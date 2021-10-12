@@ -1,0 +1,27 @@
+# Base
+-r requirements-databases.txt
+
+# Crear tarball y wheel
+build
+twine
+wheel
+
+# Control de calidad python
+black
+flake8
+pytest
+pylint
+
+# Control de calidad html
+curlylint
+
+# Cobertura de código
+coverage
+pytest-cov
+
+# Docs
+mkdocs
+mkdocs-material
+
+# Verificación de tipos
+mypy
