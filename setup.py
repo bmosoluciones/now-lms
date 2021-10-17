@@ -33,7 +33,7 @@ setup(
     version=metadata["VERSION"],
     author=metadata["APPAUTHOR"],
     author_email="williamjmorenor@gmail.com",
-    description="Simple y minimalista entorno de aprendisaje en linea.",
+    description="Simple to {install, use, configure, mantain} learning management system.",
     long_description=descripcion,
     long_description_content_type="text/markdown",
     packages=["now_lms"],
