@@ -31,6 +31,7 @@ from flask_login import LoginManager, UserMixin, current_user, login_required, l
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from loguru import logger as log
+from sqlalchemy.exc import OperationalError
 from wtforms import PasswordField, StringField, SubmitField
 from wtforms.validators import DataRequired
 
@@ -190,7 +191,11 @@ with lms_app.app_context():
     administrador_sesion.init_app(lms_app)
     database.init_app(lms_app)
     lms_app.jinja_env.globals["current_user"] = current_user
-    lms_app.jinja_env.globals["cursos"] = Curso.query.all()
+    try:
+        CURSOS = Curso.query.all()
+    except OperationalError:
+        CURSOS = None
+    lms_app.jinja_env.globals["cursos"] = CURSOS
 
 
 def init_app():
@@ -222,7 +227,8 @@ def init_app():
 @lms_app.cli.command()
 def setup():  # pragma: no cover
     """Inicia al aplicacion"""
-    init_app()
+    with current_app.app_context():
+        init_app()
 
 
 @lms_app.cli.command()
@@ -288,7 +294,6 @@ def inicio_sesion():
 @lms_app.route("/logon", methods=["GET", "POST"])
 def crear_cuenta():
     """Crear cuenta de usuario."""
-    from sqlalchemy.exc import OperationalError
 
     form = LogonForm()
     if form.validate_on_submit() or request.method == "POST":
