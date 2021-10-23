@@ -1,0 +1,74 @@
+{% import "macros.html" as macros %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+
+<head>
+
+    {{ macros.headertags() }}
+    <title>{{ title }}</title>
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    {{ macros.navbar() }}
+
+    <main>
+        <div class="container" id="user_profile">
+            <h4 class="pb-2 border-bottom">Perfil del usuario {{ perfil.usuario }}</h4>
+
+            <div class="container" id="profile">
+
+                <!--
+                Gracias al snippets creado por Edgar Burongoh
+
+                https://bbbootstrap.com/snippets/bootstrap-5-myprofile-90806631
+                -->
+
+                <div class="container rounded bg-white mt-5 mb-5">
+                    <div class="row">
+                        <div class="col-md-2 border-right">
+                            <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                                <img class="rounded-circle mt-5" width="150px"
+                                    src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
+                                <span class="font-weight-bold">{{ perfil.nombre }} {{ perfil.apellido }}</span>
+                                <span class="text-black-50">{{ perfil.correo_electronico }}</span>
+                                <p>Perfil: <span class="text-black-50">{{ perfil.tipo }}</span></p>
+                            </div>
+                        </div>
+                        <div class="col-md-10 border-right">
+                            {% if current_user.is_authenticated and  current_user.tipo == "admin" %}
+                                {% if perfil.estado == False %}
+                                
+                                {% endif%}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </main>
+
+
+</body>
+
+</html>

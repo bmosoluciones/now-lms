@@ -19,12 +19,13 @@
 """NOW Learning Management System."""
 # Libreria standar:
 import sys
+from functools import wraps
 from os import environ, name, path, cpu_count
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Union
 
 # Librerias de terceros:
-from flask import Flask, flash, redirect, request, render_template, url_for, current_app
+from flask import Flask, abort, flash, redirect, request, render_template, url_for, current_app
 from flask.cli import FlaskGroup
 from flask_alembic import Alembic
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
@@ -41,7 +42,8 @@ from now_lms.version import VERSION
 # < --------------------------------------------------------------------------------------------- >
 # Metadatos
 STATUS: str = "development"
-__all__: tuple = VERSION
+APPNAME: str = "NOW LMS"
+__all__: Union[tuple, str] = (VERSION,)
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios de la aplicacion
@@ -49,6 +51,13 @@ DIRECTORIO_APP: str = path.abspath(path.dirname(__file__))
 DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
 DIRECTORIO_PLANTILLAS: str = path.join(DIRECTORIO_APP, "templates")
 DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
+DIRECTORIO_BASE_ARCHIVOS_DE_USUARIO: str = path.join(DIRECTORIO_APP, "static", "files")
+DIRECTORIO_ARCHIVOS_PUBLICOS: str = path.join(DIRECTORIO_BASE_ARCHIVOS_DE_USUARIO, "public")
+DIRECTORIO_ARCHIVOS_PRIVADOS: str = path.join(DIRECTORIO_BASE_ARCHIVOS_DE_USUARIO, "private")
+
+
+# < --------------------------------------------------------------------------------------------- >
+# Directorios utilizados para la carga de archivos.
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -82,6 +91,9 @@ database: SQLAlchemy = SQLAlchemy()
 # < --------------------------------------------------------------------------------------------- >
 # Base de datos relacional
 
+MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA: int = 3
+
+
 # pylint: disable=too-few-public-methods
 # pylint: disable=no-member
 class BaseTabla:
@@ -104,10 +116,11 @@ class Usuario(UserMixin, database.Model, BaseTabla):  # type: ignore[name-define
     acceso = database.Column(database.LargeBinary(), nullable=False)
     nombre = database.Column(database.String(100))
     apellido = database.Column(database.String(100))
+    correo_electronico = database.Column(database.String(100))
     # Tipo puede ser: admin, user, instructor, moderator
     tipo = database.Column(database.String(20))
     activo = database.Column(database.Boolean())
-    genero = database.Column(database.String(10))
+    genero = database.Column(database.String(1))
     nacimiento = database.Column(database.Date())
 
 
@@ -173,6 +186,7 @@ class LogonForm(FlaskForm):
     acceso = PasswordField(validators=[DataRequired()])
     nombre = StringField(validators=[DataRequired()])
     apellido = StringField(validators=[DataRequired()])
+    correo_electronico = StringField(validators=[DataRequired()])
     inicio_sesion = SubmitField()
 
 
@@ -199,7 +213,7 @@ with lms_app.app_context():
 
 
 def init_app():
-    """Funcion auxiliar para iniciar la aplicacion"""
+    """Funcion auxiliar para iniciar la aplicacion."""
     with current_app.app_context():
         if STATUS == "development":
             log.warning("Modo desarrollo detectado.")
@@ -226,14 +240,14 @@ def init_app():
 
 @lms_app.cli.command()
 def setup():  # pragma: no cover
-    """Inicia al aplicacion"""
+    """Inicia al aplicacion."""
     with current_app.app_context():
         init_app()
 
 
 @lms_app.cli.command()
 def serve():  # pragma: no cover
-    """Servidor WSGI predeterminado"""
+    """Servidor WSGI predeterminado."""
     from waitress import serve as server
 
     PORT: str = environ.get("LMS_PORT") or "8080"
@@ -252,6 +266,13 @@ def error_404(error):
     return render_template("404.html"), 404
 
 
+@lms_app.errorhandler(403)
+def error_403(error):
+    """Pagina personalizada para recursos no autorizados."""
+    assert error is not None
+    return render_template("403.html"), 403
+
+
 # < --------------------------------------------------------------------------------------------- >
 # Interfaz de linea de comandos
 COMMAND_LINE_INTERFACE = FlaskGroup(
@@ -268,13 +289,38 @@ def command(as_module=False) -> None:
 
 # < --------------------------------------------------------------------------------------------- >
 # Definición de rutas/vistas
+
+
+def perfil_requerido(perfil_id):
+    """Comprueba si un usuario tiene acceso a un recurso determinado en base a su tipo."""
+
+    def decorator_verifica_acceso(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+
+            if (current_user.is_authenticated and current_user.tipo == perfil_id) or current_user.tipo == "admin":
+                return func(*args, **kwargs)
+
+            else:
+                flash("No se encuentra autorizado a acceder al recurso solicitado.")
+                return abort(403)
+
+        return wrapper
+
+    return decorator_verifica_acceso
+
+
+# < --------------------------------------------------------------------------------------------- >
+# Definición de rutas/vistas
+
+
+# <-------- Autenticación de usuarios  -------->
 INICIO_SESION = redirect("/login")
 
 
 @lms_app.route("/login", methods=["GET", "POST"])
 def inicio_sesion():
     """Inicio de sesión del usuario."""
-
     form = LoginForm()
     if form.validate_on_submit():
         if validar_acceso(form.usuario.data, form.acceso.data):
@@ -294,7 +340,6 @@ def inicio_sesion():
 @lms_app.route("/logon", methods=["GET", "POST"])
 def crear_cuenta():
     """Crear cuenta de usuario."""
-
     form = LogonForm()
     if form.validate_on_submit() or request.method == "POST":
         usuario_ = Usuario(
@@ -302,6 +347,7 @@ def crear_cuenta():
             acceso=proteger_passwd(form.acceso.data),
             nombre=form.nombre.data,
             apellido=form.apellido.data,
+            correo_electronico=form.correo_electronico.data,
             tipo="user",
             activo=False,
         )
@@ -326,6 +372,7 @@ def cerrar_sesion():
     return redirect("/home")
 
 
+# <-------- Estructura general de al aplicación  -------->
 @lms_app.route("/")
 @lms_app.route("/home")
 @lms_app.route("/index")
@@ -342,6 +389,35 @@ def panel():
     return render_template("inicio/panel.html")
 
 
+@lms_app.route("/student")
+@login_required
+def pagina_estudiante():
+    """Perfil de usuario."""
+    return render_template("perfiles/estudiante.html")
+
+
+@lms_app.route("/moderator")
+@login_required
+def pagina_moderador():
+    """Perfil de usuario moderador."""
+    return render_template("perfiles/instructor.html")
+
+
+@lms_app.route("/instructor")
+@login_required
+def pagina_instructor():
+    """Perfil de usuario instructor."""
+    return render_template("perfiles/moderador.html")
+
+
+@lms_app.route("/admin")
+@login_required
+def pagina_admin():
+    """Perfil de usuario administrador."""
+    return render_template("perfiles/admin.html")
+
+
+# <-------- Aprendizaje -------->
 @lms_app.route("/program")
 @lms_app.route("/programa")
 def programa():
@@ -358,37 +434,77 @@ def curso():
     """Pagina principal del curso."""
 
 
-@lms_app.route("/user")
-@lms_app.route("/usuario")
+# <-------- Administración -------->
+@lms_app.route("/users")
 @login_required
-def usuario():
-    """Perfil de usuario."""
-    return render_template("inicio/usuario.html")
+@perfil_requerido("admin")
+def usuarios():
+    """Lista de usuarios con acceso a al aplicación."""
+    CONSULTA = Usuario.query.paginate(
+        request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False
+    )
+
+    return render_template(
+        "admin/users.html",
+        consulta=CONSULTA,
+    )
 
 
-@lms_app.route("/student")
+@lms_app.route("/inactive_users")
 @login_required
-def pagina_estudiante():
-    """Perfil de usuario."""
-    return render_template("perfiles/estudiante.html")
+@perfil_requerido("admin")
+def usuarios_inactivos():
+    """Lista de usuarios con acceso a al aplicación."""
+    CONSULTA = Usuario.query.filter_by(activo=False).paginate(
+        request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False
+    )
+
+    return render_template(
+        "admin/inactive_users.html",
+        consulta=CONSULTA,
+    )
 
 
-@lms_app.route("/moderator")
+@lms_app.route("/user/<id_usuario>")
 @login_required
-def pagina_moderador():
-    """Perfil de usuario."""
-    return render_template("perfiles/instructor.html")
+@perfil_requerido("admin")
+def usuario(id_usuario):
+    """Acceso administrativo al perfil de un usuario."""
+
+    perfil_usuario = Usuario.query.filter_by(usuario=id_usuario).first()
+    # La misma plantilla del perfil de usuario con permisos elevados como
+    # activar desactivar el perfil o cambiar el perfil del usuario.
+    return render_template("inicio/perfil.html", perfil=perfil_usuario)
 
 
-@lms_app.route("/instructor")
+# <-------- Espacio del usuario -------->
+@lms_app.route("/perfil")
 @login_required
-def pagina_instructor():
-    """Perfil de usuario."""
-    return render_template("perfiles/moderador.html")
+def perfil():
+    """Perfil del usuario."""
+    perfil_usuario = Usuario.query.filter_by(usuario=current_user.usuario).first()
+    return render_template("inicio/perfil.html", perfil=perfil_usuario)
 
 
-@lms_app.route("/admin")
+# <-------- Funciones Auxiliares -------->
+@lms_app.route("/set_user_as_active/<user_id>")
 @login_required
-def pagina_admin():
-    """Perfil de usuario."""
-    return render_template("perfiles/admin.html")
+@perfil_requerido("admin")
+def activar_usuario(user_id):
+    """Estable el usuario como activo y redirecciona a la vista dada."""
+    perfil_usuario = Usuario.query.filter_by(usuario=user_id).first()
+    perfil_usuario.activo = True
+    database.session.add(perfil_usuario)
+    database.session.commit()
+    return redirect(url_for(request.args.get("ruta", default="home", type=str)))
+
+
+@lms_app.route("/delete_user/<user_id>")
+@login_required
+@perfil_requerido("admin")
+def eliminar_usuario(user_id):
+    """Elimina un usuario por su id y redirecciona a la vista dada."""
+    perfil_usuario = Usuario.query.filter(Usuario.usuario == user_id)
+    perfil_usuario.delete()
+    database.session.commit()
+    return redirect(url_for(request.args.get("ruta", default="home", type=str)))

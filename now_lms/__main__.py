@@ -16,7 +16,7 @@
 # - William José Moreno Reyes
 
 """
-Modula para ejecutar NOW LMS
+Modula para ejecutar NOW LMS.
 
 Permite ejecutar el sistema con:
 

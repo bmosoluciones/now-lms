@@ -1,0 +1,97 @@
+{% import "macros.html" as macros %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+
+<head>
+
+    {{ macros.headertags() }}
+    <title>{{ title }}</title>
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    {{ macros.navbar() }}
+
+    <main>
+        <div class="container" id="user_list">
+            <h4 class="pb-2 border-bottom">Usuarios pendientes de activación.</h4>
+
+            <div class="container" id="user_table">
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellido</th>
+                            <th scope="col">Correo Electronico</th>
+                            <th scope="col">Accion</th>
+                        </tr>
+                    </thead>
+                    {% for item in consulta.items -%}
+                    <tbody>
+                        <tr>
+
+                            <td>
+                                <a class="link-dark" href="{{ url_for("usuario", id_usuario=item.usuario) }}">
+                                    {{ item.usuario }}
+                                </a>
+                            </td>
+                            <td>
+                                <a class="link-dark" href="{{ url_for("usuario", id_usuario=item.usuario) }}">
+                                    {{ item.nombre }}
+                                </a>
+                            </td>
+                            <td>
+                                <a class="link-dark" href="{{ url_for("usuario", id_usuario=item.usuario) }}">
+                                    {{ item.apellido }}
+                                </a>
+                            </td>
+                            <td>
+                                <a class="link-dark" href="{{ url_for("usuario", id_usuario=item.usuario) }}">
+                                    {{ item.correo_electronico }}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{{ url_for("activar_usuario", user_id=item.usuario, ruta="usuarios_inactivos") }}"
+                                    class="btn btn-success btn-sm" role="button">
+                                    Activar
+                                </a>
+                                <a href="{{ url_for("eliminar_usuario", user_id=item.usuario, ruta="usuarios_inactivos") }}"
+                                    class="btn btn-danger btn-sm" role="button">
+                                    Rechazar
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="container" id="user_paginatios">
+                {{ macros.rendizar_paginacion(consulta=consulta, vista="usuarios") }}
+            </div>
+
+        </div>
+    </main>
+</body>
+
+</html>
