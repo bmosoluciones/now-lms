@@ -121,11 +121,13 @@
             </div>
         </div>
         {% else %}
+        <div class="text-center">
           {% if current_user.is_authenticated %}
           <a href="#" class="btn btn-primary " role="button" aria-disabled="true">Crear Curso</a>
           {% else %}
           <p>No hay cursos disponibles en este momento.</p>
           {% endif %}
+        </div>
         {% endif %}
     </main>
 
