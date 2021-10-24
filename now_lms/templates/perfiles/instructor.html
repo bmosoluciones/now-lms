@@ -22,6 +22,7 @@
                 font-size: 3.5rem;
             }
         }
+
     </style>
 </head>
 
@@ -30,8 +31,22 @@
     {{ macros.navbar() }}
 
     <main>
+        <div class="container px-4 py-5" id="icon-grid">
+            <h2 class="pb-2 border-bottom">Panel del docente.</h2>
 
-        
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+                <div class="col d-flex align-items-start">
+                    <h3><i class="bi bi-people-fill" aria-hidden="true"></i></i></h3>
+                    <div>
+                        <h4 class="fw-bold mb-0">Cursos</h4>
+                        <p>
+                            <a href=" {{ url_for("cursos") }} " class="link-dark">Cursos</a>
+                             - 
+                            <a href="{{ url_for("nuevo_curso") }}" class="link-dark">Nuevo Curso</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
     </main>
 
 

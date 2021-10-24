@@ -33,7 +33,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from loguru import logger as log
 from sqlalchemy.exc import OperationalError
-from wtforms import PasswordField, StringField, SubmitField
+from wtforms import PasswordField, StringField, SubmitField, IntegerField, DecimalField
+from wtforms.fields.core import BooleanField
+from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired
 
 # Recursos locales:
@@ -128,7 +130,46 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Un curso es la base del aprendizaje en NOW LMS."""
 
     nombre = database.Column(database.String(150), nullable=False)
-    codigo = database.Column(database.String(20), nullable=False)
+    codigo = database.Column(database.String(20))
+    descripcion = database.Column(database.String(500), nullable=False)
+    # draft, public, active, closed
+    estado = database.Column(database.String(10), nullable=False)
+    # mooc
+    publico = database.Column(database.Boolean())
+    precio = database.Column(database.Numeric())
+    capacidad = database.Column(database.Integer())
+    fecha_inicio = database.Column(database.Time())
+    fecha_fin = database.Column(database.Time())
+
+
+class Files(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Listado de archivos que se han cargado a la aplicacion."""
+
+    archivo = database.Column(database.String(100), nullable=False)
+    tipo = database.Column(database.String(15), nullable=False)
+    hash = database.Column(database.String(50), nullable=False)
+    url = database.Column(database.String(100), nullable=False)
+
+
+class DocenteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Uno o mas usuario de tipo intructor pueden estar a cargo de un curso."""
+
+    curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False)
+    usuario = database.Column(database.String(10), database.ForeignKey("usuario.usuario"), nullable=False)
+
+
+class ModeradorCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Uno o mas usuario de tipo moderator pueden estar a cargo de un curso."""
+
+    curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False)
+    usuario = database.Column(database.String(10), database.ForeignKey("usuario.usuario"), nullable=False)
+
+
+class EstudianteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Uno o mas usuario de tipo user pueden estar a cargo de un curso."""
+
+    curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False)
+    usuario = database.Column(database.String(10), database.ForeignKey("usuario.usuario"), nullable=False)
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -187,7 +228,19 @@ class LogonForm(FlaskForm):
     nombre = StringField(validators=[DataRequired()])
     apellido = StringField(validators=[DataRequired()])
     correo_electronico = StringField(validators=[DataRequired()])
-    inicio_sesion = SubmitField()
+
+
+class CurseForm(FlaskForm):
+    """Formulario para crear un nuevo curso."""
+
+    nombre = StringField(validators=[DataRequired()])
+    codigo = StringField(validators=[DataRequired()])
+    descripcion = StringField(validators=[DataRequired()])
+    publico = BooleanField(validators=[])
+    precio = DecimalField(validators=[])
+    capacidad = IntegerField(validators=[])
+    fecha_inicio = DateField(validators=[])
+    fecha_fin = DateField(validators=[])
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -400,14 +453,14 @@ def pagina_estudiante():
 @login_required
 def pagina_moderador():
     """Perfil de usuario moderador."""
-    return render_template("perfiles/instructor.html")
+    return render_template("perfiles/moderador.html")
 
 
 @lms_app.route("/instructor")
 @login_required
 def pagina_instructor():
     """Perfil de usuario instructor."""
-    return render_template("perfiles/moderador.html")
+    return render_template("perfiles/instructor.html")
 
 
 @lms_app.route("/admin")
@@ -428,10 +481,54 @@ def programa():
     """
 
 
-@lms_app.route("/course")
-@lms_app.route("/curso")
-def curso():
+@lms_app.route("/new_curse", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_curso():
+    """Formulario para crear un nuevo usuario."""
+    form = CurseForm()
+    if form.validate_on_submit() or request.method == "POST":
+        nuevo_curso_ = Curso(
+            nombre=form.nombre.data,
+            codigo=form.codigo.data,
+            descripcion=form.descripcion.data,
+            estado="draft",
+            publico=form.publico.data,
+            precio=form.precio.data,
+            capacidad=form.capacidad.data,
+            fecha_inicio=form.fecha_inicio.data,
+            fecha_fin=form.fecha_fin.data,
+        )
+        try:
+            database.session.add(nuevo_curso_)
+            database.session.commit()
+            flash("Curso creado exitosamente.")
+            return redirect(url_for("curso", course_code=form.codigo.data))
+        except OperationalError:
+            flash("Hubo en error al crear su curso.")
+            return redirect("/instructor")
+    else:
+        return render_template("learning/nuevo_curso.html", form=form)
+
+
+@lms_app.route("/courses")
+@lms_app.route("/cursos")
+def cursos():
     """Pagina principal del curso."""
+
+    lista_cursos = Curso.query.paginate(
+        request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False
+    )
+    return render_template("learning/curso_lista.html", consulta=lista_cursos)
+
+
+@lms_app.route("/course/<course_code>")
+@lms_app.route("/curso")
+def curso(course_code):
+    """Pagina principal del curso."""
+    curso_data = Curso.query.filter_by(codigo=course_code).first()
+
+    return render_template("learning/curso.html", data=curso_data)
 
 
 # <-------- Administración -------->
