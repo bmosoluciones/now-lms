@@ -467,7 +467,7 @@ def pagina_instructor():
 @login_required
 def pagina_admin():
     """Perfil de usuario administrador."""
-    return render_template("perfiles/admin.html")
+    return render_template("perfiles/admin.html", inactivos=Usuario.query.filter_by(activo=False).count() or 0)
 
 
 # <-------- Aprendizaje -------->

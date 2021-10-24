@@ -42,7 +42,11 @@
                         <p>
                             <a href="{{ url_for("usuarios") }}" class="link-dark">Usuarios</a>
                              - 
-                            <a href="{{ url_for("usuarios_inactivos") }}" class="link-dark">Usuarios pendientes de activar</a>
+                            <a href="{{ url_for("usuarios_inactivos") }}" class="link-dark">Usuarios pendientes de activar
+                                {% if inactivos > 0 %}
+                                ({{ inactivos | int }})
+                                {% endif %}
+                            </a>
                         </p>
                     </div>
                 </div>
