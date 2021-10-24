@@ -37,6 +37,7 @@
         <div class="container px-4 py-5" id="icon-grid">
             <h2 class="pb-2 border-bottom">Crear nuevo curso.</h2>
             <form method="post">
+                {{ form.csrf_token }}
                 <div class="row g-3">
                     <div class="col-sm-6">
                         <label for="nombre" class="form-label">Nombre del Curso</label>
