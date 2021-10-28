@@ -136,10 +136,12 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     estado = database.Column(database.String(10), nullable=False)
     # mooc
     publico = database.Column(database.Boolean())
+    certificado = database.Column(database.Boolean())
     precio = database.Column(database.Numeric())
     capacidad = database.Column(database.Integer())
-    fecha_inicio = database.Column(database.Time())
-    fecha_fin = database.Column(database.Time())
+    fecha_inicio = database.Column(database.Date())
+    fecha_fin = database.Column(database.Date())
+    duracion = database.Column(database.Integer())
 
 
 class Files(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -237,10 +239,12 @@ class CurseForm(FlaskForm):
     codigo = StringField(validators=[DataRequired()])
     descripcion = StringField(validators=[DataRequired()])
     publico = BooleanField(validators=[])
+    certificado = BooleanField(validators=[])
     precio = DecimalField(validators=[])
     capacidad = IntegerField(validators=[])
     fecha_inicio = DateField(validators=[])
     fecha_fin = DateField(validators=[])
+    duracion = IntegerField(validators=[])
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -258,11 +262,6 @@ with lms_app.app_context():
     administrador_sesion.init_app(lms_app)
     database.init_app(lms_app)
     lms_app.jinja_env.globals["current_user"] = current_user
-    try:
-        CURSOS = Curso.query.all()
-    except OperationalError:
-        CURSOS = None
-    lms_app.jinja_env.globals["cursos"] = CURSOS
 
 
 def init_app():
@@ -365,7 +364,7 @@ def perfil_requerido(perfil_id):
 
 # < --------------------------------------------------------------------------------------------- >
 # Definición de rutas/vistas
-
+# pylint: disable=singleton-comparison
 
 # <-------- Autenticación de usuarios  -------->
 INICIO_SESION = redirect("/login")
@@ -431,7 +430,9 @@ def cerrar_sesion():
 @lms_app.route("/index")
 def home():
     """Página principal de la aplicación."""
-    return render_template("inicio/mooc.html")
+
+    CURSOS = Curso.query.filter(Curso.publico == True).paginate(request.args.get("page", default=1, type=int), 9, False)
+    return render_template("inicio/mooc.html", cursos=CURSOS)
 
 
 @lms_app.route("/dashboard")
@@ -494,10 +495,13 @@ def nuevo_curso():
             descripcion=form.descripcion.data,
             estado="draft",
             publico=form.publico.data,
+            certificado=form.certificado.data,
             precio=form.precio.data,
             capacidad=form.capacidad.data,
             fecha_inicio=form.fecha_inicio.data,
             fecha_fin=form.fecha_fin.data,
+            duracion=form.duracion.data,
+            creado_por=current_user.usuario,
         )
         try:
             database.session.add(nuevo_curso_)

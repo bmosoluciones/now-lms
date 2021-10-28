@@ -43,7 +43,7 @@
             </div>
         </section>
 
-        {% if cursos %}
+        {% if cursos.total > 0 %}
         <div class="album py-5 bg-light">
             <div class="container">
 
@@ -71,62 +71,32 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col">
-                        <div class="card shadow-sm">
-                            <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                                xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                                preserveAspectRatio="xMidYMid slice" focusable="false">
-                                <title>Placeholder</title>
-                                <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                                    dy=".3em">Thumbnail</text>
-                            </svg>
-
-                            <div class="card-body">
-                                <p class="card-text">This is a wider card with supporting text below as a natural
-                                    lead-in to additional content. This content is a little bit longer.</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                    </div>
-                                    <small class="text-muted">9 mins</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="card shadow-sm">
-                            <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                                xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                                preserveAspectRatio="xMidYMid slice" focusable="false">
-                                <title>Placeholder</title>
-                                <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                                    dy=".3em">Thumbnail</text>
-                            </svg>
-
-                            <div class="card-body">
-                                <p class="card-text">This is a wider card with supporting text below as a natural
-                                    lead-in to additional content. This content is a little bit longer.</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                                    </div>
-                                    <small class="text-muted">9 mins</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
+        <div class="text-center">
+            <p>{{ cursos.total }} cursos disponibles.
+                <br>
+                {% if cursos.has_prev %}
+                <a class="link-dark" href="{{ url_for("home", page=cursos.prev_num) }}" <i
+                    class="bi bi-arrow-left-short" aria-hidden="true"></i>
+                    Anterior</a>
+                {% endif %}
+                Página {{ cursos.page }} de {{ cursos.pages }}
+                {% if cursos.has_next %}
+                <a class="link-dark" href="{{ url_for("home", page=cursos.next_num) }}">Siguiente <i
+                        class="bi bi-arrow-right-short" aria-hidden="true"></i></a>
+                {% endif %}
+            </p>
+        </div>
         {% else %}
         <div class="text-center">
-          {% if current_user.is_authenticated %}
-          <a href="#" class="btn btn-primary " role="button" aria-disabled="true">Crear Curso</a>
-          {% else %}
-          <p>No hay cursos disponibles en este momento.</p>
-          {% endif %}
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for("nuevo_curso")}}" class="btn btn-primary " role="button" aria-disabled="true">Crear
+                Curso</a>
+            {% else %}
+            <p>No hay cursos disponibles en este momento.</p>
+            {% endif %}
         </div>
         {% endif %}
     </main>
