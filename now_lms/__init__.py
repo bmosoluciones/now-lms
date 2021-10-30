@@ -94,6 +94,8 @@ database: SQLAlchemy = SQLAlchemy()
 # Base de datos relacional
 
 MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA: int = 3
+LLAVE_FORONEA_CURSO: str = "curso.codigo"
+LLAVE_FORONEA_USUARIO: str = "usuario.usuario"
 
 
 # pylint: disable=too-few-public-methods
@@ -158,22 +160,22 @@ class Files(database.Model, BaseTabla):  # type: ignore[name-defined]
 class DocenteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Uno o mas usuario de tipo intructor pueden estar a cargo de un curso."""
 
-    curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False)
-    usuario = database.Column(database.String(10), database.ForeignKey("usuario.usuario"), nullable=False)
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
+    usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
 
 
 class ModeradorCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Uno o mas usuario de tipo moderator pueden estar a cargo de un curso."""
 
-    curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False)
-    usuario = database.Column(database.String(10), database.ForeignKey("usuario.usuario"), nullable=False)
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
+    usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
 
 
 class EstudianteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Uno o mas usuario de tipo user pueden estar a cargo de un curso."""
 
-    curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False)
-    usuario = database.Column(database.String(10), database.ForeignKey("usuario.usuario"), nullable=False)
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
+    usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
 
 
 class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
