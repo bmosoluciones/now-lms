@@ -1,0 +1,1 @@
+web: python -m flask setup && python -m flask serve

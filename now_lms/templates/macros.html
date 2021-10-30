@@ -66,11 +66,6 @@
 </p>
 {% endmacro %}
 
-{% macro render_status(status=None, lista_status=None) %}
-<span class="badge" title="Tooltip on top">
-  <i class="bi bi-circle-fill" style="color:{{ lista_status[status].color }}"></i>
-</span>
-{% endmacro %}
 
 {% macro navbar() -%}
 
@@ -78,7 +73,7 @@
   <div class="container">
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
       <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-        <img height="25" src="{{ url_for('static', filename='/icons/logo_horizontal_blanco.svg') }}" alt="NOW LMS"
+        <img height="25" src="{{ url_for('static', filename='/icons/logo/logo_horizontal_blanco.svg') }}" alt="NOW LMS"
           class="d-inline-block align-top">
       </a>
 

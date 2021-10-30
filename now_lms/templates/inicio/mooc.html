@@ -48,29 +48,69 @@
             <div class="container">
 
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                    {% for curso in cursos.items %}
                     <div class="col">
                         <div class="card shadow-sm">
+                            {% if curso.portada %}
+                            <img src="{{ curso.portada }}" alt="{{ curso.nombre }}" width="100%" height="225">
+                            {% else %}
                             <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
                                 xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
                                 preserveAspectRatio="xMidYMid slice" focusable="false">
-                                <title>Placeholder</title>
+                                <title> {{ curso.nombre }} </title>
                                 <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                                    dy=".3em">Thumbnail</text>
+                                    dy=".3em">{{ curso.nombre }}</text>
                             </svg>
+                            {% endif %}
 
                             <div class="card-body">
-                                <p class="card-text">This is a wider card with supporting text below as a natural
-                                    lead-in to additional content. This content is a little bit longer.</p>
+
+                                <div class="d-flex d-flex justify-content-between">
+                                    <strong>{{ curso.nombre }}</strong>
+
+
+
+                                    {% if curso.nivel == 0 %}
+                                    <img src="{{ url_for("static", filename='/icons/curso-level0.svg') }}"
+                                        alt="{{ curso.nombre }}" width="20" height="20" alt="Nivel Introductorio">
+                                    {% elif curso.nivel == 1 %}
+                                    <img src="{{ url_for("static", filename='/icons/curso-level1.svg') }}"
+                                        alt="{{ curso.nombre }}" width="20" height="20" alt="Nivel Principiante">
+                                    {% elif curso.nivel == 2 %}
+                                    <img src="{{ url_for("static", filename='/icons/curso-level2.svg') }}"
+                                        alt="{{ curso.nombre }}" width="20" height="20" alt="Nivel Intermedio">
+                                    {% elif curso.nivel == 3 %}
+                                    <img src="{{ url_for("static", filename='/icons/curso-level3.svg') }}"
+                                        alt="{{ curso.nombre }}" width="20" height="20" alt="Nivel Avanzado">
+                                    {% endif %}
+
+
+
+
+                                </div>
+                                {{ curso.descripcion }}
+
                                 <div class="d-flex justify-content-between align-items-center">
+
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                        <a href="{{ url_for("curso", course_code=curso.codigo )}}"
+                                            class="btn btn-sm btn-outline-secondary" role="button" aria-disabled="true">
+                                            Ver Curso
+                                        </a>
                                     </div>
-                                    <small class="text-muted">9 mins</small>
+                                    {% if curso.duracion %}
+                                    <small class="text-muted">{{ curso.duracion }} mins</small>
+                                    {% endif %}
+                                    {% if curso.precio %}
+                                    <small>{{ curso.precio | float }} USD</small>
+                                    {% else %}
+                                    <small>Gratis</small>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -80,7 +120,8 @@
                 {% if cursos.has_prev %}
                 <a class="link-dark" href="{{ url_for("home", page=cursos.prev_num) }}" <i
                     class="bi bi-arrow-left-short" aria-hidden="true"></i>
-                    Anterior</a>
+                    Anterior
+                </a>
                 {% endif %}
                 Página {{ cursos.page }} de {{ cursos.pages }}
                 {% if cursos.has_next %}

@@ -34,7 +34,7 @@ from flask_wtf import FlaskForm
 from loguru import logger as log
 from sqlalchemy.exc import OperationalError
 from wtforms import PasswordField, StringField, SubmitField, IntegerField, DecimalField
-from wtforms.fields.core import BooleanField
+from wtforms.fields.core import BooleanField, SelectField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired
 
@@ -142,6 +142,8 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     fecha_inicio = database.Column(database.Date())
     fecha_fin = database.Column(database.Date())
     duracion = database.Column(database.Integer())
+    portada = database.Column(database.String(250), nullable=True, default=None)
+    nivel = database.Column(database.Integer())
 
 
 class Files(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -172,6 +174,23 @@ class EstudianteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
 
     curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False)
     usuario = database.Column(database.String(10), database.ForeignKey("usuario.usuario"), nullable=False)
+
+
+class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """
+    Repositorio Central para la configuración de la aplicacion.
+
+    Realmente esta tabla solo va a contener un registro con una columna para cada opción, en las plantillas
+    va a estar disponible como la variable global config.
+    """
+
+    titulo = database.Column(database.String(150), nullable=False)
+    descripcion = database.Column(database.String(500), nullable=False)
+    # Uno de mooc, school, training
+    modo = database.Column(database.String(500), nullable=False, default="mooc")
+    # Pagos en linea
+    paypal_key = database.Column(database.String(150), nullable=False)
+    stripe_key = database.Column(database.String(150), nullable=False)
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -245,6 +264,7 @@ class CurseForm(FlaskForm):
     fecha_inicio = DateField(validators=[])
     fecha_fin = DateField(validators=[])
     duracion = IntegerField(validators=[])
+    nivel = SelectField("User", choices=[(0, "Introductorio"), (1, "Principiante"), (2, "Intermedio"), (2, "Avanzado")])
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -262,6 +282,10 @@ with lms_app.app_context():
     administrador_sesion.init_app(lms_app)
     database.init_app(lms_app)
     lms_app.jinja_env.globals["current_user"] = current_user
+    try:
+        lms_app.jinja_env.globals["config"] = Configuracion.query.first()
+    except OperationalError:
+        lms_app.jinja_env.globals["config"] = None
 
 
 def init_app():
@@ -431,7 +455,9 @@ def cerrar_sesion():
 def home():
     """Página principal de la aplicación."""
 
-    CURSOS = Curso.query.filter(Curso.publico == True).paginate(request.args.get("page", default=1, type=int), 9, False)
+    CURSOS = Curso.query.filter(Curso.publico == True).paginate(  # noqa: E712
+        request.args.get("page", default=1, type=int), 6, False
+    )
     return render_template("inicio/mooc.html", cursos=CURSOS)
 
 
@@ -502,6 +528,7 @@ def nuevo_curso():
             fecha_fin=form.fecha_fin.data,
             duracion=form.duracion.data,
             creado_por=current_user.usuario,
+            nivel=form.nivel.data,
         )
         try:
             database.session.add(nuevo_curso_)
