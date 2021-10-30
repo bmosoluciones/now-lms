@@ -6,7 +6,7 @@
 <head>
 
     {{ macros.headertags() }}
-    <title>{{ title }}</title>
+    <title>{{ curso.nombre }}</title>
 
     <style>
         .bd-placeholder-img {
@@ -22,6 +22,7 @@
                 font-size: 3.5rem;
             }
         }
+
     </style>
 </head>
 
@@ -30,8 +31,29 @@
     {{ macros.navbar() }}
 
     <main>
+        <br>
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
+                <div class="col-md-4 border-right">
+                    <img src="{{ curso.portada }}" alt="Portada {{curso.nombre}}" width="360" height="225">
+                    <h2> {{ curso.nombre }}</h2>
+                    <p>
+                        {{ curso.descripcion }}
+                    </p>
 
-        
+                </div>
+                <div class="col-md-8">
+                    <h4> Contenido del Curso. </h4>
+                    
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
     </main>
 
 

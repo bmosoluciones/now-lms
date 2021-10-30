@@ -559,9 +559,8 @@ def cursos():
 @lms_app.route("/curso")
 def curso(course_code):
     """Pagina principal del curso."""
-    curso_data = Curso.query.filter_by(codigo=course_code).first()
 
-    return render_template("learning/curso.html", data=curso_data)
+    return render_template("learning/curso.html", curso=Curso.query.filter_by(codigo=course_code).first())
 
 
 # <-------- Administración -------->
