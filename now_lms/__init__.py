@@ -43,6 +43,7 @@ from now_lms.version import VERSION
 
 # < --------------------------------------------------------------------------------------------- >
 # Metadatos
+DESARROLLO: bool = ("FLASK_DEBUG" in environ) or (environ.get("FLASK_ENV") == "development") or ("CI" in environ)
 STATUS: str = "development"
 APPNAME: str = "NOW LMS"
 __all__: Union[tuple, str] = (VERSION,)
@@ -327,7 +328,7 @@ with lms_app.app_context():
 def init_app():
     """Funcion auxiliar para iniciar la aplicacion."""
     with current_app.app_context():
-        if STATUS == "development":
+        if DESARROLLO:
             log.warning("Modo desarrollo detectado.")
             log.warning("Iniciando una base de datos nueva.")
             database.drop_all()
@@ -363,7 +364,7 @@ def serve():  # pragma: no cover
     from waitress import serve as server
 
     PORT: str = environ.get("LMS_PORT") or "8080"
-    if STATUS == "development":
+    if DESARROLLO:
         THREADS: int = 4
     else:
         THREADS = int(environ.get("LMS_THREADS")) or ((cpu_count() * 2) + 1)
