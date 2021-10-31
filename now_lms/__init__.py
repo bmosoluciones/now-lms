@@ -148,6 +148,23 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     nivel = database.Column(database.Integer())
 
 
+class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Los cursos tienen secciones para dividir el contenido en secciones logicas."""
+
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
+    nombre = database.Column(database.String(150), nullable=False)
+    indice = database.Column(database.Integer())
+
+
+class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Un curso consta de una serie de recursos."""
+
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
+    seccion = database.Column(database.Integer(), database.ForeignKey("curso_seccion.id"), nullable=False)
+    nombre = database.Column(database.String(150), nullable=False)
+    indice = database.Column(database.Integer())
+
+
 class Files(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Listado de archivos que se han cargado a la aplicacion."""
 
@@ -560,7 +577,12 @@ def cursos():
 def curso(course_code):
     """Pagina principal del curso."""
 
-    return render_template("learning/curso.html", curso=Curso.query.filter_by(codigo=course_code).first())
+    return render_template(
+        "learning/curso.html",
+        curso=Curso.query.filter_by(codigo=course_code).first(),
+        secciones=CursoSeccion.query.filter_by(curso=course_code).all(),
+        recursos=CursoRecurso.query.filter_by(curso=course_code).all(),
+    )
 
 
 # <-------- Administración -------->
