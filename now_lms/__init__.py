@@ -212,6 +212,23 @@ class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
     stripe_key = database.Column(database.String(150), nullable=False)
 
 
+class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """
+    Repositorio Central para la configuración de la aplicacion.
+
+    Realmente esta tabla solo va a contener un registro con una columna para cada opción, en las plantillas
+    va a estar disponible como la variable global config.
+    """
+
+    titulo = database.Column(database.String(150), nullable=False)
+    descripcion = database.Column(database.String(500), nullable=False)
+    # Uno de mooc, school, training
+    modo = database.Column(database.String(500), nullable=False, default="mooc")
+    # Pagos en linea
+    paypal_key = database.Column(database.String(150), nullable=False)
+    stripe_key = database.Column(database.String(150), nullable=False)
+
+
 # < --------------------------------------------------------------------------------------------- >
 # Control de acceso a la aplicación
 
