@@ -677,3 +677,7 @@ def eliminar_usuario(user_id):
     perfil_usuario.delete()
     database.session.commit()
     return redirect(url_for(request.args.get("ruta", default="home", type=str)))
+
+
+# Los servidores WSGI buscan por defecto una app
+app = lms_app
