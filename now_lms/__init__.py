@@ -212,7 +212,7 @@ class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
     stripe_key = database.Column(database.String(150), nullable=False)
 
 
-class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
+class Opciones(database.Model, BaseTabla):  # type: ignore[name-defined]
     """
     Repositorio Central para la configuración de la aplicacion.
 
