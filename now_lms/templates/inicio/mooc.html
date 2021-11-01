@@ -6,7 +6,7 @@
 <head>
 
     {{ macros.headertags() }}
-    <title>{{ title }}</title>
+    <title>{{ config.titulo }}</title>
 
     <style>
         .bd-placeholder-img {
@@ -35,9 +35,9 @@
         <section class="py-5 text-center container">
             <div class="row py-lg-5">
                 <div class="col-lg-6 col-md-8 mx-auto">
-                    <h1 class="fw-light">NOW LMS</h1>
+                    <h1 class="fw-light">{{ config.titulo }}</h1>
                     <p class="lead text-muted">
-                        Plataforma de aprendizaje en linea.
+                        {{ config.descripcion }}
                     </p>
                 </div>
             </div>
@@ -51,25 +51,24 @@
                     {% for curso in cursos.items %}
                     <div class="col">
                         <div class="card shadow-sm">
-                            {% if curso.portada %}
-                            <img src="{{ curso.portada }}" alt="{{ curso.nombre }}" width="100%" height="225">
-                            {% else %}
-                            <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                                xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                                preserveAspectRatio="xMidYMid slice" focusable="false">
-                                <title> {{ curso.nombre }} </title>
-                                <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                                    dy=".3em">{{ curso.nombre }}</text>
-                            </svg>
-                            {% endif %}
+                            <a href="{{ url_for("curso", course_code=curso.codigo )}}">
+                                {% if curso.portada %}
+                                <img src="{{ curso.portada }}" alt="{{ curso.nombre }}" width="100%" height="225">
+                                {% else %}
+                                <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
+                                    xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
+                                    preserveAspectRatio="xMidYMid slice" focusable="false">
+                                    <title> {{ curso.nombre }} </title>
+                                    <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%"
+                                        fill="#eceeef" dy=".3em">{{ curso.nombre }}</text>
+                                </svg>
+                                {% endif %}
+                            </a>
 
                             <div class="card-body">
 
                                 <div class="d-flex d-flex justify-content-between">
                                     <strong>{{ curso.nombre }}</strong>
-
-
-
                                     {% if curso.nivel == 0 %}
                                     <img src="{{ url_for("static", filename='/icons/curso-level0.svg') }}"
                                         alt="{{ curso.nombre }}" width="20" height="20" alt="Nivel Introductorio">
@@ -83,12 +82,8 @@
                                     <img src="{{ url_for("static", filename='/icons/curso-level3.svg') }}"
                                         alt="{{ curso.nombre }}" width="20" height="20" alt="Nivel Avanzado">
                                     {% endif %}
-
-
-
-
                                 </div>
-                                {{ curso.descripcion }}
+                                {{ curso.descripcion | truncate(120) }}
 
                                 <div class="d-flex justify-content-between align-items-center">
 

@@ -1,0 +1,2 @@
+# Install NOW - LMS with the OCI image.
+[![Docker Repository on Quay](https://quay.io/repository/bmosoluciones/now-lms/status "Docker Repository on Quay")](https://quay.io/repository/bmosoluciones/now-lms)
