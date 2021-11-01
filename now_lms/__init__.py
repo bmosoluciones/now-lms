@@ -32,7 +32,9 @@ from flask_login import LoginManager, UserMixin, current_user, login_required, l
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from loguru import logger as log
-from sqlalchemy.exc import OperationalError
+from pg8000.dbapi import ProgrammingError as PGProgrammingError
+from pg8000.exceptions import DatabaseError
+from sqlalchemy.exc import OperationalError, ProgrammingError
 from wtforms import PasswordField, StringField, SubmitField, IntegerField, DecimalField
 from wtforms.fields.core import BooleanField, SelectField
 from wtforms.fields.html5 import DateField
@@ -117,6 +119,7 @@ class Usuario(UserMixin, database.Model, BaseTabla):  # type: ignore[name-define
     """Una entidad con acceso al sistema."""
 
     # Información Básica
+    __table_args__ = (database.UniqueConstraint("usuario", name="usuario_unico"),)
     usuario = database.Column(database.String(150), nullable=False)
     acceso = database.Column(database.LargeBinary(), nullable=False)
     nombre = database.Column(database.String(100))
@@ -132,8 +135,9 @@ class Usuario(UserMixin, database.Model, BaseTabla):  # type: ignore[name-define
 class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Un curso es la base del aprendizaje en NOW LMS."""
 
+    __table_args__ = (database.UniqueConstraint("codigo", name="curso_codigo_unico"),)
     nombre = database.Column(database.String(150), nullable=False)
-    codigo = database.Column(database.String(20))
+    codigo = database.Column(database.String(20), unique=True)
     descripcion = database.Column(database.String(500), nullable=False)
     # draft, public, active, closed
     estado = database.Column(database.String(10), nullable=False)
@@ -305,9 +309,16 @@ with lms_app.app_context():
     database.init_app(lms_app)
     lms_app.jinja_env.globals["current_user"] = current_user
     try:
-        lms_app.jinja_env.globals["config"] = Configuracion.query.first()
+        CONFIG = Configuracion.query.first()
     except OperationalError:
-        lms_app.jinja_env.globals["config"] = None
+        CONFIG = None
+    except ProgrammingError:
+        CONFIG = None
+    except PGProgrammingError:
+        CONFIG = None
+    except DatabaseError:
+        CONFIG = None
+    lms_app.jinja_env.globals["config"] = CONFIG
 
 
 def init_app():
@@ -352,6 +363,9 @@ def setup():  # pragma: no cover
 def serve():  # pragma: no cover
     """Servidor WSGI predeterminado."""
     from waitress import serve as server
+
+    if not CONFIG:
+        init_app()
 
     if environ.get("LMS_PORT"):
         PORT: int = int(environ.get("LMS_PORT"))

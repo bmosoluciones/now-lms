@@ -1,5 +1,5 @@
 # Base
--r requirements-databases.txt
+-r requirements.txt
 
 # Crear tarball y wheel
 build

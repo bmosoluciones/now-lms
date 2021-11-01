@@ -6,7 +6,7 @@
 <head>
 
     {{ macros.headertags() }}
-    <title>{{ title }}</title>
+    <title>Crear nueva cuenta./title>
 
     <style>
         .bd-placeholder-img {
@@ -34,7 +34,7 @@
         <form method="post">
             {{ form.csrf_token }}
             <a href="{{ url_for('home') }}">
-                <img class="mb-4" src="{{ url_for('static', filename='icons/logo.svg') }}" alt="" width="72"
+                <img class="mb-4" src="{{ url_for('static', filename='icons/logo/logo.svg') }}" alt="" width="72"
                     height="57">
             </a>
             <h1 class="h3 mb-3 fw-normal">Crear nuevo usuario.</h1>

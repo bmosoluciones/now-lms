@@ -1,16 +1,24 @@
+# Librerias de terceros
 # Mantener en orden alfabetico
 alembic
 bcrypt
 babel
-Flask
-Flask[async]
-Flask-Alembic
+flask
+flask[async]
+flask-alembic
 flask-babel
 flask-login
-Flask-Reuploaded
+flask-reuploaded
 flask-sqlalchemy
 flask-wtf
 loguru
 sqlalchemy
 waitress
 wtforms
+
+# Soporte a Bases de datos
+#MySQL
+PyMySQL
+cryptography
+# Postgresql
+pg8000
