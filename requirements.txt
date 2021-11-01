@@ -1,0 +1,16 @@
+# Mantener en orden alfabetico
+alembic
+bcrypt
+babel
+Flask
+Flask[async]
+Flask-Alembic
+flask-babel
+flask-login
+Flask-Reuploaded
+flask-sqlalchemy
+flask-wtf
+loguru
+sqlalchemy
+waitress
+wtforms

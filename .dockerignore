@@ -1,0 +1,31 @@
+# Control de Versiones
+.git
+.github
+.gitignore
+.git-blame-ignore-revs
+.vscode
+.idea
+
+
+# Documentacion
+mkdocs.yml
+docs
+
+# No necesitamos docker files en el contenedor
+Dockerfile
+docker-compose.yml
+
+# Archivos para colaboradores
+.theia
+.coveragerc
+.pylintrc
+codecov.yml
+venv
+tests
+development.txt
+requirements-databases.txt
+*.yml
+*.db
+.mypy.ini
+.gitpod.yml
+.gitpod.sh

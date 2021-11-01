@@ -1,0 +1,99 @@
+{% import "macros.html" as macros %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+
+<head>
+
+    {{ macros.headertags() }}
+    <title>{{ title }}</title>
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    {{ macros.navbar() }}
+
+    <main>
+        <div class="container" id="curse_list">
+            <h4 class="pb-2 border-bottom">Lista de cursos disponibles.</h4>
+            <a href="{{ url_for("nuevo_curso")}}" class="btn btn-primary " role="button" aria-disabled="true">Crear
+                Curso</a>
+
+
+            <div class="container" id="curse_table">
+
+                <table class="table">
+                    <caption>Lista de cursos disponibles en el sistema.</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Codigo Curso</th>
+                            <th scope="col">Nombre Curso</th>
+                            <th scope="col">Fecha Inicio</th>
+                            <th scope="col">Fecha Fin</th>
+                            <th scope="col">Estado</th>
+                        </tr>
+                    </thead>
+                    {% for item in consulta.items -%}
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
+                                    {{ item.codigo }}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
+                                    {{ item.nombre }}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
+                                    {{ item.fecha_inicio }}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
+                                    {{ item.fecha_fin }}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
+                                    {{ item.estado | capitalize }}
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="container" id="user_paginatios">
+                {{ macros.rendizar_paginacion(consulta=consulta, vista="cursos") }}
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+</body>
+
+</html>

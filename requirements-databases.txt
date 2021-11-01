@@ -1,0 +1,10 @@
+-r requirements.txt
+
+# Bases de datos
+
+#MySQL
+PyMySQL
+cryptography
+
+# Postgresql
+pg8000
