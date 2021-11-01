@@ -43,7 +43,6 @@ from now_lms.version import VERSION
 
 # < --------------------------------------------------------------------------------------------- >
 # Metadatos
-DESARROLLO: bool = ("FLASK_DEBUG" in environ) or (environ.get("FLASK_ENV") == "development") or ("CI" in environ)
 STATUS: str = "development"
 APPNAME: str = "NOW LMS"
 __all__: Union[tuple, str] = (VERSION,)
@@ -95,8 +94,6 @@ database: SQLAlchemy = SQLAlchemy()
 # Base de datos relacional
 
 MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA: int = 3
-LLAVE_FORONEA_CURSO: str = "curso.codigo"
-LLAVE_FORONEA_USUARIO: str = "usuario.usuario"
 
 
 # pylint: disable=too-few-public-methods
@@ -149,23 +146,6 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     nivel = database.Column(database.Integer())
 
 
-class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Los cursos tienen secciones para dividir el contenido en secciones logicas."""
-
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    nombre = database.Column(database.String(150), nullable=False)
-    indice = database.Column(database.Integer())
-
-
-class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Un curso consta de una serie de recursos."""
-
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    seccion = database.Column(database.Integer(), database.ForeignKey("curso_seccion.id"), nullable=False)
-    nombre = database.Column(database.String(150), nullable=False)
-    indice = database.Column(database.Integer())
-
-
 class Files(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Listado de archivos que se han cargado a la aplicacion."""
 
@@ -178,22 +158,22 @@ class Files(database.Model, BaseTabla):  # type: ignore[name-defined]
 class DocenteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Uno o mas usuario de tipo intructor pueden estar a cargo de un curso."""
 
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
+    curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False)
+    usuario = database.Column(database.String(10), database.ForeignKey("usuario.usuario"), nullable=False)
 
 
 class ModeradorCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Uno o mas usuario de tipo moderator pueden estar a cargo de un curso."""
 
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
+    curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False)
+    usuario = database.Column(database.String(10), database.ForeignKey("usuario.usuario"), nullable=False)
 
 
 class EstudianteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Uno o mas usuario de tipo user pueden estar a cargo de un curso."""
 
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
+    curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False)
+    usuario = database.Column(database.String(10), database.ForeignKey("usuario.usuario"), nullable=False)
 
 
 class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -209,10 +189,8 @@ class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
     # Uno de mooc, school, training
     modo = database.Column(database.String(500), nullable=False, default="mooc")
     # Pagos en linea
-    paypal_key = database.Column(database.String(150), nullable=True)
-    stripe_key = database.Column(database.String(150), nullable=True)
-    # Micelaneos
-    dev_docs = database.Column(database.Boolean(), default=False)
+    paypal_key = database.Column(database.String(150), nullable=False)
+    stripe_key = database.Column(database.String(150), nullable=False)
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -313,7 +291,7 @@ with lms_app.app_context():
 def init_app():
     """Funcion auxiliar para iniciar la aplicacion."""
     with current_app.app_context():
-        if DESARROLLO:
+        if STATUS == "development":
             log.warning("Modo desarrollo detectado.")
             log.warning("Iniciando una base de datos nueva.")
             database.drop_all()
@@ -328,12 +306,7 @@ def init_app():
                 tipo="admin",
                 activo=True,
             )
-            config = Configuracion(
-                titulo="NOW LMS",
-                descripcion="Sistema de aprendizaje en linea.",
-            )
             database.session.add(administrador)
-            database.session.add(config)
             database.session.commit()
 
         else:
@@ -354,13 +327,10 @@ def serve():  # pragma: no cover
     from waitress import serve as server
 
     PORT: str = environ.get("LMS_PORT") or "8080"
-    if DESARROLLO:
+    if STATUS == "development":
         THREADS: int = 4
     else:
-        if environ.get("LMS_THREADS"):
-            THREADS = int(environ.get("LMS_THREADS"))
-        else:
-            THREADS = (cpu_count() * 2) + 1
+        THREADS = int(environ.get("LMS_THREADS")) or ((cpu_count() * 2) + 1)
     log.info("Iniciando servidor WSGI en puerto {puerto} con {threads} hilos.", puerto=PORT, threads=THREADS)
     server(app=lms_app, port=int(PORT), threads=THREADS)
 
@@ -587,13 +557,9 @@ def cursos():
 @lms_app.route("/curso")
 def curso(course_code):
     """Pagina principal del curso."""
+    curso_data = Curso.query.filter_by(codigo=course_code).first()
 
-    return render_template(
-        "learning/curso.html",
-        curso=Curso.query.filter_by(codigo=course_code).first(),
-        secciones=CursoSeccion.query.filter_by(curso=course_code).all(),
-        recursos=CursoRecurso.query.filter_by(curso=course_code).all(),
-    )
+    return render_template("learning/curso.html", data=curso_data)
 
 
 # <-------- Administración -------->
@@ -670,7 +636,3 @@ def eliminar_usuario(user_id):
     perfil_usuario.delete()
     database.session.commit()
     return redirect(url_for(request.args.get("ruta", default="home", type=str)))
-
-
-# Los servidores WSGI buscan por defecto una app
-app = lms_app

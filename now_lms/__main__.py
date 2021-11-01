@@ -24,7 +24,9 @@ Permite ejecutar el sistema con:
 
 """
 
-from now_lms import serve
+from os import environ
+from waitress import serve
+from now_lms import lms_app as app
 
 if __name__ == "__main__":
-    serve()
+    serve(app, port=environ.get("PORT") or 8080, threads=environ.get("THREADS") or 6)

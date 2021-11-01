@@ -6,7 +6,7 @@
 <head>
 
     {{ macros.headertags() }}
-    <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
+    <title>{{ title }}</title>
 
     <style>
         .bd-placeholder-img {
@@ -22,7 +22,6 @@
                 font-size: 3.5rem;
             }
         }
-
     </style>
 </head>
 
@@ -31,97 +30,8 @@
     {{ macros.navbar() }}
 
     <main>
-        <br>
-        <div class="container">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
-                <div class="col-md-4 border-right">
-                    {% if curso.portada %}
-                    <img src="{{ curso.portada }}" alt="Portada {{curso.nombre}}" width="360" height="225">
-                    {% else %}
-                    <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                        xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                        preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <title> {{ curso.nombre }} </title>
-                        <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
-                            dy=".3em">{{ curso.nombre }}</text>
-                    </svg>
-                    {% endif %}
-                    <h2> {{ curso.nombre }}</h2>
-                    <p>
-                        {{ curso.descripcion }}
-                    </p>
-                    {% if curso.fecha_inicio and curso.fecha_fin %}
-                    <i class="bi bi-calendar-week" aria-hidden="true"></i>
-                    {{ curso.fecha_inicio }} - {{ curso.fecha_fin }}
-                    {% else %}
-                    <i class="bi bi-calendar" aria-hidden="true"></i>
-                    A su propio ritmo
-                    {% endif %}
-                    <br>
-                    {% if curso.precio %}
-                    <i class="bi bi-cash-coin" aria-hidden="true"></i>
-                    {{ curso.precio | float }}
-                    {% endif %}
-                    <br>
-                    {% if curso.certificado %}
-                    <i class="bi bi-award" aria-hidden="true"></i>
-                    Curso Certificado
-                    {% endif %}
-                    <br>
-                    {% if curso.capacidad %}
-                    <i class="bi bi-people" aria-hidden="true"></i>
-                    Cupo Limitado
-                    {% endif %}
-                    <br>
-                    {% if curso.nivel == 0 %}
-                    <i class="bi bi-circle" aria-hidden="true"></i>
-                    Nivel Introductorio
-                    {% elif curso.nivel == 1 %}
-                    <i class="bi bi-circle-fill" aria-hidden="true"></i>
-                    Nivel Principiante
-                    {% elif curso.nivel == 2 %}
-                    <i class="bi bi-circle-fill" aria-hidden="true"></i>
-                    <i class="bi bi-circle-fill" aria-hidden="true"></i>
-                    Nivel Intermedio
-                    {% elif curso.nivel == 3 %}
-                    <i class="bi bi-circle-fill" aria-hidden="true"></i>
-                    <i class="bi bi-circle-fill" aria-hidden="true"></i>
-                    <i class="bi bi-circle-fill" aria-hidden="true"></i>
-                    Nivel Avanzado
-                    {% endif %}
-                    <br>
-                    {% if current_user.is_authenticated %}
 
-                    {% else %}
-                    <div class="d-flex d-flex justify-content-around">
-                        <a href="{{ url_for("inicio_sesion")}}" class="btn btn-primary" role="button"
-                            aria-disabled="true">
-                            Iniciar Sesión
-                        </a>
-                        <a href="{{ url_for("crear_cuenta")}}" class="btn btn-warning" role="button"
-                            aria-disabled="true">
-                            Crear Cuenta
-                        </a>
-                    </div>
-                    {% endif %}
-
-
-
-                </div>
-                <div class="col-md-8">
-                    <h4> Contenido del Curso. </h4>
-
-
-
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-
+        
     </main>
 
 
