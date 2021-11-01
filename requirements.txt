@@ -14,4 +14,3 @@ loguru
 sqlalchemy
 waitress
 wtforms
-WTForms-SQLAlchemy

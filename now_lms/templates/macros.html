@@ -107,7 +107,20 @@
         {% endif %}
 
       </ul>
+      
+      {% if config.dev_docs %}
+      <div class="text-end">
+        <a href="https://github.com/bmosoluciones/now-lms" class="nav-link px-2 text-white">
+          <i class="bi bi-github" aria-hidden="true"></i>
+        </a>
+      </div>
+      <div class="text-end">
+        <a href="https://bmosoluciones.github.io/now-lms/" class="nav-link px-2 text-white">
+          <i class="bi bi-book" aria-hidden="true"></i>
+        </a>
+      </div>
 
+      {% endif %}
       {% if not current_user.is_authenticated %}
       <div class="text-end">
         <a class="btn btn-outline-light me-2" href="{{ url_for('inicio_sesion') }}" role="button">Iniciar Sesión</a>

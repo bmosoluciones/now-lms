@@ -6,7 +6,7 @@
 <head>
 
     {{ macros.headertags() }}
-    <title>{{ title }}</title>
+    <title>{{ config.titulo }}</title>
 
     <style>
         .bd-placeholder-img {
@@ -35,9 +35,9 @@
         <section class="py-5 text-center container">
             <div class="row py-lg-5">
                 <div class="col-lg-6 col-md-8 mx-auto">
-                    <h1 class="fw-light">NOW LMS</h1>
+                    <h1 class="fw-light">{{ config.titulo }}</h1>
                     <p class="lead text-muted">
-                        Plataforma de aprendizaje en linea.
+                        {{ config.descripcion }}
                     </p>
                 </div>
             </div>
@@ -68,8 +68,6 @@
                                 <div class="d-flex d-flex justify-content-between">
                                     <strong>{{ curso.nombre }}</strong>
 
-
-
                                     {% if curso.nivel == 0 %}
                                     <img src="{{ url_for("static", filename='/icons/curso-level0.svg') }}"
                                         alt="{{ curso.nombre }}" width="20" height="20" alt="Nivel Introductorio">
@@ -83,12 +81,8 @@
                                     <img src="{{ url_for("static", filename='/icons/curso-level3.svg') }}"
                                         alt="{{ curso.nombre }}" width="20" height="20" alt="Nivel Avanzado">
                                     {% endif %}
-
-
-
-
                                 </div>
-                                {{ curso.descripcion }}
+                                {{ curso.descripcion | truncate(120) }}
 
                                 <div class="d-flex justify-content-between align-items-center">
 
