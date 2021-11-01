@@ -6,7 +6,7 @@
 <head>
 
     {{ macros.headertags() }}
-    <title>{{ title }}</title>
+    <title>{{ config.titulo }}</title>
 
     <style>
         .bd-placeholder-img {
@@ -35,9 +35,9 @@
         <section class="py-5 text-center container">
             <div class="row py-lg-5">
                 <div class="col-lg-6 col-md-8 mx-auto">
-                    <h1 class="fw-light">NOW LMS</h1>
+                    <h1 class="fw-light">{{ config.titulo }}</h1>
                     <p class="lead text-muted">
-                        Plataforma de aprendizaje en linea.
+                        {{ config.descripcion }}
                     </p>
                 </div>
             </div>

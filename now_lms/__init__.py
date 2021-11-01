@@ -209,25 +209,10 @@ class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
     # Uno de mooc, school, training
     modo = database.Column(database.String(500), nullable=False, default="mooc")
     # Pagos en linea
-    paypal_key = database.Column(database.String(150), nullable=False)
-    stripe_key = database.Column(database.String(150), nullable=False)
-
-
-class Opciones(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """
-    Repositorio Central para la configuración de la aplicacion.
-
-    Realmente esta tabla solo va a contener un registro con una columna para cada opción, en las plantillas
-    va a estar disponible como la variable global config.
-    """
-
-    titulo = database.Column(database.String(150), nullable=False)
-    descripcion = database.Column(database.String(500), nullable=False)
-    # Uno de mooc, school, training
-    modo = database.Column(database.String(500), nullable=False, default="mooc")
-    # Pagos en linea
-    paypal_key = database.Column(database.String(150), nullable=False)
-    stripe_key = database.Column(database.String(150), nullable=False)
+    paypal_key = database.Column(database.String(150), nullable=True)
+    stripe_key = database.Column(database.String(150), nullable=True)
+    # Micelaneos
+    dev_docs = database.Column(database.Boolean(), default=False)
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -343,7 +328,12 @@ def init_app():
                 tipo="admin",
                 activo=True,
             )
+            config = Configuracion(
+                titulo="NOW LMS",
+                descripcion="Sistema de aprendizaje en linea.",
+            )
             database.session.add(administrador)
+            database.session.add(config)
             database.session.commit()
 
         else:
@@ -367,7 +357,10 @@ def serve():  # pragma: no cover
     if DESARROLLO:
         THREADS: int = 4
     else:
-        THREADS = int(environ.get("LMS_THREADS")) or ((cpu_count() * 2) + 1)
+        if environ.get("LMS_THREADS"):
+            THREADS = int(environ.get("LMS_THREADS"))
+        else:
+            THREADS = (cpu_count() * 2) + 1
     log.info("Iniciando servidor WSGI en puerto {puerto} con {threads} hilos.", puerto=PORT, threads=THREADS)
     server(app=lms_app, port=int(PORT), threads=THREADS)
 
