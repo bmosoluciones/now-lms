@@ -6,7 +6,7 @@
 <head>
 
     {{ macros.headertags() }}
-    <title>{{ title }}</title>
+    <title>Usuario - {{ perfil.usuario }}</title>
 
     <style>
         .bd-placeholder-img {
@@ -33,6 +33,12 @@
     <main>
         <div class="container" id="user_profile">
             <h4 class="pb-2 border-bottom">Perfil del usuario {{ perfil.usuario }}</h4>
+            <div class="d-flex d-flex justify-content-end">
+                {% if current_user.tipo == "admin" %}
+                admin
+                {% endif %}
+            </div>
+
 
             <div class="container" id="profile">
 

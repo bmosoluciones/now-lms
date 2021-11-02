@@ -31,6 +31,7 @@ from flask_alembic import Alembic
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
+from flask_uploads import IMAGES, UploadSet, configure_uploads
 from loguru import logger as log
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
@@ -49,6 +50,7 @@ DESARROLLO: bool = ("FLASK_DEBUG" in environ) or (environ.get("FLASK_ENV") == "d
 STATUS: str = "development"
 APPNAME: str = "NOW LMS"
 __all__: Union[tuple, str] = (VERSION,)
+TIPOS_DE_USUARIO: list = ["admin", "user", "instructor", "moderator"]
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios de la aplicacion
@@ -63,7 +65,9 @@ DIRECTORIO_ARCHIVOS_PRIVADOS: str = path.join(DIRECTORIO_BASE_ARCHIVOS_DE_USUARI
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios utilizados para la carga de archivos.
+DIRECTORIO_IMAGENES: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "img")
 
+CARGA_IMAGENES = UploadSet("photos", IMAGES)
 
 # < --------------------------------------------------------------------------------------------- >
 # Ubicación predeterminada de base de datos SQLITE
@@ -82,6 +86,8 @@ CONFIGURACION: Dict = {
     "SECRET_KEY": environ.get("LMS_KEY") or "dev",
     "SQLALCHEMY_DATABASE_URI": environ.get("LMS_DB") or SQLITE,
     "SQLALCHEMY_TRACK_MODIFICATIONS": "False",
+    # Carga de archivos
+    "UPLOADED_PHOTOS_DEST": DIRECTORIO_IMAGENES,
 }
 
 
@@ -184,6 +190,7 @@ class DocenteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
     usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
+    vigente = database.Column(database.Boolean())
 
 
 class ModeradorCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -191,6 +198,7 @@ class ModeradorCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
     usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
+    vigente = database.Column(database.Boolean())
 
 
 class EstudianteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -198,6 +206,7 @@ class EstudianteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
     usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
+    vigente = database.Column(database.Boolean())
 
 
 class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -217,6 +226,27 @@ class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
     stripe_key = database.Column(database.String(150), nullable=True)
     # Micelaneos
     dev_docs = database.Column(database.Boolean(), default=False)
+    # Permitir al usuario cargar archivos
+    file_uploads = database.Column(database.Boolean(), default=False)
+
+
+# < --------------------------------------------------------------------------------------------- >
+# Funciones auxiliares relacionadas a contultas de la base de datos.
+
+
+def verifica_docente_asignado_a_curso(id_curso: Union[None, str] = None, id_usuario: Union[None, str] = None):
+    """Si el usuario no esta asignado como docente al curso devuelve None."""
+    return DocenteCurso.query.filter(DocenteCurso.usuario == id_usuario, DocenteCurso.curso == id_curso)
+
+
+def verifica_moderador_asignado_a_curso(id_curso: Union[None, str] = None, id_usuario: Union[None, str] = None):
+    """Si el usuario no esta asignado como moderador al curso devuelve None."""
+    return ModeradorCurso.query.filter(ModeradorCurso.usuario == id_usuario, ModeradorCurso.curso == id_curso)
+
+
+def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None, id_usuario: Union[None, str] = None):
+    """Si el usuario no esta asignado como estudiante al curso devuelve None."""
+    return EstudianteCurso.query.filter(EstudianteCurso.usuario == id_usuario, EstudianteCurso.curso == id_curso)
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -307,7 +337,7 @@ with lms_app.app_context():
     alembic.init_app(lms_app)
     administrador_sesion.init_app(lms_app)
     database.init_app(lms_app)
-    lms_app.jinja_env.globals["current_user"] = current_user
+    configure_uploads(app=lms_app, upload_sets=[CARGA_IMAGENES])
     try:
         CONFIG = Configuracion.query.first()
     except OperationalError:
@@ -318,7 +348,11 @@ with lms_app.app_context():
         CONFIG = None
     except DatabaseError:
         CONFIG = None
+    lms_app.jinja_env.globals["current_user"] = current_user
     lms_app.jinja_env.globals["config"] = CONFIG
+    lms_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
+    lms_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
+    lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
 
 
 def init_app():
@@ -413,6 +447,49 @@ def command(as_module=False) -> None:
 
 
 # < --------------------------------------------------------------------------------------------- >
+# Funciones auxiliares
+def asignar_curso_a_instructor(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
+    """Asigna un usuario como instructor de un curso."""
+    ASIGNACION = DocenteCurso(curso=curso_codigo, usuario=usuario_id, vigente=True, creado_por=current_user.usuario)
+    database.session.add(ASIGNACION)
+    database.session.commit()
+
+
+def asignar_curso_a_moderador(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
+    """Asigna un usuario como moderador de un curso."""
+    ASIGNACION = ModeradorCurso(usuario=usuario_id, curso=curso_codigo, vigente=True, creado_por=current_user.usuario)
+    database.session.add(ASIGNACION)
+    database.session.commit()
+
+
+def asignar_curso_a_estudiante(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
+    """Asigna un usuario como moderador de un curso."""
+    ASIGNACION = EstudianteCurso(
+        creado_por=current_user.usuario,
+        curso=curso_codigo,
+        usuario=usuario_id,
+        vigente=True,
+    )
+    database.session.add(ASIGNACION)
+    database.session.commit()
+
+
+def cambia_tipo_de_usuario(id_usuario: Union[None, str] = None, nuevo_tipo: Union[None, str] = None):
+    """
+    Cambia el estatus de un usuario del sistema.
+
+    Los valores reconocidos por el sistema son: admin, user, instructor, moderator.
+    """
+    if nuevo_tipo in TIPOS_DE_USUARIO:
+        USUARIO = Usuario.query.filter_by(usuario=id_usuario)
+        USUARIO.tipo = nuevo_tipo
+        database.session.add(USUARIO)
+        database.session.commit()
+    else:
+        raise RuntimeError("Tipo de usuario no reconocido.")
+
+
+# < --------------------------------------------------------------------------------------------- >
 # Definición de rutas/vistas
 
 
@@ -486,6 +563,35 @@ def crear_cuenta():
             return redirect("/logon")
     else:
         return render_template("auth/logon.html", form=form, titulo="Crear cuenta - NOW LMS")
+
+
+@lms_app.route("/new_user", methods=["GET", "POST"])
+def crear_usuario():
+    """Crear manualmente una cuenta de usuario."""
+    form = LogonForm()
+    if form.validate_on_submit() or request.method == "POST":
+        usuario_ = Usuario(
+            usuario=form.usuario.data,
+            acceso=proteger_passwd(form.acceso.data),
+            nombre=form.nombre.data,
+            apellido=form.apellido.data,
+            correo_electronico=form.correo_electronico.data,
+            tipo="user",
+            activo=False,
+        )
+        try:
+            database.session.add(usuario_)
+            database.session.commit()
+            flash("Usuario creado exitosamente.")
+            return redirect(url_for("usuario", id_usuario=form.usuario.data))
+        except OperationalError:
+            flash("Error al crear la cuenta.")
+            return redirect("/new_user")
+    else:
+        return render_template(
+            "learning/nuevo_usuario.html",
+            form=form,
+        )
 
 
 @lms_app.route("/exit")
@@ -582,6 +688,7 @@ def nuevo_curso():
         try:
             database.session.add(nuevo_curso_)
             database.session.commit()
+            asignar_curso_a_instructor(curso_codigo=form.codigo.data, usuario_id=current_user.usuario)
             flash("Curso creado exitosamente.")
             return redirect(url_for("curso", course_code=form.codigo.data))
         except OperationalError:

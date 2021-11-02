@@ -1,4 +1,7 @@
 {% import "macros.html" as macros %}
+{% set docente = docente_asignado(id_curso=curso.codigo, id_usuario=current_user.usuario) %}
+{% set moderador = moderador_asignado(id_curso=curso.codigo, id_usuario=current_user.usuario) %}
+{% set estudiante = estudiante_asignado(id_curso=curso.codigo, id_usuario=current_user.usuario) %}
 
 <!doctype html>
 <html lang="es" class="h-100">
@@ -33,6 +36,11 @@
     <main>
         <br>
         <div class="container">
+            <div class="d-flex d-flex justify-content-end">
+                {% if docente %}
+                instructor
+                {% endif %}
+            </div>
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
                 <div class="col-md-4 border-right">
                     {% if curso.portada %}
@@ -57,23 +65,23 @@
                     <i class="bi bi-calendar" aria-hidden="true"></i>
                     A su propio ritmo
                     {% endif %}
-                    <br>
                     {% if curso.precio %}
+                    <br>
                     <i class="bi bi-cash-coin" aria-hidden="true"></i>
                     {{ curso.precio | float }}
                     {% endif %}
-                    <br>
                     {% if curso.certificado %}
+                    <br>
                     <i class="bi bi-award" aria-hidden="true"></i>
                     Curso Certificado
                     {% endif %}
-                    <br>
                     {% if curso.capacidad %}
+                    <br>
                     <i class="bi bi-people" aria-hidden="true"></i>
                     Cupo Limitado
                     {% endif %}
-                    <br>
                     {% if curso.nivel == 0 %}
+                    <br>
                     <i class="bi bi-circle" aria-hidden="true"></i>
                     Nivel Introductorio
                     {% elif curso.nivel == 1 %}

@@ -15,8 +15,8 @@
 # Contributors:
 # - William José Moreno Reyes
 
-from waitress import serve
 from now_lms import lms_app as app
+from now_lms import serve
 
 if __name__ == "__main__":
-    serve(app)
+    serve()
