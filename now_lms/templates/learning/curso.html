@@ -1,7 +1,7 @@
 {% import "macros.html" as macros %}
-{% set docente = docente_asignado(id_curso=curso.codigo, id_usuario=current_user.usuario) %}
-{% set moderador = moderador_asignado(id_curso=curso.codigo, id_usuario=current_user.usuario) %}
-{% set estudiante = estudiante_asignado(id_curso=curso.codigo, id_usuario=current_user.usuario) %}
+{% set docente = docente_asignado(id_curso=curso.codigo) %}
+{% set moderador = moderador_asignado(id_curso=curso.codigo) %}
+{% set estudiante = estudiante_asignado(id_curso=curso.codigo) %}
 
 <!doctype html>
 <html lang="es" class="h-100">

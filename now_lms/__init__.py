@@ -234,19 +234,28 @@ class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
 # Funciones auxiliares relacionadas a contultas de la base de datos.
 
 
-def verifica_docente_asignado_a_curso(id_curso: Union[None, str] = None, id_usuario: Union[None, str] = None):
+def verifica_docente_asignado_a_curso(id_curso: Union[None, str] = None):
     """Si el usuario no esta asignado como docente al curso devuelve None."""
-    return DocenteCurso.query.filter(DocenteCurso.usuario == id_usuario, DocenteCurso.curso == id_curso)
+    if current_user.is_authenticated:
+        return DocenteCurso.query.filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == id_curso)
+    else:
+        return False
 
 
-def verifica_moderador_asignado_a_curso(id_curso: Union[None, str] = None, id_usuario: Union[None, str] = None):
+def verifica_moderador_asignado_a_curso(id_curso: Union[None, str] = None):
     """Si el usuario no esta asignado como moderador al curso devuelve None."""
-    return ModeradorCurso.query.filter(ModeradorCurso.usuario == id_usuario, ModeradorCurso.curso == id_curso)
+    if current_user.is_authenticated:
+        return ModeradorCurso.query.filter(ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.curso == id_curso)
+    else:
+        return False
 
 
-def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None, id_usuario: Union[None, str] = None):
+def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
     """Si el usuario no esta asignado como estudiante al curso devuelve None."""
-    return EstudianteCurso.query.filter(EstudianteCurso.usuario == id_usuario, EstudianteCurso.curso == id_curso)
+    if current_user.is_authenticated:
+        return EstudianteCurso.query.filter(EstudianteCurso.usuario == current_user.usuario, EstudianteCurso.curso == id_curso)
+    else:
+        return False
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -474,19 +483,16 @@ def asignar_curso_a_estudiante(curso_codigo: Union[None, str] = None, usuario_id
     database.session.commit()
 
 
-def cambia_tipo_de_usuario(id_usuario: Union[None, str] = None, nuevo_tipo: Union[None, str] = None):
+def cambia_tipo_de_usuario_por_id(id_usuario: Union[None, str] = None, nuevo_tipo: Union[None, str] = None):
     """
     Cambia el estatus de un usuario del sistema.
 
     Los valores reconocidos por el sistema son: admin, user, instructor, moderator.
     """
-    if nuevo_tipo in TIPOS_DE_USUARIO:
-        USUARIO = Usuario.query.filter_by(usuario=id_usuario)
-        USUARIO.tipo = nuevo_tipo
-        database.session.add(USUARIO)
-        database.session.commit()
-    else:
-        raise RuntimeError("Tipo de usuario no reconocido.")
+
+    USUARIO = Usuario.query.filter_by(usuario=id_usuario).first()
+    USUARIO.tipo = nuevo_tipo
+    database.session.commit()
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -784,7 +790,19 @@ def activar_usuario(user_id):
     perfil_usuario.activo = True
     database.session.add(perfil_usuario)
     database.session.commit()
-    return redirect(url_for(request.args.get("ruta", default="home", type=str)))
+    return redirect(url_for("usuario", id_usuario=user_id))
+
+
+@lms_app.route("/set_user_as_inactive/<user_id>")
+@login_required
+@perfil_requerido("admin")
+def inactivar_usuario(user_id):
+    """Estable el usuario como activo y redirecciona a la vista dada."""
+    perfil_usuario = Usuario.query.filter_by(usuario=user_id).first()
+    perfil_usuario.activo = False
+    database.session.add(perfil_usuario)
+    database.session.commit()
+    return redirect(url_for("usuario", id_usuario=user_id))
 
 
 @lms_app.route("/delete_user/<user_id>")
@@ -796,6 +814,18 @@ def eliminar_usuario(user_id):
     perfil_usuario.delete()
     database.session.commit()
     return redirect(url_for(request.args.get("ruta", default="home", type=str)))
+
+
+@lms_app.route("/change_user_tipo")
+@login_required
+@perfil_requerido("admin")
+def cambiar_tipo_usario():
+    """Actualiza el tipo de usuario."""
+    cambia_tipo_de_usuario_por_id(
+        id_usuario=request.args.get("user"),
+        nuevo_tipo=request.args.get("type"),
+    )
+    return redirect(url_for("usuario", id_usuario=request.args.get("user")))
 
 
 # Los servidores WSGI buscan por defecto una app

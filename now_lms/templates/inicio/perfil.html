@@ -33,11 +33,31 @@
     <main>
         <div class="container" id="user_profile">
             <h4 class="pb-2 border-bottom">Perfil del usuario {{ perfil.usuario }}</h4>
+            {% if current_user.tipo == "admin" %}
             <div class="d-flex d-flex justify-content-end">
-                {% if current_user.tipo == "admin" %}
-                admin
-                {% endif %}
+                    {% if perfil.tipo != "user" %}
+                    <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="user") }}" class="btn btn-info btn-sm" role="button" aria-disabled="true">Establecer como Estudiante</a>
+                    {% endif %}
+                    {% if perfil.tipo != "moderator" %}
+                    <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="moderator") }}" class="btn btn-primary btn-sm" role="button" aria-disabled="true">Establecer como Moderador</a>
+                    {% endif %}
+                    {% if perfil.tipo != "instructor" %}
+                    <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="instructor") }}" class="btn btn-success btn-sm" role="button" aria-disabled="true">Establecer como Instructor</a>
+                    {% endif %}
+                    {% if perfil.tipo != "admin" %}
+                    <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="admin") }}" class="btn btn-warning btn-sm" role="button" aria-disabled="true">Establecer como Administrador</a>
+                    {% endif %}
             </div>
+            
+            <div class="d-flex d-flex justify-content-end">
+                {% if perfil.activo %}
+                <a href="{{ url_for("inactivar_usuario", user_id=perfil.usuario) }}" class="btn btn-warning btn-sm" role="button" aria-disabled="true">Inactivar Usuario</a>
+                {% else %}
+                <a href="{{ url_for("activar_usuario", user_id=perfil.usuario) }}" class="btn btn-warning btn-sm" role="button" aria-disabled="true">Activar Usuario</a>
+                {% endif %}
+                <a href="{{ url_for("eliminar_usuario", user_id=perfil.usuario) }}" class="btn btn-danger btn-sm" role="button" aria-disabled="true">Eliminar Usuario</a>
+            </div>
+            {% endif %}
 
 
             <div class="container" id="profile">
