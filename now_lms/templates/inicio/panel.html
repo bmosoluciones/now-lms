@@ -32,16 +32,13 @@
 
     <main>
         <div class="container px-4 py-5" id="icon-grid">
-            <h2 class="pb-2 border-bottom">Bienvenido {{ current_user.nombre}} {{ current_user.apellido}}</h2>
-
+            <h2 class="pb-2 border-bottom">Bienvenido 
+                {% if current_user.nombre == "admin" %}
+                Administrador del sistema.
+                {% else %}
+                {{ current_user.nombre}} {{ current_user.apellido}}</h2>
+                {% endif %}
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
-                <div class="col d-flex align-items-start">
-                    <h3><i class="bi bi-book" aria-hidden="true"></i></h3>
-                    <div>
-                        <h4 class="fw-bold mb-0">Featured title</h4>
-                        <p>Paragraph of text beneath the heading to explain the heading.</p>
-                    </div>
-                </div>
                 <div class="col d-flex align-items-start">
                     <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
                         <use xlink:href="#cpu-fill" />
@@ -51,27 +48,8 @@
                         <p>Paragraph of text beneath the heading to explain the heading.</p>
                     </div>
                 </div>
-                <div class="col d-flex align-items-start">
-                    <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
-                        <use xlink:href="#calendar3" />
-                    </svg>
-                    <div>
-                        <h4 class="fw-bold mb-0">Featured title</h4>
-                        <p>Paragraph of text beneath the heading to explain the heading.</p>
-                    </div>
-                </div>
-                <div class="col d-flex align-items-start">
-                    <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
-                        <use xlink:href="#calendar3" />
-                    </svg>
-                    <div>
-                        <h4 class="fw-bold mb-0">Featured title</h4>
-                        <p>Paragraph of text beneath the heading to explain the heading.</p>
-                    </div>
-                </div>
             </div>
         </div>
-
     </main>
 
 

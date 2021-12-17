@@ -89,6 +89,8 @@ CONFIGURACION: Dict = {
     # Carga de archivos
     "UPLOADED_PHOTOS_DEST": DIRECTORIO_IMAGENES,
 }
+if DESARROLLO:
+    CONFIGURACION["SQLALCHEMY_ECHO"] = True
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -616,7 +618,7 @@ def cerrar_sesion():
 def home():
     """Página principal de la aplicación."""
 
-    CURSOS = Curso.query.filter(Curso.publico == True).paginate(  # noqa: E712
+    CURSOS = Curso.query.filter(Curso.publico == True, Curso.estado != "draft").paginate(  # noqa: E712
         request.args.get("page", default=1, type=int), 6, False
     )
     return render_template("inicio/mooc.html", cursos=CURSOS)
@@ -706,12 +708,20 @@ def nuevo_curso():
 
 @lms_app.route("/courses")
 @lms_app.route("/cursos")
+@login_required
 def cursos():
     """Pagina principal del curso."""
 
-    lista_cursos = Curso.query.paginate(
-        request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False
-    )
+    if current_user.tipo == "admin":
+        lista_cursos = Curso.query.paginate(
+            request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False
+        )
+    else:
+        lista_cursos = (
+            Curso.query.join(Curso.creado_por)
+            .filter(Usuario.id == current_user.id)
+            .paginate(request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False)
+        )
     return render_template("learning/curso_lista.html", consulta=lista_cursos)
 
 
