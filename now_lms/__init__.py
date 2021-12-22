@@ -36,9 +36,7 @@ from loguru import logger as log
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
 from sqlalchemy.exc import OperationalError, ProgrammingError
-from wtforms import PasswordField, StringField, SubmitField, IntegerField, DecimalField
-from wtforms.fields.core import BooleanField, SelectField
-from wtforms.fields.html5 import DateField
+from wtforms import BooleanField, DecimalField, DateField, IntegerField, PasswordField, SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired
 
 # Recursos locales:
