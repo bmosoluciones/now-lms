@@ -40,14 +40,19 @@ from wtforms import BooleanField, DecimalField, DateField, IntegerField, Passwor
 from wtforms.validators import DataRequired
 
 # Recursos locales:
-from now_lms.version import VERSION
+from now_lms.version import PRERELEASE, VERSION
 
 # < --------------------------------------------------------------------------------------------- >
 # Metadatos
-DESARROLLO: bool = ("FLASK_DEBUG" in environ) or (environ.get("FLASK_ENV") == "development") or ("CI" in environ)
-STATUS: str = "development"
+__version__: str = VERSION
+DESARROLLO: bool = (
+    (PRERELEASE is not None) or ("FLASK_DEBUG" in environ) or (environ.get("FLASK_ENV") == "development") or ("CI" in environ)
+)
 APPNAME: str = "NOW LMS"
-__all__: Union[tuple, str] = (VERSION,)
+
+
+# < --------------------------------------------------------------------------------------------- >
+# Datos predefinidos
 TIPOS_DE_USUARIO: list = ["admin", "user", "instructor", "moderator"]
 
 # < --------------------------------------------------------------------------------------------- >
@@ -64,7 +69,6 @@ DIRECTORIO_ARCHIVOS_PRIVADOS: str = path.join(DIRECTORIO_BASE_ARCHIVOS_DE_USUARI
 # < --------------------------------------------------------------------------------------------- >
 # Directorios utilizados para la carga de archivos.
 DIRECTORIO_IMAGENES: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "img")
-
 CARGA_IMAGENES = UploadSet("photos", IMAGES)
 
 # < --------------------------------------------------------------------------------------------- >
@@ -103,6 +107,8 @@ database: SQLAlchemy = SQLAlchemy()
 # Base de datos relacional
 
 MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA: int = 3
+# Para hacer feliz a Sonar Cloud
+# https://sonarcloud.io/project/overview?id=bmosoluciones_now-lms
 LLAVE_FORONEA_CURSO: str = "curso.codigo"
 LLAVE_FORONEA_USUARIO: str = "usuario.usuario"
 
@@ -416,7 +422,7 @@ def serve():  # pragma: no cover
         PORT = int(environ.get("PORT"))
     else:
         PORT = 8080
-    if STATUS == "development":
+    if DESARROLLO:
         THREADS: int = 4
     else:
         if environ.get("LMS_THREADS"):
