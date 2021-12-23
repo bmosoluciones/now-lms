@@ -69,15 +69,18 @@
 
 {% macro navbar() -%}
 
-<header class="p-3 bg-dark text-white">
-  <div class="container">
-    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-      <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-        <img height="25" src="{{ url_for('static', filename='/icons/logo/logo_horizontal_blanco.svg') }}" alt="NOW LMS"
-          class="d-inline-block align-top">
-      </a>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark" aria-label="Fourth navbar example">
+  <div class="container-fluid">
+    <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+      <img height="25" src="{{ url_for('static', filename='/icons/logo/logo_horizontal_blanco.svg') }}" alt="NOW LMS"
+        class="d-inline-block align-top">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsNOWLMS" aria-controls="navbarsNOWLMS" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+    <div class="collapse navbar-collapse" id="navbarsNOWLMS">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
         {% if not current_user.is_authenticated %}
         <li><a href="{{ url_for('home') }}" class="nav-link px-2 text-white"><i class="bi bi-house-fill"
               aria-hidden="true"></i> Inicio</a>
@@ -105,39 +108,29 @@
             Administración</a></li>
         {% endif %}
         {% endif %}
-
       </ul>
-      
-      {% if config.dev_docs %}
       <div class="text-end">
-        <a href="https://github.com/bmosoluciones/now-lms" class="nav-link px-2 text-white">
+      {% if config.dev_docs %}
+      
+        <a href="https://github.com/bmosoluciones/now-lms" class="text-white">
           <i class="bi bi-github" aria-hidden="true"></i>
         </a>
-      </div>
-      <div class="text-end">
-        <a href="https://bmosoluciones.github.io/now-lms/" class="nav-link px-2 text-white">
+        <a href="https://bmosoluciones.github.io/now-lms/" class="text-white">
           <i class="bi bi-book" aria-hidden="true"></i>
         </a>
-      </div>
-
       {% endif %}
       {% if not current_user.is_authenticated %}
-      <div class="text-end">
         <a class="btn btn-outline-light me-2" href="{{ url_for('inicio_sesion') }}" role="button">Iniciar Sesión</a>
         <a class="btn btn-warning me-2" href="{{ url_for('crear_cuenta') }}" role="button">Crear Cuenta</a>
-      </div>
       {% else %}
-      <div class="text-end">
-        <a class="nav-link px-2 text-white" href="{{ url_for('perfil') }}"><i class="bi bi-person-circle"
+        <a class="text-white" href="{{ url_for('perfil') }}"><i class="bi bi-person-circle"
             aria-hidden="true"></i></a>
-      </div>
-      <div class="text-end">
-        <a class="nav-link px-2 text-white" href="{{ url_for('cerrar_sesion') }}"><i class="bi bi-power"
+        <a class="text-white" href="{{ url_for('cerrar_sesion') }}"><i class="bi bi-power"
             aria-hidden="true"></i></a>
-      </div>
       {% endif %}
     </div>
+    </div>
   </div>
-</header>
+</nav>
 
 {% endmacro %}

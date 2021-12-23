@@ -6,7 +6,7 @@
 <head>
 
     {{ macros.headertags() }}
-    <title>{{ title }}</title>
+    <title>Crear un nuevo curso</title>
 
     <style>
         .bd-placeholder-img {
@@ -35,7 +35,7 @@
     <main>
 
         <div class="container px-4 py-5" id="icon-grid">
-            <h2 class="pb-2 border-bottom">Crear nuevo curso.</h2>
+            <h4 class="pb-2 border-bottom">Crear nuevo curso.</h4>
             <form method="post">
                 {{ form.csrf_token }}
                 <div class="row g-3">
@@ -54,51 +54,53 @@
                         {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripción del Curso") }}
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label for="duracion" class="form-label">Duracion (HR)</label>
                         {{ form.duracion }}
-                        
+
                     </div>
 
-                    <div class="col-md-3">
-                        <label for="publico" class="form-label">Curso Publico</label>
-                        {{ form.publico }}
-                        
-                    </div>
-
-                    <div class="col-md-3">
-                        <label for="certificado" class="form-label">Extender Certificado</label>
-                        {{ form.certificado }}
-                        
-                    </div>
-
-
-                    <div class="col-md-3">
-                        <label for="nivel" class="form-label">Nivel</label>
-                        {{ form.nivel }}
-                        
-                    </div>
-
-                    <div class="col-md-3">
-                        <label for="fecha_inicio" class="form-label">Fecha Inicio</label>
-                        {{ form.fecha_inicio }}
-                    </div>
-
-                    <div class="col-md-3">
-                        <label for="fecha_fin" class="form-label">Fecha Fin</label>
-                        {{ form.fecha_fin }}
-                    </div>
-
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label for="capacidad" class="form-label">Cupos</label>
                         {{ form.capacidad }}
-                        
+
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label for="precio" class="form-label">Precio</label>
                         {{ form.precio }}
                     </div>
+
+
+                        <div class="col-md-4">
+                            <label for="fecha_inicio" class="form-label">Fecha Inicio</label>
+                            {{ form.fecha_inicio }}
+                        </div>
+    
+                        <div class="col-md-4">
+                            <label for="fecha_fin" class="form-label">Fecha Fin</label>
+                            {{ form.fecha_fin }}
+                        </div>
+
+
+                    <div class="col-md-4">
+                        <label for="nivel" class="form-label">Nivel</label>
+                        {{ form.nivel }}
+
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="publico" class="form-label">Curso Publico</label>
+                        {{ form.publico }}
+
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="certificado" class="form-label">Extender Certificado</label>
+                        {{ form.certificado }}
+
+                    </div>
+
                 </div>
 
                 <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Curso</button>

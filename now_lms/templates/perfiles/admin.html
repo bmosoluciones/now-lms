@@ -31,21 +31,20 @@
     {{ macros.navbar() }}
 
     <main>
-        <div class="container px-4 py-5" id="icon-grid">
-            <h2 class="pb-2 border-bottom">Panel de Administración.</h2>
+        <div class="container px-0 py-3" id="icon-grid">
+            <h4 class="pb-2 border-bottom">Panel de Administración.</h4>
 
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
                 <div class="col d-flex align-items-start">
                     <div>
                         <h4 class="fw-bold mb-0">
-                            <i class="bi bi-people-fill" aria-hidden="true"></i>
+                            <i class="bi bi-person-fill" aria-hidden="true"></i>
                             Usuarios
                         </h4>
                         <p>
                             <a href="{{ url_for("usuarios") }}" class="link-dark">Usuarios</a>
                             -
-                            <a href="{{ url_for("usuarios_inactivos") }}" class="link-dark">Usuarios pendientes de
-                                activar
+                            <a href="{{ url_for("usuarios_inactivos") }}" class="link-dark">Usuarios Inactivos
                                 {% if inactivos > 0 %}
                                 ({{ inactivos | int }})
                                 {% endif %}
@@ -55,6 +54,31 @@
                         </p>
                     </div>
                 </div>
+
+                <div class="col d-flex align-items-start">
+                    <div>
+                        <h4 class="fw-bold mb-0">
+                            <i class="bi bi-people-fill" aria-hidden="true"></i>
+                            Grupos
+                        </h4>
+                        <p>
+                            
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col d-flex align-items-start">
+                    <div>
+                        <h4 class="fw-bold mb-0">
+                            <i class="bi bi-palette2" aria-hidden="true"></i>
+                            Personalización
+                        </h4>
+                        <p>
+                            
+                        </p>
+                    </div>
+                </div>
+
                 <div class="col d-flex align-items-start">
                     <div>
                         <h4 class="fw-bold mb-0">
@@ -62,11 +86,10 @@
                             Configuración
                         </h4>
                         <p>
-                            <a href="{{ url_for("usuarios") }}" class="link-dark">Usuarios</a>
+                            
                         </p>
                     </div>
                 </div>
-
             </div>
     </main>
 </body>
