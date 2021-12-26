@@ -50,6 +50,8 @@ DESARROLLO: bool = (
 )
 APPNAME: str = "NOW LMS"
 
+if DESARROLLO:
+    log.warning("Opciones de desarrollo detectadas, favor revise su configuración.")
 
 # < --------------------------------------------------------------------------------------------- >
 # Datos predefinidos
@@ -91,8 +93,6 @@ CONFIGURACION: Dict = {
     # Carga de archivos
     "UPLOADED_PHOTOS_DEST": DIRECTORIO_IMAGENES,
 }
-if DESARROLLO:
-    CONFIGURACION["SQLALCHEMY_ECHO"] = True
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -363,6 +363,10 @@ with lms_app.app_context():
         CONFIG = None
     except DatabaseError:
         CONFIG = None
+    if CONFIG:
+        log.info("Configuración detectada.")
+    else:
+        log.warning("No se pudo cargar la configuración.")
     lms_app.jinja_env.globals["current_user"] = current_user
     lms_app.jinja_env.globals["config"] = CONFIG
     lms_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
