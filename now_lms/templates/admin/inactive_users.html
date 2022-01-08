@@ -72,14 +72,12 @@
                                 </a>
                             </td>
                             <td>
-                                <a href="{{ url_for("activar_usuario", user_id=item.usuario, ruta="usuarios_inactivos") }}"
-                                    class="btn btn-success btn-sm" role="button">
-                                    Activar
-                                </a>
-                                <a href="{{ url_for("eliminar_usuario", user_id=item.usuario, ruta="usuarios_inactivos") }}"
-                                    class="btn btn-danger btn-sm" role="button">
-                                    Rechazar
-                                </a>
+                                <span class="badge bg-success">
+                                    <a href="{{ url_for("activar_usuario", user_id=item.usuario, ruta="usuarios_inactivos") }}" class="link-light">Aprobar</a>
+                                </span>
+                                <span class="badge bg-danger">
+                                    <a href="{{ url_for("eliminar_usuario", user_id=item.usuario, ruta="usuarios_inactivos") }}" class="link-light">Rechazar</a>
+                                </span>
                             </td>
                         </tr>
                     </tbody>

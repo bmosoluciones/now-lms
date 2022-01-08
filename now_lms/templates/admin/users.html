@@ -31,8 +31,19 @@
     {{ macros.navbar() }}
 
     <main>
-        <div class="container  px-0 py-3" id="user_list">
-            <h4 class="pb-2 border-bottom">Usuarios registrados en el sistema.</h4>
+        <div class="container  px-0 py-3" id="lista-usarios">
+
+            <div class="d-flex justify-content-between border-bottom">
+
+                <h4>Usuarios registrados en el sistema.</h4>
+                
+                <p>
+                    <span class="badge bg-success">
+                        <a href="{{ url_for("crear_usuario") }}" class="link-light">Nuevo Usuario</a>
+                    </span>
+                </p>
+
+            </div>
 
             <div class="container" id="user_table">
 
