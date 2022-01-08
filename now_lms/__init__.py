@@ -156,6 +156,7 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     # mooc
     publico = database.Column(database.Boolean())
     certificado = database.Column(database.Boolean())
+    auditable = database.Column(database.Boolean())
     precio = database.Column(database.Numeric())
     capacidad = database.Column(database.Integer())
     fecha_inicio = database.Column(database.Date())
@@ -329,6 +330,7 @@ class CurseForm(FlaskForm):
     codigo = StringField(validators=[DataRequired()])
     descripcion = StringField(validators=[DataRequired()])
     publico = BooleanField(validators=[])
+    auditable = BooleanField(validators=[])
     certificado = BooleanField(validators=[])
     precio = DecimalField(validators=[])
     capacidad = IntegerField(validators=[])
@@ -692,6 +694,7 @@ def nuevo_curso():
             descripcion=form.descripcion.data,
             estado="draft",
             publico=form.publico.data,
+            auditable=form.auditable.data,
             certificado=form.certificado.data,
             precio=form.precio.data,
             capacidad=form.capacidad.data,
