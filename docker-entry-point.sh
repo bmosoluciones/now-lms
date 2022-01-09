@@ -2,4 +2,4 @@
 
 set -e
 
-/usr/bin/python3.8 -m now_lms
+/usr/bin/python3.9 -m now_lms
