@@ -501,9 +501,29 @@ def cambia_tipo_de_usuario_por_id(id_usuario: Union[None, str] = None, nuevo_tip
 
     Los valores reconocidos por el sistema son: admin, user, instructor, moderator.
     """
-
     USUARIO = Usuario.query.filter_by(usuario=id_usuario).first()
     USUARIO.tipo = nuevo_tipo
+    database.session.commit()
+
+
+def cambia_estado_curso_por_id(id_curso: Union[None, str, int] = None, nuevo_estado: Union[None, str] = None):
+    """
+    Cambia el estatus de un curso.
+
+    Los valores reconocidos por el sistema son: draft, public, open, closed.
+    """
+    CURSO = Curso.query.filter_by(codigo=id_curso).first()
+    CURSO.estado = nuevo_estado
+    database.session.commit()
+
+
+def cambia_curso_publico(id_curso: Union[None, str, int] = None):
+    """Cambia el estatus publico de un curso."""
+    CURSO = Curso.query.filter_by(codigo=id_curso).first()
+    if CURSO.publico:
+        CURSO.publico = False
+    else:
+        CURSO.publico = True
     database.session.commit()
 
 
@@ -627,8 +647,7 @@ def cerrar_sesion():
 @lms_app.route("/index")
 def home():
     """Página principal de la aplicación."""
-
-    CURSOS = Curso.query.filter(Curso.publico == True, Curso.estado != "draft").paginate(  # noqa: E712
+    CURSOS = Curso.query.filter(Curso.publico == True, Curso.estado == "public").paginate(  # noqa: E712
         request.args.get("page", default=1, type=int), 6, False
     )
     return render_template("inicio/mooc.html", cursos=CURSOS)
@@ -722,7 +741,6 @@ def nuevo_curso():
 @login_required
 def cursos():
     """Pagina principal del curso."""
-
     if current_user.tipo == "admin":
         lista_cursos = Curso.query.paginate(
             request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False
@@ -740,7 +758,6 @@ def cursos():
 @lms_app.route("/curso")
 def curso(course_code):
     """Pagina principal del curso."""
-
     return render_template(
         "learning/curso.html",
         curso=Curso.query.filter_by(codigo=course_code).first(),
@@ -785,7 +802,6 @@ def usuarios_inactivos():
 @perfil_requerido("admin")
 def usuario(id_usuario):
     """Acceso administrativo al perfil de un usuario."""
-
     perfil_usuario = Usuario.query.filter_by(usuario=id_usuario).first()
     # La misma plantilla del perfil de usuario con permisos elevados como
     # activar desactivar el perfil o cambiar el perfil del usuario.
@@ -847,6 +863,29 @@ def cambiar_tipo_usario():
         nuevo_tipo=request.args.get("type"),
     )
     return redirect(url_for("usuario", id_usuario=request.args.get("user")))
+
+
+@lms_app.route("/change_curse_status")
+@login_required
+@perfil_requerido("admin")
+def cambiar_estatus_curso():
+    """Actualiza el estatus de un curso."""
+    cambia_estado_curso_por_id(
+        id_curso=request.args.get("curse"),
+        nuevo_estado=request.args.get("status"),
+    )
+    return redirect(url_for("curso", course_code=request.args.get("curse")))
+
+
+@lms_app.route("/change_curse_public")
+@login_required
+@perfil_requerido("admin")
+def cambiar_curso_publico():
+    """Actualiza el estado publico de un curso."""
+    cambia_curso_publico(
+        id_curso=request.args.get("curse"),
+    )
+    return redirect(url_for("curso", course_code=request.args.get("curse")))
 
 
 # Los servidores WSGI buscan por defecto una app

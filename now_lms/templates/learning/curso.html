@@ -34,13 +34,39 @@
     {{ macros.navbar() }}
 
     <main>
-        <br>
+
         <div class="container">
-            <div class="d-flex justify-content-end">
-                {% if docente %}
-                instructor
-                {% endif %}
+            <div class="d-flex justify-content-between border-bottom">
+
+                <h4>{{ curso.codigo }} - {{ curso.nombre }}</h4>
+                
+                <p>
+                    {% if docente %}
+                    <span class="badge bg-success">
+                        <a href="{{ url_for("cambiar_estatus_curso", curse=curso.codigo, status="draft") }}" class="link-light">Borrador</a>
+                    </span>
+                    <span class="badge bg-primary">
+                        <a href="{{ url_for("cambiar_estatus_curso", curse=curso.codigo, status="public") }}" class="link-light">Publicar</a>
+                    </span>
+                    <span class="badge bg-info">
+                        <a href="{{ url_for("cambiar_estatus_curso", curse=curso.codigo, status="open") }}" class="link-light">Abrir</a>
+                    </span>
+                    <span class="badge bg-danger">
+                        <a href="{{ url_for("cambiar_estatus_curso", curse=curso.codigo, status="closed") }}" class="link-light">Cerrar</a>
+                    </span>
+                    {% if curso.publico %}
+                    <span class="badge bg-warning">
+                        <a href="{{ url_for("cambiar_curso_publico", curse=curso.codigo) }}" class="link-light">Quitar del Sitio Web.</a>
+                    </span>
+                    {% else %}
+                    <span class="badge bg-success">
+                        <a href="{{ url_for("cambiar_curso_publico", curse=curso.codigo) }}" class="link-light">Agregar al Sitio Web.</a>
+                    </span>
+                    {% endif %}
+                    {% endif %}
+                </p>
             </div>
+
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
                 <div class="col-md-4 border-right">
                     {% if curso.portada %}
