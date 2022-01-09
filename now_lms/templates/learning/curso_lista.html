@@ -45,6 +45,8 @@
 
             </div>
 
+            {% if consulta %}
+
             <div class="container" id="curse_table">
 
                 <table class="table">
@@ -91,6 +93,9 @@
                     {% endfor %}
                 </table>
             </div>
+            {% else %}
+            <p>Usted no ha creado ningun curso todavia.</p>
+            {% endif %}
 
             <div class="container" id="user_paginatios">
                 {{ macros.rendizar_paginacion(consulta=consulta, vista="cursos") }}

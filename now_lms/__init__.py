@@ -35,7 +35,7 @@ from flask_uploads import IMAGES, UploadSet, configure_uploads
 from loguru import logger as log
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
-from sqlalchemy.exc import OperationalError, ProgrammingError
+from sqlalchemy.exc import ArgumentError, OperationalError, ProgrammingError
 from wtforms import BooleanField, DecimalField, DateField, IntegerField, PasswordField, SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired
 
@@ -746,11 +746,14 @@ def cursos():
             request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False
         )
     else:
-        lista_cursos = (
-            Curso.query.join(Curso.creado_por)
-            .filter(Usuario.id == current_user.id)
-            .paginate(request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False)
-        )
+        try:
+            lista_cursos = (
+                Curso.query.join(Curso.creado_por)
+                .filter(Usuario.id == current_user.id)
+                .paginate(request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False)
+            )
+        except ArgumentError:
+            lista_cursos = None
     return render_template("learning/curso_lista.html", consulta=lista_cursos)
 
 
