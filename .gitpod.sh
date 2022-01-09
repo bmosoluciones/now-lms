@@ -8,5 +8,5 @@ python -m pip install -r development.txt
 python -m pip install -e .
 python setup.py develop
 mypy now_lms --install-types --non-interactive 
-python -m pip install gunicorn inotify
-gunicorn --workers=4 --reload wsgi:app
+python -m pip install hupper
+/home/gitpod/.pyenv/versions/3.8.12/bin/hupper -m waitress --port=8080 now_lms:app
