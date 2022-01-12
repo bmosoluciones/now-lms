@@ -111,11 +111,12 @@ database: SQLAlchemy = SQLAlchemy()
 # < --------------------------------------------------------------------------------------------- >
 # Base de datos relacional
 
-MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA: int = 3
+MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA: int = 10
 # Para hacer feliz a Sonar Cloud
 # https://sonarcloud.io/project/overview?id=bmosoluciones_now-lms
 LLAVE_FORONEA_CURSO: str = "curso.codigo"
 LLAVE_FORONEA_USUARIO: str = "usuario.usuario"
+LLAVE_FORANEA_SECCION: str = "curso_seccion.id"
 
 
 # pylint: disable=too-few-public-methods
@@ -175,7 +176,8 @@ class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Los cursos tienen secciones para dividir el contenido en secciones logicas."""
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    nombre = database.Column(database.String(150), nullable=False)
+    nombre = database.Column(database.String(100), nullable=False)
+    descripcion = database.Column(database.String(250), nullable=False)
     indice = database.Column(database.Integer())
 
 
@@ -183,8 +185,9 @@ class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Un curso consta de una serie de recursos."""
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    seccion = database.Column(database.Integer(), database.ForeignKey("curso_seccion.id"), nullable=False)
+    seccion = database.Column(database.Integer(), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False)
     nombre = database.Column(database.String(150), nullable=False)
+    tipo = database.Column(database.String(150), nullable=False)
     indice = database.Column(database.Integer())
 
 
@@ -399,11 +402,34 @@ def init_app():
                 tipo="admin",
                 activo=True,
             )
+            # Crea un usuario de cada perfil (admin, user, instructor, moderator)
+            # por defecto desactivados.
+            demo_user1 = Usuario(
+                usuario="student",
+                acceso=proteger_passwd("studen"),
+                tipo="user",
+                activo=False,
+            )
+            demo_user2 = Usuario(
+                usuario="instructor",
+                acceso=proteger_passwd("instructor"),
+                tipo="instructor",
+                activo=False,
+            )
+            demo_user3 = Usuario(
+                usuario="moderator",
+                acceso=proteger_passwd("moderator"),
+                tipo="moderator",
+                activo=False,
+            )
             config = Configuracion(
                 titulo="NOW LMS",
                 descripcion="Sistema de aprendizaje en linea.",
             )
             database.session.add(administrador)
+            database.session.add(demo_user1)
+            database.session.add(demo_user2)
+            database.session.add(demo_user3)
             database.session.add(config)
             database.session.commit()
 
