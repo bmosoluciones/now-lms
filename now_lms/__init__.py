@@ -92,6 +92,8 @@ CONFIGURACION: Dict = {
     "SQLALCHEMY_TRACK_MODIFICATIONS": "False",
     # Carga de archivos
     "UPLOADED_PHOTOS_DEST": DIRECTORIO_IMAGENES,
+    # Just for development
+    # "SQLALCHEMY_ECHO":True,
 }
 
 # Servicios como Heroku, Elephantsql, Digital Ocean proveen una direccion de corrección que comienza con "postgres"
@@ -779,10 +781,11 @@ def cursos():
     else:
         try:
             lista_cursos = (
-                Curso.query.join(Curso.creado_por)
-                .filter(Usuario.id == current_user.id)
+                Curso.query.join(DocenteCurso)
+                .filter(DocenteCurso.usuario == current_user.usuario)
                 .paginate(request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False)
             )
+
         except ArgumentError:
             lista_cursos = None
     return render_template("learning/curso_lista.html", consulta=lista_cursos)
