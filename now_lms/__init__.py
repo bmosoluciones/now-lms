@@ -95,7 +95,7 @@ CONFIGURACION: Dict = {
     "SQLALCHEMY_TRACK_MODIFICATIONS": "False",
     # Carga de archivos
     "UPLOADED_PHOTOS_DEST": DIRECTORIO_IMAGENES,
-    # Just for development.
+    # Just for development
     # "SQLALCHEMY_ECHO":True,
 }
 
