@@ -1,0 +1,53 @@
+{% import "macros.html" as macros %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+
+<head>
+
+    {{ macros.headertags() }}
+    <title>Crear un nuevo recurso</title>
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet">
+</head>
+
+<body>
+
+    {{ macros.navbar() }}
+
+    <main>
+
+        <div class="container px-4 py-5" id="icon-grid">
+            <h4 class="pb-2 border-bottom">Crear nuevo curso.</h4>
+            <form method="post">
+                {{ form.csrf_token }}
+                
+
+                <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Recurso</button>
+            </form>
+        </div>
+
+
+    </main>
+
+
+</body>
+
+</html>

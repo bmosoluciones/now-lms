@@ -92,7 +92,7 @@ CONFIGURACION: Dict = {
     "SQLALCHEMY_TRACK_MODIFICATIONS": "False",
     # Carga de archivos
     "UPLOADED_PHOTOS_DEST": DIRECTORIO_IMAGENES,
-    # Just for development
+    # Just for development.
     # "SQLALCHEMY_ECHO":True,
 }
 
@@ -114,8 +114,6 @@ database: SQLAlchemy = SQLAlchemy()
 # Base de datos relacional
 
 MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA: int = 10
-# Para hacer feliz a Sonar Cloud
-# https://sonarcloud.io/project/overview?id=bmosoluciones_now-lms
 LLAVE_FORONEA_CURSO: str = "curso.codigo"
 LLAVE_FORONEA_USUARIO: str = "usuario.usuario"
 LLAVE_FORANEA_SECCION: str = "curso_seccion.id"
@@ -159,7 +157,7 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     nombre = database.Column(database.String(150), nullable=False)
     codigo = database.Column(database.String(20), unique=True)
     descripcion = database.Column(database.String(500), nullable=False)
-    # draft, public, active, closed
+    # draft, public, active, closed, open
     estado = database.Column(database.String(10), nullable=False)
     # mooc
     publico = database.Column(database.Boolean())
@@ -189,6 +187,7 @@ class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
     seccion = database.Column(database.Integer(), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False)
     nombre = database.Column(database.String(150), nullable=False)
+    # link, youtube, text, file
     tipo = database.Column(database.String(150), nullable=False)
     indice = database.Column(database.Integer())
 
@@ -348,6 +347,22 @@ class CurseForm(FlaskForm):
     fecha_fin = DateField(validators=[])
     duracion = IntegerField(validators=[])
     nivel = SelectField("User", choices=[(0, "Introductorio"), (1, "Principiante"), (2, "Intermedio"), (2, "Avanzado")])
+
+
+class CursoRecursoForm(FlaskForm):
+    """Formulario para crear un nuevo recurso."""
+
+    tipo = SelectField(
+        "Tipo",
+        choices=[("link", "Vinculo"), ("youtube", "Vídeo en YouTube"), ("file", "Archivo"), ("text", "Texto")],
+    )
+
+
+class CursoSeccionForm(FlaskForm):
+    """Formulario para crear una nueva sección."""
+
+    nombre = StringField(validators=[DataRequired()])
+    descripcion = StringField(validators=[DataRequired()])
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -769,6 +784,50 @@ def nuevo_curso():
         return render_template("learning/nuevo_curso.html", form=form)
 
 
+@lms_app.route("/course/<course_code>/new_seccion", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_seccion(course_code):
+    """Formulario para crear un nuevo recurso."""
+    form = CursoSeccionForm()
+    if form.validate_on_submit() or request.method == "POST":
+        nuevo_seccion = CursoSeccion(
+            curso=course_code,
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+        )
+        try:
+            database.session.add(nuevo_seccion)
+            database.session.commit()
+            flash("Sección agregada correctamente al curso.")
+            return redirect(url_for("curso", course_code=course_code))
+        except OperationalError:
+            flash("Hubo en error al crear la seccion.")
+            return redirect(url_for("curso", course_code=course_code))
+    else:
+        return render_template("learning/nuevo_seccion.html", form=form)
+
+
+@lms_app.route("/course/<course_code>/<seccion>/new_resource", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_recurso(course_code, seccion):
+    """Formulario para crear un nuevo recurso."""
+    form = CursoSeccionForm()
+    if form.validate_on_submit() or request.method == "POST":
+        nuevo_recurso = CursoRecurso()
+        try:
+            database.session.add(nuevo_recurso)
+            database.session.commit()
+            flash("Recurso agregado correctamente al curso.")
+            return redirect(url_for("curso", course_code=course_code))
+        except OperationalError:
+            flash("Hubo en error al crear el recurso.")
+            return redirect(url_for("curso", course_code=course_code))
+    else:
+        return render_template("learning/nuevo_recurso.html", form=form)
+
+
 @lms_app.route("/courses")
 @lms_app.route("/cursos")
 @login_required
@@ -792,7 +851,6 @@ def cursos():
 
 
 @lms_app.route("/course/<course_code>")
-@lms_app.route("/curso")
 def curso(course_code):
     """Pagina principal del curso."""
     return render_template(

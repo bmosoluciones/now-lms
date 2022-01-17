@@ -1,7 +1,8 @@
 {% import "macros.html" as macros %}
-{% set docente = docente_asignado(id_curso=curso.codigo) %}
-{% set moderador = moderador_asignado(id_curso=curso.codigo) %}
-{% set estudiante = estudiante_asignado(id_curso=curso.codigo) %}
+{% set permitir_docente = docente_asignado(id_curso=curso.codigo) %}
+{% set permitir_moderador = moderador_asignado(id_curso=curso.codigo) %}
+{% set permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %}
+{% set permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
 <!doctype html>
 <html lang="es" class="h-100">
@@ -41,7 +42,7 @@
                 <h4>{{ curso.codigo }} - {{ curso.nombre }}</h4>
                 
                 <p>
-                    {% if docente %}
+                    {% if permitir_docente %}
                     <span class="badge bg-success">
                         <a href="{{ url_for("cambiar_estatus_curso", curse=curso.codigo, status="draft") }}" class="link-light">Borrador</a>
                     </span>
@@ -144,40 +145,39 @@
                 </div>
                 <div class="col-md-8">
 
+                  {% if permitir_editar %}
+                  <div class="d-flex justify-content-end">
+                    <span class="badge bg-success">
+                      <a href="{{ url_for("nuevo_seccion", course_code=curso.codigo) }}" class="link-light">Nueva Sección</a>
+                  </span>
+                  </div>
+                  {% endif %}
+
                     <h3>Contenido del curso.</h3>
 
 
                     <div class="accordion accordion-flush" id="accordionFlushExample">
+                      {% if secciones %}
+                      {% for seccion in secciones %}
                         <div class="accordion-item">
                           <h2 class="accordion-header" id="flush-headingOne">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                              Accordion Item #1
+                              {{ seccion.nombre }}
                             </button>
                           </h2>
                           <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.</div>
+                            <div class="accordion-body">
+                              {{ seccion.descripcion }}
+                            </div>
                           </div>
                         </div>
-                        <div class="accordion-item">
-                          <h2 class="accordion-header" id="flush-headingTwo">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                              Accordion Item #2
-                            </button>
-                          </h2>
-                          <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item's accordion body. Let's imagine this being filled with some actual content.</div>
-                          </div>
-                        </div>
-                        <div class="accordion-item">
-                          <h2 class="accordion-header" id="flush-headingThree">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                              Accordion Item #3
-                            </button>
-                          </h2>
-                          <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
-                          </div>
-                        </div>
+                      {% endfor %}
+                      {% else %}
+
+                      <div class="d-flex justify-content-center">
+                        <a href="{{ url_for("nuevo_seccion", course_code=curso.codigo) }}" class="btn btn-primary" role="button" aria-disabled="true">Crear Nueva Sección</a>
+                      </div>
+                      {% endif %}
                       </div>
 
 
