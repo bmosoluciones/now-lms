@@ -187,7 +187,7 @@ class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
 class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Un curso consta de una serie de recursos."""
 
-    __table_args__ = (database.UniqueConstraint("codigo", name="curso_seccion_unico"),)
+    __table_args__ = (database.UniqueConstraint("codigo", name="curso_recurso_unico"),)
     codigo = database.Column(database.String(32), unique=False)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
     seccion = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False)
