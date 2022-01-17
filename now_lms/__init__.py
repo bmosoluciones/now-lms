@@ -797,15 +797,15 @@ def nuevo_seccion(course_code):
     form = CursoSeccionForm()
     if form.validate_on_submit() or request.method == "POST":
         ramdon = uuid4()
-        id = str(ramdon.hex)
-        nuevo_seccion = CursoSeccion(
-            codigo=id,
+        id_unico = str(ramdon.hex)
+        nueva_seccion = CursoSeccion(
+            codigo=id_unico,
             curso=course_code,
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
         )
         try:
-            database.session.add(nuevo_seccion)
+            database.session.add(nueva_seccion)
             database.session.commit()
             flash("Sección agregada correctamente al curso.")
             return redirect(url_for("curso", course_code=course_code))
@@ -824,12 +824,14 @@ def nuevo_recurso(course_code, seccion):
     form = CursoSeccionForm()
     if form.validate_on_submit() or request.method == "POST":
         ramdon = uuid4()
-        id = str(ramdon.hex)
-        nuevo_recurso = CursoRecurso(
-            codigo=id,
+        id_unico = str(ramdon.hex)
+        nuevo_recurso_ = CursoRecurso(
+            codigo=id_unico,
+            seccion=seccion,
+            curso=course_code,
         )
         try:
-            database.session.add(nuevo_recurso)
+            database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("Recurso agregado correctamente al curso.")
             return redirect(url_for("curso", course_code=course_code))
