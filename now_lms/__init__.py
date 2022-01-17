@@ -23,6 +23,7 @@ from functools import wraps
 from os import environ, name, path, cpu_count
 from pathlib import Path
 from typing import Dict, Union
+from uuid import uuid4
 
 # Librerias de terceros:
 from flask import Flask, abort, flash, redirect, request, render_template, url_for, current_app
@@ -116,7 +117,7 @@ database: SQLAlchemy = SQLAlchemy()
 MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA: int = 10
 LLAVE_FORONEA_CURSO: str = "curso.codigo"
 LLAVE_FORONEA_USUARIO: str = "usuario.usuario"
-LLAVE_FORANEA_SECCION: str = "curso_seccion.id"
+LLAVE_FORANEA_SECCION: str = "curso_seccion.codigo"
 
 
 # pylint: disable=too-few-public-methods
@@ -175,6 +176,8 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
 class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Los cursos tienen secciones para dividir el contenido en secciones logicas."""
 
+    __table_args__ = (database.UniqueConstraint("codigo", name="curso_seccion_unico"),)
+    codigo = database.Column(database.String(32), unique=False)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
     nombre = database.Column(database.String(100), nullable=False)
     descripcion = database.Column(database.String(250), nullable=False)
@@ -184,8 +187,10 @@ class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
 class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Un curso consta de una serie de recursos."""
 
+    __table_args__ = (database.UniqueConstraint("codigo", name="curso_seccion_unico"),)
+    codigo = database.Column(database.String(32), unique=False)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    seccion = database.Column(database.Integer(), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False)
+    seccion = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False)
     nombre = database.Column(database.String(150), nullable=False)
     # link, youtube, text, file
     tipo = database.Column(database.String(150), nullable=False)
@@ -791,7 +796,10 @@ def nuevo_seccion(course_code):
     """Formulario para crear un nuevo recurso."""
     form = CursoSeccionForm()
     if form.validate_on_submit() or request.method == "POST":
+        ramdon = uuid4()
+        id = str(ramdon.hex)
         nuevo_seccion = CursoSeccion(
+            codigo=id,
             curso=course_code,
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
@@ -815,7 +823,11 @@ def nuevo_recurso(course_code, seccion):
     """Formulario para crear un nuevo recurso."""
     form = CursoSeccionForm()
     if form.validate_on_submit() or request.method == "POST":
-        nuevo_recurso = CursoRecurso()
+        ramdon = uuid4()
+        id = str(ramdon.hex)
+        nuevo_recurso = CursoRecurso(
+            codigo=id,
+        )
         try:
             database.session.add(nuevo_recurso)
             database.session.commit()
