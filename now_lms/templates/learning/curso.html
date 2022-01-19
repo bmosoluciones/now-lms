@@ -139,35 +139,30 @@
                   {% endif %}
 
                     <h3>Contenido del curso.</h3>
-
-
-                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                    
                       {% if secciones %}
-                      {% for seccion in secciones %}
-                        <div class="accordion-item">
-                          <h2 class="accordion-header" id="flush-headingOne">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                              {{ seccion.nombre }}
-                            </button>
-                          </h2>
-                          <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body">
-                              {{ seccion.descripcion }}
+                      <div class="accordion accordion-flush" id="accordionSeccionesCurso">
+                        {% for seccion in secciones %}
+                        <div class="accordion-item accordion-flush">
+                            <h2 class="accordion-header accordion-flush" id="heading{{ seccion.codigo }}">
+                              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ seccion.codigo }}" aria-expanded="false" aria-controls="collapse{{ seccion.codigo }}">
+                                {{ seccion.nombre }}
+                              </button>
+                            </h2>
+                            <div id="collapse{{ seccion.codigo }}" class="accordion-collapse collapse" aria-labelledby="heading{{ seccion.codigo }}" data-bs-parent="#accordionSeccionesCurso">
+                              <div class="accordion-body accordion-flush">
+                                  {{ seccion.descripcion }}
+                              </div>
                             </div>
                           </div>
+                          {% endfor %}
                         </div>
-                      {% endfor %}
                       {% else %}
 
                       <div class="d-flex justify-content-center">
                         <a href="{{ url_for("nuevo_seccion", course_code=curso.codigo) }}" class="btn btn-primary" role="button" aria-disabled="true">Crear Nueva Sección</a>
                       </div>
                       {% endif %}
-                      </div>
-
-
-
-
                 </div>
 
             </div>
