@@ -817,7 +817,7 @@ def nuevo_seccion(course_code):
         return render_template("learning/nuevo_seccion.html", form=form)
 
 
-@lms_app.route("/course/<course_code>/<seccion>/tipo", methods=["GET", "POST"])
+@lms_app.route("/course/<course_code>/<seccion>/tipo")
 @login_required
 @perfil_requerido("instructor")
 def nuevo_recurso(course_code, seccion):
