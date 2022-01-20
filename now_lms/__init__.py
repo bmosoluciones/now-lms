@@ -41,6 +41,7 @@ from wtforms import BooleanField, DecimalField, DateField, IntegerField, Passwor
 from wtforms.validators import DataRequired
 
 # pylint: disable=too-many-lines
+
 # Recursos locales:
 from now_lms.version import PRERELEASE, VERSION
 
@@ -280,6 +281,42 @@ def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
         return False
 
 
+def crear_usuarios_predeterminados():
+    """Crea en la base de datos los usuarios iniciales."""
+    log.info("Creando usuario administrador.")
+    administrador = Usuario(
+        usuario=CONFIGURACION.get("ADMIN_USER"),
+        acceso=proteger_passwd(CONFIGURACION.get("ADMIN_PSWD")),
+        tipo="admin",
+        activo=True,
+    )
+    # Crea un usuario de cada perfil (admin, user, instructor, moderator)
+    # por defecto desactivados.
+    demo_user1 = Usuario(
+        usuario="student",
+        acceso=proteger_passwd("studen"),
+        tipo="user",
+        activo=False,
+    )
+    demo_user2 = Usuario(
+        usuario="instructor",
+        acceso=proteger_passwd("instructor"),
+        tipo="instructor",
+        activo=False,
+    )
+    demo_user3 = Usuario(
+        usuario="moderator",
+        acceso=proteger_passwd("moderator"),
+        tipo="moderator",
+        activo=False,
+    )
+    database.session.add(administrador)
+    database.session.add(demo_user1)
+    database.session.add(demo_user2)
+    database.session.add(demo_user3)
+    database.session.commit()
+
+
 # < --------------------------------------------------------------------------------------------- >
 # Control de acceso a la aplicación
 
@@ -381,6 +418,8 @@ lms_app = Flask(
 lms_app.config.from_mapping(CONFIGURACION)
 
 
+# Inicializamos extenciones y cargamos algunas variables para que esten disponibles de forma
+# global en las plantillas de Jinja2.
 with lms_app.app_context():
     alembic.init_app(lms_app)
     administrador_sesion.init_app(lms_app)
@@ -418,44 +457,13 @@ def init_app():
             log.info("Iniciando Configuracion de la aplicacion.")
             log.info("Creando esquema de base de datos.")
             database.create_all()
-            log.info("Creando usuario administrador.")
-            administrador = Usuario(
-                usuario=CONFIGURACION.get("ADMIN_USER"),
-                acceso=proteger_passwd(CONFIGURACION.get("ADMIN_PSWD")),
-                tipo="admin",
-                activo=True,
-            )
-            # Crea un usuario de cada perfil (admin, user, instructor, moderator)
-            # por defecto desactivados.
-            demo_user1 = Usuario(
-                usuario="student",
-                acceso=proteger_passwd("studen"),
-                tipo="user",
-                activo=False,
-            )
-            demo_user2 = Usuario(
-                usuario="instructor",
-                acceso=proteger_passwd("instructor"),
-                tipo="instructor",
-                activo=False,
-            )
-            demo_user3 = Usuario(
-                usuario="moderator",
-                acceso=proteger_passwd("moderator"),
-                tipo="moderator",
-                activo=False,
-            )
             config = Configuracion(
                 titulo="NOW LMS",
                 descripcion="Sistema de aprendizaje en linea.",
             )
-            database.session.add(administrador)
-            database.session.add(demo_user1)
-            database.session.add(demo_user2)
-            database.session.add(demo_user3)
             database.session.add(config)
             database.session.commit()
-
+            crear_usuarios_predeterminados()
         else:
             log.warning("NOW LMS ya se encuentra configurado.")
             log.warning("Intente ejecutar 'python -m now_lms'")
@@ -522,7 +530,7 @@ def command(as_module=False) -> None:
 
 
 # < --------------------------------------------------------------------------------------------- >
-# Funciones auxiliares
+# Funciones auxiliares parte de la "logica de negocio" de la implementacion.
 def asignar_curso_a_instructor(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
     """Asigna un usuario como instructor de un curso."""
     ASIGNACION = DocenteCurso(curso=curso_codigo, usuario=usuario_id, vigente=True, creado_por=current_user.usuario)
@@ -583,6 +591,7 @@ def cambia_curso_publico(id_curso: Union[None, str, int] = None):
 
 # < --------------------------------------------------------------------------------------------- >
 # Definición de rutas/vistas
+# pylint: disable=singleton-comparison
 
 
 def perfil_requerido(perfil_id):
@@ -603,10 +612,6 @@ def perfil_requerido(perfil_id):
 
     return decorator_verifica_acceso
 
-
-# < --------------------------------------------------------------------------------------------- >
-# Definición de rutas/vistas
-# pylint: disable=singleton-comparison
 
 # <-------- Autenticación de usuarios  -------->
 INICIO_SESION = redirect("/login")
@@ -1007,5 +1012,5 @@ def cambiar_curso_publico():
     return redirect(url_for("curso", course_code=request.args.get("curse")))
 
 
-# Los servidores WSGI buscan por defecto una app
+# <-------- Servidores WSGI buscan una app por defecto  -------->
 app = lms_app
