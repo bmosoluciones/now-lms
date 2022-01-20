@@ -40,6 +40,7 @@ from sqlalchemy.exc import ArgumentError, OperationalError, ProgrammingError
 from wtforms import BooleanField, DecimalField, DateField, IntegerField, PasswordField, SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired
 
+# pylint: disable=too-many-lines
 # Recursos locales:
 from now_lms.version import PRERELEASE, VERSION
 
@@ -816,10 +817,18 @@ def nuevo_seccion(course_code):
         return render_template("learning/nuevo_seccion.html", form=form)
 
 
-@lms_app.route("/course/<course_code>/<seccion>/new_resource", methods=["GET", "POST"])
+@lms_app.route("/course/<course_code>/<seccion>/tipo", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
 def nuevo_recurso(course_code, seccion):
+    """Página para seleccionar tipo de recurso."""
+    return render_template("learning/nuevo_recurso.html", curso=course_code, codigo=seccion)
+
+
+@lms_app.route("/course/<course_code>/<seccion>/<tipo>/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_recurso_tipo(course_code, seccion, tipo):
     """Formulario para crear un nuevo recurso."""
     form = CursoSeccionForm()
     if form.validate_on_submit() or request.method == "POST":
@@ -828,6 +837,7 @@ def nuevo_recurso(course_code, seccion):
         nuevo_recurso_ = CursoRecurso(
             codigo=id_unico,
             seccion=seccion,
+            tipo=tipo,
             curso=course_code,
         )
         try:

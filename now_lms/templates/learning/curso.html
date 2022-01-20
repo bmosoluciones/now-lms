@@ -151,6 +151,13 @@
                             </h2>
                             <div id="collapse{{ seccion.codigo }}" class="accordion-collapse collapse" aria-labelledby="heading{{ seccion.codigo }}" data-bs-parent="#accordionSeccionesCurso">
                               <div class="accordion-body accordion-flush">
+                                {% if permitir_editar %}
+                                <div class="d-flex justify-content-end">
+                                  <span class="badge bg-success">
+                                    <a href="{{ url_for("nuevo_recurso", course_code=curso.codigo, seccion=seccion.codigo) }}" class="link-light">Nueva Recurso</a>
+                                </span>
+                                </div>
+                                {% endif %}
                                   {{ seccion.descripcion }}
                               </div>
                             </div>
