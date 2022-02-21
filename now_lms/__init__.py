@@ -141,7 +141,7 @@ class Usuario(UserMixin, database.Model, BaseTabla):  # type: ignore[name-define
 
     # Información Básica
     __table_args__ = (database.UniqueConstraint("usuario", name="usuario_unico"),)
-    usuario = database.Column(database.String(150), nullable=False)
+    usuario = database.Column(database.String(150), nullable=False, index=True)
     acceso = database.Column(database.LargeBinary(), nullable=False)
     nombre = database.Column(database.String(100))
     apellido = database.Column(database.String(100))
