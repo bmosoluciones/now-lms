@@ -27,31 +27,34 @@ app.config["WTF_CSRF_ENABLED"] = False
 app.config["DEBUG"] = True
 app.app_context().push()
 
-with app.app_context():
-    database.drop_all()
-    database.create_all()
-    config = Configuracion(
+
+@pytest.fixture(scope="module", autouse=True)
+def lms():
+    with app.app_context():
+        database.drop_all()
+        database.create_all()
+        config = Configuracion(
         titulo="NOW LMS",
         descripcion="Sistema de aprendizaje en linea.",
-    )
-    database.session.add(config)
-    database.session.commit()
-    crear_usuarios_predeterminados()
+        )
+        database.session.add(config)
+        database.session.commit()
+        crear_usuarios_predeterminados()
+    app.app_context().push()
+    yield app
 
-app.app_context().push()
 
-
-def test_dummy():
+def test_dummy(lms):
     assert app.config["DEBUG"] == True
 
 
 @pytest.fixture
-def client():
+def client(lms):
     return app.test_client()
 
 
 @pytest.fixture
-def runner():
+def runner(lms):
     return app.test_cli_runner()
 
 
