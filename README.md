@@ -61,10 +61,14 @@ podman run --pod now-lms --rm --name now-lms-db \
 
 # App:
 podman run --pod now-lms --rm --init --name now-lms-app \
-    -e LMS_KEY=nsjksldknsdlkdsljdnsdjñasññqldñaas554dlkallas \ # Set you own secret and secure key.
-    -e LMS_DB=postgresql+pg8000://nowlearning:nowlearning@localhost:5432/nowlearning \ # Set according the database container credentials
-    -e LMS_USER=administrator \ # Set your own admin user.
-    -e LMS_PSWD=administrator \ # Set your own admin user. 
+    # Set you own secret and secure key. \
+    -e LMS_KEY=nsjksldknsdlkdsljdnsdjñasññqldñaas554dlkallas \
+    # Set according the database container credentials \
+    -e LMS_DB=postgresql+pg8000://nowlearning:nowlearning@localhost:5432/nowlearning \
+    # Set your own admin user. \ 
+    -e LMS_USER=administrator \
+    # Set your own admin user. \
+    -e LMS_PSWD=administrator \  
     -d quay.io/bmosoluciones/now-lms
 
 ```
