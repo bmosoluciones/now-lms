@@ -88,11 +88,16 @@ CONFIGURACION: Dict = {
     "ADMIN_USER": environ.get("LMS_USER") or "lms-admin",
     "ADMIN_PSWD": environ.get("LMS_PSWD") or "lms-admin",
     "SECRET_KEY": environ.get("LMS_KEY") or "dev",
-    "SQLALCHEMY_DATABASE_URI": environ.get("LMS_DB") or SQLITE,
+    "SQLALCHEMY_DATABASE_URI": environ.get("LMS_DB") or environ.get("DATABASE_URL") or SQLITE,
     "SQLALCHEMY_TRACK_MODIFICATIONS": "False",
     # Carga de archivos
     "UPLOADED_PHOTOS_DEST": DIRECTORIO_IMAGENES,
 }
+
+# Servicios como Heroku, Elephantsql, Digital Ocean proveen una direccion de corrección que comienza con "postgres"
+# esta va a fallar con SQLAlchemy.
+if "postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
+    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = "postgresql+pg8000" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:]
 
 
 # < --------------------------------------------------------------------------------------------- >

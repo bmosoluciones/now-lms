@@ -30,3 +30,5 @@ requirements-databases.txt
 .mypy.ini
 .gitpod.yml
 .gitpod.sh
+
+app.json
