@@ -4,7 +4,6 @@
 ![PyPI - License](https://img.shields.io/pypi/l/now_lms?color=brightgreen&logo=apache&logoColor=white)
 ![PyPI](https://img.shields.io/pypi/v/now_lms?color=brightgreen&label=version&logo=python&logoColor=white)
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/now_lms?logo=python&logoColor=white)
-[![Docker Repository on Quay](https://quay.io/repository/bmosoluciones/now-lms/status "Docker Repository on Quay")](https://quay.io/repository/bmosoluciones/now-lms)
 [![codecov](https://codecov.io/gh/bmosoluciones/now-lms/branch/main/graph/badge.svg?token=SFVXF6Y3R3)](https://codecov.io/gh/bmosoluciones/now-lms)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bmosoluciones_now-lms&metric=alert_status)](https://sonarcloud.io/dashboard?id=bmosoluciones_now-lms)
 
@@ -33,7 +32,15 @@ python -m now_lms
 
 Visit http://127.0.0.1:8080/ in your browser, defaul user and password are `lms-admin`, note that the default server is olny bind to the localhost.
 
+### Other deployment options
+
+There are available templates to deploy Now - LMS to these services:
+
+[![Deploy to DO](https://img.shields.io/badge/DO-Deploy%20to%20DO-blue "Deploy as Digital Ocean App")](https://cloud.digitalocean.com/apps/new?repo=https://github.com/bmosoluciones/now-lms/tree/main)
+
+
 ### OCI Image
+[![Docker Repository on Quay](https://quay.io/repository/bmosoluciones/now-lms/status "Docker Repository on Quay")](https://quay.io/repository/bmosoluciones/now-lms)
 
 There is also a OCI image disponible if you prefer to user containers, in this example we use [podman](https://podman.io/):
 

@@ -1,0 +1,21 @@
+spec:
+  name: NOW - LMS
+  services:
+  - name: web
+    git:
+      branch: main
+      repo_clone_url: https://github.com/bmosoluciones/now-lms.git
+    envs:
+    - key: LMS_KEY
+      value: "nsjksldknsdlkdsljdnsdjñasññqldñaas554dlkallas"
+      type: SECRET
+    - key: LMS_USER
+      value: "admin"
+    - key: LMS_PSWD
+      value: "admin123+"
+      type: SECRET
+    - key: DATABASE_URL
+      scope: RUN_TIME
+      value: "postgresql+pg8000://nowlearning:nowlearning@localhost:5432/nowlearning"
+  databases:
+  - name: example-db
