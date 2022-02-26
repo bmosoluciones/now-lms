@@ -1,9 +1,9 @@
 spec:
   name: nowlearningmanagementsystem
-  build_command: python -m flask setup
-  run_command: python -m flask serve
   services:
   - name: web
+    build_command: python -m flask setup
+    run_command: python -m flask serve
     git:
       branch: main
       repo_clone_url: https://github.com/bmosoluciones/now-lms.git
