@@ -34,8 +34,8 @@ def lms():
         database.drop_all()
         database.create_all()
         config = Configuracion(
-        titulo="NOW LMS",
-        descripcion="Sistema de aprendizaje en linea.",
+            titulo="NOW LMS",
+            descripcion="Sistema de aprendizaje en linea.",
         )
         database.session.add(config)
         database.session.commit()
@@ -80,9 +80,37 @@ def test_login(client):
     assert b"BMO Soluciones" in response.data
 
 
+def test_logon(client):
+    response = client.get("/logon")
+    assert b"Crear nuevo usuario." in response.data
+
+
+def test_root(client):
+    response = client.get("/")
+    assert b"Sistema de aprendizaje en linea." in response.data
+    assert b"No hay cursos disponibles en este momento." in response.data
+
+
 def test_app(client, auth):
     auth.login()
     response = client.get("/panel")
     log.error(response.data)
 
     assert b"Administrador del Sistema." in response.data
+
+
+def test_admin(client, auth):
+    auth.login()
+    response = client.get("/admin")
+    log.error(response.data)
+
+    assert b"Panel de Adminis" in response.data
+    assert b"Usuarios" in response.data
+
+
+def test_instructor(client, auth):
+    auth.login()
+    response = client.get("/instructor")
+    log.error(response.data)
+
+    assert b"Panel del docente." in response.data
