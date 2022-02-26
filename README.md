@@ -49,7 +49,7 @@ sudo apt install -y podman
 sudo zypper in podman
 
 # Create a new pod:
-podman pod create --name now-lms -p 8080:8080
+podman pod create --name now-lms -p 80:80 -p 443:443
 
 # Database:
 podman run --pod now-lms --rm --name now-lms-db \
@@ -71,6 +71,19 @@ podman run --pod now-lms --rm --init --name now-lms-app \
     -e LMS_PSWD=administrator \  
     -d quay.io/bmosoluciones/now-lms
 
+# Web Server
+# Edit the path to your NGINX configuration file.
+podman run --pod --name now-lms-server --rm --init -v /host/path/nginx.conf:/etc/nginx/nginx.conf:ro -d nginx:stable
+
 ```
 
 NOW-LMS also will work with MySQL or MariaDB just change the image of the database container and set the correct connect string.
+
+#### Sample NGINX configuration.
+
+```
+todo
+```
+
+
+
