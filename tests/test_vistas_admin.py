@@ -87,7 +87,6 @@ def test_logon(client):
 
 def test_root(client):
     response = client.get("/")
-    assert b"Sistema de aprendizaje en linea." in response.data
     assert b"No hay cursos disponibles en este momento." in response.data
 
 
