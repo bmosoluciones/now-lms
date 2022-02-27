@@ -60,38 +60,21 @@ sudo zypper in podman
 podman pod create --name now-lms -p 80:80 -p 443:443
 
 # Database:
-podman run --pod now-lms --rm --name now-lms-db \
-    --volume now-lms-postgresql-backup:/var/lib/postgresql/data \
-    -e POSTGRES_DB=nowlearning \
-    -e POSTGRES_USER=nowlearning \
-    -e POSTGRES_PASSWORD=nowlearning \
-    -d postgres:13
+podman run --pod now-lms --rm --name now-lms-db --volume now-lms-postgresql-backup:/var/lib/postgresql/data -e POSTGRES_DB=nowlearning -e POSTGRES_USER=nowlearning -e POSTGRES_PASSWORD=nowlearning -d postgres:13
 
 # App:
-podman run --pod now-lms --rm --init --name now-lms-app \
-    # Set you own secret and secure key. \
-    -e LMS_KEY=nsjksldknsdlkdsljdnsdjñasññqldñaas554dlkallas \
-    # Set according the database container credentials \
-    -e LMS_DB=postgresql+pg8000://nowlearning:nowlearning@localhost:5432/nowlearning \
-    # Set your own admin user. \ 
-    -e LMS_USER=administrator \
-    # Set your own admin user. \
-    -e LMS_PSWD=administrator \  
-    -d quay.io/bmosoluciones/now-lms
+podman run --pod now-lms --rm --name now-lms-app -e LMS_KEY=nsjksldknsdlkdsljdnsdjñasññqldñaas554dlkallas -e LMS_DB=postgresql+pg8000://nowlearning:nowlearning@localhost:5432/nowlearning -e LMS_USER=administrator -e LMS_PSWD=administrator -d quay.io/bmosoluciones/now-lms
 
 # Web Server
-# Edit the path to your NGINX configuration file.
-podman run --pod --name now-lms-server --rm --init -v /host/path/nginx.conf:/etc/nginx/nginx.conf:ro -d nginx:stable
+# Download nginx configuration template:
+cd
+mkdir now_lms_dir
+cd now_lms_dir
+curl -O https://raw.githubusercontent.com/bmosoluciones/now-lms/main/docs/nginx.conf
+
+# In the same directoy run the web server pod:
+podman run --pod now-lms --name now-lms-server --rm -v $PWD/nginx.conf:/etc/nginx/nginx.conf:ro -d nginx:stable 
 
 ```
 
 NOW-LMS also will work with MySQL or MariaDB just change the image of the database container and set the correct connect string.
-
-#### Sample NGINX configuration.
-
-```
-todo
-```
-
-
-
