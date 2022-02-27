@@ -99,7 +99,6 @@ CONFIGURACION: Dict = {
 if DESARROLLO:
     CONFIGURACION["SQLALCHEMY_ECHO"] = True
 
-
 # Corrige URI de conexion a la base de datos si el usuario omite el drive apropiado.
 
 # En Heroku va a estar disponible psycopg2.
