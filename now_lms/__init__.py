@@ -101,8 +101,17 @@ CONFIGURACION: Dict = {
 
 # Servicios como Heroku, Elephantsql, Digital Ocean proveen una direccion de corrección que comienza con "postgres"
 # esta va a fallar con SQLAlchemy.
-if "postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
+if not environ.get("DINO") and "postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
     CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = "postgresql+pg8000" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:]
+
+# See: 
+# - https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
+# - https://devcenter.heroku.com/changelog-items/2035
+if environ.get("DINO") and "postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
+    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = (
+        "postgresql" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:] + "?sslmode=require"
+    )
+    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = {}
 
 
 # < --------------------------------------------------------------------------------------------- >
