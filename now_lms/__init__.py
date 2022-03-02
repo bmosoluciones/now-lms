@@ -1011,7 +1011,7 @@ def cambiar_tipo_usario():
 
 @lms_app.route("/change_curse_status")
 @login_required
-@perfil_requerido("admin")
+@perfil_requerido("instructor")
 def cambiar_estatus_curso():
     """Actualiza el estatus de un curso."""
     cambia_estado_curso_por_id(
@@ -1023,7 +1023,7 @@ def cambiar_estatus_curso():
 
 @lms_app.route("/change_curse_public")
 @login_required
-@perfil_requerido("admin")
+@perfil_requerido("instructor")
 def cambiar_curso_publico():
     """Actualiza el estado publico de un curso."""
     cambia_curso_publico(
