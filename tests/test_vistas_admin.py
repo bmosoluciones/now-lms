@@ -113,3 +113,27 @@ def test_instructor(client, auth):
     log.error(response.data)
 
     assert b"Panel del docente." in response.data
+
+
+def test_users(client, auth):
+    auth.login()
+    response = client.get("/users")
+    log.error(response.data)
+
+    assert b"Usuarios registrados en el sistema." in response.data
+
+
+def test_users_inactive(client, auth):
+    auth.login()
+    response = client.get("/inactive_users")
+    log.error(response.data)
+
+    assert b"Usuarios pendientes" in response.data
+
+
+def test_nuevo_usuario(client, auth):
+    auth.login()
+    response = client.get("/new_user")
+    log.error(response.data)
+
+    assert b"Crear nuevo Usuario." in response.data
