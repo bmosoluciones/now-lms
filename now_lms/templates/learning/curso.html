@@ -51,6 +51,9 @@
                         <a href="{{ url_for("cambiar_curso_publico", curse=curso.codigo) }}" class="link-light">Agregar al Sitio Web.</a>
                     </span>
                     {% endif %}
+                    <span class="badge bg-danger">
+                      <a href="{{ url_for("eliminar_curso", course_id=curso.codigo) }}" class="link-light">Eliminar</a>
+                  </span>
                     {% endif %}
                 </p>
             </div>

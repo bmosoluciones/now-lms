@@ -15,6 +15,7 @@
 # Contributors:
 # - William José Moreno Reyes
 
+# pylint: disable=too-many-lines
 
 """NOW Learning Management System."""
 # Libreria standar:
@@ -39,8 +40,6 @@ from pg8000.exceptions import DatabaseError
 from sqlalchemy.exc import ArgumentError, OperationalError, ProgrammingError
 from wtforms import BooleanField, DecimalField, DateField, IntegerField, PasswordField, SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired
-
-# pylint: disable=too-many-lines
 
 # Recursos locales:
 from now_lms.version import PRERELEASE, VERSION
@@ -209,7 +208,7 @@ class Files(database.Model, BaseTabla):  # type: ignore[name-defined]
 
     archivo = database.Column(database.String(100), nullable=False)
     tipo = database.Column(database.String(15), nullable=False)
-    hash = database.Column(database.String(50), nullable=False)
+    hashtag = database.Column(database.String(50), nullable=False)
     url = database.Column(database.String(100), nullable=False)
 
 
@@ -991,6 +990,18 @@ def eliminar_usuario(user_id):
     perfil_usuario.delete()
     database.session.commit()
     return redirect(url_for(request.args.get("ruta", default="home", type=str)))
+
+
+@lms_app.route("/delete_curse/<course_id>")
+@login_required
+@perfil_requerido("instructor")
+def eliminar_curso(course_id):
+    """Elimina un curso por su id y redirecciona a la vista dada."""
+    curso = Curso.query.filter_by(codigo=course_id).first().delete()
+    secciones = (CursoSeccion.query.filter_by(curso=course_id).all().delete(),)
+    recursos = (CursoRecurso.query.filter_by(curso=course_id).all().delete(),)
+    database.session.commit()
+    return redirect(url_for(cursos))
 
 
 @lms_app.route("/change_user_tipo")
