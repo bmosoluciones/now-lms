@@ -22,6 +22,3 @@ PyMySQL
 cryptography
 # Postgresql
 pg8000
-
-# Do not merge in main but keep sync with main
-psycopg2-binary
