@@ -16,6 +16,7 @@
 # - William José Moreno Reyes
 
 # pylint: disable=too-many-lines
+# pylint: disable=fixme
 
 """NOW Learning Management System."""
 # Libreria standar:
@@ -1004,13 +1005,15 @@ def eliminar_curso(course_id):
         CursoRecurso.query.filter(CursoRecurso.curso == course_id).delete()
         # Eliminanos los acceso definidos para el curso detallado.
         DocenteCurso.query.filter(DocenteCurso.curso == course_id).delete()
-        ModeradorCurso.query.filter(ModerdorCurso.curso == course_id).delete()
+        ModeradorCurso.query.filter(ModeradorCurso.curso == course_id).delete()
         EstudianteCurso.query.filter(EstudianteCurso.curso == course_id).delete()
         # Elimanos curso seleccionado.
         Curso.query.filter(Curso.codigo == course_id).delete()
         database.session.commit()
         flash("Curso Eliminado Correctamente.")
-    except:
+    except PGProgrammingError:
+        flash("No se pudo elimiar el curso solicitado.")
+    except ProgrammingError:
         flash("No se pudo elimiar el curso solicitado.")
     return redirect(url_for("cursos"))
 
