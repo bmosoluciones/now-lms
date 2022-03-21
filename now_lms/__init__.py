@@ -15,8 +15,7 @@
 # Contributors:
 # - William José Moreno Reyes
 
-# pylint: disable=too-many-lines
-# pylint: disable=fixme
+# pylint: disable=too-many-lines, fixme
 
 """NOW Learning Management System."""
 # Libreria standar:
