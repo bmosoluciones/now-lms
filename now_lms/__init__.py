@@ -95,9 +95,10 @@ CONFIGURACION: Dict = {
     "SQLALCHEMY_TRACK_MODIFICATIONS": "False",
     # Carga de archivos
     "UPLOADED_PHOTOS_DEST": DIRECTORIO_IMAGENES,
-    # Just for development
-    # "SQLALCHEMY_ECHO":True,
 }
+
+if DESARROLLO:
+    CONFIGURACION["SQLALCHEMY_ECHO"] = True
 
 
 # Heroku likes psycopg
@@ -990,6 +991,16 @@ def eliminar_usuario(user_id):
     Usuario.query.filter(Usuario.usuario == user_id).delete()
     database.session.commit()
     return redirect(url_for(request.args.get("ruta", default="home", type=str)))
+
+
+@lms_app.route("/delete_seccion/<curso_id>/<id_>")
+@login_required
+@perfil_requerido("instructor")
+def eliminar_seccion(curso_id, id_):
+    """Elimina una seccion del curso."""
+    CursoSeccion.query.filter(CursoSeccion.id == id_).delete()
+    database.session.commit()
+    return redirect(url_for("curso", course_code=curso_id))
 
 
 @lms_app.route("/delete_curse/<course_id>")

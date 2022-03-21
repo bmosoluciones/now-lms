@@ -160,7 +160,10 @@
                                 <div class="d-flex justify-content-end">
                                   <span class="badge bg-success">
                                     <a href="{{ url_for("nuevo_recurso", course_code=curso.codigo, seccion=seccion.codigo) }}" class="link-light">Nuevo Recurso</a>
-                                </span>
+                                  </span>
+                                  <span class="badge bg-danger">
+                                    <a href="{{ url_for("eliminar_seccion", curso_id=curso.codigo, id_=seccion.codigo) }}" class="link-light">Elimina Sección</a>
+                                  </span>
                                 </div>
                                 {% endif %}
                                   {{ seccion.descripcion }}
