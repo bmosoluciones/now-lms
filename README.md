@@ -41,7 +41,7 @@ There are available templates to deploy Now - LMS to these services:
 
 
 ### OCI Image
-[![Docker Repository on Quay](https://quay.io/repository/bmosoluciones/now-lms/status "Docker Repository on Quay")](https://quay.io/repository/bmosoluciones/now-lms)
+[![Docker Repository on Quay](https://quay.io/repository/bmosoluciones/now_lms/status "Docker Repository on Quay")](https://quay.io/repository/bmosoluciones/now_lms)
 
 There is also a OCI image disponible if you prefer to user containers, in this example we use [podman](https://podman.io/):
 
