@@ -104,15 +104,15 @@ if DESARROLLO:
 # See:
 # - https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
 # - https://devcenter.heroku.com/changelog-items/2035
-if (environ.get("DYNO")) and ("postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")):
-    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = (
-        "postgresql" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:] + "?sslmode=require"
-    )
+if (environ.get("DYNO")) and ("postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")):  # type: ignore[operator]
+    DBURI: str = "postgresql" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:] + "?sslmode=require"  # type: ignore[index]
+    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
 
 # Servicios como Heroku, Elephantsql, Digital Ocean proveen una direccion de corrección que comienza con "postgres"
 # esta va a fallar con SQLAlchemy.
-elif "postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
-    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = "postgresql+pg8000" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:]
+elif "postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
+    DB_URI: str = "postgresql+pg8000" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:]  # type: ignore[index]
+    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DB_URI
 
 
 # < --------------------------------------------------------------------------------------------- >
