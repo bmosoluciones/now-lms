@@ -991,8 +991,7 @@ def inactivar_usuario(user_id):
 @perfil_requerido("admin")
 def eliminar_usuario(user_id):
     """Elimina un usuario por su id y redirecciona a la vista dada."""
-    perfil_usuario = Usuario.query.filter(Usuario.usuario == user_id)
-    perfil_usuario.delete()
+    Usuario.query.filter(Usuario.usuario == user_id).delete()
     database.session.commit()
     return redirect(url_for(request.args.get("ruta", default="home", type=str)))
 
