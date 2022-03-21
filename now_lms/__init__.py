@@ -997,11 +997,22 @@ def eliminar_usuario(user_id):
 @perfil_requerido("instructor")
 def eliminar_curso(course_id):
     """Elimina un curso por su id y redirecciona a la vista dada."""
-    curso = Curso.query.filter_by(codigo=course_id).first().delete()
-    secciones = (CursoSeccion.query.filter_by(curso=course_id).all().delete(),)
-    recursos = (CursoRecurso.query.filter_by(curso=course_id).all().delete(),)
-    database.session.commit()
-    return redirect(url_for(cursos))
+    try:
+        # TODO: utilizar relaciones para eliminar en cascada.
+        # Eliminanos los recursos relacionados al curso seleccionado.
+        CursoSeccion.query.filter(CursoSeccion.curso == course_id).delete()
+        CursoRecurso.query.filter(CursoRecurso.curso == course_id).delete()
+        # Eliminanos los acceso definidos para el curso detallado.
+        DocenteCurso.query.filter(DocenteCurso.curso == course_id).delete()
+        ModeradorCurso.query.filter(ModerdorCurso.curso == course_id).delete()
+        EstudianteCurso.query.filter(EstudianteCurso.curso == course_id).delete()
+        # Elimanos curso seleccionado.
+        Curso.query.filter(Curso.codigo == course_id).delete()
+        database.session.commit()
+        flash("Curso Eliminado Correctamente.")
+    except:
+        flash("No se pudo elimiar el curso solicitado.")
+    return redirect(url_for("cursos"))
 
 
 @lms_app.route("/change_user_tipo")
