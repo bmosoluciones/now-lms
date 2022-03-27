@@ -23,6 +23,8 @@ def test_dummy():
     """El proyecto debe poder importarse sin errores."""
     import now_lms
 
+    now_lms.init_app()
+
 
 class TestBasicos(TestCase):
     def setUp(self):

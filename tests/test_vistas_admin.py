@@ -115,6 +115,16 @@ def test_instructor(client, auth):
     assert b"Panel del docente." in response.data
 
 
+def test_moderator(client, auth):
+    auth.login()
+    response = client.get("/moderator")
+
+
+def test_student(client, auth):
+    auth.login()
+    response = client.get("/student")
+
+
 def test_users(client, auth):
     auth.login()
     response = client.get("/users")
