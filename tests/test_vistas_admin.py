@@ -137,3 +137,11 @@ def test_nuevo_usuario(client, auth):
     log.error(response.data)
 
     assert b"Crear nuevo Usuario." in response.data
+
+
+def test_cursos(client, auth):
+    auth.login()
+    response = client.get("/cursos")
+    log.error(response.data)
+
+    assert b"Lista de Cursos Disponibles." in response.data
