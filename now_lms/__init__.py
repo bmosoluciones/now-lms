@@ -52,7 +52,7 @@ DESARROLLO: bool = (
 )
 APPNAME: str = "NOW LMS"
 
-if DESARROLLO:
+if DESARROLLO:  # pragma: no cover
     log.warning("Opciones de desarrollo detectadas, favor revise su configuración.")
 
 # < --------------------------------------------------------------------------------------------- >
@@ -77,7 +77,7 @@ CARGA_IMAGENES = UploadSet("photos", IMAGES)
 
 # < --------------------------------------------------------------------------------------------- >
 # Ubicación predeterminada de base de datos SQLITE
-if name == "nt":
+if name == "nt":  # pragma: no cover
     SQLITE: str = "sqlite:///" + str(DIRECTORIO_PRINCICIPAL) + "\\now_lms.db"
 else:
     SQLITE = "sqlite:///" + str(DIRECTORIO_PRINCICIPAL) + "/now_lms.db"
@@ -96,33 +96,34 @@ CONFIGURACION: Dict = {
     "UPLOADED_PHOTOS_DEST": DIRECTORIO_IMAGENES,
 }
 
-if DESARROLLO:
+if DESARROLLO:  # pragma: no cover
     CONFIGURACION["SQLALCHEMY_ECHO"] = True
 
+
 # Corrige URI de conexion a la base de datos si el usuario omite el drive apropiado.
+if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # pragma: no cover
+    # En Heroku va a estar disponible psycopg2.
+    # - https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
+    # - https://devcenter.heroku.com/changelog-items/2035
+    if (environ.get("DYNO")) and ("postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")):  # type: ignore[operator]
+        DBURI: str = "postgresql" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:] + "?sslmode=require"  # type: ignore[index]
+        CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
 
-# En Heroku va a estar disponible psycopg2.
-# - https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
-# - https://devcenter.heroku.com/changelog-items/2035
-if (environ.get("DYNO")) and ("postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")):  # type: ignore[operator]
-    DBURI: str = "postgresql" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:] + "?sslmode=require"  # type: ignore[index]
-    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
+    # Servicios como Elephantsql, Digital Ocean proveen una direccion de corrección que comienza con "postgres"
+    # esta va a fallar con SQLAlchemy, se prefiere el drive pg8000 que no requere compilarse.
+    elif "postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
+        DBURI = "postgresql+pg8000" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:]  # type: ignore[index]
+        CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
 
-# Servicios como Elephantsql, Digital Ocean proveen una direccion de corrección que comienza con "postgres"
-# esta va a fallar con SQLAlchemy, se prefiere el drive pg8000 que no requere compilarse.
-elif "postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-    DBURI = "postgresql+pg8000" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:]  # type: ignore[index]
-    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
+    # Agrega driver de mysql:
+    # - https://docs.sqlalchemy.org/en/14/dialects/mysql.html#module-sqlalchemy.dialects.mysql.pymysql
+    elif "mysql:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
+        DBURI = "mysql+pymysql" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[5:]  # type: ignore[index]
+        CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
 
-# Agrega driver de mysql:
-# - https://docs.sqlalchemy.org/en/14/dialects/mysql.html#module-sqlalchemy.dialects.mysql.pymysql
-elif "mysql:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-    DBURI = "mysql+pymysql" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[5:]  # type: ignore[index]
-    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
-
-elif "mariadb:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-    DBURI = "mariadb+pymysql" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[7:]  # type: ignore[index]
-    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
+    elif "mariadb:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
+        DBURI = "mariadb+pymysql" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[7:]  # type: ignore[index]
+        CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
 
 # < --------------------------------------------------------------------------------------------- >
 # Inicialización de extensiones de terceros
