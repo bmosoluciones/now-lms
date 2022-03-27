@@ -453,7 +453,7 @@ lms_app.config.from_mapping(CONFIGURACION)
 
 # Inicializamos extenciones y cargamos algunas variables para que esten disponibles de forma
 # global en las plantillas de Jinja2.
-with lms_app.app_context():
+with lms_app.app_context():  # pragma: no cover
     alembic.init_app(lms_app)
     administrador_sesion.init_app(lms_app)
     database.init_app(lms_app)
