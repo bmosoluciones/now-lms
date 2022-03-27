@@ -145,3 +145,34 @@ def test_cursos(client, auth):
     log.error(response.data)
 
     assert b"Lista de Cursos Disponibles." in response.data
+
+
+def test_perfil(client, auth):
+    auth.login()
+    response = client.get("/perfil")
+    log.error(response.data)
+
+    assert b"Perfil del usuario lms-admin" in response.data
+
+
+def test_user_admin(client, auth):
+    auth.login()
+    response = client.get("/user/admin")
+    log.error(response.data)
+
+    assert b"Perfil del usuario " in response.data
+
+
+def test_activar_usuario(client, auth):
+    auth.login()
+    response = client.get("/set_user_as_active/instructor")
+
+
+def test_inactivar_usuario(client, auth):
+    auth.login()
+    response = client.get("/set_user_as_inactive/instructor")
+
+
+def test_eliminar_usuario(client, auth):
+    auth.login()
+    response = client.get("/delete_user/instructor")
