@@ -535,14 +535,14 @@ def serve():  # pragma: no cover
 
 
 @lms_app.errorhandler(404)
-def error_404(error):
+def error_404(error):  # pragma: no cover
     """Pagina personalizada para recursos no encontrados."""
     assert error is not None
     return render_template("404.html"), 404
 
 
 @lms_app.errorhandler(403)
-def error_403(error):
+def error_403(error):  # pragma: no cover
     """Pagina personalizada para recursos no autorizados."""
     assert error is not None
     return render_template("403.html"), 403
@@ -557,7 +557,7 @@ Interfaz de linea de comandos para la administración de NOW LMS.
 )
 
 
-def command(as_module=False) -> None:
+def command(as_module=False) -> None:  # pragma: no cover
     """Linea de comandos para administración de la aplicacion."""
     COMMAND_LINE_INTERFACE.main(args=sys.argv[1:], prog_name="python -m flask" if as_module else None)
 
