@@ -363,7 +363,7 @@ def cargar_sesion(identidad):
 
 
 @administrador_sesion.unauthorized_handler
-def no_autorizado():
+def no_autorizado():  # pragma: no cover
     """Redirecciona al inicio de sesión usuarios no autorizados."""
     flash("Favor iniciar sesión para acceder al sistema.")
     return INICIO_SESION
