@@ -50,16 +50,20 @@ There are available templates to deploy Now - LMS to these services:
 There is also a OCI image disponible if you prefer to user containers, in this example we use [podman](https://podman.io/):
 
 ```
+# <---------------------------------------------> #
 # Install the podman command line tool.
-# Fedora, CentOS ...
+# DNF family (CentOS, Rocky, Alma):
 sudo dnf -y install podman
 
-# Debian, Ubuntu ...
+# APT family (Debian, Ubuntu):
 sudo apt install -y podman
 
-# OpenSUSE
+# OpenSUSE:
 sudo zypper in podman
 
+
+# <---------------------------------------------> #
+# Run the software.
 # Create a new pod:
 podman pod create --name now-lms -p 80:80 -p 443:443
 
@@ -81,4 +85,5 @@ podman run --pod now-lms --name now-lms-server --rm -v $PWD/nginx.conf:/etc/ngin
 
 ```
 
-NOW-LMS also will work with MySQL or MariaDB just change the image of the database container and set the correct connect string.
+NOW-LMS also will work with MySQL or MariaDB just change the image of the database container and set the correct,
+connect string. SQLite also will work if you will serve a few users.
