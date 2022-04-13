@@ -30,7 +30,7 @@ python -m pip install now_lms
 python -m now_lms
 ```
 
-Visit http://127.0.0.1:8080/ in your browser, defaul user and password are `lms-admin`, note that the default server is olny bind to the localhost.
+Visit http://127.0.0.1:8080/ in your browser, defaul user and password are `lms-admin`, note that the default server is only bind to the localhost.
 
 ### Other deployment options
 
