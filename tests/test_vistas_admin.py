@@ -18,7 +18,7 @@
 # pylint: disable=redefined-outer-name
 import pytest
 import now_lms
-from now_lms import app, database, init_app, Configuracion, crear_usuarios_predeterminados, log
+from now_lms import app, database, init_app, Configuracion, crear_usuarios_predeterminados, crear_curso_predeterminados, log
 
 app.config["SECRET_KEY"] = "jgjañlsldaksjdklasjfkjj"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
@@ -41,6 +41,7 @@ def lms():
         database.session.add(config)
         database.session.commit()
         crear_usuarios_predeterminados()
+        crear_curso_predeterminados()
     app.app_context().push()
     yield app
 
@@ -281,3 +282,15 @@ def test_crear_curso(client, auth):
     client.get("/change_curse_public?curse=T-001")
 
 
+def test_cambiar_curso_publico(client, auth):
+    auth.login()
+    client.get("/change_curse_public?curse=demo")
+    client.get("/change_curse_public?curse=demo")
+
+
+def test_cambiar_estatus_curso(client, auth):
+    auth.login()
+    client.get("/change_curse_status?curse=demo&status=draft")
+    client.get("/change_curse_status?curse=demo&status=public")
+    client.get("/change_curse_status?curse=demo&status=open")
+    client.get("/change_curse_status?curse=demo&status=closed")
