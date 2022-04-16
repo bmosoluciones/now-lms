@@ -47,6 +47,7 @@
                             <th scope="col">Fecha Inicio</th>
                             <th scope="col">Fecha Fin</th>
                             <th scope="col">Estado</th>
+                            <th scope="col">Público</th>
                         </tr>
                     </thead>
                     {% for item in consulta.items -%}
@@ -73,8 +74,49 @@
                                 </a>
                             </td>
                             <td>
+
+                                {% if item.estado == "draft" %}
+
+                                <span class="badge p-1 bg-secondary border border-light rounded-circle">
+                                    <span class="visually-hidden">Borrador</span>
+                                </span>
+
+                                {% elif item.estado == "open" %}
+
+                                <span class="badge p-1 bg-info border border-light rounded-circle">
+                                    <span class="visually-hidden">Abierto</span>
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge p-1 bg-danger border border-light rounded-circle">
+                                    <span class="visually-hidden">Cerrado</span>
+                                </span>
+
+                                {% endif %}
+
                                 <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
                                     {{ item.estado | capitalize }}
+                                </a>
+                            </td>
+                            <td>
+
+                                {% if item.publico %}
+
+                                <span class="badge p-1 bg-primary border border-light rounded-circle">
+                                    <span class="visually-hidden">Curso Publico</span>
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge p-1 bg-danger border border-light rounded-circle">
+                                    <span class="visually-hidden">Curso Privado</span>
+                                </span>
+
+                                {% endif %}
+
+                                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
+                                    {{ item.publico | replace("True", "Publico") | replace("False", "Privado") | replace("None", "Privado") }}
                                 </a>
                             </td>
                         </tr>

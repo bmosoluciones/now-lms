@@ -183,7 +183,7 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     nombre = database.Column(database.String(150), nullable=False)
     codigo = database.Column(database.String(20), unique=True)
     descripcion = database.Column(database.String(500), nullable=False)
-    # draft, public, active, closed, open
+    # draft, open, closed
     estado = database.Column(database.String(10), nullable=False)
     # mooc
     publico = database.Column(database.Boolean())
@@ -196,9 +196,6 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     duracion = database.Column(database.Integer())
     portada = database.Column(database.String(250), nullable=True, default=None)
     nivel = database.Column(database.Integer())
-    # Ref: https://docs.sqlalchemy.org/en/14/orm/cascades.html
-    rel_seccion = database.relationship("CursoSeccion", cascade="delete-orphan")
-    rel_recurso = database.relationship("CursoRecurso", cascade="delete-orphan")
 
 
 class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -1121,3 +1118,4 @@ def cambiar_seccion_publico():
 
 # <-------- Servidores WSGI buscan una app por defecto  -------->
 app = lms_app
+

@@ -30,13 +30,10 @@
                 
                 <p>
                     {% if permitir_docente %}
-                    <span class="badge bg-success">
+                    <span class="badge bg-secondary">
                         <a href="{{ url_for("cambiar_estatus_curso", curse=curso.codigo, status="draft") }}" class="link-light">Borrador</a>
                     </span>
                     <span class="badge bg-primary">
-                        <a href="{{ url_for("cambiar_estatus_curso", curse=curso.codigo, status="public") }}" class="link-light">Publicar</a>
-                    </span>
-                    <span class="badge bg-info">
                         <a href="{{ url_for("cambiar_estatus_curso", curse=curso.codigo, status="open") }}" class="link-light">Abrir</a>
                     </span>
                     <span class="badge bg-danger">

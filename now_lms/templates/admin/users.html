@@ -69,8 +69,22 @@
                                 </a>
                             </td>
                             <td>
+                                {% if item.activo %}
+
+                                <span class="badge p-1 bg-primary border border-light rounded-circle">
+                                    <span class="visually-hidden">Usuario Activo</span>
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge p-1 bg-danger border border-light rounded-circle">
+                                    <span class="visually-hidden">Usuario Inactivo</span>
+                                </span>
+
+                                {% endif %}
+
                                 <a href="{{ url_for("usuario", id_usuario=item.usuario) }}" class="link-dark">
-                                    {{ item.activo| replace("True", "Activo") | replace("False", "Inactivo") }}
+                                    {{ item.activo | replace("True", "Activo") | replace("False", "Inactivo") }}
                                 </a>
                             </td>
                             <td>
