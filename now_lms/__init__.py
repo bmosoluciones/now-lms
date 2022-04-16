@@ -1118,4 +1118,3 @@ def cambiar_seccion_publico():
 
 # <-------- Servidores WSGI buscan una app por defecto  -------->
 app = lms_app
-
