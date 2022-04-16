@@ -285,6 +285,7 @@ def test_crear_curso(client, auth):
     client.get(publicar_seccion)
     eliminar_seccion = "/delete_seccion/T-001/" + seccion.codigo
     client.get(eliminar_seccion)
+    client.get("/delete_curse/T-001")
 
 
 def test_cambiar_curso_publico(client, auth):
