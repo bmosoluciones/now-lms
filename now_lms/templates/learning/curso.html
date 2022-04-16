@@ -158,6 +158,15 @@
                               <div class="accordion-body accordion-flush">
                                 {% if permitir_editar %}
                                 <div class="d-flex justify-content-end">
+                                  {% if seccion.estado %}
+                                  <span class="badge bg-success">
+                                    <a href="{{ url_for("cambiar_seccion_publico", course_code=curso.codigo, codigo=seccion.codigo) }}" class="link-light">Publicar Sección</a>
+                                  </span>
+                                  {% else %}
+                                  <span class="badge bg-warning">
+                                    <a href="{{ url_for("cambiar_seccion_publico", course_code=curso.codigo, codigo=seccion.codigo) }}" class="link-light">Ocultar Sección</a>
+                                  </span>
+                                  {% endif %}
                                   <span class="badge bg-success">
                                     <a href="{{ url_for("nuevo_recurso", course_code=curso.codigo, seccion=seccion.codigo) }}" class="link-light">Nuevo Recurso</a>
                                   </span>

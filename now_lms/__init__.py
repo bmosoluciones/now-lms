@@ -97,7 +97,8 @@ CONFIGURACION: Dict = {
 }
 
 if DESARROLLO:  # pragma: no cover
-    CONFIGURACION["SQLALCHEMY_ECHO"] = True
+    pass
+    # CONFIGURACION["SQLALCHEMY_ECHO"] = True
 
 
 # Corrige URI de conexion a la base de datos si el usuario omite el drive apropiado.
@@ -210,6 +211,8 @@ class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
     nombre = database.Column(database.String(100), nullable=False)
     descripcion = database.Column(database.String(250), nullable=False)
     indice = database.Column(database.Integer())
+    # 0: Borrador, 1: Publico
+    estado = database.Column(database.Boolean())
 
 
 class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -636,6 +639,17 @@ def cambia_curso_publico(id_curso: Union[None, str, int] = None):
     database.session.commit()
 
 
+def cambia_seccion_publico(codigo: Union[None, str, int] = None):
+    """Cambia el estatus publico de una sección."""
+
+    SECCION = CursoSeccion.query.filter_by(codigo=codigo).first()
+    if SECCION.estado:
+        SECCION.estado = False
+    else:
+        SECCION.estado = True
+    database.session.commit()
+
+
 # < --------------------------------------------------------------------------------------------- >
 # Definición de rutas/vistas
 # pylint: disable=singleton-comparison
@@ -856,6 +870,7 @@ def nuevo_seccion(course_code):
             curso=course_code,
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
+            estado=False,
         )
         try:
             database.session.add(nueva_seccion)
@@ -1091,6 +1106,17 @@ def cambiar_curso_publico():
         id_curso=request.args.get("curse"),
     )
     return redirect(url_for("curso", course_code=request.args.get("curse")))
+
+
+@lms_app.route("/change_curse_seccion_public")
+@login_required
+@perfil_requerido("instructor")
+def cambiar_seccion_publico():
+    """Actualiza el estado publico de un curso."""
+    cambia_seccion_publico(
+        codigo=request.args.get("codigo"),
+    )
+    return redirect(url_for("curso", course_code=request.args.get("course_code")))
 
 
 # <-------- Servidores WSGI buscan una app por defecto  -------->

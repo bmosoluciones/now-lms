@@ -280,8 +280,11 @@ def test_crear_curso(client, auth):
     client.get("/change_curse_status?curse=T-001&status=closed")
     client.get("/change_curse_public?curse=T-001")
     client.get("/change_curse_public?curse=T-001")
-    url = "/delete_seccion/T-001/" + seccion.codigo
-    client.get(url)
+    publicar_seccion = "/change_curse_seccion_public?course_code=T-001" + "&codigo=" + seccion.codigo
+    client.get(publicar_seccion)
+    client.get(publicar_seccion)
+    eliminar_seccion = "/delete_seccion/T-001/" + seccion.codigo
+    client.get(eliminar_seccion)
 
 
 def test_cambiar_curso_publico(client, auth):
