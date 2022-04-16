@@ -195,6 +195,9 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     duracion = database.Column(database.Integer())
     portada = database.Column(database.String(250), nullable=True, default=None)
     nivel = database.Column(database.Integer())
+    # Ref: https://docs.sqlalchemy.org/en/14/orm/cascades.html
+    rel_seccion = database.relationship("CursoSeccion", cascade="delete-orphan")
+    rel_recurso = database.relationship("CursoRecurso", cascade="delete-orphan")
 
 
 class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -203,6 +206,7 @@ class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
     __table_args__ = (database.UniqueConstraint("codigo", name="curso_seccion_unico"),)
     codigo = database.Column(database.String(32), unique=False)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
+    rel_curso = database.relationship("Curso", foreign_keys=curso)
     nombre = database.Column(database.String(100), nullable=False)
     descripcion = database.Column(database.String(250), nullable=False)
     indice = database.Column(database.Integer())
@@ -214,6 +218,7 @@ class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     __table_args__ = (database.UniqueConstraint("codigo", name="curso_recurso_unico"),)
     codigo = database.Column(database.String(32), unique=False)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
+    rel_curso = database.relationship("Curso", foreign_keys=curso)
     seccion = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False)
     nombre = database.Column(database.String(150), nullable=False)
     # link, youtube, text, file
