@@ -303,6 +303,14 @@ def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
         return False
 
 
+def crear_curso_predeterminados():
+    """Crea en la base de datos un curso de demostración."""
+    log.info("Creando curso de demostración.")
+    course = Curso(nombre="Demo", codigo="demo", descripcion="This is a demo", estado="draft")
+    database.session.add(course)
+    database.session.commit()
+
+
 def crear_usuarios_predeterminados():
     """Crea en la base de datos los usuarios iniciales."""
     log.info("Creando usuario administrador.")
@@ -497,6 +505,7 @@ def init_app():
             database.session.add(config)
             database.session.commit()
             crear_usuarios_predeterminados()
+            crear_curso_predeterminados()
         else:
             log.warning("NOW LMS ya se encuentra configurado.")
             log.warning("Intente ejecutar 'python -m now_lms'")
