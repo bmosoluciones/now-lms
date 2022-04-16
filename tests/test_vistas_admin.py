@@ -119,25 +119,26 @@ def test_instructor(client, auth):
 def test_moderator(client, auth):
     auth.login()
     response = client.get("/moderator")
+    assert response.data
 
 
 def test_student(client, auth):
     auth.login()
     response = client.get("/student")
+    assert response.data
 
 
 def test_users(client, auth):
     auth.login()
     response = client.get("/users")
-    log.error(response.data)
-
+    assert response.data
     assert b"Usuarios registrados en el sistema." in response.data
 
 
 def test_users_inactive(client, auth):
     auth.login()
     response = client.get("/inactive_users")
-    log.error(response.data)
+    assert response.data
 
     assert b"Usuarios pendientes" in response.data
 
@@ -145,7 +146,7 @@ def test_users_inactive(client, auth):
 def test_nuevo_usuario(client, auth):
     auth.login()
     response = client.get("/new_user")
-    log.error(response.data)
+    assert response.data
 
     assert b"Crear nuevo Usuario." in response.data
 
@@ -153,7 +154,7 @@ def test_nuevo_usuario(client, auth):
 def test_cursos(client, auth):
     auth.login()
     response = client.get("/cursos")
-    log.error(response.data)
+    assert response.data
 
     assert b"Lista de Cursos Disponibles." in response.data
 
@@ -161,7 +162,7 @@ def test_cursos(client, auth):
 def test_perfil(client, auth):
     auth.login()
     response = client.get("/perfil")
-    log.error(response.data)
+    assert response.data
 
     assert b"Perfil del usuario lms-admin" in response.data
 
@@ -169,7 +170,7 @@ def test_perfil(client, auth):
 def test_user_admin(client, auth):
     auth.login()
     response = client.get("/user/admin")
-    log.error(response.data)
+    assert response.data
 
     assert b"Perfil del usuario " in response.data
 
