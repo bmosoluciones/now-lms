@@ -39,7 +39,7 @@ class TestBasicos(TestCase):
         self.app.test_cli_runner()
 
 
-class TestInstanciasDeClasesCorrectas(TestCase):
+class TestInstanciasDeClases(TestCase):
     def setUp(self):
         from now_lms import app
 
