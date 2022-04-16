@@ -273,3 +273,11 @@ def test_crear_curso(client, auth):
     seccion = now_lms.CursoSeccion.query.filter_by(curso="T-001").first()
     assert seccion.nombre == "Seccion de Prueba"
     assert seccion.descripcion == "Seccion de Prueba."
+    client.get("/change_curse_status?curse=T-001&status=draft")
+    client.get("/change_curse_status?curse=T-001&status=public")
+    client.get("/change_curse_status?curse=T-001&status=open")
+    client.get("/change_curse_status?curse=T-001&status=closed")
+    client.get("/change_curse_public?curse=T-001")
+    client.get("/change_curse_public?curse=T-001")
+
+
