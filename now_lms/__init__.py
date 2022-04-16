@@ -1028,7 +1028,7 @@ def eliminar_usuario(user_id):
 @perfil_requerido("instructor")
 def eliminar_seccion(curso_id, id_):
     """Elimina una seccion del curso."""
-    CursoSeccion.query.filter(CursoSeccion.id == id_).delete()
+    CursoSeccion.query.filter(CursoSeccion.codigo == id_).delete()
     database.session.commit()
     return redirect(url_for("curso", course_code=curso_id))
 
