@@ -205,7 +205,44 @@ def test_crear_usuario(client):
     assert query
     # Usuario inactivo por defecto.
     assert query.activo is False
-    # Establecer usuario como activo.
-    activar_usuario = client.get("/set_user_as_active/test_user", follow_redirects=True)
-    activo = now_lms.Usuario.query.filter_by(usuario="test_user").first()
-    # assert activo.activo is True
+
+
+def test_funciones_usuario(client, auth):
+    post = client.post(
+        "/logon",
+        data={
+            "usuario": "test_user1",
+            "nombre": "Testing",
+            "apellido": "Testing",
+            "correo_electronico": "testing@cacao-accounting.io",
+            "acceso": "Akjlkas5a4s6asd",
+        },
+    )
+    query = now_lms.Usuario.query.filter_by(usuario="test_user1").first()
+    assert query
+    # Usuario inactivo por defecto.
+    assert query.activo is False
+    # Activar usuario
+    auth.login()
+    activar = client.get("/set_user_as_active/test_user1")
+    activar.data
+    activo = now_lms.Usuario.query.filter_by(usuario="test_user1").first()
+    assert query.activo is True
+    from now_lms import cambia_tipo_de_usuario_por_id
+
+    # Establecer como administrador.
+    cambia_tipo_de_usuario_por_id("test_user1", "admin")
+    admin = now_lms.Usuario.query.filter_by(usuario="test_user1").first()
+    assert admin.tipo == "admin"
+    # Establecer como moderador.
+    cambia_tipo_de_usuario_por_id("test_user1", "moderator")
+    admin = now_lms.Usuario.query.filter_by(usuario="test_user1").first()
+    assert admin.tipo == "moderator"
+    # Establecer como instructor.
+    cambia_tipo_de_usuario_por_id("test_user1", "instructor")
+    admin = now_lms.Usuario.query.filter_by(usuario="test_user1").first()
+    assert admin.tipo == "instructor"
+    # Establecer como instructor.
+    cambia_tipo_de_usuario_por_id("test_user1", "user")
+    admin = now_lms.Usuario.query.filter_by(usuario="test_user1").first()
+    assert admin.tipo == "user"
