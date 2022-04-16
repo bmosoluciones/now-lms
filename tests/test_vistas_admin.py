@@ -246,3 +246,30 @@ def test_funciones_usuario(client, auth):
     cambia_tipo_de_usuario_por_id("test_user1", "user")
     admin = now_lms.Usuario.query.filter_by(usuario="test_user1").first()
     assert admin.tipo == "user"
+
+
+def test_crear_curso(client, auth):
+    auth.login()
+    # Crear un curso.
+    post = client.post(
+        "/new_curse",
+        data={
+            "nombre": "Curso de Prueba",
+            "codigo": "T-001",
+            "descripcion": "Curso de Prueba.",
+        },
+    )
+    curso = now_lms.Curso.query.filter_by(codigo="T-001").first()
+    assert curso.nombre == "Curso de Prueba"
+    assert curso.descripcion == "Curso de Prueba."
+    # Crear una sección del curso.
+    post = client.post(
+        "/course/T-001/new_seccion",
+        data={
+            "nombre": "Seccion de Prueba",
+            "descripcion": "Seccion de Prueba.",
+        },
+    )
+    seccion = now_lms.CursoSeccion.query.filter_by(curso="T-001").first()
+    assert seccion.nombre == "Seccion de Prueba"
+    assert seccion.descripcion == "Seccion de Prueba."
