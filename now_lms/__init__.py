@@ -53,7 +53,7 @@ DESARROLLO: bool = (
 APPNAME: str = "NOW LMS"
 
 if DESARROLLO:  # pragma: no cover
-    log.warning("Opciones de desarrollo detectadas, favor revise su configuración.")
+    log.warning("Opciones de desarrollo detectadas, revise su configuración.")
 
 # < --------------------------------------------------------------------------------------------- >
 # Datos predefinidos
