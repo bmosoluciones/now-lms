@@ -578,6 +578,16 @@ def command(as_module=False) -> None:  # pragma: no cover
 
 # < --------------------------------------------------------------------------------------------- >
 # Funciones auxiliares parte de la "logica de negocio" de la implementacion.
+
+
+def obtener_indice_nueva_seccion(curso_codigo: Union[None, str] = None):
+    """Asigna el numero de indice de una nueva sección."""
+
+    secciones = CursoSeccion.query.filter_by(curso=curso_codigo).count()
+
+    return int(secciones + 1)
+
+
 def asignar_curso_a_instructor(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
     """Asigna un usuario como instructor de un curso."""
     ASIGNACION = DocenteCurso(curso=curso_codigo, usuario=usuario_id, vigente=True, creado_por=current_user.usuario)
@@ -868,6 +878,7 @@ def nuevo_seccion(course_code):
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
             estado=False,
+            indice=obtener_indice_nueva_seccion(),
         )
         try:
             database.session.add(nueva_seccion)
@@ -944,7 +955,7 @@ def curso(course_code):
     return render_template(
         "learning/curso.html",
         curso=Curso.query.filter_by(codigo=course_code).first(),
-        secciones=CursoSeccion.query.filter_by(curso=course_code).all(),
+        secciones=CursoSeccion.query.filter_by(curso=course_code).order_by(CursoSeccion.indice).all(),
         recursos=CursoRecurso.query.filter_by(curso=course_code).all(),
     )
 
