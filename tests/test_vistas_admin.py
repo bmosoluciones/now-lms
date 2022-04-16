@@ -17,6 +17,7 @@
 
 # pylint: disable=redefined-outer-name
 import pytest
+import now_lms
 from now_lms import app, database, init_app, Configuracion, crear_usuarios_predeterminados, log
 
 app.config["SECRET_KEY"] = "jgjañlsldaksjdklasjfkjj"
@@ -186,3 +187,24 @@ def test_inactivar_usuario(client, auth):
 def test_eliminar_usuario(client, auth):
     auth.login()
     response = client.get("/delete_user/instructor")
+
+
+def test_crear_usuario(client):
+    post = client.post(
+        "/logon",
+        data={
+            "usuario": "test_user",
+            "nombre": "Testing",
+            "apellido": "Testing",
+            "correo_electronico": "testing@cacao-accounting.io",
+            "acceso": "Akjlkas5a4s6asd",
+        },
+    )
+    query = now_lms.Usuario.query.filter_by(usuario="test_user").first()
+    assert query
+    # Usuario inactivo por defecto.
+    assert query.activo is False
+    # Establecer usuario como activo.
+    activar_usuario = client.get("/set_user_as_active/test_user", follow_redirects=True)
+    activo = now_lms.Usuario.query.filter_by(usuario="test_user").first()
+    # assert activo.activo is True
