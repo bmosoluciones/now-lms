@@ -45,7 +45,7 @@ def lms():
     yield app
 
 
-def test_dummy(lms):
+def test_dummy():
     assert app.config["DEBUG"] == True
 
 
