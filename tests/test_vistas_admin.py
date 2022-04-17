@@ -407,8 +407,8 @@ def test_reorganizar_indice_web(client, auth):
     assert seccion3.indice == 3
     client.get("/course/T-002/increment/1")
     seccion1 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 1", CursoSeccion.curso == "T-002").first()
-    assert seccion1.indice == 2
+    assert seccion1.indice == 1
     seccion2 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 2", CursoSeccion.curso == "T-002").first()
-    assert seccion2.indice == 1
+    assert seccion2.indice == 2
     seccion3 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 3", CursoSeccion.curso == "T-002").first()
     assert seccion3.indice == 3

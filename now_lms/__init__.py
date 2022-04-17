@@ -584,36 +584,31 @@ def modificar_indice_seccion(
 ):
     """Modica el número de indice de una sección dentro de un curso."""
 
+    indice_current = indice
+    indice_next = indice + 1
+    indice_back = indice - 1
+
+    actual = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_current).first()
+    superior = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_next).first()
+    inferior = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_back).first()
+
     if task == "increment":
-        # Obtenemos el item correspondiente al indice actual e incrementamos en uno.
-        indice_actual = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice).first()
-        indice_actual.indice = indice_actual.indice + 1
-
-        # Si existe un item con indice superior al actual disminuimo su indice en uno.
-        indice_superior = CursoSeccion.query.filter(
-            CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice + 1
-        ).first()
-        if indice_superior:
-            indice_superior.indice = indice_superior.indice - 1
-
-        database.session.add(indice_actual)
-        database.session.add(indice_superior)
+        actual.indice = indice_next
+        database.session.add(actual)
         database.session.commit()
-    else:
-        # Obtenemos el item correspondiente al indice actual e incrementamos en uno.
-        indice_actual = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice).first()
-        indice_actual.indice = indice_actual.indice - 1
+        if superior:
+            superior.indice = indice_current
+            database.session.add(superior)
+            database.session.commit()
 
-        # Siempre deberia haber un item con indice inferior.
-        indice_inferior = CursoSeccion.query.filter(
-            CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice - 1
-        ).first()
-        if indice_inferior:
-            indice_inferior.indice = indice_inferior.indice + 1
-
-        database.session.add(indice_actual)
-        database.session.add(indice_inferior)
+    else:  # task == decrement
+        actual.indice = indice_back
+        database.session.add(actual)
         database.session.commit()
+        if inferior:
+            inferior.indice = indice_current
+            database.session.add(inferior)
+            database.session.commit()
 
 
 def reorganiza_indice_curso(codigo_curso: Union[None, str] = None):
