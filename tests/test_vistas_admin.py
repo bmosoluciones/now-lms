@@ -303,7 +303,7 @@ def test_cambiar_estatus_curso(client, auth):
 
 
 def test_indices_seccion():
-    from now_lms import CursoSeccion, obtener_indice_nueva_seccion, modificar_indice_seccion, reorganiza_indice_curso
+    from now_lms import CursoSeccion, modificar_indice_seccion, reorganiza_indice_curso
 
     seccion1 = CursoSeccion(
         curso="demo",
@@ -359,5 +359,3 @@ def test_indices_seccion():
     assert seccion3 is None
     cuenta = CursoSeccion.query.filter_by(curso="demo").count()
     assert cuenta == 2
-    nuevo_indice = obtener_indice_nueva_seccion(curso_codigo="demo")
-    assert nuevo_indice == 3

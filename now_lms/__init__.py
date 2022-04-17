@@ -580,28 +580,21 @@ def command(as_module=False) -> None:  # pragma: no cover
 # Funciones auxiliares parte de la "logica de negocio" de la implementacion.
 
 
-def obtener_indice_nueva_seccion(curso_codigo: Union[None, str] = None):
-    """Asigna el numero de indice de una nueva sección."""
-
-    secciones = CursoSeccion.query.filter_by(curso=curso_codigo).count()
-
-    return int(secciones + 1)
-
-
 def modificar_indice_seccion(
     codigo_curso: Union[None, str] = None,
-    indice: Union[None, int] = None,
+    indice: Union[None, int, str] = None,
     task: Union[None, str] = None,
 ):
     """Modica el número de indice de una sección dentro de un curso."""
 
+    indice_numero = int(indice)
     if task == "increment":
         # Obtenemos el item correspondiente al indice actual e incrementamos en uno.
-        indice_actual = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice).first()
+        indice_actual = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_numero).first()
         indice_actual.indice = indice_actual.indice + 1
         # Si existe un item con indice superior al actual disminuimo su indice en uno.
         indice_superior = CursoSeccion.query.filter(
-            CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice + 1
+            CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_numero + 1
         ).first()
         if indice_superior:
             indice_superior.indice = indice_superior.indice - 1
@@ -610,11 +603,11 @@ def modificar_indice_seccion(
         database.session.commit()
     elif task == "decrement":
         # Obtenemos el item correspondiente al indice actual e incrementamos en uno.
-        indice_actual = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice).first()
+        indice_actual = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_numero).first()
         indice_actual.indice = indice_actual.indice - 1
         # Siempre deberia haber un item con indice inferior.
         indice_inferior = CursoSeccion.query.filter(
-            CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice - 1
+            CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_numero - 1
         ).first()
         if indice_inferior:
             indice_inferior.indice = indice_inferior.indice + 1
@@ -922,13 +915,15 @@ def nuevo_seccion(course_code):
     if form.validate_on_submit() or request.method == "POST":
         ramdon = uuid4()
         id_unico = str(ramdon.hex)
+        secciones = CursoSeccion.query.filter_by(curso=course_code).count()
+        nuevo_indice = int(secciones + 1)
         nueva_seccion = CursoSeccion(
             codigo=id_unico,
             curso=course_code,
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
             estado=False,
-            indice=obtener_indice_nueva_seccion(),
+            indice=nuevo_indice,
         )
         try:
             database.session.add(nueva_seccion)
@@ -940,6 +935,32 @@ def nuevo_seccion(course_code):
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template("learning/nuevo_seccion.html", form=form)
+
+
+@lms_app.route("/course/<course_code>/<indice>")
+@login_required
+@perfil_requerido("instructor")
+def incrementar_indice_seccion(course_code, indice):
+    """Actualiza indice de secciones."""
+    modificar_indice_seccion(
+        codigo_curso=course_code,
+        indice=indice,
+        task="increment",
+    )
+    return redirect(url_for("curso", course_code=course_code))
+
+
+@lms_app.route("/course/<course_code>/<indice>")
+@login_required
+@perfil_requerido("instructor")
+def reducir_indice_seccion(course_code, indice):
+    """Actualiza indice de secciones."""
+    modificar_indice_seccion(
+        codigo_curso=course_code,
+        indice=indice,
+        task="decrement",
+    )
+    return redirect(url_for("curso", course_code=course_code))
 
 
 @lms_app.route("/course/<course_code>/<seccion>/tipo")
@@ -1103,6 +1124,7 @@ def eliminar_seccion(curso_id, id_):
     """Elimina una seccion del curso."""
     CursoSeccion.query.filter(CursoSeccion.codigo == id_).delete()
     database.session.commit()
+    reorganiza_indice_curso(codigo_curso=curso_id)
     return redirect(url_for("curso", course_code=curso_id))
 
 
@@ -1111,6 +1133,7 @@ def eliminar_seccion(curso_id, id_):
 @perfil_requerido("instructor")
 def eliminar_curso(course_id):
     """Elimina un curso por su id y redirecciona a la vista dada."""
+
     try:
         # TODO: utilizar relaciones para eliminar en cascada.
         # Eliminanos los recursos relacionados al curso seleccionado.

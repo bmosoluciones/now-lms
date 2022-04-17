@@ -155,7 +155,13 @@
                               <div class="accordion-body accordion-flush">
                                 {% if permitir_editar %}
                                 <div class="d-flex justify-content-end">
-                                  {% if seccion.estado %}
+                                  <span class="badge bg-primary">
+                                    <a href="{{ url_for("reducir_indice_seccion", course_code=curso.codigo, indice=seccion.indice) }}" class="link-light"><i class="bi bi-arrow-down-short" aria-hidden="true"></i> Bajar</a>
+                                  </span>
+                                  <span class="badge bg-primary">
+                                    <a href="{{ url_for("incrementar_indice_seccion", course_code=curso.codigo, indice=seccion.indice) }}" class="link-light"><i class="bi bi-arrow-up-short" aria-hidden="true"></i> Subir</a>
+                                  </span>
+                                  {% if seccion.estado == False %}
                                   <span class="badge bg-success">
                                     <a href="{{ url_for("cambiar_seccion_publico", course_code=curso.codigo, codigo=seccion.codigo) }}" class="link-light">Publicar Sección</a>
                                   </span>
@@ -172,7 +178,7 @@
                                   </span>
                                 </div>
                                 {% endif %}
-                                  {{ seccion.descripcion }}
+                                  {{ seccion.descripcion }} {{ seccion.indice }}
                               </div>
                             </div>
                           </div>
