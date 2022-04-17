@@ -810,7 +810,7 @@ def cerrar_sesion():
 @lms_app.route("/index")
 def home():
     """Página principal de la aplicación."""
-    CURSOS = Curso.query.filter(Curso.publico == True, Curso.estado == "public").paginate(  # noqa: E712
+    CURSOS = Curso.query.filter(Curso.publico == True, Curso.estado == "open").paginate(  # noqa: E712
         request.args.get("page", default=1, type=int), 6, False
     )
     return render_template("inicio/mooc.html", cursos=CURSOS)
