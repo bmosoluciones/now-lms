@@ -52,3 +52,9 @@ class TestInstanciasDeClases(TestCase):
         from flask import Flask
 
         self.assertIsInstance(self.app, Flask)
+
+    def test_SQLAlchemy(self):
+        from now_lms import database
+        from flask_sqlalchemy import SQLAlchemy
+
+        self.assertIsInstance(database, SQLAlchemy)
