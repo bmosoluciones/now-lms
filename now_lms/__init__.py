@@ -95,6 +95,9 @@ CONFIGURACION: Dict = {
 
 if DESARROLLO:  # pragma: no cover
     log.warning("Opciones de desarrollo detectadas, revise su configuración.")
+
+
+if environ.get("SQLALCHEMY_ECHO"):
     CONFIGURACION["SQLALCHEMY_ECHO"] = True
 
 
