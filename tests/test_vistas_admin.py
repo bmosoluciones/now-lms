@@ -359,3 +359,56 @@ def test_indices_seccion():
     assert seccion3 is None
     cuenta = CursoSeccion.query.filter_by(curso="demo").count()
     assert cuenta == 2
+
+
+def test_reorganizar_indice_web(client, auth):
+    from now_lms import CursoSeccion
+
+    auth.login()
+    # Crear un curso.
+    post = client.post(
+        "/new_curse",
+        data={
+            "nombre": "Curso de Prueba",
+            "codigo": "T-002",
+            "descripcion": "Curso de Prueba.",
+        },
+    )
+    curso = now_lms.Curso.query.filter_by(codigo="T-002").first()
+    assert curso.nombre == "Curso de Prueba"
+    assert curso.descripcion == "Curso de Prueba."
+    # Crear una sección del curso.
+    post1 = client.post(
+        "/course/T-002/new_seccion",
+        data={"nombre": "Seccion test 2", "descripcion": "Seccion test 2."},
+    )
+    post2 = client.post(
+        "/course/T-002/new_seccion",
+        data={"nombre": "Seccion test 3", "descripcion": "Seccion test 3."},
+    )
+    post3 = client.post(
+        "/course/T-002/new_seccion",
+        data={"nombre": "Seccion test 1", "descripcion": "Seccion test 1."},
+    )
+    cuenta = now_lms.CursoSeccion.query.filter_by(curso="T-002").count()
+    assert cuenta == 3
+    seccion1 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 1", CursoSeccion.curso == "T-002").first()
+    assert seccion1.indice == 3
+    seccion2 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 2", CursoSeccion.curso == "T-002").first()
+    assert seccion2.indice == 1
+    seccion3 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 3", CursoSeccion.curso == "T-002").first()
+    assert seccion3.indice == 2
+    client.get("/course/T-002/decrement/3")
+    seccion1 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 1", CursoSeccion.curso == "T-002").first()
+    assert seccion1.indice == 2
+    seccion2 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 2", CursoSeccion.curso == "T-002").first()
+    assert seccion2.indice == 1
+    seccion3 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 3", CursoSeccion.curso == "T-002").first()
+    assert seccion3.indice == 3
+    client.get("/course/T-002/increment/1")
+    seccion1 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 1", CursoSeccion.curso == "T-002").first()
+    assert seccion1.indice == 2
+    seccion2 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 2", CursoSeccion.curso == "T-002").first()
+    assert seccion2.indice == 1
+    seccion3 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 3", CursoSeccion.curso == "T-002").first()
+    assert seccion3.indice == 3

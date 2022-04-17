@@ -582,35 +582,38 @@ def command(as_module=False) -> None:  # pragma: no cover
 
 def modificar_indice_seccion(
     codigo_curso: Union[None, str] = None,
-    indice: Union[None, int, str] = None,
     task: Union[None, str] = None,
+    indice: int = 0,
 ):
     """Modica el número de indice de una sección dentro de un curso."""
 
-    indice_numero = int(indice)
     if task == "increment":
         # Obtenemos el item correspondiente al indice actual e incrementamos en uno.
-        indice_actual = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_numero).first()
+        indice_actual = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice).first()
         indice_actual.indice = indice_actual.indice + 1
+
         # Si existe un item con indice superior al actual disminuimo su indice en uno.
         indice_superior = CursoSeccion.query.filter(
-            CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_numero + 1
+            CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice + 1
         ).first()
         if indice_superior:
             indice_superior.indice = indice_superior.indice - 1
+
         database.session.add(indice_actual)
         database.session.add(indice_superior)
         database.session.commit()
     elif task == "decrement":
         # Obtenemos el item correspondiente al indice actual e incrementamos en uno.
-        indice_actual = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_numero).first()
+        indice_actual = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice).first()
         indice_actual.indice = indice_actual.indice - 1
+
         # Siempre deberia haber un item con indice inferior.
         indice_inferior = CursoSeccion.query.filter(
-            CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_numero - 1
+            CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice - 1
         ).first()
         if indice_inferior:
             indice_inferior.indice = indice_inferior.indice + 1
+
         database.session.add(indice_actual)
         database.session.add(indice_inferior)
         database.session.commit()
@@ -937,27 +940,27 @@ def nuevo_seccion(course_code):
         return render_template("learning/nuevo_seccion.html", form=form)
 
 
-@lms_app.route("/course/<course_code>/<indice>")
+@lms_app.route("/course/<course_code>/increment/<indice>")
 @login_required
 @perfil_requerido("instructor")
 def incrementar_indice_seccion(course_code, indice):
     """Actualiza indice de secciones."""
     modificar_indice_seccion(
         codigo_curso=course_code,
-        indice=indice,
+        indice=int(indice),
         task="increment",
     )
     return redirect(url_for("curso", course_code=course_code))
 
 
-@lms_app.route("/course/<course_code>/<indice>")
+@lms_app.route("/course/<course_code>/decrement/<indice>")
 @login_required
 @perfil_requerido("instructor")
 def reducir_indice_seccion(course_code, indice):
     """Actualiza indice de secciones."""
     modificar_indice_seccion(
         codigo_curso=course_code,
-        indice=indice,
+        indice=int(indice),
         task="decrement",
     )
     return redirect(url_for("curso", course_code=course_code))
