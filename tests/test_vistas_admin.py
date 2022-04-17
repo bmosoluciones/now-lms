@@ -361,5 +361,3 @@ def test_indices_seccion():
     assert cuenta == 2
     nuevo_indice = obtener_indice_nueva_seccion(curso_codigo="demo")
     assert nuevo_indice == 3
-
-    
