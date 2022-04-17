@@ -58,3 +58,9 @@ class TestInstanciasDeClases(TestCase):
         from flask_sqlalchemy import SQLAlchemy
 
         self.assertIsInstance(database, SQLAlchemy)
+
+def test_WTForms(self):
+        from now_lms import LoginForm
+        from flask_wtf import FlaskForm
+
+        self.assertIsInstance(LoginForm, FlaskForm)
