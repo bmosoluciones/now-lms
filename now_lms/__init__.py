@@ -938,7 +938,7 @@ def incrementar_indice_seccion(course_code, indice):
     modificar_indice_seccion(
         codigo_curso=course_code,
         indice=int(indice),
-        task="increment",
+        task="decrement",
     )
     return redirect(url_for("curso", course_code=course_code))
 
@@ -951,7 +951,7 @@ def reducir_indice_seccion(course_code, indice):
     modificar_indice_seccion(
         codigo_curso=course_code,
         indice=int(indice),
-        task="decrement",
+        task="increment",
     )
     return redirect(url_for("curso", course_code=course_code))
 
