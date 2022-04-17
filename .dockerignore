@@ -32,3 +32,5 @@ requirements-databases.txt
 .gitpod.sh
 
 app.json
+
+sonar-project.properties

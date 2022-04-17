@@ -52,9 +52,6 @@ DESARROLLO: bool = (
 )
 APPNAME: str = "NOW LMS"
 
-if DESARROLLO:  # pragma: no cover
-    log.warning("Opciones de desarrollo detectadas, revise su configuración.")
-
 # < --------------------------------------------------------------------------------------------- >
 # Datos predefinidos
 TIPOS_DE_USUARIO: list = ["admin", "user", "instructor", "moderator"]
@@ -97,8 +94,8 @@ CONFIGURACION: Dict = {
 }
 
 if DESARROLLO:  # pragma: no cover
-    pass
-    # CONFIGURACION["SQLALCHEMY_ECHO"] = True
+    log.warning("Opciones de desarrollo detectadas, revise su configuración.")
+    CONFIGURACION["SQLALCHEMY_ECHO"] = True
 
 
 # Corrige URI de conexion a la base de datos si el usuario omite el drive apropiado.
@@ -602,7 +599,7 @@ def modificar_indice_seccion(
         database.session.add(indice_actual)
         database.session.add(indice_superior)
         database.session.commit()
-    elif task == "decrement":
+    else:
         # Obtenemos el item correspondiente al indice actual e incrementamos en uno.
         indice_actual = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice).first()
         indice_actual.indice = indice_actual.indice - 1
@@ -617,8 +614,6 @@ def modificar_indice_seccion(
         database.session.add(indice_actual)
         database.session.add(indice_inferior)
         database.session.commit()
-    else:
-        pass
 
 
 def reorganiza_indice_curso(codigo_curso: Union[None, str] = None):
@@ -1138,7 +1133,6 @@ def eliminar_curso(course_id):
     """Elimina un curso por su id y redirecciona a la vista dada."""
 
     try:
-        # TODO: utilizar relaciones para eliminar en cascada.
         # Eliminanos los recursos relacionados al curso seleccionado.
         CursoSeccion.query.filter(CursoSeccion.curso == course_id).delete()
         CursoRecurso.query.filter(CursoRecurso.curso == course_id).delete()
