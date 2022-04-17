@@ -588,6 +588,56 @@ def obtener_indice_nueva_seccion(curso_codigo: Union[None, str] = None):
     return int(secciones + 1)
 
 
+def modificar_indice_seccion(
+    codigo_curso: Union[None, str] = None,
+    indice: Union[None, int] = None,
+    task: Union[None, str] = None,
+):
+    """Modica el número de indice de una sección dentro de un curso."""
+
+    if task == "increment":
+        # Obtenemos el item correspondiente al indice actual e incrementamos en uno.
+        indice_actual = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice).first()
+        indice_actual.indice = indice_actual.indice + 1
+        # Si existe un item con indice superior al actual disminuimo su indice en uno.
+        indice_superior = CursoSeccion.query.filter(
+            CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice + 1
+        ).first()
+        if indice_superior:
+            indice_superior.indice = indice_superior.indice - 1
+        database.session.add(indice_actual)
+        database.session.add(indice_superior)
+        database.session.commit()
+    elif task == "decrement":
+        # Obtenemos el item correspondiente al indice actual e incrementamos en uno.
+        indice_actual = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice).first()
+        indice_actual.indice = indice_actual.indice - 1
+        # Siempre deberia haber un item con indice inferior.
+        indice_inferior = CursoSeccion.query.filter(
+            CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice - 1
+        ).first()
+        if indice_inferior:
+            indice_inferior.indice = indice_inferior.indice + 1
+        database.session.add(indice_actual)
+        database.session.add(indice_inferior)
+        database.session.commit()
+    else:
+        pass
+
+
+def reorganiza_indice_curso(codigo_curso: Union[None, str] = None):
+    """Al eliminar una sección de un curso se debe generar el indice nuevamente."""
+
+    secciones = secciones = CursoSeccion.query.filter_by(curso=codigo_curso).order_by(CursoSeccion.indice).all()
+    if secciones:
+        indice = 1
+        for seccion in secciones:
+            seccion.indice = indice
+            database.session.add(seccion)
+            database.session.commit()
+            indice = indice + 1
+
+
 def asignar_curso_a_instructor(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
     """Asigna un usuario como instructor de un curso."""
     ASIGNACION = DocenteCurso(curso=curso_codigo, usuario=usuario_id, vigente=True, creado_por=current_user.usuario)

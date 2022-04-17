@@ -300,3 +300,66 @@ def test_cambiar_estatus_curso(client, auth):
     client.get("/change_curse_status?curse=demo&status=public")
     client.get("/change_curse_status?curse=demo&status=open")
     client.get("/change_curse_status?curse=demo&status=closed")
+
+
+def test_indices_seccion():
+    from now_lms import CursoSeccion, obtener_indice_nueva_seccion, modificar_indice_seccion, reorganiza_indice_curso
+
+    seccion1 = CursoSeccion(
+        curso="demo",
+        nombre="Seccion Prueba A",
+        descripcion="Seccion Prueba A.",
+        indice=2,
+    )
+    seccion2 = CursoSeccion(
+        curso="demo",
+        nombre="Seccion Prueba B",
+        descripcion="Seccion Prueba B.",
+        indice=1,
+    )
+    seccion3 = CursoSeccion(
+        curso="demo",
+        nombre="Seccion Prueba C",
+        descripcion="Seccion Prueba C.",
+        indice=3,
+    )
+    database.session.add(seccion1)
+    database.session.add(seccion2)
+    database.session.add(seccion3)
+    database.session.commit()
+    seccion1 = CursoSeccion.query.filter_by(nombre="Seccion Prueba A").first()
+    assert seccion1.indice == 2
+    seccion2 = CursoSeccion.query.filter_by(nombre="Seccion Prueba B").first()
+    assert seccion2.indice == 1
+    seccion3 = CursoSeccion.query.filter_by(nombre="Seccion Prueba C").first()
+    assert seccion3.indice == 3
+    modificar_indice_seccion(codigo_curso="demo", indice=3, task="decrement")
+    seccion1 = CursoSeccion.query.filter_by(nombre="Seccion Prueba A").first()
+    assert seccion1.indice == 3
+    seccion2 = CursoSeccion.query.filter_by(nombre="Seccion Prueba B").first()
+    assert seccion2.indice == 1
+    seccion3 = CursoSeccion.query.filter_by(nombre="Seccion Prueba C").first()
+    assert seccion3.indice == 2
+    modificar_indice_seccion(codigo_curso="demo", indice=2, task="increment")
+    seccion1 = CursoSeccion.query.filter_by(nombre="Seccion Prueba A").first()
+    assert seccion1.indice == 2
+    seccion2 = CursoSeccion.query.filter_by(nombre="Seccion Prueba B").first()
+    assert seccion2.indice == 1
+    seccion3 = CursoSeccion.query.filter_by(nombre="Seccion Prueba C").first()
+    assert seccion3.indice == 3
+    # Eliminamos la seccion con indice 2
+    seccion1 = CursoSeccion.query.filter_by(nombre="Seccion Prueba A").delete()
+    database.session.commit()
+    reorganiza_indice_curso(codigo_curso="demo")
+    seccion1 = CursoSeccion.query.filter_by(nombre="Seccion Prueba B").first()
+    assert seccion1.indice == 1
+    seccion2 = CursoSeccion.query.filter_by(nombre="Seccion Prueba C").first()
+    assert seccion2.indice == 2
+    seccion3 = CursoSeccion.query.filter_by(indice=3).first()
+    assert seccion3 is None
+    cuenta = CursoSeccion.query.filter_by(curso="demo").count()
+    assert cuenta == 2
+    nuevo_indice = obtener_indice_nueva_seccion(curso_codigo="demo")
+    assert nuevo_indice == 3
+
+    
