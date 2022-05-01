@@ -213,17 +213,22 @@ class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
 
 
 class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Un curso consta de una serie de recursos."""
+    """Una sección de un curso consta de una serie de recursos."""
 
     __table_args__ = (database.UniqueConstraint("codigo", name="curso_recurso_unico"),)
+    indice = database.Column(database.Integer())
     codigo = database.Column(database.String(32), unique=False)
+    seccion = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
     rel_curso = database.relationship("Curso", foreign_keys=curso)
-    seccion = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False)
     nombre = database.Column(database.String(150), nullable=False)
+    descripcion = database.Column(database.String(250), nullable=False)
     # link, youtube, text, file
     tipo = database.Column(database.String(150), nullable=False)
-    indice = database.Column(database.Integer())
+    # Youtube
+    youtube_url = database.Column(database.String(50), unique=False)
+    # Vimeo
+    vimeo_url = database.Column(database.String(50), unique=False)
 
 
 class Files(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -452,6 +457,14 @@ class CursoSeccionForm(FlaskForm):
 
     nombre = StringField(validators=[DataRequired()])
     descripcion = StringField(validators=[DataRequired()])
+
+
+class CursoRecursoVideoYoutube(FlaskForm):
+    """Formulario para crear una nueva sección."""
+
+    nombre = StringField(validators=[DataRequired()])
+    descripcion = StringField(validators=[DataRequired()])
+    youtube_url = StringField(validators=[DataRequired()])
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -959,28 +972,31 @@ def reducir_indice_seccion(course_code, indice):
     return redirect(url_for("curso", course_code=course_code))
 
 
-@lms_app.route("/course/<course_code>/<seccion>/tipo")
+@lms_app.route("/course/<course_code>/<seccion>/new_resource")
 @login_required
 @perfil_requerido("instructor")
 def nuevo_recurso(course_code, seccion):
     """Página para seleccionar tipo de recurso."""
-    return render_template("learning/nuevo_recurso.html", curso=course_code, codigo=seccion)
+    return render_template("learning/nuevo_recurso.html", id_curso=course_code, id_seccion=seccion)
 
 
-@lms_app.route("/course/<course_code>/<seccion>/<tipo>/new", methods=["GET", "POST"])
+@lms_app.route("/course/<course_code>/<seccion>/youtube/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def nuevo_recurso_tipo(course_code, seccion, tipo):
-    """Formulario para crear un nuevo recurso."""
-    form = CursoSeccionForm()
+def nuevo_recurso_youtube_video(course_code, seccion):
+    """Formulario para crear un nuevo recurso tipo vídeo en Youtube."""
+    form = CursoRecursoVideoYoutube()
     if form.validate_on_submit() or request.method == "POST":
         ramdon = uuid4()
         id_unico = str(ramdon.hex)
         nuevo_recurso_ = CursoRecurso(
             codigo=id_unico,
-            seccion=seccion,
-            tipo=tipo,
             curso=course_code,
+            seccion=seccion,
+            tipo="youtube",
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            youtube_url=form.youtube_url.data,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -991,7 +1007,7 @@ def nuevo_recurso_tipo(course_code, seccion, tipo):
             flash("Hubo en error al crear el recurso.")
             return redirect(url_for("curso", course_code=course_code))
     else:
-        return render_template("learning/nuevo_recurso.html", form=form)
+        return render_template("learning/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form)
 
 
 @lms_app.route("/courses")
