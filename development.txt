@@ -1,6 +1,9 @@
 # Base
 -r requirements.txt
 
+# Servidor de desarrollo
+hupper
+
 # Crear tarball y wheel
 build
 twine
