@@ -179,6 +179,29 @@
                                 </div>
                                 {% endif %}
                                   {{ seccion.descripcion }}
+                                  <ul class="list-group list-group-flush">
+                                    {% for recurso in recursos %}
+                                    {% if recurso.seccion == seccion.codigo %}
+                                    <li class="list-group-item">
+                                      <div class="fw-bold">{{ recurso.nombre }}</div>
+                                      {% if permitir_editar %}
+                                      <div class="d-flex justify-content-end">
+                                        <span class="badge bg-primary">
+                                          <a href="{{ url_for("reducir_indice_seccion", course_code=curso.codigo, indice=seccion.indice) }}" class="link-light"><i class="bi bi-arrow-down-short" aria-hidden="true"></i> Bajar</a>
+                                        </span>
+                                        <span class="badge bg-primary">
+                                          <a href="{{ url_for("incrementar_indice_seccion", course_code=curso.codigo, indice=seccion.indice) }}" class="link-light"><i class="bi bi-arrow-up-short" aria-hidden="true"></i> Subir</a>
+                                        </span>
+                                        <span class="badge bg-danger">
+                                          <a href="{{ url_for("eliminar_seccion", curso_id=curso.codigo, id_=seccion.codigo) }}" class="link-light">Eliminar</a>
+                                        </span>
+                                      </div class="d-flex justify-content-end">
+                                      {% endif %}
+                                      {{ recurso.descripcion }}
+                                    </li>
+                                    {% endif %}
+                                  {% endfor %}
+                                  </ul>
                               </div>
                             </div>
                           </div>

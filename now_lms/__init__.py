@@ -593,7 +593,7 @@ def command(as_module=False) -> None:  # pragma: no cover
 # Funciones auxiliares parte de la "logica de negocio" de la implementacion.
 
 
-def modificar_indice_seccion(
+def modificar_indice_curso(
     codigo_curso: Union[None, str] = None,
     task: Union[None, str] = None,
     indice: int = 0,
@@ -635,6 +635,53 @@ def reorganiza_indice_curso(codigo_curso: Union[None, str] = None):
         indice = 1
         for seccion in secciones:
             seccion.indice = indice
+            database.session.add(seccion)
+            database.session.commit()
+            indice = indice + 1
+
+
+def modificar_indice_seccion(
+    seccion: Union[None, str] = None,
+    task: Union[None, str] = None,
+    indice: int = 0,
+):
+    """Modica el número de indice de una sección dentro de un curso."""
+
+    indice_current = indice
+    indice_next = indice + 1
+    indice_back = indice - 1
+
+    actual = CursoRecurso.query.filter(CursoRecurso.seccion == seccion, CursoRecurso.indice == indice_current).first()
+    superior = CursoRecurso.query.filter(CursoRecurso.seccion == seccion, CursoRecurso.indice == indice_next).first()
+    inferior = CursoRecurso.query.filter(CursoRecurso.seccion == seccion, CursoRecurso.indice == indice_back).first()
+
+    if task == "increment":
+        actual.indice = indice_next
+        database.session.add(actual)
+        database.session.commit()
+        if superior:
+            superior.indice = indice_current
+            database.session.add(superior)
+            database.session.commit()
+
+    else:  # task == decrement
+        actual.indice = indice_back
+        database.session.add(actual)
+        database.session.commit()
+        if inferior:
+            inferior.indice = indice_current
+            database.session.add(inferior)
+            database.session.commit()
+
+
+def reorganiza_indice_seccion(seccion: Union[None, str] = None):
+    """Al eliminar una sección de un curso se debe generar el indice nuevamente."""
+
+    recursos = CursoRecurso.query.filter_by(seccion=seccion).order_by(CursoRecurso.indice).all()
+    if recursos:
+        indice = 1
+        for recurso in recursos:
+            recurso.indice = indice
             database.session.add(seccion)
             database.session.commit()
             indice = indice + 1
@@ -951,7 +998,7 @@ def nuevo_seccion(course_code):
 @perfil_requerido("instructor")
 def incrementar_indice_seccion(course_code, indice):
     """Actualiza indice de secciones."""
-    modificar_indice_seccion(
+    modificar_indice_curso(
         codigo_curso=course_code,
         indice=int(indice),
         task="decrement",
@@ -964,7 +1011,7 @@ def incrementar_indice_seccion(course_code, indice):
 @perfil_requerido("instructor")
 def reducir_indice_seccion(course_code, indice):
     """Actualiza indice de secciones."""
-    modificar_indice_seccion(
+    modificar_indice_curso(
         codigo_curso=course_code,
         indice=int(indice),
         task="increment",
@@ -986,6 +1033,8 @@ def nuevo_recurso(course_code, seccion):
 def nuevo_recurso_youtube_video(course_code, seccion):
     """Formulario para crear un nuevo recurso tipo vídeo en Youtube."""
     form = CursoRecursoVideoYoutube()
+    recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
+    nuevo_indice = int(recursos + 1)
     if form.validate_on_submit() or request.method == "POST":
         ramdon = uuid4()
         id_unico = str(ramdon.hex)
@@ -997,6 +1046,7 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
             youtube_url=form.youtube_url.data,
+            indice=nuevo_indice,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -1008,6 +1058,43 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template("learning/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form)
+
+
+@lms_app.route("/course/<seccion>/increment/<indice>")
+@login_required
+@perfil_requerido("instructor")
+def incrementar_indice_recurso(seccion, indice):
+    """Actualiza indice de recursos."""
+    modificar_indice_seccion(
+        seccion=seccion,
+        indice=int(indice),
+        task="decrement",
+    )
+    return redirect(url_for("curso", course_code=request.args.get("course_code", type=int)))
+
+
+@lms_app.route("/delete_seccion/<curso_id>/<seccion>/<id_>")
+@login_required
+@perfil_requerido("instructor")
+def eliminar_recurso(curso_id, seccion, id_):
+    """Elimina una seccion del curso."""
+    CursoRecurso.query.filter(CursoRecurso.codigo == id_).delete()
+    database.session.commit()
+    reorganiza_indice_seccion(seccion=seccion)
+    return redirect(url_for("curso", course_code=curso_id))
+
+
+@lms_app.route("/course/<seccion>/decrement/<indice>")
+@login_required
+@perfil_requerido("instructor")
+def reducir_indice_recurso(seccion, indice):
+    """Actualiza indice de recursos."""
+    modificar_indice_seccion(
+        seccion=seccion,
+        indice=int(indice),
+        task="increment",
+    )
+    return redirect(url_for("curso", course_code=request.args.get("course_code", type=int)))
 
 
 @lms_app.route("/courses")
