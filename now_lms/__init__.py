@@ -985,6 +985,8 @@ def nuevo_seccion(course_code):
             database.session.add(nueva_seccion)
             database.session.commit()
             flash("Sección agregada correctamente al curso.")
+            if secciones > 4:
+                reorganiza_indice_curso(codigo_curso=course_code)
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:
             flash("Hubo en error al crear la seccion.")
