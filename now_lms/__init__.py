@@ -1075,17 +1075,6 @@ def incrementar_indice_recurso(seccion, indice):
     return redirect(url_for("curso", course_code=request.args.get("course_code", type=int)))
 
 
-@lms_app.route("/delete_recurso/<curso_id>/<seccion>/<id_>")
-@login_required
-@perfil_requerido("instructor")
-def eliminar_recurso(curso_id, seccion, id_):
-    """Elimina una seccion del curso."""
-    CursoRecurso.query.filter(CursoRecurso.codigo == id_).delete()
-    database.session.commit()
-    reorganiza_indice_seccion(seccion=seccion)
-    return redirect(url_for("curso", course_code=curso_id))
-
-
 @lms_app.route("/course/<seccion>/decrement/<indice>")
 @login_required
 @perfil_requerido("instructor")
@@ -1097,6 +1086,17 @@ def reducir_indice_recurso(seccion, indice):
         task="increment",
     )
     return redirect(url_for("curso", course_code=request.args.get("course_code", type=int)))
+
+
+@lms_app.route("/delete_recurso/<curso_id>/<seccion>/<id_>")
+@login_required
+@perfil_requerido("instructor")
+def eliminar_recurso(curso_id, seccion, id_):
+    """Elimina una seccion del curso."""
+    CursoRecurso.query.filter(CursoRecurso.codigo == id_).delete()
+    database.session.commit()
+    reorganiza_indice_seccion(seccion=seccion)
+    return redirect(url_for("curso", course_code=curso_id))
 
 
 @lms_app.route("/courses")
