@@ -1075,7 +1075,7 @@ def incrementar_indice_recurso(seccion, indice):
     return redirect(url_for("curso", course_code=request.args.get("course_code", type=int)))
 
 
-@lms_app.route("/delete_seccion/<curso_id>/<seccion>/<id_>")
+@lms_app.route("/delete_recurso/<curso_id>/<seccion>/<id_>")
 @login_required
 @perfil_requerido("instructor")
 def eliminar_recurso(curso_id, seccion, id_):
@@ -1300,5 +1300,5 @@ def cambiar_seccion_publico():
     return redirect(url_for("curso", course_code=request.args.get("course_code")))
 
 
-# <-------- Servidores WSGI buscan una app por defecto  -------->
+# <-------- Servidores WSGI buscan una "app" por defecto  -------->
 app = lms_app
