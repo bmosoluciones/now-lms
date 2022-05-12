@@ -1,4 +1,4 @@
-# Copyright 2021 BMO Soluciones, S.A.
+# Copyright 2022 BMO Soluciones, S.A.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,41 +15,66 @@
 # Contributors:
 # - William José Moreno Reyes
 
-# pylint: disable=too-many-lines, fixme
 
 """NOW Learning Management System."""
+
+# pylint: disable=E1101
+
 # Libreria standar:
 import sys
 from functools import wraps
-from os import environ, name, path, cpu_count
-from pathlib import Path
-from typing import Dict, Union
+from os import environ, cpu_count
 from uuid import uuid4
 
 # Librerias de terceros:
 from flask import Flask, abort, flash, redirect, request, render_template, url_for, current_app
 from flask.cli import FlaskGroup
 from flask_alembic import Alembic
-from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
-from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import FlaskForm
-from flask_uploads import IMAGES, UploadSet, configure_uploads
+from flask_login import LoginManager, current_user, login_required, login_user, logout_user
+from flask_uploads import configure_uploads
 from loguru import logger as log
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
 from sqlalchemy.exc import ArgumentError, OperationalError, ProgrammingError
-from wtforms import BooleanField, DecimalField, DateField, IntegerField, PasswordField, SelectField, StringField, SubmitField
-from wtforms.validators import DataRequired
+
 
 # Recursos locales:
-from now_lms.version import PRERELEASE, VERSION
+from now_lms.auth import validar_acceso, proteger_passwd
+from now_lms.config import DIRECTORIO_PLANTILLAS, DIRECTORIO_ARCHIVOS, DESARROLLO, CONFIGURACION, CARGA_IMAGENES
+from now_lms.db import (
+    database,
+    Configuracion,
+    Curso,
+    CursoRecurso,
+    CursoSeccion,
+    DocenteCurso,
+    EstudianteCurso,
+    ModeradorCurso,
+    Usuario,
+    crear_curso_predeterminados,
+    crear_usuarios_predeterminados,
+    verifica_docente_asignado_a_curso,
+    verifica_estudiante_asignado_a_curso,
+    verifica_moderador_asignado_a_curso,
+    MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+)
+from now_lms.bi import (
+    asignar_curso_a_instructor,
+    modificar_indice_curso,
+    modificar_indice_seccion,
+    cambia_estado_curso_por_id,
+    reorganiza_indice_curso,
+    reorganiza_indice_seccion,
+    cambia_tipo_de_usuario_por_id,
+    cambia_curso_publico,
+    cambia_seccion_publico,
+)
+from now_lms.forms import LoginForm, LogonForm, CurseForm, CursoRecursoVideoYoutube, CursoSeccionForm
+from now_lms.version import VERSION
 
 # < --------------------------------------------------------------------------------------------- >
 # Metadatos
 __version__: str = VERSION
-DESARROLLO: bool = (
-    (PRERELEASE is not None) or ("FLASK_DEBUG" in environ) or (environ.get("FLASK_ENV") == "development") or ("CI" in environ)
-)
 APPNAME: str = "NOW LMS"
 
 # < --------------------------------------------------------------------------------------------- >
@@ -57,315 +82,10 @@ APPNAME: str = "NOW LMS"
 TIPOS_DE_USUARIO: list = ["admin", "user", "instructor", "moderator"]
 
 # < --------------------------------------------------------------------------------------------- >
-# Directorios de la aplicacion
-DIRECTORIO_APP: str = path.abspath(path.dirname(__file__))
-DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
-DIRECTORIO_PLANTILLAS: str = path.join(DIRECTORIO_APP, "templates")
-DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
-DIRECTORIO_BASE_ARCHIVOS_DE_USUARIO: str = path.join(DIRECTORIO_APP, "static", "files")
-DIRECTORIO_ARCHIVOS_PUBLICOS: str = path.join(DIRECTORIO_BASE_ARCHIVOS_DE_USUARIO, "public")
-DIRECTORIO_ARCHIVOS_PRIVADOS: str = path.join(DIRECTORIO_BASE_ARCHIVOS_DE_USUARIO, "private")
-
-
-# < --------------------------------------------------------------------------------------------- >
-# Directorios utilizados para la carga de archivos.
-DIRECTORIO_IMAGENES: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "img")
-CARGA_IMAGENES = UploadSet("photos", IMAGES)
-
-# < --------------------------------------------------------------------------------------------- >
-# Ubicación predeterminada de base de datos SQLITE
-if name == "nt":  # pragma: no cover
-    SQLITE: str = "sqlite:///" + str(DIRECTORIO_PRINCICIPAL) + "\\now_lms.db"
-else:
-    SQLITE = "sqlite:///" + str(DIRECTORIO_PRINCICIPAL) + "/now_lms.db"
-
-
-# < --------------------------------------------------------------------------------------------- >
-# Configuración de la aplicación, siguiendo "Twelve Factors App" las opciones se leen del entorno
-# o se utilizan valores predeterminados.
-CONFIGURACION: Dict = {
-    "ADMIN_USER": environ.get("LMS_USER") or "lms-admin",
-    "ADMIN_PSWD": environ.get("LMS_PSWD") or "lms-admin",
-    "SECRET_KEY": environ.get("LMS_KEY") or "dev",
-    "SQLALCHEMY_DATABASE_URI": environ.get("LMS_DB") or environ.get("DATABASE_URL") or SQLITE,
-    "SQLALCHEMY_TRACK_MODIFICATIONS": "False",
-    # Carga de archivos
-    "UPLOADED_PHOTOS_DEST": DIRECTORIO_IMAGENES,
-}
-
-if DESARROLLO:  # pragma: no cover
-    log.warning("Opciones de desarrollo detectadas, revise su configuración.")
-
-
-if environ.get("SQLALCHEMY_ECHO"):
-    CONFIGURACION["SQLALCHEMY_ECHO"] = True
-
-
-# Corrige URI de conexion a la base de datos si el usuario omite el drive apropiado.
-if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # pragma: no cover
-    # En Heroku va a estar disponible psycopg2.
-    # - https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
-    # - https://devcenter.heroku.com/changelog-items/2035
-    if (environ.get("DYNO")) and ("postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")):  # type: ignore[operator]
-        DBURI: str = str(
-            "postgresql" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:] + "?sslmode=require"  # type: ignore[index]
-        )
-        CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
-
-    # Servicios como Elephantsql, Digital Ocean proveen una direccion de corrección que comienza con "postgres"
-    # esta va a fallar con SQLAlchemy, se prefiere el drive pg8000 que no requere compilarse.
-    elif "postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-        DBURI = "postgresql+pg8000" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:]  # type: ignore[index]
-        CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
-
-    # Agrega driver de mysql:
-    # - https://docs.sqlalchemy.org/en/14/dialects/mysql.html#module-sqlalchemy.dialects.mysql.pymysql
-    elif "mysql:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-        DBURI = "mysql+pymysql" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[5:]  # type: ignore[index]
-        CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
-
-    elif "mariadb:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-        DBURI = "mariadb+pymysql" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[7:]  # type: ignore[index]
-        CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
-
-# < --------------------------------------------------------------------------------------------- >
 # Inicialización de extensiones de terceros
 
 alembic: Alembic = Alembic()
 administrador_sesion: LoginManager = LoginManager()
-database: SQLAlchemy = SQLAlchemy()
-
-
-# < --------------------------------------------------------------------------------------------- >
-# Base de datos relacional
-
-MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA: int = 10
-LLAVE_FORONEA_CURSO: str = "curso.codigo"
-LLAVE_FORONEA_USUARIO: str = "usuario.usuario"
-LLAVE_FORANEA_SECCION: str = "curso_seccion.codigo"
-
-
-# pylint: disable=too-few-public-methods
-# pylint: disable=no-member
-class BaseTabla:
-    """Columnas estandar para todas las tablas de la base de datos."""
-
-    # Pistas de auditoria comunes a todas las tablas.
-    id = database.Column(database.Integer(), primary_key=True, nullable=True)
-    status = database.Column(database.String(50), nullable=True)
-    creado = database.Column(database.DateTime, default=database.func.now(), nullable=False)
-    creado_por = database.Column(database.String(15), nullable=True)
-    modificado = database.Column(database.DateTime, default=database.func.now(), onupdate=database.func.now(), nullable=True)
-    modificado_por = database.Column(database.String(15), nullable=True)
-
-
-class Usuario(UserMixin, database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Una entidad con acceso al sistema."""
-
-    # Información Básica
-    __table_args__ = (database.UniqueConstraint("usuario", name="usuario_unico"),)
-    usuario = database.Column(database.String(150), nullable=False, index=True)
-    acceso = database.Column(database.LargeBinary(), nullable=False)
-    nombre = database.Column(database.String(100))
-    apellido = database.Column(database.String(100))
-    correo_electronico = database.Column(database.String(100))
-    # Tipo puede ser: admin, user, instructor, moderator
-    tipo = database.Column(database.String(20))
-    activo = database.Column(database.Boolean())
-    genero = database.Column(database.String(1))
-    nacimiento = database.Column(database.Date())
-
-
-class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Un curso es la base del aprendizaje en NOW LMS."""
-
-    __table_args__ = (database.UniqueConstraint("codigo", name="curso_codigo_unico"),)
-    nombre = database.Column(database.String(150), nullable=False)
-    codigo = database.Column(database.String(20), unique=True)
-    descripcion = database.Column(database.String(500), nullable=False)
-    # draft, open, closed
-    estado = database.Column(database.String(10), nullable=False)
-    # mooc
-    publico = database.Column(database.Boolean())
-    certificado = database.Column(database.Boolean())
-    auditable = database.Column(database.Boolean())
-    precio = database.Column(database.Numeric())
-    capacidad = database.Column(database.Integer())
-    fecha_inicio = database.Column(database.Date())
-    fecha_fin = database.Column(database.Date())
-    duracion = database.Column(database.Integer())
-    portada = database.Column(database.String(250), nullable=True, default=None)
-    nivel = database.Column(database.Integer())
-
-
-class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Los cursos tienen secciones para dividir el contenido en secciones logicas."""
-
-    __table_args__ = (database.UniqueConstraint("codigo", name="curso_seccion_unico"),)
-    codigo = database.Column(database.String(32), unique=False)
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    rel_curso = database.relationship("Curso", foreign_keys=curso)
-    nombre = database.Column(database.String(100), nullable=False)
-    descripcion = database.Column(database.String(250), nullable=False)
-    indice = database.Column(database.Integer())
-    # 0: Borrador, 1: Publico
-    estado = database.Column(database.Boolean())
-
-
-class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Una sección de un curso consta de una serie de recursos."""
-
-    __table_args__ = (database.UniqueConstraint("codigo", name="curso_recurso_unico"),)
-    indice = database.Column(database.Integer())
-    codigo = database.Column(database.String(32), unique=False)
-    seccion = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False)
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    rel_curso = database.relationship("Curso", foreign_keys=curso)
-    nombre = database.Column(database.String(150), nullable=False)
-    descripcion = database.Column(database.String(250), nullable=False)
-    # link, youtube, text, file
-    tipo = database.Column(database.String(150), nullable=False)
-    # Youtube
-    youtube_url = database.Column(database.String(50), unique=False)
-    # Vimeo
-    vimeo_url = database.Column(database.String(50), unique=False)
-
-
-class Files(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Listado de archivos que se han cargado a la aplicacion."""
-
-    archivo = database.Column(database.String(100), nullable=False)
-    tipo = database.Column(database.String(15), nullable=False)
-    hashtag = database.Column(database.String(50), nullable=False)
-    url = database.Column(database.String(100), nullable=False)
-
-
-class DocenteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Uno o mas usuario de tipo intructor pueden estar a cargo de un curso."""
-
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
-    vigente = database.Column(database.Boolean())
-
-
-class ModeradorCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Uno o mas usuario de tipo moderator pueden estar a cargo de un curso."""
-
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
-    vigente = database.Column(database.Boolean())
-
-
-class EstudianteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Uno o mas usuario de tipo user pueden estar a cargo de un curso."""
-
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
-    vigente = database.Column(database.Boolean())
-
-
-class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """
-    Repositorio Central para la configuración de la aplicacion.
-
-    Realmente esta tabla solo va a contener un registro con una columna para cada opción, en las plantillas
-    va a estar disponible como la variable global config.
-    """
-
-    titulo = database.Column(database.String(150), nullable=False)
-    descripcion = database.Column(database.String(500), nullable=False)
-    # Uno de mooc, school, training
-    modo = database.Column(database.String(500), nullable=False, default="mooc")
-    # Pagos en linea
-    paypal_key = database.Column(database.String(150), nullable=True)
-    stripe_key = database.Column(database.String(150), nullable=True)
-    # Micelaneos
-    dev_docs = database.Column(database.Boolean(), default=False)
-    # Permitir al usuario cargar archivos
-    file_uploads = database.Column(database.Boolean(), default=False)
-
-
-# < --------------------------------------------------------------------------------------------- >
-# Funciones auxiliares relacionadas a contultas de la base de datos.
-
-
-def verifica_docente_asignado_a_curso(id_curso: Union[None, str] = None):
-    """Si el usuario no esta asignado como docente al curso devuelve None."""
-    if current_user.is_authenticated:
-        return DocenteCurso.query.filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == id_curso)
-    else:
-        return False
-
-
-def verifica_moderador_asignado_a_curso(id_curso: Union[None, str] = None):
-    """Si el usuario no esta asignado como moderador al curso devuelve None."""
-    if current_user.is_authenticated:
-        return ModeradorCurso.query.filter(ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.curso == id_curso)
-    else:
-        return False
-
-
-def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
-    """Si el usuario no esta asignado como estudiante al curso devuelve None."""
-    if current_user.is_authenticated:
-        return EstudianteCurso.query.filter(EstudianteCurso.usuario == current_user.usuario, EstudianteCurso.curso == id_curso)
-    else:
-        return False
-
-
-def crear_curso_predeterminados():
-    """Crea en la base de datos un curso de demostración."""
-    log.info("Creando curso de demostración.")
-    course = Curso(nombre="Demo", codigo="demo", descripcion="This is a demo", estado="draft")
-    database.session.add(course)
-    database.session.commit()
-
-
-def crear_usuarios_predeterminados():
-    """Crea en la base de datos los usuarios iniciales."""
-    log.info("Creando usuario administrador.")
-    administrador = Usuario(
-        usuario=CONFIGURACION.get("ADMIN_USER"),
-        acceso=proteger_passwd(CONFIGURACION.get("ADMIN_PSWD")),
-        tipo="admin",
-        nombre="System",
-        apellido="Admin",
-        activo=True,
-    )
-    # Crea un usuario de cada perfil (admin, user, instructor, moderator)
-    # por defecto desactivados.
-    demo_user1 = Usuario(
-        usuario="student",
-        acceso=proteger_passwd("studen"),
-        tipo="user",
-        nombre="User",
-        apellido="Student",
-        correo_electronico="usuario1@mail.com",
-        activo=False,
-    )
-    demo_user2 = Usuario(
-        usuario="instructor",
-        acceso=proteger_passwd("instructor"),
-        tipo="instructor",
-        nombre="User",
-        apellido="Instructor",
-        correo_electronico="usuario2@mail.com",
-        activo=False,
-    )
-    demo_user3 = Usuario(
-        usuario="moderator",
-        acceso=proteger_passwd("moderator"),
-        tipo="moderator",
-        nombre="User",
-        apellido="Moderator",
-        correo_electronico="usuario3@mail.com",
-        activo=False,
-    )
-    database.session.add(administrador)
-    database.session.add(demo_user1)
-    database.session.add(demo_user2)
-    database.session.add(demo_user3)
-    database.session.commit()
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -385,86 +105,6 @@ def no_autorizado():  # pragma: no cover
     """Redirecciona al inicio de sesión usuarios no autorizados."""
     flash("Favor iniciar sesión para acceder al sistema.")
     return INICIO_SESION
-
-
-def proteger_passwd(clave):
-    """Devuelve una contraseña salteada con bcrytp."""
-    from bcrypt import hashpw, gensalt
-
-    return hashpw(clave.encode(), gensalt())
-
-
-def validar_acceso(usuario_id, acceso):
-    """Verifica el inicio de sesión del usuario."""
-    from bcrypt import checkpw
-
-    registro = Usuario.query.filter_by(usuario=usuario_id).first()
-    if registro is not None:
-        clave_validada = checkpw(acceso.encode(), registro.acceso)
-    else:
-        clave_validada = False
-    return clave_validada
-
-
-# < --------------------------------------------------------------------------------------------- >
-# Definición de formularios
-class LoginForm(FlaskForm):
-    """Formulario de inicio de sesión."""
-
-    usuario = StringField(validators=[DataRequired()])
-    acceso = PasswordField(validators=[DataRequired()])
-    inicio_sesion = SubmitField()
-
-
-class LogonForm(FlaskForm):
-    """Formulario para crear un nuevo usuario."""
-
-    usuario = StringField(validators=[DataRequired()])
-    acceso = PasswordField(validators=[DataRequired()])
-    nombre = StringField(validators=[DataRequired()])
-    apellido = StringField(validators=[DataRequired()])
-    correo_electronico = StringField(validators=[DataRequired()])
-
-
-class CurseForm(FlaskForm):
-    """Formulario para crear un nuevo curso."""
-
-    nombre = StringField(validators=[DataRequired()])
-    codigo = StringField(validators=[DataRequired()])
-    descripcion = StringField(validators=[DataRequired()])
-    publico = BooleanField(validators=[])
-    auditable = BooleanField(validators=[])
-    certificado = BooleanField(validators=[])
-    precio = DecimalField(validators=[])
-    capacidad = IntegerField(validators=[])
-    fecha_inicio = DateField(validators=[])
-    fecha_fin = DateField(validators=[])
-    duracion = IntegerField(validators=[])
-    nivel = SelectField("User", choices=[(0, "Introductorio"), (1, "Principiante"), (2, "Intermedio"), (2, "Avanzado")])
-
-
-class CursoRecursoForm(FlaskForm):
-    """Formulario para crear un nuevo recurso."""
-
-    tipo = SelectField(
-        "Tipo",
-        choices=[("link", "Vinculo"), ("youtube", "Vídeo en YouTube"), ("file", "Archivo"), ("text", "Texto")],
-    )
-
-
-class CursoSeccionForm(FlaskForm):
-    """Formulario para crear una nueva sección."""
-
-    nombre = StringField(validators=[DataRequired()])
-    descripcion = StringField(validators=[DataRequired()])
-
-
-class CursoRecursoVideoYoutube(FlaskForm):
-    """Formulario para crear una nueva sección."""
-
-    nombre = StringField(validators=[DataRequired()])
-    descripcion = StringField(validators=[DataRequired()])
-    youtube_url = StringField(validators=[DataRequired()])
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -587,173 +227,6 @@ Interfaz de linea de comandos para la administración de NOW LMS.
 def command(as_module=False) -> None:  # pragma: no cover
     """Linea de comandos para administración de la aplicacion."""
     COMMAND_LINE_INTERFACE.main(args=sys.argv[1:], prog_name="python -m flask" if as_module else None)
-
-
-# < --------------------------------------------------------------------------------------------- >
-# Funciones auxiliares parte de la "logica de negocio" de la implementacion.
-
-
-def modificar_indice_curso(
-    codigo_curso: Union[None, str] = None,
-    task: Union[None, str] = None,
-    indice: int = 0,
-):
-    """Modica el número de indice de una sección dentro de un curso."""
-
-    indice_current = indice
-    indice_next = indice + 1
-    indice_back = indice - 1
-
-    actual = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_current).first()
-    superior = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_next).first()
-    inferior = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_back).first()
-
-    if task == "increment":
-        actual.indice = indice_next
-        database.session.add(actual)
-        database.session.commit()
-        if superior:
-            superior.indice = indice_current
-            database.session.add(superior)
-            database.session.commit()
-
-    else:  # task == decrement
-        actual.indice = indice_back
-        database.session.add(actual)
-        database.session.commit()
-        if inferior:
-            inferior.indice = indice_current
-            database.session.add(inferior)
-            database.session.commit()
-
-
-def reorganiza_indice_curso(codigo_curso: Union[None, str] = None):
-    """Al eliminar una sección de un curso se debe generar el indice nuevamente."""
-
-    secciones = secciones = CursoSeccion.query.filter_by(curso=codigo_curso).order_by(CursoSeccion.indice).all()
-    if secciones:
-        indice = 1
-        for seccion in secciones:
-            seccion.indice = indice
-            database.session.add(seccion)
-            database.session.commit()
-            indice = indice + 1
-
-
-def modificar_indice_seccion(
-    seccion: Union[None, str] = None,
-    task: Union[None, str] = None,
-    indice: int = 0,
-):
-    """Modica el número de indice de una sección dentro de un curso."""
-
-    indice_current = indice
-    indice_next = indice + 1
-    indice_back = indice - 1
-
-    actual = CursoRecurso.query.filter(CursoRecurso.seccion == seccion, CursoRecurso.indice == indice_current).first()
-    superior = CursoRecurso.query.filter(CursoRecurso.seccion == seccion, CursoRecurso.indice == indice_next).first()
-    inferior = CursoRecurso.query.filter(CursoRecurso.seccion == seccion, CursoRecurso.indice == indice_back).first()
-
-    if task == "increment":
-        actual.indice = indice_next
-        database.session.add(actual)
-        database.session.commit()
-        if superior:
-            superior.indice = indice_current
-            database.session.add(superior)
-            database.session.commit()
-
-    else:  # task == decrement
-        actual.indice = indice_back
-        database.session.add(actual)
-        database.session.commit()
-        if inferior:
-            inferior.indice = indice_current
-            database.session.add(inferior)
-            database.session.commit()
-
-
-def reorganiza_indice_seccion(seccion: Union[None, str] = None):
-    """Al eliminar una sección de un curso se debe generar el indice nuevamente."""
-
-    recursos = CursoRecurso.query.filter_by(seccion=seccion).order_by(CursoRecurso.indice).all()
-    if recursos:
-        indice = 1
-        for recurso in recursos:
-            recurso.indice = indice
-            database.session.add(seccion)
-            database.session.commit()
-            indice = indice + 1
-
-
-def asignar_curso_a_instructor(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
-    """Asigna un usuario como instructor de un curso."""
-    ASIGNACION = DocenteCurso(curso=curso_codigo, usuario=usuario_id, vigente=True, creado_por=current_user.usuario)
-    database.session.add(ASIGNACION)
-    database.session.commit()
-
-
-def asignar_curso_a_moderador(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
-    """Asigna un usuario como moderador de un curso."""
-    ASIGNACION = ModeradorCurso(usuario=usuario_id, curso=curso_codigo, vigente=True, creado_por=current_user.usuario)
-    database.session.add(ASIGNACION)
-    database.session.commit()
-
-
-def asignar_curso_a_estudiante(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
-    """Asigna un usuario como moderador de un curso."""
-    ASIGNACION = EstudianteCurso(
-        creado_por=current_user.usuario,
-        curso=curso_codigo,
-        usuario=usuario_id,
-        vigente=True,
-    )
-    database.session.add(ASIGNACION)
-    database.session.commit()
-
-
-def cambia_tipo_de_usuario_por_id(id_usuario: Union[None, str] = None, nuevo_tipo: Union[None, str] = None):
-    """
-    Cambia el estatus de un usuario del sistema.
-
-    Los valores reconocidos por el sistema son: admin, user, instructor, moderator.
-    """
-    USUARIO = Usuario.query.filter_by(usuario=id_usuario).first()
-    USUARIO.tipo = nuevo_tipo
-    database.session.commit()
-
-
-def cambia_estado_curso_por_id(id_curso: Union[None, str, int] = None, nuevo_estado: Union[None, str] = None):
-    """
-    Cambia el estatus de un curso.
-
-    Los valores reconocidos por el sistema son: draft, public, open, closed.
-    """
-    CURSO = Curso.query.filter_by(codigo=id_curso).first()
-    CURSO.estado = nuevo_estado
-    database.session.commit()
-
-
-def cambia_curso_publico(id_curso: Union[None, str, int] = None):
-    """Cambia el estatus publico de un curso."""
-    CURSO = Curso.query.filter_by(codigo=id_curso).first()
-    if CURSO.publico:
-        CURSO.publico = False
-    else:
-        CURSO.publico = True
-    database.session.commit()
-
-
-def cambia_seccion_publico(codigo: Union[None, str, int] = None):
-    """Cambia el estatus publico de una sección."""
-
-    SECCION = CursoSeccion.query.filter_by(codigo=codigo).first()
-    if SECCION.estado:
-        SECCION.estado = False
-    else:
-        SECCION.estado = True
-    database.session.commit()
 
 
 # < --------------------------------------------------------------------------------------------- >
