@@ -16,8 +16,5 @@ spec:
     - key: LMS_PSWD
       value: "admin123+"
       type: SECRET
-    - key: DATABASE_URL
-      scope: RUN_TIME
-      value: ${example-db.DATABASE_URL}
   databases:
   - name: example-db

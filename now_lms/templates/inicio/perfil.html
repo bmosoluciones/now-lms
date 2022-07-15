@@ -8,22 +8,7 @@
     {{ macros.headertags() }}
     <title>Usuario - {{ perfil.usuario }}</title>
 
-    <style>
-        .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            user-select: none;
-        }
-
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
-            }
-        }
-
-    </style>
+    {{ macros.local_style() }}
 </head>
 
 <body>
@@ -31,6 +16,9 @@
     {{ macros.navbar() }}
 
     <main>
+
+        {{ macros.notify() }}
+        
         <div class="container" id="user_profile">
 
             <div class="d-flex justify-content-between border-bottom">
@@ -39,17 +27,17 @@
                 <div class="d-flex d-flex justify-content-end">
                 <p>
                     {% if perfil.tipo != "user" %}
-                    <span class="badge bg-success">
+                    <span class="badge bg-secondary">
                         <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="user") }}" class="link-light">Establecer como Estudiante</a>
                     </span>
                     {% endif %}
                     {% if perfil.tipo != "moderator" %}
-                    <span class="badge bg-warning">
+                    <span class="badge bg-primary">
                         <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="moderator") }}" class="link-light">Establecer como Moderador</a>
                     </span>
                     {% endif %}
                     {% if perfil.tipo != "instructor" %}
-                    <span class="badge bg-primary">
+                    <span class="badge bg-success">
                         <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="instructor") }}" class="link-light">Establecer como Instructor</a>
                     </span>
                     {% endif %}
@@ -66,11 +54,11 @@
             <div class="d-flex d-flex justify-content-end">
                 <p>
                     {% if perfil.activo %}
-                    <span class="badge bg-warning text-dark">
+                    <span class="badge bg-secondary">
                         <a href="{{ url_for("inactivar_usuario", user_id=perfil.usuario) }}" class="link-light">Inactivar Usuario</a>
                     </span>
                     {% else %}
-                    <span class="badge bg-warning">
+                    <span class="badge bg-primary">
                         <a href="{{ url_for("activar_usuario", user_id=perfil.usuario) }}" class="link-light">Activar Usuario</a>
                     </span>
                     {% endif %}

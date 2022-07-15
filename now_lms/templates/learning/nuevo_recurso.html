@@ -1,0 +1,138 @@
+{% import "macros.html" as macros %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+
+<head>
+
+    {{ macros.headertags() }}
+    <title>Crear un nuevo recurso</title>
+
+    {{ macros.local_style() }}
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet">
+</head>
+
+<body>
+
+    {{ macros.navbar() }}
+
+    <main>
+
+        {{ macros.notify() }}
+
+        <div class="container px-4 py-5" id="icon-grid">
+            <h3 class="pb-2 border-bottom">Seleccione un elemento a añadir al curso.</h3>
+        
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#cpu-fill"/></svg>
+                <div>
+                  <h4 class="fw-bold mb-0">Youtube Vídeo.</h4>
+                  <p>Una lección en video alojada en YouTube.</p>
+                  <p>
+                    <span class="badge bg-success">
+                      <a href="{{ url_for("nuevo_recurso_youtube_video", course_code=id_curso, seccion=id_seccion) }}" class="link-light">Agregar al curso.</a>
+                  </span>
+                  </p>
+                </div>
+              </div>
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#cpu-fill"/></svg>
+                <div>
+                  <h4 class="fw-bold mb-0">Vimeo Vídeo.</h4>
+                  <p>Una lección en video alojada en Vimeo.</p>
+                </div>
+              </div>
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#calendar3"/></svg>
+                <div>
+                  <h4 class="fw-bold mb-0">Elemento Externo.</h4>
+                  <p>Comparta un link a un elemento en una página web externa.</p>
+                </div>
+              </div>
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#home"/></svg>
+                <div>
+                  <h4 class="fw-bold mb-0">Cargar Elemento.</h4>
+                  <p>Adjunte un archivo para compartirlo con sus estudiantes.</p>
+                </div>
+              </div>
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#speedometer2"/></svg>
+                <div>
+                  <h4 class="fw-bold mb-0">Leccion de Texto.</h4>
+                  <p>Una lectura para compartir con sus estudiantes.</p>
+                </div>
+              </div>
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#toggles2"/></svg>
+                <div>
+                  <h4 class="fw-bold mb-0">Google Drive.</h4>
+                  <p>Agregue un recurso alojado en Google Drive.</p>
+                </div>
+              </div>
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#geo-fill"/></svg>
+                <div>
+                  <h4 class="fw-bold mb-0">Diapositivas.</h4>
+                  <p>Agregue una presentación sencilla sin salir de la aplicación.</p>
+                </div>
+              </div>
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#tools"/></svg>
+                <div>
+                  <h4 class="fw-bold mb-0">HTLM Personalizado.</h4>
+                  <p>Agregue directamente un recurso externo a su curso.</p>
+                </div>
+              </div>
+            </div>
+
+            <h3 class="pb-2 border-bottom">Agregue una evaluación al curso.</h3>
+        
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#bootstrap"/></svg>
+                <div>
+                  <h4 class="fw-bold mb-0">Selección Multiple.</h4>
+                  <p>Agregue una evaluación con multiples opciones de las cuales una es la correcta.
+                     Puede crear una evaluación con solo dos opciones para respuestas de tipo verdadero falso.
+                  </p>
+                </div>
+              </div>
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#bootstrap"/></svg>
+                <div>
+                  <h4 class="fw-bold mb-0">Preguntas de Desarrollo.</h4>
+                  <p>El estudiante debera desarrollar su respuesta, la calificación de la evaluación
+                      debera agregarla manualmente.
+                  </p>
+                </div>
+              </div>
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#bootstrap"/></svg>
+                <div>
+                  <h4 class="fw-bold mb-0">Link a Recurso Externo.</h4>
+                  <p>El estudiante debera publicar su trabajo en otro sitio y compartir el acceso al mismo, debera
+                      asignar manualmente la calificación.
+                  </p>
+                </div>
+              </div>
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#bootstrap"/></svg>
+                <div>
+                  <h4 class="fw-bold mb-0">Carga de Archivos.</h4>
+                  <p>El estudiante debera publicar su trabajo, debera asignar manualmente la calificación.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+    </main>
+
+
+</body>
+
+</html>
