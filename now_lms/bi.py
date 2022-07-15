@@ -15,7 +15,7 @@
 # Contributors:
 # - William José Moreno Reyes
 
-"""Logica del negocio."""
+"""Logica del "negocio"."""
 
 # pylint: disable=E1101
 
@@ -58,13 +58,14 @@ def modificar_indice_curso(
             database.session.commit()
 
     else:  # task == decrement
-        actual.indice = indice_back
-        database.session.add(actual)
-        database.session.commit()
-        if inferior:
-            inferior.indice = indice_current
-            database.session.add(inferior)
+        if actual.indice != 1: # No convertir indice 1 a 0.
+            actual.indice = indice_back
+            database.session.add(actual)
             database.session.commit()
+            if inferior:
+                inferior.indice = indice_current
+                database.session.add(inferior)
+                database.session.commit()
 
 
 def reorganiza_indice_curso(codigo_curso: Union[None, str] = None):
@@ -81,7 +82,7 @@ def reorganiza_indice_curso(codigo_curso: Union[None, str] = None):
 
 
 def modificar_indice_seccion(
-    seccion: Union[None, str] = None,
+    seccion_id: Union[None, str] = None,
     task: Union[None, str] = None,
     indice: int = 0,
 ):
@@ -91,9 +92,9 @@ def modificar_indice_seccion(
     indice_next = indice + 1
     indice_back = indice - 1
 
-    actual = CursoRecurso.query.filter(CursoRecurso.seccion == seccion, CursoRecurso.indice == indice_current).first()
-    superior = CursoRecurso.query.filter(CursoRecurso.seccion == seccion, CursoRecurso.indice == indice_next).first()
-    inferior = CursoRecurso.query.filter(CursoRecurso.seccion == seccion, CursoRecurso.indice == indice_back).first()
+    actual = CursoRecurso.query.filter(CursoRecurso.seccion == seccion_id, CursoRecurso.indice == indice_current).first()
+    superior = CursoRecurso.query.filter(CursoRecurso.seccion == seccion_id, CursoRecurso.indice == indice_next).first()
+    inferior = CursoRecurso.query.filter(CursoRecurso.seccion == seccion_id, CursoRecurso.indice == indice_back).first()
 
     if task == "increment":
         actual.indice = indice_next
@@ -105,13 +106,14 @@ def modificar_indice_seccion(
             database.session.commit()
 
     else:  # task == decrement
-        actual.indice = indice_back
-        database.session.add(actual)
-        database.session.commit()
-        if inferior:
-            inferior.indice = indice_current
-            database.session.add(inferior)
+        if actual.indice != 1: # No convertir el indice 1 a 0.
+            actual.indice = indice_back
+            database.session.add(actual)
             database.session.commit()
+            if inferior:
+                inferior.indice = indice_current
+                database.session.add(inferior)
+                database.session.commit()
 
 
 def reorganiza_indice_seccion(seccion: Union[None, str] = None):

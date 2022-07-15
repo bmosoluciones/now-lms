@@ -468,7 +468,7 @@ def nuevo_seccion(course_code):
         return render_template("learning/nuevo_seccion.html", form=form)
 
 
-@lms_app.route("/course/<course_code>/increment/<indice>")
+@lms_app.route("/course/<course_code>/seccion/increment/<indice>")
 @login_required
 @perfil_requerido("instructor")
 def incrementar_indice_seccion(course_code, indice):
@@ -481,7 +481,7 @@ def incrementar_indice_seccion(course_code, indice):
     return redirect(url_for("curso", course_code=course_code))
 
 
-@lms_app.route("/course/<course_code>/decrement/<indice>")
+@lms_app.route("/course/<course_code>/seccion/decrement/<indice>")
 @login_required
 @perfil_requerido("instructor")
 def reducir_indice_seccion(course_code, indice):
@@ -535,30 +535,30 @@ def nuevo_recurso_youtube_video(course_code, seccion):
         return render_template("learning/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form)
 
 
-@lms_app.route("/course/<seccion>/increment/<indice>")
+@lms_app.route("/course/resource/<cource_code>/<seccion_id>/increment/<indice>")
 @login_required
 @perfil_requerido("instructor")
-def incrementar_indice_recurso(seccion, indice):
+def incrementar_indice_recurso(cource_code, seccion_id, indice):
     """Actualiza indice de recursos."""
     modificar_indice_seccion(
-        seccion=seccion,
+        seccion_id=seccion_id,
         indice=int(indice),
         task="decrement",
     )
-    return redirect(url_for("curso", course_code=request.args.get("course_code", type=int)))
+    return redirect(url_for("curso", course_code=cource_code))
 
 
-@lms_app.route("/course/<seccion>/decrement/<indice>")
+@lms_app.route("/course/resource/<cource_code>/<seccion_id>/decrement/<indice>")
 @login_required
 @perfil_requerido("instructor")
-def reducir_indice_recurso(seccion, indice):
+def reducir_indice_recurso(cource_code, seccion_id, indice):
     """Actualiza indice de recursos."""
     modificar_indice_seccion(
-        seccion=seccion,
+        seccion_id=seccion_id,
         indice=int(indice),
         task="increment",
     )
-    return redirect(url_for("curso", course_code=request.args.get("course_code", type=int)))
+    return redirect(url_for("curso", course_code=cource_code))
 
 
 @lms_app.route("/delete_recurso/<curso_id>/<seccion>/<id_>")

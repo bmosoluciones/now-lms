@@ -398,13 +398,13 @@ def test_reorganizar_indice_web(client, auth):
     assert seccion2.indice == 1
     seccion3 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 3", CursoSeccion.curso == "T-002").first()
     assert seccion3.indice == 2
-    client.get("/course/T-002/increment/3")
+    client.get("/course/seccion/T-002/increment/3")
     seccion1 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 1", CursoSeccion.curso == "T-002").first()
-    assert seccion1.indice == 2
+    assert seccion1.indice == 3
     seccion2 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 2", CursoSeccion.curso == "T-002").first()
     assert seccion2.indice == 1
     seccion3 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 3", CursoSeccion.curso == "T-002").first()
-    assert seccion3.indice == 3
-    client.get("/course/T-002/decrement/2")
+    assert seccion3.indice == 2
+    client.get("/course/seccion/T-002/decrement/2")
     seccion1 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 1", CursoSeccion.curso == "T-002").first()
     assert seccion1.indice == 3
