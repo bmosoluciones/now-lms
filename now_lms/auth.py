@@ -28,6 +28,7 @@
 
 # pylint: disable=R0401
 
+
 def proteger_passwd(clave):
     """Devuelve una contraseña salteada con bcrytp."""
     from bcrypt import hashpw, gensalt

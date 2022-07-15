@@ -58,7 +58,7 @@ def modificar_indice_curso(
             database.session.commit()
 
     else:  # task == decrement
-        if actual.indice != 1: # No convertir indice 1 a 0.
+        if actual.indice != 1:  # No convertir indice 1 a 0.
             actual.indice = indice_back
             database.session.add(actual)
             database.session.commit()
@@ -106,7 +106,7 @@ def modificar_indice_seccion(
             database.session.commit()
 
     else:  # task == decrement
-        if actual.indice != 1: # No convertir el indice 1 a 0.
+        if actual.indice != 1:  # No convertir el indice 1 a 0.
             actual.indice = indice_back
             database.session.add(actual)
             database.session.commit()
