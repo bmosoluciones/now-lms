@@ -6,6 +6,7 @@
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/now_lms?logo=python&logoColor=white)
 [![codecov](https://codecov.io/gh/bmosoluciones/now-lms/branch/main/graph/badge.svg?token=SFVXF6Y3R3)](https://codecov.io/gh/bmosoluciones/now-lms)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bmosoluciones_now-lms&metric=alert_status)](https://sonarcloud.io/dashboard?id=bmosoluciones_now-lms)
+[![Join the chat at https://gitter.im/now-lms/community](https://badges.gitter.im/now-lms/community.svg)](https://gitter.im/now-lms/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Simple to {install, use, configure, mantain} learning management system.
 
@@ -30,32 +31,37 @@ python -m pip install now_lms
 python -m now_lms
 ```
 
-Visit http://127.0.0.1:8080/ in your browser, defaul user and password are `lms-admin`, note that the default server is olny bind to the localhost.
+Visit http://127.0.0.1:8080/ in your browser, defaul user and password are `lms-admin`, note that the default server is only bind to the localhost.
 
 ### Other deployment options
 
 There are available templates to deploy Now - LMS to these services:
 
 [![Deploy to DO](https://img.shields.io/badge/DO-Deploy%20to%20DO-blue "Deploy as Digital Ocean App")](https://cloud.digitalocean.com/apps/new?repo=https://github.com/bmosoluciones/now-lms/tree/main)
-[![Deploy to Heroku](https://img.shields.io/badge/Heroku-Deploy%20to%20Heroku-blueviolet "Deploy to Heroku")](https://heroku.com/deploy?template=https://github.com/bmosoluciones/now-lms/tree/main)
+[![Deploy to Heroku](https://img.shields.io/badge/Heroku-Deploy%20to%20Heroku-blueviolet "Deploy to Heroku")](https://heroku.com/deploy?template=https://github.com/bmosoluciones/now-lms/tree/heroku)
 
 
 ### OCI Image
-[![Docker Repository on Quay](https://quay.io/repository/bmosoluciones/now-lms/status "Docker Repository on Quay")](https://quay.io/repository/bmosoluciones/now-lms) [![Join the chat at https://gitter.im/now-lms/community](https://badges.gitter.im/now-lms/community.svg)](https://gitter.im/now-lms/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+[![Docker Repository on Quay](https://quay.io/repository/bmosoluciones/now_lms/status "Docker Repository on Quay")](https://quay.io/repository/bmosoluciones/now_lms)
 
 There is also a OCI image disponible if you prefer to user containers, in this example we use [podman](https://podman.io/):
 
 ```
+# <---------------------------------------------> #
 # Install the podman command line tool.
-# Fedora, CentOS ...
+# DNF family (CentOS, Rocky, Alma):
 sudo dnf -y install podman
 
-# Debian, Ubuntu ...
+# APT family (Debian, Ubuntu):
 sudo apt install -y podman
 
-# OpenSUSE
+# OpenSUSE:
 sudo zypper in podman
 
+
+# <---------------------------------------------> #
+# Run the software.
 # Create a new pod:
 podman pod create --name now-lms -p 80:80 -p 443:443
 
@@ -77,4 +83,5 @@ podman run --pod now-lms --name now-lms-server --rm -v $PWD/nginx.conf:/etc/ngin
 
 ```
 
-NOW-LMS also will work with MySQL or MariaDB just change the image of the database container and set the correct connect string.
+NOW-LMS also will work with MySQL or MariaDB just change the image of the database container and set the correct,
+connect string. SQLite also will work if you will serve a few users.

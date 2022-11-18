@@ -6,7 +6,7 @@
     "logo": "https://github.com/bmosoluciones/now-lms/raw/main/now_lms/static/icons/logo/logo_small.png",
     "keywords": ["lms", "python"],
     "scripts": {
-        "postdeploy": "python -m flask setup"
+        "postdeploy": "python -m pip install psycopg2-binary && python -m flask setup"
       },
       "env": {
         "LMS_KEY": {

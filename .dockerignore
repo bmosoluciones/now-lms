@@ -7,7 +7,6 @@
 .idea
 .do
 
-
 # Documentacion
 mkdocs.yml
 docs
@@ -30,5 +29,5 @@ requirements-databases.txt
 .mypy.ini
 .gitpod.yml
 .gitpod.sh
-
 app.json
+sonar-project.properties
