@@ -25,3 +25,7 @@ mkdocs-material
 
 # Verificación de tipos
 mypy
+
+#Live realoader
+hupper
+# hupper -m now_lms

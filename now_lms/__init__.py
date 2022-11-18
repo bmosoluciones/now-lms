@@ -51,7 +51,9 @@ DESARROLLO: bool = (
 APPNAME: str = "NOW LMS"
 
 if DESARROLLO:
-    log.warning("Opciones de desarrollo detectadas, favor revise su configuración.")
+    log.warning("Se detecto que tiene configuradas las opciones de desarrollo.")
+    log.warning("Con las opciones de desarrollo habilitadas puede experimentar perdida de datos.")
+    log.warning("Revise su configuración si no desea perder cambios realizados en la base de datos.")
 
 # < --------------------------------------------------------------------------------------------- >
 # Datos predefinidos
@@ -652,9 +654,14 @@ def cerrar_sesion():
 @lms_app.route("/index")
 def home():
     """Página principal de la aplicación."""
-    CURSOS = Curso.query.filter(Curso.publico == True, Curso.estado == "public").paginate(  # noqa: E712
-        request.args.get("page", default=1, type=int), 6, False
+
+    CURSOS = database.paginate(
+        database.select(Curso).filter(Curso.publico == True, Curso.estado == "public"),
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=6,
+        count=True,
     )
+
     return render_template("inicio/mooc.html", cursos=CURSOS)
 
 
