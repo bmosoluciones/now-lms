@@ -32,9 +32,10 @@ jobs:
     - name: Lint project
       run: |
         rm -rf build
-        flake8 now_lms
+        flake8 --ignore=E712 now_lms
         python -m build
         python -m twine check dist/*
+        python -m pylint now_lms
     - name: Test with pytest
       run: |
         pytest  -v --exitfirst --cov=now_lms
