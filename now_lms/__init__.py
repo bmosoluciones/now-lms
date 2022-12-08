@@ -358,7 +358,7 @@ def home():
     CURSOS = database.paginate(
         database.select(Curso).filter(Curso.publico == True, Curso.estado == "public"),
         page=request.args.get("page", default=1, type=int),
-        max_per_page=6,
+        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,
     )
 
@@ -591,15 +591,19 @@ def eliminar_recurso(curso_id, seccion, id_):
 def cursos():
     """Pagina principal del curso."""
     if current_user.tipo == "admin":
-        lista_cursos = Curso.query.paginate(
-            request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False
+        lista_cursos = database.paginate(
+            database.select(Curso),
+            page=request.args.get("page", default=1, type=int),
+            max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+            count=True,
         )
     else:
         try:
-            lista_cursos = (
-                Curso.query.join(DocenteCurso)
-                .filter(DocenteCurso.usuario == current_user.usuario)
-                .paginate(request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False)
+            lista_cursos = database.paginate(
+                database.select(Curso).join(DocenteCurso).filter(DocenteCurso.usuario == current_user.usuario),
+                page=request.args.get("page", default=1, type=int),
+                max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+                count=True,
             )
 
         except ArgumentError:
@@ -624,8 +628,11 @@ def curso(course_code):
 @perfil_requerido("admin")
 def usuarios():
     """Lista de usuarios con acceso a al aplicación."""
-    CONSULTA = Usuario.query.paginate(
-        request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False
+    CONSULTA = database.paginate(
+        database.select(Usuario),
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+        count=True,
     )
 
     return render_template(
@@ -639,8 +646,11 @@ def usuarios():
 @perfil_requerido("admin")
 def usuarios_inactivos():
     """Lista de usuarios con acceso a al aplicación."""
-    CONSULTA = Usuario.query.filter_by(activo=False).paginate(
-        request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False
+    CONSULTA = database.paginate(
+        database.select(Usuario).filter_by(activo=False),
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+        count=True,
     )
 
     return render_template(
