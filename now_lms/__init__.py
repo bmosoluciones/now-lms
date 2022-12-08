@@ -80,7 +80,7 @@ APPNAME: str = "NOW LMS"
 if DESARROLLO:
     log.warning("Se detecto que tiene configuradas las opciones de desarrollo.")
     log.warning("Con las opciones de desarrollo habilitadas puede experimentar perdida de datos.")
-    log.warning("Revise su configuración si no desea perder cambios realizados en la base de datos.")
+    log.warning("Revise su configuración si desea que sus cambios sean permanentes.")
 
 # < --------------------------------------------------------------------------------------------- >
 # Datos predefinidos
@@ -140,9 +140,11 @@ with lms_app.app_context():  # pragma: no cover
     except DatabaseError:
         CONFIG = None
     if CONFIG:
-        log.info("Configuración detectada.")
+        log.info("Configuración cargada correctamente.")
     else:
-        log.warning("No se pudo cargar la configuración.")
+        log.warning("No se detecto configuración de usuario.")
+        log.warning("Utilizando configuración predeterminada.")
+    # Asignamos variables globales para ser utilizadas dentro de las plantillas del sistema.
     lms_app.jinja_env.globals["current_user"] = current_user
     lms_app.jinja_env.globals["config"] = CONFIG
     lms_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
