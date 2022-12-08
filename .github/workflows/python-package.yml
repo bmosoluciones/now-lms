@@ -35,7 +35,7 @@ jobs:
         flake8 now_lms
         python -m build
         python -m twine check dist/*
-        pylint now_lms
+        # pylint now_lms 
     - name: Test with pytest
       run: |
         pytest  -v --exitfirst --cov=now_lms
