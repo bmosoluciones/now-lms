@@ -239,6 +239,7 @@ def command(as_module=False) -> None:  # pragma: no cover
 # < --------------------------------------------------------------------------------------------- >
 # Definición de rutas/vistas
 # pylint: disable=singleton-comparison
+# pylint: disable=E712
 
 
 def perfil_requerido(perfil_id):
