@@ -1,12 +1,10 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal AS js
-RUN rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg \
-    && curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo \
-    && microdnf -y install yarn
-COPY package.json .
-COPY yarn.lock .
-RUN yarn
+FROM registry.access.redhat.com/ubi9/ubi-minimal AS js
+RUN nicrodnf module install nodejs:18
+COPY nom_lms/static/package.json .
+COPY nom_lms/static/package-lock.json .
+RUN npm install
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal
 
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
