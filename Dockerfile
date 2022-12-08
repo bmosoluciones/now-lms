@@ -1,5 +1,5 @@
 FROM registry.access.redhat.com/ubi9/ubi-minimal AS js
-RUN nicrodnf module install nodejs:18
+RUN microdnf module install nodejs:18
 COPY nom_lms/static/package.json .
 COPY nom_lms/static/package-lock.json .
 RUN npm install
