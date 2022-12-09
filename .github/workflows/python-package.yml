@@ -41,6 +41,6 @@ jobs:
         pytest  -v --exitfirst --cov=now_lms
     - name: Docker
       run: |
-        docker buildx build
+        docker buildx build .
     - name: Codecov
       uses: codecov/codecov-action@v1
