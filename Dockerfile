@@ -11,7 +11,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED = 1
 ENV FLASK_ENV "production"
 
-RUN microdnf install -y --nodocs --best --refresh python39 python39-pip python39-cryptography \
+RUN microdnf install -y --nodocs --best --refresh python39 python3-pip python3-cryptography \
     && microdnf clean all
 
 # Install dependencies in a layer
