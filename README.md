@@ -8,16 +8,21 @@
 [![linting: pylint](https://img.shields.io/badge/linting-pylint-yellow)](https://github.com/PyCQA/pylint)
 [![codecov](https://codecov.io/gh/bmosoluciones/now-lms/branch/main/graph/badge.svg?token=SFVXF6Y3R3)](https://codecov.io/gh/bmosoluciones/now-lms)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bmosoluciones_now-lms&metric=alert_status)](https://sonarcloud.io/dashboard?id=bmosoluciones_now-lms)
+[![CodeFactor](https://www.codefactor.io/repository/github/bmosoluciones/now-lms/badge)](https://www.codefactor.io/repository/github/bmosoluciones/now-lms)
 [![Join the chat at https://gitter.im/now-lms/community](https://badges.gitter.im/now-lms/community.svg)](https://gitter.im/now-lms/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Simple to {install, use, configure, mantain} learning management system.
 
+For users and teaches using NOW-LMS please see the [user manual](https://bmosoluciones.github.io/now-lms/).
+
 ## Getting Started
+Thanks for your interest in the Now - LMS project.
 
 ### Dependencies
 
 * Requires python >= 3.7
 * Runs on Linux and Windows
+* Requires very low resources to run
 
 ### Quick Start
 
@@ -33,11 +38,11 @@ python -m pip install now_lms
 python -m now_lms
 ```
 
-Visit http://127.0.0.1:8080/ in your browser, defaul user and password are `lms-admin`, note that the default server is only bind to the localhost.
+Visit http://127.0.0.1:8080/ in your browser, default user and password are `lms-admin`, note that the default server is only bind to the localhost. You can test the software in your local machine, if you want to deploy NOW-LMS for production use please check de [user manual](https://bmosoluciones.github.io/now-lms/).
 
 ### Other deployment options
 
-There are available templates to deploy Now - LMS to these services:
+There are templates available to deploy Now - LMS to these services:
 
 [![Deploy to DO](https://img.shields.io/badge/DO-Deploy%20to%20DO-blue "Deploy as Digital Ocean App")](https://cloud.digitalocean.com/apps/new?repo=https://github.com/bmosoluciones/now-lms/tree/main)
 [![Deploy to Heroku](https://img.shields.io/badge/Heroku-Deploy%20to%20Heroku-blueviolet "Deploy to Heroku")](https://heroku.com/deploy?template=https://github.com/bmosoluciones/now-lms/tree/heroku)
@@ -88,6 +93,13 @@ podman run --pod now-lms --name now-lms-server --rm -v $PWD/nginx.conf:/etc/ngin
 NOW-LMS also will work with MySQL or MariaDB just change the image of the database container and set the correct connect string. SQLite also will work if you will serve a few users.
 
 ## Contributing
+Thanks for your interest in contributing with the NOW-LMS project, please note that this is a open source projects so your contribution will be available to others for free under the terns of the Apache License.
+
+To contribute with this project you will need:
+
+* [Python](https://www.python.org/)
+* [NPM](https://www.npmjs.com/package/npm)
+* Your favorite code editor
 
 ### Getting the source code
 
