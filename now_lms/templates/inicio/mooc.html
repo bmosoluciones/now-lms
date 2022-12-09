@@ -96,20 +96,14 @@
             </div>
         </div>
         <div class="text-center">
-            <p>{{ cursos.total }} cursos disponibles.
-                <br>
-                {% if cursos.has_prev %}
-                <a class="link-dark" href="{{ url_for("home", page=cursos.prev_num) }}" <i
-                    class="bi bi-arrow-left-short" aria-hidden="true"></i>
-                    Anterior
-                </a>
-                {% endif %}
-                Página {{ cursos.page }} de {{ cursos.pages }}
-                {% if cursos.has_next %}
-                <a class="link-dark" href="{{ url_for("home", page=cursos.next_num) }}">Siguiente <i
-                        class="bi bi-arrow-right-short" aria-hidden="true"></i></a>
-                {% endif %}
-            </p>
+            <p>{{ cursos.total }} cursos disponibles.</p>
+              {% if cursos.has_prev %}
+              <a class="link-dark" href="{{ url_for("home", page=cursos.prev_num) }}"><i class="bi bi-arrow-left-short" aria-hidden="true"></i>Anterior</a>
+              {% endif %}
+              Página {{ cursos.page }} de {{ cursos.pages }}
+              {% if cursos.has_next %}
+              <a class="link-dark" href="{{ url_for("home", page=cursos.next_num) }}">Siguiente <i class="bi bi-arrow-right-short" aria-hidden="true"></i></a>
+              {% endif %}
         </div>
         {% else %}
         <div class="text-center">
