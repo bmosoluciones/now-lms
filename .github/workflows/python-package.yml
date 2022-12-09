@@ -44,7 +44,7 @@ jobs:
     - name: Check python  types
       run: |
         python -m pip install mypy
-        python -m mypy --non-interactive now_lms
+        python -m mypy --install-types --non-interactive now_lms
     - name: OCI Image
       run: |
         docker buildx build .
