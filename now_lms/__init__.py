@@ -1,4 +1,4 @@
-# Copyright 2021 BMO Soluciones, S.A.
+# Copyright 2022 BMO Soluciones, S.A.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,257 +17,80 @@
 
 
 """NOW Learning Management System."""
+
+# pylint: disable=E1101
+
 # Libreria standar:
 import sys
 from functools import wraps
-from os import environ, name, path, cpu_count
-from pathlib import Path
-from typing import Dict, Union
+from os import environ, cpu_count
+from uuid import uuid4
 
 # Librerias de terceros:
 from flask import Flask, abort, flash, redirect, request, render_template, url_for, current_app
 from flask.cli import FlaskGroup
 from flask_alembic import Alembic
-from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
-from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import FlaskForm
-from flask_uploads import IMAGES, UploadSet, configure_uploads
+from flask_login import LoginManager, current_user, login_required, login_user, logout_user
+from flask_uploads import configure_uploads
 from loguru import logger as log
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
 from sqlalchemy.exc import ArgumentError, OperationalError, ProgrammingError
-from wtforms import BooleanField, DecimalField, DateField, IntegerField, PasswordField, SelectField, StringField, SubmitField
-from wtforms.validators import DataRequired
+
 
 # Recursos locales:
-from now_lms.version import PRERELEASE, VERSION
+from now_lms.auth import validar_acceso, proteger_passwd
+from now_lms.config import DIRECTORIO_PLANTILLAS, DIRECTORIO_ARCHIVOS, DESARROLLO, CONFIGURACION, CARGA_IMAGENES
+from now_lms.db import (
+    database,
+    Configuracion,
+    Curso,
+    CursoRecurso,
+    CursoSeccion,
+    DocenteCurso,
+    EstudianteCurso,
+    ModeradorCurso,
+    Usuario,
+    crear_cursos_predeterminados,
+    crear_usuarios_predeterminados,
+    verifica_docente_asignado_a_curso,
+    verifica_estudiante_asignado_a_curso,
+    verifica_moderador_asignado_a_curso,
+    MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+)
+from now_lms.bi import (
+    asignar_curso_a_instructor,
+    modificar_indice_curso,
+    modificar_indice_seccion,
+    cambia_estado_curso_por_id,
+    reorganiza_indice_curso,
+    reorganiza_indice_seccion,
+    cambia_tipo_de_usuario_por_id,
+    cambia_curso_publico,
+    cambia_seccion_publico,
+)
+from now_lms.forms import LoginForm, LogonForm, CurseForm, CursoRecursoVideoYoutube, CursoSeccionForm
+from now_lms.version import VERSION
 
 # < --------------------------------------------------------------------------------------------- >
 # Metadatos
 __version__: str = VERSION
-DESARROLLO: bool = (
-    (PRERELEASE is not None) or ("FLASK_DEBUG" in environ) or (environ.get("FLASK_ENV") == "development") or ("CI" in environ)
-)
 APPNAME: str = "NOW LMS"
 
 if DESARROLLO:
-    log.warning("Opciones de desarrollo detectadas, favor revise su configuración.")
+    log.warning("Se detecto que tiene configuradas las opciones de desarrollo.")
+    log.warning("Con las opciones de desarrollo habilitadas puede experimentar perdida de datos.")
+    log.warning("Revise su configuración si desea que sus cambios sean permanentes.")
 
 # < --------------------------------------------------------------------------------------------- >
 # Datos predefinidos
 TIPOS_DE_USUARIO: list = ["admin", "user", "instructor", "moderator"]
 
 # < --------------------------------------------------------------------------------------------- >
-# Directorios de la aplicacion
-DIRECTORIO_APP: str = path.abspath(path.dirname(__file__))
-DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
-DIRECTORIO_PLANTILLAS: str = path.join(DIRECTORIO_APP, "templates")
-DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
-DIRECTORIO_BASE_ARCHIVOS_DE_USUARIO: str = path.join(DIRECTORIO_APP, "static", "files")
-DIRECTORIO_ARCHIVOS_PUBLICOS: str = path.join(DIRECTORIO_BASE_ARCHIVOS_DE_USUARIO, "public")
-DIRECTORIO_ARCHIVOS_PRIVADOS: str = path.join(DIRECTORIO_BASE_ARCHIVOS_DE_USUARIO, "private")
-
-
-# < --------------------------------------------------------------------------------------------- >
-# Directorios utilizados para la carga de archivos.
-DIRECTORIO_IMAGENES: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "img")
-CARGA_IMAGENES = UploadSet("photos", IMAGES)
-
-# < --------------------------------------------------------------------------------------------- >
-# Ubicación predeterminada de base de datos SQLITE
-if name == "nt":
-    SQLITE: str = "sqlite:///" + str(DIRECTORIO_PRINCICIPAL) + "\\now_lms.db"
-else:
-    SQLITE = "sqlite:///" + str(DIRECTORIO_PRINCICIPAL) + "/now_lms.db"
-
-
-# < --------------------------------------------------------------------------------------------- >
-# Configuración de la aplicación, siguiendo "Twelve Factors App" las opciones se leen del entorno
-# o se utilizan valores predeterminados.
-CONFIGURACION: Dict = {
-    "ADMIN_USER": environ.get("LMS_USER") or "lms-admin",
-    "ADMIN_PSWD": environ.get("LMS_PSWD") or "lms-admin",
-    "SECRET_KEY": environ.get("LMS_KEY") or "dev",
-    "SQLALCHEMY_DATABASE_URI": environ.get("LMS_DB") or environ.get("DATABASE_URL") or SQLITE,
-    "SQLALCHEMY_TRACK_MODIFICATIONS": "False",
-    # Carga de archivos
-    "UPLOADED_PHOTOS_DEST": DIRECTORIO_IMAGENES,
-}
-
-# Servicios como Heroku, Elephantsql, Digital Ocean proveen una direccion de corrección que comienza con "postgres"
-# esta va a fallar con SQLAlchemy.
-if "postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
-    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = "postgresql+pg8000" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:]
-
-
-# < --------------------------------------------------------------------------------------------- >
 # Inicialización de extensiones de terceros
 
 alembic: Alembic = Alembic()
 administrador_sesion: LoginManager = LoginManager()
-database: SQLAlchemy = SQLAlchemy()
-
-
-# < --------------------------------------------------------------------------------------------- >
-# Base de datos relacional
-
-MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA: int = 3
-# Para hacer feliz a Sonar Cloud
-# https://sonarcloud.io/project/overview?id=bmosoluciones_now-lms
-LLAVE_FORONEA_CURSO: str = "curso.codigo"
-LLAVE_FORONEA_USUARIO: str = "usuario.usuario"
-
-
-# pylint: disable=too-few-public-methods
-# pylint: disable=no-member
-class BaseTabla:
-    """Columnas estandar para todas las tablas de la base de datos."""
-
-    # Pistas de auditoria comunes a todas las tablas.
-    id = database.Column(database.Integer(), primary_key=True, nullable=True)
-    status = database.Column(database.String(50), nullable=True)
-    creado = database.Column(database.DateTime, default=database.func.now(), nullable=False)
-    creado_por = database.Column(database.String(15), nullable=True)
-    modificado = database.Column(database.DateTime, default=database.func.now(), onupdate=database.func.now(), nullable=True)
-    modificado_por = database.Column(database.String(15), nullable=True)
-
-
-class Usuario(UserMixin, database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Una entidad con acceso al sistema."""
-
-    # Información Básica
-    __table_args__ = (database.UniqueConstraint("usuario", name="usuario_unico"),)
-    usuario = database.Column(database.String(150), nullable=False)
-    acceso = database.Column(database.LargeBinary(), nullable=False)
-    nombre = database.Column(database.String(100))
-    apellido = database.Column(database.String(100))
-    correo_electronico = database.Column(database.String(100))
-    # Tipo puede ser: admin, user, instructor, moderator
-    tipo = database.Column(database.String(20))
-    activo = database.Column(database.Boolean())
-    genero = database.Column(database.String(1))
-    nacimiento = database.Column(database.Date())
-
-
-class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Un curso es la base del aprendizaje en NOW LMS."""
-
-    __table_args__ = (database.UniqueConstraint("codigo", name="curso_codigo_unico"),)
-    nombre = database.Column(database.String(150), nullable=False)
-    codigo = database.Column(database.String(20), unique=True)
-    descripcion = database.Column(database.String(500), nullable=False)
-    # draft, public, active, closed
-    estado = database.Column(database.String(10), nullable=False)
-    # mooc
-    publico = database.Column(database.Boolean())
-    certificado = database.Column(database.Boolean())
-    auditable = database.Column(database.Boolean())
-    precio = database.Column(database.Numeric())
-    capacidad = database.Column(database.Integer())
-    fecha_inicio = database.Column(database.Date())
-    fecha_fin = database.Column(database.Date())
-    duracion = database.Column(database.Integer())
-    portada = database.Column(database.String(250), nullable=True, default=None)
-    nivel = database.Column(database.Integer())
-
-
-class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Los cursos tienen secciones para dividir el contenido en secciones logicas."""
-
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    nombre = database.Column(database.String(150), nullable=False)
-    indice = database.Column(database.Integer())
-
-
-class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Un curso consta de una serie de recursos."""
-
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    seccion = database.Column(database.Integer(), database.ForeignKey("curso_seccion.id"), nullable=False)
-    nombre = database.Column(database.String(150), nullable=False)
-    indice = database.Column(database.Integer())
-
-
-class Files(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Listado de archivos que se han cargado a la aplicacion."""
-
-    archivo = database.Column(database.String(100), nullable=False)
-    tipo = database.Column(database.String(15), nullable=False)
-    hash = database.Column(database.String(50), nullable=False)
-    url = database.Column(database.String(100), nullable=False)
-
-
-class DocenteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Uno o mas usuario de tipo intructor pueden estar a cargo de un curso."""
-
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
-    vigente = database.Column(database.Boolean())
-
-
-class ModeradorCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Uno o mas usuario de tipo moderator pueden estar a cargo de un curso."""
-
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
-    vigente = database.Column(database.Boolean())
-
-
-class EstudianteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """Uno o mas usuario de tipo user pueden estar a cargo de un curso."""
-
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
-    usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
-    vigente = database.Column(database.Boolean())
-
-
-class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
-    """
-    Repositorio Central para la configuración de la aplicacion.
-
-    Realmente esta tabla solo va a contener un registro con una columna para cada opción, en las plantillas
-    va a estar disponible como la variable global config.
-    """
-
-    titulo = database.Column(database.String(150), nullable=False)
-    descripcion = database.Column(database.String(500), nullable=False)
-    # Uno de mooc, school, training
-    modo = database.Column(database.String(500), nullable=False, default="mooc")
-    # Pagos en linea
-    paypal_key = database.Column(database.String(150), nullable=True)
-    stripe_key = database.Column(database.String(150), nullable=True)
-    # Micelaneos
-    dev_docs = database.Column(database.Boolean(), default=False)
-    # Permitir al usuario cargar archivos
-    file_uploads = database.Column(database.Boolean(), default=False)
-
-
-# < --------------------------------------------------------------------------------------------- >
-# Funciones auxiliares relacionadas a contultas de la base de datos.
-
-
-def verifica_docente_asignado_a_curso(id_curso: Union[None, str] = None):
-    """Si el usuario no esta asignado como docente al curso devuelve None."""
-    if current_user.is_authenticated:
-        return DocenteCurso.query.filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == id_curso)
-    else:
-        return False
-
-
-def verifica_moderador_asignado_a_curso(id_curso: Union[None, str] = None):
-    """Si el usuario no esta asignado como moderador al curso devuelve None."""
-    if current_user.is_authenticated:
-        return ModeradorCurso.query.filter(ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.curso == id_curso)
-    else:
-        return False
-
-
-def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
-    """Si el usuario no esta asignado como estudiante al curso devuelve None."""
-    if current_user.is_authenticated:
-        return EstudianteCurso.query.filter(EstudianteCurso.usuario == current_user.usuario, EstudianteCurso.curso == id_curso)
-    else:
-        return False
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -283,66 +106,10 @@ def cargar_sesion(identidad):
 
 
 @administrador_sesion.unauthorized_handler
-def no_autorizado():
+def no_autorizado():  # pragma: no cover
     """Redirecciona al inicio de sesión usuarios no autorizados."""
     flash("Favor iniciar sesión para acceder al sistema.")
     return INICIO_SESION
-
-
-def proteger_passwd(clave):
-    """Devuelve una contraseña salteada con bcrytp."""
-    from bcrypt import hashpw, gensalt
-
-    return hashpw(clave.encode(), gensalt())
-
-
-def validar_acceso(usuario_id, acceso):
-    """Verifica el inicio de sesión del usuario."""
-    from bcrypt import checkpw
-
-    registro = Usuario.query.filter_by(usuario=usuario_id).first()
-    if registro is not None:
-        clave_validada = checkpw(acceso.encode(), registro.acceso)
-    else:
-        clave_validada = False
-    return clave_validada
-
-
-# < --------------------------------------------------------------------------------------------- >
-# Definición de formularios
-class LoginForm(FlaskForm):
-    """Formulario de inicio de sesión."""
-
-    usuario = StringField(validators=[DataRequired()])
-    acceso = PasswordField(validators=[DataRequired()])
-    inicio_sesion = SubmitField()
-
-
-class LogonForm(FlaskForm):
-    """Formulario para crear un nuevo usuario."""
-
-    usuario = StringField(validators=[DataRequired()])
-    acceso = PasswordField(validators=[DataRequired()])
-    nombre = StringField(validators=[DataRequired()])
-    apellido = StringField(validators=[DataRequired()])
-    correo_electronico = StringField(validators=[DataRequired()])
-
-
-class CurseForm(FlaskForm):
-    """Formulario para crear un nuevo curso."""
-
-    nombre = StringField(validators=[DataRequired()])
-    codigo = StringField(validators=[DataRequired()])
-    descripcion = StringField(validators=[DataRequired()])
-    publico = BooleanField(validators=[])
-    auditable = BooleanField(validators=[])
-    certificado = BooleanField(validators=[])
-    precio = DecimalField(validators=[])
-    capacidad = IntegerField(validators=[])
-    fecha_inicio = DateField(validators=[])
-    fecha_fin = DateField(validators=[])
-    duracion = IntegerField(validators=[])
-    nivel = SelectField("User", choices=[(0, "Introductorio"), (1, "Principiante"), (2, "Intermedio"), (2, "Avanzado")])
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -355,7 +122,9 @@ lms_app = Flask(
 lms_app.config.from_mapping(CONFIGURACION)
 
 
-with lms_app.app_context():
+# Inicializamos extenciones y cargamos algunas variables para que esten disponibles de forma
+# global en las plantillas de Jinja2.
+with lms_app.app_context():  # pragma: no cover
     alembic.init_app(lms_app)
     administrador_sesion.init_app(lms_app)
     database.init_app(lms_app)
@@ -371,9 +140,11 @@ with lms_app.app_context():
     except DatabaseError:
         CONFIG = None
     if CONFIG:
-        log.info("Configuración detectada.")
+        log.info("Configuración cargada correctamente.")
     else:
-        log.warning("No se pudo cargar la configuración.")
+        log.warning("No se detecto configuración de usuario.")
+        log.warning("Utilizando configuración predeterminada.")
+    # Asignamos variables globales para ser utilizadas dentro de las plantillas del sistema.
     lms_app.jinja_env.globals["current_user"] = current_user
     lms_app.jinja_env.globals["config"] = CONFIG
     lms_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
@@ -392,21 +163,14 @@ def init_app():
             log.info("Iniciando Configuracion de la aplicacion.")
             log.info("Creando esquema de base de datos.")
             database.create_all()
-            log.info("Creando usuario administrador.")
-            administrador = Usuario(
-                usuario=CONFIGURACION.get("ADMIN_USER"),
-                acceso=proteger_passwd(CONFIGURACION.get("ADMIN_PSWD")),
-                tipo="admin",
-                activo=True,
-            )
             config = Configuracion(
                 titulo="NOW LMS",
                 descripcion="Sistema de aprendizaje en linea.",
             )
-            database.session.add(administrador)
             database.session.add(config)
             database.session.commit()
-
+            crear_usuarios_predeterminados()
+            crear_cursos_predeterminados()
         else:
             log.warning("NOW LMS ya se encuentra configurado.")
             log.warning("Intente ejecutar 'python -m now_lms'")
@@ -445,16 +209,16 @@ def serve():  # pragma: no cover
 
 
 @lms_app.errorhandler(404)
-def error_404(error):
+def error_404(error):  # pragma: no cover
     """Pagina personalizada para recursos no encontrados."""
-    assert error is not None
+    assert error is not None  # nosec B101
     return render_template("404.html"), 404
 
 
 @lms_app.errorhandler(403)
-def error_403(error):
+def error_403(error):  # pragma: no cover
     """Pagina personalizada para recursos no autorizados."""
-    assert error is not None
+    assert error is not None  # nosec B101
     return render_template("403.html"), 403
 
 
@@ -467,73 +231,14 @@ Interfaz de linea de comandos para la administración de NOW LMS.
 )
 
 
-def command(as_module=False) -> None:
+def command(as_module=False) -> None:  # pragma: no cover
     """Linea de comandos para administración de la aplicacion."""
     COMMAND_LINE_INTERFACE.main(args=sys.argv[1:], prog_name="python -m flask" if as_module else None)
 
 
 # < --------------------------------------------------------------------------------------------- >
-# Funciones auxiliares
-def asignar_curso_a_instructor(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
-    """Asigna un usuario como instructor de un curso."""
-    ASIGNACION = DocenteCurso(curso=curso_codigo, usuario=usuario_id, vigente=True, creado_por=current_user.usuario)
-    database.session.add(ASIGNACION)
-    database.session.commit()
-
-
-def asignar_curso_a_moderador(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
-    """Asigna un usuario como moderador de un curso."""
-    ASIGNACION = ModeradorCurso(usuario=usuario_id, curso=curso_codigo, vigente=True, creado_por=current_user.usuario)
-    database.session.add(ASIGNACION)
-    database.session.commit()
-
-
-def asignar_curso_a_estudiante(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
-    """Asigna un usuario como moderador de un curso."""
-    ASIGNACION = EstudianteCurso(
-        creado_por=current_user.usuario,
-        curso=curso_codigo,
-        usuario=usuario_id,
-        vigente=True,
-    )
-    database.session.add(ASIGNACION)
-    database.session.commit()
-
-
-def cambia_tipo_de_usuario_por_id(id_usuario: Union[None, str] = None, nuevo_tipo: Union[None, str] = None):
-    """
-    Cambia el estatus de un usuario del sistema.
-
-    Los valores reconocidos por el sistema son: admin, user, instructor, moderator.
-    """
-    USUARIO = Usuario.query.filter_by(usuario=id_usuario).first()
-    USUARIO.tipo = nuevo_tipo
-    database.session.commit()
-
-
-def cambia_estado_curso_por_id(id_curso: Union[None, str, int] = None, nuevo_estado: Union[None, str] = None):
-    """
-    Cambia el estatus de un curso.
-
-    Los valores reconocidos por el sistema son: draft, public, open, closed.
-    """
-    CURSO = Curso.query.filter_by(codigo=id_curso).first()
-    CURSO.estado = nuevo_estado
-    database.session.commit()
-
-
-def cambia_curso_publico(id_curso: Union[None, str, int] = None):
-    """Cambia el estatus publico de un curso."""
-    CURSO = Curso.query.filter_by(codigo=id_curso).first()
-    if CURSO.publico:
-        CURSO.publico = False
-    else:
-        CURSO.publico = True
-    database.session.commit()
-
-
-# < --------------------------------------------------------------------------------------------- >
 # Definición de rutas/vistas
+# pylint: disable=singleton-comparison
 
 
 def perfil_requerido(perfil_id):
@@ -554,10 +259,6 @@ def perfil_requerido(perfil_id):
 
     return decorator_verifica_acceso
 
-
-# < --------------------------------------------------------------------------------------------- >
-# Definición de rutas/vistas
-# pylint: disable=singleton-comparison
 
 # <-------- Autenticación de usuarios  -------->
 INICIO_SESION = redirect("/login")
@@ -652,9 +353,14 @@ def cerrar_sesion():
 @lms_app.route("/index")
 def home():
     """Página principal de la aplicación."""
-    CURSOS = Curso.query.filter(Curso.publico == True, Curso.estado == "public").paginate(  # noqa: E712
-        request.args.get("page", default=1, type=int), 6, False
+
+    CURSOS = database.paginate(
+        database.select(Curso).filter(Curso.publico == True, Curso.estado == "public"),  # noqa: E712
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+        count=True,
     )
+
     return render_template("inicio/mooc.html", cursos=CURSOS)
 
 
@@ -741,35 +447,176 @@ def nuevo_curso():
         return render_template("learning/nuevo_curso.html", form=form)
 
 
+@lms_app.route("/course/<course_code>/new_seccion", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_seccion(course_code):
+    """Formulario para crear un nuevo recurso."""
+    form = CursoSeccionForm()
+    if form.validate_on_submit() or request.method == "POST":
+        ramdon = uuid4()
+        id_unico = str(ramdon.hex)
+        secciones = CursoSeccion.query.filter_by(curso=course_code).count()
+        nuevo_indice = int(secciones + 1)
+        nueva_seccion = CursoSeccion(
+            codigo=id_unico,
+            curso=course_code,
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            estado=False,
+            indice=nuevo_indice,
+        )
+        try:
+            database.session.add(nueva_seccion)
+            database.session.commit()
+            flash("Sección agregada correctamente al curso.")
+            if secciones > 4:
+                reorganiza_indice_curso(codigo_curso=course_code)
+            return redirect(url_for("curso", course_code=course_code))
+        except OperationalError:
+            flash("Hubo en error al crear la seccion.")
+            return redirect(url_for("curso", course_code=course_code))
+    else:
+        return render_template("learning/nuevo_seccion.html", form=form)
+
+
+@lms_app.route("/course/<course_code>/seccion/increment/<indice>")
+@login_required
+@perfil_requerido("instructor")
+def incrementar_indice_seccion(course_code, indice):
+    """Actualiza indice de secciones."""
+    modificar_indice_curso(
+        codigo_curso=course_code,
+        indice=int(indice),
+        task="decrement",
+    )
+    return redirect(url_for("curso", course_code=course_code))
+
+
+@lms_app.route("/course/<course_code>/seccion/decrement/<indice>")
+@login_required
+@perfil_requerido("instructor")
+def reducir_indice_seccion(course_code, indice):
+    """Actualiza indice de secciones."""
+    modificar_indice_curso(
+        codigo_curso=course_code,
+        indice=int(indice),
+        task="increment",
+    )
+    return redirect(url_for("curso", course_code=course_code))
+
+
+@lms_app.route("/course/<course_code>/<seccion>/new_resource")
+@login_required
+@perfil_requerido("instructor")
+def nuevo_recurso(course_code, seccion):
+    """Página para seleccionar tipo de recurso."""
+    return render_template("learning/nuevo_recurso.html", id_curso=course_code, id_seccion=seccion)
+
+
+@lms_app.route("/course/<course_code>/<seccion>/youtube/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_recurso_youtube_video(course_code, seccion):
+    """Formulario para crear un nuevo recurso tipo vídeo en Youtube."""
+    form = CursoRecursoVideoYoutube()
+    recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
+    nuevo_indice = int(recursos + 1)
+    if form.validate_on_submit() or request.method == "POST":
+        ramdon = uuid4()
+        id_unico = str(ramdon.hex)
+        nuevo_recurso_ = CursoRecurso(
+            codigo=id_unico,
+            curso=course_code,
+            seccion=seccion,
+            tipo="youtube",
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            youtube_url=form.youtube_url.data,
+            indice=nuevo_indice,
+        )
+        try:
+            database.session.add(nuevo_recurso_)
+            database.session.commit()
+            flash("Recurso agregado correctamente al curso.")
+            return redirect(url_for("curso", course_code=course_code))
+        except OperationalError:
+            flash("Hubo en error al crear el recurso.")
+            return redirect(url_for("curso", course_code=course_code))
+    else:
+        return render_template("learning/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form)
+
+
+@lms_app.route("/course/resource/<cource_code>/<seccion_id>/increment/<indice>")
+@login_required
+@perfil_requerido("instructor")
+def incrementar_indice_recurso(cource_code, seccion_id, indice):
+    """Actualiza indice de recursos."""
+    modificar_indice_seccion(
+        seccion_id=seccion_id,
+        indice=int(indice),
+        task="decrement",
+    )
+    return redirect(url_for("curso", course_code=cource_code))
+
+
+@lms_app.route("/course/resource/<cource_code>/<seccion_id>/decrement/<indice>")
+@login_required
+@perfil_requerido("instructor")
+def reducir_indice_recurso(cource_code, seccion_id, indice):
+    """Actualiza indice de recursos."""
+    modificar_indice_seccion(
+        seccion_id=seccion_id,
+        indice=int(indice),
+        task="increment",
+    )
+    return redirect(url_for("curso", course_code=cource_code))
+
+
+@lms_app.route("/delete_recurso/<curso_id>/<seccion>/<id_>")
+@login_required
+@perfil_requerido("instructor")
+def eliminar_recurso(curso_id, seccion, id_):
+    """Elimina una seccion del curso."""
+    CursoRecurso.query.filter(CursoRecurso.codigo == id_).delete()
+    database.session.commit()
+    reorganiza_indice_seccion(seccion=seccion)
+    return redirect(url_for("curso", course_code=curso_id))
+
+
 @lms_app.route("/courses")
 @lms_app.route("/cursos")
 @login_required
 def cursos():
     """Pagina principal del curso."""
     if current_user.tipo == "admin":
-        lista_cursos = Curso.query.paginate(
-            request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False
+        lista_cursos = database.paginate(
+            database.select(Curso),
+            page=request.args.get("page", default=1, type=int),
+            max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+            count=True,
         )
     else:
         try:
-            lista_cursos = (
-                Curso.query.join(Curso.creado_por)
-                .filter(Usuario.id == current_user.id)
-                .paginate(request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False)
+            lista_cursos = database.paginate(
+                database.select(Curso).join(DocenteCurso).filter(DocenteCurso.usuario == current_user.usuario),
+                page=request.args.get("page", default=1, type=int),
+                max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+                count=True,
             )
+
         except ArgumentError:
             lista_cursos = None
     return render_template("learning/curso_lista.html", consulta=lista_cursos)
 
 
 @lms_app.route("/course/<course_code>")
-@lms_app.route("/curso")
 def curso(course_code):
     """Pagina principal del curso."""
     return render_template(
         "learning/curso.html",
         curso=Curso.query.filter_by(codigo=course_code).first(),
-        secciones=CursoSeccion.query.filter_by(curso=course_code).all(),
+        secciones=CursoSeccion.query.filter_by(curso=course_code).order_by(CursoSeccion.indice).all(),
         recursos=CursoRecurso.query.filter_by(curso=course_code).all(),
     )
 
@@ -780,8 +627,11 @@ def curso(course_code):
 @perfil_requerido("admin")
 def usuarios():
     """Lista de usuarios con acceso a al aplicación."""
-    CONSULTA = Usuario.query.paginate(
-        request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False
+    CONSULTA = database.paginate(
+        database.select(Usuario),
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+        count=True,
     )
 
     return render_template(
@@ -795,8 +645,11 @@ def usuarios():
 @perfil_requerido("admin")
 def usuarios_inactivos():
     """Lista de usuarios con acceso a al aplicación."""
-    CONSULTA = Usuario.query.filter_by(activo=False).paginate(
-        request.args.get("page", default=1, type=int), MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, False
+    CONSULTA = database.paginate(
+        database.select(Usuario).filter_by(activo=False),
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+        count=True,
     )
 
     return render_template(
@@ -855,10 +708,45 @@ def inactivar_usuario(user_id):
 @perfil_requerido("admin")
 def eliminar_usuario(user_id):
     """Elimina un usuario por su id y redirecciona a la vista dada."""
-    perfil_usuario = Usuario.query.filter(Usuario.usuario == user_id)
-    perfil_usuario.delete()
+    Usuario.query.filter(Usuario.usuario == user_id).delete()
     database.session.commit()
     return redirect(url_for(request.args.get("ruta", default="home", type=str)))
+
+
+@lms_app.route("/delete_seccion/<curso_id>/<id_>")
+@login_required
+@perfil_requerido("instructor")
+def eliminar_seccion(curso_id, id_):
+    """Elimina una seccion del curso."""
+    CursoSeccion.query.filter(CursoSeccion.codigo == id_).delete()
+    database.session.commit()
+    reorganiza_indice_curso(codigo_curso=curso_id)
+    return redirect(url_for("curso", course_code=curso_id))
+
+
+@lms_app.route("/delete_curse/<course_id>")
+@login_required
+@perfil_requerido("instructor")
+def eliminar_curso(course_id):
+    """Elimina un curso por su id y redirecciona a la vista dada."""
+
+    try:
+        # Eliminanos los recursos relacionados al curso seleccionado.
+        CursoSeccion.query.filter(CursoSeccion.curso == course_id).delete()
+        CursoRecurso.query.filter(CursoRecurso.curso == course_id).delete()
+        # Eliminanos los acceso definidos para el curso detallado.
+        DocenteCurso.query.filter(DocenteCurso.curso == course_id).delete()
+        ModeradorCurso.query.filter(ModeradorCurso.curso == course_id).delete()
+        EstudianteCurso.query.filter(EstudianteCurso.curso == course_id).delete()
+        # Elimanos curso seleccionado.
+        Curso.query.filter(Curso.codigo == course_id).delete()
+        database.session.commit()
+        flash("Curso Eliminado Correctamente.")
+    except PGProgrammingError:
+        flash("No se pudo elimiar el curso solicitado.")
+    except ProgrammingError:
+        flash("No se pudo elimiar el curso solicitado.")
+    return redirect(url_for("cursos"))
 
 
 @lms_app.route("/change_user_tipo")
@@ -875,7 +763,7 @@ def cambiar_tipo_usario():
 
 @lms_app.route("/change_curse_status")
 @login_required
-@perfil_requerido("admin")
+@perfil_requerido("instructor")
 def cambiar_estatus_curso():
     """Actualiza el estatus de un curso."""
     cambia_estado_curso_por_id(
@@ -887,7 +775,7 @@ def cambiar_estatus_curso():
 
 @lms_app.route("/change_curse_public")
 @login_required
-@perfil_requerido("admin")
+@perfil_requerido("instructor")
 def cambiar_curso_publico():
     """Actualiza el estado publico de un curso."""
     cambia_curso_publico(
@@ -896,5 +784,16 @@ def cambiar_curso_publico():
     return redirect(url_for("curso", course_code=request.args.get("curse")))
 
 
-# Los servidores WSGI buscan por defecto una app
+@lms_app.route("/change_curse_seccion_public")
+@login_required
+@perfil_requerido("instructor")
+def cambiar_seccion_publico():
+    """Actualiza el estado publico de un curso."""
+    cambia_seccion_publico(
+        codigo=request.args.get("codigo"),
+    )
+    return redirect(url_for("curso", course_code=request.args.get("course_code")))
+
+
+# <-------- Servidores WSGI buscan una "app" por defecto  -------->
 app = lms_app

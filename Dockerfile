@@ -1,12 +1,9 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal AS js
-RUN rpm --import https://dl.yarnpkg.com/rpm/pubkey.gpg \
-    && curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo \
-    && microdnf -y install yarn
-COPY package.json .
-COPY yarn.lock .
-RUN yarn
+FROM registry.access.redhat.com/ubi9/ubi-minimal AS js
+RUN microdnf install -y nodejs npm
+COPY ./now_lms/static/package.json package.json 
+RUN npm install
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal
 
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
@@ -14,7 +11,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED = 1
 ENV FLASK_ENV "production"
 
-RUN microdnf install -y --nodocs --best --refresh python39 python39-pip python39-cryptography \
+RUN microdnf install -y --nodocs --best --refresh python39 python3-pip python3-cryptography \
     && microdnf clean all
 
 # Install dependencies in a layer
