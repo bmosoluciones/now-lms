@@ -211,14 +211,14 @@ def serve():  # pragma: no cover
 @lms_app.errorhandler(404)
 def error_404(error):  # pragma: no cover
     """Pagina personalizada para recursos no encontrados."""
-    assert error is not None
+    assert error is not None  # nosec B101
     return render_template("404.html"), 404
 
 
 @lms_app.errorhandler(403)
 def error_403(error):  # pragma: no cover
     """Pagina personalizada para recursos no autorizados."""
-    assert error is not None
+    assert error is not None  # nosec B101
     return render_template("403.html"), 403
 
 
