@@ -29,7 +29,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install bandit flake8 pytest
         python -m pip install -r development.txt
-    - name: Lint project
+    - name: Lint python code
       run: |
         rm -rf build
         flake8 --ignore=E712 now_lms
@@ -38,6 +38,10 @@ jobs:
         python -m bandit -r now_lms
         python -m flake8 now_lms
         python -m pylint now_lms
+    - name: Lint html templanes
+      run: |
+        python -m pip install curlylint
+        python -m curlylint now_lms/templates/
     - name: Test with pytest
       run: |
         pytest  -v --exitfirst --cov=now_lms

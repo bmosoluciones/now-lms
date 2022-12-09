@@ -31,4 +31,4 @@ mypy
 
 #Live realoader
 hupper
-# hupper -m now_lms
+watchdog
