@@ -51,7 +51,7 @@ from now_lms.db import (
     EstudianteCurso,
     ModeradorCurso,
     Usuario,
-    crear_curso_predeterminados,
+    crear_cursos_predeterminados,
     crear_usuarios_predeterminados,
     verifica_docente_asignado_a_curso,
     verifica_estudiante_asignado_a_curso,
@@ -170,7 +170,7 @@ def init_app():
             database.session.add(config)
             database.session.commit()
             crear_usuarios_predeterminados()
-            crear_curso_predeterminados()
+            crear_cursos_predeterminados()
         else:
             log.warning("NOW LMS ya se encuentra configurado.")
             log.warning("Intente ejecutar 'python -m now_lms'")
@@ -355,7 +355,7 @@ def home():
     """Página principal de la aplicación."""
 
     CURSOS = database.paginate(
-        database.select(Curso).filter(Curso.publico == True, Curso.estado == "public"),
+        database.select(Curso).filter(Curso.publico == True, Curso.estado == "public"),  # noqa: E712
         page=request.args.get("page", default=1, type=int),
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,

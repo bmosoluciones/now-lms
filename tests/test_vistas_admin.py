@@ -18,7 +18,7 @@
 # pylint: disable=redefined-outer-name
 import pytest
 import now_lms
-from now_lms import app, database, init_app, Configuracion, crear_usuarios_predeterminados, crear_curso_predeterminados, log
+from now_lms import app, database, init_app, Configuracion, crear_usuarios_predeterminados, crear_cursos_predeterminados, log
 
 app.config["SECRET_KEY"] = "jgjañlsldaksjdklasjfkjj"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
@@ -41,7 +41,7 @@ def lms():
         database.session.add(config)
         database.session.commit()
         crear_usuarios_predeterminados()
-        crear_curso_predeterminados()
+        crear_cursos_predeterminados()
     app.app_context().push()
     yield app
 

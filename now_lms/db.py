@@ -211,11 +211,15 @@ def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
         return False
 
 
-def crear_curso_predeterminados():
+def crear_cursos_predeterminados():
     """Crea en la base de datos un curso de demostración."""
     log.info("Creando curso de demostración.")
-    course = Curso(nombre="Demo", codigo="demo", descripcion="This is a demo", estado="draft")
-    database.session.add(course)
+    course1 = Curso(nombre="Demo", codigo="demo", descripcion="This is a demo", estado="draft")
+    course2 = Curso(nombre="Course 1", codigo="course1", descripcion="This is the first course.", estado="open")
+    course3 = Curso(nombre="Course 2", codigo="course2", descripcion="This is the first course.", estado="closed")
+    database.session.add(course1)
+    database.session.add(course2)
+    database.session.add(course3)
     database.session.commit()
 
 
