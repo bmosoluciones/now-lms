@@ -547,28 +547,15 @@ def nuevo_recurso_youtube_video(course_code, seccion):
         return render_template("learning/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form)
 
 
-@lms_app.route("/course/resource/<cource_code>/<seccion_id>/increment/<indice>")
+@lms_app.route("/course/resource/<cource_code>/<seccion_id>/<task>/<resource_index>")
 @login_required
 @perfil_requerido("instructor")
-def incrementar_indice_recurso(cource_code, seccion_id, indice):
+def modificar_orden_recurso(cource_code, seccion_id, resource_index, task):
     """Actualiza indice de recursos."""
     modificar_indice_seccion(
         seccion_id=seccion_id,
-        indice=int(indice),
-        task="decrement",
-    )
-    return redirect(url_for("curso", course_code=cource_code))
-
-
-@lms_app.route("/course/resource/<cource_code>/<seccion_id>/decrement/<indice>")
-@login_required
-@perfil_requerido("instructor")
-def reducir_indice_recurso(cource_code, seccion_id, indice):
-    """Actualiza indice de recursos."""
-    modificar_indice_seccion(
-        seccion_id=seccion_id,
-        indice=int(indice),
-        task="increment",
+        indice=int(resource_index),
+        task=task,
     )
     return redirect(url_for("curso", course_code=cource_code))
 
