@@ -93,29 +93,38 @@ def modificar_indice_seccion(
     NO_INDICE_POSTERIOR = NO_INDICE_ACTUAL + 1
 
     # Obtenemos lista de recursos de la base de datos.
-    RECURSO_ACTUAL = database.select(CursoRecurso).filter(
+    RECURSO_ACTUAL = CursoRecurso.query.filter(
         CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_ACTUAL
-    )
-    RECURSO_ANTERIOR = database.select(CursoRecurso).filter(
-        CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_ANTERIOR
-    )
-    RECURSO_POSTERIOR = database.select(CursoRecurso).filter(
-        CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_ANTERIOR
-    )
+    ).first()
 
-    if task == "increment" and RECURSO_POSTERIOR:  # Si RECURSO_POSTERIOR es None no procedemos
-        RECURSO_ACTUAL = NO_INDICE_POSTERIOR
-        RECURSO_POSTERIOR = NO_INDICE_ACTUAL
-        database.session.add(RECURSO_ACTUAL)
-        database.session.add(RECURSO_POSTERIOR)
-        database.session.commit()
+    RECURSO_ANTERIOR = CursoRecurso.query.filter(
+        CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_ANTERIOR
+    ).first()
 
-    elif task == "decrement" and RECURSO_ANTERIOR:  # Si RECURSO_ANTERIOR es None estamos en el indice 1
-        RECURSO_ACTUAL = NO_INDICE_ANTERIOR
-        RECURSO_ANTERIOR = NO_INDICE_ACTUAL
+    RECURSO_POSTERIOR = CursoRecurso.query.filter(
+        CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_POSTERIOR
+    ).first()
+
+    if task == "increment":
+        RECURSO_ACTUAL.indice = NO_INDICE_POSTERIOR
         database.session.add(RECURSO_ACTUAL)
-        database.session.add(RECURSO_ANTERIOR)
         database.session.commit()
+        if RECURSO_POSTERIOR:
+            RECURSO_POSTERIOR.indice = NO_INDICE_ACTUAL
+            database.session.add(RECURSO_POSTERIOR)
+            database.session.commit()
+
+    else:  # task == decrement
+        if RECURSO_ACTUAL.indice != 1:  # No convertir indice 1 a 0.
+            RECURSO_ACTUAL.indice = NO_INDICE_ANTERIOR
+            database.session.add(RECURSO_ACTUAL)
+            database.session.commit()
+            if RECURSO_ANTERIOR:
+                RECURSO_ANTERIOR.indice = NO_INDICE_ACTUAL
+                database.session.add(RECURSO_ANTERIOR)
+                database.session.commit()
+        else:
+            pass
 
 
 def reorganiza_indice_seccion(seccion: Union[None, str] = None):
