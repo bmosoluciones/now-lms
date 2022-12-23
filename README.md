@@ -93,46 +93,5 @@ podman run --pod now-lms --name now-lms-server --rm -v $PWD/nginx.conf:/etc/ngin
 NOW-LMS also will work with MySQL or MariaDB just change the image of the database container and set the correct connect string. SQLite also will work if you will serve a few users.
 
 ## Contributing
-Thanks for your interest in contributing with the NOW-LMS project, please note that this is a open source projects so your contribution will be available to others for free under the terns of the Apache License.
+Thanks for your interest in contributing with the NOW-LMS project, please note that this is a open source projects so your contribution will be available to others for free under the terns of the Apache License, please refers to the [CONTRIBUTING](https://github.com/bmosoluciones/now-lms/blob/main/docs/CONTRIBUTING.md) file to start.
 
-To contribute with this project you will need:
-
-* [Python](https://www.python.org/)
-* [NPM](https://www.npmjs.com/package/npm)
-* Your favorite code editor
-
-### Getting the source code
-
-```
-git clone https://github.com/bmosoluciones/now-lms.git
-```
-### Create a python virtual env
-
-```
-python3 -m venv venv
-# Linux:
-source venv/bin/activate
-# Windows
-venv\Scripts\activate.bat
-```
-### Install python deps
-
-```
-python3 - m pip install -r development.txt
-```
-
-### Install Boostrap
-
-```
- cd now_lms/static/
- npm install
-```
-
-### Start a development server
-
-```
-hupper -m waitress --port=8080 now_lms:app
-```
-Please note that we use waitress as WSGI server because gunicorn do not work on Windows, hupper will live reload the WSGI server as you save changes in the source code so you will be able to work with your changes as you work, please note that changes to the jinja templates will not trigger the server reload, only changes to python files.
-
-Default user and password are ```lms-admin```, default url to work with th server will be ```http://127.0.0.1:8080/```.

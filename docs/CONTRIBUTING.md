@@ -69,69 +69,41 @@ Technologies used:
 
 Development is done in the branch ```development```, once the project is released for production the branch ```main``` will contain the latest version suitable for use in production.
 
-#### Getting the source code:
+### Getting the source code
 
-Download the source code with:
-
-```bash
+```
 git clone https://github.com/bmosoluciones/now-lms.git
-cd now-lms
+```
+### Create a python virtual env
+
+```
+python3 -m venv venv
+# Linux:
+source venv/bin/activate
+# Windows
+venv\Scripts\activate.bat
+```
+### Install python deps
+
+```
+python3 - m pip install -r development.txt
 ```
 
-To start the project you need to follow these steps:
+### Install Boostrap
 
-#### Create a python virtual environment.
-
-```bash
-python -m venv venv
-# Windows:
-.\venv\Scripts\activate.bat
-# Linux y MAC: 
-source venv/bin/activate 
+```
+ cd now_lms/static/
+ npm install
 ```
 
-#### Install the dependencies:
+### Start a development server
 
-```bash
-python -m pip install -r requirements.txt
-python -m pip install -r development.txt
-python setup.py develop
-yarn
 ```
-
-Yarn is necessary so that you don't have to include third-party JavaScritp libraries in the project's master repository.
-
-You can verify that the installation was successful by running:
-
-```bash
-lmsctl
+hupper -m waitress --port=8080 now_lms:app
 ```
+Please note that we use waitress as WSGI server because gunicorn do not work on Windows, hupper will live reload the WSGI server as you save changes in the source code so you will be able to work with your changes as you work, please note that changes to the jinja templates will not trigger the server reload, only changes to python files.
 
-#### Database schema
-
-To create a test database run:
-
-```bash
-lmsctl setup
-```
-
-#### Run Development Server:
-
-To access the project we can use the development web server included in flask:
-
-```bash
-FLASK_ENV=development  # Linux
-set FLASK_ENV="development"  # Windows
-lmsctl run
-```
-
-To verify that the project runs successfully with a WSGI server act to run production:
-
-```bash
-lmsctl serve
-```
-
-With user ```lms-admin``` and password ```lms-admin```.
+Default user and password are ```lms-admin```, default url to work with th server will be ```http://127.0.0.1:8080/```.
 
 #### Style Guide:
 
