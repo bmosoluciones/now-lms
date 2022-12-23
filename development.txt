@@ -11,6 +11,7 @@ wheel
 
 # Control de calidad python
 black
+bandit
 flake8
 pytest
 pylint
