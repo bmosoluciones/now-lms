@@ -105,6 +105,12 @@ Please note that we use waitress as WSGI server because gunicorn do not work on 
 
 Default user and password are ```lms-admin```, default url to work with th server will be ```http://127.0.0.1:8080/```.
 
+Note that the reloader will setpup a new database with any code change, if you do not want this you can start NOW LMS as a python module without reloader.
+
+```
+python -m now_lms
+```
+
 #### Style Guide:
 
 [PEP8](https://www.python.org/dev/peps/pep-0008/) with a maximum line length of 127 characters.
