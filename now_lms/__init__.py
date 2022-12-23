@@ -152,35 +152,45 @@ with lms_app.app_context():  # pragma: no cover
     lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
 
 
+def initial_setup():
+    """Inicializa una nueva bases de datos"""
+    current_app.app_context().push()
+    log.info("Iniciando Configuracion de la aplicacion.")
+    log.info("Creando esquema de base de datos.")
+    database.create_all()
+    config = Configuracion(
+        titulo="NOW LMS",
+        descripcion="Sistema de aprendizaje en linea.",
+    )
+    database.session.add(config)
+    database.session.commit()
+    crear_usuarios_predeterminados()
+    if DESARROLLO:
+        log.info("Creando cursos predeterminados para desarrollo.")
+        crear_cursos_predeterminados()
+
+
 def init_app():
     """Funcion auxiliar para iniciar la aplicacion."""
-    with current_app.app_context():
-        if DESARROLLO:
-            log.warning("Modo desarrollo detectado.")
-            log.warning("Iniciando una base de datos nueva.")
-            database.drop_all()
-        if not database.engine.has_table("usuario"):
-            log.info("Iniciando Configuracion de la aplicacion.")
-            log.info("Creando esquema de base de datos.")
-            database.create_all()
-            config = Configuracion(
-                titulo="NOW LMS",
-                descripcion="Sistema de aprendizaje en linea.",
-            )
-            database.session.add(config)
-            database.session.commit()
-            crear_usuarios_predeterminados()
-            crear_cursos_predeterminados()
-        else:
-            log.warning("NOW LMS ya se encuentra configurado.")
-            log.warning("Intente ejecutar 'python -m now_lms'")
+    if DESARROLLO:
+        log.warning("Modo desarrollo detectado.")
+        log.warning("Iniciando una base de datos nueva.")
+        database.drop_all()
+        initial_setup()
+    else:
+        log.info("Iniciando NOW LMS")
+        VERIFICA_CONFIGURACION = database.query(Configuracion).first()
+        if not VERIFICA_CONFIGURACION:
+            log.warning("No se detecto base de datos.")
+            log.info("Iniciando una base de datos.")
+            initial_setup()
 
 
 @lms_app.cli.command()
 def setup():  # pragma: no cover
     """Inicia al aplicacion."""
     with current_app.app_context():
-        init_app()
+        initial_setup()
 
 
 @lms_app.cli.command()
@@ -188,8 +198,7 @@ def serve():  # pragma: no cover
     """Servidor WSGI predeterminado."""
     from waitress import serve as server
 
-    if not CONFIG:
-        init_app()
+    init_app()
 
     if environ.get("LMS_PORT"):
         PORT: int = int(environ.get("LMS_PORT"))
