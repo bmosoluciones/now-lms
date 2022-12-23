@@ -81,9 +81,24 @@ def reorganiza_indice_curso(codigo_curso: Union[None, str] = None):
             indice = indice + 1
 
 
+def reorganiza_indice_seccion(seccion: Union[None, str] = None):
+    """Al eliminar una sección de un curso se debe generar el indice nuevamente."""
+
+    recursos = CursoRecurso.query.filter_by(seccion=seccion).order_by(CursoRecurso.indice).all()
+    if recursos:
+        indice = 1
+        for recurso in recursos:
+            recurso.indice = indice
+            database.session.add(recurso)
+            database.session.commit()
+            indice = indice + 1
+
+
 def modificar_indice_seccion(
     seccion_id: Union[None, str] = None,
     task: Union[None, str] = None,
+    # increment: aumenta el numero de indice por lo que el recurso "baja" en la lista de recursos.
+    # decrement: disminuye el numero de indice por lo que el recurso "sube" nala lista de recursos.
     indice: int = 0,
 ):
     """Modica el número de indice de un recurso dentro de una sección."""
@@ -105,39 +120,19 @@ def modificar_indice_seccion(
         CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_POSTERIOR
     ).first()
 
-    if task == "increment":
+    if task == "increment" and RECURSO_POSTERIOR:
         RECURSO_ACTUAL.indice = NO_INDICE_POSTERIOR
+        RECURSO_POSTERIOR.indice = NO_INDICE_ACTUAL
         database.session.add(RECURSO_ACTUAL)
+        database.session.add(RECURSO_POSTERIOR)
         database.session.commit()
-        if RECURSO_POSTERIOR:
-            RECURSO_POSTERIOR.indice = NO_INDICE_ACTUAL
-            database.session.add(RECURSO_POSTERIOR)
-            database.session.commit()
 
-    else:  # task == decrement
-        if RECURSO_ACTUAL.indice != 1:  # No convertir indice 1 a 0.
-            RECURSO_ACTUAL.indice = NO_INDICE_ANTERIOR
-            database.session.add(RECURSO_ACTUAL)
-            database.session.commit()
-            if RECURSO_ANTERIOR:
-                RECURSO_ANTERIOR.indice = NO_INDICE_ACTUAL
-                database.session.add(RECURSO_ANTERIOR)
-                database.session.commit()
-        else:
-            pass
-
-
-def reorganiza_indice_seccion(seccion: Union[None, str] = None):
-    """Al eliminar una sección de un curso se debe generar el indice nuevamente."""
-
-    recursos = CursoRecurso.query.filter_by(seccion=seccion).order_by(CursoRecurso.indice).all()
-    if recursos:
-        indice = 1
-        for recurso in recursos:
-            recurso.indice = indice
-            database.session.add(seccion)
-            database.session.commit()
-            indice = indice + 1
+    elif task == "decrement" and RECURSO_ANTERIOR:
+        RECURSO_ACTUAL.indice = NO_INDICE_ANTERIOR
+        RECURSO_ANTERIOR.indice = NO_INDICE_ACTUAL
+        database.session.add(RECURSO_ACTUAL)
+        database.session.add(RECURSO_ANTERIOR)
+        database.session.commit()
 
 
 def asignar_curso_a_instructor(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
