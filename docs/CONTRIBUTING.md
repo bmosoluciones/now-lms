@@ -99,7 +99,7 @@ python3 - m pip install -r development.txt
 ### Start a development server
 
 ```
-hupper -m waitress --port=8080 now_lms:app
+hupper -m now_lms
 ```
 Please note that we use waitress as WSGI server because gunicorn do not work on Windows, hupper will live reload the WSGI server as you save changes in the source code so you will be able to work with your changes as you work, please note that changes to the jinja templates will not trigger the server reload, only changes to python files.
 
