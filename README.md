@@ -94,4 +94,3 @@ NOW-LMS also will work with MySQL or MariaDB just change the image of the databa
 
 ## Contributing
 Thanks for your interest in contributing with the NOW-LMS project, please note that this is a open source projects so your contribution will be available to others for free under the terns of the Apache License, please refers to the [CONTRIBUTING](https://github.com/bmosoluciones/now-lms/blob/main/docs/CONTRIBUTING.md) file to start.
-
