@@ -172,15 +172,29 @@ def initial_setup():
 
 def init_app():
     """Funcion auxiliar para iniciar la aplicacion."""
+
+    VERIFICA_CONFIGURACION = database.session.query(Configuracion).first()
+    VERIFICA_USUARIO = database.session.query(Usuario).first()
+
+    DB_INICIALIZADA = (VERIFICA_CONFIGURACION is not None) and (VERIFICA_USUARIO is not None)
+
     if DESARROLLO:
         log.warning("Modo desarrollo detectado.")
-        log.warning("Iniciando una base de datos nueva.")
-        database.drop_all()
-        initial_setup()
+        if not "NO_RESET_DATABASE" in environ:
+            log.warning("Iniciando una base de datos nueva.")
+            database.drop_all()
+            initial_setup()
+        else:
+            log.info("Ha elegido no reiniciar la base de datos de desarrollo.")
+            log.info("Debera iniciar reiniciar manualment su base de datos si realiza cambios al esquema de la DB.")
+            if not DB_INICIALIZADA:
+                log.warning("No se detecto una base de datos inicilizada.")
+                log.info("Iniciando nueva base de datos de desarrollo.")
+                initial_setup()
     else:
         log.info("Iniciando NOW LMS")
-        VERIFICA_CONFIGURACION = database.query(Configuracion).first()
-        if not VERIFICA_CONFIGURACION:
+
+        if not DB_INICIALIZADA:
             log.warning("No se detecto base de datos.")
             log.info("Iniciando una base de datos.")
             initial_setup()

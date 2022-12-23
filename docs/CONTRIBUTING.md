@@ -105,10 +105,10 @@ Please note that we use waitress as WSGI server because gunicorn do not work on 
 
 Default user and password are ```lms-admin```, default url to work with th server will be ```http://127.0.0.1:8080/```.
 
-Note that the reloader will setpup a new database with any code change, if you do not want this you can start NOW LMS as a python module without reloader.
+Note that the reloader will setpup a new database with any code change, if you do not want a fresh database any time you save a change you can set to True the ```NO_RESET_DATABASE``` as follow:
 
 ```
-python -m now_lms
+NO_RESET_DATABASE=True hupper -m now_lms
 ```
 
 #### Style Guide:
