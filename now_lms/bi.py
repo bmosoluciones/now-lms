@@ -125,14 +125,14 @@ def modificar_indice_seccion(
         RECURSO_POSTERIOR.indice = NO_INDICE_ACTUAL
         database.session.add(RECURSO_ACTUAL)
         database.session.add(RECURSO_POSTERIOR)
-        database.session.commit()
 
     elif task == "decrement" and RECURSO_ANTERIOR:
         RECURSO_ACTUAL.indice = NO_INDICE_ANTERIOR
         RECURSO_ANTERIOR.indice = NO_INDICE_ACTUAL
         database.session.add(RECURSO_ACTUAL)
         database.session.add(RECURSO_ANTERIOR)
-        database.session.commit()
+
+    database.session.commit()
 
 
 def asignar_curso_a_instructor(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
