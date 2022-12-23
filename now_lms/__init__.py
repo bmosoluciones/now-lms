@@ -173,14 +173,22 @@ def initial_setup():
 def init_app():
     """Funcion auxiliar para iniciar la aplicacion."""
 
-    VERIFICA_CONFIGURACION = database.session.query(Configuracion).first()
-    VERIFICA_USUARIO = database.session.query(Usuario).first()
-
-    DB_INICIALIZADA = (VERIFICA_CONFIGURACION is not None) and (VERIFICA_USUARIO is not None)
+    try:
+        VERIFICA_CONFIGURACION = Configuracion.query.first()
+        VERIFICA_USUARIO = Usuario.query.first()
+        DB_INICIALIZADA = (VERIFICA_CONFIGURACION is not None) and (VERIFICA_USUARIO is not None)
+    except OperationalError:
+        DB_INICIALIZADA = False
+    except ProgrammingError:
+        DB_INICIALIZADA = False
+    except PGProgrammingError:
+        DB_INICIALIZADA = False
+    except DatabaseError:
+        DB_INICIALIZADA = False
 
     if DESARROLLO:
         log.warning("Modo desarrollo detectado.")
-        if not "NO_RESET_DATABASE" in environ:
+        if "NO_RESET_DATABASE" not in environ:
             log.warning("Iniciando una base de datos nueva.")
             database.drop_all()
             initial_setup()
@@ -627,7 +635,7 @@ def curso(course_code):
         "learning/curso.html",
         curso=Curso.query.filter_by(codigo=course_code).first(),
         secciones=CursoSeccion.query.filter_by(curso=course_code).order_by(CursoSeccion.indice).all(),
-        recursos=CursoRecurso.query.filter_by(curso=course_code).all(),
+        recursos=CursoRecurso.query.filter_by(curso=course_code).order_by(CursoRecurso.indice).all(),
     )
 
 
