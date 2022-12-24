@@ -445,6 +445,7 @@ def test_reorganizar_indice_web(client, auth):
 
 def test_update_resource_index(client, auth):
     from now_lms import CursoRecurso
+    from now_lms.bi import reorganiza_indice_seccion
 
     database.drop_all()
     initial_setup()
@@ -467,3 +468,5 @@ def test_update_resource_index(client, auth):
 
     for url in urls:
         client.get(url)
+
+    reorganiza_indice_seccion(recurso1.seccion)

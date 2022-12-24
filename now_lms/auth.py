@@ -44,6 +44,6 @@ def validar_acceso(usuario_id, acceso):
     registro = Usuario.query.filter_by(usuario=usuario_id).first()
     if registro is not None:
         clave_validada = checkpw(acceso.encode(), registro.acceso)
-    else:
+    else:  # pragma: no cover
         clave_validada = False
     return clave_validada
