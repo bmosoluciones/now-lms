@@ -277,7 +277,7 @@ def crear_cursos_predeterminados():
         nombre="How to Teach OnLine.",
         descripcion="Kristina Garcia - Top Tips for New Online Teachers!",
         youtube_url="https://www.youtube.com/watch?v=CvPj4V_j7u8",
-        indice=1,
+        indice=2,
     )
 
     with current_app.app_context():
