@@ -80,7 +80,7 @@ def test_database_is_populated():
     query = now_lms.CursoRecurso.query.filter_by(nombre="Introduction to Online Teaching").first()
     assert query.descripcion == "UofSC Center for Teaching Excellence - Introduction to Online Teaching."
     assert query.tipo == "youtube"
-    assert query.youtube_url == "https://www.youtube.com/watch?v=CvPj4V_j7u8"
+    assert query.url == "https://www.youtube.com/watch?v=CvPj4V_j7u8"
     assert query.seccion is not None
     assert query.codigo is not None
 
