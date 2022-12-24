@@ -20,7 +20,7 @@
 # pylint: disable=E1101
 
 # Libreria standar:
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta
 from typing import Union
 from uuid import uuid4
 
@@ -124,12 +124,12 @@ class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     rel_curso = database.relationship("Curso", foreign_keys=curso)
     nombre = database.Column(database.String(150), nullable=False)
     descripcion = database.Column(database.String(250), nullable=False)
-    # link, youtube, text, file
+    # Implemented types: meet, pdf, youtube
     tipo = database.Column(database.String(150), nullable=False)
     # Youtube
-    youtube_url = database.Column(database.String(50), unique=False)
-    # Vimeo
-    vimeo_url = database.Column(database.String(50), unique=False)
+    url = database.Column(database.String(250), unique=False)
+    fecha = database.Column(database.Date())
+    hora = database.Column(database.Time())
 
 
 class Files(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -215,6 +215,7 @@ def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
 
 
 def crear_cursos_predeterminados():
+    # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
     log.info("Creando curso de demostración.")
     demo = Curso(
@@ -263,7 +264,7 @@ def crear_cursos_predeterminados():
         tipo="youtube",
         nombre="Introduction to Online Teaching",
         descripcion="UofSC Center for Teaching Excellence - Introduction to Online Teaching.",
-        youtube_url="https://www.youtube.com/watch?v=CvPj4V_j7u8",
+        url="https://www.youtube.com/watch?v=CvPj4V_j7u8",
         indice=1,
     )
 
@@ -276,14 +277,9 @@ def crear_cursos_predeterminados():
         tipo="youtube",
         nombre="How to Teach OnLine.",
         descripcion="Kristina Garcia - Top Tips for New Online Teachers!",
-        youtube_url="https://www.youtube.com/watch?v=CvPj4V_j7u8",
+        url="https://www.youtube.com/watch?v=CvPj4V_j7u8",
         indice=2,
     )
-
-    with current_app.app_context():
-        database.session.add(nuevo_recurso1)
-        database.session.add(nuevo_recurso2)
-        database.session.commit()
 
     ramdon2 = uuid4()
     seccion_id2 = str(ramdon2.hex)
@@ -309,12 +305,44 @@ def crear_cursos_predeterminados():
         tipo="youtube",
         nombre="4 Steps to Sell your Online Course with 0 audience.",
         descripcion="Sunny Lenarduzzi - No audience? No problem! YOU DON’T NEED AN AUDIENCE TO START A BUSINESS.",
-        youtube_url="https://www.youtube.com/watch?v=TWQFHRt3dNg",
+        url="https://www.youtube.com/watch?v=TWQFHRt3dNg",
         indice=1,
     )
 
+    ramdon4 = uuid4()
+    recurso_id4 = str(ramdon4.hex)
+    nuevo_recurso4 = CursoRecurso(
+        codigo=recurso_id4,
+        curso="now",
+        seccion=seccion_id2,
+        tipo="meet",
+        nombre="A live meet about course sales.",
+        descripcion="Live meets will improve your course.",
+        url="https://meet.jit.si/",
+        indice=2,
+        fecha=datetime.today() + timedelta(days=9),
+        hora=time(hour=14, minute=30),
+    )
+
+    ramdon5 = uuid4()
+    recurso_id5 = str(ramdon5.hex)
+    nuevo_recurso5 = CursoRecurso(
+        codigo=recurso_id5,
+        curso="now",
+        seccion=seccion_id2,
+        tipo="pdf",
+        nombre="FACULTY DEVELOPMENT FOR ONLINE TEACHING AS A CATALYST FOR CHANGE.",
+        descripcion="A PDF file to share with yours learners.",
+        url="https://files.eric.ed.gov/fulltext/EJ971044.pdf",
+        indice=3,
+    )
+
     with current_app.app_context():
+        database.session.add(nuevo_recurso1)
+        database.session.add(nuevo_recurso2)
         database.session.add(nuevo_recurso3)
+        database.session.add(nuevo_recurso4)
+        database.session.add(nuevo_recurso5)
         database.session.commit()
 
 

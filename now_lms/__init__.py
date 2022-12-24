@@ -70,6 +70,7 @@ from now_lms.bi import (
     cambia_seccion_publico,
 )
 from now_lms.forms import LoginForm, LogonForm, CurseForm, CursoRecursoVideoYoutube, CursoSeccionForm
+from now_lms.misc import ICONOS_RECURSOS
 from now_lms.version import VERSION
 
 # < --------------------------------------------------------------------------------------------- >
@@ -150,6 +151,7 @@ with lms_app.app_context():  # pragma: no cover
     lms_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
     lms_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
     lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
+    lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
 
 
 def initial_setup():
@@ -481,7 +483,8 @@ def nuevo_curso():
 @login_required
 @perfil_requerido("instructor")
 def nuevo_seccion(course_code):
-    """Formulario para crear un nuevo recurso."""
+    """Formulario para crear una nueva sección en el curso."""
+    # Las seccion son contenedores de recursos.
     form = CursoSeccionForm()
     if form.validate_on_submit() or request.method == "POST":
         ramdon = uuid4()
@@ -562,7 +565,7 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             tipo="youtube",
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
-            youtube_url=form.youtube_url.data,
+            url=form.youtube_url.data,
             indice=nuevo_indice,
         )
         try:
