@@ -69,6 +69,22 @@ def auth(client):
     return AuthActions(client)
 
 
+def test_database_is_populated():
+    database.drop_all()
+    initial_setup()
+    query = now_lms.Curso.query.filter_by(codigo="now").first()
+    assert query is not None
+    assert query.codigo == "now"
+    query = now_lms.CursoSeccion.query.filter_by(nombre="Introduction to online teaching.").first()
+    assert query.descripcion == "This is introductory material to online teaching."
+    query = now_lms.CursoRecurso.query.filter_by(nombre="Introduction to Online Teaching").first()
+    assert query.descripcion == "UofSC Center for Teaching Excellence - Introduction to Online Teaching."
+    assert query.tipo == "youtube"
+    assert query.youtube_url == "https://www.youtube.com/watch?v=CvPj4V_j7u8"
+    assert query.seccion is not None
+    assert query.codigo is not None
+
+
 def test_login(client):
     response = client.get("/login")
     assert b"Inicio" in response.data
@@ -82,6 +98,7 @@ def test_logon(client):
 
 def test_root(client):
     response = client.get("/")
+    assert b"NOW LMS" in response.data
     assert b"Sistema de aprendizaje en linea." in response.data
     assert b"Welcome! This is your first course." in response.data
 
