@@ -98,8 +98,9 @@ def test_logon(client):
 
 def test_root(client):
     response = client.get("/")
+    database.drop_all()
+    initial_setup()
     assert b"NOW LMS" in response.data
-    assert b"Sistema de aprendizaje en linea." in response.data
     assert b"Welcome! This is your first course." in response.data
 
 
