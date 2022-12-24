@@ -20,9 +20,12 @@
 # pylint: disable=E1101
 
 # Libreria standar:
+from datetime import datetime, timedelta
 from typing import Union
+from uuid import uuid4
 
 # Librerias de terceros:
+from flask import current_app
 from flask_login import current_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from loguru import logger as log
@@ -214,13 +217,105 @@ def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
 def crear_cursos_predeterminados():
     """Crea en la base de datos un curso de demostración."""
     log.info("Creando curso de demostración.")
-    course1 = Curso(nombre="Demo", codigo="demo", descripcion="This is a demo", estado="draft")
-    course2 = Curso(nombre="Course 1", codigo="course1", descripcion="This is the first course.", estado="open")
-    course3 = Curso(nombre="Course 2", codigo="course2", descripcion="This is the first course.", estado="closed")
-    database.session.add(course1)
-    database.session.add(course2)
-    database.session.add(course3)
-    database.session.commit()
+    demo = Curso(
+        nombre="First Course",
+        codigo="now",
+        descripcion="Welcome! This is your first course.",
+        estado="open",
+        certificado=True,
+        publico=True,
+        fecha_inicio=datetime.today() + timedelta(days=7),
+        fecha_fin=datetime.today() + timedelta(days=14),
+        duracion=7,
+        nivel=1,
+        precio=10,
+        capacidad=50,
+        auditable=True,
+        portada="https://img.freepik.com/vector-gratis/concepto-tutoriales-linea_52683-37480.jpg",
+        # https://www.freepik.es/vector-gratis/concepto-tutoriales-linea_7915189.htm
+        # Imagen de pikisuperstar en Freepik
+    )
+    with current_app.app_context():
+        database.session.add(demo)
+        database.session.commit()
+
+    ramdon = uuid4()
+    seccion_id = str(ramdon.hex)
+    nueva_seccion1 = CursoSeccion(
+        codigo=seccion_id,
+        curso="now",
+        nombre="Introduction to online teaching.",
+        descripcion="This is introductory material to online teaching.",
+        estado=False,
+        indice=1,
+    )
+
+    with current_app.app_context():
+        database.session.add(nueva_seccion1)
+        database.session.commit()
+
+    ramdon1 = uuid4()
+    recurso_id1 = str(ramdon1.hex)
+    nuevo_recurso1 = CursoRecurso(
+        codigo=recurso_id1,
+        curso="now",
+        seccion=seccion_id,
+        tipo="youtube",
+        nombre="Introduction to Online Teaching",
+        descripcion="UofSC Center for Teaching Excellence - Introduction to Online Teaching.",
+        youtube_url="https://www.youtube.com/watch?v=CvPj4V_j7u8",
+        indice=1,
+    )
+
+    ramdon2 = uuid4()
+    recurso_id2 = str(ramdon2.hex)
+    nuevo_recurso2 = CursoRecurso(
+        codigo=recurso_id2,
+        curso="now",
+        seccion=seccion_id,
+        tipo="youtube",
+        nombre="How to Teach OnLine.",
+        descripcion="Kristina Garcia - Top Tips for New Online Teachers!",
+        youtube_url="https://www.youtube.com/watch?v=CvPj4V_j7u8",
+        indice=1,
+    )
+
+    with current_app.app_context():
+        database.session.add(nuevo_recurso1)
+        database.session.add(nuevo_recurso2)
+        database.session.commit()
+
+    ramdon2 = uuid4()
+    seccion_id2 = str(ramdon2.hex)
+    nueva_seccion2 = CursoSeccion(
+        codigo=seccion_id2,
+        curso="now",
+        nombre="How to sell a online course.",
+        descripcion="This is introductory material to how to sell your online course.",
+        estado=False,
+        indice=2,
+    )
+
+    with current_app.app_context():
+        database.session.add(nueva_seccion2)
+        database.session.commit()
+
+    ramdon3 = uuid4()
+    recurso_id3 = str(ramdon3.hex)
+    nuevo_recurso3 = CursoRecurso(
+        codigo=recurso_id3,
+        curso="now",
+        seccion=seccion_id2,
+        tipo="youtube",
+        nombre="4 Steps to Sell your Online Course with 0 audience.",
+        descripcion="Sunny Lenarduzzi - No audience? No problem! YOU DON’T NEED AN AUDIENCE TO START A BUSINESS.",
+        youtube_url="https://www.youtube.com/watch?v=TWQFHRt3dNg",
+        indice=1,
+    )
+
+    with current_app.app_context():
+        database.session.add(nuevo_recurso3)
+        database.session.commit()
 
 
 def crear_usuarios_predeterminados():
