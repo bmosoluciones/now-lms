@@ -104,6 +104,27 @@ def test_root(client):
     assert b"Welcome! This is your first course." in response.data
 
 
+def test_course_logout(client):
+    database.drop_all()
+    initial_setup()
+    response = client.get("/course/now")
+    assert b"First Course" in response.data
+    assert b"Welcome! This is your first course." in response.data
+    assert b"now - First Course" in response.data
+    assert b"Crear Cuenta" in response.data
+
+
+def test_course_logout(client, auth):
+    database.drop_all()
+    initial_setup()
+    auth.login()
+    response = client.get("/course/now")
+    assert b"First Course" in response.data
+    assert b"Welcome! This is your first course." in response.data
+    assert b"now - First Course" in response.data
+    assert b"Quitar del Sitio Web" in response.data
+
+
 def test_app(client, auth):
     auth.login()
     response = client.get("/panel")
@@ -420,3 +441,29 @@ def test_reorganizar_indice_web(client, auth):
     client.get("/course/seccion/T-002/decrement/2")
     seccion1 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 1", CursoSeccion.curso == "T-002").first()
     assert seccion1.indice == 3
+
+
+def test_update_resource_index(client, auth):
+    from now_lms import CursoRecurso
+
+    database.drop_all()
+    initial_setup()
+
+    auth.login()
+
+    recurso1 = CursoRecurso.query.filter(CursoRecurso.nombre == "Introduction to Online Teaching").first()
+    assert recurso1 is not None
+    recurso2 = CursoRecurso.query.filter(CursoRecurso.nombre == "How to Teach OnLine.").first()
+    assert recurso2 is not None
+    recurso3 = CursoRecurso.query.filter(CursoRecurso.nombre == "4 Steps to Sell your Online Course with 0 audience.").first()
+    assert recurso3 is not None
+
+    urls = (
+        "/course/resource/now/" + recurso1.seccion + "/increment/1",
+        "/course/resource/now/" + recurso1.seccion + "/decrement/1",
+        "/course/resource/now/" + recurso1.seccion + "/increment/2",
+        "/course/resource/now/" + recurso1.seccion + "/decrement/2",
+    )
+
+    for url in urls:
+        client.get(url)
