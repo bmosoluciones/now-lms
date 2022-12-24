@@ -166,7 +166,6 @@ def initial_setup():
     database.session.commit()
     crear_usuarios_predeterminados()
     if DESARROLLO:
-        log.info("Creando cursos predeterminados para desarrollo.")
         crear_cursos_predeterminados()
 
 
@@ -386,7 +385,7 @@ def home():
     """Página principal de la aplicación."""
 
     CURSOS = database.paginate(
-        database.select(Curso).filter(Curso.publico == True, Curso.estado == "public"),  # noqa: E712
+        database.select(Curso).filter(Curso.publico == True, Curso.estado == "open"),  # noqa: E712
         page=request.args.get("page", default=1, type=int),
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,

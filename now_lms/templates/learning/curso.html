@@ -229,9 +229,14 @@
                         </div>
                       {% else %}
 
-                      <div class="d-flex justify-content-center">
-                        <a href="{{ url_for("nuevo_seccion", course_code=curso.codigo) }}" class="btn btn-primary" role="button" aria-disabled="true">Crear Nueva Sección</a>
-                      </div>
+                        <div class="d-flex justify-content-center">
+                          {% if permitir_editar %}
+                          <a href="{{ url_for("nuevo_seccion", course_code=curso.codigo) }}" class="btn btn-primary" role="button" aria-disabled="true">Crear Nueva Sección</a>
+                          {% else %}
+                          <p>Este curso actualmente no cuenta con secciones disponibles.</p>
+                          {% endif %}
+                        </div>
+                       
                       {% endif %}
                 </div>
 

@@ -18,7 +18,7 @@
 # pylint: disable=redefined-outer-name
 import pytest
 import now_lms
-from now_lms import app, database, init_app, Configuracion, crear_usuarios_predeterminados, crear_cursos_predeterminados, log
+from now_lms import app, database, initial_setup, log
 
 app.config["SECRET_KEY"] = "jgjañlsldaksjdklasjfkjj"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
@@ -31,17 +31,10 @@ app.app_context().push()
 
 @pytest.fixture(scope="module", autouse=True)
 def lms():
-    with app.app_context():
-        database.drop_all()
-        database.create_all()
-        config = Configuracion(
-            titulo="NOW LMS",
-            descripcion="Sistema de aprendizaje en linea.",
-        )
-        database.session.add(config)
-        database.session.commit()
-        crear_usuarios_predeterminados()
-        crear_cursos_predeterminados()
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
+
     app.app_context().push()
     yield app
 
@@ -89,7 +82,8 @@ def test_logon(client):
 
 def test_root(client):
     response = client.get("/")
-    assert b"No hay cursos disponibles en este momento." in response.data
+    assert b"Sistema de aprendizaje en linea." in response.data
+    assert b"Welcome! This is your first course." in response.data
 
 
 def test_app(client, auth):
@@ -290,16 +284,16 @@ def test_crear_curso(client, auth):
 
 def test_cambiar_curso_publico(client, auth):
     auth.login()
-    client.get("/change_curse_public?curse=demo")
-    client.get("/change_curse_public?curse=demo")
+    client.get("/change_curse_public?curse=now")
+    client.get("/change_curse_public?curse=now")
 
 
 def test_cambiar_estatus_curso(client, auth):
     auth.login()
-    client.get("/change_curse_status?curse=demo&status=draft")
-    client.get("/change_curse_status?curse=demo&status=public")
-    client.get("/change_curse_status?curse=demo&status=open")
-    client.get("/change_curse_status?curse=demo&status=closed")
+    client.get("/change_curse_status?curse=now&status=draft")
+    client.get("/change_curse_status?curse=now&status=public")
+    client.get("/change_curse_status?curse=now&status=open")
+    client.get("/change_curse_status?curse=now&status=closed")
 
 
 def test_indices_seccion():
