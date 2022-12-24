@@ -73,7 +73,7 @@ if DESARROLLO:  # pragma: no cover
     log.warning("Opciones de desarrollo detectadas, revise su configuración.")
 
 
-if environ.get("SQLALCHEMY_ECHO"):
+if environ.get("SQLALCHEMY_ECHO"):  # pragma: no cover
     CONFIGURACION["SQLALCHEMY_ECHO"] = True
 
 
