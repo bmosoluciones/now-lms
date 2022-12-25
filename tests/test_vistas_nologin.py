@@ -57,6 +57,7 @@ def test_no_login_url(client):
     database.drop_all()
     initial_setup()
     page = client.get("/home")
+    assert page.status_code == 200
     assert b"NOW LMS" in page.data
     assert b"First Course" in page.data
     assert b"1 cursos disponibles." in page.data
@@ -74,3 +75,16 @@ def test_no_login_url(client):
     assert b"First Course" in page.data
     assert b"Curso Certificado" in page.data
     assert b"This is introductory material to online teaching." in page.data
+
+
+def test_courses_nologin(client):
+
+    database.drop_all()
+    initial_setup()
+
+    query = now_lms.CursoRecurso.query.all()
+
+    for recurso in query:
+        URL = "/cource/" + recurso.curso + "/resource/" + recurso.tipo + "/" + recurso.codigo
+        page = client.get(URL)
+        assert page.status_code == 302
