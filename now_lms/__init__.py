@@ -641,6 +641,26 @@ def curso(course_code):
     )
 
 
+TEMPLATES_BY_TYPE = {
+    "meet": "type_meet.html",
+    "pdf": "type_pdf.html",
+    "youtube": "type_youtube.html",
+}
+
+
+@lms_app.route("/cource/<curso_id>/resource/<resource_type>/<codigo>")
+@login_required
+def recurso(curso_id, resource_type, codigo):
+    """Pagina de un recurso."""
+
+    CURSO = database.session.query(Curso).filter(Curso.codigo == curso_id).first()
+    RECURSO = database.session.query(CursoRecurso).filter(CursoRecurso.codigo == codigo).first()
+    SECCION = database.session.query(CursoSeccion).filter(CursoSeccion.codigo == RECURSO.seccion).first()
+    TEMPLATE = "learning/resources/" + TEMPLATES_BY_TYPE[resource_type]
+
+    return render_template(TEMPLATE, curso=CURSO, recurso=RECURSO, seccion=SECCION)
+
+
 # <-------- Administración -------->
 @lms_app.route("/users")
 @login_required
