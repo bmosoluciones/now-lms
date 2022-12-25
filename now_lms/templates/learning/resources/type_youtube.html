@@ -1,0 +1,42 @@
+{% import "macros.html" as macros %}
+{% import "learning/resources/type_macros.html" as r_macros %}
+{% set permitir_docente = docente_asignado(id_curso=curso.codigo) %}
+{% set permitir_moderador = moderador_asignado(id_curso=curso.codigo) %}
+{% set permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %}
+{% set permitir_editar = current_user.tipo == "admin" or permitir_docente %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+
+<head>
+
+    {{ macros.headertags() }}
+    <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
+
+    {{ macros.local_style() }}
+</head>
+
+<body>
+
+    {{ macros.navbar() }}
+
+    <main>
+
+      {{ macros.notify() }}
+
+      <div class="container px-0 py-3" id="icon-grid">
+        <h4 class="pb-2 border-bottom">{{ recurso.nombre }}</h4>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+            <div class="col d-flex align-items-start">
+                
+            </div>
+        </div>
+        {{ r_macros.nav_footer() }}
+    </div>
+
+    </main>
+
+</body>
+
+</html>
