@@ -44,6 +44,8 @@ MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA: int = 10
 LLAVE_FORONEA_CURSO: str = "curso.codigo"
 LLAVE_FORONEA_USUARIO: str = "usuario.usuario"
 LLAVE_FORANEA_SECCION: str = "curso_seccion.codigo"
+LLAVE_FORANEA_RECURSO: str = "curso_recurso.codigo"
+LLAVE_FORANEA_PREGUNTA: str = "curso_recurso_pregunta.codigo"
 
 
 # pylint: disable=too-few-public-methods
@@ -124,12 +126,91 @@ class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     rel_curso = database.relationship("Curso", foreign_keys=curso)
     nombre = database.Column(database.String(150), nullable=False)
     descripcion = database.Column(database.String(250), nullable=False)
-    # Implemented types: meet, pdf, youtube
+    # Tipos implementados:
+    #   - prueba: Una evaluación para valor el aprendizaje del estudiante.
+    #   - meet: Un link a un reunión en linea en la plataforma de elección del docente:
+    # Zoom, Microsoft Teams, Google Meet, etc.
+    #   - pdf: Un link a un pdf descargable
+    #   - youtube: Un link a un vídeo alojado en YouTube.
+    # Es importante mencionar advertir al docente que si bien navegadores basados en Chromium como MS Edge o Google Chrome
+    # no permiten descargar videos directamente desde ese navegador exiten N cantidad de sitios y herramientas que permiten
+    # bajar al ordenador vídeos alojados en YouTube por que lo el contenido es facilmente plageable.
     tipo = database.Column(database.String(150), nullable=False)
-    # Youtube
+    # Parte de la logica de la aplicación es que el docente puede definir si en recurso debe ser
+    # completado para considerar el curso finalizado, si el recurso es opcional o si el alumno puede
+    # decidir completar uno de N recurso recursos para considerar el curso finalizado.
+    # Se definen 3 tipos de recurso: requerido, opcional y alternativo.
+    requerido = database.Column(database.String(15))
     url = database.Column(database.String(250), unique=False)
     fecha = database.Column(database.Date())
     hora = database.Column(database.Time())
+
+
+class CursoRecursoAvance(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """
+    Un control del avance de cada usuario de tipo estudiante de los recursos de un curso,
+    para que un curso de considere finalizado un alumno debe completar todos los recursos requeridos.
+    """
+
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
+    seccion = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False)
+    recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False)
+    usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
+    # pendiente, iniciado, completado
+    estado = database.Column(database.String(15))
+    avance = database.Column(database.Float(asdecimal=True))
+
+
+class CursoRecursoPregunta(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Los recursos de tipo prueba estan conformados por una serie de preguntas que el usario debe contestar."""
+
+    indice = database.Column(database.Integer())
+    codigo = database.Column(database.String(32), unique=False)
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
+    seccion = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False)
+    recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False)
+    # Tipo:
+    # boleano: Verdadero o Falso
+    # seleccionar: El usuario debe seleccionar una de varias opciónes.
+    # texto: El alunmo debe desarrollar una respuesta, normalmente el instructor/moderador
+    # debera calificar la respuesta
+    tipo = database.Column(database.String(15))
+    # Es posible que el instructor decida modificar las evaluaciones, pero se debe conservar el historial.
+    evaluar = database.Column(database.Boolean())
+
+
+class CursoRecursoPreguntaOpcion(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Las preguntas tienen opciones."""
+
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
+    recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False)
+    pregunta = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_PREGUNTA), nullable=False)
+    texto = database.Column(database.String(50))
+    boleano = database.Column(database.Boolean())
+    correcta = database.Column(database.Boolean())
+
+
+class CursoRecursoPreguntaRespuesta(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Respuestas de los usuarios a las preguntas del curso."""
+
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
+    recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False)
+    pregunta = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_PREGUNTA), nullable=False)
+    usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
+    texto = database.Column(database.String(500))
+    boleano = database.Column(database.Boolean())
+    correcta = database.Column(database.Boolean())
+    nota = database.Column(database.Float(asdecimal=True))
+
+
+class CursoRecursoConsulta(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Un usuario debe poder hacer consultas a su tutor/moderador."""
+
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
+    recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False)
+    usuario = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_USUARIO), nullable=False)
+    pregunta = database.Column(database.String(500))
+    respuesta = database.Column(database.String(500))
 
 
 class Files(database.Model, BaseTabla):  # type: ignore[name-defined]
