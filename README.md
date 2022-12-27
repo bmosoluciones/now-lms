@@ -16,7 +16,7 @@ Simple to {install, use, configure, mantain} learning management system.
 Students and Educators using NOW-LMS please refer the [user manual](https://bmosoluciones.github.io/now-lms/).
 
 ## Getting Started
-Thanks for your interest in the Now - LMS project.
+Thanks for your interest in the Now - LMS project (the project).
 
 ### Dependencies
 
