@@ -649,8 +649,7 @@ TEMPLATES_BY_TYPE = {
 
 
 @lms_app.route("/cource/<curso_id>/resource/<resource_type>/<codigo>")
-@login_required
-def recurso(curso_id, resource_type, codigo):
+def pagina_recurso(curso_id, resource_type, codigo):
     """Pagina de un recurso."""
 
     CURSO = database.session.query(Curso).filter(Curso.codigo == curso_id).first()
@@ -658,7 +657,11 @@ def recurso(curso_id, resource_type, codigo):
     SECCION = database.session.query(CursoSeccion).filter(CursoSeccion.codigo == RECURSO.seccion).first()
     TEMPLATE = "learning/resources/" + TEMPLATES_BY_TYPE[resource_type]
 
-    return render_template(TEMPLATE, curso=CURSO, recurso=RECURSO, seccion=SECCION)
+    if current_user.is_authenticated or RECURSO.publico is True:
+        return render_template(TEMPLATE, curso=CURSO, recurso=RECURSO, seccion=SECCION)
+    else:
+        flash("No se encuentra autorizado a acceder al recurso solicitado.")
+        return abort(403)
 
 
 # <-------- Administración -------->

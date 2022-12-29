@@ -202,7 +202,20 @@
                                     {% if recurso.seccion == seccion.codigo %}
                                     <li class="list-group-item">
                                       <div class="d-flex justify-content-between">
+
+                                        {% if current_user.tipo == "admin" or permitir_estudiante %}
+                                        <a class="link-dark" href="{{ url_for("pagina_recurso", curso_id=recurso.curso, resource_type=recurso.tipo, codigo=recurso.codigo) }} ">
+                                          <div class="fw-bold"> <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i> {{ recurso.nombre }}</div>
+                                        </a>
+                                        {% elif recurso.publico == True %}
+                                        <a class="link-dark" href="{{ url_for("pagina_recurso", curso_id=recurso.curso, codigo=recurso.codigo, resource_type=recurso.tipo) }} ">
+                                          <div class="fw-bold"> <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i> {{ recurso.nombre }}</div>
+                                        </a>
+                                        <span class="badge bg-success">Preview</span>
+                                        {% else %}
                                         <div class="fw-bold"> <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i> {{ recurso.nombre }}</div>
+                                        {% endif %}
+
                                         {% if permitir_editar %}
                                         <div>
                                           <span class="badge bg-primary">

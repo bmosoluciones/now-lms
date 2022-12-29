@@ -144,6 +144,8 @@ class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     url = database.Column(database.String(250), unique=False)
     fecha = database.Column(database.Date())
     hora = database.Column(database.Time())
+    # Un instructor puede decidir brindar acceso publico a un recurso.
+    publico = database.Column(database.Boolean())
 
 
 class CursoRecursoAvance(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -347,6 +349,8 @@ def crear_cursos_predeterminados():
         descripcion="UofSC Center for Teaching Excellence - Introduction to Online Teaching.",
         url="https://www.youtube.com/watch?v=CvPj4V_j7u8",
         indice=1,
+        publico=True,
+        requerido=True,
     )
 
     ramdon2 = uuid4()
@@ -360,6 +364,8 @@ def crear_cursos_predeterminados():
         descripcion="Kristina Garcia - Top Tips for New Online Teachers!",
         url="https://www.youtube.com/watch?v=CvPj4V_j7u8",
         indice=2,
+        publico=False,
+        requerido=False,
     )
 
     ramdon2 = uuid4()
@@ -388,6 +394,8 @@ def crear_cursos_predeterminados():
         descripcion="Sunny Lenarduzzi - No audience? No problem! YOU DON’T NEED AN AUDIENCE TO START A BUSINESS.",
         url="https://www.youtube.com/watch?v=TWQFHRt3dNg",
         indice=1,
+        publico=False,
+        requerido=True,
     )
 
     ramdon4 = uuid4()
@@ -403,6 +411,8 @@ def crear_cursos_predeterminados():
         indice=2,
         fecha=datetime.today() + timedelta(days=9),
         hora=time(hour=14, minute=30),
+        publico=False,
+        requerido=True,
     )
 
     ramdon5 = uuid4()
@@ -416,6 +426,8 @@ def crear_cursos_predeterminados():
         descripcion="A PDF file to share with yours learners.",
         url="https://files.eric.ed.gov/fulltext/EJ971044.pdf",
         indice=3,
+        publico=False,
+        requerido=True,
     )
 
     with current_app.app_context():
