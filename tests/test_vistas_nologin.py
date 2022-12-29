@@ -87,4 +87,7 @@ def test_courses_nologin(client):
     for recurso in query:
         URL = "/cource/" + recurso.curso + "/resource/" + recurso.tipo + "/" + recurso.codigo
         page = client.get(URL)
-        assert page.status_code == 302
+        if recurso.publico is True:
+            assert page.status_code == 200
+        else:
+            assert page.status_code == 403
