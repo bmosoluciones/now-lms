@@ -654,11 +654,13 @@ def pagina_recurso(curso_id, resource_type, codigo):
 
     CURSO = database.session.query(Curso).filter(Curso.codigo == curso_id).first()
     RECURSO = database.session.query(CursoRecurso).filter(CursoRecurso.codigo == codigo).first()
+    RECURSOS = database.session.query(CursoRecurso).filter(CursoRecurso.curso == curso_id).order_by(CursoRecurso.indice)
     SECCION = database.session.query(CursoSeccion).filter(CursoSeccion.codigo == RECURSO.seccion).first()
+    SECCIONES = database.session.query(CursoSeccion).filter(CursoSeccion.curso == curso_id).order_by(CursoSeccion.indice)
     TEMPLATE = "learning/resources/" + TEMPLATES_BY_TYPE[resource_type]
 
     if current_user.is_authenticated or RECURSO.publico is True:
-        return render_template(TEMPLATE, curso=CURSO, recurso=RECURSO, seccion=SECCION)
+        return render_template(TEMPLATE, curso=CURSO, recurso=RECURSO, recursos=RECURSOS, seccion=SECCION, secciones=SECCIONES)
     else:
         flash("No se encuentra autorizado a acceder al recurso solicitado.")
         return abort(403)
