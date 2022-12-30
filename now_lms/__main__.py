@@ -23,7 +23,6 @@ Permite ejecutar el sistema con:
    python -m now_lms
 
 """
-
 from now_lms import serve
 
 if __name__ == "__main__":
