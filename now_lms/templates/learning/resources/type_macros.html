@@ -7,3 +7,31 @@
 </div>
 
 {%- endmacro %}
+
+{% macro resource_nav(secciones=None, recursos=None) %}
+
+<h2 class="h6 pt-4 pb-3 mb-4 border-bottom">Contenido del Curso</h2>
+            <nav class="small" id="toc">
+              <ul class="list-unstyled">
+                {% for s in secciones %}
+                <li>
+                  <button class="btn d-inline-flex align-items-center collapsed border-0" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#contents-collapse-{{s.codigo}}" aria-controls="contents-collapse">
+                    <strong>Sección {{s.indice}}:</strong>  {{ s.nombre }}
+                  </button>
+                  <ul class="list-unstyled ps-3 collapse" id="contents-collapse-{{s.codigo}}">
+                    {% for r in recursos %}
+                    {% if r.seccion == s.codigo %}
+                    <li>
+                      <a class="d-inline-flex align-items-center link-dark rounded text-decoration-none" href="{{ url_for("pagina_recurso", curso_id=r.curso, codigo=r.codigo, resource_type=r.tipo) }}">
+                      {{ r.nombre | capitalize }}
+                      </a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                  </ul>
+                </li>
+                {% endfor %}
+              </ul>
+            </nav>
+
+{%- endmacro %}
