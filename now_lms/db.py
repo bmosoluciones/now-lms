@@ -25,7 +25,6 @@ from typing import Union
 from uuid import uuid4
 
 # Librerias de terceros:
-from flask import current_app
 from flask_login import current_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from loguru import logger as log
@@ -166,6 +165,7 @@ class CursoRecursoAvance(database.Model, BaseTabla):  # type: ignore[name-define
 class CursoRecursoPregunta(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Los recursos de tipo prueba estan conformados por una serie de preguntas que el usario debe contestar."""
 
+    __table_args__ = (database.UniqueConstraint("codigo", name="curso_recurso_pregunta_unico"),)
     indice = database.Column(database.Integer())
     codigo = database.Column(database.String(32), unique=False)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORONEA_CURSO), nullable=False)
@@ -319,10 +319,10 @@ def crear_cursos_predeterminados():
         # https://www.freepik.es/vector-gratis/concepto-tutoriales-linea_7915189.htm
         # Imagen de pikisuperstar en Freepik
     )
-    with current_app.app_context():
-        database.session.add(demo)
-        database.session.commit()
+    database.session.add(demo)
+    database.session.commit()
 
+    log.info("Creando seccion 1.")
     ramdon = uuid4()
     seccion_id = str(ramdon.hex)
     nueva_seccion1 = CursoSeccion(
@@ -334,10 +334,10 @@ def crear_cursos_predeterminados():
         indice=1,
     )
 
-    with current_app.app_context():
-        database.session.add(nueva_seccion1)
-        database.session.commit()
+    database.session.add(nueva_seccion1)
+    database.session.commit()
 
+    log.info("Creando recurso 1.")
     ramdon1 = uuid4()
     recurso_id1 = str(ramdon1.hex)
     nuevo_recurso1 = CursoRecurso(
@@ -353,6 +353,7 @@ def crear_cursos_predeterminados():
         requerido=True,
     )
 
+    log.info("Creando recurso 2.")
     ramdon2 = uuid4()
     recurso_id2 = str(ramdon2.hex)
     nuevo_recurso2 = CursoRecurso(
@@ -368,6 +369,7 @@ def crear_cursos_predeterminados():
         requerido=False,
     )
 
+    log.info("Creando seccion 2.")
     ramdon2 = uuid4()
     seccion_id2 = str(ramdon2.hex)
     nueva_seccion2 = CursoSeccion(
@@ -379,10 +381,10 @@ def crear_cursos_predeterminados():
         indice=2,
     )
 
-    with current_app.app_context():
-        database.session.add(nueva_seccion2)
-        database.session.commit()
+    database.session.add(nueva_seccion2)
+    database.session.commit()
 
+    log.info("Creando recurso 3.")
     ramdon3 = uuid4()
     recurso_id3 = str(ramdon3.hex)
     nuevo_recurso3 = CursoRecurso(
@@ -398,6 +400,7 @@ def crear_cursos_predeterminados():
         requerido=True,
     )
 
+    log.info("Creando recurso 4.")
     ramdon4 = uuid4()
     recurso_id4 = str(ramdon4.hex)
     nuevo_recurso4 = CursoRecurso(
@@ -415,6 +418,7 @@ def crear_cursos_predeterminados():
         requerido=True,
     )
 
+    log.info("Creando recurso 5.")
     ramdon5 = uuid4()
     recurso_id5 = str(ramdon5.hex)
     nuevo_recurso5 = CursoRecurso(
@@ -430,13 +434,12 @@ def crear_cursos_predeterminados():
         requerido=True,
     )
 
-    with current_app.app_context():
-        database.session.add(nuevo_recurso1)
-        database.session.add(nuevo_recurso2)
-        database.session.add(nuevo_recurso3)
-        database.session.add(nuevo_recurso4)
-        database.session.add(nuevo_recurso5)
-        database.session.commit()
+    database.session.add(nuevo_recurso1)
+    database.session.add(nuevo_recurso2)
+    database.session.add(nuevo_recurso3)
+    database.session.add(nuevo_recurso4)
+    database.session.add(nuevo_recurso5)
+    database.session.commit()
 
 
 def crear_usuarios_predeterminados():
