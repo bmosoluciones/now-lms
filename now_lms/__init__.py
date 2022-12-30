@@ -156,7 +156,7 @@ with lms_app.app_context():  # pragma: no cover
 
 def initial_setup():
     """Inicializa una nueva bases de datos"""
-    current_app.app_context().push()
+    lms_app.app_context().push()
     log.info("Iniciando Configuracion de la aplicacion.")
     log.info("Creando esquema de base de datos.")
     database.create_all()
@@ -167,13 +167,13 @@ def initial_setup():
     database.session.add(config)
     database.session.commit()
     crear_usuarios_predeterminados()
-    if DESARROLLO:
-        crear_cursos_predeterminados()
+    crear_cursos_predeterminados()
 
 
 def init_app():  # pragma: no cover
     """Funcion auxiliar para iniciar la aplicacion."""
 
+    lms_app.app_context().push()
     try:
         VERIFICA_CONFIGURACION = Configuracion.query.first()
         VERIFICA_USUARIO = Usuario.query.first()
@@ -212,7 +212,7 @@ def init_app():  # pragma: no cover
 @lms_app.cli.command()
 def setup():  # pragma: no cover
     """Inicia al aplicacion."""
-    with current_app.app_context():
+    with lms_app.app_context():
         initial_setup()
 
 
@@ -221,7 +221,17 @@ def serve():  # pragma: no cover
     """Servidor WSGI predeterminado."""
     from waitress import serve as server
 
-    init_app()
+    try:
+        current_app.app_context().pop()
+    except IndexError:
+        pass
+    try:
+        lms_app.app_context().pop()
+    except IndexError:
+        pass
+
+    with lms_app.app_context():
+        init_app()
 
     if environ.get("LMS_PORT"):
         PORT: int = int(environ.get("LMS_PORT"))
