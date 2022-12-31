@@ -65,13 +65,14 @@ jobs:
       run: |
         python -m pip install curlylint
         python -m curlylint now_lms/templates/
-    - name: Test with pytest
+    - name: Test with pytest/SQLite
       run: |
-        # SQLite
         pytest  -v --exitfirst --cov=now_lms
-        # PostgreSQL
+    - name: Test with pytest/Postgres
+      run: |
         DATABASE_URL=postgresql://testdb:testdb@postgres:5432/testdb pytest  -v --exitfirst --cov=now_lms
-        MySQL
+    - name: Test with pytest/MySQL
+      run: |
         DATABASE_URL=mysql://testdb:testdb@mysql:3306/testdb pytest  -v --exitfirst --cov=now_lms
     - name: Check python  types
       run: |
