@@ -28,9 +28,9 @@ jobs:
         ports:
           - 5432/tcp
         env:
-          POSTGRES_DB: testdb
-          POSTGRES_USER: testdb
-          POSTGRES_PASSWORD: testdb
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -70,7 +70,7 @@ jobs:
         pytest  -v --exitfirst --cov=now_lms
     - name: Test with pytest/Postgres
       run: |
-        DATABASE_URL=postgresql://testdb:testdb@postgres:5432/testdb pytest  -v --exitfirst --cov=now_lms
+        DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres pytest  -v --exitfirst --cov=now_lms
     - name: Test with pytest/MySQL
       run: |
         DATABASE_URL=mysql://testdb:testdb@mysql:3306/testdb pytest  -v --exitfirst --cov=now_lms
