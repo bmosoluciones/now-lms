@@ -90,6 +90,11 @@ if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # pragma: no cover
 
     # Servicios como Elephantsql, Digital Ocean proveen una direccion de corrección que comienza con "postgres"
     # esta va a fallar con SQLAlchemy, se prefiere el drive pg8000 que no requere compilarse.
+    elif "postgresql:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
+        DBURI = "postgresql+pg8000" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[10:]  # type: ignore[index]
+        CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
+
+
     elif "postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
         DBURI = "postgresql+pg8000" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:]  # type: ignore[index]
         CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
