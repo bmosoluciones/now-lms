@@ -6,7 +6,7 @@ def test_postgresl_connection():
         if "postgres:" in environ.get("DATABASE_URL") or "postgresql:" in environ.get("DATABASE_URL"):
             import pg8000.native
 
-            con = pg8000.native.Connection("postgres", host="postgres", database="postgres", port=5432, password="postgres")
+            con = pg8000.native.Connection("postgresdb", host="postgres", database="postgresdb", port=5432, password="postgresdb")
             test = con.run()
             assert test is not None
 
@@ -17,7 +17,7 @@ def test_mysql_connection():
             import pymysql.cursors
 
             connection = pymysql.connect(
-                host="mysql", user="mysql", password="mysql", database="mysql", cursorclass=pymysql.cursors.DictCursor
+                host="mysql", user="mysqldb", password="mysqldb", database="mysqldb", cursorclass=pymysql.cursors.DictCursor
             )
 
             with connection:
