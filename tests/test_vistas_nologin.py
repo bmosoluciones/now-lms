@@ -21,7 +21,6 @@ import now_lms
 from now_lms import app, database, initial_setup, log
 
 app.config["SECRET_KEY"] = "jgjañlsldaksjdklasjfkjj"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["TESTING"] = True
 app.config["WTF_CSRF_ENABLED"] = False
@@ -38,10 +37,6 @@ def lms():
 
     app.app_context().push()
     yield app
-
-
-def test_dummy():
-    assert app.config["DEBUG"] == True
 
 
 @pytest.fixture
