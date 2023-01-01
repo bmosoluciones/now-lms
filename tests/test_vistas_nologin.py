@@ -26,6 +26,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["TESTING"] = True
 app.config["WTF_CSRF_ENABLED"] = False
 app.config["DEBUG"] = True
+app.config["PRESERVE_CONTEXT_ON_EXCEPTION"] = False
 app.app_context().push()
 
 
