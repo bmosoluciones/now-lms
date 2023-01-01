@@ -331,9 +331,7 @@ def crear_cursos_predeterminados():
     )
     database.session.add(demo)
     database.session.commit()
-    log.debug("Curso Creado Correctamente.")
 
-    log.info("Creando seccion 1.")
     ramdon1 = uuid4()
     seccion1_id = str(ramdon1.hex)
     nueva_seccion1 = CursoSeccion(
@@ -347,9 +345,7 @@ def crear_cursos_predeterminados():
 
     database.session.add(nueva_seccion1)
     database.session.commit()
-    log.debug("Seccion 1 creada correctamente.")
 
-    log.info("Creando seccion 2.")
     ramdon2 = uuid4()
     seccion2_id = str(ramdon2.hex)
     nueva_seccion2 = CursoSeccion(
@@ -363,9 +359,7 @@ def crear_cursos_predeterminados():
 
     database.session.add(nueva_seccion2)
     database.session.commit()
-    log.debug("Seccion 2 creada correctamente.")
 
-    log.info("Creando recurso 1.")
     ramdon1 = uuid4()
     recurso_id1 = str(ramdon1.hex)
     nuevo_recurso1 = CursoRecurso(
@@ -382,9 +376,7 @@ def crear_cursos_predeterminados():
     )
     database.session.add(nuevo_recurso1)
     database.session.commit()
-    log.debug("Recurso 1 creado correctamente.")
 
-    log.info("Creando recurso 2.")
     ramdon2 = uuid4()
     recurso_id2 = str(ramdon2.hex)
     nuevo_recurso2 = CursoRecurso(
@@ -401,9 +393,7 @@ def crear_cursos_predeterminados():
     )
     database.session.add(nuevo_recurso2)
     database.session.commit()
-    log.debug("Recurso 2 creado correctamente.")
 
-    log.info("Creando recurso 3.")
     ramdon3 = uuid4()
     recurso_id3 = str(ramdon3.hex)
     nuevo_recurso3 = CursoRecurso(
@@ -420,9 +410,7 @@ def crear_cursos_predeterminados():
     )
     database.session.add(nuevo_recurso3)
     database.session.commit()
-    log.debug("Recurso 3 creado correctamente.")
 
-    log.info("Creando recurso 4.")
     ramdon4 = uuid4()
     recurso_id4 = str(ramdon4.hex)
     nuevo_recurso4 = CursoRecurso(
@@ -441,9 +429,7 @@ def crear_cursos_predeterminados():
     )
     database.session.add(nuevo_recurso4)
     database.session.commit()
-    log.debug("Recurso 4 creado correctamente.")
 
-    log.info("Creando recurso 5.")
     ramdon5 = uuid4()
     recurso_id5 = str(ramdon5.hex)
     nuevo_recurso5 = CursoRecurso(
@@ -460,7 +446,7 @@ def crear_cursos_predeterminados():
     )
     database.session.add(nuevo_recurso5)
     database.session.commit()
-    log.debug("Recurso 5 creado correctamente.")
+    log.debug("Curso de demostración creado correctamente.")
 
 
 def crear_usuarios_predeterminados():
