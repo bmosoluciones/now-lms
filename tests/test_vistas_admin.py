@@ -81,31 +81,18 @@ def test_database_is_populated():
     assert query.codigo is not None
 
 
-def test_login(client):
-    response = client.get("/login")
-    assert response.status_code == 200
-    assert b"Inicio" in response.data
-    assert b"BMO Soluciones" in response.data
-
-
-def test_logon(client):
-    response = client.get("/logon")
-    assert response.status_code == 200
-    assert b"Crear nuevo usuario." in response.data
-
-
-def test_root(client):
-    database.drop_all()
-    initial_setup()
+def test_non_interactive(client):
     response = client.get("/")
     assert response.status_code == 200
     assert b"NOW LMS" in response.data
     assert b"Welcome! This is your first course." in response.data
-
-
-def test_course_logout(client):
-    database.drop_all()
-    initial_setup()
+    response = client.get("/login")
+    assert response.status_code == 200
+    assert b"Inicio" in response.data
+    assert b"BMO Soluciones" in response.data
+    response = client.get("/logon")
+    assert response.status_code == 200
+    assert b"Crear nuevo usuario." in response.data
     response = client.get("/course/now")
     assert response.status_code == 200
     assert b"First Course" in response.data
@@ -114,9 +101,7 @@ def test_course_logout(client):
     assert b"Crear Cuenta" in response.data
 
 
-def test_course_logoin(client, auth):
-    database.drop_all()
-    initial_setup()
+def test_logged_in(client, auth):
     auth.login()
     response = client.get("/course/now")
     assert response.status_code == 200
@@ -124,50 +109,46 @@ def test_course_logoin(client, auth):
     assert b"Welcome! This is your first course." in response.data
     assert b"now - First Course" in response.data
     assert b"Quitar del Sitio Web" in response.data
-
-
-def test_app(client, auth):
-    auth.login()
     response = client.get("/panel")
     assert response.status_code == 200
     assert b"Administrador del Sistema." in response.data
-
-
-def test_admin(client, auth):
-    auth.login()
     response = client.get("/admin")
     assert response.status_code == 200
     assert b"Panel de Adminis" in response.data
     assert b"Usuarios" in response.data
-
-
-def test_instructor(client, auth):
-    auth.login()
     response = client.get("/instructor")
     assert response.status_code == 200
     assert b"Panel del docente." in response.data
-
-
-def test_moderator(client, auth):
-    auth.login()
     response = client.get("/moderator")
     assert response.status_code == 200
     assert response.data
-
-
-def test_student(client, auth):
-    auth.login()
     response = client.get("/student")
     assert response.status_code == 200
     assert response.data
-
-
-def test_users(client, auth):
-    auth.login()
     response = client.get("/users")
     assert response.status_code == 200
     assert response.data
     assert b"Usuarios registrados en el sistema." in response.data
+    response = client.get("/cursos")
+    assert response.status_code == 200
+    assert b"Lista de Cursos Disponibles." in response.data
+    response = client.get("/new_user")
+    assert response.status_code == 200
+    assert b"Crear nuevo Usuario." in response.data
+    response = client.get("/user/admin")
+    assert response.status_code == 200
+    assert b"Perfil del usuario " in response.data
+    query = now_lms.CursoRecurso.query.all()
+
+    for recurso in query:
+        URL = "/cource/" + recurso.curso + "/resource/" + recurso.tipo + "/" + recurso.codigo
+        page = client.get(URL)
+        as_bytes = str.encode(recurso.nombre)
+        assert as_bytes in page.data
+        assert b"Recurso Anterior" in page.data
+        assert b"Marcar Completado" in page.data
+        assert b"Recurso Siguiente" in page.data
+        assert page.status_code == 200
 
 
 def test_users_inactive(client, auth):
@@ -176,42 +157,9 @@ def test_users_inactive(client, auth):
     assert response.status_code == 200
     assert response.data
     assert b"Usuarios pendientes" in response.data
-
-
-def test_nuevo_usuario(client, auth):
-    auth.login()
-    response = client.get("/new_user")
-    assert response.status_code == 200
-    assert response.data
-
-    assert b"Crear nuevo Usuario." in response.data
-
-
-def test_cursos(client, auth):
-    auth.login()
-    response = client.get("/cursos")
-    assert response.status_code == 200
-    assert response.data
-
-    assert b"Lista de Cursos Disponibles." in response.data
-
-
-def test_perfil(client, auth):
-    auth.login()
     response = client.get("/perfil")
     assert response.status_code == 200
-    assert response.data
-
     assert b"Perfil del usuario lms-admin" in response.data
-
-
-def test_user_admin(client, auth):
-    auth.login()
-    response = client.get("/user/admin")
-    assert response.status_code == 200
-    assert response.data
-
-    assert b"Perfil del usuario " in response.data
 
 
 def test_activar_usuario(client, auth):
@@ -479,23 +427,3 @@ def test_update_resource_index(client, auth):
         assert response.status_code == 302
 
     reorganiza_indice_seccion(recurso1.seccion)
-
-
-def test_courses_nologin(client, auth):
-
-    database.drop_all()
-    initial_setup()
-
-    auth.login()
-
-    query = now_lms.CursoRecurso.query.all()
-
-    for recurso in query:
-        URL = "/cource/" + recurso.curso + "/resource/" + recurso.tipo + "/" + recurso.codigo
-        page = client.get(URL)
-        as_bytes = str.encode(recurso.nombre)
-        assert as_bytes in page.data
-        assert b"Recurso Anterior" in page.data
-        assert b"Marcar Completado" in page.data
-        assert b"Recurso Siguiente" in page.data
-        assert page.status_code == 200
