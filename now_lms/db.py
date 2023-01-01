@@ -462,10 +462,11 @@ def crear_usuarios_predeterminados():
     )
     database.session.add(administrador)
     database.session.commit()
+    log.debug("Usuario administrador creado correctamente.")
 
     # Crea un usuario de cada perfil (admin, user, instructor, moderator)
     # por defecto desactivados.
-    log.info("Creando usuario estudiante.")
+    log.info("Creando usuarios de demostración.")
     student = Usuario(
         usuario="student",
         acceso=proteger_passwd("studen"),
@@ -477,7 +478,6 @@ def crear_usuarios_predeterminados():
     )
     database.session.add(student)
     database.session.commit()
-    log.info("Creando usuario instructor.")
     instructor = Usuario(
         usuario="instructor",
         acceso=proteger_passwd("instructor"),
@@ -489,7 +489,6 @@ def crear_usuarios_predeterminados():
     )
     database.session.add(instructor)
     database.session.commit()
-    log.info("Creando usuario moderador.")
     moderator = Usuario(
         usuario="moderator",
         acceso=proteger_passwd("moderator"),
@@ -501,4 +500,4 @@ def crear_usuarios_predeterminados():
     )
     database.session.add(moderator)
     database.session.commit()
-    log.debug("Usuario creados correctamente.")
+    log.debug("Usuarios creados correctamente.")
