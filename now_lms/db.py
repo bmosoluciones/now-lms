@@ -297,6 +297,16 @@ def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
         return False
 
 
+def crear_configuracion_predeterminada():
+    """Crea configuración predeterminada de la aplicación."""
+    config = Configuracion(
+        titulo="NOW LMS",
+        descripcion="Sistema de aprendizaje en linea.",
+    )
+    database.session.add(config)
+    database.session.commit()
+
+
 def crear_cursos_predeterminados():
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
@@ -321,12 +331,13 @@ def crear_cursos_predeterminados():
     )
     database.session.add(demo)
     database.session.commit()
+    log.debug("Curso Creado Correctamente.")
 
     log.info("Creando seccion 1.")
-    ramdon = uuid4()
-    seccion_id = str(ramdon.hex)
+    ramdon1 = uuid4()
+    seccion1_id = str(ramdon1.hex)
     nueva_seccion1 = CursoSeccion(
-        codigo=seccion_id,
+        codigo=seccion1_id,
         curso="now",
         nombre="Introduction to online teaching.",
         descripcion="This is introductory material to online teaching.",
@@ -336,44 +347,13 @@ def crear_cursos_predeterminados():
 
     database.session.add(nueva_seccion1)
     database.session.commit()
-
-    log.info("Creando recurso 1.")
-    ramdon1 = uuid4()
-    recurso_id1 = str(ramdon1.hex)
-    nuevo_recurso1 = CursoRecurso(
-        codigo=recurso_id1,
-        curso="now",
-        seccion=seccion_id,
-        tipo="youtube",
-        nombre="Introduction to Online Teaching",
-        descripcion="UofSC Center for Teaching Excellence - Introduction to Online Teaching.",
-        url="https://www.youtube.com/watch?v=CvPj4V_j7u8",
-        indice=1,
-        publico=True,
-        requerido=True,
-    )
-
-    log.info("Creando recurso 2.")
-    ramdon2 = uuid4()
-    recurso_id2 = str(ramdon2.hex)
-    nuevo_recurso2 = CursoRecurso(
-        codigo=recurso_id2,
-        curso="now",
-        seccion=seccion_id,
-        tipo="youtube",
-        nombre="How to Teach OnLine.",
-        descripcion="Kristina Garcia - Top Tips for New Online Teachers!",
-        url="https://www.youtube.com/watch?v=CvPj4V_j7u8",
-        indice=2,
-        publico=False,
-        requerido=False,
-    )
+    log.debug("Seccion 1 creada correctamente.")
 
     log.info("Creando seccion 2.")
     ramdon2 = uuid4()
-    seccion_id2 = str(ramdon2.hex)
+    seccion2_id = str(ramdon2.hex)
     nueva_seccion2 = CursoSeccion(
-        codigo=seccion_id2,
+        codigo=seccion2_id,
         curso="now",
         nombre="How to sell a online course.",
         descripcion="This is introductory material to how to sell your online course.",
@@ -383,6 +363,45 @@ def crear_cursos_predeterminados():
 
     database.session.add(nueva_seccion2)
     database.session.commit()
+    log.debug("Seccion 2 creada correctamente.")
+
+    log.info("Creando recurso 1.")
+    ramdon1 = uuid4()
+    recurso_id1 = str(ramdon1.hex)
+    nuevo_recurso1 = CursoRecurso(
+        codigo=recurso_id1,
+        curso="now",
+        seccion=seccion1_id,
+        tipo="youtube",
+        nombre="Introduction to Online Teaching",
+        descripcion="UofSC Center for Teaching Excellence - Introduction to Online Teaching.",
+        url="https://www.youtube.com/watch?v=CvPj4V_j7u8",
+        indice=1,
+        publico=True,
+        requerido=True,
+    )
+    database.session.add(nuevo_recurso1)
+    database.session.commit()
+    log.debug("Recurso 1 creado correctamente.")
+
+    log.info("Creando recurso 2.")
+    ramdon2 = uuid4()
+    recurso_id2 = str(ramdon2.hex)
+    nuevo_recurso2 = CursoRecurso(
+        codigo=recurso_id2,
+        curso="now",
+        seccion=seccion1_id,
+        tipo="youtube",
+        nombre="How to Teach OnLine.",
+        descripcion="Kristina Garcia - Top Tips for New Online Teachers!",
+        url="https://www.youtube.com/watch?v=CvPj4V_j7u8",
+        indice=2,
+        publico=False,
+        requerido=False,
+    )
+    database.session.add(nuevo_recurso2)
+    database.session.commit()
+    log.debug("Recurso 2 creado correctamente.")
 
     log.info("Creando recurso 3.")
     ramdon3 = uuid4()
@@ -390,7 +409,7 @@ def crear_cursos_predeterminados():
     nuevo_recurso3 = CursoRecurso(
         codigo=recurso_id3,
         curso="now",
-        seccion=seccion_id2,
+        seccion=seccion2_id,
         tipo="youtube",
         nombre="4 Steps to Sell your Online Course with 0 audience.",
         descripcion="Sunny Lenarduzzi - No audience? No problem! YOU DON’T NEED AN AUDIENCE TO START A BUSINESS.",
@@ -399,6 +418,9 @@ def crear_cursos_predeterminados():
         publico=False,
         requerido=True,
     )
+    database.session.add(nuevo_recurso3)
+    database.session.commit()
+    log.debug("Recurso 3 creado correctamente.")
 
     log.info("Creando recurso 4.")
     ramdon4 = uuid4()
@@ -406,7 +428,7 @@ def crear_cursos_predeterminados():
     nuevo_recurso4 = CursoRecurso(
         codigo=recurso_id4,
         curso="now",
-        seccion=seccion_id2,
+        seccion=seccion2_id,
         tipo="meet",
         nombre="A live meet about course sales.",
         descripcion="Live meets will improve your course.",
@@ -417,6 +439,9 @@ def crear_cursos_predeterminados():
         publico=False,
         requerido=True,
     )
+    database.session.add(nuevo_recurso4)
+    database.session.commit()
+    log.debug("Recurso 4 creado correctamente.")
 
     log.info("Creando recurso 5.")
     ramdon5 = uuid4()
@@ -424,7 +449,7 @@ def crear_cursos_predeterminados():
     nuevo_recurso5 = CursoRecurso(
         codigo=recurso_id5,
         curso="now",
-        seccion=seccion_id2,
+        seccion=seccion2_id,
         tipo="pdf",
         nombre="FACULTY DEVELOPMENT FOR ONLINE TEACHING AS A CATALYST FOR CHANGE.",
         descripcion="A PDF file to share with yours learners.",
@@ -433,13 +458,9 @@ def crear_cursos_predeterminados():
         publico=False,
         requerido=True,
     )
-
-    database.session.add(nuevo_recurso1)
-    database.session.add(nuevo_recurso2)
-    database.session.add(nuevo_recurso3)
-    database.session.add(nuevo_recurso4)
     database.session.add(nuevo_recurso5)
     database.session.commit()
+    log.debug("Recurso 5 creado correctamente.")
 
 
 def crear_usuarios_predeterminados():
@@ -453,9 +474,13 @@ def crear_usuarios_predeterminados():
         apellido="Admin",
         activo=True,
     )
+    database.session.add(administrador)
+    database.session.commit()
+
     # Crea un usuario de cada perfil (admin, user, instructor, moderator)
     # por defecto desactivados.
-    demo_user1 = Usuario(
+    log.info("Creando usuario estudiante.")
+    student = Usuario(
         usuario="student",
         acceso=proteger_passwd("studen"),
         tipo="user",
@@ -464,7 +489,10 @@ def crear_usuarios_predeterminados():
         correo_electronico="usuario1@mail.com",
         activo=False,
     )
-    demo_user2 = Usuario(
+    database.session.add(student)
+    database.session.commit()
+    log.info("Creando usuario instructor.")
+    instructor = Usuario(
         usuario="instructor",
         acceso=proteger_passwd("instructor"),
         tipo="instructor",
@@ -473,7 +501,10 @@ def crear_usuarios_predeterminados():
         correo_electronico="usuario2@mail.com",
         activo=False,
     )
-    demo_user3 = Usuario(
+    database.session.add(instructor)
+    database.session.commit()
+    log.info("Creando usuario moderador.")
+    moderator = Usuario(
         usuario="moderator",
         acceso=proteger_passwd("moderator"),
         tipo="moderator",
@@ -482,8 +513,6 @@ def crear_usuarios_predeterminados():
         correo_electronico="usuario3@mail.com",
         activo=False,
     )
-    database.session.add(administrador)
-    database.session.add(demo_user1)
-    database.session.add(demo_user2)
-    database.session.add(demo_user3)
+    database.session.add(moderator)
     database.session.commit()
+    log.debug("Usuario creados correctamente.")
