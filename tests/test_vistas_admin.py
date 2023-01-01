@@ -183,14 +183,14 @@ def test_crear_usuario(client):
     post = client.post(
         "/logon",
         data={
-            "usuario": "test_user",
-            "nombre": "Testing",
-            "apellido": "Testing",
-            "correo_electronico": "testing@cacao-accounting.io",
+            "usuario": "mperez",
+            "nombre": "Meyling",
+            "apellido": "Perez",
+            "correo_electronico": "mperez@ibw.com.ni",
             "acceso": "Akjlkas5a4s6asd",
         },
     )
-    query = now_lms.Usuario.query.filter_by(usuario="test_user").first()
+    query = now_lms.Usuario.query.filter_by(usuario="mperez").first()
     assert query
     # Usuario inactivo por defecto.
     assert query.activo is False
@@ -291,8 +291,24 @@ def test_cambiar_estatus_curso(client, auth):
 
 
 def test_indices_seccion():
-    from now_lms import CursoSeccion, modificar_indice_curso, reorganiza_indice_curso
+    from now_lms import Curso, CursoSeccion, modificar_indice_curso, reorganiza_indice_curso
 
+    demo = Curso(
+        nombre="Demo Course",
+        codigo="demo",
+        descripcion="Demo Course.",
+        estado="open",
+        certificado=True,
+        publico=True,
+        duracion=7,
+        nivel=1,
+        precio=10,
+        capacidad=50,
+        auditable=True,
+    )
+    database.session.add(demo)
+    database.session.commit()
+    
     seccion1 = CursoSeccion(
         curso="demo",
         nombre="Seccion Prueba A",
