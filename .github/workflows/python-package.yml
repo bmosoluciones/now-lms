@@ -17,16 +17,21 @@ jobs:
       mysql:
         image: mysql:8
         env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_ROOT_PASSWORD: mysqldb
           MYSQL_DATABASE: mysqldb
           MYSQL_USER: mysqldb
           MYSQL_PASSWORD: mysqldb
+        ports:
+            - 3306:3306
       postgres:
         image: postgres:15
         env:
           POSTGRES_DB: postgresdb
           POSTGRES_USER: postgresdb
           POSTGRES_PASSWORD: postgresdb
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
