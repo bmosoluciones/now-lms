@@ -71,10 +71,10 @@ jobs:
         pytest  -v --exitfirst --cov=now_lms
     - name: Test with pytest/Postgres
       run: |
-        DATABASE_URL=postgresql://postgresdb:postgresdb@postgres:5432/postgresdb pytest  -v --exitfirst --cov=now_lms
+        DATABASE_URL=postgresql://postgresdb:postgresdb@localhost:5432/postgresdb pytest  -v --exitfirst --cov=now_lms
     - name: Test with pytest/MySQL
       run: |
-        DATABASE_URL=mysql://mysqldb:mysqldb@mysql:3306/mysqldb pytest  -v --exitfirst --cov=now_lms
+        DATABASE_URL=mysql://mysqldb:mysqldb@localhost:3306/mysqldb pytest  -v --exitfirst --cov=now_lms
     - name: Check python  types
       run: |
         python -m pip install mypy
