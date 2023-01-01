@@ -27,7 +27,7 @@ from os import environ, cpu_count
 from uuid import uuid4
 
 # Librerias de terceros:
-from flask import Flask, abort, flash, redirect, request, render_template, url_for, current_app
+from flask import Flask, abort, flash, redirect, request, render_template, url_for
 from flask.cli import FlaskGroup
 from flask_alembic import Alembic
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
@@ -51,6 +51,7 @@ from now_lms.db import (
     EstudianteCurso,
     ModeradorCurso,
     Usuario,
+    crear_configuracion_predeterminada,
     crear_cursos_predeterminados,
     crear_usuarios_predeterminados,
     verifica_docente_asignado_a_curso,
@@ -131,6 +132,7 @@ with lms_app.app_context():  # pragma: no cover
     database.init_app(lms_app)
     configure_uploads(app=lms_app, upload_sets=[CARGA_IMAGENES])
     try:
+        log.debug("Consultando Configuración desde la BD.")
         CONFIG = Configuracion.query.first()
     except OperationalError:
         CONFIG = None
@@ -140,8 +142,10 @@ with lms_app.app_context():  # pragma: no cover
         CONFIG = None
     except DatabaseError:
         CONFIG = None
+    finally:
+        log.warning("No se pudo obtener la configuración de la base de datos.")
     if CONFIG:
-        log.info("Configuración cargada correctamente.")
+        log.info("Configuración cargada correctamente desde la base de datos.")
     else:
         log.warning("No se detecto configuración de usuario.")
         log.warning("Utilizando configuración predeterminada.")
@@ -157,15 +161,11 @@ with lms_app.app_context():  # pragma: no cover
 def initial_setup():
     """Inicializa una nueva bases de datos"""
     lms_app.app_context().push()
-    log.info("Iniciando Configuracion de la aplicacion.")
     log.info("Creando esquema de base de datos.")
     database.create_all()
-    config = Configuracion(
-        titulo="NOW LMS",
-        descripcion="Sistema de aprendizaje en linea.",
-    )
-    database.session.add(config)
-    database.session.commit()
+    log.debug("Esquema de base de datos creado correctamente.")
+    log.info("Cargando datos de muestra.")
+    crear_configuracion_predeterminada()
     crear_usuarios_predeterminados()
     crear_cursos_predeterminados()
 
@@ -220,18 +220,6 @@ def setup():  # pragma: no cover
 def serve():  # pragma: no cover
     """Servidor WSGI predeterminado."""
     from waitress import serve as server
-
-    try:
-        current_app.app_context().pop()
-    except IndexError:
-        pass
-    try:
-        lms_app.app_context().pop()
-    except IndexError:
-        pass
-
-    with lms_app.app_context():
-        init_app()
 
     if environ.get("LMS_PORT"):
         PORT: int = int(environ.get("LMS_PORT"))
