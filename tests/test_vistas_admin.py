@@ -33,7 +33,6 @@ app.app_context().push()
 @pytest.fixture(scope="module", autouse=True)
 def lms():
     app.app_context().push()
-    database.drop_all()
     initial_setup()
 
     app.app_context().push()
