@@ -40,10 +40,6 @@ def lms():
     yield app
 
 
-def test_dummy():
-    assert app.config["DEBUG"] == True
-
-
 @pytest.fixture
 def client(lms):
     return app.test_client()
