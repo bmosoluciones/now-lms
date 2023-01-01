@@ -308,7 +308,7 @@ def test_indices_seccion():
     )
     database.session.add(demo)
     database.session.commit()
-    
+
     seccion1 = CursoSeccion(
         curso="demo",
         nombre="Seccion Prueba A",
