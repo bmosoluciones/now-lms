@@ -460,7 +460,7 @@ def crear_usuarios_predeterminados():
         nombre="System",
         apellido="Admin",
         activo=True,
-        correo_electronico="admin@mail.com",
+        correo_electronico="admininistrator@mail.com",
     )
     database.session.add(administrador)
     database.session.commit()
@@ -475,7 +475,7 @@ def crear_usuarios_predeterminados():
         tipo="user",
         nombre="User",
         apellido="Student",
-        correo_electronico="usuario1@mail.com",
+        correo_electronico="student@mail.com",
         activo=False,
     )
     database.session.add(student)
@@ -486,7 +486,7 @@ def crear_usuarios_predeterminados():
         tipo="instructor",
         nombre="User",
         apellido="Instructor",
-        correo_electronico="usuario2@mail.com",
+        correo_electronico="instructor@mail.com",
         activo=False,
     )
     database.session.add(instructor)
@@ -497,7 +497,7 @@ def crear_usuarios_predeterminados():
         tipo="moderator",
         nombre="User",
         apellido="Moderator",
-        correo_electronico="usuario3@mail.com",
+        correo_electronico="moderator@mail.com",
         activo=False,
     )
     database.session.add(moderator)
