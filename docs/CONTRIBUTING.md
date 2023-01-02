@@ -114,3 +114,77 @@ NO_RESET_DATABASE=True hupper -m now_lms
 #### Style Guide:
 
 [PEP8](https://www.python.org/dev/peps/pep-0008/) with a maximum line length of 127 characters.
+
+## Database Support
+
+These database are supported:
+
+* SQLite
+* Postgres
+* MySQL
+
+These database should work:
+
+* MariaDB
+
+### SQLite
+
+SQLite works out of the box, to test NOW - LMS with SQLite just run:
+
+```
+python -m pytest  -v --exitfirst --cov=now_lms
+```
+
+### Postgres
+
+To test NOW - LMS with Postgres follow this steps:
+
+```
+sudo dnf install postgresql-server postgresql-contrib
+sudo postgresql-setup --initdb --unit postgresql
+sudo systemctl start postgresql
+sudo -u postgres psql
+postgres=# CREATE USER postgresdb WITH PASSWORD 'postgresdb';
+postgres=# CREATE DATABASE postgresdb OWNER postgresdb;
+postgres=# \q
+```
+
+Allow connet with user and password:
+
+```
+sudo gedit /var/lib/pgsql/data/pg_hba.conf
+And edit host all all 127.0.0.1/32 ident to host all all 127.0.0.1/32 md5
+```
+
+Run the test with postgres:
+
+```
+DATABASE_URL=postgresql://postgresdb:postgresdb@127.0.0.1:5432/postgresdb pytest  -v --exitfirst --cov=now_lms
+```
+
+## MySQL
+
+To test NOW - LMS with MySQL follos this steps:
+
+```
+sudo dnf install community-mysql-server -y
+sudo systemctl start mysqld
+sudo mysql_secure_installation
+sudo mysql -u root -p
+CREATE USER 'mysqldatabase'@'localhost' IDENTIFIED BY 'mysqldatabase';
+CREATE DATABASE mysqldatabase;
+GRANT ALL PRIVILEGES ON mysqldatabase.* TO 'mysqldatabase'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+For the most the users, this script will work fine but if it asks you for the password, you can retrieve a temporary password from mysqld.log at /var/log/ by the given command:
+
+```
+sudo grep 'temporary password' /var/log/mysqld.log
+```
+
+Now you can test NOW - LMS with MySQL running:
+
+```
+DATABASE_URL=mysql://mysqldatabase:mysqldatabase@127.0.0.1:3306/mysqldatabase pytest  -v --exitfirst --cov=now_lms
+```
