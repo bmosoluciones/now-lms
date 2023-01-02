@@ -18,10 +18,10 @@ jobs:
         image: mysql:8
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_ROOT_PASSWORD: mysqldb
-          MYSQL_DATABASE: mysqldb
-          MYSQL_USER: mysqldb
-          MYSQL_PASSWORD: mysqldb
+          MYSQL_ROOT_PASSWORD: mysqldatabase
+          MYSQL_DATABASE: mysqldatabase
+          MYSQL_USER: mysqldatabase
+          MYSQL_PASSWORD: mysqldatabase
         ports:
             - 3306:3306
       postgres:
@@ -71,7 +71,7 @@ jobs:
         pytest  -v --exitfirst --cov=now_lms
     - name: Test with pytest/MySQL
       run: |
-        DATABASE_URL=mysql://mysqldb:mysqldb@localhost:3306/mysqldb pytest  -v --exitfirst --cov=now_lms
+        DATABASE_URL=mysql://mysqldatabase:mysqldatabase@localhost:3306/mysqldatabase pytest  -v --exitfirst --cov=now_lms
     - name: Test with pytest/Postgres
       run: |
         DATABASE_URL=postgresql://postgresdb:postgresdb@localhost:5432/postgresdb pytest  -v --exitfirst --cov=now_lms
