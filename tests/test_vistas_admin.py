@@ -371,9 +371,6 @@ def test_update_resource_index(client, auth):
     from now_lms import CursoRecurso
     from now_lms.bi import reorganiza_indice_seccion
 
-
-    
-
     auth.login()
     """
     recurso1 = CursoRecurso.query.filter(CursoRecurso.nombre == "Introduction to Online Teaching").first()
@@ -401,8 +398,6 @@ def test_update_resource_index(client, auth):
 
 def test_reorganizar_indice_web(client, auth):
     from now_lms import CursoSeccion
-
-    
 
     auth.login()
     """
