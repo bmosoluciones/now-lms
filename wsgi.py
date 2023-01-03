@@ -15,8 +15,15 @@
 # Contributors:
 # - William José Moreno Reyes
 
-from now_lms import lms_app as app
-from now_lms import serve
+"""
+Modulo para ejecutar NOW LMS.
+
+Varios servicios prefieren tener un servidor archivo wsgi.py
+
+"""
+
+from now_lms import serve, init_app
 
 if __name__ == "__main__":
+    init_app()
     serve()
