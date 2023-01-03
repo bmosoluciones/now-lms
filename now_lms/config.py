@@ -108,11 +108,11 @@ if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # pragma: no cover
         DBURI = "mariadb+pymysql" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[7:]  # type: ignore[index]
         CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
 
-if "postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
+if "postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
     log.debug("Database type is Postgres.")
-if "mysql:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
+if "mysql:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
     log.debug("Database type is MySQL.")
-if "mariadb:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
+if "mariadb:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
     log.debug("Database type is MariaDB.")
-if "sqlite:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
+if "sqlite:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
     log.debug("Database type is SQLite.")
