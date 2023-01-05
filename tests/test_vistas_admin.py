@@ -400,76 +400,13 @@ def test_reorganizar_indice_web(client, auth):
     from now_lms import CursoSeccion
 
     auth.login()
-    """
-    # Crear un curso.
-    post = client.post(
-        "/new_curse",
-        data={
-            "nombre": "Curso de Prueba",
-            "codigo": "T-002",
-            "descripcion": "Curso de Prueba.",
-        },
-    )
-    assert post.status_code == 302
-    course = client.get("/course/T-002")
-    assert course.status_code == 200
-    assert b"Curso de Prueba" in course.data
-    curso = now_lms.Curso.query.filter_by(codigo="T-002").first()
-    assert curso.nombre == "Curso de Prueba"
-    assert curso.descripcion == "Curso de Prueba."
 
-    # Crear secciones del curso.
-    post1 = client.post(
-        "/course/T-002/new_seccion",
-        data={"nombre": "Seccion test 2", "descripcion": "Seccion test 2."},
-    )
-    assert post1.status_code == 302
-    course = client.get("/course/T-002")
-    assert course.status_code == 200
-    assert b"Seccion test 2" in course.data
+    SECCION = CursoSeccion.query.filter_by(nombre="How to sell a online course.").first()
 
-    post2 = client.post(
-        "/course/T-002/new_seccion",
-        data={"nombre": "Seccion test 3", "descripcion": "Seccion test 3."},
-    )
-    assert post2.status_code == 302
-    course = client.get("/course/T-002")
-    assert course.status_code == 200
-    assert b"Seccion test 3" in course.data
+    assert SECCION is not None
 
-    post3 = client.post(
-        "/course/T-002/new_seccion",
-        data={"nombre": "Seccion test 1", "descripcion": "Seccion test 1."},
-    )
-    assert post3.status_code == 302
-    course = client.get("/course/T-002")
-    assert course.status_code == 200
-    assert b"Seccion test 1" in course.data
+    URL = "course/resource/now/" + SECCION.codigo + "/decrement/2"
+    client.get(URL)
 
-    cuenta = now_lms.CursoSeccion.query.filter_by(curso="T-002").count()
-    assert cuenta is not None
-    assert cuenta == 3
-
-    # Verificar orden actual de las secciones.
-    seccion1 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 1", CursoSeccion.curso == "T-002").first()
-    assert seccion1 is not None
-    assert seccion1.indice == 3
-    seccion2 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 2", CursoSeccion.curso == "T-002").first()
-    assert seccion2 is not None
-    assert seccion2.indice == 1
-    seccion3 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 3", CursoSeccion.curso == "T-002").first()
-    assert seccion3 is not None
-    assert seccion3.indice == 2
-
-    # Verifica cambio de indices.
-    client.get("/course/seccion/T-002/increment/3")
-    seccion1 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 1", CursoSeccion.curso == "T-002").first()
-    assert seccion1.indice == 3
-    seccion2 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 2", CursoSeccion.curso == "T-002").first()
-    assert seccion2.indice == 1
-    seccion3 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 3", CursoSeccion.curso == "T-002").first()
-    assert seccion3.indice == 2
-    client.get("/course/seccion/T-002/decrement/2")
-    seccion1 = CursoSeccion.query.filter(CursoSeccion.nombre == "Seccion test 1", CursoSeccion.curso == "T-002").first()
-    assert seccion1.indice == 3
-    """
+    URL = "course/resource/now/" + SECCION.codigo + "/increment/2"
+    client.get(URL)
