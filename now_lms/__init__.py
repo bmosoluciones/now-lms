@@ -123,16 +123,6 @@ lms_app = Flask(
 )
 lms_app.config.from_mapping(CONFIGURACION)
 
-if "postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore
-    log.debug("Database type is Postgres.")
-if "mysql:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore
-    log.debug("Database type is MySQL.")
-if "mariadb:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore
-    log.debug("Database type is MariaDB.")
-if "sqlite:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore
-    log.debug("Database type is SQLite.")
-
-
 # Inicializamos extenciones y cargamos algunas variables para que esten disponibles de forma
 # global en las plantillas de Jinja2.
 with lms_app.app_context():  # pragma: no cover
@@ -509,8 +499,6 @@ def nuevo_seccion(course_code):
             database.session.add(nueva_seccion)
             database.session.commit()
             flash("Sección agregada correctamente al curso.")
-            if secciones > 4:
-                reorganiza_indice_curso(codigo_curso=course_code)
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear la seccion.")
