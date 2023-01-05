@@ -18,13 +18,10 @@
 """
 Modulo para ejecutar NOW LMS.
 
-Permite ejecutar el sistema con:
-
-   python -m now_lms
-
 """
+
 from now_lms import serve, init_app
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     init_app()
     serve()
