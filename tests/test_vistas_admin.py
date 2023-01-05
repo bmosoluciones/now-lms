@@ -367,37 +367,9 @@ def test_indices_seccion():
     assert cuenta == 2
 
 
-def test_update_resource_index(client, auth):
-    from now_lms import CursoRecurso
-    from now_lms.bi import reorganiza_indice_seccion
-
-    auth.login()
-    """
-    recurso1 = CursoRecurso.query.filter(CursoRecurso.nombre == "Introduction to Online Teaching").first()
-    assert recurso1 is not None
-    recurso2 = CursoRecurso.query.filter(CursoRecurso.nombre == "How to Teach OnLine.").first()
-    assert recurso2 is not None
-    recurso3 = CursoRecurso.query.filter(CursoRecurso.nombre == "4 Steps to Sell your Online Course with 0 audience.").first()
-    assert recurso3 is not None
-
-    
-    urls = (
-        "/course/resource/now/" + recurso1.seccion + "/increment/1",
-        "/course/resource/now/" + recurso1.seccion + "/decrement/1",
-        "/course/resource/now/" + recurso1.seccion + "/increment/2",
-        "/course/resource/now/" + recurso1.seccion + "/decrement/2",
-    )
-
-    for url in urls:
-        response = client.get(url)
-        assert response.status_code == 302
-
-    reorganiza_indice_seccion(recurso1.seccion)
-    """
-
-
-def test_reorganizar_indice_web(client, auth):
+def test_reorganizar_indice_recurso(client, auth):
     from now_lms import CursoSeccion
+    from now_lms.bi import reorganiza_indice_seccion
 
     auth.login()
 
@@ -406,7 +378,33 @@ def test_reorganizar_indice_web(client, auth):
     assert SECCION is not None
 
     URL = "course/resource/now/" + SECCION.codigo + "/decrement/2"
-    client.get(URL)
+    get = client.get(URL)
+    assert get.status_code == 302
 
     URL = "course/resource/now/" + SECCION.codigo + "/increment/2"
-    client.get(URL)
+    get = client.get(URL)
+    assert get.status_code == 302
+
+    reorganiza_indice_seccion(SECCION.codigo)
+
+
+def test_reorganizar_nuevo_recurso(client, auth):
+    from now_lms import CursoSeccion
+
+    auth.login()
+
+    SECCION = CursoSeccion.query.filter_by(nombre="How to sell a online course.").first()
+    URL = "/course/now/" + SECCION.codigo + "/new_resource"
+    get = client.get(URL)
+    assert get.status_code == 200
+
+
+def test_reorganizar_indice_seccion(client, auth):
+    from now_lms import CursoSeccion
+
+    auth.login()
+
+    get = client.get("/course/now/seccion/decrement/1")
+    assert get.status_code == 302
+    get = client.get("/course/now/seccion/increment/2")
+    assert get.status_code == 302
