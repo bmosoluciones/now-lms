@@ -18,6 +18,7 @@
   "homepage": "https://github.com/bmosoluciones/now-lms#readme",
   "dependencies": {
     "bootstrap": "^5.2.2",
-    "bootstrap-icons": "^1.10.2"
+    "bootstrap-icons": "^1.10.2",
+    "pdfjs-dist": "^3.2.146"
   }
 }
