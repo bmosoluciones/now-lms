@@ -37,6 +37,29 @@
           
           <div class="col-sm-8">
 
+            <div class="d-flex justify-content-around">
+              <div class="align-self-start">
+                <h6>{{ recurso.nombre }}</h6>
+                <p>
+                  {{ recurso.descripcion }}
+                </p>
+                <p>
+                  <i class="bi bi-calendar-event aria-hidden="true"></i> Fecha: {{ recurso.fecha }}
+                </p>
+                <p>
+                  <i class="bi bi-stopwatch-fill aria-hidden="true"></i> Hora: {{ recurso.hora }}
+                </p>
+                <a href="{{ recurso.url }} class="d-flex justify-content-center"">
+                  <i class="bi bi-broadcast aria-hidden="true"></i>
+                  Link a la Reunión
+                  <i class="bi bi-broadcast aria-hidden="true"></i>
+                </a>
+              </div>
+              <div class="align-self-start">
+                <img src="https://img.freepik.com/foto-gratis/estudiante-negro-discutiendo-ideas-academicas-marketing-equipo-universitario-que-tiene-reunion-teleconferencia-virtual-sentados-frente-al-escritorio-sala-estar_482257-2333.jpg">
+              </div>
+            </div>
+
           </div>
 
           <div class="col-sm-4">
