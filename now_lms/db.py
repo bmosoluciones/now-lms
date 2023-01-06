@@ -421,7 +421,7 @@ def crear_cursos_predeterminados():
         tipo="meet",
         nombre="A live meet about course sales.",
         descripcion="Live meets will improve your course.",
-        url="https://meet.jit.si/",
+        url="https://en.wikipedia.org/wiki/Web_conferencing",
         indice=2,
         fecha=datetime.today() + timedelta(days=9),
         hora=time(hour=14, minute=30),
