@@ -5,7 +5,7 @@
 {% set permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %}
 {% set permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es" class="h-100">
 
 <head>
@@ -44,12 +44,12 @@
                   {{ recurso.descripcion }}
                 </p>
                 <p>
-                  <i class="bi bi-calendar-event aria-hidden="true"></i> Fecha: {{ recurso.fecha }}
+                  <i class="bi bi-calendar-event aria-hidden="true" ></i> Fecha: {{ recurso.fecha }}
                 </p>
                 <p>
                   <i class="bi bi-stopwatch-fill aria-hidden="true"></i> Hora: {{ recurso.hora }}
                 </p>
-                <a href="{{ recurso.url }} class="d-flex justify-content-center"">
+                <a href="{{ recurso.url }} class="d-flex justify-content-center">
                   <i class="bi bi-broadcast aria-hidden="true"></i>
                   Link a la Reunión
                   <i class="bi bi-broadcast aria-hidden="true"></i>
