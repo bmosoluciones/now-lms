@@ -5,7 +5,7 @@
 {% set permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %}
 {% set permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es" class="h-100">
 
 <head>
@@ -58,7 +58,7 @@
               </div>
               <div id="navigation_controls" class="d-flex justify-content-around">
                   <button type="button" class="btn btn-outline-info" id="go_previous"><i class="bi bi-arrow-left-short" aria-hidden="true"></i> Página Anterior</button>
-                  <input id="current_page" value="1" type="number"/>
+                  <input id="current_page" value="1" type="number">
                   <button type="button" class="btn btn-outline-info"id="go_next">Página Posterior <i class="bi bi-arrow-right-short" aria-hidden="true"></i></button>
                 </div>
           </div>
