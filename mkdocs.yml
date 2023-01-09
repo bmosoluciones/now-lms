@@ -1,5 +1,5 @@
 site_name: NOW - LMS
-theme: 
+theme:
     name: material
     language: es
     favicon: media/favicon.png
