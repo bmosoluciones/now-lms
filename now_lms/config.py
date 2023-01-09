@@ -116,3 +116,27 @@ if "mariadb" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[op
     log.debug("Database type is MariaDB.")  # pragma: no cover
 if "sqlite" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
     log.debug("Database type is SQLite.")  # pragma: no cover
+
+
+# < --------------------------------------------------------------------------------------------- >
+# Configuracion de Cache
+CACHE_CONFIG: dict = {}
+CACHE_CONFIG["CACHE_DEFAULT_TIMEOUT"] = 300
+
+REDIS = (
+    environ.get("CACHE_REDIS_HOST")
+    and environ.get("CACHE_REDIS_PORT")  # noqa: W503
+    and environ.get("CACHE_REDIS_PASSWORD")  # noqa: W503
+    and environ.get("CACHE_REDIS_DB")  # noqa: W503
+) or environ.get(
+    "CACHE_REDIS_URL"
+)  # noqa: W503
+
+MEMCACHED = environ.get("CACHE_MEMCACHED_SERVERS")
+
+if REDIS:
+    CACHE_CONFIG["CACHE_TYPE"] = "RedisCache"
+elif MEMCACHED:
+    CACHE_CONFIG["CACHE_TYPE"] = "MemcachedCache"
+else:
+    CACHE_CONFIG["CACHE_TYPE"] = "SimpleCache"
