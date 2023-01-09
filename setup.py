@@ -17,15 +17,18 @@
 
 """NOW-LMS setup."""
 
-from setuptools import setup
 from os import path
+from setuptools import setup
+
 
 aqui = path.abspath(path.dirname(__file__))
 with open(path.join(aqui, "README.md"), encoding="utf-8") as f:
     descripcion = f.read()
 
+# pylint: disable=W0122
+
 metadata = {}
-with open("now_lms/version.py") as fp:
+with open("now_lms/version.py", encoding="utf-8") as fp:
     exec(fp.read(), metadata)
 
 setup(
