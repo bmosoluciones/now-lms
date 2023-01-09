@@ -30,6 +30,7 @@ from uuid import uuid4
 from flask import Flask, abort, flash, redirect, request, render_template, url_for
 from flask.cli import FlaskGroup
 from flask_alembic import Alembic
+from flask_caching import Cache
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from flask_uploads import configure_uploads
 from loguru import logger as log
@@ -40,7 +41,7 @@ from sqlalchemy.exc import ArgumentError, OperationalError, ProgrammingError
 
 # Recursos locales:
 from now_lms.auth import validar_acceso, proteger_passwd
-from now_lms.config import DIRECTORIO_PLANTILLAS, DIRECTORIO_ARCHIVOS, DESARROLLO, CONFIGURACION, CARGA_IMAGENES
+from now_lms.config import DIRECTORIO_PLANTILLAS, DIRECTORIO_ARCHIVOS, DESARROLLO, CONFIGURACION, CARGA_IMAGENES, CACHE_CONFIG
 from now_lms.db import (
     database,
     Configuracion,
@@ -88,11 +89,13 @@ if DESARROLLO:
 # Datos predefinidos
 TIPOS_DE_USUARIO: list = ["admin", "user", "instructor", "moderator"]
 
+
 # < --------------------------------------------------------------------------------------------- >
 # Inicialización de extensiones de terceros
 
 alembic: Alembic = Alembic()
 administrador_sesion: LoginManager = LoginManager()
+cache = Cache()
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -114,6 +117,17 @@ def no_autorizado():  # pragma: no cover
     return INICIO_SESION
 
 
+def no_guardar_en_cache():
+    """Si el usuario es anomino preferimos usar el sistema de cache."""
+    if current_user and current_user.is_authenticated:
+        log.debug("Se detecto inicio de sesión, obiviando cache.")
+        return True
+
+    else:
+        log.debug("Se detecto usuario anonimo, utilizando cache si esta disponible.")
+        return False
+
+
 # < --------------------------------------------------------------------------------------------- >
 # Definición de la aplicación
 lms_app = Flask(
@@ -129,6 +143,7 @@ with lms_app.app_context():  # pragma: no cover
     alembic.init_app(lms_app)
     administrador_sesion.init_app(lms_app)
     database.init_app(lms_app)
+    cache.init_app(lms_app, CACHE_CONFIG)
     configure_uploads(app=lms_app, upload_sets=[CARGA_IMAGENES])
     try:
         log.debug("Consultando Configuración desde la BD.")
@@ -237,6 +252,7 @@ def serve():  # pragma: no cover
 
 
 @lms_app.errorhandler(404)
+@cache.cached()
 def error_404(error):  # pragma: no cover
     """Pagina personalizada para recursos no encontrados."""
     assert error is not None  # nosec B101
@@ -244,6 +260,7 @@ def error_404(error):  # pragma: no cover
 
 
 @lms_app.errorhandler(403)
+@cache.cached()
 def error_403(error):  # pragma: no cover
     """Pagina personalizada para recursos no autorizados."""
     assert error is not None  # nosec B101
@@ -379,6 +396,7 @@ def cerrar_sesion():  # pragma: no cover
 @lms_app.route("/")
 @lms_app.route("/home")
 @lms_app.route("/index")
+@cache.cached(unless=no_guardar_en_cache)
 def home():
     """Página principal de la aplicación."""
 
@@ -625,8 +643,10 @@ def cursos():
 
 
 @lms_app.route("/course/<course_code>")
+@cache.cached(unless=no_guardar_en_cache)
 def curso(course_code):
     """Pagina principal del curso."""
+
     return render_template(
         "learning/curso.html",
         curso=Curso.query.filter_by(codigo=course_code).first(),
