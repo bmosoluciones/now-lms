@@ -53,14 +53,19 @@
           <div class="col-sm-8">
 
             <div id="my_pdf_viewer">
+
               <div id="canvas_container" class="d-flex justify-content-around">
                   <canvas id="pdf_renderer"></canvas>
               </div>
+
               <div id="navigation_controls" class="d-flex justify-content-around">
-                  <button type="button" class="btn btn-outline-info" id="go_previous"><i class="bi bi-arrow-left-short" aria-hidden="true"></i> Página Anterior</button>
-                  <input id="current_page" value="1" type="number">
-                  <button type="button" class="btn btn-outline-info"id="go_next">Página Posterior <i class="bi bi-arrow-right-short" aria-hidden="true"></i></button>
-                </div>
+                <button type="button" class="btn btn-outline-info" id="go_previous"><i class="bi bi-arrow-left-short" aria-hidden="true"></i> Página Anterior</button>
+                <input id="current_page" value="1" type="number">
+                <button type="button" class="btn btn-outline-info" id="go_next">Página Posterior <i class="bi bi-arrow-right-short" aria-hidden="true"></i></button>
+              </div>
+
+            </div>
+
           </div>
           <script>
               var myState = {
@@ -123,9 +128,6 @@
                   }
               });
           </script>
-            
-
-          </div>
 
           <div class="col-sm-4">
 
