@@ -7,6 +7,7 @@ flask
 flask[async]
 flask-alembic
 flask-babel
+flask-caching
 flask-login
 flask-reuploaded
 flask-sqlalchemy
