@@ -81,8 +81,8 @@ __version__: str = VERSION
 APPNAME: str = "NOW LMS"
 
 if DESARROLLO:
-    log.warning("Se detecto que tiene configuradas las opciones de desarrollo.")
-    log.warning("Con las opciones de desarrollo habilitadas puede experimentar perdida de datos.")
+    log.info("Opciones de desarrollo detectadas.")
+    log.warning("Opciones de desarrollo habilitadas puede experimentar perdida de datos.")
     log.warning("Revise su configuración si desea que sus cambios sean permanentes.")
 
 # < --------------------------------------------------------------------------------------------- >
@@ -120,11 +120,11 @@ def no_autorizado():  # pragma: no cover
 def no_guardar_en_cache():
     """Si el usuario es anomino preferimos usar el sistema de cache."""
     if current_user and current_user.is_authenticated:
-        log.debug("Se detecto inicio de sesión, obiviando cache.")
+        log.debug("Se detecto inicio de sesión, obviando cache global.")
         return True
 
     else:
-        log.debug("Se detecto usuario anonimo, utilizando cache si esta disponible.")
+        log.debug("Se detectó usuario anonimo, utilizando cache si esta disponible.")
         return False
 
 
@@ -146,7 +146,6 @@ with lms_app.app_context():  # pragma: no cover
     cache.init_app(lms_app, CACHE_CONFIG)
     configure_uploads(app=lms_app, upload_sets=[CARGA_IMAGENES])
     try:
-        log.debug("Consultando Configuración desde la BD.")
         CONFIG = Configuracion.query.first()
     except OperationalError:
         CONFIG = None
@@ -157,8 +156,7 @@ with lms_app.app_context():  # pragma: no cover
     except DatabaseError:
         CONFIG = None
     finally:
-        log.warning("No se pudo obtener la configuración de la base de datos.")
-        log.debug("Utilisando configuración predeterminada.")
+        log.warning("Utilisando configuración predeterminada del sitio web.")
 
     # Asignamos variables globales para ser utilizadas dentro de las plantillas del sistema.
     log.debug("Estableciendo valores blogales de Jinja2.")
