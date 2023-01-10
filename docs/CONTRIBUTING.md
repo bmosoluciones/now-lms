@@ -111,6 +111,11 @@ Note that the reloader will setpup a new database with any code change, if you d
 NO_RESET_DATABASE=True hupper -m now_lms
 ```
 
+You can disable the default cache service with:
+
+```
+NO_LMS_CACHE=True hupper -m now_lms
+```
 #### Style Guide:
 
 [PEP8](https://www.python.org/dev/peps/pep-0008/) with a maximum line length of 127 characters.
