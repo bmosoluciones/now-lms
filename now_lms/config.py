@@ -122,7 +122,7 @@ if "sqlite" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[ope
 # Configuracion de Cache
 CACHE_CONFIG: dict = {}
 
-if environ.get("NO_LMS_CACHE"):  # pragma: no cover
+if not environ.get("NO_LMS_CACHE"):  # pragma: no cover
 
     CACHE_CONFIG["CACHE_DEFAULT_TIMEOUT"] = 300
     REDIS = environ.get("CACHE_REDIS_URL")
