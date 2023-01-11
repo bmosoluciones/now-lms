@@ -103,7 +103,7 @@ hupper -m now_lms
 ```
 Please note that we use waitress as WSGI server because gunicorn do not work on Windows, hupper will live reload the WSGI server as you save changes in the source code so you will be able to work with your changes as you work, please note that changes to the jinja templates will not trigger the server reload, only changes to python files.
 
-Default user and password are ```lms-admin```, default url to work with th server will be ```http://127.0.0.1:8080/```.
+Default user and password are ```lms-admin```, default url to work with the server will be ```http://127.0.0.1:8080/```.
 
 You can disable the default cache service with:
 
