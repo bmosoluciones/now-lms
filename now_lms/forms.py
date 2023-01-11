@@ -23,6 +23,8 @@ from flask_wtf import FlaskForm
 from wtforms import BooleanField, DecimalField, DateField, IntegerField, PasswordField, SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired
 
+# pylint: disable=R0903
+
 # Recursos locales:
 
 
