@@ -198,32 +198,27 @@ def init_app():  # pragma: no cover
     except DatabaseError:
         DB_INICIALIZADA = False
 
-    if DESARROLLO:
-        log.warning("Modo desarrollo detectado.")
-        if "NO_RESET_DATABASE" not in environ:
-            log.warning("Iniciando una base de datos nueva.")
-            database.drop_all()
-            initial_setup()
-        else:
-            log.info("Ha elegido no reiniciar la base de datos de desarrollo.")
-            log.info("Debera iniciar reiniciar manualment su base de datos si realiza cambios al esquema de la DB.")
-            if not DB_INICIALIZADA:
-                log.warning("No se detecto una base de datos inicilizada.")
-                log.info("Iniciando nueva base de datos de desarrollo.")
-                initial_setup()
+    if not DB_INICIALIZADA:
+        log.warning("No se detecto una base de datos inicilizada.")
+        log.info("Iniciando nueva base de datos de desarrollo.")
+        initial_setup()
+
     else:
         log.info("Iniciando NOW LMS")
-
-        if not DB_INICIALIZADA:
-            log.warning("No se detecto base de datos.")
-            log.info("Iniciando una base de datos.")
-            initial_setup()
 
 
 @lms_app.cli.command()
 def setup():  # pragma: no cover
     """Inicia al aplicacion."""
     with lms_app.app_context():
+        initial_setup()
+
+
+@lms_app.cli.command()
+def reset():  # pragma: no cover
+    """Elimina la base de datos actual e inicia una nueva."""
+    with lms_app.app_context():
+        database.drop_all()
         initial_setup()
 
 

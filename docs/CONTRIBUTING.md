@@ -105,12 +105,6 @@ Please note that we use waitress as WSGI server because gunicorn do not work on 
 
 Default user and password are ```lms-admin```, default url to work with th server will be ```http://127.0.0.1:8080/```.
 
-Note that the reloader will setpup a new database with any code change, if you do not want a fresh database any time you save a change you can set to True the ```NO_RESET_DATABASE``` as follow:
-
-```
-NO_RESET_DATABASE=True hupper -m now_lms
-```
-
 You can disable the default cache service with:
 
 ```
