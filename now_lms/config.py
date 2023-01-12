@@ -17,12 +17,13 @@
 
 """Configuración de la aplicación."""
 # Libreria standar:
-from os import environ, name, path
+from os import environ, name, path, access, W_OK, R_OK, makedirs
 from pathlib import Path
 from typing import Dict
 
 # Librerias de terceros:
-from flask_uploads import IMAGES, UploadSet
+from appdirs import AppDirs
+from flask_uploads import ARCHIVES, IMAGES, UploadSet
 from loguru import logger as log
 
 # Recursos locales:
@@ -33,20 +34,60 @@ DESARROLLO: bool = (
 )
 
 # < --------------------------------------------------------------------------------------------- >
-# Directorios de la aplicacion
+# Directorios base de la aplicacion
 DIRECTORIO_APP: str = path.abspath(path.dirname(__file__))
 DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
 DIRECTORIO_PLANTILLAS: str = path.join(DIRECTORIO_APP, "templates")
 DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
-DIRECTORIO_BASE_ARCHIVOS_DE_USUARIO: str = path.join(DIRECTORIO_APP, "static", "files")
-DIRECTORIO_ARCHIVOS_PUBLICOS: str = path.join(DIRECTORIO_BASE_ARCHIVOS_DE_USUARIO, "public")
-DIRECTORIO_ARCHIVOS_PRIVADOS: str = path.join(DIRECTORIO_BASE_ARCHIVOS_DE_USUARIO, "private")
-
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios utilizados para la carga de archivos.
-DIRECTORIO_IMAGENES: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "img")
+
+DIRECTORIO_BASE_ARCHIVOS_USUARIO = path.join(DIRECTORIO_ARCHIVOS, "files")
+
+if DESARROLLO:
+    DIRECTORIO_BASE_UPLOADS = DIRECTORIO_BASE_ARCHIVOS_USUARIO
+
+else:
+
+    if name == "nt":  # pragma: no cover:
+        DIRECTORIO_BASE_APP = AppDirs("NOW-LMS", "BMO Soluciones")
+        DIRECTORIO_BASE_UPLOADS = path.join(DIRECTORIO_BASE_APP.site_data_dir, "files")
+
+    else:
+        UNIX_UPLOAD_DIR = str(Path("/var/www/now-lms/data"))
+
+        if access(UNIX_UPLOAD_DIR, R_OK) and access(UNIX_UPLOAD_DIR, W_OK):
+            DIRECTORIO_BASE_UPLOADS = UNIX_UPLOAD_DIR
+
+        else:
+            DIRECTORIO_BASE_UPLOADS = DIRECTORIO_BASE_ARCHIVOS_USUARIO
+
+DIRECTORIO_ARCHIVOS_PUBLICOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "public")
+DIRECTORIO_ARCHIVOS_PRIVADOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "private")
+DIRECTORIO_UPLOAD_IMAGENES: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "images")
+DIRECTORIO_UPLOAD_ARCHIVOS: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "files")
 CARGA_IMAGENES = UploadSet("photos", IMAGES)
+CARGA_ARCHIVOS = UploadSet("files", ARCHIVES)
+
+if not path.isdir(DIRECTORIO_BASE_UPLOADS):
+    try:
+        makedirs(DIRECTORIO_BASE_UPLOADS)
+        makedirs(DIRECTORIO_ARCHIVOS_PRIVADOS)
+        makedirs(DIRECTORIO_ARCHIVOS_PUBLICOS)
+        makedirs(DIRECTORIO_UPLOAD_ARCHIVOS)
+        makedirs(DIRECTORIO_UPLOAD_IMAGENES)
+    except OSError:
+        log.warning("No se puede crear directorio para carga de archivos: {directorio}", directorio=DIRECTORIO_BASE_UPLOADS)
+
+if access(DIRECTORIO_BASE_UPLOADS, R_OK) and access(DIRECTORIO_BASE_UPLOADS, W_OK):
+    log.debug("Directorio para carga de archivos es {directorio}", directorio=DIRECTORIO_BASE_UPLOADS)
+else:
+    log.warning(
+        "No se tiene acceso a leer/escribir en directorio de carga de archivos {directorio}",
+        directorio=DIRECTORIO_BASE_UPLOADS,
+    )
+
 
 # < --------------------------------------------------------------------------------------------- >
 # Ubicación predeterminada de base de datos SQLITE
@@ -65,8 +106,6 @@ CONFIGURACION: Dict = {
     "SECRET_KEY": environ.get("LMS_KEY") or "dev",
     "SQLALCHEMY_DATABASE_URI": environ.get("LMS_DB") or environ.get("DATABASE_URL") or SQLITE,
     "SQLALCHEMY_TRACK_MODIFICATIONS": "False",
-    # Carga de archivos
-    "UPLOADED_PHOTOS_DEST": DIRECTORIO_IMAGENES,
 }
 
 if DESARROLLO:  # pragma: no cover
