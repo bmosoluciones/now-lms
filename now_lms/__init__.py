@@ -32,7 +32,6 @@ from flask.cli import FlaskGroup
 from flask_alembic import Alembic
 from flask_caching import Cache
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
-from flask_uploads import configure_uploads
 from loguru import logger as log
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
@@ -41,7 +40,13 @@ from sqlalchemy.exc import ArgumentError, OperationalError, ProgrammingError
 
 # Recursos locales:
 from now_lms.auth import validar_acceso, proteger_passwd
-from now_lms.config import DIRECTORIO_PLANTILLAS, DIRECTORIO_ARCHIVOS, DESARROLLO, CONFIGURACION, CARGA_IMAGENES, CACHE_CONFIG
+from now_lms.config import (
+    DIRECTORIO_PLANTILLAS,
+    DIRECTORIO_ARCHIVOS,
+    DESARROLLO,
+    CONFIGURACION,
+    CACHE_CONFIG,
+)
 from now_lms.db import (
     database,
     Configuracion,
@@ -144,7 +149,6 @@ with lms_app.app_context():  # pragma: no cover
     administrador_sesion.init_app(lms_app)
     database.init_app(lms_app)
     cache.init_app(lms_app, CACHE_CONFIG)
-    configure_uploads(app=lms_app, upload_sets=[CARGA_IMAGENES])
     try:
         CONFIG = Configuracion.query.first()
     except OperationalError:
