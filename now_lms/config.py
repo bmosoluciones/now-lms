@@ -125,13 +125,19 @@ CACHE_CONFIG: dict = {}
 if not environ.get("NO_LMS_CACHE"):  # pragma: no cover
 
     CACHE_CONFIG["CACHE_DEFAULT_TIMEOUT"] = 300
-    REDIS = environ.get("CACHE_REDIS_URL")
-    MEMCACHED = environ.get("CACHE_MEMCACHED_SERVERS")
-
-    if REDIS:
+    if environ.get("CACHE_REDIS_HOST") and environ.get("CACHE_REDIS_PORT"):
         CTYPE = "RedisCache"
-    elif MEMCACHED:
+        CACHE_CONFIG["CACHE_REDIS_HOST"] = environ.get("CACHE_REDIS_HOST")
+        CACHE_CONFIG["CACHE_REDIS_PORT"] = environ.get("CACHE_REDIS_PORT")
+
+    elif environ.get("CACHE_REDIS_URL") or environ.get("REDIS_URL"):
+        CTYPE = "RedisCache"
+        CACHE_CONFIG["CACHE_REDIS_URL"] = environ.get("CACHE_REDIS_URL") or environ.get("REDIS_URL")
+
+    elif environ.get("CACHE_MEMCACHED_SERVERS"):
         CTYPE = "MemcachedCache"
+        CACHE_CONFIG["CACHE_MEMCACHED_SERVERS"] = environ.get("CACHE_MEMCACHED_SERVERS")
+
     else:
         CTYPE = "SimpleCache"
 
