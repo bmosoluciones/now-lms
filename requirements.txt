@@ -1,6 +1,7 @@
 # Librerias de terceros
 # Mantener en orden alfabetico
 alembic
+appdirs
 bcrypt
 babel
 flask
