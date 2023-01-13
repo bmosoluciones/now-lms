@@ -22,12 +22,12 @@
 # Libreria standar:
 from datetime import datetime, time, timedelta
 from typing import Union
-from uuid import uuid4
 
 # Librerias de terceros:
 from flask_login import current_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from loguru import logger as log
+from ulid import ULID
 
 # Recursos locales:
 from now_lms.auth import proteger_passwd
@@ -118,7 +118,10 @@ class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
 class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Una sección de un curso consta de una serie de recursos."""
 
-    __table_args__ = (database.UniqueConstraint("codigo", name="curso_recurso_unico"),)
+    __table_args__ = (
+        database.UniqueConstraint("codigo", name="curso_recurso_unico"),
+        database.UniqueConstraint("doc", name="documento_unico"),
+    )
     indice = database.Column(database.Integer())
     codigo = database.Column(database.String(32), unique=False)
     seccion = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False)
@@ -146,6 +149,8 @@ class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     hora = database.Column(database.Time())
     # Un instructor puede decidir brindar acceso publico a un recurso.
     publico = database.Column(database.Boolean())
+    base_doc_url = database.Column(database.String(50), unique=False)
+    doc = database.Column(database.String(50), unique=True)
 
 
 class CursoRecursoAvance(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -333,8 +338,8 @@ def crear_cursos_predeterminados():
     database.session.add(demo)
     database.session.commit()
 
-    ramdon1 = uuid4()
-    seccion1_id = str(ramdon1.hex)
+    ramdon1 = ULID()
+    seccion1_id = str(ramdon1)
     nueva_seccion1 = CursoSeccion(
         codigo=seccion1_id,
         curso="now",
@@ -347,8 +352,8 @@ def crear_cursos_predeterminados():
     database.session.add(nueva_seccion1)
     database.session.commit()
 
-    ramdon2 = uuid4()
-    seccion2_id = str(ramdon2.hex)
+    ramdon2 = ULID()
+    seccion2_id = str(ramdon2)
     nueva_seccion2 = CursoSeccion(
         codigo=seccion2_id,
         curso="now",
@@ -361,8 +366,8 @@ def crear_cursos_predeterminados():
     database.session.add(nueva_seccion2)
     database.session.commit()
 
-    ramdon1 = uuid4()
-    recurso_id1 = str(ramdon1.hex)
+    ramdon1 = ULID()
+    recurso_id1 = str(ramdon1)
     nuevo_recurso1 = CursoRecurso(
         codigo=recurso_id1,
         curso="now",
@@ -378,8 +383,8 @@ def crear_cursos_predeterminados():
     database.session.add(nuevo_recurso1)
     database.session.commit()
 
-    ramdon2 = uuid4()
-    recurso_id2 = str(ramdon2.hex)
+    ramdon2 = ULID()
+    recurso_id2 = str(ramdon2)
     nuevo_recurso2 = CursoRecurso(
         codigo=recurso_id2,
         curso="now",
@@ -395,8 +400,8 @@ def crear_cursos_predeterminados():
     database.session.add(nuevo_recurso2)
     database.session.commit()
 
-    ramdon3 = uuid4()
-    recurso_id3 = str(ramdon3.hex)
+    ramdon3 = ULID()
+    recurso_id3 = str(ramdon3)
     nuevo_recurso3 = CursoRecurso(
         codigo=recurso_id3,
         curso="now",
@@ -412,8 +417,8 @@ def crear_cursos_predeterminados():
     database.session.add(nuevo_recurso3)
     database.session.commit()
 
-    ramdon4 = uuid4()
-    recurso_id4 = str(ramdon4.hex)
+    ramdon4 = ULID()
+    recurso_id4 = str(ramdon4)
     nuevo_recurso4 = CursoRecurso(
         codigo=recurso_id4,
         curso="now",
@@ -431,8 +436,8 @@ def crear_cursos_predeterminados():
     database.session.add(nuevo_recurso4)
     database.session.commit()
 
-    ramdon5 = uuid4()
-    recurso_id5 = str(ramdon5.hex)
+    ramdon5 = ULID()
+    recurso_id5 = str(ramdon5)
     nuevo_recurso5 = CursoRecurso(
         codigo=recurso_id5,
         curso="now",

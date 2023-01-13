@@ -82,8 +82,15 @@ class CursoSeccionForm(FlaskForm):
 
 
 class CursoRecursoVideoYoutube(FlaskForm):
-    """Formulario para crear una nueva sección."""
+    """Formulario para un nuevo recurso Youtube."""
 
     nombre = StringField(validators=[DataRequired()])
     descripcion = StringField(validators=[DataRequired()])
     youtube_url = StringField(validators=[DataRequired()])
+
+
+class CursoRecursoArchivoPDF(FlaskForm):
+    """Formulario para un nuevo recurso PDF."""
+
+    nombre = StringField(validators=[DataRequired()])
+    descripcion = StringField(validators=[DataRequired()])

@@ -23,7 +23,6 @@ from typing import Dict
 
 # Librerias de terceros:
 from appdirs import AppDirs
-from flask_uploads import ARCHIVES, IMAGES, UploadSet
 from loguru import logger as log
 
 # Recursos locales:
@@ -67,8 +66,6 @@ DIRECTORIO_ARCHIVOS_PUBLICOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "public")
 DIRECTORIO_ARCHIVOS_PRIVADOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "private")
 DIRECTORIO_UPLOAD_IMAGENES: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "images")
 DIRECTORIO_UPLOAD_ARCHIVOS: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "files")
-CARGA_IMAGENES = UploadSet("photos", IMAGES)
-CARGA_ARCHIVOS = UploadSet("files", ARCHIVES)
 
 if not path.isdir(DIRECTORIO_BASE_UPLOADS):
     try:
@@ -106,6 +103,10 @@ CONFIGURACION: Dict = {
     "SECRET_KEY": environ.get("LMS_KEY") or "dev",
     "SQLALCHEMY_DATABASE_URI": environ.get("LMS_DB") or environ.get("DATABASE_URL") or SQLITE,
     "SQLALCHEMY_TRACK_MODIFICATIONS": "False",
+    # Carga de Archivos: https://flask-reuploaded.readthedocs.io/en/latest/configuration/
+    "UPLOADS_AUTOSERVE": True,
+    "UPLOADED_FILES_DEST": DIRECTORIO_UPLOAD_ARCHIVOS,
+    "UPLOADED_IMAGES_DEST": DIRECTORIO_UPLOAD_IMAGENES,
 }
 
 if DESARROLLO:  # pragma: no cover
