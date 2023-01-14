@@ -319,7 +319,7 @@ def copy_sample_pdf():
     from shutil import copyfile
     from now_lms.config import DIRECTORIO_ARCHIVOS
 
-    origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "NOW Learning Management System.pdf")
+    origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "NOW_Learning_Management_System.pdf")
     destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "files", "now", "NOW_Learning_Management_System.pdf")
     copyfile(origen, destino)
 
