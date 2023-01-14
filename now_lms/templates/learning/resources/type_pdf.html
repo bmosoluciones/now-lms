@@ -62,6 +62,10 @@
                 <button type="button" class="btn btn-outline-info" id="go_next">Página Posterior <i class="bi bi-arrow-right-short" aria-hidden="true"></i></button>
               </div>
 
+              <div id="download buttom" class="d-flex justify-content-around">
+                <a type="button" class="btn btn-outline-info" id="download" href="{{ url_for('recurso_file', recurso_code=recurso.codigo, course_code=recurso.curso) }}"><i class="bi bi-arrow-left-short" aria-hidden="true"></i>Descargar PDF</a>
+              </div>
+
             </div>
 
           </div>
