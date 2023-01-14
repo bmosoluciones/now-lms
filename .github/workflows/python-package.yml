@@ -5,7 +5,7 @@ name: Python package
 
 on:
   push:
-    branches: [ main, development, file-uploads ]
+    branches: [ main, development, fix-html-viewer ]
   pull_request:
     branches: [ main, development ]
 
