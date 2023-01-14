@@ -315,12 +315,17 @@ def crear_configuracion_predeterminada():
 
 def copy_sample_pdf():
     """Crea un archivo PDF de ejemplo."""
-    from os import path
+    from os import path, makedirs
     from shutil import copyfile
     from now_lms.config import DIRECTORIO_ARCHIVOS
 
     origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "NOW_Learning_Management_System.pdf")
-    destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "files", "now", "NOW_Learning_Management_System.pdf")
+    directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "files", "now")
+    try:
+        makedirs(directorio_destino)
+    except FileExistsError:
+        pass
+    destino = path.join(directorio_destino, "NOW_Learning_Management_System.pdf")
     copyfile(origen, destino)
 
 
