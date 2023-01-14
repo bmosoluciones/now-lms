@@ -26,3 +26,6 @@ PyMySQL
 cryptography
 # Postgresql
 pg8000
+
+# Heroku
+psycopg-binary
