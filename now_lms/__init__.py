@@ -220,6 +220,7 @@ def setup():  # pragma: no cover
 def resetdb():  # pragma: no cover
     """Elimina la base de datos actual e inicia una nueva."""
     lms_app.app_context().push()
+    cache.clear()
     database.drop_all()
     initial_setup()
 
@@ -889,15 +890,15 @@ def cambiar_seccion_publico():
     return redirect(url_for("curso", course_code=request.args.get("course_code")))
 
 
-@lms_app.route("/files/<recurso>")
-def recurso_file(recurso):
+# <-------- Rutas para servir archivos -------->
+@lms_app.route("/course/<course_code>/files/<recurso_code>")
+def recurso_file(course_code, recurso_code):
     """Devuelve un archivo desde el sistema de archivos."""
-    config = current_app.upload_set_config.get(recurso.base_doc_url)
+    doc = CursoRecurso.query.filter(CursoRecurso.codigo == recurso_code, CursoRecurso.curso == course_code).first()
+    config = current_app.upload_set_config.get(doc.base_doc_url)
 
-    return send_from_directory(config.destination, recurso.file)
+    return send_from_directory(config.destination, doc.doc)
 
-
-lms_app.jinja_env.globals["recurso_file"] = recurso_file
 
 # <-------- Servidores WSGI buscan una "app" por defecto  -------->
 app = lms_app

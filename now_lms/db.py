@@ -313,6 +313,17 @@ def crear_configuracion_predeterminada():
     database.session.commit()
 
 
+def copy_sample_pdf():
+    """Crea un archivo PDF de ejemplo."""
+    from os import path
+    from shutil import copyfile
+    from now_lms.config import DIRECTORIO_ARCHIVOS
+
+    origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "NOW Learning Management System.pdf")
+    destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "files", "now", "NOW_Learning_Management_System.pdf")
+    copyfile(origen, destino)
+
+
 def crear_cursos_predeterminados():
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
@@ -436,6 +447,7 @@ def crear_cursos_predeterminados():
     database.session.add(nuevo_recurso4)
     database.session.commit()
 
+    copy_sample_pdf()
     ramdon5 = ULID()
     recurso_id5 = str(ramdon5)
     nuevo_recurso5 = CursoRecurso(
@@ -445,7 +457,8 @@ def crear_cursos_predeterminados():
         tipo="pdf",
         nombre="FACULTY DEVELOPMENT FOR ONLINE TEACHING AS A CATALYST FOR CHANGE.",
         descripcion="A PDF file to share with yours learners.",
-        url="https://files.eric.ed.gov/fulltext/EJ971044.pdf",
+        base_doc_url="files",
+        doc="now/NOW_Learning_Management_System.pdf",
         indice=3,
         publico=False,
         requerido=True,

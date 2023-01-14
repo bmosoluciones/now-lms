@@ -9,3 +9,4 @@ python -m curlylint now_lms/templates/
 python -m black tests/
 python -m flake8 tests/
 python -m pytest  -v --exitfirst --cov=now_lms
+lmsctl resetdb
