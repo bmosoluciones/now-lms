@@ -31,3 +31,4 @@ requirements-databases.txt
 .gitpod.sh
 app.json
 sonar-project.properties
+now_lms/static/files/*

@@ -24,18 +24,19 @@
 import sys
 from functools import wraps
 from os import environ, cpu_count
-from uuid import uuid4
 
 # Librerias de terceros:
-from flask import Flask, abort, flash, redirect, request, render_template, url_for
+from flask import Flask, abort, flash, redirect, request, render_template, url_for, send_from_directory, current_app
 from flask.cli import FlaskGroup
 from flask_alembic import Alembic
 from flask_caching import Cache
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
+from flask_uploads import DOCUMENTS, IMAGES, UploadSet, configure_uploads
 from loguru import logger as log
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
 from sqlalchemy.exc import ArgumentError, OperationalError, ProgrammingError
+from ulid import ULID
 
 
 # Recursos locales:
@@ -76,7 +77,7 @@ from now_lms.bi import (
     cambia_curso_publico,
     cambia_seccion_publico,
 )
-from now_lms.forms import LoginForm, LogonForm, CurseForm, CursoRecursoVideoYoutube, CursoSeccionForm
+from now_lms.forms import LoginForm, LogonForm, CurseForm, CursoRecursoVideoYoutube, CursoRecursoArchivoPDF, CursoSeccionForm
 from now_lms.misc import ICONOS_RECURSOS
 from now_lms.version import VERSION
 
@@ -85,10 +86,6 @@ from now_lms.version import VERSION
 __version__: str = VERSION
 APPNAME: str = "NOW LMS"
 
-if DESARROLLO:
-    log.info("Opciones de desarrollo detectadas.")
-    log.warning("Opciones de desarrollo habilitadas puede experimentar perdida de datos.")
-    log.warning("Revise su configuración si desea que sus cambios sean permanentes.")
 
 # < --------------------------------------------------------------------------------------------- >
 # Datos predefinidos
@@ -122,15 +119,9 @@ def no_autorizado():  # pragma: no cover
     return INICIO_SESION
 
 
-def no_guardar_en_cache():
+def no_guardar_en_cache_global():
     """Si el usuario es anomino preferimos usar el sistema de cache."""
-    if current_user and current_user.is_authenticated:
-        log.debug("Se detecto inicio de sesión, obviando cache global.")
-        return True
-
-    else:
-        log.debug("Se detectó usuario anonimo, utilizando cache si esta disponible.")
-        return False
+    return current_user and current_user.is_authenticated
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -170,6 +161,13 @@ with lms_app.app_context():  # pragma: no cover
     lms_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
     lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
     lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
+
+# < --------------------------------------------------------------------------------------------- >
+# Carga de Archivos al sistema.
+images = UploadSet("images", IMAGES)
+files = UploadSet("files", DOCUMENTS)
+configure_uploads(lms_app, images)
+configure_uploads(lms_app, files)
 
 
 def initial_setup():
@@ -214,16 +212,17 @@ def init_app():  # pragma: no cover
 @lms_app.cli.command()
 def setup():  # pragma: no cover
     """Inicia al aplicacion."""
-    with lms_app.app_context():
-        initial_setup()
+    lms_app.app_context().push()
+    initial_setup()
 
 
 @lms_app.cli.command()
-def reset():  # pragma: no cover
+def resetdb():  # pragma: no cover
     """Elimina la base de datos actual e inicia una nueva."""
-    with lms_app.app_context():
-        database.drop_all()
-        initial_setup()
+    lms_app.app_context().push()
+    cache.clear()
+    database.drop_all()
+    initial_setup()
 
 
 @lms_app.cli.command()
@@ -393,7 +392,7 @@ def cerrar_sesion():  # pragma: no cover
 @lms_app.route("/")
 @lms_app.route("/home")
 @lms_app.route("/index")
-@cache.cached(unless=no_guardar_en_cache)
+@cache.cached(unless=no_guardar_en_cache_global)
 def home():
     """Página principal de la aplicación."""
 
@@ -498,8 +497,8 @@ def nuevo_seccion(course_code):
     # Las seccion son contenedores de recursos.
     form = CursoSeccionForm()
     if form.validate_on_submit() or request.method == "POST":
-        ramdon = uuid4()
-        id_unico = str(ramdon.hex)
+        ramdon = ULID()
+        id_unico = str(ramdon)
         secciones = CursoSeccion.query.filter_by(curso=course_code).count()
         nuevo_indice = int(secciones + 1)
         nueva_seccion = CursoSeccion(
@@ -565,8 +564,8 @@ def nuevo_recurso_youtube_video(course_code, seccion):
     recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
     nuevo_indice = int(recursos + 1)
     if form.validate_on_submit() or request.method == "POST":
-        ramdon = uuid4()
-        id_unico = str(ramdon.hex)
+        ramdon = ULID()
+        id_unico = str(ramdon)
         nuevo_recurso_ = CursoRecurso(
             codigo=id_unico,
             curso=course_code,
@@ -576,6 +575,8 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             descripcion=form.descripcion.data,
             url=form.youtube_url.data,
             indice=nuevo_indice,
+            requerido=False,
+            creado_por=current_user.code,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -587,6 +588,44 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template("learning/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form)
+
+
+@lms_app.route("/course/<course_code>/<seccion>/pdf/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_recurso_pdf(course_code, seccion):
+    """Formulario para crear un nuevo recurso tipo archivo en PDF."""
+    form = CursoRecursoArchivoPDF()
+    recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
+    nuevo_indice = int(recursos + 1)
+    if (form.validate_on_submit() or request.method == "POST") and "pdf" in request.files:
+        file_name = str(ULID()) + ".pdf"
+        pdf_file = files.save(request.files["pdf"], folder=course_code, name=file_name)
+        ramdon = ULID()
+        id_unico = str(ramdon)
+        nuevo_recurso_ = CursoRecurso(
+            codigo=id_unico,
+            curso=course_code,
+            seccion=seccion,
+            tipo="pdf",
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            indice=nuevo_indice,
+            base_doc_url=files.name,
+            doc=pdf_file,
+            requerido=False,
+            creado_por=current_user.usuario,
+        )
+        try:
+            database.session.add(nuevo_recurso_)
+            database.session.commit()
+            flash("Recurso agregado correctamente al curso.")
+            return redirect(url_for("curso", course_code=course_code))
+        except OperationalError:
+            flash("Hubo en error al crear el recurso.")
+            return redirect(url_for("curso", course_code=course_code))
+    else:
+        return render_template("learning/nuevo_recurso_pdf.html", id_curso=course_code, id_seccion=seccion, form=form)
 
 
 @lms_app.route("/course/resource/<cource_code>/<seccion_id>/<task>/<resource_index>")
@@ -640,7 +679,7 @@ def cursos():
 
 
 @lms_app.route("/course/<course_code>")
-@cache.cached(unless=no_guardar_en_cache)
+@cache.cached(unless=no_guardar_en_cache_global)
 def curso(course_code):
     """Pagina principal del curso."""
 
@@ -849,6 +888,16 @@ def cambiar_seccion_publico():
         codigo=request.args.get("codigo"),
     )
     return redirect(url_for("curso", course_code=request.args.get("course_code")))
+
+
+# <-------- Rutas para servir archivos -------->
+@lms_app.route("/course/<course_code>/files/<recurso_code>")
+def recurso_file(course_code, recurso_code):
+    """Devuelve un archivo desde el sistema de archivos."""
+    doc = CursoRecurso.query.filter(CursoRecurso.codigo == recurso_code, CursoRecurso.curso == course_code).first()
+    config = current_app.upload_set_config.get(doc.base_doc_url)
+
+    return send_from_directory(config.destination, doc.doc)
 
 
 # <-------- Servidores WSGI buscan una "app" por defecto  -------->
