@@ -325,6 +325,8 @@ def copy_sample_pdf():
         makedirs(directorio_destino)
     except FileExistsError:
         pass
+    except FileNotFoundError:
+        pass
     destino = path.join(directorio_destino, "NOW_Learning_Management_System.pdf")
     copyfile(origen, destino)
 
