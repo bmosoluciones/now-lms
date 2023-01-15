@@ -1,0 +1,76 @@
+{% import "macros.html" as macros %}
+{% import "learning/resources/type_macros.html" as r_macros %}
+{% set permitir_docente = docente_asignado(id_curso=curso.codigo) %}
+{% set permitir_moderador = moderador_asignado(id_curso=curso.codigo) %}
+{% set permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %}
+{% set permitir_editar = current_user.tipo == "admin" or permitir_docente %}
+
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+
+<head>
+
+    {{ macros.headertags() }}
+    <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
+
+    {{ macros.local_style() }}
+
+</head>
+
+<body>
+
+    {{ macros.navbar() }}
+
+    <main>
+
+      {{ macros.notify() }}
+
+      <div class="container px-0 py-3" id="icon-grid">
+
+        <h4 class="pb-2 border-bottom">
+          <a class="link-dark" href="{{ url_for("curso", course_code=recurso.curso) }}">
+              <i class="bi bi-arrow-left-short" aria-hidden="true"></i><i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i>
+          </a>
+          {{ seccion.nombre }} / {{ recurso.nombre }}
+        </h4>
+
+        <div class="row">
+
+          <div class="col-sm-8">
+
+            <div id="pdf_container" class="d-flex justify-content-around">
+
+              <audio controls>
+                <source src="{{ url_for('recurso_file', recurso_code=recurso.codigo, course_code=recurso.curso) }}" type="audio/ogg">
+                Your browser does not support the audio element.
+              </audio>
+
+            </div>
+
+            <div id="download" class="d-flex justify-content-around">
+              <a type="button" class="btn btn-success" id="download" href="{{ url_for('recurso_file', recurso_code=recurso.codigo, course_code=recurso.curso) }}">
+                <i class="bi bi-soundwave" aria-hidden="true"></i>
+                Descargar Audio
+              </a>
+            </div>
+
+            
+
+          </div>
+
+          <div class="col-sm-4">
+
+            {{ r_macros.resource_nav(recursos=recursos, secciones=secciones) }}
+            
+          </div>
+
+        </div>
+      </div>
+      
+      {{ r_macros.nav_footer() }}
+    
+    </main>
+
+  </body>
+
+</html>
