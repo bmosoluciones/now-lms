@@ -59,7 +59,8 @@ from now_lms.db import (
     ModeradorCurso,
     Usuario,
     crear_configuracion_predeterminada,
-    crear_cursos_predeterminados,
+    crear_curso_predeterminado,
+    crear_curso_demo,
     crear_usuarios_predeterminados,
     verifica_docente_asignado_a_curso,
     verifica_estudiante_asignado_a_curso,
@@ -189,7 +190,8 @@ def initial_setup():
     log.info("Cargando datos de muestra.")
     crear_configuracion_predeterminada()
     crear_usuarios_predeterminados()
-    crear_cursos_predeterminados()
+    crear_curso_predeterminado()
+    crear_curso_demo()
     log.debug("Datos de muestra cargados correctamente.")
 
 

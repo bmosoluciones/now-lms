@@ -320,7 +320,7 @@ def copy_sample_pdf():
     from now_lms.config import DIRECTORIO_ARCHIVOS
 
     origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "NOW_Learning_Management_System.pdf")
-    directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "files", "now")
+    directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "files", "resources")
     try:
         makedirs(directorio_destino)
     except FileExistsError:
@@ -343,7 +343,7 @@ def copy_sample_audio():
     from now_lms.config import DIRECTORIO_ARCHIVOS
 
     origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "En-us-hello.ogg")
-    directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "audio", "now")
+    directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "audio", "resources")
     try:
         makedirs(directorio_destino)
     except FileExistsError:
@@ -359,9 +359,106 @@ def copy_sample_audio():
         pass
 
 
-def crear_cursos_predeterminados():
+def crear_curso_demo():
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
+    log.info("Creando curso de demo de recursos.")
+    demo = Curso(
+        nombre="Demo Course",
+        codigo="resources",
+        descripcion="This course will let you learn resource types.",
+        estado="draft",
+        certificado=False,
+        publico=False,
+        duracion=7,
+        nivel=1,
+        auditable=False,
+        portada="https://img.freepik.com/vector-gratis/concepto-tutoriales-linea_52683-37480.jpg",
+        # https://www.freepik.es/vector-gratis/concepto-tutoriales-linea_7915189.htm
+        # Imagen de pikisuperstar en Freepik
+        fecha_inicio=datetime.today() + timedelta(days=7),
+        fecha_fin=datetime.today() + timedelta(days=14),
+    )
+    database.session.add(demo)
+    database.session.commit()
+
+    ramdon1 = ULID()
+    seccion_id = str(ramdon1)
+    nueva_seccion = CursoSeccion(
+        codigo=seccion_id,
+        curso="resources",
+        nombre="Demo of type of resources.",
+        descripcion="Demo of type of resources.",
+        estado=False,
+        indice=1,
+    )
+
+    database.session.add(nueva_seccion)
+    database.session.commit()
+
+    copy_sample_audio()
+    ramdon2 = ULID()
+    recurso1 = str(ramdon2)
+    nuevo_recurso6 = CursoRecurso(
+        codigo=recurso1,
+        curso="resources",
+        seccion=seccion_id,
+        tipo="mp3",
+        nombre="A demo audio resource.",
+        descripcion="Audio is easy to produce that videos.",
+        base_doc_url="audio",
+        doc="demo/En-us-hello.ogg",
+        indice=1,
+        publico=True,
+        requerido=True,
+    )
+    database.session.add(nuevo_recurso6)
+    database.session.commit()
+
+    copy_sample_pdf()
+    ramdon3 = ULID()
+    recurso2 = str(ramdon3)
+    nuevo_recurso5 = CursoRecurso(
+        codigo=recurso2,
+        curso="resources",
+        seccion=seccion_id,
+        tipo="pdf",
+        nombre="Demo pdf resource.",
+        descripcion="A exampel of a PDF file to share with yours learners.",
+        base_doc_url="files",
+        doc="demo/NOW_Learning_Management_System.pdf",
+        indice=2,
+        publico=True,
+        requerido=True,
+    )
+    database.session.add(nuevo_recurso5)
+    database.session.commit()
+
+    ramdon4 = ULID()
+    recurso4 = str(ramdon4)
+    nuevo_recurso4 = CursoRecurso(
+        codigo=recurso4,
+        curso="resources",
+        seccion=seccion_id,
+        tipo="meet",
+        nombre="A live meet about course sales.",
+        descripcion="Live meets will improve your course.",
+        url="https://en.wikipedia.org/wiki/Web_conferencing",
+        indice=3,
+        fecha=datetime.today() + timedelta(days=9),
+        hora=time(hour=14, minute=30),
+        publico=False,
+        requerido=True,
+    )
+    database.session.add(nuevo_recurso4)
+    database.session.commit()
+
+    log.debug("Curso de demo de recursos creado correctamente.")
+
+
+def crear_curso_predeterminado():
+    # pylint: disable=too-many-locals
+    """Crea un recurso publico."""
     log.info("Creando curso de demostración.")
     demo = Curso(
         nombre="First Course",
@@ -429,25 +526,6 @@ def crear_cursos_predeterminados():
     database.session.add(nuevo_recurso1)
     database.session.commit()
 
-    copy_sample_audio()
-    ramdon6 = ULID()
-    recurso_id6 = str(ramdon6)
-    nuevo_recurso6 = CursoRecurso(
-        codigo=recurso_id6,
-        curso="now",
-        seccion=seccion1_id,
-        tipo="mp3",
-        nombre="A demo audio resource.",
-        descripcion="Audio is easy to produce that videos.",
-        base_doc_url="audio",
-        doc="now/En-us-hello.ogg",
-        indice=3,
-        publico=True,
-        requerido=True,
-    )
-    database.session.add(nuevo_recurso6)
-    database.session.commit()
-
     ramdon2 = ULID()
     recurso_id2 = str(ramdon2)
     nuevo_recurso2 = CursoRecurso(
@@ -458,6 +536,23 @@ def crear_cursos_predeterminados():
         nombre="How to Teach OnLine.",
         descripcion="Kristina Garcia - Top Tips for New Online Teachers!",
         url="https://www.youtube.com/watch?v=CvPj4V_j7u8",
+        indice=2,
+        publico=False,
+        requerido=False,
+    )
+    database.session.add(nuevo_recurso2)
+    database.session.commit()
+
+    ramdon6 = ULID()
+    recurso_id6 = str(ramdon6)
+    nuevo_recurso2 = CursoRecurso(
+        codigo=recurso_id6,
+        curso="now",
+        seccion=seccion1_id,
+        tipo="youtube",
+        nombre="What You Should Know BEFORE Becoming an Online English Teacher.",
+        descripcion="Danie Jay - What You Should Know BEFORE Becoming an Online English Teacher | 10 Things I WISH I Knew",
+        url="https://www.youtube.com/watch?v=9JBDSzSARHA",
         indice=2,
         publico=False,
         requerido=False,
@@ -482,43 +577,6 @@ def crear_cursos_predeterminados():
     database.session.add(nuevo_recurso3)
     database.session.commit()
 
-    ramdon4 = ULID()
-    recurso_id4 = str(ramdon4)
-    nuevo_recurso4 = CursoRecurso(
-        codigo=recurso_id4,
-        curso="now",
-        seccion=seccion2_id,
-        tipo="meet",
-        nombre="A live meet about course sales.",
-        descripcion="Live meets will improve your course.",
-        url="https://en.wikipedia.org/wiki/Web_conferencing",
-        indice=2,
-        fecha=datetime.today() + timedelta(days=9),
-        hora=time(hour=14, minute=30),
-        publico=False,
-        requerido=True,
-    )
-    database.session.add(nuevo_recurso4)
-    database.session.commit()
-
-    copy_sample_pdf()
-    ramdon5 = ULID()
-    recurso_id5 = str(ramdon5)
-    nuevo_recurso5 = CursoRecurso(
-        codigo=recurso_id5,
-        curso="now",
-        seccion=seccion2_id,
-        tipo="pdf",
-        nombre="Demo pdf resource.",
-        descripcion="A exampel of a PDF file to share with yours learners.",
-        base_doc_url="files",
-        doc="now/NOW_Learning_Management_System.pdf",
-        indice=3,
-        publico=True,
-        requerido=True,
-    )
-    database.session.add(nuevo_recurso5)
-    database.session.commit()
     log.debug("Curso de demostración creado correctamente.")
 
 
