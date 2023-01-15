@@ -321,14 +321,14 @@ def copy_sample_pdf():
 
     origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "NOW_Learning_Management_System.pdf")
     directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "files", "resources")
-    try:
+    try:  # pragma: no cover
         makedirs(directorio_destino)
     except FileExistsError:
         pass
     except FileNotFoundError:
         pass
     destino = path.join(directorio_destino, "NOW_Learning_Management_System.pdf")
-    try:
+    try:  # pragma: no cover
         copyfile(origen, destino)
     except FileExistsError:
         pass
