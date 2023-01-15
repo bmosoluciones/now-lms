@@ -373,7 +373,7 @@ def test_reorganizar_indice_recurso(client, auth):
 
     auth.login()
 
-    SECCION = CursoSeccion.query.filter_by(nombre="How to sell a online course.").first()
+    SECCION = CursoSeccion.query.filter_by(nombre="Introduction to online teaching.").first()
 
     assert SECCION is not None
 
