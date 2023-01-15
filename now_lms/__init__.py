@@ -31,7 +31,7 @@ from flask.cli import FlaskGroup
 from flask_alembic import Alembic
 from flask_caching import Cache
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
-from flask_uploads import DOCUMENTS, IMAGES, UploadSet, configure_uploads
+from flask_uploads import AUDIO, DOCUMENTS, IMAGES, UploadSet, configure_uploads
 from loguru import logger as log
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
@@ -77,7 +77,15 @@ from now_lms.bi import (
     cambia_curso_publico,
     cambia_seccion_publico,
 )
-from now_lms.forms import LoginForm, LogonForm, CurseForm, CursoRecursoVideoYoutube, CursoRecursoArchivoPDF, CursoSeccionForm
+from now_lms.forms import (
+    LoginForm,
+    LogonForm,
+    CurseForm,
+    CursoRecursoVideoYoutube,
+    CursoRecursoArchivoPDF,
+    CursoSeccionForm,
+    CursoRecursoArchivoAudio,
+)
 from now_lms.misc import ICONOS_RECURSOS
 from now_lms.version import VERSION
 
@@ -166,8 +174,10 @@ with lms_app.app_context():  # pragma: no cover
 # Carga de Archivos al sistema.
 images = UploadSet("images", IMAGES)
 files = UploadSet("files", DOCUMENTS)
+audio = UploadSet("audio", AUDIO)
 configure_uploads(lms_app, images)
 configure_uploads(lms_app, files)
+configure_uploads(lms_app, audio)
 
 
 def initial_setup():
@@ -628,6 +638,44 @@ def nuevo_recurso_pdf(course_code, seccion):
         return render_template("learning/nuevo_recurso_pdf.html", id_curso=course_code, id_seccion=seccion, form=form)
 
 
+@lms_app.route("/course/<course_code>/<seccion>/audio/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_recurso_audio(course_code, seccion):
+    """Formulario para crear un nuevo recurso de audio"""
+    form = CursoRecursoArchivoAudio()
+    recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
+    nuevo_indice = int(recursos + 1)
+    if (form.validate_on_submit() or request.method == "POST") and "audio" in request.files:
+        audio_name = str(ULID()) + ".ogg"
+        audio_file = audio.save(request.files["audio"], folder=course_code, name=audio_name)
+        ramdon = ULID()
+        id_unico = str(ramdon)
+        nuevo_recurso_ = CursoRecurso(
+            codigo=id_unico,
+            curso=course_code,
+            seccion=seccion,
+            tipo="mp3",
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            indice=nuevo_indice,
+            base_doc_url=audio.name,
+            doc=audio_file,
+            requerido=False,
+            creado_por=current_user.usuario,
+        )
+        try:
+            database.session.add(nuevo_recurso_)
+            database.session.commit()
+            flash("Recurso agregado correctamente al curso.")
+            return redirect(url_for("curso", course_code=course_code))
+        except OperationalError:
+            flash("Hubo en error al crear el recurso.")
+            return redirect(url_for("curso", course_code=course_code))
+    else:
+        return render_template("learning/nuevo_recurso_mp3.html", id_curso=course_code, id_seccion=seccion, form=form)
+
+
 @lms_app.route("/course/resource/<cource_code>/<seccion_id>/<task>/<resource_index>")
 @login_required
 @perfil_requerido("instructor")
@@ -693,6 +741,7 @@ def curso(course_code):
 
 TEMPLATES_BY_TYPE = {
     "meet": "type_meet.html",
+    "mp3": "type_audio.html",
     "pdf": "type_pdf.html",
     "youtube": "type_youtube.html",
 }

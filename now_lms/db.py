@@ -328,7 +328,35 @@ def copy_sample_pdf():
     except FileNotFoundError:
         pass
     destino = path.join(directorio_destino, "NOW_Learning_Management_System.pdf")
-    copyfile(origen, destino)
+    try:
+        copyfile(origen, destino)
+    except FileExistsError:
+        pass
+    except FileNotFoundError:
+        pass
+
+
+def copy_sample_audio():
+    """Crea un archivo audio de ejemplo."""
+    from os import path, makedirs
+    from shutil import copyfile
+    from now_lms.config import DIRECTORIO_ARCHIVOS
+
+    origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "En-us-hello.ogg")
+    directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "audio", "now")
+    try:
+        makedirs(directorio_destino)
+    except FileExistsError:
+        pass
+    except FileNotFoundError:
+        pass
+    destino = path.join(directorio_destino, "En-us-hello.ogg")
+    try:
+        copyfile(origen, destino)
+    except FileExistsError:
+        pass
+    except FileNotFoundError:
+        pass
 
 
 def crear_cursos_predeterminados():
@@ -401,6 +429,25 @@ def crear_cursos_predeterminados():
     database.session.add(nuevo_recurso1)
     database.session.commit()
 
+    copy_sample_audio()
+    ramdon6 = ULID()
+    recurso_id6 = str(ramdon6)
+    nuevo_recurso6 = CursoRecurso(
+        codigo=recurso_id6,
+        curso="now",
+        seccion=seccion1_id,
+        tipo="mp3",
+        nombre="A demo audio resource.",
+        descripcion="Audio is easy to produce that videos.",
+        base_doc_url="audio",
+        doc="now/En-us-hello.ogg",
+        indice=3,
+        publico=True,
+        requerido=True,
+    )
+    database.session.add(nuevo_recurso6)
+    database.session.commit()
+
     ramdon2 = ULID()
     recurso_id2 = str(ramdon2)
     nuevo_recurso2 = CursoRecurso(
@@ -467,7 +514,7 @@ def crear_cursos_predeterminados():
         base_doc_url="files",
         doc="now/NOW_Learning_Management_System.pdf",
         indice=3,
-        publico=False,
+        publico=True,
         requerido=True,
     )
     database.session.add(nuevo_recurso5)

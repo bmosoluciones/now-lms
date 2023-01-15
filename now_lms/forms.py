@@ -94,3 +94,10 @@ class CursoRecursoArchivoPDF(FlaskForm):
 
     nombre = StringField(validators=[DataRequired()])
     descripcion = StringField(validators=[DataRequired()])
+
+
+class CursoRecursoArchivoAudio(FlaskForm):
+    """Formulario para un nuevo recurso de audio."""
+
+    nombre = StringField(validators=[DataRequired()])
+    descripcion = StringField(validators=[DataRequired()])
