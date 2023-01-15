@@ -40,12 +40,12 @@
 
             <div id="pdf_container" class="d-flex justify-content-around">
 
-              <iframe src="{{ url_for('recurso_file', recurso_code=recurso.codigo, course_code=recurso.curso) }}" width="75%" height="500px"></iframe>
+              <iframe title="{{ recurso.nombre + recurso.codigo }}" src="{{ url_for('recurso_file', recurso_code=recurso.codigo, course_code=recurso.curso) }}" width="75%" height="500px"></iframe>
 
             </div>
 
             <div id="download" class="d-flex justify-content-around">
-              <a type="button" class="btn btn-outline-info" id="download" href="{{ url_for('recurso_file', recurso_code=recurso.codigo, course_code=recurso.curso) }}">
+              <a type="button" class="btn btn-success" id="download" href="{{ url_for('recurso_file', recurso_code=recurso.codigo, course_code=recurso.curso) }}">
                 <i class="bi bi-file-earmark-pdf-fill" aria-hidden="true"></i>
                 Descargar PDF
               </a>
