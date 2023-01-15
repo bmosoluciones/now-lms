@@ -44,19 +44,19 @@ DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
 
 DIRECTORIO_BASE_ARCHIVOS_USUARIO = path.join(DIRECTORIO_ARCHIVOS, "files")
 
-if DESARROLLO:
+if DESARROLLO:  # pragma: no cover
     DIRECTORIO_BASE_UPLOADS = DIRECTORIO_BASE_ARCHIVOS_USUARIO
 
-else:
+else:  # pragma: no cover
 
-    if name == "nt":  # pragma: no cover:
+    if name == "nt":
         DIRECTORIO_BASE_APP = AppDirs("NOW-LMS", "BMO Soluciones")
         DIRECTORIO_BASE_UPLOADS = path.join(DIRECTORIO_BASE_APP.site_data_dir, "files")
 
     else:
         UNIX_UPLOAD_DIR = str(Path("/var/www/now-lms/data"))
 
-        if access(UNIX_UPLOAD_DIR, R_OK) and access(UNIX_UPLOAD_DIR, W_OK):
+        if access(UNIX_UPLOAD_DIR, R_OK) and access(UNIX_UPLOAD_DIR, W_OK):  # pragma: no cover
             DIRECTORIO_BASE_UPLOADS = UNIX_UPLOAD_DIR
 
         else:
@@ -68,7 +68,7 @@ DIRECTORIO_UPLOAD_IMAGENES: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "image
 DIRECTORIO_UPLOAD_ARCHIVOS: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "files")
 DIRECTORIO_UPLOAD_AUDIO: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "audio")
 
-if not path.isdir(DIRECTORIO_BASE_UPLOADS):
+if not path.isdir(DIRECTORIO_BASE_UPLOADS):  # pragma: no cover
     try:
         makedirs(DIRECTORIO_BASE_UPLOADS)
         makedirs(DIRECTORIO_ARCHIVOS_PRIVADOS)
@@ -78,7 +78,7 @@ if not path.isdir(DIRECTORIO_BASE_UPLOADS):
     except OSError:
         log.warning("No se puede crear directorio para carga de archivos: {directorio}", directorio=DIRECTORIO_BASE_UPLOADS)
 
-if access(DIRECTORIO_BASE_UPLOADS, R_OK) and access(DIRECTORIO_BASE_UPLOADS, W_OK):
+if access(DIRECTORIO_BASE_UPLOADS, R_OK) and access(DIRECTORIO_BASE_UPLOADS, W_OK):  # pragma: no cover
     log.debug("Directorio para carga de archivos es {directorio}", directorio=DIRECTORIO_BASE_UPLOADS)
 else:
     log.warning(
