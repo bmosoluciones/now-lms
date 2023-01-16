@@ -434,3 +434,33 @@ def test_serve_files(client, auth):
             assert r.status_code == 200
 
 
+def test_upload_pdf(client, auth):
+    """Test can upload logo."""
+    from io import BytesIO
+    from now_lms.db import CursoSeccion
+
+    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
+    url = "/course/resources/" + seccion.codigo + "/pdf/new"
+
+    data = {"nombre": "test", "descripcion": "test pdf"}
+    data = {key: str(value) for key, value in data.items()}
+    data["pdf"] = (BytesIO(b"abcdef"), "test.pdf")
+    auth.login()
+    response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
+    assert response.status_code == 200
+
+
+def test_upload_img(client, auth):
+    """Test can upload logo."""
+    from io import BytesIO
+    from now_lms.db import CursoSeccion
+
+    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
+    url = "/course/resources/" + seccion.codigo + "/img/new"
+
+    data = {"nombre": "test", "descripcion": "test pdf"}
+    data = {key: str(value) for key, value in data.items()}
+    data["img"] = (BytesIO(b"abcdef"), "test.jpg")
+    auth.login()
+    response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
+    assert response.status_code == 200
