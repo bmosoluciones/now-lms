@@ -408,3 +408,29 @@ def test_reorganizar_indice_seccion(client, auth):
     assert get.status_code == 302
     get = client.get("/course/now/seccion/increment/2")
     assert get.status_code == 302
+
+
+def test_serve_files(client, auth):
+
+    auth.login()
+
+    from now_lms.db import CursoRecurso
+
+    recursos = CursoRecurso.query.filter(CursoRecurso.curso == "resources").all()
+
+    for recurso in recursos:
+        url = "/cource/resources/resource/" + recurso.tipo + "/" + recurso.codigo
+        page = client.get(url)
+        assert page.status_code == 200
+
+        if recurso.doc:
+            doc_url = "/course/resources/files/" + recurso.codigo
+            r = client.get(doc_url)
+            assert r.status_code == 200
+
+        if recurso.text:
+            src = "/course/resources/md_to_html/" + recurso.codigo
+            r = client.get(src)
+            assert r.status_code == 200
+
+

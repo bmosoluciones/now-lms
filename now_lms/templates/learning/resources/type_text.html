@@ -39,7 +39,7 @@
           <div class="col-sm-8">
 
             <h6>{{ recurso.nombre }}:</h6>
-            <iframe width="100%" src="{{ url_for('markdown_a_html', recurso_code=recurso.codigo, course_code=recurso.curso) }}" frameborder="0"></iframe>
+            <iframe title="{{ recurso.nombre }}" width="100%" src="{{ url_for('markdown_a_html', recurso_code=recurso.codigo, course_code=recurso.curso) }}" frameborder="0"></iframe>
 
           </div>
 
