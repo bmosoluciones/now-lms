@@ -592,7 +592,6 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             url=form.youtube_url.data,
             indice=nuevo_indice,
             requerido=False,
-            creado_por=current_user.code,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -603,7 +602,9 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             flash("Hubo en error al crear el recurso.")
             return redirect(url_for("curso", course_code=course_code))
     else:
-        return render_template("learning/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form)
+        return render_template(
+            "learning/resources_new/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
 
 
 @lms_app.route("/course/<course_code>/<seccion>/text/new", methods=["GET", "POST"])
@@ -637,7 +638,9 @@ def nuevo_recurso_text(course_code, seccion):
             flash("Hubo en error al crear el recurso.")
             return redirect(url_for("curso", course_code=course_code))
     else:
-        return render_template("learning/nuevo_recurso_text.html", id_curso=course_code, id_seccion=seccion, form=form)
+        return render_template(
+            "learning/resources_new/nuevo_recurso_text.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
 
 
 @lms_app.route("/course/<course_code>/<seccion>/pdf/new", methods=["GET", "POST"])
@@ -664,7 +667,6 @@ def nuevo_recurso_pdf(course_code, seccion):
             base_doc_url=files.name,
             doc=pdf_file,
             requerido=False,
-            creado_por=current_user.usuario,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -675,7 +677,9 @@ def nuevo_recurso_pdf(course_code, seccion):
             flash("Hubo en error al crear el recurso.")
             return redirect(url_for("curso", course_code=course_code))
     else:
-        return render_template("learning/nuevo_recurso_pdf.html", id_curso=course_code, id_seccion=seccion, form=form)
+        return render_template(
+            "learning/resources_new/nuevo_recurso_pdf.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
 
 
 @lms_app.route("/course/<course_code>/<seccion>/img/new", methods=["GET", "POST"])
@@ -702,7 +706,6 @@ def nuevo_recurso_img(course_code, seccion):
             base_doc_url=images.name,
             doc=picture_file,
             requerido=False,
-            creado_por=current_user.usuario,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -713,7 +716,9 @@ def nuevo_recurso_img(course_code, seccion):
             flash("Hubo en error al crear el recurso.")
             return redirect(url_for("curso", course_code=course_code))
     else:
-        return render_template("learning/nuevo_recurso_img.html", id_curso=course_code, id_seccion=seccion, form=form)
+        return render_template(
+            "learning/resources_new/nuevo_recurso_img.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
 
 
 @lms_app.route("/course/<course_code>/<seccion>/audio/new", methods=["GET", "POST"])
@@ -740,7 +745,6 @@ def nuevo_recurso_audio(course_code, seccion):
             base_doc_url=audio.name,
             doc=audio_file,
             requerido=False,
-            creado_por=current_user.usuario,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -751,7 +755,9 @@ def nuevo_recurso_audio(course_code, seccion):
             flash("Hubo en error al crear el recurso.")
             return redirect(url_for("curso", course_code=course_code))
     else:
-        return render_template("learning/nuevo_recurso_mp3.html", id_curso=course_code, id_seccion=seccion, form=form)
+        return render_template(
+            "learning/resources_new/nuevo_recurso_mp3.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
 
 
 @lms_app.route("/course/resource/<cource_code>/<seccion_id>/<task>/<resource_index>")
