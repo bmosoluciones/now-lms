@@ -640,6 +640,44 @@ def nuevo_recurso_pdf(course_code, seccion):
         return render_template("learning/nuevo_recurso_pdf.html", id_curso=course_code, id_seccion=seccion, form=form)
 
 
+@lms_app.route("/course/<course_code>/<seccion>/img/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_recurso_img(course_code, seccion):
+    """Formulario para crear un nuevo recurso tipo imagen."""
+    form = CursoRecursoArchivoAudio()
+    recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
+    nuevo_indice = int(recursos + 1)
+    if (form.validate_on_submit() or request.method == "POST") and "img" in request.files:
+        file_name = str(ULID()) + ".jpg"
+        picture_file = images.save(request.files["img"], folder=course_code, name=file_name)
+        ramdon = ULID()
+        id_unico = str(ramdon)
+        nuevo_recurso_ = CursoRecurso(
+            codigo=id_unico,
+            curso=course_code,
+            seccion=seccion,
+            tipo="img",
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            indice=nuevo_indice,
+            base_doc_url=images.name,
+            doc=picture_file,
+            requerido=False,
+            creado_por=current_user.usuario,
+        )
+        try:
+            database.session.add(nuevo_recurso_)
+            database.session.commit()
+            flash("Recurso agregado correctamente al curso.")
+            return redirect(url_for("curso", course_code=course_code))
+        except OperationalError:
+            flash("Hubo en error al crear el recurso.")
+            return redirect(url_for("curso", course_code=course_code))
+    else:
+        return render_template("learning/nuevo_recurso_img.html", id_curso=course_code, id_seccion=seccion, form=form)
+
+
 @lms_app.route("/course/<course_code>/<seccion>/audio/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -742,6 +780,7 @@ def curso(course_code):
 
 
 TEMPLATES_BY_TYPE = {
+    "img": "type_img.html",
     "meet": "type_meet.html",
     "mp3": "type_audio.html",
     "pdf": "type_pdf.html",
