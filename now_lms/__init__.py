@@ -31,6 +31,7 @@ from flask.cli import FlaskGroup
 from flask_alembic import Alembic
 from flask_caching import Cache
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
+from flask_mde import Mde
 from flask_uploads import AUDIO, DOCUMENTS, IMAGES, UploadSet, configure_uploads
 from loguru import logger as log
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
@@ -86,6 +87,7 @@ from now_lms.forms import (
     CursoRecursoArchivoPDF,
     CursoSeccionForm,
     CursoRecursoArchivoAudio,
+    CursoRecursoArchivoText,
 )
 from now_lms.misc import ICONOS_RECURSOS
 from now_lms.version import VERSION
@@ -107,6 +109,7 @@ TIPOS_DE_USUARIO: list = ["admin", "user", "instructor", "moderator"]
 alembic: Alembic = Alembic()
 administrador_sesion: LoginManager = LoginManager()
 cache = Cache()
+mde = Mde()
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -149,6 +152,7 @@ with lms_app.app_context():  # pragma: no cover
     administrador_sesion.init_app(lms_app)
     database.init_app(lms_app)
     cache.init_app(lms_app, CACHE_CONFIG)
+    mde.init_app(lms_app)
     try:
         CONFIG = Configuracion.query.first()
     except OperationalError:
@@ -602,6 +606,40 @@ def nuevo_recurso_youtube_video(course_code, seccion):
         return render_template("learning/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form)
 
 
+@lms_app.route("/course/<course_code>/<seccion>/text/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_recurso_text(course_code, seccion):
+    """Formulario para crear un nuevo documento de texto."""
+    form = CursoRecursoArchivoText()
+    recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
+    nuevo_indice = int(recursos + 1)
+    if form.validate_on_submit() or request.method == "POST":
+        ramdon = ULID()
+        id_unico = str(ramdon)
+        nuevo_recurso_ = CursoRecurso(
+            codigo=id_unico,
+            curso=course_code,
+            seccion=seccion,
+            tipo="text",
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            indice=nuevo_indice,
+            text=form.editor.data,
+            requerido=False,
+        )
+        try:
+            database.session.add(nuevo_recurso_)
+            database.session.commit()
+            flash("Recurso agregado correctamente al curso.")
+            return redirect(url_for("curso", course_code=course_code))
+        except OperationalError:
+            flash("Hubo en error al crear el recurso.")
+            return redirect(url_for("curso", course_code=course_code))
+    else:
+        return render_template("learning/nuevo_recurso_text.html", id_curso=course_code, id_seccion=seccion, form=form)
+
+
 @lms_app.route("/course/<course_code>/<seccion>/pdf/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -784,6 +822,7 @@ TEMPLATES_BY_TYPE = {
     "meet": "type_meet.html",
     "mp3": "type_audio.html",
     "pdf": "type_pdf.html",
+    "text": "type_text.html",
     "youtube": "type_youtube.html",
 }
 

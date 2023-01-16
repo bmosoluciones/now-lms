@@ -23,5 +23,6 @@ ICONOS_RECURSOS = {
     "meet": "bi bi-broadcast",
     "mp3": "bi bi-soundwave",
     "pdf": "bi bi-file-pdf-fill",
+    "text": "bi bi-blockquote-left",
     "youtube": "bi bi-youtube",
 }

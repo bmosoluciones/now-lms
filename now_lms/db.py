@@ -151,6 +151,7 @@ class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     publico = database.Column(database.Boolean())
     base_doc_url = database.Column(database.String(50), unique=False)
     doc = database.Column(database.String(50), unique=True)
+    text = database.Column(database.String())
 
 
 class CursoRecursoAvance(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -493,6 +494,23 @@ def crear_curso_demo():
         doc="resources/logo_large.png",
     )
     database.session.add(nuevo_recurso5)
+    database.session.commit()
+
+    ramdon6 = ULID()
+    recurso6 = str(ramdon6)
+    nuevo_recurso6 = CursoRecurso(
+        codigo=recurso6,
+        curso="resources",
+        seccion=seccion_id,
+        tipo="text",
+        nombre="A demo text resource.",
+        descripcion="A text in markdown.",
+        indice=5,
+        publico=False,
+        requerido=True,
+        text="# NOW - Learning Management System.",
+    )
+    database.session.add(nuevo_recurso6)
     database.session.commit()
 
     log.debug("Curso de demo de recursos creado correctamente.")
