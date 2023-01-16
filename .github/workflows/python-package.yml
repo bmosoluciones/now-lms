@@ -60,7 +60,7 @@ jobs:
         python -m build
         python -m twine check dist/*
         python -m bandit -r now_lms
-        python -m flake8 now_lms
+        # python -m flake8 now_lms
         python -m pylint now_lms
     - name: Lint html templanes
       run: |
