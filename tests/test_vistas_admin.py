@@ -435,7 +435,6 @@ def test_serve_files(client, auth):
 
 
 def test_upload_pdf(client, auth):
-    """Test can upload logo."""
     from io import BytesIO
     from now_lms.db import CursoSeccion
 
@@ -451,7 +450,6 @@ def test_upload_pdf(client, auth):
 
 
 def test_upload_img(client, auth):
-    """Test can upload logo."""
     from io import BytesIO
     from now_lms.db import CursoSeccion
 
@@ -461,6 +459,21 @@ def test_upload_img(client, auth):
     data = {"nombre": "test", "descripcion": "test pdf"}
     data = {key: str(value) for key, value in data.items()}
     data["img"] = (BytesIO(b"abcdef"), "test.jpg")
+    auth.login()
+    response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
+    assert response.status_code == 200
+
+
+def test_upload_ogg(client, auth):
+    from io import BytesIO
+    from now_lms.db import CursoSeccion
+
+    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
+    url = "/course/resources/" + seccion.codigo + "/audio/new"
+
+    data = {"nombre": "test", "descripcion": "test pdf"}
+    data = {key: str(value) for key, value in data.items()}
+    data["audio"] = (BytesIO(b"abcdef"), "test.ogg")
     auth.login()
     response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
     assert response.status_code == 200
