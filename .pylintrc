@@ -93,6 +93,7 @@ disable=raw-checker-failed,
         duplicate-code,
         # Existe inconsitencia entre esta regla y mypy, se desabilita en favor de mypy.
         no-else-return,
+        too-many-lines,
 
 
 # Enable the message, report, category or checker with the given id(s). You can
