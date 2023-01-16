@@ -1,25 +1,6 @@
 {
-  "name": "now_lms",
-  "version": "1.0.0",
-  "description": "LMS",
-  "main": "index.js",
-  "scripts": {
-    "test": "test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bmosoluciones/now-lms.git"
-  },
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/bmosoluciones/now-lms/issues"
-  },
-  "homepage": "https://github.com/bmosoluciones/now-lms#readme",
   "dependencies": {
-    "bootstrap": "^5.2.2",
-    "bootstrap-icons": "^1.10.2",
-    "marked": "^4.2.12",
-    "pdfjs-dist": "^3.2.146"
+    "bootstrap": "^5.2.3",
+    "bootstrap-icons": "^1.10.3"
   }
 }
