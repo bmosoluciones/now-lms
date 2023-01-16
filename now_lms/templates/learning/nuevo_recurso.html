@@ -28,7 +28,7 @@
               <div class="col d-flex align-items-start">
                 <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#cpu-fill"/></svg>
                 <div>
-                  <h4 class="fw-bold mb-0"><i class="bi bi-youtube" aria-hidden="true"></i>Youtube Vídeo.</h4>
+                  <h5 class="fw-bold mb-0"><i class="bi bi-youtube" aria-hidden="true"></i> Vídeo en YouTube</h5>
                   <p>Una lección en video alojada en YouTube.</p>
                   <p>
                     <span class="badge bg-success">
@@ -40,7 +40,7 @@
               <div class="col d-flex align-items-start">
                 <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#cpu-fill"/></svg>
                 <div>
-                  <h4 class="fw-bold mb-0"><i class="bi bi-file-pdf-fill" aria-hidden="true"></i>Archivo PDF</h4>
+                  <h5 class="fw-bold mb-0"><i class="bi bi-file-pdf-fill" aria-hidden="true"></i> Archivo PDF</h5>
                   <p>Comparta un archivo en PDF con sus estudiantes.</p>
                   <p>
                     <span class="badge bg-success">
@@ -52,7 +52,7 @@
               <div class="col d-flex align-items-start">
                   <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#cpu-fill"/></svg>
                   <div>
-                    <h4 class="fw-bold mb-0"><i class="bi bi bi-mic-fill" aria-hidden="true"></i>Audio</h4>
+                    <h5 class="fw-bold mb-0"><i class="bi bi bi-mic-fill" aria-hidden="true"></i> Audio</h5>
                     <p>Comparta un archivo de audio con sus estudiantes.</p>
                     <p>
                       <span class="badge bg-success">
@@ -64,7 +64,7 @@
               <div class="col d-flex align-items-start">
                 <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#cpu-fill"/></svg>
                 <div>
-                  <h4 class="fw-bold mb-0"><i class="bi " aria-hidden="true"></i>Imagen</h4>
+                  <h5 class="fw-bold mb-0"><i class="bi bi-image" aria-hidden="true"></i> Imagen</h5>
                   <p>Comparta una imagen con sus estudiantes.</p>
                   <p>
                     <span class="badge bg-success">
@@ -73,19 +73,59 @@
                   </p>
                 </div>
               </div>
+            </div>
+            
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
 
-              <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
-                <div class="col d-flex align-items-start">
-                  <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#cpu-fill"/></svg>
-                  <div>
-                    <h4 class="fw-bold mb-0"><i class="bi bi-blockquote-left" aria-hidden="true"></i>Texto.</h4>
-                    <p>Redacte un documento para compatirlo con sus alumnos.</p>
-                    <p>
-                      <span class="badge bg-success">
-                        <a href="{{ url_for("nuevo_recurso_text", course_code=id_curso, seccion=id_seccion) }}" class="link-light">Agregar al curso.</a>
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#cpu-fill"/></svg>
+                <div>
+                  <h5 class="fw-bold mb-0"><i class="bi bi-blockquote-left" aria-hidden="true"></i> Documento de Texto</h5>
+                  <p>Redacte un documento para compatirlo con sus alumnos.</p>
+                  <p>
+                    <span class="badge bg-success">
+                      <a href="{{ url_for("nuevo_recurso_text", course_code=id_curso, seccion=id_seccion) }}" class="link-light">Agregar al curso.</a>
                     </span>
-                    </p>
-                  </div>
+                  </p>
+                </div>
+              </div>
+
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#cpu-fill"/></svg>
+                <div>
+                  <h5 class="fw-bold mb-0"><i class="bi bi-projector" aria-hidden="true"></i> Diapositivas</h5>
+                  <p>Cree una presentación de diapositivas para sus estudiantes.</p>
+                  <p>
+                    <span class="badge bg-success">
+                      <a href="{{ url_for("nuevo_recurso_text", course_code=id_curso, seccion=id_seccion) }}" class="link-light">Agregar al curso.</a>
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#cpu-fill"/></svg>
+                <div>
+                  <h5 class="fw-bold mb-0"><i class="bi bi-link" aria-hidden="true"></i> Recurso Externo</h5>
+                  <p>Un link a un recurso externo.</p>
+                  <p>
+                    <span class="badge bg-success">
+                      <a href="" class="link-light">Agregar al curso.</a>
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#cpu-fill"/></svg>
+                <div>
+                  <h5 class="fw-bold mb-0"><i class="bi bi-code-slash" aria-hidden="true"></i> Codigo HTLM</h5>
+                  <p>Agregue un elemento personalizado a su curso.</p>
+                  <p>
+                    <span class="badge bg-success">
+                      <a href="" class="link-light">Agregar al curso.</a>
+                    </span>
+                  </p>
                 </div>
               </div>
 
@@ -97,7 +137,7 @@
               <div class="col d-flex align-items-start">
                 <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#bootstrap"/></svg>
                 <div>
-                  <h4 class="fw-bold mb-0">Selección Multiple.</h4>
+                  <h5 class="fw-bold mb-0">Selección Multiple.</h5>
                   <p>Agregue una evaluación con multiples opciones de las cuales una es la correcta.
                      Puede crear una evaluación con solo dos opciones para respuestas de tipo verdadero falso.
                   </p>
