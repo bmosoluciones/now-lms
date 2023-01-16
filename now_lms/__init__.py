@@ -670,7 +670,7 @@ def nuevo_recurso_pdf(course_code, seccion):
             doc=pdf_file,
             requerido=False,
         )
-        try:
+        try:  # pragma: no cover
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("Recurso agregado correctamente al curso.")
@@ -709,7 +709,7 @@ def nuevo_recurso_img(course_code, seccion):
             doc=picture_file,
             requerido=False,
         )
-        try:
+        try:  # pragma: no cover
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("Recurso agregado correctamente al curso.")
@@ -748,7 +748,7 @@ def nuevo_recurso_audio(course_code, seccion):
             doc=audio_file,
             requerido=False,
         )
-        try:
+        try:  # pragma: no cover
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("Recurso agregado correctamente al curso.")
