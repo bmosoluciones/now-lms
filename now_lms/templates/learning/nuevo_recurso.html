@@ -52,7 +52,7 @@
               <div class="col d-flex align-items-start">
                   <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#cpu-fill"/></svg>
                   <div>
-                    <h4 class="fw-bold mb-0"><i class="bi bi bi-mic-fill" aria-hidden="true"></i>Audio</h4>
+                    <h4 class="fw-bold mb-0"><i class="bi bi-mic-fill" aria-hidden="true"></i>Audio</h4>
                     <p>Comparta un archivo de audio con sus estudiantes.</p>
                     <p>
                       <span class="badge bg-success">
@@ -61,6 +61,18 @@
                     </p>
                   </div>
               </div>
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#cpu-fill"/></svg>
+                <div>
+                  <h4 class="fw-bold mb-0"><i class="bi bi bi-image" aria-hidden="true"></i>Imagen</h4>
+                  <p>Comparta una imagen con sus estudiantes.</p>
+                  <p>
+                    <span class="badge bg-success">
+                      <a href="{{ url_for("nuevo_recurso_img", course_code=id_curso, seccion=id_seccion) }}" class="link-light">Agregar al curso.</a>
+                  </span>
+                  </p>
+                </div>
+            </div>
             </div>
 
             <h3 class="pb-2 border-bottom">Agregue una evaluación al curso.</h3>

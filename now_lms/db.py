@@ -359,6 +359,29 @@ def copy_sample_audio():
         pass
 
 
+def copy_sample_img():
+    """Crea un archivo de imagen de ejemplo."""
+    from os import path, makedirs
+    from shutil import copyfile
+    from now_lms.config import DIRECTORIO_ARCHIVOS
+
+    origen = path.join(DIRECTORIO_ARCHIVOS, "icons", "logo", "logo_large.png")
+    directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "images", "resources")
+    try:
+        makedirs(directorio_destino)
+    except FileExistsError:
+        pass
+    except FileNotFoundError:
+        pass
+    destino = path.join(directorio_destino, "logo_large.png")
+    try:
+        copyfile(origen, destino)
+    except FileExistsError:
+        pass
+    except FileNotFoundError:
+        pass
+
+
 def crear_curso_demo():
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
@@ -407,7 +430,7 @@ def crear_curso_demo():
         nombre="A demo audio resource.",
         descripcion="Audio is easy to produce that videos.",
         base_doc_url="audio",
-        doc="demo/En-us-hello.ogg",
+        doc="resources/En-us-hello.ogg",
         indice=1,
         publico=True,
         requerido=True,
@@ -426,7 +449,7 @@ def crear_curso_demo():
         nombre="Demo pdf resource.",
         descripcion="A exampel of a PDF file to share with yours learners.",
         base_doc_url="files",
-        doc="demo/NOW_Learning_Management_System.pdf",
+        doc="resources/NOW_Learning_Management_System.pdf",
         indice=2,
         publico=True,
         requerido=True,
@@ -451,6 +474,25 @@ def crear_curso_demo():
         requerido=True,
     )
     database.session.add(nuevo_recurso4)
+    database.session.commit()
+
+    copy_sample_img()
+    ramdon5 = ULID()
+    recurso5 = str(ramdon5)
+    nuevo_recurso5 = CursoRecurso(
+        codigo=recurso5,
+        curso="resources",
+        seccion=seccion_id,
+        tipo="img",
+        nombre="A demo image file.",
+        descripcion="A image file.",
+        indice=4,
+        publico=False,
+        requerido=True,
+        base_doc_url="images",
+        doc="resources/logo_large.png",
+    )
+    database.session.add(nuevo_recurso5)
     database.session.commit()
 
     log.debug("Curso de demo de recursos creado correctamente.")
