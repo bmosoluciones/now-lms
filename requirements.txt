@@ -1,6 +1,7 @@
 # Librerias de terceros
 # Mantener en orden alfabetico
 alembic
+bleach
 appdirs
 bcrypt
 babel
@@ -15,6 +16,7 @@ flask-reuploaded
 flask-sqlalchemy
 flask-wtf
 loguru
+markdown
 python-ulid
 sqlalchemy
 redis

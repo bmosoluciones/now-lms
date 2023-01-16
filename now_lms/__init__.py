@@ -26,6 +26,7 @@ from functools import wraps
 from os import environ, cpu_count
 
 # Librerias de terceros:
+from bleach import clean, linkify
 from flask import Flask, abort, flash, redirect, request, render_template, url_for, send_from_directory, current_app
 from flask.cli import FlaskGroup
 from flask_alembic import Alembic
@@ -34,6 +35,7 @@ from flask_login import LoginManager, current_user, login_required, login_user, 
 from flask_mde import Mde
 from flask_uploads import AUDIO, DOCUMENTS, IMAGES, UploadSet, configure_uploads
 from loguru import logger as log
+from markdown import markdown
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
 from sqlalchemy.exc import ArgumentError, OperationalError, ProgrammingError
@@ -1033,6 +1035,55 @@ def recurso_file(course_code, recurso_code):
     config = current_app.upload_set_config.get(doc.base_doc_url)
 
     return send_from_directory(config.destination, doc.doc)
+
+
+@lms_app.route("/course/<course_code>/md_to_html/<recurso_code>")
+def markdown_a_html(course_code, recurso_code):
+    """Devuelve un texto en markdown como HTML."""
+    recurso = CursoRecurso.query.filter(CursoRecurso.codigo == recurso_code, CursoRecurso.curso == course_code).first()
+    allowed_tags = [
+        "a",
+        "abbr",
+        "acronym",
+        "b",
+        "blockquote",
+        "br",
+        "code",
+        "dd",
+        "del",
+        "div",
+        "dl",
+        "dt",
+        "em",
+        "em",
+        "h1",
+        "h2",
+        "h3",
+        "hr",
+        "i",
+        "img",
+        "li",
+        "ol",
+        "p",
+        "pre",
+        "s",
+        "strong",
+        "sub",
+        "sup",
+        "table",
+        "tbody",
+        "td",
+        "th",
+        "thead",
+        "tr",
+        "ul",
+    ]
+    allowed_attrs = {"*": ["class"], "a": ["href", "rel"], "img": ["src", "alt"]}
+
+    html = markdown(recurso.text)
+    html_limpio = clean(linkify(html), tags=allowed_tags, attributes=allowed_attrs)
+
+    return html_limpio
 
 
 # <-------- Servidores WSGI buscan una "app" por defecto  -------->
