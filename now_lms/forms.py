@@ -19,6 +19,7 @@
 # Libreria standar:
 
 # Librerias de terceros:
+from flask_mde import MdeField
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, DecimalField, DateField, IntegerField, PasswordField, SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired
@@ -108,3 +109,11 @@ class CursoRecursoArchivoImagen(FlaskForm):
 
     nombre = StringField(validators=[DataRequired()])
     descripcion = StringField(validators=[DataRequired()])
+
+
+class CursoRecursoArchivoText(FlaskForm):
+    """Formulario para un nuevo recurso de audio."""
+
+    nombre = StringField(validators=[DataRequired()])
+    descripcion = StringField(validators=[DataRequired()])
+    editor = MdeField()
