@@ -151,7 +151,7 @@ class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     publico = database.Column(database.Boolean())
     base_doc_url = database.Column(database.String(50), unique=False)
     doc = database.Column(database.String(50), unique=True)
-    text = database.Column(database.String())
+    text = database.Column(database.String(750))
 
 
 class CursoRecursoAvance(database.Model, BaseTabla):  # type: ignore[name-defined]
