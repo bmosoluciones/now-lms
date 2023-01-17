@@ -600,7 +600,7 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             database.session.commit()
             flash("Recurso agregado correctamente al curso.")
             return redirect(url_for("curso", course_code=course_code))
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear el recurso.")
             return redirect(url_for("curso", course_code=course_code))
     else:
@@ -636,7 +636,7 @@ def nuevo_recurso_text(course_code, seccion):
             database.session.commit()
             flash("Recurso agregado correctamente al curso.")
             return redirect(url_for("curso", course_code=course_code))
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear el recurso.")
             return redirect(url_for("curso", course_code=course_code))
     else:
@@ -670,12 +670,12 @@ def nuevo_recurso_pdf(course_code, seccion):
             doc=pdf_file,
             requerido=False,
         )
-        try:  # pragma: no cover
+        try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("Recurso agregado correctamente al curso.")
             return redirect(url_for("curso", course_code=course_code))
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear el recurso.")
             return redirect(url_for("curso", course_code=course_code))
     else:
@@ -709,12 +709,12 @@ def nuevo_recurso_img(course_code, seccion):
             doc=picture_file,
             requerido=False,
         )
-        try:  # pragma: no cover
+        try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("Recurso agregado correctamente al curso.")
             return redirect(url_for("curso", course_code=course_code))
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear el recurso.")
             return redirect(url_for("curso", course_code=course_code))
     else:
@@ -748,12 +748,12 @@ def nuevo_recurso_audio(course_code, seccion):
             doc=audio_file,
             requerido=False,
         )
-        try:  # pragma: no cover
+        try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("Recurso agregado correctamente al curso.")
             return redirect(url_for("curso", course_code=course_code))
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear el recurso.")
             return redirect(url_for("curso", course_code=course_code))
     else:
@@ -974,9 +974,9 @@ def eliminar_curso(course_id):
         Curso.query.filter(Curso.codigo == course_id).delete()
         database.session.commit()
         flash("Curso Eliminado Correctamente.")
-    except PGProgrammingError:
+    except PGProgrammingError:  # pragma: no cover
         flash("No se pudo elimiar el curso solicitado.")
-    except ProgrammingError:
+    except ProgrammingError:  # pragma: no cover
         flash("No se pudo elimiar el curso solicitado.")
     return redirect(url_for("cursos"))
 
