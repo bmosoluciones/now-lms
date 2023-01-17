@@ -445,6 +445,7 @@ def test_upload_pdf(client, auth):
     data = {key: str(value) for key, value in data.items()}
     data["pdf"] = (BytesIO(b"abcdef"), "test.pdf")
     auth.login()
+    response = client.get(url)
     response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
     assert response.status_code == 200
 
@@ -460,6 +461,7 @@ def test_upload_img(client, auth):
     data = {key: str(value) for key, value in data.items()}
     data["img"] = (BytesIO(b"abcdef"), "test.jpg")
     auth.login()
+    response = client.get(url)
     response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
     assert response.status_code == 200
 
@@ -475,5 +477,33 @@ def test_upload_ogg(client, auth):
     data = {key: str(value) for key, value in data.items()}
     data["audio"] = (BytesIO(b"abcdef"), "test.ogg")
     auth.login()
+    response = client.get(url)
     response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
+    assert response.status_code == 200
+
+
+def test_upload_youtube(client, auth):
+    from now_lms.db import CursoSeccion
+
+    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
+    url = "/course/resources/" + seccion.codigo + "/youtube/new"
+
+    data = {"nombre": "test", "descripcion": "test pdf", "youtube_url": "test"}
+    data = {key: str(value) for key, value in data.items()}
+    auth.login()
+    response = client.post(url, data=data, follow_redirects=True)
+    assert response.status_code == 200
+
+
+def test_upload_text(client, auth):
+    from now_lms.db import CursoSeccion
+
+    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
+    url = "/course/resources/" + seccion.codigo + "/text/new"
+
+    data = {"nombre": "test", "descripcion": "test pdf", "editor": "test"}
+    data = {key: str(value) for key, value in data.items()}
+    auth.login()
+    response = client.get(url)
+    response = client.post(url, data=data, follow_redirects=True)
     assert response.status_code == 200
