@@ -11,7 +11,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/bmosoluciones/now-lms/badge)](https://www.codefactor.io/repository/github/bmosoluciones/now-lms)
 [![Join the chat at https://gitter.im/now-lms/community](https://badges.gitter.im/now-lms/community.svg)](https://gitter.im/now-lms/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Simple to {install, use, configure, mantain} learning management system.
+Simple to {install, use, configure, maintain} learning management system.
 
 Students and Educators using NOW-LMS please refer the [user manual](https://bmosoluciones.github.io/now-lms/).
 
