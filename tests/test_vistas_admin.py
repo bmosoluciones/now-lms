@@ -491,6 +491,7 @@ def test_upload_youtube(client, auth):
     data = {"nombre": "test", "descripcion": "test pdf", "youtube_url": "test"}
     data = {key: str(value) for key, value in data.items()}
     auth.login()
+    response = client.get(url)
     response = client.post(url, data=data, follow_redirects=True)
     assert response.status_code == 200
 
@@ -507,3 +508,22 @@ def test_upload_text(client, auth):
     response = client.get(url)
     response = client.post(url, data=data, follow_redirects=True)
     assert response.status_code == 200
+
+
+def test_eliminar_recursos(client, auth):
+    from now_lms.db import CursoRecurso
+
+    auth.login()
+    recursos = CursoRecurso.query.filter(CursoRecurso.curso == "resources").all()
+    assert recursos is not None
+    for recurso in recursos:
+        url = "/delete_recurso/resources/" + recurso.seccion + "/" + recurso.codigo
+        page = client.get(url)
+        assert page.status_code == 302
+
+
+def test_cambiar_tipo_usuario(client, auth):
+
+    auth.login()
+    page = client.get("change_user_type", query_string={"user": "student", "type": "admin"})
+    assert page.status_code == 302

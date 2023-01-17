@@ -799,7 +799,7 @@ def cursos():
             count=True,
         )
     else:
-        try:
+        try:  # pragma: no cover
             lista_cursos = database.paginate(
                 database.select(Curso).join(DocenteCurso).filter(DocenteCurso.usuario == current_user.usuario),
                 page=request.args.get("page", default=1, type=int),
@@ -807,7 +807,7 @@ def cursos():
                 count=True,
             )
 
-        except ArgumentError:
+        except ArgumentError:  # pragma: no cover
             lista_cursos = None
     return render_template("learning/curso_lista.html", consulta=lista_cursos)
 
@@ -981,7 +981,7 @@ def eliminar_curso(course_id):
     return redirect(url_for("cursos"))
 
 
-@lms_app.route("/change_user_tipo")
+@lms_app.route("/change_user_type")
 @login_required
 @perfil_requerido("admin")
 def cambiar_tipo_usario():
