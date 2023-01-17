@@ -49,39 +49,10 @@ def runner(lms):
     return app.test_cli_runner()
 
 
-"""
-def test_no_login_url(client):
-    page = client.get("/home")
-    
-    assert page.status_code == 200
-    assert b"NOW LMS" in page.data
-    assert b"First Course" in page.data
-    assert b"1 cursos disponibles." in page.data
-    assert b"Crear Cuenta" in page.data
-    assert b"Inicio" in page.data
-    page = client.get("/login")
-    assert b"Inicio de Ses" in page.data
-    assert b"Regresar" in page.data
-    assert b"BMO Soluciones" in page.data
-    page = client.get("/logon")
-    assert b"Crear nuevo usuario." in page.data
-    page = client.get("/course/now")
-    assert b"Contenido del curso." in page.data
-    assert b"now - First Course" in page.data
-    assert b"First Course" in page.data
-    assert b"Curso Certificado" in page.data
-    assert b"This is introductory material to online teaching." in page.data
+def test_acceso_recursos(client):
+    from now_lms.db import CursoRecurso
 
-
-def test_courses_nologin(client):
-
-    query = now_lms.CursoRecurso.query.all()
-
-    for recurso in query:
-        URL = "/cource/" + recurso.curso + "/resource/" + recurso.tipo + "/" + recurso.codigo
-        page = client.get(URL)
-        if recurso.publico is True:
-            assert page.status_code == 200
-        else:
-            assert page.status_code == 403
-        """
+    recursos = CursoRecurso.query.filter(CursoRecurso.curso == "resources").all()
+    for recurso in recursos:
+        url = "/cource/resources/resource/" + recurso.tipo + "/" + recurso.codigo
+        page = client.get(url)

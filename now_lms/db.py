@@ -489,7 +489,7 @@ def crear_curso_demo():
         nombre="A demo image file.",
         descripcion="A image file.",
         indice=4,
-        publico=False,
+        publico=True,
         requerido=True,
         base_doc_url="images",
         doc="resources/logo_large.png",
