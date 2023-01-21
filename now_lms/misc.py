@@ -19,6 +19,7 @@
 """Utilerias varias."""
 
 ICONOS_RECURSOS = {
+    "html": "bi bi-code-square",
     "img": "bi bi-image",
     "meet": "bi bi-broadcast",
     "mp3": "bi bi-soundwave",

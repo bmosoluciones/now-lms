@@ -61,6 +61,10 @@ from now_lms.db import (
     EstudianteCurso,
     ModeradorCurso,
     Usuario,
+    MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+)
+
+from now_lms.db.tools import (
     crear_configuracion_predeterminada,
     crear_curso_predeterminado,
     crear_curso_demo,
@@ -68,7 +72,6 @@ from now_lms.db import (
     verifica_docente_asignado_a_curso,
     verifica_estudiante_asignado_a_curso,
     verifica_moderador_asignado_a_curso,
-    MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
 )
 from now_lms.bi import (
     asignar_curso_a_instructor,
@@ -90,6 +93,8 @@ from now_lms.forms import (
     CursoSeccionForm,
     CursoRecursoArchivoAudio,
     CursoRecursoArchivoText,
+    CursoRecursoArchivoImagen,
+    CursoRecursoExternalCode,
 )
 from now_lms.misc import ICONOS_RECURSOS
 from now_lms.version import VERSION
@@ -689,7 +694,7 @@ def nuevo_recurso_pdf(course_code, seccion):
 @perfil_requerido("instructor")
 def nuevo_recurso_img(course_code, seccion):
     """Formulario para crear un nuevo recurso tipo imagen."""
-    form = CursoRecursoArchivoAudio()
+    form = CursoRecursoArchivoImagen()
     recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
     nuevo_indice = int(recursos + 1)
     if (form.validate_on_submit() or request.method == "POST") and "img" in request.files:
@@ -762,6 +767,42 @@ def nuevo_recurso_audio(course_code, seccion):
         )
 
 
+@lms_app.route("/course/<course_code>/<seccion>/html/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_recurso_html(course_code, seccion):
+    """Formulario para crear un nuevo recurso tipo HTML externo."""
+    form = CursoRecursoExternalCode()
+    recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
+    nuevo_indice = int(recursos + 1)
+    if form.validate_on_submit() or request.method == "POST":
+        ramdon = ULID()
+        id_unico = str(ramdon)
+        nuevo_recurso_ = CursoRecurso(
+            codigo=id_unico,
+            curso=course_code,
+            seccion=seccion,
+            tipo="html",
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            external_code=form.html_externo.data,
+            indice=nuevo_indice,
+            requerido=False,
+        )
+        try:
+            database.session.add(nuevo_recurso_)
+            database.session.commit()
+            flash("Recurso agregado correctamente al curso.")
+            return redirect(url_for("curso", course_code=course_code))
+        except OperationalError:  # pragma: no cover
+            flash("Hubo en error al crear el recurso.")
+            return redirect(url_for("curso", course_code=course_code))
+    else:
+        return render_template(
+            "learning/resources_new/nuevo_recurso_html.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
+
+
 @lms_app.route("/course/resource/<cource_code>/<seccion_id>/<task>/<resource_index>")
 @login_required
 @perfil_requerido("instructor")
@@ -826,6 +867,7 @@ def curso(course_code):
 
 
 TEMPLATES_BY_TYPE = {
+    "html": "type_html.html",
     "img": "type_img.html",
     "meet": "type_meet.html",
     "mp3": "type_audio.html",
@@ -1035,6 +1077,14 @@ def recurso_file(course_code, recurso_code):
     config = current_app.upload_set_config.get(doc.base_doc_url)
 
     return send_from_directory(config.destination, doc.doc)
+
+
+@lms_app.route("/course/<course_code>/external_code/<recurso_code>")
+def external_code(course_code, recurso_code):
+    """Devuelve un archivo desde el sistema de archivos."""
+    recurso = CursoRecurso.query.filter(CursoRecurso.codigo == recurso_code, CursoRecurso.curso == course_code).first()
+
+    return recurso.external_code
 
 
 @lms_app.route("/course/<course_code>/md_to_html/<recurso_code>")

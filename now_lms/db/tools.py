@@ -150,6 +150,21 @@ def copy_sample_img():
         pass
 
 
+demo_external_code = """
+    <iframe src="//www.slideshare.net/slideshow/embed_code/key/3gxt7XbHFmPBWP"
+    width="595"
+    height="485"
+    frameborder="0"
+    marginwidth="0"
+    marginheight="0"
+    scrolling="no"
+    style="border:1px solid #CCC; border-width:1px; margin-bottom:5px;
+    max-width: 100%;"
+    allowfullscreen>
+    </iframe>
+    """
+
+
 def crear_curso_demo():
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
@@ -278,6 +293,23 @@ def crear_curso_demo():
         text="# NOW - Learning Management System.",
     )
     database.session.add(nuevo_recurso6)
+    database.session.commit()
+
+    ramdon7 = ULID()
+    recurso7 = str(ramdon7)
+    nuevo_recurso7 = CursoRecurso(
+        codigo=recurso7,
+        curso="resources",
+        seccion=seccion_id,
+        tipo="html",
+        nombre="A demo external resouce resource.",
+        descripcion="A HTML text.",
+        indice=5,
+        publico=False,
+        requerido=True,
+        external_code=demo_external_code,
+    )
+    database.session.add(nuevo_recurso7)
     database.session.commit()
 
     log.debug("Curso de demo de recursos creado correctamente.")

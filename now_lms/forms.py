@@ -108,3 +108,9 @@ class CursoRecursoArchivoText(BaseForm):
     """Formulario para un nuevo recurso de audio."""
 
     editor = MdeField()
+
+
+class CursoRecursoExternalCode(BaseForm):
+    """Formulario para insertar un recurso HTML"""
+
+    html_externo = StringField(validators=[DataRequired()])
