@@ -312,6 +312,23 @@ def crear_curso_demo():
     database.session.add(nuevo_recurso7)
     database.session.commit()
 
+    ramdon8 = ULID()
+    recurso8 = str(ramdon8)
+    nuevo_recurso8 = CursoRecurso(
+        codigo=recurso8,
+        curso="resources",
+        seccion=seccion_id,
+        tipo="link",
+        nombre="A external link.",
+        descripcion="A external link.",
+        indice=5,
+        publico=False,
+        requerido=True,
+        url="https://es.wikipedia.org/wiki/Wikipedia:Portada",
+    )
+    database.session.add(nuevo_recurso8)
+    database.session.commit()
+
     log.debug("Curso de demo de recursos creado correctamente.")
 
 

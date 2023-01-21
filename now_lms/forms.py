@@ -114,3 +114,9 @@ class CursoRecursoExternalCode(BaseForm):
     """Formulario para insertar un recurso HTML"""
 
     html_externo = StringField(validators=[DataRequired()])
+
+
+class CursoRecursoExternalLink(BaseForm):
+    """Formulario para insertar un recurso HTML"""
+
+    url = StringField(validators=[DataRequired()])

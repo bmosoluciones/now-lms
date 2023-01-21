@@ -510,6 +510,20 @@ def test_upload_html(client, auth):
     assert response.status_code == 200
 
 
+def test_upload_link(client, auth):
+    from now_lms.db import CursoSeccion
+
+    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
+    url = "/course/resources/" + seccion.codigo + "/link/new"
+
+    data = {"nombre": "test", "descripcion": "test pdf", "url": "test"}
+    data = {key: str(value) for key, value in data.items()}
+    auth.login()
+    response = client.get(url)
+    response = client.post(url, data=data, follow_redirects=True)
+    assert response.status_code == 200
+
+
 def test_upload_text(client, auth):
     from now_lms.db import CursoSeccion
 

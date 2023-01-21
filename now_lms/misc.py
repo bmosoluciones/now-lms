@@ -21,6 +21,7 @@
 ICONOS_RECURSOS = {
     "html": "bi bi-code-square",
     "img": "bi bi-image",
+    "link": "bi bi-share",
     "meet": "bi bi-broadcast",
     "mp3": "bi bi-soundwave",
     "pdf": "bi bi-file-pdf-fill",

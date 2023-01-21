@@ -95,6 +95,7 @@ from now_lms.forms import (
     CursoRecursoArchivoText,
     CursoRecursoArchivoImagen,
     CursoRecursoExternalCode,
+    CursoRecursoExternalLink,
 )
 from now_lms.misc import ICONOS_RECURSOS
 from now_lms.version import VERSION
@@ -650,6 +651,42 @@ def nuevo_recurso_text(course_code, seccion):
         )
 
 
+@lms_app.route("/course/<course_code>/<seccion>/link/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_recurso_link(course_code, seccion):
+    """Formulario para crear un nuevo documento de texto."""
+    form = CursoRecursoExternalLink()
+    recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
+    nuevo_indice = int(recursos + 1)
+    if form.validate_on_submit() or request.method == "POST":
+        ramdon = ULID()
+        id_unico = str(ramdon)
+        nuevo_recurso_ = CursoRecurso(
+            codigo=id_unico,
+            curso=course_code,
+            seccion=seccion,
+            tipo="link",
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            indice=nuevo_indice,
+            url=form.url.data,
+            requerido=False,
+        )
+        try:
+            database.session.add(nuevo_recurso_)
+            database.session.commit()
+            flash("Recurso agregado correctamente al curso.")
+            return redirect(url_for("curso", course_code=course_code))
+        except OperationalError:  # pragma: no cover
+            flash("Hubo en error al crear el recurso.")
+            return redirect(url_for("curso", course_code=course_code))
+    else:
+        return render_template(
+            "learning/resources_new/nuevo_recurso_link.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
+
+
 @lms_app.route("/course/<course_code>/<seccion>/pdf/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -869,6 +906,7 @@ def curso(course_code):
 TEMPLATES_BY_TYPE = {
     "html": "type_html.html",
     "img": "type_img.html",
+    "link": "type_link.html",
     "meet": "type_meet.html",
     "mp3": "type_audio.html",
     "pdf": "type_pdf.html",
