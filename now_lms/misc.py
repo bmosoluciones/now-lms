@@ -18,13 +18,26 @@
 
 """Utilerias varias."""
 
-ICONOS_RECURSOS = {
+ICONOS_RECURSOS: dict = {
     "html": "bi bi-code-square",
     "img": "bi bi-image",
     "link": "bi bi-share",
     "meet": "bi bi-broadcast",
     "mp3": "bi bi-soundwave",
     "pdf": "bi bi-file-pdf-fill",
+    "slides": "bi bi-file-slides",
     "text": "bi bi-blockquote-left",
     "youtube": "bi bi-youtube",
+}
+
+TEMPLATES_BY_TYPE: dict = {
+    "html": "type_html.html",
+    "img": "type_img.html",
+    "link": "type_link.html",
+    "meet": "type_meet.html",
+    "mp3": "type_audio.html",
+    "pdf": "type_pdf.html",
+    "slides": "type_slides.html",
+    "text": "type_text.html",
+    "youtube": "type_youtube.html",
 }

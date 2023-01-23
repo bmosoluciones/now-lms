@@ -21,7 +21,17 @@
 # Librerias de terceros:
 from flask_mde import MdeField
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, DecimalField, DateField, IntegerField, PasswordField, SelectField, StringField, SubmitField
+from wtforms import (
+    BooleanField,
+    DecimalField,
+    DateField,
+    TimeField,
+    IntegerField,
+    PasswordField,
+    SelectField,
+    StringField,
+    SubmitField,
+)
 from wtforms.validators import DataRequired
 
 # pylint: disable=R0903
@@ -120,3 +130,35 @@ class CursoRecursoExternalLink(BaseForm):
     """Formulario para insertar un recurso HTML"""
 
     url = StringField(validators=[DataRequired()])
+
+
+class CursoRecursoMeet(BaseForm):
+    """Formulario para insertar un Meet"""
+
+    fecha = DateField(validators=[])
+    hora = TimeField(validators=[])
+    url = StringField(validators=[DataRequired()])
+    notes = SelectField(
+        "Tema",
+        choices=[
+            ("beige", "Beige"),
+            ("black", "Black"),
+            ("blood", "Blood"),
+            ("league", "League"),
+            ("moon", "Moon"),
+            ("night", "Night"),
+            ("serif", "Serif"),
+            ("simple", "Simple"),
+            ("sky", "Sky"),
+            ("solarized", "Solarized"),
+            ("white", "White"),
+        ],
+    )
+
+
+class CursoRecursoSlides(BaseForm):
+    """Formulario para insertar un Meet"""
+
+    notes = SelectField(
+        "Plataforma", choices=[("zoom", "Zoom"), ("teams", "MS Teams"), ("meet", "Google Meet"), ("otros", "Otros")]
+    )

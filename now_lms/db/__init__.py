@@ -123,34 +123,18 @@ class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     rel_curso = database.relationship("Curso", foreign_keys=curso)
     nombre = database.Column(database.String(150), nullable=False)
     descripcion = database.Column(database.String(250), nullable=False)
-    # Tipos implementados:
-    #   - prueba: Una evaluación para valor el aprendizaje del estudiante.
-    #   - meet: Un link a un reunión en linea en la plataforma de elección del docente:
-    # Zoom, Microsoft Teams, Google Meet, etc.
-    #   - pdf: Un link a un pdf descargable
-    #   - youtube: Un link a un vídeo alojado en YouTube.
-    # Es importante mencionar advertir al docente que si bien navegadores basados en Chromium como MS Edge o Google Chrome
-    # no permiten descargar videos directamente desde ese navegador exiten N cantidad de sitios y herramientas que permiten
-    # bajar al ordenador vídeos alojados en YouTube por que lo el contenido es facilmente plageable.
     tipo = database.Column(database.String(150), nullable=False)
-    # Parte de la logica de la aplicación es que el docente puede definir si en recurso debe ser
-    # completado para considerar el curso finalizado, si el recurso es opcional o si el alumno puede
-    # decidir completar uno de N recurso recursos para considerar el curso finalizado.
-    # Se definen 3 tipos de recurso: requerido, opcional y alternativo.
     requerido = database.Column(database.String(15))
     url = database.Column(database.String(250), unique=False)
     fecha = database.Column(database.Date())
     hora = database.Column(database.Time())
-    # Un instructor puede decidir brindar acceso publico a un recurso.
     publico = database.Column(database.Boolean())
-    # Campos para carga de archivos
     base_doc_url = database.Column(database.String(50), unique=False)
     doc = database.Column(database.String(50), unique=True)
     ext = database.Column(database.String(5), unique=True)
-    # Campos para recursos de tipo texto.
     text = database.Column(database.String(750))
-    # Recursos con html externo.
     external_code = database.Column(database.String(500))
+    notes = database.Column(database.String(20))
 
 
 class CursoRecursoAvance(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -219,6 +203,29 @@ class CursoRecursoConsulta(database.Model, BaseTabla):  # type: ignore[name-defi
     usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False)
     pregunta = database.Column(database.String(500))
     respuesta = database.Column(database.String(500))
+
+
+class CursoRecursoSlideShow(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Una presentación basada en reveal.js"""
+
+    __table_args__ = (database.UniqueConstraint("codigo", name="codigo_slideshow_unico"),)
+    titulo = database.Column(database.String(100), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
+    descripcion = database.Column(database.String(250), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
+    codigo = database.Column(database.String(32), unique=False)
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
+    recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False)
+    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False)
+
+
+class CursoRecursoSlides(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Una presentación basada en reveal.js"""
+
+    titulo = database.Column(database.String(100), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
+    texto = database.Column(database.String(250), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
+    indice = database.Column(database.Integer())
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
+    recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False)
+    slide_show = database.Column(database.String(32), database.ForeignKey("curso_recurso_slide_show.codigo"), nullable=False)
 
 
 class Files(database.Model, BaseTabla):  # type: ignore[name-defined]

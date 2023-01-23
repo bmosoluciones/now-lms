@@ -57,6 +57,8 @@ from now_lms.db import (
     Curso,
     CursoRecurso,
     CursoSeccion,
+    CursoRecursoSlides,
+    CursoRecursoSlideShow,
     DocenteCurso,
     EstudianteCurso,
     ModeradorCurso,
@@ -64,11 +66,10 @@ from now_lms.db import (
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
 )
 
+from now_lms.db.init_courses import crear_curso_predeterminado, crear_curso_demo, crear_usuarios_predeterminados
+
 from now_lms.db.tools import (
     crear_configuracion_predeterminada,
-    crear_curso_predeterminado,
-    crear_curso_demo,
-    crear_usuarios_predeterminados,
     verifica_docente_asignado_a_curso,
     verifica_estudiante_asignado_a_curso,
     verifica_moderador_asignado_a_curso,
@@ -96,8 +97,9 @@ from now_lms.forms import (
     CursoRecursoArchivoImagen,
     CursoRecursoExternalCode,
     CursoRecursoExternalLink,
+    CursoRecursoMeet,
 )
-from now_lms.misc import ICONOS_RECURSOS
+from now_lms.misc import ICONOS_RECURSOS, TEMPLATES_BY_TYPE
 from now_lms.version import VERSION
 
 # < --------------------------------------------------------------------------------------------- >
@@ -116,8 +118,8 @@ TIPOS_DE_USUARIO: list = ["admin", "user", "instructor", "moderator"]
 
 alembic: Alembic = Alembic()
 administrador_sesion: LoginManager = LoginManager()
-cache = Cache()
-mde = Mde()
+cache: Cache = Cache()
+mde: Mde = Mde()
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -726,6 +728,42 @@ def nuevo_recurso_pdf(course_code, seccion):
         )
 
 
+@lms_app.route("/course/<course_code>/<seccion>/slides/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_recurso_meet(course_code, seccion):
+    """Formulario para crear un nuevo recurso tipo archivo en PDF."""
+    form = CursoRecursoMeet()
+    recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
+    nuevo_indice = int(recursos + 1)
+    if form.validate_on_submit() or request.method == "POST":
+        ramdon = ULID()
+        id_unico = str(ramdon)
+        nuevo_recurso_ = CursoRecurso(
+            codigo=id_unico,
+            curso=course_code,
+            seccion=seccion,
+            tipo="slides",
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            indice=nuevo_indice,
+            base_doc_url=files.name,
+            requerido=False,
+        )
+        try:
+            database.session.add(nuevo_recurso_)
+            database.session.commit()
+            flash("Recurso agregado correctamente al curso.")
+            return redirect(url_for("curso", course_code=course_code))
+        except OperationalError:  # pragma: no cover
+            flash("Hubo en error al crear el recurso.")
+            return redirect(url_for("curso", course_code=course_code))
+    else:
+        return render_template(
+            "learning/resources_new/nuevo_recurso_slides.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
+
+
 @lms_app.route("/course/<course_code>/<seccion>/img/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -901,18 +939,6 @@ def curso(course_code):
         secciones=CursoSeccion.query.filter_by(curso=course_code).order_by(CursoSeccion.indice).all(),
         recursos=CursoRecurso.query.filter_by(curso=course_code).order_by(CursoRecurso.indice).all(),
     )
-
-
-TEMPLATES_BY_TYPE = {
-    "html": "type_html.html",
-    "img": "type_img.html",
-    "link": "type_link.html",
-    "meet": "type_meet.html",
-    "mp3": "type_audio.html",
-    "pdf": "type_pdf.html",
-    "text": "type_text.html",
-    "youtube": "type_youtube.html",
-}
 
 
 @lms_app.route("/cource/<curso_id>/resource/<resource_type>/<codigo>")
@@ -1123,6 +1149,16 @@ def external_code(course_code, recurso_code):
     recurso = CursoRecurso.query.filter(CursoRecurso.codigo == recurso_code, CursoRecurso.curso == course_code).first()
 
     return recurso.external_code
+
+
+@lms_app.route("/slide_show/<recurso_code>")
+def slide_show(recurso_code):
+    """Devuelve un archivo desde el sistema de archivos."""
+
+    slide = CursoRecursoSlideShow.query.filter(CursoRecursoSlideShow.recurso == recurso_code).first()
+    slides = CursoRecursoSlides.query.filter(CursoRecursoSlides.recurso == recurso_code).all()
+
+    return render_template("/learning/resources/slide_show.html", resource=slide, slides=slides)
 
 
 @lms_app.route("/course/<course_code>/md_to_html/<recurso_code>")
