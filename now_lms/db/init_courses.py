@@ -25,7 +25,13 @@ from datetime import datetime, timedelta, time
 
 # Librerias de terceros:
 from loguru import logger as log
-from ulid import ULID
+#Python3.6
+try:
+    from ulid import ULID
+except ImportError:
+    from uuid import uuid4 as ULID
+except SyntaxError:
+    from uuid import uuid4 as ULID
 
 # Recursos locales:
 from now_lms.auth import proteger_passwd

@@ -10,7 +10,6 @@ include .yarnrc
 include pyproject.toml
 include Dockerfile
 include entrypoint.sh 
-recursive-include cacao_accounting *.unit *.ico *.js *.css *.png *.html *.eot *.svg *.ttf *.woff *.woff2 *.jpg *.py *.txt *.csv *.json
-recursive-include docs *.py *.rst
+recursive-include now_lms *.unit *.ico *.js *.css *.png *.html *.eot *.svg *.ttf *.woff *.woff2 *.jpg *.py *.txt *.csv *.json
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
