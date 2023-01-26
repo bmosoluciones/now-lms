@@ -25,7 +25,8 @@ from datetime import datetime, timedelta, time
 
 # Librerias de terceros:
 from loguru import logger as log
-#Python3.6
+
+# Python3.6
 try:
     from ulid import ULID
 except ImportError:
