@@ -44,15 +44,7 @@ from markdown import markdown
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
 from sqlalchemy.exc import ArgumentError, OperationalError, ProgrammingError
-
-# Python3.6
-try:
-    from ulid import ULID
-except ImportError:
-    from uuid import uuid4 as ULID
-except SyntaxError:
-    from uuid import uuid4 as ULID
-
+from ulid import ULID
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales

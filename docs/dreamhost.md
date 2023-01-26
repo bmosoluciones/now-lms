@@ -1,40 +1,57 @@
 # Install NOW - LMS in DreamHost shared host.
 
+Last update: 2023 Jan 26
+
 1. Setup your domain with [Passenger](https://help.dreamhost.com/hc/en-us/articles/215769578-Passenger-overview) support.
 2. Login via [SSH](https://help.dreamhost.com/hc/en-us/articles/216041267) to your host.
-3. Updrage pip:
+3. Install a recent version of python:
 ```
-python3 -m pip install --upgrade pip
+$ mkdir ~/py3_tmp
+$ cd ~/py3_tmp/
+$ wget https://www.python.org/ftp/python/3.10.9/Python-3.10.9.tar.xz
+$ tar -xf Python-3.10.9.tar.xz
+$ cd Python-3.10.9
+$ ./configure --prefix=$HOME/opt/python-3.10.9
+$ make
+$ make install
+$ $HOME/opt/python-3.10.9/bin/python3 --version
+Python 3.10.9
 ```
-4. Install virtualenv:
+3. Go to your domain folder:
 ```
-python3 -m pip install virtualenv
+$ cd you.domain
 ```
-5. Go to your domain folder:
+7. Go to the public folder:
 ```
-cd you.domain
+$ cd public
 ```
-6. Go to the public folder:
+8. Create a python virtual enviroment:
 ```
-cd public
+$HOME/opt/python-3.10.9/bin/python3 -m venv venv
 ```
-7. Create a python virtual enviroment:
+9. Activate the virtual env:
 ```
-$HOME/.local/bin/virtualenv venv
+$ source venv/bin/activate
 ```
-8. Activate the virtual env:
+10. Install NOW - LMS:
 ```
-source venv/bin/activate
+$ pip install now_lms
 ```
-9. Install NOW - LMS:
+11. Create a app.py file:
 ```
-pip install now_lms
+from now_lms import lms_app as app
 ```
-10. Init app:
+12. Init app:
 ```
-lmsctl setup
+$ lmsctl setup
 ```
-11. Crea a passenger_wsgi.py file:
+12. Your your.domain/public directory should be like this:
+```
+$ ls
+__pycache__  app.py  favicon.gif  favicon.ico  tmp  venv
+```
+
+13. Crea a passenger_wsgi.py file in your domain directory:
 ```
 import sys, os
 
@@ -45,10 +62,14 @@ sys.path.append(os.getcwd())
 
 from now_lms import lms_app as application
 ```
-11. Restart passenger:
+15. You your.dommain folder should be like this:
 ```
+$ ls
+passenger_wsgi.py  passenger_wsgi.pyc  public
+```
+14. Restart passenger:
+```
+mkdir public/tmp
 touch tmp/restart.txt
 ```
-
-
-
+15. You should be able to acces NOW - LMS in your domain.
