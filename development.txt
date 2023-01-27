@@ -1,4 +1,3 @@
-# Base
 -r requirements.txt
 
 # Servidor de desarrollo

@@ -1,4 +1,4 @@
-# Copyright 2021 BMO Soluciones, S.A.
+# Copyright 2022 -2023 BMO Soluciones, S.A.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,5 +26,5 @@ APPAUTHOR = "BMO Soluciones, S.A."
 MAYOR = "0"
 MENOR = "0"
 PATCH = "1"
-PRERELEASE = "dev" + datetime.today().strftime("%Y%m%d")
+PRERELEASE = "alpha" + datetime.today().strftime("%Y%m%d")
 VERSION = MAYOR + "." + MENOR + "." + PATCH + "." + PRERELEASE

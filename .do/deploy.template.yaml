@@ -12,9 +12,9 @@ spec:
       value: "nsjksldknsdlkdsljdnsdjñasññqldñaas554dlkallas"
       type: SECRET
     - key: LMS_USER
-      value: "admin"
+      value: "lms-admin"
     - key: LMS_PSWD
-      value: "admin123+"
+      value: "lms-admin"
       type: SECRET
   databases:
   - name: example-db

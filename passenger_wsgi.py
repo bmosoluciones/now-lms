@@ -1,5 +1,5 @@
 # Reference:
-# - https://www.brettsbeta.com/blog/2020/07/flask-on-dreamhost-shared-website-hosting/
+# - https://help.dreamhost.com/hc/en-us/articles/215769548-Passenger-and-Python-WSGI
 
 import sys, os
 

@@ -1,5 +1,4 @@
 # Librerias de terceros
-# Mantener en orden alfabetico
 alembic
 appdirs
 babel
