@@ -1,8 +1,10 @@
 include LICENSE
 include wsgi.py
-passenger_wsgi.py
-Procfile
+include passenger_wsgi.py
+include Procfile
 include pyproject.toml
 recursive-include now_lms *.unit *.ico *.js *.css *.png *.html *.eot *.svg *.ttf *.woff *.woff2 *.jpg *.py *.txt *.csv *.json *.pdf *.ogg
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
+graft now_lms/static
+graft now_lms/templates
