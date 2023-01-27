@@ -1,15 +1,8 @@
-include Licencias_de_Terceros.md
-include CONTRIBUTING.md
-include CODE_OF_CONDUCT.md
 include LICENSE
-include Developer_Certificate_of_Origin
 include wsgi.py
-include package.json
-include yarn.lock
-include .yarnrc
+passenger_wsgi.py
+Procfile
 include pyproject.toml
-include Dockerfile
-include entrypoint.sh 
 recursive-include now_lms *.unit *.ico *.js *.css *.png *.html *.eot *.svg *.ttf *.woff *.woff2 *.jpg *.py *.txt *.csv *.json *.pdf *.ogg
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
