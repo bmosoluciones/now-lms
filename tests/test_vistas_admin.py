@@ -1,4 +1,4 @@
-# Copyright 2020 William José Moreno Reyes
+# Copyright 2021 -2023 William José Moreno Reyes
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -489,6 +489,34 @@ def test_upload_youtube(client, auth):
     url = "/course/resources/" + seccion.codigo + "/youtube/new"
 
     data = {"nombre": "test", "descripcion": "test pdf", "youtube_url": "test"}
+    data = {key: str(value) for key, value in data.items()}
+    auth.login()
+    response = client.get(url)
+    response = client.post(url, data=data, follow_redirects=True)
+    assert response.status_code == 200
+
+
+def test_upload_html(client, auth):
+    from now_lms.db import CursoSeccion
+
+    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
+    url = "/course/resources/" + seccion.codigo + "/html/new"
+
+    data = {"nombre": "test", "descripcion": "test pdf", "html_externo": "test"}
+    data = {key: str(value) for key, value in data.items()}
+    auth.login()
+    response = client.get(url)
+    response = client.post(url, data=data, follow_redirects=True)
+    assert response.status_code == 200
+
+
+def test_upload_link(client, auth):
+    from now_lms.db import CursoSeccion
+
+    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
+    url = "/course/resources/" + seccion.codigo + "/link/new"
+
+    data = {"nombre": "test", "descripcion": "test pdf", "url": "test"}
     data = {key: str(value) for key, value in data.items()}
     auth.login()
     response = client.get(url)
