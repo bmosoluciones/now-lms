@@ -26,5 +26,9 @@ APPAUTHOR = "BMO Soluciones, S.A."
 MAYOR = "0"
 MENOR = "0"
 PATCH = "1"
-PRERELEASE = "alpha" + datetime.today().strftime("%Y%m%d")
-VERSION = MAYOR + "." + MENOR + "." + PATCH + "." + PRERELEASE
+REVISION = datetime.today().strftime("%Y%m%d")
+PRERELEASE = None
+if PRERELEASE:
+    VERSION = MAYOR + "." + MENOR + "." + PATCH + "." + PRERELEASE + REVISION
+else:
+    VERSION = MAYOR + "." + MENOR + "." + PATCH + "." + REVISION
