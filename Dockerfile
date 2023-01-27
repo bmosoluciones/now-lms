@@ -1,5 +1,5 @@
 FROM registry.access.redhat.com/ubi9/ubi-minimal AS js
-RUN microdnf install -y nodejs npm
+RUN microdnf install -y nodejs npm && microdnf clean all
 COPY ./now_lms/static/package.json package.json 
 RUN npm install
 

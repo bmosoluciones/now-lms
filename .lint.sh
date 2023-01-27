@@ -1,5 +1,4 @@
 #!/bin/bash
-rm now_lms.db
 python -m black now_lms
 python -m bandit -r now_lms
 python -m flake8 --ignore=E712 now_lms

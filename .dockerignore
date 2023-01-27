@@ -32,3 +32,4 @@ requirements-databases.txt
 app.json
 sonar-project.properties
 now_lms/static/files/*
+passenger_wsgi.py

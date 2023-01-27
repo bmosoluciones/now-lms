@@ -1,4 +1,4 @@
-# Copyright 2021 BMO Soluciones, S.A.
+# Copyright 2022 - 2023 BMO Soluciones, S.A.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ setup(
         "Natural Language :: Spanish",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3 :: Only",
+        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
@@ -57,20 +58,30 @@ setup(
     ],
     install_requires=[
         "alembic",
+        "appdirs",
         "babel",
+        "bleach",
         "bcrypt",
+        "cryptography",
         "flask",
+        "flask[async]",
         "flask-alembic",
         "flask-babel",
+        "flask-caching",
         "flask-login",
-        "Flask-Reuploaded",
+        "flask-mde",
+        "flask-reuploaded",
         "flask-sqlalchemy",
         "flask-wtf",
         "loguru",
+        "markdown",
+        "pg8000",
+        "PyMySQL",
+        "python-ulid",
         "sqlalchemy",
+        "redis",
         "waitress",
         "wtforms",
-        "WTForms-SQLAlchemy",
     ],
     entry_points={
         "console_scripts": [

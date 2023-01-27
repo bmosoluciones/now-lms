@@ -62,9 +62,8 @@ jobs:
         python -m bandit -r now_lms
         python -m flake8 now_lms
         python -m pylint now_lms
-    - name: Lint html templanes
+    - name: Lint html templates
       run: |
-        python -m pip install curlylint
         python -m curlylint now_lms/templates/
     - name: Test with pytest/SQLite
       run: |

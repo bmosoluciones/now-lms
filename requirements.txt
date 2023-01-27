@@ -1,10 +1,9 @@
 # Librerias de terceros
-# Mantener en orden alfabetico
 alembic
-bleach
 appdirs
-bcrypt
 babel
+bleach
+bcrypt
 flask
 flask[async]
 flask-alembic

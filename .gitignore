@@ -264,5 +264,5 @@ cacao_accounting/static/node_modules/*
 #PyCharm
 .idea/
 
-Dev file uploads
+# Dev file uploads
 now_lms/static/files/*
