@@ -27,7 +27,7 @@ MAYOR = "0"
 MENOR = "0"
 PATCH = "1"
 REVISION = datetime.today().strftime("%Y%m%d")
-PRERELEASE = None
+PRERELEASE = "alpha-1"
 if PRERELEASE:
     VERSION = MAYOR + "." + MENOR + "." + PATCH + "." + PRERELEASE + REVISION
 else:
