@@ -1,0 +1,55 @@
+{% import "macros.html" as macros %}
+
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+
+<head>
+
+    {{ macros.headertags() }}
+    {{ mde.css }}
+    <title>Nuevo Recurso - Documento</title>
+
+    {{ macros.local_style() }}
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet">
+</head>
+
+<body>
+
+    {{ macros.navbar() }}
+
+    <main>
+
+        {{ macros.notify() }}
+
+        <div class="container px-4 py-5" id="icon-grid">
+            <h4 class="pb-2 border-bottom">Agregar un nuevo documento.</h4>
+            <form method="post">
+                {{ form.csrf_token }}
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <label for="nombre" class="form-label">Titulo del Documento</label>
+                        {{ form.nombre(class="form-control", id="nombre", placeholder="Titulo del Video") }}
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="descripcion" class="form-label">Descripción del Documento</label>
+                        {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripción del Video") }}
+                    </div>
+
+                    {{form.editor}}
+                    {{mde.preview}}
+                    {{mde.js}}
+                    
+                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Agregar Recurso</button>
+                </div>
+            </form>
+        </div>
+
+
+    </main>
+
+
+</body>
+
+</html>

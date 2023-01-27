@@ -128,7 +128,20 @@
                   </p>
                 </div>
               </div>
-
+            </div>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+              <div class="col d-flex align-items-start">
+                <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em"><use xlink:href="#cpu-fill"/></svg>
+                <div>
+                  <h5 class="fw-bold mb-0"><i class="bi bi-people-fill" aria-hidden="true"></i> Reunión Virtual</h5>
+                  <p>Programe una reunión virtual con sus estudiantes.</p>
+                  <p>
+                    <span class="badge bg-success">
+                      <a href="{{ url_for("nuevo_recurso_youtube_video", course_code=id_curso, seccion=id_seccion) }}" class="link-light">Agregar al curso.</a>
+                  </span>
+                  </p>
+                </div>
+              </div>
             </div>
 
             <h3 class="pb-2 border-bottom">Agregue una evaluación al curso.</h3>
