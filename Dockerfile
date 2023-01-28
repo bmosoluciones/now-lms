@@ -1,6 +1,7 @@
 FROM registry.access.redhat.com/ubi9/ubi-minimal AS js
 RUN microdnf install -y nodejs npm && microdnf clean all
-COPY ./now_lms/static/package.json package.json 
+WORKDIR /usr/app
+COPY ./now_lms/static/package.json /usr/app/package.json 
 RUN npm install
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal
@@ -27,10 +28,9 @@ WORKDIR /app
 RUN chmod +x docker-entry-point.sh
 
 # Install nodejs modules in the final docker image    
-COPY --from=js node_modules /app/now_lms/static/node_modules
+COPY --from=js /usr/app/node_modules /app/now_lms/static/node_modules
 
-RUN /usr/bin/python3.9 -m pip install -e .
-RUN /usr/bin/python3.9 -m pip list --format=columns
+RUN /usr/bin/python3.9 -m pip install -e . && /usr/bin/python3.9 -m pip list --format=columns
 
 EXPOSE 8080
 ENTRYPOINT [ "/bin/sh" ]
