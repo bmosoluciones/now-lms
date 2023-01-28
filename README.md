@@ -8,7 +8,6 @@
 [![linting: pylint](https://img.shields.io/badge/linting-pylint-yellow)](https://github.com/PyCQA/pylint)
 [![codecov](https://codecov.io/gh/bmosoluciones/now-lms/branch/main/graph/badge.svg?token=SFVXF6Y3R3)](https://codecov.io/gh/bmosoluciones/now-lms)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bmosoluciones_now-lms&metric=alert_status)](https://sonarcloud.io/dashboard?id=bmosoluciones_now-lms)
-[![CodeFactor](https://www.codefactor.io/repository/github/bmosoluciones/now-lms/badge)](https://www.codefactor.io/repository/github/bmosoluciones/now-lms)
 [![Join the chat at https://gitter.im/now-lms/community](https://badges.gitter.im/now-lms/community.svg)](https://gitter.im/now-lms/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Simple to {install, use, configure and maintain} learning management system.
