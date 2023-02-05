@@ -61,7 +61,7 @@ setup(
         "babel",
         "bleach",
         "bcrypt",
-        # "cryptography", Install by hand to access MySQL
+        cryptography",
         "flask",
         "flask[async]",
         "flask-alembic",
@@ -75,7 +75,7 @@ setup(
         "loguru",
         "markdown",
         "pg8000",
-        # "PyMySQL", # Do not work without cryptography
+        "PyMySQL",
         "python-ulid",
         "sqlalchemy",
         "redis",
