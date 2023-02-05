@@ -41,14 +41,14 @@
             <div id="pdf_container" class="d-flex justify-content-around">
 
               <audio controls>
-                <source src="{{ url_for('recurso_file', recurso_code=recurso.codigo, course_code=recurso.curso) }}" type="audio/ogg">
+                <source src="{{ url_for('recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}" type="audio/ogg">
                 Your browser does not support the audio element.
               </audio>
 
             </div>
 
             <div id="download" class="d-flex justify-content-around">
-              <a type="button" class="btn btn-success" id="download" href="{{ url_for('recurso_file', recurso_code=recurso.codigo, course_code=recurso.curso) }}">
+              <a type="button" class="btn btn-success" id="download" href="{{ url_for('recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}">
                 <i class="bi bi-soundwave" aria-hidden="true"></i>
                 Descargar Audio
               </a>

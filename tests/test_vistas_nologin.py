@@ -54,5 +54,5 @@ def test_acceso_recursos(client):
 
     recursos = CursoRecurso.query.filter(CursoRecurso.curso == "resources").all()
     for recurso in recursos:
-        url = "/cource/resources/resource/" + recurso.tipo + "/" + recurso.codigo
+        url = "/cource/resources/resource/" + recurso.tipo + "/" + recurso.id
         page = client.get(url)

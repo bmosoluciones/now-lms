@@ -36,9 +36,16 @@ database: SQLAlchemy = SQLAlchemy()
 MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA: int = 10
 LLAVE_FORANEA_CURSO: str = "curso.codigo"
 LLAVE_FORANEA_USUARIO: str = "usuario.usuario"
-LLAVE_FORANEA_SECCION: str = "curso_seccion.codigo"
-LLAVE_FORANEA_RECURSO: str = "curso_recurso.codigo"
-LLAVE_FORANEA_PREGUNTA: str = "curso_recurso_pregunta.codigo"
+LLAVE_FORANEA_SECCION: str = "curso_seccion.id"
+LLAVE_FORANEA_RECURSO: str = "curso_recurso.id"
+LLAVE_FORANEA_PREGUNTA: str = "curso_recurso_pregunta.id"
+
+
+def generador_de_codigos_unicos():
+    """Genera codigo unicos basados en ULID."""
+    from ulid import ULID
+
+    return str(ULID())
 
 
 # pylint: disable=too-few-public-methods
@@ -47,7 +54,7 @@ class BaseTabla:
     """Columnas estandar para todas las tablas de la base de datos."""
 
     # Pistas de auditoria comunes a todas las tablas.
-    id = database.Column(database.Integer(), primary_key=True, nullable=True)
+    id = database.Column(database.String(26), primary_key=True, nullable=False, default=generador_de_codigos_unicos)
     status = database.Column(database.String(50), nullable=True)
     creado = database.Column(database.DateTime, default=database.func.now(), nullable=False)
     creado_por = database.Column(database.String(15), nullable=True)
@@ -98,8 +105,6 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
 class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Los cursos tienen secciones para dividir el contenido en secciones logicas."""
 
-    __table_args__ = (database.UniqueConstraint("codigo", name="curso_seccion_unico"),)
-    codigo = database.Column(database.String(32), unique=False)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
     rel_curso = database.relationship("Curso", foreign_keys=curso)
     nombre = database.Column(database.String(100), nullable=False)
@@ -112,13 +117,9 @@ class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
 class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Una sección de un curso consta de una serie de recursos."""
 
-    __table_args__ = (
-        database.UniqueConstraint("codigo", name="curso_recurso_unico"),
-        database.UniqueConstraint("doc", name="documento_unico"),
-    )
+    __table_args__ = (database.UniqueConstraint("doc", name="documento_unico"),)
     indice = database.Column(database.Integer())
-    codigo = database.Column(database.String(32), unique=False)
-    seccion = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False)
+    seccion = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
     rel_curso = database.relationship("Curso", foreign_keys=curso)
     nombre = database.Column(database.String(150), nullable=False)

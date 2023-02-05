@@ -158,13 +158,13 @@
                         {% for seccion in secciones %}
                         <div class="accordion-item accordion-flush">
 
-                            <h2 class="accordion-header accordion-flush" id="heading{{ seccion.codigo }}">
-                              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ seccion.codigo }}" aria-expanded="false" aria-controls="collapse{{ seccion.codigo }}">
+                            <h2 class="accordion-header accordion-flush" id="heading{{ seccion.id }}">
+                              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ seccion.id }}" aria-expanded="false" aria-controls="collapse{{ seccion.id }}">
                                 {{ seccion.nombre }}
                               </button>
                             </h2>
 
-                            <div id="collapse{{ seccion.codigo }}" class="accordion-collapse collapse" aria-labelledby="heading{{ seccion.codigo }}" data-bs-parent="#accordionSeccionesCurso">
+                            <div id="collapse{{ seccion.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ seccion.id }}" data-bs-parent="#accordionSeccionesCurso">
                               <div class="accordion-body accordion-flush">
                                 {% if permitir_editar %}
                                 <div class="d-flex justify-content-end">
@@ -177,20 +177,20 @@
 
                                   {% if seccion.estado == False %}
                                   <span class="badge bg-success">
-                                    <a href="{{ url_for("cambiar_seccion_publico", course_code=curso.codigo, codigo=seccion.codigo) }}" class="link-light">Publicar Sección</a>
+                                    <a href="{{ url_for("cambiar_seccion_publico", course_code=curso.codigo, codigo=seccion.id) }}" class="link-light">Publicar Sección</a>
                                   </span>
                                   {% else %}
                                   <span class="badge bg-warning">
-                                    <a href="{{ url_for("cambiar_seccion_publico", course_code=curso.codigo, codigo=seccion.codigo) }}" class="link-light">Ocultar Sección</a>
+                                    <a href="{{ url_for("cambiar_seccion_publico", course_code=curso.codigo, codigo=seccion.id) }}" class="link-light">Ocultar Sección</a>
                                   </span>
                                   {% endif %}
 
                                   <span class="badge bg-primary">
-                                    <a href="{{ url_for("nuevo_recurso", course_code=curso.codigo, seccion=seccion.codigo) }}" class="link-light">Nuevo Recurso</a>
+                                    <a href="{{ url_for("nuevo_recurso", course_code=curso.codigo, seccion=seccion.id) }}" class="link-light">Nuevo Recurso</a>
                                   </span>
 
                                   <span class="badge bg-danger">
-                                    <a href="{{ url_for("eliminar_seccion", curso_id=curso.codigo, id_=seccion.codigo) }}" class="link-light">Elimina Sección</a>
+                                    <a href="{{ url_for("eliminar_seccion", curso_id=curso.codigo, id_=seccion.id) }}" class="link-light">Elimina Sección</a>
                                   </span>
                                 </div>
                                 {% endif %}
@@ -199,16 +199,16 @@
                                   <ul class="list-group list-group-flush">
 
                                     {% for recurso in recursos %}
-                                    {% if recurso.seccion == seccion.codigo %}
+                                    {% if recurso.seccion == seccion.id %}
                                     <li class="list-group-item">
                                       <div class="d-flex justify-content-between">
 
                                         {% if current_user.tipo == "admin" or permitir_estudiante %}
-                                        <a class="link-dark" href="{{ url_for("pagina_recurso", curso_id=recurso.curso, resource_type=recurso.tipo, codigo=recurso.codigo) }} ">
+                                        <a class="link-dark" href="{{ url_for("pagina_recurso", curso_id=recurso.curso, resource_type=recurso.tipo, codigo=recurso.id) }} ">
                                           <div class="fw-bold"> <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i>  {{ recurso.nombre }}</div>
                                         </a>
                                         {% elif recurso.publico == True %}
-                                        <a class="link-dark" href="{{ url_for("pagina_recurso", curso_id=recurso.curso, codigo=recurso.codigo, resource_type=recurso.tipo) }} ">
+                                        <a class="link-dark" href="{{ url_for("pagina_recurso", curso_id=recurso.curso, codigo=recurso.id, resource_type=recurso.tipo) }} ">
                                           <div class="fw-bold"> <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i>  {{ recurso.nombre }}</div>
                                         </a>
                                         <span class="badge bg-success">Preview</span>
@@ -225,7 +225,7 @@
                                             <a href="{{  url_for("modificar_orden_recurso", cource_code=recurso.curso, seccion_id=recurso.seccion , resource_index=recurso.indice, task="decrement")  }}" class="link-light"><i class="bi bi-arrow-up-short" aria-hidden="true"></i> Subir</a>
                                           </span>
                                           <span class="badge bg-danger">
-                                            <a href="{{ url_for("eliminar_recurso", curso_id=recurso.curso, seccion=recurso.seccion, id_=recurso.codigo) }}" class="link-light">Eliminar</a>
+                                            <a href="{{ url_for("eliminar_recurso", curso_id=recurso.curso, seccion=recurso.seccion, id_=recurso.id) }}" class="link-light">Eliminar</a>
                                           </span>
                                         </div>
                                         {% endif %}
