@@ -61,7 +61,7 @@ setup(
         "babel",
         "bleach",
         "bcrypt",
-        cryptography",
+        "cryptography",
         "flask",
         "flask[async]",
         "flask-alembic",
