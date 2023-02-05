@@ -196,7 +196,7 @@ def cambia_curso_publico(id_curso: Union[None, str, int] = None):
 def cambia_seccion_publico(codigo: Union[None, str, int] = None):
     """Cambia el estatus publico de una sección."""
 
-    SECCION = CursoSeccion.query.filter_by(codigo=codigo).first()
+    SECCION = CursoSeccion.query.filter_by(id=codigo).first()
     if SECCION.estado:
         SECCION.estado = False
     else:

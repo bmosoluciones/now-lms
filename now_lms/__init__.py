@@ -686,7 +686,7 @@ def programa():
 @lms_app.route("/course/<course_code>/files/<recurso_code>")
 def recurso_file(course_code, recurso_code):
     """Devuelve un archivo desde el sistema de archivos."""
-    doc = CursoRecurso.query.filter(CursoRecurso.codigo == recurso_code, CursoRecurso.curso == course_code).first()
+    doc = CursoRecurso.query.filter(CursoRecurso.id == recurso_code, CursoRecurso.curso == course_code).first()
     config = current_app.upload_set_config.get(doc.base_doc_url)
 
     return send_from_directory(config.destination, doc.doc)
@@ -695,7 +695,7 @@ def recurso_file(course_code, recurso_code):
 @lms_app.route("/course/<course_code>/external_code/<recurso_code>")
 def external_code(course_code, recurso_code):
     """Devuelve un archivo desde el sistema de archivos."""
-    recurso = CursoRecurso.query.filter(CursoRecurso.codigo == recurso_code, CursoRecurso.curso == course_code).first()
+    recurso = CursoRecurso.query.filter(CursoRecurso.id == recurso_code, CursoRecurso.curso == course_code).first()
 
     return recurso.external_code
 
@@ -713,7 +713,7 @@ def slide_show(recurso_code):
 @lms_app.route("/course/<course_code>/md_to_html/<recurso_code>")
 def markdown_a_html(course_code, recurso_code):
     """Devuelve un texto en markdown como HTML."""
-    recurso = CursoRecurso.query.filter(CursoRecurso.codigo == recurso_code, CursoRecurso.curso == course_code).first()
+    recurso = CursoRecurso.query.filter(CursoRecurso.id == recurso_code, CursoRecurso.curso == course_code).first()
     allowed_tags = HTML_TAGS
     allowed_attrs = {"*": ["class"], "a": ["href", "rel"], "img": ["src", "alt"]}
 
@@ -796,12 +796,9 @@ def nuevo_seccion(course_code):
     # Las seccion son contenedores de recursos.
     form = CursoSeccionForm()
     if form.validate_on_submit() or request.method == "POST":
-        ramdon = ULID()
-        id_unico = str(ramdon)
         secciones = CursoSeccion.query.filter_by(curso=course_code).count()
         nuevo_indice = int(secciones + 1)
         nueva_seccion = CursoSeccion(
-            codigo=id_unico,
             curso=course_code,
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
@@ -864,7 +861,7 @@ def modificar_orden_recurso(cource_code, seccion_id, resource_index, task):
 @perfil_requerido("instructor")
 def eliminar_recurso(curso_id, seccion, id_):
     """Elimina una seccion del curso."""
-    CursoRecurso.query.filter(CursoRecurso.codigo == id_).delete()
+    CursoRecurso.query.filter(CursoRecurso.id == id_).delete()
     database.session.commit()
     reorganiza_indice_seccion(seccion=seccion)
     return redirect(url_for("curso", course_code=curso_id))
@@ -875,7 +872,7 @@ def eliminar_recurso(curso_id, seccion, id_):
 @perfil_requerido("instructor")
 def eliminar_seccion(curso_id, id_):
     """Elimina una seccion del curso."""
-    CursoSeccion.query.filter(CursoSeccion.codigo == id_).delete()
+    CursoSeccion.query.filter(CursoSeccion.id == id_).delete()
     database.session.commit()
     reorganiza_indice_curso(codigo_curso=curso_id)
     return redirect(url_for("curso", course_code=curso_id))
@@ -950,9 +947,9 @@ def pagina_recurso(curso_id, resource_type, codigo):
     """Pagina de un recurso."""
 
     CURSO = database.session.query(Curso).filter(Curso.codigo == curso_id).first()
-    RECURSO = database.session.query(CursoRecurso).filter(CursoRecurso.codigo == codigo).first()
+    RECURSO = database.session.query(CursoRecurso).filter(CursoRecurso.id == codigo).first()
     RECURSOS = database.session.query(CursoRecurso).filter(CursoRecurso.curso == curso_id).order_by(CursoRecurso.indice)
-    SECCION = database.session.query(CursoSeccion).filter(CursoSeccion.codigo == RECURSO.seccion).first()
+    SECCION = database.session.query(CursoSeccion).filter(CursoSeccion.id == RECURSO.seccion).first()
     SECCIONES = database.session.query(CursoSeccion).filter(CursoSeccion.curso == curso_id).order_by(CursoSeccion.indice)
     TEMPLATE = "learning/resources/" + TEMPLATES_BY_TYPE[resource_type]
 
@@ -980,10 +977,7 @@ def nuevo_recurso_youtube_video(course_code, seccion):
     recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
     nuevo_indice = int(recursos + 1)
     if form.validate_on_submit() or request.method == "POST":
-        ramdon = ULID()
-        id_unico = str(ramdon)
         nuevo_recurso_ = CursoRecurso(
-            codigo=id_unico,
             curso=course_code,
             seccion=seccion,
             tipo="youtube",
@@ -1016,10 +1010,7 @@ def nuevo_recurso_text(course_code, seccion):
     recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
     nuevo_indice = int(recursos + 1)
     if form.validate_on_submit() or request.method == "POST":
-        ramdon = ULID()
-        id_unico = str(ramdon)
         nuevo_recurso_ = CursoRecurso(
-            codigo=id_unico,
             curso=course_code,
             seccion=seccion,
             tipo="text",
@@ -1052,10 +1043,8 @@ def nuevo_recurso_link(course_code, seccion):
     recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
     nuevo_indice = int(recursos + 1)
     if form.validate_on_submit() or request.method == "POST":
-        ramdon = ULID()
-        id_unico = str(ramdon)
+
         nuevo_recurso_ = CursoRecurso(
-            codigo=id_unico,
             curso=course_code,
             seccion=seccion,
             tipo="link",
@@ -1090,10 +1079,7 @@ def nuevo_recurso_pdf(course_code, seccion):
     if (form.validate_on_submit() or request.method == "POST") and "pdf" in request.files:
         file_name = str(ULID()) + ".pdf"
         pdf_file = files.save(request.files["pdf"], folder=course_code, name=file_name)
-        ramdon = ULID()
-        id_unico = str(ramdon)
         nuevo_recurso_ = CursoRecurso(
-            codigo=id_unico,
             curso=course_code,
             seccion=seccion,
             tipo="pdf",
@@ -1127,10 +1113,8 @@ def nuevo_recurso_meet(course_code, seccion):
     recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
     nuevo_indice = int(recursos + 1)
     if form.validate_on_submit() or request.method == "POST":
-        ramdon = ULID()
-        id_unico = str(ramdon)
+
         nuevo_recurso_ = CursoRecurso(
-            codigo=id_unico,
             curso=course_code,
             seccion=seccion,
             tipo="slides",
@@ -1165,10 +1149,8 @@ def nuevo_recurso_img(course_code, seccion):
     if (form.validate_on_submit() or request.method == "POST") and "img" in request.files:
         file_name = str(ULID()) + ".jpg"
         picture_file = images.save(request.files["img"], folder=course_code, name=file_name)
-        ramdon = ULID()
-        id_unico = str(ramdon)
+
         nuevo_recurso_ = CursoRecurso(
-            codigo=id_unico,
             curso=course_code,
             seccion=seccion,
             tipo="img",
@@ -1204,10 +1186,8 @@ def nuevo_recurso_audio(course_code, seccion):
     if (form.validate_on_submit() or request.method == "POST") and "audio" in request.files:
         audio_name = str(ULID()) + ".ogg"
         audio_file = audio.save(request.files["audio"], folder=course_code, name=audio_name)
-        ramdon = ULID()
-        id_unico = str(ramdon)
+
         nuevo_recurso_ = CursoRecurso(
-            codigo=id_unico,
             curso=course_code,
             seccion=seccion,
             tipo="mp3",
@@ -1241,10 +1221,8 @@ def nuevo_recurso_html(course_code, seccion):
     recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
     nuevo_indice = int(recursos + 1)
     if form.validate_on_submit() or request.method == "POST":
-        ramdon = ULID()
-        id_unico = str(ramdon)
+
         nuevo_recurso_ = CursoRecurso(
-            codigo=id_unico,
             curso=course_code,
             seccion=seccion,
             tipo="html",

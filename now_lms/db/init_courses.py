@@ -143,7 +143,7 @@ def crear_curso_demo():
     ramdon1 = ULID()
     seccion_id = str(ramdon1)
     nueva_seccion = CursoSeccion(
-        codigo=seccion_id,
+        id=seccion_id,
         curso="resources",
         nombre="Demo of type of resources.",
         descripcion="Demo of type of resources.",
@@ -155,10 +155,7 @@ def crear_curso_demo():
     database.session.commit()
 
     copy_sample_audio()
-    ramdon2 = ULID()
-    recurso1 = str(ramdon2)
     nuevo_recurso6 = CursoRecurso(
-        codigo=recurso1,
         curso="resources",
         seccion=seccion_id,
         tipo="mp3",
@@ -174,10 +171,7 @@ def crear_curso_demo():
     database.session.commit()
 
     copy_sample_pdf()
-    ramdon3 = ULID()
-    recurso2 = str(ramdon3)
     nuevo_recurso5 = CursoRecurso(
-        codigo=recurso2,
         curso="resources",
         seccion=seccion_id,
         tipo="pdf",
@@ -192,10 +186,7 @@ def crear_curso_demo():
     database.session.add(nuevo_recurso5)
     database.session.commit()
 
-    ramdon3 = ULID()
-    recurso3 = str(ramdon3)
     nuevo_recurso3 = CursoRecurso(
-        codigo=recurso3,
         curso="resources",
         seccion=seccion_id,
         tipo="meet",
@@ -212,10 +203,7 @@ def crear_curso_demo():
     database.session.commit()
 
     copy_sample_img()
-    ramdon4 = ULID()
-    recurso4 = str(ramdon4)
     nuevo_recurso4 = CursoRecurso(
-        codigo=recurso4,
         curso="resources",
         seccion=seccion_id,
         tipo="img",
@@ -230,10 +218,7 @@ def crear_curso_demo():
     database.session.add(nuevo_recurso4)
     database.session.commit()
 
-    ramdon5 = ULID()
-    recurso5 = str(ramdon5)
     nuevo_recurso5 = CursoRecurso(
-        codigo=recurso5,
         curso="resources",
         seccion=seccion_id,
         tipo="text",
@@ -247,10 +232,7 @@ def crear_curso_demo():
     database.session.add(nuevo_recurso5)
     database.session.commit()
 
-    ramdon6 = ULID()
-    recurso6 = str(ramdon6)
     nuevo_recurso6 = CursoRecurso(
-        codigo=recurso6,
         curso="resources",
         seccion=seccion_id,
         tipo="html",
@@ -264,10 +246,7 @@ def crear_curso_demo():
     database.session.add(nuevo_recurso6)
     database.session.commit()
 
-    ramdon7 = ULID()
-    recurso7 = str(ramdon7)
     nuevo_recurso7 = CursoRecurso(
-        codigo=recurso7,
         curso="resources",
         seccion=seccion_id,
         tipo="link",
@@ -281,10 +260,7 @@ def crear_curso_demo():
     database.session.add(nuevo_recurso7)
     database.session.commit()
 
-    ramdon8 = ULID()
-    recurso8 = str(ramdon8)
     nuevo_recurso8 = CursoRecurso(
-        codigo=recurso8,
         curso="resources",
         seccion=seccion_id,
         tipo="slides",
@@ -297,10 +273,7 @@ def crear_curso_demo():
     database.session.add(nuevo_recurso8)
     database.session.commit()
 
-    ramdon9 = ULID()
-    recurso9 = str(ramdon9)
     nuevo_recurso9 = CursoRecurso(
-        codigo=recurso9,
         curso="resources",
         seccion=seccion_id,
         tipo="youtube",
@@ -345,7 +318,7 @@ def crear_curso_predeterminado():
     ramdon1 = ULID()
     seccion1_id = str(ramdon1)
     nueva_seccion1 = CursoSeccion(
-        codigo=seccion1_id,
+        id=seccion1_id,
         curso="now",
         nombre="Introduction to online teaching.",
         descripcion="This is introductory material to online teaching.",
@@ -359,7 +332,7 @@ def crear_curso_predeterminado():
     ramdon2 = ULID()
     seccion2_id = str(ramdon2)
     nueva_seccion2 = CursoSeccion(
-        codigo=seccion2_id,
+        id=seccion2_id,
         curso="now",
         nombre="How to sell a online course.",
         descripcion="This is introductory material to how to sell your online course.",
@@ -370,10 +343,7 @@ def crear_curso_predeterminado():
     database.session.add(nueva_seccion2)
     database.session.commit()
 
-    ramdon1 = ULID()
-    recurso_id1 = str(ramdon1)
     nuevo_recurso1 = CursoRecurso(
-        codigo=recurso_id1,
         curso="now",
         seccion=seccion1_id,
         tipo="youtube",
@@ -387,10 +357,7 @@ def crear_curso_predeterminado():
     database.session.add(nuevo_recurso1)
     database.session.commit()
 
-    ramdon2 = ULID()
-    recurso_id2 = str(ramdon2)
     nuevo_recurso2 = CursoRecurso(
-        codigo=recurso_id2,
         curso="now",
         seccion=seccion1_id,
         tipo="youtube",
@@ -404,10 +371,7 @@ def crear_curso_predeterminado():
     database.session.add(nuevo_recurso2)
     database.session.commit()
 
-    ramdon6 = ULID()
-    recurso_id6 = str(ramdon6)
     nuevo_recurso2 = CursoRecurso(
-        codigo=recurso_id6,
         curso="now",
         seccion=seccion1_id,
         tipo="youtube",
@@ -421,10 +385,7 @@ def crear_curso_predeterminado():
     database.session.add(nuevo_recurso2)
     database.session.commit()
 
-    ramdon3 = ULID()
-    recurso_id3 = str(ramdon3)
     nuevo_recurso3 = CursoRecurso(
-        codigo=recurso_id3,
         curso="now",
         seccion=seccion2_id,
         tipo="youtube",

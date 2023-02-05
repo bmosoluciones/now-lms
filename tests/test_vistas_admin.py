@@ -79,7 +79,8 @@ def test_database_is_populated():
     assert query.tipo == "youtube"
     assert query.url == "https://www.youtube.com/watch?v=CvPj4V_j7u8"
     assert query.seccion is not None
-    assert query.codigo is not None
+    assert query.id is not None
+    assert query.curso is not None
 
 
 def test_non_interactive(client):
@@ -142,7 +143,7 @@ def test_logged_in(client, auth):
     query = now_lms.CursoRecurso.query.all()
 
     for recurso in query:
-        URL = "/cource/" + recurso.curso + "/resource/" + recurso.tipo + "/" + recurso.codigo
+        URL = "/cource/" + recurso.curso + "/resource/" + recurso.tipo + "/" + recurso.id
         page = client.get(URL)
         as_bytes = str.encode(recurso.nombre)
         assert as_bytes in page.data
@@ -270,10 +271,10 @@ def test_crear_curso(client, auth):
     client.get("/change_curse_status?curse=T-001&status=closed")
     client.get("/change_curse_public?curse=T-001")
     client.get("/change_curse_public?curse=T-001")
-    publicar_seccion = "/change_curse_seccion_public?course_code=T-001" + "&codigo=" + seccion.codigo
+    publicar_seccion = "/change_curse_seccion_public?course_code=T-001" + "&codigo=" + seccion.id
     client.get(publicar_seccion)
     client.get(publicar_seccion)
-    eliminar_seccion = "/delete_seccion/T-001/" + seccion.codigo
+    eliminar_seccion = "/delete_seccion/T-001/" + seccion.id
     client.get(eliminar_seccion)
     client.get("/delete_curse/T-001")
 
@@ -377,15 +378,15 @@ def test_reorganizar_indice_recurso(client, auth):
 
     assert SECCION is not None
 
-    URL = "course/resource/now/" + SECCION.codigo + "/decrement/2"
+    URL = "course/resource/now/" + SECCION.id + "/decrement/2"
     get = client.get(URL)
     assert get.status_code == 302
 
-    URL = "course/resource/now/" + SECCION.codigo + "/increment/2"
+    URL = "course/resource/now/" + SECCION.id + "/increment/2"
     get = client.get(URL)
     assert get.status_code == 302
 
-    reorganiza_indice_seccion(SECCION.codigo)
+    reorganiza_indice_seccion(SECCION.id)
 
 
 def test_reorganizar_nuevo_recurso(client, auth):
@@ -394,7 +395,7 @@ def test_reorganizar_nuevo_recurso(client, auth):
     auth.login()
 
     SECCION = CursoSeccion.query.filter_by(nombre="How to sell a online course.").first()
-    URL = "/course/now/" + SECCION.codigo + "/new_resource"
+    URL = "/course/now/" + SECCION.id + "/new_resource"
     get = client.get(URL)
     assert get.status_code == 200
 
@@ -419,17 +420,17 @@ def test_serve_files(client, auth):
     recursos = CursoRecurso.query.filter(CursoRecurso.curso == "resources").all()
 
     for recurso in recursos:
-        url = "/cource/resources/resource/" + recurso.tipo + "/" + recurso.codigo
+        url = "/cource/resources/resource/" + recurso.tipo + "/" + recurso.id
         page = client.get(url)
         assert page.status_code == 200
 
         if recurso.doc:
-            doc_url = "/course/resources/files/" + recurso.codigo
+            doc_url = "/course/resources/files/" + recurso.id
             r = client.get(doc_url)
             assert r.status_code == 200
 
         if recurso.text:
-            src = "/course/resources/md_to_html/" + recurso.codigo
+            src = "/course/resources/md_to_html/" + recurso.id
             r = client.get(src)
             assert r.status_code == 200
 
@@ -439,7 +440,7 @@ def test_upload_pdf(client, auth):
     from now_lms.db import CursoSeccion
 
     seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
-    url = "/course/resources/" + seccion.codigo + "/pdf/new"
+    url = "/course/resources/" + seccion.id + "/pdf/new"
 
     data = {"nombre": "test", "descripcion": "test pdf"}
     data = {key: str(value) for key, value in data.items()}
@@ -455,7 +456,7 @@ def test_upload_img(client, auth):
     from now_lms.db import CursoSeccion
 
     seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
-    url = "/course/resources/" + seccion.codigo + "/img/new"
+    url = "/course/resources/" + seccion.id + "/img/new"
 
     data = {"nombre": "test", "descripcion": "test pdf"}
     data = {key: str(value) for key, value in data.items()}
@@ -471,7 +472,7 @@ def test_upload_ogg(client, auth):
     from now_lms.db import CursoSeccion
 
     seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
-    url = "/course/resources/" + seccion.codigo + "/audio/new"
+    url = "/course/resources/" + seccion.id + "/audio/new"
 
     data = {"nombre": "test", "descripcion": "test pdf"}
     data = {key: str(value) for key, value in data.items()}
@@ -486,7 +487,7 @@ def test_upload_youtube(client, auth):
     from now_lms.db import CursoSeccion
 
     seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
-    url = "/course/resources/" + seccion.codigo + "/youtube/new"
+    url = "/course/resources/" + seccion.id + "/youtube/new"
 
     data = {"nombre": "test", "descripcion": "test pdf", "youtube_url": "test"}
     data = {key: str(value) for key, value in data.items()}
@@ -500,7 +501,7 @@ def test_upload_html(client, auth):
     from now_lms.db import CursoSeccion
 
     seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
-    url = "/course/resources/" + seccion.codigo + "/html/new"
+    url = "/course/resources/" + seccion.id + "/html/new"
 
     data = {"nombre": "test", "descripcion": "test pdf", "html_externo": "test"}
     data = {key: str(value) for key, value in data.items()}
@@ -514,7 +515,7 @@ def test_upload_link(client, auth):
     from now_lms.db import CursoSeccion
 
     seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
-    url = "/course/resources/" + seccion.codigo + "/link/new"
+    url = "/course/resources/" + seccion.id + "/link/new"
 
     data = {"nombre": "test", "descripcion": "test pdf", "url": "test"}
     data = {key: str(value) for key, value in data.items()}
@@ -528,7 +529,7 @@ def test_upload_text(client, auth):
     from now_lms.db import CursoSeccion
 
     seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
-    url = "/course/resources/" + seccion.codigo + "/text/new"
+    url = "/course/resources/" + seccion.id + "/text/new"
 
     data = {"nombre": "test", "descripcion": "test pdf", "editor": "test"}
     data = {key: str(value) for key, value in data.items()}
@@ -545,7 +546,7 @@ def test_eliminar_recursos(client, auth):
     recursos = CursoRecurso.query.filter(CursoRecurso.curso == "resources").all()
     assert recursos is not None
     for recurso in recursos:
-        url = "/delete_recurso/resources/" + recurso.seccion + "/" + recurso.codigo
+        url = "/delete_recurso/resources/" + recurso.seccion + "/" + recurso.id
         page = client.get(url)
         assert page.status_code == 302
 
