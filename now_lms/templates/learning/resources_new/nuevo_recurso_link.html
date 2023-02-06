@@ -6,6 +6,7 @@
 <head>
 
     {{ macros.headertags() }}
+    {{ mde.css }}
     <title>Nuevo Recurso - HTML Externo</title>
 
     {{ macros.local_style() }}
@@ -31,14 +32,16 @@
                         {{ form.nombre(class="form-control", id="nombre", placeholder="Titulo del Link.") }}
                     </div>
 
-                    <div class="col-sm-6">
-                        <label for="codigo" class="form-label">Descripción del Link.</label>
-                        {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripción del Link.") }}
-                    </div>
-
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <label for="descripcion" class="form-label">Link Externo</label>
                         {{ form.url(class="form-control", id="url", placeholder="Link Externo") }}
+                    </div>
+
+                    <div>
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        {{form.descripcion}}
+                        {{mde.preview}}
+                        {{mde.js}}
                     </div>
                     
                     <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Agregar Recurso</button>

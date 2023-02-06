@@ -6,6 +6,7 @@
 <head>
 
     {{ macros.headertags() }}
+    {{ mde.css }}
     <title>Nuevo Recurso - YouTube</title>
 
     {{ macros.local_style() }}
@@ -36,9 +37,11 @@
                         {{ form.youtube_url(class="form-control", id="youtube_url", placeholder="Dirección del Vídeo") }}
                     </div>
 
-                    <div class="col-md-12">
-                        <label for="descripcion" class="form-label">Descripción del Vídeo</label>
-                        {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripción del Video") }}
+                    <div>
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        {{form.descripcion}}
+                        {{mde.preview}}
+                        {{mde.js}}
                     </div>
                     
                     <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Agregar Recurso</button>
