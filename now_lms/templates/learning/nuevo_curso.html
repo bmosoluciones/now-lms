@@ -6,6 +6,7 @@
 <head>
 
     {{ macros.headertags() }}
+    {{ mde.css }}
     <title>Crear un nuevo curso</title>
 
     {{ macros.local_style() }}
@@ -34,11 +35,6 @@
                     <div class="col-sm-6">
                         <label for="codigo" class="form-label">Codigo del Curso</label>
                         {{ form.codigo(class="form-control", id="codigo", placeholder="Codigo del Curso") }}
-                    </div>
-
-                    <div class="col-md-12">
-                        <label for="descripcion" class="form-label">Descripción del Curso</label>
-                        {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripción del Curso") }}
                     </div>
 
                     <div class="col-md-4">
@@ -92,6 +88,13 @@
                         <label for="auditable" class="form-label">Curso Auditable</label>
                         {{ form.auditable }}
 
+                    </div>
+
+                    <div>
+                        <label for="descripcion" class="form-label">Descripción del Curso</label>
+                        {{form.descripcion}}
+                        {{mde.preview}}
+                        {{mde.js}}
                     </div>
 
                 </div>

@@ -40,6 +40,11 @@
             <iframe width="100%" height="315" src="https://www.youtube.com/embed/{{ recurso.url[32:45]  }}" title="YouTube video player" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
           </div>
+          <div>
+
+            <iframe title="{{ recurso.codigo }}" src="{{ url_for('recurso_descripcion_a_html', course_code=recurso.curso, resource=recurso.id) }}" ></iframe>
+
+          </div>
 
           <div class="col-sm-4">
 

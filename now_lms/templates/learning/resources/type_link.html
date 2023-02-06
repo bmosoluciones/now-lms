@@ -39,7 +39,12 @@
           <div class="col-sm-8">
             
             <a href="{{ recurso.url }}" target="_blank">{{ recurso.nombre }}</a>
-            <p>{{ recurso.descripcion }}</p>
+
+          </div>
+
+          <div>
+
+            <iframe title="{{ recurso.codigo }}" src="{{ url_for('recurso_descripcion_a_html', course_code=recurso.curso, resource=recurso.id) }}" ></iframe>
 
           </div>
 

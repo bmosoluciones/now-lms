@@ -54,6 +54,12 @@
 
           </div>
 
+          <div>
+
+            <iframe title="{{ recurso.codigo }}" src="{{ url_for('recurso_descripcion_a_html', course_code=recurso.curso, resource=recurso.id) }}" ></iframe>
+
+          </div>
+
           <div class="col-sm-4">
 
             {{ r_macros.resource_nav(recursos=recursos, secciones=secciones) }}

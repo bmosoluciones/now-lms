@@ -65,7 +65,7 @@ class BaseForm(FlaskForm):
     """Campos comunes a la mayoria de los campos."""
 
     nombre = StringField(validators=[DataRequired()])
-    descripcion = StringField(validators=[DataRequired()])
+    descripcion = MdeField(validators=[DataRequired()])
 
 
 class CurseForm(BaseForm):

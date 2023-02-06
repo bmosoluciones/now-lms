@@ -39,7 +39,12 @@
           <div class="col-sm-8">
 
             <img width="100%" src="{{ url_for('recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}" alt="{{ recurso.nombre }}" id="{{ recurso.id }}">
-            <p>{{ recurso.descripcion }}</p>
+
+          </div>
+
+          <div>
+
+            <iframe title="{{ recurso.codigo }}" src="{{ url_for('recurso_descripcion_a_html', course_code=recurso.curso, resource=recurso.id) }}" ></iframe>
 
           </div>
 

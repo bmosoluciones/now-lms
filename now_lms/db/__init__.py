@@ -86,7 +86,7 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     __table_args__ = (database.UniqueConstraint("codigo", name="curso_codigo_unico"),)
     nombre = database.Column(database.String(150), nullable=False)
     codigo = database.Column(database.String(20), unique=True)
-    descripcion = database.Column(database.String(500), nullable=False)
+    descripcion = database.Column(database.String(1000), nullable=False)
     # draft, open, closed
     estado = database.Column(database.String(10), nullable=False)
     # mooc
@@ -123,7 +123,7 @@ class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
     rel_curso = database.relationship("Curso", foreign_keys=curso)
     nombre = database.Column(database.String(150), nullable=False)
-    descripcion = database.Column(database.String(250), nullable=False)
+    descripcion = database.Column(database.String(1000), nullable=False)
     tipo = database.Column(database.String(150), nullable=False)
     requerido = database.Column(database.String(15))
     url = database.Column(database.String(250), unique=False)

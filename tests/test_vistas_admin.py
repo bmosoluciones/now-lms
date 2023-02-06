@@ -87,7 +87,6 @@ def test_non_interactive(client):
     response = client.get("/")
     assert response.status_code == 200
     assert b"NOW LMS" in response.data
-    assert b"Welcome! This is your first course." in response.data
     response = client.get("/login")
     assert response.status_code == 200
     assert b"Inicio" in response.data
@@ -98,7 +97,6 @@ def test_non_interactive(client):
     response = client.get("/course/now")
     assert response.status_code == 200
     assert b"First Course" in response.data
-    assert b"Welcome! This is your first course." in response.data
     assert b"now - First Course" in response.data
     assert b"Crear Cuenta" in response.data
 
@@ -108,7 +106,6 @@ def test_logged_in(client, auth):
     response = client.get("/course/now")
     assert response.status_code == 200
     assert b"First Course" in response.data
-    assert b"Welcome! This is your first course." in response.data
     assert b"now - First Course" in response.data
     assert b"Quitar del Sitio Web" in response.data
     response = client.get("/panel")
