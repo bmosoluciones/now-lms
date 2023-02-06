@@ -19,7 +19,6 @@ RUN microdnf install -y --nodocs --best --refresh python39 python3-pip python3-c
 COPY requirements.txt /tmp/
 RUN /usr/bin/python3.9 --version \
     && /usr/bin/python3.9 -m pip --no-cache-dir install -r /tmp/requirements.txt \
-    && /usr/bin/python3.9 -m pip --no-cache-dir install pg8000 pymysql \
     && rm -rf /root/.cache/
 
 # Copy and install app
