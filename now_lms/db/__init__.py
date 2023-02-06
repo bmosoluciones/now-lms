@@ -55,7 +55,6 @@ class BaseTabla:
 
     # Pistas de auditoria comunes a todas las tablas.
     id = database.Column(database.String(26), primary_key=True, nullable=False, default=generador_de_codigos_unicos)
-    status = database.Column(database.String(50), nullable=True)
     creado = database.Column(database.DateTime, default=database.func.now(), nullable=False)
     creado_por = database.Column(database.String(15), nullable=True)
     modificado = database.Column(database.DateTime, default=database.func.now(), onupdate=database.func.now(), nullable=True)
