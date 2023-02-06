@@ -421,6 +421,14 @@ def test_serve_files(client, auth):
         page = client.get(url)
         assert page.status_code == 200
 
+        url = "/course/" + recurso.curso + "/description/" + recurso.id
+        page = client.get(url)
+        assert page.status_code == 200
+
+        url = "/course/" + recurso.curso + "/description"
+        page = client.get(url)
+        assert page.status_code == 200
+
         if recurso.doc:
             doc_url = "/course/resources/files/" + recurso.id
             r = client.get(doc_url)
@@ -430,6 +438,11 @@ def test_serve_files(client, auth):
             src = "/course/resources/md_to_html/" + recurso.id
             r = client.get(src)
             assert r.status_code == 200
+
+        if recurso.tipo == "html":
+            url = "/course/" + recurso.curso + "/external_code/" + recurso.id
+            page = client.get(url)
+            assert page.status_code == 200
 
 
 def test_upload_pdf(client, auth):
