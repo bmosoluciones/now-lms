@@ -47,13 +47,25 @@ plugins:
   - offline
 
 nav:
-    - Inicio: index.md
-    - Setup: config.md
-    - Python Package: pypi.md
-    - Docker: oci.md
-    - DreamHost: dreamhost.md
-    - Server Setup:
-      - CentOS / Alma / Rocky: rocky.md
+    - Home: index.md
+    - Setup:
+      - Setup: setup.md
+      - Configuration: setup-conf.md
+      - Database Setup: db.md
+      - Python Package: pypi.md
+      - Docker: oci.md
+      - Shared Hosting:
+        - DreamHost: dreamhost.md
+      - Server Setup:
+        - CentOS / Alma / Rocky: rocky.md
+    - Releases: release.md
+    - About:
+      - About: faq.md
+      - Readme: https://github.com/bmosoluciones/now-lms/blob/main/README.md
+      - License: https://github.com/bmosoluciones/now-lms/blob/main/LICENSE
+    - Contributing:
+      - Contributing: CONTRIBUTING.md
+      
 
 extra:
   social:
