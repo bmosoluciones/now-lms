@@ -16,6 +16,9 @@ Simple to {install, use, configure and maintain} learning management system.
 [![Documentation Status](https://readthedocs.org/projects/now-lms-manual/badge/?version=latest)](https://now-lms-manual.readthedocs.io/en/latest/?badge=latest)
   - Students and Educators please refer to the [user manual](https://now-lms-manual.readthedocs.io/en/latest/).
   - Administrators can refer to the [documentation](https://bmosoluciones.github.io/now-lms/index.html).
+  - Live demo: https://now-lms-demo.onrender.com/index
+
+Data in the live demo is reset in every deployment, user and password are: ```lms-admin```
 
 ## Getting Started
 Thanks for your interest in the Now - LMS project (the project).

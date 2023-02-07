@@ -75,7 +75,7 @@
 
                     <h2> {{ curso.nombre }}</h2>
                     <p>
-                      <iframe title="{{ curso.codigo }}" src="{{ url_for('curso_descripcion_a_html', course_code=curso.codigo) }}" ></iframe>
+                      <iframe title="{{ curso.codigo }}" src="{{ url_for('curso_descripcion_a_html', text=curso.description) }}" ></iframe>
                     </p>
                     {% if curso.fecha_inicio and curso.fecha_fin %}
                     <i class="bi bi-calendar-week" aria-hidden="true"></i>
