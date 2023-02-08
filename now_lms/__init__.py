@@ -724,8 +724,9 @@ def markdown_a_html(course_code, recurso_code):
 
 
 @lms_app.route("/course/<course_code>/description")
-def curso_descripcion_a_html(course):
+def curso_descripcion_a_html(course_code):
     """Devuelve la descripción de un curso como HTML."""
+    course = Curso.query.filter(Curso.codigo == course_code).first()
     allowed_tags = HTML_TAGS
     allowed_attrs = {"*": ["class"], "a": ["href", "rel"], "img": ["src", "alt"]}
 
@@ -736,12 +737,13 @@ def curso_descripcion_a_html(course):
 
 
 @lms_app.route("/course/<course_code>/description/<resource>")
-def recurso_descripcion_a_html(course_code, text):
+def recurso_descripcion_a_html(course_code, resource):
     """Devuelve la descripción de un curso como HTML."""
+    recurso = CursoRecurso.query.filter(CursoRecurso.id == resource, CursoRecurso.curso == course_code).first()
     allowed_tags = HTML_TAGS
     allowed_attrs = {"*": ["class"], "a": ["href", "rel"], "img": ["src", "alt"]}
 
-    html = markdown(text)
+    html = markdown(recurso.descripcion)
     html_limpio = clean(linkify(html), tags=allowed_tags, attributes=allowed_attrs)
 
     return html_limpio
