@@ -28,9 +28,13 @@ from loguru import logger as log
 # Recursos locales:
 from now_lms.version import PRERELEASE
 
-DESARROLLO: bool = (
-    (PRERELEASE is not None) or ("FLASK_DEBUG" in environ) or (environ.get("FLASK_ENV") == "development") or ("CI" in environ)
-)
+
+if environ.get("FLASK_DEBUG") != "1":
+    DESARROLLO: bool = False
+elif environ.get("CI"):
+    DESARROLLO = True
+else:
+    DESARROLLO = PRERELEASE is not None
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios base de la aplicacion
