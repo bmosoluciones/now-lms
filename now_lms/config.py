@@ -24,6 +24,7 @@ from typing import Dict
 # Librerias de terceros:
 from appdirs import AppDirs
 from loguru import logger as log
+from configobj import ConfigObj
 
 # Recursos locales:
 from now_lms.version import PRERELEASE
@@ -39,9 +40,19 @@ else:
 # < --------------------------------------------------------------------------------------------- >
 # Directorios base de la aplicacion
 DIRECTORIO_APP: str = path.abspath(path.dirname(__file__))
+DIRECTORIO_BASE_APP: AppDirs = AppDirs("NOW-LMS", "BMO Soluciones")
 DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
 DIRECTORIO_PLANTILLAS: str = path.join(DIRECTORIO_APP, "templates")
 DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
+
+if path.isfile("now_lms.conf"):
+    CONFIGURACION_ARCHIVO = ConfigObj("now_lms.conf")
+
+elif path.isfile(path.join(DIRECTORIO_BASE_APP.site_config_dir, "now_lms.conf")):
+    CONFIGURACION_ARCHIVO = ConfigObj(path.join(DIRECTORIO_BASE_APP.site_config_dir, "now_lms.conf"))
+
+else:
+    CONFIGURACION_ARCHIVO = None
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios utilizados para la carga de archivos.
@@ -49,22 +60,11 @@ DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
 DIRECTORIO_BASE_ARCHIVOS_USUARIO = path.join(DIRECTORIO_ARCHIVOS, "files")
 
 if DESARROLLO:  # pragma: no cover
+    DIRECTORIO_BASE_UPLOADS = path.join(DIRECTORIO_ARCHIVOS, "files")
+
+else:
     DIRECTORIO_BASE_UPLOADS = DIRECTORIO_BASE_ARCHIVOS_USUARIO
 
-else:  # pragma: no cover
-
-    if name == "nt":
-        DIRECTORIO_BASE_APP = AppDirs("NOW-LMS", "BMO Soluciones")
-        DIRECTORIO_BASE_UPLOADS = path.join(DIRECTORIO_BASE_APP.site_data_dir, "files")
-
-    else:
-        UNIX_UPLOAD_DIR = str(Path("/var/www/now-lms/data"))
-
-        if access(UNIX_UPLOAD_DIR, R_OK) and access(UNIX_UPLOAD_DIR, W_OK):  # pragma: no cover
-            DIRECTORIO_BASE_UPLOADS = UNIX_UPLOAD_DIR
-
-        else:
-            DIRECTORIO_BASE_UPLOADS = DIRECTORIO_BASE_ARCHIVOS_USUARIO
 
 DIRECTORIO_ARCHIVOS_PUBLICOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "public")
 DIRECTORIO_ARCHIVOS_PRIVADOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "private")
@@ -100,26 +100,40 @@ else:
 
 
 # < --------------------------------------------------------------------------------------------- >
-# Configuración de la aplicación, siguiendo "Twelve Factors App" las opciones se leen del entorno
-# o se utilizan valores predeterminados.
-CONFIGURACION: Dict = {
-    "ADMIN_USER": environ.get("LMS_USER") or "lms-admin",
-    "ADMIN_PSWD": environ.get("LMS_PSWD") or "lms-admin",
-    "SECRET_KEY": environ.get("LMS_KEY") or "dev",
-    "SQLALCHEMY_DATABASE_URI": environ.get("LMS_DB") or environ.get("DATABASE_URL") or SQLITE,
-    "SQLALCHEMY_TRACK_MODIFICATIONS": "False",
-    # Carga de Archivos: https://flask-reuploaded.readthedocs.io/en/latest/configuration/
-    "UPLOADS_AUTOSERVE": True,
-    "UPLOADED_FILES_DEST": DIRECTORIO_UPLOAD_ARCHIVOS,
-    "UPLOADED_IMAGES_DEST": DIRECTORIO_UPLOAD_IMAGENES,
-    "UPLOADED_AUDIO_DEST": DIRECTORIO_UPLOAD_AUDIO,
-}
+# Configuración de la aplicación:
+# Siguiendo "Twelve Factors App" las opciones se leen del entorno por defecto.
+# Si no se encuentran las entradas correctas se busca un archivo de configuracion
+# En caso contratio se utilizan valores predeterminados.
+
+CONFIGURACION: Dict = {}
+CONFIGURACION["ADMIN_USER"] = "lms-admin"
+CONFIGURACION["ADMIN_PSWD"] = "lms-admin"
+CONFIGURACION["SECRET_KEY"] = "dev"  # nosec
+CONFIGURACION["SQLALCHEMY_TRACK_MODIFICATIONS"] = "False"
+CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = SQLITE
+# Carga de Archivos: https://flask-reuploaded.readthedocs.io/en/latest/configuration/
+CONFIGURACION["UPLOADS_AUTOSERVE"] = (True,)
+CONFIGURACION["UPLOADED_FILES_DEST"] = DIRECTORIO_UPLOAD_ARCHIVOS
+CONFIGURACION["UPLOADED_IMAGES_DEST"] = DIRECTORIO_UPLOAD_IMAGENES
+CONFIGURACION["UPLOADED_AUDIO_DEST"] = DIRECTORIO_UPLOAD_AUDIO
+
+if DESARROLLO is not False and environ.get("SECRET_KEY") and (environ.get("DATABASE_URL") or environ.get("LMS_DB")):
+    CONFIGURACION["ADMIN_USER"] = environ.get("LMS_USER")
+    CONFIGURACION["ADMIN_PSWD"] = environ.get("LMS_PSWD")
+    CONFIGURACION["SECRET_KEY"] = environ.get("SECRET_KEY")
+    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("LMS_DB") or environ.get("DATABASE_URL")
+elif CONFIGURACION_ARCHIVO:
+    CONFIGURACION["ADMIN_USER"] = CONFIGURACION_ARCHIVO["LMS_USER"]
+    CONFIGURACION["ADMIN_PSWD"] = CONFIGURACION_ARCHIVO["LMS_PSWD"]
+    CONFIGURACION["SECRET_KEY"] = CONFIGURACION_ARCHIVO["SECRET_KEY"]
+    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = CONFIGURACION_ARCHIVO["LMS_DB"] or CONFIGURACION_ARCHIVO["DATABASE_URL"]
+
+
+else:
+    log.warning("Utilizando configuración predeterminada.")
 
 if DESARROLLO:  # pragma: no cover
     log.warning("Opciones de desarrollo detectadas, revise su configuración.")
-
-
-if environ.get("SQLALCHEMY_ECHO"):  # pragma: no cover
     CONFIGURACION["SQLALCHEMY_ECHO"] = True
 
 
@@ -185,7 +199,8 @@ if not environ.get("NO_LMS_CACHE"):  # pragma: no cover
         CACHE_CONFIG["CACHE_MEMCACHED_SERVERS"] = environ.get("CACHE_MEMCACHED_SERVERS")
 
     else:
-        CTYPE = "SimpleCache"
+        CTYPE = "NullCache"
+        log.info("No cache service configured.")
 
 else:
     CTYPE = "NullCache"
