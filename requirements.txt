@@ -4,6 +4,7 @@ appdirs
 babel
 bleach
 bcrypt
+configobj
 flask
 flask[async]
 flask-alembic
