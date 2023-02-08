@@ -6,11 +6,12 @@ RUN npm install
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
-ENV PYTHONDONTWRITEBYTECODE 1
+ENV FLASK_APP = "now_lms"
+ENV LANG = C.UTF-8
+ENV LC_ALL = C.UTF-8
+ENV PYTHONDONTWRITEBYTECODE = 1
 ENV PYTHONUNBUFFERED = 1
-ENV FLASK_ENV "production"
+ENV FLASK_DEBUG = 0
 
 RUN microdnf install -y --nodocs --best --refresh python39 python3-pip python3-cryptography \
     && microdnf clean all
