@@ -44,7 +44,7 @@ You can collaborate in different ways:
 
 * As a developer.
 * As a Quality Assurance (QA).
-* [Writing and improving documentation](https://bmosoluciones.github.io/now-lms/).
+* [Writing and improving documentation.](https://now-lms-manual.readthedocs.io/en/latest/)
 * [Contributing ideas of new characteristics.](https://github.com/bmosoluciones/now-lms/discussions)
 * [Reporting bugs.](https://github.com/bmosoluciones/now-lms/issues)
 * Translating.
@@ -55,17 +55,35 @@ You can collaborate in different ways:
 
 The development is cross-platform, you can use both Windows, Linux or Mac to contribute the project, to collaborate with the project you need:
 
-  * [GIT](https://git-scm.com/)
-  * [Yarn](https://yarnpkg.com/lang/en/)
-  * [Python](https://www.python.org/downloads/)
+  * [Git](https://git-scm.com/).
+  * [NPM](https://www.npmjs.com/).
+  * [Python](https://www.python.org/downloads/).
 
-Minimal Python version is: >=3.6
+Minimal Python version is: >=3.7
 
 Technologies used:
 
-* Backend: [Flask](https://flask.palletsprojects.com/en/1.1.x/).
+* Backend: [Flask](https://flask.palletsprojects.com/en/1.1.x/), with a set of many libraries:
+  - flask-babel
+  - flask-caching
+  - flask-login
+  - flask-mde
+  - flask-reuploaded
+  - flask-sqlalchemy
+  - flask-wtf
 * Frontend: [Bootstrap 5](https://v5.getbootstrap.com/).
-* ORM: [SQLAlchemy](https://www.sqlalchemy.org/).
+* ORM: [SQLAlchemy](https://www.sqlalchemy.org/):
+  - flask-alembic
+
+Other libraries used in the project are:
+  - appdirs: App directories.
+  - bleach: HTML sanitisation.
+  - configobj: Configuration files parser.
+  - bcrypt: Password hashing.
+  - loguru: Logging.
+  - markdown: Render markdown as HTML.
+  - python-ulid: Generate uniques id.
+  - waitress: WSGI server.
 
 Development is done in the branch ```development```, once the project is released for production the branch ```main``` will contain the latest version suitable for use in production.
 
@@ -94,6 +112,8 @@ python3 - m pip install -r development.txt
 ```
  cd now_lms/static/
  npm install
+ cd ..
+ cd ..
 ```
 
 ### Start a development server
@@ -101,7 +121,7 @@ python3 - m pip install -r development.txt
 ```
 hupper -m now_lms
 ```
-Please note that we use waitress as WSGI server because gunicorn do not work on Windows, hupper will live reload the WSGI server as you save changes in the source code so you will be able to work with your changes as you work, please note that changes to the jinja templates will not trigger the server reload, only changes to python files.
+Please note that we use waitress as WSGI server because gunicorn do not works on Windows, hupper will live reload the WSGI server as you save changes in the source code so you will be able to work with your changes as you work, please note that changes to the jinja html templates will not trigger the server reload, only changes to python files.
 
 Default user and password are ```lms-admin```, default url to work with the server will be ```http://127.0.0.1:8080/```.
 
