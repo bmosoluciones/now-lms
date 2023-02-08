@@ -61,6 +61,7 @@ setup(
         "babel",
         "bleach",
         "bcrypt",
+        "configobj",
         "cryptography",
         "flask",
         "flask[async]",
