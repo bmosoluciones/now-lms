@@ -1,6 +1,16 @@
+[project]
+name = "now_lms"
+description = "Simple to {install, use, configure, mantain} learning management system."
+readme = "README.md"
+requires-python = ">=3.7"
+dynamic = ["version"]
+
 [build-system]
 requires = ["setuptools", "wheel"]  # PEP 508 specifications.
 build-backend = "setuptools.build_meta"
 
 [tool.black]
 line-length = 127
+
+[tool.setuptools.packages]
+find = {namespaces = false}  # Disable implicit namespaces
