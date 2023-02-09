@@ -20,7 +20,7 @@ echo -------------------------------------------------
 echo Check python types
 echo -------------------------------------------------
 echo
-python -m mypy now_lms --install-types --non-interactive 
+python -m mypy now_lms --install-types --non-interactive
 echo
 echo -------------------------------------------------
 echo Lint html files wiht curlylint
