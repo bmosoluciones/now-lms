@@ -34,8 +34,3 @@ echo -------------------------------------------------
 echo
 python -m pytest  -v --exitfirst --cov=now_lms
 echo
-echo -------------------------------------------------
-echo Reset development database
-echo -------------------------------------------------
-echo
-lmsctl resetdb
