@@ -29,6 +29,7 @@ from configobj import ConfigObj
 # Recursos locales:
 from now_lms.version import PRERELEASE
 
+CONFIG_FILE: str = "now_lms.conf"
 
 if environ.get("FLASK_DEBUG") != "1":
     DESARROLLO: bool = False
@@ -45,14 +46,14 @@ DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
 DIRECTORIO_PLANTILLAS: str = path.join(DIRECTORIO_APP, "templates")
 DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
 
-if path.isfile("now_lms.conf"):
-    CONFIGURACION_ARCHIVO = ConfigObj("now_lms.conf")
+if path.isfile(CONFIG_FILE):
+    CONFIG_FROM_FILE = ConfigObj(CONFIG_FILE)
 
-elif path.isfile(path.join(DIRECTORIO_BASE_APP.site_config_dir, "now_lms.conf")):
-    CONFIGURACION_ARCHIVO = ConfigObj(path.join(DIRECTORIO_BASE_APP.site_config_dir, "now_lms.conf"))
+elif path.isfile(path.join(DIRECTORIO_BASE_APP.site_config_dir, CONFIG_FILE)):
+    CONFIG_FROM_FILE = ConfigObj(path.join(DIRECTORIO_BASE_APP.site_config_dir, CONFIG_FILE))
 
 else:
-    CONFIGURACION_ARCHIVO = None
+    CONFIG_FROM_FILE = None
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios utilizados para la carga de archivos.
@@ -122,11 +123,11 @@ if DESARROLLO is not False and environ.get("SECRET_KEY") and (environ.get("DATAB
     CONFIGURACION["ADMIN_PSWD"] = environ.get("LMS_PSWD")
     CONFIGURACION["SECRET_KEY"] = environ.get("SECRET_KEY")
     CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("LMS_DB") or environ.get("DATABASE_URL")
-elif CONFIGURACION_ARCHIVO:
-    CONFIGURACION["ADMIN_USER"] = CONFIGURACION_ARCHIVO["LMS_USER"]
-    CONFIGURACION["ADMIN_PSWD"] = CONFIGURACION_ARCHIVO["LMS_PSWD"]
-    CONFIGURACION["SECRET_KEY"] = CONFIGURACION_ARCHIVO["SECRET_KEY"]
-    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = CONFIGURACION_ARCHIVO["LMS_DB"] or CONFIGURACION_ARCHIVO["DATABASE_URL"]
+elif CONFIG_FROM_FILE:
+    CONFIGURACION["ADMIN_USER"] = CONFIG_FROM_FILE["LMS_USER"]
+    CONFIGURACION["ADMIN_PSWD"] = CONFIG_FROM_FILE["LMS_PSWD"]
+    CONFIGURACION["SECRET_KEY"] = CONFIG_FROM_FILE["SECRET_KEY"]
+    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = CONFIG_FROM_FILE["LMS_DB"] or CONFIG_FROM_FILE["DATABASE_URL"]
 
 
 else:
