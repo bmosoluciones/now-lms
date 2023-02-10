@@ -445,6 +445,19 @@ def test_serve_files(client, auth):
             assert page.status_code == 200
 
 
+def test_course_description(client, auth):
+    from now_lms.db import Curso
+
+    cursos = Curso.query.all()
+
+    auth.login()
+
+    for curso in cursos:
+        url = "/course/" + curso.codigo + "/description"
+        page = client.get(url)
+        assert page.status_code == 200
+
+
 def test_upload_pdf(client, auth):
     from io import BytesIO
     from now_lms.db import CursoSeccion
