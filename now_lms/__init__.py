@@ -172,21 +172,28 @@ def no_guardar_en_cache_global():
 # Definición de variables globales de Jinja2.
 # Estas variables estaran disponibles en todas plantillas HTML.
 # ---------------------------------------------------------------------------------------
-def carga_configuracion_del_sitio_web_desde_db(flask_app):
+def carga_configuracion_del_sitio_web_desde_db(flask_app):  # pragma: no cover
     """Obtiene configuración del sitio web desde la base de datos."""
+
+    ok = log.warning("Configuración del sitio web cargada desde la base de datos.")
+    error = log.warning("Error al cargar la configuración del sitio web desde la base de datos.")
+
     with flask_app.app_context():
         try:
             CONFIG = Configuracion.query.first()
+            ok
         except OperationalError:
             CONFIG = None
+            error
         except ProgrammingError:
             CONFIG = None
+            error
         except PGProgrammingError:
             CONFIG = None
+            error
         except DatabaseError:
             CONFIG = None
-        finally:
-            log.warning("No se pudo cargar la configuración del sitio web desde la base de datos.")
+            error
     return CONFIG
 
 
