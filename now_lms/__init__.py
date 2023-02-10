@@ -175,25 +175,17 @@ def no_guardar_en_cache_global():
 def carga_configuracion_del_sitio_web_desde_db(flask_app):  # pragma: no cover
     """Obtiene configuración del sitio web desde la base de datos."""
 
-    ok = log.warning("Configuración del sitio web cargada desde la base de datos.")
-    error = log.warning("Error al cargar la configuración del sitio web desde la base de datos.")
-
     with flask_app.app_context():
         try:
             CONFIG = Configuracion.query.first()
-            ok
         except OperationalError:
             CONFIG = None
-            error
         except ProgrammingError:
             CONFIG = None
-            error
         except PGProgrammingError:
             CONFIG = None
-            error
         except DatabaseError:
             CONFIG = None
-            error
     return CONFIG
 
 
@@ -1150,7 +1142,7 @@ def nuevo_recurso_pdf(course_code, seccion):
         )
 
 
-@lms_app.route("/course/<course_code>/<seccion>/slides/new", methods=["GET", "POST"])
+@lms_app.route("/course/<course_code>/<seccion>/meet/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
 def nuevo_recurso_meet(course_code, seccion):
@@ -1163,13 +1155,16 @@ def nuevo_recurso_meet(course_code, seccion):
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
             seccion=seccion,
-            tipo="slides",
+            tipo="meet",
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
             indice=nuevo_indice,
-            base_doc_url=files.name,
             requerido=False,
             creado_por=current_user.usuario,
+            url=form.url.data,
+            fecha=form.fecha.data,
+            hora=form.hora.data,
+            notes=form.notes.data,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -1181,7 +1176,7 @@ def nuevo_recurso_meet(course_code, seccion):
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
-            "learning/resources_new/nuevo_recurso_slides.html", id_curso=course_code, id_seccion=seccion, form=form
+            "learning/resources_new/nuevo_recurso_meet.html", id_curso=course_code, id_seccion=seccion, form=form
         )
 
 

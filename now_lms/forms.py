@@ -132,12 +132,9 @@ class CursoRecursoExternalLink(BaseForm):
     url = StringField(validators=[DataRequired()])
 
 
-class CursoRecursoMeet(BaseForm):
-    """Formulario para insertar un Meet"""
+class CursoRecursoSlides(BaseForm):
+    """Formulario para insertar un SlideShow."""
 
-    fecha = DateField(validators=[])
-    hora = TimeField(validators=[])
-    url = StringField(validators=[DataRequired()])
     notes = SelectField(
         "Tema",
         choices=[
@@ -156,9 +153,12 @@ class CursoRecursoMeet(BaseForm):
     )
 
 
-class CursoRecursoSlides(BaseForm):
+class CursoRecursoMeet(BaseForm):
     """Formulario para insertar un Meet"""
 
+    fecha = DateField(validators=[])
+    hora = TimeField(validators=[])
+    url = StringField(validators=[DataRequired()])
     notes = SelectField(
         "Plataforma", choices=[("zoom", "Zoom"), ("teams", "MS Teams"), ("meet", "Google Meet"), ("otros", "Otros")]
     )
