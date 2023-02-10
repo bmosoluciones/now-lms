@@ -161,7 +161,9 @@ def asignar_curso_a_estudiante(curso_codigo: Union[None, str] = None, usuario_id
     database.session.commit()
 
 
-def cambia_tipo_de_usuario_por_id(id_usuario: Union[None, str] = None, nuevo_tipo: Union[None, str] = None):
+def cambia_tipo_de_usuario_por_id(
+    id_usuario: Union[None, str] = None, nuevo_tipo: Union[None, str] = None, usuario: Union[None, str] = None
+):
     """
     Cambia el estatus de un usuario del sistema.
 
@@ -169,10 +171,13 @@ def cambia_tipo_de_usuario_por_id(id_usuario: Union[None, str] = None, nuevo_tip
     """
     USUARIO = Usuario.query.filter_by(usuario=id_usuario).first()
     USUARIO.tipo = nuevo_tipo
+    USUARIO.modificado_por = usuario
     database.session.commit()
 
 
-def cambia_estado_curso_por_id(id_curso: Union[None, str, int] = None, nuevo_estado: Union[None, str] = None):
+def cambia_estado_curso_por_id(
+    id_curso: Union[None, str, int] = None, nuevo_estado: Union[None, str] = None, usuario: Union[None, str] = None
+):
     """
     Cambia el estatus de un curso.
 
@@ -180,6 +185,7 @@ def cambia_estado_curso_por_id(id_curso: Union[None, str, int] = None, nuevo_est
     """
     CURSO = Curso.query.filter_by(codigo=id_curso).first()
     CURSO.estado = nuevo_estado
+    CURSO.modificado_por = usuario
     database.session.commit()
 
 
@@ -190,6 +196,7 @@ def cambia_curso_publico(id_curso: Union[None, str, int] = None):
         CURSO.publico = False
     else:
         CURSO.publico = True
+    CURSO.modificado_por = current_user.usuario
     database.session.commit()
 
 
@@ -201,4 +208,5 @@ def cambia_seccion_publico(codigo: Union[None, str, int] = None):
         SECCION.estado = False
     else:
         SECCION.estado = True
+    SECCION.modificado_por = current_user.usuario
     database.session.commit()

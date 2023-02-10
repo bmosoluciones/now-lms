@@ -39,11 +39,17 @@ def proteger_passwd(clave):
 def validar_acceso(usuario_id, acceso):
     """Verifica el inicio de sesión del usuario."""
     from bcrypt import checkpw
-    from now_lms.db import Usuario
+    from now_lms.db import Usuario, database
+    from datetime import datetime
 
     registro = Usuario.query.filter_by(usuario=usuario_id).first()
     if registro is not None:
         clave_validada = checkpw(acceso.encode(), registro.acceso)
     else:  # pragma: no cover
         clave_validada = False
+
+    if clave_validada:
+        registro.ultimo_acceso = datetime.now()
+        database.session.commit()
+
     return clave_validada
