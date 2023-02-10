@@ -134,9 +134,9 @@ mde: Mde = Mde()
 def inicializa_extenciones_terceros(flask_app):
     """Inicia extensiones de terceros."""
     with flask_app.app_context():
+        database.init_app(flask_app)
         alembic.init_app(flask_app)
         administrador_sesion.init_app(flask_app)
-        database.init_app(flask_app)
         cache.init_app(flask_app, CACHE_CONFIG)
         mde.init_app(flask_app)
 
@@ -308,6 +308,12 @@ def setup():  # pragma: no cover
     """Inicia al aplicacion."""
     lms_app.app_context().push()
     initial_setup()
+
+
+@lms_app.cli.command()
+def upgrade_db():  # pragma: no cover
+    """Actualiza esquema de base de datos."""
+    alembic.upgrade()
 
 
 @lms_app.cli.command()
