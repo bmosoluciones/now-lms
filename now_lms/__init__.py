@@ -422,6 +422,7 @@ def crear_cuenta():
             correo_electronico=form.correo_electronico.data,
             tipo="user",
             activo=False,
+            creado_por=form.usuario.data,
         )
         try:
             database.session.add(usuario_)
@@ -448,6 +449,7 @@ def crear_usuario():  # pragma: no cover
             correo_electronico=form.correo_electronico.data,
             tipo="user",
             activo=False,
+            creado_por=current_user.usuario,
         )
         try:
             database.session.add(usuario_)
@@ -664,6 +666,7 @@ def cambiar_tipo_usario():
     cambia_tipo_de_usuario_por_id(
         id_usuario=request.args.get("user"),
         nuevo_tipo=request.args.get("type"),
+        usuario=current_user.usuario,
     )
     return redirect(url_for("usuario", id_usuario=request.args.get("user")))
 
@@ -836,6 +839,7 @@ def nuevo_seccion(course_code):
             descripcion=form.descripcion.data,
             estado=False,
             indice=nuevo_indice,
+            creado_por=current_user.usuario,
         )
         try:
             database.session.add(nueva_seccion)
@@ -941,8 +945,7 @@ def eliminar_curso(course_id):
 def cambiar_estatus_curso():
     """Actualiza el estatus de un curso."""
     cambia_estado_curso_por_id(
-        id_curso=request.args.get("curse"),
-        nuevo_estado=request.args.get("status"),
+        id_curso=request.args.get("curse"), nuevo_estado=request.args.get("status"), usuario=current_user.usuario
     )
     return redirect(url_for("curso", course_code=request.args.get("curse")))
 
@@ -1018,6 +1021,7 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             url=form.youtube_url.data,
             indice=nuevo_indice,
             requerido=False,
+            creado_por=current_user.usuario,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -1051,6 +1055,7 @@ def nuevo_recurso_text(course_code, seccion):
             indice=nuevo_indice,
             text=form.editor.data,
             requerido=False,
+            creado_por=current_user.usuario,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -1085,6 +1090,7 @@ def nuevo_recurso_link(course_code, seccion):
             indice=nuevo_indice,
             url=form.url.data,
             requerido=False,
+            creado_por=current_user.usuario,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -1121,6 +1127,7 @@ def nuevo_recurso_pdf(course_code, seccion):
             base_doc_url=files.name,
             doc=pdf_file,
             requerido=False,
+            creado_por=current_user.usuario,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -1155,6 +1162,7 @@ def nuevo_recurso_meet(course_code, seccion):
             indice=nuevo_indice,
             base_doc_url=files.name,
             requerido=False,
+            creado_por=current_user.usuario,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -1192,6 +1200,7 @@ def nuevo_recurso_img(course_code, seccion):
             base_doc_url=images.name,
             doc=picture_file,
             requerido=False,
+            creado_por=current_user.usuario,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -1229,6 +1238,7 @@ def nuevo_recurso_audio(course_code, seccion):
             base_doc_url=audio.name,
             doc=audio_file,
             requerido=False,
+            creado_por=current_user.usuario,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -1263,6 +1273,7 @@ def nuevo_recurso_html(course_code, seccion):
             external_code=form.html_externo.data,
             indice=nuevo_indice,
             requerido=False,
+            creado_por=current_user.usuario,
         )
         try:
             database.session.add(nuevo_recurso_)

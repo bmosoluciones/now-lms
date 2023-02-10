@@ -57,7 +57,7 @@ class BaseTabla:
     id = database.Column(database.String(26), primary_key=True, nullable=False, default=generador_de_codigos_unicos)
     creado = database.Column(database.DateTime, default=database.func.now(), nullable=False)
     creado_por = database.Column(database.String(15), nullable=True)
-    modificado = database.Column(database.DateTime, default=database.func.now(), onupdate=database.func.now(), nullable=True)
+    modificado = database.Column(database.DateTime, onupdate=database.func.now(), nullable=True)
     modificado_por = database.Column(database.String(15), nullable=True)
 
 
@@ -77,6 +77,9 @@ class Usuario(UserMixin, database.Model, BaseTabla):  # type: ignore[name-define
     activo = database.Column(database.Boolean())
     genero = database.Column(database.String(1))
     nacimiento = database.Column(database.Date())
+    # Registro de actividad
+    fecha_alta = database.Column(database.DateTime, default=database.func.now())
+    ultimo_acceso = database.Column(database.DateTime)
 
 
 class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
