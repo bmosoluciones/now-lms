@@ -31,7 +31,7 @@ from now_lms.version import PRERELEASE
 
 CONFIG_FILE: str = "now_lms.conf"
 
-if environ.get("FLASK_DEBUG") != "1":
+if environ.get("FLASK_DEBUG") != "1":  # pragma: no cover
     DESARROLLO: bool = False
 elif environ.get("CI"):
     DESARROLLO = True
@@ -46,10 +46,10 @@ DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
 DIRECTORIO_PLANTILLAS: str = path.join(DIRECTORIO_APP, "templates")
 DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
 
-if path.isfile(CONFIG_FILE):
+if path.isfile(CONFIG_FILE):  # pragma: no cover
     CONFIG_FROM_FILE = ConfigObj(CONFIG_FILE)
 
-elif path.isfile(path.join(DIRECTORIO_BASE_APP.site_config_dir, CONFIG_FILE)):
+elif path.isfile(path.join(DIRECTORIO_BASE_APP.site_config_dir, CONFIG_FILE)):  # pragma: no cover
     CONFIG_FROM_FILE = ConfigObj(path.join(DIRECTORIO_BASE_APP.site_config_dir, CONFIG_FILE))
 
 else:
@@ -63,7 +63,7 @@ DIRECTORIO_BASE_ARCHIVOS_USUARIO = path.join(DIRECTORIO_ARCHIVOS, "files")
 if DESARROLLO:  # pragma: no cover
     DIRECTORIO_BASE_UPLOADS = path.join(DIRECTORIO_ARCHIVOS, "files")
 
-else:
+else:  # pragma: no cover
     DIRECTORIO_BASE_UPLOADS = DIRECTORIO_BASE_ARCHIVOS_USUARIO
 
 
@@ -119,21 +119,23 @@ CONFIGURACION["UPLOADED_FILES_DEST"] = DIRECTORIO_UPLOAD_ARCHIVOS
 CONFIGURACION["UPLOADED_IMAGES_DEST"] = DIRECTORIO_UPLOAD_IMAGENES
 CONFIGURACION["UPLOADED_AUDIO_DEST"] = DIRECTORIO_UPLOAD_AUDIO
 
-if DESARROLLO is not False and environ.get("SECRET_KEY") and (environ.get("DATABASE_URL") or environ.get("LMS_DB")):
+if (
+    DESARROLLO is not False and environ.get("SECRET_KEY") and (environ.get("DATABASE_URL") or environ.get("LMS_DB"))
+):  # pragma: no cover
     log.debug("Leyendo configuración desde variables de entorno.")
     CONFIGURACION["ADMIN_USER"] = environ.get("LMS_USER")
     CONFIGURACION["ADMIN_PSWD"] = environ.get("LMS_PSWD")
     CONFIGURACION["SECRET_KEY"] = environ.get("SECRET_KEY")
     CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("LMS_DB") or environ.get("DATABASE_URL")
 
-elif CONFIG_FROM_FILE:
+elif CONFIG_FROM_FILE:  # pragma: no cover
     log.debug("Archivo de configuración detectado.")
     CONFIGURACION["ADMIN_USER"] = CONFIG_FROM_FILE["LMS_USER"]
     CONFIGURACION["ADMIN_PSWD"] = CONFIG_FROM_FILE["LMS_PSWD"]
     CONFIGURACION["SECRET_KEY"] = CONFIG_FROM_FILE["SECRET_KEY"]
     CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = CONFIG_FROM_FILE["LMS_DB"] or CONFIG_FROM_FILE["DATABASE_URL"]
 
-else:
+else:  # pragma: no cover
     log.warning("Utilizando configuración predeterminada.")
 
 if DESARROLLO:  # pragma: no cover
