@@ -73,6 +73,12 @@
                     </svg>
                     {% endif %}
 
+                    {% if permitir_editar %}
+                    <div class="d-flex d-flex justify-content-around">
+                      <a class="btn btn-warning me-2" href="{{ url_for('editar_curso', course_code=curso.codigo) }}" role="button">Editar Curso</a>
+                    </div>
+                    {% endif %}
+                    
                     <h2> {{ curso.nombre }}</h2>
                     <p>
                       <iframe title="{{ curso.codigo }}" src="{{ url_for('curso_descripcion_a_html', course_code=curso.codigo) }}" ></iframe>

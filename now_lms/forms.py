@@ -43,6 +43,22 @@ from wtforms.validators import DataRequired
 # Definición de formularios
 
 
+class ConfigForm(FlaskForm):
+    """Formulario para editar la configuración del sistema."""
+
+    titulo = StringField(validators=[DataRequired()])
+    descripcion = StringField(validators=[DataRequired()])
+    modo = SelectField(
+        "Modo",
+        choices=[
+            ("mooc", "Cursos en Linea"),
+            ("school", "Escuela"),
+            ("training", "Corporativo"),
+        ],
+    )
+    dev_docs = BooleanField(validators=[])
+
+
 class LoginForm(FlaskForm):
     """Formulario de inicio de sesión."""
 
@@ -80,7 +96,7 @@ class CurseForm(BaseForm):
     fecha_inicio = DateField(validators=[])
     fecha_fin = DateField(validators=[])
     duracion = IntegerField(validators=[])
-    nivel = SelectField("User", choices=[(0, "Introductorio"), (1, "Principiante"), (2, "Intermedio"), (2, "Avanzado")])
+    nivel = SelectField("User", choices=[(0, "Introductorio"), (1, "Principiante"), (2, "Intermedio"), (3, "Avanzado")])
 
 
 class CursoRecursoForm(FlaskForm):

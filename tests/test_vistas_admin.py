@@ -409,7 +409,6 @@ def test_reorganizar_indice_seccion(client, auth):
 
 
 def test_serve_files(client, auth):
-
     auth.login()
 
     from now_lms.db import CursoRecurso
@@ -590,7 +589,6 @@ def test_eliminar_recursos(client, auth):
 
 
 def test_cambiar_tipo_usuario(client, auth):
-
     auth.login()
     page = client.get("change_user_type", query_string={"user": "student", "type": "admin"})
     assert page.status_code == 302

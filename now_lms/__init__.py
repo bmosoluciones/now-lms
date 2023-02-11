@@ -92,6 +92,7 @@ from now_lms.bi import (
     cambia_seccion_publico,
 )
 from now_lms.forms import (
+    ConfigForm,
     LoginForm,
     LogonForm,
     CurseForm,
@@ -189,11 +190,10 @@ def carga_configuracion_del_sitio_web_desde_db(flask_app):  # pragma: no cover
     return CONFIG
 
 
-def cargar_variables_globales_de_plantillas_html(flask_app):
+def cargar_variables_globales_de_plantillas_html():
     """Asignamos variables globales para ser utilizadas dentro de las plantillas del sistema."""
     log.debug("Estableciendo valores blogales de Jinja2.")
     lms_app.jinja_env.globals["current_user"] = current_user
-    lms_app.jinja_env.globals["config"] = carga_configuracion_del_sitio_web_desde_db(flask_app)
     lms_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
     lms_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
     lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
@@ -211,7 +211,7 @@ lms_app = Flask(
 app = lms_app
 lms_app.config.from_mapping(CONFIGURACION)
 inicializa_extenciones_terceros(lms_app)
-cargar_variables_globales_de_plantillas_html(lms_app)
+cargar_variables_globales_de_plantillas_html()
 
 
 @lms_app.errorhandler(404)
@@ -348,6 +348,7 @@ def serve():  # pragma: no cover
 
 # < ----------------------- Definición de las vistas del sistema. ----------------------- >
 
+
 # ---------------------------------------------------------------------------------------
 # Funciones auxiliares para las vistas del sistema.
 # ---------------------------------------------------------------------------------------
@@ -357,7 +358,6 @@ def perfil_requerido(perfil_id):
     def decorator_verifica_acceso(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-
             if (current_user.is_authenticated and current_user.tipo == perfil_id) or current_user.tipo == "admin":
                 return func(*args, **kwargs)
 
@@ -475,6 +475,7 @@ def crear_usuario():  # pragma: no cover
 def home():
     """Página principal de la aplicación."""
 
+    config = Configuracion.query.first()
     CURSOS = database.paginate(
         database.select(Curso).filter(Curso.publico == True, Curso.estado == "open"),  # noqa: E712
         page=request.args.get("page", default=1, type=int),
@@ -482,7 +483,7 @@ def home():
         count=True,
     )
 
-    return render_template("inicio/mooc.html", cursos=CURSOS)
+    return render_template("inicio/mooc.html", cursos=CURSOS, config=config)
 
 
 @lms_app.route("/dashboard")
@@ -561,6 +562,7 @@ def cursos():
 
 # ---------------------------------------------------------------------------------------
 # Espacio del administrador.
+# - Configuracion.
 # - Listado de usuarios.
 # - Inactivar usuario.
 # - Perfil del usuario.
@@ -574,6 +576,27 @@ def cursos():
 def pagina_admin():
     """Perfil de usuario administrador."""
     return render_template("perfiles/admin.html", inactivos=Usuario.query.filter_by(activo=False).count() or 0)
+
+
+@lms_app.route("/site_config", methods=["GET", "POST"])
+@login_required
+def configuracion():
+    """Configuración del sistema."""
+    form = ConfigForm()
+    config = Configuracion.query.first()
+    if form.validate_on_submit() or request.method == "POST":
+        config.titulo = form.titulo.data
+        config.descripcion = form.descripcion.data
+        try:
+            database.session.commit()
+            flash("Sitio web actualizado exitosamente.")
+            return redirect("/admin")
+        except OperationalError:
+            flash("No se pudo actualizar la configuración del sitio web.")
+            return redirect("/admin")
+
+    else:
+        return render_template("admin/config.html", form=form, config=config)
 
 
 @lms_app.route("/users")
@@ -761,6 +784,7 @@ def recurso_descripcion_a_html(course_code, resource):
 # Administración de un curso.
 # - Página del curso.
 # - Nuevo Curso
+# - Editar Curso
 # - Nueva sección
 # - Reorganizar secciones dentro del curso:
 #   - Subir sección
@@ -784,6 +808,41 @@ def curso(course_code):
         secciones=CursoSeccion.query.filter_by(curso=course_code).order_by(CursoSeccion.indice).all(),
         recursos=CursoRecurso.query.filter_by(curso=course_code).order_by(CursoRecurso.indice).all(),
     )
+
+
+@lms_app.route("/course/<course_code>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def editar_curso(course_code):
+    """Editar pagina del curso."""
+
+    curso_a_editar = Curso.query.filter_by(codigo=course_code).first()
+    form = CurseForm(nivel=curso_a_editar.nivel)
+    curso_url = url_for("curso", course_code=course_code)
+    if form.validate_on_submit() or request.method == "POST":
+        curso_a_editar.nombre = form.nombre.data
+        curso_a_editar.descripcion = form.descripcion.data
+        curso_a_editar.publico = form.publico.data
+        curso_a_editar.auditable = form.auditable.data
+        curso_a_editar.certificado = form.certificado.data
+        curso_a_editar.precio = form.precio.data
+        curso_a_editar.capacidad = form.capacidad.data
+        curso_a_editar.fecha_inicio = form.fecha_inicio.data
+        curso_a_editar.fecha_fin = form.fecha_fin.data
+        curso_a_editar.duracion = form.duracion.data
+        curso_a_editar.modificado_por = current_user.usuario
+        curso_a_editar.nivel = form.nivel.data
+
+        try:
+            database.session.commit()
+            flash("Curso actualizado exitosamente.")
+            return redirect(curso_url)
+
+        except OperationalError:  # pragma: no cover
+            flash("Hubo en error al actualizar el curso.")
+            return redirect(curso_url)
+
+    return render_template("learning/edit_curso.html", form=form, curso=curso_a_editar)
 
 
 @lms_app.route("/new_curse", methods=["GET", "POST"])
@@ -1079,7 +1138,6 @@ def nuevo_recurso_link(course_code, seccion):
     recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
     nuevo_indice = int(recursos + 1)
     if form.validate_on_submit() or request.method == "POST":
-
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
             seccion=seccion,
@@ -1151,7 +1209,6 @@ def nuevo_recurso_meet(course_code, seccion):
     recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
     nuevo_indice = int(recursos + 1)
     if form.validate_on_submit() or request.method == "POST":
-
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
             seccion=seccion,
@@ -1265,7 +1322,6 @@ def nuevo_recurso_html(course_code, seccion):
     recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
     nuevo_indice = int(recursos + 1)
     if form.validate_on_submit() or request.method == "POST":
-
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
             seccion=seccion,
