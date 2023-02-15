@@ -62,7 +62,6 @@ Start Command: python -m now_lms
 Important: You can test NOW-LMS for free on Render, but with the default configuration NOW LMS will use a SQLite database as data store, this database is not goin to persist after system upgrades, to keep your data safe ve sure to set the next enviroment variables:
 
 ```
-NO_RESET_DATABASE=True
 DATABASE_URL=proper_db_connet_string
 ```
 
