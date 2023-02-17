@@ -4,13 +4,13 @@ theme:
     favicon: images/favicon.png
     logo: images/logo.svg
     language: es
-    palette: 
+    palette:
     # Palette toggle for light mode
     - scheme: default
       primary: orange
       accent: deep orange
       toggle:
-        icon: material/toggle-switch 
+        icon: material/toggle-switch
         name: Switch to dark mode
 
     # Palette toggle for dark mode
@@ -41,7 +41,7 @@ copyright: Copyright &copy; 2021 - 2023 BMO Soluciones
 
 plugins:
   - search:
-      lang: 
+      lang:
         - en
         - de
   - offline
@@ -58,6 +58,8 @@ nav:
         - DreamHost: dreamhost.md
       - Server Setup:
         - CentOS / Alma / Rocky: rocky.md
+      - Other Deployment options:
+        - Server less: dev_ops.md
     - Releases: release.md
     - About:
       - About: faq.md
@@ -65,7 +67,7 @@ nav:
       - License: https://github.com/bmosoluciones/now-lms/blob/main/LICENSE
     - Contributing:
       - Contributing: CONTRIBUTING.md
-      
+
 
 extra:
   social:
@@ -73,10 +75,10 @@ extra:
       link: https://github.com/bmosoluciones/now-lms
     - icon: fontawesome/brands/docker
       link: https://quay.io/repository/bmosoluciones/now_lms
-    
+
   consent:
     title: Cookie consent
-    description: >- 
+    description: >-
       We use cookies to recognize your repeated visits and preferences, as well
       as to measure the effectiveness of our documentation and whether users
       find what they're searching for. With your consent, you're helping us to

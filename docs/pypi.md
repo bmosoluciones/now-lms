@@ -7,5 +7,7 @@ packages can be installed via the pip tool with:
 
 ```
 $ pip install now_lms
+python -m now_lms
 ```
 
+Visit http://127.0.0.1:8080/ in your browser, default user and password are `lms-admin`
