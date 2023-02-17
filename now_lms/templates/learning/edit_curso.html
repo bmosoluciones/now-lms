@@ -32,7 +32,7 @@
                         {{ form.nombre(class="form-control", id="nombre", placeholder="Nombre del Curso", value=curso.nombre) }}
                     </div>
                 </div>
-                
+
                 <div class="row g-3">
 
                     <div class="col-md-4">
@@ -58,7 +58,7 @@
                             <label for="fecha_inicio" class="form-label">Fecha Inicio</label>
                             {{ form.fecha_inicio(value=curso.fecha_inicio) }}
                         </div>
-    
+
                         <div class="col-md-4">
                             <label for="fecha_fin" class="form-label">Fecha Fin</label>
                             {{ form.fecha_fin(value=curso.fecha_fin) }}
@@ -91,7 +91,6 @@
 
                     <div>
                         <label for="descripcion" class="form-label">Descripción del Curso</label>
-                        {% set f = form.descripcion.process_data(curso.descripcion) %}
                         {{form.descripcion}}
                         {{mde.preview}}
                         {{mde.js}}

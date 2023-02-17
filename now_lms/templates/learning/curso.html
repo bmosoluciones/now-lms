@@ -27,7 +27,7 @@
             <div class="d-flex justify-content-between border-bottom">
 
                 <h4>{{ curso.codigo }} - {{ curso.nombre }}</h4>
-                
+
                 <p>
                   {% if permitir_docente %}
                     <span class="badge bg-secondary">
@@ -78,7 +78,7 @@
                       <a class="btn btn-warning me-2" href="{{ url_for('editar_curso', course_code=curso.codigo) }}" role="button">Editar Curso</a>
                     </div>
                     {% endif %}
-                    
+
                     <h2> {{ curso.nombre }}</h2>
                     <p>
                       <iframe title="{{ curso.codigo }}" src="{{ url_for('curso_descripcion_a_html', course_code=curso.codigo) }}" ></iframe>
@@ -157,7 +157,7 @@
                   {% endif %}
 
                     <h3>Contenido del curso.</h3>
-                    
+
                       {% if secciones %}
                       <div class="accordion accordion-flush" id="accordionSeccionesCurso">
                         {% for seccion in secciones %}
@@ -196,6 +196,10 @@
 
                                   <span class="badge bg-danger">
                                     <a href="{{ url_for("eliminar_seccion", curso_id=curso.codigo, id_=seccion.id) }}" class="link-light">Elimina Sección</a>
+                                  </span>
+
+                                  <span class="badge bg-success">
+                                    <a href="{{ url_for("editar_seccion", course_code=seccion.curso, seccion=seccion.id) }}" class="link-light">Editar Sección</a>
                                   </span>
                                 </div>
                                 {% endif %}
@@ -253,7 +257,7 @@
                           <p>Este curso actualmente no cuenta con secciones disponibles.</p>
                           {% endif %}
                         </div>
-                       
+
                       {% endif %}
                 </div>
 

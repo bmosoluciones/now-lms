@@ -817,7 +817,7 @@ def editar_curso(course_code):
     """Editar pagina del curso."""
 
     curso_a_editar = Curso.query.filter_by(codigo=course_code).first()
-    form = CurseForm(nivel=curso_a_editar.nivel)
+    form = CurseForm(nivel=curso_a_editar.nivel, descripcion=curso_a_editar.descripcion)
     curso_url = url_for("curso", course_code=course_code)
     if form.validate_on_submit() or request.method == "POST":
         curso_a_editar.nombre = form.nombre.data
@@ -909,6 +909,30 @@ def nuevo_seccion(course_code):
             return redirect(url_for("curso", course_code=course_code))
     else:  # pragma: no cover
         return render_template("learning/nuevo_seccion.html", form=form)
+
+
+@lms_app.route("/course/<course_code>/<seccion>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def editar_seccion(course_code, seccion):
+    """Formulario para editar una sección en el curso."""
+
+    seccion_a_editar = CursoSeccion.query.get_or_404(seccion)
+    form = CursoSeccionForm(nombre=seccion_a_editar.nombre, descripcion=seccion_a_editar.descripcion)
+    if form.validate_on_submit() or request.method == "POST":
+        seccion_a_editar.nombre = form.nombre.data
+        seccion_a_editar.descripcion = form.descripcion.data
+        seccion_a_editar.modificado_por = current_user.usuario
+        seccion_a_editar.curso = course_code
+        try:
+            database.session.commit()
+            flash("Sección modificada correctamente.")
+            return redirect(url_for("curso", course_code=course_code))
+        except OperationalError:  # pragma: no cover
+            flash("Hubo en error al actualizar la seccion.")
+            return redirect(url_for("curso", course_code=course_code))
+    else:  # pragma: no cover
+        return render_template("learning/editar_seccion.html", form=form, seccion=seccion_a_editar)
 
 
 @lms_app.route("/course/<course_code>/seccion/increment/<indice>")
