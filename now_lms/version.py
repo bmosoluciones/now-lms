@@ -21,7 +21,7 @@
 from datetime import datetime
 
 
-# 0.0.1.alpha-1.20230211
+# 0.0.1.alpha-1.20230216
 APPNAME = "NOW lms"
 APPAUTHOR = "BMO Soluciones, S.A."
 MAYOR = "0"
