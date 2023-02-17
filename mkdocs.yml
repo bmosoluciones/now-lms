@@ -67,6 +67,7 @@ nav:
       - License: https://github.com/bmosoluciones/now-lms/blob/main/LICENSE
     - Contributing:
       - Contributing: CONTRIBUTING.md
+      - Developer Certificate of Origin: sing-off.md
 
 
 extra:
