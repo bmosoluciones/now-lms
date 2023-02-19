@@ -5,6 +5,7 @@ babel
 bleach
 bcrypt
 configobj
+diskcache
 flask
 flask[async]
 flask-alembic

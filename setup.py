@@ -63,6 +63,7 @@ setup(
         "bcrypt",
         "configobj",
         "cryptography",
+        "diskcache",
         "flask",
         "flask[async]",
         "flask-alembic",
