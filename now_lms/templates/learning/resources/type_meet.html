@@ -52,25 +52,25 @@
               <i class="bi bi-broadcast" aria-hidden="true"></i> Link a la Reunión <i class="bi bi-broadcast" aria-hidden="true"></i>
             </a>
 
-          </div>
+            <div>
 
-          <div>
+              <iframe title="{{ recurso.codigo }}" src="{{ url_for('recurso_descripcion_a_html', course_code=recurso.curso, resource=recurso.id) }}" ></iframe>
 
-            <iframe title="{{ recurso.codigo }}" src="{{ url_for('recurso_descripcion_a_html', course_code=recurso.curso, resource=recurso.id) }}" ></iframe>
+            </div>
 
           </div>
 
           <div class="col-sm-4">
 
             {{ r_macros.resource_nav(recursos=recursos, secciones=secciones) }}
-            
+
           </div>
 
         </div>
       </div>
-      
+
       {{ r_macros.nav_footer() }}
-    
+
     </main>
 
   </body>

@@ -40,10 +40,6 @@
 
             <iframe title="{{ recurso.nombre }}" id="Iframe" width="100%" height="315" src="{{ url_for('slide_show', recurso_code=recurso.id) }}"></iframe>
 
-          </div>
-
-          <div>
-
             <iframe title="{{ recurso.codigo }}" src="{{ url_for('recurso_descripcion_a_html', course_code=recurso.curso, resource=recurso.id) }}" ></iframe>
 
           </div>
@@ -51,14 +47,14 @@
           <div class="col-sm-4">
 
             {{ r_macros.resource_nav(recursos=recursos, secciones=secciones) }}
-            
+
           </div>
 
         </div>
       </div>
-      
+
       {{ r_macros.nav_footer() }}
-    
+
     </main>
 
   </body>
