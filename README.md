@@ -1,5 +1,3 @@
-![Logo](https://raw.githubusercontent.com/bmosoluciones/now-lms/main/now_lms/static/icons/logo/logo_small.png)
-
 # NOW - Learning Management System
 ![PyPI - License](https://img.shields.io/pypi/l/now_lms?color=brightgreen&logo=apache&logoColor=white)
 ![PyPI](https://img.shields.io/pypi/v/now_lms?color=brightgreen&label=version&logo=python&logoColor=white)
@@ -9,6 +7,8 @@
 [![codecov](https://codecov.io/gh/bmosoluciones/now-lms/branch/main/graph/badge.svg?token=SFVXF6Y3R3)](https://codecov.io/gh/bmosoluciones/now-lms)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bmosoluciones_now-lms&metric=alert_status)](https://sonarcloud.io/dashboard?id=bmosoluciones_now-lms)
 [![Join the chat at https://gitter.im/now-lms/community](https://badges.gitter.im/now-lms/community.svg)](https://gitter.im/now-lms/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+![Logo](https://raw.githubusercontent.com/bmosoluciones/now-lms/main/now_lms/static/icons/logo/logo_small.png)
 
 Simple to {install, use, configure and maintain} learning management system.
 
@@ -47,3 +47,7 @@ Visit http://127.0.0.1:8080/ in your browser, default user and password are `lms
 
 ## Contributing
 Thanks for your interest in contributing with the NOW-LMS project, please note that this is a open source projects so your contribution will be available to others for free under the terns of the Apache License, please refers to the [CONTRIBUTING](https://github.com/bmosoluciones/now-lms/blob/main/docs/CONTRIBUTING.md) file to start.
+
+## Logo
+
+The NOW - LMS is based in work by [rawpixel.com](https://www.freepik.es/vector-gratis/plantilla-logotipo-empresa-educacion-vector-diseno-marca-texto-centro-educativo_18879972.htm).
