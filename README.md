@@ -50,4 +50,4 @@ Thanks for your interest in contributing with the NOW-LMS project, please note t
 
 ## Logo
 
-The NOW - LMS is based in work by [rawpixel.com](https://www.freepik.es/vector-gratis/plantilla-logotipo-empresa-educacion-vector-diseno-marca-texto-centro-educativo_18879972.htm).
+The NOW - LMS logo is based in work by [rawpixel.com](https://www.freepik.es/vector-gratis/plantilla-logotipo-empresa-educacion-vector-diseno-marca-texto-centro-educativo_18879972.htm) with the [Poppins Font](https://fonts.google.com/specimen/Poppins).

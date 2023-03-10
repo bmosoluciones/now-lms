@@ -15,7 +15,7 @@ theme:
 
     # Palette toggle for dark mode
     - scheme: slate
-      primary: orange
+      primary: cyan
       accent: deep orange
       toggle:
         icon: material/toggle-switch-off-outline
