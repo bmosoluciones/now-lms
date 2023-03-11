@@ -59,6 +59,10 @@ class ConfigForm(FlaskForm):
     dev_docs = BooleanField(validators=[])
 
 
+class ThemeForm(FlaskForm):
+    """Formulario para editar el tema del sistema."""
+
+
 class LoginForm(FlaskForm):
     """Formulario de inicio de sesión."""
 

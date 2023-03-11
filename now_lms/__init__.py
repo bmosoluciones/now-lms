@@ -105,6 +105,7 @@ from now_lms.forms import (
     CursoRecursoExternalCode,
     CursoRecursoExternalLink,
     CursoRecursoMeet,
+    ThemeForm,
 )
 from now_lms.misc import HTML_TAGS, ICONOS_RECURSOS, TEMPLATES_BY_TYPE
 from now_lms.version import VERSION
@@ -578,7 +579,7 @@ def pagina_admin():
     return render_template("perfiles/admin.html", inactivos=Usuario.query.filter_by(activo=False).count() or 0)
 
 
-@lms_app.route("/site_config", methods=["GET", "POST"])
+@lms_app.route("/settings", methods=["GET", "POST"])
 @login_required
 def configuracion():
     """Configuración del sistema."""
@@ -597,6 +598,27 @@ def configuracion():
 
     else:
         return render_template("admin/config.html", form=form, config=config)
+
+
+@lms_app.route("/theming", methods=["GET", "POST"])
+@login_required
+def personalizacion():
+    """Personalizar el sistema."""
+    form = ThemeForm()
+    config = Configuracion.query.first()
+    if form.validate_on_submit() or request.method == "POST":
+        config.titulo = form.titulo.data
+        config.descripcion = form.descripcion.data
+        try:
+            database.session.commit()
+            flash("Tema del sitio web actualizado exitosamente.")
+            return redirect("/admin")
+        except OperationalError:
+            flash("No se pudo actualizar el tema del sitio web.")
+            return redirect("/admin")
+
+    else:
+        return render_template("admin/theme.html", form=form, config=config)
 
 
 @lms_app.route("/users")

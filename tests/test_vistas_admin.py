@@ -99,10 +99,28 @@ def test_non_interactive(client):
     assert b"First Course" in response.data
     assert b"now - First Course" in response.data
     assert b"Crear Cuenta" in response.data
+    response = client.get("/theming")
+    assert response.status_code == 302
+    response = client.get("/settings")
+    assert response.status_code == 302
 
 
 def test_logged_in(client, auth):
     auth.login()
+    response = client.get("/")
+    assert response.status_code == 200
+    response = client.get("/panel")
+    assert response.status_code == 200
+    response = client.get("/student")
+    assert response.status_code == 200
+    response = client.get("/moderator")
+    assert response.status_code == 200
+    response = client.get("/instructor")
+    assert response.status_code == 200
+    response = client.get("/admin")
+    assert response.status_code == 200
+    response = client.get("/perfil")
+    assert response.status_code == 200
     response = client.get("/course/now")
     assert response.status_code == 200
     assert b"First Course" in response.data
@@ -148,6 +166,19 @@ def test_logged_in(client, auth):
         assert b"Marcar Completado" in page.data
         assert b"Recurso Siguiente" in page.data
         assert page.status_code == 200
+
+    response = client.get("/theming")
+    assert response.status_code == 200
+    response = client.get("/settings")
+    assert response.status_code == 200
+    response = client.get("/salir")
+    assert response.status_code == 302
+    response = client.get("/login")
+    assert response.status_code == 200
+    response = client.get("/logon")
+    assert response.status_code == 200
+    response = client.get("/course/now")
+    assert response.status_code == 200
 
 
 def test_users_inactive(client, auth):
