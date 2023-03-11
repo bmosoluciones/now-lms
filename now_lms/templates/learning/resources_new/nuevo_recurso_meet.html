@@ -44,8 +44,13 @@
 
                     <div class="col-sm-6">
                         <label for="hora" class="form-label">Hora del Meet</label>
-                        {{ form.hora(class="form-control", id="hora", placeholder="Hora del Meet") }}
+                        {{ form.hora_inicio(class="form-control", id="hora_inicio", placeholder="Hora del Meet") }}
                     </div>
+
+                    <div class="col-sm-6">
+                      <label for="hora" class="form-label">Hora del Meet</label>
+                      {{ form.hora_fin(class="form-control", id="hora_fin", placeholder="Hora del Meet") }}
+                  </div>
 
                     <div class="col-sm-6">
                         <label for="plataforma" class="form-label">Plataforma</label>
@@ -58,7 +63,7 @@
                         {{mde.preview}}
                         {{mde.js}}
                     </div>
-                    
+
                     <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Agregar Recurso</button>
                 </div>
             </form>

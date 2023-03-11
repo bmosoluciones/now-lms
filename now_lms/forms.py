@@ -173,7 +173,8 @@ class CursoRecursoMeet(BaseForm):
     """Formulario para insertar un Meet"""
 
     fecha = DateField(validators=[])
-    hora = TimeField(validators=[])
+    hora_inicio = TimeField(validators=[])
+    hora_fin = TimeField(validators=[])
     url = StringField(validators=[DataRequired()])
     notes = SelectField(
         "Plataforma", choices=[("zoom", "Zoom"), ("teams", "MS Teams"), ("meet", "Google Meet"), ("otros", "Otros")]

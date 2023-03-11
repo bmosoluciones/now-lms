@@ -195,7 +195,9 @@ def crear_curso_demo():
         url="https://en.wikipedia.org/wiki/Web_conferencing",
         indice=3,
         fecha=datetime.today() + timedelta(days=9),
-        hora=time(hour=14, minute=30),
+        hora_inicio=time(hour=14, minute=30),
+        hora_fin=time(hour=15, minute=00),
+        notes="Google Meet",
         publico=False,
         requerido=True,
     )

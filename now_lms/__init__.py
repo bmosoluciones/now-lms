@@ -1244,7 +1244,8 @@ def nuevo_recurso_meet(course_code, seccion):
             creado_por=current_user.usuario,
             url=form.url.data,
             fecha=form.fecha.data,
-            hora=form.hora.data,
+            hora_inicio=form.hora_inicio.data,
+            hora_fin=form.hora_fin.data,
             notes=form.notes.data,
         )
         try:

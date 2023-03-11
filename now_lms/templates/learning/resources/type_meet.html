@@ -14,6 +14,79 @@
     <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
 
     {{ macros.local_style() }}
+    <style>
+      body{margin-top:20px;}
+.events_area {
+    padding: 130px 0 100px;
+}
+@media (max-width: 991px) {
+    .events_area {
+        padding: 70px 0;
+    }
+}
+.events_area .event-link {
+    color: #fdc632;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+.events_area .event-link img {
+    margin-left: 5px;
+    display: inline-block;
+}
+
+.single_event {
+    margin-bottom: 30px;
+}
+.single_event .event_thumb {
+    overflow: hidden;
+}
+.single_event .event_thumb img {
+    -webkit-transition: all 0.3s ease 0s;
+    -moz-transition: all 0.3s ease 0s;
+    -o-transition: all 0.3s ease 0s;
+    transition: all 0.3s ease 0s;
+}
+.single_event .event_details {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 275px;
+    padding: 30px 25px;
+    color: #ffffff;
+}
+.single_event .event_details .date {
+    color: #ffffff;
+    padding-right: 15px;
+    border-right: 2px solid #fff;
+    font-family: "Rubik", sans-serif;
+    font-size: 14px;
+}
+.single_event .event_details .date span {
+    display: block;
+    color: #fdc632;
+    font-size: 35px;
+    font-weight: 500;
+}
+.single_event .event_details .time-location {
+    padding-left: 15px;
+    font-size: 14px;
+}
+.single_event .event_details .time-location p {
+    margin-bottom: 0px;
+}
+.single_event .event_details .time-location p span {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 500;
+}
+.single_event:hover img {
+    transform: scale(1.1);
+}
+.single_event:hover h4 a {
+    color: #fdc632;
+}
+
+    </style>
 
 </head>
 
@@ -37,20 +110,28 @@
         <div class="row">
 
           <div class="col-sm-8">
-
-            <h6>{{ recurso.nombre }}</h6>
-            <p>
-              {{ recurso.descripcion }}
-            </p>
-            <p>
-              <i class="bi bi-calendar-event" aria-hidden="true"></i> Fecha: {{ recurso.fecha }}
-            </p>
-            <p>
-              <i class="bi bi-stopwatch-fill" aria-hidden="true"></i> Hora: {{ recurso.hora }}
-            </p>
-            <a class="btn btn-primary" href="{{ recurso.url }}">
-              <i class="bi bi-broadcast" aria-hidden="true"></i> Link a la Reunión <i class="bi bi-broadcast" aria-hidden="true"></i>
-            </a>
+            <div class="events_area">
+              <div class="container">
+                          <div class="single_event position-relative">
+                              <div class="event_thumb">
+                                  <img src="{{ url_for('static', filename='/img/hombre-negocios-videoconferencia-mientras-trabaja-casa-pandemia-coronavirus.jpg') }}" alt="Live Meet." />
+                              </div>
+                              <div class="event_details">
+                                  <div class="d-flex mb-4">
+                                      <div class="date"><span> {{ recurso.fecha.strftime('%d') }} </span> {{ recurso.fecha.strftime('%b') }} </div>
+                                      <div class="time-location">
+                                          <p><span class="ti-time mr-2"></span> {{ recurso.hora_inicio }} - {{ recurso.hora_inicio }}</p>
+                                          <p><span class="ti-location-pin mr-2"></span>{{ recurso.notes }}</p>
+                                      </div>
+                                  </div>
+                                  <p>
+                                    {{ recurso.nombre }}
+                                  </p>
+                                  <a href="{{ recurso.url }}" class="btn btn-primary rounded-0 mt-3">Link al Meet</a>
+                              </div>
+                          </div>
+              </div>
+          </div>
 
             <div>
 
