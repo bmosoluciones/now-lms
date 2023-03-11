@@ -35,8 +35,7 @@
         <form method="post">
             {{ form.csrf_token }}
             <a href="{{ url_for('home') }}">
-                <img class="mb-4" src="{{ url_for('static', filename='icons/logo/logo.svg') }}" alt="" width="72"
-                    height="57">
+                <img class="mb-4" src="{{ url_for('static', filename='icons/logo/logo.svg') }}" alt="NOW - LMS" width="200">
             </a>
             <h1 class="h3 mb-3 fw-normal">Inicio de Sesión</h1>
             {% with messages = get_flashed_messages() %}
