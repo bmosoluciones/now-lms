@@ -143,6 +143,12 @@ if DESARROLLO:  # pragma: no cover
     CONFIGURACION["SQLALCHEMY_ECHO"] = True
 
 
+if environ.get("DATABASE_URL"):
+    log.warning("Se detecto URL de conexion vía variable de entorno.")
+    log.debug("URL de conexión a la base de datos sobre escrita por variable de entorno.")
+    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("DATABASE_URL")
+
+
 # Corrige URI de conexion a la base de datos si el usuario omite el drive apropiado.
 if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # pragma: no cover
     # En Heroku va a estar disponible psycopg2.
