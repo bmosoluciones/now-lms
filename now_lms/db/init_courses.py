@@ -165,7 +165,6 @@ def crear_curso_demo():
         doc="resources/En-us-hello.ogg",
         indice=1,
         publico=True,
-        requerido=True,
     )
     database.session.add(nuevo_recurso6)
     database.session.commit()
@@ -181,7 +180,6 @@ def crear_curso_demo():
         doc="resources/NOW_Learning_Management_System.pdf",
         indice=2,
         publico=True,
-        requerido=True,
     )
     database.session.add(nuevo_recurso5)
     database.session.commit()
@@ -199,7 +197,7 @@ def crear_curso_demo():
         hora_fin=time(hour=15, minute=00),
         notes="Google Meet",
         publico=False,
-        requerido=True,
+        requerido=2,
     )
     database.session.add(nuevo_recurso3)
     database.session.commit()
@@ -213,7 +211,7 @@ def crear_curso_demo():
         descripcion="A image file.",
         indice=4,
         publico=True,
-        requerido=True,
+        requerido=3,
         base_doc_url="images",
         doc="resources/logo_large.png",
     )
@@ -228,7 +226,7 @@ def crear_curso_demo():
         descripcion="A text in markdown.",
         indice=5,
         publico=False,
-        requerido=True,
+        requerido=3,
         text="# NOW - Learning Management System.",
     )
     database.session.add(nuevo_recurso5)
@@ -242,7 +240,6 @@ def crear_curso_demo():
         descripcion="A HTML text.",
         indice=6,
         publico=False,
-        requerido=True,
         external_code=demo_external_code,
     )
     database.session.add(nuevo_recurso6)
@@ -256,7 +253,6 @@ def crear_curso_demo():
         descripcion="A external link.",
         indice=7,
         publico=False,
-        requerido=True,
         url="https://es.wikipedia.org/wiki/Wikipedia:Portada",
     )
     database.session.add(nuevo_recurso7)
@@ -270,7 +266,6 @@ def crear_curso_demo():
         descripcion="A demo Slide Show.",
         indice=8,
         publico=False,
-        requerido=True,
     )
     database.session.add(nuevo_recurso8)
     database.session.commit()
@@ -284,7 +279,7 @@ def crear_curso_demo():
         url="https://www.youtube.com/watch?v=TWQFHRt3dNg",
         indice=9,
         publico=False,
-        requerido=True,
+        requerido=2,
     )
     database.session.add(nuevo_recurso9)
     database.session.commit()
@@ -354,7 +349,6 @@ def crear_curso_predeterminado():
         url="https://www.youtube.com/watch?v=CvPj4V_j7u8",
         indice=1,
         publico=True,
-        requerido=True,
     )
     database.session.add(nuevo_recurso1)
     database.session.commit()
@@ -368,7 +362,6 @@ def crear_curso_predeterminado():
         url="https://www.youtube.com/watch?v=CvPj4V_j7u8",
         indice=2,
         publico=False,
-        requerido=False,
     )
     database.session.add(nuevo_recurso2)
     database.session.commit()
@@ -382,7 +375,6 @@ def crear_curso_predeterminado():
         url="https://www.youtube.com/watch?v=9JBDSzSARHA",
         indice=2,
         publico=False,
-        requerido=False,
     )
     database.session.add(nuevo_recurso2)
     database.session.commit()
@@ -396,7 +388,6 @@ def crear_curso_predeterminado():
         url="https://www.youtube.com/watch?v=TWQFHRt3dNg",
         indice=1,
         publico=False,
-        requerido=True,
     )
     database.session.add(nuevo_recurso3)
     database.session.commit()

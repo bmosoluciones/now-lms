@@ -108,56 +108,53 @@ class CurseForm(BaseForm):
     nivel = SelectField("User", choices=[(0, "Introductorio"), (1, "Principiante"), (2, "Intermedio"), (3, "Avanzado")])
 
 
-class CursoRecursoForm(FlaskForm):
-    """Formulario para crear un nuevo recurso."""
-
-    tipo = SelectField(
-        "Tipo",
-        choices=[("link", "Vinculo"), ("youtube", "Vídeo en YouTube"), ("file", "Archivo"), ("text", "Texto")],
-    )
-
-
 class CursoSeccionForm(BaseForm):
     """Formulario para crear una nueva sección."""
 
 
-class CursoRecursoVideoYoutube(BaseForm):
+class CursoRecursoForm(BaseForm):
+    """Base para los recursos del curso."""
+
+    requerido = SelectField("Requerido", choices=[(1, "Requerido"), (2, "Opcinal"), (3, "Alternativo")])
+
+
+class CursoRecursoVideoYoutube(CursoRecursoForm):
     """Formulario para un nuevo recurso Youtube."""
 
     youtube_url = StringField(validators=[DataRequired()])
 
 
-class CursoRecursoArchivoPDF(BaseForm):
+class CursoRecursoArchivoPDF(CursoRecursoForm):
     """Formulario para un nuevo recurso PDF."""
 
 
-class CursoRecursoArchivoAudio(BaseForm):
+class CursoRecursoArchivoAudio(CursoRecursoForm):
     """Formulario para un nuevo recurso de audio."""
 
 
-class CursoRecursoArchivoImagen(BaseForm):
+class CursoRecursoArchivoImagen(CursoRecursoForm):
     """Formulario para un nuevo recurso de audio."""
 
 
-class CursoRecursoArchivoText(BaseForm):
+class CursoRecursoArchivoText(CursoRecursoForm):
     """Formulario para un nuevo recurso de audio."""
 
     editor = MdeField()
 
 
-class CursoRecursoExternalCode(BaseForm):
+class CursoRecursoExternalCode(CursoRecursoForm):
     """Formulario para insertar un recurso HTML"""
 
     html_externo = StringField(validators=[DataRequired()])
 
 
-class CursoRecursoExternalLink(BaseForm):
+class CursoRecursoExternalLink(CursoRecursoForm):
     """Formulario para insertar un recurso HTML"""
 
     url = StringField(validators=[DataRequired()])
 
 
-class CursoRecursoSlides(BaseForm):
+class CursoRecursoSlides(CursoRecursoForm):
     """Formulario para insertar un SlideShow."""
 
     notes = SelectField(
@@ -178,7 +175,7 @@ class CursoRecursoSlides(BaseForm):
     )
 
 
-class CursoRecursoMeet(BaseForm):
+class CursoRecursoMeet(CursoRecursoForm):
     """Formulario para insertar un Meet"""
 
     fecha = DateField(validators=[])
@@ -186,5 +183,19 @@ class CursoRecursoMeet(BaseForm):
     hora_fin = TimeField(validators=[])
     url = StringField(validators=[DataRequired()])
     notes = SelectField(
-        "Plataforma", choices=[("zoom", "Zoom"), ("teams", "MS Teams"), ("meet", "Google Meet"), ("otros", "Otros")]
+        "Plataforma",
+        choices=[
+            ("none", "Seleccione"),
+            ("bluejeans", "BlueJeans"),
+            ("zoom", "Zoom"),
+            ("teams", "MS Teams"),
+            ("meet", "Google Meet"),
+            ("zoho", "Zoho Backstage"),
+            ("click", "ClickMeeting"),
+            ("goto", "GoTo Meeting"),
+            ("webex", "Webex"),
+            ("intermedia", "Intermedia AnyMeeting"),
+            ("whatsapp", "WhatsApp"),
+            ("otros", "Otros"),
+        ],
     )

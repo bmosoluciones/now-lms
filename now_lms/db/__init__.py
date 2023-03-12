@@ -41,11 +41,14 @@ LLAVE_FORANEA_RECURSO: str = "curso_recurso.id"
 LLAVE_FORANEA_PREGUNTA: str = "curso_recurso_pregunta.id"
 
 
-def generador_de_codigos_unicos():
+def generador_de_codigos_unicos() -> str:
     """Genera codigo unicos basados en ULID."""
     from ulid import ULID
 
-    return str(ULID())
+    codigo_aleatorio = ULID()
+    id_unico = str(codigo_aleatorio)
+
+    return id_unico
 
 
 # pylint: disable=too-few-public-methods
@@ -128,8 +131,10 @@ class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     rel_curso = database.relationship("Curso", foreign_keys=curso)
     nombre = database.Column(database.String(150), nullable=False)
     descripcion = database.Column(database.String(1000), nullable=False)
+    # Uno de: mp3, pdf, meet, img, text, html, link, slides, youtube
     tipo = database.Column(database.String(150), nullable=False)
-    requerido = database.Column(database.String(15))
+    # 1: Requerido, 2: Optional, 3: Alternativo
+    requerido = database.Column(database.Integer(), default=1)
     url = database.Column(database.String(250), unique=False)
     fecha = database.Column(database.Date())
     hora_inicio = database.Column(database.Time())

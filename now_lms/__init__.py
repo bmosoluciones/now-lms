@@ -1116,7 +1116,6 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             descripcion=form.descripcion.data,
             url=form.youtube_url.data,
             indice=nuevo_indice,
-            requerido=False,
             creado_por=current_user.usuario,
         )
         try:
@@ -1150,7 +1149,6 @@ def nuevo_recurso_text(course_code, seccion):
             descripcion=form.descripcion.data,
             indice=nuevo_indice,
             text=form.editor.data,
-            requerido=False,
             creado_por=current_user.usuario,
         )
         try:
@@ -1184,7 +1182,6 @@ def nuevo_recurso_link(course_code, seccion):
             descripcion=form.descripcion.data,
             indice=nuevo_indice,
             url=form.url.data,
-            requerido=False,
             creado_por=current_user.usuario,
         )
         try:
@@ -1221,7 +1218,6 @@ def nuevo_recurso_pdf(course_code, seccion):
             indice=nuevo_indice,
             base_doc_url=files.name,
             doc=pdf_file,
-            requerido=False,
             creado_por=current_user.usuario,
         )
         try:
@@ -1254,7 +1250,6 @@ def nuevo_recurso_meet(course_code, seccion):
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
             indice=nuevo_indice,
-            requerido=False,
             creado_por=current_user.usuario,
             url=form.url.data,
             fecha=form.fecha.data,
@@ -1297,7 +1292,6 @@ def nuevo_recurso_img(course_code, seccion):
             indice=nuevo_indice,
             base_doc_url=images.name,
             doc=picture_file,
-            requerido=False,
             creado_por=current_user.usuario,
         )
         try:
@@ -1335,7 +1329,6 @@ def nuevo_recurso_audio(course_code, seccion):
             indice=nuevo_indice,
             base_doc_url=audio.name,
             doc=audio_file,
-            requerido=False,
             creado_por=current_user.usuario,
         )
         try:
@@ -1369,7 +1362,6 @@ def nuevo_recurso_html(course_code, seccion):
             descripcion=form.descripcion.data,
             external_code=form.html_externo.data,
             indice=nuevo_indice,
-            requerido=False,
             creado_por=current_user.usuario,
         )
         try:

@@ -71,12 +71,11 @@ class TestInstanciasDeClases(TestCase):
 
     def test_FlaskForm(self):
         from flask_wtf import FlaskForm
-        from now_lms.forms import LoginForm, LogonForm, CurseForm, CursoRecursoForm, CursoRecursoVideoYoutube, CursoSeccionForm
+        from now_lms.forms import LoginForm, LogonForm, CurseForm, CursoRecursoVideoYoutube, CursoSeccionForm
 
         assert issubclass(LoginForm, FlaskForm)
         assert issubclass(CurseForm, FlaskForm)
         assert issubclass(LogonForm, FlaskForm)
-        assert issubclass(CursoRecursoForm, FlaskForm)
         assert issubclass(CursoRecursoVideoYoutube, FlaskForm)
         assert issubclass(CursoSeccionForm, FlaskForm)
 
