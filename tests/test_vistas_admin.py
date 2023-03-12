@@ -502,7 +502,7 @@ def test_edit_course(client, auth):
         "fecha_inicio": datetime.today() + timedelta(days=9),
         "fecha_fin": datetime.today() + timedelta(days=9),
         "duracion": 15,
-        "nivel": "principiante",
+        "nivel": 1,
     }
     data = {key: str(value) for key, value in data.items()}
     auth.login()
