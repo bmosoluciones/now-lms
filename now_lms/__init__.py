@@ -598,7 +598,7 @@ def configuracion():
             database.session.commit()
             flash("Sitio web actualizado exitosamente.")
             return redirect("/admin")
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             flash("No se pudo actualizar la configuración del sitio web.")
             return redirect("/admin")
 
