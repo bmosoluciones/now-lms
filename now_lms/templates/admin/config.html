@@ -36,13 +36,47 @@
                 </div>
 
                 <div class="row">
-                    
+
                     <div class="col-sm-6">
                         <label for="descripcion" class="form-label">Descripción del Sitio</label>
                         {{ form.descripcion(class="form-control", id="descripcion", value=config.descripcion) }}
                     </div>
 
                 </div>
+
+                <div class="row">
+
+                  <div class="col-sm-6">
+                      <label for="modo" class="form-label">Modo del sitio Web.</label>
+                      {{ form.modo(class="form-control", id="modo", value=config.modo) }}
+                  </div>
+
+              </div>
+              <div>
+                <div class="col-sm-6">
+                  <h6>Formas de Pago.</h6>
+
+                  <label for="stripe" class="form-label">Stripe</label>
+                  {{ form.stripe(checked=config.stripe) }}
+
+                  <label for="paypal" class="form-label">Paypal</label>
+                  {{ form.paypal(checked=config.paypal) }}
+
+                </div>
+              </div>
+
+              <div>
+                <div class="col-sm-6">
+                  <h6>Configuración de Stripe.</h6>
+
+                  <label for="stripe_public" class="form-label">Clave Pública</label>
+                  {{ form.stripe_public(value=config.stripe_public) }}
+
+                  <label for="stripe_private" class="form-label">Clave Privada</label>
+                  {{ form.stripe_secret(value=config.stripe_secret) }}
+
+                </div>
+              </div>
 
                 <a class="btn btn-warning" href="{{ url_for("pagina_admin") }}" role="button">Cancelar</a>
                 <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>

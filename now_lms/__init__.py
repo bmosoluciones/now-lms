@@ -583,11 +583,17 @@ def pagina_admin():
 @login_required
 def configuracion():
     """Configuración del sistema."""
-    form = ConfigForm()
+
     config = Configuracion.query.first()
+    form = ConfigForm(modo=config.modo)
     if form.validate_on_submit() or request.method == "POST":
         config.titulo = form.titulo.data
         config.descripcion = form.descripcion.data
+        config.modo = form.descripcion.data
+        config.stripe = form.stripe.data
+        config.paypal = form.paypal.data
+        config.stripe_secret = form.stripe_secret.data
+        config.stripe_public = form.stripe_secret.data
         try:
             database.session.commit()
             flash("Sitio web actualizado exitosamente.")
@@ -713,20 +719,6 @@ def cambiar_tipo_usario():
         usuario=current_user.usuario,
     )
     return redirect(url_for("usuario", id_usuario=request.args.get("user")))
-
-
-# ---------------------------------------------------------------------------------------
-# Administración de programas.
-# Un programa consta de varios cursos.
-# ---------------------------------------------------------------------------------------
-@lms_app.route("/program")
-@lms_app.route("/programa")
-def programa():
-    """
-    Página principal del programa.
-
-    Un programa puede constar de uno o mas cursos individuales
-    """
 
 
 # ---------------------------------------------------------------------------------------

@@ -279,7 +279,9 @@ class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
     descripcion = database.Column(database.String(500), nullable=False)
     # Uno de mooc, school, training
     modo = database.Column(database.String(500), nullable=False, default="mooc")
-    # Micelaneos
-    dev_docs = database.Column(database.Boolean(), default=False)
-    # Permitir al usuario cargar archivos
-    file_uploads = database.Column(database.Boolean(), default=False)
+    # Formas de pago
+    stripe = database.Column(database.Boolean())
+    paypal = database.Column(database.Boolean())
+    # Stripe settings
+    stripe_secret = database.Column(database.String(100))
+    stripe_public = database.Column(database.String(100))

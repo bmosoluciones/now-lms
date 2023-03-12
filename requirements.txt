@@ -21,6 +21,7 @@ markdown
 python-ulid
 sqlalchemy
 redis
+stripe
 waitress
 wtforms
 

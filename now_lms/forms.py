@@ -51,12 +51,17 @@ class ConfigForm(FlaskForm):
     modo = SelectField(
         "Modo",
         choices=[
-            ("mooc", "Cursos en Linea"),
+            ("mooc", "Cursos Masivos en Linea"),
             ("school", "Escuela"),
             ("training", "Corporativo"),
         ],
     )
-    dev_docs = BooleanField(validators=[])
+    # Formas de pago.
+    stripe = BooleanField(validators=[])
+    paypal = BooleanField(validators=[])
+    # Configuración de Stripe
+    stripe_secret = StringField(validators=[])
+    stripe_public = StringField(validators=[])
 
 
 class ThemeForm(FlaskForm):

@@ -488,6 +488,72 @@ def test_course_description(client, auth):
         assert page.status_code == 200
 
 
+def test_edit_course(client, auth):
+    from datetime import datetime, timedelta
+
+    data = {
+        "nombre": "Edit",
+        "descripcion": "Edit",
+        "publico": False,
+        "auditable": False,
+        "certificado": False,
+        "precio": 1000,
+        "capacidad": 100,
+        "fecha_inicio": datetime.today() + timedelta(days=9),
+        "fecha_fin": datetime.today() + timedelta(days=9),
+        "duracion": 15,
+        "nivel": "principiante",
+    }
+    data = {key: str(value) for key, value in data.items()}
+    auth.login()
+    get = client.get("/course/now/edit")
+    assert get.status_code == 200
+    post = client.post("/course/now/edit", data=data, follow_redirects=True)
+    assert post.status_code == 200
+
+
+def test_edit_seccion(client, auth):
+    auth.login()
+
+    from now_lms.db import CursoSeccion
+
+    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
+
+    url = "/course/resources/" + seccion.id + "/edit"
+
+    data = {
+        "nombre": "lalala",
+        "descripcion": "lalala",
+    }
+
+    data = {key: str(value) for key, value in data.items()}
+    auth.login()
+    get = client.get(url)
+    assert get.status_code == 200
+    post = client.post(url, data=data, follow_redirects=True)
+    assert post.status_code == 200
+
+
+def test_edit_settings(client, auth):
+    from now_lms.db import CursoSeccion
+
+    data = {
+        "titulo": "LMS test",
+        "descripcion": "LMS test",
+        "modo": "mooc",
+        "paypal": True,
+        "stripe": True,
+        "stripe_public": "añldkakdlkadkasdksamdsa",
+        "stripe_secret": "añldmañlkdñladm",
+    }
+    data = {key: str(value) for key, value in data.items()}
+    auth.login()
+    get = client.get("/settings")
+    assert get.status_code == 200
+    post = client.post("/settings", data=data, follow_redirects=True)
+    assert post.status_code == 200
+
+
 def test_upload_pdf(client, auth):
     from io import BytesIO
     from now_lms.db import CursoSeccion

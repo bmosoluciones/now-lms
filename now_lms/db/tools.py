@@ -67,6 +67,9 @@ def crear_configuracion_predeterminada():
     config = Configuracion(
         titulo="NOW LMS",
         descripcion="Sistema de aprendizaje en linea.",
+        modo="mooc",
+        paypal=False,
+        stripe=False,
     )
     database.session.add(config)
     database.session.commit()
