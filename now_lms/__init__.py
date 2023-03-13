@@ -160,7 +160,10 @@ def inicializa_extenciones_terceros(flask_app):
             app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
             toolbar = DebugToolbarExtension(app)
             profiler = Profiler(app)
-            toolbar, profiler  # pylint: disable=W0104
+            if toolbar:
+                log.info("Flask development toolbar enabled.")
+            if profiler:
+                log.info("Flask profiler enabled.")
 
 
 # ---------------------------------------------------------------------------------------
