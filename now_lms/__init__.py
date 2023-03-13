@@ -145,21 +145,29 @@ def inicializa_extenciones_terceros(flask_app):
         cache.init_app(flask_app, CACHE_CONFIG)
         mde.init_app(flask_app)
         if DESARROLLO:
-            from flask_profiler import Profiler
-            from flask_debugtoolbar import DebugToolbarExtension
+            try:
+                from flask_profiler import Profiler
+                from flask_debugtoolbar import DebugToolbarExtension
 
-            app.debug = True
+                app.debug = True
 
-            app.config["flask_profiler"] = {
-                "enabled": app.config["DEBUG"],
-                "storage": {"engine": "sqlite"},
-                "basicAuth": {"enabled": True, "username": "admin", "password": "admin"},
-                "ignore": ["^/static/.*"],
-            }
+                app.config["flask_profiler"] = {
+                    "enabled": app.config["DEBUG"],
+                    "storage": {"engine": "sqlite"},
+                    "basicAuth": {"enabled": True, "username": "admin", "password": "admin"},
+                    "ignore": ["^/static/.*"],
+                }
 
-            app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
-            toolbar = DebugToolbarExtension(app)
-            profiler = Profiler(app)
+                app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
+                toolbar = DebugToolbarExtension(app)
+                profiler = Profiler(app)
+            except ModuleNotFoundError:
+                toolbar = None
+                profiler = None
+            except ImportError:
+                toolbar = None
+                profiler = None
+
             if toolbar:
                 log.info("Flask development toolbar enabled.")
             if profiler:
