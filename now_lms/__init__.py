@@ -142,6 +142,23 @@ def inicializa_extenciones_terceros(flask_app):
         administrador_sesion.init_app(flask_app)
         cache.init_app(flask_app, CACHE_CONFIG)
         mde.init_app(flask_app)
+        if DESARROLLO:
+            from flask_profiler import Profiler
+            from flask_debugtoolbar import DebugToolbarExtension
+
+            app.debug = True
+
+            app.config["flask_profiler"] = {
+                "enabled": app.config["DEBUG"],
+                "storage": {"engine": "sqlite"},
+                "basicAuth": {"enabled": True, "username": "admin", "password": "admin"},
+                "ignore": ["^/static/.*"],
+            }
+
+            app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
+            toolbar = DebugToolbarExtension(app)
+            profiler = Profiler(app)
+            toolbar, profiler  # pylint: disable=W0104
 
 
 # ---------------------------------------------------------------------------------------

@@ -266,3 +266,5 @@ cacao_accounting/static/node_modules/*
 
 # Dev file uploads
 now_lms/static/files/*
+
+flask_profiler.sql

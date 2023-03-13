@@ -31,9 +31,7 @@ from now_lms.version import PRERELEASE
 
 CONFIG_FILE: str = "now_lms.conf"
 
-if environ.get("FLASK_DEBUG") != "1":  # pragma: no cover
-    DESARROLLO: bool = False
-elif environ.get("CI"):
+if environ.get("CI"):
     DESARROLLO = True
 else:
     DESARROLLO = PRERELEASE is not None

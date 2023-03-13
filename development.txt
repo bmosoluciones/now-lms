@@ -1,5 +1,8 @@
 -r requirements.txt
 
+flask-debugtoolbar
+flask_profiler
+
 # Servidor de desarrollo
 hupper
 
