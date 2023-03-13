@@ -31,17 +31,25 @@
           <a class="link-dark" href="{{ url_for("curso", course_code=recurso.curso) }}">
               <i class="bi bi-arrow-left-short" aria-hidden="true"></i><i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i>
           </a>
-          {{ seccion.nombre }} / {{ recurso.nombre }}
+          Puede seleccionar uno de los siguientes recursos para continuar su aprendizaje.
         </h4>
 
         <div class="row">
 
           <div class="col-sm-8">
-
-            <a href="{{ recurso.url }}" target="_blank">{{ recurso.nombre }}</a>
-
-            <iframe title="{{ recurso.codigo }}" src="{{ url_for('recurso_descripcion_a_html', course_code=recurso.curso, resource=recurso.id) }}" ></iframe>
-
+            <ul class="list-group list-group-flush">
+              {% for recurso in recursos %}
+              {% if recurso.requerido == 3 %}
+              <li class="list-group-item">
+                <div class="d-flex justify-content-between">
+                  <a class="link-dark" href="{{ url_for("pagina_recurso", curso_id=recurso.curso, resource_type=recurso.tipo, codigo=recurso.id) }} ">
+                    <div class="fw-bold"> <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i>  {{ recurso.nombre }}</div>
+                  </a>
+                </div>
+              </li>
+              {% endif %}
+              {% endfor %}
+            </ul>
           </div>
 
           <div class="col-sm-4">
@@ -53,7 +61,7 @@
         </div>
       </div>
 
-      {{ r_macros.nav_footer(indice=indice) }}
+      {{ r_macros.nav_footer() }}
 
     </main>
 

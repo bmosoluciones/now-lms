@@ -20,13 +20,15 @@
 # pylint: disable=E1101
 
 # Libreria standar:
-from typing import Union
+from typing import NamedTuple, Union
 
 # Librerias de terceros:
 from flask_login import current_user
 
 # Recursos locales:
 from now_lms.db import (
+    CursoRecurso,
+    CursoSeccion,
     database,
     DocenteCurso,
     Configuracion,
@@ -73,3 +75,87 @@ def crear_configuracion_predeterminada():
     )
     database.session.add(config)
     database.session.commit()
+
+
+class RecursoInfo(NamedTuple):
+    """Contiene la información necesaria para generar una URL para un recurso."""
+
+    curso_id: Union[None, str] = None
+    resource_type: Union[None, str] = None
+    codigo: Union[None, str] = None
+
+
+class RecursoIndex(NamedTuple):
+    """Clase auxiliar para determinar el orden de un curso."""
+
+    has_prev: bool = False
+    has_next: bool = False
+    prev_is_alternative: bool = False
+    next_is_alternative: bool = False
+    prev_resource: Union[None, RecursoInfo] = None
+    next_resource: Union[None, RecursoInfo] = None
+
+
+# Lineas muy largas por los comentarios para ignorar errores de tipo.
+# pylint: disable=C0301
+# flake8: noqa
+def crear_indice_recurso(recurso: str) -> NamedTuple:
+    """Devuelve el indice de un recurso para determinar elemento previo y posterior."""
+
+    has_next: bool = False
+    has_prev: bool = False
+    prev_is_alternative: bool = False
+    next_is_alternative: bool = False
+    next_resource: Union[None, CursoRecurso] = None
+    prev_resource: Union[None, CursoRecurso] = None
+
+    # Obtenemos el recurso actual de la base de datos.
+    recurso_from_db: Union[None, CursoRecurso] = CursoRecurso.query.get(recurso)
+
+    if recurso_from_db:
+        seccion_from_db: Union[None, CursoRecurso] = CursoSeccion.query.get(recurso_from_db.seccion)  # type: ignore[union-attr]
+        # Verifica si existe un recurso anterior o posterior en la misma sección.
+        recurso_anterior = CursoRecurso.query.filter(
+            CursoRecurso.seccion == recurso_from_db.seccion, CursoRecurso.indice == recurso_from_db.indice - 1  # type: ignore[union-attr]
+        ).first()
+        recurso_posterior = CursoRecurso.query.filter(
+            CursoRecurso.seccion == recurso_from_db.seccion, CursoRecurso.indice == recurso_from_db.indice + 1  # type: ignore[union-attr]
+        ).first()
+    else:
+        seccion_from_db = None
+        recurso_anterior = None
+        recurso_posterior = None
+
+    if recurso_anterior:
+        has_prev = True
+        prev_is_alternative = recurso_anterior.requerido == 3
+        prev_resource = RecursoInfo(recurso_anterior.curso, recurso_anterior.tipo, recurso_anterior.id)  # type: ignore[assignment]
+    elif seccion_from_db:
+        seccion_anterior = CursoSeccion.query.filter(CursoSeccion.indice == seccion_from_db.indice - 1).first()
+        if seccion_anterior:
+            recurso_de_seccion_anterior = (
+                CursoRecurso.query.filter(CursoRecurso.seccion == seccion_anterior.id)
+                .order_by(CursoRecurso.indice.desc())
+                .first()
+            )
+            if recurso_de_seccion_anterior:
+                has_prev = True
+                prev_is_alternative = recurso_de_seccion_anterior.requerido == 3
+                prev_resource = RecursoInfo(recurso_de_seccion_anterior.curso, recurso_de_seccion_anterior.tipo, recurso_de_seccion_anterior.id)  # type: ignore[assignment]
+
+    if recurso_posterior:
+        has_next = True
+        next_is_alternative = recurso_posterior.requerido == 3
+        next_resource = RecursoInfo(recurso_posterior.curso, recurso_posterior.tipo, recurso_posterior.id)  # type: ignore[assignment]
+    elif seccion_from_db:
+        seccion_posterior = CursoSeccion.query.filter(CursoSeccion.indice == seccion_from_db.indice + 1).first()
+        if seccion_posterior:
+            recurso_de_seccion_posterior = (
+                CursoRecurso.query.filter(CursoRecurso.seccion == seccion_posterior.id).order_by(CursoRecurso.indice).first()
+            )
+            if recurso_de_seccion_posterior:
+                has_next = True
+                next_is_alternative = recurso_de_seccion_posterior.requerido == 3
+                next_resource = RecursoInfo(recurso_de_seccion_posterior.curso, recurso_de_seccion_posterior.tipo, recurso_de_seccion_posterior.id)  # type: ignore[assignment]
+
+    return RecursoIndex(has_prev, has_next, prev_is_alternative, next_is_alternative, prev_resource, next_resource)

@@ -1,9 +1,21 @@
-{% macro nav_footer() -%}
+{% macro nav_footer(indice=None) -%}
 
 <div class="d-flex justify-content-around">
-    <button type="button" class="btn btn-outline-info"><i class="bi bi-arrow-left-short" aria-hidden="true"></i> Recurso Anterior</button>
+    {% if indice.has_prev and indice.prev_is_alternative %}
+    <a href="{{ url_for("pagina_recurso_alternativo", curso_id=indice.prev_resource.curso_id, codigo=indice.prev_resource.codigo, order="desc")  }}" type="button" class="btn btn-outline-info"><i class="bi bi-arrow-left-short" aria-hidden="true"></i> Recurso Anterior</a>
+    {% elif indice.has_prev %}
+    <a href="{{ url_for("pagina_recurso", curso_id=indice.prev_resource.curso_id , resource_type=indice.prev_resource.resource_type, codigo=indice.prev_resource.codigo)  }}" type="button" class="btn btn-outline-info"><i class="bi bi-arrow-left-short" aria-hidden="true"></i> Recurso Anterior</a>
+    {% else %}
+    <button type="button" class="btn btn-outline-secondary"><i class="bi bi-arrow-left-short" aria-hidden="true"></i> Recurso Anterior</button>
+    {% endif %}
     <button type="button" class="btn btn-outline-success">Marcar Completado</button>
-    <button type="button" class="btn btn-outline-info">Recurso Siguiente <i class="bi bi-arrow-right-short" aria-hidden="true"></i></button>
+    {% if indice.has_next and indice.next_is_alternative %}
+    <a href="{{ url_for("pagina_recurso_alternativo", curso_id=indice.next_resource.curso_id, codigo=indice.next_resource.codigo, order="asc")  }}" type="button" class="btn btn-outline-info">Recurso Siguiente <i class="bi bi-arrow-right-short" aria-hidden="true"></i></a>
+    {% elif indice.has_next %}
+    <a href="{{ url_for("pagina_recurso", curso_id=indice.next_resource.curso_id , resource_type=indice.next_resource.resource_type, codigo=indice.next_resource.codigo)  }}" type="button" class="btn btn-outline-info">Recurso Siguiente <i class="bi bi-arrow-right-short" aria-hidden="true"></i></a>
+    {% else %}
+    <button type="button" class="btn btn-outline-secondary">Recurso Siguiente <i class="bi bi-arrow-right-short" aria-hidden="true"></i></button>
+    {% endif %}
 </div>
 
 {%- endmacro %}

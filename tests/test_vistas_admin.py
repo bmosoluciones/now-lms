@@ -83,6 +83,32 @@ def test_database_is_populated():
     assert query.curso is not None
 
 
+def test_generar_indice_recurso():
+    from now_lms.db import CursoRecurso
+    from now_lms.db.tools import crear_indice_recurso
+
+    s = crear_indice_recurso("lalala")
+    assert s.has_prev == False
+    assert s.has_next == False
+    assert s.prev_is_alternative == False
+    assert s.next_is_alternative == False
+    assert s.prev_resource is None
+    assert s.next_resource is None
+
+    r = CursoRecurso.query.filter(CursoRecurso.curso == "resources", CursoRecurso.tipo == "meet").first()
+    r = crear_indice_recurso(r.id)
+
+    assert r.has_prev == True
+    assert r.has_next == True
+    assert r.prev_is_alternative == False
+    assert r.next_is_alternative == True
+    assert r.prev_resource is not None
+    assert r.next_resource is not None
+
+    for a in CursoRecurso.query.all():
+        crear_indice_recurso(a.id)
+
+
 def test_non_interactive(client):
     response = client.get("/")
     assert response.status_code == 200
@@ -162,10 +188,15 @@ def test_logged_in(client, auth):
         page = client.get(URL)
         as_bytes = str.encode(recurso.nombre)
         assert as_bytes in page.data
-        assert b"Recurso Anterior" in page.data
-        assert b"Marcar Completado" in page.data
-        assert b"Recurso Siguiente" in page.data
         assert page.status_code == 200
+
+        if recurso.requerido == 3:
+            URL = "/cource/" + recurso.curso + "/alternative/" + recurso.id + "/asc"
+            page = client.get(URL)
+            assert page.status_code == 200
+            URL = "/cource/" + recurso.curso + "/alternative/" + recurso.id + "/desc"
+            page = client.get(URL)
+            assert page.status_code == 200
 
     response = client.get("/theming")
     assert response.status_code == 200

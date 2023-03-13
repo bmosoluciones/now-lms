@@ -125,7 +125,7 @@ class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Una sección de un curso consta de una serie de recursos."""
 
     __table_args__ = (database.UniqueConstraint("doc", name="documento_unico"),)
-    indice = database.Column(database.Integer())
+    indice = database.Column(database.Integer(), index=True)
     seccion = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False, index=True)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
     rel_curso = database.relationship("Curso", foreign_keys=curso)

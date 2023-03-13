@@ -76,6 +76,7 @@ from now_lms.db.init_courses import crear_curso_predeterminado, crear_curso_demo
 
 from now_lms.db.tools import (
     crear_configuracion_predeterminada,
+    crear_indice_recurso,
     verifica_docente_asignado_a_curso,
     verifica_estudiante_asignado_a_curso,
     verifica_moderador_asignado_a_curso,
@@ -1083,12 +1084,55 @@ def pagina_recurso(curso_id, resource_type, codigo):
     SECCION = database.session.query(CursoSeccion).filter(CursoSeccion.id == RECURSO.seccion).first()
     SECCIONES = database.session.query(CursoSeccion).filter(CursoSeccion.curso == curso_id).order_by(CursoSeccion.indice)
     TEMPLATE = "learning/resources/" + TEMPLATES_BY_TYPE[resource_type]
+    INDICE = crear_indice_recurso(codigo)
 
     if current_user.is_authenticated or RECURSO.publico is True:
-        return render_template(TEMPLATE, curso=CURSO, recurso=RECURSO, recursos=RECURSOS, seccion=SECCION, secciones=SECCIONES)
+        return render_template(
+            TEMPLATE, curso=CURSO, recurso=RECURSO, recursos=RECURSOS, seccion=SECCION, secciones=SECCIONES, indice=INDICE
+        )
     else:
         flash("No se encuentra autorizado a acceder al recurso solicitado.")
         return abort(403)
+
+
+@lms_app.route("/cource/<curso_id>/alternative/<codigo>/<order>")
+@login_required
+@perfil_requerido("student")
+def pagina_recurso_alternativo(curso_id, codigo, order):
+    """Pagina para seleccionar un curso alternativo."""
+
+    CURSO = database.session.query(Curso).filter(Curso.codigo == curso_id).first()
+    RECURSO = database.session.query(CursoRecurso).filter(CursoRecurso.id == codigo).first()
+    SECCION = database.session.query(CursoSeccion).filter(CursoSeccion.id == RECURSO.seccion).first()
+    INDICE = crear_indice_recurso(codigo)
+
+    if order == "asc":
+        recursos = (
+            CursoRecurso.query.filter(
+                CursoRecurso.seccion == RECURSO.seccion,
+                CursoRecurso.indice >= RECURSO.indice,  # type     : ignore[union-attr]
+            )
+            .order_by(CursoRecurso.indice)
+            .all()
+        )
+
+    else:  # order = "desc"
+        recursos = (
+            CursoRecurso.query.filter(
+                CursoRecurso.seccion == RECURSO.seccion, CursoRecurso.indice >= RECURSO.indice  # type: ignore[union-attr]
+            )
+            .order_by(CursoRecurso.indice.desc())
+            .all()
+        )
+
+    return render_template(
+        "learning/resources/type_alternativo.html",
+        recursos=recursos,
+        curso=CURSO,
+        recurso=RECURSO,
+        seccion=SECCION,
+        indice=INDICE,
+    )
 
 
 @lms_app.route("/course/<course_code>/<seccion>/new_resource")
