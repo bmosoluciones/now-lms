@@ -36,7 +36,7 @@ ignore-patterns=
 
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
 # number of processors available to use.
-jobs=1
+jobs=0
 
 # Control the amount of potential inferred values when inferring a single
 # object. This can help the performance when dealing with large functions or
@@ -82,7 +82,7 @@ disable=raw-checker-failed,
         useless-suppression,
         deprecated-pragma,
         use-symbolic-message-instead,
-        # Por la naturaleza del proyecto no todos los import estan al inicio para evitar 
+        # Por la naturaleza del proyecto no todos los import estan al inicio para evitar
         # importaciones circulares
         import-outside-toplevel,
         # De acuerdo a PEP8 utilizar nombre de variables en MAYUSCULAS es permitido
@@ -280,7 +280,7 @@ indent-after-paren=4
 indent-string='    '
 
 # Maximum number of characters on a single line.
-max-line-length=127
+max-line-length=150
 
 # Maximum number of lines in a module.
 max-module-lines=1000
