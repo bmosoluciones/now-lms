@@ -1,4 +1,4 @@
-{% macro nav_footer(indice=None) -%}
+{% macro nav_footer(indice=None, curso=None, type=None, codigo=None, avance=None) -%}
 
 <div class="d-flex justify-content-around">
     {% if indice.has_prev and indice.prev_is_alternative %}
@@ -8,7 +8,11 @@
     {% else %}
     <button type="button" class="btn btn-outline-secondary"><i class="bi bi-arrow-left-short" aria-hidden="true"></i> Recurso Anterior</button>
     {% endif %}
-    <button type="button" class="btn btn-outline-success">Marcar Completado</button>
+    {% if avance != 100 %}
+    <a href="{{ url_for("marcar_recurso_completado", curso_id=curso, resource_type=type, codigo=codigo) }}" type="button" button type="button" class="btn btn-outline-success">Marcar Completado</a>
+    {% else %}
+    <button type="button" class="btn btn-outline-info"><i class="bi bi-bookmark-check-fill" aria-hidden="True"></i> Recurso Completado</button>
+    {% endif %}
     {% if indice.has_next and indice.next_is_alternative %}
     <a href="{{ url_for("pagina_recurso_alternativo", curso_id=indice.next_resource.curso_id, codigo=indice.next_resource.codigo, order="asc")  }}" type="button" class="btn btn-outline-info">Recurso Siguiente <i class="bi bi-arrow-right-short" aria-hidden="true"></i></a>
     {% elif indice.has_next %}

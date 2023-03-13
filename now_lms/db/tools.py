@@ -28,6 +28,7 @@ from flask_login import current_user
 # Recursos locales:
 from now_lms.db import (
     CursoRecurso,
+    CursoRecursoAvance,
     CursoSeccion,
     database,
     DocenteCurso,
@@ -75,6 +76,20 @@ def crear_configuracion_predeterminada():
     )
     database.session.add(config)
     database.session.commit()
+
+
+def verificar_avance_recurso(recurso: str, usuario: str) -> int:
+    """Devuelve el porcentaje de avance de un estudiante para un recurso dado."""
+
+    if recurso and usuario:
+        if consulta := CursoRecursoAvance.query.filter(
+            CursoRecursoAvance.recurso == recurso, CursoRecursoAvance.usuario == usuario
+        ).first():
+            return consulta.avance
+        else:
+            return 0
+    else:
+        return 0
 
 
 class RecursoInfo(NamedTuple):

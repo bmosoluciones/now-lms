@@ -62,6 +62,7 @@ from now_lms.db import (
     Configuracion,
     Curso,
     CursoRecurso,
+    CursoRecursoAvance,
     CursoSeccion,
     CursoRecursoSlides,
     CursoRecursoSlideShow,
@@ -80,6 +81,7 @@ from now_lms.db.tools import (
     verifica_docente_asignado_a_curso,
     verifica_estudiante_asignado_a_curso,
     verifica_moderador_asignado_a_curso,
+    verificar_avance_recurso,
 )
 from now_lms.bi import (
     asignar_curso_a_instructor,
@@ -216,6 +218,7 @@ def cargar_variables_globales_de_plantillas_html():
     lms_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
     lms_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
     lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
+    lms_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
     lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
 
 
@@ -1110,6 +1113,26 @@ def pagina_recurso(curso_id, resource_type, codigo):
     else:
         flash("No se encuentra autorizado a acceder al recurso solicitado.")
         return abort(403)
+
+
+@lms_app.route("/cource/<curso_id>/resource/<resource_type>/<codigo>/complete")
+@login_required
+@perfil_requerido("student")
+def marcar_recurso_completado(curso_id, resource_type, codigo):
+    """Registra avance de un 100% en un recurso."""
+    RECURSO = database.session.query(CursoRecurso).filter(CursoRecurso.id == codigo).first()
+
+    avance = CursoRecursoAvance(
+        curso=curso_id,
+        seccion=RECURSO.seccion,
+        recurso=RECURSO.id,
+        usuario=current_user.id,
+        avance=100,
+    )
+    database.session.add(avance)
+    database.session.commit()
+
+    return redirect(url_for("pagina_recurso", curso_id=curso_id, resource_type=resource_type, codigo=RECURSO.id))
 
 
 @lms_app.route("/cource/<curso_id>/alternative/<codigo>/<order>")

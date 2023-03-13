@@ -51,7 +51,7 @@
 
         </div>
 
-        {{ r_macros.nav_footer(indice=indice) }}
+        {{ r_macros.nav_footer(indice=indice, curso=recurso.curso, type=recurso.tipo, codigo=recurso.id, avance=verificar_avance_recurso(recurso.id, current_user.id)) }}
     </div>
 
     </main>

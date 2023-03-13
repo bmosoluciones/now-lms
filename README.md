@@ -25,7 +25,7 @@ Thanks for your interest in the Now - LMS project (the project).
 
 ### Dependencies
 
-* Requires python >= 3.7
+* Requires python >= 3.8
 * Runs on Linux and Windows
 * Requires very low resources to run
 
