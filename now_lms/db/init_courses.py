@@ -43,16 +43,16 @@ def copy_sample_pdf():
     directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "files", "resources")
     try:  # pragma: no cover
         makedirs(directorio_destino)
-    except FileExistsError:
+    except FileExistsError:   # pragma: no cover
         pass
-    except FileNotFoundError:
+    except FileNotFoundError:  # pragma: no cover
         pass
     destino = path.join(directorio_destino, "NOW_Learning_Management_System.pdf")
     try:  # pragma: no cover
         copyfile(origen, destino)
-    except FileExistsError:
+    except FileExistsError:  # pragma: no cover
         pass
-    except FileNotFoundError:
+    except FileNotFoundError:  # pragma: no cover
         pass
 
 
@@ -66,16 +66,16 @@ def copy_sample_audio():
     directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "audio", "resources")
     try:
         makedirs(directorio_destino)
-    except FileExistsError:
+    except FileExistsError:  # pragma: no cover
         pass
-    except FileNotFoundError:
+    except FileNotFoundError:  # pragma: no cover
         pass
     destino = path.join(directorio_destino, "En-us-hello.ogg")
     try:
         copyfile(origen, destino)
-    except FileExistsError:
+    except FileExistsError:  # pragma: no cover
         pass
-    except FileNotFoundError:
+    except FileNotFoundError:  # pragma: no cover
         pass
 
 
@@ -89,16 +89,16 @@ def copy_sample_img():
     directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "images", "resources")
     try:
         makedirs(directorio_destino)
-    except FileExistsError:
+    except FileExistsError:  # pragma: no cover
         pass
-    except FileNotFoundError:
+    except FileNotFoundError:  # pragma: no cover
         pass
     destino = path.join(directorio_destino, "logo_large.png")
     try:
         copyfile(origen, destino)
-    except FileExistsError:
+    except FileExistsError:  # pragma: no cover
         pass
-    except FileNotFoundError:
+    except FileNotFoundError:  # pragma: no cover
         pass
 
 
