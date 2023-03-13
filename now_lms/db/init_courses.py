@@ -43,7 +43,7 @@ def copy_sample_pdf():
     directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "files", "resources")
     try:  # pragma: no cover
         makedirs(directorio_destino)
-    except FileExistsError:   # pragma: no cover
+    except FileExistsError:  # pragma: no cover
         pass
     except FileNotFoundError:  # pragma: no cover
         pass
