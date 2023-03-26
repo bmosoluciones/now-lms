@@ -1,4 +1,4 @@
--r requirements.txt
+-r test.txt
 
 flask-debugtoolbar
 flask_profiler
@@ -6,32 +6,9 @@ flask_profiler
 # Servidor de desarrollo
 hupper
 
-# Crear tarball y wheel
-build
-twine
-wheel
-
-# Control de calidad python
-black
-bandit
-flake8
-pytest
-pylint
-
-# Control de calidad html
-curlylint
-
-# Cobertura de código
-coverage
-pytest-cov
-
 # Docs
 mkdocs
 mkdocs-material
 
-# Verificación de tipos
-mypy
-
 #Live realoader
 hupper
-watchdog

@@ -14,6 +14,18 @@ jobs:
 
     runs-on: ubuntu-latest
     services:
+      # Label used to access the service container
+      redis:
+        # Docker Hub image
+        image: redis
+        ports:
+          - 6379:6379
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
       mysql:
         image: mysql:8
         env:
@@ -51,13 +63,16 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -r development.txt
+        python -m pip install -r test.txt
     - name: Run lint scrip
       run: |
         rm -rf build
         python -m build
         python -m twine check dist/*
         bash .lint.sh
+    - name: Test with Redis Cache
+      run: |
+        CACHE_REDIS_HOST=redis CACHE_REDIS_PORT=6379 pytest  -v --exitfirst --cov=now_lms
     - name: Test with pytest/MySQL
       run: |
         DATABASE_URL=mysql://mysqldatabase:mysqldatabase@localhost:3306/mysqldatabase pytest  -v --exitfirst --cov=now_lms
