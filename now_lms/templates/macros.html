@@ -69,10 +69,10 @@
 
 {% macro navbar() -%}
 
-<nav class="navbar navbar-expand-md navbar-dark bg-dark" aria-label="Fourth navbar example">
+<nav class="navbar navbar-expand-md {{ estilo.navbar[obtener_estilo_actual()] }}" aria-label="Fourth navbar example">
   <div class="container-fluid">
-    <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-      <img height="20" src="{{ url_for('static', filename='/icons/logo/logo_horizontal_blanco.svg') }}" alt="NOW LMS"
+    <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 {{ estilo.texto[obtener_estilo_actual()] }} text-decoration-none">
+      <img height="20" src="{{ url_for('static', filename='/icons/logo/' + estilo.logo[obtener_estilo_actual()]) }}" alt="NOW LMS"
         class="d-inline-block align-top">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsNOWLMS" aria-controls="navbarsNOWLMS" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,28 +82,28 @@
     <div class="collapse navbar-collapse" id="navbarsNOWLMS">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         {% if not current_user.is_authenticated %}
-        <li><a href="{{ url_for('home') }}" class="nav-link px-2 text-white"><i class="bi bi-house-fill"
+        <li><a href="{{ url_for('home') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-house-fill"
               aria-hidden="true"></i> Inicio</a>
         </li>
         {% else %}
-        <li><a href="{{ url_for('panel') }}" class="nav-link px-2 text-white"><i class="bi bi-house-fill"
+        <li><a href="{{ url_for('panel') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-house-fill"
               aria-hidden="true"></i>
             Inicio</a></li>
-        <li><a href="{{ url_for('pagina_estudiante') }}" class="nav-link px-2 text-white"><i class="bi bi-award-fill"
+        <li><a href="{{ url_for('pagina_estudiante') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-award-fill"
               aria-hidden="true"></i>
             Aprendizaje</a></li>
         {% if current_user.tipo == "moderator" or current_user.tipo == "instructor" or current_user.tipo == "admin" %}
-        <li><a href="{{ url_for('pagina_moderador') }}" class="nav-link px-2 text-white"><i class="bi bi-card-checklist"
+        <li><a href="{{ url_for('pagina_moderador') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-card-checklist"
               aria-hidden="true"></i>
             Moderación</a></li>
         {% endif %}
         {% if current_user.tipo == "instructor" or current_user.tipo == "admin" %}
-        <li><a href="{{ url_for('pagina_instructor') }}" class="nav-link px-2 text-white"><i class="bi bi-bank2"
+        <li><a href="{{ url_for('pagina_instructor') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-bank2"
               aria-hidden="true"></i>
             Docente</a></li>
         {% endif %}
         {% if current_user.tipo == "admin" %}
-        <li><a href="{{ url_for('pagina_admin') }}" class="nav-link px-2 text-white"><i class="bi bi-sliders"
+        <li><a href="{{ url_for('pagina_admin') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-sliders"
               aria-hidden="true"></i>
             Administración</a></li>
         {% endif %}
@@ -112,20 +112,20 @@
       <div class="text-end">
       {% if config.dev_docs %}
 
-        <a href="https://github.com/bmosoluciones/now-lms" class="text-white">
+        <a href="https://github.com/bmosoluciones/now-lms" class="{{ estilo.texto[obtener_estilo_actual()] }}">
           <i class="bi bi-github" aria-hidden="true"></i>
         </a>
-        <a href="https://bmosoluciones.github.io/now-lms/" class="text-white">
+        <a href="https://bmosoluciones.github.io/now-lms/" class="{{ estilo.texto[obtener_estilo_actual()] }}">
           <i class="bi bi-book" aria-hidden="true"></i>
         </a>
       {% endif %}
       {% if not current_user.is_authenticated %}
-        <a class="btn btn-outline-light me-2" href="{{ url_for('inicio_sesion') }}" role="button">Iniciar Sesión</a>
+        <a class="btn {{ estilo.buttom[obtener_estilo_actual()] }} me-2" href="{{ url_for('inicio_sesion') }}" role="button">Iniciar Sesión</a>
         <a class="btn btn-warning me-2" href="{{ url_for('crear_cuenta') }}" role="button">Crear Cuenta</a>
       {% else %}
-        <a class="text-white" href="{{ url_for('perfil') }}"><i class="bi bi-person-circle"
+        <a class="{{ estilo.texto[obtener_estilo_actual()] }}" href="{{ url_for('perfil') }}"><i class="bi bi-person-circle"
             aria-hidden="true"></i></a>
-        <a class="text-white" href="{{ url_for('cerrar_sesion') }}"><i class="bi bi-power"
+        <a class="{{ estilo.texto[obtener_estilo_actual()] }}" href="{{ url_for('cerrar_sesion') }}"><i class="bi bi-power"
             aria-hidden="true"></i></a>
       {% endif %}
     </div>

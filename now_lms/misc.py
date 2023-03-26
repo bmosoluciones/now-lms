@@ -18,6 +18,8 @@
 
 """Utilerias varias."""
 
+from typing import NamedTuple
+
 ICONOS_RECURSOS: dict = {
     "html": "bi bi-code-square",
     "img": "bi bi-image",
@@ -29,6 +31,42 @@ ICONOS_RECURSOS: dict = {
     "text": "bi bi-blockquote-left",
     "youtube": "bi bi-youtube",
 }
+
+
+class EstiloLocal(NamedTuple):
+    """Configuraciòn de estilo personalizable."""
+
+    navbar: dict
+    texto: dict
+    logo: dict
+    buttom: dict
+
+
+NAV_BAR = {
+    "dark": "navbar-dark bg-dark",
+    "light": "",
+    "transparent": "",
+}
+
+TEXTO = {
+    "dark": "text-white",
+    "light": "link-dark",
+    "transparent": "",
+}
+
+LOGO = {
+    "dark": "logo_horizontal_blanco.svg",
+    "light": "logo_horizontal.svg",
+    "transparent": "",
+}
+
+BUTTOM = {
+    "dark": "btn-outline-light",
+    "light": "btn-info",
+    "transparent": "",
+}
+
+ESTILO = EstiloLocal(NAV_BAR, TEXTO, LOGO, BUTTOM)
 
 TEMPLATES_BY_TYPE: dict = {
     "html": "type_html.html",

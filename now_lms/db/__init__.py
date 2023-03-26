@@ -290,3 +290,4 @@ class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
     # Stripe settings
     stripe_secret = database.Column(database.String(100))
     stripe_public = database.Column(database.String(100))
+    style = database.Column(database.String(15))

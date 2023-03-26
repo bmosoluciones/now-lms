@@ -67,6 +67,15 @@ class ConfigForm(FlaskForm):
 class ThemeForm(FlaskForm):
     """Formulario para editar el tema del sistema."""
 
+    style = SelectField(
+        "Estilo",
+        choices=[
+            ("dark", "Oscuro"),
+            ("light", "Claro"),
+            # ("transparent", "Transparente"),
+        ],
+    )
+
 
 class LoginForm(FlaskForm):
     """Formulario de inicio de sesión."""

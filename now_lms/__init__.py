@@ -82,6 +82,7 @@ from now_lms.db.tools import (
     verifica_estudiante_asignado_a_curso,
     verifica_moderador_asignado_a_curso,
     verificar_avance_recurso,
+    obtener_estilo_actual,
 )
 from now_lms.bi import (
     asignar_curso_a_instructor,
@@ -110,7 +111,7 @@ from now_lms.forms import (
     CursoRecursoMeet,
     ThemeForm,
 )
-from now_lms.misc import HTML_TAGS, ICONOS_RECURSOS, TEMPLATES_BY_TYPE
+from now_lms.misc import HTML_TAGS, ICONOS_RECURSOS, TEMPLATES_BY_TYPE, ESTILO
 from now_lms.version import VERSION
 
 # ---------------------------------------------------------------------------------------
@@ -231,6 +232,8 @@ def cargar_variables_globales_de_plantillas_html():
     lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
     lms_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
     lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
+    lms_app.jinja_env.globals["estilo"] = ESTILO
+    lms_app.jinja_env.globals["obtener_estilo_actual"] = obtener_estilo_actual
 
 
 # ---------------------------------------------------------------------------------------
@@ -642,11 +645,12 @@ def configuracion():
 @login_required
 def personalizacion():
     """Personalizar el sistema."""
-    form = ThemeForm()
+
     config = Configuracion.query.first()
+    form = ThemeForm(style=config.style)
+
     if form.validate_on_submit() or request.method == "POST":
-        config.titulo = form.titulo.data
-        config.descripcion = form.descripcion.data
+        config.style = form.style.data
         try:
             database.session.commit()
             flash("Tema del sitio web actualizado exitosamente.")

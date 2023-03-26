@@ -68,11 +68,7 @@ def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
 def crear_configuracion_predeterminada():
     """Crea configuración predeterminada de la aplicación."""
     config = Configuracion(
-        titulo="NOW LMS",
-        descripcion="Sistema de aprendizaje en linea.",
-        modo="mooc",
-        paypal=False,
-        stripe=False,
+        titulo="NOW LMS", descripcion="Sistema de aprendizaje en linea.", modo="mooc", paypal=False, stripe=False, style="dark"
     )
     database.session.add(config)
     database.session.commit()
@@ -174,3 +170,11 @@ def crear_indice_recurso(recurso: str) -> NamedTuple:
                 next_resource = RecursoInfo(recurso_de_seccion_posterior.curso, recurso_de_seccion_posterior.tipo, recurso_de_seccion_posterior.id)  # type: ignore[assignment]
 
     return RecursoIndex(has_prev, has_next, prev_is_alternative, next_is_alternative, prev_resource, next_resource)
+
+
+def obtener_estilo_actual() -> str:
+    """Retorna el estilo actual de la base de datos."""
+
+    consulta = Configuracion.query.first()
+
+    return consulta.style
