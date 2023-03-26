@@ -38,7 +38,7 @@ from flask_alembic import Alembic
 from flask_caching import Cache
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from flask_mde import Mde
-from flask_uploads import AUDIO, DOCUMENTS, IMAGES, UploadSet, configure_uploads
+from flask_uploads import AUDIO, DOCUMENTS, IMAGES, UploadSet, configure_uploads, UploadNotAllowed
 from loguru import logger as log
 from markdown import markdown
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
@@ -83,6 +83,8 @@ from now_lms.db.tools import (
     verifica_moderador_asignado_a_curso,
     verificar_avance_recurso,
     obtener_estilo_actual,
+    logo_perzonalizado,
+    elimina_logo_perzonalizado,
 )
 from now_lms.bi import (
     asignar_curso_a_instructor,
@@ -234,6 +236,7 @@ def cargar_variables_globales_de_plantillas_html():
     lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
     lms_app.jinja_env.globals["estilo"] = ESTILO
     lms_app.jinja_env.globals["obtener_estilo_actual"] = obtener_estilo_actual
+    lms_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
 
 
 # ---------------------------------------------------------------------------------------
@@ -651,16 +654,34 @@ def personalizacion():
 
     if form.validate_on_submit() or request.method == "POST":
         config.style = form.style.data
+
+        if "logo" in request.files:
+            try:
+                picture_file = images.save(request.files["logo"], name="logotipo.jpg")
+                if picture_file:
+                    config.custom_logo = True
+            except UploadNotAllowed:
+                log.warning("No se pudo actualizar el logotipo del sitio.")
+
         try:
             database.session.commit()
             flash("Tema del sitio web actualizado exitosamente.")
-            return redirect("/admin")
+            return redirect(url_for("personalizacion"))
         except OperationalError:
             flash("No se pudo actualizar el tema del sitio web.")
-            return redirect("/admin")
+            return redirect(url_for("personalizacion"))
 
     else:
         return render_template("admin/theme.html", form=form, config=config)
+
+
+@lms_app.route("/delete_logo")
+@login_required
+@perfil_requerido("admin")
+def elimina_logo():
+    """Elimina logo"""
+    elimina_logo_perzonalizado()
+    return redirect(url_for("personalizacion"))
 
 
 @lms_app.route("/users")

@@ -21,6 +21,7 @@
 
 # Libreria standar:
 from typing import NamedTuple, Union
+from os import path, remove
 
 # Librerias de terceros:
 from flask_login import current_user
@@ -36,6 +37,8 @@ from now_lms.db import (
     EstudianteCurso,
     ModeradorCurso,
 )
+
+from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
 
 # < --------------------------------------------------------------------------------------------- >
 # Funciones auxiliares relacionadas a contultas de la base de datos.
@@ -68,7 +71,13 @@ def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
 def crear_configuracion_predeterminada():
     """Crea configuración predeterminada de la aplicación."""
     config = Configuracion(
-        titulo="NOW LMS", descripcion="Sistema de aprendizaje en linea.", modo="mooc", paypal=False, stripe=False, style="dark"
+        titulo="NOW LMS",
+        descripcion="Sistema de aprendizaje en linea.",
+        modo="mooc",
+        paypal=False,
+        stripe=False,
+        style="dark",
+        custom_logo=False,
     )
     database.session.add(config)
     database.session.commit()
@@ -178,3 +187,24 @@ def obtener_estilo_actual() -> str:
     consulta = Configuracion.query.first()
 
     return consulta.style
+
+
+def logo_perzonalizado():
+    """Devuelve configuracion predeterminada."""
+
+    consulta = Configuracion.query.first()
+
+    return consulta.custom_logo
+
+
+def elimina_logo_perzonalizado():
+    """Elimina logo tipo perzonalizado."""
+
+    consulta = Configuracion.query.first()
+    consulta.custom_logo = False
+
+    database.session.commit()
+
+    LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, "logotipo.jpg")
+
+    remove(LOGO)

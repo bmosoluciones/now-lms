@@ -291,3 +291,4 @@ class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
     stripe_secret = database.Column(database.String(100))
     stripe_public = database.Column(database.String(100))
     style = database.Column(database.String(15))
+    custom_logo = database.Column(database.Boolean())

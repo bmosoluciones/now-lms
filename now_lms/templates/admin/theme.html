@@ -23,8 +23,18 @@
         {{ macros.notify() }}
 
         <div class="container px-4 py-5" id="icon-grid">
-            <h4 class="pb-2 border-bottom">Editar tema del sitio web.</h4>
-            <form  method="post">
+            <h4 class="pb-2 border-bottom">Editar estulo del sitio web.</h4>
+            <form method="post" enctype=multipart/form-data>
+
+              <div class="row">
+                {% if logo_perzonalizado() %}
+                <img src="{{ url_for('static', filename='/files/public/images/logotipo.jpg') }}" alt="NOW LMS">
+                <a href="{{ url_for("elimina_logo") }}">Eliminar Logo actual</a>
+                {% else %}
+                <label for="logo" class="form-label">Logotipo</label>
+                <input type="file" name="logo" accept="image/jpeg">
+                {% endif %}
+              </div>
 
               <div class="row">
 
@@ -34,18 +44,6 @@
                 </div>
 
               </div>
-
-                <div class="row">
-
-
-
-                </div>
-
-                <div class="row">
-
-
-
-                </div>
 
                 <a class="btn btn-warning" href="{{ url_for("pagina_admin") }}" role="button">Cancelar</a>
                 <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Tema</button>

@@ -72,8 +72,11 @@
 <nav class="navbar navbar-expand-md {{ estilo.navbar[obtener_estilo_actual()] }}" aria-label="Fourth navbar example">
   <div class="container-fluid">
     <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 {{ estilo.texto[obtener_estilo_actual()] }} text-decoration-none">
-      <img height="20" src="{{ url_for('static', filename='/icons/logo/' + estilo.logo[obtener_estilo_actual()]) }}" alt="NOW LMS"
-        class="d-inline-block align-top">
+      {% if logo_perzonalizado() %}
+      <img height="20" src="{{ url_for('static', filename='/files/public/images/logotipo.jpg') }}" alt="NOW LMS" class="d-inline-block align-top">
+      {% else %}
+      <img height="20" src="{{ url_for('static', filename='/icons/logo/' + estilo.logo[obtener_estilo_actual()]) }}" alt="NOW LMS" class="d-inline-block align-top">
+      {% endif %}
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsNOWLMS" aria-controls="navbarsNOWLMS" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
