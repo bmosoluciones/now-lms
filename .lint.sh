@@ -27,10 +27,3 @@ echo Lint html files wiht curlylint
 echo -------------------------------------------------
 echo
 python -m curlylint now_lms/templates/
-echo
-echo -------------------------------------------------
-echo Run unit test suite with pytest
-echo -------------------------------------------------
-echo
-python -m pytest  -v --exitfirst --cov=now_lms
-echo
