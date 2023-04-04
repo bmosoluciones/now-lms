@@ -22,6 +22,7 @@
 
 # Libreria standar:
 from datetime import datetime, timedelta, time
+from os import environ
 
 # Librerias de terceros:
 from loguru import logger as log
@@ -29,7 +30,6 @@ from ulid import ULID
 
 # Recursos locales:
 from now_lms.auth import proteger_passwd
-from now_lms.config import CONFIGURACION
 from now_lms.db import database, Curso, CursoSeccion, CursoRecurso, Usuario
 
 
@@ -395,12 +395,19 @@ def crear_curso_predeterminado():
     log.debug("Curso de demostración creado correctamente.")
 
 
+ADMIN = environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin"
+PASSWD = environ.get("ADMIN_PSWD") or environ.get("LMS_PSWD") or "lms-admin"
+
+if ADMIN == "lms-admin" and PASSWD == "lms-admin":
+    log.warning("Utilizando usuario y contraseña predeterminada para el usuario administrador.")
+
+
 def crear_usuarios_predeterminados():
     """Crea en la base de datos los usuarios iniciales."""
     log.info("Creando usuario administrador.")
     administrador = Usuario(
-        usuario=CONFIGURACION.get("ADMIN_USER"),
-        acceso=proteger_passwd(CONFIGURACION.get("ADMIN_PSWD")),
+        usuario=ADMIN,
+        acceso=proteger_passwd(PASSWD),
         tipo="admin",
         nombre="System",
         apellido="Admin",

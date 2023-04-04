@@ -105,8 +105,6 @@ else:
 # En caso contratio se utilizan valores predeterminados.
 
 CONFIGURACION: Dict = {}
-CONFIGURACION["ADMIN_USER"] = "lms-admin"
-CONFIGURACION["ADMIN_PSWD"] = "lms-admin"
 CONFIGURACION["SECRET_KEY"] = "dev"  # nosec
 CONFIGURACION["SQLALCHEMY_TRACK_MODIFICATIONS"] = "False"
 CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = SQLITE
@@ -121,15 +119,11 @@ if (
     DESARROLLO is not False and environ.get("SECRET_KEY") and (environ.get("DATABASE_URL") or environ.get("LMS_DB"))
 ):  # pragma: no cover
     log.debug("Leyendo configuración desde variables de entorno.")
-    CONFIGURACION["ADMIN_USER"] = environ.get("LMS_USER")
-    CONFIGURACION["ADMIN_PSWD"] = environ.get("LMS_PSWD")
     CONFIGURACION["SECRET_KEY"] = environ.get("SECRET_KEY")
     CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("LMS_DB") or environ.get("DATABASE_URL")
 
 elif CONFIG_FROM_FILE:  # pragma: no cover
     log.debug("Archivo de configuración detectado.")
-    CONFIGURACION["ADMIN_USER"] = CONFIG_FROM_FILE["LMS_USER"]
-    CONFIGURACION["ADMIN_PSWD"] = CONFIG_FROM_FILE["LMS_PSWD"]
     CONFIGURACION["SECRET_KEY"] = CONFIG_FROM_FILE["SECRET_KEY"]
     CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = CONFIG_FROM_FILE["LMS_DB"] or CONFIG_FROM_FILE["DATABASE_URL"]
 
