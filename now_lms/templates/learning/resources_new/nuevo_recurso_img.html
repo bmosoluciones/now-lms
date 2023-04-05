@@ -5,52 +5,52 @@
 
 <head>
 
-    {{ macros.headertags() }}
-    {{ mde.css }}
-    <title>Nuevo Recurso - Imagen</title>
+  {{ macros.headertags() }}
+  {{ mde.css }}
+  <title>Nuevo Recurso - Imagen</title>
 
-    {{ macros.local_style() }}
-    <!-- Custom styles for this template -->
-    <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet">
+  {{ macros.local_style() }}
+  <!-- Custom styles for this template -->
+  <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet">
 </head>
 
 <body>
 
-    {{ macros.navbar() }}
+  {{ macros.navbar() }}
 
-    <main>
+  <main>
 
-        {{ macros.notify() }}
+    {{ macros.notify() }}
 
-        <div class="container px-4 py-5" id="icon-grid">
-            <h4 class="pb-2 border-bottom">Agregar una nueva imagen</h4>
-            <form method="post" enctype=multipart/form-data>
-                {{ form.csrf_token }}
-                <div class="row g-3">
-                    <div class="col-sm-12">
-                        <label for="nombre" class="form-label">Nombre de la imagen.</label>
-                        {{ form.nombre(class="form-control", id="nombre", placeholder="Nombre de la imagén") }}
-                    </div>
+    <div class="container px-4 py-5" id="icon-grid">
+      <h4 class="pb-2 border-bottom">Agregar una nueva imagen</h4>
+      <form method="post" enctype=multipart/form-data>
+        {{ form.csrf_token }}
+        <div class="row g-3">
+          <div class="col-sm-12">
+            <label for="nombre" class="form-label">Nombre de la imagen.</label>
+            {{ form.nombre(class="form-control", id="nombre", placeholder="Nombre de la imagén") }}
+          </div>
 
-                    <div class="col-md-12">
-                        <label for="descripcion" class="form-label">Imagen</label>
-                        <input type="file" name="img" accept="image/jpeg">
-                    </div>
+          <div class="col-md-12">
+            <label for="descripcion" class="form-label">Imagen</label>
+            <input type="file" name="img" accept="image/jpeg">
+          </div>
 
-                    <div>
-                        <label for="descripcion" class="form-label">Descripción</label>
-                        {{form.descripcion}}
-                        {{mde.preview}}
-                        {{mde.js}}
-                    </div>
+          <div>
+            <label for="descripcion" class="form-label">Descripción</label>
+            {{form.descripcion}}
+            {{mde.preview}}
+            {{mde.js}}
+          </div>
 
-                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Agregar Recurso</button>
-                </div>
-            </form>
+          <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Agregar Recurso</button>
         </div>
+      </form>
+    </div>
 
 
-    </main>
+  </main>
 
 
 </body>

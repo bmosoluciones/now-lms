@@ -398,7 +398,7 @@ def crear_curso_predeterminado():
 ADMIN = environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin"
 PASSWD = environ.get("ADMIN_PSWD") or environ.get("LMS_PSWD") or "lms-admin"
 
-if ADMIN == "lms-admin" and PASSWD == "lms-admin":
+if ADMIN == "lms-admin" and PASSWD == "lms-admin":  # nosec B105
     log.warning("Utilizando usuario y contraseña predeterminada para el usuario administrador.")
 
 

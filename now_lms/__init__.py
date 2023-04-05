@@ -113,7 +113,7 @@ from now_lms.forms import (
     CursoRecursoMeet,
     ThemeForm,
 )
-from now_lms.misc import HTML_TAGS, ICONOS_RECURSOS, TEMPLATES_BY_TYPE, ESTILO
+from now_lms.misc import HTML_TAGS, ICONOS_RECURSOS, TEMPLATES_BY_TYPE, ESTILO, CURSO_NIVEL
 from now_lms.version import VERSION
 
 # ---------------------------------------------------------------------------------------
@@ -878,6 +878,7 @@ def curso(course_code):
         curso=Curso.query.filter_by(codigo=course_code).first(),
         secciones=CursoSeccion.query.filter_by(curso=course_code).order_by(CursoSeccion.indice).all(),
         recursos=CursoRecurso.query.filter_by(curso=course_code).order_by(CursoRecurso.indice).all(),
+        nivel=CURSO_NIVEL,
     )
 
 

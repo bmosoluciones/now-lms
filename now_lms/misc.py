@@ -117,3 +117,15 @@ HTML_TAGS = [
     "tr",
     "ul",
 ]
+
+CURSO_NIVEL = {
+    0: """<i class="bi bi-circle" aria-hidden="true"></i> Nivel Introductorio""",
+    1: """<i class="bi bi-circle-fill" aria-hidden="true"></i> Nivel Principiante""",
+    2: """<i class="bi bi-circle-fill" aria-hidden="true"></i> <i class="bi bi-circle-fill" aria-hidden="true"></i> Nivel Intermedio""",
+    3: """
+    <i class="bi bi-circle-fill" aria-hidden="true">
+    </i> <i class="bi bi-circle-fill" aria-hidden="true">
+    </i> <i class="bi bi-circle-fill" aria-hidden="true"></i>
+    Nivel Avanzado
+    """,
+}

@@ -5,137 +5,137 @@
 
 <head>
 
-    {{ macros.headertags() }}
-    <title>Listado de cursos.</title>
+  {{ macros.headertags() }}
+  <title>Listado de cursos.</title>
 
-    
-    {{ macros.local_style() }}
+
+  {{ macros.local_style() }}
 </head>
 
 <body>
 
-    {{ macros.navbar() }}
+  {{ macros.navbar() }}
 
-    <main>
+  <main>
 
-        {{ macros.notify() }}
+    {{ macros.notify() }}
 
-        <div class="container px-0 py-3" id="curse_list">
+    <div class="container px-0 py-3" id="curse_list">
 
-            <div class="d-flex justify-content-between border-bottom">
+      <div class="d-flex justify-content-between border-bottom">
 
-                <h4>Lista de Cursos Disponibles.</h4>
-                
-                <p>
-                    <span class="badge bg-success">
-                        <a href="{{ url_for("nuevo_curso") }}" class="link-light">Nuevo Curso</a>
-                    </span>
-                </p>
+        <h4>Lista de Cursos Disponibles.</h4>
 
-            </div>
+        <p>
+          <span class="badge bg-success">
+            <a href="{{ url_for("nuevo_curso") }}" class="link-light">Nuevo Curso</a>
+          </span>
+        </p>
 
-            {% if consulta %}
+      </div>
 
-            <div class="container" id="curse_table">
+      {% if consulta %}
 
-                <table class="table table-sm table-borderless">
-                    <caption>Lista de cursos disponibles en el sistema.</caption>
-                    <thead>
-                        <tr>
-                            <th scope="col">Codigo Curso</th>
-                            <th scope="col">Nombre Curso</th>
-                            <th scope="col">Fecha Inicio</th>
-                            <th scope="col">Fecha Fin</th>
-                            <th scope="col">Estado</th>
-                            <th scope="col">Público</th>
-                        </tr>
-                    </thead>
-                    {% for item in consulta.items -%}
-                    <tbody>
-                        <tr>
-                            <td>
-                                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
-                                    {{ item.codigo }}
-                                </a>
-                            </td>
-                            <td>
-                                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
-                                    {{ item.nombre }}
-                                </a>
-                            </td>
-                            <td>
-                                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
-                                    {{ item.fecha_inicio }}
-                                </a>
-                            </td>
-                            <td>
-                                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
-                                    {{ item.fecha_fin }}
-                                </a>
-                            </td>
-                            <td>
+      <div class="container" id="curse_table">
 
-                                {% if item.estado == "draft" %}
+        <table class="table table-sm table-borderless">
+          <caption>Lista de cursos disponibles en el sistema.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Codigo Curso</th>
+              <th scope="col">Nombre Curso</th>
+              <th scope="col">Fecha Inicio</th>
+              <th scope="col">Fecha Fin</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Público</th>
+            </tr>
+          </thead>
+          {% for item in consulta.items -%}
+          <tbody>
+            <tr>
+              <td>
+                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
+                  {{ item.codigo }}
+                </a>
+              </td>
+              <td>
+                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
+                  {{ item.nombre }}
+                </a>
+              </td>
+              <td>
+                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
+                  {{ item.fecha_inicio }}
+                </a>
+              </td>
+              <td>
+                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
+                  {{ item.fecha_fin }}
+                </a>
+              </td>
+              <td>
 
-                                <span class="badge p-1 bg-secondary border border-light rounded-circle">
-                                    <span class="visually-hidden">Borrador</span>
-                                </span>
+                {% if item.estado == "draft" %}
 
-                                {% elif item.estado == "open" %}
+                <span class="badge p-1 bg-secondary border border-light rounded-circle">
+                  <span class="visually-hidden">Borrador</span>
+                </span>
 
-                                <span class="badge p-1 bg-info border border-light rounded-circle">
-                                    <span class="visually-hidden">Abierto</span>
-                                </span>
+                {% elif item.estado == "open" %}
 
-                                {% else %}
+                <span class="badge p-1 bg-info border border-light rounded-circle">
+                  <span class="visually-hidden">Abierto</span>
+                </span>
 
-                                <span class="badge p-1 bg-danger border border-light rounded-circle">
-                                    <span class="visually-hidden">Cerrado</span>
-                                </span>
+                {% else %}
 
-                                {% endif %}
+                <span class="badge p-1 bg-danger border border-light rounded-circle">
+                  <span class="visually-hidden">Cerrado</span>
+                </span>
 
-                                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
-                                    {{ item.estado | capitalize }}
-                                </a>
-                            </td>
-                            <td>
+                {% endif %}
 
-                                {% if item.publico %}
+                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
+                  {{ item.estado | capitalize }}
+                </a>
+              </td>
+              <td>
 
-                                <span class="badge p-1 bg-primary border border-light rounded-circle">
-                                    <span class="visually-hidden">Curso Publico</span>
-                                </span>
+                {% if item.publico %}
 
-                                {% else %}
+                <span class="badge p-1 bg-primary border border-light rounded-circle">
+                  <span class="visually-hidden">Curso Publico</span>
+                </span>
 
-                                <span class="badge p-1 bg-danger border border-light rounded-circle">
-                                    <span class="visually-hidden">Curso Privado</span>
-                                </span>
+                {% else %}
 
-                                {% endif %}
+                <span class="badge p-1 bg-danger border border-light rounded-circle">
+                  <span class="visually-hidden">Curso Privado</span>
+                </span>
 
-                                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
-                                    {{ item.publico | replace("True", "Publico") | replace("False", "Privado") | replace("None", "Privado") }}
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                    {% endfor %}
-                </table>
-            </div>
-            {% else %}
-            <p>Usted no ha creado ningun curso todavia.</p>
-            {% endif %}
+                {% endif %}
 
-            <div class="container" id="user_paginatios">
-                {{ macros.rendizar_paginacion(consulta=consulta, vista="cursos") }}
-            </div>
+                <a href="{{ url_for("curso", course_code=item.codigo) }}" class="link-dark">
+                  {{ item.publico | replace("True", "Publico") | replace("False", "Privado") | replace("None", "Privado") }}
+                </a>
+              </td>
+            </tr>
+          </tbody>
+          {% endfor %}
+        </table>
+      </div>
+      {% else %}
+      <p>Usted no ha creado ningun curso todavia.</p>
+      {% endif %}
 
-        </div>
+      <div class="container" id="user_paginatios">
+        {{ macros.rendizar_paginacion(consulta=consulta, vista="cursos") }}
+      </div>
+
+    </div>
 
 
-    </main>
+  </main>
 
 
 </body>

@@ -10,59 +10,62 @@
 
 <head>
 
-    {{ macros.headertags() }}
-    <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
+  {{ macros.headertags() }}
+  <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
 
-    {{ macros.local_style() }}
+  {{ macros.local_style() }}
 
 </head>
 
 <body>
 
-    {{ macros.navbar() }}
+  {{ macros.navbar() }}
 
-    <main>
+  <main>
 
-      {{ macros.notify() }}
+    {{ macros.notify() }}
 
-      <div class="container px-0 py-3" id="icon-grid">
+    <div class="container px-0 py-3" id="icon-grid">
 
-        <h4 class="pb-2 border-bottom">
-          <a class="link-dark" href="{{ url_for("curso", course_code=recurso.curso) }}">
-              <i class="bi bi-arrow-left-short" aria-hidden="true"></i><i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i>
-          </a>
-          Puede seleccionar uno de los siguientes recursos para continuar su aprendizaje.
-        </h4>
+      <h4 class="pb-2 border-bottom">
+        <a class="link-dark" href="{{ url_for("curso", course_code=recurso.curso) }}">
+          <i class="bi bi-arrow-left-short" aria-hidden="true"></i><i class="bi bi-journal-bookmark-fill"
+            aria-hidden="true"></i>
+        </a>
+        Puede seleccionar uno de los siguientes recursos para continuar su aprendizaje.
+      </h4>
 
-        <div class="row">
+      <div class="row">
 
-          <div class="col-sm-8">
-            <ul class="list-group list-group-flush">
-              {% for recurso in recursos %}
-              {% if recurso.requerido == 3 %}
-              <li class="list-group-item">
-                <div class="d-flex justify-content-between">
-                  <a class="link-dark" href="{{ url_for("pagina_recurso", curso_id=recurso.curso, resource_type=recurso.tipo, codigo=recurso.id) }} ">
-                    <div class="fw-bold"> <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i>  {{ recurso.nombre }}</div>
-                  </a>
-                </div>
-              </li>
-              {% endif %}
-              {% endfor %}
-            </ul>
-          </div>
+        <div class="col-sm-8">
+          <ul class="list-group list-group-flush">
+            {% for recurso in recursos %}
+            {% if recurso.requerido == 3 %}
+            <li class="list-group-item">
+              <div class="d-flex justify-content-between">
+                <a class="link-dark"
+                  href="{{ url_for("pagina_recurso", curso_id=recurso.curso, resource_type=recurso.tipo, codigo=recurso.id) }} ">
+                  <div class="fw-bold"> <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i>
+                    {{ recurso.nombre }}</div>
+                </a>
+              </div>
+            </li>
+            {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
 
-          <div class="col-sm-4">
+        <div class="col-sm-4">
 
-            {{ r_macros.resource_nav(recursos=recursos, secciones=secciones) }}
-
-          </div>
+          {{ r_macros.resource_nav(recursos=recursos, secciones=secciones) }}
 
         </div>
+
       </div>
+    </div>
 
-    </main>
+  </main>
 
-  </body>
+</body>
 
 </html>

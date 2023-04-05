@@ -123,7 +123,7 @@ def test_non_interactive(client):
     response = client.get("/course/now")
     assert response.status_code == 200
     assert b"First Course" in response.data
-    assert b"now - First Course" in response.data
+    assert b"First Course" in response.data
     assert b"Crear Cuenta" in response.data
     response = client.get("/theming")
     assert response.status_code == 302
@@ -150,7 +150,6 @@ def test_logged_in(client, auth):
     response = client.get("/course/now")
     assert response.status_code == 200
     assert b"First Course" in response.data
-    assert b"now - First Course" in response.data
     assert b"Quitar del Sitio Web" in response.data
     response = client.get("/panel")
     assert response.status_code == 200

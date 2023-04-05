@@ -5,94 +5,100 @@
 
 <head>
 
-    {{ macros.headertags() }}
-    <title>Usuario - {{ perfil.usuario }}</title>
+  {{ macros.headertags() }}
+  <title>Usuario - {{ perfil.usuario }}</title>
 
-    {{ macros.local_style() }}
+  {{ macros.local_style() }}
 </head>
 
 <body>
 
-    {{ macros.navbar() }}
+  {{ macros.navbar() }}
 
-    <main>
+  <main>
 
-        {{ macros.notify() }}
-        
-        <div class="container" id="user_profile">
+    {{ macros.notify() }}
 
-            <div class="d-flex justify-content-between border-bottom">
-                <h4>Perfil del usuario {{ perfil.usuario }}</h4>
-                {% if current_user.tipo == "admin" %}
-                <div class="d-flex d-flex justify-content-end">
-                <p>
-                    {% if perfil.tipo != "user" %}
-                    <span class="badge bg-secondary">
-                        <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="user") }}" class="link-light">Establecer como Estudiante</a>
-                    </span>
-                    {% endif %}
-                    {% if perfil.tipo != "moderator" %}
-                    <span class="badge bg-primary">
-                        <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="moderator") }}" class="link-light">Establecer como Moderador</a>
-                    </span>
-                    {% endif %}
-                    {% if perfil.tipo != "instructor" %}
-                    <span class="badge bg-success">
-                        <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="instructor") }}" class="link-light">Establecer como Instructor</a>
-                    </span>
-                    {% endif %}
-                    {% if perfil.tipo != "admin" %}
-                    <span class="badge bg-danger">
-                        <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="admin") }}" class="link-light">Establecer como Administrador</a>
-                    </span>
-                    {% endif %}
-                </p>
-            </div>
-            
-            <div class="d-flex d-flex justify-content-end">
-                <p>
-                    {% if perfil.activo %}
-                    <span class="badge bg-secondary">
-                        <a href="{{ url_for("inactivar_usuario", user_id=perfil.usuario) }}" class="link-light">Inactivar Usuario</a>
-                    </span>
-                    {% else %}
-                    <span class="badge bg-primary">
-                        <a href="{{ url_for("activar_usuario", user_id=perfil.usuario) }}" class="link-light">Activar Usuario</a>
-                    </span>
-                    {% endif %}
-                    <span class="badge bg-danger">
-                        <a href="{{ url_for("eliminar_usuario", user_id=perfil.usuario) }}" class="link-light">Eliminar Usuario</a>
-                    </span>
-               </p>
-            </div>
+    <div class="container" id="user_profile">
+
+      <div class="d-flex justify-content-between border-bottom">
+        <h4>Perfil del usuario {{ perfil.usuario }}</h4>
+        {% if current_user.tipo == "admin" %}
+        <div class="d-flex d-flex justify-content-end">
+          <p>
+            {% if perfil.tipo != "user" %}
+            <span class="badge bg-secondary">
+              <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="user") }}"
+                class="link-light">Establecer como Estudiante</a>
+            </span>
             {% endif %}
+            {% if perfil.tipo != "moderator" %}
+            <span class="badge bg-primary">
+              <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="moderator") }}"
+                class="link-light">Establecer como Moderador</a>
+            </span>
+            {% endif %}
+            {% if perfil.tipo != "instructor" %}
+            <span class="badge bg-success">
+              <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="instructor") }}"
+                class="link-light">Establecer como Instructor</a>
+            </span>
+            {% endif %}
+            {% if perfil.tipo != "admin" %}
+            <span class="badge bg-danger">
+              <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="admin") }}"
+                class="link-light">Establecer como Administrador</a>
+            </span>
+            {% endif %}
+          </p>
+        </div>
+
+        <div class="d-flex d-flex justify-content-end">
+          <p>
+            {% if perfil.activo %}
+            <span class="badge bg-secondary">
+              <a href="{{ url_for("inactivar_usuario", user_id=perfil.usuario) }}" class="link-light">Inactivar
+                Usuario</a>
+            </span>
+            {% else %}
+            <span class="badge bg-primary">
+              <a href="{{ url_for("activar_usuario", user_id=perfil.usuario) }}" class="link-light">Activar Usuario</a>
+            </span>
+            {% endif %}
+            <span class="badge bg-danger">
+              <a href="{{ url_for("eliminar_usuario", user_id=perfil.usuario) }}" class="link-light">Eliminar
+                Usuario</a>
+            </span>
+          </p>
+        </div>
+        {% endif %}
 
 
-            <div class="container" id="profile">
-                <div class="container rounded bg-white mt-5 mb-5">
-                    <div class="row">
-                        <div class="col-md-2 border-right">
-                            <div class="fd-lex flex-column align-items-center text-center p-3 py-5">
-                                <img class="rounded-circle mt-5" width="150px" alt=""
-                                    src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
-                                <span class="font-weight-bold">{{ perfil.nombre }} {{ perfil.apellido }}</span>
-                                <span class="text-black-50">{{ perfil.correo_electronico }}</span>
-                                <p>Perfil: <span class="text-black-50">{{ perfil.tipo }}</span></p>
-                            </div>
-                        </div>
-                        <div class="col-md-10 border-right">
-                            {% if current_user.is_authenticated and  current_user.tipo == "admin" %}
-                                {% if perfil.estado == False %}
-                                
-                                {% endif%}
-                            {% endif %}
-                        </div>
-                    </div>
+        <div class="container" id="profile">
+          <div class="container rounded bg-white mt-5 mb-5">
+            <div class="row">
+              <div class="col-md-2 border-right">
+                <div class="fd-lex flex-column align-items-center text-center p-3 py-5">
+                  <img class="rounded-circle mt-5" width="150px" alt=""
+                    src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
+                  <span class="font-weight-bold">{{ perfil.nombre }} {{ perfil.apellido }}</span>
+                  <span class="text-black-50">{{ perfil.correo_electronico }}</span>
+                  <p>Perfil: <span class="text-black-50">{{ perfil.tipo }}</span></p>
                 </div>
+              </div>
+              <div class="col-md-10 border-right">
+                {% if current_user.is_authenticated and  current_user.tipo == "admin" %}
+                {% if perfil.estado == False %}
+
+                {% endif%}
+                {% endif %}
+              </div>
             </div>
+          </div>
         </div>
       </div>
-    </main>
+    </div>
+  </main>
 
 </body>
 

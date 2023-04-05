@@ -50,70 +50,78 @@
 
 {%- endmacro %}
 
+
+{# Macro para generar pie de página de paginación en la vista de cursos. #}
 {% macro rendizar_paginacion(consulta=None, vista=None)%}
 <p>{{ consulta.total }} items encontrados.
   <br>
   {% if consulta.has_prev %}
   <a href="{{ url_for(vista, page=consulta.prev_num) }}" class="link-dark"><i class="bi bi-arrow-left-short"
-      aria-hidden="true"></i>
-    Anterior</a>
+      aria-hidden="true"></i>Anterior</a>
   {% endif %}
   Página {{ consulta.page }} de {{ consulta.pages }}
   {% if consulta.has_next %}
-  <a href="{{ url_for(vista, page=consulta.next_num) }}" class="link-dark">Siguiente <i
-      class="bi bi-arrow-right-short" aria-hidden="true"></i></a>
+  <a href="{{ url_for(vista, page=consulta.next_num) }}" class="link-dark">Siguiente <i class="bi bi-arrow-right-short"
+      aria-hidden="true"></i></a>
   {% endif %}
 </p>
 {% endmacro %}
 
-
+{# Agrega barra de navegación superior. #}
 {% macro navbar() -%}
 
 <nav class="navbar navbar-expand-md {{ estilo.navbar[obtener_estilo_actual()] }}" aria-label="Fourth navbar example">
   <div class="container-fluid">
-    <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 {{ estilo.texto[obtener_estilo_actual()] }} text-decoration-none">
+    <a href="/"
+      class="d-flex align-items-center mb-2 mb-lg-0 {{ estilo.texto[obtener_estilo_actual()] }} text-decoration-none">
       {% if logo_perzonalizado() %}
-      <img height="20" src="{{ url_for('static', filename='/files/public/images/logotipo.jpg') }}" alt="NOW LMS" class="d-inline-block align-top">
+      <img height="20" src="{{ url_for('static', filename='/files/public/images/logotipo.jpg') }}" alt="NOW LMS"
+        class="d-inline-block align-top">
       {% else %}
-      <img height="20" src="{{ url_for('static', filename='/icons/logo/' + estilo.logo[obtener_estilo_actual()]) }}" alt="NOW LMS" class="d-inline-block align-top">
+      <img height="20" src="{{ url_for('static', filename='/icons/logo/' + estilo.logo[obtener_estilo_actual()]) }}"
+        alt="NOW LMS" class="d-inline-block align-top">
       {% endif %}
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsNOWLMS" aria-controls="navbarsNOWLMS" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsNOWLMS"
+      aria-controls="navbarsNOWLMS" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarsNOWLMS">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         {% if not current_user.is_authenticated %}
-        <li><a href="{{ url_for('home') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-house-fill"
-              aria-hidden="true"></i> Inicio</a>
+        <li><a href="{{ url_for('home') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i
+              class="bi bi-house-fill" aria-hidden="true"></i> Inicio</a>
         </li>
         {% else %}
-        <li><a href="{{ url_for('panel') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-house-fill"
-              aria-hidden="true"></i>
+        <li><a href="{{ url_for('panel') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i
+              class="bi bi-house-fill" aria-hidden="true"></i>
             Inicio</a></li>
-        <li><a href="{{ url_for('pagina_estudiante') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-award-fill"
+        <li><a href="{{ url_for('pagina_estudiante') }}"
+            class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-award-fill"
               aria-hidden="true"></i>
             Aprendizaje</a></li>
         {% if current_user.tipo == "moderator" or current_user.tipo == "instructor" or current_user.tipo == "admin" %}
-        <li><a href="{{ url_for('pagina_moderador') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-card-checklist"
+        <li><a href="{{ url_for('pagina_moderador') }}"
+            class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-card-checklist"
               aria-hidden="true"></i>
             Moderación</a></li>
         {% endif %}
         {% if current_user.tipo == "instructor" or current_user.tipo == "admin" %}
-        <li><a href="{{ url_for('pagina_instructor') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-bank2"
+        <li><a href="{{ url_for('pagina_instructor') }}"
+            class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-bank2"
               aria-hidden="true"></i>
             Docente</a></li>
         {% endif %}
         {% if current_user.tipo == "admin" %}
-        <li><a href="{{ url_for('pagina_admin') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-sliders"
-              aria-hidden="true"></i>
+        <li><a href="{{ url_for('pagina_admin') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i
+              class="bi bi-sliders" aria-hidden="true"></i>
             Administración</a></li>
         {% endif %}
         {% endif %}
       </ul>
       <div class="text-end">
-      {% if config.dev_docs %}
+        {% if config.dev_docs %}
 
         <a href="https://github.com/bmosoluciones/now-lms" class="{{ estilo.texto[obtener_estilo_actual()] }}">
           <i class="bi bi-github" aria-hidden="true"></i>
@@ -121,17 +129,18 @@
         <a href="https://bmosoluciones.github.io/now-lms/" class="{{ estilo.texto[obtener_estilo_actual()] }}">
           <i class="bi bi-book" aria-hidden="true"></i>
         </a>
-      {% endif %}
-      {% if not current_user.is_authenticated %}
-        <a class="btn {{ estilo.buttom[obtener_estilo_actual()] }} me-2" href="{{ url_for('inicio_sesion') }}" role="button">Iniciar Sesión</a>
+        {% endif %}
+        {% if not current_user.is_authenticated %}
+        <a class="btn {{ estilo.buttom[obtener_estilo_actual()] }} me-2" href="{{ url_for('inicio_sesion') }}"
+          role="button">Iniciar Sesión</a>
         <a class="btn btn-warning me-2" href="{{ url_for('crear_cuenta') }}" role="button">Crear Cuenta</a>
-      {% else %}
-        <a class="{{ estilo.texto[obtener_estilo_actual()] }}" href="{{ url_for('perfil') }}"><i class="bi bi-person-circle"
-            aria-hidden="true"></i></a>
-        <a class="{{ estilo.texto[obtener_estilo_actual()] }}" href="{{ url_for('cerrar_sesion') }}"><i class="bi bi-power"
-            aria-hidden="true"></i></a>
-      {% endif %}
-    </div>
+        {% else %}
+        <a class="{{ estilo.texto[obtener_estilo_actual()] }}" href="{{ url_for('perfil') }}"><i
+            class="bi bi-person-circle" aria-hidden="true"></i></a>
+        <a class="{{ estilo.texto[obtener_estilo_actual()] }}" href="{{ url_for('cerrar_sesion') }}"><i
+            class="bi bi-power" aria-hidden="true"></i></a>
+        {% endif %}
+      </div>
     </div>
   </div>
 </nav>
@@ -147,7 +156,8 @@
 <div class="toast-container show position-fixed bottom-0 end-0 p-3">
   <div class="toast show position-fixed bottom-0 end-0 p-3" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header">
-      <img src="{{ url_for('static', filename='/icons/logo/icon_small.png') }}" class="rounded me-2" height="20" width="20" alt="Logo NOW - LMS">
+      <img src="{{ url_for('static', filename='/icons/logo/icon_small.png') }}" class="rounded me-2" height="20"
+        width="20" alt="Logo NOW - LMS">
       <strong class="me-auto">NOW - LMS</strong>
       <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
@@ -167,19 +177,20 @@
 
 <style>
   .bd-placeholder-img {
-      font-size: 1.125rem;
-      text-anchor: middle;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      user-select: none;
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
   }
+
   @media (min-width: 768px) {
-      .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-      }
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
   }
+
 </style>
 
 
 {% endmacro %}
-

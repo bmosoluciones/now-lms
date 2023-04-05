@@ -5,53 +5,53 @@
 
 <head>
 
-    {{ macros.headertags() }}
-    <title>Docente</title>
+  {{ macros.headertags() }}
+  <title>Docente</title>
 
-    <style>
-        .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            user-select: none;
-        }
+  <style>
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
 
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
-            }
-        }
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
 
-    </style>
+  </style>
 </head>
 
 <body>
 
-    {{ macros.navbar() }}
+  {{ macros.navbar() }}
 
-    <main>
+  <main>
 
-        {{ macros.notify() }}
-        
-        <div class="container px-0 py-3" id="icon-grid">
-            <h4 class="pb-2 border-bottom">Panel del docente.</h4>
+    {{ macros.notify() }}
 
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
-                <div class="col d-flex align-items-start">
-                    <h3><i class="bi bi-people-fill" aria-hidden="true"></i></h3>
-                    <div>
-                        <h4 class="fw-bold mb-0">Cursos</h4>
-                        <p>
-                            <a href=" {{ url_for("cursos") }} " class="link-dark">Cursos</a>
-                             - 
-                            <a href="{{ url_for("nuevo_curso") }}" class="link-dark">Nuevo Curso</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
+    <div class="container px-0 py-3" id="icon-grid">
+      <h4 class="pb-2 border-bottom">Panel del docente.</h4>
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+        <div class="col d-flex align-items-start">
+          <h3><i class="bi bi-people-fill" aria-hidden="true"></i></h3>
+          <div>
+            <h4 class="fw-bold mb-0">Cursos</h4>
+            <p>
+              <a href=" {{ url_for("cursos") }} " class="link-dark">Cursos</a>
+              -
+              <a href="{{ url_for("nuevo_curso") }}" class="link-dark">Nuevo Curso</a>
+            </p>
+          </div>
         </div>
-    </main>
+      </div>
+    </div>
+  </main>
 
 
 </body>
