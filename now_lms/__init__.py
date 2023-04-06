@@ -756,13 +756,12 @@ def usuarios_inactivos():
 
 @lms_app.route("/user/<id_usuario>")
 @login_required
-@perfil_requerido("admin")
 def usuario(id_usuario):
     """Acceso administrativo al perfil de un usuario."""
     perfil_usuario = Usuario.query.filter_by(usuario=id_usuario).first()
     # La misma plantilla del perfil de usuario con permisos elevados como
     # activar desactivar el perfil o cambiar el perfil del usuario.
-    if current_user.usuario == id_usuario or current_user.tipo != "student" or perfil.visible == True:
+    if current_user.usuario == id_usuario or current_user.tipo != "student" or perfil_usuario.visible == True:
         return render_template("inicio/perfil.html", perfil=perfil_usuario, genero=GENEROS)
     else:
         return render_template("inicio/private.html")

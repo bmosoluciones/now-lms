@@ -408,6 +408,8 @@ def crear_usuarios_predeterminados():
     administrador = Usuario(
         usuario=ADMIN,
         acceso=proteger_passwd(PASSWD),
+        nombre="System",
+        apellido="Administrator",
         tipo="admin",
         activo=True,
     )
@@ -461,7 +463,7 @@ def crear_usuarios_predeterminados():
         acceso=proteger_passwd("student1"),
         nombre="Gema",
         apellido="Lopez",
-        correo_electronico="hello1@domain.net",
+        correo_electronico="hello3@domain.net",
         tipo="student",
         activo=False,
         visible=False,
@@ -477,6 +479,7 @@ def crear_usuarios_predeterminados():
     )
     database.session.add(student)
     database.session.add(student1)
+    database.session.add(student2)
     database.session.commit()
     instructor = Usuario(
         usuario="instructor",
