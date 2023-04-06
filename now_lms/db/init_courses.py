@@ -425,21 +425,33 @@ def crear_usuarios_predeterminados():
         usuario="student",
         acceso=proteger_passwd("student"),
         tipo="user",
-        nombre="User",
-        apellido="Student",
+        nombre="Demo User",
+        apellido="Student Role",
         correo_electronico="student@mail.com",
         activo=False,
+        bio="Usuario de Demostración con Perfil estudiante.",
+        genero="male",
     )
     database.session.add(student)
     database.session.commit()
     instructor = Usuario(
         usuario="instructor",
         acceso=proteger_passwd("instructor"),
+        nombre="Juan",
+        apellido="Gomez",
+        correo_electronico="hello@domain.net",
         tipo="instructor",
-        nombre="User",
-        apellido="Instructor",
-        correo_electronico="instructor@mail.com",
-        activo=False,
+        activo=True,
+        visible=True,
+        titulo="ing",
+        genero="male",
+        nacimiento=datetime(year=1988, month=9, day=21),
+        bio="Just do it!",
+        url="google.com",
+        linkedin="user",
+        facebook="user",
+        twitter="user",
+        github="user",
     )
     database.session.add(instructor)
     database.session.commit()

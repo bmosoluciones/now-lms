@@ -72,19 +72,29 @@ class Usuario(UserMixin, database.Model, BaseTabla):  # type: ignore[name-define
     # Información Básica
     __table_args__ = (database.UniqueConstraint("usuario", name="id_usuario_unico"),)
     __table_args__ = (database.UniqueConstraint("correo_electronico", name="correo_usuario_unico"),)
+    # Info de sistema
     usuario = database.Column(database.String(20), nullable=False, index=True, unique=True)
     acceso = database.Column(database.LargeBinary(), nullable=False)
     nombre = database.Column(database.String(100))
     apellido = database.Column(database.String(100))
     correo_electronico = database.Column(database.String(100))
-    # Tipo puede ser: admin, user, instructor, moderator
-    tipo = database.Column(database.String(20))
+    tipo = database.Column(database.String(20))  # Puede ser: admin, user, instructor, moderator
     activo = database.Column(database.Boolean())
-    genero = database.Column(database.String(1))
+    # Perfil personal
+    visible = database.Column(database.Boolean())
+    titulo = database.Column(database.String(10))
+    genero = database.Column(database.String(1))  # Puede ser: male, female, other, none
     nacimiento = database.Column(database.Date())
+    bio = database.Column(database.String(500))
     # Registro de actividad
     fecha_alta = database.Column(database.DateTime, default=database.func.now())
     ultimo_acceso = database.Column(database.DateTime)
+    # Social
+    url = database.Column(database.String(100))
+    linkedin = database.Column(database.String(50))
+    facebook = database.Column(database.String(50))
+    twitter = database.Column(database.String(50))
+    github = database.Column(database.String(500))
 
 
 class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]

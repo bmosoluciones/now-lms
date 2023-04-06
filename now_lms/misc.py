@@ -118,7 +118,7 @@ HTML_TAGS = [
     "ul",
 ]
 
-CURSO_NIVEL = {
+CURSO_NIVEL: dict = {
     0: """<i class="bi bi-circle" aria-hidden="true"></i> Nivel Introductorio""",
     1: """<i class="bi bi-circle-fill" aria-hidden="true"></i> Nivel Principiante""",
     2: """<i class="bi bi-circle-fill" aria-hidden="true"></i> <i class="bi bi-circle-fill" aria-hidden="true"></i> Nivel Intermedio""",
@@ -128,4 +128,11 @@ CURSO_NIVEL = {
     </i> <i class="bi bi-circle-fill" aria-hidden="true"></i>
     Nivel Avanzado
     """,
+}
+
+GENEROS: dict = {
+    "male": """<i class="bi bi-gender-male" aria-hidden="true"></i>""",
+    "female": """<i class="bi bi-gender-female" aria-hidden="true"></i>""",
+    "other": """<i class="bi bi-gender-ambiguous" aria-hidden="true"></i>""",
+    "none": """No espeficicado.""",
 }

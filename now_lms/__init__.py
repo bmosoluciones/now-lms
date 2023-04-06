@@ -113,7 +113,7 @@ from now_lms.forms import (
     CursoRecursoMeet,
     ThemeForm,
 )
-from now_lms.misc import HTML_TAGS, ICONOS_RECURSOS, TEMPLATES_BY_TYPE, ESTILO, CURSO_NIVEL
+from now_lms.misc import HTML_TAGS, ICONOS_RECURSOS, TEMPLATES_BY_TYPE, ESTILO, CURSO_NIVEL, GENEROS
 from now_lms.version import VERSION
 
 # ---------------------------------------------------------------------------------------
@@ -549,7 +549,7 @@ def pagina_estudiante():
 def perfil():
     """Perfil del usuario."""
     perfil_usuario = Usuario.query.filter_by(usuario=current_user.usuario).first()
-    return render_template("inicio/perfil.html", perfil=perfil_usuario)
+    return render_template("inicio/perfil.html", perfil=perfil_usuario, genero=GENEROS)
 
 
 # ---------------------------------------------------------------------------------------
@@ -762,7 +762,10 @@ def usuario(id_usuario):
     perfil_usuario = Usuario.query.filter_by(usuario=id_usuario).first()
     # La misma plantilla del perfil de usuario con permisos elevados como
     # activar desactivar el perfil o cambiar el perfil del usuario.
-    return render_template("inicio/perfil.html", perfil=perfil_usuario)
+    if current_user.usuario == id_usuario or current_user.tipo != "student" or perfil.visible == True:
+        return render_template("inicio/perfil.html", perfil=perfil_usuario, genero=GENEROS)
+    else:
+        return render_template("inicio/private.html")
 
 
 @lms_app.route("/change_user_type")

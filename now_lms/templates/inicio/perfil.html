@@ -6,9 +6,10 @@
 <head>
 
   {{ macros.headertags() }}
-  <title>Usuario - {{ perfil.usuario }}</title>
+  <title>Usuario - {{ perfil.nombre}} {{ perfil.apellido}}</title>
 
   {{ macros.local_style() }}
+
 </head>
 
 <body>
@@ -19,82 +20,66 @@
 
     {{ macros.notify() }}
 
-    <div class="container" id="user_profile">
+    <br>
 
+    <div class="container">
       <div class="d-flex justify-content-between border-bottom">
-        <h4>Perfil del usuario {{ perfil.usuario }}</h4>
-        {% if current_user.tipo == "admin" %}
-        <div class="d-flex d-flex justify-content-end">
-          <p>
-            {% if perfil.tipo != "user" %}
-            <span class="badge bg-secondary">
-              <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="user") }}"
-                class="link-light">Establecer como Estudiante</a>
-            </span>
-            {% endif %}
-            {% if perfil.tipo != "moderator" %}
-            <span class="badge bg-primary">
-              <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="moderator") }}"
-                class="link-light">Establecer como Moderador</a>
-            </span>
-            {% endif %}
-            {% if perfil.tipo != "instructor" %}
-            <span class="badge bg-success">
-              <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="instructor") }}"
-                class="link-light">Establecer como Instructor</a>
-            </span>
-            {% endif %}
-            {% if perfil.tipo != "admin" %}
-            <span class="badge bg-danger">
-              <a href="{{ url_for("cambiar_tipo_usario", user=perfil.usuario, type="admin") }}"
-                class="link-light">Establecer como Administrador</a>
-            </span>
-            {% endif %}
-          </p>
-        </div>
 
-        <div class="d-flex d-flex justify-content-end">
-          <p>
-            {% if perfil.activo %}
-            <span class="badge bg-secondary">
-              <a href="{{ url_for("inactivar_usuario", user_id=perfil.usuario) }}" class="link-light">Inactivar
-                Usuario</a>
-            </span>
-            {% else %}
-            <span class="badge bg-primary">
-              <a href="{{ url_for("activar_usuario", user_id=perfil.usuario) }}" class="link-light">Activar Usuario</a>
-            </span>
+        <h4>Perfil de Usuario</h4>
+
+      </div>
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
+        <div class="col-md-4 border-right">
+          <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
+            role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+            <title> {{ perfil.nombre }} {{ perfil.apellido }} </title>
+            <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
+              dy=".3em">{{ perfil.nombre }} {{ perfil.apellido }}</text>
+          </svg>
+          <h2>
+            {% if perfil.titulo %}
+            {{ perfil.titulo | capitalize }}.
             {% endif %}
-            <span class="badge bg-danger">
-              <a href="{{ url_for("eliminar_usuario", user_id=perfil.usuario) }}" class="link-light">Eliminar
-                Usuario</a>
-            </span>
-          </p>
-        </div>
-        {% endif %}
-
-
-        <div class="container" id="profile">
-          <div class="container rounded bg-white mt-5 mb-5">
-            <div class="row">
-              <div class="col-md-2 border-right">
-                <div class="fd-lex flex-column align-items-center text-center p-3 py-5">
-                  <img class="rounded-circle mt-5" width="150px" alt=""
-                    src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
-                  <span class="font-weight-bold">{{ perfil.nombre }} {{ perfil.apellido }}</span>
-                  <span class="text-black-50">{{ perfil.correo_electronico }}</span>
-                  <p>Perfil: <span class="text-black-50">{{ perfil.tipo }}</span></p>
-                </div>
-              </div>
-              <div class="col-md-10 border-right">
-                {% if current_user.is_authenticated and  current_user.tipo == "admin" %}
-                {% if perfil.estado == False %}
-
-                {% endif%}
-                {% endif %}
-              </div>
-            </div>
+            {{ perfil.nombre | capitalize }}
+            {{ perfil.apellido | capitalize }}
+          </h2>
+          <h5>Perfil:{{ perfil.tipo | capitalize }}</h5>
+          <h6> Información:</h6>
+          <span class="fw-bolder">Sobre mi:</span> {{ perfil.bio }}
+          <br> <span class="fw-bolder">Genero:</span> {{ genero[perfil.genero] | safe }}
+          <br> <span class="fw-bolder">Nacimiento:</span> {{ perfil.nacimiento }}
+          <br> <span class="fw-bolder">Fecha de Alta:</span> {{ perfil.fecha_alta }}
+          <p></p>
+          <h6>Contacto:</h6>
+          <span class="fw-bolder">Usuario:</span> {{ perfil.usuario }}
+          <br><span class="fw-bolder">Correo Electronico:</span> {{ perfil.correo_electronico }}
+          <div class="d-flex justify-content-start">
+            {% if perfil.url %}
+            <a href="{{perfil.url}}" class="text-reset text-decoration-none"><i class="bi bi-globe"
+                aria-hidden="true"></i></a>
+            {% endif %}
+            {% if perfil.linkedin %}
+            <a href="https://www.linkedin.com/in/{{perfil.linkedin}}" class="text-reset text-decoration-none"><i
+                class="bi bi-linkedin" aria-hidden="true"></i></a>
+            {% endif %}
+            {% if perfil.twitter %}
+            <a href="https://twitter.com/{{perfil.twitter}}" class="text-reset text-decoration-none"><i
+                class="bi bi-twitter" aria-hidden="true"></i></a>
+            {% endif %}
+            {% if perfil.facebook %}
+            <a href="https://www.facebook.com/{{perfil.facebook}}" class="text-reset text-decoration-none"><i
+                class="bi bi-facebook" aria-hidden="true"></i></a>
+            {% endif %}
+            {% if perfil.github %}
+            <a href="https://github.com/{{perfil.github}}" class="text-reset text-decoration-none"><i
+                class="bi bi-github" aria-hidden="true"></i></a>
+            {% endif %}
           </div>
+        </div>
+        <div class="col-md-8">
+          <h3>Perfil de aprendizaje.</h3>
+
         </div>
       </div>
     </div>

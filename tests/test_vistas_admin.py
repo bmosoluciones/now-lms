@@ -179,7 +179,7 @@ def test_logged_in(client, auth):
     assert b"Crear nuevo Usuario." in response.data
     response = client.get("/user/admin")
     assert response.status_code == 200
-    assert b"Perfil del usuario " in response.data
+    assert b"Perfil de Usuario" in response.data
     query = now_lms.CursoRecurso.query.all()
 
     for recurso in query:
@@ -219,7 +219,7 @@ def test_users_inactive(client, auth):
     assert b"Usuarios pendientes" in response.data
     response = client.get("/perfil")
     assert response.status_code == 200
-    assert b"Perfil del usuario lms-admin" in response.data
+    assert b"Perfil de Usuario" in response.data
 
 
 def test_activar_usuario(client, auth):
