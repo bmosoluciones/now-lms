@@ -83,7 +83,7 @@ class Usuario(UserMixin, database.Model, BaseTabla):  # type: ignore[name-define
     # Perfil personal
     visible = database.Column(database.Boolean())
     titulo = database.Column(database.String(10))
-    genero = database.Column(database.String(1))  # Puede ser: male, female, other, none
+    genero = database.Column(database.String(10))  # Puede ser: male, female, other, none
     nacimiento = database.Column(database.Date())
     bio = database.Column(database.String(500))
     # Registro de actividad
