@@ -23,7 +23,7 @@ from typing import NamedTuple
 ICONOS_RECURSOS: dict = {
     "html": "bi bi-code-square",
     "img": "bi bi-image",
-    "link": "bi bi-share",
+    "link": "bi bi-link",
     "meet": "bi bi-broadcast",
     "mp3": "bi bi-soundwave",
     "pdf": "bi bi-file-pdf-fill",

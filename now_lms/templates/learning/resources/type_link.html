@@ -38,8 +38,10 @@
       <div class="row">
 
         <div class="col-sm-8">
-
-          <a href="{{ recurso.url }}" target="_blank">{{ recurso.nombre }}</a>
+          <div class="px-4 py-5 my-5 text-center">
+            <h1><i class="bi bi-globe" aria-hidden="true"></i></h1>
+            <h4 class="link-dark text-decoration-none"><a href="{{ recurso.url }}"> {{ recurso.nombre }} </a></h4>
+          </div>
 
           <iframe title="{{ recurso.codigo }}"
             src="{{ url_for('recurso_descripcion_a_html', course_code=recurso.curso, resource=recurso.id) }}"></iframe>
