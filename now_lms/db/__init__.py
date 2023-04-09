@@ -97,6 +97,19 @@ class Usuario(UserMixin, database.Model, BaseTabla):  # type: ignore[name-define
     github = database.Column(database.String(500))
 
 
+class UsuarioGrupo(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Grupo de Usuarios"""
+
+    nombre = database.Column(database.String(150), nullable=False)
+
+
+class UsuarioGrupoMiembro(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Grupo de Usuarios"""
+
+    grupo = database.Column(database.String(26), database.ForeignKey("usuario_grupo.id"), nullable=False, index=True)
+    usuario = database.Column(database.String(26), database.ForeignKey("usuario.id"), nullable=False, index=True)
+
+
 class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Un curso es la base del aprendizaje en NOW LMS."""
 
