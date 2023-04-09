@@ -27,7 +27,15 @@
     <div class="container">
       <div class="d-flex justify-content-between border-bottom">
 
-        <h4>{{ curso.nombre }}</h4>
+        <h4>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a class="text-reset text-decoration-none link-dark"
+                  href="{{ url_for("panel") }}">Inicio</a></li>
+              <li class="breadcrumb-item">{{ curso.nombre }}</li>
+            </ol>
+          </nav>
+        </h4>
         <div>
           {% if permitir_editar %}
           <div class="btn-group">
