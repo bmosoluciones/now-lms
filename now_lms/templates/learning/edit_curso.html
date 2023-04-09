@@ -24,7 +24,7 @@
 
     <div class="container px-4 py-5" id="icon-grid">
       <h4 class="pb-2 border-bottom">Editar curso {{ curso.codigo }} - {{ curso.nombre }}</h4>
-      <form action="{{ url_for('editar_curso', course_code=curso.codigo) }}" method="post">
+      <form action="{{ url_for('editar_curso', course_code=curso.codigo) }}" method="post" enctype=multipart/form-data>
         {{ form.csrf_token }}
         <div class="row g-3">
           <div class="col-sm-6">
@@ -87,6 +87,19 @@
             {{ form.auditable(checked=curso.auditable) }}
 
           </div>
+
+          {% if curso.portada %}
+          <img src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}"
+            alt="Portada del Curso">
+          <a href="{{url_for("elimina_logo_curso", course_code=curso.codigo)}}">Eliminar Portada</a>
+          {% else %}
+
+          <div class=" col-md-4">
+            <label for="logo" class="form-label">Portada</label>
+            <input type="file" name="logo" accept="image/jpeg">
+          </div>
+
+          {% endif %}
 
           <div>
             <label for="descripcion" class="form-label">Descripción del Curso</label>

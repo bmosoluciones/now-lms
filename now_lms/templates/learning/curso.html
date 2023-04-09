@@ -70,7 +70,8 @@
         <div class="col-md-4 border-right">
 
           {% if curso.portada %}
-          <img src="{{ curso.portada }}" alt="Portada {{curso.nombre}}" width="360" height="225">
+          <img src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}" width="100%"
+            height="225" alt="Portada del Curso">
           {% else %}
           <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
             role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">

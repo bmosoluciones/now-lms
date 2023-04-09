@@ -128,7 +128,7 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     fecha_inicio = database.Column(database.Date())
     fecha_fin = database.Column(database.Date())
     duracion = database.Column(database.Integer())
-    portada = database.Column(database.String(250), nullable=True, default=None)
+    portada = database.Column(database.Boolean())
     nivel = database.Column(database.Integer())
 
 

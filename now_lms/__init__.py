@@ -85,6 +85,7 @@ from now_lms.db.tools import (
     obtener_estilo_actual,
     logo_perzonalizado,
     elimina_logo_perzonalizado,
+    elimina_logo_perzonalizado_curso,
 )
 from now_lms.bi import (
     asignar_curso_a_instructor,
@@ -542,6 +543,8 @@ def panel():
             recursos_creados=recursos_creados,
             cursos_por_fecha=cursos_por_fecha,
         )
+    else:
+        return None
 
 
 # ---------------------------------------------------------------------------------------
@@ -693,6 +696,15 @@ def elimina_logo():
     """Elimina logo"""
     elimina_logo_perzonalizado()
     return redirect(url_for("personalizacion"))
+
+
+@lms_app.route("/<course_code>/delete_logo")
+@login_required
+@perfil_requerido("admin")
+def elimina_logo_curso(course_code: str):
+    """Elimina logo"""
+    elimina_logo_perzonalizado_curso(course_code)
+    return redirect(url_for("editar_curso", course_code=course_code))
 
 
 @lms_app.route("/users")
@@ -920,6 +932,14 @@ def editar_curso(course_code):
 
         try:
             database.session.commit()
+            if "logo" in request.files:
+                try:
+                    picture_file = images.save(request.files["logo"], folder=curso_a_editar.codigo, name="logo.jpg")
+                    if picture_file:
+                        curso_a_editar.portada = True
+                        database.session.commit()
+                except UploadNotAllowed:
+                    log.warning("No se pudo actualizar el logotipo del sitio.")
             flash("Curso actualizado exitosamente.")
             return redirect(curso_url)
 
@@ -957,6 +977,13 @@ def nuevo_curso():
             database.session.add(nuevo_curso_)
             database.session.commit()
             asignar_curso_a_instructor(curso_codigo=form.codigo.data, usuario_id=current_user.usuario)
+            if "logo" in request.files:
+                try:
+                    picture_file = images.save(request.files["logo"], folder=nuevo_curso.codigo, name="logo.jpg")
+                    if picture_file:
+                        nuevo_curso.portada = True
+                except UploadNotAllowed:
+                    log.warning("No se pudo actualizar el logotipo del sitio.")
             flash("Curso creado exitosamente.")
             return redirect(url_for("curso", course_code=form.codigo.data))
         except OperationalError:  # pragma: no cover

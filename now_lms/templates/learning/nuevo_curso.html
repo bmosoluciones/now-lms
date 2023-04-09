@@ -24,7 +24,7 @@
 
     <div class="container px-4 py-5" id="icon-grid">
       <h4 class="pb-2 border-bottom">Crear nuevo curso.</h4>
-      <form method="post">
+      <form method="post" enctype=multipart/form-data>
         {{ form.csrf_token }}
         <div class="row g-3">
           <div class="col-sm-6">
@@ -88,6 +88,11 @@
             <label for="auditable" class="form-label">Curso Auditable</label>
             {{ form.auditable }}
 
+          </div>
+
+          <div class="col-md-4">
+            <label for="logo" class="form-label">Portada</label>
+            <input type="file" name="logo" accept="image/jpeg">
           </div>
 
           <div>

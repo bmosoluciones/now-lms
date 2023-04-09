@@ -28,6 +28,7 @@ from flask_login import current_user
 
 # Recursos locales:
 from now_lms.db import (
+    Curso,
     CursoRecurso,
     CursoRecursoAvance,
     CursoSeccion,
@@ -206,5 +207,18 @@ def elimina_logo_perzonalizado():
     database.session.commit()
 
     LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, "logotipo.jpg")
+
+    remove(LOGO)
+
+
+def elimina_logo_perzonalizado_curso(course_code: str):
+    """Elimina logo tipo perzonalizado."""
+
+    curso = Curso.query.filter_by(codigo=course_code).first()
+    curso.portada = False
+
+    database.session.commit()
+
+    LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, course_code, "logo.jpg")
 
     remove(LOGO)

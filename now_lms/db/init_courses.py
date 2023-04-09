@@ -131,9 +131,7 @@ def crear_curso_demo():
         duracion=7,
         nivel=1,
         auditable=False,
-        portada="https://img.freepik.com/vector-gratis/concepto-tutoriales-linea_52683-37480.jpg",
-        # https://www.freepik.es/vector-gratis/concepto-tutoriales-linea_7915189.htm
-        # Imagen de pikisuperstar en Freepik
+        portada=False,
         fecha_inicio=datetime.today() + timedelta(days=7),
         fecha_fin=datetime.today() + timedelta(days=14),
     )
@@ -305,9 +303,7 @@ def crear_curso_predeterminado():
         precio=10,
         capacidad=50,
         auditable=True,
-        portada="https://img.freepik.com/vector-gratis/concepto-tutoriales-linea_52683-37480.jpg",
-        # https://www.freepik.es/vector-gratis/concepto-tutoriales-linea_7915189.htm
-        # Imagen de pikisuperstar en Freepik
+        portada=False,
     )
     database.session.add(demo)
     database.session.commit()
