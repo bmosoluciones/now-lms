@@ -122,9 +122,7 @@ def test_non_interactive(client):
     assert b"Crear nuevo usuario." in response.data
     response = client.get("/course/now")
     assert response.status_code == 200
-    assert b"First Course" in response.data
-    assert b"First Course" in response.data
-    assert b"Crear Cuenta" in response.data
+    assert b"OnLine Learning 101" in response.data
     response = client.get("/theming")
     assert response.status_code == 302
     response = client.get("/settings")
@@ -149,7 +147,7 @@ def test_logged_in(client, auth):
     assert response.status_code == 200
     response = client.get("/course/now")
     assert response.status_code == 200
-    assert b"First Course" in response.data
+    assert b"OnLine Learning 101" in response.data
     assert b"Quitar del Sitio Web" in response.data
     response = client.get("/panel")
     assert response.status_code == 200

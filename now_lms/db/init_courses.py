@@ -102,6 +102,29 @@ def copy_sample_img():
         pass
 
 
+def curse_logo(curso: str):
+    """Crea un archivo de imagen de ejemplo."""
+    from os import path, makedirs
+    from shutil import copyfile
+    from now_lms.config import DIRECTORIO_ARCHIVOS
+
+    origen = path.join(DIRECTORIO_ARCHIVOS, "img", "5218255.jpg")
+    directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "images", curso)
+    try:
+        makedirs(directorio_destino)
+    except FileExistsError:  # pragma: no cover
+        pass
+    except FileNotFoundError:  # pragma: no cover
+        pass
+    destino = path.join(directorio_destino, "logo.jpg")
+    try:
+        copyfile(origen, destino)
+    except FileExistsError:  # pragma: no cover
+        pass
+    except FileNotFoundError:  # pragma: no cover
+        pass
+
+
 demo_external_code = """
     <iframe src="//www.slideshare.net/slideshow/embed_code/key/3gxt7XbHFmPBWP"
     width="595"
@@ -131,12 +154,13 @@ def crear_curso_demo():
         duracion=7,
         nivel=1,
         auditable=False,
-        portada=False,
+        portada=True,
         fecha_inicio=datetime.today() + timedelta(days=7),
         fecha_fin=datetime.today() + timedelta(days=14),
     )
     database.session.add(demo)
     database.session.commit()
+    curse_logo("resources")
 
     ramdon1 = ULID()
     seccion_id = str(ramdon1)
@@ -290,7 +314,7 @@ def crear_curso_predeterminado():
     """Crea un recurso publico."""
     log.info("Creando curso de demostración.")
     demo = Curso(
-        nombre="First Course",
+        nombre="OnLine Learning 101",
         codigo="now",
         descripcion="Welcome! This is your first course.",
         estado="open",
@@ -303,10 +327,11 @@ def crear_curso_predeterminado():
         precio=10,
         capacidad=50,
         auditable=True,
-        portada=False,
+        portada=True,
     )
     database.session.add(demo)
     database.session.commit()
+    curse_logo("now")
 
     ramdon1 = ULID()
     seccion1_id = str(ramdon1)
