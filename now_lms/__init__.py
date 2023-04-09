@@ -530,7 +530,18 @@ def home():
 @login_required
 def panel():
     """Panel principal de la aplicacion luego de inicar sesión."""
-    return render_template("inicio/panel.html")
+    if current_user.tipo == "admin":
+        cursos_actuales = Curso.query.count()
+        usuarios_registrados = Usuario.query.count()
+        recursos_creados = CursoRecurso.query.count()
+        cursos_por_fecha = Curso.query.order_by(Curso.creado).limit(5).all()
+        return render_template(
+            "inicio/panel.html",
+            cursos_actuales=cursos_actuales,
+            usuarios_registrados=usuarios_registrados,
+            recursos_creados=recursos_creados,
+            cursos_por_fecha=cursos_por_fecha,
+        )
 
 
 # ---------------------------------------------------------------------------------------
