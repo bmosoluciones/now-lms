@@ -14,6 +14,8 @@
 
 Simple to {install, use, configure and maintain} learning management system.
 
+![ScreenShot](https://awesomescreenshot.s3.amazonaws.com/image/4385805/38793975-31a6f11236ada10d2fdc3b15ee444c3e.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJSCJQ2NM3XLFPVKA%2F20230410%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230410T000714Z&X-Amz-Expires=28800&X-Amz-SignedHeaders=host&X-Amz-Signature=14c52233e8910068c14beb5a29bb0179a0e45cc1d6ba7aab68369c3172871b10)
+
 ## Documentation
 
 [![Documentation Status](https://readthedocs.org/projects/now-lms-manual/badge/?version=latest)](https://now-lms-manual.readthedocs.io/en/latest/?badge=latest)
