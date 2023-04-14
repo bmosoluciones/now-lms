@@ -33,7 +33,7 @@ database: SQLAlchemy = SQLAlchemy()
 # < --------------------------------------------------------------------------------------------- >
 # Base de datos relacional
 
-MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA: int = 5
+MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA: int = 10
 LLAVE_FORANEA_CURSO: str = "curso.codigo"
 LLAVE_FORANEA_USUARIO: str = "usuario.usuario"
 LLAVE_FORANEA_SECCION: str = "curso_seccion.id"
