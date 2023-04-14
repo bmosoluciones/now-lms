@@ -1,8 +1,8 @@
 FROM registry.access.redhat.com/ubi9/ubi-minimal AS js
 RUN microdnf install -y nodejs npm && microdnf clean all
 WORKDIR /usr/app
-COPY ./now_lms/static/package.json /usr/app/package.json 
-RUN npm install
+COPY ./now_lms/static/package.json /usr/app/package.json
+RUN npm install --ignore-scripts
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 
@@ -27,7 +27,7 @@ COPY . /app
 WORKDIR /app
 RUN chmod +x docker-entry-point.sh
 
-# Install nodejs modules in the final docker image    
+# Install nodejs modules in the final docker image
 COPY --from=js /usr/app/node_modules /app/now_lms/static/node_modules
 
 RUN /usr/bin/python3.9 -m pip install -e . && /usr/bin/python3.9 -m pip list --format=columns
