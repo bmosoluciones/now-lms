@@ -836,20 +836,12 @@ def nuevo_grupo():
 def lista_grupos():
     """Formulario para crear un nuevo grupo."""
 
-    if current_user.tipo == "admin":
-        grupos = database.paginate(
-            database.select(UsuarioGrupo),
-            page=request.args.get("page", default=1, type=int),
-            max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
-            count=True,
-        )
-    else:
-        grupos = database.paginate(
-            database.select(UsuarioGrupo),
-            page=request.args.get("page", default=1, type=int),
-            max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
-            count=True,
-        )
+    grupos = database.paginate(
+        database.select(UsuarioGrupo),
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+        count=True,
+    )
 
     return render_template("admin/grupos/lista.html", grupos=grupos)
 
