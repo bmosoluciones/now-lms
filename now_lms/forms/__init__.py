@@ -102,6 +102,10 @@ class BaseForm(FlaskForm):
     descripcion = MdeField(validators=[DataRequired()])
 
 
+class GrupoForm(BaseForm):
+    """Formulario para crear un grupo de usuarios."""
+
+
 class CurseForm(BaseForm):
     """Formulario para crear un nuevo curso."""
 

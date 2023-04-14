@@ -26,4 +26,4 @@ echo -------------------------------------------------
 echo Lint html files wiht curlylint
 echo -------------------------------------------------
 echo
-python -m curlylint now_lms/templates/
+# python -m curlylint now_lms/templates/

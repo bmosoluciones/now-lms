@@ -70,6 +70,8 @@ from now_lms.db import (
     EstudianteCurso,
     ModeradorCurso,
     Usuario,
+    UsuarioGrupo,
+    UsuarioGrupoMiembro,
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
 )
 
@@ -112,6 +114,7 @@ from now_lms.forms import (
     CursoRecursoExternalCode,
     CursoRecursoExternalLink,
     CursoRecursoMeet,
+    GrupoForm,
     ThemeForm,
 )
 from now_lms.misc import HTML_TAGS, ICONOS_RECURSOS, TEMPLATES_BY_TYPE, ESTILO, CURSO_NIVEL, GENEROS
@@ -801,6 +804,93 @@ def cambiar_tipo_usario():
         usuario=current_user.usuario,
     )
     return redirect(url_for("usuario", id_usuario=request.args.get("user")))
+
+
+@lms_app.route("/new_group", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("admin")
+def nuevo_grupo():
+    """Formulario para crear un nuevo grupo."""
+    form = GrupoForm()
+    if form.validate_on_submit() or request.method == "POST":
+        grupo_ = UsuarioGrupo(
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+        )
+
+        try:
+            database.session.add(grupo_)
+            database.session.commit()
+            return redirect("/groups")
+        except OperationalError:
+            flash("Error al crear el nuevo grupo.")
+            return redirect("/new_group")
+    else:
+        return render_template("admin/grupos/nuevo.html", form=form)
+
+
+@lms_app.route("/groups")
+@login_required
+@perfil_requerido("instructor")
+def lista_grupos():
+    """Formulario para crear un nuevo grupo."""
+
+    if current_user.tipo == "admin":
+        grupos = database.paginate(
+            database.select(UsuarioGrupo),
+            page=request.args.get("page", default=1, type=int),
+            max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+            count=True,
+        )
+    else:
+        grupos = database.paginate(
+            database.select(UsuarioGrupo),
+            page=request.args.get("page", default=1, type=int),
+            max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+            count=True,
+        )
+
+    return render_template("admin/grupos/lista.html", grupos=grupos)
+
+
+@lms_app.route("/group")
+@login_required
+@perfil_requerido("instructor")
+def grupo():
+    """Grupo de usuarios"""
+    id_ = request.args.get("id", type=str)
+    grupo_ = UsuarioGrupo.query.get(id_)
+    CONSULTA = database.paginate(
+        database.select(Usuario).join(UsuarioGrupoMiembro).filter(UsuarioGrupoMiembro.grupo == id_),
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+        count=True,
+    )
+    return render_template("admin/grupos/grupo.html", consulta=CONSULTA, grupo=grupo_)
+
+
+@lms_app.route(
+    "/group/add",
+    methods=[
+        "POST",
+    ],
+)
+@login_required
+@perfil_requerido("instructor")
+def agrega_usuario_a_grupo():
+    """Agrega un usuario a un grupo y redirecciona a la pagina del grupo."""
+
+    id_ = request.args.get("id", type=str)
+    registro = UsuarioGrupoMiembro(grupo=id, usuario=request.form["usuario"], creado_por=current_user.usuario)
+    database.session.add(registro)
+    url_grupo = url_for("grupo", id=id_)
+    try:
+        database.session.commit()
+        flash("Usuario Agregado Correctamente.")
+        return redirect(url_grupo)
+    except OperationalError:
+        flash("No se pudo agregar al usuario.")
+        return redirect(url_grupo)
 
 
 # ---------------------------------------------------------------------------------------

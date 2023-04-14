@@ -33,7 +33,7 @@ database: SQLAlchemy = SQLAlchemy()
 # < --------------------------------------------------------------------------------------------- >
 # Base de datos relacional
 
-MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA: int = 10
+MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA: int = 5
 LLAVE_FORANEA_CURSO: str = "curso.codigo"
 LLAVE_FORANEA_USUARIO: str = "usuario.usuario"
 LLAVE_FORANEA_SECCION: str = "curso_seccion.id"
@@ -95,19 +95,27 @@ class Usuario(UserMixin, database.Model, BaseTabla):  # type: ignore[name-define
     facebook = database.Column(database.String(50))
     twitter = database.Column(database.String(50))
     github = database.Column(database.String(500))
+    # Relaciones
+    relacion_grupo = database.relationship("UsuarioGrupoMiembro")
 
 
 class UsuarioGrupo(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Grupo de Usuarios"""
 
-    nombre = database.Column(database.String(150), nullable=False)
+    activo = database.Column(database.Boolean(), index=True)
+    publico = database.Column(database.Boolean(), index=True)
+    nombre = database.Column(database.String(50), nullable=False)
+    descripcion = database.Column(database.String(500), nullable=False)
+    tutor = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
 
 
 class UsuarioGrupoMiembro(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Grupo de Usuarios"""
 
-    grupo = database.Column(database.String(26), database.ForeignKey("usuario_grupo.id"), nullable=False, index=True)
-    usuario = database.Column(database.String(26), database.ForeignKey("usuario.id"), nullable=False, index=True)
+    grupo = database.Column(database.String(26), database.ForeignKey("usuario_grupo.id"))
+    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
+    relacion_grupo = database.relationship("UsuarioGrupo", foreign_keys=grupo)
+    relacion_usuario = database.relationship("Usuario", foreign_keys=usuario)
 
 
 class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
