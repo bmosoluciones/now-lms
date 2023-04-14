@@ -25,6 +25,7 @@
 # Libreria standar
 # ---------------------------------------------------------------------------------------
 import sys
+from datetime import datetime
 from functools import wraps
 from os import environ, cpu_count
 
@@ -881,7 +882,9 @@ def agrega_usuario_a_grupo():
     """Agrega un usuario a un grupo y redirecciona a la pagina del grupo."""
 
     id_ = request.args.get("id", type=str)
-    registro = UsuarioGrupoMiembro(grupo=id, usuario=request.form["usuario"], creado_por=current_user.usuario)
+    registro = UsuarioGrupoMiembro(
+        grupo=id_, usuario=request.form["usuario"], creado_por=current_user.usuario, creado=datetime.now()
+    )
     database.session.add(registro)
     url_grupo = url_for("grupo", id=id_)
     try:
