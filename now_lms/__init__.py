@@ -859,7 +859,8 @@ def grupo():
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,
     )
-    return render_template("admin/grupos/grupo.html", consulta=CONSULTA, grupo=grupo_)
+    estudiantes = Usuario.query.filter(Usuario.tipo == "student").all()
+    return render_template("admin/grupos/grupo.html", consulta=CONSULTA, grupo=grupo_, estudiantes=estudiantes)
 
 
 @lms_app.route(
@@ -886,6 +887,20 @@ def agrega_usuario_a_grupo():
     except OperationalError:
         flash("No se pudo agregar al usuario.")
         return redirect(url_grupo)
+
+
+@lms_app.route(
+    "/group/remove/<group>/<user>",
+)
+@login_required
+@perfil_requerido("instructor")
+def elimina_usuario__grupo(group: str, user: str):
+    """Elimina usuario de grupo."""
+    registro = UsuarioGrupoMiembro.query.filter(
+        UsuarioGrupoMiembro.grupo == group, UsuarioGrupoMiembro.usuario == user
+    ).delete()
+    database.session.commit()
+    return redirect(url_for("grupo", id=group))
 
 
 # ---------------------------------------------------------------------------------------
