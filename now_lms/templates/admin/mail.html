@@ -1,0 +1,94 @@
+{% import "macros.html" as macros %}
+
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+
+<head>
+
+  {{ macros.headertags() }}
+
+  <title>Editar configuracion</title>
+
+  {{ macros.local_style() }}
+  <!-- Custom styles for this template -->
+  <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet">
+</head>
+
+<body>
+
+  {{ macros.navbar() }}
+
+  <main>
+
+    {{ macros.notify() }}
+
+    <div class="container px-4 py-5" id="icon-grid">
+      <h4 class="pb-2 border-bottom">Editar configuración de correo electronico.</h4>
+      <form method="post">
+
+        <div class="row">
+
+          <div class="col-sm-6">
+            <label for="email" class="form-label">Permitir Correo Electronico.</label>
+            {{ form.email(checked=config.email) }}
+          </div>
+
+        </div>
+
+        <div class="row">
+
+          <div class="col-sm-6">
+            <label for="servidor" class="form-label">Servidor.</label>
+            {{ form.mail_server(class="form-control", id="modo", value=config.mail_server) }}
+          </div>
+
+          <div class="col-sm-6">
+            <label for="puerto" class="form-label">Puerto.</label>
+            {{ form.mail_port(class="form-control", id="puerto", value=config.mail_port) }}
+          </div>
+
+        </div>
+
+        <br>
+
+        <div class="row">
+
+          <div class="col-sm-6">
+            <label for="usuario" class="form-label">Usuario.</label>
+            {{ form.mail_username(class="form-control", id="modo", value=config.mail_username) }}
+          </div>
+
+          <div class="col-sm-6">
+            <label for="contraseña" class="form-label">Contraseña.</label>
+            {{ form.mail_password(class="form-control", id="puerto", value=config.mail_password) }}
+          </div>
+
+        </div>
+
+        <br>
+
+        <div class="row">
+
+          <div class="col-sm-6">
+            <label for="tls" class="form-label">Utilizar TLS.</label>
+            {{ form.mail_use_tls(checked=config.mail_use_tls) }}
+          </div>
+
+          <div class="col-sm-6">
+            <label for="ssl" class="form-label">Utilizar SSL.</label>
+            {{ form.mail_use_ssl(checked=config.mail_use_ssl) }}
+          </div>
+
+        </div>
+
+        <a class="btn btn-warning" href="{{ url_for("pagina_admin") }}" role="button">Cancelar</a>
+        <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
+
+      </form>
+    </div>
+
+  </main>
+
+</body>
+
+</html>

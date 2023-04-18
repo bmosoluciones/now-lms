@@ -38,6 +38,7 @@ from flask.cli import FlaskGroup
 from flask_alembic import Alembic
 from flask_caching import Cache
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
+from flask_mail import Mail
 from flask_mde import Mde
 from flask_uploads import AUDIO, DOCUMENTS, IMAGES, UploadSet, configure_uploads, UploadNotAllowed
 from loguru import logger as log
@@ -117,6 +118,7 @@ from now_lms.forms import (
     CursoRecursoMeet,
     GrupoForm,
     ThemeForm,
+    MailForm,
 )
 from now_lms.misc import HTML_TAGS, ICONOS_RECURSOS, TEMPLATES_BY_TYPE, ESTILO, CURSO_NIVEL, GENEROS
 from now_lms.version import VERSION
@@ -329,6 +331,20 @@ def init_app():  # pragma: no cover
 
     else:
         log.info("Iniciando NOW LMS")
+        with lms_app.app_context():
+            config = Configuracion.query.first()
+            if config.email:
+                lms_app.config["MAIL_SERVER"] = config.mail_server
+                lms_app.config["MAIL_PORT"] = config.mail_port
+                lms_app.config["MAIL_USERNAME"] = config.mail_username
+                lms_app.config["MAIL_PASSWORD"] = config.mail_password
+                lms_app.config["MAIL_USE_TLS"] = config.mail_use_tls
+                lms_app.config["MAIL_USE_SSL"] = config.mail_use_ssl
+                if DESARROLLO:
+                    lms_app.config["MAIL_SUPPRESS_SEND"] = True
+
+                e_mail = Mail()
+                e_mail.init_app(lms_app)
 
 
 # ---------------------------------------------------------------------------------------
@@ -630,6 +646,7 @@ def cursos():
 # ---------------------------------------------------------------------------------------
 @lms_app.route("/admin")
 @login_required
+@perfil_requerido("admin")
 def pagina_admin():
     """Perfil de usuario administrador."""
     return render_template("perfiles/admin.html", inactivos=Usuario.query.filter_by(activo=False).count() or 0)
@@ -637,6 +654,7 @@ def pagina_admin():
 
 @lms_app.route("/settings", methods=["GET", "POST"])
 @login_required
+@perfil_requerido("admin")
 def configuracion():
     """Configuración del sistema."""
 
@@ -664,6 +682,7 @@ def configuracion():
 
 @lms_app.route("/theming", methods=["GET", "POST"])
 @login_required
+@perfil_requerido("admin")
 def personalizacion():
     """Personalizar el sistema."""
 
@@ -709,6 +728,32 @@ def elimina_logo_curso(course_code: str):
     """Elimina logo"""
     elimina_logo_perzonalizado_curso(course_code)
     return redirect(url_for("editar_curso", course_code=course_code))
+
+
+@lms_app.route("/mail", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("admin")
+def mail():
+    """Configuración de Correo Electronico."""
+    config = Configuracion.query.first()
+    form = MailForm()
+    if form.validate_on_submit() or request.method == "POST":
+        config.email = form.email.data
+        config.mail_server = form.mail_server.data
+        config.mail_port = form.mail_port.data
+        config.mail_use_tls = form.mail_use_tls.data
+        config.mail_use_ssl = form.mail_use_ssl.data
+        config.mail_username = form.mail_username.data
+        config.mail_password = form.mail_password.data
+        try:
+            database.session.commit()
+            flash("Configuración de correo electronico actualizada exitosamente.")
+            return redirect(url_for("mail"))
+        except OperationalError:
+            flash("No se pudo actualizar la configuración de correo electronico.")
+            return redirect(url_for("mail"))
+    else:
+        return render_template("admin/mail.html", form=form, config=configuracion)
 
 
 @lms_app.route("/users")
@@ -899,6 +944,7 @@ def elimina_usuario__grupo(group: str, user: str):
     registro = UsuarioGrupoMiembro.query.filter(
         UsuarioGrupoMiembro.grupo == group, UsuarioGrupoMiembro.usuario == user
     ).delete()
+    database.session.add(registro)
     database.session.commit()
     return redirect(url_for("grupo", id=group))
 

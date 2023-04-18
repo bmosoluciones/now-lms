@@ -79,6 +79,13 @@ def crear_configuracion_predeterminada():
         stripe=False,
         style="dark",
         custom_logo=False,
+        email=False,
+        mail_server=None,
+        mail_port=None,
+        mail_use_tls=False,
+        mail_use_ssl=False,
+        mail_username=None,
+        mail_password=None,
     )
     database.session.add(config)
     database.session.commit()

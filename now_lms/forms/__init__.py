@@ -85,6 +85,18 @@ class LoginForm(FlaskForm):
     inicio_sesion = SubmitField()
 
 
+class MailForm(FlaskForm):
+    """Formulario de configuración de correo electronico."""
+
+    email = BooleanField(validators=[])
+    mail_server = StringField(validators=[DataRequired()])
+    mail_port = StringField(validators=[DataRequired()])
+    mail_use_tls = BooleanField(validators=[])
+    mail_use_ssl = BooleanField(validators=[])
+    mail_username = StringField(validators=[DataRequired()])
+    mail_password = StringField(validators=[DataRequired()])
+
+
 class LogonForm(FlaskForm):
     """Formulario para crear un nuevo usuario."""
 
