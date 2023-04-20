@@ -107,10 +107,14 @@
         <li><a href="{{ url_for('panel') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i
               class="bi bi-house-fill" aria-hidden="true"></i>
             Inicio</a></li>
-        <li><a href="{{ url_for('pagina_estudiante') }}"
-            class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-award-fill"
-              aria-hidden="true"></i>
-            Aprendizaje</a></li>
+        {% endif %}
+        <li>
+          <a href="" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-card-checklist" aria-hidden="true"></i> Cursos</a>
+        </li>
+        <li>
+          <a href="" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-diagram-3-fill" aria-hidden="true"></i> Programas</a>
+        </li>
+        {% if current_user.is_authenticated %}
         {% if current_user.tipo == "moderator" or current_user.tipo == "instructor" or current_user.tipo == "admin" %}
         <li><a href="{{ url_for('pagina_moderador') }}"
             class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-card-checklist"
