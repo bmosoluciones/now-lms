@@ -239,6 +239,8 @@ def test_eliminar_usuario(client, auth):
 
 
 def test_crear_usuario(client):
+    salir = client.get("/salir")
+    assert salir.status_code == 302
     post = client.post(
         "/logon",
         data={
