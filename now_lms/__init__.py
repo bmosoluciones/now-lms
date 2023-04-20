@@ -135,6 +135,7 @@ APPNAME: str = "NOW LMS"
 # ---------------------------------------------------------------------------------------
 TIPOS_DE_USUARIO: list = ["admin", "user", "instructor", "moderator"]
 INICIO_SESION = redirect("/login")
+PANEL_DE_USUARIO = redirect("/panel")
 
 
 # ---------------------------------------------------------------------------------------
@@ -438,13 +439,16 @@ def perfil_requerido(perfil_id):
 @lms_app.route("/login", methods=["GET", "POST"])
 def inicio_sesion():
     """Inicio de sesión del usuario."""
+    if current_user.is_authenticated:
+        flash("Su usuario ya tiene una sesión iniciada.")
+        return PANEL_DE_USUARIO
     form = LoginForm()
     if form.validate_on_submit():
         if validar_acceso(form.usuario.data, form.acceso.data):
             identidad = Usuario.query.filter_by(usuario=form.usuario.data).first()
             if identidad.activo:
                 login_user(identidad)
-                return redirect(url_for("panel"))
+                return PANEL_DE_USUARIO
             else:  # pragma: no cover
                 flash("Su cuenta esta inactiva.")
                 return INICIO_SESION
@@ -471,6 +475,9 @@ def cerrar_sesion():  # pragma: no cover
 @lms_app.route("/logon", methods=["GET", "POST"])
 def crear_cuenta():
     """Crear cuenta de usuario desde el sistio web."""
+    if current_user.is_authenticated:
+        flash("Usted ya posee una cuenta en el sistema.")
+        return PANEL_DE_USUARIO
     form = LogonForm()
     if form.validate_on_submit() or request.method == "POST":
         usuario_ = Usuario(
