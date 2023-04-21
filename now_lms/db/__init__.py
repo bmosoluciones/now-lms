@@ -123,7 +123,7 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
 
     __table_args__ = (database.UniqueConstraint("codigo", name="curso_codigo_unico"),)
     nombre = database.Column(database.String(150), nullable=False)
-    codigo = database.Column(database.String(20), unique=True, index=True)
+    codigo = database.Column(database.String(10), unique=True, index=True)
     descripcion = database.Column(database.String(1000), nullable=False)
     # draft, open, closed
     estado = database.Column(database.String(10), nullable=False, index=True)
@@ -332,3 +332,37 @@ class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
     mail_password = database.Column(database.String(50))
     mail_use_tls = database.Column(database.Boolean())
     mail_use_ssl = database.Column(database.Boolean())
+
+
+class Categoria(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Permite Clasificar los cursos por categoria."""
+
+    codigo = database.Column(database.String(10), nullable=False, unique=True, index=True)
+    nombre = database.Column(database.String(100), nullable=False)
+    descripcion = database.Column(database.String(250), nullable=False)
+    precio = database.Column(database.Float(asdecimal=True))
+
+
+class CategoriaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Listado de Cursos Permite Clasificar los cursos por categoria."""
+
+    curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False, index=True)
+    categoria = database.Column(database.String(10), database.ForeignKey("categoria.codigo"), nullable=False, index=True)
+    relacion_curso = database.relationship("Curso", foreign_keys=curso)
+    relacion_categoria = database.relationship("Categoria", foreign_keys=categoria)
+
+
+class Etiqueta(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Permite Clasificar los cursos por etiquetas."""
+
+    nombre = database.Column(database.String(20), nullable=False)
+    color = database.Column(database.String(10), nullable=False)
+
+
+class EtiquetaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Listado de Cursos Permite Clasificar los cursos por categoria."""
+
+    curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False, index=True)
+    etiqueta = database.Column(database.String(26), database.ForeignKey("etiqueta.id"), nullable=False, index=True)
+    relacion_curso = database.relationship("Curso", foreign_keys=curso)
+    relacion_etiqueta = database.relationship("Etiqueta", foreign_keys=etiqueta)

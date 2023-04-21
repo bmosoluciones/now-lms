@@ -33,6 +33,7 @@ from wtforms import (
     SubmitField,
 )
 from wtforms.validators import DataRequired
+from wtforms.widgets import ColorInput
 
 # pylint: disable=R0903
 
@@ -224,3 +225,19 @@ class CursoRecursoMeet(CursoRecursoForm):
             ("otros", "Otros"),
         ],
     )
+
+
+class CategoriaForm(BaseForm):
+    """Formulario para crear una categoria"""
+
+    codigo = StringField(validators=[DataRequired()])
+    nombre = StringField(validators=[DataRequired()])
+    descripcion = StringField(validators=[DataRequired()])
+    precio = DecimalField()
+
+
+class EtiquetaForm(BaseForm):
+    """Formulario para crear una etiqueta"""
+
+    nombre = StringField(validators=[DataRequired()])
+    color = StringField(widget=ColorInput())

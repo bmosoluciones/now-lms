@@ -74,6 +74,8 @@ from now_lms.db import (
     Usuario,
     UsuarioGrupo,
     UsuarioGrupoMiembro,
+    Etiqueta,
+    Categoria,
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
 )
 
@@ -90,6 +92,8 @@ from now_lms.db.tools import (
     logo_perzonalizado,
     elimina_logo_perzonalizado,
     elimina_logo_perzonalizado_curso,
+    cursos_por_etiqueta,
+    cursos_por_categoria,
 )
 from now_lms.bi import (
     asignar_curso_a_instructor,
@@ -119,6 +123,8 @@ from now_lms.forms import (
     GrupoForm,
     ThemeForm,
     MailForm,
+    EtiquetaForm,
+    CategoriaForm,
 )
 from now_lms.misc import HTML_TAGS, ICONOS_RECURSOS, TEMPLATES_BY_TYPE, ESTILO, CURSO_NIVEL, GENEROS
 from now_lms.version import VERSION
@@ -1690,3 +1696,150 @@ def nuevo_recurso_html(course_code, seccion):
         return render_template(
             "learning/resources_new/nuevo_recurso_html.html", id_curso=course_code, id_seccion=seccion, form=form
         )
+
+
+# ---------------------------------------------------------------------------------------
+# Administración de Etiquetas.
+# ---------------------------------------------------------------------------------------
+@lms_app.route("/new_tag", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def new_tag():
+    """Formulario para crear una etiqueta."""
+    form = EtiquetaForm()
+    if form.validate_on_submit() or request.method == "POST":
+        etiqueta = Etiqueta(
+            nombre=form.nombre.data,
+            color=form.color.data,
+        )
+        database.session.add(etiqueta)
+        try:
+            database.session.commit()
+            flash("Nueva etiqueta creada.")
+        except OperationalError:
+            flash("Hubo un error al crear la etiqueta.")
+        return redirect("/tags")
+
+    return render_template("learning/etiquetas/nueva_etiqueta.html", form=form)
+
+
+@lms_app.route("/tags")
+@login_required
+@perfil_requerido("instructor")
+def tags():
+    """Lista de etiquetas."""
+    etiquetas = database.paginate(
+        database.select(Etiqueta),  # noqa: E712
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+        count=True,
+    )
+    return render_template(
+        "learning/etiquetas/lista_etiquetas.html", consulta=etiquetas, cursos_por_etiqueta=cursos_por_etiqueta
+    )
+
+
+@lms_app.route("/delete_tag/<tag>")
+@login_required
+@perfil_requerido("instructor")
+def delete_tag(tag: str):
+    """Elimina una etiqueta."""
+    Etiqueta.query.filter(Etiqueta.id == tag).delete()
+    database.session.commit()
+    return redirect("/tags")
+
+
+@lms_app.route("/edit_tag/<tag>", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def edit_tag(tag: str):
+    """Edita una etiqueta."""
+    etiqueta = Etiqueta.query.filter(Etiqueta.id == tag).first()
+    form = EtiquetaForm(color=etiqueta.color, nombre=etiqueta.nombre)
+    if form.validate_on_submit() or request.method == "POST":
+        etiqueta.nombre = form.nombre.data
+        etiqueta.color = form.color.data
+        try:
+            database.session.add(etiqueta)
+            database.session.commit()
+            flash("Etiqueta editada correctamente.")
+        except OperationalError:
+            flash("No se puedo editar la etiqueta.")
+        return redirect("/tags")
+
+    return render_template("learning/etiquetas/editar_etiqueta.html", form=form)
+
+
+# ---------------------------------------------------------------------------------------
+# Administración de Categorias.
+# ---------------------------------------------------------------------------------------
+@lms_app.route("/new_category", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def new_category():
+    """Nueva Categoria."""
+    form = CategoriaForm()
+    if form.validate_on_submit() or request.method == "POST":
+        categoria = Categoria(
+            nombre=form.nombre.data,
+            codigo=form.codigo.data,
+            descripcion=form.descripcion.data,
+            precio=form.precio.data,
+        )
+        database.session.add(categoria)
+        try:
+            database.session.commit()
+            flash("Nueva categoria creada.")
+        except OperationalError:
+            flash("Hubo un error al crear la categoria.")
+        return redirect("/categories")
+
+    return render_template("learning/categorias/nueva_categoria.html", form=form)
+
+
+@lms_app.route("/categories")
+@login_required
+@perfil_requerido("instructor")
+def categories():
+    """Lista de categorias."""
+    categorias = database.paginate(
+        database.select(Categoria),  # noqa: E712
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+        count=True,
+    )
+    return render_template(
+        "learning/categorias/lista_categorias.html", consulta=categorias, cursos_por_categoria=cursos_por_categoria
+    )
+
+
+@lms_app.route("/delete_category/<tag>")
+@login_required
+@perfil_requerido("instructor")
+def delete_category(tag: str):
+    """Elimina categoria."""
+    Categoria.query.filter(Categoria.id == tag).delete()
+    database.session.commit()
+    return redirect("/categories")
+
+
+@lms_app.route("/edit_category/<tag>", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def edit_category(tag: str):
+    """Editar categoria."""
+    categoria = Categoria.query.filter(Categoria.id == tag).first()
+    form = CategoriaForm(nombre=categoria.nombre, precio=categoria.precio, descripcion=categoria.descripcion)
+    if form.validate_on_submit() or request.method == "POST":
+        categoria.nombre = form.nombre.data
+        categoria.precio = form.precio.data
+        categoria.descripcion = form.descripcion.data
+        try:
+            database.session.add(categoria)
+            database.session.commit()
+            flash("Categoria editada correctamente.")
+        except OperationalError:
+            flash("No se puedo editar la categoria.")
+        return redirect("/categories")
+
+    return render_template("learning/categorias/editar_categoria.html", form=form)

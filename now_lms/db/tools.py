@@ -37,6 +37,8 @@ from now_lms.db import (
     Configuracion,
     EstudianteCurso,
     ModeradorCurso,
+    EtiquetaCurso,
+    CategoriaCurso,
 )
 
 from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
@@ -229,3 +231,13 @@ def elimina_logo_perzonalizado_curso(course_code: str):
     LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, course_code, "logo.jpg")
 
     remove(LOGO)
+
+
+def cursos_por_etiqueta(tag: str) -> int:
+    """Devuelve el numero de cursos en una etiqueta"""
+    return EtiquetaCurso.query.filter(EtiquetaCurso.etiqueta == tag).count()
+
+
+def cursos_por_categoria(tag: str) -> int:
+    """Devuelve el numero de cursos en una Categoria"""
+    return CategoriaCurso.query.filter(CategoriaCurso.categoria == tag).count()
