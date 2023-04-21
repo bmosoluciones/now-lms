@@ -345,7 +345,7 @@ class CategoriaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Listado de Cursos Permite Clasificar los cursos por categoria."""
 
     curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False, index=True)
-    categoria = database.Column(database.String(10), database.ForeignKey("categoria.codigo"), nullable=False, index=True)
+    categoria = database.Column(database.String(10), database.ForeignKey("categoria.id"), nullable=False, index=True)
     relacion_curso = database.relationship("Curso", foreign_keys=curso)
     relacion_categoria = database.relationship("Categoria", foreign_keys=categoria)
 
