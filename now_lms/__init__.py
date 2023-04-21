@@ -1782,9 +1782,7 @@ def new_category():
     if form.validate_on_submit() or request.method == "POST":
         categoria = Categoria(
             nombre=form.nombre.data,
-            codigo=form.codigo.data,
             descripcion=form.descripcion.data,
-            precio=form.precio.data,
         )
         database.session.add(categoria)
         try:
@@ -1829,10 +1827,9 @@ def delete_category(tag: str):
 def edit_category(tag: str):
     """Editar categoria."""
     categoria = Categoria.query.filter(Categoria.id == tag).first()
-    form = CategoriaForm(nombre=categoria.nombre, precio=categoria.precio, descripcion=categoria.descripcion)
+    form = CategoriaForm(nombre=categoria.nombre, descripcion=categoria.descripcion)
     if form.validate_on_submit() or request.method == "POST":
         categoria.nombre = form.nombre.data
-        categoria.precio = form.precio.data
         categoria.descripcion = form.descripcion.data
         try:
             database.session.add(categoria)

@@ -337,10 +337,8 @@ class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
 class Categoria(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Permite Clasificar los cursos por categoria."""
 
-    codigo = database.Column(database.String(10), nullable=False, unique=True, index=True)
     nombre = database.Column(database.String(100), nullable=False)
     descripcion = database.Column(database.String(250), nullable=False)
-    precio = database.Column(database.Float(asdecimal=True))
 
 
 class CategoriaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
