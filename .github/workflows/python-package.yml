@@ -5,13 +5,12 @@ name: Python package
 
 on:
   push:
-    branches: [ main, development ]
+    branches: [main, development]
   pull_request:
-    branches: [ main, development ]
+    branches: [main, development]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     services:
       # Label used to access the service container
@@ -35,7 +34,7 @@ jobs:
           MYSQL_USER: mysqldatabase
           MYSQL_PASSWORD: mysqldatabase
         ports:
-            - 3306:3306
+          - 3306:3306
       postgres:
         image: postgres:15
         env:
@@ -52,36 +51,36 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8, 3.9, "3.10", "3.11", ]
+        python-version: [3.8, 3.9, "3.10", "3.11"]
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install -r test.txt
-    - name: Run lint file
-      run: |
-        rm -rf build
-        python -m build
-        python -m twine check dist/*
-        bash .lint.sh
-    - name: Test with SQLite
-      run: |
-        pytest  -v --exitfirst --cov=now_lms
-    - name: Test with SQLite/Redis Cache
-      run: |
-        rm now_lms.db
-        CACHE_REDIS_HOST=localhost CACHE_REDIS_PORT=6379 pytest  -v --exitfirst --cov=now_lms
-    - name: Test with pytest/MySQL
-      run: |
-        DATABASE_URL=mysql://mysqldatabase:mysqldatabase@localhost:3306/mysqldatabase pytest  -v --exitfirst --cov=now_lms
-    - name: Test with pytest/Postgres
-      run: |
-        DATABASE_URL=postgresql://postgresdb:postgresdb@localhost:5432/postgresdb pytest  -v --exitfirst --cov=now_lms
-    - name: Codecov
-      uses: codecov/codecov-action@v1
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r test.txt
+      - name: Run lint file
+        run: |
+          rm -rf build
+          python -m build
+          python -m twine check dist/*
+          bash .lint.sh
+      - name: Test with SQLite
+        run: |
+          CI=True pytest  -v --exitfirst --cov=now_lms
+      - name: Test with SQLite/Redis Cache
+        run: |
+          rm now_lms.db
+          CACHE_REDIS_HOST=localhost CACHE_REDIS_PORT=6379 pytest  -v --exitfirst --cov=now_lms
+      - name: Test with pytest/MySQL
+        run: |
+          DATABASE_URL=mysql://mysqldatabase:mysqldatabase@localhost:3306/mysqldatabase pytest  -v --exitfirst --cov=now_lms
+      - name: Test with pytest/Postgres
+        run: |
+          DATABASE_URL=postgresql://postgresdb:postgresdb@localhost:5432/postgresdb pytest  -v --exitfirst --cov=now_lms
+      - name: Codecov
+        uses: codecov/codecov-action@v1

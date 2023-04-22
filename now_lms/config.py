@@ -92,10 +92,13 @@ else:
 
 # < --------------------------------------------------------------------------------------------- >
 # Ubicación predeterminada de base de datos SQLITE
-if name == "nt":  # pragma: no cover
-    SQLITE: str = "sqlite:///" + str(DIRECTORIO_PRINCICIPAL) + "\\now_lms.db"
+if environ.get("CI"):
+    SQLITE: str = "sqlite://"
 else:
-    SQLITE = "sqlite:///" + str(DIRECTORIO_PRINCICIPAL) + "/now_lms.db"
+    if name == "nt":  # pragma: no cover
+        SQLITE = "sqlite:///" + str(DIRECTORIO_PRINCICIPAL) + "\\now_lms.db"
+    else:
+        SQLITE = "sqlite:///" + str(DIRECTORIO_PRINCICIPAL) + "/now_lms.db"
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -141,7 +144,7 @@ if environ.get("DATABASE_URL"):
     CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("DATABASE_URL")
 
 
-# Corrige URI de conexion a la base de datos si el usuario omite el drive apropiado.
+# Corrige URI de conexion a la base de datos si el usuario omite el driver apropiado.
 if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # pragma: no cover
     # En Heroku va a estar disponible psycopg2.
     # - https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python

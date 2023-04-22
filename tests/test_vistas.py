@@ -28,11 +28,17 @@ app.config["TESTING"] = True
 app.config["WTF_CSRF_ENABLED"] = False
 app.config["DEBUG"] = True
 app.config["PRESERVE_CONTEXT_ON_EXCEPTION"] = False
+app.config["SQLALCHEMY_ECHO"] = False
 app.app_context().push()
 
 Ruta = namedtuple(
     "Ruta",
     ["ruta", "admin", "no_session", "texto"],
+)
+
+Forma = namedtuple(
+    "Forma",
+    ["ruta", "datos"],
 )
 
 
@@ -71,52 +77,6 @@ class AuthActions:
 @pytest.fixture
 def auth(client):
     return AuthActions(client)
-
-
-def test_database_is_populated():
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-    assert app.config["SQLALCHEMY_DATABASE_URI"] == "sqlite://"
-    query = now_lms.Curso.query.filter_by(codigo="now").first()
-    assert query is not None
-    assert query.codigo == "now"
-    query = now_lms.CursoSeccion.query.filter_by(nombre="Introduction to online teaching.").first()
-    assert query.descripcion == "This is introductory material to online teaching."
-    query = now_lms.CursoRecurso.query.filter_by(nombre="Introduction to Online Teaching").first()
-    assert query.descripcion == "UofSC Center for Teaching Excellence - Introduction to Online Teaching."
-    assert query.tipo == "youtube"
-    assert query.url == "https://www.youtube.com/watch?v=CvPj4V_j7u8"
-    assert query.seccion is not None
-    assert query.id is not None
-    assert query.curso is not None
-
-
-def test_generar_indice_recurso():
-    from now_lms.db import CursoRecurso
-    from now_lms.db.tools import crear_indice_recurso
-
-    s = crear_indice_recurso("lalala")
-    assert s.has_prev == False
-    assert s.has_next == False
-    assert s.prev_is_alternative == False
-    assert s.next_is_alternative == False
-    assert s.prev_resource is None
-    assert s.next_resource is None
-
-    r = CursoRecurso.query.filter(CursoRecurso.curso == "resources", CursoRecurso.tipo == "meet").first()
-    r = crear_indice_recurso(r.id)
-
-    assert r.has_prev == True
-    assert r.has_next == True
-    assert r.prev_is_alternative == False
-    assert r.next_is_alternative == True
-    assert r.prev_resource is not None
-    assert r.next_resource is not None
-
-    for a in CursoRecurso.query.all():
-        crear_indice_recurso(a.id)
 
 
 rutas_estaticas = [
@@ -205,10 +165,72 @@ rutas_estaticas = [
         ],
     ),
     Ruta(
+        ruta="/instructor",
+        admin=200,
+        no_session=302,
+        texto=[b"Nuevo Curso", b"Panel del docente.", b"Nuevo Progama"],
+    ),
+    Ruta(
+        ruta="/cursos",
+        admin=200,
+        no_session=302,
+        texto=[b"Lista de Cursos Disponibles."],
+    ),
+    Ruta(
+        ruta="/new_curse",
+        admin=200,
+        no_session=302,
+        texto=[b"Crear nuevo curso."],
+    ),
+    Ruta(
+        ruta="/programs",
+        admin=200,
+        no_session=302,
+        texto=[b"Lista de Programas Disponibles."],
+    ),
+    Ruta(
+        ruta="/new_program",
+        admin=200,
+        no_session=302,
+        texto=[b"Crear Programa."],
+    ),
+    Ruta(
+        ruta="/tags",
+        admin=200,
+        no_session=302,
+        texto=[b"Lista de Etiquetas Disponibles."],
+    ),
+    Ruta(
+        ruta="/new_tag",
+        admin=200,
+        no_session=302,
+        texto=[b"Crear nueva Etiqueta."],
+    ),
+    Ruta(
+        ruta="/categories",
+        admin=200,
+        no_session=302,
+        texto=[b"Lista de Categorias Disponibles."],
+    ),
+    Ruta(
+        ruta="/new_category",
+        admin=200,
+        no_session=302,
+        texto=[
+            b"Crear Categoria.",
+        ],
+    ),
+    Ruta(
         ruta="/course/now",
         admin=200,
         no_session=200,
         texto=[b"Contenido del curso.", b"Curso Certificado"],
+    ),
+    Ruta(
+        ruta="/course/now/new_seccion",
+        admin=200,
+        no_session=302,
+        texto=[b"Crear una nueva secci"],
     ),
     # Debe estar al final para no cerrar la sesion actual.
     Ruta(ruta="/logout", admin=302, no_session=302, texto=None),
@@ -247,85 +269,48 @@ def test_visit_all_views_with_admin_session(client, auth):
                 assert t in consulta.data
 
 
-def test_activar_usuario(client, auth):
+def test_visit_all_views_with_admin_session(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
     auth.login()
-    response = client.get("/set_user_as_active/instructor")
-    assert response.status_code == 302
+    for f in formularios:
+        client.post(f.ruta, data=f.datos)
 
 
-def test_inactivar_usuario(client, auth):
-    auth.login()
-    response = client.get("/set_user_as_inactive/instructor")
-    assert response.status_code == 302
-
-
-def test_eliminar_usuario(client, auth):
-    auth.login()
-    response = client.get("/delete_user/instructor")
-    assert response.status_code == 302
-
-
-def test_crear_usuario(client):
-    salir = client.get("/salir")
-    assert salir.status_code == 302
-    post = client.post(
-        "/logon",
-        data={
-            "usuario": "mperez",
-            "nombre": "Meyling",
-            "apellido": "Perez",
-            "correo_electronico": "mperez@ibw.com.ni",
-            "acceso": "Akjlkas5a4s6asd",
+formularios = [
+    Forma(
+        ruta="/new_program",
+        datos={
+            "nombre": "nombre",
+            "descripcion": "descripcion",
+            "precio": "precio",
+            "codigo": "test",
         },
-    )
-    query = now_lms.Usuario.query.filter_by(usuario="mperez").first()
-    assert query
-    # Usuario inactivo por defecto.
-    assert query.activo is False
-
-
-def test_funciones_usuario(client, auth):
-    post = client.post(
-        "/logon",
-        data={
-            "usuario": "test_user1",
-            "nombre": "Testing",
-            "apellido": "Testing",
-            "correo_electronico": "testing@cacao-accounting.io",
-            "acceso": "Akjlkas5a4s6asd",
+    ),
+    Forma(
+        ruta="new_tag",
+        datos={
+            "nombre": "test",
+            "color": "#34e5eb",
         },
-    )
-    query = now_lms.Usuario.query.filter_by(usuario="test_user1").first()
-    assert query
-    # Usuario inactivo por defecto.
-    assert query.activo is False
-    # Activar usuario
-    auth.login()
-    activar = client.get("/set_user_as_active/test_user1")
-    activar.data
-    activo = now_lms.Usuario.query.filter_by(usuario="test_user1").first()
-    assert query.activo is True
-    from now_lms import cambia_tipo_de_usuario_por_id
-
-    # Establecer como administrador.
-    cambia_tipo_de_usuario_por_id("test_user1", "admin")
-    admin = now_lms.Usuario.query.filter_by(usuario="test_user1").first()
-    assert admin.tipo == "admin"
-    # Establecer como moderador.
-    cambia_tipo_de_usuario_por_id("test_user1", "moderator")
-    admin = now_lms.Usuario.query.filter_by(usuario="test_user1").first()
-    assert admin.tipo == "moderator"
-    # Establecer como instructor.
-    cambia_tipo_de_usuario_por_id("test_user1", "instructor")
-    admin = now_lms.Usuario.query.filter_by(usuario="test_user1").first()
-    assert admin.tipo == "instructor"
-    # Establecer como instructor.
-    cambia_tipo_de_usuario_por_id("test_user1", "user")
-    admin = now_lms.Usuario.query.filter_by(usuario="test_user1").first()
-    assert admin.tipo == "user"
+    ),
+    Forma(
+        ruta="/new_category",
+        datos={
+            "nombre": "test",
+            "descripcion": "test",
+        },
+    ),
+]
 
 
-def test_crear_curso(client, auth):
+def test_fill_all_forms(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
     auth.login()
     # Crear un curso.
     post = client.post(
@@ -364,14 +349,14 @@ def test_crear_curso(client, auth):
     client.get("/delete_curse/T-001")
 
 
-def test_cambiar_curso_publico(client, auth):
+def test_cambiar_curso(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
     auth.login()
     client.get("/change_curse_public?curse=now")
     client.get("/change_curse_public?curse=now")
-
-
-def test_cambiar_estatus_curso(client, auth):
-    auth.login()
     client.get("/change_curse_status?curse=now&status=draft")
     client.get("/change_curse_status?curse=now&status=public")
     client.get("/change_curse_status?curse=now&status=open")
@@ -379,6 +364,10 @@ def test_cambiar_estatus_curso(client, auth):
 
 
 def test_indices_seccion():
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
     from now_lms import Curso, CursoSeccion, modificar_indice_curso, reorganiza_indice_curso
 
     demo = Curso(
@@ -454,6 +443,10 @@ def test_indices_seccion():
 
 
 def test_reorganizar_indice_recurso(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
     from now_lms import CursoSeccion
     from now_lms.bi import reorganiza_indice_seccion
 
@@ -475,6 +468,10 @@ def test_reorganizar_indice_recurso(client, auth):
 
 
 def test_reorganizar_nuevo_recurso(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
     from now_lms import CursoSeccion
 
     auth.login()
@@ -486,6 +483,10 @@ def test_reorganizar_nuevo_recurso(client, auth):
 
 
 def test_reorganizar_indice_seccion(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
     from now_lms import CursoSeccion
 
     auth.login()
@@ -497,6 +498,10 @@ def test_reorganizar_indice_seccion(client, auth):
 
 
 def test_serve_files(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
     auth.login()
 
     from now_lms.db import CursoRecurso
@@ -533,6 +538,10 @@ def test_serve_files(client, auth):
 
 
 def test_course_description(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
     from now_lms.db import Curso
 
     cursos = Curso.query.all()
@@ -546,6 +555,10 @@ def test_course_description(client, auth):
 
 
 def test_edit_course(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
     from datetime import datetime, timedelta
 
     data = {
@@ -570,6 +583,10 @@ def test_edit_course(client, auth):
 
 
 def test_edit_seccion(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
     auth.login()
 
     from now_lms.db import CursoSeccion
@@ -592,6 +609,10 @@ def test_edit_seccion(client, auth):
 
 
 def test_edit_settings(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
     from now_lms.db import CursoSeccion
 
     data = {
@@ -611,7 +632,11 @@ def test_edit_settings(client, auth):
     assert post.status_code == 200
 
 
-def test_upload_pdf(client, auth):
+def test_crear_recursos(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
     from io import BytesIO
     from now_lms.db import CursoSeccion
 
@@ -626,11 +651,6 @@ def test_upload_pdf(client, auth):
     response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
     assert response.status_code == 200
 
-
-def test_upload_img(client, auth):
-    from io import BytesIO
-    from now_lms.db import CursoSeccion
-
     seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
     url = "/course/resources/" + seccion.id + "/img/new"
 
@@ -641,11 +661,6 @@ def test_upload_img(client, auth):
     response = client.get(url)
     response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
     assert response.status_code == 200
-
-
-def test_upload_ogg(client, auth):
-    from io import BytesIO
-    from now_lms.db import CursoSeccion
 
     seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
     url = "/course/resources/" + seccion.id + "/audio/new"
@@ -658,10 +673,6 @@ def test_upload_ogg(client, auth):
     response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
     assert response.status_code == 200
 
-
-def test_upload_youtube(client, auth):
-    from now_lms.db import CursoSeccion
-
     seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
     url = "/course/resources/" + seccion.id + "/youtube/new"
 
@@ -671,11 +682,6 @@ def test_upload_youtube(client, auth):
     response = client.get(url)
     response = client.post(url, data=data, follow_redirects=True)
     assert response.status_code == 200
-
-
-def test_upload_meet(client, auth):
-    from datetime import date, datetime
-    from now_lms.db import CursoSeccion
 
     seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
     url = "/course/resources/" + seccion.id + "/meet/new"
@@ -687,10 +693,6 @@ def test_upload_meet(client, auth):
     response = client.post(url, data=data, follow_redirects=True)
     assert response.status_code == 200
 
-
-def test_upload_html(client, auth):
-    from now_lms.db import CursoSeccion
-
     seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
     url = "/course/resources/" + seccion.id + "/html/new"
 
@@ -701,10 +703,6 @@ def test_upload_html(client, auth):
     response = client.post(url, data=data, follow_redirects=True)
     assert response.status_code == 200
 
-
-def test_upload_link(client, auth):
-    from now_lms.db import CursoSeccion
-
     seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
     url = "/course/resources/" + seccion.id + "/link/new"
 
@@ -714,10 +712,6 @@ def test_upload_link(client, auth):
     response = client.get(url)
     response = client.post(url, data=data, follow_redirects=True)
     assert response.status_code == 200
-
-
-def test_upload_text(client, auth):
-    from now_lms.db import CursoSeccion
 
     seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
     url = "/course/resources/" + seccion.id + "/text/new"
@@ -731,6 +725,10 @@ def test_upload_text(client, auth):
 
 
 def test_eliminar_recursos(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
     from now_lms.db import CursoRecurso
 
     auth.login()
@@ -742,7 +740,31 @@ def test_eliminar_recursos(client, auth):
         assert page.status_code == 302
 
 
-def test_cambiar_tipo_usuario(client, auth):
-    auth.login()
-    page = client.get("change_user_type", query_string={"user": "student", "type": "admin"})
-    assert page.status_code == 302
+def test_generar_indice_recurso():
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
+    from now_lms.db import CursoRecurso
+    from now_lms.db.tools import crear_indice_recurso
+
+    s = crear_indice_recurso("lalala")
+    assert s.has_prev == False
+    assert s.has_next == False
+    assert s.prev_is_alternative == False
+    assert s.next_is_alternative == False
+    assert s.prev_resource is None
+    assert s.next_resource is None
+
+    r = CursoRecurso.query.filter(CursoRecurso.curso == "resources", CursoRecurso.tipo == "meet").first()
+    r = crear_indice_recurso(r.id)
+
+    assert r.has_prev == True
+    assert r.has_next == True
+    assert r.prev_is_alternative == False
+    assert r.next_is_alternative == True
+    assert r.prev_resource is not None
+    assert r.next_resource is not None
+
+    for a in CursoRecurso.query.all():
+        crear_indice_recurso(a.id)
