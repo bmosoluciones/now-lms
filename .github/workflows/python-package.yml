@@ -74,8 +74,7 @@ jobs:
           CI=True pytest  -v --exitfirst --cov=now_lms
       - name: Test with SQLite/Redis Cache
         run: |
-          rm now_lms.db
-          CACHE_REDIS_HOST=localhost CACHE_REDIS_PORT=6379 pytest  -v --exitfirst --cov=now_lms
+          CI=True CACHE_REDIS_HOST=localhost CACHE_REDIS_PORT=6379 pytest  -v --exitfirst --cov=now_lms
       - name: Test with pytest/MySQL
         run: |
           DATABASE_URL=mysql://mysqldatabase:mysqldatabase@localhost:3306/mysqldatabase pytest  -v --exitfirst --cov=now_lms
