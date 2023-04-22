@@ -76,6 +76,7 @@ from now_lms.db import (
     UsuarioGrupoMiembro,
     Etiqueta,
     Categoria,
+    Programa,
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
 )
 
@@ -125,6 +126,7 @@ from now_lms.forms import (
     MailForm,
     EtiquetaForm,
     CategoriaForm,
+    ProgramaForm,
 )
 from now_lms.misc import HTML_TAGS, ICONOS_RECURSOS, TEMPLATES_BY_TYPE, ESTILO, CURSO_NIVEL, GENEROS
 from now_lms.version import VERSION
@@ -1840,3 +1842,81 @@ def edit_category(tag: str):
         return redirect("/categories")
 
     return render_template("learning/categorias/editar_categoria.html", form=form)
+
+
+# ---------------------------------------------------------------------------------------
+# Administración de Categorias.
+# ---------------------------------------------------------------------------------------
+@lms_app.route("/new_program", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def new_program():
+    """Nueva programa."""
+    form = ProgramaForm()
+    if form.validate_on_submit() or request.method == "POST":
+        programa = Programa(
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            codigo=form.codigo.data,
+            precio=form.precio.data,
+            publico=False,
+        )
+        database.session.add(programa)
+        try:
+            database.session.commit()
+            flash("Nueva Programa creado.")
+        except OperationalError:
+            flash("Hubo un error al crear el programa.")
+        return redirect("/programs")
+
+    return render_template("learning/programas/nuevo_programa.html", form=form)
+
+
+@lms_app.route("/programs")
+@login_required
+@perfil_requerido("instructor")
+def programs():
+    """Lista de programas"""
+    consulta = database.paginate(
+        database.select(Programa),  # noqa: E712
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+        count=True,
+    )
+    return render_template("learning/programas/lista_programas.html", consulta=consulta)
+
+
+@lms_app.route("/delete_program/<tag>")
+@login_required
+@perfil_requerido("instructor")
+def delete_program(tag: str):
+    """Elimina programa."""
+    Programa.query.filter(Programa.id == tag).delete()
+    database.session.commit()
+    return redirect("/programs")
+
+
+@lms_app.route("/edit_program/<tag>", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def edit_program(tag: str):
+    """Editar programa."""
+    programa = Programa.query.filter(Programa.id == tag).first()
+    form = ProgramaForm(
+        nombre=programa.nombre, descripcion=programa.descripcion, codigo=programa.codigo, precio=programa.precio
+    )
+    if form.validate_on_submit() or request.method == "POST":
+        programa.nombre = form.nombre.data
+        programa.descripcion = form.descripcion.data
+        programa.precio = form.precio.data
+        programa.publico = form.publico.data
+
+        try:
+            database.session.add(programa)
+            database.session.commit()
+            flash("Programa editado correctamente.")
+        except OperationalError:
+            flash("No se puedo editar el programa.")
+        return redirect("/programs")
+
+    return render_template("learning/programas/editar_programa.html", form=form, programa=programa)

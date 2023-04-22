@@ -1,0 +1,97 @@
+{% import "macros.html" as macros %}
+
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+
+<head>
+
+  {{ macros.headertags() }}
+  <title>Lista de Programas.</title>
+
+
+  {{ macros.local_style() }}
+</head>
+
+<body>
+
+  {{ macros.navbar() }}
+
+  <main>
+
+    {{ macros.notify() }}
+
+    <div class="container px-0 py-3" id="curse_list">
+
+      <div class="d-flex justify-content-between border-bottom">
+
+        <h4>Lista de Programas Disponibles.</h4>
+
+        <p>
+          <span class="badge bg-success">
+            <a href="{{ url_for("new_program") }}" class="link-light">Nueva Programa</a>
+          </span>
+        </p>
+
+      </div>
+
+      {% if consulta %}
+
+      <div class="container" id="curse_table">
+
+        <table class="table table-sm table-borderless">
+          <caption>Lista de programas disponibles en el sistema.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Codigo</th>
+              <th>Nombre</th>
+              <th>Publico</th>
+              <th>Precio</th>
+              <th></th>
+            </tr>
+          </thead>
+          {% for item in consulta.items -%}
+          <tbody>
+            <tr>
+              <td>
+                <a href="" class="link-dark">
+                  {{ item.codigo }}
+                </a>
+              <td>
+                {{ item.nombre }}
+              </td>
+              <td>
+                {{ item.publico }}
+              </td>
+              <td>
+                {{ item.precio }}
+              </td>
+              <td>
+                <span class="badge bg-danger">
+                  <a href="{{ url_for("delete_program", tag=item.id) }}" class="link-light">Eliminar Programa</a>
+                </span>
+                <span class="badge bg-info">
+                  <a href="{{ url_for("edit_program", tag=item.id) }}" class="link-light">Editar Programa</a>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+          {% endfor %}
+        </table>
+      </div>
+      {% else %}
+      <p>Usted no ha creado ninguna etiqueta todavia.</p>
+      {% endif %}
+
+      <div class="container" id="user_paginatios">
+        {{ macros.rendizar_paginacion(consulta=consulta, vista="cursos") }}
+      </div>
+
+    </div>
+
+
+  </main>
+
+
+</body>
+
+</html>

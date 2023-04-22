@@ -1,0 +1,65 @@
+{% import "macros.html" as macros %}
+
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+
+<head>
+
+  {{ macros.headertags() }}
+  <title>Crear Programa</title>
+
+  {{ macros.local_style() }}
+  <!-- Custom styles for this template -->
+  <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet">
+</head>
+
+<body>
+
+  {{ macros.navbar() }}
+
+  <main>
+
+    {{ macros.notify() }}
+
+    <div class="container px-4 py-5" id="icon-grid">
+      <h4 class="pb-2 border-bottom">Crear Programa.</h4>
+      <form method="post" enctype=multipart/form-data>
+        {{ form.csrf_token }}
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <label for="nombre" class="form-label">Programa</label>
+            {{ form.nombre(class="form-control", id="nombre", placeholder="Categoria") }}
+          </div>
+
+          <div class="col-sm-6">
+            <label for="codigo" class="form-label">Codigo</label>
+            {{ form.codigo(class="form-control", id="codigo", placeholder="Codigo") }}
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <label for="descripcion" class="form-label">Descripcion</label>
+            {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripción") }}
+          </div>
+
+          <div class="col-sm-6">
+            <label for="precio" class="form-label">Precio</label>
+            {{ form.precio(class="form-control", id="codigo") }}
+          </div>
+
+        </div>
+
+        <br>
+
+        <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Programa</button>
+      </form>
+    </div>
+
+
+  </main>
+
+
+</body>
+
+</html>

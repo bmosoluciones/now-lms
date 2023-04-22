@@ -364,3 +364,31 @@ class EtiquetaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     etiqueta = database.Column(database.String(26), database.ForeignKey("etiqueta.id"), nullable=False, index=True)
     relacion_curso = database.relationship("Curso", foreign_keys=curso)
     relacion_etiqueta = database.relationship("Etiqueta", foreign_keys=etiqueta)
+
+
+class Programa(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Un programa agrupa una serie de cursos."""
+
+    nombre = database.Column(database.String(20), nullable=False)
+    codigo = database.Column(database.String(10), nullable=False)
+    descripcion = database.Column(database.String(500))
+    precio = database.Column(database.Float())
+    publico = database.Column(database.Boolean())
+
+
+class ProgramaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Cursos en un programa."""
+
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
+    programa = database.Column(database.String(26), database.ForeignKey("programa.id"), nullable=False, index=True)
+    relacion_curso = database.relationship("Curso", foreign_keys=curso)
+    relacion_programa = database.relationship("Programa", foreign_keys=programa)
+
+
+class ProgramaEstudiante(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Cursos en un programa."""
+
+    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    programa = database.Column(database.String(26), database.ForeignKey("programa.id"), nullable=False, index=True)
+    relacion_usuario = database.relationship("Usuario", foreign_keys=usuario)
+    relacion_programa = database.relationship("Programa", foreign_keys=programa)

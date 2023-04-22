@@ -230,12 +230,14 @@ class CursoRecursoMeet(CursoRecursoForm):
 class CategoriaForm(BaseForm):
     """Formulario para crear una categoria"""
 
-    nombre = StringField(validators=[DataRequired()])
-    descripcion = StringField(validators=[DataRequired()])
-
 
 class EtiquetaForm(BaseForm):
     """Formulario para crear una etiqueta"""
 
-    nombre = StringField(validators=[DataRequired()])
     color = StringField(widget=ColorInput())
+
+
+class ProgramaForm(BaseForm):
+    codigo = StringField(validators=[DataRequired()])
+    precio = DecimalField()
+    publico = BooleanField(validators=[])
