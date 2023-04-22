@@ -75,11 +75,11 @@ jobs:
       - name: Test with SQLite/Redis Cache
         run: |
           CI=True CACHE_REDIS_HOST=localhost CACHE_REDIS_PORT=6379 pytest  -v --exitfirst --cov=now_lms
-      - name: Test with pytest/MySQL
-        run: |
-          DATABASE_URL=mysql://mysqldatabase:mysqldatabase@localhost:3306/mysqldatabase pytest  -v --exitfirst --cov=now_lms
       - name: Test with pytest/Postgres
         run: |
           DATABASE_URL=postgresql://postgresdb:postgresdb@localhost:5432/postgresdb pytest  -v --exitfirst --cov=now_lms
+      - name: Test with pytest/MySQL
+        run: |
+          DATABASE_URL=mysql://mysqldatabase:mysqldatabase@localhost:3306/mysqldatabase pytest  -v --exitfirst --cov=now_lms
       - name: Codecov
         uses: codecov/codecov-action@v1
