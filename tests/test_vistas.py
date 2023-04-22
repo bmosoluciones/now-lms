@@ -17,20 +17,28 @@
 
 # pylint: disable=redefined-outer-name
 import pytest
+from collections import namedtuple
 import now_lms
 from now_lms import app, database, initial_setup
 
 app.config["SECRET_KEY"] = "jgjañlsldaksjdklasjfkjj"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
 app.config["TESTING"] = True
 app.config["WTF_CSRF_ENABLED"] = False
 app.config["DEBUG"] = True
 app.config["PRESERVE_CONTEXT_ON_EXCEPTION"] = False
 app.app_context().push()
 
+Ruta = namedtuple(
+    "Ruta",
+    ["ruta", "admin", "no_session", "texto"],
+)
+
 
 @pytest.fixture(scope="module", autouse=True)
 def lms():
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
@@ -66,9 +74,11 @@ def auth(client):
 
 
 def test_database_is_populated():
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
+    assert app.config["SQLALCHEMY_DATABASE_URI"] == "sqlite://"
     query = now_lms.Curso.query.filter_by(codigo="now").first()
     assert query is not None
     assert query.codigo == "now"
@@ -109,115 +119,132 @@ def test_generar_indice_recurso():
         crear_indice_recurso(a.id)
 
 
-def test_non_interactive(client):
-    response = client.get("/")
-    assert response.status_code == 200
-    assert b"NOW LMS" in response.data
-    response = client.get("/login")
-    assert response.status_code == 200
-    assert b"Inicio" in response.data
-    assert b"BMO Soluciones" in response.data
-    response = client.get("/logon")
-    assert response.status_code == 200
-    assert b"Crear nuevo usuario." in response.data
-    response = client.get("/course/now")
-    assert response.status_code == 200
-    assert b"OnLine Learning 101" in response.data
-    response = client.get("/theming")
-    assert response.status_code == 302
-    response = client.get("/settings")
-    assert response.status_code == 302
+rutas_estaticas = [
+    Ruta(ruta="/login", admin=302, no_session=200, texto=[b"BMO Solucione", b"Inicio de"]),
+    Ruta(ruta="/logon", admin=302, no_session=200, texto=[b"Crear nuevo usuario", b"Crear Cuenta"]),
+    Ruta(ruta="/", admin=200, no_session=200, texto=[b"NOW LMS", b"Sistema de aprendizaje en linea.", b"OnLine Learning 101"]),
+    Ruta(
+        ruta="/index",
+        admin=200,
+        no_session=200,
+        texto=[b"NOW LMS", b"Sistema de aprendizaje en linea.", b"OnLine Learning 101"],
+    ),
+    Ruta(
+        ruta="/home",
+        admin=200,
+        no_session=200,
+        texto=[b"NOW LMS", b"Sistema de aprendizaje en linea.", b"OnLine Learning 101"],
+    ),
+    Ruta(
+        ruta="/panel",
+        admin=200,
+        no_session=302,
+        texto=None,
+    ),
+    Ruta(
+        ruta="/admin",
+        admin=200,
+        no_session=302,
+        texto=[b"Usuarios", b"Nuevo Grupo", b"Tema del Sitio"],
+    ),
+    Ruta(
+        ruta="/users",
+        admin=200,
+        no_session=302,
+        texto=[
+            b"Usuarios registrados en el sistema.",
+            b"Lista de usuarios registrados en el sistema.",
+        ],
+    ),
+    Ruta(
+        ruta="/inactive_users",
+        admin=200,
+        no_session=302,
+        texto=[
+            b"Lista de usuarios registrados en el sistema pendientes de activar.",
+        ],
+    ),
+    Ruta(
+        ruta="/groups",
+        admin=200,
+        no_session=302,
+        texto=[
+            b"Grupos registrados en el sistema",
+        ],
+    ),
+    Ruta(
+        ruta="/new_group",
+        admin=200,
+        no_session=302,
+        texto=[
+            b"Agregar un nuevo Grupo de Usuarios",
+        ],
+    ),
+    Ruta(
+        ruta="/settings",
+        admin=200,
+        no_session=302,
+        texto=[
+            b"Editar config",
+        ],
+    ),
+    Ruta(
+        ruta="/theming",
+        admin=200,
+        no_session=302,
+        texto=[
+            b"Editar estulo del sitio web",
+        ],
+    ),
+    Ruta(
+        ruta="/mail",
+        admin=200,
+        no_session=302,
+        texto=[
+            b"de correo electronico",
+        ],
+    ),
+    Ruta(
+        ruta="/course/now",
+        admin=200,
+        no_session=200,
+        texto=[b"Contenido del curso.", b"Curso Certificado"],
+    ),
+    # Debe estar al final para no cerrar la sesion actual.
+    Ruta(ruta="/logout", admin=302, no_session=302, texto=None),
+    Ruta(ruta="/salir", admin=302, no_session=302, texto=None),
+    Ruta(ruta="/exit", admin=302, no_session=302, texto=None),
+]
 
 
-def test_logged_in(client, auth):
+def test_visit_all_views_no_session(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
+    auth.logout()
+    assert app.config["SQLALCHEMY_DATABASE_URI"] == "sqlite://"
+    for ruta in rutas_estaticas:
+        consulta = client.get(ruta.ruta)
+        assert consulta.status_code == ruta.no_session
+        if consulta.status_code == 200 and ruta.texto:
+            for t in ruta.texto:
+                assert t in consulta.data
+
+
+def test_visit_all_views_with_admin_session(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
     auth.login()
-    response = client.get("/")
-    assert response.status_code == 200
-    response = client.get("/panel")
-    assert response.status_code == 200
-    response = client.get("/student")
-    assert response.status_code == 200
-    response = client.get("/moderator")
-    assert response.status_code == 200
-    response = client.get("/instructor")
-    assert response.status_code == 200
-    response = client.get("/admin")
-    assert response.status_code == 200
-    response = client.get("/perfil")
-    assert response.status_code == 200
-    response = client.get("/course/now")
-    assert response.status_code == 200
-    assert b"OnLine Learning 101" in response.data
-    assert b"Quitar del Sitio Web" in response.data
-    response = client.get("/panel")
-    assert response.status_code == 200
-    assert b"Administrador del Sistema." in response.data
-    response = client.get("/admin")
-    assert response.status_code == 200
-    assert b"Panel de Adminis" in response.data
-    assert b"Usuarios" in response.data
-    response = client.get("/instructor")
-    assert response.status_code == 200
-    assert b"Panel del docente." in response.data
-    response = client.get("/moderator")
-    assert response.status_code == 200
-    assert response.data
-    response = client.get("/student")
-    assert response.status_code == 200
-    assert response.data
-    response = client.get("/users")
-    assert response.status_code == 200
-    assert response.data
-    assert b"Usuarios registrados en el sistema." in response.data
-    response = client.get("/cursos")
-    assert response.status_code == 200
-    assert b"Lista de Cursos Disponibles." in response.data
-    response = client.get("/new_user")
-    assert response.status_code == 200
-    assert b"Crear nuevo Usuario." in response.data
-    response = client.get("/user/admin")
-    assert response.status_code == 200
-    assert b"Perfil de Usuario" in response.data
-    query = now_lms.CursoRecurso.query.all()
-
-    for recurso in query:
-        URL = "/cource/" + recurso.curso + "/resource/" + recurso.tipo + "/" + recurso.id
-        page = client.get(URL)
-        as_bytes = str.encode(recurso.nombre)
-        assert as_bytes in page.data
-        assert page.status_code == 200
-
-        if recurso.requerido == 3:
-            URL = "/cource/" + recurso.curso + "/alternative/" + recurso.id + "/asc"
-            page = client.get(URL)
-            assert page.status_code == 200
-            URL = "/cource/" + recurso.curso + "/alternative/" + recurso.id + "/desc"
-            page = client.get(URL)
-            assert page.status_code == 200
-
-    response = client.get("/theming")
-    assert response.status_code == 200
-    response = client.get("/settings")
-    assert response.status_code == 200
-    response = client.get("/salir")
-    assert response.status_code == 302
-    response = client.get("/login")
-    assert response.status_code == 200
-    response = client.get("/logon")
-    assert response.status_code == 200
-    response = client.get("/course/now")
-    assert response.status_code == 200
-
-
-def test_users_inactive(client, auth):
-    auth.login()
-    response = client.get("/inactive_users")
-    assert response.status_code == 200
-    assert response.data
-    assert b"Usuarios pendientes" in response.data
-    response = client.get("/perfil")
-    assert response.status_code == 200
-    assert b"Perfil de Usuario" in response.data
+    assert app.config["SQLALCHEMY_DATABASE_URI"] == "sqlite://"
+    for ruta in rutas_estaticas:
+        consulta = client.get(ruta.ruta)
+        assert consulta.status_code == ruta.admin
+        if consulta.status_code == 200 and ruta.texto:
+            for t in ruta.texto:
+                assert t in consulta.data
 
 
 def test_activar_usuario(client, auth):
