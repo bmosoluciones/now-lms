@@ -82,6 +82,9 @@ def auth(client):
 rutas_estaticas = [
     Ruta(ruta="/login", admin=302, no_session=200, texto=[b"BMO Solucione", b"Inicio de"]),
     Ruta(ruta="/logon", admin=302, no_session=200, texto=[b"Crear nuevo usuario", b"Crear Cuenta"]),
+    Ruta(ruta="/perfil", admin=200, no_session=302, texto=None),
+    Ruta(ruta="/student", admin=200, no_session=302, texto=None),
+    Ruta(ruta="/instructor", admin=200, no_session=302, texto=None),
     Ruta(ruta="/", admin=200, no_session=200, texto=[b"NOW LMS", b"Sistema de aprendizaje en linea.", b"OnLine Learning 101"]),
     Ruta(
         ruta="/index",
@@ -219,6 +222,18 @@ rutas_estaticas = [
         texto=[
             b"Crear Categoria.",
         ],
+    ),
+    Ruta(
+        ruta="/groups",
+        admin=200,
+        no_session=302,
+        texto=None,
+    ),
+    Ruta(
+        ruta="/new_group",
+        admin=200,
+        no_session=302,
+        texto=None,
     ),
     Ruta(
         ruta="/course/now",
