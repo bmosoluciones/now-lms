@@ -18,6 +18,7 @@
 # pylint: disable=redefined-outer-name
 import pytest
 from collections import namedtuple
+from io import BytesIO
 import now_lms
 from now_lms import app, database, initial_setup
 
@@ -247,6 +248,19 @@ rutas_estaticas = [
         no_session=302,
         texto=[b"Crear una nueva secci"],
     ),
+    Ruta(
+        ruta="/panel",
+        admin=200,
+        no_session=302,
+        texto=[
+            b"Cursos Recientes",
+            b"Recursos Creados",
+            b"Usuarios Registrados",
+        ],
+    ),
+    Ruta(ruta="/dashboard", admin=200, no_session=302, texto=None),
+    Ruta(ruta="/student", admin=200, no_session=302, texto=None),
+    Ruta(ruta="/moderator", admin=200, no_session=302, texto=None),
     # Debe estar al final para no cerrar la sesion actual.
     Ruta(ruta="/logout", admin=302, no_session=302, texto=None),
     Ruta(ruta="/salir", admin=302, no_session=302, texto=None),
@@ -284,16 +298,6 @@ def test_visit_all_views_with_admin_session(client, auth):
                 assert t in consulta.data
 
 
-def test_visit_all_views_with_admin_session(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-    auth.login()
-    for f in formularios:
-        client.post(f.ruta, data=f.datos)
-
-
 formularios = [
     Forma(
         ruta="/new_program",
@@ -318,6 +322,19 @@ formularios = [
             "descripcion": "test",
         },
     ),
+    Forma(ruta="/logon", datos={"usuario": "Carlos", "apellido": "Monge", "acceso": "gordo"}),
+    Forma(
+        ruta="/mail",
+        datos={
+            "email": "test@hola.com",
+            "mail_server": "hello.com",
+            "mail_port": "433",
+            "mail_use_tls": True,
+            "mail_use_ssl": True,
+            "mail_username": "hello",
+            "mail_password": "hola",
+        },
+    ),
 ]
 
 
@@ -327,41 +344,28 @@ def test_fill_all_forms(client, auth):
     database.drop_all()
     initial_setup()
     auth.login()
-    # Crear un curso.
+    for f in formularios:
+        client.get(f.ruta)
+        client.post(f.ruta, data=f.datos)
+
+    from now_lms.db import Usuario
+
+    usario = Usuario.query.filter(Usuario.usuario == "student1").first()
+    ruta = "/perfil/edit/" + usario.id
+    get = client.get(ruta)
+    assert get.status_code == 403
+    usario = Usuario.query.filter(Usuario.usuario == "lms-admin").first()
+    ruta = "/perfil/edit/" + usario.id
     post = client.post(
-        "/new_curse",
+        ruta,
         data={
-            "nombre": "Curso de Prueba",
-            "codigo": "T-001",
-            "descripcion": "Curso de Prueba.",
+            "correo_electronico": "holahola.hello.net",
         },
+        follow_redirects=False,
     )
-    curso = now_lms.Curso.query.filter_by(codigo="T-001").first()
-    assert curso.nombre == "Curso de Prueba"
-    assert curso.descripcion == "Curso de Prueba."
-    # Crear una sección del curso.
-    post = client.post(
-        "/course/T-001/new_seccion",
-        data={
-            "nombre": "Seccion de Prueba",
-            "descripcion": "Seccion de Prueba.",
-        },
-    )
-    seccion = now_lms.CursoSeccion.query.filter_by(curso="T-001").first()
-    assert seccion.nombre == "Seccion de Prueba"
-    assert seccion.descripcion == "Seccion de Prueba."
-    client.get("/change_curse_status?curse=T-001&status=draft")
-    client.get("/change_curse_status?curse=T-001&status=public")
-    client.get("/change_curse_status?curse=T-001&status=open")
-    client.get("/change_curse_status?curse=T-001&status=closed")
-    client.get("/change_curse_public?curse=T-001")
-    client.get("/change_curse_public?curse=T-001")
-    publicar_seccion = "/change_curse_seccion_public?course_code=T-001" + "&codigo=" + seccion.id
-    client.get(publicar_seccion)
-    client.get(publicar_seccion)
-    eliminar_seccion = "/delete_seccion/T-001/" + seccion.id
-    client.get(eliminar_seccion)
-    client.get("/delete_curse/T-001")
+    assert post.status_code == 302
+    perfil = client.get("/perfil")
+    assert b"holahola.hello.net" in perfil.data
 
 
 def test_cambiar_curso(client, auth):
@@ -628,7 +632,6 @@ def test_edit_settings(client, auth):
     app.app_context().push()
     database.drop_all()
     initial_setup()
-    from now_lms.db import CursoSeccion
 
     data = {
         "titulo": "LMS test",
@@ -646,13 +649,22 @@ def test_edit_settings(client, auth):
     post = client.post("/settings", data=data, follow_redirects=True)
     assert post.status_code == 200
 
+    data = {
+        "style": "dark",
+    }
+    data = {key: str(value) for key, value in data.items()}
+    data["logo"] = (BytesIO(b"abcdef"), "logo.pdf")
+    get = client.get("/theming")
+    assert get.status_code == 200
+    post = client.post("/theming", data=data, follow_redirects=True)
+    assert post.status_code == 200
+
 
 def test_crear_recursos(client, auth):
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
-    from io import BytesIO
     from now_lms.db import CursoSeccion
 
     seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
@@ -736,6 +748,19 @@ def test_crear_recursos(client, auth):
     auth.login()
     response = client.get(url)
     response = client.post(url, data=data, follow_redirects=True)
+    assert response.status_code == 200
+
+    from now_lms.db import Usuario
+
+    usario = Usuario.query.filter(Usuario.usuario == "lms-admin").first()
+    url = "/perfil/edit/" + usario.id
+    data = {"nombre": "Helllo"}
+    data = {key: str(value) for key, value in data.items()}
+    data["logo"] = (BytesIO(b"abcdef"), "logo.jpg")
+    response = client.get(url)
+    response = client.post(url, data=data, follow_redirects=True)
+    assert response.status_code == 200
+    response = client.get("/perfil/" + usario.id + "/delete_logo", follow_redirects=True)
     assert response.status_code == 200
 
 

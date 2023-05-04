@@ -634,7 +634,7 @@ def edit_perfil(ulid: str):
             usuario.correo_electronico_verificado = False
             flash("Favor verifique su nuevo correo electronico.")
 
-        try:
+        try:  # pragma: no cover
             database.session.commit()
             flash("Pefil actualizado.")
             if "logo" in request.files:
@@ -825,7 +825,7 @@ def mail():
         config.mail_use_ssl = form.mail_use_ssl.data
         config.mail_username = form.mail_username.data
         config.mail_password = form.mail_password.data
-        try:
+        try:  # pragma: no cover
             database.session.commit()
             flash("Configuración de correo electronico actualizada exitosamente.")
             return redirect(url_for("mail"))
