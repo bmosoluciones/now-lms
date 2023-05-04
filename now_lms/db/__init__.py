@@ -78,11 +78,12 @@ class Usuario(UserMixin, database.Model, BaseTabla):  # type: ignore[name-define
     nombre = database.Column(database.String(100))
     apellido = database.Column(database.String(100))
     correo_electronico = database.Column(database.String(100))
+    correo_electronico_verificado = database.Column(database.Boolean(), default=False)
     tipo = database.Column(database.String(20))  # Puede ser: admin, user, instructor, moderator
     activo = database.Column(database.Boolean())
     # Perfil personal
     visible = database.Column(database.Boolean())
-    titulo = database.Column(database.String(10))
+    titulo = database.Column(database.String(15))
     genero = database.Column(database.String(10))  # Puede ser: male, female, other, none
     nacimiento = database.Column(database.Date())
     bio = database.Column(database.String(500))
@@ -95,6 +96,7 @@ class Usuario(UserMixin, database.Model, BaseTabla):  # type: ignore[name-define
     facebook = database.Column(database.String(50))
     twitter = database.Column(database.String(50))
     github = database.Column(database.String(500))
+    youtube = database.Column(database.String(500))
     # Relaciones
     relacion_grupo = database.relationship("UsuarioGrupoMiembro")
 

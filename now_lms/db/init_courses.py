@@ -433,6 +433,7 @@ def crear_usuarios_predeterminados():
         apellido="Administrator",
         tipo="admin",
         activo=True,
+        correo_electronico_verificado=True,
     )
     database.session.add(administrador)
     database.session.commit()

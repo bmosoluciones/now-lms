@@ -127,6 +127,7 @@ from now_lms.forms import (
     EtiquetaForm,
     CategoriaForm,
     ProgramaForm,
+    UserForm,
 )
 from now_lms.misc import HTML_TAGS, ICONOS_RECURSOS, TEMPLATES_BY_TYPE, ESTILO, CURSO_NIVEL, GENEROS
 from now_lms.version import VERSION
@@ -163,6 +164,7 @@ def inicializa_extenciones_terceros(flask_app):
         administrador_sesion.init_app(flask_app)
         cache.init_app(flask_app, CACHE_CONFIG)
         mde.init_app(flask_app)
+        """
         if DESARROLLO:  # pragma: no cover
             try:
                 from flask_profiler import Profiler
@@ -191,6 +193,7 @@ def inicializa_extenciones_terceros(flask_app):
                 log.info("Flask development toolbar enabled.")
             if profiler:
                 log.info("Flask profiler enabled.")
+        """
 
 
 # ---------------------------------------------------------------------------------------
@@ -599,6 +602,50 @@ def perfil():
     """Perfil del usuario."""
     perfil_usuario = Usuario.query.filter_by(usuario=current_user.usuario).first()
     return render_template("inicio/perfil.html", perfil=perfil_usuario, genero=GENEROS)
+
+
+@lms_app.route("/perfil/edit/<ulid>", methods=["GET", "POST"])
+@login_required
+def edit_perfil(ulid: str):
+    """Actualizar información de usuario."""
+    if current_user.id != ulid:
+        abort(403)
+
+    usuario = Usuario.query.get(ulid)
+    form = UserForm(obj=usuario)
+
+    if request.method == "POST":
+        usuario.nombre = form.nombre.data
+        usuario.apellido = form.apellido.data
+        usuario.correo_electronico = form.correo_electronico.data
+        usuario.url = form.url.data
+        usuario.linkedin = form.linkedin.data
+        usuario.facebook = form.facebook.data
+        usuario.twitter = form.twitter.data
+        usuario.github = form.github.data
+        usuario.youtube = form.youtube.data
+        usuario.genero = form.genero.data
+        usuario.titulo = form.titulo.data
+        usuario.nacimiento = form.nacimiento.data
+        usuario.bio = form.bio.data
+
+        if form.correo_electronico.data != usuario.correo_electronico:
+            usuario.correo_electronico_verificado = False
+            flash("Favor verifique su nuevo correo electronico.")
+
+        try:
+            log.warning("Hello")
+            log.warning(form.apellido.data)
+            database.session.add(usuario)
+            database.session.commit()
+            flash("Pefil actualizado.")
+        except OperationalError:
+            flash("Error al editar el perfil.")
+
+        return redirect("/perfil")
+
+    else:
+        return render_template("inicio/perfil_editar.html", form=form, usuario=usuario)
 
 
 # ---------------------------------------------------------------------------------------

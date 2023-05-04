@@ -31,6 +31,7 @@ from wtforms import (
     SelectField,
     StringField,
     SubmitField,
+    TextAreaField,
 )
 from wtforms.validators import DataRequired
 from wtforms.widgets import ColorInput
@@ -241,3 +242,37 @@ class ProgramaForm(BaseForm):
     codigo = StringField(validators=[DataRequired()])
     precio = DecimalField()
     publico = BooleanField(validators=[])
+
+
+class UserForm(FlaskForm):
+    """Formulario para el perfil de usuario."""
+
+    nombre = StringField(validators=[])
+    apellido = StringField(validators=[])
+    correo_electronico = StringField(validators=[])
+    url = StringField(validators=[])
+    linkedin = StringField(validators=[])
+    facebook = StringField(validators=[])
+    twitter = StringField(validators=[])
+    github = StringField(validators=[])
+    youtube = StringField(validators=[])
+    genero = SelectField(
+        "Genero",
+        choices=[
+            ("none", "No especificado"),
+            ("other", "Otros"),
+            ("male", "Masculino"),
+            ("female", "Femenino"),
+        ],
+    )
+    titulo = SelectField(
+        "Titulo",
+        choices=[
+            ("", "No especificado"),
+            ("ing", "Ingenioero"),
+            ("lic", "Licenciado"),
+            ("dr", "Doctor"),
+        ],
+    )
+    nacimiento = DateField()
+    bio = TextAreaField()
