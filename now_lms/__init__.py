@@ -634,9 +634,6 @@ def edit_perfil(ulid: str):
             flash("Favor verifique su nuevo correo electronico.")
 
         try:
-            log.warning("Hello")
-            log.warning(form.apellido.data)
-            database.session.add(usuario)
             database.session.commit()
             flash("Pefil actualizado.")
         except OperationalError:
