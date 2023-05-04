@@ -99,6 +99,8 @@ class Usuario(UserMixin, database.Model, BaseTabla):  # type: ignore[name-define
     youtube = database.Column(database.String(500))
     # Relaciones
     relacion_grupo = database.relationship("UsuarioGrupoMiembro")
+    # Imagen de perfil
+    portada = database.Column(database.Boolean())
 
 
 class UsuarioGrupo(database.Model, BaseTabla):  # type: ignore[name-defined]

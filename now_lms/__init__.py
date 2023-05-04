@@ -93,6 +93,7 @@ from now_lms.db.tools import (
     logo_perzonalizado,
     elimina_logo_perzonalizado,
     elimina_logo_perzonalizado_curso,
+    elimina_imagen_usuario,
     cursos_por_etiqueta,
     cursos_por_categoria,
 )
@@ -636,6 +637,14 @@ def edit_perfil(ulid: str):
         try:
             database.session.commit()
             flash("Pefil actualizado.")
+            if "logo" in request.files:
+                try:
+                    picture_file = images.save(request.files["logo"], folder="usuarios", name=usuario.id + ".jpg")
+                    if picture_file:
+                        usuario.portada = True
+                        database.session.commit()
+                except UploadNotAllowed:
+                    log.warning("No se pudo actualizar la imagen de perfil.")
         except OperationalError:
             flash("Error al editar el perfil.")
 
@@ -643,6 +652,18 @@ def edit_perfil(ulid: str):
 
     else:
         return render_template("inicio/perfil_editar.html", form=form, usuario=usuario)
+
+
+@lms_app.route("/perfil/<ulid>/delete_logo")
+@login_required
+def elimina_logo_usuario(ulid: str):
+    """Elimina logo de usuario."""
+    if current_user.id != ulid:
+        abort(403)
+
+    elimina_imagen_usuario(ulid=ulid)
+    flash("Imagen de usuario eliminada correctamente.")
+    return redirect("/perfil")
 
 
 # ---------------------------------------------------------------------------------------
