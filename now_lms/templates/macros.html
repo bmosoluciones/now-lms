@@ -52,7 +52,7 @@
 
 
 {# Macro para generar pie de página de paginación en la vista de cursos. #}
-{% macro rendizar_paginacion(consulta=None, vista=None, id=None)%}
+{% macro rendizar_paginacion(consulta=None, vista=None, id=None, parametros=None)%}
 <p>{{ consulta.total }} items encontrados.
   <br>
   {% if consulta.has_prev %}
@@ -109,13 +109,17 @@
             Inicio</a></li>
         {% endif %}
         <li>
-          <a href="" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-card-checklist" aria-hidden="true"></i> Cursos</a>
+          <a href="{{ url_for('lista_cursos', page=1) }}"
+            class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-card-checklist"
+              aria-hidden="true"></i> Cursos</a>
         </li>
         <li>
-          <a href="" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-diagram-3-fill" aria-hidden="true"></i> Programas</a>
+          <a href="" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-diagram-3-fill"
+              aria-hidden="true"></i> Programas</a>
         </li>
         <li>
-          <a href="" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-book" aria-hidden="true"></i> Recursos</a>
+          <a href="" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-book"
+              aria-hidden="true"></i> Recursos</a>
         </li>
         {% if current_user.is_authenticated %}
         {% if current_user.tipo == "moderator" or current_user.tipo == "instructor" or current_user.tipo == "admin" %}

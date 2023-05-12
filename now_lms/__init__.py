@@ -25,13 +25,16 @@
 # Libreria standar
 # ---------------------------------------------------------------------------------------
 import sys
+from collections import OrderedDict
 from datetime import datetime
 from functools import wraps
+from typing import Union
 from os import environ, cpu_count
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
+import click
 from bleach import clean, linkify
 from flask import Flask, abort, flash, redirect, request, render_template, url_for, send_from_directory, current_app
 from flask.cli import FlaskGroup
@@ -80,7 +83,18 @@ from now_lms.db import (
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
 )
 
-from now_lms.db.init_courses import crear_curso_predeterminado, crear_curso_demo, crear_usuarios_predeterminados
+from now_lms.db.init_courses import (
+    crear_etiquetas,
+    crear_categorias,
+    crear_curso_predeterminado,
+    crear_curso_demo,
+    crear_curso_demo1,
+    crear_curso_demo2,
+    crear_curso_demo3,
+    crear_usuarios_predeterminados,
+    asignar_cursos_a_etiquetas,
+    asignar_cursos_a_categoria,
+)
 
 from now_lms.db.tools import (
     crear_configuracion_predeterminada,
@@ -130,7 +144,15 @@ from now_lms.forms import (
     ProgramaForm,
     UserForm,
 )
-from now_lms.misc import HTML_TAGS, ICONOS_RECURSOS, TEMPLATES_BY_TYPE, ESTILO, CURSO_NIVEL, GENEROS
+from now_lms.misc import (
+    HTML_TAGS,
+    ICONOS_RECURSOS,
+    TEMPLATES_BY_TYPE,
+    ESTILO,
+    CURSO_NIVEL,
+    GENEROS,
+    concatenar_parametros_a_url,
+)
 from now_lms.version import VERSION
 
 # ---------------------------------------------------------------------------------------
@@ -165,7 +187,6 @@ def inicializa_extenciones_terceros(flask_app):
         administrador_sesion.init_app(flask_app)
         cache.init_app(flask_app, CACHE_CONFIG)
         mde.init_app(flask_app)
-        """
         if DESARROLLO:  # pragma: no cover
             try:
                 from flask_profiler import Profiler
@@ -194,7 +215,6 @@ def inicializa_extenciones_terceros(flask_app):
                 log.info("Flask development toolbar enabled.")
             if profiler:
                 log.info("Flask profiler enabled.")
-        """
 
 
 # ---------------------------------------------------------------------------------------
@@ -257,6 +277,7 @@ def cargar_variables_globales_de_plantillas_html():
     lms_app.jinja_env.globals["estilo"] = ESTILO
     lms_app.jinja_env.globals["obtener_estilo_actual"] = obtener_estilo_actual
     lms_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
+    lms_app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
 
 
 # ---------------------------------------------------------------------------------------
@@ -306,7 +327,7 @@ configure_uploads(lms_app, audio)
 # - Crear base de datos.
 # - Iniciar servidor WSGI.
 # ---------------------------------------------------------------------------------------
-def initial_setup():
+def initial_setup(with_examples=False):
     """Inicializa una nueva bases de datos"""
     lms_app.app_context().push()
     log.info("Creando esquema de base de datos.")
@@ -314,13 +335,22 @@ def initial_setup():
     log.debug("Esquema de base de datos creado correctamente.")
     log.info("Cargando datos de muestra.")
     crear_configuracion_predeterminada()
-    crear_usuarios_predeterminados()
+    crear_usuarios_predeterminados(with_examples)
     crear_curso_predeterminado()
-    crear_curso_demo()
-    log.debug("Datos de muestra cargados correctamente.")
+    if DESARROLLO or environ.get("CI") or with_examples:
+        crear_categorias()
+        crear_etiquetas()
+        log.debug("Cargando datos de prueba.")
+        crear_curso_demo()
+        crear_curso_demo1()
+        crear_curso_demo2()
+        crear_curso_demo3()
+        asignar_cursos_a_etiquetas()
+        asignar_cursos_a_categoria()
+        log.debug("Datos de muestra cargados correctamente.")
 
 
-def init_app():  # pragma: no cover
+def init_app(with_examples=False):  # pragma: no cover
     """Funcion auxiliar para iniciar la aplicacion."""
 
     lms_app.app_context().push()
@@ -340,7 +370,7 @@ def init_app():  # pragma: no cover
     if not DB_INICIALIZADA:
         log.warning("No se detecto una base de datos inicilizada.")
         log.info("Iniciando nueva base de datos de desarrollo.")
-        initial_setup()
+        initial_setup(with_examples)
 
     else:
         log.info("Iniciando NOW LMS")
@@ -376,10 +406,11 @@ def command(as_module=False) -> None:  # pragma: no cover
 
 
 @lms_app.cli.command()
-def setup():  # pragma: no cover
+@click.option("--with-examples", is_flag=True, default=False, help="Load example data at setup.")
+def setup(with_examples):  # pragma: no cover
     """Inicia al aplicacion."""
     lms_app.app_context().push()
-    initial_setup()
+    initial_setup(with_examples)
 
 
 @lms_app.cli.command()
@@ -389,12 +420,13 @@ def upgrade_db():  # pragma: no cover
 
 
 @lms_app.cli.command()
-def resetdb():  # pragma: no cover
+@click.option("--with-examples", is_flag=True, default=False, help="Load example data at setup.")
+def resetdb(with_examples):  # pragma: no cover
     """Elimina la base de datos actual e inicia una nueva."""
     lms_app.app_context().push()
     cache.clear()
     database.drop_all()
-    initial_setup()
+    initial_setup(with_examples)
 
 
 @lms_app.cli.command()
@@ -554,11 +586,16 @@ def crear_usuario():  # pragma: no cover
 def home():
     """Página principal de la aplicación."""
 
+    if DESARROLLO:
+        MAX = 3
+    else:
+        MAX = MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA
+
     config = Configuracion.query.first()
     CURSOS = database.paginate(
         database.select(Curso).filter(Curso.publico == True, Curso.estado == "open"),  # noqa: E712
         page=request.args.get("page", default=1, type=int),
-        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+        max_per_page=MAX,
         count=True,
     )
 
@@ -612,26 +649,26 @@ def edit_perfil(ulid: str):
     if current_user.id != ulid:
         abort(403)
 
-    usuario = Usuario.query.get(ulid)
-    form = UserForm(obj=usuario)
+    usuario_ = Usuario.query.get(ulid)
+    form = UserForm(obj=usuario_)
 
     if request.method == "POST":
-        usuario.nombre = form.nombre.data
-        usuario.apellido = form.apellido.data
-        usuario.correo_electronico = form.correo_electronico.data
-        usuario.url = form.url.data
-        usuario.linkedin = form.linkedin.data
-        usuario.facebook = form.facebook.data
-        usuario.twitter = form.twitter.data
-        usuario.github = form.github.data
-        usuario.youtube = form.youtube.data
-        usuario.genero = form.genero.data
-        usuario.titulo = form.titulo.data
-        usuario.nacimiento = form.nacimiento.data
-        usuario.bio = form.bio.data
+        usuario_.nombre = form.nombre.data
+        usuario_.apellido = form.apellido.data
+        usuario_.correo_electronico = form.correo_electronico.data
+        usuario_.url = form.url.data
+        usuario_.linkedin = form.linkedin.data
+        usuario_.facebook = form.facebook.data
+        usuario_.twitter = form.twitter.data
+        usuario_.github = form.github.data
+        usuario_.youtube = form.youtube.data
+        usuario_.genero = form.genero.data
+        usuario_.titulo = form.titulo.data
+        usuario_.nacimiento = form.nacimiento.data
+        usuario_.bio = form.bio.data
 
-        if form.correo_electronico.data != usuario.correo_electronico:
-            usuario.correo_electronico_verificado = False
+        if form.correo_electronico.data != usuario_.correo_electronico:
+            usuario_.correo_electronico_verificado = False
             flash("Favor verifique su nuevo correo electronico.")
 
         try:  # pragma: no cover
@@ -651,7 +688,7 @@ def edit_perfil(ulid: str):
         return redirect("/perfil")
 
     else:
-        return render_template("inicio/perfil_editar.html", form=form, usuario=usuario)
+        return render_template("inicio/perfil_editar.html", form=form, usuario=usuario_)
 
 
 @lms_app.route("/perfil/<ulid>/delete_logo")
@@ -693,7 +730,7 @@ def pagina_instructor():
 def cursos():
     """Lista de cursos disponibles en el sistema."""
     if current_user.tipo == "admin":
-        lista_cursos = database.paginate(
+        consulta_cursos = database.paginate(
             database.select(Curso),
             page=request.args.get("page", default=1, type=int),
             max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
@@ -701,7 +738,7 @@ def cursos():
         )
     else:
         try:  # pragma: no cover
-            lista_cursos = database.paginate(
+            consulta_cursos = database.paginate(
                 database.select(Curso).join(DocenteCurso).filter(DocenteCurso.usuario == current_user.usuario),
                 page=request.args.get("page", default=1, type=int),
                 max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
@@ -709,8 +746,8 @@ def cursos():
             )
 
         except ArgumentError:  # pragma: no cover
-            lista_cursos = None
-    return render_template("learning/curso_lista.html", consulta=lista_cursos)
+            consulta_cursos = None
+    return render_template("learning/curso_lista.html", consulta=consulta_cursos)
 
 
 # ---------------------------------------------------------------------------------------
@@ -1119,6 +1156,43 @@ def recurso_descripcion_a_html(course_code, resource):
 # - Establecer curso publico
 # - Establecer sección publica
 # ---------------------------------------------------------------------------------------
+@lms_app.route("/explore")
+@cache.cached(unless=no_guardar_en_cache_global)
+def lista_cursos():
+    """Lista de cursos."""
+
+    if DESARROLLO:
+        MAX_COUNT = 3
+    else:
+        MAX_COUNT = 30
+
+    etiquetas = Etiqueta.query.all()
+    categorias = Categoria.query.all()
+    consulta_cursos = database.paginate(
+        database.select(Curso).filter(Curso.publico == True, Curso.estado == "open"),  # noqa: E712
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAX_COUNT,
+        count=True,
+    )
+    # /explore?page=2&nivel=2&tag=python&category=programing
+    if request.args.get("nivel") or request.args.get("tag") or request.args.get("category"):
+        PARAMETROS: Union[OrderedDict, None] = OrderedDict()
+        for arg in request.url[request.url.find("?") + 1 :].split("&"):  # noqa: E203
+            PARAMETROS[arg[: arg.find("=")]] = arg[arg.find("=") + 1 :]  # noqa: E203
+
+            # El numero de pagina debe ser generado por el macro de paginación.
+            try:
+                del PARAMETROS["page"]
+            except KeyError:
+                pass
+    else:
+        PARAMETROS = None
+
+    return render_template(
+        "inicio/cursos.html", cursos=consulta_cursos, etiquetas=etiquetas, categorias=categorias, parametros=PARAMETROS
+    )
+
+
 @lms_app.route("/course/<course_code>")
 @cache.cached(unless=no_guardar_en_cache_global)
 def curso(course_code):

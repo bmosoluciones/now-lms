@@ -30,7 +30,39 @@ from ulid import ULID
 
 # Recursos locales:
 from now_lms.auth import proteger_passwd
-from now_lms.db import database, Curso, CursoSeccion, CursoRecurso, Usuario
+from now_lms.db import (
+    database,
+    Curso,
+    CursoSeccion,
+    CursoRecurso,
+    Usuario,
+    Etiqueta,
+    EtiquetaCurso,
+    Categoria,
+    CategoriaCurso,
+)
+
+
+def crear_etiquetas():
+    """Crea etiquetas de demostración."""
+    etiqueta1 = Etiqueta(nombre="Python", color="#FFD43B")
+    etiqueta2 = Etiqueta(nombre="Postgresql", color="#0064a5")
+    etiqueta3 = Etiqueta(nombre="HTML", color="#cc3b03")
+    etiqueta4 = Etiqueta(nombre="Learning", color="#f2b3c4")
+    database.session.add(etiqueta1)
+    database.session.add(etiqueta2)
+    database.session.add(etiqueta3)
+    database.session.add(etiqueta4)
+    database.session.commit()
+
+
+def crear_categorias():
+    """Crea categorias de demostración."""
+    cat1 = Categoria(nombre="Learning", descripcion="Cursos sobre aprendizaje")
+    cat2 = Categoria(nombre="Programing", descripcion="Cursos sobre programación")
+    database.session.add(cat1)
+    database.session.add(cat2)
+    database.session.commit()
 
 
 def copy_sample_pdf():
@@ -102,13 +134,13 @@ def copy_sample_img():
         pass
 
 
-def curse_logo(curso: str):
+def curse_logo(curso: str, image: str):
     """Crea un archivo de imagen de ejemplo."""
     from os import path, makedirs
     from shutil import copyfile
     from now_lms.config import DIRECTORIO_ARCHIVOS
 
-    origen = path.join(DIRECTORIO_ARCHIVOS, "img", "5218255.jpg")
+    origen = path.join(DIRECTORIO_ARCHIVOS, "img", image)
     directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "images", curso)
     try:
         makedirs(directorio_destino)
@@ -148,9 +180,9 @@ def crear_curso_demo():
         nombre="Demo Course",
         codigo="resources",
         descripcion="This course will let you learn resource types.",
-        estado="draft",
+        estado="open",
         certificado=False,
-        publico=False,
+        publico=True,
         duracion=7,
         nivel=1,
         auditable=False,
@@ -158,9 +190,10 @@ def crear_curso_demo():
         fecha_inicio=datetime.today() + timedelta(days=7),
         fecha_fin=datetime.today() + timedelta(days=14),
     )
+
     database.session.add(demo)
     database.session.commit()
-    curse_logo("resources")
+    curse_logo("resources", "11372802.jpg")
 
     ramdon1 = ULID()
     seccion_id = str(ramdon1)
@@ -331,7 +364,7 @@ def crear_curso_predeterminado():
     )
     database.session.add(demo)
     database.session.commit()
-    curse_logo("now")
+    curse_logo("now", "5218255.jpg")
 
     ramdon1 = ULID()
     seccion1_id = str(ramdon1)
@@ -423,7 +456,7 @@ if ADMIN == "lms-admin" and PASSWD == "lms-admin":  # nosec B105
     log.warning("Utilizando usuario y contraseña predeterminada para el usuario administrador.")
 
 
-def crear_usuarios_predeterminados():
+def crear_usuarios_predeterminados(with_examples):
     """Crea en la base de datos los usuarios iniciales."""
     log.info("Creando usuario administrador.")
     administrador = Usuario(
@@ -439,108 +472,216 @@ def crear_usuarios_predeterminados():
     database.session.commit()
     log.debug("Usuario administrador creado correctamente.")
 
-    # Crea un usuario de cada perfil (admin, user, instructor, moderator)
-    # por defecto desactivados.
-    log.info("Creando usuarios de demostración.")
-    student = Usuario(
-        usuario="student",
-        acceso=proteger_passwd("student"),
-        nombre="Meylin",
-        apellido="Perez",
-        correo_electronico="hello@domain.net",
-        tipo="student",
-        activo=True,
-        visible=True,
-        titulo=None,
-        genero="female",
-        nacimiento=datetime(year=1988, month=9, day=21),
-        bio="Hello there!",
-        url="google.com",
-        linkedin="user",
-        facebook="user",
-        twitter="user",
-        github="user",
+    if environ.get("CI") or with_examples:
+        log.info("Creando usuarios de demostración.")
+        student = Usuario(
+            usuario="student",
+            acceso=proteger_passwd("student"),
+            nombre="Meylin",
+            apellido="Perez",
+            correo_electronico="hello@domain.net",
+            tipo="student",
+            activo=True,
+            visible=True,
+            titulo=None,
+            genero="female",
+            nacimiento=datetime(year=1988, month=9, day=21),
+            bio="Hello there!",
+            url="google.com",
+            linkedin="user",
+            facebook="user",
+            twitter="user",
+            github="user",
+        )
+        student1 = Usuario(
+            usuario="student1",
+            acceso=proteger_passwd("student1"),
+            nombre="Dania",
+            apellido="Mendez",
+            correo_electronico="hello1@domain.net",
+            tipo="student",
+            activo=True,
+            visible=False,
+            titulo=None,
+            genero="female",
+            nacimiento=datetime(year=1988, month=9, day=21),
+            bio="Hello there!",
+            url="google.com",
+            linkedin="user",
+            facebook="user",
+            twitter="user",
+            github="user",
+        )
+        student2 = Usuario(
+            usuario="student2",
+            acceso=proteger_passwd("student1"),
+            nombre="Gema",
+            apellido="Lopez",
+            correo_electronico="hello3@domain.net",
+            tipo="student",
+            activo=True,
+            visible=True,
+            titulo=None,
+            genero="female",
+            nacimiento=datetime(year=1988, month=9, day=21),
+            bio="Hello there!",
+            url="google.com",
+            linkedin="user",
+            facebook="user",
+            twitter="user",
+            github="user",
+        )
+        database.session.add(student)
+        database.session.add(student1)
+        database.session.add(student2)
+        database.session.commit()
+        instructor = Usuario(
+            usuario="instructor",
+            acceso=proteger_passwd("instructor"),
+            nombre="Nemesio",
+            apellido="Reyes",
+            correo_electronico="hello2@domain.net",
+            tipo="instructor",
+            activo=True,
+            visible=False,
+            genero="male",
+            nacimiento=datetime(year=1988, month=9, day=21),
+            bio="You can",
+            url="google.com",
+            linkedin="user",
+            facebook="user",
+            twitter="user",
+            github="user",
+        )
+        database.session.add(instructor)
+        database.session.commit()
+        moderator = Usuario(
+            usuario="moderator",
+            acceso=proteger_passwd("moderator"),
+            tipo="moderator",
+            nombre="Abner",
+            apellido="Romero",
+            correo_electronico="moderator@mail.com",
+            activo=True,
+            visible=False,
+            genero="male",
+            nacimiento=datetime(year=1988, month=9, day=21),
+            bio="You can do it.",
+            url="google.com",
+            linkedin="user",
+            facebook="user",
+            twitter="user",
+            github="user",
+        )
+        database.session.add(moderator)
+        database.session.commit()
+        log.debug("Usuarios creados correctamente.")
+
+
+def crear_curso_demo1():
+    # pylint: disable=too-many-locals
+    """Crea en la base de datos un curso de demostración."""
+    demo = Curso(
+        nombre="PostgreSQL",
+        codigo="postgresql",
+        descripcion="This is a course about PostgreSQL.",
+        estado="open",
+        certificado=False,
+        publico=True,
+        duracion=7,
+        nivel=1,
+        auditable=False,
+        portada=True,
+        fecha_inicio=datetime.today() + timedelta(days=7),
+        fecha_fin=datetime.today() + timedelta(days=14),
     )
-    student1 = Usuario(
-        usuario="student1",
-        acceso=proteger_passwd("student1"),
-        nombre="Dania",
-        apellido="Mendez",
-        correo_electronico="hello1@domain.net",
-        tipo="student",
-        activo=True,
-        visible=False,
-        titulo=None,
-        genero="female",
-        nacimiento=datetime(year=1988, month=9, day=21),
-        bio="Hello there!",
-        url="google.com",
-        linkedin="user",
-        facebook="user",
-        twitter="user",
-        github="user",
-    )
-    student2 = Usuario(
-        usuario="student2",
-        acceso=proteger_passwd("student1"),
-        nombre="Gema",
-        apellido="Lopez",
-        correo_electronico="hello3@domain.net",
-        tipo="student",
-        activo=True,
-        visible=True,
-        titulo=None,
-        genero="female",
-        nacimiento=datetime(year=1988, month=9, day=21),
-        bio="Hello there!",
-        url="google.com",
-        linkedin="user",
-        facebook="user",
-        twitter="user",
-        github="user",
-    )
-    database.session.add(student)
-    database.session.add(student1)
-    database.session.add(student2)
+
+    database.session.add(demo)
     database.session.commit()
-    instructor = Usuario(
-        usuario="instructor",
-        acceso=proteger_passwd("instructor"),
-        nombre="Nemesio",
-        apellido="Reyes",
-        correo_electronico="hello2@domain.net",
-        tipo="instructor",
-        activo=True,
-        visible=False,
-        genero="male",
-        nacimiento=datetime(year=1988, month=9, day=21),
-        bio="You can",
-        url="google.com",
-        linkedin="user",
-        facebook="user",
-        twitter="user",
-        github="user",
+    curse_logo("postgresql", "999454.jpg")
+
+
+def crear_curso_demo2():
+    # pylint: disable=too-many-locals
+    """Crea en la base de datos un curso de demostración."""
+    demo = Curso(
+        nombre="Python",
+        codigo="python",
+        descripcion="This is a course about Python.",
+        estado="open",
+        certificado=False,
+        publico=True,
+        duracion=7,
+        nivel=1,
+        auditable=False,
+        portada=True,
+        fecha_inicio=datetime.today() + timedelta(days=7),
+        fecha_fin=datetime.today() + timedelta(days=14),
     )
-    database.session.add(instructor)
+
+    database.session.add(demo)
     database.session.commit()
-    moderator = Usuario(
-        usuario="moderator",
-        acceso=proteger_passwd("moderator"),
-        tipo="moderator",
-        nombre="Abner",
-        apellido="Romero",
-        correo_electronico="moderator@mail.com",
-        activo=True,
-        visible=False,
-        genero="male",
-        nacimiento=datetime(year=1988, month=9, day=21),
-        bio="You can do it.",
-        url="google.com",
-        linkedin="user",
-        facebook="user",
-        twitter="user",
-        github="user",
+    curse_logo("python", "experiencia-programacion-persona-que-trabaja-codigos-computadora.jpg")
+
+
+def crear_curso_demo3():
+    # pylint: disable=too-many-locals
+    """Crea en la base de datos un curso de demostración."""
+    demo = Curso(
+        nombre="HTML",
+        codigo="html",
+        descripcion="This is a course about HTML.",
+        estado="open",
+        certificado=False,
+        publico=True,
+        duracion=7,
+        nivel=1,
+        auditable=False,
+        portada=True,
+        fecha_inicio=datetime.today() + timedelta(days=7),
+        fecha_fin=datetime.today() + timedelta(days=14),
     )
-    database.session.add(moderator)
+
+    database.session.add(demo)
     database.session.commit()
-    log.debug("Usuarios creados correctamente.")
+    curse_logo("html", "collage-fondo-programacion.jpg")
+
+
+def asignar_cursos_a_etiquetas():
+    """Asigna cursos a Categorias."""
+    etiqueta_python = Etiqueta.query.filter(Etiqueta.nombre == "Python").first()
+    etiqueta_postgresql = Etiqueta.query.filter(Etiqueta.nombre == "Postgresql").first()
+    etiqueta_html = Etiqueta.query.filter(Etiqueta.nombre == "HTML").first()
+    etiqueta_learning = Etiqueta.query.filter(Etiqueta.nombre == "Learning").first()
+
+    registro1 = EtiquetaCurso(curso="postgresql", etiqueta=etiqueta_postgresql.id)
+    registro2 = EtiquetaCurso(curso="python", etiqueta=etiqueta_python.id)
+    registro3 = EtiquetaCurso(curso="html", etiqueta=etiqueta_html.id)
+    registro4 = EtiquetaCurso(curso="now", etiqueta=etiqueta_learning.id)
+    registro5 = EtiquetaCurso(curso="resources", etiqueta=etiqueta_learning.id)
+
+    database.session.add(registro1)
+    database.session.add(registro2)
+    database.session.add(registro3)
+    database.session.add(registro4)
+    database.session.add(registro5)
+    database.session.commit()
+
+
+def asignar_cursos_a_categoria():
+    """Asigna cursos a Categorias."""
+    categoria_learning = Categoria.query.filter(Categoria.nombre == "Learning").first()
+    categoria_programing = Categoria.query.filter(Categoria.nombre == "Programing").first()
+
+    registro1 = CategoriaCurso(curso="postgresql", categoria=categoria_programing.id)
+    registro2 = CategoriaCurso(curso="python", categoria=categoria_programing.id)
+    registro3 = CategoriaCurso(curso="html", categoria=categoria_programing.id)
+    registro4 = CategoriaCurso(curso="now", categoria=categoria_learning.id)
+    registro5 = CategoriaCurso(curso="resources", categoria=categoria_learning.id)
+
+    database.session.add(registro1)
+    database.session.add(registro2)
+    database.session.add(registro3)
+    database.session.add(registro4)
+    database.session.add(registro5)
+    database.session.commit()

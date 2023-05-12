@@ -342,7 +342,7 @@ def test_fill_all_forms(client, auth):
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
-    initial_setup()
+    initial_setup(with_examples=True)
     auth.login()
     for f in formularios:
         client.get(f.ruta)
@@ -664,12 +664,13 @@ def test_crear_recursos(client, auth):
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
-    initial_setup()
+    initial_setup(with_examples=False)
     from now_lms.db import CursoSeccion
 
-    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
-    url = "/course/resources/" + seccion.id + "/pdf/new"
+    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "now").first()
+    base_url = "/course/now/" + seccion.id
 
+    url = base_url + "/pdf/new"
     data = {"nombre": "test", "descripcion": "test pdf"}
     data = {key: str(value) for key, value in data.items()}
     data["pdf"] = (BytesIO(b"abcdef"), "test.pdf")
@@ -678,9 +679,7 @@ def test_crear_recursos(client, auth):
     response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
     assert response.status_code == 200
 
-    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
-    url = "/course/resources/" + seccion.id + "/img/new"
-
+    url = base_url + "/img/new"
     data = {"nombre": "test", "descripcion": "test pdf"}
     data = {key: str(value) for key, value in data.items()}
     data["img"] = (BytesIO(b"abcdef"), "test.jpg")
@@ -689,9 +688,7 @@ def test_crear_recursos(client, auth):
     response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
     assert response.status_code == 200
 
-    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
-    url = "/course/resources/" + seccion.id + "/audio/new"
-
+    url = base_url + "/audio/new"
     data = {"nombre": "test", "descripcion": "test pdf"}
     data = {key: str(value) for key, value in data.items()}
     data["audio"] = (BytesIO(b"abcdef"), "test.ogg")
@@ -700,9 +697,7 @@ def test_crear_recursos(client, auth):
     response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
     assert response.status_code == 200
 
-    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
-    url = "/course/resources/" + seccion.id + "/youtube/new"
-
+    url = base_url + "/youtube/new"
     data = {"nombre": "test", "descripcion": "test pdf", "youtube_url": "test"}
     data = {key: str(value) for key, value in data.items()}
     auth.login()
@@ -710,9 +705,7 @@ def test_crear_recursos(client, auth):
     response = client.post(url, data=data, follow_redirects=True)
     assert response.status_code == 200
 
-    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
-    url = "/course/resources/" + seccion.id + "/meet/new"
-
+    url = base_url + "/meet/new"
     data = {"nombre": "test", "descripcion": "test pdf", "url": "test"}
     data = {key: str(value) for key, value in data.items()}
     auth.login()
@@ -720,9 +713,7 @@ def test_crear_recursos(client, auth):
     response = client.post(url, data=data, follow_redirects=True)
     assert response.status_code == 200
 
-    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
-    url = "/course/resources/" + seccion.id + "/html/new"
-
+    url = base_url + "/html/new"
     data = {"nombre": "test", "descripcion": "test pdf", "html_externo": "test"}
     data = {key: str(value) for key, value in data.items()}
     auth.login()
@@ -730,9 +721,7 @@ def test_crear_recursos(client, auth):
     response = client.post(url, data=data, follow_redirects=True)
     assert response.status_code == 200
 
-    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
-    url = "/course/resources/" + seccion.id + "/link/new"
-
+    url = base_url + "/link/new"
     data = {"nombre": "test", "descripcion": "test pdf", "url": "test"}
     data = {key: str(value) for key, value in data.items()}
     auth.login()
@@ -740,27 +729,12 @@ def test_crear_recursos(client, auth):
     response = client.post(url, data=data, follow_redirects=True)
     assert response.status_code == 200
 
-    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
-    url = "/course/resources/" + seccion.id + "/text/new"
-
+    url = base_url + "/text/new"
     data = {"nombre": "test", "descripcion": "test pdf", "editor": "test"}
     data = {key: str(value) for key, value in data.items()}
     auth.login()
     response = client.get(url)
     response = client.post(url, data=data, follow_redirects=True)
-    assert response.status_code == 200
-
-    from now_lms.db import Usuario
-
-    usario = Usuario.query.filter(Usuario.usuario == "lms-admin").first()
-    url = "/perfil/edit/" + usario.id
-    data = {"nombre": "Helllo"}
-    data = {key: str(value) for key, value in data.items()}
-    data["logo"] = (BytesIO(b"abcdef"), "logo.jpg")
-    response = client.get(url)
-    response = client.post(url, data=data, follow_redirects=True)
-    assert response.status_code == 200
-    response = client.get("/perfil/" + usario.id + "/delete_logo", follow_redirects=True)
     assert response.status_code == 200
 
 

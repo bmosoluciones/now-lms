@@ -239,6 +239,8 @@ class EtiquetaForm(BaseForm):
 
 
 class ProgramaForm(BaseForm):
+    """Formulario para crear un programa."""
+
     codigo = StringField(validators=[DataRequired()])
     precio = DecimalField()
     publico = BooleanField(validators=[])

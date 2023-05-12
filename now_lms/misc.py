@@ -18,7 +18,31 @@
 
 """Utilerias varias."""
 
-from typing import NamedTuple
+from collections import OrderedDict
+from typing import NamedTuple, Union
+
+
+def concatenar_parametros_a_url(
+    parametros: Union[OrderedDict, None], arg: Union[str, None], val: Union[str, None], char: str = ""
+) -> str:
+    """Devuelve lista de paramentros como una cadena de URL."""
+
+    argumentos: str = char
+
+    if parametros:
+        if arg and val:
+            parametros[arg] = val
+
+        for key, value in parametros.items():
+            argumentos = argumentos + "&" + key + "=" + value
+    elif arg and val:
+        argumentos = argumentos + "&" + arg + "=" + val
+
+    if char is not None and argumentos.find("&") == 1:
+        argumentos = char + argumentos[2:]
+
+    return argumentos
+
 
 ICONOS_RECURSOS: dict = {
     "html": "bi bi-code-square",

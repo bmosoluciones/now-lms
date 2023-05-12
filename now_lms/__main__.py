@@ -23,5 +23,5 @@ Modulo para ejecutar NOW LMS.
 from now_lms import serve, init_app
 
 if __name__ == "__main__":  # pragma: no cover
-    init_app()
+    init_app(with_examples=False)
     serve()
