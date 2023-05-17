@@ -187,7 +187,7 @@ def inicializa_extenciones_terceros(flask_app):
         administrador_sesion.init_app(flask_app)
         cache.init_app(flask_app, CACHE_CONFIG)
         mde.init_app(flask_app)
-        if DESARROLLO:  # pragma: no cover
+        if environ.get("PROFILER"):  # pragma: no cover
             try:
                 from flask_profiler import Profiler
                 from flask_debugtoolbar import DebugToolbarExtension
