@@ -118,8 +118,6 @@ class UsuarioGrupoMiembro(database.Model, BaseTabla):  # type: ignore[name-defin
 
     grupo = database.Column(database.String(26), database.ForeignKey("usuario_grupo.id"))
     usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
-    relacion_grupo = database.relationship("UsuarioGrupo", foreign_keys=grupo)
-    relacion_usuario = database.relationship("Usuario", foreign_keys=usuario)
 
 
 class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]

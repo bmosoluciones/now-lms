@@ -225,7 +225,7 @@ def inicializa_extenciones_terceros(flask_app):
 def cargar_sesion(identidad):  # pragma: no cover
     """Devuelve la entrada correspondiente al usuario que inicio sesión desde la base de datos."""
     if identidad is not None:
-        return Usuario.query.get(identidad)
+        return database.session.get(Usuario, identidad)
     return None
 
 
@@ -649,7 +649,7 @@ def edit_perfil(ulid: str):
     if current_user.id != ulid:
         abort(403)
 
-    usuario_ = Usuario.query.get(ulid)
+    usuario_ = database.session.get(Usuario, ulid)
     form = UserForm(obj=usuario_)
 
     if request.method == "POST":
