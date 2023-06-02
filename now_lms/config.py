@@ -135,7 +135,6 @@ else:  # pragma: no cover
 
 if DESARROLLO:  # pragma: no cover
     log.warning("Opciones de desarrollo detectadas, revise su configuración.")
-    CONFIGURACION["SQLALCHEMY_ECHO"] = True
 
 
 if environ.get("DATABASE_URL"):
