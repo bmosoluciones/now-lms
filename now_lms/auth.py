@@ -19,28 +19,26 @@
 """Control de acceso a la aplicacion."""
 
 # Libreria standar:
-
+from datetime import datetime
 
 # Librerias de terceros:
-
+from bcrypt import checkpw, hashpw, gensalt
 
 # Recursos locales:
+from now_lms.db import Usuario, database
+
 
 # pylint: disable=R0401
 
 
 def proteger_passwd(clave):
     """Devuelve una contraseña salteada con bcrytp."""
-    from bcrypt import hashpw, gensalt
 
     return hashpw(clave.encode(), gensalt())
 
 
 def validar_acceso(usuario_id, acceso):
     """Verifica el inicio de sesión del usuario."""
-    from bcrypt import checkpw
-    from now_lms.db import Usuario, database
-    from datetime import datetime
 
     registro = Usuario.query.filter_by(usuario=usuario_id).first()
     if registro is not None:
