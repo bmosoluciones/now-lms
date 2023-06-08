@@ -1631,7 +1631,7 @@ def pagina_recurso_alternativo(curso_id, codigo, order):
             .all()
         )
 
-    else:  # order = "desc"
+    else:  # Equivale a order == "desc".
         recursos = (
             CursoRecurso.query.filter(
                 CursoRecurso.seccion == RECURSO.seccion, CursoRecurso.indice >= RECURSO.indice  # type: ignore[union-attr]
