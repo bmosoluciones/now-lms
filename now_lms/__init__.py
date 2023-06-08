@@ -839,7 +839,7 @@ def personalizacion():
                 if picture_file:
                     config.custom_logo = True
             except UploadNotAllowed:
-                log.warning("No se pudo actualizar el logotipo del sitio.")
+                log.warning("Ocurrio un error al actualizar el logotipo del sitio web.")
 
         try:
             database.session.commit()
@@ -1337,7 +1337,7 @@ def editar_curso(course_code):
                         curso_a_editar.portada = True
                         database.session.commit()
                 except UploadNotAllowed:
-                    log.warning("No se pudo actualizar el logotipo del sitio.")
+                    log.warning("No se pudo actualizar la portada del curso.")
             flash("Curso actualizado exitosamente.")
             return redirect(curso_url)
 
@@ -1381,7 +1381,7 @@ def nuevo_curso():
                     if picture_file:
                         nuevo_curso.portada = True
                 except UploadNotAllowed:
-                    log.warning("No se pudo actualizar el logotipo del sitio.")
+                    log.warning("No se pudo actualizar la foto de perfil.")
             flash("Curso creado exitosamente.")
             return redirect(url_for("curso", course_code=form.codigo.data))
         except OperationalError:  # pragma: no cover
