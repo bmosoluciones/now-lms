@@ -376,6 +376,8 @@ class Programa(database.Model, BaseTabla):  # type: ignore[name-defined]
     descripcion = database.Column(database.String(500))
     precio = database.Column(database.Float())
     publico = database.Column(database.Boolean())
+    # draft, open, closed
+    estado = database.Column(database.String(20))
 
 
 class ProgramaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -394,3 +396,7 @@ class ProgramaEstudiante(database.Model, BaseTabla):  # type: ignore[name-define
     programa = database.Column(database.String(26), database.ForeignKey("programa.id"), nullable=False, index=True)
     relacion_usuario = database.relationship("Usuario", foreign_keys=usuario)
     relacion_programa = database.relationship("Programa", foreign_keys=programa)
+
+
+class Recurso(Programa):  # type: ignore[name-defined]
+    """Un recurso descargable."""

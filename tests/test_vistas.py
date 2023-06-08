@@ -187,10 +187,22 @@ rutas_estaticas = [
         texto=[b"Crear nuevo curso."],
     ),
     Ruta(
+        ruta="/explore",
+        admin=200,
+        no_session=200,
+        texto=[b"Cursos disponibles."],
+    ),
+    Ruta(
         ruta="/programs",
         admin=200,
-        no_session=302,
-        texto=[b"Lista de Programas Disponibles."],
+        no_session=200,
+        texto=[b"Programas disponibles."],
+    ),
+    Ruta(
+        ruta="/resources",
+        admin=200,
+        no_session=200,
+        texto=[b"Recursos disponibles."],
     ),
     Ruta(
         ruta="/new_program",

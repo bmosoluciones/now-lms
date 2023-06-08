@@ -91,6 +91,7 @@ from now_lms.db import (
     Etiqueta,
     Categoria,
     Programa,
+    Recurso,
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
 )
 
@@ -1213,6 +1214,80 @@ def lista_cursos():
 
     return render_template(
         "inicio/cursos.html", cursos=consulta_cursos, etiquetas=etiquetas, categorias=categorias, parametros=PARAMETROS
+    )
+
+
+@lms_app.route("/programs")
+@cache.cached(unless=no_guardar_en_cache_global)
+def lista_programas():
+    """Lista de programas."""
+
+    if DESARROLLO:
+        MAX_COUNT = 3
+    else:
+        MAX_COUNT = 30
+
+    etiquetas = Etiqueta.query.all()
+    categorias = Categoria.query.all()
+    consulta_cursos = database.paginate(
+        database.select(Programa).filter(Programa.publico == True, Programa.estado == "open"),  # noqa: E712
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAX_COUNT,
+        count=True,
+    )
+    # /explore?page=2&nivel=2&tag=python&category=programing
+    if request.args.get("nivel") or request.args.get("tag") or request.args.get("category"):
+        PARAMETROS: Union[OrderedDict, None] = OrderedDict()
+        for arg in request.url[request.url.find("?") + 1 :].split("&"):  # noqa: E203
+            PARAMETROS[arg[: arg.find("=")]] = arg[arg.find("=") + 1 :]  # noqa: E203
+
+            # El numero de pagina debe ser generado por el macro de paginación.
+            try:
+                del PARAMETROS["page"]
+            except KeyError:
+                pass
+    else:
+        PARAMETROS = None
+
+    return render_template(
+        "inicio/programas.html", cursos=consulta_cursos, etiquetas=etiquetas, categorias=categorias, parametros=PARAMETROS
+    )
+
+
+@lms_app.route("/resources")
+@cache.cached(unless=no_guardar_en_cache_global)
+def lista_recursos():
+    """Lista de programas."""
+
+    if DESARROLLO:
+        MAX_COUNT = 3
+    else:
+        MAX_COUNT = 30
+
+    etiquetas = Etiqueta.query.all()
+    categorias = Categoria.query.all()
+    consulta_cursos = database.paginate(
+        database.select(Programa).filter(Programa.publico == True, Programa.estado == "open"),  # noqa: E712
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAX_COUNT,
+        count=True,
+    )
+    # /explore?page=2&nivel=2&tag=python&category=programing
+    if request.args.get("nivel") or request.args.get("tag") or request.args.get("category"):
+        PARAMETROS: Union[OrderedDict, None] = OrderedDict()
+        for arg in request.url[request.url.find("?") + 1 :].split("&"):  # noqa: E203
+            PARAMETROS[arg[: arg.find("=")]] = arg[arg.find("=") + 1 :]  # noqa: E203
+
+            # El numero de pagina debe ser generado por el macro de paginación.
+            try:
+                del PARAMETROS["page"]
+            except KeyError:
+                pass
+    else:
+        PARAMETROS = None
+
+    return render_template(
+        "inicio/recursos.html", cursos=consulta_cursos, etiquetas=etiquetas, categorias=categorias, parametros=PARAMETROS
     )
 
 

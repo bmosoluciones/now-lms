@@ -114,11 +114,13 @@
               aria-hidden="true"></i> Cursos</a>
         </li>
         <li>
-          <a href="" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-diagram-3-fill"
+          <a href="{{ url_for('lista_programas', page=1) }}"
+            class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-diagram-3-fill"
               aria-hidden="true"></i> Programas</a>
         </li>
         <li>
-          <a href="" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-book"
+          <a href="{{ url_for('lista_recursos', page=1) }}"
+            class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-book"
               aria-hidden="true"></i> Recursos</a>
         </li>
         {% if current_user.is_authenticated %}

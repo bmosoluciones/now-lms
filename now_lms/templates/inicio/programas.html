@@ -6,7 +6,7 @@
 <head>
 
   {{ macros.headertags() }}
-  <title>Cursos Disponibles</title>
+  <title>Programas Disponibles</title>
 
   {{ macros.local_style() }}
 
@@ -27,7 +27,7 @@
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a class="text-reset text-decoration-none link-dark" href="/index">Inicio</a>
             </li>
-            <li class="breadcrumb-item">Cursos disponibles.</li>
+            <li class="breadcrumb-item">Programas disponibles.</li>
           </ol>
         </nav>
       </h4>
@@ -37,7 +37,7 @@
         <div class="col-md-8">
 
           <div class="container" id="user_paginatios">
-            {{ macros.rendizar_paginacion(consulta=cursos, vista="lista_cursos") }}
+            {{ macros.rendizar_paginacion(consulta=cursos, vista="lista_programas") }}
           </div>
 
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
