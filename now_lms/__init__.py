@@ -15,14 +15,25 @@
 # Contributors:
 # - William José Moreno Reyes
 
-
-"""NOW Learning Management System."""
-
 # pylint: disable=E1101
 # pylint: disable=singleton-comparison
 
+"""
+NOW Learning Management System.
+
+Simple to {install, use, configure and maintain} learning management system.
+
+python3 -m venv venv
+source venv/bin/activate
+lmsctl setup
+lmsctl serve
+
+Visit http://127.0.0.1:8080/ in your browser, default user and password are lms-admin
+
+"""
+
 # ---------------------------------------------------------------------------------------
-# Libreria standar
+# Libreria estandar
 # ---------------------------------------------------------------------------------------
 import sys
 from collections import OrderedDict
@@ -171,7 +182,7 @@ PANEL_DE_USUARIO = redirect("/panel")
 
 
 # ---------------------------------------------------------------------------------------
-# Inicialización de extensiones de terceros
+# Extensiones de terceros
 # ---------------------------------------------------------------------------------------
 alembic: Alembic = Alembic()
 administrador_sesion: LoginManager = LoginManager()
@@ -246,25 +257,10 @@ def no_guardar_en_cache_global():
 
 # ---------------------------------------------------------------------------------------
 # Definición de variables globales de Jinja2.
-# Estas variables estaran disponibles en todas plantillas HTML.
+# Estas variables estaran disponibles en todas las plantillas HTML.
+# Referencias:
+#  - https://jinja.palletsprojects.com/en/3.1.x/api/#the-global-namespace
 # ---------------------------------------------------------------------------------------
-def carga_configuracion_del_sitio_web_desde_db(flask_app):  # pragma: no cover
-    """Obtiene configuración del sitio web desde la base de datos."""
-
-    with flask_app.app_context():
-        try:
-            CONFIG = Configuracion.query.first()
-        except OperationalError:
-            CONFIG = None
-        except ProgrammingError:
-            CONFIG = None
-        except PGProgrammingError:
-            CONFIG = None
-        except DatabaseError:
-            CONFIG = None
-    return CONFIG
-
-
 def cargar_variables_globales_de_plantillas_html():
     """Asignamos variables globales para ser utilizadas dentro de las plantillas del sistema."""
     log.debug("Estableciendo valores blogales de Jinja2.")
@@ -288,7 +284,6 @@ lms_app = Flask(
     template_folder=DIRECTORIO_PLANTILLAS,
     static_folder=DIRECTORIO_ARCHIVOS,
 )
-app = lms_app
 lms_app.config.from_mapping(CONFIGURACION)
 inicializa_extenciones_terceros(lms_app)
 cargar_variables_globales_de_plantillas_html()
@@ -310,9 +305,15 @@ def error_403(error):  # pragma: no cover
     return render_template("403.html"), 403
 
 
+# Normalmente los servidores WSGI utilizan "app" or "application" por defecto.
+app = lms_app
+application = lms_app
+
 # ---------------------------------------------------------------------------------------
 # Configuración de carga de archivos al sistema.
 # Esta configuración es requerida por la extensión flask-reuploaded
+# Referencia:
+#  - https://flask-reuploaded.readthedocs.io/en/latest/configuration/
 # ---------------------------------------------------------------------------------------
 images = UploadSet("images", IMAGES)
 files = UploadSet("files", DOCUMENTS)
@@ -324,9 +325,29 @@ configure_uploads(lms_app, audio)
 
 # ---------------------------------------------------------------------------------------
 # Funciones auxiliares para el inicio de la aplicación.
+# - Cargar configuración del sitio web.
+# - Configuración inicial.
 # - Crear base de datos.
-# - Iniciar servidor WSGI.
 # ---------------------------------------------------------------------------------------
+def carga_configuracion_del_sitio_web_desde_db(flask_app):  # pragma: no cover
+    """Obtiene configuración del sitio web desde la base de datos."""
+
+    with flask_app.app_context():
+        try:
+            CONFIG = Configuracion.query.first()
+        # Si no existe una entrada en la tabla de configuración uno de los siguientes errores puede ocurrir
+        # en dependencia del motor de base de datos utilizado.
+        except OperationalError:
+            CONFIG = None
+        except ProgrammingError:
+            CONFIG = None
+        except PGProgrammingError:
+            CONFIG = None
+        except DatabaseError:
+            CONFIG = None
+    return CONFIG
+
+
 def initial_setup(with_examples=False):
     """Inicializa una nueva bases de datos"""
     lms_app.app_context().push()
@@ -451,7 +472,9 @@ def serve():  # pragma: no cover
     server(app=lms_app, port=int(PORT), threads=THREADS)
 
 
+# < ------------------------------------------------------------------------------------- >
 # < ----------------------- Definición de las vistas del sistema. ----------------------- >
+# < ------------------------------------------------------------------------------------- >
 
 
 # ---------------------------------------------------------------------------------------
@@ -950,7 +973,7 @@ def usuario(id_usuario):
     perfil_usuario = Usuario.query.filter_by(usuario=id_usuario).first()
     # La misma plantilla del perfil de usuario con permisos elevados como
     # activar desactivar el perfil o cambiar el perfil del usuario.
-    if current_user.usuario == id_usuario or current_user.tipo != "student" or perfil_usuario.visible == True:
+    if current_user.usuario == id_usuario or current_user.tipo != "student" or perfil_usuario.visible is True:
         return render_template("inicio/perfil.html", perfil=perfil_usuario, genero=GENEROS)
     else:
         return render_template("inicio/private.html")
