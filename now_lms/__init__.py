@@ -1569,6 +1569,11 @@ def cambiar_seccion_publico():
 # - Pagina del recurso
 # - Pagina para seleccionar tipo de recurso.
 # ---------------------------------------------------------------------------------------
+
+RECURSO_AGREGADO = "Recurso agregado correctamente al curso."
+ERROR_AL_AGREGAR_CURSO = "Hubo en error al crear el recurso."
+
+
 @lms_app.route("/cource/<curso_id>/resource/<resource_type>/<codigo>")
 def pagina_recurso(curso_id, resource_type, codigo):
     """Pagina de un recurso."""
@@ -1680,10 +1685,10 @@ def nuevo_recurso_youtube_video(course_code, seccion):
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash("Recurso agregado correctamente al curso.")
+            flash(RECURSO_AGREGADO)
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash("Hubo en error al crear el recurso.")
+            flash(ERROR_AL_AGREGAR_CURSO)
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
@@ -1713,10 +1718,10 @@ def nuevo_recurso_text(course_code, seccion):
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash("Recurso agregado correctamente al curso.")
+            flash(RECURSO_AGREGADO)
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash("Hubo en error al crear el recurso.")
+            flash(ERROR_AL_AGREGAR_CURSO)
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
@@ -1746,10 +1751,10 @@ def nuevo_recurso_link(course_code, seccion):
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash("Recurso agregado correctamente al curso.")
+            flash(RECURSO_AGREGADO)
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash("Hubo en error al crear el recurso.")
+            flash(ERROR_AL_AGREGAR_CURSO)
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
@@ -1782,10 +1787,10 @@ def nuevo_recurso_pdf(course_code, seccion):
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash("Recurso agregado correctamente al curso.")
+            flash("RECURSO_AGREGADO")
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash("Hubo en error al crear el recurso.")
+            flash(ERROR_AL_AGREGAR_CURSO)
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
@@ -1819,10 +1824,10 @@ def nuevo_recurso_meet(course_code, seccion):
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash("Recurso agregado correctamente al curso.")
+            flash("RECURSO_AGREGADO")
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash("Hubo en error al crear el recurso.")
+            flash(ERROR_AL_AGREGAR_CURSO)
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
@@ -1856,10 +1861,10 @@ def nuevo_recurso_img(course_code, seccion):
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash("Recurso agregado correctamente al curso.")
+            flash("RECURSO_AGREGADO")
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash("Hubo en error al crear el recurso.")
+            flash(ERROR_AL_AGREGAR_CURSO)
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
@@ -1893,10 +1898,10 @@ def nuevo_recurso_audio(course_code, seccion):
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash("Recurso agregado correctamente al curso.")
+            flash("RECURSO_AGREGADO")
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash("Hubo en error al crear el recurso.")
+            flash(ERROR_AL_AGREGAR_CURSO)
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
@@ -1926,10 +1931,10 @@ def nuevo_recurso_html(course_code, seccion):
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash("Recurso agregado correctamente al curso.")
+            flash("RECURSO_AGREGADO")
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash("Hubo en error al crear el recurso.")
+            flash(ERROR_AL_AGREGAR_CURSO)
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
