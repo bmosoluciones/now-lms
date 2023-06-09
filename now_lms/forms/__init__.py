@@ -246,6 +246,14 @@ class ProgramaForm(BaseForm):
     publico = BooleanField(validators=[])
 
 
+class RecursoForm(BaseForm):
+    """Formulario para crear un recurso."""
+
+    codigo = StringField(validators=[DataRequired()])
+    precio = DecimalField()
+    publico = BooleanField(validators=[])
+
+
 class UserForm(FlaskForm):
     """Formulario para el perfil de usuario."""
 

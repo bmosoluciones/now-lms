@@ -40,7 +40,7 @@ from collections import OrderedDict
 from datetime import datetime
 from functools import wraps
 from typing import Union
-from os import environ, cpu_count
+from os import environ, cpu_count, path
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -154,6 +154,7 @@ from now_lms.forms import (
     EtiquetaForm,
     CategoriaForm,
     ProgramaForm,
+    RecursoForm,
     UserForm,
 )
 from now_lms.misc import (
@@ -2087,7 +2088,7 @@ def edit_category(tag: str):
 
 
 # ---------------------------------------------------------------------------------------
-# Administración de Categorias.
+# Administración de Programas.
 # ---------------------------------------------------------------------------------------
 @lms_app.route("/new_program", methods=["GET", "POST"])
 @login_required
@@ -2114,7 +2115,7 @@ def new_program():
     return render_template("learning/programas/nuevo_programa.html", form=form)
 
 
-@lms_app.route("/programs")
+@lms_app.route("/programs_list")
 @login_required
 @perfil_requerido("instructor")
 def programs():
@@ -2159,6 +2160,125 @@ def edit_program(tag: str):
             flash("Programa editado correctamente.")
         except OperationalError:
             flash("No se puedo editar el programa.")
-        return redirect("/programs")
+        return redirect("/programs_list")
 
     return render_template("learning/programas/editar_programa.html", form=form, programa=programa)
+
+
+# ---------------------------------------------------------------------------------------
+# Administración de Recursos.
+# ---------------------------------------------------------------------------------------
+@lms_app.route("/new_resource", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def new_resource():
+    """Nueva recursos."""
+    form = RecursoForm()
+    if form.validate_on_submit() or request.method == "POST":
+        if "img" in request.files:
+            file_name = form.codigo.data + ".jpg"
+            picture_file = images.save(request.files["img"], folder="resources_files", name=file_name)
+        else:
+            picture_file = None
+
+        if "recurso" in request.files:
+            recurso = request.files["recurso"]
+            file_name = form.codigo.data + "." + recurso.filename.split(".")[1]
+            resource_file = files.save(request.files["recurso"], folder="resources_files", name=file_name)
+        else:
+            resource_file = False
+
+        recurso = Recurso(
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            codigo=form.codigo.data,
+            precio=form.precio.data,
+            publico=False,
+            file_name=file_name,
+        )
+        if resource_file and picture_file:
+            recurso.logo = True
+        database.session.add(recurso)
+        try:
+            database.session.commit()
+            flash("Nueva Recurso creado.")
+        except OperationalError:
+            flash("Hubo un error al crear el recurso.")
+        return redirect("/resources_list")
+
+    return render_template("learning/recursos/nuevo_recurso.html", form=form)
+
+
+@lms_app.route("/resources_list")
+@login_required
+@perfil_requerido("instructor")
+def recursos():
+    """Lista de programas"""
+    consulta = database.paginate(
+        database.select(Recurso),  # noqa: E712
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+        count=True,
+    )
+    return render_template("learning/recursos/lista_recursos.html", consulta=consulta)
+
+
+@lms_app.route("/resource/<resource_code>/donwload")
+def descargar_recurso(resource_code):
+    recurso = Recurso.query.filter(Recurso.codigo == resource_code).first()
+    config = current_app.upload_set_config.get("files")
+    directorio = path.join(config.destination, "resources_files")
+
+    if current_user.is_authenticated:
+        return send_from_directory(directorio, recurso.file_name)
+    else:
+        return redirect("/login")
+
+
+@lms_app.route("/delete_resource/<ulid>")
+@login_required
+@perfil_requerido("instructor")
+def delete_resource(ulid: str):
+    """Elimina recurso."""
+    Recurso.query.filter(Recurso.id == ulid).delete()
+    database.session.commit()
+    return redirect("/resources_list")
+
+
+@lms_app.route("/update_resource/<ulid>", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def edit_resource(ulid: str):
+    """Actualiza recurso."""
+
+    recurso = Recurso.query.filter(Recurso.id == ulid).first()
+    form = RecursoForm(
+        nombre=recurso.nombre,
+        descripcion=recurso.descripcion,
+    )
+
+    if form.validate_on_submit() or request.method == "POST":
+        recurso.nombre = form.nombre.data
+        recurso.descripcion = form.descripcion.data
+        recurso.precio = form.precio.data
+        recurso.publico = form.publico.data
+
+        try:  # pragma: no cover
+            database.session.commit()
+            flash("Recurso recurso.")
+        except OperationalError:
+            flash("Error al editar el recurso.")
+        return redirect(url_for("vista_recurso", resource_code=recurso.codigo))
+
+    return render_template("learning/recursos/editar_recurso.html", form=form, recurso=recurso)
+
+
+@lms_app.route("/resource/<resource_code>")
+@cache.cached(unless=no_guardar_en_cache_global)
+def vista_recurso(resource_code):
+    """Pagina de un recurso."""
+
+    return render_template(
+        "learning/recursos/recurso.html",
+        curso=Recurso.query.filter_by(codigo=resource_code).first(),
+    )

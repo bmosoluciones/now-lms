@@ -6,7 +6,7 @@
 <head>
 
   {{ macros.headertags() }}
-  <title>Crear Programa</title>
+  <title>Actualizar Recurso</title>
 
   {{ macros.local_style() }}
   <!-- Custom styles for this template -->
@@ -22,38 +22,43 @@
     {{ macros.notify() }}
 
     <div class="container px-4 py-5" id="icon-grid">
-      <h4 class="pb-2 border-bottom">Crear Programa.</h4>
-      <form method="post" enctype=multipart/form-data>
+      <h4 class="pb-2 border-bottom">Actualizar Recurso.</h4>
+      <form method="post">
         {{ form.csrf_token }}
         <div class="row g-3">
           <div class="col-sm-6">
-            <label for="nombre" class="form-label">Programa</label>
-            {{ form.nombre(class="form-control", id="nombre", placeholder="Programa") }}
+            <label for="nombre" class="form-label">Recurso</label>
+            {{ form.nombre(class="form-control", id="nombre", placeholder="Recurso", value=recurso.nombre) }}
           </div>
 
           <div class="col-sm-6">
-            <label for="codigo" class="form-label">Codigo</label>
-            {{ form.codigo(class="form-control", id="codigo", placeholder="Codigo") }}
+            <label for="precio" class="form-label">Precio</label>
+            {{ form.precio(class="form-control", id="codigo", value=recurso.precio) }}
           </div>
         </div>
 
         <div class="row g-3">
           <div class="col-sm-6">
             <label for="descripcion" class="form-label">Descripcion</label>
-            {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripción") }}
+            {{ form.descripcion(class="form-control", id="descripcion", value=recurso.descripcion) }}
+
           </div>
 
           <div class="col-sm-6">
-            <label for="precio" class="form-label">Precio</label>
-            {{ form.precio(class="form-control", id="codigo") }}
+            <label for="descripcion" class="form-label">Recurso Publico</label>
+            {{ form.publico(checked=recurso.publico) }}
+
           </div>
 
         </div>
-
         <br>
+        <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Actualizar Recurso</button>
 
-        <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Programa</button>
-      </form>
+    </div>
+
+    <br>
+
+    </form>
     </div>
 
 
