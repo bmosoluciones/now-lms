@@ -21,14 +21,14 @@
 from datetime import datetime
 
 
-# 0.0.1.alpha-5.20230609
+# 0.0.1.alpha-6.20230614
 APPNAME = "NOW lms"
 APPAUTHOR = "BMO Soluciones, S.A."
 MAYOR = "0"
 MENOR = "0"
 PATCH = "1"
 REVISION = datetime.today().strftime("%Y%m%d")
-PRERELEASE = "alpha-5"
+PRERELEASE = "alpha-6"
 if PRERELEASE:
     VERSION = MAYOR + "." + MENOR + "." + PATCH + "." + PRERELEASE + REVISION
 else:
