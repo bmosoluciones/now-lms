@@ -30,6 +30,6 @@ PATCH = "1"
 REVISION = datetime.today().strftime("%Y%m%d")
 PRERELEASE = "alpha-6"
 if PRERELEASE:
-    VERSION = MAYOR + "." + MENOR + "." + PATCH + "." + PRERELEASE + REVISION
+    VERSION = MAYOR + "." + MENOR + "." + PATCH + "." + PRERELEASE + "-rev:" + REVISION
 else:
-    VERSION = MAYOR + "." + MENOR + "." + PATCH + "." + REVISION
+    VERSION = MAYOR + "." + MENOR + "." + PATCH + "." + "-rev:" + REVISION
