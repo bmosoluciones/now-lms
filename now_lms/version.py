@@ -21,15 +21,26 @@
 from datetime import datetime
 
 
-# 0.0.1.alpha-7.20230622
+# <--------------------------------------------------------------------------> #
+# Basic info:
 APPNAME = "NOW lms"
 APPAUTHOR = "BMO Soluciones, S.A."
+
+# <--------------------------------------------------------------------------> #
+# SemVer (https://semver.org)
 MAYOR = "0"
 MENOR = "0"
 PATCH = "1"
-REVISION = datetime.today().strftime("%Y%m%d")
+
+# <--------------------------------------------------------------------------> #
+# Pre release data.
 PRERELEASE = "alpha-7"
+REVISION = datetime.today().strftime("%Y%m%d")
+
+# <--------------------------------------------------------------------------> #
+# Release string
+# 0.0.1.alpha-7.20230622
 if PRERELEASE:
     VERSION = MAYOR + "." + MENOR + "." + PATCH + "." + PRERELEASE + "-rev:" + REVISION
 else:
-    VERSION = MAYOR + "." + MENOR + "." + PATCH + "." + "-rev:" + REVISION
+    VERSION = MAYOR + "." + MENOR + "." + PATCH
