@@ -1306,6 +1306,14 @@ def curso(course_code):
     )
 
 
+@lms_app.route("/program/<codigo>")
+@cache.cached(unless=no_guardar_en_cache_global)
+def programa(codigo):
+    """Pagina principal del curso."""
+
+    return render_template("learning/programa.html")
+
+
 @lms_app.route("/course/<course_code>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -2110,7 +2118,7 @@ def new_program():
             flash("Nueva Programa creado.")
         except OperationalError:
             flash("Hubo un error al crear el programa.")
-        return redirect("/programs")
+        return redirect(url_for("programs"))
 
     return render_template("learning/programas/nuevo_programa.html", form=form)
 
@@ -2136,7 +2144,7 @@ def delete_program(tag: str):
     """Elimina programa."""
     Programa.query.filter(Programa.id == tag).delete()
     database.session.commit()
-    return redirect("/programs")
+    return redirect("/programs_list")
 
 
 @lms_app.route("/edit_program/<tag>", methods=["GET", "POST"])

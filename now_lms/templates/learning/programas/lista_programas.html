@@ -28,7 +28,7 @@
 
         <p>
           <span class="badge bg-success">
-            <a href="{{ url_for("new_program") }}" class="link-light">Nueva Programa</a>
+            <a href="{{ url_for("new_program") }}" class="link-light">Nuevo Programa</a>
           </span>
         </p>
 
@@ -53,17 +53,23 @@
           <tbody>
             <tr>
               <td>
-                <a href="" class="link-dark">
+                <a href="{{url_for("programa", codigo=item.codigo)}}" class="link-dark">
                   {{ item.codigo }}
                 </a>
               <td>
-                {{ item.nombre }}
+                <a href="{{url_for("programa", codigo=item.codigo)}}" class="link-dark">
+                  {{ item.nombre }}
+                </a>
               </td>
               <td>
-                {{ item.publico }}
+                <a href="{{url_for("programa", codigo=item.codigo)}}" class="link-dark">
+                  {{ item.publico }}
+                </a>
               </td>
               <td>
-                {{ item.precio }}
+                <a href="{{url_for("programa", codigo=item.codigo)}}" class="link-dark">
+                  {{ item.precio }}
+                </a>
               </td>
               <td>
                 <span class="badge bg-danger">
@@ -79,7 +85,7 @@
         </table>
       </div>
       {% else %}
-      <p>Usted no ha creado ninguna etiqueta todavia.</p>
+      <p>Usted no ha creado ningun programa todavia.</p>
       {% endif %}
 
       <div class="container" id="user_paginatios">
