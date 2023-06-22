@@ -1,43 +1,41 @@
 site_name: NOW - LMS
 theme:
-    name: material
-    favicon: images/favicon.png
-    logo: images/logo.svg
-    language: es
-    palette:
+  name: material
+  favicon: images/favicon.png
+  logo: images/logo.svg
+  font: Karla
+  language: es
+  palette:
     # Palette toggle for light mode
     - scheme: default
-      primary: orange
-      accent: deep orange
+      primary: indigo
       toggle:
-        icon: material/toggle-switch
+        icon: material/brightness-7
         name: Switch to dark mode
 
     # Palette toggle for dark mode
     - scheme: slate
-      primary: cyan
-      accent: deep orange
+      primary: indigo
       toggle:
-        icon: material/toggle-switch-off-outline
+        icon: material/brightness-4
         name: Switch to light mode
 
-    icon:
-        repo: fontawesome/brands/git-alt
-    features:
-        - header.autohide
-        - announce.dismiss
-        - navigation.instant
-        - navigation.tabs
-        - navigation.tabs.sticky
-        - navigation.sections
-        - navigation.expand
-        - navigation.footer
+  icon:
+    repo: fontawesome/brands/git-alt
+  features:
+    - header.autohide
+    - announce.dismiss
+    - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.footer
 
 repo_url: https://github.com/bmosoluciones/now-lms
 repo_name: bmosoluciones/now-lms
 
 copyright: Copyright &copy; 2021 - 2023 BMO Soluciones
-
 
 plugins:
   - search:
@@ -47,28 +45,27 @@ plugins:
   - offline
 
 nav:
-    - Home: index.md
-    - Setup:
+  - Home: index.md
+  - Setup:
       - Setup: setup.md
       - Configuration: setup-conf.md
       - Database Setup: db.md
       - Python Package: pypi.md
       - Docker: oci.md
       - Shared Hosting:
-        - DreamHost: dreamhost.md
+          - DreamHost: dreamhost.md
       - Server Setup:
-        - CentOS / Alma / Rocky: rocky.md
+          - CentOS / Alma / Rocky: rocky.md
       - Other Deployment options:
-        - Server less: dev_ops.md
-    - Releases: release.md
-    - About:
+          - Server less: dev_ops.md
+  - Releases: release.md
+  - About:
       - About: faq.md
       - Readme: https://github.com/bmosoluciones/now-lms/blob/main/README.md
       - License: https://github.com/bmosoluciones/now-lms/blob/main/LICENSE
-    - Contributing:
+  - Contributing:
       - Contributing: CONTRIBUTING.md
       - Developer Certificate of Origin: sing-off.md
-
 
 extra:
   social:
