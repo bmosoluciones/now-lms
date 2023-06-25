@@ -15,6 +15,51 @@
 # Contributors:
 # - William José Moreno Reyes
 
+
+# ---------------------------------------------------------------------------------------
+# Libreria estandar
+# ---------------------------------------------------------------------------------------
+from os import environ
+
+# ---------------------------------------------------------------------------------------
+# Librerias de terceros
+# ---------------------------------------------------------------------------------------
 from flask_caching import Cache
 
-cache: Cache = Cache()
+# ---------------------------------------------------------------------------------------
+# Recursos locales
+# ---------------------------------------------------------------------------------------
+from now_lms.logs import log
+
+# < --------------------------------------------------------------------------------------------- >
+# Configuracion de Cache
+CACHE_CONFIG: dict = {}
+
+if not environ.get("NO_LMS_CACHE"):  # pragma: no cover
+    CACHE_CONFIG["CACHE_DEFAULT_TIMEOUT"] = 300
+    if environ.get("CACHE_REDIS_HOST") and environ.get("CACHE_REDIS_PORT"):
+        CTYPE = "RedisCache"
+        CACHE_CONFIG["CACHE_REDIS_HOST"] = environ.get("CACHE_REDIS_HOST")
+        CACHE_CONFIG["CACHE_REDIS_PORT"] = environ.get("CACHE_REDIS_PORT")
+
+    elif environ.get("CACHE_REDIS_URL") or environ.get("REDIS_URL"):
+        CTYPE = "RedisCache"
+        CACHE_CONFIG["CACHE_REDIS_URL"] = environ.get("CACHE_REDIS_URL") or environ.get("REDIS_URL")
+
+    elif environ.get("CACHE_MEMCACHED_SERVERS"):
+        CTYPE = "MemcachedCache"
+        CACHE_CONFIG["CACHE_MEMCACHED_SERVERS"] = environ.get("CACHE_MEMCACHED_SERVERS")
+
+    else:
+        CTYPE = "NullCache"
+        log.info("No cache service configured.")
+
+else:
+    CTYPE = "NullCache"
+
+CACHE_CONFIG["CACHE_TYPE"] = CTYPE
+
+
+log.info("Cache: {type}", type=CTYPE)
+
+cache: Cache = Cache(config=CACHE_CONFIG)

@@ -65,7 +65,7 @@ from ulid import ULID
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import validar_acceso, proteger_passwd
 from now_lms.cache import cache
-from now_lms.config import DIRECTORIO_PLANTILLAS, DIRECTORIO_ARCHIVOS, DESARROLLO, CONFIGURACION, CACHE_CONFIG
+from now_lms.config import DIRECTORIO_PLANTILLAS, DIRECTORIO_ARCHIVOS, DESARROLLO, CONFIGURACION
 from now_lms.db import (
     database,
     Configuracion,
@@ -190,7 +190,7 @@ def inicializa_extenciones_terceros(flask_app):
         database.init_app(flask_app)
         alembic.init_app(flask_app)
         administrador_sesion.init_app(flask_app)
-        cache.init_app(flask_app, CACHE_CONFIG)
+        cache.init_app(flask_app)
         mde.init_app(flask_app)
         if environ.get("PROFILER"):  # pragma: no cover
             try:
