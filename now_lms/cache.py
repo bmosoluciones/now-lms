@@ -15,16 +15,6 @@
 # Contributors:
 # - William José Moreno Reyes
 
-"""
-Modulo para ejecutar NOW LMS.
+from flask_caching import Cache
 
-"""
-
-from now_lms.logs import log
-
-from now_lms import serve, init_app
-
-if __name__ == "__main__":  # pragma: no cover
-    log.debug("Iniciando NOW Learning Management System.")
-    init_app(with_examples=False)
-    serve()
+cache: Cache = Cache()

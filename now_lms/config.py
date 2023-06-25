@@ -17,16 +17,16 @@
 
 """Configuración de la aplicación."""
 # Libreria standar:
-from os import environ, name, path, access, W_OK, R_OK, makedirs
+from os import access, environ, makedirs, name, path, W_OK, R_OK
 from pathlib import Path
 from typing import Dict
 
 # Librerias de terceros:
 from appdirs import AppDirs
-from loguru import logger as log
 from configobj import ConfigObj
 
 # Recursos locales:
+from now_lms.logs import log
 from now_lms.version import PRERELEASE
 
 CONFIG_FILE: str = "now_lms.conf"
@@ -79,15 +79,15 @@ if not path.isdir(DIRECTORIO_BASE_UPLOADS):  # pragma: no cover
         makedirs(DIRECTORIO_UPLOAD_ARCHIVOS)
         makedirs(DIRECTORIO_UPLOAD_IMAGENES)
     except OSError:
-        log.warning("No se puede crear directorio para carga de archivos: {directorio}", directorio=DIRECTORIO_BASE_UPLOADS)
+        log.warning("No se puede crear directorio para carga de archivos:")
+        log.warning(DIRECTORIO_BASE_UPLOADS)
 
 if access(DIRECTORIO_BASE_UPLOADS, R_OK) and access(DIRECTORIO_BASE_UPLOADS, W_OK):  # pragma: no cover
-    log.debug("Directorio para carga de archivos es {directorio}", directorio=DIRECTORIO_BASE_UPLOADS)
+    log.debug("Directorio para carga de archivos es:")
+    log.debug(DIRECTORIO_BASE_UPLOADS)
 else:
-    log.warning(
-        "No se tiene acceso a leer/escribir en directorio de carga de archivos {directorio}",
-        directorio=DIRECTORIO_BASE_UPLOADS,
-    )
+    log.warning("No se tiene acceso a:")
+    log.warning(DIRECTORIO_BASE_UPLOADS)
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -134,7 +134,7 @@ else:  # pragma: no cover
     log.warning("Utilizando configuración predeterminada.")
 
 if DESARROLLO:  # pragma: no cover
-    log.warning("Opciones de desarrollo detectadas, revise su configuración.")
+    log.warning("Opciones de desarrollo detectadas.")
 
 
 if environ.get("DATABASE_URL"):

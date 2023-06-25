@@ -50,12 +50,10 @@ from bleach import clean, linkify
 from flask import Flask, abort, flash, redirect, request, render_template, url_for, send_from_directory, current_app
 from flask.cli import FlaskGroup
 from flask_alembic import Alembic
-from flask_caching import Cache
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from flask_mail import Mail
 from flask_mde import Mde
 from flask_uploads import AUDIO, DOCUMENTS, IMAGES, UploadSet, configure_uploads, UploadNotAllowed
-from loguru import logger as log
 from markdown import markdown
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
@@ -66,13 +64,8 @@ from ulid import ULID
 # Recursos locales
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import validar_acceso, proteger_passwd
-from now_lms.config import (
-    DIRECTORIO_PLANTILLAS,
-    DIRECTORIO_ARCHIVOS,
-    DESARROLLO,
-    CONFIGURACION,
-    CACHE_CONFIG,
-)
+from now_lms.cache import cache
+from now_lms.config import DIRECTORIO_PLANTILLAS, DIRECTORIO_ARCHIVOS, DESARROLLO, CONFIGURACION, CACHE_CONFIG
 from now_lms.db import (
     database,
     Configuracion,
@@ -107,7 +100,7 @@ from now_lms.db.init_courses import (
     asignar_cursos_a_etiquetas,
     asignar_cursos_a_categoria,
 )
-
+from now_lms.logs import log
 from now_lms.db.tools import (
     crear_configuracion_predeterminada,
     crear_indice_recurso,
@@ -188,7 +181,6 @@ PANEL_DE_USUARIO = redirect("/panel")
 # ---------------------------------------------------------------------------------------
 alembic: Alembic = Alembic()
 administrador_sesion: LoginManager = LoginManager()
-cache: Cache = Cache()
 mde: Mde = Mde()
 
 
@@ -217,6 +209,7 @@ def inicializa_extenciones_terceros(flask_app):
                 app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
                 toolbar = DebugToolbarExtension(app)
                 profiler = Profiler(app)
+                log.debug("Profiler activo")
             except ModuleNotFoundError:
                 toolbar = None
                 profiler = None
@@ -265,7 +258,6 @@ def no_guardar_en_cache_global():
 # ---------------------------------------------------------------------------------------
 def cargar_variables_globales_de_plantillas_html():
     """Asignamos variables globales para ser utilizadas dentro de las plantillas del sistema."""
-    log.debug("Estableciendo valores blogales de Jinja2.")
     lms_app.jinja_env.globals["current_user"] = current_user
     lms_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
     lms_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
@@ -377,6 +369,7 @@ def init_app(with_examples=False):  # pragma: no cover
     """Funcion auxiliar para iniciar la aplicacion."""
 
     lms_app.app_context().push()
+    log.debug("Verificando configuración de la aplicación.")
     try:
         VERIFICA_EXISTE_CONFIGURACION_DB = carga_configuracion_del_sitio_web_desde_db(lms_app)
         VERIFICA_EXISTE_USUARIO_DB = Usuario.query.first()
@@ -396,7 +389,7 @@ def init_app(with_examples=False):  # pragma: no cover
         initial_setup(with_examples)
 
     else:
-        log.info("Iniciando NOW LMS")
+        log.info("Configuración detectada correctamente.")
         with lms_app.app_context():
             config = Configuracion.query.first()
             if config.email:
