@@ -323,6 +323,7 @@ configure_uploads(lms_app, audio)
 # - Configuración inicial.
 # - Crear base de datos.
 # ---------------------------------------------------------------------------------------
+@cache.cached(timeout=50, key_prefix="site_config")
 def carga_configuracion_del_sitio_web_desde_db(flask_app):  # pragma: no cover
     """Obtiene configuración del sitio web desde la base de datos."""
 
@@ -1384,7 +1385,11 @@ def nuevo_curso():
                         nuevo_curso.portada = True
                 except UploadNotAllowed:
                     log.warning("No se pudo actualizar la foto de perfil.")
+                except AttributeError:
+                    log.warning("No se pudo actualizar la foto de perfil.")
+
             flash("Curso creado exitosamente.")
+            cache.delete("view/" + url_for("home"))
             return redirect(url_for("curso", course_code=form.codigo.data))
         except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear su curso.")

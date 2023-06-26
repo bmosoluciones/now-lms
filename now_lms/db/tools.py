@@ -41,8 +41,8 @@ from now_lms.db import (
     CategoriaCurso,
     Usuario,
 )
-
 from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
+
 
 # < --------------------------------------------------------------------------------------------- >
 # Funciones auxiliares relacionadas a contultas de la base de datos.
