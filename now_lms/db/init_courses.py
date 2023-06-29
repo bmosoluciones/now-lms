@@ -347,7 +347,7 @@ def crear_curso_predeterminado():
     """Crea un recurso publico."""
     log.info("Creando curso de demostración.")
     demo = Curso(
-        nombre="OnLine Learning 101",
+        nombre="OnLine Teaching 101",
         codigo="now",
         descripcion="Welcome! This is your first course.",
         estado="open",
