@@ -672,6 +672,20 @@ def test_edit_settings(client, auth):
     assert post.status_code == 200
 
 
+def test_crear_usuario(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup(with_examples=False)
+
+    url = "/logon"
+    data = {"usuario": "testing", "acceso": "testing"}
+
+    response = client.get(url)
+    response = client.post(url, data=data, follow_redirects=True)
+    assert response.status_code == 200
+
+
 def test_crear_recursos(client, auth):
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
