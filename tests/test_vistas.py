@@ -86,18 +86,18 @@ rutas_estaticas = [
     Ruta(ruta="/perfil", admin=200, no_session=302, texto=None),
     Ruta(ruta="/student", admin=200, no_session=302, texto=None),
     Ruta(ruta="/instructor", admin=200, no_session=302, texto=None),
-    Ruta(ruta="/", admin=200, no_session=200, texto=[b"NOW LMS", b"Sistema de aprendizaje en linea.", b"OnLine Learning 101"]),
+    Ruta(ruta="/", admin=200, no_session=200, texto=[b"NOW LMS", b"Sistema de aprendizaje en linea.", b"OnLine Teaching 101"]),
     Ruta(
         ruta="/index",
         admin=200,
         no_session=200,
-        texto=[b"NOW LMS", b"Sistema de aprendizaje en linea.", b"OnLine Learning 101"],
+        texto=[b"NOW LMS", b"Sistema de aprendizaje en linea.", b"OnLine Teaching 101"],
     ),
     Ruta(
         ruta="/home",
         admin=200,
         no_session=200,
-        texto=[b"NOW LMS", b"Sistema de aprendizaje en linea.", b"OnLine Learning 101"],
+        texto=[b"NOW LMS", b"Sistema de aprendizaje en linea.", b"OnLine Teaching 101"],
     ),
     Ruta(
         ruta="/panel",
