@@ -794,3 +794,23 @@ def test_generar_indice_recurso():
 
     for a in CursoRecurso.query.all():
         crear_indice_recurso(a.id)
+
+
+def test_eliminar_archivos():
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
+    from os import path
+    from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
+    from now_lms.db.tools import elimina_logo_perzonalizado, elimina_logo_perzonalizado_curso
+
+    from io import BytesIO
+
+    bytesio_object = BytesIO(b"Hello World!")
+
+    with open(path.join(DIRECTORIO_UPLOAD_IMAGENES, "logotipo.jpg"), "wb") as f:
+        f.write(bytesio_object.getbuffer())
+
+    elimina_logo_perzonalizado()
+    elimina_logo_perzonalizado_curso("now")
