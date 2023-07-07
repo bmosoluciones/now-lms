@@ -99,6 +99,7 @@ from now_lms.db.initial_data import (
     crear_usuarios_predeterminados,
     asignar_cursos_a_etiquetas,
     asignar_cursos_a_categoria,
+    crear_programa,
 )
 from now_lms.logs import log
 from now_lms.db.tools import (
@@ -363,6 +364,7 @@ def initial_setup(with_examples=False):
         crear_curso_demo3()
         asignar_cursos_a_etiquetas()
         asignar_cursos_a_categoria()
+        crear_programa()
         log.debug("Datos de muestra cargados correctamente.")
 
 
@@ -2236,8 +2238,9 @@ def recursos():
 
 
 @lms_app.route("/resource/<resource_code>/donwload")
+@login_required
 def descargar_recurso(resource_code):
-    recurso = Recurso.query.filter(Recurso.codigo == resource_code).first()
+    recurso = Recurso.query.filter(Recurso.id == resource_code).first()
     config = current_app.upload_set_config.get("files")
     directorio = path.join(config.destination, "resources_files")
 

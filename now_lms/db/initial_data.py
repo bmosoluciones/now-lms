@@ -40,6 +40,7 @@ from now_lms.db import (
     EtiquetaCurso,
     Categoria,
     CategoriaCurso,
+    Programa,
 )
 
 
@@ -681,4 +682,19 @@ def asignar_cursos_a_categoria():
     database.session.add(registro3)
     database.session.add(registro4)
     database.session.add(registro5)
+    database.session.commit()
+
+
+def crear_programa():
+    """Crea programa de pruebas."""
+
+    programa = Programa(
+        nombre="Programing 101",
+        codigo="P001",
+        descripcion="Introduction to programing",
+        precio=100,
+        publico=True,
+        estado="open",
+    )
+    database.session.add(programa)
     database.session.commit()
