@@ -88,7 +88,7 @@ from now_lms.db import (
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
 )
 
-from now_lms.db.init_courses import (
+from now_lms.db.initial_data import (
     crear_etiquetas,
     crear_categorias,
     crear_curso_predeterminado,
