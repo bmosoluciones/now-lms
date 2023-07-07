@@ -1317,7 +1317,9 @@ def curso(course_code):
 def programa(codigo):
     """Pagina principal del curso."""
 
-    return render_template("learning/programa.html")
+    program = Programa.query.filter(Programa.codigo == codigo).first()
+
+    return render_template("learning/programa.html", programa=program)
 
 
 @lms_app.route("/course/<course_code>/edit", methods=["GET", "POST"])
@@ -1646,7 +1648,7 @@ def pagina_recurso_alternativo(curso_id, codigo, order):
     INDICE = crear_indice_recurso(codigo)
 
     if order == "asc":
-        recursos = (
+        consulta_recursos = (
             CursoRecurso.query.filter(
                 CursoRecurso.seccion == RECURSO.seccion,
                 CursoRecurso.indice >= RECURSO.indice,  # type     : ignore[union-attr]
@@ -1656,7 +1658,7 @@ def pagina_recurso_alternativo(curso_id, codigo, order):
         )
 
     else:  # Equivale a order == "desc".
-        recursos = (
+        consulta_recursos = (
             CursoRecurso.query.filter(
                 CursoRecurso.seccion == RECURSO.seccion, CursoRecurso.indice >= RECURSO.indice  # type: ignore[union-attr]
             )
@@ -1666,7 +1668,7 @@ def pagina_recurso_alternativo(curso_id, codigo, order):
 
     return render_template(
         "learning/resources/type_alternativo.html",
-        recursos=recursos,
+        recursos=consulta_recursos,
         curso=CURSO,
         recurso=RECURSO,
         seccion=SECCION,
@@ -1688,8 +1690,8 @@ def nuevo_recurso(course_code, seccion):
 def nuevo_recurso_youtube_video(course_code, seccion):
     """Formulario para crear un nuevo recurso tipo vídeo en Youtube."""
     form = CursoRecursoVideoYoutube()
-    recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
-    nuevo_indice = int(recursos + 1)
+    consulta_recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
+    nuevo_indice = int(consulta_recursos + 1)
     if form.validate_on_submit() or request.method == "POST":
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
@@ -1721,8 +1723,8 @@ def nuevo_recurso_youtube_video(course_code, seccion):
 def nuevo_recurso_text(course_code, seccion):
     """Formulario para crear un nuevo documento de texto."""
     form = CursoRecursoArchivoText()
-    recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
-    nuevo_indice = int(recursos + 1)
+    consulta_recursos = CursoRecurso.query.filter_by(seccion=seccion).count()
+    nuevo_indice = int(consulta_recursos + 1)
     if form.validate_on_submit() or request.method == "POST":
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
@@ -2260,6 +2262,7 @@ def recursos():
 @lms_app.route("/resource/<resource_code>/donwload")
 @login_required
 def descargar_recurso(resource_code):
+    """Genera link para descargar recurso."""
     recurso = Recurso.query.filter(Recurso.id == resource_code).first()
     config = current_app.upload_set_config.get("files")
     directorio = path.join(config.destination, "resources_files")

@@ -15,6 +15,8 @@
 # Contributors:
 # - William José Moreno Reyes
 
+"""Configuración de logs."""
+
 from loguru import logger as log
 
 log.add("now_lms.log", rotation="50 MB")

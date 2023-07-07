@@ -15,6 +15,8 @@
 # Contributors:
 # - William José Moreno Reyes
 
+"""Configuración de cache."""
+
 
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
