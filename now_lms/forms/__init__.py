@@ -244,6 +244,14 @@ class ProgramaForm(BaseForm):
     codigo = StringField(validators=[DataRequired()])
     precio = DecimalField()
     publico = BooleanField(validators=[])
+    estado = SelectField(
+        "Estado",
+        choices=[
+            ("draft", "Borrador"),
+            ("open", "Abierto"),
+            ("closed", "Cerrado"),
+        ],
+    )
 
 
 class RecursoForm(BaseForm):

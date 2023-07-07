@@ -31,9 +31,14 @@
             {{ form.nombre(class="form-control", id="nombre", placeholder="Categoria") }}
           </div>
 
-          <div class="col-sm-6">
+          <div class="col-sm-3">
             <label for="codigo" class="form-label">Publico</label>
             {{ form.publico(checked=programa.publico) }}
+          </div>
+
+          <div class="col-sm-3">
+            <label for="estado" class="form-label">Estado</label>
+            {{ form.estado() }}
           </div>
         </div>
 

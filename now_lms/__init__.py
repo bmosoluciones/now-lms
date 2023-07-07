@@ -2109,6 +2109,7 @@ def new_program():
             codigo=form.codigo.data,
             precio=form.precio.data,
             publico=False,
+            estado="draft",
         )
         database.session.add(programa)
         try:
@@ -2152,13 +2153,18 @@ def edit_program(tag: str):
     """Editar programa."""
     programa = Programa.query.filter(Programa.id == tag).first()
     form = ProgramaForm(
-        nombre=programa.nombre, descripcion=programa.descripcion, codigo=programa.codigo, precio=programa.precio
+        nombre=programa.nombre,
+        descripcion=programa.descripcion,
+        codigo=programa.codigo,
+        precio=programa.precio,
+        estado=programa.estado,
     )
     if form.validate_on_submit() or request.method == "POST":
         programa.nombre = form.nombre.data
         programa.descripcion = form.descripcion.data
         programa.precio = form.precio.data
         programa.publico = form.publico.data
+        programa.estado = form.estado.data
 
         try:
             database.session.add(programa)
