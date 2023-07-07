@@ -744,7 +744,7 @@ def crear_recurso_descargable():
 
     # Copiar img de ejemplo.
     origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "Romeo_y_Julieta.jpg")
-    directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "files", "images", "resources_files")
+    directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "images", "resources_files")
     try:  # pragma: no cover
         makedirs(directorio_destino)
     except FileExistsError:  # pragma: no cover
