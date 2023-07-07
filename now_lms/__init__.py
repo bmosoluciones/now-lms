@@ -100,6 +100,7 @@ from now_lms.db.initial_data import (
     asignar_cursos_a_etiquetas,
     asignar_cursos_a_categoria,
     crear_programa,
+    crear_recurso_descargable,
 )
 from now_lms.logs import log
 from now_lms.db.tools import (
@@ -366,6 +367,7 @@ def initial_setup(with_examples=False):
         asignar_cursos_a_etiquetas()
         asignar_cursos_a_categoria()
         crear_programa()
+        crear_recurso_descargable()
         log.debug("Datos de muestra cargados correctamente.")
 
 

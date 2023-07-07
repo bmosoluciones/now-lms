@@ -41,6 +41,7 @@ from now_lms.db import (
     Categoria,
     CategoriaCurso,
     Programa,
+    Recurso,
 )
 
 
@@ -704,3 +705,56 @@ def crear_programa():
     curse_logo(curso="P001", image="concepto-collage-html-css-persona.jpg", program=True)
     database.session.add(programa)
     database.session.commit()
+
+
+def crear_recurso_descargable():
+    """Recurso descargable de ejemplo."""
+    recurso = Recurso(
+        nombre="Romeo and Juliet",
+        codigo="R001",
+        descripcion="Romeo and Juliet by William Shakespeare",
+        precio=1,
+        publico=True,
+        logo=True,
+        file_name="R001.pdf",
+    )
+    database.session.add(recurso)
+    database.session.commit()
+
+    from os import path, makedirs
+    from shutil import copyfile
+    from now_lms.config import DIRECTORIO_ARCHIVOS
+
+    # Copiar pdf de ejemplo.
+    origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "Romeo and Juliet by William Shakespeare.pdf")
+    directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "files", "resources_files")
+    try:  # pragma: no cover
+        makedirs(directorio_destino)
+    except FileExistsError:  # pragma: no cover
+        pass
+    except FileNotFoundError:  # pragma: no cover
+        pass
+    destino = path.join(directorio_destino, "R001.pdf")
+    try:  # pragma: no cover
+        copyfile(origen, destino)
+    except FileExistsError:  # pragma: no cover
+        pass
+    except FileNotFoundError:  # pragma: no cover
+        pass
+
+    # Copiar img de ejemplo.
+    origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "Romeo_y_Julieta.jpg")
+    directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "files", "images", "resources_files")
+    try:  # pragma: no cover
+        makedirs(directorio_destino)
+    except FileExistsError:  # pragma: no cover
+        pass
+    except FileNotFoundError:  # pragma: no cover
+        pass
+    destino = path.join(directorio_destino, "R001.jpg")
+    try:  # pragma: no cover
+        copyfile(origen, destino)
+    except FileExistsError:  # pragma: no cover
+        pass
+    except FileNotFoundError:  # pragma: no cover
+        pass
