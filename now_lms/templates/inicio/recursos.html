@@ -44,8 +44,8 @@
             {% for curso in cursos.items %}
             <div class="col">
               <div class="card shadow-sm">
-                {% if curso.portada %}
-                <img src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}"
+                {% if curso.logo %}
+                <img src="{{ url_for('static', filename='/files/public/images/resources_files/' + curso.codigo + '.jpg') }}"
                   alt="{{ curso.nombre }}" width="100%" height="200">
                 {% else %}
                 <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
@@ -81,9 +81,9 @@
                   <div class="d-flex justify-content-between align-items-center">
 
                     <div class="btn-group">
-                      <a href="{{ url_for("curso", course_code=curso.codigo )}}"
+                      <a href="{{ url_for("vista_recurso", resource_code=curso.codigo )}}"
                         class="btn btn-sm btn-outline-secondary" role="button" aria-disabled="true">
-                        Ver Curso
+                        Ver Recurso
                       </a>
                     </div>
                     {% if curso.duracion %}

@@ -407,7 +407,5 @@ class Recurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     descripcion = database.Column(database.String(500))
     precio = database.Column(database.Float())
     publico = database.Column(database.Boolean())
-    # draft, open, closed
-    estado = database.Column(database.String(20))
     logo = database.Column(database.Boolean(), default=False)
     file_name = database.Column(database.String(200))

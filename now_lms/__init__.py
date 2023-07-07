@@ -1274,7 +1274,7 @@ def lista_recursos():
     etiquetas = Etiqueta.query.all()
     categorias = Categoria.query.all()
     consulta_cursos = database.paginate(
-        database.select(Programa).filter(Programa.publico == True, Programa.estado == "open"),  # noqa: E712
+        database.select(Recurso).filter(Recurso.publico == True),  # noqa: E712
         page=request.args.get("page", default=1, type=int),
         max_per_page=MAX_COUNT,
         count=True,
