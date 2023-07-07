@@ -34,12 +34,12 @@ PATCH = "1"
 
 # <--------------------------------------------------------------------------> #
 # Pre release data.
-PRERELEASE = "alpha-7"
+PRERELEASE = "alpha-8"
 REVISION = datetime.today().strftime("%Y%m%d")
 
 # <--------------------------------------------------------------------------> #
 # Release string
-# 0.0.1.alpha-7.20230622
+# 0.0.1.alpha-8.20230707
 if PRERELEASE:
     VERSION = MAYOR + "." + MENOR + "." + PATCH + "." + PRERELEASE + "-rev:" + REVISION
 else:
