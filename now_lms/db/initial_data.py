@@ -699,6 +699,8 @@ def crear_programa():
         precio=100,
         publico=True,
         estado="open",
+        logo=True,
     )
+    curse_logo(curso="P001", image="concepto-collage-html-css-persona.jpg", program=True)
     database.session.add(programa)
     database.session.commit()
