@@ -135,14 +135,18 @@ def copy_sample_img():
         pass
 
 
-def curse_logo(curso: str, image: str):
+def curse_logo(curso: str, image: str, program=False):
     """Crea un archivo de imagen de ejemplo."""
     from os import path, makedirs
     from shutil import copyfile
     from now_lms.config import DIRECTORIO_ARCHIVOS
 
     origen = path.join(DIRECTORIO_ARCHIVOS, "img", image)
-    directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "images", curso)
+    if program:
+        directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "images", "program" + curso)
+    else:
+        directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "images", curso)
+
     try:
         makedirs(directorio_destino)
     except FileExistsError:  # pragma: no cover

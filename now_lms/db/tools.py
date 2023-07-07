@@ -40,6 +40,7 @@ from now_lms.db import (
     EtiquetaCurso,
     CategoriaCurso,
     Usuario,
+    Programa,
 )
 from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
 
@@ -230,6 +231,19 @@ def elimina_logo_perzonalizado_curso(course_code: str):
     database.session.commit()
 
     LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, course_code, "logo.jpg")
+
+    remove(LOGO)
+
+
+def elimina_logo_perzonalizado_programa(course_code: str):
+    """Elimina logo tipo perzonalizado de un programa."""
+
+    programa = Programa.query.filter_by(id=course_code).first()
+    programa.logo = False
+
+    database.session.commit()
+
+    LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, "program" + programa.codigo, "logo.jpg")
 
     remove(LOGO)
 

@@ -113,6 +113,7 @@ from now_lms.db.tools import (
     logo_perzonalizado,
     elimina_logo_perzonalizado,
     elimina_logo_perzonalizado_curso,
+    elimina_logo_perzonalizado_programa,
     elimina_imagen_usuario,
     cursos_por_etiqueta,
     cursos_por_categoria,
@@ -861,11 +862,20 @@ def elimina_logo():
 
 @lms_app.route("/<course_code>/delete_logo")
 @login_required
-@perfil_requerido("admin")
+@perfil_requerido("instructor")
 def elimina_logo_curso(course_code: str):
     """Elimina logo"""
     elimina_logo_perzonalizado_curso(course_code)
     return redirect(url_for("editar_curso", course_code=course_code))
+
+
+@lms_app.route("/program/<codigo>/delete_logo")
+@login_required
+@perfil_requerido("instructor")
+def elimina_logo_programa(codigo: str):
+    """Elimina logo programa."""
+    elimina_logo_perzonalizado_programa(codigo)
+    return redirect(url_for("edit_program", tag=codigo))
 
 
 @lms_app.route("/mail", methods=["GET", "POST"])
@@ -2112,6 +2122,7 @@ def new_program():
             precio=form.precio.data,
             publico=False,
             estado="draft",
+            logo=False,
         )
         database.session.add(programa)
         try:
@@ -2171,6 +2182,15 @@ def edit_program(tag: str):
         try:
             database.session.add(programa)
             database.session.commit()
+            if "logo" in request.files:
+                try:
+                    picture_file = images.save(request.files["logo"], folder="program" + programa.codigo, name="logo.jpg")
+                    if picture_file:
+                        programa.logo = True
+                        database.session.commit()
+                except UploadNotAllowed:
+                    flash("No se pudo actualizar la portada del curso.")
+
             flash("Programa editado correctamente.")
         except OperationalError:
             flash("No se puedo editar el programa.")
