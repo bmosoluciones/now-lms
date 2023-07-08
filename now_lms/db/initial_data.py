@@ -709,7 +709,11 @@ def crear_programa():
 
 def crear_recurso_descargable():
     """Recurso descargable de ejemplo."""
-    recurso = Recurso(
+    from os import path, makedirs
+    from shutil import copyfile
+    from now_lms.config import DIRECTORIO_ARCHIVOS
+
+    recurso1 = Recurso(
         nombre="Romeo and Juliet",
         codigo="R001",
         descripcion="Romeo and Juliet by William Shakespeare",
@@ -718,43 +722,79 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R001.pdf",
     )
-    database.session.add(recurso)
+    recurso2 = Recurso(
+        nombre="Alice's Adventures in Wonderland",
+        codigo="R002",
+        descripcion="Alice's Adventures in Wonderland by Lewis Carroll.",
+        precio=1,
+        publico=True,
+        logo=True,
+        file_name="R002.pdf",
+    )
+    recurso3 = Recurso(
+        nombre="Dracula",
+        codigo="R003",
+        descripcion="Dracula by Bram Stoker",
+        precio=1,
+        publico=True,
+        logo=True,
+        file_name="R003.pdf",
+    )
+    recurso4 = Recurso(
+        nombre="The War of the Worlds",
+        codigo="R004",
+        descripcion="The War of the Worlds by H. G. Wells",
+        precio=1,
+        publico=True,
+        logo=True,
+        file_name="R004.pdf",
+    )
+    database.session.add(recurso1)
+    database.session.add(recurso2)
+    database.session.add(recurso3)
+    database.session.add(recurso4)
     database.session.commit()
 
-    from os import path, makedirs
-    from shutil import copyfile
-    from now_lms.config import DIRECTORIO_ARCHIVOS
+    directorio_destino_archivo = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "files", "resources_files")
+    directorio_destino_imagen = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "images", "resources_files")
+    try:  # pragma: no cover
+        makedirs(directorio_destino_archivo)
+        makedirs(directorio_destino_imagen)
+    except FileExistsError:  # pragma: no cover
+        pass
+    except FileNotFoundError:  # pragma: no cover
+        pass
 
     # Copiar pdf de ejemplo.
-    origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "Romeo and Juliet by William Shakespeare.pdf")
-    directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "files", "resources_files")
-    try:  # pragma: no cover
-        makedirs(directorio_destino)
-    except FileExistsError:  # pragma: no cover
-        pass
-    except FileNotFoundError:  # pragma: no cover
-        pass
-    destino = path.join(directorio_destino, "R001.pdf")
-    try:  # pragma: no cover
-        copyfile(origen, destino)
-    except FileExistsError:  # pragma: no cover
-        pass
-    except FileNotFoundError:  # pragma: no cover
-        pass
+    archivos = [
+        ("Romeo and Juliet by William Shakespeare.pdf", "R001.pdf"),
+        ("Alice's Adventures in Wonderland by Lewis Carroll.pdf", "R002.pdf"),
+        ("Dracula by Bram Stoker.pdf", "R003.pdf"),
+        ("The War of the Worlds by H. G. Wells.pdf", "R004.pdf"),
+    ]
+    for archivo in archivos:
+        origen = path.join(DIRECTORIO_ARCHIVOS, "examples", archivo[0])
+        destino = path.join(directorio_destino_archivo, archivo[1])
+        try:  # pragma: no cover
+            copyfile(origen, destino)
+        except FileExistsError:  # pragma: no cover
+            pass
+        except FileNotFoundError:  # pragma: no cover
+            pass
 
     # Copiar img de ejemplo.
-    origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "Romeo_y_Julieta.jpg")
-    directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "images", "resources_files")
-    try:  # pragma: no cover
-        makedirs(directorio_destino)
-    except FileExistsError:  # pragma: no cover
-        pass
-    except FileNotFoundError:  # pragma: no cover
-        pass
-    destino = path.join(directorio_destino, "R001.jpg")
-    try:  # pragma: no cover
-        copyfile(origen, destino)
-    except FileExistsError:  # pragma: no cover
-        pass
-    except FileNotFoundError:  # pragma: no cover
-        pass
+    imagenes = [
+        ("Romeo_y_Julieta.jpg", "R001.jpg"),
+        ("Alice's Adventures in Wonderland by Lewis Carroll.jpg", "R002.jpg"),
+        ("Dracula by Bram Stoker.jpg", "R003.jpg"),
+        ("The War of the Worlds by H. G. Wells.jpg", "R004.jpg"),
+    ]
+    for image in imagenes:
+        origen = path.join(DIRECTORIO_ARCHIVOS, "examples", image[0])
+        destino = path.join(directorio_destino_imagen, image[1])
+        try:  # pragma: no cover
+            copyfile(origen, destino)
+        except FileExistsError:  # pragma: no cover
+            pass
+        except FileNotFoundError:  # pragma: no cover
+            pass
