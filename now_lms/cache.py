@@ -38,13 +38,13 @@ from now_lms.logs import log
 CACHE_CONFIG: dict = {"CACHE_KEY_PREFIX": "now_lms:"}
 
 if not environ.get("NO_LMS_CACHE"):  # pragma: no cover
-    # CACHE_REDIS_URL=redis://localhost:6379/0
     CACHE_CONFIG["CACHE_DEFAULT_TIMEOUT"] = 300
     if environ.get("CACHE_REDIS_HOST") and environ.get("CACHE_REDIS_PORT"):
         CTYPE = "RedisCache"
         CACHE_CONFIG["CACHE_REDIS_HOST"] = environ.get("CACHE_REDIS_HOST")
         CACHE_CONFIG["CACHE_REDIS_PORT"] = environ.get("CACHE_REDIS_PORT")
 
+    # CACHE_REDIS_URL=redis://localhost:6379/0
     elif environ.get("CACHE_REDIS_URL") or environ.get("REDIS_URL"):
         CTYPE = "RedisCache"
         CACHE_CONFIG["CACHE_REDIS_URL"] = environ.get("CACHE_REDIS_URL") or environ.get("REDIS_URL")
