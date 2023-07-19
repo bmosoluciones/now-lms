@@ -617,7 +617,6 @@ def home():
     else:
         MAX = MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA
 
-    config = Configuracion.query.first()
     CURSOS = database.paginate(
         database.select(Curso).filter(Curso.publico == True, Curso.estado == "open"),  # noqa: E712
         page=request.args.get("page", default=1, type=int),
@@ -625,7 +624,7 @@ def home():
         count=True,
     )
 
-    return render_template("inicio/mooc.html", cursos=CURSOS, config=config)
+    return render_template("inicio/mooc.html", cursos=CURSOS)
 
 
 @lms_app.route("/dashboard")
@@ -846,6 +845,8 @@ def personalizacion():
                 picture_file = images.save(request.files["logo"], name="logotipo.jpg")
                 if picture_file:
                     config.custom_logo = True
+                    cache.delete("cached_logo")
+                    cache.delete("cached_style")
             except UploadNotAllowed:
                 log.warning("Ocurrio un error al actualizar el logotipo del sitio web.")
 

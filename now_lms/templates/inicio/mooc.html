@@ -1,6 +1,7 @@
 {% import "macros.html" as macros %}
 
 <!DOCTYPE html>
+{% set config = config() %}
 <html lang="es" class="h-100">
 
 <head>
@@ -83,7 +84,7 @@
                   <small class="text-muted">{{ curso.duracion }} mins</small>
                   {% endif %}
                   {% if curso.precio %}
-                  <small>{{ curso.precio | float }} USD</small>
+                  <small>{{ curso.precio | float }} {{ config.moneda }} </small>
                   {% else %}
                   <small>Gratis</small>
                   {% endif %}

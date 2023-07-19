@@ -42,6 +42,7 @@ from now_lms.db import (
     Usuario,
     Programa,
 )
+from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
 
 
@@ -194,6 +195,7 @@ def crear_indice_recurso(recurso: str) -> NamedTuple:
     return RecursoIndex(has_prev, has_next, prev_is_alternative, next_is_alternative, prev_resource, next_resource)
 
 
+@cache.cached(timeout=60, key_prefix="cached_style")
 def obtener_estilo_actual() -> str:
     """Retorna el estilo actual de la base de datos."""
 
@@ -202,6 +204,7 @@ def obtener_estilo_actual() -> str:
     return consulta.style
 
 
+@cache.cached(timeout=60, key_prefix="cached_logo")
 def logo_perzonalizado():
     """Devuelve configuracion predeterminada."""
 
