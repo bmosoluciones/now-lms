@@ -90,6 +90,7 @@ def crear_configuracion_predeterminada():
         mail_use_ssl=False,
         mail_username=None,
         mail_password=None,
+        moneda="C$",
     )
     database.session.add(config)
     database.session.commit()

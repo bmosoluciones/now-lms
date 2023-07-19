@@ -44,6 +44,11 @@ from wtforms.widgets import ColorInput
 # < --------------------------------------------------------------------------------------------- >
 # Definición de formularios
 
+MONEDAS = [
+    ("C$", "Córdobas Oro"),
+    ("USD", "Dólares"),
+]
+
 
 class ConfigForm(FlaskForm):
     """Formulario para editar la configuración del sistema."""
@@ -64,6 +69,10 @@ class ConfigForm(FlaskForm):
     # Configuración de Stripe
     stripe_secret = StringField(validators=[])
     stripe_public = StringField(validators=[])
+    moneda = SelectField(
+        "Moneda",
+        choices=MONEDAS,
+    )
 
 
 class ThemeForm(FlaskForm):

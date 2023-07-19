@@ -19,6 +19,7 @@
 
 # pylint: disable=E1101
 # pylint: disable=R0915
+# pylint: disable=R0914
 
 # Libreria standar:
 from datetime import datetime, timedelta, time
@@ -35,12 +36,14 @@ from now_lms.db import (
     Curso,
     CursoSeccion,
     CursoRecurso,
+    CursoRecursoDescargable,
     Usuario,
     Etiqueta,
     EtiquetaCurso,
     Categoria,
     CategoriaCurso,
     Programa,
+    ProgramaCurso,
     Recurso,
 )
 
@@ -690,6 +693,16 @@ def asignar_cursos_a_categoria():
     database.session.commit()
 
 
+TEXTO_PROGRAMA = """
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+sunt in culpa qui officia deserunt mollit anim id est laborum.
+"""
+
+
 def crear_programa():
     """Crea programa de pruebas."""
 
@@ -701,10 +714,22 @@ def crear_programa():
         publico=True,
         estado="open",
         logo=True,
+        texto=TEXTO_PROGRAMA,
     )
     curse_logo(curso="P001", image="concepto-collage-html-css-persona.jpg", program=True)
     database.session.add(programa)
     database.session.commit()
+
+    # Asigna cursos a programa
+    programa = Programa.query.filter(Programa.codigo == "P001").first()
+    for curso in ["postgresql", "python", "html"]:
+        curso = Curso.query.filter(Curso.codigo == curso).first()
+        registro = ProgramaCurso(
+            curso=curso.codigo,
+            programa=programa.codigo,
+        )
+        database.session.add(registro)
+        database.session.commit()
 
 
 def crear_recurso_descargable():
@@ -749,6 +774,15 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R004.pdf",
     )
+    recurso4 = Recurso(
+        nombre="Think Python",
+        codigo="R005",
+        descripcion="How to Think Like a Computer Scientist",
+        precio=0,
+        publico=True,
+        logo=True,
+        file_name="R005.pdf",
+    )
     database.session.add(recurso1)
     database.session.add(recurso2)
     database.session.add(recurso3)
@@ -771,6 +805,7 @@ def crear_recurso_descargable():
         ("Alice's Adventures in Wonderland by Lewis Carroll.pdf", "R002.pdf"),
         ("Dracula by Bram Stoker.pdf", "R003.pdf"),
         ("The War of the Worlds by H. G. Wells.pdf", "R004.pdf"),
+        ("thinkpython2.pdf", "R005.pdf"),
     ]
     for archivo in archivos:
         origen = path.join(DIRECTORIO_ARCHIVOS, "examples", archivo[0])
@@ -788,6 +823,7 @@ def crear_recurso_descargable():
         ("Alice's Adventures in Wonderland by Lewis Carroll.jpg", "R002.jpg"),
         ("Dracula by Bram Stoker.jpg", "R003.jpg"),
         ("The War of the Worlds by H. G. Wells.jpg", "R004.jpg"),
+        ("thinkpython2.jpg", "R005.jpg"),
     ]
     for image in imagenes:
         origen = path.join(DIRECTORIO_ARCHIVOS, "examples", image[0])
@@ -798,3 +834,7 @@ def crear_recurso_descargable():
             pass
         except FileNotFoundError:  # pragma: no cover
             pass
+
+    recurso = CursoRecursoDescargable(curso="now", recurso="R005")
+    database.session.add(recurso)
+    database.session.commit()

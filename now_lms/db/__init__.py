@@ -142,6 +142,13 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     nivel = database.Column(database.Integer())
 
 
+class CursoRecursoDescargable(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Los cursos pueden tener recursos descargables incluidos."""
+
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
+    recurso = database.Column(database.String(10), database.ForeignKey("recurso.codigo"), nullable=False, index=True)
+
+
 class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Los cursos tienen secciones para dividir el contenido en secciones logicas."""
 
@@ -317,6 +324,7 @@ class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
     descripcion = database.Column(database.String(500), nullable=False)
     # Uno de mooc, school, training
     modo = database.Column(database.String(500), nullable=False, default="mooc")
+    moneda = database.Column(database.String(5))
     # Formas de pago
     stripe = database.Column(database.Boolean())
     paypal = database.Column(database.Boolean())
@@ -373,7 +381,8 @@ class Programa(database.Model, BaseTabla):  # type: ignore[name-defined]
 
     nombre = database.Column(database.String(20), nullable=False)
     codigo = database.Column(database.String(10), nullable=False)
-    descripcion = database.Column(database.String(500))
+    descripcion = database.Column(database.String(200))
+    texto = database.Column(database.String(1000))
     precio = database.Column(database.Float())
     publico = database.Column(database.Boolean())
     # draft, open, closed
@@ -385,7 +394,7 @@ class ProgramaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Cursos en un programa."""
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    programa = database.Column(database.String(26), database.ForeignKey("programa.id"), nullable=False, index=True)
+    programa = database.Column(database.String(10), database.ForeignKey("programa.codigo"), nullable=False, index=True)
     relacion_curso = database.relationship("Curso", foreign_keys=curso)
     relacion_programa = database.relationship("Programa", foreign_keys=programa)
 
@@ -403,7 +412,7 @@ class Recurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Un recurso descargable."""
 
     nombre = database.Column(database.String(20), nullable=False)
-    codigo = database.Column(database.String(10), nullable=False)
+    codigo = database.Column(database.String(10), nullable=False, index=True)
     descripcion = database.Column(database.String(500))
     precio = database.Column(database.Float())
     publico = database.Column(database.Boolean())

@@ -273,6 +273,12 @@ rutas_estaticas = [
     Ruta(ruta="/dashboard", admin=200, no_session=302, texto=None),
     Ruta(ruta="/student", admin=200, no_session=302, texto=None),
     Ruta(ruta="/moderator", admin=200, no_session=302, texto=None),
+    Ruta(
+        ruta="/program/P001",
+        admin=200,
+        no_session=200,
+        texto=[b"Programing 101", b"Introduction to programing", b"Lorem ipsum dolor sit amet"],
+    ),
     # Debe estar al final para no cerrar la sesion actual.
     Ruta(ruta="/logout", admin=302, no_session=302, texto=None),
     Ruta(ruta="/salir", admin=302, no_session=302, texto=None),

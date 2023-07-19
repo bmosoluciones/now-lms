@@ -84,6 +84,7 @@ from now_lms.db import (
     Etiqueta,
     Categoria,
     Programa,
+    ProgramaCurso,
     Recurso,
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
 )
@@ -800,7 +801,7 @@ def configuracion():
     """Configuración del sistema."""
 
     config = Configuracion.query.first()
-    form = ConfigForm(modo=config.modo)
+    form = ConfigForm(modo=config.modo, moneda=config.moneda)
     if form.validate_on_submit() or request.method == "POST":
         config.titulo = form.titulo.data
         config.descripcion = form.descripcion.data
@@ -809,6 +810,7 @@ def configuracion():
         config.paypal = form.paypal.data
         config.stripe_secret = form.stripe_secret.data
         config.stripe_public = form.stripe_secret.data
+        config.moneda = form.moneda.data
         try:
             database.session.commit()
             flash("Sitio web actualizado exitosamente.")
@@ -1316,12 +1318,14 @@ def curso(course_code):
 
 @lms_app.route("/program/<codigo>")
 @cache.cached(unless=no_guardar_en_cache_global)
-def programa(codigo):
+def pagina_programa(codigo):
     """Pagina principal del curso."""
 
     program = Programa.query.filter(Programa.codigo == codigo).first()
+    cuenta_cursos = ProgramaCurso.query.filter(ProgramaCurso.programa == program.codigo).count()
+    config = Configuracion.query.first()
 
-    return render_template("learning/programa.html", programa=program)
+    return render_template("learning/programa.html", programa=program, cuenta_cursos=cuenta_cursos, moneda=config.moneda)
 
 
 @lms_app.route("/course/<course_code>/edit", methods=["GET", "POST"])
@@ -2250,7 +2254,7 @@ def new_resource():
 @lms_app.route("/resources_list")
 @login_required
 @perfil_requerido("instructor")
-def recursos():
+def lista_de_recursos():
     """Lista de programas"""
     consulta = database.paginate(
         database.select(Recurso),  # noqa: E712

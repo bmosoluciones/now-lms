@@ -21,6 +21,7 @@ loguru
 markdown
 python-ulid
 sqlalchemy
+requests
 redis
 stripe
 waitress
