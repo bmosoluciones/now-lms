@@ -160,3 +160,9 @@ GENEROS: dict = {
     "other": """<i class="bi bi-gender-ambiguous" aria-hidden="true"></i>""",
     "none": """No espeficicado.""",
 }
+
+TIPOS_RECURSOS: dict = {
+    "cheat_sheet": """<i class="bi bi-file-spreadsheet-fill" aria-hidden="true"></i>""",
+    "ebook": """<i class="bi bi-file-earmark-fill" aria-hidden="true"></i>""",
+    "template": """<i class="bi bi-file-earmark-text" aria-hidden="true"></i>""",
+}

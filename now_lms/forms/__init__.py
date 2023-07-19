@@ -269,6 +269,14 @@ class RecursoForm(BaseForm):
     codigo = StringField(validators=[DataRequired()])
     precio = DecimalField()
     publico = BooleanField(validators=[])
+    tipo = SelectField(
+        "Tipo",
+        choices=[
+            ("cheat_sheet", "Hoja de Guía"),
+            ("ebook", "Libro Electronico"),
+            ("template", "Plantilla"),
+        ],
+    )
 
 
 class UserForm(FlaskForm):

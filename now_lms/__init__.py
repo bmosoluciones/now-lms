@@ -161,6 +161,7 @@ from now_lms.misc import (
     ESTILO,
     CURSO_NIVEL,
     GENEROS,
+    TIPOS_RECURSOS,
     concatenar_parametros_a_url,
 )
 from now_lms.version import VERSION
@@ -1312,7 +1313,12 @@ def lista_recursos():
         PARAMETROS = None
 
     return render_template(
-        "inicio/recursos.html", cursos=consulta_cursos, etiquetas=etiquetas, categorias=categorias, parametros=PARAMETROS
+        "inicio/recursos.html",
+        cursos=consulta_cursos,
+        etiquetas=etiquetas,
+        categorias=categorias,
+        parametros=PARAMETROS,
+        tipo=TIPOS_RECURSOS,
     )
 
 
@@ -2253,6 +2259,7 @@ def new_resource():
             precio=form.precio.data,
             publico=False,
             file_name=file_name,
+            tipo=form.tipo.data,
         )
         if resource_file and picture_file:
             recurso.logo = True
@@ -2312,16 +2319,14 @@ def edit_resource(ulid: str):
     """Actualiza recurso."""
 
     recurso = Recurso.query.filter(Recurso.id == ulid).first()
-    form = RecursoForm(
-        nombre=recurso.nombre,
-        descripcion=recurso.descripcion,
-    )
+    form = RecursoForm(nombre=recurso.nombre, descripcion=recurso.descripcion, tipo=recurso.tipo)
 
     if form.validate_on_submit() or request.method == "POST":
         recurso.nombre = form.nombre.data
         recurso.descripcion = form.descripcion.data
         recurso.precio = form.precio.data
         recurso.publico = form.publico.data
+        recurso.tipo = form.tipo.data
 
         try:  # pragma: no cover
             database.session.commit()
@@ -2341,4 +2346,5 @@ def vista_recurso(resource_code):
     return render_template(
         "learning/recursos/recurso.html",
         curso=Recurso.query.filter_by(codigo=resource_code).first(),
+        tipo=TIPOS_RECURSOS,
     )

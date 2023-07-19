@@ -413,6 +413,7 @@ class Recurso(database.Model, BaseTabla):  # type: ignore[name-defined]
 
     nombre = database.Column(database.String(20), nullable=False)
     codigo = database.Column(database.String(10), nullable=False, index=True)
+    tipo = database.Column(database.String(20))
     descripcion = database.Column(database.String(500))
     precio = database.Column(database.Float())
     publico = database.Column(database.Boolean())

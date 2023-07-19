@@ -82,12 +82,13 @@
 
                   <div class="d-flex justify-content-between align-items-center">
 
-                    <div class="btn-group">
-                      <a href="{{ url_for("vista_recurso", resource_code=curso.codigo )}}"
-                        class="btn btn-sm btn-outline-secondary" role="button" aria-disabled="true">
-                        Ver Recurso
-                      </a>
-                    </div>
+                    <a href="{{ url_for("vista_recurso", resource_code=curso.codigo )}}"
+                      class="btn btn-sm btn-outline-secondary" role="button" aria-disabled="true">
+                      Ver Recurso
+                    </a>
+
+                    {{ tipo[curso.tipo] | safe }}
+
                     {% if curso.duracion %}
                     <small class="text-muted">{{ curso.duracion }} mins</small>
                     {% endif %}
