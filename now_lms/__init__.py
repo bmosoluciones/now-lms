@@ -255,26 +255,6 @@ def no_guardar_en_cache_global():
 
 
 # ---------------------------------------------------------------------------------------
-# Definición de variables globales de Jinja2.
-# Estas variables estaran disponibles en todas las plantillas HTML.
-# Referencias:
-#  - https://jinja.palletsprojects.com/en/3.1.x/api/#the-global-namespace
-# ---------------------------------------------------------------------------------------
-def cargar_variables_globales_de_plantillas_html():
-    """Asignamos variables globales para ser utilizadas dentro de las plantillas del sistema."""
-    lms_app.jinja_env.globals["current_user"] = current_user
-    lms_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
-    lms_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
-    lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
-    lms_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
-    lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
-    lms_app.jinja_env.globals["estilo"] = ESTILO
-    lms_app.jinja_env.globals["obtener_estilo_actual"] = obtener_estilo_actual
-    lms_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
-    lms_app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
-
-
-# ---------------------------------------------------------------------------------------
 # Definición de la aplicación principal.
 # ---------------------------------------------------------------------------------------
 lms_app = Flask(
@@ -284,7 +264,6 @@ lms_app = Flask(
 )
 lms_app.config.from_mapping(CONFIGURACION)
 inicializa_extenciones_terceros(lms_app)
-cargar_variables_globales_de_plantillas_html()
 
 
 @lms_app.errorhandler(404)
@@ -322,16 +301,14 @@ configure_uploads(lms_app, audio)
 
 
 # ---------------------------------------------------------------------------------------
-# Funciones auxiliares para el inicio de la aplicación.
+# Carga configuración del sitio web.
 # - Cargar configuración del sitio web.
-# - Configuración inicial.
-# - Crear base de datos.
 # ---------------------------------------------------------------------------------------
-@cache.cached(timeout=50, key_prefix="site_config")
-def carga_configuracion_del_sitio_web_desde_db(flask_app):  # pragma: no cover
+@cache.cached(timeout=60, key_prefix="site_config")
+def carga_configuracion_del_sitio_web_desde_db():  # pragma: no cover
     """Obtiene configuración del sitio web desde la base de datos."""
 
-    with flask_app.app_context():
+    with lms_app.app_context():
         try:
             CONFIG = Configuracion.query.first()
         # Si no existe una entrada en la tabla de configuración uno de los siguientes errores puede ocurrir
@@ -347,6 +324,30 @@ def carga_configuracion_del_sitio_web_desde_db(flask_app):  # pragma: no cover
     return CONFIG
 
 
+# ---------------------------------------------------------------------------------------
+# Definición de variables globales de Jinja2.
+# Estas variables estaran disponibles en todas las plantillas HTML.
+# Referencias:
+#  - https://jinja.palletsprojects.com/en/3.1.x/api/#the-global-namespace
+# ---------------------------------------------------------------------------------------
+lms_app.jinja_env.globals["current_user"] = current_user
+lms_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
+lms_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
+lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
+lms_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
+lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
+lms_app.jinja_env.globals["estilo"] = ESTILO
+lms_app.jinja_env.globals["obtener_estilo_actual"] = obtener_estilo_actual
+lms_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
+lms_app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
+lms_app.jinja_env.globals["config"] = carga_configuracion_del_sitio_web_desde_db
+
+
+# ---------------------------------------------------------------------------------------
+# Funciones auxiliares para el inicio de la aplicación.
+# - Configuración inicial.
+# - Crear base de datos.
+# ---------------------------------------------------------------------------------------
 def initial_setup(with_examples=False):
     """Inicializa una nueva bases de datos"""
     lms_app.app_context().push()
@@ -378,7 +379,7 @@ def init_app(with_examples=False):  # pragma: no cover
     lms_app.app_context().push()
     log.debug("Verificando configuración de la aplicación.")
     try:
-        VERIFICA_EXISTE_CONFIGURACION_DB = carga_configuracion_del_sitio_web_desde_db(lms_app)
+        VERIFICA_EXISTE_CONFIGURACION_DB = carga_configuracion_del_sitio_web_desde_db()
         VERIFICA_EXISTE_USUARIO_DB = Usuario.query.first()
         DB_INICIALIZADA = (VERIFICA_EXISTE_CONFIGURACION_DB is not None) and (VERIFICA_EXISTE_USUARIO_DB is not None)
     except OperationalError:
@@ -607,7 +608,7 @@ def crear_usuario():  # pragma: no cover
 @lms_app.route("/")
 @lms_app.route("/home")
 @lms_app.route("/index")
-@cache.cached(unless=no_guardar_en_cache_global)
+@cache.cached(timeout=90, unless=no_guardar_en_cache_global)
 def home():
     """Página principal de la aplicación."""
 
@@ -661,6 +662,8 @@ def pagina_estudiante():
 
 @lms_app.route("/perfil")
 @login_required
+@perfil_requerido("student")
+@cache.cached(timeout=90)
 def perfil():
     """Perfil del usuario."""
     perfil_usuario = Usuario.query.filter_by(usuario=current_user.usuario).first()
@@ -698,6 +701,7 @@ def edit_perfil(ulid: str):
 
         try:  # pragma: no cover
             database.session.commit()
+            cache.delete("view/" + url_for("perfil"))
             flash("Pefil actualizado.")
             if "logo" in request.files:
                 try:
@@ -789,6 +793,7 @@ def cursos():
 @lms_app.route("/admin")
 @login_required
 @perfil_requerido("admin")
+@cache.cached(timeout=90)
 def pagina_admin():
     """Perfil de usuario administrador."""
     return render_template("perfiles/admin.html", inactivos=Usuario.query.filter_by(activo=False).count() or 0)
@@ -813,6 +818,7 @@ def configuracion():
         config.moneda = form.moneda.data
         try:
             database.session.commit()
+            cache.delete("site_config")
             flash("Sitio web actualizado exitosamente.")
             return redirect("/admin")
         except OperationalError:  # pragma: no cover
@@ -911,6 +917,7 @@ def mail():
 @lms_app.route("/users")
 @login_required
 @perfil_requerido("admin")
+@cache.cached(timeout=60)
 def usuarios():
     """Lista de usuarios con acceso a al aplicación."""
     CONSULTA = database.paginate(
@@ -935,6 +942,7 @@ def activar_usuario(user_id):
     perfil_usuario.activo = True
     database.session.add(perfil_usuario)
     database.session.commit()
+    cache.delete("view/" + url_for("usuarios"))
     return redirect(url_for("usuario", id_usuario=user_id))
 
 
@@ -947,6 +955,7 @@ def inactivar_usuario(user_id):
     perfil_usuario.activo = False
     database.session.add(perfil_usuario)
     database.session.commit()
+    cache.delete("view/" + url_for("usuarios"))
     return redirect(url_for("usuario", id_usuario=user_id))
 
 
@@ -957,12 +966,14 @@ def eliminar_usuario(user_id):
     """Elimina un usuario por su id y redirecciona a la vista dada."""
     Usuario.query.filter(Usuario.usuario == user_id).delete()
     database.session.commit()
+    cache.delete("view/" + url_for("usuarios"))
     return redirect(url_for(request.args.get("ruta", default="home", type=str)))
 
 
 @lms_app.route("/inactive_users")
 @login_required
 @perfil_requerido("admin")
+@cache.cached(timeout=60)
 def usuarios_inactivos():
     """Lista de usuarios con acceso a al aplicación."""
     CONSULTA = database.paginate(
@@ -1019,6 +1030,7 @@ def nuevo_grupo():
         try:
             database.session.add(grupo_)
             database.session.commit()
+            cache.delete("view/" + url_for("lista_grupos"))
             return redirect("/groups")
         except OperationalError:
             flash("Error al crear el nuevo grupo.")
@@ -1030,6 +1042,7 @@ def nuevo_grupo():
 @lms_app.route("/groups")
 @login_required
 @perfil_requerido("instructor")
+@cache.cached(timeout=60)
 def lista_grupos():
     """Formulario para crear un nuevo grupo."""
 
@@ -1317,15 +1330,14 @@ def curso(course_code):
 
 
 @lms_app.route("/program/<codigo>")
-@cache.cached(unless=no_guardar_en_cache_global)
+@cache.cached(timeout=60, unless=no_guardar_en_cache_global)
 def pagina_programa(codigo):
     """Pagina principal del curso."""
 
     program = Programa.query.filter(Programa.codigo == codigo).first()
     cuenta_cursos = ProgramaCurso.query.filter(ProgramaCurso.programa == program.codigo).count()
-    config = Configuracion.query.first()
 
-    return render_template("learning/programa.html", programa=program, cuenta_cursos=cuenta_cursos, moneda=config.moneda)
+    return render_template("learning/programa.html", programa=program, cuenta_cursos=cuenta_cursos)
 
 
 @lms_app.route("/course/<course_code>/edit", methods=["GET", "POST"])
@@ -2135,6 +2147,7 @@ def new_program():
         database.session.add(programa)
         try:
             database.session.commit()
+            cache.delete("view/" + url_for("programs"))
             flash("Nueva Programa creado.")
         except OperationalError:
             flash("Hubo un error al crear el programa.")
@@ -2146,6 +2159,7 @@ def new_program():
 @lms_app.route("/programs_list")
 @login_required
 @perfil_requerido("instructor")
+@cache.cached(timeout=60)
 def programs():
     """Lista de programas"""
     consulta = database.paginate(
@@ -2164,6 +2178,7 @@ def delete_program(tag: str):
     """Elimina programa."""
     Programa.query.filter(Programa.id == tag).delete()
     database.session.commit()
+    cache.delete("view/" + url_for("programs"))
     return redirect("/programs_list")
 
 
