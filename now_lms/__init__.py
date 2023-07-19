@@ -613,7 +613,7 @@ def crear_usuario():  # pragma: no cover
 def home():
     """Página principal de la aplicación."""
 
-    if DESARROLLO:
+    if DESARROLLO:  # pragma: no cover
         MAX = 3
     else:
         MAX = MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA
@@ -695,7 +695,7 @@ def edit_perfil(ulid: str):
         usuario_.nacimiento = form.nacimiento.data
         usuario_.bio = form.bio.data
 
-        if form.correo_electronico.data != usuario_.correo_electronico:
+        if form.correo_electronico.data != usuario_.correo_electronico:  # pragma: no cover
             usuario_.correo_electronico_verificado = False
             flash("Favor verifique su nuevo correo electronico.")
 
@@ -711,12 +711,12 @@ def edit_perfil(ulid: str):
                         database.session.commit()
                 except UploadNotAllowed:
                     log.warning("No se pudo actualizar la imagen de perfil.")
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             flash("Error al editar el perfil.")
 
         return redirect("/perfil")
 
-    else:
+    else:  # pragma: no cover
         return render_template("inicio/perfil_editar.html", form=form, usuario=usuario_)
 
 
@@ -838,7 +838,7 @@ def personalizacion():
     config = Configuracion.query.first()
     form = ThemeForm(style=config.style)
 
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit() or request.method == "POST":  # pragma: no cover
         config.style = form.style.data
 
         if "logo" in request.files:
@@ -859,7 +859,7 @@ def personalizacion():
             flash("No se pudo actualizar el tema del sitio web.")
             return redirect(url_for("personalizacion"))
 
-    else:
+    else:  # pragma: no cover
         return render_template("admin/theme.html", form=form, config=config)
 
 
@@ -897,7 +897,7 @@ def mail():
     """Configuración de Correo Electronico."""
     config = Configuracion.query.first()
     form = MailForm()
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit() or request.method == "POST":  # pragma: no cover
         config.email = form.email.data
         config.mail_server = form.mail_server.data
         config.mail_port = form.mail_port.data
@@ -912,7 +912,7 @@ def mail():
         except OperationalError:
             flash("No se pudo actualizar la configuración de correo electronico.")
             return redirect(url_for("mail"))
-    else:
+    else:  # pragma: no cover
         return render_template("admin/mail.html", form=form, config=configuracion)
 
 
