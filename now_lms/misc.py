@@ -162,7 +162,7 @@ GENEROS: dict = {
 }
 
 TIPOS_RECURSOS: dict = {
-    "cheat_sheet": """<i class="bi bi-file-spreadsheet-fill" aria-hidden="true"></i>""",
-    "ebook": """<i class="bi bi-file-earmark-fill" aria-hidden="true"></i>""",
-    "template": """<i class="bi bi-file-earmark-text" aria-hidden="true"></i>""",
+    "cheat_sheet": """<i class="bi bi-card-checklist" aria-hidden="true"></i>""",
+    "ebook": """<i class="bi bi-book" aria-hidden="true"></i>""",
+    "template": """<i class="bi bi-pencil-square" aria-hidden="true"></i>""",
 }

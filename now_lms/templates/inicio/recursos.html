@@ -78,25 +78,28 @@
                       width="20" height="20" alt="Nivel Avanzado">
                     {% endif %}
                   </div>
-                  {{ curso.descripcion | truncate(120) }}
 
                   <div class="d-flex justify-content-between align-items-center">
+
 
                     <a href="{{ url_for("vista_recurso", resource_code=curso.codigo )}}"
                       class="btn btn-sm btn-outline-secondary" role="button" aria-disabled="true">
                       Ver Recurso
                     </a>
+                    <div>
+                      <small>{{ tipo[curso.tipo] | safe }}</small>
 
-                    {{ tipo[curso.tipo] | safe }}
+                      {% if curso.duracion %}
+                      <small class="text-muted">{{ curso.duracion }} mins</small>
+                      {% endif %}
+                      {% if curso.precio or curso.precio > 0 %}
+                      <small>{{ curso.precio | float }} {{ config.moneda }}</small>
+                      {% else %}
+                      <small><span class="badge bg-primary">Gratis</span></small>
+                      {% endif %}
 
-                    {% if curso.duracion %}
-                    <small class="text-muted">{{ curso.duracion }} mins</small>
-                    {% endif %}
-                    {% if curso.precio %}
-                    <small>{{ curso.precio | float }} {{ config.moneda }}</small>
-                    {% else %}
-                    <small>Gratis</small>
-                    {% endif %}
+                    </div>
+
                   </div>
                 </div>
               </div>
