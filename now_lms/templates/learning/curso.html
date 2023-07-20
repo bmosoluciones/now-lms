@@ -131,6 +131,18 @@
           {{ nivel[curso.nivel] | safe }}
 
           <br>
+
+          {% if descargas %}
+          <strong>Recursos disponibles con este curso:</strong>
+          <br>
+          {% for item in descargas %}
+          <a href="{{ url_for("vista_recurso", resource_code=item[0].codigo) }}"
+            class="link-dark">{{ tipo[item[0].tipo] | safe }} {{ item[0].nombre }}</a><br>
+          {% endfor %}
+          {% endif %}
+
+          <br>
+
           {% if current_user.is_authenticated %}
 
           {% else %}
@@ -270,24 +282,23 @@
               </div>
             </div>
             {% endfor %}
-          </div>
-          {% else %}
-
-          <div class="d-flex justify-content-center">
-            {% if permitir_editar %}
-            <a href="{{ url_for("nuevo_seccion", course_code=curso.codigo) }}" class="btn btn-primary" role="button"
-              aria-disabled="true">Crear Nueva Sección</a>
             {% else %}
-            <p>Este curso actualmente no cuenta con secciones disponibles.</p>
+
+            <div class="d-flex justify-content-center">
+              {% if permitir_editar %}
+              <a href="{{ url_for("nuevo_seccion", course_code=curso.codigo) }}" class="btn btn-primary" role="button"
+                aria-disabled="true">Crear Nueva Sección</a>
+              {% else %}
+              <p>Este curso actualmente no cuenta con secciones disponibles.</p>
+              {% endif %}
+            </div>
+
             {% endif %}
           </div>
 
-          {% endif %}
         </div>
 
       </div>
-
-    </div>
 
 
 

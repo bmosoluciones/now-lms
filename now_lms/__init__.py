@@ -71,6 +71,7 @@ from now_lms.db import (
     Configuracion,
     Curso,
     CursoRecurso,
+    CursoRecursoDescargable,
     CursoRecursoAvance,
     CursoSeccion,
     CursoRecursoSlides,
@@ -1332,7 +1333,11 @@ def curso(course_code):
         curso=Curso.query.filter_by(codigo=course_code).first(),
         secciones=CursoSeccion.query.filter_by(curso=course_code).order_by(CursoSeccion.indice).all(),
         recursos=CursoRecurso.query.filter_by(curso=course_code).order_by(CursoRecurso.indice).all(),
+        descargas=database.session.execute(
+            database.select(Recurso).join(CursoRecursoDescargable).filter(CursoRecursoDescargable.curso == course_code)
+        ).all(),  # El join devuelve una tuple.
         nivel=CURSO_NIVEL,
+        tipo=TIPOS_RECURSOS,
     )
 
 
