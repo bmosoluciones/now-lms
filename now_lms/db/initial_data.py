@@ -198,6 +198,8 @@ def crear_curso_demo():
         portada=True,
         fecha_inicio=datetime.today() + timedelta(days=7),
         fecha_fin=datetime.today() + timedelta(days=14),
+        promocionado=True,
+        fecha_promocionado=datetime.today(),
     )
 
     database.session.add(demo)
@@ -370,6 +372,8 @@ def crear_curso_predeterminado():
         capacidad=50,
         auditable=True,
         portada=True,
+        promocionado=True,
+        fecha_promocionado=datetime.today(),
     )
     database.session.add(demo)
     database.session.commit()
@@ -600,6 +604,8 @@ def crear_curso_demo1():
         portada=True,
         fecha_inicio=datetime.today() + timedelta(days=7),
         fecha_fin=datetime.today() + timedelta(days=14),
+        promocionado=True,
+        fecha_promocionado=datetime.today(),
     )
 
     database.session.add(demo)
@@ -623,6 +629,8 @@ def crear_curso_demo2():
         portada=True,
         fecha_inicio=datetime.today() + timedelta(days=7),
         fecha_fin=datetime.today() + timedelta(days=14),
+        promocionado=True,
+        fecha_promocionado=datetime.today(),
     )
 
     database.session.add(demo)
@@ -715,6 +723,8 @@ def crear_programa():
         estado="open",
         logo=True,
         texto=TEXTO_PROGRAMA,
+        promocionado=True,
+        fecha_promocionado=datetime.today(),
     )
     curse_logo(curso="P001", image="concepto-collage-html-css-persona.jpg", program=True)
     database.session.add(programa)

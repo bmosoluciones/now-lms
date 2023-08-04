@@ -142,6 +142,7 @@ class CurseForm(BaseForm):
     fecha_fin = DateField(validators=[])
     duracion = IntegerField(validators=[])
     nivel = SelectField("User", choices=[(0, "Introductorio"), (1, "Principiante"), (2, "Intermedio"), (3, "Avanzado")])
+    promocionado = BooleanField(validators=[])
 
 
 class CursoSeccionForm(BaseForm):
@@ -261,6 +262,7 @@ class ProgramaForm(BaseForm):
             ("closed", "Cerrado"),
         ],
     )
+    promocionado = BooleanField(validators=[])
 
 
 class RecursoForm(BaseForm):
@@ -269,6 +271,7 @@ class RecursoForm(BaseForm):
     codigo = StringField(validators=[DataRequired()])
     precio = DecimalField()
     publico = BooleanField(validators=[])
+    promocionado = BooleanField(validators=[])
     tipo = SelectField(
         "Tipo",
         choices=[

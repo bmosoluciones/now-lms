@@ -140,6 +140,8 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     duracion = database.Column(database.Integer())
     portada = database.Column(database.Boolean())
     nivel = database.Column(database.Integer())
+    promocionado = database.Column(database.Boolean())
+    fecha_promocionado = database.Column(database.DateTime, nullable=True)
 
 
 class CursoRecursoDescargable(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -388,6 +390,8 @@ class Programa(database.Model, BaseTabla):  # type: ignore[name-defined]
     # draft, open, closed
     estado = database.Column(database.String(20))
     logo = database.Column(database.Boolean(), default=False)
+    promocionado = database.Column(database.Boolean())
+    fecha_promocionado = database.Column(database.DateTime, nullable=True)
 
 
 class ProgramaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
@@ -419,3 +423,5 @@ class Recurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     publico = database.Column(database.Boolean())
     logo = database.Column(database.Boolean(), default=False)
     file_name = database.Column(database.String(200))
+    promocionado = database.Column(database.Boolean())
+    fecha_promocionado = database.Column(database.DateTime, nullable=True)

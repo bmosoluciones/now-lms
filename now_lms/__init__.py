@@ -1359,9 +1359,13 @@ def editar_curso(course_code):
     """Editar pagina del curso."""
 
     curso_a_editar = Curso.query.filter_by(codigo=course_code).first()
-    form = CurseForm(nivel=curso_a_editar.nivel, descripcion=curso_a_editar.descripcion)
+    form = CurseForm(
+        nivel=curso_a_editar.nivel, descripcion=curso_a_editar.descripcion, promocionado=curso_a_editar.promocionado
+    )
     curso_url = url_for("curso", course_code=course_code)
     if form.validate_on_submit() or request.method == "POST":
+        if curso_a_editar.promocionado is False and form.promocionado.data is True:
+            curso_a_editar.promocionado = datetime.today()
         curso_a_editar.nombre = form.nombre.data
         curso_a_editar.descripcion = form.descripcion.data
         curso_a_editar.publico = form.publico.data
@@ -1374,6 +1378,7 @@ def editar_curso(course_code):
         curso_a_editar.duracion = form.duracion.data
         curso_a_editar.modificado_por = current_user.usuario
         curso_a_editar.nivel = form.nivel.data
+        curso_a_editar.promocionado = form.promocionado.data
 
         try:
             database.session.commit()
@@ -2206,13 +2211,18 @@ def edit_program(tag: str):
         codigo=programa.codigo,
         precio=programa.precio,
         estado=programa.estado,
+        promocionado=programa.promocionado,
     )
     if form.validate_on_submit() or request.method == "POST":
+        if programa.promocionado is False and form.promocionado.data is True:
+            programa.fecha_promocionado = datetime.today()
+
         programa.nombre = form.nombre.data
         programa.descripcion = form.descripcion.data
         programa.precio = form.precio.data
         programa.publico = form.publico.data
         programa.estado = form.estado.data
+        programa.promocionado = form.promocionado.data
 
         try:
             database.session.add(programa)
@@ -2327,6 +2337,8 @@ def edit_resource(ulid: str):
     form = RecursoForm(nombre=recurso.nombre, descripcion=recurso.descripcion, tipo=recurso.tipo)
 
     if form.validate_on_submit() or request.method == "POST":
+        if recurso.promocionado is False and form.promocionado.data is True:
+            recurso.fecha_promocionado = datetime.today()
         recurso.nombre = form.nombre.data
         recurso.descripcion = form.descripcion.data
         recurso.precio = form.precio.data
