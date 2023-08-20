@@ -28,5 +28,8 @@ python -m pip install now_lms
 python -m now_lms
 ```
 
-Visit `http://127.0.0.1:8080` in your browser and login with the default user and password: `lms-admin`. This will install NOW - LMS
-from the [Python Package Index](https://pypi.org/project/now-lms/), NOW - LMS is also available as a [OCI Image](https://quay.io/repository/bmosoluciones/now_lms), here you will be using a local WSGI server and SQlite as database backend, for really tiny septups or testing this can work, for a most robust deployment suitable for many users refers to the [setup guide](setup.md).
+Visit `http://127.0.0.1:8080` in your browser and login with the default user and password: `lms-admin`.
+
+This will install NOW - LMS from the [Python Package Index](https://pypi.org/project/now-lms/) with a local WSGI server and SQlite as database backend, for really tiny septups or testing this can work, for a most robust deployment suitable for many users refers to the [setup guide](setup.md).
+
+NOW-LMS aims to offers a full online learning experience and is influenced by [others project](references.md).

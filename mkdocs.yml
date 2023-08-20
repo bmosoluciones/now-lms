@@ -3,7 +3,8 @@ theme:
   name: material
   favicon: images/favicon.png
   logo: images/logo.svg
-  font: Karla
+  font:
+    text: Roboto
   language: es
   palette:
     # Palette toggle for light mode
