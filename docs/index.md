@@ -3,6 +3,8 @@
 The main objetive of NOW - LMS is to be a simple to {install, use, configure,
 mantain} learning management system (LMS).
 
+![Logo](images/logo.svg)
+
 This is alpha software!
 
 ## First Steps
