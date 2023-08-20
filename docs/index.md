@@ -5,19 +5,26 @@ mantain} learning management system (LMS).
 
 This is alpha software!
 
-## Getting Started
+## First Steps
 
-To take a quick look just execute:
+NOW-LMS is available as a package in [Pypi](https://pypi.org/project/now-lms/), to run it you just have a recent Python interpreter and run the following commands:
 
 ```
+# Python => 3.8
+
+# Linux or Mac:
 python3 -m venv venv
-# Linux:
 source venv/bin/activate
+
 # Windows
+python3 -m venv venv
 venv\Scripts\activate.bat
+
+# Inside your python virtual env:
+
 python -m pip install now_lms
 python -m now_lms
 ```
 
 Visit `http://127.0.0.1:8080` in your browser and login with the default user and password: `lms-admin`. This will install NOW - LMS
-from the [Python Package Index](https://pypi.org/project/now-lms/), NOW - LMS is also available as a [OCI Image](https://quay.io/repository/bmosoluciones/now_lms).
+from the [Python Package Index](https://pypi.org/project/now-lms/), NOW - LMS is also available as a [OCI Image](https://quay.io/repository/bmosoluciones/now_lms), here you will be using a local WSGI server and SQlite as database backend, for really tiny septups or testing this can work, for a most robust deployment suitable for many users refers to the [setup guide](setup.md).
