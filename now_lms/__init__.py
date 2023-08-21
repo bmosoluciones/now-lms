@@ -1323,9 +1323,69 @@ def lista_recursos():
     )
 
 
-@lms_app.route("/course/<course_code>")
+@lms_app.route("/course/view/<course_code>")
 @cache.cached(unless=no_guardar_en_cache_global)
 def curso(course_code):
+    """Pagina principal del curso."""
+
+    return render_template(
+        "learning/curso.html",
+        curso=Curso.query.filter_by(codigo=course_code).first(),
+        secciones=CursoSeccion.query.filter_by(curso=course_code).order_by(CursoSeccion.indice).all(),
+        recursos=CursoRecurso.query.filter_by(curso=course_code).order_by(CursoRecurso.indice).all(),
+        descargas=database.session.execute(
+            database.select(Recurso).join(CursoRecursoDescargable).filter(CursoRecursoDescargable.curso == course_code)
+        ).all(),  # El join devuelve una tuple.
+        nivel=CURSO_NIVEL,
+        tipo=TIPOS_RECURSOS,
+    )
+
+
+@lms_app.route("/course/take/<course_code>")
+@login_required
+@perfil_requerido("student")
+@cache.cached(unless=no_guardar_en_cache_global)
+def tomar_curso(course_code):
+    """Pagina principal del curso."""
+
+    return render_template(
+        "learning/curso.html",
+        curso=Curso.query.filter_by(codigo=course_code).first(),
+        secciones=CursoSeccion.query.filter_by(curso=course_code).order_by(CursoSeccion.indice).all(),
+        recursos=CursoRecurso.query.filter_by(curso=course_code).order_by(CursoRecurso.indice).all(),
+        descargas=database.session.execute(
+            database.select(Recurso).join(CursoRecursoDescargable).filter(CursoRecursoDescargable.curso == course_code)
+        ).all(),  # El join devuelve una tuple.
+        nivel=CURSO_NIVEL,
+        tipo=TIPOS_RECURSOS,
+    )
+
+
+@lms_app.route("/course/moderate/<course_code>")
+@login_required
+@perfil_requerido("moderator")
+@cache.cached(unless=no_guardar_en_cache_global)
+def moderar_curso(course_code):
+    """Pagina principal del curso."""
+
+    return render_template(
+        "learning/curso.html",
+        curso=Curso.query.filter_by(codigo=course_code).first(),
+        secciones=CursoSeccion.query.filter_by(curso=course_code).order_by(CursoSeccion.indice).all(),
+        recursos=CursoRecurso.query.filter_by(curso=course_code).order_by(CursoRecurso.indice).all(),
+        descargas=database.session.execute(
+            database.select(Recurso).join(CursoRecursoDescargable).filter(CursoRecursoDescargable.curso == course_code)
+        ).all(),  # El join devuelve una tuple.
+        nivel=CURSO_NIVEL,
+        tipo=TIPOS_RECURSOS,
+    )
+
+
+@lms_app.route("/course/admin/<course_code>")
+@login_required
+@perfil_requerido("instructor")
+@cache.cached(unless=no_guardar_en_cache_global)
+def administrar_curso(course_code):
     """Pagina principal del curso."""
 
     return render_template(

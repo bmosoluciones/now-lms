@@ -249,9 +249,27 @@ rutas_estaticas = [
         texto=None,
     ),
     Ruta(
-        ruta="/course/now",
+        ruta="/course/view/now",
         admin=200,
         no_session=200,
+        texto=[b"Contenido del curso.", b"Curso Certificado"],
+    ),
+    Ruta(
+        ruta="/course/take/now",
+        admin=200,
+        no_session=302,
+        texto=[b"Contenido del curso.", b"Curso Certificado"],
+    ),
+    Ruta(
+        ruta="/course/moderate/now",
+        admin=200,
+        no_session=302,
+        texto=[b"Contenido del curso.", b"Curso Certificado"],
+    ),
+    Ruta(
+        ruta="/course/admin/now",
+        admin=200,
+        no_session=302,
         texto=[b"Contenido del curso.", b"Curso Certificado"],
     ),
     Ruta(
