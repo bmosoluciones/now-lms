@@ -255,6 +255,12 @@ rutas_estaticas = [
         texto=[b"Contenido del curso.", b"Curso Certificado"],
     ),
     Ruta(
+        ruta="/course/enroll/now",
+        admin=200,
+        no_session=302,
+        texto=None,
+    ),
+    Ruta(
         ruta="/course/take/now",
         admin=200,
         no_session=302,
