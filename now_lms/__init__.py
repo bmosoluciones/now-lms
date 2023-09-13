@@ -1329,7 +1329,7 @@ def curso(course_code):
     """Pagina principal del curso."""
 
     return render_template(
-        "learning/curso.html",
+        "learning/curso/curso.html",
         curso=Curso.query.filter_by(codigo=course_code).first(),
         secciones=CursoSeccion.query.filter_by(curso=course_code).order_by(CursoSeccion.indice).all(),
         recursos=CursoRecurso.query.filter_by(curso=course_code).order_by(CursoRecurso.indice).all(),
