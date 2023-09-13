@@ -15,7 +15,7 @@
 
 Simple to {install, use, configure and maintain} learning management system.
 
-![ScreenShot](https://github.com/bmosoluciones/now-lms/blob/main/now_lms/docs/images/screenshot.png?raw=true)
+![ScreenShot](https://raw.githubusercontent.com/bmosoluciones/now-lms/main/docs/images/screenshot.png)
 
 ## Documentation
 
