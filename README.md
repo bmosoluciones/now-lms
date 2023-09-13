@@ -15,21 +15,21 @@
 
 Simple to {install, use, configure and maintain} learning management system.
 
-![ScreenShot](https://awesomescreenshot.s3.amazonaws.com/image/4385805/38793975-31a6f11236ada10d2fdc3b15ee444c3e.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAJSCJQ2NM3XLFPVKA%2F20230410%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230410T000714Z&X-Amz-Expires=28800&X-Amz-SignedHeaders=host&X-Amz-Signature=14c52233e8910068c14beb5a29bb0179a0e45cc1d6ba7aab68369c3172871b10)
+![ScreenShot](https://github.com/bmosoluciones/now-lms/blob/main/now_lms/docs/images/screenshot.png?raw=true)
 
 ## Documentation
 
 [![Documentation Status](https://readthedocs.org/projects/now-lms-manual/badge/?version=latest)](https://now-lms-manual.readthedocs.io/en/latest/?badge=latest)
 
--   Students and Educators please refer to the [user manual](https://now-lms-manual.readthedocs.io/en/latest/).
--   Administrators can refer to the [documentation](https://bmosoluciones.github.io/now-lms/index.html).
--   Live demo: https://now-lms-demo.onrender.com/index
+-   Users please refer to the [user manual](https://now-lms-manual.readthedocs.io/en/latest/).
+-   System Administrators refer to the [documentation](https://bmosoluciones.github.io/now-lms/index.html).
+-   Live demo at: https://now-lms-demo.onrender.com/index
 
 Data in the live demo is reset in every deployment, user and password are: `lms-admin`
 
 ## Getting Started
 
-Thanks for your interest in the Now - LMS project (the project).
+Thanks for your interest in the NOW - LMS project (the project).
 
 ### Dependencies
 
