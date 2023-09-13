@@ -1328,17 +1328,34 @@ def lista_recursos():
 def curso(course_code):
     """Pagina principal del curso."""
 
-    return render_template(
-        "learning/curso/curso.html",
-        curso=Curso.query.filter_by(codigo=course_code).first(),
-        secciones=CursoSeccion.query.filter_by(curso=course_code).order_by(CursoSeccion.indice).all(),
-        recursos=CursoRecurso.query.filter_by(curso=course_code).order_by(CursoRecurso.indice).all(),
-        descargas=database.session.execute(
-            database.select(Recurso).join(CursoRecursoDescargable).filter(CursoRecursoDescargable.curso == course_code)
-        ).all(),  # El join devuelve una tuple.
-        nivel=CURSO_NIVEL,
-        tipo=TIPOS_RECURSOS,
-    )
+    curso = Curso.query.filter_by(codigo=course_code).first()
+
+    if curso.estado == "open" and curso.publico is True:
+        return render_template(
+            "learning/curso/curso.html",
+            curso=curso,
+            secciones=CursoSeccion.query.filter_by(curso=course_code).order_by(CursoSeccion.indice).all(),
+            recursos=CursoRecurso.query.filter_by(curso=course_code).order_by(CursoRecurso.indice).all(),
+            descargas=database.session.execute(
+                database.select(Recurso).join(CursoRecursoDescargable).filter(CursoRecursoDescargable.curso == course_code)
+            ).all(),  # El join devuelve una tuple.
+            nivel=CURSO_NIVEL,
+            tipo=TIPOS_RECURSOS,
+        )
+
+    else:
+        abort(403)
+
+
+@lms_app.route("/course/enroll/<course_code>")
+@login_required
+@perfil_requerido("student")
+def course_enroll(course_code):
+    """Pagina para inscribirse a un curso."""
+
+    curso = Curso.query.filter_by(codigo=course_code).first()
+
+    return render_template("learning/curso/enroll.html", curso=curso)
 
 
 @lms_app.route("/course/take/<course_code>")

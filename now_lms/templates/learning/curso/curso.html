@@ -96,6 +96,13 @@
           <br>
 
           {% if current_user.is_authenticated %}
+          <div class="d-flex d-flex justify-content-around">
+            <a href="{{ url_for("course_enroll", course_code=curso.codigo) }}" class="btn btn-success" role="button"
+              aria-disabled="true">
+              <i class="bi bi-backpack-fill" aria-hidden="true"></i> Inscribirse al Curso
+            </a>
+          </div>
+
 
           {% else %}
           <div class="d-flex d-flex justify-content-around">
