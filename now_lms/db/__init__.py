@@ -425,3 +425,12 @@ class Recurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     file_name = database.Column(database.String(200))
     promocionado = database.Column(database.Boolean())
     fecha_promocionado = database.Column(database.DateTime, nullable=True)
+
+
+class Certificado(database.Model, BaseTabla):  # type: ignore[name-defined]
+    """Plantilla para generar un certificado."""
+
+    nombre = database.Column(database.String(100))
+    plantilla = database.Column(database.String(3000))
+    habilitado = database.Column(database.Boolean())
+    fondo = database.Column(database.String(100))
