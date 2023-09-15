@@ -53,7 +53,7 @@ if not environ.get("NO_LMS_CACHE") and not CONFIG_FROM_FILE.get("NO_LMS_CACHE"):
         CACHE_CONFIG["CACHE_REDIS_PORT"] = environ.get("CACHE_REDIS_PORT")
 
     # CACHE_REDIS_URL=redis://localhost:6379/0
-    elif (environ.get("CACHE_REDIS_URL") or CONFIG_FROM_FILE("CACHE_REDIS_URL")) or (
+    elif (environ.get("CACHE_REDIS_URL") or CONFIG_FROM_FILE.get("CACHE_REDIS_URL")) or (
         environ.get("REDIS_URL") or CONFIG_FROM_FILE.get("REDIS_URL")
     ):
         CTYPE = "RedisCache"
