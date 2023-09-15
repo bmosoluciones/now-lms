@@ -17,19 +17,18 @@
 
 """Configuración de la aplicación."""
 # Libreria standar:
-from os import access, environ, makedirs, name, path, W_OK, R_OK
+from os import access, environ, makedirs, name, pardir, path, W_OK, R_OK
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Union
 
 # Librerias de terceros:
 from appdirs import AppDirs
-from configobj import ConfigObj
 
 # Recursos locales:
+from now_lms.config.parse_config_file import CONFIG_FROM_FILE, ConfigObj
 from now_lms.logs import log
 from now_lms.version import PRERELEASE
 
-CONFIG_FILE: str = "now_lms.conf"
 
 if environ.get("CI"):
     DESARROLLO = True
@@ -38,20 +37,13 @@ else:
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios base de la aplicacion
-DIRECTORIO_APP: str = path.abspath(path.dirname(__file__))
+DIRECTORIO_ACTUAL: Path = Path(path.abspath(path.dirname(__file__)))
+DIRECTORIO_APP: Path = DIRECTORIO_ACTUAL.parent.absolute()
 DIRECTORIO_BASE_APP: AppDirs = AppDirs("NOW-LMS", "BMO Soluciones")
 DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
 DIRECTORIO_PLANTILLAS: str = path.join(DIRECTORIO_APP, "templates")
 DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
 
-if path.isfile(CONFIG_FILE):  # pragma: no cover
-    CONFIG_FROM_FILE = ConfigObj(CONFIG_FILE)
-
-elif path.isfile(path.join(DIRECTORIO_BASE_APP.site_config_dir, CONFIG_FILE)):  # pragma: no cover
-    CONFIG_FROM_FILE = ConfigObj(path.join(DIRECTORIO_BASE_APP.site_config_dir, CONFIG_FILE))
-
-else:
-    CONFIG_FROM_FILE = None
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios utilizados para la carga de archivos.
@@ -63,7 +55,6 @@ if DESARROLLO:  # pragma: no cover
 
 else:  # pragma: no cover
     DIRECTORIO_BASE_UPLOADS = DIRECTORIO_BASE_ARCHIVOS_USUARIO
-
 
 DIRECTORIO_ARCHIVOS_PUBLICOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "public")
 DIRECTORIO_ARCHIVOS_PRIVADOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "private")
@@ -103,14 +94,32 @@ else:
 
 # < --------------------------------------------------------------------------------------------- >
 # Configuración de la aplicación:
-# Siguiendo "Twelve Factors App" las opciones se leen del entorno por defecto.
-# Si no se encuentran las entradas correctas se busca un archivo de configuracion
-# En caso contratio se utilizan valores predeterminados.
+# Se busca un archivo de configuración definido por el usuario, en caso de no encontrar un archivo de
+# configuración valido se siguen las recomendaciones de "Twelve Factors App" y las opciones se leen
+# del entorno. Si no se encuentra un archivo de configuración valido y no se pueden leer las opciones
+# de configuración del entorno se utilizan valores predeterminados.
 
-CONFIGURACION: Dict = {}
-CONFIGURACION["SECRET_KEY"] = "dev"  # nosec
-CONFIGURACION["SQLALCHEMY_TRACK_MODIFICATIONS"] = "False"
-CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = SQLITE
+CONFIGURACION: Union[Dict, ConfigObj] = {}
+
+if CONFIG_FROM_FILE:  # pragma: no cover
+    log.debug("Archivo de configuración detectado.")
+    log.info("Cargando configuración desde archivo de configuración.")
+    CONFIGURACION = CONFIG_FROM_FILE
+
+elif (
+    DESARROLLO is not False and environ.get("SECRET_KEY") and (environ.get("DATABASE_URL") or environ.get("LMS_DB"))
+):  # pragma: no cover
+    log.debug("Leyendo configuración desde variables de entorno.")
+    CONFIGURACION["SECRET_KEY"] = environ.get("SECRET_KEY")
+    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("LMS_DB") or environ.get("DATABASE_URL")
+
+else:  # pragma: no cover
+    log.warning("Utilizando configuración predeterminada.")
+    CONFIGURACION["SECRET_KEY"] = "dev"  # nosec
+    CONFIGURACION["SQLALCHEMY_TRACK_MODIFICATIONS"] = "False"
+    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = SQLITE
+
+# Opciones comunes de configuración.
 CONFIGURACION["PRESERVE_CONTEXT_ON_EXCEPTION"] = False
 # Carga de Archivos: https://flask-reuploaded.readthedocs.io/en/latest/configuration/
 CONFIGURACION["UPLOADS_AUTOSERVE"] = True
@@ -118,28 +127,13 @@ CONFIGURACION["UPLOADED_FILES_DEST"] = DIRECTORIO_UPLOAD_ARCHIVOS
 CONFIGURACION["UPLOADED_IMAGES_DEST"] = DIRECTORIO_UPLOAD_IMAGENES
 CONFIGURACION["UPLOADED_AUDIO_DEST"] = DIRECTORIO_UPLOAD_AUDIO
 
-if (
-    DESARROLLO is not False and environ.get("SECRET_KEY") and (environ.get("DATABASE_URL") or environ.get("LMS_DB"))
-):  # pragma: no cover
-    log.debug("Leyendo configuración desde variables de entorno.")
-    CONFIGURACION["SECRET_KEY"] = environ.get("SECRET_KEY")
-    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("LMS_DB") or environ.get("DATABASE_URL")
-
-elif CONFIG_FROM_FILE:  # pragma: no cover
-    log.debug("Archivo de configuración detectado.")
-    CONFIGURACION["SECRET_KEY"] = CONFIG_FROM_FILE["SECRET_KEY"]
-    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = CONFIG_FROM_FILE["LMS_DB"] or CONFIG_FROM_FILE["DATABASE_URL"]
-
-else:  # pragma: no cover
-    log.warning("Utilizando configuración predeterminada.")
-
 if DESARROLLO:  # pragma: no cover
     log.warning("Opciones de desarrollo detectadas.")
 
 
-if environ.get("DATABASE_URL"):
+if environ.get("DATABASE_URL") and (environ.get("DATABASE_URL") != CONFIGURACION["SQLALCHEMY_DATABASE_URI"]):
     log.warning("Se detecto URL de conexion vía variable de entorno.")
-    log.debug("URL de conexión a la base de datos sobre escrita por variable de entorno.")
+    log.critical("URL de conexión a la base de datos sobre escrita por variable de entorno.")
     CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("DATABASE_URL")
 
 
@@ -154,8 +148,11 @@ if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # pragma: no cover
         )
         CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
 
-    # Servicios como Elephantsql, Digital Ocean proveen una direccion de corrección que comienza con "postgres"
-    # esta va a fallar con SQLAlchemy, se prefiere el drive pg8000 que no requere compilarse.
+    # La mayor parte de servicios en linea ofrecen una cadena de conexión a Postgres que comienza con "postgres"
+    # cadena de conexión va a fallar con SQLAlchemy:
+    # - https://docs.sqlalchemy.org/en/20/core/engines.html#postgresql
+    # Se utiliza por defecto el driver pg8000 que no requere compilarse y es mas amigable  en entornos de contenedores
+    # donde es mas complejo compilar psycopg2.
     elif "postgresql:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
         DBURI = "postgresql+pg8000" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[10:]  # type: ignore[index]
         CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
@@ -175,7 +172,7 @@ if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # pragma: no cover
         CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
 
 if "postgres" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-    DBType = "Postgres"  # pragma: no cover
+    DBType = "PostgreSQL"  # pragma: no cover
 if "mysql" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
     DBType = "MySQL"  # pragma: no cover
 if "mariadb" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]

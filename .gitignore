@@ -259,8 +259,6 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-cacao_accounting/static/node_modules/*
-
 #PyCharm
 .idea/
 
@@ -268,3 +266,6 @@ cacao_accounting/static/node_modules/*
 now_lms/static/files/*
 
 flask_profiler.sql
+
+# Configuration files
+*.conf

@@ -26,6 +26,7 @@ development.txt
 requirements-databases.txt
 *.yml
 *.db
+*.conf
 .mypy.ini
 .gitpod.yml
 .gitpod.sh
