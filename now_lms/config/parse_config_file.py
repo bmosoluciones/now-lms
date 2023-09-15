@@ -51,7 +51,7 @@ else:
     CONFIG_FILE_PARSER = None
 
 
-CONFIG_FROM_FILE: Union[ConfigObj, None]
+CONFIG_FROM_FILE: Union[ConfigObj, dict, None]
 
 if CONFIG_FROM_FILE := CONFIG_FILE_PARSER:
     pass

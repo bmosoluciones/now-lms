@@ -17,7 +17,7 @@
 
 """Configuración de la aplicación."""
 # Libreria standar:
-from os import access, environ, makedirs, name, pardir, path, W_OK, R_OK
+from os import access, environ, makedirs, name, path, W_OK, R_OK
 from pathlib import Path
 from typing import Dict, Union
 
