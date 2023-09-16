@@ -17,6 +17,11 @@
 
 """Configuración de logs."""
 
+from sys import stderr
 from loguru import logger as log
 
-log.add("now_lms.log", rotation="50 MB")
+LOG_FORMAT = "{time:HH:mm:ss:ssss} - {level} - {name}:{line} : {message}"
+
+log.level("note", no=15, color="<blue>")
+log.remove(0)
+log.add(stderr, level="INFO", format=LOG_FORMAT, colorize=True)

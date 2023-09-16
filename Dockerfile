@@ -6,13 +6,6 @@ RUN npm install --ignore-scripts
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 
-ENV FLASK_APP = "now_lms"
-ENV LANG = C.UTF-8
-ENV LC_ALL = C.UTF-8
-ENV PYTHONDONTWRITEBYTECODE = 1
-ENV PYTHONUNBUFFERED = 1
-ENV FLASK_DEBUG = 0
-
 RUN microdnf install -y --nodocs --best --refresh python39 python3-pip python3-cryptography \
     && microdnf clean all
 
@@ -33,5 +26,13 @@ COPY --from=js /usr/app/node_modules /app/now_lms/static/node_modules
 RUN /usr/bin/python3.9 -m pip install -e . && /usr/bin/python3.9 -m pip list --format=columns
 
 EXPOSE 8080
+
+ENV FLASK_APP = "now_lms"
+ENV LANG = C.UTF-8
+ENV LC_ALL = C.UTF-8
+ENV PYTHONDONTWRITEBYTECODE = 1
+ENV PYTHONUNBUFFERED = 1
+ENV FLASK_DEBUG = 0
+ENV NOTLOGTOFILE = 1
 ENTRYPOINT [ "/bin/sh" ]
 CMD [ "/app/docker-entry-point.sh" ]
