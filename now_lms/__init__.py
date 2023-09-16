@@ -1330,7 +1330,7 @@ def curso(course_code):
 
     _curso = Curso.query.filter_by(codigo=course_code).first()
 
-    if curso.estado == "open" and curso.publico is True:
+    if _curso.estado == "open" and _curso.publico is True:
         return render_template(
             "learning/curso/curso.html",
             curso=_curso,

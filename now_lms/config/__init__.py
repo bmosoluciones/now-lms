@@ -48,7 +48,7 @@ DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
 if not DESARROLLO or not environ.get("NOTLOGTOFILE") == "1":
     LOG_FILE = "now_lms.log"
     GLOBAL_LOG_FILE = path.join("/var/log/nowlms", LOG_FILE)
-    LOCAL_LOG_FILE = path.join(DIRECTORIO_BASE_APP, LOG_FILE)
+    LOCAL_LOG_FILE = path.join(DIRECTORIO_BASE_APP.user_log_dir, LOG_FILE)
     if access(GLOBAL_LOG_FILE, W_OK):
         log.add(GLOBAL_LOG_FILE, rotation="10 MB", level="INFO", format=LOG_FORMAT)
     elif access(LOCAL_LOG_FILE, W_OK):
