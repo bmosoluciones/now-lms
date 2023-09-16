@@ -45,16 +45,16 @@ DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
 DIRECTORIO_PLANTILLAS: str = path.join(DIRECTORIO_APP, "templates")
 DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
 
-if not DESARROLLO and not environ.get("NOTLOGTOFILE") == "1":
+if not DESARROLLO or not environ.get("NOTLOGTOFILE") == "1":
     LOG_FILE = "now_lms.log"
     GLOBAL_LOG_FILE = path.join("/var/log/nowlms", LOG_FILE)
     LOCAL_LOG_FILE = path.join(DIRECTORIO_BASE_APP, LOG_FILE)
     if access(GLOBAL_LOG_FILE, W_OK):
-        log.add(GLOBAL_LOG_FILE, "10 MB", level="INFO", format=LOG_FORMAT)
+        log.add(GLOBAL_LOG_FILE, rotation="10 MB", level="INFO", format=LOG_FORMAT)
     elif access(LOCAL_LOG_FILE, W_OK):
         log.add(LOCAL_LOG_FILE, rotation="10 MB", level="INFO", format=LOG_FORMAT)
     else:
-        log.add(LOG_FILE, "10 MB", level="INFO", format=LOG_FORMAT)
+        log.add(LOG_FILE, rotation="10 MB", level="INFO", format=LOG_FORMAT)
 
 
 # < --------------------------------------------------------------------------------------------- >

@@ -39,7 +39,7 @@ USER_CONFIG_FILE: Path = Path(path.join(Path.home(), ".config", BASE_FILE))
 
 
 if Path.exists(GLOBAL_CONFIG_FILE):
-    CONFIG_FILE: Union[str, None] = GLOBAL_CONFIG_FILE
+    CONFIG_FILE: Union[str, Path, None] = GLOBAL_CONFIG_FILE
 elif Path.exists(USER_CONFIG_FILE):
     CONFIG_FILE = USER_CONFIG_FILE
 else:
