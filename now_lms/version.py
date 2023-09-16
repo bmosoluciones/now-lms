@@ -34,14 +34,14 @@ PATCH = "1"
 
 # <--------------------------------------------------------------------------> #
 # Pre release data.
-PRERELEASE = "a10"
+PRERELEASE = "a11"
 REVISION = datetime.today().strftime("%Y%m%d")
 
 # <--------------------------------------------------------------------------> #
 # Release string
 # Refences:
 #  - https://peps.python.org/pep-0440/
-# 0.0.1a10.dev20230720
+# 0.0.1a11.dev20230916
 if PRERELEASE:
     VERSION = MAYOR + "." + MENOR + "." + PATCH + PRERELEASE + ".dev" + REVISION
 else:
