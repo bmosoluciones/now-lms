@@ -365,7 +365,7 @@ class CategoriaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Listado de Cursos Permite Clasificar los cursos por categoria."""
 
     curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False, index=True)
-    categoria = database.Column(database.String(10), database.ForeignKey("categoria.id"), nullable=False, index=True)
+    categoria = database.Column(database.String(26), database.ForeignKey("categoria.id"), nullable=False, index=True)
     relacion_curso = database.relationship("Curso", foreign_keys=curso)
     relacion_categoria = database.relationship("Categoria", foreign_keys=categoria)
 
@@ -389,8 +389,9 @@ class EtiquetaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
 class Programa(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Un programa agrupa una serie de cursos."""
 
+    __table_args__ = (database.UniqueConstraint("codigo", name="codigo_programa_unico"),)
     nombre = database.Column(database.String(20), nullable=False)
-    codigo = database.Column(database.String(10), nullable=False)
+    codigo = database.Column(database.String(10), nullable=False, unique=True)
     descripcion = database.Column(database.String(200))
     texto = database.Column(database.String(1000))
     precio = database.Column(database.Float())
@@ -423,8 +424,9 @@ class ProgramaEstudiante(database.Model, BaseTabla):  # type: ignore[name-define
 class Recurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Un recurso descargable."""
 
-    nombre = database.Column(database.String(20), nullable=False)
-    codigo = database.Column(database.String(10), nullable=False, index=True)
+    __table_args__ = (database.UniqueConstraint("codigo", name="codigo_recurso_unico"),)
+    nombre = database.Column(database.String(50), nullable=False)
+    codigo = database.Column(database.String(10), nullable=False, index=True, unique=True)
     tipo = database.Column(database.String(15))
     descripcion = database.Column(database.String(500))
     precio = database.Column(database.Float())
