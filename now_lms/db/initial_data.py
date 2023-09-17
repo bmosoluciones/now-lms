@@ -17,18 +17,20 @@
 
 """Codigo para crear cursos iniciales.s"""
 
-# pylint: disable=E1101
-# pylint: disable=R0915
-# pylint: disable=R0914
-
-# Libreria standar:
+# ---------------------------------------------------------------------------------------
+# Libreria estandar
+# ---------------------------------------------------------------------------------------
 from datetime import datetime, timedelta, time
 from os import environ
 
-# Librerias de terceros:
+# ---------------------------------------------------------------------------------------
+# Librerias de terceros
+# ---------------------------------------------------------------------------------------
 from ulid import ULID
 
-# Recursos locales:
+# ---------------------------------------------------------------------------------------
+# Recursos locales
+# ---------------------------------------------------------------------------------------
 from now_lms.auth import proteger_passwd
 from now_lms.logs import log
 from now_lms.db import (
@@ -46,6 +48,10 @@ from now_lms.db import (
     ProgramaCurso,
     Recurso,
 )
+
+# pylint: disable=E1101
+# pylint: disable=R0915
+# pylint: disable=R0914
 
 
 def crear_etiquetas():

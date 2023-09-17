@@ -16,24 +16,37 @@
 # - William José Moreno Reyes
 
 """Configuración de la aplicación."""
-# Libreria standar:
+# ---------------------------------------------------------------------------------------
+# Libreria estandar
+# ---------------------------------------------------------------------------------------
 from os import access, environ, makedirs, name, path, W_OK, R_OK
 from pathlib import Path
+from sys import stderr
 from typing import Dict, Union
 
-# Librerias de terceros:
+# ---------------------------------------------------------------------------------------
+# Librerias de terceros
+# ---------------------------------------------------------------------------------------
 from appdirs import AppDirs
 
-# Recursos locales:
+# ---------------------------------------------------------------------------------------
+# Recursos locales
+# ---------------------------------------------------------------------------------------
 from now_lms.config.parse_config_file import CONFIG_FROM_FILE, ConfigObj
 from now_lms.logs import log, LOG_FORMAT
 from now_lms.version import PRERELEASE
 
-
+# < --------------------------------------------------------------------------------------------- >
+# Configuración central de la aplicación.
 if environ.get("CI"):
     DESARROLLO = True
 else:
     DESARROLLO = PRERELEASE is not None
+
+if DESARROLLO:
+    log.remove()
+    log.add(stderr, level="TRACE", format=LOG_FORMAT, colorize=True)
+    log.warning("Opciones de desarrollo detectadas.")
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -86,11 +99,9 @@ if not path.isdir(DIRECTORIO_BASE_UPLOADS):  # pragma: no cover
         log.warning(DIRECTORIO_BASE_UPLOADS)
 
 if access(DIRECTORIO_BASE_UPLOADS, R_OK) and access(DIRECTORIO_BASE_UPLOADS, W_OK):  # pragma: no cover
-    log.debug("Directorio para carga de archivos es:")
-    log.debug(DIRECTORIO_BASE_UPLOADS)
+    log.debug("Directorio para carga de archivos es: {file}", file=DIRECTORIO_BASE_UPLOADS)
 else:
-    log.warning("No se tiene acceso a:")
-    log.warning(DIRECTORIO_BASE_UPLOADS)
+    log.error("No se tiene acceso a: {dir}", dir=DIRECTORIO_BASE_UPLOADS)
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -127,6 +138,7 @@ elif (
 
 else:  # pragma: no cover
     log.warning("Utilizando configuración predeterminada.")
+    log.info("La configuración predeterminada no se recomienda para uso en entornos reales.")
     CONFIGURACION["SECRET_KEY"] = "dev"  # nosec
     CONFIGURACION["SQLALCHEMY_TRACK_MODIFICATIONS"] = "False"
     CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = SQLITE
@@ -138,9 +150,6 @@ CONFIGURACION["UPLOADS_AUTOSERVE"] = True
 CONFIGURACION["UPLOADED_FILES_DEST"] = DIRECTORIO_UPLOAD_ARCHIVOS
 CONFIGURACION["UPLOADED_IMAGES_DEST"] = DIRECTORIO_UPLOAD_IMAGENES
 CONFIGURACION["UPLOADED_AUDIO_DEST"] = DIRECTORIO_UPLOAD_AUDIO
-
-if DESARROLLO:  # pragma: no cover
-    log.warning("Opciones de desarrollo detectadas.")
 
 
 if environ.get("DATABASE_URL") and (environ.get("DATABASE_URL") != CONFIGURACION["SQLALCHEMY_DATABASE_URI"]):
@@ -192,4 +201,4 @@ if "mariadb" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[op
 if "sqlite" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
     DBType = "SQLite"  # pragma: no cover
 
-log.info("Database: {type}.", type=DBType)
+log.info("Utilizando el motor de base de datos {type}.", type=DBType)

@@ -192,6 +192,7 @@ mde: Mde = Mde()
 
 def inicializa_extenciones_terceros(flask_app):
     """Inicia extensiones de terceros."""
+    log.trace("Iniciando extensiones de terceros")
     with flask_app.app_context():
         database.init_app(flask_app)
         alembic.init_app(flask_app)
@@ -199,6 +200,7 @@ def inicializa_extenciones_terceros(flask_app):
         cache.init_app(flask_app)
         mde.init_app(flask_app)
         if environ.get("PROFILER"):  # pragma: no cover
+            log.warning("Profiler activo, no se recomienda el uso de esta opción en entornos reales.")
             try:
                 from flask_profiler import Profiler
                 from flask_debugtoolbar import DebugToolbarExtension
@@ -227,6 +229,7 @@ def inicializa_extenciones_terceros(flask_app):
                 log.info("Flask development toolbar enabled.")
             if profiler:
                 log.info("Flask profiler enabled.")
+    log.trace("Extensiones de terceros iniciadas correctamente.")
 
 
 # ---------------------------------------------------------------------------------------
@@ -237,6 +240,7 @@ def inicializa_extenciones_terceros(flask_app):
 def cargar_sesion(identidad):  # pragma: no cover
     """Devuelve la entrada correspondiente al usuario que inicio sesión desde la base de datos."""
     if identidad is not None:
+        log.trace("Verificando identidad del usuario {user}", user=identidad)
         return database.session.get(Usuario, identidad)
     return None
 

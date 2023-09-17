@@ -17,11 +17,19 @@
 
 """Configuración de logs."""
 
-from sys import stderr
+# ---------------------------------------------------------------------------------------
+# Libreria estandar
+# ---------------------------------------------------------------------------------------
+from sys import stdout
+
+# ---------------------------------------------------------------------------------------
+# Librerias de terceros
+# ---------------------------------------------------------------------------------------
 from loguru import logger as log
+
 
 LOG_FORMAT = "{time:HH:mm:ss:ssss} - {level} - {name}:{line} : {message}"
 
 log.level("note", no=15, color="<blue>")
 log.remove(0)
-log.add(stderr, level="INFO", format=LOG_FORMAT, colorize=True)
+log.add(stdout, colorize=True, level="INFO", format=LOG_FORMAT)

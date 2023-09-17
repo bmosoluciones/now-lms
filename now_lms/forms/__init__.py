@@ -16,9 +16,14 @@
 # - William José Moreno Reyes
 
 """Definición de formularios."""
-# Libreria standar:
+# ---------------------------------------------------------------------------------------
+# Libreria estandar
+# ---------------------------------------------------------------------------------------
 
-# Librerias de terceros:
+
+# ---------------------------------------------------------------------------------------
+# Librerias de terceros
+# ---------------------------------------------------------------------------------------
 from flask_mde import MdeField
 from flask_wtf import FlaskForm
 from wtforms import (
@@ -36,9 +41,10 @@ from wtforms import (
 from wtforms.validators import DataRequired
 from wtforms.widgets import ColorInput
 
+# ---------------------------------------------------------------------------------------
+# Recursos locales
+# ---------------------------------------------------------------------------------------
 # pylint: disable=R0903
-
-# Recursos locales:
 
 
 # < --------------------------------------------------------------------------------------------- >

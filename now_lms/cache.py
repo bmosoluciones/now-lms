@@ -65,7 +65,7 @@ if not environ.get("NO_LMS_CACHE") and not CONFIG_FROM_FILE.get("NO_LMS_CACHE"):
 
     else:
         CTYPE = "NullCache"
-        log.info("No cache service configured.")
+        log.debug("No cache service configured.")
 
 else:
     CTYPE = "NullCache"
@@ -73,6 +73,6 @@ else:
 CACHE_CONFIG["CACHE_TYPE"] = CTYPE
 
 
-log.info("Cache: {type}", type=CTYPE)
+log.trace("Utilizando para almacenamiento el servicio {type}", type=CTYPE)
 
 cache: Cache = Cache(config=CACHE_CONFIG)

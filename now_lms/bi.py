@@ -23,13 +23,19 @@
 # < --------------------------------------------------------------------------------------------- >
 # Funciones auxiliares parte de la "logica de negocio" de la implementacion.
 
-# Libreria standar:
+# ---------------------------------------------------------------------------------------
+# Libreria estandar
+# ---------------------------------------------------------------------------------------
 from typing import Union
 
-# Librerias de terceros:
+# ---------------------------------------------------------------------------------------
+# Librerias de terceros
+# ---------------------------------------------------------------------------------------
 from flask_login import current_user
 
-# Recursos locales:
+# ---------------------------------------------------------------------------------------
+# Recursos locales
+# ---------------------------------------------------------------------------------------
 from now_lms.db import database, EstudianteCurso, DocenteCurso, ModeradorCurso, Usuario, Curso, CursoSeccion, CursoRecurso
 
 

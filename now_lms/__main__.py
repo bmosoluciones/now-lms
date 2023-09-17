@@ -19,12 +19,29 @@
 Modulo para ejecutar NOW LMS.
 
 """
+# ---------------------------------------------------------------------------------------
+# Libreria estandar
+# ---------------------------------------------------------------------------------------
 
+
+# ---------------------------------------------------------------------------------------
+# Librerias de terceros
+# ---------------------------------------------------------------------------------------
+
+
+# ---------------------------------------------------------------------------------------
+# Recursos locales
+# ---------------------------------------------------------------------------------------
+from now_lms import serve, init_app
+from now_lms.config import DESARROLLO
 from now_lms.logs import log
 
-from now_lms import serve, init_app
 
 if __name__ == "__main__":  # pragma: no cover
-    log.debug("Iniciando NOW Learning Management System.")
-    init_app(with_examples=False)
+    log.info("Iniciando NOW Learning Management System.")
+    if DESARROLLO:
+        log.trace("Iniciando una base de datos nueva con datos de ejemplo.")
+        init_app(with_examples=True)
+    else:
+        init_app(with_examples=False)
     serve()
