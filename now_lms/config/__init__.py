@@ -53,12 +53,13 @@ if DESARROLLO:
 # Directorios base de la aplicacion
 DIRECTORIO_ACTUAL: Path = Path(path.abspath(path.dirname(__file__)))
 DIRECTORIO_APP: Path = DIRECTORIO_ACTUAL.parent.absolute()
+log.debug("Directorio base de la aplicación es {dir}", dir=DIRECTORIO_APP)
 DIRECTORIO_BASE_APP: AppDirs = AppDirs("NOW-LMS", "BMO Soluciones")
 DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
 DIRECTORIO_PLANTILLAS: str = path.join(DIRECTORIO_APP, "templates")
 DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
 
-if not DESARROLLO or not environ.get("NOTLOGTOFILE") == "1":
+if not DESARROLLO or environ.get("NOTLOGTOFILE") == "1":
     LOG_FILE = "now_lms.log"
     GLOBAL_LOG_FILE = path.join("/var/log/nowlms", LOG_FILE)
     LOCAL_LOG_FILE = path.join(DIRECTORIO_BASE_APP.user_log_dir, LOG_FILE)
