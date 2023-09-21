@@ -13,7 +13,7 @@ RUN microdnf install -y --nodocs --best --refresh python39 python3-pip python3-c
 COPY requirements.txt /tmp/
 RUN /usr/bin/python3.9 --version \
     && /usr/bin/python3.9 -m pip --no-cache-dir install -r /tmp/requirements.txt \
-    && rm -rf /root/.cache/
+    && rm -rf /root/.cache/pip
 
 # Copy and install app
 COPY . /app
@@ -23,7 +23,7 @@ RUN chmod +x docker-entry-point.sh
 # Install nodejs modules in the final docker image
 COPY --from=js /usr/app/node_modules /app/now_lms/static/node_modules
 
-RUN /usr/bin/python3.9 -m pip install -e . && /usr/bin/python3.9 -m pip list --format=columns
+RUN /usr/bin/python3.9 -m pip install --no-cache-dir -e . && /usr/bin/python3.9 -m pip list --format=columns
 
 EXPOSE 8080
 

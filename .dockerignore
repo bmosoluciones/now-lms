@@ -6,6 +6,8 @@
 .vscode
 .idea
 .do
+.mypy_cache
+.pytest_cache
 
 # Documentacion
 mkdocs.yml
@@ -27,10 +29,15 @@ requirements-databases.txt
 *.yml
 *.db
 *.conf
+*.log
 .mypy.ini
 .gitpod.yml
-.gitpod.sh
+.git_pod.sh
+.lint.sh
+.mypy.ini
 app.json
 sonar-project.properties
 now_lms/static/files/*
 passenger_wsgi.py
+test.txt
+now_lms.egg-info
