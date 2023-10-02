@@ -240,7 +240,6 @@ def inicializa_extenciones_terceros(flask_app):
 def cargar_sesion(identidad):  # pragma: no cover
     """Devuelve la entrada correspondiente al usuario que inicio sesión desde la base de datos."""
     if identidad is not None:
-        log.trace("Verificando identidad del usuario {user}", user=identidad)
         return database.session.get(Usuario, identidad)
     return None
 

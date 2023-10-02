@@ -40,8 +40,9 @@ from now_lms.logs import log
 if __name__ == "__main__":  # pragma: no cover
     log.info("Iniciando NOW Learning Management System.")
     if DESARROLLO:
-        log.trace("Iniciando una base de datos nueva con datos de ejemplo.")
+        log.trace("Ejecutando NOW-LMS con opciones de desarrollo.")
         init_app(with_examples=True)
     else:
+        log.trace("Iniciando NOW-MLS como modulo importable.")
         init_app(with_examples=False)
     serve()

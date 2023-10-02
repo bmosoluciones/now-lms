@@ -32,6 +32,7 @@ from bcrypt import checkpw, hashpw, gensalt
 # Recursos locales
 # ---------------------------------------------------------------------------------------
 from now_lms.db import Usuario, database
+from now_lms.logs import log
 
 # pylint: disable=R0401
 
@@ -45,12 +46,15 @@ def proteger_passwd(clave):
 def validar_acceso(usuario_id, acceso):
     """Verifica el inicio de sesión del usuario."""
 
+    log.trace("Verificando acceso de {usuario}", usuario=usuario_id)
     registro = Usuario.query.filter_by(usuario=usuario_id).first()
     if registro is not None:
         clave_validada = checkpw(acceso.encode(), registro.acceso)
     else:  # pragma: no cover
+        log.trace("No se encontro registro de usuario {usuario}", usuario=usuario_id)
         clave_validada = False
 
+    log.trace("Resultado de validación de acceso es {resultado}", resultado=clave_validada)
     if clave_validada:
         registro.ultimo_acceso = datetime.now()
         database.session.commit()

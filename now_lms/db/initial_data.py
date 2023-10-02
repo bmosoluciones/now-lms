@@ -56,6 +56,7 @@ from now_lms.db import (
 
 def crear_etiquetas():
     """Crea etiquetas de demostración."""
+    log.trace("Creando etiquetas de demostración.")
     etiqueta1 = Etiqueta(nombre="Python", color="#FFD43B")
     etiqueta2 = Etiqueta(nombre="Postgresql", color="#0064a5")
     etiqueta3 = Etiqueta(nombre="HTML", color="#cc3b03")
@@ -69,6 +70,7 @@ def crear_etiquetas():
 
 def crear_categorias():
     """Crea categorias de demostración."""
+    log.trace("Creando categorias de demostración.")
     cat1 = Categoria(nombre="Learning", descripcion="Cursos sobre aprendizaje")
     cat2 = Categoria(nombre="Programing", descripcion="Cursos sobre programación")
     database.session.add(cat1)
@@ -82,6 +84,7 @@ def copy_sample_pdf():
     from shutil import copyfile
     from now_lms.config import DIRECTORIO_ARCHIVOS
 
+    log.trace("Creando archivo PDF de prueba.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "NOW_Learning_Management_System.pdf")
     directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "files", "resources")
     try:  # pragma: no cover
@@ -105,6 +108,7 @@ def copy_sample_audio():
     from shutil import copyfile
     from now_lms.config import DIRECTORIO_ARCHIVOS
 
+    log.trace("Creando archivo de audio de prueba.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "En-us-hello.ogg")
     directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "audio", "resources")
     try:
@@ -128,6 +132,7 @@ def copy_sample_img():
     from shutil import copyfile
     from now_lms.config import DIRECTORIO_ARCHIVOS
 
+    log.trace("Creando archivo de imagen de prueba.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "icons", "logo", "logo_large.png")
     directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "images", "resources")
     try:
@@ -151,6 +156,7 @@ def curse_logo(curso: str, image: str, program=False):
     from shutil import copyfile
     from now_lms.config import DIRECTORIO_ARCHIVOS
 
+    log.trace("Estableciendo logo tipo de curso de demostración.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "img", image)
     if program:
         directorio_destino = path.join(DIRECTORIO_ARCHIVOS, "files", "public", "images", "program" + curso)
@@ -190,7 +196,7 @@ demo_external_code = """
 def crear_curso_demo():
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
-    log.info("Creando curso de demo de recursos.")
+    log.trace("Creando curso de demo de recursos.")
     demo = Curso(
         nombre="Demo Course",
         codigo="resources",
@@ -362,7 +368,7 @@ def crear_curso_demo():
 def crear_curso_predeterminado():
     # pylint: disable=too-many-locals
     """Crea un recurso publico."""
-    log.info("Creando curso de demostración.")
+    log.trace("Creando curso de demostración.")
     demo = Curso(
         nombre="OnLine Teaching 101",
         codigo="now",
@@ -489,7 +495,7 @@ def crear_usuarios_predeterminados(with_examples):
     log.debug("Usuario administrador creado correctamente.")
 
     if environ.get("CI") or with_examples:
-        log.info("Creando usuarios de demostración.")
+        log.trace("Creando usuarios de demostración.")
         student = Usuario(
             usuario="student",
             acceso=proteger_passwd("student"),
@@ -597,6 +603,7 @@ def crear_usuarios_predeterminados(with_examples):
 def crear_curso_demo1():
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
+    log.trace("Creando curso de demostración PostgreSQL.")
     demo = Curso(
         nombre="PostgreSQL",
         codigo="postgresql",
@@ -622,6 +629,7 @@ def crear_curso_demo1():
 def crear_curso_demo2():
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
+    log.trace("Creando curso de demostración Python.")
     demo = Curso(
         nombre="Python",
         codigo="python",
@@ -647,6 +655,7 @@ def crear_curso_demo2():
 def crear_curso_demo3():
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
+    log.trace("Creando curso de demostración HTML.")
     demo = Curso(
         nombre="HTML",
         codigo="html",
@@ -669,6 +678,7 @@ def crear_curso_demo3():
 
 def asignar_cursos_a_etiquetas():
     """Asigna cursos a Categorias."""
+    log.trace("Asignando etiquetas a cursos.")
     etiqueta_python = Etiqueta.query.filter(Etiqueta.nombre == "Python").first()
     etiqueta_postgresql = Etiqueta.query.filter(Etiqueta.nombre == "Postgresql").first()
     etiqueta_html = Etiqueta.query.filter(Etiqueta.nombre == "HTML").first()
