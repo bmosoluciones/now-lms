@@ -64,6 +64,7 @@ jobs:
           python -m pip install greenlet==3.0.0rc3
           python -m pip install --upgrade pip
           python -m pip install -r test.txt
+          python -m pip install git+https://github.com/maxcountryman/flask-login.git
       - name: Run lint file
         run: |
           rm -rf build
