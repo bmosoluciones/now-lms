@@ -1059,7 +1059,9 @@ def lista_grupos():
         count=True,
     )
 
-    return render_template("admin/grupos/lista.html", grupos=grupos)
+    usuarios = database.session.execute(database.select(UsuarioGrupo))
+
+    return render_template("admin/grupos/lista.html", grupos=grupos, usuarios=usuarios)
 
 
 @lms_app.route("/group")
@@ -1112,10 +1114,8 @@ def agrega_usuario_a_grupo():
 @perfil_requerido("instructor")
 def elimina_usuario__grupo(group: str, user: str):
     """Elimina usuario de grupo."""
-    registro = UsuarioGrupoMiembro.query.filter(
-        UsuarioGrupoMiembro.grupo == group, UsuarioGrupoMiembro.usuario == user
-    ).delete()
-    database.session.add(registro)
+
+    UsuarioGrupoMiembro.query.filter(UsuarioGrupoMiembro.usuario == user, UsuarioGrupoMiembro.grupo == group).delete()
     database.session.commit()
     return redirect(url_for("grupo", id=group))
 

@@ -47,6 +47,7 @@ from now_lms.db import (
     Programa,
     ProgramaCurso,
     Recurso,
+    UsuarioGrupo,
 )
 
 # pylint: disable=E1101
@@ -556,6 +557,10 @@ def crear_usuarios_predeterminados(with_examples):
         database.session.add(student)
         database.session.add(student1)
         database.session.add(student2)
+        demo_grupo1 = UsuarioGrupo(nombre="Usuarios Base", descripcion="Demo Group")
+        demo_grupo2 = UsuarioGrupo(nombre="Usuarios", descripcion="Demo Group")
+        database.session.add(demo_grupo2)
+        database.session.add(demo_grupo1)
         database.session.commit()
         instructor = Usuario(
             usuario="instructor",

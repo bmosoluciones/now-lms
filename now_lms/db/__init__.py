@@ -115,7 +115,6 @@ class UsuarioGrupo(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Grupo de Usuarios"""
 
     activo = database.Column(database.Boolean(), index=True)
-    publico = database.Column(database.Boolean(), index=True)
     nombre = database.Column(database.String(50), nullable=False)
     descripcion = database.Column(database.String(500), nullable=False)
     tutor = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
