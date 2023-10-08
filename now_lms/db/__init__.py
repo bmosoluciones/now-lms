@@ -127,6 +127,10 @@ class UsuarioGrupoMiembro(database.Model, BaseTabla):  # type: ignore[name-defin
     usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
 
 
+class UsuarioGrupoTutor(UsuarioGrupoMiembro):  # type: ignore[name-defined]
+    """Asigna un usuario como tutor de un curso"""
+
+
 class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     """Un curso es la base del aprendizaje en NOW LMS."""
 

@@ -37,18 +37,36 @@
     <div class="container" id="user_table">
 
 
-      <form action="{{ "/group/add?id=" + grupo.id }}" method="post" class="row g-3">
-        <div class="col-auto">
-          <select class="select2-usuario" name="usuario">
-            {% for student in estudiantes %}
-            <option value="{{ student.usuario }}">{{ student.nombre }} {{ student.apellido }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-auto">
-          <button class="btn btn-success btn-sm" type="submit">Agregar Usuario</button>
-        </div>
-      </form>
+      <div class="col-auto">
+        <form action="{{ "/group/add?id=" + grupo.id }}" method="post" class="row g-3">
+          <div class="col-auto">>
+            <select class="select2-usuario" name="usuario">
+              {% for student in estudiantes %}
+              <option value="{{ student.usuario }}">{{ student.nombre }} {{ student.apellido }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-success btn-sm" type="submit">Agregar Usuario</button>
+          </div>
+        </form>
+      </div>
+
+
+      <div class="col-auto">
+        <form action="{{ "/group/set_tutor?id=" + grupo.id }}" method="post" class="row g-3">
+          <div class="col-auto">
+            <select class="select2-usuario" name="tutor">
+              {% for tutor in tutores %}
+              <option value="{{ tutor.usuario }}">{{ tutor.nombre }} {{ tutor.apellido }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-warning btn-sm" type="submit">Asignar Tutor</button>
+          </div>
+        </form>
+      </div>
 
       <table class="table table-sm table-borderless">
         <caption>Lista de miembros del Grupo {{ grupo.nombre }}.</caption>

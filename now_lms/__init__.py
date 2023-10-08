@@ -87,6 +87,7 @@ from now_lms.db import (
     Programa,
     ProgramaCurso,
     Recurso,
+    UsuarioGrupoTutor,
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
 )
 
@@ -1078,7 +1079,10 @@ def grupo():
         count=True,
     )
     estudiantes = Usuario.query.filter(Usuario.tipo == "student").all()
-    return render_template("admin/grupos/grupo.html", consulta=CONSULTA, grupo=grupo_, estudiantes=estudiantes)
+    tutores = Usuario.query.filter(Usuario.tipo == "instructor").all()
+    return render_template(
+        "admin/grupos/grupo.html", consulta=CONSULTA, grupo=grupo_, tutores=tutores, estudiantes=estudiantes
+    )
 
 
 @lms_app.route(
@@ -1094,6 +1098,32 @@ def agrega_usuario_a_grupo():
 
     id_ = request.args.get("id", type=str)
     registro = UsuarioGrupoMiembro(
+        grupo=id_, usuario=request.form["usuario"], creado_por=current_user.usuario, creado=datetime.now()
+    )
+    database.session.add(registro)
+    url_grupo = url_for("grupo", id=id_)
+    try:
+        database.session.commit()
+        flash("Usuario Agregado Correctamente.")
+        return redirect(url_grupo)
+    except OperationalError:
+        flash("No se pudo agregar al usuario.")
+        return redirect(url_grupo)
+
+
+@lms_app.route(
+    "/group/set_tutor",
+    methods=[
+        "POST",
+    ],
+)
+@login_required
+@perfil_requerido("admin")
+def agrega_tutor_a_grupo():
+    """Asigna como tutor de grupo a un usuario."""
+
+    id_ = request.args.get("id", type=str)
+    registro = UsuarioGrupoTutor(
         grupo=id_, usuario=request.form["usuario"], creado_por=current_user.usuario, creado=datetime.now()
     )
     database.session.add(registro)
