@@ -710,10 +710,15 @@ def edit_perfil(ulid: str):
             flash("Pefil actualizado.")
             if "logo" in request.files:
                 try:
-                    picture_file = images.save(request.files["logo"], folder="usuarios", name=usuario.id + ".jpg")
+                    picture_file = images.save(request.files["logo"], folder="usuarios", name=current_user.id + ".jpg")
                     if picture_file:
-                        usuario.portada = True
+                        usuario_ = database.session.execute(
+                            database.select(Usuario).filter(Usuario.id == current_user.id)
+                        ).first()[0]
+                        log.warning(usuario_)
+                        usuario_.portada = True
                         database.session.commit()
+                        flash("Imagen de perfil actualizada.")
                 except UploadNotAllowed:
                     log.warning("No se pudo actualizar la imagen de perfil.")
         except OperationalError:  # pragma: no cover
