@@ -178,3 +178,27 @@ TIPOS_RECURSOS: dict = {
     "ebook": """<i class="bi bi-book" aria-hidden="true"></i>""",
     "template": """<i class="bi bi-pencil-square" aria-hidden="true"></i>""",
 }
+
+
+class EstiloAlterta(NamedTuple):
+    """Estilo de alertas."""
+
+    icono: dict
+    clase: dict
+
+
+ICONOS_ALERTAS: dict = {
+    "info": "bi bi-info-circle",
+    "success": "bi bi-check-circle",
+    "error": "bi bi-slash-circle",
+    "warning": "bi bi-radioactive",
+}
+
+ESTILOS_ALERTAS: dict = {
+    "info": "alert alert-primary",
+    "success": "alert alert-success",
+    "error": "alert alert-dange",
+    "warning": "alert alert-warning",
+}
+
+ESTILO_ALERTAS = EstiloAlterta(icono=ICONOS_ALERTAS, clase=ESTILOS_ALERTAS)

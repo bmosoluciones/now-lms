@@ -161,6 +161,7 @@ from now_lms.misc import (
     ICONOS_RECURSOS,
     TEMPLATES_BY_TYPE,
     ESTILO,
+    ESTILO_ALERTAS,
     CURSO_NIVEL,
     GENEROS,
     TIPOS_RECURSOS,
@@ -248,7 +249,7 @@ def cargar_sesion(identidad):  # pragma: no cover
 @administrador_sesion.unauthorized_handler
 def no_autorizado():  # pragma: no cover
     """Redirecciona al inicio de sesión usuarios no autorizados."""
-    flash("Favor iniciar sesión para acceder al sistema.")
+    flash("Favor iniciar sesión para acceder al sistema.", "warning")
     return INICIO_SESION
 
 
@@ -343,6 +344,7 @@ lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_
 lms_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
 lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
 lms_app.jinja_env.globals["estilo"] = ESTILO
+lms_app.jinja_env.globals["estilo_alerta"] = ESTILO_ALERTAS
 lms_app.jinja_env.globals["obtener_estilo_actual"] = obtener_estilo_actual
 lms_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
 lms_app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
@@ -499,7 +501,7 @@ def perfil_requerido(perfil_id):
                 return func(*args, **kwargs)
 
             else:  # pragma: no cover
-                flash("No se encuentra autorizado a acceder al recurso solicitado.")
+                flash("No se encuentra autorizado a acceder al recurso solicitado.", "error")
                 return abort(403)
 
         return wrapper
@@ -516,7 +518,7 @@ def perfil_requerido(perfil_id):
 def inicio_sesion():
     """Inicio de sesión del usuario."""
     if current_user.is_authenticated:
-        flash("Su usuario ya tiene una sesión iniciada.")
+        flash("Su usuario ya tiene una sesión iniciada.", "info")
         return PANEL_DE_USUARIO
     form = LoginForm()
     if form.validate_on_submit():
@@ -526,10 +528,10 @@ def inicio_sesion():
                 login_user(identidad)
                 return PANEL_DE_USUARIO
             else:  # pragma: no cover
-                flash("Su cuenta esta inactiva.")
+                flash("Su cuenta esta inactiva.", "info")
                 return INICIO_SESION
         else:  # pragma: no cover
-            flash("Inicio de Sesion Incorrecto.")
+            flash("Inicio de Sesion Incorrecto.", "warning")
             return INICIO_SESION
     return render_template("auth/login.html", form=form, titulo="Inicio de Sesion - NOW LMS")
 
@@ -552,7 +554,7 @@ def cerrar_sesion():  # pragma: no cover
 def crear_cuenta():
     """Crear cuenta de usuario desde el sistio web."""
     if current_user.is_authenticated:
-        flash("Usted ya posee una cuenta en el sistema.")
+        flash("Usted ya posee una cuenta en el sistema.", "warning")
         return PANEL_DE_USUARIO
     form = LogonForm()
     if form.validate_on_submit() or request.method == "POST":
@@ -569,10 +571,10 @@ def crear_cuenta():
         try:
             database.session.add(usuario_)
             database.session.commit()
-            flash("Cuenta creada exitosamente.")
+            flash("Cuenta creada exitosamente.", "success")
             return INICIO_SESION
         except OperationalError:  # pragma: no cover
-            flash("Error al crear la cuenta.")
+            flash("Error al crear la cuenta.", "warning")
             return redirect("/logon")
     else:
         return render_template("auth/logon.html", form=form, titulo="Crear cuenta - NOW LMS")
@@ -596,10 +598,10 @@ def crear_usuario():  # pragma: no cover
         try:
             database.session.add(usuario_)
             database.session.commit()
-            flash("Usuario creado exitosamente.")
+            flash("Usuario creado exitosamente.", "success")
             return redirect(url_for("usuario", id_usuario=form.usuario.data))
         except OperationalError:
-            flash("Error al crear la cuenta.")
+            flash("Error al crear la cuenta.", "warning")
             return redirect("/new_user")
     else:
         return render_template(
@@ -702,12 +704,12 @@ def edit_perfil(ulid: str):
 
         if form.correo_electronico.data != usuario_.correo_electronico:  # pragma: no cover
             usuario_.correo_electronico_verificado = False
-            flash("Favor verifique su nuevo correo electronico.")
+            flash("Favor verifique su nuevo correo electronico.", "warning")
 
         try:  # pragma: no cover
             database.session.commit()
             cache.delete("view/" + url_for("perfil"))
-            flash("Pefil actualizado.")
+            flash("Pefil actualizado.", "success")
             if "logo" in request.files:
                 try:
                     picture_file = images.save(request.files["logo"], folder="usuarios", name=current_user.id + ".jpg")
@@ -715,14 +717,13 @@ def edit_perfil(ulid: str):
                         usuario_ = database.session.execute(
                             database.select(Usuario).filter(Usuario.id == current_user.id)
                         ).first()[0]
-                        log.warning(usuario_)
                         usuario_.portada = True
                         database.session.commit()
-                        flash("Imagen de perfil actualizada.")
+                        flash("Imagen de perfil actualizada.", "success")
                 except UploadNotAllowed:
-                    log.warning("No se pudo actualizar la imagen de perfil.")
+                    log.warning("No se pudo actualizar la imagen de perfil.", "error")
         except OperationalError:  # pragma: no cover
-            flash("Error al editar el perfil.")
+            flash("Error al editar el perfil.", "error")
 
         return redirect("/perfil")
 
@@ -738,7 +739,7 @@ def elimina_logo_usuario(ulid: str):
         abort(403)
 
     elimina_imagen_usuario(ulid=ulid)
-    flash("Imagen de usuario eliminada correctamente.")
+    flash("Imagen de usuario eliminada correctamente.", "success")
     return redirect("/perfil")
 
 
@@ -829,10 +830,10 @@ def configuracion():
         try:
             database.session.commit()
             cache.delete("site_config")
-            flash("Sitio web actualizado exitosamente.")
+            flash("Sitio web actualizado exitosamente.", "success")
             return redirect("/admin")
         except OperationalError:  # pragma: no cover
-            flash("No se pudo actualizar la configuración del sitio web.")
+            flash("No se pudo actualizar la configuración del sitio web.", "warning")
             return redirect("/admin")
 
     else:
@@ -863,10 +864,10 @@ def personalizacion():
 
         try:
             database.session.commit()
-            flash("Tema del sitio web actualizado exitosamente.")
+            flash("Tema del sitio web actualizado exitosamente.", "success")
             return redirect(url_for("personalizacion"))
         except OperationalError:
-            flash("No se pudo actualizar el tema del sitio web.")
+            flash("No se pudo actualizar el tema del sitio web.", "warning")
             return redirect(url_for("personalizacion"))
 
     else:  # pragma: no cover
@@ -917,10 +918,10 @@ def mail():
         config.mail_password = form.mail_password.data
         try:  # pragma: no cover
             database.session.commit()
-            flash("Configuración de correo electronico actualizada exitosamente.")
+            flash("Configuración de correo electronico actualizada exitosamente.", "success")
             return redirect(url_for("mail"))
         except OperationalError:
-            flash("No se pudo actualizar la configuración de correo electronico.")
+            flash("No se pudo actualizar la configuración de correo electronico.", "warning")
             return redirect(url_for("mail"))
     else:  # pragma: no cover
         return render_template("admin/mail.html", form=form, config=configuracion)
@@ -1043,9 +1044,10 @@ def nuevo_grupo():
             database.session.add(grupo_)
             database.session.commit()
             cache.delete("view/" + url_for("lista_grupos"))
+            flash("Grupo creado correctamente", "success")
             return redirect("/groups")
         except OperationalError:
-            flash("Error al crear el nuevo grupo.")
+            flash("Error al crear el nuevo grupo.", "warning")
             return redirect("/new_group")
     else:
         return render_template("admin/grupos/nuevo.html", form=form)
@@ -1109,10 +1111,10 @@ def agrega_usuario_a_grupo():
     url_grupo = url_for("grupo", id=id_)
     try:
         database.session.commit()
-        flash("Usuario Agregado Correctamente.")
+        flash("Usuario Agregado Correctamente.", "success")
         return redirect(url_grupo)
     except OperationalError:
-        flash("No se pudo agregar al usuario.")
+        flash("No se pudo agregar al usuario.", "warning")
         return redirect(url_grupo)
 
 
@@ -1135,10 +1137,10 @@ def agrega_tutor_a_grupo():
     url_grupo = url_for("grupo", id=id_)
     try:
         database.session.commit()
-        flash("Usuario Agregado Correctamente.")
+        flash("Usuario Agregado Correctamente.", "success")
         return redirect(url_grupo)
     except OperationalError:
-        flash("No se pudo agregar al usuario.")
+        flash("No se pudo agregar al usuario.", "warning")
         return redirect(url_grupo)
 
 
@@ -1505,11 +1507,11 @@ def editar_curso(course_code):
                         database.session.commit()
                 except UploadNotAllowed:
                     log.warning("No se pudo actualizar la portada del curso.")
-            flash("Curso actualizado exitosamente.")
+            flash("Curso actualizado exitosamente.", "success")
             return redirect(curso_url)
 
         except OperationalError:  # pragma: no cover
-            flash("Hubo en error al actualizar el curso.")
+            flash("Hubo en error al actualizar el curso.", "warning")
             return redirect(curso_url)
 
     return render_template("learning/edit_curso.html", form=form, curso=curso_a_editar)
@@ -1552,11 +1554,11 @@ def nuevo_curso():
                 except AttributeError:
                     log.warning("No se pudo actualizar la foto de perfil.")
 
-            flash("Curso creado exitosamente.")
+            flash("Curso creado exitosamente.", "success")
             cache.delete("view/" + url_for("home"))
             return redirect(url_for("curso", course_code=form.codigo.data))
         except OperationalError:  # pragma: no cover
-            flash("Hubo en error al crear su curso.")
+            flash("Hubo en error al crear su curso.", "warning")
             return redirect("/instructor")
     else:  # pragma: no cover
         return render_template("learning/nuevo_curso.html", form=form)
@@ -1583,10 +1585,10 @@ def nuevo_seccion(course_code):
         try:
             database.session.add(nueva_seccion)
             database.session.commit()
-            flash("Sección agregada correctamente al curso.")
+            flash("Sección agregada correctamente al curso.", "success")
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash("Hubo en error al crear la seccion.")
+            flash("Hubo en error al crear la seccion.", "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:  # pragma: no cover
         return render_template("learning/nuevo_seccion.html", form=form)
@@ -1607,10 +1609,10 @@ def editar_seccion(course_code, seccion):
         seccion_a_editar.curso = course_code
         try:
             database.session.commit()
-            flash("Sección modificada correctamente.")
+            flash("Sección modificada correctamente.", "success")
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash("Hubo en error al actualizar la seccion.")
+            flash("Hubo en error al actualizar la seccion.", "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:  # pragma: no cover
         return render_template("learning/editar_seccion.html", form=form, seccion=seccion_a_editar)
@@ -1694,11 +1696,11 @@ def eliminar_curso(course_id):
         # Elimanos curso seleccionado.
         Curso.query.filter(Curso.codigo == course_id).delete()
         database.session.commit()
-        flash("Curso Eliminado Correctamente.")
+        flash("Curso Eliminado Correctamente.", "success")
     except PGProgrammingError:  # pragma: no cover
-        flash("No se pudo elimiar el curso solicitado.")
+        flash("No se pudo eliminar el curso solicitado.", "warning")
     except ProgrammingError:  # pragma: no cover
-        flash("No se pudo elimiar el curso solicitado.")
+        flash("No se pudo eliminar el curso solicitado.", "warning")
     return redirect(url_for("cursos"))
 
 
@@ -1762,7 +1764,7 @@ def pagina_recurso(curso_id, resource_type, codigo):
             TEMPLATE, curso=CURSO, recurso=RECURSO, recursos=RECURSOS, seccion=SECCION, secciones=SECCIONES, indice=INDICE
         )
     else:
-        flash("No se encuentra autorizado a acceder al recurso solicitado.")
+        flash("No se encuentra autorizado a acceder al recurso solicitado.", "warning")
         return abort(403)
 
 
@@ -1856,10 +1858,10 @@ def nuevo_recurso_youtube_video(course_code, seccion):
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash(RECURSO_AGREGADO)
+            flash(RECURSO_AGREGADO, "success")
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash(ERROR_AL_AGREGAR_CURSO)
+            flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
@@ -1889,10 +1891,10 @@ def nuevo_recurso_text(course_code, seccion):
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash(RECURSO_AGREGADO)
+            flash(RECURSO_AGREGADO, "success")
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash(ERROR_AL_AGREGAR_CURSO)
+            flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
@@ -1922,10 +1924,10 @@ def nuevo_recurso_link(course_code, seccion):
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash(RECURSO_AGREGADO)
+            flash(RECURSO_AGREGADO, "success")
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash(ERROR_AL_AGREGAR_CURSO)
+            flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
@@ -1958,10 +1960,10 @@ def nuevo_recurso_pdf(course_code, seccion):
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash("RECURSO_AGREGADO")
+            flash("RECURSO_AGREGADO", "success")
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash(ERROR_AL_AGREGAR_CURSO)
+            flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
@@ -1995,10 +1997,10 @@ def nuevo_recurso_meet(course_code, seccion):
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash("RECURSO_AGREGADO")
+            flash("RECURSO_AGREGADO", "success")
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash(ERROR_AL_AGREGAR_CURSO)
+            flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
@@ -2032,10 +2034,10 @@ def nuevo_recurso_img(course_code, seccion):
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash("RECURSO_AGREGADO")
+            flash("RECURSO_AGREGADO", "success")
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash(ERROR_AL_AGREGAR_CURSO)
+            flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
@@ -2069,10 +2071,10 @@ def nuevo_recurso_audio(course_code, seccion):
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash("RECURSO_AGREGADO")
+            flash("RECURSO_AGREGADO", "success")
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash(ERROR_AL_AGREGAR_CURSO)
+            flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
@@ -2102,10 +2104,10 @@ def nuevo_recurso_html(course_code, seccion):
         try:
             database.session.add(nuevo_recurso_)
             database.session.commit()
-            flash("RECURSO_AGREGADO")
+            flash("RECURSO_AGREGADO", "success")
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
-            flash(ERROR_AL_AGREGAR_CURSO)
+            flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:
         return render_template(
@@ -2130,9 +2132,9 @@ def new_tag():
         database.session.add(etiqueta)
         try:
             database.session.commit()
-            flash("Nueva etiqueta creada.")
+            flash("Nueva etiqueta creada.", "successs")
         except OperationalError:
-            flash("Hubo un error al crear la etiqueta.")
+            flash("Hubo un error al crear la etiqueta.", "warning")
         return redirect("/tags")
 
     return render_template("learning/etiquetas/nueva_etiqueta.html", form=form)
@@ -2177,9 +2179,9 @@ def edit_tag(tag: str):
         try:
             database.session.add(etiqueta)
             database.session.commit()
-            flash("Etiqueta editada correctamente.")
+            flash("Etiqueta editada correctamente.", "success")
         except OperationalError:
-            flash("No se puedo editar la etiqueta.")
+            flash("No se puedo editar la etiqueta.", "warning")
         return redirect("/tags")
 
     return render_template("learning/etiquetas/editar_etiqueta.html", form=form)
@@ -2202,9 +2204,9 @@ def new_category():
         database.session.add(categoria)
         try:
             database.session.commit()
-            flash("Nueva categoria creada.")
+            flash("Nueva categoria creada.", "success")
         except OperationalError:
-            flash("Hubo un error al crear la categoria.")
+            flash("Hubo un error al crear la categoria.", "warning")
         return redirect("/categories")
 
     return render_template("learning/categorias/nueva_categoria.html", form=form)
@@ -2249,9 +2251,9 @@ def edit_category(tag: str):
         try:
             database.session.add(categoria)
             database.session.commit()
-            flash("Categoria editada correctamente.")
+            flash("Categoria editada correctamente.", "success")
         except OperationalError:
-            flash("No se puedo editar la categoria.")
+            flash("No se puedo editar la categoria.", "warning")
         return redirect("/categories")
 
     return render_template("learning/categorias/editar_categoria.html", form=form)
@@ -2280,9 +2282,9 @@ def new_program():
         try:
             database.session.commit()
             cache.delete("view/" + url_for("programs"))
-            flash("Nueva Programa creado.")
+            flash("Nueva Programa creado.", "success")
         except OperationalError:
-            flash("Hubo un error al crear el programa.")
+            flash("Hubo un error al crear el programa.", "warning")
         return redirect(url_for("programs"))
 
     return render_template("learning/programas/nuevo_programa.html", form=form)
@@ -2347,9 +2349,10 @@ def edit_program(tag: str):
                     picture_file = images.save(request.files["logo"], folder="program" + programa.codigo, name="logo.jpg")
                     if picture_file:
                         programa.logo = True
+                        flash("Portada del curso actualizada correctamente", "success")
                         database.session.commit()
                 except UploadNotAllowed:
-                    flash("No se pudo actualizar la portada del curso.")
+                    flash("No se pudo actualizar la portada del curso.", "warning")
 
             flash("Programa editado correctamente.")
         except OperationalError:
@@ -2396,9 +2399,9 @@ def new_resource():
         database.session.add(recurso)
         try:
             database.session.commit()
-            flash("Nueva Recurso creado.")
+            flash("Nueva Recurso creado.", "success")
         except OperationalError:
-            flash("Hubo un error al crear el recurso.")
+            flash("Hubo un error al crear el recurso.", "warning")
         return redirect("/resources_list")
 
     return render_template("learning/recursos/nuevo_recurso.html", form=form)
@@ -2462,9 +2465,9 @@ def edit_resource(ulid: str):
 
         try:  # pragma: no cover
             database.session.commit()
-            flash("Recurso recurso.")
+            flash("Recurso recurso correctamente.", "success")
         except OperationalError:
-            flash("Error al editar el recurso.")
+            flash("Error al editar el recurso.", "warning")
         return redirect(url_for("vista_recurso", resource_code=recurso.codigo))
 
     return render_template("learning/recursos/editar_recurso.html", form=form, recurso=recurso)

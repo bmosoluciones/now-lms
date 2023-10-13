@@ -151,22 +151,13 @@
 
 {% macro notify() %}
 
-{% with messages = get_flashed_messages() %}
+{% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
-{% for message in messages %}
+{% for category, message in messages %}
 
-<div class="toast-container show position-fixed bottom-0 end-0 p-3">
-  <div class="toast show position-fixed bottom-0 end-0 p-3" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-      <img src="{{ url_for('static', filename='/icons/logo/icon_small.png') }}" class="rounded me-2" height="20"
-        width="20" alt="Logo NOW - LMS">
-      <strong class="me-auto">NOW - LMS</strong>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-      {{ message }}
-    </div>
-  </div>
+<div class="{{estilo_alerta.clase[category]}} alert-dismissible fade show" role="alert">
+  <i class="{{estilo_alerta.icono[category]}}" aria-hidden="true"></i> {{ message }}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 
 {% endfor %}
