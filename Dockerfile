@@ -13,6 +13,8 @@ RUN microdnf install -y --nodocs --best --refresh python39 python3-pip python3-c
 COPY requirements.txt /tmp/
 RUN /usr/bin/python3.9 --version \
     && /usr/bin/python3.9 -m pip --no-cache-dir install -r /tmp/requirements.txt \
+    && /usr/bin/python3.9 -m pip install git+https://github.com/maxcountryman/flask-login.git \
+    && /usr/bin/python3.9-m pip install git+https://github.com/alanhamlett/flask-caching.git
     && rm -rf /root/.cache/pip
 
 # Copy and install app
