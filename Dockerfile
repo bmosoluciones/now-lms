@@ -1,10 +1,10 @@
-FROM registry.access.redhat.com/ubi9/ubi-minimal AS js
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.2 AS js
 RUN microdnf install -y nodejs npm && microdnf clean all
 WORKDIR /usr/app
 COPY ./now_lms/static/package.json /usr/app/package.json
 RUN npm install --ignore-scripts
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.2
 
 RUN microdnf install -y --nodocs --best --refresh python39 python3-pip python3-cryptography \
     && microdnf clean all
