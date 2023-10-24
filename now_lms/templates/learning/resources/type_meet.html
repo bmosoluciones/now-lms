@@ -1,0 +1,184 @@
+{% import "macros.html" as macros %}
+{% import "learning/resources/type_macros.html" as r_macros %}
+{% set permitir_docente = docente_asignado(id_curso=curso.codigo) %}
+{% set permitir_moderador = moderador_asignado(id_curso=curso.codigo) %}
+{% set permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %}
+{% set permitir_editar = current_user.tipo == "admin" or permitir_docente %}
+
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+
+<head>
+
+  {{ macros.headertags() }}
+  <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
+
+  {{ macros.local_style() }}
+  <style>
+    body {
+      margin-top: 20px;
+    }
+
+    .events_area {
+      padding: 130px 0 100px;
+    }
+
+    @media (max-width: 991px) {
+      .events_area {
+        padding: 70px 0;
+      }
+    }
+
+    .events_area .event-link {
+      color: #fdc632;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .events_area .event-link img {
+      margin-left: 5px;
+      display: inline-block;
+    }
+
+    .single_event {
+      margin-bottom: 30px;
+    }
+
+    .single_event .event_thumb {
+      overflow: hidden;
+    }
+
+    .single_event .event_thumb img {
+      -webkit-transition: all 0.3s ease 0s;
+      -moz-transition: all 0.3s ease 0s;
+      -o-transition: all 0.3s ease 0s;
+      transition: all 0.3s ease 0s;
+    }
+
+    .single_event .event_details {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      width: 275px;
+      padding: 30px 25px;
+      color: #ffffff;
+    }
+
+    .single_event .event_details .date {
+      color: #ffffff;
+      padding-right: 15px;
+      border-right: 2px solid #fff;
+      font-family: "Rubik", sans-serif;
+      font-size: 14px;
+    }
+
+    .single_event .event_details .date span {
+      display: block;
+      color: #fdc632;
+      font-size: 35px;
+      font-weight: 500;
+    }
+
+    .single_event .event_details .time-location {
+      padding-left: 15px;
+      font-size: 14px;
+    }
+
+    .single_event .event_details .time-location p {
+      margin-bottom: 0px;
+    }
+
+    .single_event .event_details .time-location p span {
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .single_event:hover img {
+      transform: scale(1.1);
+    }
+
+    .single_event:hover h4 a {
+      color: #fdc632;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  {{ macros.navbar() }}
+
+  <main>
+
+    {{ macros.notify() }}
+
+    <div class="container px-0 py-3" id="icon-grid">
+
+      <h4 class="pb-2 border-bottom">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a class="text-reset text-decoration-none link-dark"
+                href="{{ url_for("panel") }}">Inicio</a></li>
+            <li class="breadcrumb-item"><a class="text-reset text-decoration-none link-dark"
+                href="{{ url_for("curso", course_code=curso.codigo) }}">{{ curso.nombre }}</a></li>
+            <li class="breadcrumb-item">{{ recurso.nombre }}</li>
+          </ol>
+        </nav>
+      </h4>
+
+      <div class="row">
+
+        <div class="col-sm-8">
+          <div class="events_area">
+            <div class="container">
+              <div class="single_event position-relative">
+                <div class="event_thumb">
+                  <img
+                    src="{{ url_for('static', filename='/img/hombre-negocios-videoconferencia-mientras-trabaja-casa-pandemia-coronavirus.jpg') }}"
+                    alt="Live Meet." />
+                </div>
+                <div class="event_details">
+                  <div class="d-flex mb-4">
+                    <div class="date"><span> {{ recurso.fecha.strftime('%d') }} </span>
+                      {{ recurso.fecha.strftime('%b') }} </div>
+                    <div class="time-location">
+                      <p><span class="ti-time mr-2"></span> {{ recurso.hora_inicio }} - {{ recurso.hora_inicio }}</p>
+                      <p><span class="ti-location-pin mr-2"></span>{{ recurso.notes }}</p>
+                    </div>
+                  </div>
+                  <p>
+                    {{ recurso.nombre }}
+                  </p>
+                  <a href="{{ recurso.url }}" class="btn btn-primary rounded-0 mt-3">Link al Meet</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+
+            <iframe title="{{ recurso.codigo }}"
+              src="{{ url_for('recurso_descripcion_a_html', course_code=recurso.curso, resource=recurso.id) }}"></iframe>
+
+          </div>
+
+        </div>
+
+        <div class="col-sm-4">
+
+          {{ r_macros.resource_nav(recursos=recursos, secciones=secciones) }}
+
+        </div>
+
+      </div>
+    </div>
+
+    {{ r_macros.nav_footer(indice=indice, curso=recurso.curso, type=recurso.tipo, codigo=recurso.id, avance=verificar_avance_recurso(recurso.id, current_user.id)) }}
+
+  </main>
+
+</body>
+
+</html>

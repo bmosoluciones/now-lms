@@ -1,0 +1,14 @@
+-r test.txt
+
+flask-debugtoolbar
+flask_profiler
+
+# Servidor de desarrollo
+hupper
+
+# Docs
+mkdocs
+mkdocs-material
+
+#Live realoader
+hupper

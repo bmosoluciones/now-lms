@@ -1,0 +1,75 @@
+{% import "macros.html" as macros %}
+{% import "learning/resources/type_macros.html" as r_macros %}
+{% set permitir_docente = docente_asignado(id_curso=curso.codigo) %}
+{% set permitir_moderador = moderador_asignado(id_curso=curso.codigo) %}
+{% set permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %}
+{% set permitir_editar = current_user.tipo == "admin" or permitir_docente %}
+
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+
+<head>
+
+  {{ macros.headertags() }}
+  <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
+
+  {{ macros.local_style() }}
+
+</head>
+
+<body>
+
+  {{ macros.navbar() }}
+
+  <main>
+
+    {{ macros.notify() }}
+
+    <div class="container px-0 py-3" id="icon-grid">
+
+      <h4 class="pb-2 border-bottom">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a class="text-reset text-decoration-none link-dark"
+                href="{{ url_for("panel") }}">Inicio</a></li>
+            <li class="breadcrumb-item"><a class="text-reset text-decoration-none link-dark"
+                href="{{ url_for("curso", course_code=curso.codigo) }}">{{ curso.nombre }}</a></li>
+            <li class="breadcrumb-item">Seleccione un recurso.</li>
+          </ol>
+        </nav>
+      </h4>
+
+      <div class="row">
+
+        <div class="col-sm-8">
+          <ul class="list-group list-group-flush">
+            {% for recurso in recursos %}
+            {% if recurso.requerido == 3 %}
+            <li class="list-group-item">
+              <div class="d-flex justify-content-between">
+                <a class="link-dark"
+                  href="{{ url_for("pagina_recurso", curso_id=recurso.curso, resource_type=recurso.tipo, codigo=recurso.id) }} ">
+                  <div class="fw-bold"> <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i>
+                    {{ recurso.nombre }}</div>
+                </a>
+              </div>
+            </li>
+            {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="col-sm-4">
+
+          {{ r_macros.resource_nav(recursos=recursos, secciones=secciones) }}
+
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+</body>
+
+</html>

@@ -1,0 +1,87 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python package
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      # Label used to access the service container
+      redis:
+        # Docker Hub image
+        image: redis
+        ports:
+          - 6379:6379
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: mysqldatabase
+          MYSQL_DATABASE: mysqldatabase
+          MYSQL_USER: mysqldatabase
+          MYSQL_PASSWORD: mysqldatabase
+        ports:
+          - 3306:3306
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: postgresdb
+          POSTGRES_USER: postgresdb
+          POSTGRES_PASSWORD: postgresdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8, 3.9, "3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r test.txt
+          python -m pip install git+https://github.com/maxcountryman/flask-login.git
+          python -m pip install git+https://github.com/alanhamlett/flask-caching.git
+      - name: Run lint file
+        run: |
+          rm -rf build
+          python -m build
+          python -m twine check dist/*
+          bash .lint.sh
+      - name: Test with SQLite
+        run: |
+          CI=True pytest  -v --exitfirst --cov=now_lms
+      - name: Test with SQLite/Redis Cache
+        run: |
+          CI=True CACHE_REDIS_HOST=localhost CACHE_REDIS_PORT=6379 pytest  -v --exitfirst --cov=now_lms
+      - name: Test with pytest/Postgres
+        run: |
+          # DATABASE_URL=postgresql://postgresdb:postgresdb@localhost:5432/postgresdb pytest  -v --exitfirst --cov=now_lms
+      - name: Test with pytest/MySQL
+        run: |
+          # DATABASE_URL=mysql://mysqldatabase:mysqldatabase@localhost:3306/mysqldatabase pytest  -v --exitfirst --cov=now_lms
+      - name: Codecov
+        uses: codecov/codecov-action@v1

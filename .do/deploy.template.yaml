@@ -1,0 +1,20 @@
+spec:
+  name: nowlearningmanagementsystem
+  services:
+  - name: web
+    build_command: python -m flask setup
+    run_command: python -m flask serve
+    git:
+      branch: main
+      repo_clone_url: https://github.com/bmosoluciones/now-lms.git
+    envs:
+    - key: LMS_KEY
+      value: "nsjksldknsdlkdsljdnsdjñasññqldñaas554dlkallas"
+      type: SECRET
+    - key: LMS_USER
+      value: "lms-admin"
+    - key: LMS_PSWD
+      value: "lms-admin"
+      type: SECRET
+  databases:
+  - name: example-db

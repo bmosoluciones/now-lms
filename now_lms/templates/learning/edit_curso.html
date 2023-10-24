@@ -1,0 +1,127 @@
+{% import "macros.html" as macros %}
+
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+
+<head>
+
+  {{ macros.headertags() }}
+  {{ mde.css }}
+  <title>Editar curso {{ curso.nombre }}</title>
+
+  {{ macros.local_style() }}
+  <!-- Custom styles for this template -->
+  <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet">
+</head>
+
+<body>
+
+  {{ macros.navbar() }}
+
+  <main>
+
+    {{ macros.notify() }}
+
+    <div class="container px-4 py-5" id="icon-grid">
+      <h4 class="pb-2 border-bottom">Editar curso {{ curso.codigo }} - {{ curso.nombre }}</h4>
+      <form action="{{ url_for('editar_curso', course_code=curso.codigo) }}" method="post" enctype=multipart/form-data>
+        {{ form.csrf_token }}
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <label for="nombre" class="form-label">Nombre del Curso</label>
+            {{ form.nombre(class="form-control", id="nombre", placeholder="Nombre del Curso", value=curso.nombre) }}
+          </div>
+        </div>
+
+        <div class="row g-3">
+
+          <div class="col-md-4">
+            <label for="duracion" class="form-label">Duracion (HR)</label>
+            {{ form.duracion(value=curso.duracion) }}
+            <br>
+
+          </div>
+
+          <div class="col-md-4">
+            <label for="capacidad" class="form-label">Cupos</label>
+            {{ form.capacidad(value=curso.capacidad) }}
+
+          </div>
+
+          <div class="col-md-4">
+            <label for="precio" class="form-label">Precio</label>
+            {{ form.precio(value=curso.precio) }}
+          </div>
+
+
+          <div class="col-md-4">
+            <label for="fecha_inicio" class="form-label">Fecha Inicio</label>
+            {{ form.fecha_inicio(value=curso.fecha_inicio) }}
+          </div>
+
+          <div class="col-md-4">
+            <label for="fecha_fin" class="form-label">Fecha Fin</label>
+            {{ form.fecha_fin(value=curso.fecha_fin) }}
+          </div>
+
+          <div class="col-md-4">
+            <label for="nivel" class="form-label">Nivel</label>
+            {{ form.nivel() }}
+
+          </div>
+
+          <div class="col-md-4">
+            <label for="publico" class="form-label">Curso Publico</label>
+            {{ form.publico(checked=curso.publico) }}
+            <br>
+            <label for="publico" class="form-label">Curso Promocionado</label>
+            {{ form.promocionado(checked=curso.promocionado) }}
+
+          </div>
+
+          <div class="col-md-4">
+            <label for="certificado" class="form-label">Extender Certificado</label>
+            {{ form.certificado(checked=curso.certificado) }}
+
+          </div>
+
+          <div class="col-md-4">
+            <label for="auditable" class="form-label">Curso Auditable</label>
+            {{ form.auditable(checked=curso.auditable) }}
+
+          </div>
+
+          {% if curso.portada %}
+          <img src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}"
+            alt="Portada del Curso">
+          <a href="{{url_for("elimina_logo_curso", course_code=curso.codigo)}}">Eliminar Portada</a>
+          {% else %}
+
+          <div class=" col-md-4">
+            <label for="logo" class="form-label">Portada</label>
+            <input type="file" name="logo" accept="image/jpeg">
+          </div>
+
+          {% endif %}
+
+          <div>
+            <label for="descripcion" class="form-label">Descripción del Curso</label>
+            {{form.descripcion}}
+            {{mde.preview}}
+            {{mde.js}}
+          </div>
+
+        </div>
+
+        <a class="btn btn-warning" href="{{ url_for('curso', course_code=curso.codigo) }}" role="button">Cancelar</a>
+        <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Curso</button>
+      </form>
+    </div>
+
+
+  </main>
+
+
+</body>
+
+</html>

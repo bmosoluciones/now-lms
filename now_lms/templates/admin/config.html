@@ -1,0 +1,101 @@
+{% import "macros.html" as macros %}
+
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+
+<head>
+
+  {{ macros.headertags() }}
+  {{ mde.css }}
+  <title>Editar configuracion</title>
+
+  {{ macros.local_style() }}
+  <!-- Custom styles for this template -->
+  <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet">
+</head>
+
+<body>
+
+  {{ macros.navbar() }}
+
+  <main>
+
+    {{ macros.notify() }}
+
+    <div class="container px-4 py-5" id="icon-grid">
+      <h4 class="pb-2 border-bottom">Editar configuración del sitio web.</h4>
+      <form method="post">
+
+        <div class="row">
+
+          <div class="col-sm-6">
+            <label for="titulo" class="form-label">Nombre del Curso</label>
+            {{ form.titulo(class="form-control", id="titulo", value=config.titulo) }}
+          </div>
+
+        </div>
+
+        <div class="row">
+
+          <div class="col-sm-6">
+            <label for="descripcion" class="form-label">Descripción del Sitio</label>
+            {{ form.descripcion(class="form-control", id="descripcion", value=config.descripcion) }}
+          </div>
+
+        </div>
+
+        <div class="row">
+
+          <div class="col-sm-6">
+            <label for="modo" class="form-label">Modo del sitio Web.</label>
+            {{ form.modo(class="form-control", id="modo", value=config.modo) }}
+          </div>
+
+        </div>
+        <div class="row">
+
+          <div class="col-sm-6">
+            <label for="moneda" class="form-label">Moneda Predeterminada.</label>
+            {{ form.moneda(class="form-control", id="moneda", value=config.moneda) }}
+          </div>
+
+        </div>
+        <div>
+          <div class="col-sm-6">
+            <h6>Formas de Pago.</h6>
+
+            <label for="stripe" class="form-label">Stripe</label>
+            {{ form.stripe(checked=config.stripe) }}
+
+            <label for="paypal" class="form-label">Paypal</label>
+            {{ form.paypal(checked=config.paypal) }}
+
+          </div>
+        </div>
+
+        <div>
+          <div class="col-sm-6">
+            <h6>Configuración de Stripe.</h6>
+
+            <label for="stripe_public" class="form-label">Clave Pública</label>
+            {{ form.stripe_public(value=config.stripe_public) }}
+
+            <label for="stripe_private" class="form-label">Clave Privada</label>
+            {{ form.stripe_secret(value=config.stripe_secret) }}
+
+          </div>
+        </div>
+
+        <a class="btn btn-warning" href="{{ url_for("pagina_admin") }}" role="button">Cancelar</a>
+        <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
+
+      </form>
+    </div>
+
+
+  </main>
+
+
+</body>
+
+</html>

@@ -1,0 +1,149 @@
+{% import "macros.html" as macros %}
+
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+
+<head>
+
+  {{ macros.headertags() }}
+  <title>Panel del usuario</title>
+
+  {{ macros.local_style() }}
+</head>
+
+<body>
+
+  {{ macros.navbar() }}
+
+  <main>
+
+    {{ macros.notify() }}
+
+    <div class="container px-0 py-3" id="icon-grid">
+      <h4 class="pb-2 border-bottom">Bienvenido
+        {% if current_user.tipo == "admin" %}
+        Administrador del Sistema.
+        {% else %}
+        {{ current_user.nombre}} {{ current_user.apellido}}
+        {% endif %}
+      </h4>
+      {% if current_user.tipo == "admin" %}
+      <div class="row mb-2 mb-xl-3">
+        <div class="col-auto d-none d-sm-block">
+          <h3>Información del sistema.</h3>
+        </div>
+
+        <div class="col-auto ms-auto text-end mt-n1">
+          <span class="badge bg-success">
+            <a href="{{ url_for("crear_usuario") }}" class="link-light">Nuevo Usuario</a>
+          </span>
+          <span class="badge bg-success">
+            <a href="{{ url_for("nuevo_curso") }}" class="link-light">Nuevo Curso</a>
+          </span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-6 col-xxl-5 d-flex">
+          <div class="w-100">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col mt-0">
+                        <h5 class="card-title"><i class="bi bi-person-vcard-fill" aria-hidden="true"></i> Cursos </h5>
+                      </div>
+
+                      <div class="col-auto">
+                        <div class="stat text-primary">
+                          <i class="align-middle" data-feather="truck"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <h1 class="mt-1 mb-3">{{ cursos_actuales }}</h1>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col mt-0">
+                        <h5 class="card-title"><i class="bi bi-people-fill" aria-hidden="true"></i> Usuarios Registrados
+                        </h5>
+                      </div>
+
+                      <div class="col-auto">
+                        <div class="stat text-primary">
+                          <i class="align-middle" data-feather="users"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <h1 class="mt-1 mb-3">{{ usuarios_registrados }}</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col mt-0">
+                        <h5 class="card-title"><i class="bi bi-card-checklist" aria-hidden="true"></i> Recursos Creados
+                        </h5>
+                      </div>
+
+                      <div class="col-auto">
+                        <div class="stat text-primary">
+                          <i class="align-middle" data-feather="dollar-sign"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <h1 class="mt-1 mb-3">{{ recursos_creados }}</h1>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col mt-0">
+                        <h5 class="card-title"><i class="bi bi-award-fill" aria-hidden="true"></i> Certificados
+                          Extendidos</h5>
+                      </div>
+
+                      <div class="col-auto">
+                        <div class="stat text-primary">
+                          <i class="align-middle" data-feather="shopping-cart"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <h1 class="mt-1 mb-3">64</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-6 col-xxl-7">
+          <div class="card flex-fill w-100">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Cursos Recientes</h5>
+            </div>
+            <div class="card-body pt-2 pb-3">
+              <ul>
+                {% for curso in cursos_por_fecha %}
+                <li><a href="{{ url_for("curso", course_code=curso.codigo) }}">{{ curso.nombre }}</a> </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% elif current_user.tipo == "instructor" %}
+      {% elif current_user.tipo == "moderator" %}
+      {% else %}
+      {% endif %}
+    </div>
+  </main>
+
+
+</body>
+
+</html>

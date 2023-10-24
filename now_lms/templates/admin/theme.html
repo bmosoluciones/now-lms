@@ -1,0 +1,60 @@
+{% import "macros.html" as macros %}
+
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+
+<head>
+
+  {{ macros.headertags() }}
+  {{ mde.css }}
+  <title>Editar configuracion</title>
+
+  {{ macros.local_style() }}
+  <!-- Custom styles for this template -->
+  <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet">
+</head>
+
+<body>
+
+  {{ macros.navbar() }}
+
+  <main>
+
+    {{ macros.notify() }}
+
+    <div class="container px-4 py-5" id="icon-grid">
+      <h4 class="pb-2 border-bottom">Editar estulo del sitio web.</h4>
+      <form method="post" enctype=multipart/form-data>
+
+        <div class="row">
+          {% if logo_perzonalizado() %}
+          <img src="{{ url_for('static', filename='/files/public/images/logotipo.jpg') }}" alt="NOW LMS">
+          <a href="{{ url_for("elimina_logo") }}">Eliminar Logo actual</a>
+          {% else %}
+          <label for="logo" class="form-label">Logotipo</label>
+          <input type="file" name="logo" accept="image/jpeg">
+          {% endif %}
+        </div>
+
+        <div class="row">
+
+          <div class="col-sm-6">
+            <label for="style" class="form-label">Estilo de la barra principal.</label>
+            {{ form.style(class="form-control", id="style") }}
+          </div>
+
+        </div>
+
+        <a class="btn btn-warning" href="{{ url_for("pagina_admin") }}" role="button">Cancelar</a>
+        <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Tema</button>
+
+      </form>
+    </div>
+
+
+  </main>
+
+
+</body>
+
+</html>

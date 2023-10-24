@@ -1,0 +1,189 @@
+{# Esta no es una página web, contiene funciones para que puedan ser usadas en otras páginas. #}
+{# Referencia: https://jinja.palletsprojects.com/en/2.11.x/templates/#macros #}
+
+{# Ayuda a agregar a importar los mismos archivos en el header de los archivos .html #}
+{% macro headertags() -%}
+{# Linea en blanco intencional #}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Aplicación para gestión del aprendizaje.">
+<meta name="author" content="BMO Moreno Berroteran Ortiz Soluciones Sociedad Anonima">
+
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.css') }}">
+<script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.bundle.js') }}"></script>
+
+<!-- Bootstrap Font -->
+<link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap-icons/font/bootstrap-icons.css') }}">
+
+<!-- Favicons -->
+<link rel="apple-touch-icon" sizes="180x180"
+  href="{{ url_for('static', filename='icons/favicon//apple-touch-icon.png') }}"">
+<link rel=" icon" type="image/png" sizes="32x32"
+  href="{{ url_for('static', filename='icons/favicon/favicon-32x32.png') }}">
+<link rel="icon" type="image/png" sizes="16x16"
+  href="{{ url_for('static', filename='icons/favicon/favicon-16x16.png') }}">
+<link rel="manifest" href="{{ url_for('static', filename='icons/favicon/site.webmanifest') }}">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="theme-color" content="#ffffff">
+
+{%- endmacro %}
+
+
+{# Macro para generar pie de página de paginación en la vista de cursos. #}
+{% macro rendizar_paginacion(consulta=None, vista=None, id=None, parametros=None)%}
+<p>{{ consulta.total }} items encontrados.
+  <br>
+  {% if consulta.has_prev %}
+  {% if id %}
+  <a href="{{ url_for(vista,id=id, page=consulta.prev_num) }}" class="link-dark"><i class="bi bi-arrow-left-short"
+      aria-hidden="true"></i>Anterior</a>
+  {% else %}
+  <a href="{{ url_for(vista, page=consulta.prev_num) }}" class="link-dark"><i class="bi bi-arrow-left-short"
+      aria-hidden="true"></i>Anterior</a>
+  {% endif %}
+  {% endif %}
+  Página {{ consulta.page }} de {{ consulta.pages }}
+  {% if consulta.has_next %}
+  {% if id %}
+  <a href="{{ url_for(vista,id=id, page=consulta.next_num) }}" class="link-dark">Siguiente <i
+      class="bi bi-arrow-right-short" aria-hidden="true"></i></a>
+  {% else %}
+  <a href="{{ url_for(vista, page=consulta.next_num) }}" class="link-dark">Siguiente <i class="bi bi-arrow-right-short"
+      aria-hidden="true"></i></a>
+  {% endif %}
+  {% endif %}
+</p>
+{% endmacro %}
+
+{# Agrega barra de navegación superior. #}
+{% macro navbar() -%}
+
+<nav class="navbar navbar-expand-md {{ estilo.navbar[obtener_estilo_actual()] }}" aria-label="Fourth navbar example">
+  <div class="container-fluid">
+    <a href="{{ url_for("home") }}"
+      class="d-flex align-items-center mb-2 mb-lg-0 {{ estilo.texto[obtener_estilo_actual()] }} text-decoration-none">
+      {% if logo_perzonalizado() %}
+      <img height="20" src="{{ url_for('static', filename='/files/public/images/logotipo.jpg') }}" alt="NOW LMS"
+        class="d-inline-block align-top">
+      {% else %}
+      <img height="20" src="{{ url_for('static', filename='/icons/logo/' + estilo.logo[obtener_estilo_actual()]) }}"
+        alt="NOW LMS" class="d-inline-block align-top">
+      {% endif %}
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsNOWLMS"
+      aria-controls="navbarsNOWLMS" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsNOWLMS">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        {% if not current_user.is_authenticated %}
+        <li><a href="{{ url_for('home') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i
+              class="bi bi-house-fill" aria-hidden="true"></i> Inicio</a>
+        </li>
+        {% else %}
+        <li><a href="{{ url_for('panel') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i
+              class="bi bi-house-fill" aria-hidden="true"></i>
+            Inicio</a></li>
+        {% endif %}
+        <li>
+          <a href="{{ url_for('lista_cursos', page=1) }}"
+            class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-card-checklist"
+              aria-hidden="true"></i> Cursos</a>
+        </li>
+        <li>
+          <a href="{{ url_for('lista_programas', page=1) }}"
+            class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-diagram-3-fill"
+              aria-hidden="true"></i> Programas</a>
+        </li>
+        <li>
+          <a href="{{ url_for('lista_recursos', page=1) }}"
+            class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-book"
+              aria-hidden="true"></i> Recursos</a>
+        </li>
+        {% if current_user.is_authenticated %}
+        {% if current_user.tipo == "moderator" or current_user.tipo == "instructor" or current_user.tipo == "admin" %}
+        <li><a href="{{ url_for('pagina_moderador') }}"
+            class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-card-checklist"
+              aria-hidden="true"></i>
+            Moderación</a></li>
+        {% endif %}
+        {% if current_user.tipo == "instructor" or current_user.tipo == "admin" %}
+        <li><a href="{{ url_for('pagina_instructor') }}"
+            class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-bank2"
+              aria-hidden="true"></i>
+            Docente</a></li>
+        {% endif %}
+        {% if current_user.tipo == "admin" %}
+        <li><a href="{{ url_for('pagina_admin') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i
+              class="bi bi-sliders" aria-hidden="true"></i>
+            Administración</a></li>
+        {% endif %}
+        {% endif %}
+      </ul>
+      <div class="text-end">
+        {% if config.dev_docs %}
+
+        <a href="https://github.com/bmosoluciones/now-lms" class="{{ estilo.texto[obtener_estilo_actual()] }}">
+          <i class="bi bi-github" aria-hidden="true"></i>
+        </a>
+        <a href="https://bmosoluciones.github.io/now-lms/" class="{{ estilo.texto[obtener_estilo_actual()] }}">
+          <i class="bi bi-book" aria-hidden="true"></i>
+        </a>
+        {% endif %}
+        {% if not current_user.is_authenticated %}
+        <a class="btn {{ estilo.buttom[obtener_estilo_actual()] }} me-2" href="{{ url_for('inicio_sesion') }}"
+          role="button">Iniciar Sesión</a>
+        <a class="btn btn-warning me-2" href="{{ url_for('crear_cuenta') }}" role="button">Crear Cuenta</a>
+        {% else %}
+        <a class="{{ estilo.texto[obtener_estilo_actual()] }}" href="{{ url_for('perfil') }}"><i
+            class="bi bi-person-circle" aria-hidden="true"></i></a>
+        <a class="{{ estilo.texto[obtener_estilo_actual()] }}" href="{{ url_for('cerrar_sesion') }}"><i
+            class="bi bi-power" aria-hidden="true"></i></a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
+{% endmacro %}
+
+{% macro notify() %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+
+<div class="{{estilo_alerta.clase[category]}} alert-dismissible fade show" role="alert">
+  <i class="{{estilo_alerta.icono[category]}}" aria-hidden="true"></i> {{ message }}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+{% endmacro %}
+
+{% macro local_style() -%}
+
+<style>
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+
+</style>
+
+
+{% endmacro %}

@@ -1,0 +1,105 @@
+{% import "macros.html" as macros %}
+
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+
+<head>
+
+  {{ macros.headertags() }}
+  <title>Usuario - {{ perfil.nombre}} {{ perfil.apellido}}</title>
+
+  {{ macros.local_style() }}
+
+</head>
+
+<body>
+
+  {{ macros.navbar() }}
+
+  <main>
+
+    {{ macros.notify() }}
+
+    <br>
+
+    <div class="container">
+      <div class="d-flex justify-content-between border-bottom">
+
+        <h4>Perfil de Usuario</h4>
+
+      </div>
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
+        <div class="col-md-4 border-right">
+          {% if current_user.portada %}
+          <img src="{{ url_for('static', filename='/files/public/images/usuarios/' + current_user.id + '.jpg') }}"
+            alt="{{ current_user.usuario}}" width="100%" height="225">
+          {% else %}
+          <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg"
+            role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+            <title> {{ perfil.nombre }} {{ perfil.apellido }} </title>
+            <rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef"
+              dy=".3em">{{ perfil.nombre }} {{ perfil.apellido }}</text>
+          </svg>
+          {% endif %}
+          {% if current_user.id == perfil.id %}
+          <div class="d-flex justify-content-center">
+            <a class="btn btn-warning btn-sm" href="{{ url_for("edit_perfil", ulid=perfil.id)}}" role="button"><i
+                class="bi bi-pencil-square" aria-hidden="true"></i> Editar Perfil</a>
+          </div>
+          {% endif %}
+          <h2>
+            {% if perfil.titulo %}
+            {{ perfil.titulo | capitalize }}.
+            {% endif %}
+            {{ perfil.nombre | capitalize }}
+            {{ perfil.apellido | capitalize }}
+          </h2>
+          <h5>Perfil:{{ perfil.tipo | capitalize }}</h5>
+          <h6> Información:</h6>
+          <span class="fw-bolder">Sobre mi:</span> {{ perfil.bio }}
+          <br> <span class="fw-bolder">Genero:</span> {{ genero[perfil.genero] | safe }}
+          <br> <span class="fw-bolder">Nacimiento:</span> {{ perfil.nacimiento }}
+          <br> <span class="fw-bolder">Fecha de Alta:</span> {{ perfil.fecha_alta }}
+          <p></p>
+          <h6>Contacto:</h6>
+          <span class="fw-bolder">Usuario:</span> {{ perfil.usuario }}
+          <br><span class="fw-bolder">Correo Electronico:</span> {{ perfil.correo_electronico }}
+          <div class="d-flex justify-content-start">
+            {% if perfil.url %}
+            <a href="{{perfil.url}}" class="text-reset text-decoration-none"><i class="bi bi-globe"
+                aria-hidden="true"></i></a>
+            {% endif %}
+            {% if perfil.linkedin %}
+            <a href="https://www.linkedin.com/in/{{perfil.linkedin}}" class="text-reset text-decoration-none"><i
+                class="bi bi-linkedin" aria-hidden="true"></i></a>
+            {% endif %}
+            {% if perfil.twitter %}
+            <a href="https://twitter.com/{{perfil.twitter}}" class="text-reset text-decoration-none"><i
+                class="bi bi-twitter" aria-hidden="true"></i></a>
+            {% endif %}
+            {% if perfil.facebook %}
+            <a href="https://www.facebook.com/{{perfil.facebook}}" class="text-reset text-decoration-none"><i
+                class="bi bi-facebook" aria-hidden="true"></i></a>
+            {% endif %}
+            {% if perfil.github %}
+            <a href="https://github.com/{{perfil.github}}" class="text-reset text-decoration-none"><i
+                class="bi bi-github" aria-hidden="true"></i></a>
+            {% endif %}
+            {% if perfil.youtube %}
+            <a href="https://youtube.com/{{perfil.youtube}}" class="text-reset text-decoration-none"><i
+                class="bi bi-youtube" aria-hidden="true"></i></a>
+            {% endif %}
+          </div>
+        </div>
+        <div class="col-md-8">
+          <h3>Perfil de aprendizaje.</h3>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+</body>
+
+</html>
