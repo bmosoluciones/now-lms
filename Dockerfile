@@ -12,8 +12,6 @@ RUN microdnf install -y --nodocs --best --refresh python39 python3-pip python3-c
 # Install dependencies in a layer
 COPY requirements.txt /tmp/
 RUN /usr/bin/python3.9 --version \
-    && microdnf install -y git \
-    && /usr/bin/python3.9 -m pip install git+https://github.com/maxcountryman/flask-login.git \
     && /usr/bin/python3.9 -m pip --no-cache-dir install -r /tmp/requirements.txt \
     && rm -rf /root/.cache/pip
 
