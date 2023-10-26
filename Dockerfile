@@ -1,5 +1,5 @@
 FROM registry.access.redhat.com/ubi9/ubi-minimal:9.2 AS js
-RUN microdnf install -y nodejs npm && microdnf clean all
+RUN microdnf install -y nodejs npm
 WORKDIR /usr/app
 COPY ./now_lms/static/package.json /usr/app/package.json
 RUN npm install --ignore-scripts
@@ -11,10 +11,11 @@ RUN microdnf install -y --nodocs --best --refresh python39 python3-pip python3-c
 
 # Install dependencies in a layer
 COPY requirements.txt /tmp/
-RUN /usr/bin/python3.9 --version  && microdnf install -y git \
+RUN /usr/bin/python3.9 --version \
+    && microdnf install -y git \
     && /usr/bin/python3.9 -m pip install git+https://github.com/maxcountryman/flask-login.git \
     && /usr/bin/python3.9 -m pip --no-cache-dir install -r /tmp/requirements.txt \
-    && rm -rf /root/.cache/pip && microdnf remove -y git && microdnf clean all
+    && rm -rf /root/.cache/pip
 
 # Copy and install app
 COPY . /app
