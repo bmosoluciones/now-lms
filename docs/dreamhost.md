@@ -62,6 +62,10 @@ $ touch app.py
 
 app.py template:
 ```
+import os
+
+os.environ["UPLOAD_FILES_DIR"] = os.path.join(os.environ["HOME"], "yourdomain.com", "public", "files")
+
 from now_lms import lms_app
 # Configure your app:
 lms_app.config["SECRET_KEY"] = "set_a_very_secure_secret_key"
@@ -114,6 +118,7 @@ import os
 INTERP = os.path.join(os.environ["HOME"], "yourdomain.com", "venv", "bin", "python3")
 if sys.executable != INTERP:
     os.execl(INTERP, INTERP, *sys.argv)
+os.environ["UPLOAD_FILES_DIR"] = os.path.join(os.environ["HOME"], "yourdomain.com", "public", "files")
 sys.path.append(os.getcwd())
 sys.path.append(os.path.join(os.environ["HOME"], "yourdomain.com", "public"))
 
