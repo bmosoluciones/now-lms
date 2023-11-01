@@ -28,12 +28,12 @@ from typing import Dict, Union
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
 from appdirs import AppDirs
-from flask import Flask
+from configobj import ConfigObj
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms.config.parse_config_file import CONFIG_FROM_FILE, ConfigObj
+from now_lms.config.parse_config_file import CONFIG_FROM_FILE
 from now_lms.logs import log, LOG_FORMAT
 from now_lms.version import PRERELEASE
 
@@ -74,17 +74,17 @@ if not DESARROLLO or environ.get("NOTLOGTOFILE") == "1":
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios utilizados para la carga de archivos.
-if isinstance(CONFIG_FROM_FILE, ConfigObj):
-    DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(CONFIG_FROM_FILE.get("UPLOAD_FILES_DIR"))
-elif environ.get("UPLOAD_FILES_DIR"):
+if environ.get("UPLOAD_FILES_DIR"):
+    log.trace("Configuración de carga de archivos encontrada en variables de entorno.")
     DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(environ.get("UPLOAD_FILES_DIR"))
+elif isinstance(CONFIG_FROM_FILE, ConfigObj):
+    DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(CONFIG_FROM_FILE.get("UPLOAD_FILES_DIR")) or path.join(
+        DIRECTORIO_ARCHIVOS, "files"
+    )
 else:
     DIRECTORIO_BASE_ARCHIVOS_USUARIO = path.join(DIRECTORIO_ARCHIVOS, "files")
 
-if DESARROLLO:  # pragma: no cover
-    DIRECTORIO_BASE_UPLOADS = path.join(DIRECTORIO_ARCHIVOS, "files")
-else:  # pragma: no cover
-    DIRECTORIO_BASE_UPLOADS = DIRECTORIO_BASE_ARCHIVOS_USUARIO
+DIRECTORIO_BASE_UPLOADS = DIRECTORIO_BASE_ARCHIVOS_USUARIO
 
 DIRECTORIO_ARCHIVOS_PUBLICOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "public")
 DIRECTORIO_ARCHIVOS_PRIVADOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "private")
