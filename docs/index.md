@@ -5,14 +5,16 @@ mantain} learning management system (LMS).
 
 ![Logo](images/logo.svg)
 
+Online education can be used as a primary source of knowledge or as a reinforcement method.
+
 This is alpha software!
 
 ## First Steps
 
-NOW-LMS is available as a package in [Pypi](https://pypi.org/project/now-lms/), to run it you just have a recent Python interpreter and run the following commands:
+NOW-LMS is available as a Python Package in [Pypi](https://pypi.org/project/now-lms/), to run it you just have a recent Python interpreter and run the following commands:
 
 ```
-# Python => 3.8
+# Python >= 3.8
 
 # Linux or Mac:
 python3 -m venv venv

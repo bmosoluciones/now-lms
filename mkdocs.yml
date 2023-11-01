@@ -46,7 +46,9 @@ plugins:
   - offline
 
 nav:
-  - Home: index.md
+  - Home:
+      - Home: index.md
+      - References: references.md
   - Setup:
       - Setup: setup.md
       - Configuration: setup-conf.md
