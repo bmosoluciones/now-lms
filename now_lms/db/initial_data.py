@@ -86,7 +86,7 @@ def copy_sample_pdf():
 
     log.trace("Creando archivo PDF de prueba.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "NOW_Learning_Management_System.pdf")
-    directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "files", "public", "files", "resources")
+    directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "files", "resources")
     try:  # pragma: no cover
         makedirs(directorio_destino)
     except FileExistsError:  # pragma: no cover
@@ -107,7 +107,7 @@ def copy_sample_audio():
 
     log.trace("Creando archivo de audio de prueba.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "En-us-hello.ogg")
-    directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "files", "public", "audio", "resources")
+    directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "audio", "resources")
     try:
         makedirs(directorio_destino)
     except FileExistsError:  # pragma: no cover
@@ -128,7 +128,7 @@ def copy_sample_img():
 
     log.trace("Creando archivo de imagen de prueba.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "icons", "logo", "logo_large.png")
-    directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "files", "public", "images", "resources")
+    directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "images", "resources")
     try:
         makedirs(directorio_destino)
     except FileExistsError:  # pragma: no cover
@@ -150,9 +150,9 @@ def curse_logo(curso: str, image: str, program=False):
     log.trace("Estableciendo logo tipo de curso de demostración.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "img", image)
     if program:
-        directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "files", "public", "images", "program" + curso)
+        directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "images", "program" + curso)
     else:
-        directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "files", "public", "images", curso)
+        directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "images", curso)
 
     try:
         makedirs(directorio_destino)
@@ -825,8 +825,8 @@ def crear_recurso_descargable():
     database.session.add(recurso4)
     database.session.commit()
 
-    directorio_destino_archivo = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "files", "public", "files", "resources_files")
-    directorio_destino_imagen = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "files", "public", "images", "resources_files")
+    directorio_destino_archivo = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "files", "resources_files")
+    directorio_destino_imagen = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "images", "resources_files")
     try:  # pragma: no cover
         makedirs(directorio_destino_archivo)
         makedirs(directorio_destino_imagen)
