@@ -269,6 +269,8 @@ lms_app = Flask(
     template_folder=DIRECTORIO_PLANTILLAS,
     static_folder=DIRECTORIO_ARCHIVOS,
 )
+log.trace("Configurando directorio de archivos estaticos: {dir}", dir=DIRECTORIO_ARCHIVOS)
+log.trace("Configurando directorio de plantillas: {dir}", dir=DIRECTORIO_PLANTILLAS)
 lms_app.config.from_mapping(CONFIGURACION)
 inicializa_extenciones_terceros(lms_app)
 

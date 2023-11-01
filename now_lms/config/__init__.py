@@ -55,10 +55,10 @@ if DESARROLLO:
 DIRECTORIO_ACTUAL: Path = Path(path.abspath(path.dirname(__file__)))
 DIRECTORIO_APP: Path = DIRECTORIO_ACTUAL.parent.absolute()
 log.trace("Directorio base de la aplicación es {dir}", dir=DIRECTORIO_APP)
-DIRECTORIO_BASE_APP: AppDirs = AppDirs("NOW-LMS", "BMO Soluciones")
-DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
 DIRECTORIO_PLANTILLAS: str = path.join(DIRECTORIO_APP, "templates")
 DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
+DIRECTORIO_BASE_APP: AppDirs = AppDirs("NOW-LMS", "BMO Soluciones")
+DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
 
 if not DESARROLLO or environ.get("NOTLOGTOFILE") == "1":
     LOG_FILE = "now_lms.log"
@@ -85,12 +85,18 @@ else:
     DIRECTORIO_BASE_ARCHIVOS_USUARIO = path.join(DIRECTORIO_ARCHIVOS, "files")
 
 DIRECTORIO_BASE_UPLOADS = DIRECTORIO_BASE_ARCHIVOS_USUARIO
+log.trace("Directorio para cargas de archivos: {dir}", dir=DIRECTORIO_BASE_UPLOADS)
 
 DIRECTORIO_ARCHIVOS_PUBLICOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "public")
+log.trace("Directorio de archivos publicos es {directorio}", directorio=DIRECTORIO_ARCHIVOS_PUBLICOS)
 DIRECTORIO_ARCHIVOS_PRIVADOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "private")
+log.trace("Directorio de archivos privados es {directorio}", directorio=DIRECTORIO_ARCHIVOS_PRIVADOS)
 DIRECTORIO_UPLOAD_IMAGENES: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "images")
+log.trace("Directorio de imagenes es {directorio}", directorio=DIRECTORIO_UPLOAD_IMAGENES)
 DIRECTORIO_UPLOAD_ARCHIVOS: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "files")
+log.trace("Directorio de archivos es {directorio}", directorio=DIRECTORIO_UPLOAD_ARCHIVOS)
 DIRECTORIO_UPLOAD_AUDIO: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "audio")
+log.trace("Directorio de audios es {directorio}", directorio=DIRECTORIO_UPLOAD_AUDIO)
 
 if not path.isdir(DIRECTORIO_BASE_UPLOADS):  # pragma: no cover
     try:
