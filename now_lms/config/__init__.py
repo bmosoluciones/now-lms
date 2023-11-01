@@ -28,6 +28,7 @@ from typing import Dict, Union
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
 from appdirs import AppDirs
+from flask import Flask
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
@@ -53,7 +54,7 @@ if DESARROLLO:
 # Directorios base de la aplicacion
 DIRECTORIO_ACTUAL: Path = Path(path.abspath(path.dirname(__file__)))
 DIRECTORIO_APP: Path = DIRECTORIO_ACTUAL.parent.absolute()
-log.debug("Directorio base de la aplicación es {dir}", dir=DIRECTORIO_APP)
+log.trace("Directorio base de la aplicación es {dir}", dir=DIRECTORIO_APP)
 DIRECTORIO_BASE_APP: AppDirs = AppDirs("NOW-LMS", "BMO Soluciones")
 DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
 DIRECTORIO_PLANTILLAS: str = path.join(DIRECTORIO_APP, "templates")
@@ -73,12 +74,15 @@ if not DESARROLLO or environ.get("NOTLOGTOFILE") == "1":
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios utilizados para la carga de archivos.
-
-DIRECTORIO_BASE_ARCHIVOS_USUARIO = path.join(DIRECTORIO_ARCHIVOS, "files")
+if isinstance(CONFIG_FROM_FILE, ConfigObj):
+    DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(CONFIG_FROM_FILE.get("UPLOAD_FILES_DIR"))
+elif environ.get("UPLOAD_FILES_DIR"):
+    DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(environ.get("UPLOAD_FILES_DIR"))
+else:
+    DIRECTORIO_BASE_ARCHIVOS_USUARIO = path.join(DIRECTORIO_ARCHIVOS, "files")
 
 if DESARROLLO:  # pragma: no cover
     DIRECTORIO_BASE_UPLOADS = path.join(DIRECTORIO_ARCHIVOS, "files")
-
 else:  # pragma: no cover
     DIRECTORIO_BASE_UPLOADS = DIRECTORIO_BASE_ARCHIVOS_USUARIO
 
@@ -95,14 +99,13 @@ if not path.isdir(DIRECTORIO_BASE_UPLOADS):  # pragma: no cover
         makedirs(DIRECTORIO_ARCHIVOS_PUBLICOS)
         makedirs(DIRECTORIO_UPLOAD_ARCHIVOS)
         makedirs(DIRECTORIO_UPLOAD_IMAGENES)
+        makedirs(DIRECTORIO_UPLOAD_AUDIO)
     except OSError:
-        log.warning("No se puede crear directorio para carga de archivos:")
-        log.warning(DIRECTORIO_BASE_UPLOADS)
-
+        log.warning("No se puede crear directorio para carga de archivos: {directorio}", directorio=DIRECTORIO_BASE_UPLOADS)
 if access(DIRECTORIO_BASE_UPLOADS, R_OK) and access(DIRECTORIO_BASE_UPLOADS, W_OK):  # pragma: no cover
-    log.debug("Directorio para carga de archivos es: {file}", file=DIRECTORIO_BASE_UPLOADS)
+    log.trace("Directorio para carga de archivos es: {file}", file=DIRECTORIO_BASE_UPLOADS)
 else:
-    log.error("No se tiene acceso a: {dir}", dir=DIRECTORIO_BASE_UPLOADS)
+    log.error("No se tiene acceso a subir archivos al directorio: {dir}", dir=DIRECTORIO_BASE_UPLOADS)
 
 
 # < --------------------------------------------------------------------------------------------- >
