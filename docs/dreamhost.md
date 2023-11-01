@@ -145,8 +145,14 @@ $ chmod +x passenger_wsgi.py
 14. Restart passenger:
 
 ```
-mkdir public/tmp
-touch public/tmp/restart.txt
+mkdir tmp
+touch tmp/restart.txt
+```
+
+your.domain directory should looks like this:
+
+```
+passenger_wsgi.py  public  tmp  venv
 ```
 
 15. You should be able to acces NOW - LMS in your domain.
