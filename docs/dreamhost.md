@@ -136,6 +136,12 @@ $ python3.8 passenger_wsgi.py
 
 Is there are no errors Passenger should be able to run NOW - LMS without issues.
 
+Make the passenger_wsgi.py
+
+```
+$ chmod +x passenger_wsgi.py
+```
+
 14. Restart passenger:
 
 ```
