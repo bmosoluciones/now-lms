@@ -68,6 +68,7 @@ def verify_config_file(config_file: ConfigObj) -> bool:
         if config_file.get("SECRET_KEY") and config_file.get("DATABASE_URL"):
             return True
         else:
+            log.warning("Archivo de configuración incorrecto.")
             return False
     else:
         return False
@@ -77,9 +78,9 @@ def verify_config_file(config_file: ConfigObj) -> bool:
 # Load and verify configuration from file.
 # ---------------------------------------------------------------------------------------
 if CONFIG_FILE:
-    log.trace("Archivo de configuración encontrado")
+    log.trace("Archivo de configuración detectado.")
     CONFIG_FILE_PARSER: Union[ConfigObj, None] = ConfigObj(CONFIG_FILE)
-    log.trace("Archivo de configuración leido correctamente")
+    log.trace("Archivo de configuración leido correctamente.")
 
 else:
     CONFIG_FILE_PARSER = None

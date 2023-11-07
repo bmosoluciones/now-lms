@@ -34,6 +34,8 @@ from flask_caching import Cache
 from now_lms.logs import log
 from now_lms.config.parse_config_file import CONFIG_FROM_FILE
 
+# type: ignore[union-attr]
+
 # < --------------------------------------------------------------------------------------------- >
 # Configuracion de Cache
 CACHE_CONFIG: dict = {"CACHE_KEY_PREFIX": "now_lms:"}
@@ -72,7 +74,7 @@ else:
 
 CACHE_CONFIG["CACHE_TYPE"] = CTYPE
 
-
-log.trace("Utilizando para almacenamiento el servicio {type}", type=CTYPE)
+if not CTYPE == "NullCache":
+    log.trace("Utilizando para almacenamiento el servicio {type}", type=CTYPE)
 
 cache: Cache = Cache(config=CACHE_CONFIG)

@@ -65,7 +65,7 @@ from ulid import ULID
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import validar_acceso, proteger_passwd
 from now_lms.cache import cache
-from now_lms.config import DIRECTORIO_PLANTILLAS, DIRECTORIO_ARCHIVOS, DESARROLLO, CONFIGURACION
+from now_lms.config import DIRECTORIO_PLANTILLAS, DIRECTORIO_ARCHIVOS, DESARROLLO, CONFIGURACION, log_messages
 from now_lms.db import (
     database,
     Configuracion,
@@ -272,7 +272,9 @@ lms_app = Flask(
 log.trace("Configurando directorio de archivos estaticos: {dir}", dir=DIRECTORIO_ARCHIVOS)
 log.trace("Configurando directorio de plantillas: {dir}", dir=DIRECTORIO_PLANTILLAS)
 lms_app.config.from_mapping(CONFIGURACION)
+log.trace("Configuración de la aplicación cargada correctamente.")
 inicializa_extenciones_terceros(lms_app)
+log_messages(lms_app)
 
 
 @lms_app.errorhandler(404)
@@ -387,7 +389,7 @@ def init_app(with_examples=False):  # pragma: no cover
     """Funcion auxiliar para iniciar la aplicacion."""
 
     lms_app.app_context().push()
-    log.debug("Verificando configuración de la aplicación.")
+    log.debug("Verificando acceso a base de datos.")
     try:
         VERIFICA_EXISTE_CONFIGURACION_DB = carga_configuracion_del_sitio_web_desde_db()
         VERIFICA_EXISTE_USUARIO_DB = Usuario.query.first()
@@ -407,7 +409,7 @@ def init_app(with_examples=False):  # pragma: no cover
         initial_setup(with_examples)
 
     else:
-        log.info("Configuración detectada correctamente.")
+        log.info("Acceso a base de datos verificado.")
         with lms_app.app_context():
             config = Configuracion.query.first()
             if config.email:

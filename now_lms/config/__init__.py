@@ -29,6 +29,7 @@ from typing import Dict, Union
 # ---------------------------------------------------------------------------------------
 from appdirs import AppDirs
 from configobj import ConfigObj
+from flask import Flask
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
@@ -54,7 +55,6 @@ if DESARROLLO:
 # Directorios base de la aplicacion
 DIRECTORIO_ACTUAL: Path = Path(path.abspath(path.dirname(__file__)))
 DIRECTORIO_APP: Path = DIRECTORIO_ACTUAL.parent.absolute()
-log.trace("Directorio base de la aplicación es {dir}", dir=DIRECTORIO_APP)
 DIRECTORIO_PLANTILLAS: str = path.join(DIRECTORIO_APP, "templates")
 DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
 DIRECTORIO_BASE_APP: AppDirs = AppDirs("NOW-LMS", "BMO Soluciones")
@@ -85,18 +85,11 @@ else:
     DIRECTORIO_BASE_ARCHIVOS_USUARIO = path.join(DIRECTORIO_ARCHIVOS, "files")
 
 DIRECTORIO_BASE_UPLOADS = DIRECTORIO_BASE_ARCHIVOS_USUARIO
-log.trace("Directorio para cargas de archivos: {dir}", dir=DIRECTORIO_BASE_UPLOADS)
-
 DIRECTORIO_ARCHIVOS_PUBLICOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "public")
-log.trace("Directorio de archivos publicos es {directorio}", directorio=DIRECTORIO_ARCHIVOS_PUBLICOS)
 DIRECTORIO_ARCHIVOS_PRIVADOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "private")
-log.trace("Directorio de archivos privados es {directorio}", directorio=DIRECTORIO_ARCHIVOS_PRIVADOS)
 DIRECTORIO_UPLOAD_IMAGENES: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "images")
-log.trace("Directorio de imagenes es {directorio}", directorio=DIRECTORIO_UPLOAD_IMAGENES)
 DIRECTORIO_UPLOAD_ARCHIVOS: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "files")
-log.trace("Directorio de archivos es {directorio}", directorio=DIRECTORIO_UPLOAD_ARCHIVOS)
 DIRECTORIO_UPLOAD_AUDIO: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "audio")
-log.trace("Directorio de audios es {directorio}", directorio=DIRECTORIO_UPLOAD_AUDIO)
 
 if not path.isdir(DIRECTORIO_BASE_UPLOADS):  # pragma: no cover
     try:
@@ -109,7 +102,7 @@ if not path.isdir(DIRECTORIO_BASE_UPLOADS):  # pragma: no cover
     except OSError:
         log.warning("No se puede crear directorio para carga de archivos: {directorio}", directorio=DIRECTORIO_BASE_UPLOADS)
 if access(DIRECTORIO_BASE_UPLOADS, R_OK) and access(DIRECTORIO_BASE_UPLOADS, W_OK):  # pragma: no cover
-    log.trace("Directorio para carga de archivos es: {file}", file=DIRECTORIO_BASE_UPLOADS)
+    log.trace("Acceso verificado a: {file}", file=DIRECTORIO_BASE_UPLOADS)
 else:
     log.error("No se tiene acceso a subir archivos al directorio: {dir}", dir=DIRECTORIO_BASE_UPLOADS)
 
@@ -202,13 +195,25 @@ if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # pragma: no cover
         DBURI = "mariadb+pymysql" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[7:]  # type: ignore[index]
         CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
 
-if "postgres" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-    DBType = "PostgreSQL"  # pragma: no cover
-if "mysql" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-    DBType = "MySQL"  # pragma: no cover
-if "mariadb" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-    DBType = "MariaDB"  # pragma: no cover
-if "sqlite" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-    DBType = "SQLite"  # pragma: no cover
 
-log.info("Utilizando el motor de base de datos {type}.", type=DBType)
+def log_messages(_app: Flask):
+    """Emite mensages de log luego de haber cargado la configuración."""
+
+    if "postgres" in _app.config.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
+        DBType = "PostgreSQL"  # pragma: no cover
+    if "mysql" in _app.config.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
+        DBType = "MySQL"  # pragma: no cover
+    if "mariadb" in _app.config.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
+        DBType = "MariaDB"  # pragma: no cover
+    if "sqlite" in _app.config.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
+        DBType = "SQLite"  # pragma: no cover
+
+    log.info("Utilizando el motor de base de datos {type}.", type=DBType)
+
+    log.trace("Directorio base de la aplicación es {dir}", dir=DIRECTORIO_APP)
+    log.trace("Directorio para cargas de archivos: {dir}", dir=DIRECTORIO_BASE_UPLOADS)
+    log.trace("Directorio de archivos publicos es {directorio}", directorio=DIRECTORIO_ARCHIVOS_PUBLICOS)
+    log.trace("Directorio de archivos privados es {directorio}", directorio=DIRECTORIO_ARCHIVOS_PRIVADOS)
+    log.trace("Directorio de imagenes es {directorio}", directorio=DIRECTORIO_UPLOAD_IMAGENES)
+    log.trace("Directorio de archivos es {directorio}", directorio=DIRECTORIO_UPLOAD_ARCHIVOS)
+    log.trace("Directorio de audios es {directorio}", directorio=DIRECTORIO_UPLOAD_AUDIO)
