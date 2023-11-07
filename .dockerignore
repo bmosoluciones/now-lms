@@ -8,6 +8,10 @@
 .do
 .mypy_cache
 .pytest_cache
+.editorconfig
+.gitattributes
+Procfile
+README.md
 
 # Documentacion
 mkdocs.yml
@@ -39,5 +43,6 @@ app.json
 sonar-project.properties
 now_lms/static/files/*
 passenger_wsgi.py
+wsgi.py
 test.txt
 now_lms.egg-info

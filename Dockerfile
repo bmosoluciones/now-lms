@@ -24,7 +24,7 @@ RUN microdnf install -y --nodocs --best --refresh python39 python3-pip python3-c
     && /usr/bin/python3.9 -m pip list --format=columns \
     && rm -rf /root/.cache/pip && rm -rf /tmp && microdnf remove -y --best python3-pip \
     && ls -l /app/now_lms/static/node_modules \
-    && ls -a
+    && ls -a && flask --app now_lms
 
 ENV FLASK_APP="now_lms"
 ENV LANG=C.UTF-8
