@@ -37,7 +37,7 @@ from now_lms.config import DESARROLLO
 from now_lms.logs import log
 
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__":
     log.info("Iniciando NOW Learning Management System.")
     if DESARROLLO:
         log.trace("Ejecutando NOW-LMS con opciones de desarrollo.")

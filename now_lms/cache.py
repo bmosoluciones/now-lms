@@ -39,9 +39,9 @@ from now_lms.config.parse_config_file import CONFIG_FROM_FILE
 # Configuracion de Cache
 CACHE_CONFIG: dict = {"CACHE_KEY_PREFIX": "now_lms:"}
 
-if CONFIG_FROM_FILE:
-    pass
-else:
+if CONFIG_FROM_FILE:  # pragma: no cover
+    log.trace("Intentando leer configuración de cache desde archivo de configuración.")
+else:  # pragma: no cover
     CONFIG_FROM_FILE = {}  # Empy dictionary to avoid errors
 
 if not environ.get("NO_LMS_CACHE") and not CONFIG_FROM_FILE.get("NO_LMS_CACHE"):  # pragma: no cover
@@ -68,7 +68,7 @@ if not environ.get("NO_LMS_CACHE") and not CONFIG_FROM_FILE.get("NO_LMS_CACHE"):
         CTYPE = "NullCache"
         log.debug("No cache service configured.")
 
-else:
+else:  # pragma: no cover
     CTYPE = "NullCache"
 
 CACHE_CONFIG["CACHE_TYPE"] = CTYPE

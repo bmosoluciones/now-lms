@@ -36,3 +36,8 @@ line-length = 127
 
 [tool.setuptools.packages]
 find = {namespaces = false}  # Disable implicit namespaces
+
+[tool.coverage.run]
+omit = [
+    "now_lms/__main__.py",
+    ]
