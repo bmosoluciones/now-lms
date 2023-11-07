@@ -76,13 +76,13 @@ if not DESARROLLO or environ.get("NOTLOGTOFILE") == "1":
 # Directorios utilizados para la carga de archivos.
 if environ.get("UPLOAD_FILES_DIR"):
     log.trace("Configuración de carga de archivos encontrada en variables de entorno.")
-    DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(environ.get("UPLOAD_FILES_DIR"))
+    DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(str(environ.get("UPLOAD_FILES_DIR")))
 elif isinstance(CONFIG_FROM_FILE, ConfigObj):
-    DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(CONFIG_FROM_FILE.get("UPLOAD_FILES_DIR")) or path.join(
-        DIRECTORIO_ARCHIVOS, "files"
+    DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(
+        str(CONFIG_FROM_FILE.get("UPLOAD_FILES_DIR")) or str(path.join(DIRECTORIO_ARCHIVOS, "files"))
     )
 else:
-    DIRECTORIO_BASE_ARCHIVOS_USUARIO = path.join(DIRECTORIO_ARCHIVOS, "files")
+    DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(path.join(DIRECTORIO_ARCHIVOS, "files"))
 
 DIRECTORIO_BASE_UPLOADS = DIRECTORIO_BASE_ARCHIVOS_USUARIO
 DIRECTORIO_ARCHIVOS_PUBLICOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "public")

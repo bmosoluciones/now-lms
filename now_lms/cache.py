@@ -34,7 +34,6 @@ from flask_caching import Cache
 from now_lms.logs import log
 from now_lms.config.parse_config_file import CONFIG_FROM_FILE
 
-# type: ignore[union-attr]
 
 # < --------------------------------------------------------------------------------------------- >
 # Configuracion de Cache

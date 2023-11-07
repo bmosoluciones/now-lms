@@ -457,7 +457,7 @@ def upgrade_db():  # pragma: no cover
 
 @lms_app.cli.command()
 @click.option("--with-examples", is_flag=True, default=False, help="Load example data at setup.")
-def resetdb(with_examples):  # pragma: no cover
+def resetdb(with_examples) -> None:  # pragma: no cover
     """Elimina la base de datos actual e inicia una nueva."""
     lms_app.app_context().push()
     cache.clear()
@@ -471,16 +471,16 @@ def serve():  # pragma: no cover
     from waitress import serve as server
 
     if environ.get("LMS_PORT"):
-        PORT: int = int(environ.get("LMS_PORT"))
+        PORT: int = environ.get("LMS_PORT")
     elif environ.get("PORT"):
-        PORT = int(environ.get("PORT"))
+        PORT = environ.get("PORT")
     else:
         PORT = 8080
     if DESARROLLO:
         THREADS: int = 4
     else:
         if environ.get("LMS_THREADS"):
-            THREADS = int(environ.get("LMS_THREADS"))
+            THREADS = environ.get("LMS_THREADS")
         else:
             THREADS = (cpu_count() * 2) + 1
     log.info("Iniciando servidor WSGI en puerto {puerto} con {threads} hilos.", puerto=PORT, threads=THREADS)
@@ -695,22 +695,22 @@ def edit_perfil(ulid: str):
 
     if request.method == "POST":
         #
-        usuario_.nombre = form.nombre.data  # type: ignore[union-attr]
-        usuario_.apellido = form.apellido.data  # type: ignore[union-attr]
-        usuario_.correo_electronico = form.correo_electronico.data  # type: ignore[union-attr]
-        usuario_.url = form.url.data  # type: ignore[union-attr]
-        usuario_.linkedin = form.linkedin.data  # type: ignore[union-attr]
-        usuario_.facebook = form.facebook.data  # type: ignore[union-attr]
-        usuario_.twitter = form.twitter.data  # type: ignore[union-attr]
-        usuario_.github = form.github.data  # type: ignore[union-attr]
-        usuario_.youtube = form.youtube.data  # type: ignore[union-attr]
-        usuario_.genero = form.genero.data  # type: ignore[union-attr]
-        usuario_.titulo = form.titulo.data  # type: ignore[union-attr]
-        usuario_.nacimiento = form.nacimiento.data  # type: ignore[union-attr]
-        usuario_.bio = form.bio.data  # type: ignore[union-attr]
+        usuario_.nombre = form.nombre.data
+        usuario_.apellido = form.apellido.data
+        usuario_.correo_electronico = form.correo_electronico.data
+        usuario_.url = form.url.data
+        usuario_.linkedin = form.linkedin.data
+        usuario_.facebook = form.facebook.data
+        usuario_.twitter = form.twitter.data
+        usuario_.github = form.github.data
+        usuario_.youtube = form.youtube.data
+        usuario_.genero = form.genero.data
+        usuario_.titulo = form.titulo.data
+        usuario_.nacimiento = form.nacimiento.data
+        usuario_.bio = form.bio.data
 
-        if form.correo_electronico.data != usuario_.correo_electronico:  # type: ignore[union-attr]
-            usuario_.correo_electronico_verificado = False  # type: ignore[union-attr]
+        if form.correo_electronico.data != usuario_.correo_electronico:
+            usuario_.correo_electronico_verificado = False
             flash("Favor verifique su nuevo correo electronico.", "warning")
 
         try:  # pragma: no cover
@@ -724,7 +724,7 @@ def edit_perfil(ulid: str):
                         usuario_ = database.session.execute(
                             database.select(Usuario).filter(Usuario.id == current_user.id)
                         ).first()[0]
-                        usuario_.portada = True  # type: ignore[union-attr]
+                        usuario_.portada = True
                         database.session.commit()
                         flash("Imagen de perfil actualizada.", "success")
                 except UploadNotAllowed:
@@ -1836,9 +1836,7 @@ def pagina_recurso_alternativo(curso_id, codigo, order):
 
     else:  # Equivale a order == "desc".
         consulta_recursos = (
-            CursoRecurso.query.filter(
-                CursoRecurso.seccion == RECURSO.seccion, CursoRecurso.indice >= RECURSO.indice  # type: ignore[union-attr]
-            )
+            CursoRecurso.query.filter(CursoRecurso.seccion == RECURSO.seccion, CursoRecurso.indice >= RECURSO.indice)
             .order_by(CursoRecurso.indice.desc())
             .all()
         )

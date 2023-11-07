@@ -74,7 +74,7 @@ class BaseTabla:
     modificado_por = database.Column(database.String(15), nullable=True)
 
 
-class Usuario(UserMixin, database.Model, BaseTabla):  # type: ignore[name-defined]
+class Usuario(UserMixin, database.Model, BaseTabla):
     """Una entidad con acceso al sistema."""
 
     # Información Básica
@@ -111,7 +111,7 @@ class Usuario(UserMixin, database.Model, BaseTabla):  # type: ignore[name-define
     portada = database.Column(database.Boolean())
 
 
-class UsuarioGrupo(database.Model, BaseTabla):  # type: ignore[name-defined]
+class UsuarioGrupo(database.Model, BaseTabla):
     """Grupo de Usuarios"""
 
     activo = database.Column(database.Boolean(), index=True)
@@ -120,18 +120,18 @@ class UsuarioGrupo(database.Model, BaseTabla):  # type: ignore[name-defined]
     tutor = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
 
 
-class UsuarioGrupoMiembro(database.Model, BaseTabla):  # type: ignore[name-defined]
+class UsuarioGrupoMiembro(database.Model, BaseTabla):
     """Grupo de Usuarios"""
 
     grupo = database.Column(database.String(26), database.ForeignKey("usuario_grupo.id"))
     usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
 
 
-class UsuarioGrupoTutor(UsuarioGrupoMiembro):  # type: ignore[name-defined]
+class UsuarioGrupoTutor(UsuarioGrupoMiembro):
     """Asigna un usuario como tutor de un curso"""
 
 
-class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
+class Curso(database.Model, BaseTabla):
     """Un curso es la base del aprendizaje en NOW LMS."""
 
     __table_args__ = (database.UniqueConstraint("codigo", name="curso_codigo_unico"),)
@@ -155,14 +155,14 @@ class Curso(database.Model, BaseTabla):  # type: ignore[name-defined]
     fecha_promocionado = database.Column(database.DateTime, nullable=True)
 
 
-class CursoRecursoDescargable(database.Model, BaseTabla):  # type: ignore[name-defined]
+class CursoRecursoDescargable(database.Model, BaseTabla):
     """Los cursos pueden tener recursos descargables incluidos."""
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
     recurso = database.Column(database.String(10), database.ForeignKey("recurso.codigo"), nullable=False, index=True)
 
 
-class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
+class CursoSeccion(database.Model, BaseTabla):
     """Los cursos tienen secciones para dividir el contenido en secciones logicas."""
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
@@ -174,7 +174,7 @@ class CursoSeccion(database.Model, BaseTabla):  # type: ignore[name-defined]
     estado = database.Column(database.Boolean())
 
 
-class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
+class CursoRecurso(database.Model, BaseTabla):
     """Una sección de un curso consta de una serie de recursos."""
 
     __table_args__ = (database.UniqueConstraint("doc", name="documento_unico"),)
@@ -201,7 +201,7 @@ class CursoRecurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     notes = database.Column(database.String(20))
 
 
-class CursoRecursoAvance(database.Model, BaseTabla):  # type: ignore[name-defined]
+class CursoRecursoAvance(database.Model, BaseTabla):
     """
     Un control del avance de cada usuario de tipo estudiante de los recursos de un curso,
     para que un curso de considere finalizado un alumno debe completar todos los recursos requeridos.
@@ -216,7 +216,7 @@ class CursoRecursoAvance(database.Model, BaseTabla):  # type: ignore[name-define
     avance = database.Column(database.Float(asdecimal=True))
 
 
-class CursoRecursoPregunta(database.Model, BaseTabla):  # type: ignore[name-defined]
+class CursoRecursoPregunta(database.Model, BaseTabla):
     """Los recursos de tipo prueba estan conformados por una serie de preguntas que el usario debe contestar."""
 
     __table_args__ = (database.UniqueConstraint("codigo", name="curso_recurso_pregunta_unico"),)
@@ -235,7 +235,7 @@ class CursoRecursoPregunta(database.Model, BaseTabla):  # type: ignore[name-defi
     evaluar = database.Column(database.Boolean())
 
 
-class CursoRecursoPreguntaOpcion(database.Model, BaseTabla):  # type: ignore[name-defined]
+class CursoRecursoPreguntaOpcion(database.Model, BaseTabla):
     """Las preguntas tienen opciones."""
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
@@ -246,7 +246,7 @@ class CursoRecursoPreguntaOpcion(database.Model, BaseTabla):  # type: ignore[nam
     correcta = database.Column(database.Boolean())
 
 
-class CursoRecursoPreguntaRespuesta(database.Model, BaseTabla):  # type: ignore[name-defined]
+class CursoRecursoPreguntaRespuesta(database.Model, BaseTabla):
     """Respuestas de los usuarios a las preguntas del curso."""
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
@@ -259,7 +259,7 @@ class CursoRecursoPreguntaRespuesta(database.Model, BaseTabla):  # type: ignore[
     nota = database.Column(database.Float(asdecimal=True))
 
 
-class CursoRecursoConsulta(database.Model, BaseTabla):  # type: ignore[name-defined]
+class CursoRecursoConsulta(database.Model, BaseTabla):
     """Un usuario debe poder hacer consultas a su tutor/moderador."""
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
@@ -269,7 +269,7 @@ class CursoRecursoConsulta(database.Model, BaseTabla):  # type: ignore[name-defi
     respuesta = database.Column(database.String(500))
 
 
-class CursoRecursoSlideShow(database.Model, BaseTabla):  # type: ignore[name-defined]
+class CursoRecursoSlideShow(database.Model, BaseTabla):
     """Una presentación basada en reveal.js"""
 
     __table_args__ = (database.UniqueConstraint("codigo", name="codigo_slideshow_unico"),)
@@ -281,7 +281,7 @@ class CursoRecursoSlideShow(database.Model, BaseTabla):  # type: ignore[name-def
     usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False)
 
 
-class CursoRecursoSlides(database.Model, BaseTabla):  # type: ignore[name-defined]
+class CursoRecursoSlides(database.Model, BaseTabla):
     """Una presentación basada en reveal.js"""
 
     titulo = database.Column(database.String(100), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
@@ -292,7 +292,7 @@ class CursoRecursoSlides(database.Model, BaseTabla):  # type: ignore[name-define
     slide_show = database.Column(database.String(32), database.ForeignKey("curso_recurso_slide_show.codigo"), nullable=False)
 
 
-class Files(database.Model, BaseTabla):  # type: ignore[name-defined]
+class Files(database.Model, BaseTabla):
     """Listado de archivos que se han cargado a la aplicacion."""
 
     archivo = database.Column(database.String(100), nullable=False)
@@ -301,7 +301,7 @@ class Files(database.Model, BaseTabla):  # type: ignore[name-defined]
     url = database.Column(database.String(100), nullable=False)
 
 
-class DocenteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
+class DocenteCurso(database.Model, BaseTabla):
     """Uno o mas usuario de tipo intructor pueden estar a cargo de un curso."""
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
@@ -309,7 +309,7 @@ class DocenteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     vigente = database.Column(database.Boolean())
 
 
-class ModeradorCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
+class ModeradorCurso(database.Model, BaseTabla):
     """Uno o mas usuario de tipo moderator pueden estar a cargo de un curso."""
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
@@ -317,7 +317,7 @@ class ModeradorCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     vigente = database.Column(database.Boolean())
 
 
-class EstudianteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
+class EstudianteCurso(database.Model, BaseTabla):
     """Uno o mas usuario de tipo user pueden estar a cargo de un curso."""
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
@@ -325,7 +325,7 @@ class EstudianteCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     vigente = database.Column(database.Boolean())
 
 
-class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
+class Configuracion(database.Model, BaseTabla):
     """
     Repositorio Central para la configuración de la aplicacion.
 
@@ -357,14 +357,14 @@ class Configuracion(database.Model, BaseTabla):  # type: ignore[name-defined]
     mail_use_ssl = database.Column(database.Boolean())
 
 
-class Categoria(database.Model, BaseTabla):  # type: ignore[name-defined]
+class Categoria(database.Model, BaseTabla):
     """Permite Clasificar los cursos por categoria."""
 
     nombre = database.Column(database.String(100), nullable=False)
     descripcion = database.Column(database.String(250), nullable=False)
 
 
-class CategoriaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
+class CategoriaCurso(database.Model, BaseTabla):
     """Listado de Cursos Permite Clasificar los cursos por categoria."""
 
     curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False, index=True)
@@ -373,14 +373,14 @@ class CategoriaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     relacion_categoria = database.relationship("Categoria", foreign_keys=categoria)
 
 
-class Etiqueta(database.Model, BaseTabla):  # type: ignore[name-defined]
+class Etiqueta(database.Model, BaseTabla):
     """Permite Clasificar los cursos por etiquetas."""
 
     nombre = database.Column(database.String(20), nullable=False)
     color = database.Column(database.String(10), nullable=False)
 
 
-class EtiquetaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
+class EtiquetaCurso(database.Model, BaseTabla):
     """Listado de Cursos Permite Clasificar los cursos por categoria."""
 
     curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False, index=True)
@@ -389,7 +389,7 @@ class EtiquetaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     relacion_etiqueta = database.relationship("Etiqueta", foreign_keys=etiqueta)
 
 
-class Programa(database.Model, BaseTabla):  # type: ignore[name-defined]
+class Programa(database.Model, BaseTabla):
     """Un programa agrupa una serie de cursos."""
 
     __table_args__ = (database.UniqueConstraint("codigo", name="codigo_programa_unico"),)
@@ -406,7 +406,7 @@ class Programa(database.Model, BaseTabla):  # type: ignore[name-defined]
     fecha_promocionado = database.Column(database.DateTime, nullable=True)
 
 
-class ProgramaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
+class ProgramaCurso(database.Model, BaseTabla):
     """Cursos en un programa."""
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
@@ -415,7 +415,7 @@ class ProgramaCurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     relacion_programa = database.relationship("Programa", foreign_keys=programa)
 
 
-class ProgramaEstudiante(database.Model, BaseTabla):  # type: ignore[name-defined]
+class ProgramaEstudiante(database.Model, BaseTabla):
     """Cursos en un programa."""
 
     usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
@@ -424,7 +424,7 @@ class ProgramaEstudiante(database.Model, BaseTabla):  # type: ignore[name-define
     relacion_programa = database.relationship("Programa", foreign_keys=programa)
 
 
-class Recurso(database.Model, BaseTabla):  # type: ignore[name-defined]
+class Recurso(database.Model, BaseTabla):
     """Un recurso descargable."""
 
     __table_args__ = (database.UniqueConstraint("codigo", name="codigo_recurso_unico"),)
@@ -440,7 +440,7 @@ class Recurso(database.Model, BaseTabla):  # type: ignore[name-defined]
     fecha_promocionado = database.Column(database.DateTime, nullable=True)
 
 
-class Certificado(database.Model, BaseTabla):  # type: ignore[name-defined]
+class Certificado(database.Model, BaseTabla):
     """Plantilla para generar un certificado."""
 
     nombre = database.Column(database.String(50))
@@ -450,7 +450,7 @@ class Certificado(database.Model, BaseTabla):  # type: ignore[name-defined]
     fondo = database.Column(database.String(100))
 
 
-class Mensaje(database.Model, BaseTabla):  # type: ignore[name-defined]
+class Mensaje(database.Model, BaseTabla):
     """Mensajes de usuarios."""
 
     usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)

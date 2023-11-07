@@ -152,13 +152,13 @@ def crear_indice_recurso(recurso: str) -> NamedTuple:
     recurso_from_db: Union[None, CursoRecurso] = CursoRecurso.query.get(recurso)
 
     if recurso_from_db:
-        seccion_from_db: Union[None, CursoRecurso] = CursoSeccion.query.get(recurso_from_db.seccion)  # type: ignore[union-attr]
+        seccion_from_db: Union[None, CursoRecurso] = CursoSeccion.query.get(recurso_from_db.seccion)
         # Verifica si existe un recurso anterior o posterior en la misma sección.
         recurso_anterior = CursoRecurso.query.filter(
-            CursoRecurso.seccion == recurso_from_db.seccion, CursoRecurso.indice == recurso_from_db.indice - 1  # type: ignore[union-attr]
+            CursoRecurso.seccion == recurso_from_db.seccion, CursoRecurso.indice == recurso_from_db.indice - 1
         ).first()
         recurso_posterior = CursoRecurso.query.filter(
-            CursoRecurso.seccion == recurso_from_db.seccion, CursoRecurso.indice == recurso_from_db.indice + 1  # type: ignore[union-attr]
+            CursoRecurso.seccion == recurso_from_db.seccion, CursoRecurso.indice == recurso_from_db.indice + 1
         ).first()
     else:
         seccion_from_db = None
