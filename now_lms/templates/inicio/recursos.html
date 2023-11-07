@@ -78,103 +78,104 @@
                       width="20" height="20" alt="Nivel Avanzado">
                     {% endif %}
                   </div>
+                </div>
 
-                  <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center">
 
 
-                    <a href="{{ url_for("vista_recurso", resource_code=curso.codigo )}}"
-                      class="btn btn-sm btn-outline-secondary" role="button" aria-disabled="true">
-                      Ver Recurso
-                    </a>
-                    <div>
-                      <small>{{ tipo[curso.tipo] | safe }}</small>
+                  <a href="{{ url_for("vista_recurso", resource_code=curso.codigo )}}"
+                    class="btn btn-sm btn-outline-secondary" role="button" aria-disabled="true">
+                    Ver Recurso
+                  </a>
+                  <div>
+                    <small>{{ tipo[curso.tipo] | safe }}</small>
 
-                      {% if curso.duracion %}
-                      <small class="text-muted">{{ curso.duracion }} mins</small>
-                      {% endif %}
-                      {% if curso.precio or curso.precio > 0 %}
-                      <small>{{ curso.precio | float }} {{ config.moneda }}</small>
-                      {% else %}
-                      <small><span class="badge bg-primary">Gratis</span></small>
-                      {% endif %}
-
-                    </div>
+                    {% if curso.duracion %}
+                    <small class="text-muted">{{ curso.duracion }} mins</small>
+                    {% endif %}
+                    {% if curso.precio or curso.precio > 0 %}
+                    <small>{{ curso.precio | float }} {{ config.moneda }}</small>
+                    {% else %}
+                    <small><span class="badge bg-primary">Gratis</span></small>
+                    {% endif %}
 
                   </div>
+
                 </div>
               </div>
             </div>
-            {% endfor %}
           </div>
-
-          <div class="container" id="user_paginatios">
-            {{ macros.rendizar_paginacion(consulta=cursos, vista="lista_recursos") }}
-          </div>
-
+          {% endfor %}
         </div>
 
-        <div class="col-md-4 themed-grid-col">
+        <div class="container" id="user_paginatios">
+          {{ macros.rendizar_paginacion(consulta=cursos, vista="lista_recursos") }}
+        </div>
+
+      </div>
+
+      <div class="col-md-4 themed-grid-col">
 
 
-          <div class="flex-shrink-0 p-3 bg-white">
-            <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
-              <svg class="bi me-2" width="30" height="24">
-              </svg>
-              <h5>Navegar Cursos</h5>
-            </a>
-            <ul class="list-unstyled ps-0">
-              <li class="mb-1">
-                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
-                  data-bs-target="#home-collapse" aria-expanded="true">
-                  Categorias
-                </button>
-                <div class="collapse show" id="home-collapse">
-                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    {% for categoria in categorias %}
-                    <li><a href="#" class="link-dark rounded">{{ categoria.nombre }}</a></li>
-                    {% endfor %}
-                  </ul>
-                </div>
-              </li>
-              <li class="mb-1">
-                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
-                  data-bs-target="#dashboard-collapse" aria-expanded="false">
-                  Etiquetas
-                </button>
-                <div class="collapse" id="dashboard-collapse">
-                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    {% for etiqueta in etiquetas %}
-                    <li><a href="#" class="link-dark rounded">{{ etiqueta.nombre }}</a></li>
-                    {% endfor %}
-                  </ul>
-                </div>
-              </li>
-              <li class="mb-1">
-                <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
-                  data-bs-target="#dashboard-collapse" aria-expanded="false">
-                  Nivel
-                </button>
-                <div class="collapse" id="dashboard-collapse">
-                  <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a
-                        href="{{ url_for("lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="0", char="?") }}"
-                        class="link-dark rounded">Introductorio</a></li>
-                    <li><a
-                        href="{{ url_for("lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="1", char="?") }}"
-                        class="link-dark rounded">Principiante</a></li>
-                    <li><a
-                        href="{{ url_for("lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="2", char="?") }}"
-                        class="link-dark rounded">Intermedio</a></li>
-                    <li><a
-                        href="{{ url_for("lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="3", char="?") }}"
-                        class="link-dark rounded">Avanzado</a></li>
-                  </ul>
-                </div>
-              </li>
-            </ul>
-          </div>
+        <div class="flex-shrink-0 p-3 bg-white">
+          <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
+            <svg class="bi me-2" width="30" height="24">
+            </svg>
+            <h5>Navegar Cursos</h5>
+          </a>
+          <ul class="list-unstyled ps-0">
+            <li class="mb-1">
+              <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                data-bs-target="#home-collapse" aria-expanded="true">
+                Categorias
+              </button>
+              <div class="collapse show" id="home-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  {% for categoria in categorias %}
+                  <li><a href="#" class="link-dark rounded">{{ categoria.nombre }}</a></li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </li>
+            <li class="mb-1">
+              <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                data-bs-target="#dashboard-collapse" aria-expanded="false">
+                Etiquetas
+              </button>
+              <div class="collapse" id="dashboard-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  {% for etiqueta in etiquetas %}
+                  <li><a href="#" class="link-dark rounded">{{ etiqueta.nombre }}</a></li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </li>
+            <li class="mb-1">
+              <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse"
+                data-bs-target="#dashboard-collapse" aria-expanded="false">
+                Nivel
+              </button>
+              <div class="collapse" id="dashboard-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                  <li><a
+                      href="{{ url_for("lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="0", char="?") }}"
+                      class="link-dark rounded">Introductorio</a></li>
+                  <li><a
+                      href="{{ url_for("lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="1", char="?") }}"
+                      class="link-dark rounded">Principiante</a></li>
+                  <li><a
+                      href="{{ url_for("lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="2", char="?") }}"
+                      class="link-dark rounded">Intermedio</a></li>
+                  <li><a
+                      href="{{ url_for("lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="3", char="?") }}"
+                      class="link-dark rounded">Avanzado</a></li>
+                </ul>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
+    </div>
   </main>
 
 
