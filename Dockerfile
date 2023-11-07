@@ -21,9 +21,9 @@ RUN microdnf install -y --nodocs --best --refresh python39 python3-pip python3-c
     && chmod +x docker-entry-point.sh \
     && /usr/bin/python3.9 -m pip --no-cache-dir install -r /tmp/requirements.txt \
     && /usr/bin/python3.9 -m pip list --format=columns \
-    && rm -rf /root/.cache/pip && rm -rf /tmp && microdnf remove -y --best python3-pip \
+    && rm -rf /root/.cache/pip && rm -rf /tmp && microdnf remove -y --best python3-pip
 
-    ENV FLASK_APP="now_lms"
+ENV FLASK_APP="now_lms"
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 ENV PYTHONDONTWRITEBYTECODE=1
