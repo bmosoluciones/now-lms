@@ -48,64 +48,12 @@ $ source venv/bin/activate
 $ pip install now_lms
 ```
 
-8. Go to the public directory in your.domain directory:
+8. Create a passenger_wsgi.py file in your.domain directory following the next template:
 
 ```
-$ cd public
-```
-
-9. Create a app.py file following this template:
-
-```
-$ touch app.py
-```
-
-app.py template:
-```
-import os
-
-os.environ["UPLOAD_FILES_DIR"] = os.path.join(os.environ["HOME"], "yourdomain.com", "public", "files")
-
-from now_lms import lms_app
-# Configure your app:
-lms_app.config["SECRET_KEY"] = "set_a_very_secure_secret_key"
-lms_app.config["SQLALCHEMY_DATABASE_URI"] = "database_uri"
-
-app = lms_app
-
-from now_lms import serve, init_app
-
-app.app_context().push()
-
-if __name__ == "__main__":
-    init_app(with_examples=False)
-```
-
-10. Init app:
-Be sure to run ```lmsctl``` commands in the same directory that your app.py file.
-You can set the Administrator user and password o let the user use the default values.
-Since default values for admin user are publics in documentation they are more suitables
-for development purposes that for production usage.
-
-```
-$ ls
-app.py  favicon.gif  favicon.ico
-$ ADMIN_USER=setyouruserhere ADMIN_PSWD=setasecurepasswd flask --app app.py setup
-```
-
-11. Your your.domain/public directory should be like this:
-
-```
-$ ls
-app.py  favicon.gif  favicon.ico
-```
-
-12. Create a passenger_wsgi.py file in your.domain directory following the next template:
-
-```
-$ cd ..
-# ls
+ls
 public  venv
+touch passenger_wsgi.py
 ```
 
 passenger_wsgi.py template:
@@ -119,21 +67,32 @@ INTERP = os.path.join(os.environ["HOME"], "yourdomain.com", "venv", "bin", "pyth
 if sys.executable != INTERP:
     os.execl(INTERP, INTERP, *sys.argv)
 os.environ["UPLOAD_FILES_DIR"] = os.path.join(os.environ["HOME"], "yourdomain.com", "public", "files")
-sys.path.append(os.getcwd())
-sys.path.append(os.path.join(os.environ["HOME"], "yourdomain.com", "public"))
 
 # Now we can import the configured app from the current directory
-from public.app import lms_app as application
+from now_lms import lms_app as application
 ```
 
-13. You your.dommain folder should be like this:
+9. Init app:
+Be sure to run this commands in the same directory that your passenger_wsgi.py file.
+You can set the Administrator user and password o let the user use the default values.
+Since default values for admin user are publics in documentation they are more suitables
+for development purposes that for production usage.
+
+```
+$ ls
+passenger_wsgi.py venv public
+$ ADMIN_USER=setyouruserhere ADMIN_PSWD=setasecurepasswd flask --app passenger_wsgi.py setup
+```
+
+
+10. You your.dommain folder should be like this:
 
 ```
 $ ls
 passenger_wsgi.py venv public
 ```
 
-You can check your passenger file works running it with python:
+11. You can check your passenger file works running it with python:
 
 ```
 $ python3.8 passenger_wsgi.py
@@ -147,7 +106,7 @@ Make the passenger_wsgi.py
 $ chmod +x passenger_wsgi.py
 ```
 
-14. Restart passenger:
+12. Restart passenger:
 
 ```
 mkdir tmp
