@@ -383,6 +383,7 @@ def initial_setup(with_examples=False):
         crear_programa()
         crear_recurso_descargable()
         log.debug("Datos de muestra cargados correctamente.")
+    log.info("NOW - LMS iniciado correctamente.")
 
 
 def init_app(with_examples=False):  # pragma: no cover
@@ -406,7 +407,7 @@ def init_app(with_examples=False):  # pragma: no cover
     if not DB_INICIALIZADA:
         log.warning("No se detecto una base de datos inicilizada.")
         log.info("Iniciando nueva base de datos de desarrollo.")
-        initial_setup(with_examples)
+        initial_setup(with_examples=False)
 
     else:
         log.info("Acceso a base de datos verificado.")
