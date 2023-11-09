@@ -51,7 +51,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8, "3.12"]
+      # 3.8 Shared hosting
+      # 3.9 Ubi minimal
+      # 3.12 Last release
+        python-version: [3.8, 3.9, 3.12]
 
     steps:
       - uses: actions/checkout@v3
