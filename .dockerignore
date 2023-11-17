@@ -46,3 +46,5 @@ passenger_wsgi.py
 wsgi.py
 test.txt
 now_lms.egg-info
+
+.ruff_cache

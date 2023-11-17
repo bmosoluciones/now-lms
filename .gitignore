@@ -269,3 +269,5 @@ flask_profiler.sql
 
 # Configuration files
 *.conf
+
+.ruff_cache

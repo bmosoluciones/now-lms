@@ -1572,7 +1572,7 @@ def nuevo_curso():
             asignar_curso_a_instructor(curso_codigo=form.codigo.data, usuario_id=current_user.usuario)
             if "logo" in request.files:
                 try:
-                    picture_file = images.save(request.files["logo"], folder=nuevo_curso.codigo, name="logo.jpg")
+                    picture_file = images.save(request.files["logo"], folder=form.codigo.data, name="logo.jpg")
                     if picture_file:
                         nuevo_curso.portada = True
                 except UploadNotAllowed:
@@ -1582,7 +1582,7 @@ def nuevo_curso():
 
             flash("Curso creado exitosamente.", "success")
             cache.delete("view/" + url_for("home"))
-            return redirect(url_for("curso", course_code=form.codigo.data))
+            return redirect(url_for("curso", course_code=form.codigo.data, inspect=True))
         except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear su curso.", "warning")
             return redirect("/instructor")
