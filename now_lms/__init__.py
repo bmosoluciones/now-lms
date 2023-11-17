@@ -1574,7 +1574,12 @@ def nuevo_curso():
                 try:
                     picture_file = images.save(request.files["logo"], folder=form.codigo.data, name="logo.jpg")
                     if picture_file:
-                        nuevo_curso.portada = True
+                        _curso = database.session.execute(
+                            database.select(Curso).filter(Curso.codigo == form.codigo.data)
+                        ).first()[0]
+                        log.warning(_curso)
+                        _curso.portada = True
+                        database.session.commit()
                 except UploadNotAllowed:
                     log.warning("No se pudo actualizar la foto de perfil.")
                 except AttributeError:
