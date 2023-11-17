@@ -627,7 +627,7 @@ def home():
 
     if DESARROLLO:  # pragma: no cover
         MAX = 3
-    else:
+    else:  # pragma: no cover
         MAX = MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA
 
     CURSOS = database.paginate(
@@ -747,7 +747,6 @@ def elimina_logo_usuario(ulid: str):
         abort(403)
 
     elimina_imagen_usuario(ulid=ulid)
-    flash("Imagen de usuario eliminada correctamente.", "success")
     return redirect("/perfil")
 
 

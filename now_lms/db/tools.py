@@ -25,6 +25,7 @@ from os import path, remove
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
+from flask import flash
 from flask_login import current_user
 
 # ---------------------------------------------------------------------------------------
@@ -228,7 +229,10 @@ def elimina_logo_perzonalizado():
 
     LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, "logotipo.jpg")
 
-    remove(LOGO)
+    try:
+        remove(LOGO)
+    except FileNotFoundError:
+        pass
 
 
 def elimina_logo_perzonalizado_curso(course_code: str):
@@ -267,7 +271,11 @@ def elimina_imagen_usuario(ulid: str):
 
     LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, "usuarios", usuario.id + ".jpg")
 
-    remove(LOGO)
+    try:  # pragma: no cover
+        remove(LOGO)
+        flash("Imagen de usuario eliminada correctamente.", "success")
+    except FileNotFoundError:  # pragma: no cover
+        flash("Imagen de usuario no existe.", "error")
 
 
 def cursos_por_etiqueta(tag: str) -> int:

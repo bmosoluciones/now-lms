@@ -83,6 +83,8 @@ def auth(client):
 rutas_estaticas = [
     Ruta(ruta="/login", admin=302, no_session=200, texto=[b"BMO Solucione", b"Inicio de"]),
     Ruta(ruta="/logon", admin=302, no_session=200, texto=[b"Crear nuevo usuario", b"Crear Cuenta"]),
+    Ruta(ruta="/panel", admin=200, no_session=302, texto=None),
+    Ruta(ruta="/dashboard", admin=200, no_session=302, texto=None),
     Ruta(ruta="/perfil", admin=200, no_session=302, texto=None),
     Ruta(ruta="/student", admin=200, no_session=302, texto=None),
     Ruta(ruta="/instructor", admin=200, no_session=302, texto=None),
@@ -413,6 +415,16 @@ def test_fill_all_forms(client, auth):
     assert post.status_code == 302
     perfil = client.get("/perfil")
     assert b"holahola.hello.net" in perfil.data
+    post = client.post(
+        ruta,
+        data={
+            "correo_electronico": "holahola1.hello.net",
+        },
+        follow_redirects=False,
+    )
+    assert post.status_code == 302
+    perfil = client.get("/perfil")
+    get = client.get("/perfil/" + usario.id + "/delete_logo")
 
 
 def test_cambiar_curso(client, auth):
@@ -863,3 +875,25 @@ def test_eliminar_archivos():
 
     elimina_logo_perzonalizado()
     elimina_logo_perzonalizado_curso("now")
+
+
+def test_eliminar_logo(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup()
+
+    auth.login()
+
+    from os import path
+    from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
+    from io import BytesIO
+
+    bytesio_object = BytesIO(b"Hello World!")
+
+    with open(path.join(DIRECTORIO_UPLOAD_IMAGENES, "logotipo.jpg"), "wb") as f:
+        f.write(bytesio_object.getbuffer())
+
+    page = client.get("/delete_logo")
+
+    assert page.status_code == 302
