@@ -1577,7 +1577,6 @@ def nuevo_curso():
                         _curso = database.session.execute(
                             database.select(Curso).filter(Curso.codigo == form.codigo.data)
                         ).first()[0]
-                        log.warning(_curso)
                         _curso.portada = True
                         database.session.commit()
                 except UploadNotAllowed:
