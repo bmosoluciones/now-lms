@@ -47,11 +47,13 @@ python3 -m venv venv
 source venv/bin/activate
 # Windows
 venv\Scripts\activate.bat
+# Install NOW Learning Managenet System
 python -m pip install now_lms
+# Execute the build in server
 python -m now_lms
 ```
 
-Visit http://127.0.0.1:8080/ in your browser, default user and password are `lms-admin`, note that the default server is only bind to the localhost. You can test the software in your local machine, if you want to deploy NOW-LMS for production use please check de [user manual](https://bmosoluciones.github.io/now-lms/setup.html).
+Visit http://127.0.0.1:8080/ in your browser, the default user and password are `lms-admin`, note that the default server is only bind to the localhost. You can test the software in your local machine, if you want to deploy NOW-LMS for production use please check de [user manual](https://bmosoluciones.github.io/now-lms/setup.html).
 
 ## Contributing
 
