@@ -16,11 +16,13 @@
 # - William José Moreno Reyes
 
 # pylint: disable=redefined-outer-name
+import imp
 import pytest
 from collections import namedtuple
 from io import BytesIO
 import now_lms
 from now_lms import app, database, initial_setup
+from now_lms.db import Usuario
 
 app.config["SECRET_KEY"] = "jgjañlsldaksjdklasjfkjj"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -732,6 +734,43 @@ def test_crear_usuario(client, auth):
     response = client.post(url, data=data, follow_redirects=True)
     assert response.status_code == 200
 
+    usuario_ = database.session.execute(database.select(Usuario).filter(Usuario.usuario == "testing")).first()[0]
+
+    # Editar correo de usuario.
+    data = {"usuario": "testing", "acceso": "testing", "correo_electronico": "testing1@dominio.net"}
+
+    url = "/perfil/edit/" + usuario_.id
+
+    response = client.post(url, data=data, follow_redirects=True)
+    assert response.status_code == 200
+
+    data = {"usuario": "testing", "acceso": "testing", "correo_electronico": "testing2@dominio.net"}
+    response = client.post(url, data=data, follow_redirects=True)
+    assert response.status_code == 200
+
+    bytesio_object = BytesIO(b"Hello World!")
+
+    from os import path, makedirs
+    from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
+
+    file_name = usuario_.id + ".jpg"
+    directorio = path.join(DIRECTORIO_UPLOAD_IMAGENES, "usuarios")
+    try:
+        makedirs(directorio)
+    except FileExistsError:
+        pass
+
+    with open(
+        path.join(directorio, file_name),
+        "wb",
+    ) as f:
+        f.write(bytesio_object.getbuffer())
+
+    url = "/perfil/" + usuario_.id + "/delete_logo"
+
+    response = client.get(url, follow_redirects=True)
+    assert response.status_code == 200
+
 
 def test_crear_recursos(client, auth):
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
@@ -865,8 +904,6 @@ def test_eliminar_archivos():
     from os import path
     from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
     from now_lms.db.tools import elimina_logo_perzonalizado, elimina_logo_perzonalizado_curso
-
-    from io import BytesIO
 
     bytesio_object = BytesIO(b"Hello World!")
 
