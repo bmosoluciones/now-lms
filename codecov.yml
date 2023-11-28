@@ -1,5 +1,5 @@
 fixes:
-   - "/home/runner/work/now_lms/::"
+  - "/home/runner/work/now_lms/::"
 coverage:
   status:
     project:
@@ -7,3 +7,5 @@ coverage:
         # basic
         target: auto
         threshold: 8%
+ignore:
+  - "now_lms/config"
