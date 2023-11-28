@@ -828,7 +828,11 @@ def test_eliminar_logo_programa(client, auth):
     ) as f:
         f.write(bytesio_object.getbuffer())
 
-    url = "/program/P001/delete_logo"
+    from now_lms.db import Programa
+
+    programa_ = Programa.query.filter_by(codigo="P001").first()
+
+    url = "/program/" + programa_.id + "/delete_logo"
 
     response = client.get(url, follow_redirects=True)
     assert response.status_code == 200
