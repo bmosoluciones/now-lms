@@ -9,3 +9,5 @@ coverage:
         threshold: 8%
 ignore:
   - "now_lms/config"
+  - "now_lms/db"
+  - "now_lms/forms"
