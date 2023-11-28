@@ -772,6 +772,30 @@ def test_crear_usuario(client, auth):
     assert response.status_code == 200
 
 
+def test_activar_inactivar_eliminar_usuario(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup(with_examples=True)
+    auth.login()
+
+    url = "/user/" + "student"
+    response = client.get(url, follow_redirects=True)
+    assert response.status_code == 200
+
+    url = "/set_user_as_inactive/" + "student"
+    response = client.get(url, follow_redirects=True)
+    assert response.status_code == 200
+
+    url = "/set_user_as_active/" + "student"
+    response = client.get(url, follow_redirects=True)
+    assert response.status_code == 200
+
+    url = "/delete_user/" + "student"
+    response = client.get(url, follow_redirects=True)
+    assert response.status_code == 200
+
+
 def test_eliminar_logo_curso(client, auth):
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
