@@ -16,7 +16,6 @@
 # - William José Moreno Reyes
 
 # pylint: disable=redefined-outer-name
-import imp
 import pytest
 from collections import namedtuple
 from io import BytesIO
