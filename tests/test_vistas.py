@@ -772,6 +772,68 @@ def test_crear_usuario(client, auth):
     assert response.status_code == 200
 
 
+def test_eliminar_logo_curso(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup(with_examples=True)
+    auth.login()
+
+    bytesio_object = BytesIO(b"Hello World!")
+
+    from os import path, makedirs
+    from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
+
+    file_name = "logo.jpg"
+    directorio = path.join(DIRECTORIO_UPLOAD_IMAGENES, "now")
+    try:
+        makedirs(directorio)
+    except FileExistsError:
+        pass
+
+    with open(
+        path.join(directorio, file_name),
+        "wb",
+    ) as f:
+        f.write(bytesio_object.getbuffer())
+
+    url = "/now/delete_logo"
+
+    response = client.get(url, follow_redirects=True)
+    assert response.status_code == 200
+
+
+def test_eliminar_logo_programa(client, auth):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+    app.app_context().push()
+    database.drop_all()
+    initial_setup(with_examples=True)
+    auth.login()
+
+    bytesio_object = BytesIO(b"Hello World!")
+
+    from os import path, makedirs
+    from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
+
+    file_name = "logo.jpg"
+    directorio = path.join(DIRECTORIO_UPLOAD_IMAGENES, "programP001")
+    try:
+        makedirs(directorio)
+    except FileExistsError:
+        pass
+
+    with open(
+        path.join(directorio, file_name),
+        "wb",
+    ) as f:
+        f.write(bytesio_object.getbuffer())
+
+    url = "/program/P001/delete_logo"
+
+    response = client.get(url, follow_redirects=True)
+    assert response.status_code == 200
+
+
 def test_crear_recursos(client, auth):
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
