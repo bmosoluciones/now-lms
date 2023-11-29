@@ -19,7 +19,6 @@
 import pytest
 from collections import namedtuple
 from io import BytesIO
-import now_lms
 from now_lms import app, database, initial_setup
 from now_lms.db import Usuario
 
@@ -566,7 +565,6 @@ def test_reorganizar_indice_seccion(client, auth):
     app.app_context().push()
     database.drop_all()
     initial_setup()
-    from now_lms import CursoSeccion
 
     auth.login()
 
@@ -778,19 +776,27 @@ def test_activar_inactivar_eliminar_usuario(client, auth):
     initial_setup(with_examples=True)
     auth.login()
 
+    perfil_usuario = database.session.execute(database.select(Usuario).filter(Usuario.usuario == "student")).first()[0]
+
     url = "/user/" + "student"
     response = client.get(url, follow_redirects=True)
     assert response.status_code == 200
 
-    url = "/set_user_as_inactive/" + "student"
+    url = "/set_user_as_inactive/" + perfil_usuario.id
     response = client.get(url, follow_redirects=True)
     assert response.status_code == 200
 
-    url = "/set_user_as_active/" + "student"
+    response = client.get(url, follow_redirects=True)
+    assert b"Usuario ya se encuentra definido como inactivo" in response.data
+
+    url = "/set_user_as_active/" + perfil_usuario.id
     response = client.get(url, follow_redirects=True)
     assert response.status_code == 200
 
-    url = "/delete_user/" + "student"
+    response = client.get(url, follow_redirects=True)
+    assert b"Usuario ya se encuentra definido como activo" in response.data
+
+    url = "/delete_user/" + perfil_usuario.id
     response = client.get(url, follow_redirects=True)
     assert response.status_code == 200
 

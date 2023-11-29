@@ -16,7 +16,6 @@
 # - William José Moreno Reyes
 
 from unittest import TestCase
-import pytest
 
 
 class TestBasicos(TestCase):
