@@ -41,7 +41,9 @@
               <th scope="col">Apellido</th>
               <th scope="col">Tipo</th>
               <th scope="col">Estado</th>
+              <th scope="col">Acciones</th>
               <th scope="col">Fecha registro</th>
+              <th scope="col">Ultimo Inicio</th>
             </tr>
           </thead>
           {% for item in consulta.items -%}
@@ -116,8 +118,38 @@
                 </a>
               </td>
               <td>
+                <div class="btn-group">
+                  <button class="btn btn-secondary btn-sm" type="button">
+                    Acciones
+                  </button>
+                  <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for("activar_usuario", user_id=item.id) }}"><i
+                          class="bi bi-person-fill-check" aria-hidden="true"></i> Activar
+                        Usuario</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for("inactivar_usuario", user_id=item.id) }}"><i
+                          class="bi bi-person-fill-slash" aria-hidden="true"></i> Inactivar
+                        Usuario</a></li>
+                    <li>
+                      <hr class="dropdown-divider">
+                    </li>
+                  </ul>
+
+                  </ul>
+                </div>
+
+              </td>
+              <td>
                 <a href="{{ url_for("usuario", id_usuario=item.usuario) }}" class="link-dark">
                   {{ item.creado }}
+                </a>
+              </td>
+              <td>
+                <a href="{{ url_for("usuario", id_usuario=item.usuario) }}" class="link-dark">
+                  {{ item.ultimo_acceso }}
                 </a>
               </td>
             </tr>

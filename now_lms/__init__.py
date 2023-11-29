@@ -959,10 +959,13 @@ def usuarios():
 @perfil_requerido("admin")
 def activar_usuario(user_id):
     """Estable el usuario como activo y redirecciona a la vista dada."""
-    perfil_usuario = Usuario.query.filter_by(usuario=user_id).first()
-    perfil_usuario.activo = True
-    database.session.add(perfil_usuario)
-    database.session.commit()
+    perfil_usuario = database.session.execute(database.select(Usuario).filter(Usuario.id == user_id)).first()[0]
+    if not perfil_usuario.activo:
+        perfil_usuario.activo = True
+        database.session.commit()
+        flash("Usuario definido como activo", "info")
+    else:
+        flash("Usuario ya se encuentra definido como activo", "warning")
     cache.delete("view/" + url_for("usuarios"))
     return redirect(url_for("usuario", id_usuario=user_id))
 
@@ -972,10 +975,13 @@ def activar_usuario(user_id):
 @perfil_requerido("admin")
 def inactivar_usuario(user_id):
     """Estable el usuario como activo y redirecciona a la vista dada."""
-    perfil_usuario = Usuario.query.filter_by(usuario=user_id).first()
-    perfil_usuario.activo = False
-    database.session.add(perfil_usuario)
-    database.session.commit()
+    perfil_usuario = database.session.execute(database.select(Usuario).filter(Usuario.id == user_id)).first()[0]
+    if perfil_usuario.activo:
+        perfil_usuario.activo = False
+        database.session.commit()
+        flash("Usuario definido como inactivo", "info")
+    else:
+        flash("Usuario ya se encuentra definido como inactivo", "warning")
     cache.delete("view/" + url_for("usuarios"))
     return redirect(url_for("usuario", id_usuario=user_id))
 
@@ -985,9 +991,10 @@ def inactivar_usuario(user_id):
 @perfil_requerido("admin")
 def eliminar_usuario(user_id):
     """Elimina un usuario por su id y redirecciona a la vista dada."""
-    Usuario.query.filter(Usuario.usuario == user_id).delete()
+    Usuario.query.filter(Usuario.id == user_id).delete()
     database.session.commit()
     cache.delete("view/" + url_for("usuarios"))
+    flash("Usuario eliminado correctamente.", "info")
     return redirect(url_for(request.args.get("ruta", default="home", type=str)))
 
 
