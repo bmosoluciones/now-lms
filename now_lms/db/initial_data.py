@@ -544,9 +544,29 @@ def crear_usuarios_predeterminados(with_examples):
             twitter="user",
             github="user",
         )
+        student3 = Usuario(
+            usuario="student3",
+            acceso=proteger_passwd("student3"),
+            nombre="Maria",
+            apellido="Lopez",
+            correo_electronico="hi@domain.com",
+            tipo="student",
+            activo=False,
+            visible=False,
+            titulo=None,
+            genero="female",
+            nacimiento=datetime(year=1988, month=9, day=21),
+            bio="Hello there!",
+            url="google.com",
+            linkedin="user",
+            facebook="user",
+            twitter="user",
+            github="user",
+        )
         database.session.add(student)
         database.session.add(student1)
         database.session.add(student2)
+        database.session.add(student3)
         demo_grupo1 = UsuarioGrupo(nombre="Usuarios Base", descripcion="Demo Group", activo=True)
         demo_grupo2 = UsuarioGrupo(nombre="Usuarios", descripcion="Demo Group", activo=True)
         database.session.add(demo_grupo2)
