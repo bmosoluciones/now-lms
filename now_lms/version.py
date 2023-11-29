@@ -53,7 +53,7 @@ REVISION = datetime.today().strftime("%Y%m%d")
 # Release string
 # Refences:
 #  - https://peps.python.org/pep-0440/
-# 0.0.1a13.dev20231101
+# 0.0.1a13.dev20231129
 if PRERELEASE:  # pragma: no cover
     VERSION = MAYOR + "." + MENOR + "." + PATCH + PRERELEASE + ".dev" + REVISION
 else:  # pragma: no cover
