@@ -105,6 +105,7 @@ from now_lms.db.initial_data import (
     crear_programa,
     crear_recurso_descargable,
 )
+from now_lms.db.info import app_info
 from now_lms.logs import log
 from now_lms.db.tools import (
     crear_configuracion_predeterminada,
@@ -354,6 +355,7 @@ lms_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
 lms_app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
 lms_app.jinja_env.globals["config"] = carga_configuracion_del_sitio_web_desde_db
 lms_app.jinja_env.globals["version"] = VERSION
+lms_app.jinja_env.globals["info"] = app_info(lms_app)
 
 
 # ---------------------------------------------------------------------------------------

@@ -167,6 +167,12 @@
       </div>
       <div class="modal-body">
         Versión: {{ version }}
+        {% if current_user.tipo == "admin" %}
+        <br>
+        Database: {{ info["DBENGINE"] }}
+        <br>
+        Cache: {{ info["CACHE"] }}
+        {% endif %}
       </div>
     </div>
   </div>
