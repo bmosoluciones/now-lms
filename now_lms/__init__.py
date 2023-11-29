@@ -353,6 +353,7 @@ lms_app.jinja_env.globals["obtener_estilo_actual"] = obtener_estilo_actual
 lms_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
 lms_app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
 lms_app.jinja_env.globals["config"] = carga_configuracion_del_sitio_web_desde_db
+lms_app.jinja_env.globals["version"] = VERSION
 
 
 # ---------------------------------------------------------------------------------------
