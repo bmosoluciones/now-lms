@@ -41,6 +41,7 @@ from datetime import datetime
 from functools import wraps
 from typing import Union
 from os import environ, cpu_count, path
+from platform import python_version
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -356,6 +357,7 @@ lms_app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
 lms_app.jinja_env.globals["config"] = carga_configuracion_del_sitio_web_desde_db
 lms_app.jinja_env.globals["version"] = VERSION
 lms_app.jinja_env.globals["info"] = app_info(lms_app)
+lms_app.jinja_env.globals["pyversion"] = python_version()
 
 
 # ---------------------------------------------------------------------------------------
