@@ -8,7 +8,4 @@ coverage:
         target: auto
         threshold: 8%
 ignore:
-  - "now_lms/config"
-  - "now_lms/db"
-  - "now_lms/forms"
   - "now_lms/__main__.py"
