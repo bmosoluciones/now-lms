@@ -182,7 +182,7 @@ class CursoRecurso(database.Model, BaseTabla):
     indice = database.Column(database.Integer(), index=True)
     seccion = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False, index=True)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    rel_curso = database.relationship("Curso", foreign_keys=curso)
+    rel_curso = database.relationship("Curso")
     nombre = database.Column(database.String(150), nullable=False)
     descripcion = database.Column(database.String(1000), nullable=False)
     # Uno de: mp3, pdf, meet, img, text, html, link, slides, youtube
