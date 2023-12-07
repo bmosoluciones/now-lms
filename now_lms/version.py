@@ -43,6 +43,7 @@ APPAUTHOR = "BMO Soluciones, S.A."
 MAYOR = "0"
 MENOR = "0"
 PATCH = "1"
+POST = False
 
 # <--------------------------------------------------------------------------> #
 # Pre release data.
@@ -53,8 +54,11 @@ REVISION = datetime.today().strftime("%Y%m%d")
 # Release string
 # Refences:
 #  - https://peps.python.org/pep-0440/
-# 0.0.1a13.dev20231129
-if PRERELEASE:  # pragma: no cover
+# 0.0.1a13.dev20231207
+if PRERELEASE:
     VERSION = MAYOR + "." + MENOR + "." + PATCH + PRERELEASE + ".dev" + REVISION
-else:  # pragma: no cover
-    VERSION = MAYOR + "." + MENOR + "." + PATCH
+else:
+    if not POST:
+        VERSION = MAYOR + "." + MENOR + "." + PATCH
+    else:
+        VERSION = MAYOR + "." + MENOR + "." + PATCH + ".post" + REVISION

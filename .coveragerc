@@ -14,4 +14,5 @@ exclude_lines =
 
 omit =
     "now_lms/__main__.py",
+    "now_lms/version.py",
     "now_lms/config/parse_config_file.py"
