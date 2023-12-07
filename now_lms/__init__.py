@@ -89,6 +89,7 @@ from now_lms.db import (
     ProgramaCurso,
     Recurso,
     UsuarioGrupoTutor,
+    Mensaje,
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
 )
 
@@ -157,6 +158,7 @@ from now_lms.forms import (
     ProgramaForm,
     RecursoForm,
     UserForm,
+    MsgForm,
 )
 from now_lms.misc import (
     HTML_TAGS,
@@ -192,6 +194,17 @@ PANEL_DE_USUARIO = redirect("/panel")
 alembic: Alembic = Alembic()
 administrador_sesion: LoginManager = LoginManager()
 mde: Mde = Mde()
+
+
+def markdown_to_clean_hmtl(text: str):
+    """Devuelve HTML limpio a partir de un texto en MarkDown."""
+    allowed_tags = HTML_TAGS
+    allowed_attrs = {"*": ["class"], "a": ["href", "rel"], "img": ["src", "alt"]}
+
+    html = markdown(text)
+    html_limpio = clean(linkify(html), tags=allowed_tags, attributes=allowed_attrs)
+
+    return html_limpio
 
 
 def inicializa_extenciones_terceros(flask_app):
@@ -358,6 +371,7 @@ lms_app.jinja_env.globals["config"] = carga_configuracion_del_sitio_web_desde_db
 lms_app.jinja_env.globals["version"] = VERSION
 lms_app.jinja_env.globals["info"] = app_info(lms_app)
 lms_app.jinja_env.globals["pyversion"] = python_version()
+lms_app.jinja_env.globals["mkdonw2thml"] = markdown_to_clean_hmtl
 
 
 # ---------------------------------------------------------------------------------------
@@ -2522,3 +2536,46 @@ def vista_recurso(resource_code):
         curso=Recurso.query.filter_by(codigo=resource_code).first(),
         tipo=TIPOS_RECURSOS,
     )
+
+
+# ---------------------------------------------------------------------------------------
+# Interfaz de mensajes
+# ---------------------------------------------------------------------------------------
+
+
+@lms_app.route("/message/view/<mgs_id>")
+@login_required
+def mensaje(mgs_id: str):
+    """Mensaje."""
+
+    mensaje = database.session.execute(database.select(Mensaje).filter(Mensaje.id == mgs_id)).first()[0]
+    usuario = database.session.execute(database.select(Usuario).filter(Usuario.id == mensaje.usuario)).first()[0]
+    respuestas = database.session.execute(database.select(Mensaje, Usuario).filter(Mensaje.parent == mgs_id)).all()
+    form = MsgForm(es_respuesta=True, parent=mensaje.id)
+
+    if mensaje.parent is None:
+        return render_template(
+            "learning/mensajes/ver_msg.html", mensaje=mensaje, usuario=usuario, form=form, respuestas=respuestas
+        )
+    else:
+        return redirect(url_for("mensaje", mgs_id=mensaje.parent))
+
+
+@lms_app.route("/message/new", methods=["GET", "POST"])
+@login_required
+def nuevo_mensaje():
+    """Nuevo Mensaje."""
+
+    form = MsgForm()
+    mensaje = Mensaje()
+    if form.validate_on_submit():
+        mensaje.usuario = current_user.id
+        mensaje.titulo = form.titulo.data
+        mensaje.texto = form.editor.data
+        mensaje.parent = form.parent.data
+        database.session.add(mensaje)
+        database.session.commit()
+        database.session.refresh(mensaje)
+        return redirect(url_for("mensaje", mgs_id=mensaje.id))
+
+    return render_template("learning/mensajes/nuevo_msg.html", form=form)

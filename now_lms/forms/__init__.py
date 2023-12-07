@@ -37,6 +37,7 @@ from wtforms import (
     StringField,
     SubmitField,
     TextAreaField,
+    HiddenField,
 )
 from wtforms.validators import DataRequired
 from wtforms.widgets import ColorInput
@@ -313,10 +314,18 @@ class UserForm(FlaskForm):
         "Titulo",
         choices=[
             ("", "No especificado"),
-            ("ing", "Ingenioero"),
+            ("ing", "Ingeniero"),
             ("lic", "Licenciado"),
             ("dr", "Doctor"),
         ],
     )
     nacimiento = DateField()
     bio = TextAreaField()
+
+
+class MsgForm(FlaskForm):
+    """Formulario para crear un mensaje en el sistema."""
+
+    titulo = StringField(validators=[])
+    editor = MdeField()
+    parent = HiddenField(validators=[])

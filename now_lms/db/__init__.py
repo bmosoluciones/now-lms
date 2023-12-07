@@ -68,7 +68,8 @@ class BaseTabla:
     id = database.Column(
         database.String(26), primary_key=True, nullable=False, index=True, default=generador_de_codigos_unicos
     )
-    creado = database.Column(database.DateTime, default=database.func.now(), nullable=False)
+    timestamp = database.Column(database.DateTime, default=database.func.now(), nullable=False)
+    creado = database.Column(database.Date, default=database.func.date(database.func.now()), nullable=False)
     creado_por = database.Column(database.String(15), nullable=True)
     modificado = database.Column(database.DateTime, onupdate=database.func.now(), nullable=True)
     modificado_por = database.Column(database.String(15), nullable=True)
@@ -453,11 +454,11 @@ class Certificado(database.Model, BaseTabla):
 class Mensaje(database.Model, BaseTabla):
     """Mensajes de usuarios."""
 
-    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    recurso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False, index=True)
+    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), index=True)
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), index=True)
+    recurso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_RECURSO), index=True)
     cerrado = database.Column(database.Boolean(), default=False)
     publico = database.Column(database.Boolean(), default=False)
-    texto = database.Column(database.String(100))
-    es_respuesta = database.Column(database.Boolean(), default=False)
-    padre = database.Column(database.String(26))
+    titulo = database.Column(database.String(100))
+    texto = database.Column(database.String(1000))
+    parent = database.Column(database.String(26), database.ForeignKey("mensaje.id"), nullable=True, index=True)
