@@ -397,7 +397,7 @@ class Programa(database.Model, BaseTabla):
     nombre = database.Column(database.String(20), nullable=False)
     codigo = database.Column(database.String(10), nullable=False, unique=True)
     descripcion = database.Column(database.String(200))
-    texto = database.Column(database.String(1000))
+    texto = database.Column(database.String(1500))
     precio = database.Column(database.Float())
     publico = database.Column(database.Boolean())
     # draft, open, closed
