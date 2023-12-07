@@ -454,7 +454,7 @@ class Certificado(database.Model, BaseTabla):
 class Mensaje(database.Model, BaseTabla):
     """Mensajes de usuarios."""
 
-    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), index=True)
+    usuario = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_USUARIO), index=True)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), index=True)
     recurso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_RECURSO), index=True)
     cerrado = database.Column(database.Boolean(), default=False)
