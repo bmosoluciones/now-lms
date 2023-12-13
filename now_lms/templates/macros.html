@@ -158,6 +158,7 @@
   </div>
 </nav>
 
+{% if current_user.is_authenticated %}
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -176,9 +177,23 @@
         <strong>Cache:</strong> {{ info["CACHE"] }}
         {% endif %}
       </div>
+      <div class="modal-footer">
+        <a href="https://now-lms-manual.readthedocs.io/en/latest/" "button" class="btn btn-sm btn-secondary"
+          data-dismiss="modal"><i class="bi bi-book" aria-hidden="true"></i>
+          Manual de Usuario</a>
+        {% if current_user.tipo == "admin" %}
+        <a href="https://bmosoluciones.github.io/now-lms/" "button" class="btn btn-sm btn-secondary"
+          data-dismiss="modal"><i class="bi bi-book" aria-hidden="true"></i>
+          Manual de Administración</a>
+        {% endif %}
+      </div>
+
+
+
     </div>
   </div>
 </div>
+{% endif %}
 
 {% endmacro %}
 
