@@ -470,6 +470,12 @@ def setup(with_examples):  # pragma: no cover
 
 
 @lms_app.cli.command()
+def release():  # pragma: no cover
+    """Devuelve la versión actual del programa."""
+    print(VERSION)
+
+
+@lms_app.cli.command()
 def upgrade_db():  # pragma: no cover
     """Actualiza esquema de base de datos."""
     alembic.upgrade()
