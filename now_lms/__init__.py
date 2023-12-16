@@ -1535,7 +1535,7 @@ def editar_curso(course_code):
     form = CurseForm(
         nivel=curso_a_editar.nivel, descripcion=curso_a_editar.descripcion, promocionado=curso_a_editar.promocionado
     )
-    curso_url = url_for("curso", course_code=course_code, inspect=True)
+    curso_url = url_for("administrar_curso", course_code=course_code)
     if form.validate_on_submit() or request.method == "POST":
         if curso_a_editar.promocionado is False and form.promocionado.data is True:
             curso_a_editar.promocionado = datetime.today()
@@ -1616,7 +1616,7 @@ def nuevo_curso():
 
             flash("Curso creado exitosamente.", "success")
             cache.delete("view/" + url_for("home"))
-            return redirect(url_for("curso", course_code=form.codigo.data, inspect=True))
+            return redirect(url_for("administrar_curso", course_code=form.codigo.data))
         except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear su curso.", "warning")
             return redirect("/instructor")
@@ -1646,10 +1646,10 @@ def nuevo_seccion(course_code):
             database.session.add(nueva_seccion)
             database.session.commit()
             flash("Sección agregada correctamente al curso.", "success")
-            return redirect(url_for("curso", course_code=course_code, inspect=True))
+            return redirect(url_for("administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear la seccion.", "warning")
-            return redirect(url_for("curso", course_code=course_code, inspect=True))
+            return redirect(url_for("administrar_curso", course_code=course_code))
     else:  # pragma: no cover
         return render_template("learning/nuevo_seccion.html", form=form)
 
@@ -1670,10 +1670,10 @@ def editar_seccion(course_code, seccion):
         try:
             database.session.commit()
             flash("Sección modificada correctamente.", "success")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash("Hubo en error al actualizar la seccion.", "warning")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("administrar_curso", course_code=course_code))
     else:  # pragma: no cover
         return render_template("learning/editar_seccion.html", form=form, seccion=seccion_a_editar)
 
@@ -1688,7 +1688,7 @@ def incrementar_indice_seccion(course_code, indice):
         indice=int(indice),
         task="decrement",
     )
-    return redirect(url_for("curso", course_code=course_code))
+    return redirect(url_for("administrar_curso", course_code=course_code))
 
 
 @lms_app.route("/course/<course_code>/seccion/decrement/<indice>")
@@ -1701,7 +1701,7 @@ def reducir_indice_seccion(course_code, indice):
         indice=int(indice),
         task="increment",
     )
-    return redirect(url_for("curso", course_code=course_code))
+    return redirect(url_for("administrar_curso", course_code=course_code))
 
 
 @lms_app.route("/course/resource/<cource_code>/<seccion_id>/<task>/<resource_index>")
@@ -1714,7 +1714,7 @@ def modificar_orden_recurso(cource_code, seccion_id, resource_index, task):
         indice=int(resource_index),
         task=task,
     )
-    return redirect(url_for("curso", course_code=cource_code))
+    return redirect(url_for("administrar_curso", course_code=cource_code))
 
 
 @lms_app.route("/delete_recurso/<curso_id>/<seccion>/<id_>")
@@ -1725,7 +1725,7 @@ def eliminar_recurso(curso_id, seccion, id_):
     CursoRecurso.query.filter(CursoRecurso.id == id_).delete()
     database.session.commit()
     reorganiza_indice_seccion(seccion=seccion)
-    return redirect(url_for("curso", course_code=curso_id))
+    return redirect(url_for("administrar_curso", course_code=curso_id))
 
 
 @lms_app.route("/delete_seccion/<curso_id>/<id_>")
@@ -1736,7 +1736,7 @@ def eliminar_seccion(curso_id, id_):
     CursoSeccion.query.filter(CursoSeccion.id == id_).delete()
     database.session.commit()
     reorganiza_indice_curso(codigo_curso=curso_id)
-    return redirect(url_for("curso", course_code=curso_id))
+    return redirect(url_for("administrar_curso", course_code=curso_id))
 
 
 @lms_app.route("/delete_curse/<course_id>")
@@ -1917,7 +1917,7 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
@@ -1953,7 +1953,7 @@ def nuevo_recurso_text(course_code, seccion):
             return redirect(url_for("curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("administrar_curso", course_code=course_code))
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_text.html", id_curso=course_code, id_seccion=seccion, form=form
@@ -1983,7 +1983,7 @@ def nuevo_recurso_link(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
@@ -2019,7 +2019,7 @@ def nuevo_recurso_pdf(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
@@ -2056,7 +2056,7 @@ def nuevo_recurso_meet(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
@@ -2093,7 +2093,7 @@ def nuevo_recurso_img(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
@@ -2130,7 +2130,7 @@ def nuevo_recurso_audio(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
@@ -2163,7 +2163,7 @@ def nuevo_recurso_html(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
