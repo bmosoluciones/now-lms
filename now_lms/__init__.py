@@ -701,12 +701,11 @@ def pagina_estudiante():
 
 @lms_app.route("/perfil")
 @login_required
-@perfil_requerido("student")
-@cache.cached(timeout=90)
 def perfil():
     """Perfil del usuario."""
-    perfil_usuario = Usuario.query.filter_by(usuario=current_user.usuario).first()
-    return render_template("inicio/perfil.html", perfil=perfil_usuario, genero=GENEROS)
+    registro_usuario = database.session.execute(database.select(Usuario).filter(Usuario.id == current_user.id)).first()[0]
+
+    return render_template("inicio/perfil.html", perfil=registro_usuario, genero=GENEROS)
 
 
 @lms_app.route("/perfil/edit/<ulid>", methods=["GET", "POST"])
@@ -1415,7 +1414,7 @@ def curso(course_code):
             editable = True
         else:
             _consulta = database.select(DocenteCurso).filter(
-                DocenteCurso.curso == course_code, DocenteCurso.usuario == current_user.id
+                DocenteCurso.curso == course_code, DocenteCurso.usuario == current_user.usuario
             )
             acceso = database.session.execute(_consulta).first()
             if acceso:
