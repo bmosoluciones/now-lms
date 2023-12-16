@@ -2335,6 +2335,7 @@ def new_program():
             publico=False,
             estado="draft",
             logo=False,
+            creado_por=current_user.id,
         )
         database.session.add(programa)
         try:
@@ -2354,12 +2355,22 @@ def new_program():
 @cache.cached(timeout=60)
 def programs():
     """Lista de programas"""
-    consulta = database.paginate(
-        database.select(Programa),  # noqa: E712
-        page=request.args.get("page", default=1, type=int),
-        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
-        count=True,
-    )
+
+    if current_user.tipo == "admin":
+        consulta = database.paginate(
+            database.select(Programa),  # noqa: E712
+            page=request.args.get("page", default=1, type=int),
+            max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+            count=True,
+        )
+    else:
+        consulta = database.paginate(
+            database.select(Programa).filter(Programa.creado_por == current_user.id),  # noqa: E712
+            page=request.args.get("page", default=1, type=int),
+            max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+            count=True,
+        )
+
     return render_template("learning/programas/lista_programas.html", consulta=consulta)
 
 
