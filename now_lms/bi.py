@@ -210,13 +210,17 @@ def cambia_estado_curso_por_id(
 
 def cambia_curso_publico(id_curso: Union[None, str, int] = None):
     """Cambia el estatus publico de un curso."""
-    CURSO = Curso.query.filter_by(codigo=id_curso).first()
-    if CURSO.publico:
-        CURSO.publico = False
+
+    CURSO = database.session.execute(database.select(Curso).filter(Curso.codigo == id_curso)).first()[0]
+    if CURSO.estado == "open":
+        if CURSO.publico:
+            CURSO.publico = False
+        else:
+            CURSO.publico = True
+            CURSO.modificado_por = current_user.usuario
+            database.session.commit()
     else:
-        CURSO.publico = True
-    CURSO.modificado_por = current_user.usuario
-    database.session.commit()
+        flash("No se puede publicar el curso", "warning")
 
 
 def cambia_seccion_publico(codigo: Union[None, str, int] = None):
