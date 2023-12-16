@@ -31,6 +31,7 @@ from typing import Union
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
+from flask import flash
 from flask_login import current_user
 
 # ---------------------------------------------------------------------------------------
@@ -194,10 +195,17 @@ def cambia_estado_curso_por_id(
 
     Los valores reconocidos por el sistema son: draft, public, open, closed.
     """
-    CURSO = Curso.query.filter_by(codigo=id_curso).first()
+
+    CURSO = database.session.execute(database.select(Curso).filter(Curso.codigo == id_curso)).first()[0]
     CURSO.estado = nuevo_estado
     CURSO.modificado_por = usuario
     database.session.commit()
+
+    database.session.refresh(CURSO)
+    if CURSO.estado != "open":
+        CURSO.publico = False
+        database.session.commit()
+        flash("Curso eliminado del sitio Web.", "info")
 
 
 def cambia_curso_publico(id_curso: Union[None, str, int] = None):

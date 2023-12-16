@@ -1772,7 +1772,7 @@ def cambiar_estatus_curso():
     cambia_estado_curso_por_id(
         id_curso=request.args.get("curse"), nuevo_estado=request.args.get("status"), usuario=current_user.usuario
     )
-    return redirect(url_for("curso", course_code=request.args.get("curse")))
+    return redirect(url_for("administrar_curso", course_code=request.args.get("curse")))
 
 
 @lms_app.route("/change_curse_public")
@@ -1783,7 +1783,7 @@ def cambiar_curso_publico():
     cambia_curso_publico(
         id_curso=request.args.get("curse"),
     )
-    return redirect(url_for("curso", course_code=request.args.get("curse")))
+    return redirect(url_for("administrar_curso", course_code=request.args.get("curse")))
 
 
 @lms_app.route("/change_curse_seccion_public")
