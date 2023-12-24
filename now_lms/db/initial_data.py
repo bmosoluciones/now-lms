@@ -798,6 +798,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R001.pdf",
         tipo="ebook",
+        usuario="admin",
     )
     recurso2 = Recurso(
         nombre="Alice's Adventures in Wonderland",
@@ -808,6 +809,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R002.pdf",
         tipo="ebook",
+        usuario="admin",
     )
     recurso3 = Recurso(
         nombre="Dracula",
@@ -818,6 +820,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R003.pdf",
         tipo="ebook",
+        usuario="admin",
     )
     recurso4 = Recurso(
         nombre="The War of the Worlds",
@@ -828,6 +831,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R004.pdf",
         tipo="ebook",
+        usuario="admin",
     )
     recurso4 = Recurso(
         nombre="Think Python",
@@ -838,6 +842,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R005.pdf",
         tipo="ebook",
+        usuario="instructor",
     )
     database.session.add(recurso1)
     database.session.add(recurso2)

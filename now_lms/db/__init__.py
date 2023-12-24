@@ -439,6 +439,7 @@ class Recurso(database.Model, BaseTabla):
     file_name = database.Column(database.String(200))
     promocionado = database.Column(database.Boolean())
     fecha_promocionado = database.Column(database.DateTime, nullable=True)
+    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
 
 
 class Certificado(database.Model, BaseTabla):

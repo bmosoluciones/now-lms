@@ -2481,12 +2481,22 @@ def new_resource():
 @perfil_requerido("instructor")
 def lista_de_recursos():
     """Lista de programas"""
-    consulta = database.paginate(
-        database.select(Recurso),  # noqa: E712
-        page=request.args.get("page", default=1, type=int),
-        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
-        count=True,
-    )
+
+    if current_user.tipo == "admin":
+        consulta = database.paginate(
+            database.select(Recurso),  # noqa: E712
+            page=request.args.get("page", default=1, type=int),
+            max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+            count=True,
+        )
+    else:
+        consulta = database.paginate(
+            database.select(Recurso).filter(Recurso.usuario == current_user.usuario),  # noqa: E712
+            page=request.args.get("page", default=1, type=int),
+            max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+            count=True,
+        )
+
     return render_template("learning/recursos/lista_recursos.html", consulta=consulta)
 
 
