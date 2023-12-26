@@ -24,7 +24,6 @@ from now_lms.db import Usuario
 
 app.config["SECRET_KEY"] = "jgjañlsldaksjdklasjfkjj"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
 app.config["TESTING"] = True
 app.config["WTF_CSRF_ENABLED"] = False
 app.config["DEBUG"] = True
@@ -318,12 +317,10 @@ rutas_estaticas = [
 
 
 def test_visit_all_views_no_session(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
     auth.logout()
-    assert app.config["SQLALCHEMY_DATABASE_URI"] == "sqlite://"
     for ruta in rutas_estaticas:
         consulta = client.get(ruta.ruta)
         assert consulta.status_code == ruta.no_session
@@ -333,12 +330,10 @@ def test_visit_all_views_no_session(client, auth):
 
 
 def test_visit_all_views_with_admin_session(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
     auth.login()
-    assert app.config["SQLALCHEMY_DATABASE_URI"] == "sqlite://"
     for ruta in rutas_estaticas:
         consulta = client.get(ruta.ruta)
         assert consulta.status_code == ruta.admin
@@ -388,7 +383,6 @@ formularios = [
 
 
 def test_fill_all_forms(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup(with_examples=True)
@@ -428,7 +422,6 @@ def test_fill_all_forms(client, auth):
 
 
 def test_cambiar_curso(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
@@ -442,7 +435,6 @@ def test_cambiar_curso(client, auth):
 
 
 def test_indices_seccion():
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
@@ -521,7 +513,6 @@ def test_indices_seccion():
 
 
 def test_reorganizar_indice_recurso(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
@@ -546,7 +537,6 @@ def test_reorganizar_indice_recurso(client, auth):
 
 
 def test_reorganizar_nuevo_recurso(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
@@ -561,7 +551,6 @@ def test_reorganizar_nuevo_recurso(client, auth):
 
 
 def test_reorganizar_indice_seccion(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
@@ -575,7 +564,6 @@ def test_reorganizar_indice_seccion(client, auth):
 
 
 def test_serve_files(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
@@ -615,7 +603,6 @@ def test_serve_files(client, auth):
 
 
 def test_course_description(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
@@ -632,7 +619,6 @@ def test_course_description(client, auth):
 
 
 def test_edit_course(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
@@ -660,7 +646,6 @@ def test_edit_course(client, auth):
 
 
 def test_edit_seccion(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
@@ -686,7 +671,6 @@ def test_edit_seccion(client, auth):
 
 
 def test_edit_settings(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
@@ -718,8 +702,7 @@ def test_edit_settings(client, auth):
     assert post.status_code == 200
 
 
-def test_crear_usuario(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
+def test_crear_usuario(client):
     app.app_context().push()
     database.drop_all()
     initial_setup(with_examples=False)
@@ -770,7 +753,6 @@ def test_crear_usuario(client, auth):
 
 
 def test_activar_inactivar_eliminar_usuario(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup(with_examples=True)
@@ -802,7 +784,6 @@ def test_activar_inactivar_eliminar_usuario(client, auth):
 
 
 def test_eliminar_logo_curso(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup(with_examples=True)
@@ -833,7 +814,6 @@ def test_eliminar_logo_curso(client, auth):
 
 
 def test_eliminar_logo_programa(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup(with_examples=True)
@@ -868,10 +848,10 @@ def test_eliminar_logo_programa(client, auth):
 
 
 def test_crear_recursos(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup(with_examples=False)
+
     from now_lms.db import CursoSeccion
 
     seccion = CursoSeccion.query.filter(CursoSeccion.curso == "now").first()
@@ -903,6 +883,17 @@ def test_crear_recursos(client, auth):
     response = client.get(url)
     response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
     assert response.status_code == 200
+
+
+def test_crear_recursos_no_files(client, auth):
+    app.app_context().push()
+    database.drop_all()
+    initial_setup(with_examples=False)
+
+    from now_lms.db import CursoSeccion
+
+    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "now").first()
+    base_url = "/course/now/" + seccion.id
 
     url = base_url + "/youtube/new"
     data = {"nombre": "test", "descripcion": "test pdf", "youtube_url": "test"}
@@ -946,7 +937,6 @@ def test_crear_recursos(client, auth):
 
 
 def test_eliminar_recursos(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
@@ -962,7 +952,6 @@ def test_eliminar_recursos(client, auth):
 
 
 def test_generar_indice_recurso():
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
@@ -992,7 +981,6 @@ def test_generar_indice_recurso():
 
 
 def test_eliminar_archivos():
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
@@ -1010,7 +998,6 @@ def test_eliminar_archivos():
 
 
 def test_eliminar_logo(client, auth):
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
     app.app_context().push()
     database.drop_all()
     initial_setup()
