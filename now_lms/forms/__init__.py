@@ -285,6 +285,7 @@ class RecursoForm(BaseForm):
             ("cheat_sheet", "Hoja de Guía"),
             ("ebook", "Libro Electronico"),
             ("template", "Plantilla"),
+            ("guide", "Guia"),
         ],
     )
 
