@@ -46,6 +46,7 @@
               <th>Nombre</th>
               <th>Publico</th>
               <th>Precio</th>
+              <th>Estatus</th>
               <th></th>
             </tr>
           </thead>
@@ -69,6 +70,11 @@
               <td>
                 <a href="{{url_for("pagina_programa", codigo=item.codigo)}}" class="link-dark">
                   {{ item.precio }}
+                </a>
+              </td>
+              <td>
+                <a href="{{url_for("pagina_programa", codigo=item.codigo)}}" class="link-dark">
+                  {{ item.estado }}
                 </a>
               </td>
               <td>
