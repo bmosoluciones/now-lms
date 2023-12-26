@@ -1514,6 +1514,14 @@ def administrar_curso(course_code):
     )
 
 
+@lms_app.route("/program/<codigo>/courses")
+@login_required
+@perfil_requerido("instructor")
+def programa_cursos(codigo):
+    """Pagina principal del curso."""
+
+    return render_template("learning/programas/lista_cursos.html")
+
 @lms_app.route("/program/<codigo>")
 @cache.cached(timeout=60, unless=no_guardar_en_cache_global)
 def pagina_programa(codigo):

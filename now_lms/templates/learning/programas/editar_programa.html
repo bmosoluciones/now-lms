@@ -22,7 +22,17 @@
     {{ macros.notify() }}
 
     <div class="container px-4 py-5" id="icon-grid">
-      <h4 class="pb-2 border-bottom">Editar Programa.</h4>
+      <div class="d-flex justify-content-between border-bottom">
+        <h4 class="pb-2 border-bottom">Editar Programa.</h4>
+
+        <p>
+          <span class="badge bg-success">
+            <a href="{{ url_for("programa_cursos", codigo=programa.codigo) }}" class="link-light">Lista de Cursos</a>
+          </span>
+        </p>
+
+      </div>
+      
       <form method="post" enctype=multipart/form-data>
         {{ form.csrf_token }}
         <div class="row g-3">

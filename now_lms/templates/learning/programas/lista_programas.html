@@ -84,6 +84,9 @@
                 <span class="badge bg-info">
                   <a href="{{ url_for("edit_program", tag=item.id) }}" class="link-light">Editar Programa</a>
                 </span>
+                <span class="badge bg-primary">
+                  <a href="{{ url_for("programa_cursos", codigo=item.codigo) }}" class="link-light">Lista de Cursos</a>
+                </span>
               </td>
             </tr>
           </tbody>
