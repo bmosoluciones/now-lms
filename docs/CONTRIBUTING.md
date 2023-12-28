@@ -142,19 +142,21 @@ NO_LMS_CACHE=True hupper -m now_lms
 
 ## Database Support
 
-These database are supported:
+These database engines are supported and tested as part of the release validation process:
 
 -   SQLite
--   Postgres
--   MySQL
+-   PostgreSQL version 13 or superior.
+-   MySQL version 8 or superior.
 
-These database should work:
+These database engines should work but are not tested by default:
 
 -   MariaDB
+-   MS SQLServer
 
 ### SQLite
 
-SQLite works out of the box, to test NOW - LMS with SQLite just run:
+SQLite works out of the box and if the default option if not other database engine is defined via
+configuration, to test NOW - LMS with SQLite just run:
 
 ```
 python -m pytest  -v --exitfirst --cov=now_lms
@@ -165,10 +167,14 @@ python -m pytest  -v --exitfirst --cov=now_lms
 To test NOW - LMS with Postgres follow this steps:
 
 ```
+# On Fedora, Rocky Linux, Alma or RHEL:
 sudo dnf install postgresql-server postgresql-contrib
 sudo postgresql-setup --initdb --unit postgresql
 sudo systemctl start postgresql
 sudo -u postgres psql
+# We use "postgresdb"  as the default user, password and database name, you
+# can use another database name or user credentials but be care of update the
+# conection string before running the test or the development server.
 postgres=# CREATE USER postgresdb WITH PASSWORD 'postgresdb';
 postgres=# CREATE DATABASE postgresdb OWNER postgresdb;
 postgres=# \q
@@ -178,8 +184,9 @@ Allow connet with user and password:
 
 ```
 sudo gedit /var/lib/pgsql/data/pg_hba.conf
-And edit host all all 127.0.0.1/32 ident to host all all 127.0.0.1/32 md5
 ```
+
+And edit the line `host all all 127.0.0.1/32 ident` and set it to `host all all 127.0.0.1/32 md5`
 
 Run the test with postgres:
 
@@ -196,6 +203,9 @@ sudo dnf install community-mysql-server -y
 sudo systemctl start mysqld
 sudo mysql_secure_installation
 sudo mysql -u root -p
+# We use "mysqldatabase"  as the default user, password and database name, you
+# can use another database name or user credentials but be care of update the
+# conection string before running the test or the development server.
 CREATE USER 'mysqldatabase'@'localhost' IDENTIFIED BY 'mysqldatabase';
 CREATE DATABASE mysqldatabase;
 GRANT ALL PRIVILEGES ON mysqldatabase.* TO 'mysqldatabase'@'localhost';
