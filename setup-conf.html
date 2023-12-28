@@ -1303,18 +1303,18 @@ app = lms_app
 <h2 id="list-of-options">List of options:</h2>
 <p>You can use the following options to configure NOW-LMS:</p>
 <ul>
-<li><strong>SECRET_KEY</strong> (required): A secure string used to secure the login proccess and form validation.</li>
-<li><strong>SQLALCHEMY_DATABASE_URI</strong> (required): A valid SQLAlchemy conextion string, SQLite, MySQL version 8 and a resent version of PostgreSQL
-    must work out of the box, MariaDB ans MS SQLServer should work but we not test the release versus this database engines. Checkout the
+<li><strong>SECRET_KEY</strong> (<span style="color:red">required</span>): A secure string used to secure the login proccess and form validation.</li>
+<li><strong>SQLALCHEMY_DATABASE_URI</strong> (<span style="color:red">required</span>): A valid SQLAlchemy conextion string, SQLite, MySQL version
+    8 and a resent version of PostgreSQL must work out of the box, MariaDB ans MS SQLServer should work but we not test the release versus this database engines. Checkout the
     <a href="https://docs.sqlalchemy.org/en/20/core/engines.html">SQLAlchemy docs</a> to valid examples to conections strings, the PyMSQL and PG800 database drivers are installed as normal dependencies, other database engines may requiere manual drivers setup.</li>
-<li><strong>DATABASE_URL</strong> (alias): User friendly alias to <code>SQLALCHEMY_DATABASE_URI</code>.</li>
-<li><strong>CACHE_REDIS_URL</strong> (optional): Connection string to use <a href="https://redis.io/">Redis</a> as cache backend. Example to connect to a Redis
-    instance running in the same host is: <code>redis://localhost:6379/0</code>.</li>
-<li><strong>REDIS_URL</strong> (alias): User friendly alias to <code>CACHE_REDIS_URL</code>.</li>
-<li><strong>CACHE_MEMCACHED_SERVERS</strong> (optional): Connection string to use <a href="https://memcached.org/">Mencached</a> as cache backend.</li>
-<li><strong>UPLOAD_FILES_DIR</strong> (recomended): Directory to save user uploaded files, must be writable. Note that this variable can be set AD-HOC
-    because the order we parse the configuration options upload file directorios must be set before the initial import of the app, any
-    overwritte we do can lead to unexpected results. It is better to set this option as enviroment variable before the firts run of the app. Note that if you migrate your instalation to a diferent host must edit this value so database records can match fisical file storage.</li>
+<li><strong>DATABASE_URL</strong> (<span style="color:blue">alias</span>): User friendly alias to <code>SQLALCHEMY_DATABASE_URI</code>.</li>
+<li><strong>CACHE_REDIS_URL</strong> (<span style="color:green">optional</span>): Connection string to use <a href="https://redis.io/">Redis</a> as cache backend
+    Example to connect to a Redis instance running in the same host is: <code>redis://localhost:6379/0</code>.</li>
+<li><strong>REDIS_URL</strong> (<span style="color:blue">alias</span>): User friendly alias to <code>CACHE_REDIS_URL</code>.</li>
+<li><strong>CACHE_MEMCACHED_SERVERS</strong> (<span style="color:green">optional</span>): Connection string to use <a href="https://memcached.org/">Mencached</a>
+    as cache backend.</li>
+<li><strong>UPLOAD_FILES_DIR</strong> (<span style="color:purple">recomended</span>): Directory to save user uploaded files, must be writable by the
+    main app proccess. Note that this variable can NOT be set AD-HOC because the order we parse the configuration options, so you must set this options before the app firts run, any overwritte before this can lead to unexpected results like file not found errors.It is better to set this option as enviroment variable before the firts run of the app. Note that if you migrate your instalation to a diferent host must edit this value so database records can match fisical file storage.</li>
 </ul>
 
 
