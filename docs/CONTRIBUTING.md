@@ -16,13 +16,13 @@ Thank you for your interest in collaborating with NOW Learning Management System
 
 NOW LMS is free and open source software released under the Apache Version 2 license (the [license](https://github.com/bmosoluciones/now-lms/blob/main/LICENSE) of the proyect), this means that project users can:
 
-* Use the project for profit or not.
-* Modify the project to fit theirs specific needs (clearly defining the changes made to the original project).
+-   Use the project for profit or not.
+-   Modify the project to fit theirs specific needs (clearly defining the changes made to the original project).
 
 However, users cannot:
 
-* Make use of the project trademarks without explicit permission.
-* Require warranties of any kind; the project is distributed as is without guarantees that it may be useful for any specific purpose.
+-   Make use of the project trademarks without explicit permission.
+-   Require warranties of any kind; the project is distributed as is without guarantees that it may be useful for any specific purpose.
 
 ## Certify the origin of your contributions.
 
@@ -42,56 +42,59 @@ And an appropriate signature will be added to the commit, not included in the co
 
 You can collaborate in different ways:
 
-* As a developer.
-* As a Quality Assurance (QA).
-* [Writing and improving documentation.](https://now-lms-manual.readthedocs.io/en/latest/)
-* [Contributing ideas of new characteristics.](https://github.com/bmosoluciones/now-lms/discussions)
-* [Reporting bugs.](https://github.com/bmosoluciones/now-lms/issues)
-* Translating.
-* Providing guidance and support to other users.
-* Sharing the project with others.
+-   As a developer.
+-   As a Quality Assurance (QA).
+-   [Writing and improving documentation.](https://now-lms-manual.readthedocs.io/en/latest/)
+-   [Contributing ideas of new characteristics.](https://github.com/bmosoluciones/now-lms/discussions)
+-   [Reporting bugs.](https://github.com/bmosoluciones/now-lms/issues)
+-   Translating.
+-   Providing guidance and support to other users.
+-   Sharing the project with others.
 
 ### Collaborating with the development of the project:
 
 The development is cross-platform, you can use both Windows, Linux or Mac to contribute the project, to collaborate with the project you need:
 
-  * [Git](https://git-scm.com/).
-  * [NPM](https://www.npmjs.com/).
-  * [Python](https://www.python.org/downloads/).
+-   [Git](https://git-scm.com/).
+-   [NPM](https://www.npmjs.com/).
+-   [Python](https://www.python.org/downloads/).
 
-Minimal Python version is: >=3.7
+Minimal Python version is: >=3.8
 
 Technologies used:
 
-* Backend: [Flask](https://flask.palletsprojects.com/en/1.1.x/), with a set of many libraries:
-  - flask-babel
-  - flask-caching
-  - flask-login
-  - flask-mde
-  - flask-reuploaded
-  - flask-sqlalchemy
-  - flask-wtf
-* Frontend: [Bootstrap 5](https://v5.getbootstrap.com/).
-* ORM: [SQLAlchemy](https://www.sqlalchemy.org/):
-  - flask-alembic
+-   Backend: [Flask](https://flask.palletsprojects.com/en/1.1.x/), with a set of many libraries:
+    -   flask-babel
+    -   flask-caching
+    -   flask-login
+    -   flask-mde
+    -   flask-reuploaded
+    -   flask-sqlalchemy
+    -   flask-wtf
+-   Frontend: [Bootstrap 5](https://v5.getbootstrap.com/).
+-   ORM: [SQLAlchemy](https://www.sqlalchemy.org/):
+    -   flask-alembic
 
 Other libraries used in the project are:
-  - appdirs: App directories.
-  - bleach: HTML sanitisation.
-  - configobj: Configuration files parser.
-  - bcrypt: Password hashing.
-  - loguru: Logging.
-  - markdown: Render markdown as HTML.
-  - python-ulid: Generate uniques id.
-  - waitress: WSGI server.
 
-Development is done in the branch ```development```, once the project is released for production the branch ```main``` will contain the latest version suitable for use in production.
+-   appdirs: App directories.
+-   bleach: HTML sanitisation.
+-   configobj: Configuration files parser.
+-   bcrypt: Password hashing.
+-   loguru: Logging.
+-   markdown: Render markdown as HTML.
+-   python-ulid: Generate uniques id.
+-   waitress: WSGI server.
+
+Development is done in the branch `development`, once the project is released for production the branch `main` will contain the latest version suitable for use in production.
 
 ### Getting the source code
 
 ```
 git clone https://github.com/bmosoluciones/now-lms.git
+cd now-lms
 ```
+
 ### Create a python virtual env
 
 ```
@@ -101,6 +104,7 @@ source venv/bin/activate
 # Windows
 venv\Scripts\activate.bat
 ```
+
 ### Install python deps
 
 ```
@@ -121,15 +125,17 @@ python3 - m pip install -r development.txt
 ```
 hupper -m now_lms
 ```
-Please note that we use waitress as WSGI server because gunicorn do not works on Windows, hupper will live reload the WSGI server as you save changes in the source code so you will be able to work with your changes as you work, please note that changes to the jinja html templates will not trigger the server reload, only changes to python files.
 
-Default user and password are ```lms-admin```, default url to work with the server will be ```http://127.0.0.1:8080/```.
+Please note that we use waitress as WSGI server because gunicorn do not works on Windows, hupper will live reload the WSGI server as you save changes in the source code so you will be able to verify your changes as you work, please note that changes to the jinja html templates will not trigger the server reload, only changes to python source files.
+
+Default user and password are `lms-admin`, default url to work with the development server will be `http://127.0.0.1:8080/`.
 
 You can disable the default cache service with:
 
 ```
 NO_LMS_CACHE=True hupper -m now_lms
 ```
+
 #### Style Guide:
 
 [PEP8](https://www.python.org/dev/peps/pep-0008/) with a maximum line length of 127 characters.
@@ -138,13 +144,13 @@ NO_LMS_CACHE=True hupper -m now_lms
 
 These database are supported:
 
-* SQLite
-* Postgres
-* MySQL
+-   SQLite
+-   Postgres
+-   MySQL
 
 These database should work:
 
-* MariaDB
+-   MariaDB
 
 ### SQLite
 
