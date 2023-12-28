@@ -6,11 +6,11 @@ We must agree that there are many options to host your online teaching on the we
 you must firts to use Moodle to serve a efective learning experience. Long history in short: maybe Moodle just feel to moucht
 for your online school requeriments.
 
-[OpenEDX](https://openedx.org/) is the software thats powers the [EDX](https://www.edx.org/), another great project if you want to go bit.
+[OpenEDX](https://openedx.org/) is the software thats powers the [EDX](https://www.edx.org/), another great project if you want to go big.
 
-[Udemy](https://www.udemy.com/) If you only want to organize your lesson in videos and try to reach the largest possible audience Udemy is an option, however they have an aggressive charging policy and you may feel that they take most of the profit for your course online.
+[Udemy](https://www.udemy.com/) If you only want to organize your lesson in videos and try to reach the largest possible audience Udemy is an option, however they have an aggressive charging policy and you may feel that they take most of the profit for your online course.
 
-Haven said that are some really nice options to host your courses on line like [Thinkific](https://www.thinkific.com/) and [Teachable](https://teachable.com/), with both of then you can make a on line class run than feels yours and just pay the hosting a payment fee, so NOW - LMS aims to be a place to your cources than you can host almost anywhere and if you want to get paid do not share the income with anyone.
+Haven said thatm they are some really nice options to host your courses on line like [Thinkific](https://www.thinkific.com/) and [Teachable](https://teachable.com/), with both of then you can make a on line class run than feels yours and just pay the hosting fee, so NOW - LMS aims to be a place to your cources than you can host almost anywhere and if you want to get paid do not share the income with anyone.
 
 These sites can be a inspiration for you:
 
@@ -53,3 +53,5 @@ install software in Arch Linux.
 YouTube tutorials are a good way to learns something new, but creating high quality video lessons is hard and
 can be expensive to produce, we believe than a good course must have a good mix of resource formats, from plain
 text to videos, passing from pdf, infografics, audios, embebed content, etc.
+
+With NOW - LMS you can set your cource with many resources types to offer a better leaning experience.

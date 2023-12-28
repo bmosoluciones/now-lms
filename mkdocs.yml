@@ -61,9 +61,10 @@ nav:
           - CentOS / Alma / Rocky: rocky.md
       - Other Deployment options:
           - Server less: dev_ops.md
-  - Releases: release.md
   - About:
       - About: faq.md
+      - Releases: release.md
+      - Changelog: changes.md
       - Readme: https://github.com/bmosoluciones/now-lms/blob/main/README.md
       - License: https://github.com/bmosoluciones/now-lms/blob/main/LICENSE
   - Contributing:

@@ -139,6 +139,7 @@ NO_LMS_CACHE=True hupper -m now_lms
 #### Style Guide:
 
 [PEP8](https://www.python.org/dev/peps/pep-0008/) with a maximum line length of 127 characters.
+[Prettier](https://github.com/prettier/prettier) for html templates.
 
 ## Database Support
 

@@ -8,9 +8,9 @@ We support by default SQLite, MySQL and PostgreSQL.
 ### SQLite
 
 [SQLite](https://www.sqlite.org/index.html) works out of the box and if the default option for development,
-if you want to use the sytem to serve a small amount of user SQLite will work fine, but many hosting options
-do not provide access to persisten storage out of the box so many tines you will need a separate database host
-to save your data.
+if you want to use the sytem to serve a small amount of users SQLite will work fine, but many hosting options
+that do not provide access to persisten storage in the file system so many tines you will need a separate
+database host to save your data.
 
 If not other database service if defined in the configuration NOW - LMS will default to a local SQLite database:
 
@@ -20,7 +20,7 @@ python -m now_lms
 
 ### PostgreSQL
 
-For many user [PostreSQL](https://www.postgresql.org/) is the best open source database engine, NOW - LMS support
+For many user [PostreSQL](https://www.postgresql.org/) is the best open source database engine, NOW - LMS supports
 PostgreSQL as a primary database host, and there many cloud providers ofering PostgreSQL as a service like:
 
 -   [ElephantSQL](https://www.elephantsql.com/)
@@ -43,7 +43,7 @@ postgres=# CREATE DATABASE postgresdb OWNER postgresdb;
 postgres=# \q
 ```
 
-Allow connet with user and password:
+Allow connect with user and password:
 
 ```
 sudo gedit /var/lib/pgsql/data/pg_hba.conf
@@ -51,8 +51,8 @@ sudo gedit /var/lib/pgsql/data/pg_hba.conf
 
 And edit the line `host all all 127.0.0.1/32 ident` and set it to `host all all 127.0.0.1/32 md5`
 
-In this example the database server and the aplication server runs in the same host, if you want to user a
-diferent server for the database service please read the PostgreSQL docs.
+In this example the database server and the application server runs in the same host, if you
+want to use a different server for the database service please read the PostgreSQL docs.
 
 Refer to the [configuration guide](setup-conf.md) about how to configure the connection to the database server.
 

@@ -20,6 +20,7 @@ $ python3 --version
 Python 3.8.10
 
 ```
+
 You need Python >= 3.8 in order to run NOW - LMS, with the current version of Python available in DreamHost you can run a NOW - LMS instance.
 
 4. Go to your domain folder:
@@ -33,7 +34,7 @@ $ cd your.domain
 ```
 $ virtualenv venv
 $ ls
-public  venv 
+public  venv
 ```
 
 6. Activate the virtual env:
@@ -57,6 +58,7 @@ $ touch passenger_wsgi.py
 ```
 
 passenger_wsgi.py template:
+
 ```
 import sys
 import os
@@ -79,17 +81,18 @@ from now_lms import lms_app as application
 ```
 
 9. Init NOW - LMS, be sure to run this commands in the same directory that your passenger_wsgi.py file.
-You can set the Administrator user and password o let the user use the default values.
-Since default values for admin user are publics in documentation they are more suitables
-for development purposes that for production usage.
+   You can set the Administrator user and password o let the user use the default values.
+   Since default values for admin user are publics in documentation they are more suitables
+   for development purposes that for production usage.
 
 ```
 $ ls
 passenger_wsgi.py venv public
 $ ADMIN_USER=setyouruserhere ADMIN_PSWD=setasecurepasswd flask --app passenger_wsgi.py setup
 ```
+
 You should se the message: NOW - LMS iniciado correctamente.
-You can ignore: AssertionError: Popped wrong app context, this message con from the way flask check the current app
+You can ignore: `AssertionError: Popped wrong app context`, this message con from the way flask check the current app
 running in the command line.
 
 10. You your.dommain folder should be like this:
