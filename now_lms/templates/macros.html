@@ -148,11 +148,15 @@
                   <i class="bi bi-info-circle" aria-hidden="true"></i> Información
                 </a>
               </li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li>
+                <a class="dropdown-item text-decoration-none" href="{{ url_for('cerrar_sesion') }}">
+                  <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Cerrar Sesión
+                </a>
+              </li>
             </ul>
-          </li>
-          <li><a class="{{ estilo.texto[obtener_estilo_actual()] }} text-decoration-none"
-              href="{{ url_for('cerrar_sesion') }}">
-              Salir <i class="bi bi-box-arrow-right" aria-hidden="true"></i></a>
           </li>
         </ul>
         {% endif %}
