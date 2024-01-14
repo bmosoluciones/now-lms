@@ -86,8 +86,6 @@ def crear_configuracion_predeterminada():
         titulo="NOW LMS",
         descripcion="Sistema de aprendizaje en linea.",
         modo="mooc",
-        paypal=False,
-        stripe=False,
         style="dark",
         custom_logo=False,
         email=False,

@@ -346,12 +346,6 @@ class Configuracion(database.Model, BaseTabla):
     # Uno de mooc, school, training
     modo = database.Column(database.String(500), nullable=False, default="mooc")
     moneda = database.Column(database.String(5))
-    # Formas de pago
-    stripe = database.Column(database.Boolean())
-    paypal = database.Column(database.Boolean())
-    # Stripe settings
-    stripe_secret = database.Column(database.String(100))
-    stripe_public = database.Column(database.String(100))
     # Style settings
     style = database.Column(database.String(15))
     custom_logo = database.Column(database.Boolean())
@@ -470,3 +464,11 @@ class Mensaje(database.Model, BaseTabla):
     titulo = database.Column(database.String(100))
     texto = database.Column(database.String(1000))
     parent = database.Column(database.String(26), database.ForeignKey("mensaje.id"), nullable=True, index=True)
+
+
+class PagosConfig(database.Model):
+    """Configuración de pagos."""
+
+    id = database.Column(
+        database.String(26), primary_key=True, nullable=False, index=True, default=generador_de_codigos_unicos
+    )
