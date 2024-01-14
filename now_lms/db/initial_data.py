@@ -23,6 +23,8 @@
 from datetime import datetime, timedelta, time
 from os import environ, path, makedirs
 from shutil import copyfile
+from typing import TYPE_CHECKING
+
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -50,11 +52,30 @@ from now_lms.db import (
     ProgramaCurso,
     Recurso,
     UsuarioGrupo,
+    SystemInfo,
 )
+from now_lms.version import VERSION, MAYOR, MENOR
 
 # pylint: disable=E1101
 # pylint: disable=R0915
 # pylint: disable=R0914
+
+if TYPE_CHECKING:
+    from flask import Flask
+
+
+def system_info(app: "Flask"):
+    """Información básica de la instalación."""
+
+    with app.app_context():
+        version_sistema = SystemInfo(param="version", val=VERSION)
+        version_sistema_mayor = SystemInfo(param="version_mayor", val=str(MAYOR))
+        version_sistema_menor = SystemInfo(param="version_menor", val=str(MENOR))
+
+        database.session.add(version_sistema)
+        database.session.add(version_sistema_menor)
+        database.session.add(version_sistema_mayor)
+        database.session.commit()
 
 
 def crear_etiquetas():

@@ -75,6 +75,13 @@ class BaseTabla:
     modificado_por = database.Column(database.String(15), nullable=True)
 
 
+class SystemInfo(database.Model):
+    """Información basica sobre la instalación."""
+
+    param = database.Column(database.String(20), primary_key=True, nullable=False, index=True)
+    val = database.Column(database.String(100))
+
+
 class Usuario(UserMixin, database.Model, BaseTabla):
     """Una entidad con acceso al sistema."""
 

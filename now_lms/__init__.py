@@ -106,6 +106,7 @@ from now_lms.db.initial_data import (
     asignar_cursos_a_categoria,
     crear_programa,
     crear_recurso_descargable,
+    system_info,
 )
 from now_lms.db.info import app_info
 from now_lms.logs import log
@@ -384,6 +385,7 @@ def initial_setup(with_examples=False):
     lms_app.app_context().push()
     log.info("Creando esquema de base de datos.")
     database.create_all()
+    system_info(lms_app)
     log.debug("Esquema de base de datos creado correctamente.")
     log.info("Cargando datos de muestra.")
     crear_configuracion_predeterminada()
@@ -409,41 +411,61 @@ def init_app(with_examples=False):  # pragma: no cover
     """Funcion auxiliar para iniciar la aplicacion."""
 
     lms_app.app_context().push()
-    log.debug("Verificando acceso a base de datos.")
+    log.trace("Verificando acceso a base de datos.")
+
     try:
-        VERIFICA_EXISTE_CONFIGURACION_DB = carga_configuracion_del_sitio_web_desde_db()
-        VERIFICA_EXISTE_USUARIO_DB = Usuario.query.first()
-        DB_INICIALIZADA = (VERIFICA_EXISTE_CONFIGURACION_DB is not None) and (VERIFICA_EXISTE_USUARIO_DB is not None)
+        from now_lms.db.initial_data import SystemInfo
+
+        consulta = database.session.execute(database.select(SystemInfo)).all()
+        if consulta:
+            DB_ACCESS = True
     except OperationalError:
-        DB_INICIALIZADA = False
+        DB_ACCESS = False
     except ProgrammingError:
-        DB_INICIALIZADA = False
+        DB_ACCESS = False
     except PGProgrammingError:
-        DB_INICIALIZADA = False
+        DB_ACCESS = False
     except DatabaseError:
+        DB_ACCESS = False
+
+    if DB_ACCESS:
+        log.trace("Acceso a base de datos verificado.")
+        try:
+            VERIFICA_EXISTE_CONFIGURACION_DB = carga_configuracion_del_sitio_web_desde_db()
+            VERIFICA_EXISTE_USUARIO_DB = Usuario.query.first()
+            DB_INICIALIZADA = (VERIFICA_EXISTE_CONFIGURACION_DB is not None) and (VERIFICA_EXISTE_USUARIO_DB is not None)
+        except OperationalError:
+            DB_INICIALIZADA = False
+        except ProgrammingError:
+            DB_INICIALIZADA = False
+        except PGProgrammingError:
+            DB_INICIALIZADA = False
+        except DatabaseError:
+            DB_INICIALIZADA = False
+    else:
+        log.warning("Error al acceder a la base de datos.")
         DB_INICIALIZADA = False
 
-    if not DB_INICIALIZADA:
-        log.warning("No se detecto una base de datos inicilizada.")
+    if DB_ACCESS and not DB_INICIALIZADA:
+        log.warning(".")
         log.info("Iniciando nueva base de datos de desarrollo.")
         initial_setup(with_examples=False)
 
     else:
-        log.info("Acceso a base de datos verificado.")
-        with lms_app.app_context():
-            config = Configuracion.query.first()
-            if config.email:
-                lms_app.config["MAIL_SERVER"] = config.mail_server
-                lms_app.config["MAIL_PORT"] = config.mail_port
-                lms_app.config["MAIL_USERNAME"] = config.mail_username
-                lms_app.config["MAIL_PASSWORD"] = config.mail_password
-                lms_app.config["MAIL_USE_TLS"] = config.mail_use_tls
-                lms_app.config["MAIL_USE_SSL"] = config.mail_use_ssl
-                if DESARROLLO:
-                    lms_app.config["MAIL_SUPPRESS_SEND"] = True
+        log.trace("Acceso a base de datos verificado.")
+        config = Configuracion.query.first()
+        if config.email:
+            lms_app.config["MAIL_SERVER"] = config.mail_server
+            lms_app.config["MAIL_PORT"] = config.mail_port
+            lms_app.config["MAIL_USERNAME"] = config.mail_username
+            lms_app.config["MAIL_PASSWORD"] = config.mail_password
+            lms_app.config["MAIL_USE_TLS"] = config.mail_use_tls
+            lms_app.config["MAIL_USE_SSL"] = config.mail_use_ssl
+            if DESARROLLO:
+                lms_app.config["MAIL_SUPPRESS_SEND"] = True
 
-                e_mail = Mail()
-                e_mail.init_app(lms_app)
+            e_mail = Mail()
+            e_mail.init_app(lms_app)
 
 
 # ---------------------------------------------------------------------------------------
