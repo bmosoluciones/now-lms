@@ -520,13 +520,13 @@ def serve():  # pragma: no cover
     from waitress import serve as server
 
     if environ.get("LMS_PORT"):
-        PORT: int = environ.get("LMS_PORT")
+        PORT = environ.get("LMS_PORT")
     elif environ.get("PORT"):
         PORT = environ.get("PORT")
     else:
         PORT = 8080
     if DESARROLLO:
-        THREADS: int = 4
+        THREADS = 4
     else:
         if environ.get("LMS_THREADS"):
             THREADS = environ.get("LMS_THREADS")
@@ -1328,7 +1328,7 @@ def lista_cursos():
     )
     # /explore?page=2&nivel=2&tag=python&category=programing
     if request.args.get("nivel") or request.args.get("tag") or request.args.get("category"):
-        PARAMETROS: Union[OrderedDict, None] = OrderedDict()
+        PARAMETROS = OrderedDict()
         for arg in request.url[request.url.find("?") + 1 :].split("&"):  # noqa: E203
             PARAMETROS[arg[: arg.find("=")]] = arg[arg.find("=") + 1 :]  # noqa: E203
 
@@ -1365,7 +1365,7 @@ def lista_programas():
     )
     # /explore?page=2&nivel=2&tag=python&category=programing
     if request.args.get("nivel") or request.args.get("tag") or request.args.get("category"):
-        PARAMETROS: Union[OrderedDict, None] = OrderedDict()
+        PARAMETROS = OrderedDict()
         for arg in request.url[request.url.find("?") + 1 :].split("&"):  # noqa: E203
             PARAMETROS[arg[: arg.find("=")]] = arg[arg.find("=") + 1 :]  # noqa: E203
 
@@ -1402,7 +1402,7 @@ def lista_recursos():
     )
     # /explore?page=2&nivel=2&tag=python&category=programing
     if request.args.get("nivel") or request.args.get("tag") or request.args.get("category"):
-        PARAMETROS: Union[OrderedDict, None] = OrderedDict()
+        PARAMETROS = OrderedDict()
         for arg in request.url[request.url.find("?") + 1 :].split("&"):  # noqa: E203
             PARAMETROS[arg[: arg.find("=")]] = arg[arg.find("=") + 1 :]  # noqa: E203
 
