@@ -39,7 +39,6 @@ import sys
 from collections import OrderedDict
 from datetime import datetime
 from functools import wraps
-from typing import Union
 from os import environ, cpu_count, path
 from platform import python_version
 
