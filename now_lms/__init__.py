@@ -2454,7 +2454,7 @@ def edit_program(tag: str):
                 except UploadNotAllowed:
                     flash("No se pudo actualizar la portada del curso.", "warning")
 
-            flash("Programa editado correctamente.")
+            flash("Programa editado correctamente.", "success")
         except OperationalError:
             flash("No se puedo editar el programa.")
         return redirect("/programs_list")
