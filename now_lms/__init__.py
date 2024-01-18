@@ -2441,6 +2441,14 @@ def edit_program(tag: str):
         programa.estado = form.estado.data
         programa.promocionado = form.promocionado.data
 
+        if programa.publico is True and cuenta_cursos_por_programa(programa.codigo) == 0:
+            flash("No se puede cambiar estatus de programa a publico porque no tiene cursos añadidos", "error")
+            programa.publico = False
+
+        if programa.estado == "open" and cuenta_cursos_por_programa(programa.codigo) == 0:
+            flash("No se puede cambiar programa a abierto porque no tiene cursos añadidos", "error")
+            programa.estado = "draft"
+
         try:
             database.session.add(programa)
             database.session.commit()
