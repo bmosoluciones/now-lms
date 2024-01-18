@@ -45,6 +45,7 @@ from now_lms.db import (
     CategoriaCurso,
     Usuario,
     Programa,
+    ProgramaCurso,
 )
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
@@ -284,3 +285,8 @@ def cursos_por_etiqueta(tag: str) -> int:
 def cursos_por_categoria(tag: str) -> int:
     """Devuelve el numero de cursos en una Categoria"""
     return CategoriaCurso.query.filter(CategoriaCurso.categoria == tag).count()
+
+
+def cuenta_cursos_por_programa(codigo_programa: str) -> int:
+    """Devuelve el número de programas que tiene un curso."""
+    return ProgramaCurso.query.filter(ProgramaCurso.programa == codigo_programa).count()

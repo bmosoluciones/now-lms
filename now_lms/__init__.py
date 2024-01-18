@@ -86,7 +86,6 @@ from now_lms.db import (
     Etiqueta,
     Categoria,
     Programa,
-    ProgramaCurso,
     Recurso,
     UsuarioGrupoTutor,
     Mensaje,
@@ -109,6 +108,7 @@ from now_lms.db.initial_data import (
     system_info,
 )
 from now_lms.db.info import app_info
+from now_lms.db.tools import cuenta_cursos_por_programa
 from now_lms.logs import log
 from now_lms.db.tools import (
     crear_configuracion_predeterminada,
@@ -373,6 +373,7 @@ lms_app.jinja_env.globals["version"] = VERSION
 lms_app.jinja_env.globals["info"] = app_info(lms_app)
 lms_app.jinja_env.globals["pyversion"] = python_version()
 lms_app.jinja_env.globals["mkdonw2thml"] = markdown_to_clean_hmtl
+lms_app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
 
 
 # ---------------------------------------------------------------------------------------
@@ -1551,9 +1552,8 @@ def pagina_programa(codigo):
     """Pagina principal del curso."""
 
     program = Programa.query.filter(Programa.codigo == codigo).first()
-    cuenta_cursos = ProgramaCurso.query.filter(ProgramaCurso.programa == program.codigo).count()
 
-    return render_template("learning/programa.html", programa=program, cuenta_cursos=cuenta_cursos)
+    return render_template("learning/programa.html", programa=program)
 
 
 @lms_app.route("/course/<course_code>/edit", methods=["GET", "POST"])

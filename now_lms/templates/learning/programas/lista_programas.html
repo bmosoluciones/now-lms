@@ -44,6 +44,7 @@
             <tr>
               <th scope="col">Codigo</th>
               <th>Nombre</th>
+              <th>Cursos</th>
               <th>Publico</th>
               <th>Precio</th>
               <th>Estatus</th>
@@ -60,6 +61,11 @@
               <td>
                 <a href="{{url_for("pagina_programa", codigo=item.codigo)}}" class="link-dark">
                   {{ item.nombre }}
+                </a>
+              </td>
+              <td>
+                <a href="{{url_for("pagina_programa", codigo=item.codigo)}}" class="link-dark">
+                  {{ cuenta_cursos(item.codigo) }}
                 </a>
               </td>
               <td>
