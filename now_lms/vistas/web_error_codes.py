@@ -16,9 +16,11 @@
 # - William José Moreno Reyes
 
 """
-Modulo para ejecutar NOW LMS.
+NOW Learning Management System.
 
+Gestión de certificados.
 """
+
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
@@ -27,21 +29,30 @@ Modulo para ejecutar NOW LMS.
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-
+from flask import Blueprint, flash, redirect, render_template, request
+from flask_login import login_required
+from sqlalchemy.exc import OperationalError
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms import init_app, serve
-from now_lms.config import DESARROLLO
-from now_lms.logs import log
+from now_lms.auth import perfil_requerido
+from now_lms.config import DIRECTORIO_PLANTILLAS
+from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Etiqueta, database
+from now_lms.db.tools import cursos_por_etiqueta
+from now_lms.forms import EtiquetaForm
 
-if __name__ == "__main__":
-    log.info("Iniciando NOW Learning Management System.")
-    if DESARROLLO:
-        log.trace("Ejecutando NOW-LMS con opciones de desarrollo.")
-        init_app(with_examples=True)
-    else:
-        log.trace("Iniciando NOW-MLS como modulo importable.")
-        init_app(with_examples=False)
-    serve()
+# ---------------------------------------------------------------------------------------
+# Administración de Etiquetas.
+# ---------------------------------------------------------------------------------------
+
+web_error = Blueprint("error", __name__, template_folder=DIRECTORIO_PLANTILLAS)
+
+
+@web_error.route("/http/error/<code>")
+def error_page(code):
+    """HTTP error code pages."""
+
+    url = "error_pages/" + code + ".html"
+
+    return render_template(url)

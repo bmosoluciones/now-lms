@@ -13,7 +13,7 @@
 
   <div class="cover-container d-flex w-100 h-100 mx-auto  p-3 flex-column">
     <header class="mb-auto">
-      <a class="navbar-brand col-md-3 col-lg-2 px-3 me-0 " href="{{ url_for("home") }}">
+      <a class="navbar-brand col-md-3 col-lg-2 px-3 me-0 " href="{{ url_for("home.pagina_de_inicio") }}">
         <img src="{{ url_for('static', filename='icons/logo/logo_large.png') }}" height="80" alt="NOW LMS"
           class="d-inline-block align-top">
       </a>
@@ -24,7 +24,8 @@
       <h1>403</h1>
       <p class="lead">Su usuario no se encuentra autorizado a acceder al recurso solicitado.</p>
       <p class="lead">
-        <a class="btn btn-warning fw-bold" href="{{ url_for("home") }}"><i class="bi bi-house" aria-hidden="true"></i>
+        <a class="btn btn-warning fw-bold" href="{{ url_for("home.pagina_de_inicio") }}"><i class="bi bi-house"
+            aria-hidden="true"></i>
           Regresar al inicio</a>
       </p>
     </main>

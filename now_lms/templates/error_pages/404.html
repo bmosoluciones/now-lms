@@ -13,7 +13,7 @@
 
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
     <header class="mb-auto">
-      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="{{ url_for("home") }}">
+      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="{{ url_for("home.pagina_de_inicio") }}">
         <img height="80" src="{{ url_for('static', filename='icons/logo/logo_large.png') }}" alt="NOW LMS"
           class="d-inline-block align-top">
       </a>
@@ -24,7 +24,8 @@
       <h1>404</h1>
       <p class="lead">El recurso solicitado no fue encontrado.</p>
       <p class="lead">
-        <a href="{{ url_for("home") }}" class="btn btn-warning fw-bold"><i class="bi bi-house" aria-hidden="true"></i>
+        <a href="{{ url_for("home.pagina_de_inicio") }}" class="btn btn-warning fw-bold"><i class="bi bi-house"
+            aria-hidden="true"></i>
           Regresar al inicio</a>
       </p>
     </main>

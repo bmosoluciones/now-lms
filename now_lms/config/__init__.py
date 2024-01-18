@@ -19,24 +19,27 @@
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
-from os import access, environ, makedirs, name, path, W_OK, R_OK
+from os import R_OK, W_OK, access, environ, makedirs, name, path
 from pathlib import Path
 from sys import stderr
-from typing import Dict, Union
+from typing import TYPE_CHECKING, Dict, Union
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
 from appdirs import AppDirs
 from configobj import ConfigObj
-from flask import Flask
+from flask_uploads import AUDIO, DOCUMENTS, IMAGES, UploadSet
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
 from now_lms.config.parse_config_file import CONFIG_FROM_FILE
-from now_lms.logs import log, LOG_FORMAT
+from now_lms.logs import LOG_FORMAT, log
 from now_lms.version import PRERELEASE
+
+if TYPE_CHECKING:
+    from flask import Flask
 
 # < --------------------------------------------------------------------------------------------- >
 # Configuración central de la aplicación.
@@ -145,6 +148,8 @@ else:  # pragma: no cover
     CONFIGURACION["SECRET_KEY"] = "dev"  # nosec
     CONFIGURACION["SQLALCHEMY_TRACK_MODIFICATIONS"] = "False"
     CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = SQLITE
+    CONFIGURACION["TEMPLATES_AUTO_RELOAD"] = True
+    CONFIGURACION["EXPLAIN_TEMPLATE_LOADING"] = True
 
 # Opciones comunes de configuración.
 CONFIGURACION["PRESERVE_CONTEXT_ON_EXCEPTION"] = False
@@ -196,7 +201,7 @@ if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # pragma: no cover
         CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
 
 
-def log_messages(_app: Flask):
+def log_messages(_app: "Flask"):
     """Emite mensages de log luego de haber cargado la configuración."""
 
     if "postgres" in _app.config.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
@@ -217,3 +222,9 @@ def log_messages(_app: Flask):
     log.trace("Directorio de imagenes es {directorio}", directorio=DIRECTORIO_UPLOAD_IMAGENES)
     log.trace("Directorio de archivos es {directorio}", directorio=DIRECTORIO_UPLOAD_ARCHIVOS)
     log.trace("Directorio de audios es {directorio}", directorio=DIRECTORIO_UPLOAD_AUDIO)
+
+
+# Configuración de Directorio de carga de archivos.
+images = UploadSet("images", IMAGES)
+files = UploadSet("files", DOCUMENTS)
+audio = UploadSet("audio", AUDIO)

@@ -15,10 +15,9 @@
 # Contributors:
 # - William José Moreno Reyes
 
-"""
-Modulo para ejecutar NOW LMS.
 
-"""
+"""NOW Learning Management System."""
+
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
@@ -32,16 +31,3 @@ Modulo para ejecutar NOW LMS.
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms import init_app, serve
-from now_lms.config import DESARROLLO
-from now_lms.logs import log
-
-if __name__ == "__main__":
-    log.info("Iniciando NOW Learning Management System.")
-    if DESARROLLO:
-        log.trace("Ejecutando NOW-LMS con opciones de desarrollo.")
-        init_app(with_examples=True)
-    else:
-        log.trace("Iniciando NOW-MLS como modulo importable.")
-        init_app(with_examples=False)
-    serve()

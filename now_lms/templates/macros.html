@@ -61,7 +61,7 @@
 
 <nav class="navbar navbar-expand-md {{ estilo.navbar[obtener_estilo_actual()] }}" aria-label="Fourth navbar example">
   <div class="container-fluid">
-    <a href="{{ url_for("home") }}"
+    <a href="{{ url_for("home.pagina_de_inicio") }}"
       class="d-flex align-items-center mb-2 mb-lg-0 {{ estilo.texto[obtener_estilo_actual()] }} text-decoration-none">
       {% if logo_perzonalizado() %}
       <img height="20" src="{{ url_for('static', filename='/files/public/images/logotipo.jpg') }}" alt="NOW LMS"
@@ -79,54 +79,56 @@
     <div class="collapse navbar-collapse" id="navbarsNOWLMS">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         {% if not current_user.is_authenticated %}
-        <li><a href="{{ url_for('home') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i
-              class="bi bi-house-fill" aria-hidden="true"></i> Inicio</a>
+        <li><a href="{{ url_for('home.pagina_de_inicio') }}"
+            class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-house-fill"
+              aria-hidden="true"></i> Inicio</a>
         </li>
         {% else %}
-        <li><a href="{{ url_for('panel') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i
+        <li><a href="{{ url_for('home.panel') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i
               class="bi bi-house-fill" aria-hidden="true"></i>
             Inicio</a></li>
         {% endif %}
         <li>
-          <a href="{{ url_for('lista_cursos', page=1) }}"
+          <a href="{{ url_for('course.lista_cursos', page=1) }}"
             class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-card-checklist"
               aria-hidden="true"></i> Cursos</a>
         </li>
         <li>
-          <a href="{{ url_for('lista_programas', page=1) }}"
+          <a href="{{ url_for('program.lista_programas', page=1) }}"
             class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-diagram-3-fill"
               aria-hidden="true"></i> Programas</a>
         </li>
         <li>
-          <a href="{{ url_for('lista_recursos', page=1) }}"
+          <a href="{{ url_for('resource.lista_de_recursos', page=1) }}"
             class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-book"
               aria-hidden="true"></i> Recursos</a>
         </li>
         {% if current_user.is_authenticated %}
         {% if current_user.tipo == "moderator" or current_user.tipo == "instructor" or current_user.tipo == "admin" %}
-        <li><a href="{{ url_for('pagina_moderador') }}"
+        <li><a href="{{ url_for('moderator_profile.pagina_moderador') }}"
             class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-card-checklist"
               aria-hidden="true"></i>
             Moderación</a></li>
         {% endif %}
         {% if current_user.tipo == "instructor" or current_user.tipo == "admin" %}
-        <li><a href="{{ url_for('pagina_instructor') }}"
+        <li><a href="{{ url_for('instructor_profile.pagina_instructor') }}"
             class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-bank2"
               aria-hidden="true"></i>
             Docente</a></li>
         {% endif %}
         {% if current_user.tipo == "admin" %}
-        <li><a href="{{ url_for('pagina_admin') }}" class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i
-              class="bi bi-sliders" aria-hidden="true"></i>
+        <li><a href="{{ url_for('admin_profile.pagina_admin') }}"
+            class="nav-link px-2 {{ estilo.texto[obtener_estilo_actual()] }}"><i class="bi bi-sliders"
+              aria-hidden="true"></i>
             Administración</a></li>
         {% endif %}
         {% endif %}
       </ul>
       <div class="text-end">
         {% if not current_user.is_authenticated %}
-        <a class="btn {{ estilo.buttom[obtener_estilo_actual()] }} me-2" href="{{ url_for('inicio_sesion') }}"
+        <a class="btn {{ estilo.buttom[obtener_estilo_actual()] }} me-2" href="{{ url_for('user.inicio_sesion') }}"
           role="button">Iniciar Sesión</a>
-        <a class="btn btn-warning me-2" href="{{ url_for('crear_cuenta') }}" role="button">Crear Cuenta</a>
+        <a class="btn btn-warning me-2" href="{{ url_for('user.crear_cuenta') }}" role="button">Crear Cuenta</a>
         {% else %}
         <ul class="navbar-nav">
           <li class="nav-item dropdown">
@@ -135,7 +137,7 @@
               {{ current_user.nombre }}
               {{ current_user.apellido }} <i class="bi bi-list" aria-hidden="true"></i> </a>
             <ul class="dropdown-menu dropdown-menu-lg-end">
-              <li><a class="dropdown-item" href="{{ url_for('perfil') }}"> <i class="bi bi-person-circle"
+              <li><a class="dropdown-item" href="{{ url_for('user_profile.perfil') }}"> <i class="bi bi-person-circle"
                     aria-hidden="true"></i> Perfil
                   de Usuario</a></li>
               <li><a class="dropdown-item" href="#"> </a></li>
@@ -152,7 +154,7 @@
                 <hr class="dropdown-divider">
               </li>
               <li>
-                <a class="dropdown-item text-decoration-none" href="{{ url_for('cerrar_sesion') }}">
+                <a class="dropdown-item text-decoration-none" href="{{ url_for('user.cerrar_sesion') }}">
                   <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Cerrar Sesión
                 </a>
               </li>

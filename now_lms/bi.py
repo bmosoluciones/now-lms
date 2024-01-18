@@ -37,7 +37,7 @@ from flask_login import current_user
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms.db import database, EstudianteCurso, DocenteCurso, ModeradorCurso, Usuario, Curso, CursoSeccion, CursoRecurso
+from now_lms.db import Curso, CursoRecurso, CursoSeccion, DocenteCurso, EstudianteCurso, ModeradorCurso, Usuario, database
 from now_lms.logs import log
 
 

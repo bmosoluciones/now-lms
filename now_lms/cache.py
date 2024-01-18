@@ -27,13 +27,14 @@ from os import environ
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
 from flask_caching import Cache
+from flask_login import current_user
+
+from now_lms.config.parse_config_file import CONFIG_FROM_FILE
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
 from now_lms.logs import log
-from now_lms.config.parse_config_file import CONFIG_FROM_FILE
-
 
 # < --------------------------------------------------------------------------------------------- >
 # Configuracion de Cache
@@ -77,3 +78,11 @@ if not CTYPE == "NullCache":
     log.trace("Utilizando para almacenamiento el servicio {type}", type=CTYPE)
 
 cache: Cache = Cache(config=CACHE_CONFIG)
+
+
+# ---------------------------------------------------------------------------------------
+# Opciones de cache.
+# ---------------------------------------------------------------------------------------
+def no_guardar_en_cache_global():
+    """Si el usuario es anomino preferimos usar el sistema de cache."""
+    return current_user and current_user.is_authenticated

@@ -27,11 +27,17 @@ from typing import NamedTuple, Union
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-
+from bleach import clean, linkify
+from flask import redirect
+from markdown import markdown
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
+
+
+INICIO_SESION = redirect("/user/login")
+PANEL_DE_USUARIO = redirect("/home/panel")
 
 
 def concatenar_parametros_a_url(
@@ -55,6 +61,8 @@ def concatenar_parametros_a_url(
 
     return argumentos
 
+
+TIPOS_DE_USUARIO: list = ["admin", "user", "instructor", "moderator"]
 
 ICONOS_RECURSOS: dict = {
     "html": "bi bi-code-square",
@@ -153,6 +161,18 @@ HTML_TAGS = [
     "tr",
     "ul",
 ]
+
+
+def markdown_to_clean_hmtl(text: str):
+    """Devuelve HTML limpio a partir de un texto en MarkDown."""
+    allowed_tags = HTML_TAGS
+    allowed_attrs = {"*": ["class"], "a": ["href", "rel"], "img": ["src", "alt"]}
+
+    html = markdown(text)
+    html_limpio = clean(linkify(html), tags=allowed_tags, attributes=allowed_attrs)
+
+    return html_limpio
+
 
 CURSO_NIVEL: dict = {
     0: """<i class="bi bi-circle" aria-hidden="true"></i> Nivel Introductorio""",

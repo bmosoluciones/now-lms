@@ -6,8 +6,7 @@
 <head>
 
   {{ macros.headertags() }}
-  <title>Lista de Categorias.</title>
-
+  <title>{{ title }}</title>
 
   {{ macros.local_style() }}
 </head>
@@ -24,11 +23,11 @@
 
       <div class="d-flex justify-content-between border-bottom">
 
-        <h4>Lista de Categorias Disponibles.</h4>
+        <h4>Lista de Certificados Disponibles.</h4>
 
         <p>
           <span class="badge bg-success">
-            <a href="{{ url_for("category.new_category") }}" class="link-light">Nueva Categoria</a>
+            <a href="{{ url_for("certificate.new_certificate") }}" class="link-light">Nuevo Certificado</a>
           </span>
         </p>
 
@@ -39,11 +38,11 @@
       <div class="container" id="curse_table">
 
         <table class="table table-sm table-borderless">
-          <caption>Lista de categorias disponibles en el sistema.</caption>
+          <caption>Lista de certificados disponibles en el sistema.</caption>
           <thead>
             <tr>
-              <th scope="col">Nombre</th>
-              <th>Cursos</th>
+              <th scope="col">Certificado</th>
+              <th scope="col">Habilitado</th>
               <th></th>
             </tr>
           </thead>
@@ -52,19 +51,20 @@
             <tr>
               <td>
                 <a href="" class="link-dark">
-                  {{ item.nombre }}
+                  {{ item.titulo }}
                 </a>
+              </td>
               <td>
-                {{ cursos_por_categoria(item.id) }}
+                {{ item.habilitado }}
               </td>
               <td>
                 <span class="badge bg-danger">
-                  <a href="{{ url_for("category.delete_category", ulid=item.id) }}" class="link-light">Eliminar
-                    Categoria</a>
+                  <a href="{{ url_for("certificate.delete_certificate", ulid=item.id) }}" class="link-light">Eliminar
+                    Certificado</a>
                 </span>
                 <span class="badge bg-info">
-                  <a href="{{ url_for("category.edit_category", ulid=item.id) }}" class="link-light">Editar
-                    Categoria</a>
+                  <a href="{{ url_for("certificate.edit_certificate", ulid=item.id) }}" class="link-light">Editar
+                    Certificado</a>
                 </span>
               </td>
             </tr>
@@ -76,12 +76,11 @@
       <p>Usted no ha creado ninguna etiqueta todavia.</p>
       {% endif %}
 
-      <div class="container" id="user_paginatios">
-        {{ macros.rendizar_paginacion(consulta=consulta, vista="cursos") }}
+      <div class="container" id="user_pagination">
+        {{ macros.rendizar_paginacion(consulta=consulta, vista="program.programs") }}
       </div>
 
     </div>
-
 
   </main>
 

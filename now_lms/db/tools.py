@@ -16,11 +16,12 @@
 # - William José Moreno Reyes
 
 """Definición de base de datos."""
+from os import path, remove
+
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
 from typing import NamedTuple, Union
-from os import path, remove
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -28,27 +29,28 @@ from os import path, remove
 from flask import flash
 from flask_login import current_user
 
+from now_lms.cache import cache
+from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
+
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
 from now_lms.db import (
+    CategoriaCurso,
+    Configuracion,
     Curso,
     CursoRecurso,
     CursoRecursoAvance,
     CursoSeccion,
-    database,
     DocenteCurso,
-    Configuracion,
     EstudianteCurso,
-    ModeradorCurso,
     EtiquetaCurso,
-    CategoriaCurso,
-    Usuario,
+    ModeradorCurso,
     Programa,
     ProgramaCurso,
+    Usuario,
+    database,
 )
-from now_lms.cache import cache
-from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
 
 # pylint: disable=E1101
 

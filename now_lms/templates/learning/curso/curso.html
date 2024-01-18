@@ -26,7 +26,7 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a class="text-reset text-decoration-none link-dark"
-                  href="{{ url_for("panel") }}">Inicio</a></li>
+                  href="{{ url_for("home.panel") }}">Inicio</a></li>
               <li class="breadcrumb-item">{{ curso.nombre }}</li>
             </ol>
           </nav>
@@ -57,7 +57,7 @@
           </div>
           {% endif %}
           <iframe title="{{ curso.codigo }}" style="border:none;"
-            src="{{ url_for('curso_descripcion_a_html', course_code=curso.codigo) }}">
+            src="{{ url_for('course.curso_descripcion_a_html', course_code=curso.codigo) }}">
           </iframe>
           <br>
           {% if curso.fecha_inicio and curso.fecha_fin %}
@@ -95,7 +95,7 @@
           <strong>Recursos disponibles con este curso:</strong>
           <br>
           {% for item in descargas %}
-          <a href="{{ url_for("vista_recurso", resource_code=item[0].codigo) }}"
+          <a href="{{ url_for("resource.vista_recurso", resource_code=item[0].codigo) }}"
             class="link-dark">{{ tipo[item[0].tipo] | safe }} {{ item[0].nombre }}</a><br>
           {% endfor %}
           {% endif %}
@@ -103,20 +103,22 @@
           <br>
 
           {% if current_user.is_authenticated %}
+          {% if current_user.tipo == "user" %}
           <div class="d-flex d-flex justify-content-around">
-            <a href="{{ url_for("course_enroll", course_code=curso.codigo) }}" class="btn btn-success" role="button"
-              aria-disabled="true">
+            <a href="{{ url_for("course.course_enroll", course_code=curso.codigo) }}" class="btn btn-success"
+              role="button" aria-disabled="true">
               <i class="bi bi-backpack-fill" aria-hidden="true"></i> Inscribirse al Curso
             </a>
           </div>
+          {% endif %}
 
 
           {% else %}
           <div class="d-flex d-flex justify-content-around">
-            <a href="{{ url_for("inicio_sesion")}}" class="btn btn-primary" role="button" aria-disabled="true">
+            <a href="{{ url_for("user.inicio_sesion")}}" class="btn btn-primary" role="button" aria-disabled="true">
               Iniciar Sesión
             </a>
-            <a href="{{ url_for("crear_cuenta")}}" class="btn btn-warning" role="button" aria-disabled="true">
+            <a href="{{ url_for("user.crear_cuenta")}}" class="btn btn-warning" role="button" aria-disabled="true">
               Crear Cuenta
             </a>
           </div>
@@ -154,7 +156,7 @@
 
                         {% if recurso.publico == True %}
                         <a class="link-dark text-decoration-none"
-                          href="{{ url_for("pagina_recurso", curso_id=recurso.curso, codigo=recurso.id, resource_type=recurso.tipo) }} ">
+                          href="{{ url_for("course.pagina_recurso", curso_id=recurso.curso, codigo=recurso.id, resource_type=recurso.tipo) }} ">
                           <div class="fw-bold"> <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i>
                             {{ recurso.nombre }}</div>
                         </a>

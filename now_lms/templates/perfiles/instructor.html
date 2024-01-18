@@ -43,9 +43,9 @@
           <div>
             <h4 class="fw-bold mb-0">Cursos</h4>
             <p>
-              <a href=" {{ url_for("cursos") }} " class="link-dark">Cursos</a>
+              <a href=" {{ url_for("instructor_profile.cursos") }} " class="link-dark">Cursos</a>
               -
-              <a href="{{ url_for("nuevo_curso") }}" class="link-dark">Nuevo Curso</a>
+              <a href="{{ url_for("course.nuevo_curso") }}" class="link-dark">Nuevo Curso</a>
             </p>
           </div>
         </div>
@@ -54,9 +54,9 @@
           <div>
             <h4 class="fw-bold mb-0">Programas</h4>
             <p>
-              <a href="/programs_list" class="link-dark">Programas</a>
+              <a href="{{ url_for("program.programas") }}" class="link-dark">Programas</a>
               -
-              <a href="/new_program" class="link-dark">Nuevo Progama</a>
+              <a href="{{ url_for("program.nuevo_programa") }}" class="link-dark">Nuevo Progama</a>
             </p>
           </div>
         </div>
@@ -65,9 +65,9 @@
           <div>
             <h4 class="fw-bold mb-0">Certificados</h4>
             <p>
-              <a href="" class="link-dark">Certificados</a>
+              <a href="{{url_for("certificate.certificados")}}" class="link-dark">Certificados</a>
               -
-              <a href="" class="link-dark">Nuevo Certificado</a>
+              <a href="{{url_for("certificate.new_certificate")}}" class="link-dark">Nuevo Certificado</a>
             </p>
           </div>
         </div>
@@ -78,9 +78,9 @@
           <div>
             <h4 class="fw-bold mb-0">Etiquetas</h4>
             <p>
-              <a href="{{url_for("tags")}}" class="link-dark">Etiquetas</a>
+              <a href="{{url_for("tag.tags")}}" class="link-dark">Etiquetas</a>
               -
-              <a href="{{url_for("new_tag")}}" class="link-dark">Nueva Etiqueta</a>
+              <a href="{{url_for("tag.new_tag")}}" class="link-dark">Nueva Etiqueta</a>
             </p>
           </div>
         </div>
@@ -89,9 +89,9 @@
           <div>
             <h4 class="fw-bold mb-0">Categorias</h4>
             <p>
-              <a href="{{url_for("categories")}}" class="link-dark">Categorias</a>
+              <a href="{{url_for("category.categories")}}" class="link-dark">Categorias</a>
               -
-              <a href="{{url_for("new_category")}}" class="link-dark">Nueva Categoria</a>
+              <a href="{{url_for("category.new_category")}}" class="link-dark">Nueva Categoria</a>
             </p>
           </div>
         </div>
@@ -100,9 +100,9 @@
           <div>
             <h4 class="fw-bold mb-0">Recuros Descargables</h4>
             <p>
-              <a href="{{url_for("lista_de_recursos")}}" class="link-dark">Recursos</a>
+              <a href="{{url_for("resource.lista_de_recursos")}}" class="link-dark">Recursos</a>
               -
-              <a href="{{url_for("new_resource")}}" class="link-dark">Nuevo Recurso</a>
+              <a href="{{url_for("resource.new_resource")}}" class="link-dark">Nuevo Recurso</a>
             </p>
           </div>
         </div>

@@ -20,11 +20,10 @@
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
-from datetime import datetime, timedelta, time
-from os import environ, path, makedirs
+from datetime import datetime, time, timedelta
+from os import environ, makedirs, path
 from shutil import copyfile
 from typing import TYPE_CHECKING
-
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -36,25 +35,24 @@ from ulid import ULID
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import proteger_passwd
 from now_lms.config import DIRECTORIO_ARCHIVOS, DIRECTORIO_BASE_ARCHIVOS_USUARIO
-from now_lms.logs import log
 from now_lms.db import (
-    database,
-    Curso,
-    CursoSeccion,
-    CursoRecurso,
-    CursoRecursoDescargable,
-    Usuario,
-    Etiqueta,
-    EtiquetaCurso,
     Categoria,
     CategoriaCurso,
+    Curso,
+    CursoRecurso,
+    CursoRecursoDescargable,
+    CursoSeccion,
+    Etiqueta,
+    EtiquetaCurso,
     Programa,
     ProgramaCurso,
     Recurso,
-    UsuarioGrupo,
     SystemInfo,
+    Usuario,
+    database,
 )
-from now_lms.version import VERSION, MAYOR, MENOR
+from now_lms.logs import log
+from now_lms.version import MAYOR, MENOR, VERSION
 
 # pylint: disable=E1101
 # pylint: disable=R0915
@@ -490,7 +488,7 @@ ADMIN = environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin"
 PASSWD = environ.get("ADMIN_PSWD") or environ.get("LMS_PSWD") or "lms-admin"
 
 
-def crear_usuarios_predeterminados(with_examples):
+def crear_usuarios_predeterminados():
     """Crea en la base de datos los usuarios iniciales."""
     log.info("Creando usuario administrador.")
     administrador = Usuario(
@@ -505,135 +503,6 @@ def crear_usuarios_predeterminados(with_examples):
     database.session.add(administrador)
     database.session.commit()
     log.debug("Usuario administrador creado correctamente.")
-
-    if environ.get("CI") or with_examples:
-        log.trace("Creando usuarios de demostración.")
-        student = Usuario(
-            usuario="student",
-            acceso=proteger_passwd("student"),
-            nombre="Meylin",
-            apellido="Perez",
-            correo_electronico="hello@domain.net",
-            tipo="student",
-            activo=True,
-            visible=True,
-            titulo=None,
-            genero="female",
-            nacimiento=datetime(year=1988, month=9, day=21),
-            bio="Hello there!",
-            url="google.com",
-            linkedin="user",
-            facebook="user",
-            twitter="user",
-            github="user",
-        )
-        student1 = Usuario(
-            usuario="student1",
-            acceso=proteger_passwd("student1"),
-            nombre="Dania",
-            apellido="Mendez",
-            correo_electronico="hello1@domain.net",
-            tipo="student",
-            activo=True,
-            visible=False,
-            titulo=None,
-            genero="female",
-            nacimiento=datetime(year=1988, month=9, day=21),
-            bio="Hello there!",
-            url="google.com",
-            linkedin="user",
-            facebook="user",
-            twitter="user",
-            github="user",
-        )
-        student2 = Usuario(
-            usuario="student2",
-            acceso=proteger_passwd("student1"),
-            nombre="Gema",
-            apellido="Lopez",
-            correo_electronico="hello3@domain.net",
-            tipo="student",
-            activo=True,
-            visible=True,
-            titulo=None,
-            genero="female",
-            nacimiento=datetime(year=1988, month=9, day=21),
-            bio="Hello there!",
-            url="google.com",
-            linkedin="user",
-            facebook="user",
-            twitter="user",
-            github="user",
-        )
-        student3 = Usuario(
-            usuario="student3",
-            acceso=proteger_passwd("student3"),
-            nombre="Maria",
-            apellido="Lopez",
-            correo_electronico="hi@domain.com",
-            tipo="student",
-            activo=False,
-            visible=False,
-            titulo=None,
-            genero="female",
-            nacimiento=datetime(year=1988, month=9, day=21),
-            bio="Hello there!",
-            url="google.com",
-            linkedin="user",
-            facebook="user",
-            twitter="user",
-            github="user",
-        )
-        database.session.add(student)
-        database.session.add(student1)
-        database.session.add(student2)
-        database.session.add(student3)
-        demo_grupo1 = UsuarioGrupo(nombre="Usuarios Base", descripcion="Demo Group", activo=True)
-        demo_grupo2 = UsuarioGrupo(nombre="Usuarios", descripcion="Demo Group", activo=True)
-        database.session.add(demo_grupo2)
-        database.session.add(demo_grupo1)
-        database.session.commit()
-        instructor = Usuario(
-            usuario="instructor",
-            acceso=proteger_passwd("instructor"),
-            nombre="Nemesio",
-            apellido="Reyes",
-            correo_electronico="hello2@domain.net",
-            tipo="instructor",
-            activo=True,
-            visible=False,
-            genero="male",
-            nacimiento=datetime(year=1988, month=9, day=21),
-            bio="You can",
-            url="google.com",
-            linkedin="user",
-            facebook="user",
-            twitter="user",
-            github="user",
-        )
-        database.session.add(instructor)
-        database.session.commit()
-        moderator = Usuario(
-            usuario="moderator",
-            acceso=proteger_passwd("moderator"),
-            tipo="moderator",
-            nombre="Abner",
-            apellido="Romero",
-            correo_electronico="moderator@mail.com",
-            activo=True,
-            visible=False,
-            genero="male",
-            nacimiento=datetime(year=1988, month=9, day=21),
-            bio="You can do it.",
-            url="google.com",
-            linkedin="user",
-            facebook="user",
-            twitter="user",
-            github="user",
-        )
-        database.session.add(moderator)
-        database.session.commit()
-        log.debug("Usuarios creados correctamente.")
 
 
 def crear_curso_demo1():
