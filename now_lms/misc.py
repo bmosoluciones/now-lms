@@ -197,7 +197,7 @@ ICONOS_ALERTAS: dict = {
 ESTILOS_ALERTAS: dict = {
     "info": "alert alert-primary",
     "success": "alert alert-success",
-    "error": "alert alert-dange",
+    "error": "alert alert-danger",
     "warning": "alert alert-warning",
 }
 
