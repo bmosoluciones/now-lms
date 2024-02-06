@@ -29,18 +29,12 @@ Gestión de certificados.
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, flash, redirect, render_template, request
-from flask_login import login_required
-from sqlalchemy.exc import OperationalError
+from flask import Blueprint, render_template
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms.auth import perfil_requerido
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Etiqueta, database
-from now_lms.db.tools import cursos_por_etiqueta
-from now_lms.forms import EtiquetaForm
 
 # ---------------------------------------------------------------------------------------
 # Administración de Etiquetas.
