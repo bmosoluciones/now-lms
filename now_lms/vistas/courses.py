@@ -180,7 +180,7 @@ def tomar_curso(course_code):
 def moderar_curso(course_code):
     """Pagina principal del curso."""
 
-    if current_user.tipo == "moderator":
+    if current_user.tipo == "moderator" or current_user.tipo == "admin":
         return render_template(
             "learning/curso.html",
             curso=Curso.query.filter_by(codigo=course_code).first(),
@@ -193,7 +193,7 @@ def moderar_curso(course_code):
             tipo=TIPOS_RECURSOS,
         )
     else:
-        return redirect(url_for(".curso", codigo=course_code))
+        return redirect(url_for("course.curso", course_code=course_code))
 
 
 @course.route("/course/<course_code>/admin")
