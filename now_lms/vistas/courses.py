@@ -170,7 +170,7 @@ def tomar_curso(course_code):
             tipo=TIPOS_RECURSOS,
         )
     else:
-        return redirect(url_for(course.curso, codigo=course_code))
+        return redirect(url_for("course.curso", course_code=course_code))
 
 
 @course.route("/course/<course_code>/moderate")
@@ -193,7 +193,7 @@ def moderar_curso(course_code):
             tipo=TIPOS_RECURSOS,
         )
     else:
-        return redirect(url_for(course.curso, codigo=course_code))
+        return redirect(url_for(".curso", codigo=course_code))
 
 
 @course.route("/course/<course_code>/admin")

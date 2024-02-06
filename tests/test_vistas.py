@@ -35,6 +35,7 @@ Para ver una lista de vistas ejecutar:
 >>> from now_lms import app
 >>> app.url_map
 
+Error codes se verifican al final.
 """
 
 

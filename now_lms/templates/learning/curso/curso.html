@@ -103,7 +103,7 @@
           <br>
 
           {% if current_user.is_authenticated %}
-          {% if current_user.tipo == "user" %}
+          {% if current_user.tipo == "student" %}
           <div class="d-flex d-flex justify-content-around">
             <a href="{{ url_for("course.course_enroll", course_code=curso.codigo) }}" class="btn btn-success"
               role="button" aria-disabled="true">
