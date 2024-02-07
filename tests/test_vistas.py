@@ -193,10 +193,27 @@ def test_visit_all_views_with_instructor_user(lms_application):
             client.get("/user/logout")
 
 
-def test_visit_custom_error_pages(lms_application):
+def test_visit_custom_error_pages(lms_application, request):
 
-    error_codes = [402, 403, 404, 405, 500]
-    with lms_application.test_client() as client:
-        for error in error_codes:
-            url = "/http/error/" + str(error)
-            client.get(url)
+    if request.config.getoption("--slow") == "True":
+        error_codes = [402, 403, 404, 405, 500]
+        with lms_application.test_client() as client:
+            for error in error_codes:
+                url = "/http/error/" + str(error)
+                client.get(url)
+
+
+def test_demo_course(request, lms_application):
+    if request.config.getoption("--slow") == "True":
+        from now_lms import database, initial_setup
+
+        with lms_application.app_context():
+
+            database.drop_all()
+            initial_setup(with_test_data=False, with_examples=True)
+
+            with lms_application.test_client() as client:
+                client.get("/course/resources/view")
+
+    else:
+        pytest.skip("Not running slow test.")

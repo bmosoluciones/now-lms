@@ -38,6 +38,6 @@ jobs:
           bash .lint.sh
       - name: Test with SQLite
         run: |
-          CI=True pytest  -v --exitfirst --cov=now_lms
+          CI=True pytest  -v --exitfirst --cov=now_lms --slow=True
       - name: Codecov
         uses: codecov/codecov-action@v1
