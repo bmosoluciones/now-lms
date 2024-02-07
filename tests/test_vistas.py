@@ -201,6 +201,8 @@ def test_visit_custom_error_pages(lms_application, request):
             for error in error_codes:
                 url = "/http/error/" + str(error)
                 client.get(url)
+    else:
+        pytest.skip("Not running slow test.")
 
 
 def test_demo_course(request, lms_application):

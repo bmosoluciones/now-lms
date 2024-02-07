@@ -15,6 +15,7 @@
 # Contributors:
 # - William José Moreno Reyes
 
+import pytest
 from unittest import TestCase
 
 
