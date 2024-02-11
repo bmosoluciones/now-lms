@@ -65,8 +65,6 @@
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><a href="{{ url_for("course.eliminar_curso", course_id=curso.codigo) }}"
-                  class="text-reset text-decoration-none">Eliminar</a></li>
             </ul>
           </div>
         </div>
@@ -213,7 +211,7 @@
                         class="link-light"><i class="bi bi-arrow-up-short" aria-hidden="true"></i> Subir</a>
                     </span>
                     <span class="badge bg-danger">
-                      <a href="{{ url_for("course.eliminar_recurso", curso_id=recurso.curso, seccion=recurso.seccion, id_=recurso.id) }}"
+                      <a href="{{ url_for("course.eliminar_recurso", curso_code=recurso.curso, seccion=recurso.seccion, id_=recurso.id) }}"
                         class="link-light"><i class="bi bi-trash3" aria-hidden="true"></i> Eliminar</a>
                     </span>
                   </div>

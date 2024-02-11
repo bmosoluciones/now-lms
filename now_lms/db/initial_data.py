@@ -428,6 +428,7 @@ def crear_curso_predeterminado():
     database.session.commit()
 
     nuevo_recurso1 = CursoRecurso(
+        id="01HPB3AP3QNVK9ES6JGG5YK7CH",
         curso="now",
         seccion=seccion1_id,
         tipo="youtube",
@@ -441,6 +442,7 @@ def crear_curso_predeterminado():
     database.session.commit()
 
     nuevo_recurso2 = CursoRecurso(
+        id="01HPB3BC71R8WFZXFS8BSH5QEG",
         curso="now",
         seccion=seccion1_id,
         tipo="youtube",
@@ -454,6 +456,7 @@ def crear_curso_predeterminado():
     database.session.commit()
 
     nuevo_recurso2 = CursoRecurso(
+        id="01HPB3C1EDYAX5JWV49GXWNFJF",
         curso="now",
         seccion=seccion1_id,
         tipo="youtube",
@@ -467,6 +470,7 @@ def crear_curso_predeterminado():
     database.session.commit()
 
     nuevo_recurso3 = CursoRecurso(
+        id="01HPB3CGYV6PQXF4DXEEM3QT78",
         curso="now",
         seccion=seccion2_id,
         tipo="youtube",

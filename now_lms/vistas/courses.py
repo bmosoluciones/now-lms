@@ -259,7 +259,7 @@ def nuevo_curso():
 
             flash("Curso creado exitosamente.", "success")
             cache.delete("view/" + url_for("home.pagina_inicio"))
-            return redirect(url_for("administrar_curso", course_code=form.codigo.data))
+            return redirect(url_for("course.administrar_curso", course_code=form.codigo.data))
         except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear su curso.", "warning")
             return redirect("/instructor")
@@ -337,10 +337,10 @@ def nuevo_seccion(course_code):
             database.session.add(nueva_seccion)
             database.session.commit()
             flash("Sección agregada correctamente al curso.", "success")
-            return redirect(url_for("administrar_curso", course_code=course_code))
+            return redirect(url_for("course.administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear la seccion.", "warning")
-            return redirect(url_for("administrar_curso", course_code=course_code))
+            return redirect(url_for("course.administrar_curso", course_code=course_code))
     else:  # pragma: no cover
         return render_template("learning/nuevo_seccion.html", form=form)
 
@@ -361,10 +361,10 @@ def editar_seccion(course_code, seccion):
         try:
             database.session.commit()
             flash("Sección modificada correctamente.", "success")
-            return redirect(url_for("administrar_curso", course_code=course_code))
+            return redirect(url_for("course.administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash("Hubo en error al actualizar la seccion.", "warning")
-            return redirect(url_for("administrar_curso", course_code=course_code))
+            return redirect(url_for("course.administrar_curso", course_code=course_code))
     else:  # pragma: no cover
         return render_template("learning/editar_seccion.html", form=form, seccion=seccion_a_editar)
 
@@ -405,18 +405,18 @@ def modificar_orden_recurso(cource_code, seccion_id, resource_index, task):
         indice=int(resource_index),
         task=task,
     )
-    return redirect(url_for("administrar_curso", course_code=cource_code))
+    return redirect(url_for("course.administrar_curso", course_code=cource_code))
 
 
-@course.route("/course/<curso_id>/delete_recurso/<seccion>/<id_>")
+@course.route("/course/<curso_code>/delete_recurso/<seccion>/<id_>")
 @login_required
 @perfil_requerido("instructor")
-def eliminar_recurso(curso_id, seccion, id_):
+def eliminar_recurso(curso_code, seccion, id_):
     """Elimina una seccion del curso."""
     CursoRecurso.query.filter(CursoRecurso.id == id_).delete()
     database.session.commit()
     reorganiza_indice_seccion(seccion=seccion)
-    return redirect(url_for("administrar_curso", course_code=curso_id))
+    return redirect(url_for("course.administrar_curso", course_code=curso_code))
 
 
 @course.route("/course/<curso_id>/delete_seccion/<id_>")
@@ -427,32 +427,7 @@ def eliminar_seccion(curso_id, id_):
     CursoSeccion.query.filter(CursoSeccion.id == id_).delete()
     database.session.commit()
     reorganiza_indice_curso(codigo_curso=curso_id)
-    return redirect(url_for("administrar_curso", course_code=curso_id))
-
-
-@course.route("/course/<course_id>/delete_curse")
-@login_required
-@perfil_requerido("instructor")
-def eliminar_curso(course_id):
-    """Elimina un curso por su id y redirecciona a la vista dada."""
-
-    try:
-        # Eliminanos los recursos relacionados al curso seleccionado.
-        CursoSeccion.query.filter(CursoSeccion.curso == course_id).delete()
-        CursoRecurso.query.filter(CursoRecurso.curso == course_id).delete()
-        # Eliminanos los acceso definidos para el curso detallado.
-        DocenteCurso.query.filter(DocenteCurso.curso == course_id).delete()
-        ModeradorCurso.query.filter(ModeradorCurso.curso == course_id).delete()
-        EstudianteCurso.query.filter(EstudianteCurso.curso == course_id).delete()
-        # Elimanos curso seleccionado.
-        Curso.query.filter(Curso.codigo == course_id).delete()
-        database.session.commit()
-        flash("Curso Eliminado Correctamente.", "success")
-    except PGProgrammingError:  # pragma: no cover
-        flash("No se pudo eliminar el curso solicitado.", "warning")
-    except ProgrammingError:  # pragma: no cover
-        flash("No se pudo eliminar el curso solicitado.", "warning")
-    return redirect(url_for("cursos"))
+    return redirect(url_for("course.administrar_curso", course_code=curso_id))
 
 
 @course.route("/course/change_curse_status")
