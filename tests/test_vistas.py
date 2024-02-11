@@ -20,6 +20,8 @@ import os
 import sys
 import pytest
 
+from now_lms import log
+
 # Add currect dir to path to import the list of static views to test
 sys.path.append(os.path.join(os.path.dirname(__file__)))
 
@@ -66,10 +68,11 @@ def test_visit_all_views_with_anonimus_user(lms_application):
         from now_lms import database, initial_setup
 
         database.drop_all()
-        initial_setup(with_test_data=True, with_examples=False)
+        initial_setup(with_tests=True, with_examples=False)
 
         with lms_application.test_client() as client:
             for ruta in rutas_estaticas:
+                log.warning(ruta.ruta)
                 consulta = client.get(ruta.ruta)
                 assert consulta.status_code == ruta.no_session
                 if consulta.status_code == 200 and ruta.texto:
@@ -85,7 +88,7 @@ def test_visit_all_views_with_admin_user(lms_application):
         from flask_login import current_user
 
         database.drop_all()
-        initial_setup(with_test_data=True, with_examples=False)
+        initial_setup(with_tests=True, with_examples=False)
 
         with lms_application.test_client() as client:
             # Keep the session alive until the with clausule closes
@@ -95,7 +98,7 @@ def test_visit_all_views_with_admin_user(lms_application):
             assert current_user.tipo == "admin"
 
             for ruta in rutas_estaticas:
-
+                log.warning(ruta.ruta)
                 consulta = client.get(ruta.ruta)
                 assert consulta.status_code == ruta.admin
                 if consulta.status_code == 200 and ruta.texto:
@@ -114,7 +117,7 @@ def test_visit_all_views_with_student_user(lms_application):
         from flask_login import current_user
 
         database.drop_all()
-        initial_setup(with_test_data=True, with_examples=False)
+        initial_setup(with_tests=True, with_examples=False)
 
         with lms_application.test_client() as client:
             # Keep the session alive until the with clausule closes
@@ -124,7 +127,7 @@ def test_visit_all_views_with_student_user(lms_application):
             assert current_user.tipo == "student"
 
             for ruta in rutas_estaticas:
-
+                log.warning(ruta.ruta)
                 consulta = client.get(ruta.ruta)
                 assert consulta.status_code == ruta.user
                 if consulta.status_code == 200 and ruta.texto:
@@ -145,7 +148,7 @@ def test_visit_all_views_with_moderator_user(lms_application, request):
             from flask_login import current_user
 
             database.drop_all()
-            initial_setup(with_test_data=True, with_examples=False)
+            initial_setup(with_tests=True, with_examples=False)
 
             with lms_application.test_client() as client:
                 # Keep the session alive until the with clausule closes
@@ -155,7 +158,7 @@ def test_visit_all_views_with_moderator_user(lms_application, request):
                 assert current_user.tipo == "moderator"
 
                 for ruta in rutas_estaticas:
-
+                    log.warning(ruta.ruta)
                     consulta = client.get(ruta.ruta)
                     assert consulta.status_code == ruta.moderator
                     if consulta.status_code == 200 and ruta.texto:
@@ -176,7 +179,7 @@ def test_visit_all_views_with_instructor_user(lms_application, request):
             from flask_login import current_user
 
             database.drop_all()
-            initial_setup(with_test_data=True, with_examples=False)
+            initial_setup(with_tests=True, with_examples=False)
 
             with lms_application.test_client() as client:
                 # Keep the session alive until the with clausule closes
@@ -186,7 +189,7 @@ def test_visit_all_views_with_instructor_user(lms_application, request):
                 assert current_user.tipo == "instructor"
 
                 for ruta in rutas_estaticas:
-
+                    log.warning(ruta.ruta)
                     consulta = client.get(ruta.ruta)
                     assert consulta.status_code == ruta.instructor
                     if consulta.status_code == 200 and ruta.texto:
@@ -216,7 +219,7 @@ def test_demo_course(request, lms_application):
         with lms_application.app_context():
 
             database.drop_all()
-            initial_setup(with_test_data=False, with_examples=True)
+            initial_setup(with_tests=False, with_examples=True)
 
             with lms_application.test_client() as client:
                 client.get("/course/resources/view")

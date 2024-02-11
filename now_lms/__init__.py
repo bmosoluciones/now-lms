@@ -363,7 +363,7 @@ lms_app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
 # ---------------------------------------------------------------------------------------
 # Funciones auxiliares para la administracion y configuración inicial de la aplicacion
 # ---------------------------------------------------------------------------------------
-def initial_setup(with_examples=False, with_test_data=False):
+def initial_setup(with_examples=False, with_tests=False):
     """Inicializa una nueva bases de datos"""
     with lms_app.app_context():
         log.info("Creando esquema de base de datos.")
@@ -387,7 +387,7 @@ def initial_setup(with_examples=False, with_test_data=False):
             crear_programa()
             crear_recurso_descargable()
             log.debug("Datos de muestra cargados correctamente.")
-        if DESARROLLO or environ.get("CI") or with_test_data:
+        if with_tests:
             from now_lms.db.data_test import crear_data_para_pruebas
 
             crear_data_para_pruebas()

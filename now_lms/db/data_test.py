@@ -73,13 +73,13 @@ def crear_certificado_prueba():
     database.session.commit()
 
 
-def crear_curso_demo():
+def crear_curso_para_pruebas():
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
     demo = Curso(
         id="01HNZY78P2PW3R46BW447FH816",
         nombre="Demo Course",
-        codigo="resources",
+        codigo="test",
         descripcion="This course will let you learn resource types.",
         estado="open",
         certificado=False,
@@ -96,12 +96,12 @@ def crear_curso_demo():
 
     database.session.add(demo)
     database.session.commit()
-    curse_logo("resources", "11372802.jpg")
+    curse_logo("test", "11372802.jpg")
 
     seccion_id = "01HNZY7Y81RR4EFMDQX8F2XWHE"
     nueva_seccion = CursoSeccion(
         id=seccion_id,
-        curso="resources",
+        curso="test",
         nombre="Demo of type of resources.",
         descripcion="Demo of type of resources.",
         estado=False,
@@ -114,7 +114,7 @@ def crear_curso_demo():
     copy_sample_audio()
     nuevo_recurso6 = CursoRecurso(
         id="01HNZYDA9WKT2FHCBZSFV7JQBR",
-        curso="resources",
+        curso="test",
         seccion=seccion_id,
         tipo="mp3",
         nombre="A demo audio resource.",
@@ -130,7 +130,7 @@ def crear_curso_demo():
     copy_sample_pdf()
     nuevo_recurso5 = CursoRecurso(
         id="01HNZYDQV2K1FWNKH0R04JTSNV",
-        curso="resources",
+        curso="test",
         seccion=seccion_id,
         tipo="pdf",
         nombre="Demo pdf resource.",
@@ -145,7 +145,7 @@ def crear_curso_demo():
 
     nuevo_recurso3 = CursoRecurso(
         id="01HNZYDXSJJ1EC28QW22YNHSGX",
-        curso="resources",
+        curso="test",
         seccion=seccion_id,
         tipo="meet",
         nombre="A live meet about course sales.",
@@ -165,7 +165,7 @@ def crear_curso_demo():
     copy_sample_img()
     nuevo_recurso4 = CursoRecurso(
         id="01HNZYECPY2SKBM09GFA4TFWN2",
-        curso="resources",
+        curso="test",
         seccion=seccion_id,
         tipo="img",
         nombre="A demo image file.",
@@ -181,7 +181,7 @@ def crear_curso_demo():
 
     nuevo_recurso5 = CursoRecurso(
         id="01HNZYETGNYGVYN79JB9STQHAM",
-        curso="resources",
+        curso="test",
         seccion=seccion_id,
         tipo="text",
         nombre="A demo text resource.",
@@ -196,7 +196,7 @@ def crear_curso_demo():
 
     nuevo_recurso6 = CursoRecurso(
         id="01HNZYFK9SX5GE6CEKC4DSSZHD",
-        curso="resources",
+        curso="test",
         seccion=seccion_id,
         tipo="html",
         nombre="A demo external resouce resource.",
@@ -210,7 +210,7 @@ def crear_curso_demo():
 
     nuevo_recurso7 = CursoRecurso(
         id="01HNZYFZWX2HF6354B5SV4V8V8",
-        curso="resources",
+        curso="test",
         seccion=seccion_id,
         tipo="link",
         nombre="A external link.",
@@ -224,7 +224,7 @@ def crear_curso_demo():
 
     nuevo_recurso8 = CursoRecurso(
         id="01HNZYGGKNNDG4NJ949971GMJM",
-        curso="resources",
+        curso="test",
         seccion=seccion_id,
         tipo="slides",
         nombre="A demo Slide Show.",
@@ -237,7 +237,7 @@ def crear_curso_demo():
 
     nuevo_recurso9 = CursoRecurso(
         id="01HNZYGXRRWXJ8GXVXYZY8S994",
-        curso="resources",
+        curso="test",
         seccion=seccion_id,
         tipo="youtube",
         nombre="A demo youtube video.",
@@ -473,3 +473,4 @@ def crear_data_para_pruebas():
     crear_usuarios_de_prueba()
     crear_recurso_prueba()
     crear_programa_prueba()
+    crear_curso_para_pruebas()
