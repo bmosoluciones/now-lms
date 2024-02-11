@@ -277,7 +277,7 @@ def editar_curso(course_code):
     form = CurseForm(
         nivel=curso_a_editar.nivel, descripcion=curso_a_editar.descripcion, promocionado=curso_a_editar.promocionado
     )
-    curso_url = url_for("administrar_curso", course_code=course_code)
+    curso_url = url_for("course.administrar_curso", course_code=course_code)
     if form.validate_on_submit() or request.method == "POST":
         if curso_a_editar.promocionado is False and form.promocionado.data is True:
             curso_a_editar.promocionado = datetime.today()
@@ -379,7 +379,7 @@ def incrementar_indice_seccion(course_code, indice):
         indice=int(indice),
         task="decrement",
     )
-    return redirect(url_for("administrar_curso", course_code=course_code))
+    return redirect(url_for("course.administrar_curso", course_code=course_code))
 
 
 @course.route("/course/<course_code>/seccion/decrement/<indice>")
@@ -392,7 +392,7 @@ def reducir_indice_seccion(course_code, indice):
         indice=int(indice),
         task="increment",
     )
-    return redirect(url_for("administrar_curso", course_code=course_code))
+    return redirect(url_for("course.administrar_curso", course_code=course_code))
 
 
 @course.route("/course/resource/<cource_code>/<seccion_id>/<task>/<resource_index>")
@@ -852,6 +852,18 @@ def nuevo_recurso_html(course_code, seccion):
         return render_template(
             "learning/resources_new/nuevo_recurso_html.html", id_curso=course_code, id_seccion=seccion, form=form
         )
+
+
+@course.route("/course/<course_code>/delete_logo")
+@login_required
+@perfil_requerido("instructor")
+def elimina_logo(course_code):
+    """Elimina logotipo del curso."""
+    from now_lms.db.tools import elimina_logo_perzonalizado_curso
+
+    elimina_logo_perzonalizado_curso(course_code=course_code)
+
+    return redirect(url_for("course.curo", course_code=course_code))
 
 
 # ---------------------------------------------------------------------------------------

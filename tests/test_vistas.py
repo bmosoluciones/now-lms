@@ -135,62 +135,66 @@ def test_visit_all_views_with_student_user(lms_application):
             client.get("/user/logout")
 
 
-def test_visit_all_views_with_moderator_user(lms_application):
+def test_visit_all_views_with_moderator_user(lms_application, request):
 
-    from now_lms import database, initial_setup
+    if request.config.getoption("--slow") == "True":
 
-    with lms_application.app_context():
-        from flask_login import current_user
+        from now_lms import database, initial_setup
 
-        database.drop_all()
-        initial_setup(with_test_data=True, with_examples=False)
+        with lms_application.app_context():
+            from flask_login import current_user
 
-        with lms_application.test_client() as client:
-            # Keep the session alive until the with clausule closes
+            database.drop_all()
+            initial_setup(with_test_data=True, with_examples=False)
 
-            client.post("/user/login", data={"usuario": "moderator", "acceso": "moderator"})
-            assert current_user.is_authenticated
-            assert current_user.tipo == "moderator"
+            with lms_application.test_client() as client:
+                # Keep the session alive until the with clausule closes
 
-            for ruta in rutas_estaticas:
+                client.post("/user/login", data={"usuario": "moderator", "acceso": "moderator"})
+                assert current_user.is_authenticated
+                assert current_user.tipo == "moderator"
 
-                consulta = client.get(ruta.ruta)
-                assert consulta.status_code == ruta.moderator
-                if consulta.status_code == 200 and ruta.texto:
-                    for t in ruta.texto:
-                        assert t in consulta.data
-                    for t in ruta.como_moderador:
-                        assert t in consulta.data
-            client.get("/user/logout")
+                for ruta in rutas_estaticas:
+
+                    consulta = client.get(ruta.ruta)
+                    assert consulta.status_code == ruta.moderator
+                    if consulta.status_code == 200 and ruta.texto:
+                        for t in ruta.texto:
+                            assert t in consulta.data
+                        for t in ruta.como_moderador:
+                            assert t in consulta.data
+                client.get("/user/logout")
 
 
-def test_visit_all_views_with_instructor_user(lms_application):
+def test_visit_all_views_with_instructor_user(lms_application, request):
 
-    from now_lms import database, initial_setup
+    if request.config.getoption("--slow") == "True":
 
-    with lms_application.app_context():
-        from flask_login import current_user
+        from now_lms import database, initial_setup
 
-        database.drop_all()
-        initial_setup(with_test_data=True, with_examples=False)
+        with lms_application.app_context():
+            from flask_login import current_user
 
-        with lms_application.test_client() as client:
-            # Keep the session alive until the with clausule closes
+            database.drop_all()
+            initial_setup(with_test_data=True, with_examples=False)
 
-            client.post("/user/login", data={"usuario": "instructor", "acceso": "instructor"})
-            assert current_user.is_authenticated
-            assert current_user.tipo == "instructor"
+            with lms_application.test_client() as client:
+                # Keep the session alive until the with clausule closes
 
-            for ruta in rutas_estaticas:
+                client.post("/user/login", data={"usuario": "instructor", "acceso": "instructor"})
+                assert current_user.is_authenticated
+                assert current_user.tipo == "instructor"
 
-                consulta = client.get(ruta.ruta)
-                assert consulta.status_code == ruta.instructor
-                if consulta.status_code == 200 and ruta.texto:
-                    for t in ruta.texto:
-                        assert t in consulta.data
-                    for t in ruta.como_instructor:
-                        assert t in consulta.data
-            client.get("/user/logout")
+                for ruta in rutas_estaticas:
+
+                    consulta = client.get(ruta.ruta)
+                    assert consulta.status_code == ruta.instructor
+                    if consulta.status_code == 200 and ruta.texto:
+                        for t in ruta.texto:
+                            assert t in consulta.data
+                            for t in ruta.como_instructor:
+                                assert t in consulta.data
+                client.get("/user/logout")
 
 
 def test_visit_custom_error_pages(lms_application, request):

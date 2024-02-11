@@ -401,8 +401,7 @@ def crear_curso_predeterminado():
     database.session.commit()
     curse_logo("now", "5218255.jpg")
 
-    ramdon1 = ULID()
-    seccion1_id = str(ramdon1)
+    seccion1_id = "01HPB1MZXBHZETC4ZH0HV4G39Q"
     nueva_seccion1 = CursoSeccion(
         id=seccion1_id,
         curso="now",
@@ -415,8 +414,7 @@ def crear_curso_predeterminado():
     database.session.add(nueva_seccion1)
     database.session.commit()
 
-    ramdon2 = ULID()
-    seccion2_id = str(ramdon2)
+    seccion2_id = "01HPB1Q1R4HGJPG3C5NSFX3GH2"
     nueva_seccion2 = CursoSeccion(
         id=seccion2_id,
         curso="now",
