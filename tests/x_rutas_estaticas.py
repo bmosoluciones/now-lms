@@ -335,6 +335,19 @@ rutas_estaticas = [
         como_admin=[],
     ),
     Ruta(
+        ruta="/course/now/view?inspect=True",
+        no_session=200,
+        admin=200,
+        user=403,
+        moderator=403,
+        instructor=403,
+        texto=[],
+        como_user=[b"Inscribirse al Curso"],
+        como_moderador=[],
+        como_instructor=[],
+        como_admin=[],
+    ),
+    Ruta(
         ruta="/course/test/view",  # Test course
         no_session=200,
         admin=200,

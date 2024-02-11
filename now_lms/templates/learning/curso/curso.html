@@ -51,7 +51,7 @@
           <h2> {{ curso.nombre }}</h2>
           {% if editable %}
           <div class="d-flex justify-content-center">
-            <a href="{{ url_for("administrar_curso", course_code=curso.codigo) }}" class="btn btn-primary btn-sm"
+            <a href="{{ url_for("course.administrar_curso", course_code=curso.codigo) }}" class="btn btn-primary btn-sm"
               tabindex="-1" role="button" aria-disabled="false"><i class="bi bi-pencil-square" aria-hidden="true"></i>
               Editar</a>
           </div>
