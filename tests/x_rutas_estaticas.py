@@ -857,7 +857,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/course/now/delete_logo",
         no_session=302,
-        admin=200,
+        admin=302,
         user=403,
         moderator=403,
         instructor=403,
