@@ -475,7 +475,7 @@ def pagina_recurso(curso_id, resource_type, codigo):
     TEMPLATE = "learning/resources/" + TEMPLATES_BY_TYPE[resource_type]
     INDICE = crear_indice_recurso(codigo)
 
-    if current_user.is_authenticated or RECURSO.publico is True:
+    if (current_user.is_authenticated and current_user.tipo == "admin") or RECURSO.publico is True:
         return render_template(
             TEMPLATE, curso=CURSO, recurso=RECURSO, recursos=RECURSOS, seccion=SECCION, secciones=SECCIONES, indice=INDICE
         )
@@ -489,19 +489,26 @@ def pagina_recurso(curso_id, resource_type, codigo):
 @perfil_requerido("student")
 def marcar_recurso_completado(curso_id, resource_type, codigo):
     """Registra avance de un 100% en un recurso."""
-    RECURSO = database.session.query(CursoRecurso).filter(CursoRecurso.id == codigo).first()
 
-    avance = CursoRecursoAvance(
-        curso=curso_id,
-        seccion=RECURSO.seccion,
-        recurso=RECURSO.id,
-        usuario=current_user.id,
-        avance=100,
-    )
-    database.session.add(avance)
-    database.session.commit()
+    if current_user.is_authenticated and current_user.tipo == "admin":
+        RECURSO = database.session.query(CursoRecurso).filter(CursoRecurso.id == codigo).first()
 
-    return redirect(url_for("pagina_recurso", curso_id=curso_id, resource_type=resource_type, codigo=RECURSO.id))
+        if RECURSO:
+
+            avance = CursoRecursoAvance(
+                curso=curso_id,
+                seccion=RECURSO.seccion,
+                recurso=RECURSO.id,
+                usuario=current_user.id,
+                avance=100,
+            )
+            database.session.add(avance)
+            database.session.commit()
+
+        return redirect(url_for("course.pagina_recurso", curso_id=curso_id, resource_type=resource_type, codigo=RECURSO.id))
+    else:
+        flash("No se encuentra autorizado a acceder al recurso solicitado.", "warning")
+        return abort(403)
 
 
 @course.route("/course/<curso_id>/alternative/<codigo>/<order>")
@@ -532,14 +539,18 @@ def pagina_recurso_alternativo(curso_id, codigo, order):
             .all()
         )
 
-    return render_template(
-        "learning/resources/type_alternativo.html",
-        recursos=consulta_recursos,
-        curso=CURSO,
-        recurso=RECURSO,
-        seccion=SECCION,
-        indice=INDICE,
-    )
+    if (current_user.is_authenticated and current_user.tipo == "admin") or RECURSO.publico is True:
+        return render_template(
+            "learning/resources/type_alternativo.html",
+            recursos=consulta_recursos,
+            curso=CURSO,
+            recurso=RECURSO,
+            seccion=SECCION,
+            indice=INDICE,
+        )
+    else:
+        flash("No se encuentra autorizado a acceder al recurso solicitado.", "warning")
+        return abort(403)
 
 
 @course.route("/course/<course_code>/<seccion>/new_resource")
@@ -547,7 +558,7 @@ def pagina_recurso_alternativo(curso_id, codigo, order):
 @perfil_requerido("instructor")
 def nuevo_recurso(course_code, seccion):
     """Página para seleccionar tipo de recurso."""
-    return render_template("learning/nuevo_recurso.html", id_curso=course_code, id_seccion=seccion)
+    return render_template("learning/resources_new/nuevo_recurso.html", id_curso=course_code, id_seccion=seccion)
 
 
 @course.route("/course/<course_code>/<seccion>/youtube/new", methods=["GET", "POST"])

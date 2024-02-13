@@ -122,7 +122,7 @@ def crear_curso_para_pruebas():
         base_doc_url="audio",
         doc="resources/En-us-hello.ogg",
         indice=1,
-        publico=True,
+        publico=False,
     )
     database.session.add(nuevo_recurso6)
     database.session.commit()
@@ -138,7 +138,7 @@ def crear_curso_para_pruebas():
         base_doc_url="files",
         doc="resources/NOW_Learning_Management_System.pdf",
         indice=2,
-        publico=True,
+        publico=False,
     )
     database.session.add(nuevo_recurso5)
     database.session.commit()
@@ -171,7 +171,7 @@ def crear_curso_para_pruebas():
         nombre="A demo image file.",
         descripcion="A image file.",
         indice=4,
-        publico=True,
+        publico=False,
         requerido=3,
         base_doc_url="images",
         doc="resources/logo_large.png",
