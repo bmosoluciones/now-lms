@@ -593,9 +593,13 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:
-        return render_template(
-            "learning/resources_new/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form
-        )
+        if current_user.tipo == "admin":
+            return render_template(
+                "learning/resources_new/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form
+            )
+        else:
+            flash("No se encuentra autorizado a acceder al recurso solicitado.", "warning")
+            return abort(403)
 
 
 @course.route("/course/<course_code>/<seccion>/text/new", methods=["GET", "POST"])
@@ -626,9 +630,13 @@ def nuevo_recurso_text(course_code, seccion):
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("administrar_curso", course_code=course_code))
     else:
-        return render_template(
-            "learning/resources_new/nuevo_recurso_text.html", id_curso=course_code, id_seccion=seccion, form=form
-        )
+        if current_user.tipo == "admin":
+            return render_template(
+                "learning/resources_new/nuevo_recurso_text.html", id_curso=course_code, id_seccion=seccion, form=form
+            )
+        else:
+            flash("No se encuentra autorizado a acceder al recurso solicitado.", "warning")
+            return abort(403)
 
 
 @course.route("/course/<course_code>/<seccion>/link/new", methods=["GET", "POST"])
@@ -659,9 +667,13 @@ def nuevo_recurso_link(course_code, seccion):
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:
-        return render_template(
-            "learning/resources_new/nuevo_recurso_link.html", id_curso=course_code, id_seccion=seccion, form=form
-        )
+        if current_user.tipo == "admin":
+            return render_template(
+                "learning/resources_new/nuevo_recurso_link.html", id_curso=course_code, id_seccion=seccion, form=form
+            )
+        else:
+            flash("No se encuentra autorizado a acceder al recurso solicitado.", "warning")
+            return abort(403)
 
 
 @course.route("/course/<course_code>/<seccion>/pdf/new", methods=["GET", "POST"])
@@ -695,9 +707,13 @@ def nuevo_recurso_pdf(course_code, seccion):
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:
-        return render_template(
-            "learning/resources_new/nuevo_recurso_pdf.html", id_curso=course_code, id_seccion=seccion, form=form
-        )
+        if current_user.tipo == "admin":
+            return render_template(
+                "learning/resources_new/nuevo_recurso_pdf.html", id_curso=course_code, id_seccion=seccion, form=form
+            )
+        else:
+            flash("No se encuentra autorizado a acceder al recurso solicitado.", "warning")
+            return abort(403)
 
 
 @course.route("/course/<course_code>/<seccion>/meet/new", methods=["GET", "POST"])
@@ -732,9 +748,13 @@ def nuevo_recurso_meet(course_code, seccion):
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:
-        return render_template(
-            "learning/resources_new/nuevo_recurso_meet.html", id_curso=course_code, id_seccion=seccion, form=form
-        )
+        if current_user.tipo == "admin":
+            return render_template(
+                "learning/resources_new/nuevo_recurso_meet.html", id_curso=course_code, id_seccion=seccion, form=form
+            )
+        else:
+            flash("No se encuentra autorizado a acceder al recurso solicitado.", "warning")
+            return abort(403)
 
 
 @course.route("/course/<course_code>/<seccion>/img/new", methods=["GET", "POST"])
@@ -769,9 +789,13 @@ def nuevo_recurso_img(course_code, seccion):
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:
-        return render_template(
-            "learning/resources_new/nuevo_recurso_img.html", id_curso=course_code, id_seccion=seccion, form=form
-        )
+        if current_user.tipo == "admin":
+            return render_template(
+                "learning/resources_new/nuevo_recurso_img.html", id_curso=course_code, id_seccion=seccion, form=form
+            )
+        else:
+            flash("No se encuentra autorizado a acceder al recurso solicitado.", "warning")
+            return abort(403)
 
 
 @course.route("/course/<course_code>/<seccion>/audio/new", methods=["GET", "POST"])
@@ -806,9 +830,13 @@ def nuevo_recurso_audio(course_code, seccion):
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:
-        return render_template(
-            "learning/resources_new/nuevo_recurso_mp3.html", id_curso=course_code, id_seccion=seccion, form=form
-        )
+        if current_user.tipo == "admin":
+            return render_template(
+                "learning/resources_new/nuevo_recurso_mp3.html", id_curso=course_code, id_seccion=seccion, form=form
+            )
+        else:
+            flash("No se encuentra autorizado a acceder al recurso solicitado.", "warning")
+            return abort(403)
 
 
 @course.route("/course/<course_code>/<seccion>/html/new", methods=["GET", "POST"])
@@ -839,9 +867,13 @@ def nuevo_recurso_html(course_code, seccion):
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("curso", course_code=course_code))
     else:
-        return render_template(
-            "learning/resources_new/nuevo_recurso_html.html", id_curso=course_code, id_seccion=seccion, form=form
-        )
+        if current_user.tipo == "admin":
+            return render_template(
+                "learning/resources_new/nuevo_recurso_html.html", id_curso=course_code, id_seccion=seccion, form=form
+            )
+        else:
+            flash("No se encuentra autorizado a acceder al recurso solicitado.", "warning")
+            return abort(403)
 
 
 @course.route("/course/<course_code>/delete_logo")
@@ -851,9 +883,13 @@ def elimina_logo(course_code):
     """Elimina logotipo del curso."""
     from now_lms.db.tools import elimina_logo_perzonalizado_curso
 
-    elimina_logo_perzonalizado_curso(course_code=course_code)
+    if current_user.tipo == "admin":
 
-    return redirect(url_for("course.curo", course_code=course_code))
+        elimina_logo_perzonalizado_curso(course_code=course_code)
+        return redirect(url_for("course.curso", course_code=course_code))
+    else:
+        flash("No se encuentra autorizado a acceder al recurso solicitado.", "warning")
+        return abort(403)
 
 
 # ---------------------------------------------------------------------------------------
