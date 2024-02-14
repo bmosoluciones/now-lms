@@ -67,6 +67,12 @@ def test_fill_all_forms(lms_application):
 
             for form in forms:
                 log.warning(form.ruta)
-                consulta = client.post(form.ruta, data=form.data, follow_redirects=True, content_type="multipart/form-data")
+                if form.file:
+                    data = {key: str(value) for key, value in form.data.items()}
+                    data[form.file.get("name")] = form.file.get("bytes")
+                    consulta = client.post(form.ruta, data=data, follow_redirects=True, content_type="multipart/form-data")
+                else:
+                    consulta = client.post(form.ruta, data=form.data, follow_redirects=True)
+
                 assert consulta.status_code == 200
             client.get("/user/logout")
