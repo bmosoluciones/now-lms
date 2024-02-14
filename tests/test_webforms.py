@@ -20,6 +20,8 @@ import os
 import sys
 import pytest
 
+from flask import session
+
 from now_lms import log
 
 # Add currect dir to path to import the list of static views to test
@@ -68,7 +70,9 @@ def test_fill_all_forms(lms_application, request):
                 assert current_user.tipo == "admin"
 
                 for form in forms:
+
                     log.warning(form.ruta)
+
                     if form.file:
                         data = {key: str(value) for key, value in form.data.items()}
                         data[form.file.get("name")] = form.file.get("bytes")
@@ -77,4 +81,9 @@ def test_fill_all_forms(lms_application, request):
                         consulta = client.post(form.ruta, data=form.data, follow_redirects=True)
 
                     assert consulta.status_code == 200
+
+                    if form.flash:
+                        assert session["_flashes"][0][0] == "success"
+                        assert session["_flashes"][0][1] == "Grupo creado correctamente"
+
                 client.get("/user/logout")

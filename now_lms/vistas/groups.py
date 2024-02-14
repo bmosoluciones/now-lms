@@ -37,9 +37,9 @@ def nuevo_grupo():
         try:
             database.session.add(grupo_)
             database.session.commit()
-            cache.delete("view/" + url_for("lista_grupos"))
+            # cache.delete("view/" + url_for("lista_grupos"))
             flash("Grupo creado correctamente", "success")
-            return redirect("/groups")
+            return redirect("/admin/panel")
         except OperationalError:
             flash("Error al crear el nuevo grupo.", "warning")
             return redirect("/new_group")
