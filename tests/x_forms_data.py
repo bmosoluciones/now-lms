@@ -86,4 +86,22 @@ forms = [
         },
         file=None,
     ),
+    Form(
+        ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/img/new",
+        data={
+            "nombre": "nombrekk",
+            "descripcion": "adadadadadadescripcion",
+            "editor": "aaaaaa",
+        },
+        file={"name": "img", "bytes": (BytesIO(b"aasdfkkkk"), "imagen.jpg")},
+    ),
+    Form(
+        ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/audio/new",
+        data={
+            "nombre": "nombrekk",
+            "descripcion": "adadadadadadescripcion",
+            "editor": "aaaaaa",
+        },
+        file={"name": "audio", "bytes": (BytesIO(b"aasdfkkakk"), "imagen.ogg")},
+    ),
 ]
