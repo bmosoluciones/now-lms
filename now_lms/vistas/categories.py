@@ -29,7 +29,7 @@ Gestión de certificados.
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, flash, redirect, render_template, request
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
 from sqlalchemy.exc import OperationalError
 
@@ -66,7 +66,7 @@ def new_category():
             flash("Nueva categoria creada.", "success")
         except OperationalError:
             flash("Hubo un error al crear la categoria.", "warning")
-        return redirect("/categories")
+        return redirect(url_for("category.categories"))
 
     return render_template("learning/categorias/nueva_categoria.html", form=form)
 
@@ -113,6 +113,6 @@ def edit_category(ulid: str):
             flash("Categoria editada correctamente.", "success")
         except OperationalError:
             flash("No se puedo editar la categoria.", "warning")
-        return redirect("/categories")
+        return redirect(url_for("category.categories"))
 
     return render_template("learning/categorias/editar_categoria.html", form=form)

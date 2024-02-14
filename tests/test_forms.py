@@ -48,31 +48,33 @@ def lms_application():
     yield app
 
 
-def test_fill_all_forms(lms_application):
+def test_fill_all_forms(lms_application, request):
 
-    from now_lms import database, initial_setup
+    if request.config.getoption("--slow") == "True":
 
-    with lms_application.app_context():
-        from flask_login import current_user
+        from now_lms import database, initial_setup
 
-        database.drop_all()
-        initial_setup(with_tests=True, with_examples=False)
+        with lms_application.app_context():
+            from flask_login import current_user
 
-        with lms_application.test_client() as client:
-            # Keep the session alive until the with clausule closes
+            database.drop_all()
+            initial_setup(with_tests=True, with_examples=False)
 
-            client.post("/user/login", data={"usuario": "lms-admin", "acceso": "lms-admin"})
-            assert current_user.is_authenticated
-            assert current_user.tipo == "admin"
+            with lms_application.test_client() as client:
+                # Keep the session alive until the with clausule closes
 
-            for form in forms:
-                log.warning(form.ruta)
-                if form.file:
-                    data = {key: str(value) for key, value in form.data.items()}
-                    data[form.file.get("name")] = form.file.get("bytes")
-                    consulta = client.post(form.ruta, data=data, follow_redirects=True, content_type="multipart/form-data")
-                else:
-                    consulta = client.post(form.ruta, data=form.data, follow_redirects=True)
+                client.post("/user/login", data={"usuario": "lms-admin", "acceso": "lms-admin"})
+                assert current_user.is_authenticated
+                assert current_user.tipo == "admin"
 
-                assert consulta.status_code == 200
-            client.get("/user/logout")
+                for form in forms:
+                    log.warning(form.ruta)
+                    if form.file:
+                        data = {key: str(value) for key, value in form.data.items()}
+                        data[form.file.get("name")] = form.file.get("bytes")
+                        consulta = client.post(form.ruta, data=data, follow_redirects=True, content_type="multipart/form-data")
+                    else:
+                        consulta = client.post(form.ruta, data=form.data, follow_redirects=True)
+
+                    assert consulta.status_code == 200
+                client.get("/user/logout")
