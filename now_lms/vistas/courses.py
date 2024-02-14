@@ -82,7 +82,7 @@ from now_lms.forms import (
     CursoSeccionForm,
 )
 from now_lms.logs import log
-from now_lms.misc import CURSO_NIVEL, HTML_TAGS, TEMPLATES_BY_TYPE, TIPOS_RECURSOS
+from now_lms.misc import CURSO_NIVEL, HTML_TAGS, INICIO_SESION, TEMPLATES_BY_TYPE, TIPOS_RECURSOS
 
 # ---------------------------------------------------------------------------------------
 # Gestión de cursos.
@@ -900,15 +900,30 @@ def recurso_file(course_code, recurso_code):
     doc = CursoRecurso.query.filter(CursoRecurso.id == recurso_code, CursoRecurso.curso == course_code).first()
     config = current_app.upload_set_config.get(doc.base_doc_url)
 
-    return send_from_directory(config.destination, doc.doc)
+    if current_user.is_authenticated:
+        if doc.publico or current_user.tipo == "admin":
+            return send_from_directory(config.destination, doc.doc)
+        else:
+            return abort(403)
+    else:
+        return redirect(INICIO_SESION)
 
 
 @course.route("/course/<course_code>/external_code/<recurso_code>")
 def external_code(course_code, recurso_code):
     """Devuelve un archivo desde el sistema de archivos."""
+
     recurso = CursoRecurso.query.filter(CursoRecurso.id == recurso_code, CursoRecurso.curso == course_code).first()
 
-    return recurso.external_code
+    if current_user.is_authenticated:
+        if recurso.publico or current_user.tipo == "admin":
+
+            return recurso.external_code
+
+        else:
+            return abort(403)
+    else:
+        return redirect(INICIO_SESION)
 
 
 @course.route("/course/slide_show/<recurso_code>")

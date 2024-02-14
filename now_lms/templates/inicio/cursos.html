@@ -152,16 +152,16 @@
               <div class="collapse" id="dashboard-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                   <li><a
-                      href="{{ url_for("lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="0", char="?") }}"
+                      href="{{ url_for("course.lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="0", char="?") }}"
                       class="link-dark rounded">Introductorio</a></li>
                   <li><a
-                      href="{{ url_for("lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="1", char="?") }}"
+                      href="{{ url_for("course.lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="1", char="?") }}"
                       class="link-dark rounded">Principiante</a></li>
                   <li><a
-                      href="{{ url_for("lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="2", char="?") }}"
+                      href="{{ url_for("course.lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="2", char="?") }}"
                       class="link-dark rounded">Intermedio</a></li>
                   <li><a
-                      href="{{ url_for("lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="3", char="?") }}"
+                      href="{{ url_for("course.lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="3", char="?") }}"
                       class="link-dark rounded">Avanzado</a></li>
                 </ul>
               </div>
