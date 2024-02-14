@@ -47,14 +47,14 @@ POST = False
 
 # <--------------------------------------------------------------------------> #
 # Pre release data.
-PRERELEASE = "a13"
+PRERELEASE = "a14"
 REVISION = datetime.today().strftime("%Y%m%d")
 
 # <--------------------------------------------------------------------------> #
 # Release string
 # Refences:
 #  - https://peps.python.org/pep-0440/
-# 0.0.1a13.dev20231223
+# 0.0.1a13.dev20240214
 if PRERELEASE:
     VERSION = MAYOR + "." + MENOR + "." + PATCH + PRERELEASE + ".dev" + REVISION
 else:
