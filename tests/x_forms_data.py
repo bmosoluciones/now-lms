@@ -104,4 +104,13 @@ forms = [
         },
         file={"name": "audio", "bytes": (BytesIO(b"aasdfkkakk"), "imagen.ogg")},
     ),
+    Form(
+        ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/html/new",
+        data={
+            "nombre": "nombrekk",
+            "descripcion": "adadadadadadescripcion",
+            "html_externo": "<h1>Hello</h1>",
+        },
+        file=None,
+    ),
 ]
