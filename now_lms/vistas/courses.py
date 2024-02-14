@@ -258,7 +258,7 @@ def nuevo_curso():
                     log.warning("No se pudo actualizar la foto de perfil.")
 
             flash("Curso creado exitosamente.", "success")
-            cache.delete("view/" + url_for("home.pagina_inicio"))
+            cache.delete("view/" + url_for("home.pagina_de_inicio"))
             return redirect(url_for("course.administrar_curso", course_code=form.codigo.data))
         except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear su curso.", "warning")
