@@ -136,4 +136,13 @@ forms = [
         file=None,
         flash=("Grupo creado correctamente", "success"),
     ),
+    Form(
+        ruta="/message/new",
+        data={
+            "titulo": "nombrekk",
+            "editor": "adadadadadadescripcion",
+        },
+        file=None,
+        flash=None,
+    ),
 ]

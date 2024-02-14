@@ -29,7 +29,7 @@ Gestión de certificados.
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, redirect, render_template, url_for
+from flask import Blueprint, abort, redirect, render_template, url_for
 from flask_login import current_user, login_required
 
 # ---------------------------------------------------------------------------------------
@@ -38,6 +38,7 @@ from flask_login import current_user, login_required
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import Mensaje, Usuario, database
 from now_lms.forms import MsgForm
+from now_lms.misc import INICIO_SESION
 
 # ---------------------------------------------------------------------------------------
 # Interfaz de mensajes
@@ -56,12 +57,15 @@ def mensaje(ulid: str):
     respuestas = database.session.execute(database.select(Mensaje, Usuario).filter(Mensaje.parent == ulid)).all()
     form = MsgForm(es_respuesta=True, parent=mensaje.id)
 
-    if mensaje.parent is None:
-        return render_template(
-            "learning/mensajes/ver_msg.html", mensaje=mensaje, usuario=usuario, form=form, respuestas=respuestas
-        )
+    if current_user.is_authenticated:
+        if mensaje.usuario == current_user.id:
+            return render_template(
+                "learning/mensajes/ver_msg.html", mensaje=mensaje, usuario=usuario, form=form, respuestas=respuestas
+            )
+        else:
+            return abort(403)
     else:
-        return redirect(url_for("mensaje", mgs_id=mensaje.parent))
+        return redirect(INICIO_SESION)
 
 
 @msg.route("/message/new", methods=["GET", "POST"])
@@ -79,6 +83,6 @@ def nuevo_mensaje():
         database.session.add(mensaje)
         database.session.commit()
         database.session.refresh(mensaje)
-        return redirect(url_for("mensaje", mgs_id=mensaje.id))
+        return redirect(url_for("msg.mensaje", ulid=mensaje.id))
 
     return render_template("learning/mensajes/nuevo_msg.html", form=form)

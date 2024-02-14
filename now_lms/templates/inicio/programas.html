@@ -83,7 +83,7 @@
                   <div class="d-flex justify-content-between align-items-center">
 
                     <div class="btn-group">
-                      <a href="{{ url_for("pagina_programa", codigo=curso.codigo )}}"
+                      <a href="{{ url_for("program.pagina_programa", codigo=curso.codigo )}}"
                         class="btn btn-sm btn-outline-secondary" role="button" aria-disabled="true">
                         Ver Programa
                       </a>
@@ -104,7 +104,7 @@
           </div>
 
           <div class="container" id="user_paginatios">
-            {{ macros.rendizar_paginacion(consulta=cursos, vista="lista_programas") }}
+            {{ macros.rendizar_paginacion(consulta=cursos, vista="program.lista_programas") }}
           </div>
 
         </div>
@@ -153,16 +153,16 @@
                 <div class="collapse" id="dashboard-collapse">
                   <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     <li><a
-                        href="{{ url_for("lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="0", char="?") }}"
+                        href="{{ url_for("course.lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="0", char="?") }}"
                         class="link-dark rounded">Introductorio</a></li>
                     <li><a
-                        href="{{ url_for("lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="1", char="?") }}"
+                        href="{{ url_for("course.lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="1", char="?") }}"
                         class="link-dark rounded">Principiante</a></li>
                     <li><a
-                        href="{{ url_for("lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="2", char="?") }}"
+                        href="{{ url_for("course.lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="2", char="?") }}"
                         class="link-dark rounded">Intermedio</a></li>
                     <li><a
-                        href="{{ url_for("lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="3", char="?") }}"
+                        href="{{ url_for("course.lista_cursos") + parametros_url(parametros=parametros, arg="nivel", val="3", char="?") }}"
                         class="link-dark rounded">Avanzado</a></li>
                   </ul>
                 </div>
