@@ -35,8 +35,7 @@ from flask import Blueprint, abort, current_app, flash, redirect, render_templat
 from flask_login import current_user, login_required
 from flask_uploads import UploadNotAllowed
 from markdown import markdown
-from pg8000.dbapi import ProgrammingError as PGProgrammingError
-from sqlalchemy.exc import OperationalError, ProgrammingError
+from sqlalchemy.exc import OperationalError
 from ulid import ULID
 
 # ---------------------------------------------------------------------------------------
@@ -64,9 +63,7 @@ from now_lms.db import (
     CursoRecursoSlideShow,
     CursoSeccion,
     DocenteCurso,
-    EstudianteCurso,
     Etiqueta,
-    ModeradorCurso,
     Recurso,
     database,
 )
@@ -494,7 +491,6 @@ def marcar_recurso_completado(curso_id, resource_type, codigo):
         RECURSO = database.session.query(CursoRecurso).filter(CursoRecurso.id == codigo).first()
 
         if RECURSO:
-
             avance = CursoRecursoAvance(
                 curso=curso_id,
                 seccion=RECURSO.seccion,
@@ -884,7 +880,6 @@ def elimina_logo(course_code):
     from now_lms.db.tools import elimina_logo_perzonalizado_curso
 
     if current_user.tipo == "admin":
-
         elimina_logo_perzonalizado_curso(course_code=course_code)
         return redirect(url_for("course.curso", course_code=course_code))
     else:
