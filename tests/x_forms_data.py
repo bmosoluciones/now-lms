@@ -145,4 +145,25 @@ forms = [
         file=None,
         flash=None,
     ),
+    Form(
+        ruta="/user/logon",
+        data={
+            "usuario": "donald",
+            "acceso": "duck",
+            "nombre": "Donald",
+            "apellido": "Duck",
+            "correo_electronico": "d.duck@disneylatino.com",
+        },
+        file=None,
+        flash=None,
+    ),
+    Form(
+        ruta="/certificate/new",
+        data={
+            "titulo": "cert",
+            "descripcion": "cert",
+        },
+        file=None,
+        flash=None,
+    ),
 ]
