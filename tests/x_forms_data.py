@@ -33,4 +33,57 @@ forms = [
         },
         file=None,
     ),
+    Form(
+        ruta="/course/now/01HPB1MZXBHZETC4ZH0HV4G39Q/edit",
+        data={
+            "nombre": "nombreaaa",
+            "descripcion": "descaaaripcion",
+        },
+        file=None,
+    ),
+    Form(
+        ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/youtube/new",
+        data={
+            "nombre": "nombreaaa",
+            "descripcion": "descaaaripcion",
+            "youtube_url": "sssssssssss",
+        },
+        file=None,
+    ),
+    Form(
+        ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/text/new",
+        data={
+            "nombre": "nombrekk",
+            "descripcion": "adadadadadadescaaaripcion",
+            "editor": "aaaaaa",
+        },
+        file=None,
+    ),
+    Form(
+        ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/link/new",
+        data={
+            "nombre": "nombrekk",
+            "descripcion": "adadadadadadescripcion",
+            "editor": "aaaaaa",
+        },
+        file=None,
+    ),
+    Form(
+        ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/pdf/new",
+        data={
+            "nombre": "nombrekk",
+            "descripcion": "adadadadadadescripcion",
+            "editor": "aaaaaa",
+        },
+        file={"name": "pdf", "bytes": (BytesIO(b"asdfkkkk"), "archivo.pdf")},
+    ),
+    Form(
+        ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/meet/new",
+        data={
+            "nombre": "nombrekk",
+            "descripcion": "adadadadadadescripcion",
+            "editor": "aaaaaa",
+        },
+        file=None,
+    ),
 ]

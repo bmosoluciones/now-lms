@@ -249,9 +249,9 @@ def nuevo_curso():
                         ).first()[0]
                         _curso.portada = True
                         database.session.commit()
-                except UploadNotAllowed:
+                except UploadNotAllowed:  # pragma: no cover
                     log.warning("No se pudo actualizar la foto de perfil.")
-                except AttributeError:
+                except AttributeError:  # pragma: no cover
                     log.warning("No se pudo actualizar la foto de perfil.")
 
             flash("Curso creado exitosamente.", "success")
@@ -300,7 +300,7 @@ def editar_curso(course_code):
                     if picture_file:
                         curso_a_editar.portada = True
                         database.session.commit()
-                except UploadNotAllowed:
+                except UploadNotAllowed:  # pragma: no cover
                     log.warning("No se pudo actualizar la portada del curso.")
             flash("Curso actualizado exitosamente.", "success")
             return redirect(curso_url)
@@ -584,10 +584,10 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
-            return redirect(url_for("administrar_curso", course_code=course_code))
+            return redirect(url_for("course.administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("course.curso", course_code=course_code))
     else:
         if current_user.tipo == "admin":
             return render_template(
@@ -621,10 +621,10 @@ def nuevo_recurso_text(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("course.curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for("administrar_curso", course_code=course_code))
+            return redirect(url_for("course.administrar_curso", course_code=course_code))
     else:
         if current_user.tipo == "admin":
             return render_template(
@@ -658,10 +658,10 @@ def nuevo_recurso_link(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
-            return redirect(url_for("administrar_curso", course_code=course_code))
+            return redirect(url_for("course.administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("course.curso", course_code=course_code))
     else:
         if current_user.tipo == "admin":
             return render_template(
@@ -698,10 +698,10 @@ def nuevo_recurso_pdf(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
-            return redirect(url_for("administrar_curso", course_code=course_code))
+            return redirect(url_for("course.administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("course.curso", course_code=course_code))
     else:
         if current_user.tipo == "admin":
             return render_template(
@@ -739,10 +739,10 @@ def nuevo_recurso_meet(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
-            return redirect(url_for("administrar_curso", course_code=course_code))
+            return redirect(url_for("course.administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("course.curso", course_code=course_code))
     else:
         if current_user.tipo == "admin":
             return render_template(
@@ -780,10 +780,10 @@ def nuevo_recurso_img(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
-            return redirect(url_for("administrar_curso", course_code=course_code))
+            return redirect(url_for("course.administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("course.curso", course_code=course_code))
     else:
         if current_user.tipo == "admin":
             return render_template(
@@ -821,10 +821,10 @@ def nuevo_recurso_audio(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
-            return redirect(url_for("administrar_curso", course_code=course_code))
+            return redirect(url_for("course.administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("course.curso", course_code=course_code))
     else:
         if current_user.tipo == "admin":
             return render_template(
@@ -858,10 +858,10 @@ def nuevo_recurso_html(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
-            return redirect(url_for("administrar_curso", course_code=course_code))
+            return redirect(url_for("course.administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for("curso", course_code=course_code))
+            return redirect(url_for("course.curso", course_code=course_code))
     else:
         if current_user.tipo == "admin":
             return render_template(
