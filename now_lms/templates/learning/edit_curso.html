@@ -24,7 +24,8 @@
 
     <div class="container px-4 py-5" id="icon-grid">
       <h4 class="pb-2 border-bottom">Editar curso {{ curso.codigo }} - {{ curso.nombre }}</h4>
-      <form action="{{ url_for('editar_curso', course_code=curso.codigo) }}" method="post" enctype=multipart/form-data>
+      <form action="{{ url_for('course.editar_curso', course_code=curso.codigo) }}" method="post"
+        enctype=multipart/form-data>
         {{ form.csrf_token }}
         <div class="row g-3">
           <div class="col-sm-6">
@@ -94,7 +95,7 @@
           {% if curso.portada %}
           <img src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}"
             alt="Portada del Curso">
-          <a href="{{url_for("elimina_logo_curso", course_code=curso.codigo)}}">Eliminar Portada</a>
+          <a href="{{url_for("course.elimina_logo", course_code=curso.codigo)}}">Eliminar Portada</a>
           {% else %}
 
           <div class=" col-md-4">
@@ -113,7 +114,8 @@
 
         </div>
 
-        <a class="btn btn-warning" href="{{ url_for('curso', course_code=curso.codigo) }}" role="button">Cancelar</a>
+        <a class="btn btn-warning" href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+          role="button">Cancelar</a>
         <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Curso</button>
       </form>
     </div>

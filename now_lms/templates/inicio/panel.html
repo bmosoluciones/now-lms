@@ -35,10 +35,10 @@
 
         <div class="col-auto ms-auto text-end mt-n1">
           <span class="badge bg-success">
-            <a href="{{ url_for("crear_usuario") }}" class="link-light">Nuevo Usuario</a>
+            <a href="{{ url_for("user.crear_usuario") }}" class="link-light">Nuevo Usuario</a>
           </span>
           <span class="badge bg-success">
-            <a href="{{ url_for("nuevo_curso") }}" class="link-light">Nuevo Curso</a>
+            <a href="{{ url_for("course.nuevo_curso") }}" class="link-light">Nuevo Curso</a>
           </span>
         </div>
       </div>
@@ -129,7 +129,7 @@
             <div class="card-body pt-2 pb-3">
               <ul>
                 {% for curso in cursos_por_fecha %}
-                <li><a href="{{ url_for("curso", course_code=curso.codigo) }}">{{ curso.nombre }}</a> </li>
+                <li><a href="{{ url_for("course.curso", course_code=curso.codigo) }}">{{ curso.nombre }}</a> </li>
                 {% endfor %}
               </ul>
             </div>

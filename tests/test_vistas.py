@@ -15,1004 +15,214 @@
 # Contributors:
 # - William José Moreno Reyes
 
-# pylint: disable=redefined-outer-name
+
+import os
+import sys
 import pytest
-from collections import namedtuple
-from io import BytesIO
-from now_lms import app, database, initial_setup
-from now_lms.db import Usuario
 
-app.config["SECRET_KEY"] = "jgjañlsldaksjdklasjfkjj"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["TESTING"] = True
-app.config["WTF_CSRF_ENABLED"] = False
-app.config["DEBUG"] = True
-app.config["PRESERVE_CONTEXT_ON_EXCEPTION"] = False
-app.config["SQLALCHEMY_ECHO"] = False
-app.app_context().push()
+from now_lms import log
 
-Ruta = namedtuple(
-    "Ruta",
-    ["ruta", "admin", "no_session", "texto"],
-)
+# Add currect dir to path to import the list of static views to test
+sys.path.append(os.path.join(os.path.dirname(__file__)))
 
-Forma = namedtuple(
-    "Forma",
-    ["ruta", "datos"],
-)
+from x_rutas_estaticas import rutas_estaticas
+
+"""
+Todas las vistas que expone el programa deben de poderse "visitar" sin mostrar
+errores al usuario, si el perfil del usuario no tiene permisos para acceder a
+la vista mencionada se debe de redireccionar apropiadamente.
+
+Para ver una lista de vistas ejecutar:
+
+>>> from now_lms import app
+>>> app.url_map
+
+Error codes se verifican al final.
+"""
 
 
-@pytest.fixture(scope="module", autouse=True)
-def lms():
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite://"
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
+@pytest.fixture
+def lms_application():
+    from now_lms import app
 
-    app.app_context().push()
+    app.config.update(
+        {
+            "TESTING": True,
+            "SECRET_KEY": "jgjañlsldaksjdklasjfkjj",
+            "SQLALCHEMY_TRACK_MODIFICATIONS": False,
+            "WTF_CSRF_ENABLED": False,
+            "DEBUG": True,
+            "PRESERVE_CONTEXT_ON_EXCEPTION": True,
+            "SQLALCHEMY_ECHO": True,
+            "SQLALCHEMY_DATABASE_URI": "sqlite://",
+        }
+    )
+
     yield app
 
 
-@pytest.fixture
-def client(lms):
-    return app.test_client()
-
-
-@pytest.fixture
-def runner(lms):
-    return app.test_cli_runner()
-
-
-class AuthActions:
-    def __init__(self, client):
-        self._client = client
-
-    def login(self):
-        return self._client.post("/login", data={"usuario": "lms-admin", "acceso": "lms-admin"})
-
-    def logout(self):
-        return self._client.get("/salir")
-
-
-@pytest.fixture
-def auth(client):
-    return AuthActions(client)
-
-
-rutas_estaticas = [
-    Ruta(ruta="/login", admin=302, no_session=200, texto=[b"BMO Solucione", b"Inicio de"]),
-    Ruta(ruta="/logon", admin=302, no_session=200, texto=[b"Crear nuevo usuario", b"Crear Cuenta"]),
-    Ruta(ruta="/panel", admin=200, no_session=302, texto=None),
-    Ruta(ruta="/dashboard", admin=200, no_session=302, texto=None),
-    Ruta(ruta="/perfil", admin=200, no_session=302, texto=None),
-    Ruta(ruta="/student", admin=200, no_session=302, texto=None),
-    Ruta(ruta="/instructor", admin=200, no_session=302, texto=None),
-    Ruta(ruta="/", admin=200, no_session=200, texto=[b"NOW LMS", b"Sistema de aprendizaje en linea.", b"OnLine Teaching 101"]),
-    Ruta(
-        ruta="/index",
-        admin=200,
-        no_session=200,
-        texto=[b"NOW LMS", b"Sistema de aprendizaje en linea.", b"OnLine Teaching 101"],
-    ),
-    Ruta(
-        ruta="/home",
-        admin=200,
-        no_session=200,
-        texto=[b"NOW LMS", b"Sistema de aprendizaje en linea.", b"OnLine Teaching 101"],
-    ),
-    Ruta(
-        ruta="/panel",
-        admin=200,
-        no_session=302,
-        texto=None,
-    ),
-    Ruta(
-        ruta="/admin",
-        admin=200,
-        no_session=302,
-        texto=[b"Usuarios", b"Nuevo Grupo", b"Tema del Sitio"],
-    ),
-    Ruta(
-        ruta="/users",
-        admin=200,
-        no_session=302,
-        texto=[
-            b"Usuarios registrados en el sistema.",
-            b"Lista de usuarios registrados en el sistema.",
-        ],
-    ),
-    Ruta(
-        ruta="/inactive_users",
-        admin=200,
-        no_session=302,
-        texto=[
-            b"Lista de usuarios registrados en el sistema pendientes de activar.",
-        ],
-    ),
-    Ruta(
-        ruta="/groups",
-        admin=200,
-        no_session=302,
-        texto=[
-            b"Grupos registrados en el sistema",
-        ],
-    ),
-    Ruta(
-        ruta="/new_group",
-        admin=200,
-        no_session=302,
-        texto=[
-            b"Agregar un nuevo Grupo de Usuarios",
-        ],
-    ),
-    Ruta(
-        ruta="/settings",
-        admin=200,
-        no_session=302,
-        texto=[
-            b"Editar config",
-        ],
-    ),
-    Ruta(
-        ruta="/theming",
-        admin=200,
-        no_session=302,
-        texto=[
-            b"Editar estulo del sitio web",
-        ],
-    ),
-    Ruta(
-        ruta="/mail",
-        admin=200,
-        no_session=302,
-        texto=[
-            b"de correo electronico",
-        ],
-    ),
-    Ruta(
-        ruta="/instructor",
-        admin=200,
-        no_session=302,
-        texto=[b"Nuevo Curso", b"Panel del docente.", b"Nuevo Progama"],
-    ),
-    Ruta(
-        ruta="/cursos",
-        admin=200,
-        no_session=302,
-        texto=[b"Lista de Cursos Disponibles."],
-    ),
-    Ruta(
-        ruta="/new_curse",
-        admin=200,
-        no_session=302,
-        texto=[b"Crear nuevo curso."],
-    ),
-    Ruta(
-        ruta="/explore",
-        admin=200,
-        no_session=200,
-        texto=[b"Cursos disponibles."],
-    ),
-    Ruta(
-        ruta="/programs",
-        admin=200,
-        no_session=200,
-        texto=[b"Programas disponibles."],
-    ),
-    Ruta(
-        ruta="/resources",
-        admin=200,
-        no_session=200,
-        texto=[b"Recursos disponibles."],
-    ),
-    Ruta(
-        ruta="/new_program",
-        admin=200,
-        no_session=302,
-        texto=[b"Crear Programa."],
-    ),
-    Ruta(
-        ruta="/tags",
-        admin=200,
-        no_session=302,
-        texto=[b"Lista de Etiquetas Disponibles."],
-    ),
-    Ruta(
-        ruta="/new_tag",
-        admin=200,
-        no_session=302,
-        texto=[b"Crear nueva Etiqueta."],
-    ),
-    Ruta(
-        ruta="/categories",
-        admin=200,
-        no_session=302,
-        texto=[b"Lista de Categorias Disponibles."],
-    ),
-    Ruta(
-        ruta="/new_category",
-        admin=200,
-        no_session=302,
-        texto=[
-            b"Crear Categoria.",
-        ],
-    ),
-    Ruta(
-        ruta="/groups",
-        admin=200,
-        no_session=302,
-        texto=None,
-    ),
-    Ruta(
-        ruta="/new_group",
-        admin=200,
-        no_session=302,
-        texto=None,
-    ),
-    Ruta(
-        ruta="/course/view/now",
-        admin=200,
-        no_session=200,
-        texto=[b"Contenido del curso.", b"Curso Certificado"],
-    ),
-    Ruta(
-        ruta="/course/enroll/now",
-        admin=200,
-        no_session=302,
-        texto=None,
-    ),
-    Ruta(
-        ruta="/course/take/now",
-        admin=200,
-        no_session=302,
-        texto=[b"Contenido del curso.", b"Curso Certificado"],
-    ),
-    Ruta(
-        ruta="/course/moderate/now",
-        admin=200,
-        no_session=302,
-        texto=[b"Contenido del curso.", b"Curso Certificado"],
-    ),
-    Ruta(
-        ruta="/course/admin/now",
-        admin=200,
-        no_session=302,
-        texto=[
-            b"Contenido del curso.",
-            b"Introduction to online teaching",
-            b"Ordenar",
-            b"Recursos disponibles en esta secci",
-        ],
-    ),
-    Ruta(
-        ruta="/course/now/new_seccion",
-        admin=200,
-        no_session=302,
-        texto=[b"Crear una nueva secci"],
-    ),
-    Ruta(
-        ruta="/panel",
-        admin=200,
-        no_session=302,
-        texto=[
-            b"Cursos Recientes",
-            b"Recursos Creados",
-            b"Usuarios Registrados",
-        ],
-    ),
-    Ruta(ruta="/dashboard", admin=200, no_session=302, texto=None),
-    Ruta(ruta="/student", admin=200, no_session=302, texto=None),
-    Ruta(ruta="/moderator", admin=200, no_session=302, texto=None),
-    Ruta(
-        ruta="/program/P001",
-        admin=200,
-        no_session=200,
-        texto=[b"Programing 101", b"Introduction to programing", b"Lorem ipsum dolor sit amet"],
-    ),
-    # Debe estar al final para no cerrar la sesion actual.
-    Ruta(ruta="/logout", admin=302, no_session=302, texto=None),
-    Ruta(ruta="/salir", admin=302, no_session=302, texto=None),
-    Ruta(ruta="/exit", admin=302, no_session=302, texto=None),
-]
-
-
-def test_visit_all_views_no_session(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-    auth.logout()
-    for ruta in rutas_estaticas:
-        consulta = client.get(ruta.ruta)
-        assert consulta.status_code == ruta.no_session
-        if consulta.status_code == 200 and ruta.texto:
-            for t in ruta.texto:
-                assert t in consulta.data
-
-
-def test_visit_all_views_with_admin_session(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-    auth.login()
-    for ruta in rutas_estaticas:
-        consulta = client.get(ruta.ruta)
-        assert consulta.status_code == ruta.admin
-        if consulta.status_code == 200 and ruta.texto:
-            for t in ruta.texto:
-                assert t in consulta.data
-
-
-formularios = [
-    Forma(
-        ruta="/new_program",
-        datos={
-            "nombre": "nombre",
-            "descripcion": "descripcion",
-            "precio": "precio",
-            "codigo": "test",
-        },
-    ),
-    Forma(
-        ruta="new_tag",
-        datos={
-            "nombre": "test",
-            "color": "#34e5eb",
-        },
-    ),
-    Forma(
-        ruta="/new_category",
-        datos={
-            "nombre": "test",
-            "descripcion": "test",
-        },
-    ),
-    Forma(ruta="/logon", datos={"usuario": "Carlos", "apellido": "Monge", "acceso": "gordo"}),
-    Forma(
-        ruta="/mail",
-        datos={
-            "email": "test@hola.com",
-            "mail_server": "hello.com",
-            "mail_port": "433",
-            "mail_use_tls": True,
-            "mail_use_ssl": True,
-            "mail_username": "hello",
-            "mail_password": "hola",
-        },
-    ),
-]
-
-
-def test_fill_all_forms(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup(with_examples=True)
-    auth.login()
-    for f in formularios:
-        client.get(f.ruta)
-        client.post(f.ruta, data=f.datos)
-
-    from now_lms.db import Usuario
-
-    usario = Usuario.query.filter(Usuario.usuario == "student1").first()
-    ruta = "/perfil/edit/" + usario.id
-    get = client.get(ruta)
-    assert get.status_code == 403
-    usario = Usuario.query.filter(Usuario.usuario == "lms-admin").first()
-    ruta = "/perfil/edit/" + usario.id
-    post = client.post(
-        ruta,
-        data={
-            "correo_electronico": "holahola.hello.net",
-        },
-        follow_redirects=False,
-    )
-    assert post.status_code == 302
-    perfil = client.get("/perfil")
-    assert b"holahola.hello.net" in perfil.data
-    post = client.post(
-        ruta,
-        data={
-            "correo_electronico": "holahola1.hello.net",
-        },
-        follow_redirects=False,
-    )
-    assert post.status_code == 302
-    perfil = client.get("/perfil")
-    get = client.get("/perfil/" + usario.id + "/delete_logo")
-
-
-def test_cambiar_curso(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-    auth.login()
-    client.get("/change_curse_public?curse=now")
-    client.get("/change_curse_public?curse=now")
-    client.get("/change_curse_status?curse=now&status=draft")
-    client.get("/change_curse_status?curse=now&status=public")
-    client.get("/change_curse_status?curse=now&status=open")
-    client.get("/change_curse_status?curse=now&status=closed")
-
-
-def test_indices_seccion():
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-    from now_lms import Curso, CursoSeccion, modificar_indice_curso, reorganiza_indice_curso
-
-    demo = Curso(
-        nombre="Demo Course",
-        codigo="demo",
-        descripcion="Demo Course.",
-        estado="open",
-        certificado=True,
-        publico=True,
-        duracion=7,
-        nivel=1,
-        precio=10,
-        capacidad=50,
-        auditable=True,
-    )
-    database.session.add(demo)
-    database.session.commit()
-
-    seccion1 = CursoSeccion(
-        curso="demo",
-        nombre="Seccion Prueba A",
-        descripcion="Seccion Prueba A.",
-        indice=2,
-    )
-    seccion2 = CursoSeccion(
-        curso="demo",
-        nombre="Seccion Prueba B",
-        descripcion="Seccion Prueba B.",
-        indice=1,
-    )
-    seccion3 = CursoSeccion(
-        curso="demo",
-        nombre="Seccion Prueba C",
-        descripcion="Seccion Prueba C.",
-        indice=3,
-    )
-    database.session.add(seccion1)
-    database.session.add(seccion2)
-    database.session.add(seccion3)
-    database.session.commit()
-    seccion1 = CursoSeccion.query.filter_by(nombre="Seccion Prueba A").first()
-    assert seccion1.indice == 2
-    seccion2 = CursoSeccion.query.filter_by(nombre="Seccion Prueba B").first()
-    assert seccion2.indice == 1
-    seccion3 = CursoSeccion.query.filter_by(nombre="Seccion Prueba C").first()
-    assert seccion3.indice == 3
-    modificar_indice_curso(codigo_curso="demo", indice=3, task="decrement")
-    seccion1 = CursoSeccion.query.filter_by(nombre="Seccion Prueba A").first()
-    assert seccion1.indice == 3
-    seccion2 = CursoSeccion.query.filter_by(nombre="Seccion Prueba B").first()
-    assert seccion2.indice == 1
-    seccion3 = CursoSeccion.query.filter_by(nombre="Seccion Prueba C").first()
-    assert seccion3.indice == 2
-    modificar_indice_curso(codigo_curso="demo", indice=2, task="increment")
-    seccion1 = CursoSeccion.query.filter_by(nombre="Seccion Prueba A").first()
-    assert seccion1.indice == 2
-    seccion2 = CursoSeccion.query.filter_by(nombre="Seccion Prueba B").first()
-    assert seccion2.indice == 1
-    seccion3 = CursoSeccion.query.filter_by(nombre="Seccion Prueba C").first()
-    assert seccion3.indice == 3
-    # Eliminamos la seccion con indice 2
-    seccion1 = CursoSeccion.query.filter_by(nombre="Seccion Prueba A").delete()
-    database.session.commit()
-    reorganiza_indice_curso(codigo_curso="demo")
-    seccion1 = CursoSeccion.query.filter_by(nombre="Seccion Prueba B").first()
-    assert seccion1.indice == 1
-    seccion2 = CursoSeccion.query.filter_by(nombre="Seccion Prueba C").first()
-    assert seccion2.indice == 2
-    seccion3 = CursoSeccion.query.filter_by(indice=3).first()
-    assert seccion3 is None
-    cuenta = CursoSeccion.query.filter_by(curso="demo").count()
-    assert cuenta == 2
-
-
-def test_reorganizar_indice_recurso(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-    from now_lms import CursoSeccion
-    from now_lms.bi import reorganiza_indice_seccion
-
-    auth.login()
-
-    SECCION = CursoSeccion.query.filter_by(nombre="Introduction to online teaching.").first()
-
-    assert SECCION is not None
-
-    URL = "course/resource/now/" + SECCION.id + "/decrement/2"
-    get = client.get(URL)
-    assert get.status_code == 302
-
-    URL = "course/resource/now/" + SECCION.id + "/increment/2"
-    get = client.get(URL)
-    assert get.status_code == 302
-
-    reorganiza_indice_seccion(SECCION.id)
-
-
-def test_reorganizar_nuevo_recurso(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-    from now_lms import CursoSeccion
-
-    auth.login()
-
-    SECCION = CursoSeccion.query.filter_by(nombre="How to sell a online course.").first()
-    URL = "/course/now/" + SECCION.id + "/new_resource"
-    get = client.get(URL)
-    assert get.status_code == 200
-
-
-def test_reorganizar_indice_seccion(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-
-    auth.login()
-
-    get = client.get("/course/now/seccion/decrement/1")
-    assert get.status_code == 302
-    get = client.get("/course/now/seccion/increment/2")
-    assert get.status_code == 302
-
-
-def test_serve_files(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-    auth.login()
-
-    from now_lms.db import CursoRecurso
-
-    recursos = CursoRecurso.query.filter(CursoRecurso.curso == "resources").all()
-
-    for recurso in recursos:
-        url = "/cource/resources/resource/" + recurso.tipo + "/" + recurso.id
-        page = client.get(url)
-        assert page.status_code == 200
-
-        url = "/course/" + recurso.curso + "/description/" + recurso.id
-        page = client.get(url)
-        assert page.status_code == 200
-
-        url = "/course/" + recurso.curso + "/description"
-        page = client.get(url)
-        assert page.status_code == 200
-
-        if recurso.doc:
-            doc_url = "/course/resources/files/" + recurso.id
-            r = client.get(doc_url)
-            assert r.status_code == 200
-
-        if recurso.text:
-            src = "/course/resources/md_to_html/" + recurso.id
-            r = client.get(src)
-            assert r.status_code == 200
-
-        if recurso.tipo == "html":
-            url = "/course/" + recurso.curso + "/external_code/" + recurso.id
-            page = client.get(url)
-            assert page.status_code == 200
-
-
-def test_course_description(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-    from now_lms.db import Curso
-
-    cursos = Curso.query.all()
-
-    auth.login()
-
-    for curso in cursos:
-        url = "/course/" + curso.codigo + "/description"
-        page = client.get(url)
-        assert page.status_code == 200
-
-
-def test_edit_course(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-    from datetime import datetime, timedelta
-
-    data = {
-        "nombre": "Edit",
-        "descripcion": "Edit",
-        "publico": False,
-        "auditable": False,
-        "certificado": False,
-        "precio": 1000,
-        "capacidad": 100,
-        "fecha_inicio": datetime.today() + timedelta(days=9),
-        "fecha_fin": datetime.today() + timedelta(days=9),
-        "duracion": 15,
-        "nivel": 1,
-    }
-    data = {key: str(value) for key, value in data.items()}
-    auth.login()
-    get = client.get("/course/now/edit")
-    assert get.status_code == 200
-    post = client.post("/course/now/edit", data=data, follow_redirects=True)
-    assert post.status_code == 200
-
-
-def test_edit_seccion(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-    auth.login()
-
-    from now_lms.db import CursoSeccion
-
-    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "resources").first()
-
-    url = "/course/resources/" + seccion.id + "/edit"
-
-    data = {
-        "nombre": "lalala",
-        "descripcion": "lalala",
-    }
-
-    data = {key: str(value) for key, value in data.items()}
-    auth.login()
-    get = client.get(url)
-    assert get.status_code == 200
-    post = client.post(url, data=data, follow_redirects=True)
-    assert post.status_code == 200
-
-
-def test_edit_settings(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-
-    data = {
-        "titulo": "LMS test",
-        "descripcion": "LMS test",
-        "modo": "mooc",
-        "paypal": True,
-        "stripe": True,
-        "stripe_public": "añldkakdlkadkasdksamdsa",
-        "stripe_secret": "añldmañlkdñladm",
-    }
-    data = {key: str(value) for key, value in data.items()}
-    auth.login()
-    get = client.get("/settings")
-    assert get.status_code == 200
-    post = client.post("/settings", data=data, follow_redirects=True)
-    assert post.status_code == 200
-
-    data = {
-        "style": "dark",
-    }
-    data = {key: str(value) for key, value in data.items()}
-    data["logo"] = (BytesIO(b"abcdef"), "logo.pdf")
-    get = client.get("/theming")
-    assert get.status_code == 200
-    post = client.post("/theming", data=data, follow_redirects=True)
-    assert post.status_code == 200
-
-
-def test_crear_usuario(client):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup(with_examples=False)
-
-    url = "/logon"
-    data = {"usuario": "testing", "acceso": "testing"}
-
-    response = client.get(url)
-    response = client.post(url, data=data, follow_redirects=True)
-    assert response.status_code == 200
-
-    usuario_ = database.session.execute(database.select(Usuario).filter(Usuario.usuario == "testing")).first()[0]
-
-    # Editar correo de usuario.
-    data = {"usuario": "testing", "acceso": "testing", "correo_electronico": "testing1@dominio.net"}
-
-    url = "/perfil/edit/" + usuario_.id
-
-    response = client.post(url, data=data, follow_redirects=True)
-    assert response.status_code == 200
-
-    data = {"usuario": "testing", "acceso": "testing", "correo_electronico": "testing2@dominio.net"}
-    response = client.post(url, data=data, follow_redirects=True)
-    assert response.status_code == 200
-
-    bytesio_object = BytesIO(b"Hello World!")
-
-    from os import path, makedirs
-    from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
-
-    file_name = usuario_.id + ".jpg"
-    directorio = path.join(DIRECTORIO_UPLOAD_IMAGENES, "usuarios")
-    try:
-        makedirs(directorio)
-    except FileExistsError:
-        pass
-
-    with open(
-        path.join(directorio, file_name),
-        "wb",
-    ) as f:
-        f.write(bytesio_object.getbuffer())
-
-    url = "/perfil/" + usuario_.id + "/delete_logo"
-
-    response = client.get(url, follow_redirects=True)
-    assert response.status_code == 200
-
-
-def test_activar_inactivar_eliminar_usuario(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup(with_examples=True)
-    auth.login()
-
-    perfil_usuario = database.session.execute(database.select(Usuario).filter(Usuario.usuario == "student")).first()[0]
-
-    url = "/user/" + "student"
-    response = client.get(url, follow_redirects=True)
-    assert response.status_code == 200
-
-    url = "/set_user_as_inactive/" + perfil_usuario.id
-    response = client.get(url, follow_redirects=True)
-    assert response.status_code == 200
-
-    response = client.get(url, follow_redirects=True)
-    assert b"Usuario ya se encuentra definido como inactivo" in response.data
-
-    url = "/set_user_as_active/" + perfil_usuario.id
-    response = client.get(url, follow_redirects=True)
-    assert response.status_code == 200
-
-    response = client.get(url, follow_redirects=True)
-    assert b"Usuario ya se encuentra definido como activo" in response.data
-
-    url = "/delete_user/" + perfil_usuario.id
-    response = client.get(url, follow_redirects=True)
-    assert response.status_code == 200
-
-
-def test_eliminar_logo_curso(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup(with_examples=True)
-    auth.login()
-
-    bytesio_object = BytesIO(b"Hello World!")
-
-    from os import path, makedirs
-    from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
-
-    file_name = "logo.jpg"
-    directorio = path.join(DIRECTORIO_UPLOAD_IMAGENES, "now")
-    try:
-        makedirs(directorio)
-    except FileExistsError:
-        pass
-
-    with open(
-        path.join(directorio, file_name),
-        "wb",
-    ) as f:
-        f.write(bytesio_object.getbuffer())
-
-    url = "/now/delete_logo"
-
-    response = client.get(url, follow_redirects=True)
-    assert response.status_code == 200
-
-
-def test_eliminar_logo_programa(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup(with_examples=True)
-    auth.login()
-
-    bytesio_object = BytesIO(b"Hello World!")
-
-    from os import path, makedirs
-    from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
-
-    file_name = "logo.jpg"
-    directorio = path.join(DIRECTORIO_UPLOAD_IMAGENES, "programP001")
-    try:
-        makedirs(directorio)
-    except FileExistsError:
-        pass
-
-    with open(
-        path.join(directorio, file_name),
-        "wb",
-    ) as f:
-        f.write(bytesio_object.getbuffer())
-
-    from now_lms.db import Programa
-
-    programa_ = Programa.query.filter_by(codigo="P001").first()
-
-    url = "/program/" + programa_.id + "/delete_logo"
-
-    response = client.get(url, follow_redirects=True)
-    assert response.status_code == 200
-
-
-def test_crear_recursos(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup(with_examples=False)
-
-    from now_lms.db import CursoSeccion
-
-    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "now").first()
-    base_url = "/course/now/" + seccion.id
-
-    url = base_url + "/pdf/new"
-    data = {"nombre": "test", "descripcion": "test pdf"}
-    data = {key: str(value) for key, value in data.items()}
-    data["pdf"] = (BytesIO(b"abcdef"), "test.pdf")
-    auth.login()
-    response = client.get(url)
-    response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
-    assert response.status_code == 200
-
-    url = base_url + "/img/new"
-    data = {"nombre": "test", "descripcion": "test pdf"}
-    data = {key: str(value) for key, value in data.items()}
-    data["img"] = (BytesIO(b"abcdef"), "test.jpg")
-    auth.login()
-    response = client.get(url)
-    response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
-    assert response.status_code == 200
-
-    url = base_url + "/audio/new"
-    data = {"nombre": "test", "descripcion": "test pdf"}
-    data = {key: str(value) for key, value in data.items()}
-    data["audio"] = (BytesIO(b"abcdef"), "test.ogg")
-    auth.login()
-    response = client.get(url)
-    response = client.post(url, data=data, follow_redirects=True, content_type="multipart/form-data")
-    assert response.status_code == 200
-
-
-def test_crear_recursos_no_files(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup(with_examples=False)
-
-    from now_lms.db import CursoSeccion
-
-    seccion = CursoSeccion.query.filter(CursoSeccion.curso == "now").first()
-    base_url = "/course/now/" + seccion.id
-
-    url = base_url + "/youtube/new"
-    data = {"nombre": "test", "descripcion": "test pdf", "youtube_url": "test"}
-    data = {key: str(value) for key, value in data.items()}
-    auth.login()
-    response = client.get(url)
-    response = client.post(url, data=data, follow_redirects=True)
-    assert response.status_code == 200
-
-    url = base_url + "/meet/new"
-    data = {"nombre": "test", "descripcion": "test pdf", "url": "test"}
-    data = {key: str(value) for key, value in data.items()}
-    auth.login()
-    response = client.get(url)
-    response = client.post(url, data=data, follow_redirects=True)
-    assert response.status_code == 200
-
-    url = base_url + "/html/new"
-    data = {"nombre": "test", "descripcion": "test pdf", "html_externo": "test"}
-    data = {key: str(value) for key, value in data.items()}
-    auth.login()
-    response = client.get(url)
-    response = client.post(url, data=data, follow_redirects=True)
-    assert response.status_code == 200
-
-    url = base_url + "/link/new"
-    data = {"nombre": "test", "descripcion": "test pdf", "url": "test"}
-    data = {key: str(value) for key, value in data.items()}
-    auth.login()
-    response = client.get(url)
-    response = client.post(url, data=data, follow_redirects=True)
-    assert response.status_code == 200
-
-    url = base_url + "/text/new"
-    data = {"nombre": "test", "descripcion": "test pdf", "editor": "test"}
-    data = {key: str(value) for key, value in data.items()}
-    auth.login()
-    response = client.get(url)
-    response = client.post(url, data=data, follow_redirects=True)
-    assert response.status_code == 200
-
-
-def test_eliminar_recursos(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-    from now_lms.db import CursoRecurso
-
-    auth.login()
-    recursos = CursoRecurso.query.filter(CursoRecurso.curso == "resources").all()
-    assert recursos is not None
-    for recurso in recursos:
-        url = "/delete_recurso/resources/" + recurso.seccion + "/" + recurso.id
-        page = client.get(url)
-        assert page.status_code == 302
-
-
-def test_generar_indice_recurso():
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-    from now_lms.db import CursoRecurso
-    from now_lms.db.tools import crear_indice_recurso
-
-    s = crear_indice_recurso("lalala")
-    assert s.has_prev == False
-    assert s.has_next == False
-    assert s.prev_is_alternative == False
-    assert s.next_is_alternative == False
-    assert s.prev_resource is None
-    assert s.next_resource is None
-
-    r = CursoRecurso.query.filter(CursoRecurso.curso == "resources", CursoRecurso.tipo == "meet").first()
-    r = crear_indice_recurso(r.id)
-
-    assert r.has_prev == True
-    assert r.has_next == True
-    assert r.prev_is_alternative == False
-    assert r.next_is_alternative == True
-    assert r.prev_resource is not None
-    assert r.next_resource is not None
-
-    for a in CursoRecurso.query.all():
-        crear_indice_recurso(a.id)
-
-
-def test_eliminar_archivos():
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-    from os import path
-    from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
-    from now_lms.db.tools import elimina_logo_perzonalizado, elimina_logo_perzonalizado_curso
-
-    bytesio_object = BytesIO(b"Hello World!")
-
-    with open(path.join(DIRECTORIO_UPLOAD_IMAGENES, "logotipo.jpg"), "wb") as f:
-        f.write(bytesio_object.getbuffer())
-
-    elimina_logo_perzonalizado()
-    elimina_logo_perzonalizado_curso("now")
-
-
-def test_eliminar_logo(client, auth):
-    app.app_context().push()
-    database.drop_all()
-    initial_setup()
-
-    auth.login()
-
-    from os import path
-    from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
-    from io import BytesIO
-
-    bytesio_object = BytesIO(b"Hello World!")
-
-    with open(path.join(DIRECTORIO_UPLOAD_IMAGENES, "logotipo.jpg"), "wb") as f:
-        f.write(bytesio_object.getbuffer())
-
-    page = client.get("/delete_logo")
-
-    assert page.status_code == 302
+def test_visit_all_views_with_anonimus_user(lms_application):
+
+    with lms_application.app_context():
+
+        from now_lms import database, initial_setup
+
+        database.drop_all()
+        initial_setup(with_tests=True, with_examples=False)
+
+        with lms_application.test_client() as client:
+            for ruta in rutas_estaticas:
+                log.warning(ruta.ruta)
+                consulta = client.get(ruta.ruta)
+                assert consulta.status_code == ruta.no_session
+                if consulta.status_code == 200 and ruta.texto:
+                    for t in ruta.texto:
+                        assert t in consulta.data
+
+
+def test_visit_all_views_with_admin_user(lms_application):
+
+    from now_lms import database, initial_setup
+
+    with lms_application.app_context():
+        from flask_login import current_user
+
+        database.drop_all()
+        initial_setup(with_tests=True, with_examples=False)
+
+        with lms_application.test_client() as client:
+            # Keep the session alive until the with clausule closes
+
+            client.post("/user/login", data={"usuario": "lms-admin", "acceso": "lms-admin"})
+            assert current_user.is_authenticated
+            assert current_user.tipo == "admin"
+
+            for ruta in rutas_estaticas:
+                log.warning(ruta.ruta)
+                consulta = client.get(ruta.ruta)
+                assert consulta.status_code == ruta.admin
+                if consulta.status_code == 200 and ruta.texto:
+                    for t in ruta.texto:
+                        assert t in consulta.data
+                    for t in ruta.como_admin:
+                        assert t in consulta.data
+            client.get("/user/logout")
+
+
+def test_visit_all_views_with_student_user(lms_application):
+
+    from now_lms import database, initial_setup
+
+    with lms_application.app_context():
+        from flask_login import current_user
+
+        database.drop_all()
+        initial_setup(with_tests=True, with_examples=False)
+
+        with lms_application.test_client() as client:
+            # Keep the session alive until the with clausule closes
+
+            client.post("/user/login", data={"usuario": "student1", "acceso": "student1"})
+            assert current_user.is_authenticated
+            assert current_user.tipo == "student"
+
+            for ruta in rutas_estaticas:
+                log.warning(ruta.ruta)
+                consulta = client.get(ruta.ruta)
+                assert consulta.status_code == ruta.user
+                if consulta.status_code == 200 and ruta.texto:
+                    for t in ruta.texto:
+                        assert t in consulta.data
+                    for t in ruta.como_user:
+                        assert t in consulta.data
+            client.get("/user/logout")
+
+
+def test_visit_all_views_with_moderator_user(lms_application, request):
+
+    if request.config.getoption("--slow") == "True":
+
+        from now_lms import database, initial_setup
+
+        with lms_application.app_context():
+            from flask_login import current_user
+
+            database.drop_all()
+            initial_setup(with_tests=True, with_examples=False)
+
+            with lms_application.test_client() as client:
+                # Keep the session alive until the with clausule closes
+
+                client.post("/user/login", data={"usuario": "moderator", "acceso": "moderator"})
+                assert current_user.is_authenticated
+                assert current_user.tipo == "moderator"
+
+                for ruta in rutas_estaticas:
+                    log.warning(ruta.ruta)
+                    consulta = client.get(ruta.ruta)
+                    assert consulta.status_code == ruta.moderator
+                    if consulta.status_code == 200 and ruta.texto:
+                        for t in ruta.texto:
+                            assert t in consulta.data
+                        for t in ruta.como_moderador:
+                            assert t in consulta.data
+                client.get("/user/logout")
+
+
+def test_visit_all_views_with_instructor_user(lms_application, request):
+
+    if request.config.getoption("--slow") == "True":
+
+        from now_lms import database, initial_setup
+
+        with lms_application.app_context():
+            from flask_login import current_user
+
+            database.drop_all()
+            initial_setup(with_tests=True, with_examples=False)
+
+            with lms_application.test_client() as client:
+                # Keep the session alive until the with clausule closes
+
+                client.post("/user/login", data={"usuario": "instructor", "acceso": "instructor"})
+                assert current_user.is_authenticated
+                assert current_user.tipo == "instructor"
+
+                for ruta in rutas_estaticas:
+                    log.warning(ruta.ruta)
+                    consulta = client.get(ruta.ruta)
+                    assert consulta.status_code == ruta.instructor
+                    if consulta.status_code == 200 and ruta.texto:
+                        for t in ruta.texto:
+                            assert t in consulta.data
+                            for t in ruta.como_instructor:
+                                assert t in consulta.data
+                client.get("/user/logout")
+
+
+def test_visit_custom_error_pages(lms_application, request):
+
+    if request.config.getoption("--slow") == "True":
+        error_codes = [402, 403, 404, 405, 500]
+        with lms_application.test_client() as client:
+            for error in error_codes:
+                url = "/http/error/" + str(error)
+                client.get(url)
+    else:
+        pytest.skip("Not running slow test.")
+
+
+def test_demo_course(request, lms_application):
+    if request.config.getoption("--slow") == "True":
+        from now_lms import database, initial_setup
+
+        with lms_application.app_context():
+
+            database.drop_all()
+            initial_setup(with_tests=False, with_examples=True)
+
+            with lms_application.test_client() as client:
+                client.get("/course/resources/view")
+
+    else:
+        pytest.skip("Not running slow test.")

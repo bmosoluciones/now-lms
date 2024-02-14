@@ -38,7 +38,8 @@
           </div>
 
         </div>
-        <a class="btn btn-warning" href="{{ url_for('curso', course_code=seccion.curso) }}" role="button">Cancelar</a>
+        <a class="btn btn-warning" href="{{ url_for('course.curso', course_code=seccion.curso) }}"
+          role="button">Cancelar</a>
         <button class="w-10 btn btn btn-primary btn-block" type="submit">Actualizar Sección</button>
       </form>
     </div>

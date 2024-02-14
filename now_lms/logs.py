@@ -27,7 +27,6 @@ from sys import stdout
 # ---------------------------------------------------------------------------------------
 from loguru import logger as log
 
-
 LOG_FORMAT = "{time:HH:mm:ss:ssss} - {level} - {name}:{line} : {message}"
 
 log.level("note", no=15, color="<blue>")

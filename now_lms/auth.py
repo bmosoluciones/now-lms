@@ -22,11 +22,14 @@
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
 from datetime import datetime
+from functools import wraps
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from bcrypt import checkpw, hashpw, gensalt
+from bcrypt import checkpw, gensalt, hashpw
+from flask import abort, flash
+from flask_login import current_user
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
@@ -60,3 +63,21 @@ def validar_acceso(usuario_id, acceso):
         database.session.commit()
 
     return clave_validada
+
+
+def perfil_requerido(perfil_id):
+    """Comprueba si un usuario tiene acceso a un recurso determinado en base a su tipo."""
+
+    def decorator_verifica_acceso(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            if (current_user.is_authenticated and current_user.tipo == perfil_id) or current_user.tipo == "admin":
+                return func(*args, **kwargs)
+
+            else:  # pragma: no cover
+                flash("No se encuentra autorizado a acceder al recurso solicitado.", "error")
+                return abort(403)
+
+        return wrapper
+
+    return decorator_verifica_acceso

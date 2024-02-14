@@ -12,42 +12,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    services:
-      # Label used to access the service container
-      redis:
-        # Docker Hub image
-        image: redis
-        ports:
-          - 6379:6379
-        # Set health checks to wait until redis has started
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_ROOT_PASSWORD: mysqldatabase
-          MYSQL_DATABASE: mysqldatabase
-          MYSQL_USER: mysqldatabase
-          MYSQL_PASSWORD: mysqldatabase
-        ports:
-          - 3306:3306
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_DB: postgresdb
-          POSTGRES_USER: postgresdb
-          POSTGRES_PASSWORD: postgresdb
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     strategy:
       fail-fast: false
       matrix:
@@ -66,8 +30,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r test.txt
-          python -m pip install git+https://github.com/maxcountryman/flask-login.git
-          python -m pip install git+https://github.com/alanhamlett/flask-caching.git
       - name: Run lint file
         run: |
           rm -rf build
@@ -76,15 +38,6 @@ jobs:
           bash .lint.sh
       - name: Test with SQLite
         run: |
-          CI=True pytest  -v --exitfirst --cov=now_lms
-      - name: Test with SQLite/Redis Cache
-        run: |
-          CI=True DATABASE_URL=sqlite:// CACHE_REDIS_HOST=localhost CACHE_REDIS_PORT=6379 pytest  -v --exitfirst --cov=now_lms
-      - name: Test with pytest/Postgres
-        run: |
-          # DATABASE_URL=postgresql://postgresdb:postgresdb@localhost:5432/postgresdb pytest  -v --exitfirst --cov=now_lms
-      - name: Test with pytest/MySQL
-        run: |
-          # DATABASE_URL=mysql://mysqldatabase:mysqldatabase@localhost:3306/mysqldatabase pytest  -v --exitfirst --cov=now_lms
+          CI=True pytest  -v --exitfirst --cov=now_lms --slow=True
       - name: Codecov
         uses: codecov/codecov-action@v1

@@ -28,16 +28,16 @@ from flask_mde import MdeField
 from flask_wtf import FlaskForm
 from wtforms import (
     BooleanField,
-    DecimalField,
     DateField,
-    TimeField,
+    DecimalField,
+    HiddenField,
     IntegerField,
     PasswordField,
     SelectField,
     StringField,
     SubmitField,
     TextAreaField,
-    HiddenField,
+    TimeField,
 )
 from wtforms.validators import DataRequired
 from wtforms.widgets import ColorInput
@@ -330,3 +330,11 @@ class MsgForm(FlaskForm):
     titulo = StringField(validators=[])
     editor = MdeField()
     parent = HiddenField(validators=[])
+
+
+class CertificateForm(FlaskForm):
+    """Formulario para crear un certificado en el sistema."""
+
+    titulo = StringField(validators=[])
+    descripcion = StringField(validators=[])
+    habilitado = BooleanField(validators=[])

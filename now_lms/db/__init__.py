@@ -446,11 +446,9 @@ class Recurso(database.Model, BaseTabla):
 class Certificado(database.Model, BaseTabla):
     """Plantilla para generar un certificado."""
 
-    nombre = database.Column(database.String(50))
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    plantilla = database.Column(database.String(3000))
+    titulo = database.Column(database.String(50))
+    descripcion = database.Column(database.String(500))
     habilitado = database.Column(database.Boolean())
-    fondo = database.Column(database.String(100))
 
 
 class Mensaje(database.Model, BaseTabla):

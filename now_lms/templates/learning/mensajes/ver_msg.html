@@ -77,7 +77,7 @@
           <div class="row">
             <br>
             <h5>Publicar una respuesta:</h5>
-            <form action="{{ url_for("nuevo_mensaje") }}" method="post">
+            <form action="{{ url_for("msg.nuevo_mensaje") }}" method="post">
               {{ form.csrf_token }}
               {{ form.parent }}
 

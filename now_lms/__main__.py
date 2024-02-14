@@ -32,10 +32,9 @@ Modulo para ejecutar NOW LMS.
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms import serve, init_app
+from now_lms import init_app, serve
 from now_lms.config import DESARROLLO
 from now_lms.logs import log
-
 
 if __name__ == "__main__":
     log.info("Iniciando NOW Learning Management System.")
