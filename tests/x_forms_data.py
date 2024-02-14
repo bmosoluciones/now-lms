@@ -8,7 +8,7 @@ forms = [
     Form(
         ruta="/course/new_curse",
         data={"nombre": "nombre", "codigo": "codigo", "descripcion": "descripcion"},
-        file={"name": "logo", "bytes": (BytesIO(b"abcdef"), "logo.pdf")},
+        file={"name": "logo", "bytes": (BytesIO(b"abcdef"), "logo.jpg")},
     ),
     Form(
         ruta="course/test/new_seccion",
