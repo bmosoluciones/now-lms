@@ -31,7 +31,7 @@ from datetime import datetime
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from flask_uploads import UploadNotAllowed
 from sqlalchemy.exc import OperationalError
@@ -60,24 +60,27 @@ def nuevo_programa():
     """Nueva programa."""
     form = ProgramaForm()
     if form.validate_on_submit() or request.method == "POST":
-        programa = Programa(
-            nombre=form.nombre.data,
-            descripcion=form.descripcion.data,
-            codigo=form.codigo.data,
-            precio=form.precio.data,
-            publico=False,
-            estado="draft",
-            logo=False,
-            creado_por=current_user.id,
-        )
-        database.session.add(programa)
-        try:
-            database.session.commit()
-            cache.delete("view/" + url_for("programs"))
-            flash("Nueva Programa creado.", "success")
-        except OperationalError:
-            flash("Hubo un error al crear el programa.", "warning")
-        return redirect(url_for("programs"))
+        if current_user.tipo == "admin":
+            programa = Programa(
+                nombre=form.nombre.data,
+                descripcion=form.descripcion.data,
+                codigo=form.codigo.data,
+                precio=form.precio.data,
+                publico=False,
+                estado="draft",
+                logo=False,
+                creado_por=current_user.id,
+            )
+            database.session.add(programa)
+            try:
+                database.session.commit()
+                cache.delete("view/" + url_for("program.programas"))
+                flash("Nuevo Programa creado.", "success")
+            except OperationalError:
+                flash("Hubo un error al crear el programa.", "warning")
+            return redirect(url_for("program.programas"))
+        else:
+            return abort(403)
 
     return render_template("learning/programas/nuevo_programa.html", form=form)
 
@@ -113,9 +116,13 @@ def programas():
 def delete_program(ulid: str):
     """Elimina programa."""
     Programa.query.filter(Programa.id == ulid).delete()
-    database.session.commit()
-    cache.delete("view/" + url_for("programs"))
-    return redirect("/programs_list")
+
+    if current_user.tipo == "admin":
+        database.session.commit()
+        cache.delete("view/" + url_for("program.programas"))
+        return redirect(url_for("program.programas"))
+    else:
+        return abort(403)
 
 
 @program.route("/program/<ulid>/edit", methods=["GET", "POST"])
@@ -178,7 +185,12 @@ def edit_program(ulid: str):
 def programa_cursos(codigo):
     """Pagina principal del curso."""
 
-    return render_template("learning/programas/lista_cursos.html")
+    if current_user.tipo == "admin":
+
+        return render_template("learning/programas/lista_cursos.html")
+
+    else:
+        return abort(403)
 
 
 @program.route("/program/<codigo>")

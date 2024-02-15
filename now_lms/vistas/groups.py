@@ -14,7 +14,6 @@ from sqlalchemy.exc import OperationalError
 # Recursos locales
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
-from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import UsuarioGrupo, UsuarioGrupoTutor, database
 from now_lms.forms import GrupoForm

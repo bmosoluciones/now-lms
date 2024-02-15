@@ -166,4 +166,15 @@ forms = [
         file=None,
         flash=None,
     ),
+    Form(
+        ruta="/program/new",
+        data={
+            "nombre": "cert",
+            "descripcion": "cert",
+            "codigo": "cert",
+            "precio": 100,
+        },
+        file=None,
+        flash=("Nuevo Programa creado.", "success"),
+    ),
 ]
