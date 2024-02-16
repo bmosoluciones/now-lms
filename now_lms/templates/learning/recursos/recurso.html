@@ -1,8 +1,4 @@
 {% import "macros.html" as macros %}
-{% set permitir_docente = docente_asignado(id_curso=curso.codigo) %}
-{% set permitir_moderador = moderador_asignado(id_curso=curso.codigo) %}
-{% set permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %}
-{% set permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
 <!DOCTYPE html>
 <html lang="es" class="h-100">
@@ -59,10 +55,10 @@
 
           {% else %}
           <div class="d-flex d-flex justify-content-around">
-            <a href="{{ url_for("inicio_sesion")}}" class="btn btn-primary" role="button" aria-disabled="true">
+            <a href="{{ url_for("user.inicio_sesion")}}" class="btn btn-primary" role="button" aria-disabled="true">
               Iniciar Sesión
             </a>
-            <a href="{{ url_for("crear_cuenta")}}" class="btn btn-warning" role="button" aria-disabled="true">
+            <a href="{{ url_for("user.crear_cuenta")}}" class="btn btn-warning" role="button" aria-disabled="true">
               Crear Cuenta
             </a>
           </div>
@@ -74,8 +70,8 @@
         <div class="col-md-8">
           <h3>{{ tipo[curso.tipo] | safe }} {{ curso.nombre }}</h3>
           <p>{{ curso.descripcion }}</p>
-          <a href="{{url_for("descargar_recurso", resource_code=curso.id)}}"><i class="bi bi-cloud-download-fill"
-              aria-hidden="true"></i> Descarga El Recurso</a>
+          <a href="{{url_for("resource.descargar_recurso", resource_code=curso.id)}}"><i
+              class="bi bi-cloud-download-fill" aria-hidden="true"></i> Descarga El Recurso</a>
 
         </div>
       </div>

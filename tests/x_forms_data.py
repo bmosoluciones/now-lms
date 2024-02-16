@@ -177,4 +177,26 @@ forms = [
         file=None,
         flash=("Nuevo Programa creado.", "success"),
     ),
+    Form(
+        ruta="/resource/new",
+        data={
+            "nombre": "cert",
+            "descripcion": "cert",
+            "codigo": "cert",
+            "precio": 100,
+        },
+        file={"name": "recurso", "bytes": (BytesIO(b"aasdfkkakk"), "imagen.pdf")},
+        flash=("Nuevo Recurso creado correctamente.", "success"),
+    ),
+    Form(
+        ruta="/resource/01HNZXA1BX9B297CYAAA4MK93V/update",
+        data={
+            "nombre": "cert",
+            "descripcion": "cert",
+            "codigo": "cert",
+            "precio": 100,
+        },
+        file={"name": "img", "bytes": (BytesIO(b"aasdfkkakk"), "imagen.jpg")},
+        flash=("Recurso actualizado correctamente.", "success"),
+    ),
 ]

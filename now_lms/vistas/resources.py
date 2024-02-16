@@ -32,7 +32,7 @@ from os import path
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, current_app, flash, redirect, render_template, request, send_from_directory, url_for
+from flask import Blueprint, abort, current_app, flash, redirect, render_template, request, send_from_directory, url_for
 from flask_login import current_user, login_required
 from sqlalchemy.exc import OperationalError
 
@@ -87,10 +87,10 @@ def new_resource():
         database.session.add(recurso)
         try:
             database.session.commit()
-            flash("Nueva Recurso creado.", "success")
+            flash("Nuevo Recurso creado correctamente.", "success")
         except OperationalError:
             flash("Hubo un error al crear el recurso.", "warning")
-        return redirect("/resources_list")
+        return redirect(url_for("resource.lista_de_recursos"))
 
     return render_template("learning/recursos/nuevo_recurso.html", form=form)
 
@@ -121,6 +121,7 @@ def lista_de_recursos():
 
 @resource_d.route("/resource/<resource_code>/donwload")
 @login_required
+@perfil_requerido("user")
 def descargar_recurso(resource_code):
     """Genera link para descargar recurso."""
     recurso = Recurso.query.filter(Recurso.id == resource_code).first()
@@ -128,7 +129,10 @@ def descargar_recurso(resource_code):
     directorio = path.join(config.destination, "resources_files")
 
     if current_user.is_authenticated:
-        return send_from_directory(directorio, recurso.file_name)
+        if current_user.tipo == "admin":
+            return send_from_directory(directorio, recurso.file_name)
+        else:
+            return abort(403)
     else:
         return redirect("/login")
 
@@ -138,9 +142,12 @@ def descargar_recurso(resource_code):
 @perfil_requerido("instructor")
 def delete_resource(ulid: str):
     """Elimina recurso."""
-    Recurso.query.filter(Recurso.id == ulid).delete()
-    database.session.commit()
-    return redirect("/resources_list")
+    if current_user.tipo == "admin":
+        Recurso.query.filter(Recurso.id == ulid).delete()
+        database.session.commit()
+        return redirect("/resources_list")
+    else:
+        return abort(403)
 
 
 @resource_d.route("/resource/<ulid>/update", methods=["GET", "POST"])
@@ -153,20 +160,23 @@ def edit_resource(ulid: str):
     form = RecursoForm(nombre=recurso.nombre, descripcion=recurso.descripcion, tipo=recurso.tipo)
 
     if form.validate_on_submit() or request.method == "POST":
-        if recurso.promocionado is False and form.promocionado.data is True:
-            recurso.fecha_promocionado = datetime.today()
-        recurso.nombre = form.nombre.data
-        recurso.descripcion = form.descripcion.data
-        recurso.precio = form.precio.data
-        recurso.publico = form.publico.data
-        recurso.tipo = form.tipo.data
+        if current_user.tipo == "admin":
+            if recurso.promocionado is False and form.promocionado.data is True:
+                recurso.fecha_promocionado = datetime.today()
+            recurso.nombre = form.nombre.data
+            recurso.descripcion = form.descripcion.data
+            recurso.precio = form.precio.data
+            recurso.publico = form.publico.data
+            recurso.tipo = form.tipo.data
+        else:
+            return abort(403)
 
         try:  # pragma: no cover
             database.session.commit()
-            flash("Recurso recurso correctamente.", "success")
+            flash("Recurso actualizado correctamente.", "success")
         except OperationalError:
             flash("Error al editar el recurso.", "warning")
-        return redirect(url_for("vista_recurso", resource_code=recurso.codigo))
+        return redirect(url_for("resource.vista_recurso", resource_code=recurso.codigo))
 
     return render_template("learning/recursos/editar_recurso.html", form=form, recurso=recurso)
 
