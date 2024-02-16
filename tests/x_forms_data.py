@@ -189,6 +189,17 @@ forms = [
         flash=("Nuevo Recurso creado correctamente.", "success"),
     ),
     Form(
+        ruta="/resource/new",
+        data={
+            "nombre": "cerat",
+            "descripcion": "ceart",
+            "codigo": "cerat",
+            "precio": 100,
+        },
+        file={"name": "img", "bytes": (BytesIO(b"aasdfkkakk"), "imagen.jpg")},
+        flash=("Nuevo Recurso creado correctamente.", "success"),
+    ),
+    Form(
         ruta="/resource/01HNZXA1BX9B297CYAAA4MK93V/update",
         data={
             "nombre": "cert",
