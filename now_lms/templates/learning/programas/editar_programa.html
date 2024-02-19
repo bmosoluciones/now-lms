@@ -27,12 +27,13 @@
 
         <p>
           <span class="badge bg-success">
-            <a href="{{ url_for("programa_cursos", codigo=programa.codigo) }}" class="link-light">Lista de Cursos</a>
+            <a href="{{ url_for("program.programa_cursos", codigo=programa.codigo) }}" class="link-light">Lista de
+              Cursos</a>
           </span>
         </p>
 
       </div>
-      
+
       <form method="post" enctype=multipart/form-data>
         {{ form.csrf_token }}
         <div class="row g-3">
@@ -69,13 +70,14 @@
         <br>
         <div>
           {% if programa.logo %}
-          <img src="{{ url_for('static', filename='/files/public/images/'+ 'program' + programa.codigo + '/logo.jpg') }}"
+          <img
+            src="{{ url_for('static', filename='/files/public/images/'+ 'program' + programa.codigo + '/logo.jpg') }}"
             alt="Portada del programa">
           <br>
-          <a href="{{url_for("elimina_logo_programa", codigo=programa.id)}}">Eliminar Portada</a>
+          <a href="#">Eliminar Portada</a>
 
           {% else %}
-          
+
           <label for="logo" class="form-label">Portada</label>
           <input type="file" name="logo" accept="image/jpeg">
 
@@ -84,7 +86,7 @@
 
         <br>
 
-        <a href="/programs" class="w-10 btn btn-lg btn-danger btn-block" type="submit">Cancelar</a>
+        <a href="url_for(" program.programas")" class="w-10 btn btn-lg btn-danger btn-block" type="submit">Cancelar</a>
         <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Editar Programa</button>
       </form>
     </div>

@@ -139,6 +139,9 @@ def edit_program(ulid: str):
         estado=programa.estado,
         promocionado=programa.promocionado,
     )
+    if not current_user.tipo == "admin":
+        return abort(403)
+
     if form.validate_on_submit() or request.method == "POST":
         if programa.promocionado is False and form.promocionado.data is True:
             programa.fecha_promocionado = datetime.today()
