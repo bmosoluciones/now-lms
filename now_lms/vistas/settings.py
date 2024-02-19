@@ -147,4 +147,4 @@ def mail():
 def elimina_logo():
     """Elimina logo"""
     elimina_logo_perzonalizado()
-    return redirect(url_for("personalizacion"))
+    return redirect(url_for("setting.personalizacion"))
