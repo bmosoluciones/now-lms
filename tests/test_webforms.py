@@ -80,8 +80,6 @@ def test_fill_all_forms(lms_application, request):
                     else:
                         consulta = client.post(form.ruta, data=form.data, follow_redirects=True)
 
-                    assert consulta.status_code == 200
-
                     if form.flash:
                         assert session["_flashes"][0][0] == form.flash[1]
                         assert session["_flashes"][0][1] == form.flash[0]

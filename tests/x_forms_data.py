@@ -210,4 +210,15 @@ forms = [
         file={"name": "img", "bytes": (BytesIO(b"aasdfkkakk"), "imagen.jpg")},
         flash=("Recurso actualizado correctamente.", "success"),
     ),
+    Form(
+        ruta="/program/01HNZXEMSWTSBM4PNSY4R9VMN6/edit",
+        data={
+            "publico": True,
+            "estado": "open",
+            "nombre": "form.nombre.data",
+            "descripcion": "form.descripcion.data",
+        },
+        file={"name": "img", "bytes": (BytesIO(b"aasdfkkakk"), "imagen.jpg")},
+        flash=None,
+    ),
 ]
