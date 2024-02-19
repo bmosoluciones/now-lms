@@ -221,4 +221,13 @@ forms = [
         file={"name": "img", "bytes": (BytesIO(b"aasdfkkakk"), "imagen.jpg")},
         flash=None,
     ),
+    Form(
+        ruta="/setting/general",
+        data={
+            "titulo": "Hi",
+            "descripcion": "hi",
+        },
+        file=None,
+        flash=None,
+    ),
 ]
