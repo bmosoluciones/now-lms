@@ -17,6 +17,7 @@ flask-mde
 flask-reuploaded
 flask-sqlalchemy
 flask-wtf
+icalendar
 loguru
 markdown
 python-ulid

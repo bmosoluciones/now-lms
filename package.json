@@ -4,10 +4,6 @@
     "@fullcalendar/core": "^6.1.11",
     "@fullcalendar/icalendar": "^6.1.11",
     "@fullcalendar/interaction": "^6.1.11",
-    "bootstrap": "^5.2.3",
-    "bootstrap-icons": "^1.11.3",
-    "jquery": "^3.6.4",
-    "reveal.js": "^4.4.0",
-    "select2": "^4.1.0-rc.0"
+    "bootstrap-icons": "^1.11.3"
   }
 }
