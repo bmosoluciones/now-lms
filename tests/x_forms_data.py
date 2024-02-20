@@ -1,6 +1,5 @@
 from collections import namedtuple
 from io import BytesIO
-from tkinter.messagebox import NO
 
 Form = namedtuple("form", ["ruta", "data", "file", "flash"])
 

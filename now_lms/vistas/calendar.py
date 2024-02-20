@@ -45,22 +45,29 @@ from now_lms.config import DIRECTORIO_PLANTILLAS
 calendar = Blueprint("calendar", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
-@calendar.route("calendar/<course_ulid>")
-@login_required()
+@calendar.route("/calendar/<course_ulid>")
+@login_required
 @perfil_requerido("user")
 def calendario(course_ulid: str):
     """Genera un calendario ical a partir de los eventos de un curso."""
 
 
-@calendar.route("calendar/<course_ulid>/export")
-@login_required()
+@calendar.route("/calendar/<course_ulid>/export")
+@login_required
 @perfil_requerido("user")
 def calendario_export(course_ulid: str):
     """Exporta un calendario ical a partir de los eventos de un curso."""
 
 
-@calendar.route("calendar/<course_ulid>/event/<resource_id>")
-@login_required()
+@calendar.route("/calendar/<course_ulid>/event/<resource_id>")
+@login_required
 @perfil_requerido("user")
-def calendario_evento(course_ulid: str):
+def calendario_evento(course_ulid: str, resource_id: str):
     """Genera un evento a partir de un recurso del calendario."""
+
+
+@calendar.route("/calendar/<course_ulid>/event/<resource_id>/export")
+@login_required
+@perfil_requerido("user")
+def calendario_evento_export(course_ulid: str, resource_id: str):
+    """Exporta un evento a ical."""
