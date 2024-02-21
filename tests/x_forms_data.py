@@ -230,4 +230,13 @@ forms = [
         file=None,
         flash=None,
     ),
+    Form(
+        ruta="/tag/new",
+        data={
+            "nombre": "Hilll",
+            "color": "#eb4034",
+        },
+        file=None,
+        flash=None,
+    ),
 ]
