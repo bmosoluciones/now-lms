@@ -80,7 +80,7 @@ Other libraries used in the project are:
 -   appdirs: App directories.
 -   bleach: HTML sanitisation.
 -   configobj: Configuration files parser.
--   bcrypt: Password hashing.
+-   argon2-cffi: Password hashing.
 -   loguru: Logging.
 -   markdown: Render markdown as HTML.
 -   python-ulid: Generate uniques id.
