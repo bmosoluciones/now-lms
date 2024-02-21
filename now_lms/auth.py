@@ -43,7 +43,7 @@ ph = PasswordHasher()
 
 
 def proteger_passwd(clave):
-    """Devuelve una contraseña salteada con bcrytp."""
+    """Devuelve una contraseña salteada con argon2."""
 
     _hash = ph.hash(clave.encode()).encode("utf-8")
 
