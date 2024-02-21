@@ -27,7 +27,8 @@ from functools import wraps
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from bcrypt import checkpw, gensalt, hashpw
+from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError
 from flask import abort, flash
 from flask_login import current_user
 
@@ -37,13 +38,16 @@ from flask_login import current_user
 from now_lms.db import Usuario, database
 from now_lms.logs import log
 
-# pylint: disable=R0401
+
+ph = PasswordHasher()
 
 
 def proteger_passwd(clave):
     """Devuelve una contraseña salteada con bcrytp."""
 
-    return hashpw(clave.encode(), gensalt())
+    _hash = ph.hash(clave.encode()).encode("utf-8")
+
+    return _hash
 
 
 def validar_acceso(usuario_id, acceso):
@@ -52,7 +56,10 @@ def validar_acceso(usuario_id, acceso):
     log.trace("Verificando acceso de {usuario}", usuario=usuario_id)
     registro = Usuario.query.filter_by(usuario=usuario_id).first()
     if registro is not None:
-        clave_validada = checkpw(acceso.encode(), registro.acceso)
+        try:
+            clave_validada = ph.verify(registro.acceso, acceso.encode())
+        except VerifyMismatchError:
+            clave_validada = False
     else:  # pragma: no cover
         log.trace("No se encontro registro de usuario {usuario}", usuario=usuario_id)
         clave_validada = False
