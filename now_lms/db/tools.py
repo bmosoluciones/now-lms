@@ -232,7 +232,7 @@ def elimina_logo_perzonalizado():
 
     try:
         remove(LOGO)
-    except FileNotFoundError:
+    except FileNotFoundError:  # pragma: no cover
         pass
 
 

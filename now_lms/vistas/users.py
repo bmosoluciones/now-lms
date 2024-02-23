@@ -91,7 +91,6 @@ def crear_cuenta():
         return PANEL_DE_USUARIO
 
     else:
-
         form = LogonForm()
         if form.validate_on_submit() or request.method == "POST":
             usuario_ = Usuario(
@@ -138,7 +137,7 @@ def crear_usuario():  # pragma: no cover
             database.session.commit()
             flash("Usuario creado exitosamente.", "success")
             return redirect(url_for("usuario", id_usuario=form.usuario.data))
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             flash("Error al crear la cuenta.", "warning")
             return redirect("/new_user")
     else:

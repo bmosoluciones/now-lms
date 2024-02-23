@@ -76,7 +76,7 @@ def nuevo_programa():
                 database.session.commit()
                 cache.delete("view/" + url_for("program.programas"))
                 flash("Nuevo Programa creado.", "success")
-            except OperationalError:
+            except OperationalError:  # pragma: no cover
                 flash("Hubo un error al crear el programa.", "warning")
             return redirect(url_for("program.programas"))
         else:
@@ -172,11 +172,11 @@ def edit_program(ulid: str):
                         programa.logo = True
                         flash("Portada del curso actualizada correctamente", "success")
                         database.session.commit()
-                except UploadNotAllowed:
+                except UploadNotAllowed:  # pragma: no cover
                     flash("No se pudo actualizar la portada del curso.", "warning")
 
             flash("Programa editado correctamente.", "success")
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             flash("No se puedo editar el programa.")
         return redirect("/programs_list")
 
@@ -190,7 +190,6 @@ def programa_cursos(codigo):
     """Pagina principal del curso."""
 
     if current_user.tipo == "admin":
-
         return render_template("learning/programas/lista_cursos.html")
 
     else:
@@ -234,7 +233,7 @@ def lista_programas():
             # El numero de pagina debe ser generado por el macro de paginación.
             try:
                 del PARAMETROS["page"]
-            except KeyError:
+            except KeyError:  # pragma: no cover
                 pass
     else:
         PARAMETROS = None

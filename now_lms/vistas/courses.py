@@ -917,7 +917,6 @@ def external_code(course_code, recurso_code):
 
     if current_user.is_authenticated:
         if recurso.publico or current_user.tipo == "admin":
-
             return recurso.external_code
 
         else:

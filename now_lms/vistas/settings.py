@@ -70,14 +70,14 @@ def personalizacion():
                     config.custom_logo = True
                     cache.delete("cached_logo")
                     cache.delete("cached_style")
-            except UploadNotAllowed:
+            except UploadNotAllowed:  # pragma: no cover
                 log.warning("Ocurrio un error al actualizar el logotipo del sitio web.")
 
         try:
             database.session.commit()
             flash("Tema del sitio web actualizado exitosamente.", "success")
             return redirect(url_for("personalizacion"))
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             flash("No se pudo actualizar el tema del sitio web.", "warning")
             return redirect(url_for("personalizacion"))
 
@@ -134,7 +134,7 @@ def mail():
             database.session.commit()
             flash("Configuración de correo electronico actualizada exitosamente.", "success")
             return redirect(url_for("mail"))
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             flash("No se pudo actualizar la configuración de correo electronico.", "warning")
             return redirect(url_for("mail"))
     else:  # pragma: no cover
