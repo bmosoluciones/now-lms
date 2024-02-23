@@ -61,7 +61,7 @@ def lms_application():
     yield app
 
 
-def test_visit_all_views_with_anonimus_user(lms_application):
+def test_visit_views_anonimus(lms_application):
 
     with lms_application.app_context():
 
@@ -80,7 +80,7 @@ def test_visit_all_views_with_anonimus_user(lms_application):
                         assert t in consulta.data
 
 
-def test_visit_all_views_with_admin_user(lms_application):
+def test_visit_views_admin(lms_application):
 
     from now_lms import database, initial_setup
 
@@ -109,7 +109,7 @@ def test_visit_all_views_with_admin_user(lms_application):
             client.get("/user/logout")
 
 
-def test_visit_all_views_with_student_user(lms_application):
+def test_visit_views_student(lms_application):
 
     from now_lms import database, initial_setup
 
@@ -138,7 +138,7 @@ def test_visit_all_views_with_student_user(lms_application):
             client.get("/user/logout")
 
 
-def test_visit_all_views_with_moderator_user(lms_application, request):
+def test_visit_views_moderator(lms_application, request):
 
     if request.config.getoption("--slow") == "True":
 
@@ -169,7 +169,7 @@ def test_visit_all_views_with_moderator_user(lms_application, request):
                 client.get("/user/logout")
 
 
-def test_visit_all_views_with_instructor_user(lms_application, request):
+def test_visit_views_instructor(lms_application, request):
 
     if request.config.getoption("--slow") == "True":
 
@@ -200,7 +200,7 @@ def test_visit_all_views_with_instructor_user(lms_application, request):
                 client.get("/user/logout")
 
 
-def test_visit_custom_error_pages(lms_application, request):
+def test_error_pages(lms_application, request):
 
     if request.config.getoption("--slow") == "True":
         error_codes = [402, 403, 404, 405, 500]
