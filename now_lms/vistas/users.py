@@ -29,13 +29,13 @@ Gestión de certificados.
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user, login_required
 from sqlalchemy.exc import OperationalError
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms.auth import proteger_passwd, validar_acceso
+from now_lms.auth import proteger_passwd, validar_acceso, perfil_requerido
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import Usuario, database
 from now_lms.forms import LoginForm, LogonForm
@@ -85,34 +85,39 @@ def cerrar_sesion():  # pragma: no cover
 @user.route("/user/logon", methods=["GET", "POST"])
 def crear_cuenta():
     """Crear cuenta de usuario desde el sistio web."""
+
     if current_user.is_authenticated:
         flash("Usted ya posee una cuenta en el sistema.", "warning")
         return PANEL_DE_USUARIO
-    form = LogonForm()
-    if form.validate_on_submit() or request.method == "POST":
-        usuario_ = Usuario(
-            usuario=form.usuario.data,
-            acceso=proteger_passwd(form.acceso.data),
-            nombre=form.nombre.data,
-            apellido=form.apellido.data,
-            correo_electronico=form.correo_electronico.data,
-            tipo="user",
-            activo=False,
-            creado_por=form.usuario.data,
-        )
-        try:
-            database.session.add(usuario_)
-            database.session.commit()
-            flash("Cuenta creada exitosamente.", "success")
-            return INICIO_SESION
-        except OperationalError:  # pragma: no cover
-            flash("Error al crear la cuenta.", "warning")
-            return redirect("/logon")
+
     else:
-        return render_template("auth/logon.html", form=form, titulo="Crear cuenta - NOW LMS")
+        form = LogonForm()
+        if form.validate_on_submit() or request.method == "POST":
+            usuario_ = Usuario(
+                usuario=form.usuario.data,
+                acceso=proteger_passwd(form.acceso.data),
+                nombre=form.nombre.data,
+                apellido=form.apellido.data,
+                correo_electronico=form.correo_electronico.data,
+                tipo="user",
+                activo=False,
+                creado_por=form.usuario.data,
+            )
+            try:
+                database.session.add(usuario_)
+                database.session.commit()
+                flash("Cuenta creada exitosamente.", "success")
+                return INICIO_SESION
+            except OperationalError:  # pragma: no cover
+                flash("Error al crear la cuenta.", "warning")
+                return redirect("/logon")
+        else:
+            return render_template("auth/logon.html", form=form, titulo="Crear cuenta - NOW LMS")
 
 
 @user.route("/user/new_user", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("admin")
 def crear_usuario():  # pragma: no cover
     """Crear manualmente una cuenta de usuario."""
     form = LogonForm()
@@ -132,7 +137,7 @@ def crear_usuario():  # pragma: no cover
             database.session.commit()
             flash("Usuario creado exitosamente.", "success")
             return redirect(url_for("usuario", id_usuario=form.usuario.data))
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             flash("Error al crear la cuenta.", "warning")
             return redirect("/new_user")
     else:

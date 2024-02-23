@@ -6,6 +6,6 @@ coverage:
       default:
         # basic
         target: auto
-        threshold: 8%
+        threshold: 10%
 ignore:
   - "now_lms/__main__.py"

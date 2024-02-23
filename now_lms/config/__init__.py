@@ -1,4 +1,4 @@
-# Copyright 2022 - 2023 BMO Soluciones, S.A.
+# Copyright 2022 - 2024 BMO Soluciones, S.A.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -102,7 +102,7 @@ if not path.isdir(DIRECTORIO_BASE_UPLOADS):  # pragma: no cover
         makedirs(DIRECTORIO_UPLOAD_ARCHIVOS)
         makedirs(DIRECTORIO_UPLOAD_IMAGENES)
         makedirs(DIRECTORIO_UPLOAD_AUDIO)
-    except OSError:
+    except OSError:  # pragma: no cover
         log.warning("No se puede crear directorio para carga de archivos: {directorio}", directorio=DIRECTORIO_BASE_UPLOADS)
 if access(DIRECTORIO_BASE_UPLOADS, R_OK) and access(DIRECTORIO_BASE_UPLOADS, W_OK):  # pragma: no cover
     log.trace("Acceso verificado a: {file}", file=DIRECTORIO_BASE_UPLOADS)

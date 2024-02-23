@@ -10,5 +10,6 @@ hupper
 mkdocs
 mkdocs-material
 
-#Live realoader
-hupper
+# Code Style
+black
+isort

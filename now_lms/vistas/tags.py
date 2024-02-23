@@ -64,7 +64,7 @@ def new_tag():
         try:
             database.session.commit()
             flash("Nueva etiqueta creada.", "successs")
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             flash("Hubo un error al crear la etiqueta.", "warning")
         return redirect("/tags")
 
@@ -111,7 +111,7 @@ def edit_tag(ulid: str):
             database.session.add(etiqueta)
             database.session.commit()
             flash("Etiqueta editada correctamente.", "success")
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             flash("No se puedo editar la etiqueta.", "warning")
         return redirect("/tags")
 

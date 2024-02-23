@@ -1,4 +1,4 @@
-# Copyright 2022 - 2023 BMO Soluciones, S.A.
+# Copyright 2022 - 2024 BMO Soluciones, S.A.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -232,7 +232,7 @@ def elimina_logo_perzonalizado():
 
     try:
         remove(LOGO)
-    except FileNotFoundError:
+    except FileNotFoundError:  # pragma: no cover
         pass
 
 

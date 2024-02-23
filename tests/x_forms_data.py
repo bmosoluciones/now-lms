@@ -165,4 +165,77 @@ forms = [
         file=None,
         flash=None,
     ),
+    Form(
+        ruta="/program/new",
+        data={
+            "nombre": "cert",
+            "descripcion": "cert",
+            "codigo": "cert",
+            "precio": 100,
+        },
+        file=None,
+        flash=("Nuevo Programa creado.", "success"),
+    ),
+    Form(
+        ruta="/resource/new",
+        data={
+            "nombre": "cert",
+            "descripcion": "cert",
+            "codigo": "cert",
+            "precio": 100,
+        },
+        file={"name": "recurso", "bytes": (BytesIO(b"aasdfkkakk"), "imagen.pdf")},
+        flash=("Nuevo Recurso creado correctamente.", "success"),
+    ),
+    Form(
+        ruta="/resource/new",
+        data={
+            "nombre": "cerat",
+            "descripcion": "ceart",
+            "codigo": "cerat",
+            "precio": 100,
+        },
+        file={"name": "img", "bytes": (BytesIO(b"aasdfkkakk"), "imagen.jpg")},
+        flash=("Nuevo Recurso creado correctamente.", "success"),
+    ),
+    Form(
+        ruta="/resource/01HNZXA1BX9B297CYAAA4MK93V/update",
+        data={
+            "nombre": "cert",
+            "descripcion": "cert",
+            "codigo": "cert",
+            "precio": 100,
+        },
+        file={"name": "img", "bytes": (BytesIO(b"aasdfkkakk"), "imagen.jpg")},
+        flash=("Recurso actualizado correctamente.", "success"),
+    ),
+    Form(
+        ruta="/program/01HNZXEMSWTSBM4PNSY4R9VMN6/edit",
+        data={
+            "publico": True,
+            "estado": "open",
+            "nombre": "form.nombre.data",
+            "descripcion": "form.descripcion.data",
+        },
+        file={"name": "img", "bytes": (BytesIO(b"aasdfkkakk"), "imagen.jpg")},
+        flash=None,
+    ),
+    Form(
+        ruta="/setting/general",
+        data={
+            "titulo": "Hi",
+            "descripcion": "hi",
+        },
+        file=None,
+        flash=None,
+    ),
+    Form(
+        ruta="/tag/new",
+        data={
+            "nombre": "Hilll",
+            "color": "#eb4034",
+        },
+        file=None,
+        flash=None,
+    ),
 ]

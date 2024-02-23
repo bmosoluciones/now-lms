@@ -6,7 +6,6 @@ twine
 wheel
 
 # Control de calidad python
-black
 pytest
 ruff
 

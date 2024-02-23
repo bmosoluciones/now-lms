@@ -36,7 +36,7 @@ theme:
 repo_url: https://github.com/bmosoluciones/now-lms
 repo_name: bmosoluciones/now-lms
 
-copyright: Copyright &copy; 2021 - 2023 BMO Soluciones
+copyright: Copyright &copy; 2021 - 2024 BMO Soluciones
 
 plugins:
   - search:
