@@ -28,7 +28,7 @@
 
         <p>
           <span class="badge bg-success">
-            <a href="{{ url_for("new_program") }}" class="link-light">Nuevo Programa</a>
+            <a href="{{ url_for("program.nuevo_programa") }}" class="link-light">Nuevo Programa</a>
           </span>
         </p>
 
@@ -55,43 +55,45 @@
           <tbody>
             <tr>
               <td>
-                <a href="{{url_for("pagina_programa", codigo=item.codigo)}}" class="link-dark">
+                <a href="{{url_for("program.pagina_programa", codigo=item.codigo)}}" class="link-dark">
                   {{ item.codigo }}
                 </a>
               <td>
-                <a href="{{url_for("pagina_programa", codigo=item.codigo)}}" class="link-dark">
+                <a href="{{url_for("program.pagina_programa", codigo=item.codigo)}}" class="link-dark">
                   {{ item.nombre }}
                 </a>
               </td>
               <td>
-                <a href="{{url_for("pagina_programa", codigo=item.codigo)}}" class="link-dark">
+                <a href="{{url_for("program.pagina_programa", codigo=item.codigo)}}" class="link-dark">
                   {{ cuenta_cursos(item.codigo) }}
                 </a>
               </td>
               <td>
-                <a href="{{url_for("pagina_programa", codigo=item.codigo)}}" class="link-dark">
+                <a href="{{url_for("program.pagina_programa", codigo=item.codigo)}}" class="link-dark">
                   {{ item.publico }}
                 </a>
               </td>
               <td>
-                <a href="{{url_for("pagina_programa", codigo=item.codigo)}}" class="link-dark">
+                <a href="{{url_for("program.pagina_programa", codigo=item.codigo)}}" class="link-dark">
                   {{ item.precio }}
                 </a>
               </td>
               <td>
-                <a href="{{url_for("pagina_programa", codigo=item.codigo)}}" class="link-dark">
+                <a href="{{url_for("program.pagina_programa", codigo=item.codigo)}}" class="link-dark">
                   {{ item.estado }}
                 </a>
               </td>
               <td>
                 <span class="badge bg-danger">
-                  <a href="{{ url_for("delete_program", tag=item.id) }}" class="link-light">Eliminar Programa</a>
+                  <a href="{{ url_for("program.delete_program", ulid=item.id) }}" class="link-light">Eliminar
+                    Programa</a>
                 </span>
                 <span class="badge bg-info">
-                  <a href="{{ url_for("edit_program", tag=item.id) }}" class="link-light">Editar Programa</a>
+                  <a href="{{ url_for("program.edit_program", ulid=item.id) }}" class="link-light">Editar Programa</a>
                 </span>
                 <span class="badge bg-primary">
-                  <a href="{{ url_for("programa_cursos", codigo=item.codigo) }}" class="link-light">Lista de Cursos</a>
+                  <a href="{{ url_for("program.programa_cursos", codigo=item.codigo) }}" class="link-light">Lista de
+                    Cursos</a>
                 </span>
               </td>
             </tr>

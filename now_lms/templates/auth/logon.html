@@ -33,7 +33,7 @@
   <main class="form-signin">
     <form method="post">
       {{ form.csrf_token }}
-      <a href="{{ url_for('home') }}">
+      <a href="/home">
         <img class="mb-4" src="{{ url_for('static', filename='icons/logo/logo.svg') }}" alt="NOW - LMS" width="200">
       </a>
       <h1 class="h3 mb-3 fw-normal">Crear nuevo usuario.</h1>
@@ -57,7 +57,7 @@
       <label for="contraseña" class="visually-hidden">Contraseña</label>
       {{ form.acceso(class="form-control", id="acceso", placeholder="Contraseña") }}
       <button class="w-100 btn btn-lg btn-primary btn-block" type="submit">Crear Cuenta</button>
-      <a href="{{ url_for('home') }}"><i class="bi bi-arrow-left" aria-hidden="true"></i> Regresar</a>
+      <a href="/home"><i class="bi bi-arrow-left" aria-hidden="true"></i> Regresar</a>
       <p class="mt-5 mb-3 text-muted text-center">BMO Soluciones &copy; 2023</p>
     </form>
   </main>

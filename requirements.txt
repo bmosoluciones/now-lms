@@ -5,7 +5,6 @@ argon2-cffi
 babel
 bleach
 configobj
-diskcache
 flask
 flask[async]
 flask-alembic

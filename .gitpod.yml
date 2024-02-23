@@ -1,4 +1,4 @@
 ports:
-- port: 8080
+  - port: 5000
 tasks:
-- init: 'bash .git_pod.sh'
+  - init: "bash .git_pod.sh"

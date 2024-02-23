@@ -8,4 +8,4 @@ cd ..
 python -m pip install --upgrade pip
 python -m pip install --upgrade -r development.txt
 python -m pip install -e .
-hupper -m now_lms
+python -m flask --debug run

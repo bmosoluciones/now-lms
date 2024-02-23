@@ -170,10 +170,10 @@ def inicializa_extenciones_terceros(flask_app: Flask):
                 toolbar = DebugToolbarExtension(app)
                 profiler = Profiler(app)
                 log.debug("Profiler activo")
-            except ModuleNotFoundError:
+            except ModuleNotFoundError:  # pragma: no cover
                 toolbar = None
                 profiler = None
-            except ImportError:
+            except ImportError:  # pragma: no cover
                 toolbar = None
                 profiler = None
 
@@ -327,13 +327,13 @@ def carga_configuracion_del_sitio_web_desde_db():  # pragma: no cover
             CONFIG = Configuracion.query.first()
         # Si no existe una entrada en la tabla de configuración uno de los siguientes errores puede ocurrir
         # en dependencia del motor de base de datos utilizado.
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             CONFIG = None
-        except ProgrammingError:
+        except ProgrammingError:  # pragma: no cover
             CONFIG = None
-        except PGProgrammingError:
+        except PGProgrammingError:  # pragma: no cover
             CONFIG = None
-        except DatabaseError:
+        except DatabaseError:  # pragma: no cover
             CONFIG = None
     return CONFIG
 
@@ -407,13 +407,13 @@ def init_app(with_examples=False):  # pragma: no cover
             if consulta:
                 DB_ACCESS = True
 
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             DB_ACCESS = False
-        except ProgrammingError:
+        except ProgrammingError:  # pragma: no cover
             DB_ACCESS = False
-        except PGProgrammingError:
+        except PGProgrammingError:  # pragma: no cover
             DB_ACCESS = False
-        except DatabaseError:
+        except DatabaseError:  # pragma: no cover
             DB_ACCESS = False
 
         if DB_ACCESS:
@@ -423,13 +423,13 @@ def init_app(with_examples=False):  # pragma: no cover
                 VERIFICA_EXISTE_CONFIGURACION_DB = carga_configuracion_del_sitio_web_desde_db()
                 VERIFICA_EXISTE_USUARIO_DB = Usuario.query.first()
                 DB_INICIALIZADA = (VERIFICA_EXISTE_CONFIGURACION_DB is not None) and (VERIFICA_EXISTE_USUARIO_DB is not None)
-            except OperationalError:
+            except OperationalError:  # pragma: no cover
                 DB_INICIALIZADA = False
-            except ProgrammingError:
+            except ProgrammingError:  # pragma: no cover
                 DB_INICIALIZADA = False
-            except PGProgrammingError:
+            except PGProgrammingError:  # pragma: no cover
                 DB_INICIALIZADA = False
-            except DatabaseError:
+            except DatabaseError:  # pragma: no cover
                 DB_INICIALIZADA = False
         else:
             log.warning("Error al acceder a la base de datos.")

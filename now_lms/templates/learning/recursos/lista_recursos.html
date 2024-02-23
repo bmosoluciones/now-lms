@@ -53,7 +53,7 @@
           <tbody>
             <tr>
               <td>
-                <a href="{{url_for("vista_recurso", resource_code=item.codigo)}}" class="link-dark">
+                <a href="{{url_for("resource.vista_recurso", resource_code=item.codigo)}}" class="link-dark">
                   {{ item.codigo }}
                 </a>
               <td>
@@ -67,10 +67,11 @@
               </td>
               <td>
                 <span class="badge bg-danger">
-                  <a href="{{ url_for("delete_resource", ulid=item.id) }}" class="link-light">Eliminar Recurso</a>
+                  <a href="{{ url_for("resource.delete_resource", ulid=item.id) }}" class="link-light">Eliminar
+                    Recurso</a>
                 </span>
                 <span class="badge bg-info">
-                  <a href="{{ url_for("edit_resource", ulid=item.id) }}" class="link-light">Editar Recurso</a>
+                  <a href="{{ url_for("resource.edit_resource", ulid=item.id) }}" class="link-light">Editar Recurso</a>
                 </span>
               </td>
               <td></td>

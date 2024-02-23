@@ -134,6 +134,6 @@ def agrega_usuario_a_grupo():
         database.session.commit()
         flash("Usuario Agregado Correctamente.", "success")
         return redirect(url_grupo)
-    except OperationalError:
+    except OperationalError:  # pragma: no cover
         flash("No se pudo agregar al usuario.", "warning")
         return redirect(url_grupo)

@@ -28,7 +28,7 @@
 
         <p>
           <span class="badge bg-success">
-            <a href="{{ url_for("new_tag") }}" class="link-light">Nueva Etiqueta</a>
+            <a href="{{ url_for("tag.new_tag") }}" class="link-light">Nueva Etiqueta</a>
           </span>
         </p>
 
@@ -66,10 +66,10 @@
               </td>
               <td>
                 <span class="badge bg-danger">
-                  <a href="{{ url_for("delete_tag", tag=item.id) }}" class="link-light">Eliminar Etiqueta</a>
+                  <a href="{{ url_for("tag.delete_tag", ulid=item.id) }}" class="link-light">Eliminar Etiqueta</a>
                 </span>
                 <span class="badge bg-info">
-                  <a href="{{ url_for("edit_tag", tag=item.id) }}" class="link-light">Editar Etiqueta</a>
+                  <a href="{{ url_for("tag.edit_tag", ulid=item.id) }}" class="link-light">Editar Etiqueta</a>
                 </span>
               </td>
             </tr>

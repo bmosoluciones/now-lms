@@ -65,7 +65,7 @@ def new_certificate():
         try:
             database.session.commit()
             flash("Nuevo certificado creado correctamente.", "success")
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             flash("Hubo un error al crear el certificado.", "warning")
         return redirect("/certificate/list")
 
@@ -110,7 +110,7 @@ def edit_certificate(ulid: str):
             database.session.add(certificado)
             database.session.commit()
             flash("Certificado editado correctamente.", "success")
-        except OperationalError:
+        except OperationalError:  # pragma: no cover
             flash("No se puedo editar el certificado.", "warning")
         return redirect(url_for("certificate.certificados"))
 
