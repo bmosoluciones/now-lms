@@ -107,12 +107,12 @@ class MailForm(FlaskForm):
     """Formulario de configuración de correo electronico."""
 
     email = BooleanField(validators=[])
-    mail_server = StringField(validators=[DataRequired()])
-    mail_port = StringField(validators=[DataRequired()])
-    mail_use_tls = BooleanField(validators=[])
-    mail_use_ssl = BooleanField(validators=[])
-    mail_username = StringField(validators=[DataRequired()])
-    mail_password = StringField(validators=[DataRequired()])
+    MAIL_HOST = StringField(validators=[DataRequired()])
+    MAIL_PORT = StringField(validators=[DataRequired()])
+    MAIL_USERNAME = StringField(validators=[DataRequired()])
+    MAIL_PASSWORD = StringField(validators=[DataRequired()])
+    MAIL_USE_TLS = BooleanField(validators=[])
+    MAIL_USE_SSL = BooleanField(validators=[])
 
 
 class LogonForm(FlaskForm):

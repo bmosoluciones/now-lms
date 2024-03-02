@@ -351,12 +351,12 @@ class Configuracion(database.Model, BaseTabla):
     custom_logo = database.Column(database.Boolean())
     # Email settings
     email = database.Column(database.Boolean())
-    mail_server = database.Column(database.String(50))
-    mail_port = database.Column(database.String(50))
-    mail_username = database.Column(database.String(50))
-    mail_password = database.Column(database.String(50))
-    mail_use_tls = database.Column(database.Boolean())
-    mail_use_ssl = database.Column(database.Boolean())
+    MAIL_HOST = database.Column(database.String(50))
+    MAIL_PORT = database.Column(database.String(50))
+    MAIL_USERNAME = database.Column(database.String(50))
+    MAIL_PASSWORD = database.Column(database.String(50))
+    MAIL_USE_TLS = database.Column(database.Boolean())
+    MAIL_USE_SSL = database.Column(database.Boolean())
 
 
 class Categoria(database.Model, BaseTabla):
