@@ -154,36 +154,6 @@ def inicializa_extenciones_terceros(flask_app: Flask):
         cache.init_app(flask_app)
         mde.init_app(flask_app)
         mail.init_app(flask_app)
-        if environ.get("PROFILER"):  # pragma: no cover
-            log.warning("Profiler activo, no se recomienda el uso de esta opción en entornos reales.")
-            try:
-                from flask_debugtoolbar import DebugToolbarExtension
-                from flask_profiler import Profiler
-
-                app.debug = True
-
-                app.config["flask_profiler"] = {
-                    "enabled": app.config["DEBUG"],
-                    "storage": {"engine": "sqlite"},
-                    "basicAuth": {"enabled": True, "username": "admin", "password": "admin"},
-                    "ignore": ["^/static/.*"],
-                }
-
-                app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
-                toolbar = DebugToolbarExtension(app)
-                profiler = Profiler(app)
-                log.debug("Profiler activo")
-            except ModuleNotFoundError:  # pragma: no cover
-                toolbar = None
-                profiler = None
-            except ImportError:  # pragma: no cover
-                toolbar = None
-                profiler = None
-
-            if toolbar:
-                log.info("Flask development toolbar enabled.")
-            if profiler:
-                log.info("Flask profiler enabled.")
     log.trace("Extensiones de terceros iniciadas correctamente.")
 
 
