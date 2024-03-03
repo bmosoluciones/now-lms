@@ -21,6 +21,7 @@
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
+import base64
 from datetime import datetime
 from functools import wraps
 
@@ -29,7 +30,10 @@ from functools import wraps
 # ---------------------------------------------------------------------------------------
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-from flask import abort, flash
+from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from flask import abort, flash, current_app
 from flask_login import current_user
 
 # ---------------------------------------------------------------------------------------
@@ -88,3 +92,53 @@ def perfil_requerido(perfil_id):
         return wrapper
 
     return decorator_verifica_acceso
+
+
+def proteger_secreto(password):
+    """
+    Devuelve el hash de una contraseña.
+
+    Se requiere que el parametro "SECRET_KEY" este establecido en la configuración de la aplicacion,
+    si cambia el valor de este parametro debera actualizar la configuración ya se utiliza el mismo
+    parametro para obtener la contraseña original.
+    """
+
+    with current_app.app_context():
+        from now_lms.db import database, Configuracion
+
+        config = database.session.execute(database.select(Configuracion)).first()[0]
+
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=config.r,
+            iterations=480000,
+        )
+        key = base64.urlsafe_b64encode(kdf.derive(current_app.config.get("SECRET_KEY").encode()))
+        f = Fernet(key)
+        return f.encrypt(password.encode())
+
+
+def descifrar_secreto(hash):
+    """
+    Devuelve el valor de una contraseña protegida.
+
+    Se utiliza el valor del parametro "SECRET_KEY" de la configuración de la aplicación para decodificar
+    la contraseña original, si el parametro "SECRET_KEY" cambia en la configuración no se posible desifrar
+    la contraseña original, debera generar una nueva.
+    """
+
+    with current_app.app_context():
+        from now_lms.db import database, Configuracion
+
+        config = database.session.execute(database.select(Configuracion)).first()[0]
+
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=config.r,
+            iterations=480000,
+        )
+        key = base64.urlsafe_b64encode(kdf.derive(current_app.config.get("SECRET_KEY").encode()))
+        f = Fernet(key)
+        return f.decrypt(hash)
