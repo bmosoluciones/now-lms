@@ -145,6 +145,7 @@ def mail():
             database.session.commit()
             flash("Configuración de correo electronico actualizada exitosamente.", "success")
             return redirect(url_for("setting.mail"))
+            return redirect(url_for("mail"))
         except OperationalError:  # pragma: no cover
             flash("No se pudo actualizar la configuración de correo electronico.", "warning")
             return redirect(url_for("setting.mail"))
