@@ -47,7 +47,7 @@ from flask import Flask, flash, render_template
 from flask.cli import FlaskGroup
 from flask_alembic import Alembic
 from flask_login import LoginManager, current_user
-from flask_mail import Mail
+from flask_mailman import Mail
 from flask_mde import Mde
 from flask_uploads import configure_uploads
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
@@ -58,6 +58,7 @@ from werkzeug.exceptions import HTTPException
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
+from now_lms.auth import descifrar_secreto
 from now_lms.cache import cache
 from now_lms.config import (
     CONFIGURACION,
@@ -137,6 +138,7 @@ APPNAME: str = "NOW LMS"
 alembic: Alembic = Alembic()
 administrador_sesion: LoginManager = LoginManager()
 mde: Mde = Mde()
+mail: Mail = Mail()
 
 
 # ---------------------------------------------------------------------------------------
@@ -152,36 +154,7 @@ def inicializa_extenciones_terceros(flask_app: Flask):
         administrador_sesion.init_app(flask_app)
         cache.init_app(flask_app)
         mde.init_app(flask_app)
-        if environ.get("PROFILER"):  # pragma: no cover
-            log.warning("Profiler activo, no se recomienda el uso de esta opción en entornos reales.")
-            try:
-                from flask_debugtoolbar import DebugToolbarExtension
-                from flask_profiler import Profiler
-
-                app.debug = True
-
-                app.config["flask_profiler"] = {
-                    "enabled": app.config["DEBUG"],
-                    "storage": {"engine": "sqlite"},
-                    "basicAuth": {"enabled": True, "username": "admin", "password": "admin"},
-                    "ignore": ["^/static/.*"],
-                }
-
-                app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
-                toolbar = DebugToolbarExtension(app)
-                profiler = Profiler(app)
-                log.debug("Profiler activo")
-            except ModuleNotFoundError:  # pragma: no cover
-                toolbar = None
-                profiler = None
-            except ImportError:  # pragma: no cover
-                toolbar = None
-                profiler = None
-
-            if toolbar:
-                log.info("Flask development toolbar enabled.")
-            if profiler:
-                log.info("Flask profiler enabled.")
+        mail.init_app(flask_app)
     log.trace("Extensiones de terceros iniciadas correctamente.")
 
 
@@ -397,7 +370,7 @@ def initial_setup(with_examples=False, with_tests=False):
     log.info("NOW - LMS iniciado correctamente.")
 
 
-def init_app(with_examples=False):  # pragma: no cover
+def init_app(with_examples=False):
     """Funcion auxiliar para iniciar la aplicacion."""
 
     with lms_app.app_context():
@@ -444,21 +417,26 @@ def init_app(with_examples=False):  # pragma: no cover
             log.trace("Acceso a base de datos verificado.")
             config = Configuracion.query.first()
 
-        if config.email:
+        if (
+            config.email
+            and config.MAIL_HOST is not None
+            and config.MAIL_PORT is not None
+            and config.MAIL_USERNAME is not None
+            and config.MAIL_PASSWORD is not None
+        ):
+            log.trace("Cargando configuración de correo electronico.")
             lms_app.config.update(
                 {
-                    "MAIL_SERVER": config.mail_server,
-                    "MAIL_PORT": config.mail_port,
-                    "MAIL_USERNAME": config.mail_username,
-                    "MAIL_PASSWORD": config.mail_password,
-                    "MAIL_USE_TLS": config.mail_use_tls,
-                    "MAIL_USE_SSL": config.mail_use_ssl,
+                    "MAIL_HOST": config.MAIL_HOST,
+                    "MAIL_PORT": config.MAIL_PORT,
+                    "MAIL_USERNAME": config.MAIL_USERNAME,
+                    "MAIL_PASSWORD": descifrar_secreto(config.MAIL_PASSWORD),
+                    "MAIL_USE_TLS": config.MAIL_USE_TLS,
+                    "MAIL_USE_SSL": config.MAIL_USE_SSL,
                 }
             )
             if DESARROLLO:
-                lms_app.config.update({"MAIL_SUPPRESS_SEND": True})
-            e_mail = Mail()
-            e_mail.init_app(lms_app)
+                lms_app.config.update({"MAIL_BACKEND": "dummy"})
 
 
 # ---------------------------------------------------------------------------------------
