@@ -110,7 +110,7 @@ class MailForm(FlaskForm):
     MAIL_HOST = StringField(validators=[DataRequired()])
     MAIL_PORT = StringField(validators=[DataRequired()])
     MAIL_USERNAME = StringField(validators=[DataRequired()])
-    MAIL_PASSWORD = StringField(validators=[DataRequired()])
+    MAIL_PASSWORD = PasswordField()
     MAIL_USE_TLS = BooleanField(validators=[])
     MAIL_USE_SSL = BooleanField(validators=[])
 

@@ -77,7 +77,8 @@ Note that initial log messages will refer to the default options because you are
 
 You can use the following options to configure NOW-LMS:
 
--   **SECRET_KEY** (<span style="color:red">required</span>): A secure string used to secure the login proccess and form validation.
+-   **SECRET_KEY** (<span style="color:red">required</span>): A secure string used to secure the login proccess and form validation and to hash sensible data stored in the system database, if this parameter changes, hashed secrets will not be
+    decripted and you will need to save then againg.
 -   **SQLALCHEMY_DATABASE_URI** (<span style="color:red">required</span>): A valid SQLAlchemy conextion string, SQLite, MySQL version
     8 and a resent version of PostgreSQL must work out of the box, MariaDB ans MS SQLServer should work but we not test the release versus this database engines. Checkout the
     [SQLAlchemy docs](https://docs.sqlalchemy.org/en/20/core/engines.html) to valid examples to conections strings, the PyMSQL and PG800 database drivers are installed as normal dependencies, other database engines may requiere manual drivers setup.

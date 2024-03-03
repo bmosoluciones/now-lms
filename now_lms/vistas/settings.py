@@ -28,15 +28,15 @@ Gestión de certificados.
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, flash, redirect, render_template, request, url_for
-from flask_login import login_required
+from flask import Blueprint, flash, redirect, render_template, request, url_for, current_app
+from flask_login import login_required, current_user
 from flask_uploads import UploadNotAllowed
 from sqlalchemy.exc import OperationalError
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms.auth import perfil_requerido
+from now_lms.auth import perfil_requerido, proteger_secreto
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
 from now_lms.db import Configuracion, database
@@ -120,25 +120,72 @@ def configuracion():
 @perfil_requerido("admin")
 def mail():
     """Configuración de Correo Electronico."""
-    config = Configuracion.query.first()
-    form = MailForm()
-    if form.validate_on_submit() or request.method == "POST":  # pragma: no cover
+    config = database.session.execute(database.select(Configuracion)).first()[0]
+    form = MailForm(
+        email=config.email,
+        MAIL_HOST=config.MAIL_HOST,
+        MAIL_PORT=config.MAIL_PORT,
+        MAIL_USERNAME=config.MAIL_USERNAME,
+        MAIL_PASSWORD=config.MAIL_PASSWORD,
+        MAIL_USE_TLS=config.MAIL_USE_TLS,
+        MAIL_USE_SSL=config.MAIL_USE_SSL,
+    )
+
+    if form.validate_on_submit() or request.method == "POST":
+
         config.email = form.email.data
-        config.mail_server = form.mail_server.data
-        config.mail_port = form.mail_port.data
-        config.mail_use_tls = form.mail_use_tls.data
-        config.mail_use_ssl = form.mail_use_ssl.data
-        config.mail_username = form.mail_username.data
-        config.mail_password = form.mail_password.data
+        config.MAIL_HOST = form.MAIL_HOST.data
+        config.MAIL_PORT = form.MAIL_PORT.data
+        config.MAIL_USE_TLS = form.MAIL_USE_TLS.data
+        config.MAIL_USE_SSL = form.MAIL_USE_SSL.data
+        config.MAIL_USERNAME = form.MAIL_USERNAME.data
+        config.MAIL_PASSWORD = proteger_secreto(form.MAIL_PASSWORD.data)
+        config.email_verificado = False
         try:  # pragma: no cover
             database.session.commit()
             flash("Configuración de correo electronico actualizada exitosamente.", "success")
-            return redirect(url_for("mail"))
+            return redirect(url_for("setting.mail"))
         except OperationalError:  # pragma: no cover
             flash("No se pudo actualizar la configuración de correo electronico.", "warning")
-            return redirect(url_for("mail"))
+            return redirect(url_for("setting.mail"))
     else:  # pragma: no cover
-        return render_template("admin/mail.html", form=form, config=configuracion)
+        return render_template("admin/mail.html", form=form, config=config)
+
+
+@setting.route("/setting/mail_check", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("admin")
+def test_mail():
+    """Envia un correo de prueba."""
+    from flask_mailman import EmailMessage
+
+    msg = EmailMessage(
+        "Hello",
+        "Body goes here",
+        "from@example.com",
+        [current_user.correo_electronico],
+        [],
+        reply_to=["another@example.com"],
+        headers={"Message-ID": "foo"},
+    )
+
+    with current_app.app_context():
+
+        if current_user.correo_electronico:
+            try:
+                msg.send()
+                config = database.session.execute(database.select(Configuracion)).first()[0]
+                config.email_verificado = True
+                database.session.commit()
+                flash("Correo de prueba enviado correctamente.", "success")
+            except RuntimeError:
+                flash("Error, no se pudo enviar el correo electronico.", "error")
+            except ConnectionRefusedError:
+                flash("Su sistema operativo denego el acceso a red.", "error")
+        else:
+            flash("Error, no ha configurado su correo electronico.", "error")
+
+    return redirect(url_for("setting.mail"))
 
 
 @setting.route("/setting/delete_site_logo")
