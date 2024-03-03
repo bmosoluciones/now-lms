@@ -368,7 +368,7 @@ def initial_setup(with_examples=False, with_tests=False):
     log.info("NOW - LMS iniciado correctamente.")
 
 
-def init_app(with_examples=False):  # pragma: no cover
+def init_app(with_examples=False):
     """Funcion auxiliar para iniciar la aplicacion."""
 
     with lms_app.app_context():
