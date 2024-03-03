@@ -3,7 +3,6 @@ source = now_lms
 
 [report]
 exclude_lines =
-    pragma: no cover
     def __repr__
     if self.debug:
     if settings.DEBUG

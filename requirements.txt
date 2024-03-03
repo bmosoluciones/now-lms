@@ -11,7 +11,7 @@ flask-alembic
 flask-babel
 flask-caching
 flask-login
-flask-mail
+flask-mailman
 flask-mde
 flask-reuploaded
 flask-sqlalchemy

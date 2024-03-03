@@ -85,6 +85,9 @@ def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
 
 def crear_configuracion_predeterminada():
     """Crea configuración predeterminada de la aplicación."""
+
+    from os import urandom
+
     config = Configuracion(
         titulo="NOW LMS",
         descripcion="Sistema de aprendizaje en linea.",
@@ -92,13 +95,10 @@ def crear_configuracion_predeterminada():
         style="dark",
         custom_logo=False,
         email=False,
-        mail_server=None,
-        mail_port=None,
-        mail_use_tls=False,
-        mail_use_ssl=False,
-        mail_username=None,
-        mail_password=None,
+        MAIL_USE_TLS=False,
+        MAIL_USE_SSL=False,
         moneda="C$",
+        r=urandom(16),
     )
     database.session.add(config)
     database.session.commit()
