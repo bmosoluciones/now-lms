@@ -154,13 +154,16 @@ class Curso(database.Model, BaseTabla):
     auditable = database.Column(database.Boolean())
     precio = database.Column(database.Numeric())
     capacidad = database.Column(database.Integer())
+    portada = database.Column(database.Boolean())
+    nivel = database.Column(database.Integer())
+    # CEO
+    promocionado = database.Column(database.Boolean())
+    fecha_promocionado = database.Column(database.DateTime, nullable=True)
+    # Duración del evento.
+    temporalidad = database.Column(database.String(10), nullable=True)
     fecha_inicio = database.Column(database.Date())
     fecha_fin = database.Column(database.Date())
     duracion = database.Column(database.Integer())
-    portada = database.Column(database.Boolean())
-    nivel = database.Column(database.Integer())
-    promocionado = database.Column(database.Boolean())
-    fecha_promocionado = database.Column(database.DateTime, nullable=True)
 
 
 class CursoRecursoDescargable(database.Model, BaseTabla):
@@ -197,9 +200,6 @@ class CursoRecurso(database.Model, BaseTabla):
     # 1: Requerido, 2: Optional, 3: Alternativo
     requerido = database.Column(database.Integer(), default=1)
     url = database.Column(database.String(250), unique=False)
-    fecha = database.Column(database.Date())
-    hora_inicio = database.Column(database.Time())
-    hora_fin = database.Column(database.Time())
     publico = database.Column(database.Boolean())
     base_doc_url = database.Column(database.String(50), unique=False)
     doc = database.Column(database.String(50), unique=True)
@@ -207,6 +207,10 @@ class CursoRecurso(database.Model, BaseTabla):
     text = database.Column(database.String(750))
     external_code = database.Column(database.String(500))
     notes = database.Column(database.String(20))
+    # Temporalidad
+    fecha = database.Column(database.Date())
+    hora_inicio = database.Column(database.Time())
+    hora_fin = database.Column(database.Time())
 
 
 class CursoRecursoAvance(database.Model, BaseTabla):

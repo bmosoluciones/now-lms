@@ -1,6 +1,5 @@
 include LICENSE
 include wsgi.py
-include passenger_wsgi.py
 include Procfile
 include pyproject.toml
 graft now_lms/static

@@ -16,6 +16,7 @@ flask-mde
 flask-reuploaded
 flask-sqlalchemy
 flask-wtf
+icalendar
 gevent
 greenlet
 huey
