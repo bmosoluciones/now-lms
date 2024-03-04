@@ -16,6 +16,10 @@ flask-mde
 flask-reuploaded
 flask-sqlalchemy
 flask-wtf
+icalendar
+gevent
+greenlet
+huey
 loguru
 markdown
 python-ulid

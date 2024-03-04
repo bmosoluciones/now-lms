@@ -107,6 +107,7 @@ from now_lms.misc import (
     markdown_to_clean_hmtl,
 )
 from now_lms.version import VERSION
+from now_lms.vistas.calendar import calendar
 from now_lms.vistas.categories import category
 from now_lms.vistas.certificates import certificate
 from now_lms.vistas.courses import course
@@ -180,6 +181,7 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
         flask_app.register_blueprint(moderator_profile)
         flask_app.register_blueprint(user_profile)
         flask_app.register_blueprint(web_error)
+        flask_app.register_blueprint(calendar)
 
 
 # ---------------------------------------------------------------------------------------
