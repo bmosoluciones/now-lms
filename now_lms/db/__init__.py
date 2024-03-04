@@ -477,9 +477,26 @@ class Mensaje(database.Model, BaseTabla):
     parent = database.Column(database.String(26), database.ForeignKey("mensaje.id"), nullable=True, index=True)
 
 
-class PagosConfig(database.Model):
+class StripeUserKey(database.Model):
+    """Datos de acceso de usuario a la plataforma de Stripe."""
+
+    id = database.Column(
+        database.String(26), primary_key=True, nullable=False, index=True, default=generador_de_codigos_unicos
+    )
+    acceso = database.Column(database.LargeBinary(), nullable=False)
+    usuario = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+
+
+class StripePaymentsConfig(database.Model):
     """Configuración de pagos."""
 
     id = database.Column(
         database.String(26), primary_key=True, nullable=False, index=True, default=generador_de_codigos_unicos
     )
+    # Relaciones foraneas
+    curso = database.Column(database.String(26), database.ForeignKey("curso.id"), nullable=False, index=True)
+    programa = database.Column(database.String(26), database.ForeignKey("programa.id"), nullable=False, index=True)
+    # Configuración de la API de Stripe
+    stripe_price_id = database.Column(database.String(60))
+    stripe_product_id = database.Column(database.String(60))
+    stripe_payment_url = database.Column(database.String(60))
