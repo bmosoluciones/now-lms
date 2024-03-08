@@ -337,7 +337,7 @@ class EstudianteCurso(database.Model, BaseTabla):
     vigente = database.Column(database.Boolean())
 
 
-class Configuracion(database.Model, BaseTabla):
+class Configuracion(database.Model):
     """
     Repositorio Central para la configuración de la aplicacion.
 
