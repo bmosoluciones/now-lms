@@ -337,7 +337,7 @@ class EstudianteCurso(database.Model, BaseTabla):
     vigente = database.Column(database.Boolean())
 
 
-class Configuracion(database.Model, BaseTabla):
+class Configuracion(database.Model):
     """
     Repositorio Central para la configuración de la aplicacion.
 
@@ -345,6 +345,7 @@ class Configuracion(database.Model, BaseTabla):
     va a estar disponible como la variable global config.
     """
 
+    id = database.Column(database.Integer, primary_key=True, autoincrement=True)
     titulo = database.Column(database.String(150), nullable=False)
     descripcion = database.Column(database.String(500), nullable=False)
     # Uno de mooc, school, training
