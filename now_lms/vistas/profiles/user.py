@@ -88,7 +88,7 @@ def edit_perfil(ulid: str):
 
         try:  # pragma: no cover
             database.session.commit()
-            cache.delete("view/" + url_for("perfil"))
+            cache.delete("view/" + url_for("user_profile.perfil"))
             flash("Pefil actualizado.", "success")
             if "logo" in request.files:
                 try:

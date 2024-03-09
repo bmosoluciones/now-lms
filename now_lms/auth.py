@@ -116,7 +116,14 @@ def proteger_secreto(password):
         )
         key = base64.urlsafe_b64encode(kdf.derive(current_app.config.get("SECRET_KEY").encode()))
         f = Fernet(key)
-        return f.encrypt(password)
+
+        if isinstance(password, bytes):
+
+            return f.encrypt(password)
+
+        else:
+
+            return f.encrypt(password.encode())
 
 
 def descifrar_secreto(hash):
