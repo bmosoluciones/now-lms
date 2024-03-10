@@ -89,6 +89,15 @@ class TestInstanciasDeClases(TestCase):
         assert issubclass(Usuario, database.Model)
 
 
+def tests_secretos():
+    from now_lms.auth import proteger_secreto, descifrar_secreto
+
+    password = b"testing123abcqwerty"
+    hash = proteger_secreto(password=password)
+
+    assert password == descifrar_secreto(hash=hash)
+
+
 # Source: https://gist.github.com/allysonsilva/85fff14a22bbdf55485be947566cc09e
 MARKDOWN_EXAMPLE = """
 # Headers

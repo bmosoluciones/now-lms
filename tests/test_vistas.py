@@ -255,11 +255,5 @@ def test_email_backend(request, lms_application):
                     follow_redirects=True,
                 )
 
-            from now_lms.auth import proteger_secreto, descifrar_secreto
-
-            password = b"testing123abcqwerty"
-
-            assert password == descifrar_secreto(proteger_secreto(password))
-
     else:
         pytest.skip("Not running slow test.")
