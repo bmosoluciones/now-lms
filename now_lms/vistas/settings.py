@@ -28,8 +28,8 @@ Gestión de certificados.
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, flash, redirect, render_template, request, url_for, current_app
-from flask_login import login_required, current_user
+from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
+from flask_login import current_user, login_required
 from flask_uploads import UploadNotAllowed
 from sqlalchemy.exc import OperationalError
 

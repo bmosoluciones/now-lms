@@ -35,7 +35,7 @@ from argon2.exceptions import VerifyMismatchError
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from flask import abort, flash, current_app
+from flask import abort, current_app, flash
 from flask_login import current_user
 
 # ---------------------------------------------------------------------------------------
@@ -44,7 +44,6 @@ from flask_login import current_user
 from now_lms.config import DIRECTORIO_ARCHIVOS_PRIVADOS
 from now_lms.db import Usuario, database
 from now_lms.logs import log
-
 
 ph = PasswordHasher()
 
