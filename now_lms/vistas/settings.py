@@ -162,10 +162,6 @@ def test_mail():
     from now_lms.mail import cargar_configuracion_correo_desde_db
 
     cargar_configuracion_correo_desde_db()
-    log.trace(current_app.config.get("MAIL_HOST"))
-    log.trace(current_app.config.get("MAIL_PORT"))
-    log.trace(current_app.config.get("MAIL_USERNAME"))
-    log.trace(current_app.config.get("MAIL_PASSWORD"))
     msg = EmailMessage(
         "Email is working.",
         "This email was send by NOW-LMS",
