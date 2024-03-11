@@ -47,10 +47,8 @@ def cargar_configuracion_correo_desde_db():
             and CONFIG.MAIL_PASSWORD is not None
         ):
             log.trace("Cargando configuración de correo electronico.")
-            log.trace(CONFIG.MAIL_PASSWORD)
-            log.trace(descifrar_secreto(CONFIG.MAIL_PASSWORD))
 
-            lms_app.config.update(
+            current_app.config.update(
                 {
                     "MAIL_HOST": CONFIG.MAIL_HOST,
                     "MAIL_PORT": CONFIG.MAIL_PORT,
