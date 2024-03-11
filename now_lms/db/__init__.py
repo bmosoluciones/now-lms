@@ -357,7 +357,7 @@ class Configuracion(database.Model):
     # Email settings
     email = database.Column(database.Boolean())
     MAIL_HOST = database.Column(database.String(50))
-    MAIL_PORT = database.Column(database.String(50))
+    MAIL_PORT = database.Column(database.Integer())
     MAIL_USERNAME = database.Column(database.String(50))
     MAIL_PASSWORD = database.Column(database.LargeBinary())
     MAIL_USE_TLS = database.Column(database.Boolean())
