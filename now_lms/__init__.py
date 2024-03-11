@@ -293,7 +293,14 @@ def error_500(error):  # pragma: no cover
 # ---------------------------------------------------------------------------------------
 # Carga configuración del sitio web desde la base de datos.
 # ---------------------------------------------------------------------------------------
-@cache.cached(timeout=60, key_prefix="site_config")
+
+if DESARROLLO:
+    timeout = 1
+else:
+    timeout = 60
+
+
+@cache.cached(timeout=timeout, key_prefix="site_config")
 def carga_configuracion_del_sitio_web_desde_db():  # pragma: no cover
     """Obtiene configuración del sitio web desde la base de datos."""
 
@@ -415,28 +422,6 @@ def init_app(with_examples=False):
             initial_setup(with_examples=with_examples)
         else:
             log.trace("Acceso a base de datos verificado.")
-            config = Configuracion.query.first()
-
-        if (
-            config.email
-            and config.MAIL_HOST is not None
-            and config.MAIL_PORT is not None
-            and config.MAIL_USERNAME is not None
-            and config.MAIL_PASSWORD is not None
-        ):
-            log.trace("Cargando configuración de correo electronico.")
-            lms_app.config.update(
-                {
-                    "MAIL_HOST": config.MAIL_HOST,
-                    "MAIL_PORT": config.MAIL_PORT,
-                    "MAIL_USERNAME": config.MAIL_USERNAME,
-                    "MAIL_PASSWORD": descifrar_secreto(config.MAIL_PASSWORD),
-                    "MAIL_USE_TLS": config.MAIL_USE_TLS,
-                    "MAIL_USE_SSL": config.MAIL_USE_SSL,
-                }
-            )
-            if DESARROLLO:
-                lms_app.config.update({"MAIL_BACKEND": "dummy"})
 
 
 # ---------------------------------------------------------------------------------------

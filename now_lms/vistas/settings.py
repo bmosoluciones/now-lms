@@ -159,10 +159,16 @@ def mail():
 def test_mail():
     """Envia un correo de prueba."""
     from flask_mailman import EmailMessage
+    from now_lms.mail import cargar_configuracion_correo_desde_db
 
+    cargar_configuracion_correo_desde_db()
+    log.trace(current_app.config.get("MAIL_HOST"))
+    log.trace(current_app.config.get("MAIL_PORT"))
+    log.trace(current_app.config.get("MAIL_USERNAME"))
+    log.trace(current_app.config.get("MAIL_PASSWORD"))
     msg = EmailMessage(
-        "Hello",
-        "Body goes here",
+        "Email is working.",
+        "This email was send by NOW-LMS",
         "from@example.com",
         [current_user.correo_electronico],
         [],
@@ -182,7 +188,7 @@ def test_mail():
             except RuntimeError:
                 flash("Error, no se pudo enviar el correo electronico.", "error")
             except ConnectionRefusedError:
-                flash("Su sistema operativo denego el acceso a red.", "error")
+                flash("Error de conexión.", "error")
         else:
             flash("Error, no ha configurado su correo electronico.", "error")
 
