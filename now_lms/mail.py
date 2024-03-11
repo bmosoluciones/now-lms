@@ -56,6 +56,7 @@ def cargar_configuracion_correo_desde_db():
                     "MAIL_PASSWORD": descifrar_secreto(CONFIG.MAIL_PASSWORD).decode(),
                     "MAIL_USE_TLS": CONFIG.MAIL_USE_TLS,
                     "MAIL_USE_SSL": CONFIG.MAIL_USE_SSL,
+                    "MAIL_BACKEND": "smtp",
                 }
             )
 
