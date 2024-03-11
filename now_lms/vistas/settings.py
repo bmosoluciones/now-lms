@@ -175,16 +175,10 @@ def test_mail():
     with current_app.app_context():
 
         if current_user.correo_electronico:
-            try:
-                msg.send()
-                config = database.session.execute(database.select(Configuracion)).first()[0]
-                config.email_verificado = True
-                database.session.commit()
-                flash("Correo de prueba enviado correctamente.", "success")
-            except RuntimeError:
-                flash("Error, no se pudo enviar el correo electronico.", "error")
-            except ConnectionRefusedError:
-                flash("Error de conexión.", "error")
+            msg.send()
+            config = database.session.execute(database.select(Configuracion)).first()[0]
+            config.email_verificado = True
+            database.session.commit()
         else:
             flash("Error, no ha configurado su correo electronico.", "error")
 
