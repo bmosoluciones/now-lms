@@ -18,6 +18,7 @@
 
 import os
 import sys
+
 import pytest
 
 from now_lms import log

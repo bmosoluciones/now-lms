@@ -337,7 +337,7 @@ class EstudianteCurso(database.Model, BaseTabla):
     vigente = database.Column(database.Boolean())
 
 
-class Configuracion(database.Model, BaseTabla):
+class Configuracion(database.Model):
     """
     Repositorio Central para la configuración de la aplicacion.
 
@@ -345,6 +345,7 @@ class Configuracion(database.Model, BaseTabla):
     va a estar disponible como la variable global config.
     """
 
+    id = database.Column(database.Integer, primary_key=True, autoincrement=True)
     titulo = database.Column(database.String(150), nullable=False)
     descripcion = database.Column(database.String(500), nullable=False)
     # Uno de mooc, school, training
@@ -355,21 +356,13 @@ class Configuracion(database.Model, BaseTabla):
     custom_logo = database.Column(database.Boolean())
     # Email settings
     email = database.Column(database.Boolean())
-    MAIL_HOST = database.Column(database.String(50))
-    MAIL_PORT = database.Column(database.String(50))
+    MAIL_SERVER = database.Column(database.String(50))
+    MAIL_PORT = database.Column(database.Integer())
     MAIL_USERNAME = database.Column(database.String(50))
     MAIL_PASSWORD = database.Column(database.LargeBinary())
     MAIL_USE_TLS = database.Column(database.Boolean())
     MAIL_USE_SSL = database.Column(database.Boolean())
     email_verificado = database.Column(database.Boolean())
-    # These are ramdon bytes to protect passwords like SMTP mail password or others
-    # than the users of the system will estore in the database as configuration parameters
-    # those password are not goint to be saved in plain text, we will save them in hashed version
-    # with your app SECRET_KEY
-    # So, if any one have access to your database it will access to the hashed
-    # version of the password and this 16 bytes, but will need your app SECRET_KEY
-    # in order to decode those passwords.
-    r = database.Column(database.LargeBinary())
 
 
 class Categoria(database.Model, BaseTabla):

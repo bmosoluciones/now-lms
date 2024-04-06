@@ -44,8 +44,8 @@
           {% endif %}
           {% if current_user.id == perfil.id %}
           <div class="d-flex justify-content-center">
-            <a class="btn btn-warning btn-sm" href="{{ url_for("edit_perfil", ulid=perfil.id)}}" role="button"><i
-                class="bi bi-pencil-square" aria-hidden="true"></i> Editar Perfil</a>
+            <a class="btn btn-warning btn-sm" href="{{ url_for("user_profile.edit_perfil", ulid=perfil.id)}}"
+              role="button"><i class="bi bi-pencil-square" aria-hidden="true"></i> Editar Perfil</a>
           </div>
           {% endif %}
           <h2>

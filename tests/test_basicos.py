@@ -19,74 +19,186 @@
 from unittest import TestCase
 
 
-class TestBasicos(TestCase):
-    def setUp(self):
-        from now_lms import app
-
-        self.app = app
-        self.app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-        self.app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
-        self.app.app_context().push()
-
-    def test_importable(self):
-        """El proyecto debe poder importarse sin errores."""
-
-        assert self.app
-
-    def test_cli(self):
-        self.app.test_cli_runner()
-
-
 class TestInstanciasDeClases(TestCase):
-    def setUp(self):
-        from now_lms import app
-
-        self.app = app
-        self.app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-        self.app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
-        self.app.app_context().push()
 
     def test_Flask(self):
         from flask import Flask
 
-        self.assertIsInstance(self.app, Flask)
+        from now_lms import app
+
+        self.assertIsInstance(app, Flask)
 
     def test_SQLAlchemy(self):
-        from now_lms import database
         from flask_sqlalchemy import SQLAlchemy
+
+        from now_lms import database
 
         self.assertIsInstance(database, SQLAlchemy)
 
     def test_Alembic(self):
-        from now_lms import alembic
         from flask_alembic import Alembic
+
+        from now_lms import alembic
 
         self.assertIsInstance(alembic, Alembic)
 
     def test_Login(self):
-        from now_lms import administrador_sesion
         from flask_login import LoginManager
+
+        from now_lms import administrador_sesion
 
         self.assertIsInstance(administrador_sesion, LoginManager)
 
     def test_FlaskForm(self):
         from flask_wtf import FlaskForm
-        from now_lms.forms import LoginForm, LogonForm, CurseForm, CursoRecursoVideoYoutube, CursoSeccionForm
 
-        assert issubclass(LoginForm, FlaskForm)
-        assert issubclass(CurseForm, FlaskForm)
-        assert issubclass(LogonForm, FlaskForm)
-        assert issubclass(CursoRecursoVideoYoutube, FlaskForm)
-        assert issubclass(CursoSeccionForm, FlaskForm)
+        from now_lms.forms import (
+            BaseForm,
+            CategoriaForm,
+            CertificateForm,
+            CurseForm,
+            CursoRecursoArchivoAudio,
+            CursoRecursoArchivoImagen,
+            CursoRecursoArchivoPDF,
+            CursoRecursoArchivoText,
+            CursoRecursoExternalLink,
+            CursoRecursoForm,
+            CursoRecursoMeet,
+            CursoRecursoSlides,
+            CursoRecursoVideoYoutube,
+            CursoSeccionForm,
+            EtiquetaForm,
+            GrupoForm,
+            LoginForm,
+            LogonForm,
+            MailForm,
+            MsgForm,
+            ProgramaForm,
+            RecursoForm,
+            ThemeForm,
+            UserForm,
+        )
+
+        forms = [
+            ThemeForm,
+            LoginForm,
+            MailForm,
+            LogonForm,
+            BaseForm,
+            GrupoForm,
+            CurseForm,
+            CursoSeccionForm,
+            CursoRecursoForm,
+            CursoRecursoVideoYoutube,
+            CursoRecursoArchivoPDF,
+            CursoRecursoArchivoAudio,
+            CursoRecursoArchivoImagen,
+            CursoRecursoArchivoText,
+            CursoRecursoExternalLink,
+            CursoRecursoSlides,
+            CursoRecursoMeet,
+            CategoriaForm,
+            EtiquetaForm,
+            ProgramaForm,
+            RecursoForm,
+            UserForm,
+            MsgForm,
+            CertificateForm,
+        ]
+
+        for form in forms:
+            assert issubclass(form, FlaskForm)
 
     def test_BaseTable(self):
-        from now_lms.db import BaseTabla, database
         from flask_login import UserMixin
+
         from now_lms import Usuario
+        from now_lms.db import (
+            Categoria,
+            CategoriaCurso,
+            Certificado,
+            Configuracion,
+            Curso,
+            CursoRecurso,
+            CursoRecursoAvance,
+            CursoRecursoConsulta,
+            CursoRecursoDescargable,
+            CursoRecursoPregunta,
+            CursoRecursoPreguntaOpcion,
+            CursoRecursoPreguntaRespuesta,
+            CursoRecursoSlides,
+            CursoRecursoSlideShow,
+            CursoSeccion,
+            DocenteCurso,
+            EstudianteCurso,
+            Etiqueta,
+            EtiquetaCurso,
+            Files,
+            Mensaje,
+            ModeradorCurso,
+            Programa,
+            ProgramaCurso,
+            ProgramaEstudiante,
+            Recurso,
+            StripePaymentsConfig,
+            StripeUserKey,
+            SystemInfo,
+            Usuario,
+            UsuarioGrupo,
+            UsuarioGrupoMiembro,
+            UsuarioGrupoTutor,
+            database,
+        )
 
         assert issubclass(Usuario, UserMixin)
-        assert issubclass(Usuario, BaseTabla)
-        assert issubclass(Usuario, database.Model)
+
+        tablas = (
+            SystemInfo,
+            Usuario,
+            UsuarioGrupo,
+            UsuarioGrupoMiembro,
+            UsuarioGrupoTutor,
+            Curso,
+            CursoRecursoDescargable,
+            CursoSeccion,
+            CursoRecurso,
+            CursoRecursoAvance,
+            CursoRecursoPregunta,
+            CursoRecursoPreguntaOpcion,
+            CursoRecursoPreguntaRespuesta,
+            CursoRecursoConsulta,
+            CursoRecursoSlideShow,
+            CursoRecursoSlides,
+            Files,
+            DocenteCurso,
+            ModeradorCurso,
+            EstudianteCurso,
+            Configuracion,
+            Categoria,
+            CategoriaCurso,
+            Etiqueta,
+            EtiquetaCurso,
+            Programa,
+            ProgramaCurso,
+            ProgramaEstudiante,
+            Recurso,
+            Certificado,
+            Mensaje,
+            StripeUserKey,
+            StripePaymentsConfig,
+        )
+
+        for tabla in tablas:
+            assert issubclass(tabla, database.Model)
+
+
+def tests_secretos():
+    from now_lms.auth import descifrar_secreto, proteger_secreto
+
+    password = b"testing123abcqwerty"
+    hash = proteger_secreto(password=password)
+
+    assert password.decode() == descifrar_secreto(hash=hash)
 
 
 # Source: https://gist.github.com/allysonsilva/85fff14a22bbdf55485be947566cc09e

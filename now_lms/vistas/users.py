@@ -29,13 +29,13 @@ Gestión de certificados.
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-from flask_login import current_user, login_user, logout_user, login_required
+from flask_login import current_user, login_required, login_user, logout_user
 from sqlalchemy.exc import OperationalError
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms.auth import proteger_passwd, validar_acceso, perfil_requerido
+from now_lms.auth import perfil_requerido, proteger_passwd, validar_acceso
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import Usuario, database
 from now_lms.forms import LoginForm, LogonForm

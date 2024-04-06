@@ -18,8 +18,8 @@
 
 import os
 import sys
-import pytest
 
+import pytest
 from flask import session
 
 from now_lms import log
