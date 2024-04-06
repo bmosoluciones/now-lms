@@ -1,9 +1,9 @@
 name: Publish to PyPi
 
 on:
-   workflow_run:
-     workflows: ["CI"]
-     types: [completed]
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
 
 jobs:
   build:
@@ -26,7 +26,6 @@ jobs:
           cd ..
           python -m build --sdist --wheel --outdir dist/ .
       - name: Publish distribution to PyPI
-        if: contains(github.event.head_commit.message, 'release:')
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
