@@ -47,7 +47,6 @@ from flask import Flask, flash, render_template
 from flask.cli import FlaskGroup
 from flask_alembic import Alembic
 from flask_login import LoginManager, current_user
-from flask_mailman import Mail
 from flask_mde import Mde
 from flask_uploads import configure_uploads
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
@@ -138,7 +137,6 @@ APPNAME: str = "NOW LMS"
 alembic: Alembic = Alembic()
 administrador_sesion: LoginManager = LoginManager()
 mde: Mde = Mde()
-mail: Mail = Mail()
 
 
 # ---------------------------------------------------------------------------------------
@@ -154,7 +152,6 @@ def inicializa_extenciones_terceros(flask_app: Flask):
         administrador_sesion.init_app(flask_app)
         cache.init_app(flask_app)
         mde.init_app(flask_app)
-        mail.init_app(flask_app)
     log.trace("Extensiones de terceros iniciadas correctamente.")
 
 

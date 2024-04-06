@@ -123,7 +123,7 @@ def mail():
     config = database.session.execute(database.select(Configuracion)).first()[0]
     form = MailForm(
         email=config.email,
-        MAIL_HOST=config.MAIL_HOST,
+        MAIL_HOST=config.MAIL_SERVER,
         MAIL_PORT=config.MAIL_PORT,
         MAIL_USERNAME=config.MAIL_USERNAME,
         MAIL_PASSWORD=config.MAIL_PASSWORD,
@@ -134,7 +134,7 @@ def mail():
     if form.validate_on_submit() or request.method == "POST":
 
         config.email = form.email.data
-        config.MAIL_HOST = form.MAIL_HOST.data
+        config.MAIL_SERVER = form.MAIL_HOST.data
         config.MAIL_PORT = form.MAIL_PORT.data
         config.MAIL_USE_TLS = form.MAIL_USE_TLS.data
         config.MAIL_USE_SSL = form.MAIL_USE_SSL.data
@@ -156,31 +156,27 @@ def mail():
 @setting.route("/setting/mail_check", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def test_mail():
+async def test_mail():
     """Envia un correo de prueba."""
-    from flask_mailman import EmailMessage
+    from flask_mailing import Message
     from now_lms.mail import cargar_configuracion_correo_desde_db
 
-    cargar_configuracion_correo_desde_db()
-    msg = EmailMessage(
-        "Email is working.",
-        "This email was send by NOW-LMS",
-        "from@example.com",
-        [current_user.correo_electronico],
-        [],
-        reply_to=["another@example.com"],
-        headers={"Message-ID": "foo"},
-    )
+    mail = cargar_configuracion_correo_desde_db()
 
-    with current_app.app_context():
+    if current_user.correo_electronico:
+        message = Message(
+            subject="NOW-LMS mail setup confirmation.",
+            recipients=[current_user.correo_electronico],
+            body="Your email is working.",
+        )
+        await mail.send_message(message)
+        flash(
+            "Verifique su casilla de correo electronico, incluso los spam. Si no recibio un correo de confirmación favor verifique su configuración.",
+            "success",
+        )
 
-        if current_user.correo_electronico:
-            msg.send()
-            config = database.session.execute(database.select(Configuracion)).first()[0]
-            config.email_verificado = True
-            database.session.commit()
-        else:
-            flash("Error, no ha configurado su correo electronico.", "error")
+    else:
+        flash("Error, no ha configurado su correo electronico.", "error")
 
     return redirect(url_for("setting.mail"))
 

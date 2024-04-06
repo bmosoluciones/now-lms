@@ -165,4 +165,6 @@ def descifrar_secreto(hash):
     """
 
     f = Fernet(obtener_clave_de_cifrado())
-    return f.decrypt(hash)
+    b = f.decrypt(hash).decode("utf-8")
+
+    return b

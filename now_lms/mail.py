@@ -31,11 +31,50 @@ from now_lms.auth import descifrar_secreto
 from now_lms.db import database, Configuracion
 from now_lms.logs import log
 
+from flask import Flask
+from flask_mailing import Mail, Message
+
+mail = Mail()
+
+
+def create_app():
+    app = Flask(__name__)
+
+    app.config["MAIL_USERNAME"] = "williamjmorenor@gmail.com"
+    app.config["MAIL_PASSWORD"] = "bqmzfnnltdedbjbv"
+    app.config["MAIL_PORT"] = 465
+    app.config["MAIL_SERVER"] = "smtp.gmail.com"
+    app.config["MAIL_USE_TLS"] = False
+    app.config["MAIL_USE_SSL"] = True
+    mail.init_app(app)
+
+    return app
+
+
+app = create_app()
+
+
+@app.route("/email")
+async def enviar():
+    with app.app_context():
+
+        message = Message(
+            subject="Flask-Mailing module",
+            recipients=["wmoreno@montelimar.com.ni"],
+            body="This is the basic email body",
+        )
+
+        await mail.send_message(message)
+        return "ok"
+
 
 def cargar_configuracion_correo_desde_db():
     """Carga la configuración de correo electronico desde la base de datos a la configuración de la aplicacion."""
 
     log.trace("Verificando configuración de correo electronico.")
+    from flask_mailing import Mail
+
+    mail: Mail = Mail()
     with current_app.app_context():
         CONFIG = database.session.execute(database.select(Configuracion)).first()[0]
 
@@ -50,15 +89,18 @@ def cargar_configuracion_correo_desde_db():
 
             current_app.config.update(
                 {
-                    "MAIL_HOST": CONFIG.MAIL_HOST,
+                    "MAIL_SERVER": CONFIG.MAIL_SERVER,
                     "MAIL_PORT": CONFIG.MAIL_PORT,
                     "MAIL_USERNAME": CONFIG.MAIL_USERNAME,
-                    "MAIL_PASSWORD": descifrar_secreto(CONFIG.MAIL_PASSWORD).decode(),
+                    "MAIL_PASSWORD": descifrar_secreto(CONFIG.MAIL_PASSWORD),
                     "MAIL_USE_TLS": CONFIG.MAIL_USE_TLS,
                     "MAIL_USE_SSL": CONFIG.MAIL_USE_SSL,
                     "MAIL_BACKEND": "smtp",
                 }
             )
+            mail.init_app(current_app)
 
         else:
             log.trace("No se encontraron opciones de correo electronico.")
+
+        return mail
