@@ -27,6 +27,7 @@ lmsctl = "now_lms:command"
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
+version = {attr = "now_lms.version.VERSION"}
 
 [build-system]
 requires = ["setuptools", "wheel"]  # PEP 508 specifications.
