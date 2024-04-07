@@ -136,7 +136,7 @@ def crear_usuario():  # pragma: no cover
             database.session.add(usuario_)
             database.session.commit()
             flash("Usuario creado exitosamente.", "success")
-            return redirect(url_for("usuario", id_usuario=form.usuario.data))
+            return redirect(url_for("user_profile.usuario", id_usuario=form.usuario.data))
         except OperationalError:  # pragma: no cover
             flash("Error al crear la cuenta.", "warning")
             return redirect("/new_user")

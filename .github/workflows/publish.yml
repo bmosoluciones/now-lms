@@ -2,7 +2,10 @@ name: Publish to PyPi
 
 on:
   push:
-    branches: [main]
+    branches: main
+    paths-ignore:
+      - "docs/**"
+      - "tests/**"
 
 jobs:
   build:

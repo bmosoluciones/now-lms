@@ -29,7 +29,7 @@
         <div class="row">
           {% if logo_perzonalizado() %}
           <img src="{{ url_for('static', filename='/files/public/images/logotipo.jpg') }}" alt="NOW LMS">
-          <a href="{{ url_for("settings.elimina_logo") }}">Eliminar Logo actual</a>
+          <a href="{{ url_for("setting.elimina_logo") }}">Eliminar Logo actual</a>
           {% else %}
           <label for="logo" class="form-label">Logotipo</label>
           <input type="file" name="logo" accept="image/jpeg">

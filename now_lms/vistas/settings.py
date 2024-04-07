@@ -76,10 +76,10 @@ def personalizacion():
         try:
             database.session.commit()
             flash("Tema del sitio web actualizado exitosamente.", "success")
-            return redirect(url_for("personalizacion"))
+            return redirect(url_for("setting.personalizacion"))
         except OperationalError:  # pragma: no cover
             flash("No se pudo actualizar el tema del sitio web.", "warning")
-            return redirect(url_for("personalizacion"))
+            return redirect(url_for("setting.personalizacion"))
 
     else:  # pragma: no cover
         return render_template("admin/theme.html", form=form, config=config)

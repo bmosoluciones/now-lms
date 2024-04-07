@@ -239,4 +239,28 @@ forms = [
         file=None,
         flash=None,
     ),
+    Form(
+        ruta="/user/logon",
+        data={
+            "usuario": "timon",
+            "acceso": "hakunamatata",
+            "nombre": "Rey",
+            "apellido": "Leon",
+            "correo_electronico": "hakuna@matata.com",
+        },
+        file=None,
+        flash=None,
+    ),
+    Form(
+        ruta="/user/new_user",
+        data={
+            "usuario": "pumba",
+            "acceso": "hakunamatata",
+            "nombre": "Rey",
+            "apellido": "Leon",
+            "correo_electronico": "pumba_hakuna@matata.com",
+        },
+        file=None,
+        flash=None,
+    ),
 ]
