@@ -11,11 +11,15 @@ flask-alembic
 flask-babel
 flask-caching
 flask-login
-flask-mailman
+flask-mailing
 flask-mde
 flask-reuploaded
 flask-sqlalchemy
 flask-wtf
+icalendar
+gevent
+greenlet
+huey
 loguru
 markdown
 python-ulid

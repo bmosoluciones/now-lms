@@ -47,7 +47,7 @@ def concatenar_parametros_a_url(
 
     argumentos: str = char
 
-    if parametros:
+    if parametros:  # pragma: no cover
         if arg and val:
             parametros[arg] = val
 
@@ -56,7 +56,7 @@ def concatenar_parametros_a_url(
     elif arg and val:
         argumentos = argumentos + "&" + arg + "=" + val
 
-    if char is not None and argumentos.find("&") == 1:
+    if char is not None and argumentos.find("&") == 1:  # pragma: no cover
         argumentos = char + argumentos[2:]
 
     return argumentos

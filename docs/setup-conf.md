@@ -90,3 +90,5 @@ You can use the following options to configure NOW-LMS:
     as cache backend.
 -   **UPLOAD_FILES_DIR** (<span style="color:purple">recomended</span>): Directory to save user uploaded files, must be writable by the
     main app proccess. Note that this variable can NOT be set AD-HOC because the order we parse the configuration options, so you must set this options before the app firts run, any overwritte before this can lead to unexpected results like file not found errors.It is better to set this option as enviroment variable before the firts run of the app. Note that if you migrate your instalation to a diferent host must edit this value so database records can match fisical file storage.
+-   **LMS_FERNET_KEY** (<span style="color:purple">recomended</span>): If available vía system enviroment
+    this option will be used to encrypt sencitive data, if not available a secret key will be generated and stored in the private directory of the app.

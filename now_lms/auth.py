@@ -24,6 +24,8 @@
 import base64
 from datetime import datetime
 from functools import wraps
+from os import environ, path
+from pathlib import Path
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -33,15 +35,15 @@ from argon2.exceptions import VerifyMismatchError
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from flask import abort, flash, current_app
+from flask import abort, current_app, flash
 from flask_login import current_user
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
+from now_lms.config import DIRECTORIO_ARCHIVOS_PRIVADOS
 from now_lms.db import Usuario, database
 from now_lms.logs import log
-
 
 ph = PasswordHasher()
 
@@ -94,28 +96,62 @@ def perfil_requerido(perfil_id):
     return decorator_verifica_acceso
 
 
+def obtener_clave_de_cifrado():
+    """
+    Retorna una clave en bytes para utilizarla para proteger información sencible.
+
+    Los usuario de NOW_LMS pueden almacenar información sencible como contraseñas y claves
+    de acceso a otros servicios en sus perfiles, para proteger la privacidad del usuario
+    estos valores no se almacen como texto plano en la base de datos si no que se almacen como
+    hashes.
+
+    La implementación actual esta inspirada por la forma en que Apache Airflow almacena los datos
+    accesos que sus usuarios guardan.
+
+    El sistema utiliza una llave segura para cifrar y desifrar estos valores, de esta forma un tercero
+    requerira tanto acceso a la base de datos como a la clave de cifrado para acceder a la información
+    cifrada.
+
+    Se recomienda utilizar una clave de cifrado guardada como clave de entorno, en caso de proveerse una
+    el sistema generara una clave aleatoria y la almacenara en la carpeta de archivos privados de su
+    implementación.
+
+    Referencias:
+     - https://airflow.apache.org/docs/apache-airflow/stable/security/secrets/fernet.html
+     - https://cryptography.io/en/latest/fernet/
+    """
+
+    if environ.get("LMS_FERNET_KEY"):
+        return environ.get("LMS_FERNET_KEY").encode()
+    else:
+        SECURE_KEY_FILE: Path = Path(path.join(DIRECTORIO_ARCHIVOS_PRIVADOS, "secret.key"))
+        if Path.exists(SECURE_KEY_FILE):
+            with open(SECURE_KEY_FILE) as f:
+                return f.readline().encode()
+        else:
+            SECURE_KEY = Fernet.generate_key()
+            with open(SECURE_KEY_FILE, "x") as f:
+                f.write(SECURE_KEY.decode())
+            return SECURE_KEY
+
+
 def proteger_secreto(password):
     """
-    Devuelve el hash de una contraseña.
+    Devuelve el hash de un valor sencible a almancenar en la base de datos.
 
-    Se requiere que el parametro "SECRET_KEY" este establecido en la configuración de la aplicacion,
-    si cambia el valor de este parametro debera actualizar la configuración ya se utiliza el mismo
-    parametro para obtener la contraseña original.
+    Si la variable de entorno "LMS_FERNET_KEY" esta definida se utiliza este valor por defecto, en
+    caso contrario se utilizara una clave generada aleatoriamente que sera almacenada en el directorio
+    de archivos privados de su implementación.
     """
 
-    with current_app.app_context():
-        from now_lms.db import database, Configuracion
+    f = Fernet(obtener_clave_de_cifrado())
 
-        config = database.session.execute(database.select(Configuracion)).first()[0]
+    if isinstance(password, bytes):
 
-        kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(),
-            length=32,
-            salt=config.r,
-            iterations=480000,
-        )
-        key = base64.urlsafe_b64encode(kdf.derive(current_app.config.get("SECRET_KEY").encode()))
-        f = Fernet(key)
+        return f.encrypt(password)
+
+    else:
+
         return f.encrypt(password.encode())
 
 
@@ -123,22 +159,12 @@ def descifrar_secreto(hash):
     """
     Devuelve el valor de una contraseña protegida.
 
-    Se utiliza el valor del parametro "SECRET_KEY" de la configuración de la aplicación para decodificar
-    la contraseña original, si el parametro "SECRET_KEY" cambia en la configuración no se posible desifrar
-    la contraseña original, debera generar una nueva.
+    Si la variable de entorno "LMS_FERNET_KEY" esta definida se utiliza este valor por defecto, en
+    caso contrario se utilizara una clave generada aleatoriamente que sera almacenada en el directorio
+    de archivos privados de su implementación.
     """
 
-    with current_app.app_context():
-        from now_lms.db import database, Configuracion
+    f = Fernet(obtener_clave_de_cifrado())
+    b = f.decrypt(hash).decode("utf-8")
 
-        config = database.session.execute(database.select(Configuracion)).first()[0]
-
-        kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(),
-            length=32,
-            salt=config.r,
-            iterations=480000,
-        )
-        key = base64.urlsafe_b64encode(kdf.derive(current_app.config.get("SECRET_KEY").encode()))
-        f = Fernet(key)
-        return f.decrypt(hash)
+    return b

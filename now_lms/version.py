@@ -21,7 +21,6 @@
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
-from datetime import datetime
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -47,17 +46,17 @@ POST = False
 
 # <--------------------------------------------------------------------------> #
 # Pre release data.
-PRERELEASE = "a14"
-REVISION = datetime.today().strftime("%Y%m%d")
+PRERELEASE = "a15"
+REVISION = "20240406"
 
 # <--------------------------------------------------------------------------> #
 # Release string
 # Refences:
 #  - https://peps.python.org/pep-0440/
-# 0.0.1a14.dev20240302
-if PRERELEASE:
+# 0.0.1a14.dev20240303
+if PRERELEASE:  # pragma: no cover
     VERSION = MAYOR + "." + MENOR + "." + PATCH + PRERELEASE + ".dev" + REVISION
-else:
+else:  # pragma: no cover
     if not POST:
         VERSION = MAYOR + "." + MENOR + "." + PATCH
     else:

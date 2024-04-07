@@ -154,13 +154,16 @@ class Curso(database.Model, BaseTabla):
     auditable = database.Column(database.Boolean())
     precio = database.Column(database.Numeric())
     capacidad = database.Column(database.Integer())
+    portada = database.Column(database.Boolean())
+    nivel = database.Column(database.Integer())
+    # CEO
+    promocionado = database.Column(database.Boolean())
+    fecha_promocionado = database.Column(database.DateTime, nullable=True)
+    # Duración del evento.
+    temporalidad = database.Column(database.String(10), nullable=True)
     fecha_inicio = database.Column(database.Date())
     fecha_fin = database.Column(database.Date())
     duracion = database.Column(database.Integer())
-    portada = database.Column(database.Boolean())
-    nivel = database.Column(database.Integer())
-    promocionado = database.Column(database.Boolean())
-    fecha_promocionado = database.Column(database.DateTime, nullable=True)
 
 
 class CursoRecursoDescargable(database.Model, BaseTabla):
@@ -197,9 +200,6 @@ class CursoRecurso(database.Model, BaseTabla):
     # 1: Requerido, 2: Optional, 3: Alternativo
     requerido = database.Column(database.Integer(), default=1)
     url = database.Column(database.String(250), unique=False)
-    fecha = database.Column(database.Date())
-    hora_inicio = database.Column(database.Time())
-    hora_fin = database.Column(database.Time())
     publico = database.Column(database.Boolean())
     base_doc_url = database.Column(database.String(50), unique=False)
     doc = database.Column(database.String(50), unique=True)
@@ -207,6 +207,10 @@ class CursoRecurso(database.Model, BaseTabla):
     text = database.Column(database.String(750))
     external_code = database.Column(database.String(500))
     notes = database.Column(database.String(20))
+    # Temporalidad
+    fecha = database.Column(database.Date())
+    hora_inicio = database.Column(database.Time())
+    hora_fin = database.Column(database.Time())
 
 
 class CursoRecursoAvance(database.Model, BaseTabla):
@@ -333,7 +337,7 @@ class EstudianteCurso(database.Model, BaseTabla):
     vigente = database.Column(database.Boolean())
 
 
-class Configuracion(database.Model, BaseTabla):
+class Configuracion(database.Model):
     """
     Repositorio Central para la configuración de la aplicacion.
 
@@ -341,6 +345,7 @@ class Configuracion(database.Model, BaseTabla):
     va a estar disponible como la variable global config.
     """
 
+    id = database.Column(database.Integer, primary_key=True, autoincrement=True)
     titulo = database.Column(database.String(150), nullable=False)
     descripcion = database.Column(database.String(500), nullable=False)
     # Uno de mooc, school, training
@@ -351,21 +356,13 @@ class Configuracion(database.Model, BaseTabla):
     custom_logo = database.Column(database.Boolean())
     # Email settings
     email = database.Column(database.Boolean())
-    MAIL_HOST = database.Column(database.String(50))
-    MAIL_PORT = database.Column(database.String(50))
+    MAIL_SERVER = database.Column(database.String(50))
+    MAIL_PORT = database.Column(database.Integer())
     MAIL_USERNAME = database.Column(database.String(50))
     MAIL_PASSWORD = database.Column(database.LargeBinary())
     MAIL_USE_TLS = database.Column(database.Boolean())
     MAIL_USE_SSL = database.Column(database.Boolean())
     email_verificado = database.Column(database.Boolean())
-    # These are ramdon bytes to protect passwords like SMTP mail password or others
-    # than the users of the system will estore in the database as configuration parameters
-    # those password are not goint to be saved in plain text, we will save them in hashed version
-    # with your app SECRET_KEY
-    # So, if any one have access to your database it will access to the hashed
-    # version of the password and this 16 bytes, but will need your app SECRET_KEY
-    # in order to decode those passwords.
-    r = database.Column(database.LargeBinary())
 
 
 class Categoria(database.Model, BaseTabla):
@@ -473,9 +470,26 @@ class Mensaje(database.Model, BaseTabla):
     parent = database.Column(database.String(26), database.ForeignKey("mensaje.id"), nullable=True, index=True)
 
 
-class PagosConfig(database.Model):
+class StripeUserKey(database.Model):
+    """Datos de acceso de usuario a la plataforma de Stripe."""
+
+    id = database.Column(
+        database.String(26), primary_key=True, nullable=False, index=True, default=generador_de_codigos_unicos
+    )
+    acceso = database.Column(database.LargeBinary(), nullable=False)
+    usuario = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+
+
+class StripePaymentsConfig(database.Model):
     """Configuración de pagos."""
 
     id = database.Column(
         database.String(26), primary_key=True, nullable=False, index=True, default=generador_de_codigos_unicos
     )
+    # Relaciones foraneas
+    curso = database.Column(database.String(26), database.ForeignKey("curso.id"), nullable=False, index=True)
+    programa = database.Column(database.String(26), database.ForeignKey("programa.id"), nullable=False, index=True)
+    # Configuración de la API de Stripe
+    stripe_price_id = database.Column(database.String(60))
+    stripe_product_id = database.Column(database.String(60))
+    stripe_payment_url = database.Column(database.String(60))

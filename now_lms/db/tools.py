@@ -98,7 +98,6 @@ def crear_configuracion_predeterminada():
         MAIL_USE_TLS=False,
         MAIL_USE_SSL=False,
         moneda="C$",
-        r=urandom(16),
     )
     database.session.add(config)
     database.session.commit()
