@@ -1,0 +1,117 @@
+{% import "macros.html" as macros %}
+
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+
+<head>
+
+  {{ macros.headertags() }}
+  {{ mde.css }}
+  <title>Crear un nuevo curso</title>
+
+  {{ macros.local_style() }}
+  <!-- Custom styles for this template -->
+  <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet">
+</head>
+
+<body>
+
+  {{ macros.navbar() }}
+
+  <main>
+
+    {{ macros.notify() }}
+
+    <div class="container px-4 py-5" id="icon-grid">
+      <h4 class="pb-2 border-bottom">Crear nuevo curso.</h4>
+      <form method="post" enctype=multipart/form-data>
+        {{ form.csrf_token }}
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <label for="nombre" class="form-label">Nombre del Curso</label>
+            {{ form.nombre(class="form-control", id="nombre", placeholder="Nombre del Curso") }}
+          </div>
+
+          <div class="col-sm-6">
+            <label for="codigo" class="form-label">Codigo del Curso</label>
+            {{ form.codigo(class="form-control", id="codigo", placeholder="Codigo del Curso") }}
+          </div>
+
+          <div class="col-md-4">
+            <label for="duracion" class="form-label">Duracion (HR)</label>
+            {{ form.duracion }}
+
+          </div>
+
+          <div class="col-md-4">
+            <label for="capacidad" class="form-label">Cupos</label>
+            {{ form.capacidad }}
+
+          </div>
+
+          <div class="col-md-4">
+            <label for="precio" class="form-label">Precio</label>
+            {{ form.precio }}
+          </div>
+
+
+          <div class="col-md-4">
+            <label for="fecha_inicio" class="form-label">Fecha Inicio</label>
+            {{ form.fecha_inicio }}
+          </div>
+
+          <div class="col-md-4">
+            <label for="fecha_fin" class="form-label">Fecha Fin</label>
+            {{ form.fecha_fin }}
+          </div>
+
+
+          <div class="col-md-4">
+            <label for="nivel" class="form-label">Nivel</label>
+            {{ form.nivel }}
+
+          </div>
+
+          <div class="col-md-4">
+            <label for="publico" class="form-label">Curso Publico</label>
+            {{ form.publico }}
+
+          </div>
+
+          <div class="col-md-4">
+            <label for="certificado" class="form-label">Extender Certificado</label>
+            {{ form.certificado }}
+
+          </div>
+
+          <div class="col-md-4">
+            <label for="auditable" class="form-label">Curso Auditable</label>
+            {{ form.auditable }}
+
+          </div>
+
+          <div class="col-md-4">
+            <label for="logo" class="form-label">Portada</label>
+            <input type="file" name="logo" accept="image/jpeg">
+          </div>
+
+          <div>
+            <label for="descripcion" class="form-label">Descripción del Curso</label>
+            {{form.descripcion}}
+            {{mde.preview}}
+            {{mde.js}}
+          </div>
+
+        </div>
+
+        <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Curso</button>
+      </form>
+    </div>
+
+
+  </main>
+
+
+</body>
+
+</html>

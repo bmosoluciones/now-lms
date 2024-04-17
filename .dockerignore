@@ -1,0 +1,49 @@
+# Control de Versiones
+.git
+.github
+.gitignore
+.git-blame-ignore-revs
+.vscode
+.idea
+.do
+.mypy_cache
+.pytest_cache
+.editorconfig
+.gitattributes
+Procfile
+README.md
+
+# Documentacion
+mkdocs.yml
+docs
+
+# No necesitamos docker files en el contenedor
+Dockerfile
+docker-compose.yml
+
+# Archivos para colaboradores
+.theia
+.coveragerc
+.pylintrc
+codecov.yml
+venv
+tests
+development.txt
+requirements-databases.txt
+*.yml
+*.db
+*.conf
+*.log
+.mypy.ini
+.gitpod.yml
+.git_pod.sh
+.lint.sh
+.mypy.ini
+app.json
+sonar-project.properties
+now_lms/static/files/*
+passenger_wsgi.py
+wsgi.py
+test.txt
+now_lms.egg-info
+.ruff_cache

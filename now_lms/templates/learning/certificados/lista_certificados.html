@@ -1,0 +1,90 @@
+{% import "macros.html" as macros %}
+
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+
+<head>
+
+  {{ macros.headertags() }}
+  <title>{{ title }}</title>
+
+  {{ macros.local_style() }}
+</head>
+
+<body>
+
+  {{ macros.navbar() }}
+
+  <main>
+
+    {{ macros.notify() }}
+
+    <div class="container px-0 py-3" id="curse_list">
+
+      <div class="d-flex justify-content-between border-bottom">
+
+        <h4>Lista de Certificados Disponibles.</h4>
+
+        <p>
+          <span class="badge bg-success">
+            <a href="{{ url_for("certificate.new_certificate") }}" class="link-light">Nuevo Certificado</a>
+          </span>
+        </p>
+
+      </div>
+
+      {% if consulta %}
+
+      <div class="container" id="curse_table">
+
+        <table class="table table-sm table-borderless">
+          <caption>Lista de certificados disponibles en el sistema.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Certificado</th>
+              <th scope="col">Habilitado</th>
+              <th></th>
+            </tr>
+          </thead>
+          {% for item in consulta.items -%}
+          <tbody>
+            <tr>
+              <td>
+                <a href="" class="link-dark">
+                  {{ item.titulo }}
+                </a>
+              </td>
+              <td>
+                {{ item.habilitado }}
+              </td>
+              <td>
+                <span class="badge bg-danger">
+                  <a href="{{ url_for("certificate.delete_certificate", ulid=item.id) }}" class="link-light">Eliminar
+                    Certificado</a>
+                </span>
+                <span class="badge bg-info">
+                  <a href="{{ url_for("certificate.edit_certificate", ulid=item.id) }}" class="link-light">Editar
+                    Certificado</a>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+          {% endfor %}
+        </table>
+      </div>
+      {% else %}
+      <p>Usted no ha creado ninguna etiqueta todavia.</p>
+      {% endif %}
+
+      <div class="container" id="user_pagination">
+        {{ macros.rendizar_paginacion(consulta=consulta, vista="program.programs") }}
+      </div>
+
+    </div>
+
+  </main>
+
+
+</body>
+
+</html>

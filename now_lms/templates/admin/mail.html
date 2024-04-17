@@ -1,0 +1,112 @@
+{% import "macros.html" as macros %}
+
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+
+<head>
+
+  {{ macros.headertags() }}
+
+  <title>Editar configuracion</title>
+
+  {{ macros.local_style() }}
+  <!-- Custom styles for this template -->
+  <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet">
+</head>
+
+<body>
+
+  {{ macros.navbar() }}
+
+  <main>
+
+    {{ macros.notify() }}
+
+    <div class="container px-4 py-5" id="icon-grid">
+      <h4 class="pb-2 border-bottom">Editar configuración de correo electronico.</h4>
+      <form method="post">
+
+        <div class="row">
+
+          <div class="col-sm-6">
+            <label for="email" class="form-label">Permitir Correo Electronico:</label>
+            {{ form.email() }}
+          </div>
+
+        </div>
+
+        <div class="row">
+
+          <div class="col-sm-6">
+            <label for="servidor" class="form-label">Servidor:</label>
+            {{ form.MAIL_HOST(class="form-control", id="modo",) }}
+          </div>
+
+          <div class="col-sm-6">
+            <label for="puerto" class="form-label">Puerto:</label>
+            {{ form.MAIL_PORT(class="form-control", id="puerto",) }}
+          </div>
+
+        </div>
+
+        <br>
+
+        <div class="row">
+
+          <div class="col-sm-6">
+            <label for="usuario" class="form-label">Usuario:</label>
+            {{ form.MAIL_USERNAME(class="form-control", id="modo") }}
+          </div>
+
+          <div class="col-sm-6">
+            <label for="contraseña" class="form-label">Contraseña (Oculta por seguridad.):</label>
+            {{ form.MAIL_PASSWORD(class="form-control", id="contraseña") }}
+          </div>
+
+        </div>
+
+        <br>
+
+        <div class="row">
+
+          <div class="col-sm-6">
+            <label for="tls" class="form-label">Utilizar TLS.</label>
+            {{ form.MAIL_USE_TLS() }}
+          </div>
+
+          <div class="col-sm-6">
+            <label for="ssl" class="form-label">Utilizar SSL.</label>
+            {{ form.MAIL_USE_SSL() }}
+          </div>
+
+        </div>
+        {% if config.email %}
+        <div class="row">
+          {% if config.email_verificado %}
+          <div class="col-sm-6">
+            <button type="button" class="btn btn-success"><i class="bi bi-envelope-check" aria-hidden="true"></i> Correo
+              verificado.</button>
+          </div>
+          {% else %}
+          <div class="col-sm-6">
+            <a href="{{ url_for("setting.test_mail") }}" role="button" class="btn btn-primary"><i class="bi bi-envelope"
+                aria-hidden="true"></i> Verificar
+              configuración.</a>
+          </div>
+          {% endif %}
+          <br>
+        </div>
+        {% endif %}
+        <div class="row"><br></div>
+
+        <a class="btn btn-warning" href="{{ url_for("admin_profile.pagina_admin") }}" role="button">Cancelar</a>
+        <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
+
+      </form>
+    </div>
+
+  </main>
+
+</body>
+
+</html>

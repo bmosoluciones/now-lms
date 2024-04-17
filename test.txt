@@ -1,0 +1,20 @@
+-r requirements.txt
+
+# Crear tarball y wheel
+build
+twine
+wheel
+
+# Control de calidad python
+pytest
+ruff
+
+# Control de calidad html
+curlylint
+
+# Cobertura de código
+coverage
+pytest-cov
+
+# Verificación de tipos
+mypy

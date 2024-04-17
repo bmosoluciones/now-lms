@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+  {# Linea en blanco intencional #}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Aplicación para gestión del aprendizaje.">
+  <meta name="author" content="BMO Moreno Berroteran Ortiz Soluciones Sociedad Anonima">
+
+  <!-- Código local -->
+  <link href="{{ url_for('static', filename='css/cacaoaccounting.css') }}" rel="stylesheet">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.css') }}">
+  <script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.bundle.js') }}"></script>
+
+  <!-- Bootstrap Font -->
+  <link rel="stylesheet"
+    href="{{ url_for('static', filename='node_modules/bootstrap-icons/font/bootstrap-icons.css') }}">
+
+  <title> {{ title }} </title>
+</head>
+
+<body>
+  <!-- Inicio del bloque contenido -->
+
+  {% block contenido %}
+  {% endblock %}
+
+  <!-- Fin del bloque contenido -->
+
+</body>
+
+</html>

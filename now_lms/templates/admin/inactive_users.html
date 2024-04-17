@@ -1,0 +1,83 @@
+{% import "macros.html" as macros %}
+
+<!DOCTYPE html>
+<html lang="es" class="h-100">
+
+<head>
+
+  {{ macros.headertags() }}
+  <title>Usuarios inativos</title>
+
+  {{ macros.local_style() }}
+</head>
+
+<body>
+
+  {{ macros.navbar() }}
+
+  <main>
+    <div class="container  px-0 py-3" id="user_list">
+      <h4 class="pb-2 border-bottom">Usuarios pendientes de activación.</h4>
+
+      <div class="container" id="user_table">
+
+        <table class="table table-sm table-borderless">
+          <caption>Lista de usuarios registrados en el sistema pendientes de activar.</caption>
+          <thead>
+            <tr>
+              <th scope="col">Usuario</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Apellido</th>
+              <th scope="col">Correo Electronico</th>
+              <th scope="col">Accion</th>
+            </tr>
+          </thead>
+          {% for item in consulta.items -%}
+          <tbody>
+            <tr>
+
+              <td>
+                <a class="link-dark" href="{{ url_for("usuario", id_usuario=item.usuario) }}">
+                  {{ item.usuario }}
+                </a>
+              </td>
+              <td>
+                <a class="link-dark" href="{{ url_for("usuario", id_usuario=item.usuario) }}">
+                  {{ item.nombre }}
+                </a>
+              </td>
+              <td>
+                <a class="link-dark" href="{{ url_for("usuario", id_usuario=item.usuario) }}">
+                  {{ item.apellido }}
+                </a>
+              </td>
+              <td>
+                <a class="link-dark" href="{{ url_for("usuario", id_usuario=item.usuario) }}">
+                  {{ item.correo_electronico }}
+                </a>
+              </td>
+              <td>
+                <span class="badge bg-success">
+                  <a href="{{ url_for("activar_usuario", user_id=item.usuario, ruta="usuarios_inactivos") }}"
+                    class="link-light">Aprobar</a>
+                </span>
+                <span class="badge bg-danger">
+                  <a href="{{ url_for("eliminar_usuario", user_id=item.usuario, ruta="usuarios_inactivos") }}"
+                    class="link-light">Rechazar</a>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+          {% endfor %}
+        </table>
+      </div>
+
+      <div class="container" id="user_paginatios">
+        {{ macros.rendizar_paginacion(consulta=consulta, vista="usuarios") }}
+      </div>
+
+    </div>
+  </main>
+</body>
+
+</html>
