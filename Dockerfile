@@ -1,10 +1,10 @@
-FROM registry.access.redhat.com/ubi9/ubi-minimal:9.3 AS js
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4 AS js
 RUN microdnf install -y nodejs npm
 WORKDIR /usr/app
 COPY ./now_lms/static/package.json /usr/app/package.json
 RUN npm install --ignore-scripts
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal:9.3
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4
 
 # Copy app code
 COPY . /app
