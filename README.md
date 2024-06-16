@@ -23,9 +23,13 @@ Simple to {install, use, configure and maintain} learning management system.
 
 -   Users please refer to the [user manual](https://now-lms-manual.readthedocs.io/en/latest/).
 -   System Administrators refer to the [documentation](https://bmosoluciones.github.io/now-lms/index.html).
--   Live demo at: https://now-lms-demo.onrender.com/index
 
-Data in the live demo is reset in every deployment, user and password are: `lms-admin`
+```
+Live demo at: https://now-lms-demo.onrender.com/index
+User: lms-admin
+Password: lms-admin
+Data in the live demo is reset in every deployment, wait to the free render instance to wake up.
+```
 
 ## Getting Started
 
