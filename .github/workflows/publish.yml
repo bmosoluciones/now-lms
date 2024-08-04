@@ -1,10 +1,9 @@
 name: Publish to PyPi
 on:
-  push:
-    branches: main
-    paths-ignore:
-      - "docs/**"
-      - "tests/**"
+ workflow_run:
+    workflows: [CI]
+    types:
+      - completed
 jobs:
   pypi-publish:
     name: Upload release to PyPI
