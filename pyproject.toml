@@ -2,7 +2,7 @@
 name = "now_lms"
 description = "Simple to {install, use, configure, mantain} learning management system."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 authors = [
   {name = "BMO Soluciones", email = "soluciones.bmo@gmail.com"},
 ]
