@@ -160,30 +160,19 @@ def adsense():
     try:
         config = database.session.execute(database.select(AdSense)).first()[0]
     except:
-        config = None
-    
-    form = AdSenseForm()
+        config = AdSense()
+        config.meta_tag = ""
+        config.meta_tag_include = False
+        database.session.add(config)
+        database.session.commit()
+        config = database.session.execute(database.select(AdSense)).first()[0]
 
-    if config:
-        
-        form.meta_tag=config.meta_tag,
-        form.meta_tag_include=config.meta_tag_include,
-
-    else:
-        form.meta_tag = ""
-        form.meta_tag_include = False
+    form = AdSenseForm(meta_tag=config.meta_tag, meta_tag_include=config.meta_tag_include)
 
     if form.validate_on_submit() or request.method == "POST":
 
-        try:
-            config.meta_tag = form.meta_tag.data
-            config.meta_tag_include = form.meta_tag_include.data
-
-        except AttributeError:
-            config = AdSense()
-            config.meta_tag = form.meta_tag.data,
-            config.meta_tag_include = form.meta_tag_include.data
-            database.session.add(config)
+        config.meta_tag = form.meta_tag.data
+        config.meta_tag_include = form.meta_tag_include.data
 
         try:  # pragma: no cover
             database.session.commit()
@@ -193,7 +182,7 @@ def adsense():
         except OperationalError:  # pragma: no cover
             flash("No se pudo actualizar la configuración de Google AdSense.", "warning")
             return redirect(url_for("setting.adsense"))
-        
+
     else:  # pragma: no cover
         return render_template("admin/adsense.html", form=form, config=config)
 

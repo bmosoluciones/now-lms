@@ -480,8 +480,8 @@ class PagosConfig(database.Model):
         database.String(26), primary_key=True, nullable=False, index=True, default=generador_de_codigos_unicos
     )
 
+
 class AdSense(database.Model):
     id = database.Column(database.Integer, primary_key=True)
-    meta_tag = database.String(100)
+    meta_tag = database.Column(database.String(100))
     meta_tag_include = database.Column(database.Boolean(), default=False)
-    
