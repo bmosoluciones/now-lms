@@ -46,6 +46,23 @@
 
         <br>
 
+        <div class="row">
+
+          <div class="col-sm-6">
+            <label for="pug_id" class="form-label">ID de Usuario:</label>
+            {{ form.pub_id(class="form-control", id="pub_id",) }}
+          </div>
+
+        </div>
+        <br>
+
+        <a class="btn btn-success" target="_blank" href="{{ url_for("setting.ads_txt") }}" role="button">Verificar
+          archivo
+          ads.txt</a>
+
+        <br>
+        <br>
+
         <a class="btn btn-warning" href="{{ url_for("admin_profile.pagina_admin") }}" role="button">Cancelar</a>
         <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
 
