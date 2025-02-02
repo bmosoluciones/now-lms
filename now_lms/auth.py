@@ -59,6 +59,10 @@ def validar_acceso(usuario_id, acceso):
 
     log.trace("Verificando acceso de {usuario}", usuario=usuario_id)
     registro = Usuario.query.filter_by(usuario=usuario_id).first()
+
+    if not registro:
+        registro = Usuario.query.filter_by(correo_electronico=usuario_id).first()
+
     if registro is not None:
         try:
             clave_validada = ph.verify(registro.acceso, acceso.encode())
