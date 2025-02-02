@@ -90,6 +90,7 @@ from now_lms.db.initial_data import (
 from now_lms.db.tools import (
     crear_configuracion_predeterminada,
     cuenta_cursos_por_programa,
+    get_addsense_meta,
     logo_perzonalizado,
     obtener_estilo_actual,
     verifica_docente_asignado_a_curso,
@@ -331,6 +332,7 @@ lms_app.jinja_env.globals["info"] = app_info(lms_app)
 lms_app.jinja_env.globals["pyversion"] = python_version()
 lms_app.jinja_env.globals["mkdonw2thml"] = markdown_to_clean_hmtl
 lms_app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
+lms_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
 
 
 # ---------------------------------------------------------------------------------------

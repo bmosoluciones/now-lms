@@ -39,9 +39,9 @@ from sqlalchemy.exc import OperationalError
 from now_lms.auth import perfil_requerido, proteger_secreto
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
-from now_lms.db import Configuracion, database
+from now_lms.db import AdSense, Configuracion, database
 from now_lms.db.tools import elimina_logo_perzonalizado
-from now_lms.forms import ConfigForm, MailForm, ThemeForm
+from now_lms.forms import AdSenseForm, ConfigForm, MailForm, ThemeForm
 from now_lms.logs import log
 
 # ---------------------------------------------------------------------------------------
@@ -145,12 +145,57 @@ def mail():
             database.session.commit()
             flash("Configuración de correo electronico actualizada exitosamente.", "success")
             return redirect(url_for("setting.mail"))
-            return redirect(url_for("mail"))
         except OperationalError:  # pragma: no cover
             flash("No se pudo actualizar la configuración de correo electronico.", "warning")
             return redirect(url_for("setting.mail"))
     else:  # pragma: no cover
         return render_template("admin/mail.html", form=form, config=config)
+
+
+@setting.route("/setting/adsense", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("admin")
+def adsense():
+    """Configuración de anuncios de AdSense."""
+    try:
+        config = database.session.execute(database.select(AdSense)).first()[0]
+    except:
+        config = None
+    
+    form = AdSenseForm()
+
+    if config:
+        
+        form.meta_tag=config.meta_tag,
+        form.meta_tag_include=config.meta_tag_include,
+
+    else:
+        form.meta_tag = ""
+        form.meta_tag_include = False
+
+    if form.validate_on_submit() or request.method == "POST":
+
+        try:
+            config.meta_tag = form.meta_tag.data
+            config.meta_tag_include = form.meta_tag_include.data
+
+        except AttributeError:
+            config = AdSense()
+            config.meta_tag = form.meta_tag.data,
+            config.meta_tag_include = form.meta_tag_include.data
+            database.session.add(config)
+
+        try:  # pragma: no cover
+            database.session.commit()
+            flash("Configuración de Google AdSense actualizada exitosamente.", "success")
+            return redirect(url_for("setting.adsense"))
+
+        except OperationalError:  # pragma: no cover
+            flash("No se pudo actualizar la configuración de Google AdSense.", "warning")
+            return redirect(url_for("setting.adsense"))
+        
+    else:  # pragma: no cover
+        return render_template("admin/adsense.html", form=form, config=config)
 
 
 @setting.route("/setting/mail_check", methods=["GET", "POST"])

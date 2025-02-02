@@ -338,3 +338,8 @@ class CertificateForm(FlaskForm):
     titulo = StringField(validators=[])
     descripcion = StringField(validators=[])
     habilitado = BooleanField(validators=[])
+
+class AdSenseForm(FlaskForm):
+    """AdSbse"""
+    meta_tag = TextAreaField(validators=[])
+    meta_tag_include = BooleanField(validators=[])

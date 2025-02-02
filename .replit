@@ -1,0 +1,12 @@
+modules = ["web", "python-base-3.13", "nodejs-22"]
+run = "/home/runner/workspace/venv/bin/python -m now_lms"
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = "/home/runner/workspace/venv/bin/python -m now_lms"
+
+[[ports]]
+localPort = 8080
+externalPort = 80
