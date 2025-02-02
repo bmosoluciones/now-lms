@@ -187,6 +187,11 @@ def adsense():
         return render_template("admin/adsense.html", form=form, config=config)
 
 
+@setting.route("/ads.txt")
+def ads_txt():
+    """Información de ads.txt para anuncios."""
+
+
 @setting.route("/setting/mail_check", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")

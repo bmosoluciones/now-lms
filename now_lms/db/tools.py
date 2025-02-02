@@ -294,14 +294,14 @@ def cuenta_cursos_por_programa(codigo_programa: str) -> int:
     """Devuelve el número de programas que tiene un curso."""
     return ProgramaCurso.query.filter(ProgramaCurso.programa == codigo_programa).count()
 
+
 def get_addsense_meta():
     """AdSense metatags."""
     try:
         query = database.session.execute(database.select(AdSense)).first()
     except:
         query = None
-    
-    
+
     if query:
         data = query[0]
         if data.meta_tag_include:
@@ -310,5 +310,3 @@ def get_addsense_meta():
             return ""
     else:
         return ""
-
-
