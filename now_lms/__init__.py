@@ -434,24 +434,6 @@ def init_app(with_examples=False):
             log.trace("Acceso a base de datos verificado.")
             config = Configuracion.query.first()
 
-        if (
-            config.email
-            and config.MAIL_HOST is not None
-            and config.MAIL_PORT is not None
-            and config.MAIL_USERNAME is not None
-            and config.MAIL_PASSWORD is not None
-        ):
-            log.trace("Cargando configuración de correo electronico.")
-            lms_app.config.update(
-                {
-                    "MAIL_HOST": config.MAIL_HOST,
-                    "MAIL_PORT": config.MAIL_PORT,
-                    "MAIL_USERNAME": config.MAIL_USERNAME,
-                    "MAIL_PASSWORD": descifrar_secreto(config.MAIL_PASSWORD),
-                    "MAIL_USE_TLS": config.MAIL_USE_TLS,
-                    "MAIL_USE_SSL": config.MAIL_USE_SSL,
-                }
-            )
             if DESARROLLO:
                 lms_app.config.update({"MAIL_BACKEND": "dummy"})
 
