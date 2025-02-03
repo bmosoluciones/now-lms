@@ -174,13 +174,16 @@ def adsense():
         database.session.commit()
         config = database.session.execute(database.select(AdSense)).first()[0]
 
-    form = AdSenseForm(meta_tag=config.meta_tag, meta_tag_include=config.meta_tag_include, pub_id=config.pub_id)
+    form = AdSenseForm(
+        meta_tag=config.meta_tag, meta_tag_include=config.meta_tag_include, pub_id=config.pub_id, add_code=config.add_code
+    )
 
     if form.validate_on_submit() or request.method == "POST":
 
         config.meta_tag = form.meta_tag.data
         config.meta_tag_include = form.meta_tag_include.data
         config.pub_id = form.pub_id.data
+        config.add_code = form.add_code.data
 
         try:  # pragma: no cover
             database.session.commit()

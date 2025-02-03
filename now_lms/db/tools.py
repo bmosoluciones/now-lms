@@ -315,3 +315,20 @@ def get_addsense_meta():
             return ""
     else:
         return ""
+
+
+def get_addsense_code():
+    """AdSense metatags."""
+    try:
+        query = database.session.execute(database.select(AdSense)).first()
+    except:
+        query = None
+
+    if query:
+        data = query[0]
+        if data.meta_tag_include:
+            return data.add_code
+        else:
+            return ""
+    else:
+        return ""
