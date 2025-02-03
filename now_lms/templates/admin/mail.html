@@ -39,7 +39,7 @@
 
           <div class="col-sm-6">
             <label for="servidor" class="form-label">Servidor:</label>
-            {{ form.MAIL_HOST(class="form-control", id="modo",) }}
+            {{ form.MAIL_SERVER(class="form-control", id="servidor",) }}
           </div>
 
           <div class="col-sm-6">
@@ -55,12 +55,12 @@
 
           <div class="col-sm-6">
             <label for="usuario" class="form-label">Usuario:</label>
-            {{ form.MAIL_USERNAME(class="form-control", id="modo") }}
+            {{ form.MAIL_USERNAME(class="form-control", id="usuario") }}
           </div>
 
           <div class="col-sm-6">
-            <label for="contraseña" class="form-label">Contraseña (Oculta por seguridad.):</label>
-            {{ form.MAIL_PASSWORD(class="form-control", id="contraseña") }}
+            <label for="contrasena" class="form-label">Contraseña (Oculta por seguridad.):</label>
+            {{ form.MAIL_PASSWORD(class="form-control", id="contrasena") }}
           </div>
 
         </div>
@@ -80,6 +80,18 @@
           </div>
 
         </div>
+
+        <div class="row">
+
+          <div class="col-sm-6">
+
+            <label for="default_sender" class="form-label">Default sender.</label>
+            {{ form.MAIL_DEFAULT_SENDER(class="form-control", id="default_sender") }}
+
+          </div>
+
+        </div>
+
         {% if config.email %}
         <div class="row">
           {% if config.email_verificado %}

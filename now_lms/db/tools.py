@@ -46,6 +46,7 @@ from now_lms.db import (
     DocenteCurso,
     EstudianteCurso,
     EtiquetaCurso,
+    MailConfig,
     ModeradorCurso,
     Programa,
     ProgramaCurso,
@@ -95,12 +96,16 @@ def crear_configuracion_predeterminada():
         modo="mooc",
         style="dark",
         custom_logo=False,
-        email=False,
-        MAIL_USE_TLS=False,
-        MAIL_USE_SSL=False,
         moneda="C$",
         r=urandom(16),
     )
+    mail = MailConfig(
+        email=True,
+        MAIL_USE_TLS=True,
+        MAIL_USE_SSL=True,
+        email_verificado=True,
+    )
+
     database.session.add(config)
     database.session.commit()
 

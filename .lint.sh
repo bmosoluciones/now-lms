@@ -3,7 +3,7 @@ echo -------------------------------------------------
 echo Check python code with ruff
 echo -------------------------------------------------
 echo
-python -m ruff now_lms
+python -m ruff check now_lms
 echo
 echo -------------------------------------------------
 echo Check python types

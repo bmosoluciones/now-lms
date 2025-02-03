@@ -30,6 +30,7 @@ Gestión de certificados.
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, flash, redirect, render_template, request, url_for, current_app
 from flask_login import login_required, current_user
+from flask_mail import Mail
 from flask_uploads import UploadNotAllowed
 from sqlalchemy.exc import OperationalError
 
@@ -39,7 +40,7 @@ from sqlalchemy.exc import OperationalError
 from now_lms.auth import perfil_requerido, proteger_secreto
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
-from now_lms.db import AdSense, Configuracion, database
+from now_lms.db import AdSense, Configuracion, MailConfig, database
 from now_lms.db.tools import elimina_logo_perzonalizado
 from now_lms.forms import AdSenseForm, ConfigForm, MailForm, ThemeForm
 from now_lms.logs import log
@@ -120,34 +121,40 @@ def configuracion():
 @perfil_requerido("admin")
 def mail():
     """Configuración de Correo Electronico."""
-    config = database.session.execute(database.select(Configuracion)).first()[0]
+    config = database.session.execute(database.select(MailConfig)).first()[0]
+
     form = MailForm(
         email=config.email,
-        MAIL_HOST=config.MAIL_HOST,
+        MAIL_SERVER=config.MAIL_SERVER,
         MAIL_PORT=config.MAIL_PORT,
         MAIL_USERNAME=config.MAIL_USERNAME,
         MAIL_PASSWORD=config.MAIL_PASSWORD,
         MAIL_USE_TLS=config.MAIL_USE_TLS,
         MAIL_USE_SSL=config.MAIL_USE_SSL,
+        MAIL_DEFAULT_SENDER=config.MAIL_DEFAULT_SENDER,
     )
 
     if form.validate_on_submit() or request.method == "POST":
 
         config.email = form.email.data
-        config.MAIL_HOST = form.MAIL_HOST.data
+        config.MAIL_SERVER = form.MAIL_SERVER.data
         config.MAIL_PORT = form.MAIL_PORT.data
         config.MAIL_USE_TLS = form.MAIL_USE_TLS.data
         config.MAIL_USE_SSL = form.MAIL_USE_SSL.data
         config.MAIL_USERNAME = form.MAIL_USERNAME.data
         config.MAIL_PASSWORD = proteger_secreto(form.MAIL_PASSWORD.data)
+        config.MAIL_DEFAULT_SENDER = form.MAIL_DEFAULT_SENDER.data
         config.email_verificado = False
+
         try:  # pragma: no cover
             database.session.commit()
             flash("Configuración de correo electronico actualizada exitosamente.", "success")
             return redirect(url_for("setting.mail"))
+
         except OperationalError:  # pragma: no cover
             flash("No se pudo actualizar la configuración de correo electronico.", "warning")
             return redirect(url_for("setting.mail"))
+
     else:  # pragma: no cover
         return render_template("admin/mail.html", form=form, config=config)
 
