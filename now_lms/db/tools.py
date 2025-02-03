@@ -99,7 +99,7 @@ def crear_configuracion_predeterminada():
         moneda="C$",
         r=urandom(16),
     )
-    mail = MailConfig(
+    mail_config = MailConfig(
         email=True,
         MAIL_USE_TLS=True,
         MAIL_USE_SSL=True,
@@ -107,6 +107,7 @@ def crear_configuracion_predeterminada():
     )
 
     database.session.add(config)
+    database.session.add(mail_config)
     database.session.commit()
 
 
