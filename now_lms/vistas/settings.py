@@ -30,7 +30,6 @@ Gestión de certificados.
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
-from flask_mail import Mail
 from flask_uploads import UploadNotAllowed
 from sqlalchemy.exc import OperationalError
 
@@ -164,15 +163,7 @@ def mail():
 @perfil_requerido("admin")
 def adsense():
     """Configuración de anuncios de AdSense."""
-    try:
-        config = database.session.execute(database.select(AdSense)).first()[0]
-    except:
-        config = AdSense()
-        config.meta_tag = ""
-        config.meta_tag_include = False
-        database.session.add(config)
-        database.session.commit()
-        config = database.session.execute(database.select(AdSense)).first()[0]
+    config = database.session.execute(database.select(AdSense)).first()[0]
 
     form = AdSenseForm(
         meta_tag=config.meta_tag, meta_tag_include=config.meta_tag_include, pub_id=config.pub_id, add_code=config.add_code
@@ -202,15 +193,9 @@ def adsense():
 def ads_txt():
     """Información de ads.txt para anuncios."""
 
-    try:
-        config = database.session.execute(database.select(AdSense)).first()[0]
-    except:
-        config = None
+    config = database.session.execute(database.select(AdSense)).first()[0]
 
-    if config:
-        pub_id = config.pub_id
-    else:
-        pub_id = "0000000000000000"
+    pub_id = config.pub_id
 
     return render_template("ads.txt", pub_id=pub_id)
 

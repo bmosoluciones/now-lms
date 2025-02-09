@@ -47,7 +47,6 @@ from flask import Flask, flash, render_template
 from flask.cli import FlaskGroup
 from flask_alembic import Alembic
 from flask_login import LoginManager, current_user
-from flask_mail import Mail
 from flask_mde import Mde
 from flask_uploads import configure_uploads
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
@@ -58,7 +57,6 @@ from werkzeug.exceptions import HTTPException
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms.auth import descifrar_secreto
 from now_lms.cache import cache
 from now_lms.config import (
     CONFIGURACION,
@@ -432,7 +430,6 @@ def init_app(with_examples=False):
             initial_setup(with_examples=with_examples)
         else:
             log.trace("Acceso a base de datos verificado.")
-            config = Configuracion.query.first()
 
             if DESARROLLO:
                 lms_app.config.update({"MAIL_BACKEND": "dummy"})

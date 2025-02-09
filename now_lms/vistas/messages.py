@@ -65,7 +65,7 @@ def mensaje(ulid: str):
         else:
             return abort(403)
     else:
-        return redirect(INICIO_SESION)
+        return INICIO_SESION
 
 
 @msg.route("/message/new", methods=["GET", "POST"])
