@@ -179,7 +179,7 @@ def adsense():
         config.meta_tag_include = form.meta_tag_include.data
         config.pub_id = form.pub_id.data
         config.add_code = form.add_code.data
-        config.show_adds = form.show_adds.data
+        config.show_ads = form.show_ads.data
 
         try:  # pragma: no cover
             database.session.commit()
