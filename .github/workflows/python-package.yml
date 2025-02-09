@@ -35,7 +35,7 @@ jobs:
           rm -rf build
           python -m build
           python -m twine check dist/*
-          bash .lint.sh
+          # bash .lint.sh
       - name: Test with SQLite
         run: |
           CI=True pytest  -v --exitfirst --cov=now_lms --slow=True

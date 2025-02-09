@@ -1,12 +1,5 @@
 -r test.txt
 
-# Servidor de desarrollo
-hupper
-
 # Docs
 mkdocs
 mkdocs-material
-
-# Code Style
-black
-isort
