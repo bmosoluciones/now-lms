@@ -1348,4 +1348,17 @@ rutas_estaticas = [
         como_instructor=[],
         como_admin=[],
     ),
+    Ruta(
+        ruta="/setting/adsense",
+        no_session=302,
+        admin=302,
+        user=302,
+        moderator=302,
+        instructor=302,
+        texto=[],
+        como_user=[],
+        como_moderador=[],
+        como_instructor=[],
+        como_admin=[],
+    ),
 ]
