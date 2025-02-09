@@ -1,5 +1,4 @@
 #!/bin/bash
-pip install --upgrade -r test.txt
 echo -------------------------------------------------
 echo Format Python code
 echo -------------------------------------------------
