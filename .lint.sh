@@ -3,13 +3,18 @@ echo -------------------------------------------------
 echo Format Python code
 echo -------------------------------------------------
 echo
-iosrt now_lms
+isort now_lms
 black now_lms
 echo -------------------------------------------------
 echo Check python code with flake8
 echo -------------------------------------------------
 echo
 flake8 --ignore E501 now_lms
+echo -------------------------------------------------
+echo Check python code with bandit
+echo -------------------------------------------------
+echo
+bandit -r now_lms
 echo -------------------------------------------------
 echo Check python code with ruff
 echo -------------------------------------------------
