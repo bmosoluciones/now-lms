@@ -348,3 +348,4 @@ class AdSenseForm(FlaskForm):
     meta_tag_include = BooleanField(validators=[])
     pub_id = StringField(validators=[])
     add_code = TextAreaField(validators=[])
+    show_ads = BooleanField(validators=[])

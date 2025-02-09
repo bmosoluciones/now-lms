@@ -493,3 +493,4 @@ class AdSense(database.Model):
     meta_tag_include = database.Column(database.Boolean(), default=False)
     pub_id = database.Column(database.String(20))
     add_code = database.Column(database.String(200))
+    show_ads = database.Column(database.Boolean(), default=False)

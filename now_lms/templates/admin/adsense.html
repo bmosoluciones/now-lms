@@ -29,6 +29,7 @@
         <div class="row">
 
           <div class="col-sm-6">
+            <h4>Configuración de usuario de AdSense.</h4>
             <label for="email" class="form-label">Mostrar etiqueta en Header:</label>
             {{ form.meta_tag_include() }}
           </div>
@@ -49,8 +50,8 @@
         <div class="row">
 
           <div class="col-sm-6">
-            <label for="add_code" class="form-label">Código de AdSense:</label>
-            {{ form.add_code(class="form-control", id="add_code",) }}
+            <label for="pug_id" class="form-label">ID de Usuario:</label>
+            {{ form.pub_id(class="form-control", id="pub_id",) }}
           </div>
 
         </div>
@@ -60,11 +61,22 @@
         <div class="row">
 
           <div class="col-sm-6">
-            <label for="pug_id" class="form-label">ID de Usuario:</label>
-            {{ form.pub_id(class="form-control", id="pub_id",) }}
+            <h4>Configuración de anuncios en el sitio.</h4>
+            <label for="show_ads" class="form-label">Mostrar anuncios:</label>
+            {{ form.show_ads() }}
           </div>
 
         </div>
+
+        <div class="row">
+
+          <div class="col-sm-6">
+            <label for="add_code" class="form-label">Código Glogal de AdSense:</label>
+            {{ form.add_code(class="form-control", id="add_code",) }}
+          </div>
+
+        </div>
+
         <br>
 
         <a class="btn btn-success" target="_blank" href="{{ url_for("setting.ads_txt") }}" role="button">Verificar

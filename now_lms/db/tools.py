@@ -105,9 +105,11 @@ def crear_configuracion_predeterminada():
         MAIL_USE_SSL=True,
         email_verificado=True,
     )
+    adsense_config = AdSense(meta_tag_include=False)
 
     database.session.add(config)
     database.session.add(mail_config)
+    database.session.add(adsense_config)
     database.session.commit()
 
 
