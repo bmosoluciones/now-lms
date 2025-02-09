@@ -70,7 +70,7 @@ from now_lms.config import (
     images,
     log_messages,
 )
-from now_lms.db import Configuracion, Usuario, MailConfig, database
+from now_lms.db import Configuracion, MailConfig, Usuario, database
 from now_lms.db.info import app_info
 from now_lms.db.initial_data import (
     asignar_cursos_a_categoria,
@@ -90,8 +90,8 @@ from now_lms.db.initial_data import (
 from now_lms.db.tools import (
     crear_configuracion_predeterminada,
     cuenta_cursos_por_programa,
-    get_addsense_meta,
     get_addsense_code,
+    get_addsense_meta,
     logo_perzonalizado,
     obtener_estilo_actual,
     verifica_docente_asignado_a_curso,
