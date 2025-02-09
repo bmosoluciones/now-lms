@@ -101,9 +101,9 @@ def crear_configuracion_predeterminada():
     )
     mail_config = MailConfig(
         email=True,
-        MAIL_USE_TLS=True,
-        MAIL_USE_SSL=True,
-        email_verificado=True,
+        MAIL_USE_TLS=False,
+        MAIL_USE_SSL=False,
+        email_verificado=False,
     )
     adsense_config = AdSense(meta_tag_include=False)
 
