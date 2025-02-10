@@ -8,12 +8,12 @@ FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4
 
 # Dependencies
 COPY requirements.txt /tmp/
-RUN microdnf install -y --nodocs --best --refresh python39 python3-pip python3-cryptography \
+RUN microdnf install -y --nodocs --best --refresh python3.12 python3.12-pip python3.12-cryptography \
     && microdnf clean all \
-    && /usr/bin/python3.9 --version \
-    && /usr/bin/python3.9 -m pip --no-cache-dir install -r /tmp/requirements.txt \
-    && /usr/bin/python3.9 -m pip list --format=columns \
-    && rm -rf /root/.cache/pip && rm -rf /tmp && microdnf remove -y --best python3-pip
+    && /usr/bin/python3.12 --version \
+    && /usr/bin/python3.12 -m pip --no-cache-dir install -r /tmp/requirements.txt \
+    && /usr/bin/python3.12 -m pip list --format=columns \
+    && rm -rf /root/.cache/pip && rm -rf /tmp && microdnf remove -y --best python3.12-pip
 
 # App code
 COPY . /app
