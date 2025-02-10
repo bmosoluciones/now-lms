@@ -6,22 +6,22 @@ RUN npm install --ignore-scripts
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4
 
-# Copy app code
-COPY . /app
-# Install nodejs modules from de js image in the final docker image
-COPY --from=js /usr/app/node_modules /app/now_lms/static/node_modules
-# Dependency files
+# Dependencies
 COPY requirements.txt /tmp/
-
-WORKDIR /app
-
 RUN microdnf install -y --nodocs --best --refresh python39 python3-pip python3-cryptography \
     && microdnf clean all \
     && /usr/bin/python3.9 --version \
-    && chmod +x docker-entry-point.sh \
     && /usr/bin/python3.9 -m pip --no-cache-dir install -r /tmp/requirements.txt \
     && /usr/bin/python3.9 -m pip list --format=columns \
     && rm -rf /root/.cache/pip && rm -rf /tmp && microdnf remove -y --best python3-pip
+
+# App code
+COPY . /app
+WORKDIR /app
+RUN chmod +x docker-entry-point.sh
+
+# NodeJS modules
+COPY --from=js /usr/app/node_modules /app/now_lms/static/node_modules
 
 ENV FLASK_APP="now_lms"
 ENV LANG=C.UTF-8
