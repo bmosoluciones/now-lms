@@ -39,11 +39,20 @@ repo_name: bmosoluciones/now-lms
 copyright: Copyright &copy; 2021 - 2024 BMO Soluciones
 
 plugins:
-  - search:
-      lang:
-        - en
-        - de
-  - offline
+  - blog
+  - open-in-new-tab
+  - search
+  - i18n:
+      docs_structure: suffix
+      languages:
+        - locale: en
+          name: English
+          default: true
+          build: true
+        - locale: es
+          name: Español
+          build: true
+  - mkdocstrings
 
 nav:
   - Home:
@@ -77,9 +86,20 @@ extra:
       link: https://github.com/bmosoluciones/now-lms
     - icon: fontawesome/brands/docker
       link: https://quay.io/repository/bmosoluciones/now_lms
-
   consent:
     title: Cookie consent
+
+markdown_extensions:
+  - attr_list
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
     description: >-
       We use cookies to recognize your repeated visits and preferences, as well
       as to measure the effectiveness of our documentation and whether users
