@@ -456,12 +456,12 @@ def command(as_module=False) -> None:  # pragma: no cover
 @click.option("--with-tests", is_flag=True, default=False, help="Load data for testing.")
 def setup(with_examples=False, with_tests=False):  # pragma: no cover
     """Inicia al aplicacion."""
-    lms_app.app_context().push()
-    initial_setup(with_examples)
-    if with_tests:
-        from now_lms.db.data_test import crear_data_para_pruebas
-
-        crear_data_para_pruebas()
+    with lms_app.app_context():
+        initial_setup(with_examples)
+        if with_tests:
+            from now_lms.db.data_test import crear_data_para_pruebas
+            
+            crear_data_para_pruebas()
 
 
 @lms_app.cli.command()
@@ -476,15 +476,24 @@ def upgrade_db():  # pragma: no cover
     alembic.upgrade()
 
 
+
+@lms_app.cli.command()
+def deletedb():  # pragma: no cover
+    """Elimina base de datos."""
+    if DESARROLLO:
+        with lms_app.app_context():
+            database.drop_all()
+
+
 @lms_app.cli.command()
 @click.option("--with-examples", is_flag=True, default=False, help="Load example data at setup.")
 @click.option("--with-tests", is_flag=True, default=False, help="Load data for testing.")
 def resetdb(with_examples=False, with_tests=False) -> None:  # pragma: no cover
     """Elimina la base de datos actual e inicia una nueva."""
-    lms_app.app_context().push()
-    cache.clear()
-    database.drop_all()
-    initial_setup(with_examples, with_tests)
+    with lms_app.app_context():
+        cache.clear()
+        database.drop_all()
+        initial_setup(with_examples, with_tests)
 
 
 @lms_app.cli.command()
@@ -498,6 +507,7 @@ def serve():  # pragma: no cover
         PORT = environ.get("PORT")
     else:
         PORT = 8080
+    
     if DESARROLLO:
         THREADS = 4
     else:
@@ -505,8 +515,11 @@ def serve():  # pragma: no cover
             THREADS = environ.get("LMS_THREADS")
         else:
             THREADS = (cpu_count() * 2) + 1
+    
     log.info("Iniciando servidor WSGI en puerto {puerto} con {threads} hilos.", puerto=PORT, threads=THREADS)
-    server(app=lms_app, port=int(PORT), threads=THREADS)
+    
+    with lms_app.app_context():
+        server(app=lms_app, port=int(PORT), threads=THREADS)
 
 
 # ---------------------------------------------------------------------------------------
