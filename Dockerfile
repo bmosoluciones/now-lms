@@ -13,7 +13,8 @@ RUN microdnf install -y --nodocs --best --refresh python3.12 python3.12-pip pyth
     && /usr/bin/python3.12 --version \
     && /usr/bin/python3.12 -m pip --no-cache-dir install -r /tmp/requirements.txt \
     && /usr/bin/python3.12 -m pip list --format=columns \
-    && rm -rf /root/.cache/pip && rm -rf /tmp && microdnf remove -y --best python3.12-pip
+    && rm -rf /root/.cache/pip && rm -rf /tmp && microdnf remove -y --best python3.12-pip \
+    && microdnf clean all
 
 # App code
 COPY . /app
