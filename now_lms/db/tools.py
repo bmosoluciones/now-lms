@@ -26,7 +26,7 @@ from typing import NamedTuple, Union
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import flash
+from flask import current_app, flash
 from flask_login import current_user
 
 from now_lms.cache import cache
@@ -335,3 +335,18 @@ def get_addsense_code():
             return ""
     else:
         return ""
+
+
+def database_is_populated():
+    """Check is database is populated."""
+
+    query = database.execute(database.select(Configuracion)).first()
+
+    if query:
+        return True
+
+    else:
+        return False
+
+    
+

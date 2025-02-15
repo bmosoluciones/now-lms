@@ -457,11 +457,17 @@ def command(as_module=False) -> None:  # pragma: no cover
 def setup(with_examples=False, with_tests=False):  # pragma: no cover
     """Inicia al aplicacion."""
     with lms_app.app_context():
-        initial_setup(with_examples)
-        if with_tests:
-            from now_lms.db.data_test import crear_data_para_pruebas
+        from now_lms.db.tools import database_is_populated
+
+        if database_is_populated:
             
-            crear_data_para_pruebas()
+            initial_setup(with_examples)
+            if with_tests:
+                from now_lms.db.data_test import crear_data_para_pruebas
+                
+                crear_data_para_pruebas()
+        else:
+            log.info("Database already initialised.")
 
 
 @lms_app.cli.command()
