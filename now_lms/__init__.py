@@ -25,6 +25,7 @@ Simple to {install, use, configure and maintain} learning management system.
 
 python3 -m venv venv
 source venv/bin/activate
+python3 -m pip install -e .
 lmsctl setup
 lmsctl serve
 
