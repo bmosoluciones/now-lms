@@ -22,7 +22,7 @@ Modulo para ejecutar NOW LMS.
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
-
+from os import environ
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -37,6 +37,7 @@ from now_lms.config import DESARROLLO
 from now_lms.logs import log
 
 if __name__ == "__main__":
+    environ["FLASK_APP"] = "now_lms"
     log.info("Iniciando NOW Learning Management System.")
     if DESARROLLO:
         log.trace("Ejecutando NOW-LMS con opciones de desarrollo.")
