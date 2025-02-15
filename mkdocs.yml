@@ -5,11 +5,12 @@ theme:
   logo: images/logo.svg
   font:
     text: Roboto
-  language: es
+    code: Source Code Pro
+  language: en
   palette:
     # Palette toggle for light mode
     - scheme: default
-      primary: indigo
+      primary: white
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
@@ -79,6 +80,7 @@ nav:
   - Contributing:
       - Contributing: CONTRIBUTING.md
       - Developer Certificate of Origin: sing-off.md
+  - Blog: blog/index.md
 
 extra:
   social:
@@ -99,9 +101,3 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - admonition
   - pymdownx.details
-  - pymdownx.superfences
-    description: >-
-      We use cookies to recognize your repeated visits and preferences, as well
-      as to measure the effectiveness of our documentation and whether users
-      find what they're searching for. With your consent, you're helping us to
-      make our documentation better.
