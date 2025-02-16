@@ -13,7 +13,7 @@
 
 ![Logo](https://github.com/bmosoluciones/now-lms/blob/main/now_lms/static/icons/logo/logo_large.png?raw=true)
 
-Simple to {install, use, configure and maintain} learning management system.
+Simple to {install, use, configure, monetice and maintain} learning management system.
 
 ![ScreenShot](https://raw.githubusercontent.com/bmosoluciones/now-lms/main/docs/images/screenshot.png)
 
