@@ -47,3 +47,10 @@ wsgi.py
 test.txt
 now_lms.egg-info
 .ruff_cache
+
+build
+docs.txt
+now_lms.db
+replit.nix
+requirements.txt
+run_server.sh
