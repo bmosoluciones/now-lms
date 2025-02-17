@@ -15,8 +15,6 @@
 # Contributors:
 # - William José Moreno Reyes
 
-# pylint: disable=E1101
-# pylint: disable=singleton-comparison
 
 """
 NOW Learning Management System.
@@ -163,7 +161,7 @@ def init_mail(flask_app: Flask):
     with flask_app.app_context():
         mail_config = database.session.execute(database.select(MailConfig)).first()[0]
 
-        if mail_config.email and mail_config.email_verificado:
+        if mail_config.email:
             flask_app.config["MAIL_SERVER"] = mail_config.MAIL_SERVER
             flask_app.config["MAIL_PORT"] = int(mail_config.MAIL_PORT)
             flask_app.config["MAIL_USE_TLS"] = mail_config.MAIL_USE_TLS
@@ -459,12 +457,12 @@ def setup(with_examples=False, with_tests=False):  # pragma: no cover
     with lms_app.app_context():
         from now_lms.db.tools import database_is_populated
 
-        if database_is_populated:
-            
+        if database_is_populated():
+
             initial_setup(with_examples)
             if with_tests:
                 from now_lms.db.data_test import crear_data_para_pruebas
-                
+
                 crear_data_para_pruebas()
         else:
             log.info("Database already initialised.")
@@ -480,7 +478,6 @@ def release():  # pragma: no cover
 def upgrade_db():  # pragma: no cover
     """Actualiza esquema de base de datos."""
     alembic.upgrade()
-
 
 
 @lms_app.cli.command()
@@ -513,7 +510,7 @@ def serve():  # pragma: no cover
         PORT = environ.get("PORT")
     else:
         PORT = 8080
-    
+
     if DESARROLLO:
         THREADS = 4
     else:
@@ -521,9 +518,9 @@ def serve():  # pragma: no cover
             THREADS = environ.get("LMS_THREADS")
         else:
             THREADS = (cpu_count() * 2) + 1
-    
+
     log.info("Iniciando servidor WSGI en puerto {puerto} con {threads} hilos.", puerto=PORT, threads=THREADS)
-    
+
     with lms_app.app_context():
         server(app=lms_app, port=int(PORT), threads=THREADS)
 

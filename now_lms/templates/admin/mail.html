@@ -23,7 +23,7 @@
     {{ macros.notify() }}
 
     <div class="container px-4 py-5" id="icon-grid">
-      <h4 class="pb-2 border-bottom">Editar configuración de correo electronico.</h4>
+      <h5 class="pb-2 border-bottom">Configuración del Correo Electronico.</h5>
       <form method="post">
 
         <div class="row">
@@ -36,6 +36,8 @@
         </div>
 
         <div class="row">
+          <br>
+          <h5 class="pb-2 border-bottom">Datos de acceso al servidor SMTP.</h5>
 
           <div class="col-sm-6">
             <label for="servidor" class="form-label">Servidor:</label>
@@ -84,7 +86,7 @@
         <div class="row">
 
           <div class="col-sm-6">
-
+            <br>
             <label for="default_sender" class="form-label">Default sender.</label>
             {{ form.MAIL_DEFAULT_SENDER(class="form-control", id="default_sender") }}
 
@@ -92,27 +94,27 @@
 
         </div>
 
-        {% if config.email %}
-        <div class="row">
-          {% if config.email_verificado %}
-          <div class="col-sm-6">
-            <button type="button" class="btn btn-success"><i class="bi bi-envelope-check" aria-hidden="true"></i> Correo
-              verificado.</button>
-          </div>
-          {% else %}
-          <div class="col-sm-6">
-            <a href="{{ url_for("setting.test_mail") }}" role="button" class="btn btn-primary"><i class="bi bi-envelope"
-                aria-hidden="true"></i> Verificar
-              configuración.</a>
-          </div>
-          {% endif %}
-          <br>
-        </div>
-        {% endif %}
+        <div class="row"><br></div>
         <div class="row"><br></div>
 
-        <a class="btn btn-warning" href="{{ url_for("admin_profile.pagina_admin") }}" role="button">Cancelar</a>
-        <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
+        <div class="row">
+          {% if not config.email_verificado %}
+          <br>
+          <h6>La configuración de correo electronico no se ha sido verificada.</h6>
+          <div>
+            <a href="{{ url_for("setting.test_mail") }}" type="button" class="btn btn-warning">Validar configuración de correo electronico</a>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="row">
+          <div>
+            <br>
+            <a class="btn btn-warning" href="{{ url_for("admin_profile.pagina_admin") }}" role="button">Cancelar</a>
+            <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
+          </div>
+
+        </div>
 
       </form>
     </div>

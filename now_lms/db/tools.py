@@ -347,6 +347,3 @@ def database_is_populated():
 
     else:
         return False
-
-    
-
