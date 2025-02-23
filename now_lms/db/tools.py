@@ -58,7 +58,7 @@ from now_lms.db import (
 
 
 # < --------------------------------------------------------------------------------------------- >
-# Funciones auxiliares relacionadas a contultas de la base de datos.
+# Funciones auxiliares relacionadas a consultas de la base de datos.
 
 
 def verifica_docente_asignado_a_curso(id_curso: Union[None, str] = None):
