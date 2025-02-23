@@ -218,6 +218,7 @@ def elimina_logo():
     elimina_logo_perzonalizado()
     return redirect(url_for("setting.personalizacion"))
 
+
 @setting.route("/setting/stripe", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")

@@ -25,6 +25,7 @@
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
+from cuid2 import Cuid
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 
@@ -57,6 +58,13 @@ def generador_de_codigos_unicos() -> str:
     id_unico = str(codigo_aleatorio)
 
     return id_unico
+
+
+def generador_codigos_unicos_cuid() -> str:
+    """Generado codigos unicos con CUID2"""
+
+    CUID_GENERATOR: Cuid = Cuid(length=10)
+    return CUID_GENERATOR.generate()
 
 
 # pylint: disable=too-few-public-methods

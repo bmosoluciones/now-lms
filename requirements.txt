@@ -5,6 +5,7 @@ argon2-cffi
 babel
 bleach
 configobj
+cuid2
 flask
 flask[async]
 flask-alembic
