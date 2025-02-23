@@ -183,6 +183,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+        <img src="{{ url_for("static", filename="/icons/logo/logo_large.png") }}" alt="NOW Learning Management System">
+        <br>
         <strong>Versión:</strong> {{ version }}
         <br>
         <strong>Python:</strong> {{ pyversion }}
@@ -194,13 +196,20 @@
         {% endif %}
       </div>
       <div class="modal-footer">
-        <a href="https://now-lms-manual.readthedocs.io/en/latest/" "button" class="btn btn-sm btn-secondary"
+        <div class="d-flex justify-content-between">
+          <div>
+            <img weith="75" height="20" src="{{ url_for("static", filename="/img/bmo-logo.png") }}" alt="BMO Soluciones">
+          </div>
+          <div>
+            <a href="https://now-lms-manual.readthedocs.io/en/latest/" "button" class="btn btn-sm btn-secondary"
           data-dismiss="modal"><i class="bi bi-book" aria-hidden="true"></i>
           Manual de Usuario</a>
         {% if current_user.tipo == "admin" %}
         <a href="https://bmosoluciones.github.io/now-lms/" "button" class="btn btn-sm btn-secondary"
           data-dismiss="modal"><i class="bi bi-book" aria-hidden="true"></i>
           Manual de Administración</a>
+          </div>
+        </div>
         {% endif %}
       </div>
 
