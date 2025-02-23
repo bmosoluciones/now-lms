@@ -217,3 +217,11 @@ def elimina_logo():
     """Elimina logo"""
     elimina_logo_perzonalizado()
     return redirect(url_for("setting.personalizacion"))
+
+@setting.route("/setting/stripe", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("admin")
+def stripe():
+    """Configuración de Stripe."""
+
+    return render_template("admin/stripe.html")
