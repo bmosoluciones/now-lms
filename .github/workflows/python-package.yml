@@ -15,10 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 3.8 Shared hosting
-        # 3.9 Ubi minimal
-        # 3.12 Last release
-        python-version: [3.8, 3.9, 3.12]
+        python-version: [3.8, 3.9, 3.12, 3.13]
 
     steps:
       - uses: actions/checkout@v3
@@ -39,5 +36,3 @@ jobs:
       - name: Test with SQLite
         run: |
           CI=True pytest  -v --exitfirst --cov=now_lms --slow=True
-      - name: Codecov
-        uses: codecov/codecov-action@v1
