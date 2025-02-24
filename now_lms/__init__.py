@@ -112,6 +112,7 @@ from now_lms.vistas.courses import course
 from now_lms.vistas.groups import group
 from now_lms.vistas.home import home
 from now_lms.vistas.messages import msg
+from now_lms.vistas.paypal import check_paypal_enabled, paypal
 from now_lms.vistas.profiles.admin import admin_profile
 from now_lms.vistas.profiles.instructor import instructor_profile
 from now_lms.vistas.profiles.moderator import moderator_profile
@@ -119,6 +120,7 @@ from now_lms.vistas.profiles.user import user_profile
 from now_lms.vistas.programs import program
 from now_lms.vistas.resources import resource_d
 from now_lms.vistas.settings import setting
+from now_lms.vistas.stripe import check_stripe_enabled, stripe
 from now_lms.vistas.tags import tag
 from now_lms.vistas.users import user
 from now_lms.vistas.web_error_codes import web_error
@@ -188,6 +190,8 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
         flask_app.register_blueprint(setting)
         flask_app.register_blueprint(tag)
         flask_app.register_blueprint(user)
+        flask_app.register_blueprint(stripe)
+        flask_app.register_blueprint(paypal)
         # User profiles
         flask_app.register_blueprint(admin_profile)
         flask_app.register_blueprint(instructor_profile)
@@ -347,6 +351,8 @@ lms_app.jinja_env.globals["mkdonw2thml"] = markdown_to_clean_hmtl
 lms_app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
 lms_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
 lms_app.jinja_env.globals["adsense_code"] = get_addsense_code
+lms_app.jinja_env.globals["stripe_enabled"] = check_stripe_enabled
+lms_app.jinja_env.globals["paypal_enabled"] = check_paypal_enabled
 
 
 # ---------------------------------------------------------------------------------------

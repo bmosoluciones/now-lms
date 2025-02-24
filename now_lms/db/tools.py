@@ -48,8 +48,10 @@ from now_lms.db import (
     EtiquetaCurso,
     MailConfig,
     ModeradorCurso,
+    PaypalConfig,
     Programa,
     ProgramaCurso,
+    StripeConfig,
     Usuario,
     database,
 )
@@ -106,10 +108,14 @@ def crear_configuracion_predeterminada():
         email_verificado=False,
     )
     adsense_config = AdSense(meta_tag_include=False)
+    stripe_config = StripeConfig(enable=False)
+    paypal_config = PaypalConfig(enable=False)
 
     database.session.add(config)
     database.session.add(mail_config)
     database.session.add(adsense_config)
+    database.session.add(stripe_config)
+    database.session.add(paypal_config)
     database.session.commit()
 
 

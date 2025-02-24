@@ -19,6 +19,12 @@
 <!-- Bootstrap Font -->
 <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap-icons/font/bootstrap-icons.css') }}">
 
+{% if stripe_enabled() %}
+{% if with_stripe %}
+<script src="https://js.stripe.com/v3/"></script>
+{% endif %}
+{% endif %}
+
 <!-- Favicons -->
 <link rel="apple-touch-icon" sizes="180x180"
   href="{{ url_for('static', filename='icons/favicon/apple-touch-icon.png') }}">
