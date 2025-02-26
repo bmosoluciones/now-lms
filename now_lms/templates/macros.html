@@ -19,8 +19,12 @@
 <!-- Bootstrap Font -->
 <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap-icons/font/bootstrap-icons.css') }}">
 
+<!-- AlpineJS -->
+<script src="//unpkg.com/alpinejs" defer></script>
+
 {% if stripe_enabled() %}
 {% if with_stripe %}
+<!-- Stripe -->
 <script src="https://js.stripe.com/v3/"></script>
 {% endif %}
 {% endif %}
