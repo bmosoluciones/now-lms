@@ -16,4 +16,5 @@ omit =
     "now_lms/version.py",
     "now_lms/config/parse_config_file.py",
     "now_lms/cache.py ",
-    "now_lms/auth.py"
+    "now_lms/auth.py",
+    "now_lms/config/__init__.py "
