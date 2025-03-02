@@ -54,9 +54,9 @@ REVISION = "20250222"
 # Refences:
 #  - https://peps.python.org/pep-0440/
 # 0.0.1a18.dev20250222
-if PRERELEASE:
+if PRERELEASE:  # pragma: no cover
     VERSION = MAYOR + "." + MENOR + "." + PATCH + PRERELEASE + ".dev" + REVISION
-else:
+else:  # pragma: no cover
     if not POST:
         VERSION = MAYOR + "." + MENOR + "." + PATCH
     else:

@@ -206,7 +206,7 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
 @administrador_sesion.user_loader
 def cargar_sesion(identidad):  # pragma: no cover
     """Devuelve la entrada correspondiente al usuario que inicio sesión desde la base de datos."""
-    if identidad is not None: # pragma: no cover
+    if identidad is not None:  # pragma: no cover
         return database.session.get(Usuario, identidad)
     return None
 
