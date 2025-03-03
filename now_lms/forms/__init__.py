@@ -349,3 +349,9 @@ class AdSenseForm(FlaskForm):
     pub_id = StringField(validators=[])
     add_code = TextAreaField(validators=[])
     show_ads = BooleanField(validators=[])
+
+
+class PayaplForm(FlaskForm):
+    """Paypal"""
+
+    habilitado = BooleanField(validators=[])

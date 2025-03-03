@@ -36,5 +36,6 @@ paypal = Blueprint("paypal", __name__, template_folder=DIRECTORIO_PLANTILLAS, ur
 @cache.cached(timeout=50)
 def check_paypal_enabled():
     with current_app.app_context():
-        q = database.execute(database.select(PaypalConfig)).firts()
-        return q[0].enable
+        q = database.session.execute(database.select(PaypalConfig)).first()[0]
+        enabled = q.enable
+        return enabled

@@ -35,9 +35,9 @@ from sqlalchemy.exc import OperationalError
 from now_lms.auth import perfil_requerido, proteger_secreto
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
-from now_lms.db import AdSense, Configuracion, MailConfig, database
+from now_lms.db import AdSense, Configuracion, MailConfig, PaypalConfig, database
 from now_lms.db.tools import elimina_logo_perzonalizado
-from now_lms.forms import AdSenseForm, ConfigForm, MailForm, ThemeForm
+from now_lms.forms import AdSenseForm, ConfigForm, MailForm, PayaplForm, ThemeForm
 from now_lms.logs import log
 
 # ---------------------------------------------------------------------------------------
@@ -226,3 +226,29 @@ def stripe():
     """Configuración de Stripe."""
 
     return render_template("admin/stripe.html")
+
+
+@setting.route("/setting/paypal", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("admin")
+def paypal():
+    """Configuración de Paypal."""
+
+    config = database.session.execute(database.select(PaypalConfig)).first()[0]
+    form = PayaplForm(habilitado=config.enable)
+
+    if form.validate_on_submit() or request.method == "POST":
+
+        config.enable = form.habilitado.data
+
+        try:  # pragma: no cover
+            database.session.commit()
+            flash("Configuración de Paypal actualizada exitosamente.", "success")
+            return redirect(url_for("setting.paypal"))
+
+        except OperationalError:  # pragma: no cover
+            flash("No se pudo actualizar la configuración de Paypal.", "warning")
+            return redirect(url_for("setting.paypal"))
+
+    else:  # pragma: no cover
+        return render_template("admin/paypal.html", form=form, config=config, with_paypal=True)

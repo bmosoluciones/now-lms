@@ -22,12 +22,19 @@
 <!-- AlpineJS -->
 <script src="//unpkg.com/alpinejs" defer></script>
 
-{% if stripe_enabled() %}
-{% if with_stripe %}
+
+{%- if stripe_enabled() -%}
+{%- if with_stripe -%}
 <!-- Stripe -->
 <script src="https://js.stripe.com/v3/"></script>
-{% endif %}
-{% endif %}
+{%- endif -%}
+{%- endif -%}
+
+{%- if paypal_enabled() -%}
+<!-- Paypal -->
+<script src="https://js.braintreegateway.com/web/dropin/1.44.1/js/dropin.min.js"></script>
+{%- endif -%}
+
 
 <!-- Favicons -->
 <link rel="apple-touch-icon" sizes="180x180"
