@@ -28,7 +28,6 @@ docker-compose.yml
 codecov.yml
 venv
 tests
-development.txt
 requirements-databases.txt
 *.yml
 *.db
@@ -52,5 +51,4 @@ build
 docs.txt
 now_lms.db
 replit.nix
-requirements.txt
 run_server.sh
