@@ -17,6 +17,7 @@ RUN microdnf install -y --nodocs --best nodejs npm && cd /app/now_lms/static && 
 
 COPY requirements.txt /app/requirements.txt
 RUN microdnf install -y --nodocs --best python3.12 python3.12-pip python3.12-cryptography \
+    && microdnf install -y --nodocs --best pango \
     && /usr/bin/python3.12 --version \
     && /usr/bin/python3.12 -m pip --no-cache-dir install -r /app/requirements.txt \
     && rm -rf /root/.cache/pip && rm -rf /tmp && microdnf remove -y --best python3.12-pip \
