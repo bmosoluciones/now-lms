@@ -25,6 +25,7 @@ requests
 redis
 stripe
 waitress
+weasyprint
 wtforms
 
 # Soporte a Bases de datos
