@@ -29,7 +29,7 @@ Gestión de certificados.
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, flash, redirect, render_template, request
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
 from sqlalchemy.exc import OperationalError
 
@@ -66,7 +66,7 @@ def new_tag():
             flash("Nueva etiqueta creada.", "successs")
         except OperationalError:  # pragma: no cover
             flash("Hubo un error al crear la etiqueta.", "warning")
-        return redirect("/tags")
+        return redirect(url_for("tag.tags"))
 
     return render_template("learning/etiquetas/nueva_etiqueta.html", form=form)
 
@@ -94,7 +94,7 @@ def delete_tag(ulid: str):
     """Elimina una etiqueta."""
     Etiqueta.query.filter(Etiqueta.id == ulid).delete()
     database.session.commit()
-    return redirect("/tags")
+    return redirect(url_for("tag.tags"))
 
 
 @tag.route("/tag/<ulid>/edit", methods=["GET", "POST"])
@@ -113,6 +113,6 @@ def edit_tag(ulid: str):
             flash("Etiqueta editada correctamente.", "success")
         except OperationalError:  # pragma: no cover
             flash("No se puedo editar la etiqueta.", "warning")
-        return redirect("/tags")
+        return redirect(url_for("tag.tags"))
 
     return render_template("learning/etiquetas/editar_etiqueta.html", form=form)

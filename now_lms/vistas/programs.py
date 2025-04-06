@@ -178,7 +178,7 @@ def edit_program(ulid: str):
             flash("Programa editado correctamente.", "success")
         except OperationalError:  # pragma: no cover
             flash("No se puedo editar el programa.")
-        return redirect("/programs_list")
+        return redirect(url_for("program.programas"))
 
     return render_template("learning/programas/editar_programa.html", form=form, programa=programa)
 
