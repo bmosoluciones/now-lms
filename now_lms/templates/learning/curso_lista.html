@@ -28,7 +28,7 @@
 
         <p>
           <span class="badge bg-success">
-            <a href="{{ url_for("nuevo_curso") }}" class="link-light">Nuevo Curso</a>
+            <a href="{{ url_for("course.nuevo_curso") }}" class="link-light">Nuevo Curso</a>
           </span>
         </p>
 
@@ -55,22 +55,22 @@
           <tbody>
             <tr>
               <td>
-                <a href="{{ url_for("curso", course_code=item.codigo, inspect=True) }}" class="link-dark">
+                <a href="{{ url_for("course.curso", course_code=item.codigo, inspect=True) }}" class="link-dark">
                   {{ item.codigo }}
                 </a>
               </td>
               <td>
-                <a href="{{ url_for("curso", course_code=item.codigo, inspect=True) }}" class="link-dark">
+                <a href="{{ url_for("course.curso", course_code=item.codigo, inspect=True) }}" class="link-dark">
                   {{ item.nombre }}
                 </a>
               </td>
               <td>
-                <a href="{{ url_for("curso", course_code=item.codigo, inspect=True) }}" class="link-dark">
+                <a href="{{ url_for("course.curso", course_code=item.codigo, inspect=True) }}" class="link-dark">
                   {{ item.fecha_inicio }}
                 </a>
               </td>
               <td>
-                <a href="{{ url_for("curso", course_code=item.codigo, inspect=True) }}" class="link-dark">
+                <a href="{{ url_for("course.curso", course_code=item.codigo, inspect=True) }}" class="link-dark">
                   {{ item.fecha_fin }}
                 </a>
               </td>
@@ -96,7 +96,7 @@
 
                 {% endif %}
 
-                <a href="{{ url_for("curso", course_code=item.codigo, inspect=True) }}" class="link-dark">
+                <a href="{{ url_for("course.curso", course_code=item.codigo, inspect=True) }}" class="link-dark">
                   {{ item.estado | capitalize }}
                 </a>
               </td>
@@ -116,16 +116,17 @@
 
                 {% endif %}
 
-                <a href="{{ url_for("curso", course_code=item.codigo, inspect=True) }}" class="link-dark">
+                <a href="{{ url_for("course.curso", course_code=item.codigo, inspect=True) }}" class="link-dark">
                   {{ item.publico | replace("True", "Publico") | replace("False", "Privado") | replace("None", "Privado") }}
                 </a>
               </td>
               <td>
-                <a href="{{ url_for("administrar_curso", course_code=item.codigo) }}" class="btn btn-primary btn-sm"
-                  tabindex="-1" role="button" aria-disabled="false"><i class="bi bi-pencil-square"
-                    aria-hidden="true"></i> Editar</a>
-                <a href="{{ url_for("curso", course_code=item.codigo, inspect=True) }}" class="btn btn-primary btn-sm"
-                  tabindex="-1" role="button" aria-disabled="false"><i class="bi bi-eye-fill" aria-hidden="true"></i>
+                <a href="{{ url_for("course.administrar_curso", course_code=item.codigo) }}"
+                  class="btn btn-primary btn-sm" tabindex="-1" role="button" aria-disabled="false"><i
+                    class="bi bi-pencil-square" aria-hidden="true"></i> Editar</a>
+                <a href="{{ url_for("course.curso", course_code=item.codigo, inspect=True) }}"
+                  class="btn btn-primary btn-sm" tabindex="-1" role="button" aria-disabled="false"><i
+                    class="bi bi-eye-fill" aria-hidden="true"></i>
                   Visualizar</a>
 
               </td>
