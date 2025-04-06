@@ -60,8 +60,8 @@ def activar_usuario(user_id):
         flash("Usuario definido como activo", "info")
     else:
         flash("Usuario ya se encuentra definido como activo", "warning")
-    cache.delete("view/" + url_for("usuarios"))
-    return redirect(url_for("usuario", id_usuario=user_id))
+    cache.delete("view/" + url_for("admin_profile.usuarios"))
+    return redirect(url_for("admin_profile.usuarios"))
 
 
 @admin_profile.route("/admin/users/set_inactive/<user_id>")
@@ -76,8 +76,8 @@ def inactivar_usuario(user_id):
         flash("Usuario definido como inactivo", "info")
     else:
         flash("Usuario ya se encuentra definido como inactivo", "warning")
-    cache.delete("view/" + url_for("usuarios"))
-    return redirect(url_for("usuario", id_usuario=user_id))
+    cache.delete("view/" + url_for("admin_profile.usuarios"))
+    return redirect(url_for("admin_profile.usuarios"))
 
 
 @admin_profile.route("/admin/users/delete/<user_id>")
