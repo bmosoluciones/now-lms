@@ -25,7 +25,7 @@ Simple to {install, use, configure, monetice and maintain} learning management s
 -   System Administrators refer to the [documentation](https://bmosoluciones.github.io/now-lms/index.html).
 
 ```
-Live demo at: https://now-lms-demo.onrender.com/index
+Live demo at: https://now-lms-demo.onrender.com/
 User: lms-admin
 Password: lms-admin
 Data in the live demo is reset in every deployment, wait to the free render instance to wake up.
@@ -46,17 +46,11 @@ To star a local server just execute:
 
 ```
 python3 -m venv venv
-# Linux:
-source venv/bin/activate
-# Windows
-venv\Scripts\activate.bat
-# Install NOW Learning Managenet System
 python -m pip install now_lms
-# Execute the build in server
 python -m now_lms
 ```
 
-Visit http://127.0.0.1:8080/ in your browser, the default user and password are `lms-admin`, note that the default server is only bind to the localhost. You can test the software in your local machine, if you want to deploy NOW-LMS for production use please check de [user manual](https://bmosoluciones.github.io/now-lms/setup.html).
+Visit `http://127.0.0.1:8080/` in your browser, the default user and password are `lms-admin`, note that the default server is only bind to the localhost. You can test the software in your local machine, if you want to deploy NOW-LMS for production use please check de [user manual](https://bmosoluciones.github.io/now-lms/setup.html).
 
 ## Contributing
 
