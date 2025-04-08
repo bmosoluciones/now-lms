@@ -14,11 +14,8 @@ Build Command: pip install -r requirements.txt && cd now_lms/static/ && npm inst
 Start Command: python -m now_lms
 ```
 
-Important: You can test NOW-LMS for free on Render, but with the default configuration NOW - LMS will use a SQLite database as data store, this database is not goin to persist after system upgrades, to keep your data safe ve sure to set a proper database service and set the
-next enviroment variables:
+Important: You can test NOW-LMS for free on Render, but with the default configuration NOW - LMS will use a SQLite database as data store, this database is not goin to persist after system upgrades, to keep your data safe ve sure to set a proper database service and set the next enviroment variables:
 
 ```
 DATABASE_URL=proper_db_connet_string
 ```
-
-Note that you can host a tiny up to 20MB PostgreSQL database for free in [elephantsql](https://customer.elephantsql.com/instance).

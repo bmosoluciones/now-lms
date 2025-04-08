@@ -1,5 +1,10 @@
 # Install NOW - LMS in DreamHost shared host.
 
+!!! failure
+
+    Passenger was removed from dreamhost, see:
+    https://www.reddit.com/r/dreamhost/comments/19fjg18/passenger_removed/?rdt=55800
+
 NOW - Learning Management System can be hosted at DreamHost shared hosting service, this is usefull if you alredy
 have a host plan in DreamHost and you want to serve a few users, in a shared hosting enviroment there will be some
 limitations like no separate cache service or memory constraints, but if you alredy have a host plan in DreamHost
