@@ -1,5 +1,10 @@
 {pkgs}: {
   deps = [
+    pkgs.pango
+    pkgs.harfbuzz
+    pkgs.glib
+    pkgs.ghostscript
+    pkgs.fontconfig
     pkgs.vim-full
     pkgs.rustc
     pkgs.pkg-config
