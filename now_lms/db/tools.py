@@ -346,7 +346,10 @@ def get_addsense_code():
 def database_is_populated():
     """Check is database is populated."""
 
-    query = database.execute(database.select(Configuracion)).first()
+    try:
+        query = database.execute(database.select(Configuracion)).first()
+    except AttributeError:
+        return False
 
     if query:
         return True
