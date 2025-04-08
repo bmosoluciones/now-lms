@@ -1,3 +1,241 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>None./</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="None"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/"/>
+    </url>
+    <url>
+        <loc>NoneCONTRIBUTING/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="NoneCONTRIBUTING/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/CONTRIBUTING/"/>
+    </url>
+    <url>
+        <loc>Nonechanges/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonechanges/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/changes/"/>
+    </url>
+    <url>
+        <loc>Nonedb/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedb/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/db/"/>
+    </url>
+    <url>
+        <loc>Nonedev_ops/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedev_ops/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/dev_ops/"/>
+    </url>
+    <url>
+        <loc>Nonedreamhost/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedreamhost/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/dreamhost/"/>
+    </url>
+    <url>
+        <loc>Nonefaq/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonefaq/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/faq/"/>
+    </url>
+    <url>
+        <loc>Nonelogo/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonelogo/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/logo/"/>
+    </url>
+    <url>
+        <loc>Noneoci/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneoci/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/oci/"/>
+    </url>
+    <url>
+        <loc>Nonepypi/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonepypi/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/pypi/"/>
+    </url>
+    <url>
+        <loc>Nonereferences/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonereferences/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/references/"/>
+    </url>
+    <url>
+        <loc>Nonerelease/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonerelease/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/release/"/>
+    </url>
+    <url>
+        <loc>Nonerocky/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonerocky/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/rocky/"/>
+    </url>
+    <url>
+        <loc>Nonesetup-conf/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonesetup-conf/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/setup-conf/"/>
+    </url>
+    <url>
+        <loc>Nonesetup/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonesetup/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/setup/"/>
+    </url>
+    <url>
+        <loc>Nonesing-off/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonesing-off/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/sing-off/"/>
+    </url>
+    <url>
+        <loc>Noneblog/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneblog/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/blog/"/>
+    </url>
+    <url>
+        <loc>Nonees/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="None"/>
+    </url>
+    <url>
+        <loc>Nonees/CONTRIBUTING/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/CONTRIBUTING/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="NoneCONTRIBUTING/"/>
+    </url>
+    <url>
+        <loc>Nonees/changes/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/changes/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonechanges/"/>
+    </url>
+    <url>
+        <loc>Nonees/db/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/db/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedb/"/>
+    </url>
+    <url>
+        <loc>Nonees/dev_ops/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/dev_ops/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedev_ops/"/>
+    </url>
+    <url>
+        <loc>Nonees/dreamhost/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/dreamhost/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedreamhost/"/>
+    </url>
+    <url>
+        <loc>Nonees/faq/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/faq/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonefaq/"/>
+    </url>
+    <url>
+        <loc>Nonees/logo/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/logo/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonelogo/"/>
+    </url>
+    <url>
+        <loc>Nonees/oci/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/oci/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneoci/"/>
+    </url>
+    <url>
+        <loc>Nonees/pypi/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/pypi/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonepypi/"/>
+    </url>
+    <url>
+        <loc>Nonees/references/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/references/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonereferences/"/>
+    </url>
+    <url>
+        <loc>Nonees/release/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/release/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonerelease/"/>
+    </url>
+    <url>
+        <loc>Nonees/rocky/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/rocky/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonerocky/"/>
+    </url>
+    <url>
+        <loc>Nonees/setup-conf/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/setup-conf/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonesetup-conf/"/>
+    </url>
+    <url>
+        <loc>Nonees/setup/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/setup/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonesetup/"/>
+    </url>
+    <url>
+        <loc>Nonees/sing-off/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/sing-off/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonesing-off/"/>
+    </url>
+    <url>
+        <loc>Nonees/blog/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/blog/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneblog/"/>
+    </url>
 </urlset>
