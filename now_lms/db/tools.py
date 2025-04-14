@@ -26,8 +26,9 @@ from typing import NamedTuple, Union
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import current_app, flash
+from flask import flash
 from flask_login import current_user
+from sqlalchemy.exc import OperationalError
 
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
@@ -55,9 +56,6 @@ from now_lms.db import (
     Usuario,
     database,
 )
-
-# pylint: disable=E1101
-
 
 # < --------------------------------------------------------------------------------------------- >
 # Funciones auxiliares relacionadas a consultas de la base de datos.
@@ -102,7 +100,7 @@ def crear_configuracion_predeterminada():
         r=urandom(16),
     )
     mail_config = MailConfig(
-        email=True,
+        email=False,
         MAIL_USE_TLS=False,
         MAIL_USE_SSL=False,
         email_verificado=False,
@@ -152,9 +150,6 @@ class RecursoIndex(NamedTuple):
     next_resource: Union[None, RecursoInfo] = None
 
 
-# Lineas muy largas por los comentarios para ignorar errores de tipo.
-# pylint: disable=C0301
-# flake8: noqa
 def crear_indice_recurso(recurso: str) -> NamedTuple:
     """Devuelve el indice de un recurso para determinar elemento previo y posterior."""
 
@@ -313,7 +308,9 @@ def get_addsense_meta():
     """AdSense metatags."""
     try:
         query = database.session.execute(database.select(AdSense)).first()
-    except:
+    except AttributeError:
+        return False
+    except OperationalError:
         query = None
 
     if query:
@@ -330,7 +327,9 @@ def get_addsense_code():
     """AdSense metatags."""
     try:
         query = database.session.execute(database.select(AdSense)).first()
-    except:
+    except AttributeError:
+        return False
+    except OperationalError:
         query = None
 
     if query:
@@ -350,6 +349,8 @@ def database_is_populated():
         query = database.execute(database.select(Configuracion)).first()
     except AttributeError:
         return False
+    except OperationalError:
+        query = None
 
     if query:
         return True

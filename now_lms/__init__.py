@@ -204,15 +204,15 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
 # Control de acceso a la aplicación con la extensión flask_login.
 # ---------------------------------------------------------------------------------------
 @administrador_sesion.user_loader
-def cargar_sesion(identidad):  # pragma: no cover
+def cargar_sesion(identidad):
     """Devuelve la entrada correspondiente al usuario que inicio sesión desde la base de datos."""
-    if identidad is not None:  # pragma: no cover
+    if identidad is not None:
         return database.session.get(Usuario, identidad)
     return None
 
 
 @administrador_sesion.unauthorized_handler
-def no_autorizado():  # pragma: no cover
+def no_autorizado():
     """Redirecciona al inicio de sesión usuarios no autorizados."""
     flash("Favor iniciar sesión para acceder al sistema.", "warning")
     return INICIO_SESION
@@ -265,45 +265,45 @@ makes a payment.
 """
 
 
-# Errores standares
-def handle_402(error):  # pragma: no cover
-    if error:
-        return render_template("error_pages/403.html")
+# Errores personalizados
+def handle_402(error):
+    """Pagina personalizada para recursos que requieren pago."""
+
+    return render_template("error_pages/403.html", error=error)
 
 
 lms_app.register_error_handler(PaymentRequired, handle_402)
 
 
+# Errores standares
 @lms_app.errorhandler(403)
 @cache.cached()
-def error_403(error):  # pragma: no cover
+def error_403(error):
     """Pagina personalizada para recursos no autorizados."""
-    assert error is not None  # nosec B101
-    return render_template("error_pages/403.html"), 403
+
+    return render_template("error_pages/403.html", error=error), 403
 
 
 @lms_app.errorhandler(404)
 @cache.cached()
-def error_404(error):  # pragma: no cover
+def error_404(error):
     """Pagina personalizada para recursos no encontrados."""
-    assert error is not None  # nosec B101
-    return render_template("error_pages/404.html"), 404
+
+    return render_template("error_pages/404.html", error=error), 404
 
 
 @lms_app.errorhandler(405)
 @cache.cached()
-def error_405(error):  # pragma: no cover
+def error_405(error):
     """Pagina personalizada para metodos no permitidos."""
-    assert error is not None  # nosec B101
-    return render_template("error_pages/405.html"), 405
+    return render_template("error_pages/405.html", error=error), 405
 
 
 @lms_app.errorhandler(500)
 @cache.cached()
-def error_500(error):  # pragma: no cover
+def error_500(error):
     """Pagina personalizada para recursos no autorizados."""
-    assert error is not None  # nosec B101
-    return render_template("error_pages/500.html"), 500
+    return render_template("error_pages/500.html", error=error), 500
 
 
 # ---------------------------------------------------------------------------------------
@@ -318,13 +318,13 @@ def carga_configuracion_del_sitio_web_desde_db():  # pragma: no cover
             CONFIG = Configuracion.query.first()
         # Si no existe una entrada en la tabla de configuración uno de los siguientes errores puede ocurrir
         # en dependencia del motor de base de datos utilizado.
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             CONFIG = None
-        except ProgrammingError:  # pragma: no cover
+        except ProgrammingError:
             CONFIG = None
-        except PGProgrammingError:  # pragma: no cover
+        except PGProgrammingError:
             CONFIG = None
-        except DatabaseError:  # pragma: no cover
+        except DatabaseError:
             CONFIG = None
     return CONFIG
 
@@ -402,13 +402,13 @@ def init_app(with_examples=False):
             if consulta:
                 DB_ACCESS = True
 
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             DB_ACCESS = False
-        except ProgrammingError:  # pragma: no cover
+        except ProgrammingError:
             DB_ACCESS = False
-        except PGProgrammingError:  # pragma: no cover
+        except PGProgrammingError:
             DB_ACCESS = False
-        except DatabaseError:  # pragma: no cover
+        except DatabaseError:
             DB_ACCESS = False
 
         if DB_ACCESS:

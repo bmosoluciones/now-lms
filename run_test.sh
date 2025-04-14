@@ -3,7 +3,6 @@ echo -------------------------------------------------
 echo Format Python code
 echo -------------------------------------------------
 echo
-isort now_lms
 black now_lms
 echo -------------------------------------------------
 echo Check python code with flake8
