@@ -418,13 +418,13 @@ def init_app(with_examples=False):
                 VERIFICA_EXISTE_CONFIGURACION_DB = carga_configuracion_del_sitio_web_desde_db()
                 VERIFICA_EXISTE_USUARIO_DB = Usuario.query.first()
                 DB_INICIALIZADA = (VERIFICA_EXISTE_CONFIGURACION_DB is not None) and (VERIFICA_EXISTE_USUARIO_DB is not None)
-            except OperationalError:  # pragma: no cover
+            except OperationalError:
                 DB_INICIALIZADA = False
-            except ProgrammingError:  # pragma: no cover
+            except ProgrammingError:
                 DB_INICIALIZADA = False
-            except PGProgrammingError:  # pragma: no cover
+            except PGProgrammingError:
                 DB_INICIALIZADA = False
-            except DatabaseError:  # pragma: no cover
+            except DatabaseError:
                 DB_INICIALIZADA = False
         else:
             log.warning("Error al acceder a la base de datos.")
