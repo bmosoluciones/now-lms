@@ -160,6 +160,7 @@ class Curso(database.Model, BaseTabla):
     publico = database.Column(database.Boolean(), index=True)
     certificado = database.Column(database.Boolean())
     auditable = database.Column(database.Boolean())
+    pagado = database.Column(database.Boolean())
     precio = database.Column(database.Numeric())
     capacidad = database.Column(database.Integer())
     fecha_inicio = database.Column(database.Date())
@@ -169,6 +170,23 @@ class Curso(database.Model, BaseTabla):
     nivel = database.Column(database.Integer())
     promocionado = database.Column(database.Boolean())
     fecha_promocionado = database.Column(database.DateTime, nullable=True)
+
+
+class ClaseMagistral(database.Model, BaseTabla):
+    """Clase Magistral."""
+
+    __table_args__ = (database.UniqueConstraint("codigo", name="clase_codigo_unico"),)
+    nombre = database.Column(database.String(150), nullable=False)
+    codigo = database.Column(database.String(10), unique=True, index=True)
+    descripcion = database.Column(database.String(1000), nullable=False)
+    estado = database.Column(database.String(10), nullable=False, index=True)
+    publico = database.Column(database.Boolean(), index=True)
+    certificado = database.Column(database.Boolean())
+    auditable = database.Column(database.Boolean())
+    pagado = database.Column(database.Boolean())
+    precio = database.Column(database.Numeric())
+    portada = database.Column(database.Boolean())
+    promocionado = database.Column(database.Boolean())
 
 
 class CursoRecursoDescargable(database.Model, BaseTabla):
@@ -422,6 +440,7 @@ class Programa(database.Model, BaseTabla):
     codigo = database.Column(database.String(10), nullable=False, unique=True)
     descripcion = database.Column(database.String(200))
     texto = database.Column(database.String(1500))
+    pagado = database.Column(database.Boolean())
     precio = database.Column(database.Float())
     publico = database.Column(database.Boolean())
     # draft, open, closed
@@ -464,6 +483,7 @@ class Recurso(database.Model, BaseTabla):
     promocionado = database.Column(database.Boolean())
     fecha_promocionado = database.Column(database.DateTime, nullable=True)
     usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
+    pagado = database.Column(database.Boolean())
 
 
 class Certificado(database.Model, BaseTabla):

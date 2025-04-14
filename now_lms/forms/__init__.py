@@ -151,6 +151,7 @@ class CurseForm(BaseForm):
     duracion = IntegerField(validators=[])
     nivel = SelectField("User", choices=[(0, "Introductorio"), (1, "Principiante"), (2, "Intermedio"), (3, "Avanzado")])
     promocionado = BooleanField(validators=[])
+    pagado = BooleanField(validators=[])
 
 
 class CursoSeccionForm(BaseForm):
@@ -271,6 +272,7 @@ class ProgramaForm(BaseForm):
         ],
     )
     promocionado = BooleanField(validators=[])
+    pagado = BooleanField(validators=[])
 
 
 class RecursoForm(BaseForm):
@@ -289,6 +291,7 @@ class RecursoForm(BaseForm):
             ("guide", "Guia"),
         ],
     )
+    pagado = BooleanField(validators=[])
 
 
 class UserForm(FlaskForm):
