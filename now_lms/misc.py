@@ -222,3 +222,20 @@ ESTILOS_ALERTAS: dict = {
 }
 
 ESTILO_ALERTAS = EstiloAlterta(icono=ICONOS_ALERTAS, clase=ESTILOS_ALERTAS)
+
+
+def check_generate_pdf():
+    """Verify PDF generation."""
+
+    from now_lms.db import Certificado, database
+
+    from jinja2 import Environment, BaseLoader
+
+    from weasyprint import HTML, CSS
+
+    cert = database.session.execute(database.select(Certificado).filter_by(titulo="Demo Certificado")).first()
+    cert = cert[0]
+
+    rtemplate = Environment(loader=BaseLoader).from_string(cert.html)
+
+    HTML(string=rtemplate.render()).write_pdf("/tmp/weasyprint-website.pdf", stylesheets=[CSS(string=cert.css)])

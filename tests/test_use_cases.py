@@ -16,11 +16,8 @@
 # - William José Moreno Reyes
 
 
-import os
-import sys
 import pytest
 
-from now_lms import log
 
 """
 Casos de uso mas comunes.
@@ -66,3 +63,20 @@ def test_contraseña_incorrecta(lms_application, request):
                 client.post("/user/login", data={"usuario": "lms-admin", "acceso": "lms_admin"})
                 assert isinstance(current_user, AnonymousUserMixin)
                 assert validar_acceso("lms-admn", "lms-admin") is False
+
+
+def test_generar_pdf(lms_application, request):
+
+    if request.config.getoption("--testpdf") == "True":
+
+        from now_lms import initial_setup
+        from now_lms.db import database
+
+        with lms_application.app_context():
+
+            database.drop_all()
+            initial_setup(with_tests=False, with_examples=False)
+
+            from now_lms.misc import check_generate_pdf
+
+            check_generate_pdf()
