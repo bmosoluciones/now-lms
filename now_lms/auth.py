@@ -67,7 +67,7 @@ def validar_acceso(usuario_id, acceso):
             clave_validada = ph.verify(registro.acceso, acceso.encode())
         except VerifyMismatchError:
             clave_validada = False
-    else:  # pragma: no cover
+    else:
         log.trace("No se encontro registro de usuario {usuario}", usuario=usuario_id)
         clave_validada = False
 
@@ -88,7 +88,7 @@ def perfil_requerido(perfil_id):
             if (current_user.is_authenticated and current_user.tipo == perfil_id) or current_user.tipo == "admin":
                 return func(*args, **kwargs)
 
-            else:  # pragma: no cover
+            else:
                 flash("No se encuentra autorizado a acceder al recurso solicitado.", "error")
                 return abort(403)
 
