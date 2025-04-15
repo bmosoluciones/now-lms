@@ -16,11 +16,12 @@
 # - William José Moreno Reyes
 
 """Definición de base de datos."""
-from os import path, remove
+
 
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
+from os import path, remove
 from typing import NamedTuple, Union
 
 # ---------------------------------------------------------------------------------------
@@ -342,18 +343,18 @@ def get_addsense_code():
         return ""
 
 
-def database_is_populated():
+def database_is_populated(app):
     """Check is database is populated."""
 
-    try:
-        query = database.execute(database.select(Configuracion)).first()
-    except AttributeError:
-        return False
-    except OperationalError:
-        query = None
-
-    if query:
-        return True
-
-    else:
-        return False
+    with app.app_context():
+        try:
+            query = database.execute(database.select(Configuracion)).first()
+            query = query[0]
+            if query:
+                return True
+            else:
+                return False
+        except AttributeError:
+            return False
+        except OperationalError:
+            return False

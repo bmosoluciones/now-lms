@@ -27,9 +27,12 @@ from waitress import serve
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms import init_app, lms_app
+from now_lms import lms_app, init_app
+from now_lms.db.tools import database_is_populated
+
+PORT = environ.get("DATABASE_URL") or 8080
 
 init_app()
 
 logger.info("Iniciando NOW Learning Management System")
-serve(app=lms_app)
+serve(app=lms_app, port=int(PORT))
