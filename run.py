@@ -31,5 +31,5 @@ from now_lms import init_app, lms_app
 
 init_app()
 
-logger.info("Iniciando NO Learning Management System")
+logger.info("Iniciando NOW Learning Management System")
 serve(app=lms_app)
