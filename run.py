@@ -36,4 +36,4 @@ if init_app():
     logger.info("Iniciando NOW Learning Management System")
     serve(app=lms_app, port=int(PORT))
 else:
-    logger.error("No se iniciar NOW Learning Management System.")
+    logger.error("No se pudo iniciar NOW Learning Management System.")

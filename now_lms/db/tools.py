@@ -350,13 +350,37 @@ def database_is_populated(app):
     """Check is database is populated."""
 
     with app.app_context():
+        from sqlalchemy.sql import text
+
         try:
-            query = database.execute(database.select(Configuracion)).first()
-            query = query[0]
-            if query:
-                return True
+            if "postgresql" in app.config["SQLALCHEMY_DATABASE_URI"]:
+                check = database.session.execute(text("SELECT FROM pg_tables WHERE tablename  = 'curso';")).first()
+                log.warning("Check: {check}", check=check)
+                if check:
+                    return True
+                else:
+                    return False
+
+            elif "mysql" in app.config["SQLALCHEMY_DATABASE_URI"]:
+                check = database.session.execute(text("SHOW TABLES LIKE 'curso';")).first()
+                log.warning("Check: {check}", check=check)
+                if check:
+                    return True
+                else:
+                    return False
+
+            elif "sqlite" in app.config["SQLALCHEMY_DATABASE_URI"]:
+                check = database.session.execute(
+                    text("SELECT name FROM sqlite_master WHERE type='table' AND name='curso';")
+                ).first()
+                log.warning("Check: {check}", check=check)
+                if check:
+                    return True
+                else:
+                    return False
             else:
                 return False
+
         except AttributeError:
             return False
         except OperationalError:
@@ -369,20 +393,37 @@ def database_is_populated(app):
             return False
 
 
+def database_select_version_query(app):
+    """Returns the query to get version of the database."""
+
+    if "postgresql" in app.config["SQLALCHEMY_DATABASE_URI"]:
+        return "SELECT version() AS version;"
+    elif "mysql" in app.config["SQLALCHEMY_DATABASE_URI"]:
+        return "SELECT VERSION() AS version;"
+    elif "mariadb" in app.config["SQLALCHEMY_DATABASE_URI"]:
+        return "SELECT VERSION() AS version;"
+    elif "sqlite" in app.config["SQLALCHEMY_DATABASE_URI"]:
+        return "SELECT sqlite_version() AS version;"
+    else:
+        return None
+
+
 def check_db_access(app):
     """Verifica acceso a la base de datos."""
 
     with app.app_context():
+        from sqlalchemy.sql import text
+
         log.trace("Verificando acceso a base de datos.")
         try:
-            from now_lms.db import SystemInfo
-
-            consulta = database.session.execute(database.select(SystemInfo)).first()
-            if consulta:
-                log.trace("Acceso a base de datos verificado.")
-                return True
-            else:
-                return False
+            QUERY = database_select_version_query(app)
+            if QUERY:
+                consulta = database.session.execute(text(QUERY)).first()
+                if consulta:
+                    log.trace("Acceso a base de datos verificado.")
+                    return True
+                else:
+                    return False
         except OperationalError:
             return False
         except ProgrammingError:
