@@ -22,6 +22,7 @@
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, current_app
+from sqlalchemy.exc import OperationalError
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
@@ -36,6 +37,9 @@ paypal = Blueprint("paypal", __name__, template_folder=DIRECTORIO_PLANTILLAS, ur
 @cache.cached(timeout=50)
 def check_paypal_enabled():
     with current_app.app_context():
-        q = database.session.execute(database.select(PaypalConfig)).first()[0]
-        enabled = q.enable
-        return enabled
+        try:
+            q = database.session.execute(database.select(PaypalConfig)).first()[0]
+            enabled = q.enable
+            return enabled
+        except OperationalError:
+            return False

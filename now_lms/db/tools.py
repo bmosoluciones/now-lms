@@ -29,14 +29,16 @@ from typing import NamedTuple, Union
 # ---------------------------------------------------------------------------------------
 from flask import flash
 from flask_login import current_user
-from sqlalchemy.exc import OperationalError
+from pg8000.dbapi import ProgrammingError as PGProgrammingError
+from pg8000.exceptions import DatabaseError
+from sqlalchemy.exc import OperationalError, ProgrammingError
 
-from now_lms.cache import cache
-from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
+from now_lms.cache import cache
+from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
 from now_lms.db import (
     AdSense,
     CategoriaCurso,
@@ -57,6 +59,7 @@ from now_lms.db import (
     Usuario,
     database,
 )
+from now_lms.logs import log
 
 # < --------------------------------------------------------------------------------------------- >
 # Funciones auxiliares relacionadas a consultas de la base de datos.
@@ -357,4 +360,36 @@ def database_is_populated(app):
         except AttributeError:
             return False
         except OperationalError:
+            return False
+        except ProgrammingError:
+            return False
+        except PGProgrammingError:
+            return False
+        except DatabaseError:
+            return False
+
+
+def check_db_access(app):
+    """Verifica acceso a la base de datos."""
+
+    with app.app_context():
+        log.trace("Verificando acceso a base de datos.")
+        try:
+            from now_lms.db import SystemInfo
+
+            consulta = database.session.execute(database.select(SystemInfo)).first()
+            if consulta:
+                log.trace("Acceso a base de datos verificado.")
+                return True
+            else:
+                return False
+        except OperationalError:
+            return False
+        except ProgrammingError:
+            return False
+        except PGProgrammingError:
+            return False
+        except DatabaseError:
+            return False
+        except AttributeError:
             return False

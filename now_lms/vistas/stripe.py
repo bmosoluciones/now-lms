@@ -22,6 +22,7 @@
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, current_app
+from sqlalchemy.exc import OperationalError
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
@@ -36,8 +37,11 @@ stripe = Blueprint("stripe", __name__, template_folder=DIRECTORIO_PLANTILLAS, ur
 @cache.cached(timeout=50)
 def check_stripe_enabled():
     with current_app.app_context():
-        q = database.session.execute(database.select(StripeConfig)).first()
-        return q[0].enable
+        try:
+            q = database.session.execute(database.select(StripeConfig)).first()
+            return q[0].enable
+        except OperationalError:
+            return False
 
 
 @cache.cached(timeout=50)

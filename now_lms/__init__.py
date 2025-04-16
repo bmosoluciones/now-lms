@@ -366,15 +366,16 @@ def initial_setup(with_examples=False, with_tests=False):
         database.create_all()
         system_info(lms_app)
         log.debug("Esquema de base de datos creado correctamente.")
-        log.info("Cargando datos de muestra.")
+        log.debug("Cargando datos de muestra.")
         crear_configuracion_predeterminada()
         crear_curso_predeterminado()
         crear_usuarios_predeterminados()
         crear_certificado_dummy()
+        log.debug("Datos de muestra cargado correctamente.")
         if with_examples:
+            log.debug("Cargando datos de prueba.")
             crear_categorias()
             crear_etiquetas()
-            log.debug("Cargando datos de prueba.")
             crear_curso_demo()
             crear_curso_demo1()
             crear_curso_demo2()
@@ -388,58 +389,29 @@ def initial_setup(with_examples=False, with_tests=False):
             from now_lms.db.data_test import crear_data_para_pruebas
 
             crear_data_para_pruebas()
-
     log.info("NOW - LMS iniciado correctamente.")
 
 
 def init_app(with_examples=False):
     """Funcion auxiliar para iniciar la aplicacion."""
 
-    with lms_app.app_context():
-        log.trace("Verificando acceso a base de datos.")
-        try:
-            from now_lms.db.initial_data import SystemInfo
+    from now_lms.db.tools import database_is_populated, check_db_access
 
-            consulta = database.session.execute(database.select(SystemInfo)).all()
-            if consulta:
-                DB_ACCESS = True
+    DB_ACCESS = check_db_access(lms_app)
+    DB_INICIALIZADA = database_is_populated(lms_app)
 
-        except OperationalError:
-            DB_ACCESS = False
-        except ProgrammingError:
-            DB_ACCESS = False
-        except PGProgrammingError:
-            DB_ACCESS = False
-        except DatabaseError:
-            DB_ACCESS = False
-
-        if DB_ACCESS:
-            log.trace("Acceso a base de datos verificado.")
-
-            try:
-                VERIFICA_EXISTE_CONFIGURACION_DB = carga_configuracion_del_sitio_web_desde_db()
-                VERIFICA_EXISTE_USUARIO_DB = Usuario.query.first()
-                DB_INICIALIZADA = (VERIFICA_EXISTE_CONFIGURACION_DB is not None) and (VERIFICA_EXISTE_USUARIO_DB is not None)
-            except OperationalError:
-                DB_INICIALIZADA = False
-            except ProgrammingError:
-                DB_INICIALIZADA = False
-            except PGProgrammingError:
-                DB_INICIALIZADA = False
-            except DatabaseError:
-                DB_INICIALIZADA = False
+    if DB_ACCESS:
+        log.trace("Acceso a base de datos verificado.")
+        if DB_INICIALIZADA:
+            log.trace("Base de datos inicializada.")
+            return True
         else:
-            log.warning("Error al acceder a la base de datos.")
-            DB_INICIALIZADA = False
-
-        if DB_ACCESS and not DB_INICIALIZADA:
             log.info("Iniciando nueva base de datos.")
             initial_setup(with_examples=with_examples)
-        else:
-            log.trace("Acceso a base de datos verificado.")
-
-            if DESARROLLO:
-                lms_app.config.update({"MAIL_BACKEND": "dummy"})
+            return True
+    else:
+        log.trace("No se pudo acceder a la base de datos.")
+        return False
 
 
 # ---------------------------------------------------------------------------------------

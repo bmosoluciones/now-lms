@@ -32,7 +32,8 @@ from now_lms.db.tools import database_is_populated
 
 PORT = environ.get("DATABASE_URL") or 8080
 
-init_app()
-
-logger.info("Iniciando NOW Learning Management System")
-serve(app=lms_app, port=int(PORT))
+if init_app():
+    logger.info("Iniciando NOW Learning Management System")
+    serve(app=lms_app, port=int(PORT))
+else:
+    logger.error("No se iniciar NOW Learning Management System.")
