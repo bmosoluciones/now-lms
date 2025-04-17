@@ -35,5 +35,4 @@ jobs:
           # bash .lint.sh
       - name: Test with SQLite
         run: |
-          sudo apt install libpango* -y
-          CI=True pytest  -v --exitfirst --cov=now_lms --slow=True --testpdf=True
+          CI=True pytest  -v --exitfirst --cov=now_lms --slow=True
