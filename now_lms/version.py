@@ -47,13 +47,13 @@ POST = False
 # <--------------------------------------------------------------------------> #
 # Pre release data.
 PRERELEASE = "a18"
-REVISION = "20250512"
+REVISION = "20250517"
 
 # <--------------------------------------------------------------------------> #
 # Release string
 # Refences:
 #  - https://peps.python.org/pep-0440/
-# 0.0.1a18.dev20250222
+# 0.0.1a18.dev20250517
 if PRERELEASE:  # pragma: no cover
     VERSION = MAYOR + "." + MENOR + "." + PATCH + PRERELEASE + ".dev" + REVISION
 else:  # pragma: no cover
