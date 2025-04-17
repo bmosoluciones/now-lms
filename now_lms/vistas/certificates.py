@@ -193,10 +193,12 @@ def certificate_inspect(ulid: str):
     return insert_style_in_html(consulta)
 
 
-@certificate.route("/certificate/get_as_qr/<url>/")
-def certificacion_qr(url: str):
+@certificate.route("/certificate/get_as_qr/<id>/")
+def certificacion_qr(id: str):
     import qrcode
 
+    base_url = request.url_root
+    url = base_url + "/certificate/view/" + id
     qr = qrcode.make(url)
 
     buffer = BytesIO()
@@ -258,6 +260,7 @@ def certificate_serve_pdf(ulid: str):
                 usuario=usuario,
                 certificacion=certificacion,
                 certificado=certificado,
+                url_for=url_for,
             )
         ),
         stylesheets=[CSS(string=certificado.css)],
@@ -301,3 +304,18 @@ def certificado(ulid):
         certificacion=certificacion,
         certificado=certificado,
     )
+
+
+@certificate.route("/certificate/issue/<course>/<user>/<template>/")
+@login_required
+@perfil_requerido("instructor")
+def certificacion_crear(course, user, template):
+    """Generar un nuevo certificado."""
+
+    cert = Certificacion(usuario=user, curso=course, certificado=template)
+
+    database.session.add(cert)
+    database.session.commit()
+    database.session.refresh(cert)
+
+    return redirect(url_for("certificate.certificado", ulid=cert.id))

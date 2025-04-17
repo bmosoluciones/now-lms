@@ -54,18 +54,11 @@ CERTIFICADO_HORIZONTAL_HTML = """
             </div>
             <div class="footer">
                 <div class="firma">
-                    Instructor<br />
-                    <div class="linea"></div>
-                </div>
-                <div class="firma">
-                    Fecha<br />
-                    <div class="linea"></div>
+                    Fecha: {{ certificacion.fecha }}<br />
                 </div>
             </div>
             <div>
-
-            <img src="{{ url_for("certificare.qr", url=certicacion.url) }}" alt="QR Code" width="150" height="150">
-
+            <img src="{{ url_for("certificate.certificacion_qr", id=certificacion.id) }}" alt="QR Code" width="50" height="50">
             </div>
         </div>
     </body>
@@ -167,18 +160,11 @@ CERTIFICADO_VERTICAL_HTML = """
             </div>
             <div class="footer">
                 <div class="firma">
-                    Instructor<br />
-                    <div class="linea"></div>
-                </div>
-                <div class="firma">
-                    Fecha<br />
-                    <div class="linea"></div>
+                    Fecha: {{ certificacion.fecha }}<br />
                 </div>
             </div>
             <div>
-
-            <img src="{{ url_for("certificate.qr", url=certicacion.url) }}" alt="QR Code" width="150" height="150">
-
+            <img src="{{ url_for("certificate.certificacion_qr", id=certificacion.id) }}" alt="QR Code" width="50" height="50">
             </div>
         </div>
     </body>
