@@ -437,7 +437,7 @@ def setup(with_examples=False, with_tests=False):  # pragma: no cover
     with lms_app.app_context():
         from now_lms.db.tools import database_is_populated
 
-        if database_is_populated():
+        if database_is_populated(lms_app):
 
             initial_setup(with_examples)
             if with_tests:
