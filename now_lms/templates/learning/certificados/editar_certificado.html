@@ -50,12 +50,12 @@
         </div>
         <div class="row g-3">
           <label for="html" class="form-label">HTML</label>
-          {{ form.html(class="form-control", id="html", rows="15") }}
+          {{ form.html(class="form-control", id="html", rows="15") | safe }}
         </div>
         <div class="row g-3">
           <br>
           <label for="css" class="form-label">CSS</label>
-          {{ form.css(class="form-control", id="css", rows="15") }}
+          {{ form.css(class="form-control", id="css", rows="15") | safe }}
         </div>
 
         <br>

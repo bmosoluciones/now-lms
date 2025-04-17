@@ -40,7 +40,7 @@ from wtforms import (
     TimeField,
 )
 from wtforms.validators import DataRequired
-from wtforms.widgets import ColorInput
+from wtforms.widgets import ColorInput, html_params, TextArea
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
@@ -336,6 +336,24 @@ class MsgForm(FlaskForm):
     parent = HiddenField(validators=[])
 
 
+class TextAreaNoEscape(TextArea):
+    """
+    Renders a multi-line text area.
+    """
+
+    validation_attrs = ["required", "disabled", "readonly", "maxlength", "minlength"]
+
+    def __call__(self, field, **kwargs):
+        kwargs.setdefault("id", field.id)
+        flags = getattr(field, "flags", {})
+        for k in dir(flags):
+            if k in self.validation_attrs and k not in kwargs:
+                kwargs[k] = getattr(flags, k)
+        textarea_params = html_params(name=field.name, **kwargs)
+        textarea_innerhtml = field._value()
+        return f"<textarea {textarea_params}>\r\n{textarea_innerhtml}</textarea>"
+
+
 class CertificateForm(FlaskForm):
     """Formulario para crear un certificado en el sistema."""
 
@@ -343,8 +361,8 @@ class CertificateForm(FlaskForm):
     descripcion = StringField(validators=[])
     habilitado = BooleanField(validators=[])
     publico = BooleanField(validators=[])
-    html = TextAreaField(validators=[])
-    css = TextAreaField(validators=[])
+    html = TextAreaField(widget=TextAreaNoEscape())
+    css = TextAreaField(widget=TextAreaNoEscape())
 
 
 class AdSenseForm(FlaskForm):
