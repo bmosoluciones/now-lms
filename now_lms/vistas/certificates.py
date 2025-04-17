@@ -171,22 +171,16 @@ def certificate_edit(ulid: str):
     return render_template("learning/certificados/editar_certificado.html", form=form)
 
 
-@certificate.route("/certificate/view/<ulid>/")
-@login_required
-@perfil_requerido("admin")
-def certificate_view(ulid: str):
+@certificate.route("/certificate/render/<ulid>/")
+def certificate_render(ulid: str):
     """Editar categoria."""
-    certificado = Certificado.query.filter(Certificado.id == ulid).first()
-    form = CertificateForm(titulo=certificado.titulo, descripcion=certificado.descripcion, habilitado=certificado.habilitado)
-    if form.validate_on_submit() or request.method == "POST":
-        certificado.titulo = form.titulo.data
-        certificado.descripcion = form.descripcion.data
-        try:
-            database.session.add(certificado)
-            database.session.commit()
-            flash("Certificado editado correctamente.", "success")
-        except OperationalError:  # pragma: no cover
-            flash("No se puedo editar el certificado.", "warning")
-        return redirect(url_for("certificate.certificados"))
+    from flask_weasyprint import HTML, render_pdf
+    from jinja2 import BaseLoader, Environment
+    from weasyprint import CSS
 
-    return render_template("learning/certificados/editar_certificado.html", form=form)
+    consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
+    consulta = consulta[0]
+
+    rtemplate = Environment(loader=BaseLoader).from_string(consulta.html)
+
+    return render_pdf(HTML(string=rtemplate.render()), stylesheets=[CSS(string=consulta.css)])
