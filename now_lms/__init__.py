@@ -395,7 +395,7 @@ def initial_setup(with_examples=False, with_tests=False):
 def init_app(with_examples=False):
     """Funcion auxiliar para iniciar la aplicacion."""
 
-    from now_lms.db.tools import database_is_populated, check_db_access
+    from now_lms.db.tools import check_db_access, database_is_populated
 
     DB_ACCESS = check_db_access(lms_app)
     DB_INICIALIZADA = database_is_populated(lms_app)

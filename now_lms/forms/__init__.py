@@ -40,7 +40,7 @@ from wtforms import (
     TimeField,
 )
 from wtforms.validators import DataRequired
-from wtforms.widgets import ColorInput, html_params, TextArea
+from wtforms.widgets import ColorInput, TextArea, html_params
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
