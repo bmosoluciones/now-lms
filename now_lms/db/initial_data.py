@@ -471,20 +471,35 @@ p{
 """
 
 
-def crear_certificado_dummy():
+def crear_certificados():
     """Crea un certificado de prueba."""
     log.trace("Crea un certificado demo.")
 
     demo = Certificado(
+        id="1234567890",
         html=HTML,
         css=CSS,
         titulo="Demo Certificado",
         descripcion="Puede verificar la generación de PDF con este certificado.",
-        habilitado=True,
-        publico=True,
+        habilitado=False,
+        publico=False,
     )
     database.session.add(demo)
     database.session.commit()
+
+    from now_lms.db.certificates_templates import CERTIFICADOS
+
+    for certificado in CERTIFICADOS:
+        cert = Certificado(
+            titulo=certificado[0],
+            descripcion=certificado[1],
+            html=certificado[2],
+            css=certificado[3],
+            habilitado=True,
+            publico=True,
+        )
+        database.session.add(cert)
+        database.session.commit()
 
 
 def crear_curso_predeterminado():

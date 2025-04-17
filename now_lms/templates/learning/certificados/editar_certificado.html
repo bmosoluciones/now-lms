@@ -41,11 +41,27 @@
             <label for="habilitado" class="form-label">Habilitado</label>
             {{ form.habilitado() }}
           </div>
+
+          <div class="col-sm-6">
+            <br>
+            <label for="publico" class="form-label">Publico</label>
+            {{ form.publico() }}
+          </div>
+        </div>
+        <div class="row g-3">
+          <label for="html" class="form-label">HTML</label>
+          {{ form.html(class="form-control", id="html", rows="15") }}
+        </div>
+        <div class="row g-3">
+          <br>
+          <label for="css" class="form-label">CSS</label>
+          {{ form.css(class="form-control", id="css", rows="15") }}
         </div>
 
         <br>
 
         <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Actualizar Certificado</button>
+        <a href="{{ url_for("certificate.certificados") }}" class="w-10 btn btn-lg btn-danger btn-block">Cancelar</a>
       </form>
     </div>
 

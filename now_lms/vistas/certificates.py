@@ -30,7 +30,7 @@ Gestión de certificados.
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-from flask_login import login_required
+from flask_login import login_required, current_user
 from sqlalchemy.exc import OperationalError
 
 # ---------------------------------------------------------------------------------------
@@ -49,29 +49,6 @@ from now_lms.forms import CertificateForm
 certificate = Blueprint("certificate", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
-@certificate.route("/certificate/new", methods=["GET", "POST"])
-@login_required
-@perfil_requerido("admin")
-def new_certificate():
-    """Nuevo certificado."""
-    form = CertificateForm()
-    if form.validate_on_submit() or request.method == "POST":
-        certificado = Certificado(
-            titulo=form.titulo.data,
-            descripcion=form.descripcion.data,
-            habilitado=False,
-        )
-        database.session.add(certificado)
-        try:
-            database.session.commit()
-            flash("Nuevo certificado creado correctamente.", "success")
-        except OperationalError:  # pragma: no cover
-            flash("Hubo un error al crear el certificado.", "warning")
-        return redirect("/certificate/list")
-
-    return render_template("learning/certificados/nuevo_certificado.html", form=form)
-
-
 @certificate.route("/certificate/list")
 @login_required
 @perfil_requerido("instructor")
@@ -86,20 +63,118 @@ def certificados():
     return render_template("learning/certificados/lista_certificados.html", consulta=certificados)
 
 
-@certificate.route("/certificate/<ulid>/delete")
+@certificate.route("/certificate/<ulid>/remove")
 @login_required
 @perfil_requerido("admin")
-def delete_certificate(ulid: str):
+def certificate_remove(ulid: str):
     """Elimina certificado."""
-    Certificado.query.filter(Certificado.id == ulid).delete()
+    consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
+    consulta = consulta[0]
+    consulta.habilitado = False
     database.session.commit()
-    return redirect("/certificate/list")
+    return redirect(url_for("certificate.certificados"))
+
+
+@certificate.route("/certificate/<ulid>/add")
+@login_required
+@perfil_requerido("admin")
+def certificate_add(ulid: str):
+    """Elimina certificado."""
+    consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
+    consulta = consulta[0]
+    consulta.habilitado = True
+    database.session.commit()
+    return redirect(url_for("certificate.certificados"))
+
+
+@certificate.route("/certificate/<ulid>/publish")
+@login_required
+@perfil_requerido("admin")
+def certificate_publish(ulid: str):
+    """Elimina certificado."""
+    consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
+    consulta = consulta[0]
+    consulta.publico = True
+    database.session.commit()
+    return redirect(url_for("certificate.certificados"))
+
+
+@certificate.route("/certificate/<ulid>/unpublish")
+@login_required
+@perfil_requerido("admin")
+def certificate_unpublish(ulid: str):
+    """Elimina certificado."""
+    consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
+    consulta = consulta[0]
+    consulta.publico = False
+    database.session.commit()
+    return redirect(url_for("certificate.certificados"))
+
+
+@certificate.route("/certificate/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("admin")
+def certificate_new():
+    """Nuevo certificado."""
+    form = CertificateForm()
+    if form.validate_on_submit() or request.method == "POST":
+        certificado = Certificado(
+            titulo=form.titulo.data,
+            descripcion=form.descripcion.data,
+            habilitado=False,
+            publico=False,
+            usuario=current_user.id,
+            html=form.html.data,
+            css=form.css.data,
+        )
+        database.session.add(certificado)
+        try:
+            database.session.commit()
+            flash("Nuevo certificado creado correctamente.", "success")
+        except OperationalError:  # pragma: no cover
+            flash("Hubo un error al crear el certificado.", "warning")
+        return redirect(url_for("certificate.certificados"))
+
+    return render_template("learning/certificados/nuevo_certificado.html", form=form)
 
 
 @certificate.route("/certificate/<ulid>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def edit_certificate(ulid: str):
+def certificate_edit(ulid: str):
+    """Editar categoria."""
+    certificado = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
+    certificado = certificado[0]
+    form = CertificateForm(
+        titulo=certificado.titulo,
+        descripcion=certificado.descripcion,
+        habilitado=certificado.habilitado,
+        publico=certificado.publico,
+        html=certificado.html,
+        css=certificado.css,
+    )
+    if form.validate_on_submit() or request.method == "POST":
+        certificado.titulo = form.titulo.data
+        certificado.descripcion = form.descripcion.data
+        certificado.publico = form.publico.data
+        certificado.habilitado = form.habilitado.data
+        certificado.html = form.html.data
+        certificado.css = form.css.data
+        try:
+            database.session.add(certificado)
+            database.session.commit()
+            flash("Certificado editado correctamente.", "success")
+        except OperationalError:  # pragma: no cover
+            flash("No se puedo editar el certificado.", "warning")
+        return redirect(url_for("certificate.certificados"))
+
+    return render_template("learning/certificados/editar_certificado.html", form=form)
+
+
+@certificate.route("/certificate/view/<ulid>/")
+@login_required
+@perfil_requerido("admin")
+def certificate_view(ulid: str):
     """Editar categoria."""
     certificado = Certificado.query.filter(Certificado.id == ulid).first()
     form = CertificateForm(titulo=certificado.titulo, descripcion=certificado.descripcion, habilitado=certificado.habilitado)

@@ -73,7 +73,7 @@ from now_lms.db.initial_data import (
     asignar_cursos_a_categoria,
     asignar_cursos_a_etiquetas,
     crear_categorias,
-    crear_certificado_dummy,
+    crear_certificados,
     crear_curso_demo,
     crear_curso_demo1,
     crear_curso_demo2,
@@ -370,7 +370,7 @@ def initial_setup(with_examples=False, with_tests=False):
         crear_configuracion_predeterminada()
         crear_curso_predeterminado()
         crear_usuarios_predeterminados()
-        crear_certificado_dummy()
+        crear_certificados()
         log.debug("Datos de muestra cargado correctamente.")
         if with_examples:
             log.debug("Cargando datos de prueba.")

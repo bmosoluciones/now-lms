@@ -342,6 +342,9 @@ class CertificateForm(FlaskForm):
     titulo = StringField(validators=[])
     descripcion = StringField(validators=[])
     habilitado = BooleanField(validators=[])
+    publico = BooleanField(validators=[])
+    html = TextAreaField(validators=[])
+    css = TextAreaField(validators=[])
 
 
 class AdSenseForm(FlaskForm):
