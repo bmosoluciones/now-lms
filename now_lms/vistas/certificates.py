@@ -40,6 +40,7 @@ from now_lms.auth import perfil_requerido
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Certificado, database
 from now_lms.forms import CertificateForm
+from now_lms.logs import log
 
 # ---------------------------------------------------------------------------------------
 # Gestión de certificados
@@ -171,8 +172,34 @@ def certificate_edit(ulid: str):
     return render_template("learning/certificados/editar_certificado.html", form=form)
 
 
+def insert_style_in_html(template):
+
+    html = template.html
+    css = template.css
+
+    css = "<style>" + css + "</style>"
+
+    log.warning(html)
+
+    html = css + html
+
+    return html
+
+
 @certificate.route("/certificate/render/<ulid>/")
 def certificate_render(ulid: str):
+    from jinja2 import BaseLoader, Environment
+
+    consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
+    consulta = consulta[0]
+
+    rtemplate = Environment(loader=BaseLoader).from_string(insert_style_in_html(consulta))
+
+    return rtemplate.render()
+
+
+@certificate.route("/certificate/download/<ulid>/")
+def certificate_serve_pdf(ulid: str):
     """Editar categoria."""
     from flask_weasyprint import HTML, render_pdf
     from jinja2 import BaseLoader, Environment
