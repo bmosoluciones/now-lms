@@ -84,6 +84,7 @@ from now_lms.db.initial_data import (
     crear_recurso_descargable,
     crear_usuarios_predeterminados,
     system_info,
+    crear_certificacion,
 )
 from now_lms.db.tools import (
     crear_configuracion_predeterminada,
@@ -371,6 +372,7 @@ def initial_setup(with_examples=False, with_tests=False):
         crear_curso_predeterminado()
         crear_usuarios_predeterminados()
         crear_certificados()
+        crear_certificacion()
         log.debug("Datos de muestra cargado correctamente.")
         if with_examples:
             log.debug("Cargando datos de prueba.")

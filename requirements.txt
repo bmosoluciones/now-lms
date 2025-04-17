@@ -21,6 +21,7 @@ flask-wtf
 loguru
 markdown
 python-ulid
+qrcode
 sqlalchemy
 requests
 redis

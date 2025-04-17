@@ -39,6 +39,7 @@ from now_lms.db import (
     Categoria,
     CategoriaCurso,
     Certificado,
+    Certificacion,
     Curso,
     CursoRecurso,
     CursoRecursoDescargable,
@@ -500,6 +501,17 @@ def crear_certificados():
         )
         database.session.add(cert)
         database.session.commit()
+
+
+def crear_certificacion():
+    certificacion = Certificacion(
+        id="01JS2NK7NJ74DBSHD83MGRH5HE",
+        usuario="lms-admin",
+        curso="now",
+        certificado="1234567890",
+    )
+    database.session.add(certificacion)
+    database.session.commit()
 
 
 def crear_curso_predeterminado():

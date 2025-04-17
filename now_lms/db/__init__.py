@@ -170,6 +170,7 @@ class Curso(database.Model, BaseTabla):
     nivel = database.Column(database.Integer())
     promocionado = database.Column(database.Boolean())
     fecha_promocionado = database.Column(database.DateTime, nullable=True)
+    certificado = database.Column(database.String(26), database.ForeignKey("certificado.id"), nullable=False, index=True)
 
 
 class ClaseMagistral(database.Model, BaseTabla):
@@ -499,6 +500,16 @@ class Certificado(database.Model, BaseTabla):
     id = database.Column(
         database.String(10), primary_key=True, nullable=False, index=True, default=generador_codigos_unicos_cuid
     )
+
+
+class Certificacion(database.Model, BaseTabla):
+    """Una certificación generada a un estudiante."""
+
+    usuario = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
+    certificado = database.Column(database.String(26), database.ForeignKey("certificado.id"), nullable=False, index=True)
+    fecha = database.Column(database.Date, default=database.func.date(database.func.now()), nullable=False)
+    nota = database.Column(database.Numeric())
 
 
 class Mensaje(database.Model, BaseTabla):

@@ -41,9 +41,9 @@
           <caption>Lista de certificados disponibles en el sistema.</caption>
           <thead>
             <tr>
-              <th scope="col">Certificado</th>
-              <th scope="col">Habilitado</th>
-              <th scope="col">Publico</th>
+              <th scope="col">ID Unico</th>
+              <th scope="col">Codigo de Curso</th>
+              <th scope="col">Codigo de usuario</th>
               <th></th>
             </tr>
           </thead>
@@ -52,39 +52,18 @@
             <tr>
               <td>
                 <a href="" class="link-dark">
-                  {{ item.titulo }}
+                  {{ item.id }}
                 </a>
               </td>
               <td>
-                {{ item.habilitado }}
+                {{ item.curso }}
               </td>
               <td>
-                {{ item.publico }}
+                {{ item.usuario }}
               </td>
               <td>
                 <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
-                  {% if item.habilitado %}
-                  <a href="{{ url_for("certificate.certificate_remove", ulid=item.id) }}" type="button"
-                    class="btn btn-danger"><ion-icon name="alert-circle-sharp"></ion-icon>
-                    Deshabilitar</a>
-                  {% else %}
-                  <a href="{{ url_for("certificate.certificate_add", ulid=item.id) }}" type="button"
-                    class="btn btn-info"><ion-icon name="add-circle-sharp"></ion-icon>
-                    Habilitar</a>
-                  {% endif %}
-                  {% if item.publico %}
-                  <a href="{{ url_for("certificate.certificate_unpublish", ulid=item.id) }}" type="button"
-                    class="btn btn-warning"><ion-icon name="trash-bin-sharp"></ion-icon>
-                    Remover</a>
-                  {% else %}
-                  <a href="{{ url_for("certificate.certificate_publish", ulid=item.id) }}" type="button"
-                    class="btn btn-info"><ion-icon name="checkbox-outline"></ion-icon>
-                    Publicar</a>
-                  {% endif %}
-                  <a href="{{ url_for("certificate.certificate_edit", ulid=item.id) }}" type="button"
-                    class="btn btn-success"><ion-icon name="create-sharp"></ion-icon>
-                    Editar</a>
-                  <a href="{{ url_for("certificate.certificate_inspect", ulid=item.id) }}" target="_blank" type="button"
+                  <a href="{{ url_for("certificate.certificado", ulid=item.id) }}" target="_blank" type="button"
                     class="btn btn-primary"><ion-icon name="eye-sharp"></ion-icon>
                     Visualizar</a>
                 </div>

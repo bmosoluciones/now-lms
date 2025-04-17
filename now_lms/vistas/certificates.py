@@ -24,12 +24,12 @@ Gestión de certificados.
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
-
+from io import BytesIO
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, redirect, render_template, request, url_for, make_response
 from flask_login import current_user, login_required
 from sqlalchemy.exc import OperationalError
 
@@ -38,9 +38,8 @@ from sqlalchemy.exc import OperationalError
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Certificado, database
+from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Certificado, database, Curso, Usuario, Certificacion
 from now_lms.forms import CertificateForm
-from now_lms.logs import log
 
 # ---------------------------------------------------------------------------------------
 # Gestión de certificados
@@ -179,23 +178,56 @@ def insert_style_in_html(template):
 
     css = "<style>" + css + "</style>"
 
-    log.warning(html)
+    if css:
+        return css + html
+    else:
+        return html
 
-    html = css + html
 
-    return html
-
-
-@certificate.route("/certificate/render/<ulid>/")
-def certificate_render(ulid: str):
-    from jinja2 import BaseLoader, Environment
+@certificate.route("/certificate/inspect/<ulid>/")
+def certificate_inspect(ulid: str):
 
     consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
     consulta = consulta[0]
 
-    rtemplate = Environment(loader=BaseLoader).from_string(insert_style_in_html(consulta))
+    return insert_style_in_html(consulta)
 
-    return rtemplate.render()
+
+@certificate.route("/certificate/get_as_qr/<url>/")
+def certificacion_qr(url: str):
+    import qrcode
+
+    qr = qrcode.make(url)
+
+    buffer = BytesIO()
+    qr.save(buffer, format="PNG")
+    buffer.seek(0)
+
+    response = make_response(buffer.getvalue())
+    response.headers["Content-Disposition"] = "attachment; filename=QR.png"
+    response.mimetype = "image/png"
+    return response
+
+
+@certificate.route("/certificate/certificate/<ulid>/")
+def certificacion(ulid: str):
+    from jinja2 import BaseLoader, Environment
+
+    certificacion = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
+    certificacion = certificacion[0]
+
+    certificado = database.session.execute(database.select(Certificado).filter_by(id=certificacion.certificado)).first()
+    certificado = certificado[0]
+
+    curso = database.session.execute(database.select(Curso).filter_by(codigo=certificacion.curso)).first()
+    curso = curso[0]
+
+    usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion.usuario)).first()
+    usuario = usuario[0]
+
+    template = Environment(loader=BaseLoader).from_string(insert_style_in_html(certificado))
+
+    return template.render(curso=curso, usuario=usuario, certificacion=certificacion, certificado=certificado, url_for=url_for)
 
 
 @certificate.route("/certificate/download/<ulid>/")
@@ -205,9 +237,67 @@ def certificate_serve_pdf(ulid: str):
     from jinja2 import BaseLoader, Environment
     from weasyprint import CSS
 
-    consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
-    consulta = consulta[0]
+    certificacion = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
+    certificacion = certificacion[0]
 
-    rtemplate = Environment(loader=BaseLoader).from_string(consulta.html)
+    certificado = database.session.execute(database.select(Certificado).filter_by(id=certificacion.certificado)).first()
+    certificado = certificado[0]
 
-    return render_pdf(HTML(string=rtemplate.render()), stylesheets=[CSS(string=consulta.css)])
+    curso = database.session.execute(database.select(Curso).filter_by(codigo=certificacion.curso)).first()
+    curso = curso[0]
+
+    usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion.usuario)).first()
+    usuario = usuario[0]
+
+    rtemplate = Environment(loader=BaseLoader).from_string(certificado.html)
+
+    return render_pdf(
+        HTML(
+            string=rtemplate.render(
+                curso=curso,
+                usuario=usuario,
+                certificacion=certificacion,
+                certificado=certificado,
+            )
+        ),
+        stylesheets=[CSS(string=certificado.css)],
+    )
+
+
+@certificate.route("/certificate/issued/list")
+@login_required
+@perfil_requerido("instructor")
+def certificaciones():
+    """Lista de certificaciones emitidas."""
+    certificados = database.paginate(
+        database.select(Certificacion),  # noqa: E712
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+        count=True,
+    )
+    return render_template("learning/certificados/lista_certificaciones.html", consulta=certificados)
+
+
+@certificate.route("/certificate/view/<ulid>")
+def certificado(ulid):
+    """Lista de certificaciones emitidas."""
+
+    certificacion = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
+    certificacion = certificacion[0]
+
+    certificado = database.session.execute(database.select(Certificado).filter_by(id=certificacion.certificado)).first()
+    certificado = certificado[0]
+
+    curso = database.session.execute(database.select(Curso).filter_by(codigo=certificacion.curso)).first()
+    curso = curso[0]
+
+    usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion.usuario)).first()
+    usuario = usuario[0]
+
+    return render_template(
+        "learning/certificados/certificado.html",
+        curso=curso,
+        usuario=usuario,
+        certificacion=certificacion,
+        certificado=certificado,
+    )

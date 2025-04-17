@@ -235,6 +235,7 @@ def nuevo_curso():
             duracion=form.duracion.data,
             creado_por=current_user.usuario,
             nivel=form.nivel.data,
+            pagado=form.pagado.data,
         )
         try:
             database.session.add(nuevo_curso_)
@@ -291,6 +292,7 @@ def editar_curso(course_code):
         curso_a_editar.modificado_por = current_user.usuario
         curso_a_editar.nivel = form.nivel.data
         curso_a_editar.promocionado = form.promocionado.data
+        curso_a_editar.pagado = form.pagado.data
 
         try:
             database.session.commit()
