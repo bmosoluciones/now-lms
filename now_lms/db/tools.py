@@ -346,6 +346,21 @@ def get_addsense_code():
         return ""
 
 
+def database_select_version(app):
+    """Return SQL select query."""
+    if "postgresql" in app.config["SQLALCHEMY_DATABASE_URI"]:
+        return "SELECT FROM pg_tables WHERE tablename  = 'curso';"
+
+    elif "mysql" in app.config["SQLALCHEMY_DATABASE_URI"]:
+        return "SHOW TABLES LIKE 'curso';"
+
+    elif "sqlite" in app.config["SQLALCHEMY_DATABASE_URI"]:
+        return "SELECT name FROM sqlite_master WHERE type='table' AND name='curso';"
+
+    else:
+        return None
+
+
 def database_is_populated(app):
     """Check is database is populated."""
 
@@ -353,27 +368,10 @@ def database_is_populated(app):
         from sqlalchemy.sql import text
 
         try:
-            if "postgresql" in app.config["SQLALCHEMY_DATABASE_URI"]:
-                check = database.session.execute(text("SELECT FROM pg_tables WHERE tablename  = 'curso';")).first()
-                log.warning("Check: {check}", check=check)
-                if check:
-                    return True
-                else:
-                    return False
-
-            elif "mysql" in app.config["SQLALCHEMY_DATABASE_URI"]:
-                check = database.session.execute(text("SHOW TABLES LIKE 'curso';")).first()
-                log.warning("Check: {check}", check=check)
-                if check:
-                    return True
-                else:
-                    return False
-
-            elif "sqlite" in app.config["SQLALCHEMY_DATABASE_URI"]:
-                check = database.session.execute(
-                    text("SELECT name FROM sqlite_master WHERE type='table' AND name='curso';")
-                ).first()
-                log.warning("Check: {check}", check=check)
+            QUERY = database_select_version(app)
+            if QUERY:
+                check = database.session.execute(text(QUERY)).first()
+                log.warning("Check table curso: {check}", check=check)
                 if check:
                     return True
                 else:
