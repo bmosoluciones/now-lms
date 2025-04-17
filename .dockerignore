@@ -52,3 +52,8 @@ docs.txt
 now_lms.db
 replit.nix
 run_server.sh
+
+development.txt
+pyproject.toml
+run_test.sh
+MANIFEST.in
