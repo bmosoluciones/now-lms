@@ -45,7 +45,6 @@ from wtforms.widgets import ColorInput, TextArea, html_params
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-# pylint: disable=R0903
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -379,3 +378,19 @@ class PayaplForm(FlaskForm):
     """Paypal"""
 
     habilitado = BooleanField(validators=[])
+
+
+class EmitCertificateForm(FlaskForm):
+
+    usuario = SelectField(
+        "Usuario",
+    )
+
+    curso = SelectField(
+        "Curso",
+    )
+
+    template = SelectField(
+        "Plantilla",
+    )
+    nota = DecimalField(validators=[])

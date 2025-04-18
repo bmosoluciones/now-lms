@@ -27,7 +27,7 @@ from typing import NamedTuple, Union
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import flash
+from flask import flash, current_app
 from flask_login import current_user
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
@@ -41,6 +41,7 @@ from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
 from now_lms.db import (
     AdSense,
     CategoriaCurso,
+    Certificado,
     Configuracion,
     Curso,
     CursoRecurso,
@@ -431,3 +432,30 @@ def check_db_access(app):
             return False
         except AttributeError:
             return False
+
+
+def generate_user_choices():
+
+    usuarios = database.session.execute(database.select(Usuario)).all()
+    choices = []
+    for usuario in usuarios:
+        choices.append((usuario[0].usuario, usuario[0].nombre + " " + usuario[0].apellido))
+    return choices
+
+
+def generate_cource_choices():
+
+    cursos = database.session.execute(database.select(Curso)).all()
+    choices = []
+    for curso in cursos:
+        choices.append((curso[0].codigo, curso[0].nombre))
+    return choices
+
+
+def generate_template_choices():
+
+    templates = database.session.execute(database.select(Certificado)).all()
+    choices = []
+    for template in templates:
+        choices.append((template[0].id, template[0].titulo))
+    return choices

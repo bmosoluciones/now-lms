@@ -39,7 +39,8 @@ from sqlalchemy.exc import OperationalError
 from now_lms.auth import perfil_requerido
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Certificado, database, Curso, Usuario, Certificacion
-from now_lms.forms import CertificateForm
+from now_lms.forms import CertificateForm, EmitCertificateForm
+from now_lms.vistas.profiles.user import usuario
 
 # ---------------------------------------------------------------------------------------
 # Gestión de certificados
@@ -319,3 +320,32 @@ def certificacion_crear(course, user, template):
     database.session.refresh(cert)
 
     return redirect(url_for("certificate.certificado", ulid=cert.id))
+
+
+@certificate.route("/certificate/release/", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def certificacion_generar():
+    """Generar un nuevo certificado."""
+    from now_lms.db.tools import generate_user_choices, generate_cource_choices, generate_template_choices
+
+    form = EmitCertificateForm()
+
+    form.usuario.choices = generate_user_choices()
+    form.curso.choices = generate_cource_choices()
+    form.template.choices = generate_template_choices()
+
+    if form.validate_on_submit() or request.method == "POST":
+        cert = Certificacion(
+            usuario=form.usuario.data, curso=form.curso.data, certificado=form.template.data, nota=form.nota.data
+        )
+        try:
+            database.session.add(cert)
+            database.session.commit()
+            return redirect(url_for("certificate.certificados"))
+
+        except OperationalError:  # pragma: no cover
+            flash("Hubo en error al crear la plantilla.", "warning")
+            return redirect("/instructor")
+    else:  # pragma: no cover
+        return render_template("learning/certificados/emitir_certificado.html", form=form)
