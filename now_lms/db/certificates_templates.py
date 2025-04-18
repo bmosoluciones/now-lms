@@ -152,7 +152,7 @@ CERTIFICADO_VERTICAL_HTML = """
         <div class="certificado">
             <div class="titulo">Certificado de Finalización</div>
             <div class="subtitulo">Otorgado a</div>
-            <div class="nombre">Nombre del Participante</div>
+            <div class="nombre">{{ usuario.nombre }} {{ usuario.apellido }}</div>
             <div class="curso">
                 Por haber completado satisfactoriamente el curso<br /><strong
                     >{{ curso.nombre }}</strong

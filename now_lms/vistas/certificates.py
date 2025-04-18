@@ -200,7 +200,7 @@ def certificacion_qr(id: str):
 
     base_url = request.url_root
     url = base_url + "/certificate/view/" + id
-    qr = qrcode.make(url)
+    qr = qrcode.make(url, box_size=4)
 
     buffer = BytesIO()
     qr.save(buffer, format="PNG")
@@ -342,7 +342,7 @@ def certificacion_generar():
         try:
             database.session.add(cert)
             database.session.commit()
-            return redirect(url_for("certificate.certificados"))
+            return redirect(url_for("certificate.certificaciones"))
 
         except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear la plantilla.", "warning")
