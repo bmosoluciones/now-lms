@@ -57,3 +57,5 @@ development.txt
 pyproject.toml
 run_test.sh
 MANIFEST.in
+
+run_mail.sh

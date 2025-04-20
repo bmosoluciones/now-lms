@@ -67,12 +67,13 @@ from now_lms.config import (
     images,
     log_messages,
 )
-from now_lms.db import Configuracion, MailConfig, Usuario, database
+from now_lms.db import Configuracion, Usuario, database
 from now_lms.db.info import app_info
 from now_lms.db.initial_data import (
     asignar_cursos_a_categoria,
     asignar_cursos_a_etiquetas,
     crear_categorias,
+    crear_certificacion,
     crear_certificados,
     crear_curso_demo,
     crear_curso_demo1,
@@ -84,7 +85,6 @@ from now_lms.db.initial_data import (
     crear_recurso_descargable,
     crear_usuarios_predeterminados,
     system_info,
-    crear_certificacion,
 )
 from now_lms.db.tools import (
     crear_configuracion_predeterminada,
@@ -156,23 +156,6 @@ def inicializa_extenciones_terceros(flask_app: Flask):
         cache.init_app(flask_app)
         mde.init_app(flask_app)
     log.trace("Extensiones de terceros iniciadas correctamente.")
-
-
-def init_mail(flask_app: Flask):
-    """Inicia la configuración de correo electronico."""
-
-    log.trace("Iniciando configuración correo electronico.")
-    with flask_app.app_context():
-        mail_config = database.session.execute(database.select(MailConfig)).first()[0]
-
-        if mail_config.email:
-            flask_app.config["MAIL_SERVER"] = mail_config.MAIL_SERVER
-            flask_app.config["MAIL_PORT"] = int(mail_config.MAIL_PORT)
-            flask_app.config["MAIL_USE_TLS"] = mail_config.MAIL_USE_TLS
-            flask_app.config["MAIL_USE_SSL"] = mail_config.MAIL_USE_SSL
-            flask_app.config["MAIL_USERNAME"] = mail_config.MAIL_USERNAME
-            flask_app.config["MAIL_PASSWORD"] = mail_config.MAIL_PASSWORD
-            flask_app.config["MAIL_DEFAULT_SENDER"] = mail_config.MAIL_DEFAULT_SENDER
 
 
 def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):

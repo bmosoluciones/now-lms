@@ -27,7 +27,7 @@ from typing import NamedTuple, Union
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import flash, current_app
+from flask import flash
 from flask_login import current_user
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError

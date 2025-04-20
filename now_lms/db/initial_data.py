@@ -38,8 +38,8 @@ from now_lms.config import DIRECTORIO_ARCHIVOS, DIRECTORIO_BASE_ARCHIVOS_USUARIO
 from now_lms.db import (
     Categoria,
     CategoriaCurso,
-    Certificado,
     Certificacion,
+    Certificado,
     Curso,
     CursoRecurso,
     CursoRecursoDescargable,

@@ -29,7 +29,7 @@ from io import BytesIO
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, flash, redirect, render_template, request, url_for, make_response
+from flask import Blueprint, flash, make_response, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy.exc import OperationalError
 
@@ -38,9 +38,8 @@ from sqlalchemy.exc import OperationalError
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Certificado, database, Curso, Usuario, Certificacion
+from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Certificacion, Certificado, Curso, Usuario, database
 from now_lms.forms import CertificateForm, EmitCertificateForm
-from now_lms.vistas.profiles.user import usuario
 
 # ---------------------------------------------------------------------------------------
 # Gestión de certificados
@@ -327,7 +326,7 @@ def certificacion_crear(course, user, template):
 @perfil_requerido("instructor")
 def certificacion_generar():
     """Generar un nuevo certificado."""
-    from now_lms.db.tools import generate_user_choices, generate_cource_choices, generate_template_choices
+    from now_lms.db.tools import generate_cource_choices, generate_template_choices, generate_user_choices
 
     form = EmitCertificateForm()
 

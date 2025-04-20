@@ -270,3 +270,5 @@ flask_profiler.sql
 *.conf
 
 .ruff_cache
+
+run_mail.sh
