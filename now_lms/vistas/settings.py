@@ -24,7 +24,7 @@
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 from flask_login import login_required
 from flask_uploads import UploadNotAllowed
 from sqlalchemy.exc import OperationalError
@@ -37,7 +37,7 @@ from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
 from now_lms.db import AdSense, Configuracion, MailConfig, PaypalConfig, database
 from now_lms.db.tools import elimina_logo_perzonalizado
-from now_lms.forms import AdSenseForm, ConfigForm, MailForm, PayaplForm, ThemeForm
+from now_lms.forms import AdSenseForm, ConfigForm, MailForm, PayaplForm, ThemeForm, CheckMailForm
 from now_lms.logs import log
 
 # ---------------------------------------------------------------------------------------
@@ -152,6 +152,44 @@ def mail():
 
     else:  # pragma: no cover
         return render_template("admin/mail.html", form=form, config=config)
+
+
+@setting.route("/setting/mail/verify", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("admin")
+def mail_check():
+    """Configuración de Correo Electronico."""
+    config = database.session.execute(database.select(MailConfig)).first()[0]
+
+    form = CheckMailForm()
+
+    if form.validate_on_submit() or request.method == "POST":
+        from flask_mail import Mail, Message
+        from now_lms.mail import load_email_setup
+
+        load_email_setup(current_app)
+        mail = Mail()
+        mail.init_app(current_app)
+        msg = Message(
+            subject="Hello",
+            recipients=[form.email.data],
+        )
+        try:
+            mail.send(msg)
+            try:
+                config.email_verificado = True
+                database.session.commit()
+                flash("Correo de prueba enviado correctamente.", "success")
+                return redirect(url_for("setting.mail"))
+            except OperationalError:  # pragma: no cover
+                flash("No se pudo actualizar la configuración de correo electronico.", "warning")
+                return redirect(url_for("setting.mail"))
+        except:
+            flash("No se puede enviar un correo de prueba. Revise su configuración.", "warning")
+            return redirect(url_for("setting.mail"))
+
+    else:  # pragma: no cover
+        return render_template("admin/mail _check.html", form=form)
 
 
 @setting.route("/setting/adsense", methods=["GET", "POST"])

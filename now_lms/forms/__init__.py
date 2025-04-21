@@ -394,3 +394,9 @@ class EmitCertificateForm(FlaskForm):
         "Plantilla",
     )
     nota = DecimalField(validators=[])
+
+
+class CheckMailForm(FlaskForm):
+    """Formulario para crear un certificado en el sistema."""
+
+    email = StringField(validators=[])

@@ -144,4 +144,8 @@ def descifrar_secreto(hash):
         )
         key = base64.urlsafe_b64encode(kdf.derive(current_app.config.get("SECRET_KEY").encode()))
         f = Fernet(key)
-        return f.decrypt(hash)
+        try:
+            s = f.decrypt(hash)
+            return s.decode()
+        except:
+            return None

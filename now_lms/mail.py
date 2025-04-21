@@ -31,6 +31,7 @@ from typing import TYPE_CHECKING
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
+from now_lms.auth import descifrar_secreto
 from now_lms.db import MailConfig, database
 from now_lms.logs import log
 
@@ -39,28 +40,26 @@ if TYPE_CHECKING:
     from flask import Flask
 
 
-@dataclass
-class MailConfigFromEnv:
-    MAIL_SERVER = environ.get("MAIL_SERVER")
-    MAIL_PORT = environ.get("MAIL_PORT")
-    MAIL_USE_TLS = environ.get("MAIL_USE_TLS")
-    MAIL_USE_SSL = environ.get("MAIL_USE_SSL")
-    MAIL_USERNAME = environ.get("MAIL_USERNAME")
-    MAIL_PASSWORD = environ.get("MAIL_PASSWORD")
-    MAIL_DEFAULT_SENDER = environ.get("MAIL_DEFAULT_SENDER")
-    # Must be a integer
-    if MAIL_PORT:
-        MAIL_PORT = int(MAIL_PORT)
-    # Must be a boolean
-    if MAIL_USE_SSL == "False" or MAIL_USE_SSL == "false" or MAIL_USE_SSL == "FALSE":
-        MAIL_USE_SSL = False
-    elif MAIL_USE_SSL == "True" or MAIL_USE_SSL == "true" or MAIL_USE_SSL == "TRUE":
-        MAIL_USE_SSL = True
-    # Must be a boolean
-    if MAIL_USE_TLS == "False" or MAIL_USE_TLS == "false" or MAIL_USE_TLS == "FALSE":
-        MAIL_USE_TLS = False
-    elif MAIL_USE_TLS == "True" or MAIL_USE_TLS == "true" or MAIL_USE_TLS == "TRUE":
-        MAIL_USE_TLS = True
+MAIL_SERVER = environ.get("MAIL_SERVER")
+MAIL_PORT = environ.get("MAIL_PORT")
+MAIL_USE_TLS = environ.get("MAIL_USE_TLS")
+MAIL_USE_SSL = environ.get("MAIL_USE_SSL")
+MAIL_USERNAME = environ.get("MAIL_USERNAME")
+MAIL_PASSWORD = environ.get("MAIL_PASSWORD")
+MAIL_DEFAULT_SENDER = environ.get("MAIL_DEFAULT_SENDER")
+# Must be a integer
+if MAIL_PORT:
+    MAIL_PORT = int(MAIL_PORT)
+# Must be a boolean
+if MAIL_USE_SSL == "False" or MAIL_USE_SSL == "false" or MAIL_USE_SSL == "FALSE":
+    MAIL_USE_SSL = False
+elif MAIL_USE_SSL == "True" or MAIL_USE_SSL == "true" or MAIL_USE_SSL == "TRUE":
+    MAIL_USE_SSL = True
+# Must be a boolean
+if MAIL_USE_TLS == "False" or MAIL_USE_TLS == "false" or MAIL_USE_TLS == "FALSE":
+    MAIL_USE_TLS = False
+elif MAIL_USE_TLS == "True" or MAIL_USE_TLS == "true" or MAIL_USE_TLS == "TRUE":
+    MAIL_USE_TLS = True
 
 
 def load_email_setup(flask_app: "Flask"):
@@ -69,15 +68,13 @@ def load_email_setup(flask_app: "Flask"):
     log.trace("Iniciando configuración correo electronico.")
     with flask_app.app_context():
         mail_config = database.session.execute(database.select(MailConfig)).first()[0]
-        mail_config_from_env = MailConfigFromEnv()
 
-        if mail_config.email:
-            flask_app.config["MAIL_SERVER"] = mail_config_from_env.MAIL_SERVER or mail_config.MAIL_SERVER
-            flask_app.config["MAIL_PORT"] = mail_config_from_env.MAIL_PORT or mail_config.MAIL_PORT
-            flask_app.config["MAIL_USE_TLS"] = mail_config_from_env.MAIL_USE_TLS or mail_config.MAIL_USE_TLS
-            flask_app.config["MAIL_USE_SSL"] = mail_config_from_env.MAIL_USE_SSL or mail_config.MAIL_USE_SSL
-            flask_app.config["MAIL_USERNAME"] = mail_config_from_env.MAIL_USERNAME or mail_config.MAIL_USERNAME
-            flask_app.config["MAIL_PASSWORD"] = mail_config_from_env.MAIL_PASSWORD or mail_config.MAIL_PASSWORD
-            flask_app.config["MAIL_DEFAULT_SENDER"] = (
-                mail_config_from_env.MAIL_DEFAULT_SENDER or mail_config.MAIL_DEFAULT_SENDER
-            )
+        flask_app.config["MAIL_SERVER"] = MAIL_SERVER or mail_config.MAIL_SERVER
+        flask_app.config["MAIL_PORT"] = MAIL_PORT or mail_config.MAIL_PORT
+        flask_app.config["MAIL_USE_TLS"] = MAIL_USE_TLS or mail_config.MAIL_USE_TLS
+        flask_app.config["MAIL_USE_SSL"] = MAIL_USE_SSL or mail_config.MAIL_USE_SSL
+        flask_app.config["MAIL_USERNAME"] = MAIL_USERNAME or mail_config.MAIL_USERNAME
+        flask_app.config["MAIL_PASSWORD"] = MAIL_PASSWORD or descifrar_secreto(mail_config.MAIL_PASSWORD)
+        flask_app.config["MAIL_DEFAULT_SENDER"] = MAIL_DEFAULT_SENDER or mail_config.MAIL_DEFAULT_SENDER
+        for m in ("MAIL_SERVER", "MAIL_PORT", "MAIL_USERNAME", "MAIL_PASSWORD", "MAIL_USE_SSL", "MAIL_USE_TLS"):
+            log.warning(flask_app.config[m])
