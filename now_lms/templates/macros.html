@@ -31,8 +31,9 @@
 {%- endif -%}
 
 {%- if paypal_enabled() -%}
-<!-- Paypal -->
-<script src="https://js.braintreegateway.com/web/dropin/1.44.1/js/dropin.min.js"></script>
+<script src="https://js.braintreegateway.com/web/dropin/1.44.1/js/dropin.js"></script>
+<script src="https://js.braintreegateway.com/web/3.87.0/js/client.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.87.0/js/data-collector.min.js"></script>
 {%- endif -%}
 
 
@@ -215,16 +216,17 @@
       <div class="modal-footer">
         <div class="d-flex justify-content-between">
           <div>
-            <img weith="75" height="20" src="{{ url_for("static", filename="/img/bmo-logo.png") }}" alt="BMO Soluciones">
+            <img weith="75" height="20" src="{{ url_for("static", filename="/img/bmo-logo.png") }}"
+              alt="BMO Soluciones">
           </div>
           <div>
             <a href="https://now-lms-manual.readthedocs.io/en/latest/" "button" class="btn btn-sm btn-secondary"
-          data-dismiss="modal"><i class="bi bi-book" aria-hidden="true"></i>
-          Manual de Usuario</a>
-        {% if current_user.tipo == "admin" %}
-        <a href="https://bmosoluciones.github.io/now-lms/" "button" class="btn btn-sm btn-secondary"
-          data-dismiss="modal"><i class="bi bi-book" aria-hidden="true"></i>
-          Manual de Administración</a>
+              data-dismiss="modal"><i class="bi bi-book" aria-hidden="true"></i>
+              Manual de Usuario</a>
+            {% if current_user.tipo == "admin" %}
+            <a href="https://bmosoluciones.github.io/now-lms/" "button" class="btn btn-sm btn-secondary"
+              data-dismiss="modal"><i class="bi bi-book" aria-hidden="true"></i>
+              Manual de Administración</a>
           </div>
         </div>
         {% endif %}

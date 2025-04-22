@@ -4,6 +4,7 @@ appdirs
 argon2-cffi
 babel
 bleach
+braintree
 configobj
 cuid2
 flask
@@ -25,7 +26,6 @@ qrcode
 sqlalchemy
 requests
 redis
-stripe
 waitress
 weasyprint
 wtforms
