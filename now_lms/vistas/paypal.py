@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Stripe Payments"""
+"""Paypal Payments"""
 
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
@@ -33,7 +33,7 @@ from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import PaypalConfig, database
 
-paypal = Blueprint("paypal", __name__, template_folder=DIRECTORIO_PLANTILLAS, url_prefix="paypal_checkout")
+paypal = Blueprint("paypal", __name__, template_folder=DIRECTORIO_PLANTILLAS, url_prefix="/paypal_checkout")
 
 gateway = braintree.BraintreeGateway(
     braintree.Configuration(
@@ -66,7 +66,7 @@ def token():
     )
 
 
-@app.route("/", methods=["POST"])
+@paypal.route("/", methods=["POST"])
 def create_purchase():
     nonce_from_the_client = request.form["payment_method_nonce"]
 
