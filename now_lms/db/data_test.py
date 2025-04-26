@@ -15,7 +15,7 @@
 # Contributors:
 # - William José Moreno Reyes
 
-"""Codigo para crear cursos iniciales.s"""
+"""Codigo para crear cursos iniciales."""
 
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
