@@ -1,5 +1,6 @@
 # Librerias de terceros
 alembic
+appdirs
 argon2-cffi
 babel
 bleach
