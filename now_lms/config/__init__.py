@@ -28,7 +28,6 @@ from typing import TYPE_CHECKING, Dict, Union
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
 from appdirs import AppDirs
-from configobj import ConfigObj
 from flask_uploads import AUDIO, DOCUMENTS, IMAGES, UploadSet
 
 # ---------------------------------------------------------------------------------------
@@ -118,12 +117,9 @@ else:
 
 # < --------------------------------------------------------------------------------------------- >
 # Configuración de la aplicación:
-# Se busca un archivo de configuración definido por el usuario, en caso de no encontrar un archivo de
-# configuración valido se siguen las recomendaciones de "Twelve Factors App" y las opciones se leen
-# del entorno. Si no se encuentra un archivo de configuración valido y no se pueden leer las opciones
-# de configuración del entorno se utilizan valores predeterminados.
+# Se siguen las recomendaciones de "Twelve Factors App" y las opciones se leen del entorno.
 
-CONFIGURACION: Union[Dict, ConfigObj] = {}
+CONFIGURACION: Dict = {}
 
 if (
     DESARROLLO is not False and environ.get("SECRET_KEY") and (environ.get("DATABASE_URL") or environ.get("LMS_DB"))
