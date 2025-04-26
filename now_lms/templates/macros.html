@@ -23,12 +23,7 @@
 <script src="//unpkg.com/alpinejs" defer></script>
 
 
-{%- if stripe_enabled() -%}
-{%- if with_stripe -%}
-<!-- Stripe -->
-<script src="https://js.stripe.com/v3/"></script>
-{%- endif -%}
-{%- endif -%}
+
 
 {%- if paypal_enabled() -%}
 <script src="https://js.braintreegateway.com/web/dropin/1.44.1/js/dropin.js"></script>
