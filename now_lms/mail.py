@@ -19,7 +19,6 @@
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
-from dataclasses import dataclass
 from os import environ
 from typing import TYPE_CHECKING
 

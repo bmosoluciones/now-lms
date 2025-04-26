@@ -34,7 +34,6 @@ from flask_uploads import AUDIO, DOCUMENTS, IMAGES, UploadSet
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms.config.parse_config_file import CONFIG_FROM_FILE
 from now_lms.logs import LOG_FORMAT, log
 from now_lms.version import PRERELEASE
 
@@ -80,10 +79,6 @@ if not DESARROLLO or environ.get("NOTLOGTOFILE") == "1":
 if environ.get("UPLOAD_FILES_DIR"):
     log.trace("Configuración de carga de archivos encontrada en variables de entorno.")
     DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(str(environ.get("UPLOAD_FILES_DIR")))
-elif isinstance(CONFIG_FROM_FILE, ConfigObj):
-    DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(
-        str(CONFIG_FROM_FILE.get("UPLOAD_FILES_DIR")) or str(path.join(DIRECTORIO_ARCHIVOS, "files"))
-    )
 else:
     DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(path.join(DIRECTORIO_ARCHIVOS, "files"))
 
@@ -130,12 +125,7 @@ else:
 
 CONFIGURACION: Union[Dict, ConfigObj] = {}
 
-if CONFIG_FROM_FILE:  # pragma: no cover
-    log.debug("Archivo de configuración detectado.")
-    log.info("Cargando configuración desde archivo de configuración.")
-    CONFIGURACION = CONFIG_FROM_FILE
-
-elif (
+if (
     DESARROLLO is not False and environ.get("SECRET_KEY") and (environ.get("DATABASE_URL") or environ.get("LMS_DB"))
 ):  # pragma: no cover
     log.debug("Leyendo configuración desde variables de entorno.")

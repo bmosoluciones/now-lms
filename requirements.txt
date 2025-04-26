@@ -1,11 +1,9 @@
 # Librerias de terceros
 alembic
-appdirs
 argon2-cffi
 babel
 bleach
 braintree
-configobj
 cuid2
 flask
 flask[async]
