@@ -31,6 +31,7 @@ from typing import TYPE_CHECKING
 # Recursos locales
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import descifrar_secreto
+from now_lms.config import DESARROLLO
 from now_lms.db import MailConfig, database
 from now_lms.logs import log
 
@@ -68,6 +69,9 @@ def load_email_setup(flask_app: "Flask"):
     with flask_app.app_context():
         mail_config = database.session.execute(database.select(MailConfig)).first()[0]
 
+        if DESARROLLO and not environ.get("WITH_MAIL"):
+            flask_app.config["MAIL_SUPPRESS_SEND"] = True
+
         flask_app.config["MAIL_SERVER"] = MAIL_SERVER or mail_config.MAIL_SERVER
         flask_app.config["MAIL_PORT"] = MAIL_PORT or mail_config.MAIL_PORT
         flask_app.config["MAIL_USE_TLS"] = MAIL_USE_TLS or mail_config.MAIL_USE_TLS
@@ -75,5 +79,3 @@ def load_email_setup(flask_app: "Flask"):
         flask_app.config["MAIL_USERNAME"] = MAIL_USERNAME or mail_config.MAIL_USERNAME
         flask_app.config["MAIL_PASSWORD"] = MAIL_PASSWORD or descifrar_secreto(mail_config.MAIL_PASSWORD)
         flask_app.config["MAIL_DEFAULT_SENDER"] = MAIL_DEFAULT_SENDER or mail_config.MAIL_DEFAULT_SENDER
-        for m in ("MAIL_SERVER", "MAIL_PORT", "MAIL_USERNAME", "MAIL_PASSWORD", "MAIL_USE_SSL", "MAIL_USE_TLS"):
-            log.warning(flask_app.config[m])

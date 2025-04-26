@@ -167,6 +167,8 @@ def test_visit_views_moderator(lms_application, request):
                         for t in ruta.como_moderador:
                             assert t in consulta.data
                 client.get("/user/logout")
+    else:
+        pytest.skip("Not running slow test.")
 
 
 def test_visit_views_instructor(lms_application, request):
@@ -198,6 +200,8 @@ def test_visit_views_instructor(lms_application, request):
                             for t in ruta.como_instructor:
                                 assert t in consulta.data
                 client.get("/user/logout")
+    else:
+        pytest.skip("Not running slow test.")
 
 
 def test_error_pages(lms_application, request):

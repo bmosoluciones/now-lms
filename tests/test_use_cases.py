@@ -80,3 +80,11 @@ def test_generar_pdf(lms_application, request):
             from now_lms.misc import check_generate_pdf
 
             check_generate_pdf()
+
+
+def test_load_mail_config(lms_application):
+
+    with lms_application.app_context():
+        from now_lms.mail import load_email_setup
+
+        load_email_setup(lms_application)
