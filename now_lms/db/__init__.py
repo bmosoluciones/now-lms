@@ -545,3 +545,6 @@ class AdSense(database.Model):
 class PaypalConfig(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     enable = database.Column(database.Boolean(), default=False)
+    sandbox = database.Column(database.Boolean(), default=False)
+    paypal_id = database.Column(database.String(100))
+    paypal_sandbox = database.Column(database.String(100))

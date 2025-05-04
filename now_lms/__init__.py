@@ -97,6 +97,7 @@ from now_lms.db.tools import (
     verifica_estudiante_asignado_a_curso,
     verifica_moderador_asignado_a_curso,
     verificar_avance_recurso,
+    get_paypal_id,
 )
 from now_lms.logs import log
 from now_lms.misc import (
@@ -335,6 +336,7 @@ lms_app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
 lms_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
 lms_app.jinja_env.globals["adsense_code"] = get_addsense_code
 lms_app.jinja_env.globals["paypal_enabled"] = check_paypal_enabled
+lms_app.jinja_env.globals["paypal_id"] = get_paypal_id
 
 
 # ---------------------------------------------------------------------------------------

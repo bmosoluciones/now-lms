@@ -358,6 +358,18 @@ def database_select_version(app):
         return None
 
 
+def get_paypal_id() -> str:
+    """Return pay ID"""
+
+    query = database.session.execute(database.select(PaypalConfig)).first()
+    query = query[0]
+
+    if query.sandbox:
+        return query.sandbox
+    else:
+        return query.paypal_id
+
+
 def database_is_populated(app):
     """Check is database is populated."""
 
