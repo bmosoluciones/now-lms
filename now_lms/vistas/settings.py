@@ -181,14 +181,14 @@ def mail_check():
                 database.session.commit()
                 flash("Correo de prueba enviado correctamente.", "success")
                 return redirect(url_for("setting.mail"))
-            except OperationalError:  # pragma: no cover
+            except OperationalError:
                 flash("No se pudo actualizar la configuración de correo electronico.", "warning")
                 return redirect(url_for("setting.mail"))
-        except:
+        except:  # noqa: E722
             flash("No se puede enviar un correo de prueba. Revise su configuración.", "warning")
             return redirect(url_for("setting.mail"))
 
-    else:  # pragma: no cover
+    else:
         return render_template("admin/mail _check.html", form=form)
 
 

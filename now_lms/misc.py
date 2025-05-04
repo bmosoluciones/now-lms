@@ -22,6 +22,7 @@
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
 from collections import OrderedDict
+from os import getcwd
 from typing import NamedTuple, Union
 
 # ---------------------------------------------------------------------------------------
@@ -235,6 +236,6 @@ def check_generate_pdf():
     cert = database.session.execute(database.select(Certificado).filter_by(titulo="Demo Certificado")).first()
     cert = cert[0]
 
-    rtemplate = Environment(loader=BaseLoader).from_string(cert.html)
+    rtemplate = Environment(loader=BaseLoader, autoescape=True).from_string(cert.html)
 
-    HTML(string=rtemplate.render()).write_pdf("/tmp/weasyprint-website.pdf", stylesheets=[CSS(string=cert.css)])
+    HTML(string=rtemplate.render()).write_pdf(getcwd() + "/test.pdf", stylesheets=[CSS(string=cert.css)])

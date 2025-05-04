@@ -22,7 +22,7 @@
 from os import R_OK, W_OK, access, environ, makedirs, name, path
 from pathlib import Path
 from sys import stderr
-from typing import TYPE_CHECKING, Dict, Union
+from typing import TYPE_CHECKING, Dict
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros

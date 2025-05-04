@@ -47,19 +47,18 @@ MAIL_USE_SSL = environ.get("MAIL_USE_SSL")
 MAIL_USERNAME = environ.get("MAIL_USERNAME")
 MAIL_PASSWORD = environ.get("MAIL_PASSWORD")
 MAIL_DEFAULT_SENDER = environ.get("MAIL_DEFAULT_SENDER")
-# Must be a integer
 if MAIL_PORT:
-    MAIL_PORT = int(MAIL_PORT)
+    MAIL_PORT = MAIL_PORT  # type: ignore[assignment]
 # Must be a boolean
 if MAIL_USE_SSL == "False" or MAIL_USE_SSL == "false" or MAIL_USE_SSL == "FALSE":
-    MAIL_USE_SSL = False
+    MAIL_USE_SSL = False  # type: ignore[assignment]
 elif MAIL_USE_SSL == "True" or MAIL_USE_SSL == "true" or MAIL_USE_SSL == "TRUE":
-    MAIL_USE_SSL = True
+    MAIL_USE_SSL = True  # type: ignore[assignment]
 # Must be a boolean
 if MAIL_USE_TLS == "False" or MAIL_USE_TLS == "false" or MAIL_USE_TLS == "FALSE":
-    MAIL_USE_TLS = False
+    MAIL_USE_TLS = False  # type: ignore[assignment]
 elif MAIL_USE_TLS == "True" or MAIL_USE_TLS == "true" or MAIL_USE_TLS == "TRUE":
-    MAIL_USE_TLS = True
+    MAIL_USE_TLS = True  # type: ignore[assignment]
 
 
 def load_email_setup(flask_app: "Flask"):

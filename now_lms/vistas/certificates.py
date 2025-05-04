@@ -55,7 +55,7 @@ certificate = Blueprint("certificate", __name__, template_folder=DIRECTORIO_PLAN
 def certificados():
     """Lista de certificados."""
     certificados = database.paginate(
-        database.select(Certificado),  # noqa: E712
+        database.select(Certificado),
         page=request.args.get("page", default=1, type=int),
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,
@@ -227,7 +227,7 @@ def certificacion(ulid: str):
     usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion.usuario)).first()
     usuario = usuario[0]
 
-    template = Environment(loader=BaseLoader).from_string(insert_style_in_html(certificado))
+    template = Environment(loader=BaseLoader, autoescape=True).from_string(insert_style_in_html(certificado))  # type: ignore[arg-type]
 
     return template.render(curso=curso, usuario=usuario, certificacion=certificacion, certificado=certificado, url_for=url_for)
 
@@ -251,7 +251,7 @@ def certificate_serve_pdf(ulid: str):
     usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion.usuario)).first()
     usuario = usuario[0]
 
-    rtemplate = Environment(loader=BaseLoader).from_string(certificado.html)
+    rtemplate = Environment(loader=BaseLoader, autoescape=True).from_string(certificado.html)  # type: ignore[arg-type]
 
     return render_pdf(
         HTML(
