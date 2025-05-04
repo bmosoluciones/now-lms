@@ -1,1 +1,1 @@
-flask resetdb &&WITH_MAIL=True flask run --debug --reload --port 8080 --extra-files "now_lms/templates/*"
+flask resetdb --with-examples --with-testdata && WITH_MAIL=True flask run --debug --reload --port 8080 --extra-files "now_lms/templates/*"

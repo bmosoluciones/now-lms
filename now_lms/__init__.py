@@ -413,8 +413,8 @@ def command(as_module=False) -> None:  # pragma: no cover
 
 @lms_app.cli.command()
 @click.option("--with-examples", is_flag=True, default=False, help="Load example data at setup.")
-@click.option("--with-tests", is_flag=True, default=False, help="Load data for testing.")
-def setup(with_examples=False, with_tests=False):  # pragma: no cover
+@click.option("--with-testdata", is_flag=True, default=False, help="Load data for testing.")
+def setup(with_examples=False, with_testdata=False):  # pragma: no cover
     """Inicia al aplicacion."""
     with lms_app.app_context():
         from now_lms.db.tools import database_is_populated
@@ -422,7 +422,7 @@ def setup(with_examples=False, with_tests=False):  # pragma: no cover
         if database_is_populated(lms_app):
 
             initial_setup(with_examples)
-            if with_tests:
+            if with_testdata:
                 from now_lms.db.data_test import crear_data_para_pruebas
 
                 crear_data_para_pruebas()
