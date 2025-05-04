@@ -47,9 +47,7 @@ MAIL_USE_SSL = environ.get("MAIL_USE_SSL")
 MAIL_USERNAME = environ.get("MAIL_USERNAME")
 MAIL_PASSWORD = environ.get("MAIL_PASSWORD")
 MAIL_DEFAULT_SENDER = environ.get("MAIL_DEFAULT_SENDER")
-if MAIL_PORT:
-    MAIL_PORT = MAIL_PORT  # type: ignore[assignment]
-# Must be a boolean
+# Booleans
 if MAIL_USE_SSL == "False" or MAIL_USE_SSL == "false" or MAIL_USE_SSL == "FALSE":
     MAIL_USE_SSL = False  # type: ignore[assignment]
 elif MAIL_USE_SSL == "True" or MAIL_USE_SSL == "true" or MAIL_USE_SSL == "TRUE":
