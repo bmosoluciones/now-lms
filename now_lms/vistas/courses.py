@@ -90,6 +90,7 @@ from now_lms.misc import CURSO_NIVEL, HTML_TAGS, INICIO_SESION, TEMPLATES_BY_TYP
 
 RECURSO_AGREGADO = "Recurso agregado correctamente al curso."
 ERROR_AL_AGREGAR_CURSO = "Hubo en error al crear el recurso."
+VISTA_CURSOS =
 
 course = Blueprint("course", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
@@ -167,7 +168,7 @@ def tomar_curso(course_code):
             tipo=TIPOS_RECURSOS,
         )
     else:
-        return redirect(url_for("course.curso", course_code=course_code))
+        return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
 
 @course.route("/course/<course_code>/moderate")
@@ -190,7 +191,7 @@ def moderar_curso(course_code):
             tipo=TIPOS_RECURSOS,
         )
     else:
-        return redirect(url_for("course.curso", course_code=course_code))
+        return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
 
 @course.route("/course/<course_code>/admin")
@@ -459,7 +460,7 @@ def cambiar_seccion_publico():
     cambia_seccion_publico(
         codigo=request.args.get("codigo"),
     )
-    return redirect(url_for("course.curso", course_code=request.args.get("course_code")))
+    return redirect(url_for(VISTA_CURSOS, course_code=request.args.get("course_code")))
 
 
 @course.route("/course/<curso_id>/resource/<resource_type>/<codigo>")
@@ -589,7 +590,7 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             return redirect(url_for("course.administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for("course.curso", course_code=course_code))
+            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
     else:
         if current_user.tipo == "admin":
             return render_template(
@@ -623,7 +624,7 @@ def nuevo_recurso_text(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
-            return redirect(url_for("course.curso", course_code=course_code))
+            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for("course.administrar_curso", course_code=course_code))
@@ -663,7 +664,7 @@ def nuevo_recurso_link(course_code, seccion):
             return redirect(url_for("course.administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for("course.curso", course_code=course_code))
+            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
     else:
         if current_user.tipo == "admin":
             return render_template(
@@ -703,7 +704,7 @@ def nuevo_recurso_pdf(course_code, seccion):
             return redirect(url_for("course.administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for("course.curso", course_code=course_code))
+            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
     else:
         if current_user.tipo == "admin":
             return render_template(
@@ -744,7 +745,7 @@ def nuevo_recurso_meet(course_code, seccion):
             return redirect(url_for("course.administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for("course.curso", course_code=course_code))
+            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
     else:
         if current_user.tipo == "admin":
             return render_template(
@@ -785,7 +786,7 @@ def nuevo_recurso_img(course_code, seccion):
             return redirect(url_for("course.administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for("course.curso", course_code=course_code))
+            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
     else:
         if current_user.tipo == "admin":
             return render_template(
@@ -826,7 +827,7 @@ def nuevo_recurso_audio(course_code, seccion):
             return redirect(url_for("course.administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for("course.curso", course_code=course_code))
+            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
     else:
         if current_user.tipo == "admin":
             return render_template(
@@ -863,7 +864,7 @@ def nuevo_recurso_html(course_code, seccion):
             return redirect(url_for("course.administrar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for("course.curso", course_code=course_code))
+            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
     else:
         if current_user.tipo == "admin":
             return render_template(
@@ -883,7 +884,7 @@ def elimina_logo(course_code):
 
     if current_user.tipo == "admin":
         elimina_logo_perzonalizado_curso(course_code=course_code)
-        return redirect(url_for("course.curso", course_code=course_code))
+        return redirect(url_for(VISTA_CURSOS, course_code=course_code))
     else:
         flash("No se encuentra autorizado a acceder al recurso solicitado.", "warning")
         return abort(403)
