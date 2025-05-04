@@ -542,13 +542,6 @@ class AdSense(database.Model):
     show_ads = database.Column(database.Boolean(), default=False)
 
 
-class StripeConfig(database.Model):
-    id = database.Column(database.Integer, primary_key=True)
-    enable = database.Column(database.Boolean(), default=False)
-    stripe_public_key = database.Column(database.String(100))
-    stripe_private_key = database.Column(database.String(100))
-
-
 class PaypalConfig(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     enable = database.Column(database.Boolean(), default=False)
