@@ -147,5 +147,5 @@ def descifrar_secreto(hash):
         try:
             s = f.decrypt(hash)
             return s.decode()
-        except:
+        except:  # noqa: E722
             return None

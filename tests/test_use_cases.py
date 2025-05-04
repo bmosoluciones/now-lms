@@ -15,7 +15,7 @@
 # Contributors:
 # - William José Moreno Reyes
 
-
+from os import name
 import pytest
 
 
@@ -67,16 +67,32 @@ def test_contraseña_incorrecta(lms_application, request):
 
 def test_generar_pdf(lms_application, request):
 
-    if request.config.getoption("--testpdf") == "True":
+    if name == "nt":
+        pytest.skip("PDF generation likelly to fail in Windows.")
 
-        from now_lms import initial_setup
-        from now_lms.db import database
+    else:
 
-        with lms_application.app_context():
+        if request.config.getoption("--testpdf") == "True":
 
-            database.drop_all()
-            initial_setup(with_tests=False, with_examples=False)
+            from now_lms import initial_setup
+            from now_lms.db import database
 
-            from now_lms.misc import check_generate_pdf
+            with lms_application.app_context():
 
-            check_generate_pdf()
+                database.drop_all()
+                initial_setup(with_tests=False, with_examples=False)
+
+                from now_lms.misc import check_generate_pdf
+
+                check_generate_pdf()
+
+        else:
+            pytest.skip("Not running slow test.")
+
+
+def test_load_mail_config(lms_application):
+
+    with lms_application.app_context():
+        from now_lms.mail import load_email_setup
+
+        load_email_setup(lms_application)

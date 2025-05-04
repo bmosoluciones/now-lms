@@ -23,7 +23,6 @@ python -m now_lms
 For many user [PostreSQL](https://www.postgresql.org/) is the best open source database engine, NOW - LMS supports
 PostgreSQL as a primary database host, and there many cloud providers ofering PostgreSQL as a service like:
 
--   [ElephantSQL](https://www.elephantsql.com/)
 -   [Google Cloud SQL for PostgreSQL](https://cloud.google.com/sql/postgresql)
 -   [Amazon RDS para PostgreSQL](https://aws.amazon.com/es/rds/postgresql/)
 

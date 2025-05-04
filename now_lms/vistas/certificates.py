@@ -47,6 +47,7 @@ from now_lms.forms import CertificateForm, EmitCertificateForm
 
 
 certificate = Blueprint("certificate", __name__, template_folder=DIRECTORIO_PLANTILLAS)
+VISTA_CERTIFICADOS = "certificate.certificados"
 
 
 @certificate.route("/certificate/list")
@@ -55,7 +56,7 @@ certificate = Blueprint("certificate", __name__, template_folder=DIRECTORIO_PLAN
 def certificados():
     """Lista de certificados."""
     certificados = database.paginate(
-        database.select(Certificado),  # noqa: E712
+        database.select(Certificado),
         page=request.args.get("page", default=1, type=int),
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,
@@ -72,7 +73,7 @@ def certificate_remove(ulid: str):
     consulta = consulta[0]
     consulta.habilitado = False
     database.session.commit()
-    return redirect(url_for("certificate.certificados"))
+    return redirect(url_for(VISTA_CERTIFICADOS))
 
 
 @certificate.route("/certificate/<ulid>/add")
@@ -84,7 +85,7 @@ def certificate_add(ulid: str):
     consulta = consulta[0]
     consulta.habilitado = True
     database.session.commit()
-    return redirect(url_for("certificate.certificados"))
+    return redirect(url_for(VISTA_CERTIFICADOS))
 
 
 @certificate.route("/certificate/<ulid>/publish")
@@ -96,7 +97,7 @@ def certificate_publish(ulid: str):
     consulta = consulta[0]
     consulta.publico = True
     database.session.commit()
-    return redirect(url_for("certificate.certificados"))
+    return redirect(url_for(VISTA_CERTIFICADOS))
 
 
 @certificate.route("/certificate/<ulid>/unpublish")
@@ -108,7 +109,7 @@ def certificate_unpublish(ulid: str):
     consulta = consulta[0]
     consulta.publico = False
     database.session.commit()
-    return redirect(url_for("certificate.certificados"))
+    return redirect(url_for(VISTA_CERTIFICADOS))
 
 
 @certificate.route("/certificate/new", methods=["GET", "POST"])
@@ -133,7 +134,7 @@ def certificate_new():
             flash("Nuevo certificado creado correctamente.", "success")
         except OperationalError:  # pragma: no cover
             flash("Hubo un error al crear el certificado.", "warning")
-        return redirect(url_for("certificate.certificados"))
+        return redirect(url_for(VISTA_CERTIFICADOS))
 
     return render_template("learning/certificados/nuevo_certificado.html", form=form)
 
@@ -166,7 +167,7 @@ def certificate_edit(ulid: str):
             flash("Certificado editado correctamente.", "success")
         except OperationalError:  # pragma: no cover
             flash("No se puedo editar el certificado.", "warning")
-        return redirect(url_for("certificate.certificados"))
+        return redirect(url_for(VISTA_CERTIFICADOS))
 
     return render_template("learning/certificados/editar_certificado.html", form=form)
 
@@ -227,7 +228,7 @@ def certificacion(ulid: str):
     usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion.usuario)).first()
     usuario = usuario[0]
 
-    template = Environment(loader=BaseLoader).from_string(insert_style_in_html(certificado))
+    template = Environment(loader=BaseLoader, autoescape=True).from_string(insert_style_in_html(certificado))  # type: ignore[arg-type]
 
     return template.render(curso=curso, usuario=usuario, certificacion=certificacion, certificado=certificado, url_for=url_for)
 
@@ -251,7 +252,7 @@ def certificate_serve_pdf(ulid: str):
     usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion.usuario)).first()
     usuario = usuario[0]
 
-    rtemplate = Environment(loader=BaseLoader).from_string(certificado.html)
+    rtemplate = Environment(loader=BaseLoader, autoescape=True).from_string(certificado.html)  # type: ignore[arg-type]
 
     return render_pdf(
         HTML(

@@ -411,7 +411,7 @@ class Categoria(database.Model, BaseTabla):
 class CategoriaCurso(database.Model, BaseTabla):
     """Listado de Cursos Permite Clasificar los cursos por categoria."""
 
-    curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False, index=True)
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
     categoria = database.Column(database.String(26), database.ForeignKey("categoria.id"), nullable=False, index=True)
     relacion_curso = database.relationship("Curso", foreign_keys=curso)
     relacion_categoria = database.relationship("Categoria", foreign_keys=categoria)
@@ -427,7 +427,7 @@ class Etiqueta(database.Model, BaseTabla):
 class EtiquetaCurso(database.Model, BaseTabla):
     """Listado de Cursos Permite Clasificar los cursos por categoria."""
 
-    curso = database.Column(database.String(10), database.ForeignKey("curso.codigo"), nullable=False, index=True)
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
     etiqueta = database.Column(database.String(26), database.ForeignKey("etiqueta.id"), nullable=False, index=True)
     relacion_curso = database.relationship("Curso", foreign_keys=curso)
     relacion_etiqueta = database.relationship("Etiqueta", foreign_keys=etiqueta)

@@ -22,19 +22,17 @@
 from os import R_OK, W_OK, access, environ, makedirs, name, path
 from pathlib import Path
 from sys import stderr
-from typing import TYPE_CHECKING, Dict, Union
+from typing import TYPE_CHECKING, Dict
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
 from appdirs import AppDirs
-from configobj import ConfigObj
 from flask_uploads import AUDIO, DOCUMENTS, IMAGES, UploadSet
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms.config.parse_config_file import CONFIG_FROM_FILE
 from now_lms.logs import LOG_FORMAT, log
 from now_lms.version import PRERELEASE
 
@@ -63,16 +61,18 @@ DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
 DIRECTORIO_BASE_APP: AppDirs = AppDirs("NOW-LMS", "BMO Soluciones")
 DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
 
+LOGS_MAX_MB = "10 MB"
+
 if not DESARROLLO or environ.get("NOTLOGTOFILE") == "1":
     LOG_FILE = "now_lms.log"
     GLOBAL_LOG_FILE = path.join("/var/log/nowlms", LOG_FILE)
     LOCAL_LOG_FILE = path.join(DIRECTORIO_BASE_APP.user_log_dir, LOG_FILE)
     if access(GLOBAL_LOG_FILE, W_OK):
-        log.add(GLOBAL_LOG_FILE, rotation="10 MB", level="INFO", format=LOG_FORMAT)
+        log.add(GLOBAL_LOG_FILE, rotation=LOGS_MAX_MB, level="INFO", format=LOG_FORMAT)
     elif access(LOCAL_LOG_FILE, W_OK):
-        log.add(LOCAL_LOG_FILE, rotation="10 MB", level="INFO", format=LOG_FORMAT)
+        log.add(LOCAL_LOG_FILE, rotation=LOGS_MAX_MB, level="INFO", format=LOG_FORMAT)
     else:
-        log.add(LOG_FILE, rotation="10 MB", level="INFO", format=LOG_FORMAT)
+        log.add(LOG_FILE, rotation=LOGS_MAX_MB, level="INFO", format=LOG_FORMAT)
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -80,10 +80,6 @@ if not DESARROLLO or environ.get("NOTLOGTOFILE") == "1":
 if environ.get("UPLOAD_FILES_DIR"):
     log.trace("Configuración de carga de archivos encontrada en variables de entorno.")
     DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(str(environ.get("UPLOAD_FILES_DIR")))
-elif isinstance(CONFIG_FROM_FILE, ConfigObj):
-    DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(
-        str(CONFIG_FROM_FILE.get("UPLOAD_FILES_DIR")) or str(path.join(DIRECTORIO_ARCHIVOS, "files"))
-    )
 else:
     DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(path.join(DIRECTORIO_ARCHIVOS, "files"))
 
@@ -123,19 +119,11 @@ else:
 
 # < --------------------------------------------------------------------------------------------- >
 # Configuración de la aplicación:
-# Se busca un archivo de configuración definido por el usuario, en caso de no encontrar un archivo de
-# configuración valido se siguen las recomendaciones de "Twelve Factors App" y las opciones se leen
-# del entorno. Si no se encuentra un archivo de configuración valido y no se pueden leer las opciones
-# de configuración del entorno se utilizan valores predeterminados.
+# Se siguen las recomendaciones de "Twelve Factors App" y las opciones se leen del entorno.
 
-CONFIGURACION: Union[Dict, ConfigObj] = {}
+CONFIGURACION: Dict = {}
 
-if CONFIG_FROM_FILE:  # pragma: no cover
-    log.debug("Archivo de configuración detectado.")
-    log.info("Cargando configuración desde archivo de configuración.")
-    CONFIGURACION = CONFIG_FROM_FILE
-
-elif (
+if (
     DESARROLLO is not False and environ.get("SECRET_KEY") and (environ.get("DATABASE_URL") or environ.get("LMS_DB"))
 ):  # pragma: no cover
     log.debug("Leyendo configuración desde variables de entorno.")
