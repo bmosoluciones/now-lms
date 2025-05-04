@@ -23,15 +23,6 @@
 <script src="//unpkg.com/alpinejs" defer></script>
 
 
-
-
-{%- if paypal_enabled() -%}
-<script src="https://js.braintreegateway.com/web/dropin/1.44.1/js/dropin.js"></script>
-<script src="https://js.braintreegateway.com/web/3.87.0/js/client.min.js"></script>
-<script src="https://js.braintreegateway.com/web/3.87.0/js/data-collector.min.js"></script>
-{%- endif -%}
-
-
 <!-- Favicons -->
 <link rel="apple-touch-icon" sizes="180x180"
   href="{{ url_for('static', filename='icons/favicon/apple-touch-icon.png') }}">
