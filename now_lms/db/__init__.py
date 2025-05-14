@@ -373,17 +373,12 @@ class Configuracion(database.Model, BaseTabla):
     # Uno de mooc, school, training
     modo = database.Column(database.String(500), nullable=False, default="mooc")
     moneda = database.Column(database.String(5))
-    # Style settings
-    style = database.Column(database.String(15))
-    custom_logo = database.Column(database.Boolean())
-    # These are ramdon bytes to protect passwords like SMTP mail password or others
-    # than the users of the system will estore in the database as configuration parameters
-    # those password are not goint to be saved in plain text, we will save them in hashed version
-    # with your app SECRET_KEY
-    # So, if any one have access to your database it will access to the hashed
-    # version of the password and this 16 bytes, but will need your app SECRET_KEY
-    # in order to decode those passwords.
     r = database.Column(database.LargeBinary())
+
+
+class Style(database.Model, BaseTabla):
+    theme = database.Column(database.String(15))
+    custom_logo = database.Column(database.Boolean())
 
 
 class MailConfig(database.Model, BaseTabla):

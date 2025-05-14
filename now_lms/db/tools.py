@@ -55,6 +55,7 @@ from now_lms.db import (
     PaypalConfig,
     Programa,
     ProgramaCurso,
+    Style,
     Usuario,
     database,
 )
@@ -110,11 +111,13 @@ def crear_configuracion_predeterminada():
     )
     adsense_config = AdSense(meta_tag_include=False)
     paypal_config = PaypalConfig(enable=False)
+    theme = Style(theme="now_lms")
 
     database.session.add(config)
     database.session.add(mail_config)
     database.session.add(adsense_config)
     database.session.add(paypal_config)
+    database.session.add(theme)
     database.session.commit()
 
 
