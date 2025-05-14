@@ -54,6 +54,7 @@ plugins:
           name: Español
           build: true
   - mkdocstrings
+  - glightbox
 
 nav:
   - Home:
@@ -69,6 +70,7 @@ nav:
           - CentOS / Alma / Rocky: rocky.md
       - Other Deployment options:
           - Server less: dev_ops.md
+  - Configure Payments: payments.md
   - About:
       - About: faq.md
       - Releases: release.md
