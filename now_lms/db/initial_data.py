@@ -21,8 +21,8 @@
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
 from datetime import datetime, time, timedelta
-from os import environ, makedirs, path
-from shutil import copyfile
+from os import environ, makedirs, path, listdir
+from shutil import copyfile, copytree
 from typing import TYPE_CHECKING
 
 # ---------------------------------------------------------------------------------------
@@ -250,7 +250,7 @@ def crear_curso_demo():
         seccion=seccion_id,
         tipo="mp3",
         nombre="A demo audio resource.",
-        descripcion="Audio is easy to produce that videos.",
+        descripcion="Audio is easier to produce than videos.",
         base_doc_url="audio",
         doc="resources/En-us-hello.ogg",
         indice=1,
@@ -602,7 +602,7 @@ def crear_curso_predeterminado():
         nombre="What You Should Know BEFORE Becoming an Online English Teacher.",
         descripcion="Danie Jay - What You Should Know BEFORE Becoming an Online English Teacher | 10 Things I WISH I Knew",
         url="https://www.youtube.com/watch?v=9JBDSzSARHA",
-        indice=2,
+        indice=3,
         publico=False,
     )
     database.session.add(nuevo_recurso2)
@@ -875,11 +875,9 @@ def crear_recurso_descargable():
         tipo="ebook",
         usuario="instructor",
     )
-    database.session.add(recurso1)
-    database.session.add(recurso2)
-    database.session.add(recurso3)
-    database.session.add(recurso4)
-    database.session.commit()
+    for i in recurso1, recurso2, recurso3, recurso4:
+        database.session.add(i)
+        database.session.commit()
 
     directorio_destino_archivo = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "files", "resources_files")
     directorio_destino_imagen = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "images", "resources_files")
@@ -930,3 +928,39 @@ def crear_recurso_descargable():
     recurso = CursoRecursoDescargable(curso="now", recurso="R005")
     database.session.add(recurso)
     database.session.commit()
+
+
+def populate_custmon_data_dir():
+    """Crea un directorio de archivos personalizado."""
+
+    from now_lms.config import DIRECTORIO_ARCHIVOS, DIRECTORIO_ARCHIVOS_BASE
+
+    if not DIRECTORIO_ARCHIVOS == DIRECTORIO_ARCHIVOS_BASE:
+
+        if path.isdir(DIRECTORIO_ARCHIVOS) and bool(listdir(DIRECTORIO_ARCHIVOS)):
+            pass
+        else:
+            try:
+                copytree(DIRECTORIO_ARCHIVOS_BASE, DIRECTORIO_ARCHIVOS, dirs_exist_ok=True)
+            except FileExistsError:
+                pass
+            except FileNotFoundError:
+                pass
+
+
+def populate_custom_theme_dir():
+    """Crea un directorio de tema personalizado."""
+
+    from now_lms.config import DIRECTORIO_PLANTILLAS, DIRECTORIO_PLANTILLAS_BASE
+
+    if not DIRECTORIO_PLANTILLAS == DIRECTORIO_PLANTILLAS_BASE:
+
+        if path.isdir(DIRECTORIO_PLANTILLAS) and bool(listdir(DIRECTORIO_PLANTILLAS)):
+            pass
+        else:
+            try:
+                copytree(DIRECTORIO_PLANTILLAS_BASE, DIRECTORIO_PLANTILLAS, dirs_exist_ok=True)
+            except FileExistsError:
+                pass
+            except FileNotFoundError:
+                pass

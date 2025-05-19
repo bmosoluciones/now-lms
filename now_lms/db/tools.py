@@ -97,9 +97,6 @@ def crear_configuracion_predeterminada():
     config = Configuracion(
         titulo="NOW LMS",
         descripcion="Sistema de aprendizaje en linea.",
-        modo="mooc",
-        style="dark",
-        custom_logo=False,
         moneda="C$",
         r=urandom(16),
     )
@@ -111,7 +108,10 @@ def crear_configuracion_predeterminada():
     )
     adsense_config = AdSense(meta_tag_include=False)
     paypal_config = PaypalConfig(enable=False)
-    theme = Style(theme="now_lms")
+    theme = Style(
+        theme="now_lms",
+        custom_logo=False,
+    )
 
     database.session.add(config)
     database.session.add(mail_config)

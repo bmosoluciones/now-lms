@@ -4,7 +4,6 @@ appdirs
 argon2-cffi
 babel
 bleach
-braintree
 cuid2
 flask
 flask[async]

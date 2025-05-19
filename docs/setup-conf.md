@@ -48,16 +48,6 @@ services:
 
 ```
 
-## Configuration from file:
-
-NOW-LMS can load its configuration from a init like file placed in `/etc/nowlms.conf` or `$home/.config/nowlms.conf` or a file named `nowlms.conf` in the current directory of the main proccess. Save the configuration in a plain text is common for unix like operative systems administrators.
-
-```
-# Example minimal configuration file in `/etc/nowlms.conf`
-SECRET_KEY=set_a_very_secure_secret_key_with_[\w\[\]`!@#$%\^&*()={}:;<>+'-]*
-SQLALCHEMY_DATABASE_URI=postgresql+pg8000://scott:tiger@localhost/mydatabase
-```
-
 ## Ad hoc configuration:
 
 You can can also configure NOW-LMS at run time setting configuration values in the `config` dictionary of the main Flask app.
@@ -77,7 +67,8 @@ Note that initial log messages will refer to the default options because you are
 
 You can use the following options to configure NOW-LMS:
 
--   **SECRET_KEY** (<span style="color:red">required</span>): A secure string used to secure the login proccess and form validation and to hash sensible data stored in the system database, if this parameter changes, hashed secrets will not be
+-   **SECRET_KEY** (<span style="color:red">required</span>): A secure string used to secure the login proccess and form validation and to
+    hash sensible data stored in the system database, if this parameter changes, hashed secrets will not be
     decripted and you will need to save then againg.
 -   **SQLALCHEMY_DATABASE_URI** (<span style="color:red">required</span>): A valid SQLAlchemy conextion string, SQLite, MySQL version
     8 and a resent version of PostgreSQL must work out of the box, MariaDB ans MS SQLServer should work but we not test the release versus this database engines. Checkout the
@@ -88,5 +79,7 @@ You can use the following options to configure NOW-LMS:
 -   **REDIS_URL** (<span style="color:blue">alias</span>): User friendly alias to `CACHE_REDIS_URL`.
 -   **CACHE_MEMCACHED_SERVERS** (<span style="color:green">optional</span>): Connection string to use [Mencached](https://memcached.org/)
     as cache backend.
--   **UPLOAD_FILES_DIR** (<span style="color:purple">recomended</span>): Directory to save user uploaded files, must be writable by the
-    main app proccess. Note that this variable can NOT be set AD-HOC because the order we parse the configuration options, so you must set this options before the app firts run, any overwritte before this can lead to unexpected results like file not found errors.It is better to set this option as enviroment variable before the firts run of the app. Note that if you migrate your instalation to a diferent host must edit this value so database records can match fisical file storage.
+-   **CUSTOM_DATA_DIR** (<span style="color:purple">recomended</span>): Directory to save user uploaded files, must be writable by the
+    main app proccess. Note that this variable can NOT be set AD-HOC because the order we parse the configuration options, so you must set this options before the app starts. You MUST have backups this directory in the same way  you make backups of the system database.
+-   **CUSTOM_THEMES_DIR** (<span style="color:purple">recomended</span>): Directory to save custom user themes, you must copy yout themes
+    files to the themes directory in this directory and set it in the system configuration. You SHOULD make backups of this directory,

@@ -212,7 +212,6 @@ class CursoSeccion(database.Model, BaseTabla):
 class CursoRecurso(database.Model, BaseTabla):
     """Una sección de un curso consta de una serie de recursos."""
 
-    __table_args__ = (database.UniqueConstraint("doc", name="documento_unico"),)
     indice = database.Column(database.Integer(), index=True)
     seccion = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False, index=True)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
@@ -229,7 +228,7 @@ class CursoRecurso(database.Model, BaseTabla):
     hora_fin = database.Column(database.Time())
     publico = database.Column(database.Boolean())
     base_doc_url = database.Column(database.String(50), unique=False)
-    doc = database.Column(database.String(50), unique=True)
+    doc = database.Column(database.String(50), unique=False)
     ext = database.Column(database.String(5), unique=True)
     text = database.Column(database.String(750))
     external_code = database.Column(database.String(500))
@@ -370,8 +369,6 @@ class Configuracion(database.Model, BaseTabla):
 
     titulo = database.Column(database.String(150), nullable=False)
     descripcion = database.Column(database.String(500), nullable=False)
-    # Uno de mooc, school, training
-    modo = database.Column(database.String(500), nullable=False, default="mooc")
     moneda = database.Column(database.String(5))
     r = database.Column(database.LargeBinary())
 

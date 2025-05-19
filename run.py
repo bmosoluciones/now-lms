@@ -28,7 +28,6 @@ from waitress import serve
 # Recursos locales
 # ---------------------------------------------------------------------------------------
 from now_lms import lms_app, init_app
-from now_lms.db.tools import database_is_populated
 
 PORT = environ.get("DATABASE_URL") or 8080
 

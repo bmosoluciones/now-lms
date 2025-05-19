@@ -56,14 +56,14 @@ if DESARROLLO:
 # Directorios base de la aplicacion
 DIRECTORIO_ACTUAL: Path = Path(path.abspath(path.dirname(__file__)))
 DIRECTORIO_APP: Path = DIRECTORIO_ACTUAL.parent.absolute()
-DIRECTORIO_PLANTILLAS: str = path.join(DIRECTORIO_APP, "templates")
-DIRECTORIO_TEMAS: str = path.join(DIRECTORIO_PLANTILLAS, "themes")
-DIRECTORIO_ARCHIVOS: str = path.join(DIRECTORIO_APP, "static")
+DIRECTORIO_PLANTILLAS_BASE: str = path.join(DIRECTORIO_APP, "templates")
+DIRECTORIO_ARCHIVOS_BASE: str = path.join(DIRECTORIO_APP, "static")
 DIRECTORIO_BASE_APP: AppDirs = AppDirs("NOW-LMS", "BMO Soluciones")
 DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
 
 LOGS_MAX_MB = "10 MB"
 
+# < --------------------------------------------------------------------------------------------- >
 if not DESARROLLO or environ.get("NOTLOGTOFILE") == "1":
     LOG_FILE = "now_lms.log"
     GLOBAL_LOG_FILE = path.join("/var/log/nowlms", LOG_FILE)
@@ -74,6 +74,21 @@ if not DESARROLLO or environ.get("NOTLOGTOFILE") == "1":
         log.add(LOCAL_LOG_FILE, rotation=LOGS_MAX_MB, level="INFO", format=LOG_FORMAT)
     else:
         log.add(LOG_FILE, rotation=LOGS_MAX_MB, level="INFO", format=LOG_FORMAT)
+
+
+# < --------------------------------------------------------------------------------------------- >
+# Directorios utilizados para la carga de archivos.
+if environ.get("CUSTOM_DATA_DIR"):
+    log.trace("Configuración de directorio de datos encontrada en variables de entorno.")
+    DIRECTORIO_ARCHIVOS = environ.get("CUSTOM_DATA_DIR")
+else:
+    DIRECTORIO_ARCHIVOS = DIRECTORIO_ARCHIVOS_BASE
+
+if environ.get("CUSTOM_THEMES_DIR"):
+    log.trace("Configuración de directorio de temas encontrada en variables de entorno.")
+    DIRECTORIO_PLANTILLAS = environ.get("CUSTOM_THEMES_DIR")
+else:
+    DIRECTORIO_PLANTILLAS = DIRECTORIO_PLANTILLAS_BASE
 
 
 # < --------------------------------------------------------------------------------------------- >
