@@ -42,7 +42,7 @@ from platform import python_version
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
 import click
-from flask import Flask, flash, render_template
+from flask import Flask, flash, render_template, get_template_attribute
 from flask.cli import FlaskGroup
 from flask_alembic import Alembic
 from flask_login import LoginManager, current_user

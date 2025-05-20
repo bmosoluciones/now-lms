@@ -75,9 +75,8 @@ if not DESARROLLO or environ.get("NOTLOGTOFILE") == "1":
     else:
         log.add(LOG_FILE, rotation=LOGS_MAX_MB, level="INFO", format=LOG_FORMAT)
 
-
 # < --------------------------------------------------------------------------------------------- >
-# Directorios utilizados para la carga de archivos.
+# Directorios personalizados para la aplicación.
 if environ.get("CUSTOM_DATA_DIR"):
     log.trace("Configuración de directorio de datos encontrada en variables de entorno.")
     DIRECTORIO_ARCHIVOS = environ.get("CUSTOM_DATA_DIR")
@@ -90,37 +89,35 @@ if environ.get("CUSTOM_THEMES_DIR"):
 else:
     DIRECTORIO_PLANTILLAS = DIRECTORIO_PLANTILLAS_BASE
 
-
 # < --------------------------------------------------------------------------------------------- >
 # Directorios utilizados para la carga de archivos.
-if environ.get("UPLOAD_FILES_DIR"):
-    log.trace("Configuración de carga de archivos encontrada en variables de entorno.")
-    DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(str(environ.get("UPLOAD_FILES_DIR")))
-else:
-    DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(path.join(DIRECTORIO_ARCHIVOS, "files"))
-
-DIRECTORIO_BASE_UPLOADS = DIRECTORIO_BASE_ARCHIVOS_USUARIO
-DIRECTORIO_ARCHIVOS_PUBLICOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "public")
-DIRECTORIO_ARCHIVOS_PRIVADOS: str = path.join(DIRECTORIO_BASE_UPLOADS, "private")
+DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(path.join(DIRECTORIO_ARCHIVOS, "files"))
+DIRECTORIO_ARCHIVOS_PUBLICOS: str = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public")
+DIRECTORIO_ARCHIVOS_PRIVADOS: str = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "private")
 DIRECTORIO_UPLOAD_IMAGENES: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "images")
 DIRECTORIO_UPLOAD_ARCHIVOS: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "files")
 DIRECTORIO_UPLOAD_AUDIO: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "audio")
 
-if not path.isdir(DIRECTORIO_BASE_UPLOADS):  # pragma: no cover
+if not path.isdir(DIRECTORIO_BASE_ARCHIVOS_USUARIO):  # pragma: no cover
     try:
-        makedirs(DIRECTORIO_BASE_UPLOADS)
+        makedirs(DIRECTORIO_BASE_ARCHIVOS_USUARIO)
         makedirs(DIRECTORIO_ARCHIVOS_PRIVADOS)
         makedirs(DIRECTORIO_ARCHIVOS_PUBLICOS)
         makedirs(DIRECTORIO_UPLOAD_ARCHIVOS)
         makedirs(DIRECTORIO_UPLOAD_IMAGENES)
         makedirs(DIRECTORIO_UPLOAD_AUDIO)
     except OSError:  # pragma: no cover
-        log.warning("No se puede crear directorio para carga de archivos: {directorio}", directorio=DIRECTORIO_BASE_UPLOADS)
-if access(DIRECTORIO_BASE_UPLOADS, R_OK) and access(DIRECTORIO_BASE_UPLOADS, W_OK):  # pragma: no cover
-    log.trace("Acceso verificado a: {file}", file=DIRECTORIO_BASE_UPLOADS)
+        log.warning(
+            "No se puede crear directorio para carga de archivos: {directorio}", directorio=DIRECTORIO_BASE_ARCHIVOS_USUARIO
+        )
+if access(DIRECTORIO_BASE_ARCHIVOS_USUARIO, R_OK) and access(DIRECTORIO_BASE_ARCHIVOS_USUARIO, W_OK):  # pragma: no cover
+    log.trace("Acceso verificado a: {file}", file=DIRECTORIO_BASE_ARCHIVOS_USUARIO)
 else:
-    log.error("No se tiene acceso a subir archivos al directorio: {dir}", dir=DIRECTORIO_BASE_UPLOADS)
+    log.error("No se tiene acceso a subir archivos al directorio: {dir}", dir=DIRECTORIO_BASE_ARCHIVOS_USUARIO)
 
+# < --------------------------------------------------------------------------------------------- >
+# Directorio base temas.
+DIRECTORIO_BASE_UPLOADS = Path(path.join(DIRECTORIO_ARCHIVOS, "files"))
 
 # < --------------------------------------------------------------------------------------------- >
 # Ubicación predeterminada de base de datos SQLITE

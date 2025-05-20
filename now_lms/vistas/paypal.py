@@ -21,7 +21,6 @@
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-import braintree
 from flask import Blueprint, current_app
 from sqlalchemy.exc import OperationalError
 

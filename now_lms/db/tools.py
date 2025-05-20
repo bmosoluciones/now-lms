@@ -446,6 +446,23 @@ def check_db_access(app):
             return False
 
 
+def get_current_theme():
+    """Devuelve el tema actual de la base de datos."""
+
+    try:
+        consulta = database.session.execute(database.select(Style)).first()
+    except AttributeError:
+        return False
+    except OperationalError:
+        consulta = None
+
+    if consulta:
+        data = consulta[0]
+        return data.theme
+    else:
+        return "now_lms"
+
+
 def generate_user_choices():
 
     usuarios = database.session.execute(database.select(Usuario)).all()
