@@ -272,3 +272,5 @@ flask_profiler.sql
 .ruff_cache
 
 run_mail.sh
+
+now_lms/templates/themes/test
