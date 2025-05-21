@@ -27,7 +27,6 @@ from typing import NamedTuple, Union
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import flash
 from flask_login import current_user
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
@@ -442,18 +441,16 @@ def check_db_access(app):
 
 def get_current_theme() -> str:
     """Devuelve el tema actual de la base de datos."""
-
     try:
         consulta = database.session.execute(database.select(Style)).first()
+        if consulta:
+            data = consulta[0]
+            return data.theme
+        else:
+            return "now_lms"
     except AttributeError:
         return "now_lms"
     except OperationalError:
-        consulta = None
-
-    if consulta:
-        data = consulta[0]
-        return data.theme
-    else:
         return "now_lms"
 
 

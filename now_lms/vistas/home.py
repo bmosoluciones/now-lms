@@ -14,6 +14,7 @@ from flask_login import current_user, login_required
 from now_lms.cache import cache, no_guardar_en_cache_global
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Curso, CursoRecurso, Usuario, database
+from now_lms.themes import get_home_template
 
 home = Blueprint("home", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
@@ -39,7 +40,7 @@ def pagina_de_inicio():
         count=True,
     )
 
-    return render_template("inicio/mooc.html", cursos=CURSOS)
+    return render_template(get_home_template(), cursos=CURSOS)
 
 
 @home.route("/home/panel")
