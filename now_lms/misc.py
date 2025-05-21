@@ -87,32 +87,6 @@ class EstiloLocal(NamedTuple):
     buttom: dict
 
 
-NAV_BAR = {
-    "dark": "navbar-dark bg-dark",
-    "light": "",
-    "transparent": "",
-}
-
-TEXTO = {
-    "dark": "text-white",
-    "light": "link-dark",
-    "transparent": "",
-}
-
-LOGO = {
-    "dark": "logo_horizontal_blanco.svg",
-    "light": "logo_horizontal.svg",
-    "transparent": "",
-}
-
-BUTTOM = {
-    "dark": "btn-outline-light",
-    "light": "btn-info",
-    "transparent": "",
-}
-
-ESTILO = EstiloLocal(NAV_BAR, TEXTO, LOGO, BUTTOM)
-
 TEMPLATES_BY_TYPE: dict = {
     "html": "type_html.html",
     "img": "type_img.html",

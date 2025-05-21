@@ -216,22 +216,16 @@ def crear_indice_recurso(recurso: str) -> NamedTuple:
     return RecursoIndex(has_prev, has_next, prev_is_alternative, next_is_alternative, prev_resource, next_resource)
 
 
-@cache.cached(timeout=60, key_prefix="cached_style")
-def obtener_estilo_actual() -> str:
-    """Retorna el estilo actual de la base de datos."""
-
-    consulta = Configuracion.query.first()
-
-    return consulta.style
-
-
 @cache.cached(timeout=60, key_prefix="cached_logo")
 def logo_perzonalizado():
     """Devuelve configuracion predeterminada."""
 
-    consulta = Configuracion.query.first()
-
-    return consulta.custom_logo
+    consulta = database.session.execute(database.select(Style)).first()
+    if consulta:
+        consulta = consulta[0]
+        return consulta.custom_logo
+    else:
+        return
 
 
 def elimina_logo_perzonalizado():
@@ -446,13 +440,13 @@ def check_db_access(app):
             return False
 
 
-def get_current_theme():
+def get_current_theme() -> str:
     """Devuelve el tema actual de la base de datos."""
 
     try:
         consulta = database.session.execute(database.select(Style)).first()
     except AttributeError:
-        return False
+        return "now_lms"
     except OperationalError:
         consulta = None
 

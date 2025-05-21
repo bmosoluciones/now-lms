@@ -94,16 +94,15 @@ from now_lms.db.tools import (
     get_addsense_code,
     get_addsense_meta,
     logo_perzonalizado,
-    obtener_estilo_actual,
     verifica_docente_asignado_a_curso,
     verifica_estudiante_asignado_a_curso,
     verifica_moderador_asignado_a_curso,
     verificar_avance_recurso,
     get_paypal_id,
+    get_current_theme,
 )
 from now_lms.logs import log
 from now_lms.misc import (
-    ESTILO,
     ESTILO_ALERTAS,
     ICONOS_RECURSOS,
     INICIO_SESION,
@@ -324,9 +323,7 @@ lms_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_
 lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
 lms_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
 lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
-lms_app.jinja_env.globals["estilo"] = ESTILO
 lms_app.jinja_env.globals["estilo_alerta"] = ESTILO_ALERTAS
-lms_app.jinja_env.globals["obtener_estilo_actual"] = obtener_estilo_actual
 lms_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
 lms_app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
 lms_app.jinja_env.globals["config"] = carga_configuracion_del_sitio_web_desde_db
@@ -339,6 +336,15 @@ lms_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
 lms_app.jinja_env.globals["adsense_code"] = get_addsense_code
 lms_app.jinja_env.globals["paypal_enabled"] = check_paypal_enabled
 lms_app.jinja_env.globals["paypal_id"] = get_paypal_id
+with lms_app.app_context():
+    lms_app.jinja_env.globals["headertags"] = get_template_attribute(
+        "themes/" + get_current_theme() + "/header_tags.j2", "headertags"
+    )
+    lms_app.jinja_env.globals["local_style"] = get_template_attribute(
+        "themes/" + get_current_theme() + "/local_style.j2", "local_style"
+    )
+    lms_app.jinja_env.globals["navbar"] = get_template_attribute("themes/" + get_current_theme() + "/navbar.j2", "navbar")
+    lms_app.jinja_env.globals["notify"] = get_template_attribute("themes/" + get_current_theme() + "/notify.j2", "notify")
 
 
 # ---------------------------------------------------------------------------------------
