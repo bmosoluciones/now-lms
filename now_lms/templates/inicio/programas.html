@@ -1,15 +1,13 @@
-{% import "macros.html" as macros %}
-
 <!DOCTYPE html>
 {% set config = config() %}
 <html lang="es" class="h-100">
 
 <head>
 
-  {{ macros.headertags() }}
+  {{ headertags() }}
   <title>Programas Disponibles</title>
 
-  {{ macros.local_style() }}
+  {{ local_style() }}
 
   <!-- Custom styles for this template -->
   <link href="{{ url_for('static', filename='css/sidebars.css') }}" rel="stylesheet">
@@ -17,7 +15,7 @@
 
 <body>
 
-  {{ macros.navbar() }}
+  {{ navbar() }}
 
   <main>
 
@@ -38,7 +36,7 @@
         <div class="col-md-8">
 
           <div class="container" id="user_paginatios">
-            {{ macros.rendizar_paginacion(consulta=cursos, vista="lista_programas") }}
+            {{ rendizar_paginacion(consulta=cursos, vista="lista_programas") }}
           </div>
 
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
@@ -104,7 +102,7 @@
           </div>
 
           <div class="container" id="user_paginatios">
-            {{ macros.rendizar_paginacion(consulta=cursos, vista="program.lista_programas") }}
+            {{ rendizar_paginacion(consulta=cursos, vista="program.lista_programas") }}
           </div>
 
         </div>

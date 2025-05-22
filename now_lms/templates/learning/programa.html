@@ -1,25 +1,23 @@
-{% import "macros.html" as macros %}
-
 <!DOCTYPE html>
 {% set config = config() %}
 <html lang="es" class="h-100">
 
 <head>
 
-  {{ macros.headertags() }}
+  {{ headertags() }}
   <title>{{ programa.nombre }}</title>
 
-  {{ macros.local_style() }}
+  {{ local_style() }}
 
 </head>
 
 <body>
 
-  {{ macros.navbar() }}
+  {{ navbar() }}
 
   <main>
 
-    {{ macros.notify() }}
+    {{ notify() }}
 
     <div class="px-4 pt-5 my-5 text-center border-bottom">
 

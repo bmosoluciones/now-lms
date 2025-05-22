@@ -1,4 +1,3 @@
-{% import "macros.html" as macros %}
 {% set config = config() %}
 {% set permitir_docente = docente_asignado(id_curso=curso.codigo) %}
 {% set permitir_moderador = moderador_asignado(id_curso=curso.codigo) %}
@@ -10,19 +9,19 @@
 
 <head>
 
-  {{ macros.headertags() }}
+  {{ headertags() }}
   <title>{{ curso.nombre | title }}</title>
 
-  {{ macros.local_style() }}
+  {{ local_style() }}
 </head>
 
 <body>
 
-  {{ macros.navbar() }}
+  {{ navbar() }}
 
   <main>
 
-    {{ macros.notify() }}
+    {{ notify() }}
     <br>
 
     <div class="container">

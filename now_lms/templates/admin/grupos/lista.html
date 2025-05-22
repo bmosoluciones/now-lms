@@ -1,19 +1,17 @@
-{% import "macros.html" as macros %}
-
 <!DOCTYPE html>
 <html lang="es" class="h-100">
 
 <head>
 
-  {{ macros.headertags() }}
+  {{ headertags() }}
   <title>Lista de Grupo</title>
 
-  {{ macros.local_style() }}
+  {{ local_style() }}
 </head>
 
 <body>
 
-  {{ macros.navbar() }}
+  {{ navbar() }}
 
   <main>
     <div class="container  px-0 py-3" id="lista-usarios">
@@ -61,7 +59,7 @@
       </div>
 
       <div class="container" id="user_pagination">
-        {{ macros.rendizar_paginacion(consulta=grupos, vista="groups") }}
+        {{ rendizar_paginacion(consulta=grupos, vista="groups") }}
       </div>
 
     </div>

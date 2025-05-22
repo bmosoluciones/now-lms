@@ -1,4 +1,3 @@
-{% import "macros.html" as macros %}
 {% import "learning/resources/type_macros.html" as r_macros %}
 
 <!DOCTYPE html>
@@ -6,21 +5,21 @@
 
 <head>
 
-  {{ macros.headertags() }}
+  {{ headertags() }}
   {{ mde.css }}
   <title>Mensaje</title>
 
-  {{ macros.local_style() }}
+  {{ local_style() }}
 
 </head>
 
 <body>
 
-  {{ macros.navbar() }}
+  {{ navbar() }}
 
   <main>
 
-    {{ macros.notify() }}
+    {{ notify() }}
 
     <div class="container px-0 py-3" id="icon-grid">
 

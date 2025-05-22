@@ -27,6 +27,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
+from flask import get_template_attribute
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
@@ -60,3 +61,19 @@ def get_home_template() -> str:
         return "themes/" + str(THEME) + "/home.j2"
     else:
         return "inicio/home.html"
+
+
+def load_theme_variables(app):
+    """Carga las variables de los temas en el contexto de la aplicacion."""
+    with app.app_context():
+        app.jinja_env.globals["headertags"] = get_template_attribute(
+            "themes/" + get_current_theme() + "/header_tags.j2", "headertags"
+        )
+        app.jinja_env.globals["local_style"] = get_template_attribute(
+            "themes/" + get_current_theme() + "/local_style.j2", "local_style"
+        )
+        app.jinja_env.globals["navbar"] = get_template_attribute("themes/" + get_current_theme() + "/navbar.j2", "navbar")
+        app.jinja_env.globals["notify"] = get_template_attribute("themes/" + get_current_theme() + "/notify.j2", "notify")
+        app.jinja_env.globals["rendizar_paginacion"] = get_template_attribute(
+            "themes/" + get_current_theme() + "/pagination.j2", "rendizar_paginacion"
+        )

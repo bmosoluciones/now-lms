@@ -1,11 +1,9 @@
-{% import "macros.html" as macros %}
-
 <!DOCTYPE html>
 <html lang="es" class="h-100">
 
 <head>
 
-  {{ macros.headertags() }}
+  {{ headertags() }}
   <link href="{{ url_for('static', filename='node_modules/select2/dist/css/select2.css') }}" rel="stylesheet" />
   <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.js') }}"></script>
   <script src="{{ url_for('static', filename='node_modules/select2/dist/js/select2.min.js') }}"></script>
@@ -18,13 +16,13 @@
 
   <title>Miembros del Grupo {{ grupo.nombre }}</title>
 
-  {{ macros.local_style() }}
+  {{ local_style() }}
 
 </head>
 
 <body>
 
-  {{ macros.navbar() }}
+  {{ navbar() }}
 
   <main>
     <div class="container  px-0 py-3" id="lista-usarios">
@@ -151,7 +149,7 @@
     </div>
 
     <div class="container" id="user_paginatios">
-      {{ macros.rendizar_paginacion(consulta=consulta, vista="grupo", id=grupo.id) }}
+      {{ rendizar_paginacion(consulta=consulta, vista="grupo", id=grupo.id) }}
     </div>
   </main>
 </body>

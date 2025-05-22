@@ -1,26 +1,24 @@
-{% import "macros.html" as macros %}
-
 <!DOCTYPE html>
 <html lang="es" class="h-100">
 
 <head>
 
-  {{ macros.headertags() }}
+  {{ headertags() }}
   {{ mde.css }}
   <title>Nuevo Recurso - Documento</title>
 
-  {{ macros.local_style() }}
+  {{ local_style() }}
   <!-- Custom styles for this template -->
   <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet">
 </head>
 
 <body>
 
-  {{ macros.navbar() }}
+  {{ navbar() }}
 
   <main>
 
-    {{ macros.notify() }}
+    {{ notify() }}
 
     <div class="container px-4 py-5" id="icon-grid">
       <h4 class="pb-2 border-bottom">Agregar un nuevo documento.</h4>

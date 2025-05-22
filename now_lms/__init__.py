@@ -42,7 +42,7 @@ from platform import python_version
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
 import click
-from flask import Flask, flash, render_template, get_template_attribute
+from flask import Flask, flash, render_template
 from flask.cli import FlaskGroup
 from flask_alembic import Alembic
 from flask_login import LoginManager, current_user
@@ -109,6 +109,7 @@ from now_lms.misc import (
     concatenar_parametros_a_url,
     markdown_to_clean_hmtl,
 )
+from now_lms.themes import load_theme_variables
 from now_lms.version import VERSION
 from now_lms.vistas.categories import category
 from now_lms.vistas.certificates import certificate
@@ -336,15 +337,7 @@ lms_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
 lms_app.jinja_env.globals["adsense_code"] = get_addsense_code
 lms_app.jinja_env.globals["paypal_enabled"] = check_paypal_enabled
 lms_app.jinja_env.globals["paypal_id"] = get_paypal_id
-with lms_app.app_context():
-    lms_app.jinja_env.globals["headertags"] = get_template_attribute(
-        "themes/" + get_current_theme() + "/header_tags.j2", "headertags"
-    )
-    lms_app.jinja_env.globals["local_style"] = get_template_attribute(
-        "themes/" + get_current_theme() + "/local_style.j2", "local_style"
-    )
-    lms_app.jinja_env.globals["navbar"] = get_template_attribute("themes/" + get_current_theme() + "/navbar.j2", "navbar")
-    lms_app.jinja_env.globals["notify"] = get_template_attribute("themes/" + get_current_theme() + "/notify.j2", "notify")
+load_theme_variables(lms_app)
 
 
 # ---------------------------------------------------------------------------------------

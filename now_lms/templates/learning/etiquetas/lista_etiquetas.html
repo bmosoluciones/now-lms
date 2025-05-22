@@ -1,24 +1,22 @@
-{% import "macros.html" as macros %}
-
 <!DOCTYPE html>
 <html lang="es" class="h-100">
 
 <head>
 
-  {{ macros.headertags() }}
+  {{ headertags() }}
   <title>Lista de Etiquetas.</title>
 
 
-  {{ macros.local_style() }}
+  {{ local_style() }}
 </head>
 
 <body>
 
-  {{ macros.navbar() }}
+  {{ navbar() }}
 
   <main>
 
-    {{ macros.notify() }}
+    {{ notify() }}
 
     <div class="container px-0 py-3" id="curse_list">
 
@@ -82,7 +80,7 @@
       {% endif %}
 
       <div class="container" id="user_pagination">
-        {{ macros.rendizar_paginacion(consulta=consulta, vista="lista_cursos") }}
+        {{ rendizar_paginacion(consulta=consulta, vista="lista_cursos") }}
       </div>
 
     </div>
