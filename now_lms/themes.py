@@ -67,11 +67,11 @@ def get_home_template() -> str:
 def load_theme_variables(app):
     """Carga las variables de los temas en el contexto de la aplicacion."""
     with app.app_context():
-        globals = app.jinja_env.globals
+        globals_ = app.jinja_env.globals
         theme = get_current_theme
         dir_ = THEMES_DIRECTORY
-        globals["headertags"] = get_macro(dir_ + theme() + "/header.j2", "headertags")
-        globals["local_style"] = get_macro(dir_ + theme() + "/local_style.j2", "local_style")
-        globals["navbar"] = get_macro(dir_ + theme() + "/navbar.j2", "navbar")
-        globals["notify"] = get_macro(dir_ + theme() + "/notify.j2", "notify")
-        globals["rendizar_paginacion"] = get_macro(dir_ + theme() + "/pagination.j2", "paginate")
+        globals_["headertags"] = get_macro(dir_ + theme() + "/header.j2", "headertags")
+        globals_["local_style"] = get_macro(dir_ + theme() + "/local_style.j2", "local_style")
+        globals_["navbar"] = get_macro(dir_ + theme() + "/navbar.j2", "navbar")
+        globals_["notify"] = get_macro(dir_ + theme() + "/notify.j2", "notify")
+        globals_["rendizar_paginacion"] = get_macro(dir_ + theme() + "/pagination.j2", "paginate")
