@@ -274,3 +274,4 @@ flask_profiler.sql
 run_mail.sh
 
 now_lms/templates/themes/test
+test.pdf

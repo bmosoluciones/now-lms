@@ -99,7 +99,6 @@ from now_lms.db.tools import (
     verifica_moderador_asignado_a_curso,
     verificar_avance_recurso,
     get_paypal_id,
-    get_current_theme,
 )
 from now_lms.logs import log
 from now_lms.misc import (

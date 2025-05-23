@@ -19,7 +19,8 @@
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
-
+from os import listdir
+from os.path import join
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -45,7 +46,7 @@ from wtforms.widgets import ColorInput, TextArea, html_params
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-
+from now_lms.config import DIRECTORIO_PLANTILLAS
 
 # < --------------------------------------------------------------------------------------------- >
 # Definición de formularios
@@ -55,30 +56,19 @@ MONEDAS = [
     ("USD", "Dólares"),
 ]
 
+THEMES_PATH = join(DIRECTORIO_PLANTILLAS, "themes")
+TEMPLATE_LIST = listdir(THEMES_PATH)
+TEMPLATE_CHOICES = []
+
+for template in TEMPLATE_LIST:
+    TEMPLATE_CHOICES.append((template, template))
 
 class ConfigForm(FlaskForm):
     """Formulario para editar la configuración del sistema."""
 
     titulo = StringField(validators=[DataRequired()])
     descripcion = StringField(validators=[DataRequired()])
-    modo = SelectField(
-        "Modo",
-        choices=[
-            ("mooc", "Cursos Masivos en Linea"),
-            ("school", "Escuela"),
-            ("training", "Corporativo"),
-        ],
-    )
-    # Formas de pago.
-    stripe = BooleanField(validators=[])
-    paypal = BooleanField(validators=[])
-    # Configuración de Stripe
-    stripe_secret = StringField(validators=[])
-    stripe_public = StringField(validators=[])
-    moneda = SelectField(
-        "Moneda",
-        choices=MONEDAS,
-    )
+
 
 
 class ThemeForm(FlaskForm):
@@ -86,11 +76,7 @@ class ThemeForm(FlaskForm):
 
     style = SelectField(
         "Estilo",
-        choices=[
-            ("dark", "Oscuro"),
-            ("light", "Claro"),
-            # ("transparent", "Transparente"),
-        ],
+        choices=TEMPLATE_CHOICES,
     )
 
 

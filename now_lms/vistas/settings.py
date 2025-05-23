@@ -35,7 +35,7 @@ from sqlalchemy.exc import OperationalError
 from now_lms.auth import perfil_requerido, proteger_secreto
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
-from now_lms.db import AdSense, Configuracion, MailConfig, PaypalConfig, database
+from now_lms.db import AdSense, Configuracion, MailConfig, PaypalConfig, Style,database
 from now_lms.db.tools import elimina_logo_perzonalizado
 from now_lms.forms import AdSenseForm, ConfigForm, MailForm, PayaplForm, ThemeForm, CheckMailForm
 from now_lms.logs import log
@@ -53,8 +53,8 @@ setting = Blueprint("setting", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 def personalizacion():
     """Personalizar el sistema."""
 
-    config = Configuracion.query.first()
-    form = ThemeForm(style=config.style)
+    config = database.session.execute(database.select(Style)).first()[0]
+    form = ThemeForm(style=config.theme)
 
     if form.validate_on_submit() or request.method == "POST":  # pragma: no cover
         config.style = form.style.data
@@ -87,17 +87,11 @@ def personalizacion():
 def configuracion():
     """Configuración del sistema."""
 
-    config = Configuracion.query.first()
-    form = ConfigForm(modo=config.modo, moneda=config.moneda)
+    config = config = database.session.execute(database.select(Configuracion)).first()[0]
+    form = ConfigForm()
     if form.validate_on_submit() or request.method == "POST":
         config.titulo = form.titulo.data
         config.descripcion = form.descripcion.data
-        config.modo = form.descripcion.data
-        config.stripe = form.stripe.data
-        config.paypal = form.paypal.data
-        config.stripe_secret = form.stripe_secret.data
-        config.stripe_public = form.stripe_secret.data
-        config.moneda = form.moneda.data
         try:
             database.session.commit()
             cache.delete("site_config")
