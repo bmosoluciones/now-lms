@@ -56,10 +56,6 @@ from now_lms.db import (
 from now_lms.logs import log
 from now_lms.version import MAYOR, MENOR, VERSION
 
-# pylint: disable=E1101
-# pylint: disable=R0915
-# pylint: disable=R0914
-
 if TYPE_CHECKING:
     from flask import Flask
 
@@ -935,11 +931,10 @@ def populate_custmon_data_dir():
 
     from now_lms.config import DIRECTORIO_ARCHIVOS, DIRECTORIO_ARCHIVOS_BASE
 
-    if not DIRECTORIO_ARCHIVOS == DIRECTORIO_ARCHIVOS_BASE:
+    if DIRECTORIO_ARCHIVOS != DIRECTORIO_ARCHIVOS_BASE:
 
-        if path.isdir(DIRECTORIO_ARCHIVOS) and bool(listdir(DIRECTORIO_ARCHIVOS)):
-            pass
-        else:
+        if not path.isdir(DIRECTORIO_ARCHIVOS) and not bool(listdir(DIRECTORIO_ARCHIVOS)):
+
             try:
                 copytree(DIRECTORIO_ARCHIVOS_BASE, DIRECTORIO_ARCHIVOS, dirs_exist_ok=True)
             except FileExistsError:

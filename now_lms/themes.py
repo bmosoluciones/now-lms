@@ -27,7 +27,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import get_template_attribute
+from flask import get_template_attribute as get_macro
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
@@ -36,7 +36,8 @@ from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db.tools import get_current_theme
 
 # < --------------------------------------------------------------------------------------------- >
-DIRECTORIO_TEMAS = Path(path.join(DIRECTORIO_PLANTILLAS, "themes"))
+THEMES_DIRECTORY = "themes/"
+DIRECTORIO_TEMAS = Path(path.join(DIRECTORIO_PLANTILLAS, THEMES_DIRECTORY))
 
 
 def get_theme_path() -> str:
@@ -58,7 +59,7 @@ def get_home_template() -> str:
     HOME = Path(path.join(get_theme_path(), "home.j2"))
 
     if HOME.exists():
-        return "themes/" + str(THEME) + "/home.j2"
+        return THEMES_DIRECTORY + str(THEME) + "/home.j2"
     else:
         return "inicio/home.html"
 
@@ -66,14 +67,11 @@ def get_home_template() -> str:
 def load_theme_variables(app):
     """Carga las variables de los temas en el contexto de la aplicacion."""
     with app.app_context():
-        app.jinja_env.globals["headertags"] = get_template_attribute(
-            "themes/" + get_current_theme() + "/header_tags.j2", "headertags"
-        )
-        app.jinja_env.globals["local_style"] = get_template_attribute(
-            "themes/" + get_current_theme() + "/local_style.j2", "local_style"
-        )
-        app.jinja_env.globals["navbar"] = get_template_attribute("themes/" + get_current_theme() + "/navbar.j2", "navbar")
-        app.jinja_env.globals["notify"] = get_template_attribute("themes/" + get_current_theme() + "/notify.j2", "notify")
-        app.jinja_env.globals["rendizar_paginacion"] = get_template_attribute(
-            "themes/" + get_current_theme() + "/pagination.j2", "rendizar_paginacion"
-        )
+        globals = app.jinja_env.globals
+        theme = get_current_theme
+        dir = THEMES_DIRECTORY
+        globals["headertags"] = get_macro(dir + theme() + "/header.j2", "headertags")
+        globals["local_style"] = get_macro(dir + theme() + "/local_style.j2", "local_style")
+        globals["navbar"] = get_macro(dir + theme() + "/navbar.j2", "navbar")
+        globals["notify"] = get_macro(dir + theme() + "/notify.j2", "notify")
+        globals["rendizar_paginacion"] = get_macro(dir + theme() + "/pagination.j2", "paginate")

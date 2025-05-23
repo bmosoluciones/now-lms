@@ -1,4 +1,4 @@
-{% macro rendizar_paginacion(consulta=None, vista=None, id=None, parametros=None)%}
+{% macro paginate(consulta=None, vista=None, id=None, parametros=None)%}
 <p>{{ consulta.total }} items encontrados.
   <br>
   {% if consulta.has_prev %}

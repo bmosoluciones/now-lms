@@ -35,7 +35,7 @@ from sqlalchemy.exc import OperationalError
 from now_lms.auth import perfil_requerido, proteger_secreto
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
-from now_lms.db import AdSense, Configuracion, MailConfig, PaypalConfig, Style,database
+from now_lms.db import AdSense, Configuracion, MailConfig, PaypalConfig, Style, database
 from now_lms.db.tools import elimina_logo_perzonalizado
 from now_lms.forms import AdSenseForm, ConfigForm, MailForm, PayaplForm, ThemeForm, CheckMailForm
 from now_lms.logs import log

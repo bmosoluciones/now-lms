@@ -63,12 +63,12 @@ TEMPLATE_CHOICES = []
 for template in TEMPLATE_LIST:
     TEMPLATE_CHOICES.append((template, template))
 
+
 class ConfigForm(FlaskForm):
     """Formulario para editar la configuración del sistema."""
 
     titulo = StringField(validators=[DataRequired()])
     descripcion = StringField(validators=[DataRequired()])
-
 
 
 class ThemeForm(FlaskForm):
