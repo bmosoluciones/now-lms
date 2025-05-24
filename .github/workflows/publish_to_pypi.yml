@@ -14,7 +14,7 @@ jobs:
       name: pypi
       url: https://pypi.org/p/now-lms
     permissions:
-      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3
@@ -32,5 +32,4 @@ jobs:
         cd ..
         python -m build --sdist --wheel --outdir dist/ .
     - name: Publish package distributions to PyPI
-      if: contains(github.event.head_commit.message, 'release:')
       uses: pypa/gh-action-pypi-publish@release/v1
