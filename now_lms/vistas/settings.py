@@ -57,7 +57,7 @@ def personalizacion():
     form = ThemeForm(style=config.theme)
 
     if form.validate_on_submit() or request.method == "POST":  # pragma: no cover
-        config.style = form.style.data
+        config.theme = form.style.data
 
         if "logo" in request.files:
             try:
