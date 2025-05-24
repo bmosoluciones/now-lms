@@ -1,0 +1,36 @@
+# Librerias de terceros
+alembic
+appdirs
+argon2-cffi
+babel
+bleach
+cuid2
+flask
+flask[async]
+flask-alembic
+flask-babel
+flask-caching
+flask-login
+flask-mail
+flask-mde
+flask-reuploaded
+flask-sqlalchemy
+flask_weasyprint
+flask-wtf
+loguru
+markdown
+python-ulid
+qrcode
+sqlalchemy
+requests
+redis
+waitress
+weasyprint
+wtforms
+
+# Soporte a Bases de datos
+#MySQL
+PyMySQL
+cryptography
+# Postgresql
+pg8000

@@ -1,0 +1,4 @@
+ports:
+  - port: 5000
+tasks:
+  - init: "bash .git_pod.sh"

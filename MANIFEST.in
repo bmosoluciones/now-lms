@@ -1,0 +1,11 @@
+include LICENSE
+include wsgi.py
+include passenger_wsgi.py
+include Procfile
+include pyproject.toml
+graft now_lms/static
+graft now_lms/migrations
+graft now_lms/templates
+recursive-include now_lms *.unit *.ico *.js *.css *.png *.html *.eot *.svg *.ttf *.woff *.woff2 *.jpg *.py *.txt *.csv *.json *.pdf *.ogg
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
