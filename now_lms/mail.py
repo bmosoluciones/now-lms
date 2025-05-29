@@ -66,7 +66,8 @@ def load_email_setup(flask_app: "Flask"):
     with flask_app.app_context():
         mail_config = database.session.execute(database.select(MailConfig)).first()[0]
 
-        if DESARROLLO and not environ.get("WITH_MAIL"):
+        if DESARROLLO:
+            log.warning("Desarrollo: No se enviarán correos electrónicos.")
             flask_app.config["MAIL_SUPPRESS_SEND"] = True
 
         flask_app.config["MAIL_SERVER"] = MAIL_SERVER or mail_config.MAIL_SERVER

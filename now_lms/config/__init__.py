@@ -34,17 +34,14 @@ from flask_uploads import AUDIO, DOCUMENTS, IMAGES, UploadSet
 # Recursos locales
 # ---------------------------------------------------------------------------------------
 from now_lms.logs import LOG_FORMAT, log
-from now_lms.version import PRERELEASE
 
 if TYPE_CHECKING:
     from flask import Flask
 
 # < --------------------------------------------------------------------------------------------- >
 # Configuración central de la aplicación.
-if environ.get("CI"):
-    DESARROLLO = True
-else:
-    DESARROLLO = PRERELEASE is not None
+DESARROLLO = environ.get("CI") or environ.get("DEBUG") or False
+
 
 if DESARROLLO:
     log.remove()
