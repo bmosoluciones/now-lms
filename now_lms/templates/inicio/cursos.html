@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 {% set config = config() %}
+{% set current_theme = current_theme() %}
 <html lang="es" class="h-100">
 
 <head>
 
-  {{ headertags() }}
+  {{ current_theme.headertags() }}
   <title>Cursos Disponibles</title>
 
-  {{ local_style() }}
+  {{ current_theme.local_style() }}
 
   <!-- Custom styles for this template -->
   <link href="{{ url_for('static', filename='css/sidebars.css') }}" rel="stylesheet">
@@ -15,7 +16,7 @@
 
 <body>
 
-  {{ navbar() }}
+  {{ current_theme.navbar() }}
 
   <main>
 

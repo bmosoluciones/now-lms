@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="es" class="h-100">
+{% set current_theme = current_theme() %}
 
 <head>
 
-  {{ headertags() }}
+  {{ current_theme.headertags() }}
   <title>Panel del usuario</title>
 
-  {{ local_style() }}
+  {{ current_theme.local_style() }}
 </head>
 
 <body>
 
-  {{ navbar() }}
+  {{ current_theme.navbar() }}
 
   <main>
 
-    {{ notify() }}
+    {{ current_theme.notify() }}
 
     <div class="container px-0 py-3" id="icon-grid">
       <h4 class="pb-2 border-bottom">Bienvenido

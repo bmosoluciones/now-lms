@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="es" class="h-100">
+{% set current_theme = current_theme() %}
 
 <head>
   <title>Inicio de sesión.</title>
 
-  {{ headertags() }}
+  {{ current_theme.headertags() }}
   <title>Inicio de sesión</title>
 
   <style>

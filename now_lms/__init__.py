@@ -108,7 +108,7 @@ from now_lms.misc import (
     concatenar_parametros_a_url,
     markdown_to_clean_hmtl,
 )
-from now_lms.themes import load_theme_variables
+from now_lms.themes import current_theme
 from now_lms.version import VERSION
 from now_lms.vistas.categories import category
 from now_lms.vistas.certificates import certificate
@@ -336,7 +336,7 @@ lms_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
 lms_app.jinja_env.globals["adsense_code"] = get_addsense_code
 lms_app.jinja_env.globals["paypal_enabled"] = check_paypal_enabled
 lms_app.jinja_env.globals["paypal_id"] = get_paypal_id
-load_theme_variables(lms_app)
+lms_app.jinja_env.globals["current_theme"] = current_theme
 
 
 # ---------------------------------------------------------------------------------------
