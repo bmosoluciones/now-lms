@@ -35,7 +35,6 @@ from flask import get_template_attribute as get_macro
 # ---------------------------------------------------------------------------------------
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db.tools import get_current_theme
-from now_lms.logs import log
 
 # < --------------------------------------------------------------------------------------------- >
 THEMES_DIRECTORY = "themes/"
