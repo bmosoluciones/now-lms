@@ -1,17 +1,18 @@
+{% set current_theme = current_theme() %}
 <!DOCTYPE html>
 <html lang="es" class="h-100">
 
 <head>
 
-  {{ headertags() }}
+  {{ current_theme.headertags() }}
   <title>Usuarios inativos</title>
 
-  {{ local_style() }}
+  {{ current_theme.local_style() }}
 </head>
 
 <body>
 
-  {{ navbar() }}
+  {{ current_theme.navbar() }}
 
   <main>
     <div class="container  px-0 py-3" id="user_list">
@@ -71,7 +72,7 @@
       </div>
 
       <div class="container" id="user_paginatios">
-        {{ rendizar_paginacion(consulta=consulta, vista="usuarios") }}
+        {{ current_theme.rendizar_paginacion(consulta=consulta, vista="usuarios") }}
       </div>
 
     </div>

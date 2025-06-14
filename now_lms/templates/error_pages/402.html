@@ -1,8 +1,9 @@
+{% set current_theme = current_theme() %}
 <!DOCTYPE html>
 <html class="h-100" lang="es">
 
 <head>
-  {{ headertags() }}
+  {{ current_theme.headertags() }}
   <title>Pago requerido.</title>
 
 </head>

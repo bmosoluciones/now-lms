@@ -1,3 +1,4 @@
+{% set current_theme = current_theme() %}
 {% set config = config() %}
 {% set permitir_docente = docente_asignado(id_curso=curso.codigo) %}
 {% set permitir_moderador = moderador_asignado(id_curso=curso.codigo) %}
@@ -9,19 +10,19 @@
 
 <head>
 
-  {{ headertags() }}
+  {{ current_theme.headertags() }}
   <title>{{ curso.nombre | title }}</title>
 
-  {{ local_style() }}
+  {{ current_theme.local_style() }}
 </head>
 
 <body>
 
-  {{ navbar() }}
+  {{ current_theme.navbar() }}
 
   <main>
 
-    {{ notify() }}
+    {{ current_theme.notify() }}
     <br>
 
     <div class="container">

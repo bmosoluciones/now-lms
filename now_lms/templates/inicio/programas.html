@@ -1,13 +1,14 @@
+{% set current_theme = current_theme() %}
 <!DOCTYPE html>
 {% set config = config() %}
 <html lang="es" class="h-100">
 
 <head>
 
-  {{ headertags() }}
+  {{ current_theme.headertags() }}
   <title>Programas Disponibles</title>
 
-  {{ local_style() }}
+  {{ current_theme.local_style() }}
 
   <!-- Custom styles for this template -->
   <link href="{{ url_for('static', filename='css/sidebars.css') }}" rel="stylesheet">
@@ -15,7 +16,7 @@
 
 <body>
 
-  {{ navbar() }}
+  {{ current_theme.navbar() }}
 
   <main>
 
@@ -36,7 +37,7 @@
         <div class="col-md-8">
 
           <div class="container" id="user_paginatios">
-            {{ rendizar_paginacion(consulta=cursos, vista="lista_programas") }}
+            {{ current_theme.rendizar_paginacion(consulta=cursos, vista="lista_programas") }}
           </div>
 
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
@@ -102,7 +103,7 @@
           </div>
 
           <div class="container" id="user_paginatios">
-            {{ rendizar_paginacion(consulta=cursos, vista="program.lista_programas") }}
+            {{ current_theme.rendizar_paginacion(consulta=cursos, vista="program.lista_programas") }}
           </div>
 
         </div>

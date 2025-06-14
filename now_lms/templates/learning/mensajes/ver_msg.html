@@ -1,3 +1,4 @@
+{% set current_theme = current_theme() %}
 {% import "learning/resources/type_macros.html" as r_macros %}
 
 <!DOCTYPE html>
@@ -5,21 +6,21 @@
 
 <head>
 
-  {{ headertags() }}
+  {{ current_theme.headertags() }}
   {{ mde.css }}
   <title>Mensaje</title>
 
-  {{ local_style() }}
+  {{ current_theme.local_style() }}
 
 </head>
 
 <body>
 
-  {{ navbar() }}
+  {{ current_theme.navbar() }}
 
   <main>
 
-    {{ notify() }}
+    {{ current_theme.notify() }}
 
     <div class="container px-0 py-3" id="icon-grid">
 

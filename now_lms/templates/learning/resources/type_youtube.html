@@ -1,3 +1,4 @@
+{% set current_theme = current_theme() %}
 {% import "learning/resources/type_macros.html" as r_macros %}
 {% set permitir_docente = docente_asignado(id_curso=curso.codigo) %}
 {% set permitir_moderador = moderador_asignado(id_curso=curso.codigo) %}
@@ -9,20 +10,20 @@
 
 <head>
 
-  {{ headertags() }}
+  {{ current_theme.headertags() }}
   <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
 
-  {{ local_style() }}
+  {{ current_theme.local_style() }}
 
 </head>
 
 <body>
 
-  {{ navbar() }}
+  {{ current_theme.navbar() }}
 
   <main>
 
-    {{ notify() }}
+    {{ current_theme.notify() }}
 
     <div class="container px-0 py-3" id="icon-grid">
       <h4 class="pb-2 border-bottom">

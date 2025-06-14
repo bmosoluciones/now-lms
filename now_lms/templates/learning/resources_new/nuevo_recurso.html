@@ -1,23 +1,24 @@
+{% set current_theme = current_theme() %}
 <!DOCTYPE html>
 <html lang="es" class="h-100">
 
 <head>
 
-  {{ headertags() }}
+  {{ current_theme.headertags() }}
   <title>Crear un nuevo recurso</title>
 
-  {{ local_style() }}
+  {{ current_theme.local_style() }}
   <!-- Custom styles for this template -->
   <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet">
 </head>
 
 <body>
 
-  {{ navbar() }}
+  {{ current_theme.navbar() }}
 
   <main>
 
-    {{ notify() }}
+    {{ current_theme.notify() }}
 
     <div class="container px-4 py-5" id="icon-grid">
       <h3 class="pb-2 border-bottom">Seleccione un elemento a añadir al curso.</h3>
@@ -32,7 +33,7 @@
             <p>Una lección en video alojada en YouTube.</p>
             <p>
               <span class="badge bg-success">
-                <a href="{{ url_for("course.nuevo_recurso_youtube_video", course_code=id_curso, seccion=id_seccion) }}"
+                <a href="{{ url_for('course.nuevo_recurso_youtube_video', course_code=id_curso, seccion=id_seccion) }}"
                   class="link-light">Agregar al curso.</a>
               </span>
             </p>

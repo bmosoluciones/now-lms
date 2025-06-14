@@ -1,9 +1,10 @@
+{% set current_theme = current_theme() %}
 <!DOCTYPE html>
 <html lang="es" class="h-100">
 
 <head>
 
-  {{ headertags() }}
+  {{ current_theme.headertags() }}
   <title>Moderador</title>
 
   <style>
@@ -26,11 +27,11 @@
 
 <body>
 
-  {{ navbar() }}
+  {{ current_theme.navbar() }}
 
   <main>
 
-    {{ notify() }}
+    {{ current_theme.notify() }}
 
     <div class="container px-0 py-3" id="icon-grid">
       <h4 class="pb-2 border-bottom">Panel de Moderación.</h4>

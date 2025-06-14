@@ -1,15 +1,16 @@
+{% set current_theme = current_theme() %}
 <!doctype html>
 <html lang="es" class="h-100">
-    <head>
-        {{ headertags() }}
-        <title>{{ title }}</title>
+  <head>
+    {{ current_theme.headertags() }}
+    <title>{{ title }}</title>
 
-        {{ local_style() }}
-    </head>
+    {{ current_theme.local_style() }}
+  </head>
 
-    <body>
-        {{ navbar() }}
+  <body>
+    {{ current_theme.navbar() }}
 
-        <main>{{ notify() }}</main>
-    </body>
+    <main>{{ current_theme.notify() }}</main>
+  </body>
 </html>

@@ -1,9 +1,10 @@
+{% set current_theme = current_theme() %}
 <!DOCTYPE html>
 <html lang="es" class="h-100">
 
 <head>
 
-  {{ headertags() }}
+  {{ current_theme.headertags() }}
   <link href="{{ url_for('static', filename='node_modules/select2/dist/css/select2.css') }}" rel="stylesheet" />
   <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.js') }}"></script>
   <script src="{{ url_for('static', filename='node_modules/select2/dist/js/select2.min.js') }}"></script>
@@ -16,13 +17,13 @@
 
   <title>Miembros del Grupo {{ grupo.nombre }}</title>
 
-  {{ local_style() }}
+  {{ current_theme.local_style() }}
 
 </head>
 
 <body>
 
-  {{ navbar() }}
+  {{ current_theme.navbar() }}
 
   <main>
     <div class="container  px-0 py-3" id="lista-usarios">
@@ -36,7 +37,7 @@
 
 
       <div class="col-auto">
-        <form action="{{ "/group/add?id=" + grupo.id }}" method="post" class="row g-3">
+        <form action="{{ '/group/add?id=' + grupo.id }}" method="post" class="row g-3">
           <div class="col-auto">>
             <select class="select2-usuario" name="usuario">
               {% for student in estudiantes %}
@@ -149,7 +150,7 @@
     </div>
 
     <div class="container" id="user_paginatios">
-      {{ rendizar_paginacion(consulta=consulta, vista="grupo", id=grupo.id) }}
+      {{ current_theme.rendizar_paginacion(consulta=consulta, vista="grupo", id=grupo.id) }}
     </div>
   </main>
 </body>

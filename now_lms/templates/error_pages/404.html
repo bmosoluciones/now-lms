@@ -1,8 +1,9 @@
+{% set current_theme = current_theme() %}
 <!DOCTYPE html>
 <html lang="es" class="h-100">
 
 <head>
-  {{ headertags() }}
+  {{ current_theme.headertags() }}
   <title>Recurso no encontrado.</title>
 
 </head>

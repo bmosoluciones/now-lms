@@ -1,21 +1,22 @@
+{% set current_theme = current_theme() %}
 <!DOCTYPE html>
 <html lang="es" class="h-100">
 
 <head>
 
-  {{ headertags() }}
+  {{ current_theme.headertags() }}
   <title>Crear Nueva Plantilla</title>
 
-  {{ local_style() }}
+  {{ current_theme.local_style() }}
 </head>
 
 <body>
 
-  {{ navbar() }}
+  {{ current_theme.navbar() }}
 
   <main>
 
-    {{ notify() }}
+    {{ current_theme.notify() }}
 
     <div class="container px-4 py-5" id="icon-grid">
       <h4 class="pb-2 border-bottom">Crear nuevo Certificado.</h4>

@@ -1,22 +1,23 @@
+{% set current_theme = current_theme() %}
 <!DOCTYPE html>
 <html lang="es" class="h-100">
 
 <head>
 
-  {{ headertags() }}
+  {{ current_theme.headertags() }}
   <title>Lista de Etiquetas.</title>
 
 
-  {{ local_style() }}
+  {{ current_theme.local_style() }}
 </head>
 
 <body>
 
-  {{ navbar() }}
+  {{ current_theme.navbar() }}
 
   <main>
 
-    {{ notify() }}
+    {{ current_theme.notify() }}
 
     <div class="container px-0 py-3" id="curse_list">
 
@@ -80,7 +81,7 @@
       {% endif %}
 
       <div class="container" id="user_pagination">
-        {{ rendizar_paginacion(consulta=consulta, vista="lista_cursos") }}
+        {{ current_theme.rendizar_paginacion(consulta=consulta, vista="lista_cursos") }}
       </div>
 
     </div>
