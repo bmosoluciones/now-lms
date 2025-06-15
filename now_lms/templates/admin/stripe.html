@@ -1,50 +1,37 @@
 {% set current_theme = current_theme() %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es" class="h-100">
+  <head>
+    {{ current_theme.headertags() }}
 
-<head>
+    <title>Editar configuracion</title>
 
-  {{ current_theme.headertags() }}
+    {{ current_theme.local_style() }}
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+  </head>
 
-  <title>Editar configuracion</title>
+  <body>
+    {{ current_theme.navbar() }}
 
-  {{ current_theme.local_style() }}
-  <!-- Custom styles for this template -->
-  <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet">
-</head>
+    <main>
+      {{ current_theme.notify() }}
 
-<body>
-
-  {{ current_theme.navbar() }}
-
-  <main>
-
-    {{ current_theme.notify() }}
-
-    <div class="container px-4 py-5" id="icon-grid">
-      <h5 class="pb-2 border-bottom">Configuración del Correo Electronico.</h5>
-      <form method="post">
-
-        <div class="row">
-
-          <div class="col-sm-6">
-
+      <div class="container px-4 py-5" id="icon-grid">
+        <h5 class="pb-2 border-bottom">Configuración del Correo Electronico.</h5>
+        <form method="post">
+          <div class="row">
+            <div class="col-sm-6"></div>
           </div>
-        </div>
-        <div class="row">
-          <div>
-            <br>
-            <a class="btn btn-warning" href="{{ url_for("admin_profile.pagina_admin") }}" role="button">Cancelar</a>
-            <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
+          <div class="row">
+            <div>
+              <br />
+              <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button">Cancelar</a>
+              <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
+            </div>
           </div>
-
-        </div>
-
-      </form>
-    </div>
-
-  </main>
-
-</body>
-
+        </form>
+      </div>
+    </main>
+  </body>
 </html>

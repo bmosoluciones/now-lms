@@ -1,60 +1,52 @@
 {% set current_theme = current_theme() %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es" class="h-100">
+  <head>
+    {{ current_theme.headertags() }}
+    <title>Crear Nueva Plantilla</title>
 
-<head>
+    {{ current_theme.local_style() }}
+  </head>
 
-  {{ current_theme.headertags() }}
-  <title>Crear Nueva Plantilla</title>
+  <body>
+    {{ current_theme.navbar() }}
 
-  {{ current_theme.local_style() }}
-</head>
+    <main>
+      {{ current_theme.notify() }}
 
-<body>
+      <div class="container px-4 py-5" id="icon-grid">
+        <h4 class="pb-2 border-bottom">Emitir un nuevo Certificado.</h4>
+        <form method="post" enctype="multipart/form-data">
+          {{ form.csrf_token }}
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label for="usuario" class="form-label">Usuario</label>
+              {{ form.usuario(class="form-control") }}
+            </div>
 
-  {{ current_theme.navbar() }}
-
-  <main>
-
-    {{ current_theme.notify() }}
-
-    <div class="container px-4 py-5" id="icon-grid">
-      <h4 class="pb-2 border-bottom">Emitir un nuevo Certificado.</h4>
-      <form method="post" enctype=multipart/form-data>
-        {{ form.csrf_token }}
-        <div class="row g-3">
-          <div class="col-sm-6">
-            <label for="usuario" class="form-label">Usuario</label>
-            {{ form.usuario(class="form-control") }}
+            <div class="col-sm-6">
+              <label for="curso" class="form-label">Curso</label>
+              {{ form.curso(class="form-control") }}
+            </div>
           </div>
 
-          <div class="col-sm-6">
-            <label for="curso" class="form-label">Curso</label>
-            {{ form.curso(class="form-control") }}
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label for="template" class="form-label">Plantilla</label>
+              {{ form.template(class="form-control") }}
+            </div>
+
+            <div class="col-sm-6">
+              <label for="nota" class="form-label">Nota</label>
+              {{ form.nota(class="form-control") }}
+            </div>
           </div>
-        </div>
 
-        <div class="row g-3">
-          <div class="col-sm-6">
-            <label for="template" class="form-label">Plantilla</label>
-            {{ form.template(class="form-control") }}
-          </div>
+          <br />
 
-          <div class="col-sm-6">
-            <label for="nota" class="form-label">Nota</label>
-            {{ form.nota(class="form-control") }}
-          </div>
-        </div>
-
-        <br>
-
-        <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Certificado</button>
-      </form>
-    </div>
-
-  </main>
-
-
-</body>
-
+          <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Certificado</button>
+        </form>
+      </div>
+    </main>
+  </body>
 </html>
