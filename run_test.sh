@@ -1,15 +1,5 @@
 #!/bin/bash
 echo -------------------------------------------------
-echo Format Python code
-echo -------------------------------------------------
-echo
-black now_lms
-echo -------------------------------------------------
-echo Format HTML templates
-echo -------------------------------------------------
-echo
-./node_modules/.bin/prettier --write now_lms/templates/
-echo -------------------------------------------------
 echo Check python code with flake8
 echo -------------------------------------------------
 echo
@@ -26,11 +16,6 @@ echo -------------------------------------------------
 echo
 python -m mypy now_lms --install-types --non-interactive --ignore-missing-imports
 echo
-echo -------------------------------------------------
-echo Lint html files wiht curlylint
-echo -------------------------------------------------
-echo
-python -m curlylint now_lms/templates/
 echo -------------------------------------------------
 echo Run tests
 echo -------------------------------------------------
