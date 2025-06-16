@@ -170,7 +170,6 @@ class Curso(database.Model, BaseTabla):
     nivel = database.Column(database.Integer())
     promocionado = database.Column(database.Boolean())
     fecha_promocionado = database.Column(database.DateTime, nullable=True)
-    certificado = database.Column(database.String(26), database.ForeignKey("certificado.id"), nullable=False, index=True)
 
 
 class ClaseMagistral(database.Model, BaseTabla):
