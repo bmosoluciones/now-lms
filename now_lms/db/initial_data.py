@@ -502,7 +502,7 @@ def crear_certificados():
 def crear_certificacion():
     certificacion = Certificacion(
         id="01JS2NK7NJ74DBSHD83MGRH5HE",
-        usuario="lms-admin",
+        usuario=environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin",
         curso="now",
         certificado="1234567890",
     )
