@@ -42,7 +42,7 @@ from platform import python_version
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
 import click
-from flask import Flask, flash, render_template
+from flask import Flask, current_app, flash, render_template
 from flask.cli import FlaskGroup
 from flask_alembic import Alembic
 from flask_login import LoginManager, current_user
@@ -423,7 +423,7 @@ def setup(with_examples=False, with_testdata=False):  # pragma: no cover
     with lms_app.app_context():
         from now_lms.db.tools import database_is_populated
 
-        if database_is_populated(lms_app):
+        if not database_is_populated(lms_app):
 
             initial_setup(with_examples)
             if with_testdata:
