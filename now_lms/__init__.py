@@ -449,9 +449,8 @@ def upgrade_db():  # pragma: no cover
 @lms_app.cli.command()
 def deletedb():  # pragma: no cover
     """Elimina base de datos."""
-    if DESARROLLO:
-        with lms_app.app_context():
-            database.drop_all()
+    with lms_app.app_context():
+        database.drop_all()
 
 
 @lms_app.cli.command()
