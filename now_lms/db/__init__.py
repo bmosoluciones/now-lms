@@ -483,8 +483,8 @@ class Certificado(database.Model, BaseTabla):
 
     titulo = database.Column(database.String(50))
     descripcion = database.Column(database.String(500))
-    html = database.Column(database.String(5000))
-    css = database.Column(database.String(1000))
+    html = database.Column(database.String(10000))
+    css = database.Column(database.String(10000))
     habilitado = database.Column(database.Boolean())
     publico = database.Column(database.Boolean())
     usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
