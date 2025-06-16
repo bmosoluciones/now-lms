@@ -369,6 +369,7 @@ def get_paypal_id() -> str:
 
 def database_is_populated(app):
     """Check is database is populated."""
+    from sqlalchemy.exc import ResourceClosedError
 
     with app.app_context():
         from sqlalchemy.sql import text
@@ -394,6 +395,8 @@ def database_is_populated(app):
         except PGProgrammingError:
             return False
         except DatabaseError:
+            return False
+        except ResourceClosedError:
             return False
 
 
