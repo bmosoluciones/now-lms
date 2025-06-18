@@ -441,7 +441,7 @@ def db_seed():
     from now_lms.db.data_test import crear_data_para_pruebas
 
     with lms_app.app_context():
-        initial_setup(with_examples)
+        initial_setup(with_examples=True)
         crear_data_para_pruebas()
 
 
