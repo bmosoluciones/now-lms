@@ -275,3 +275,9 @@ run_mail.sh
 
 now_lms/templates/themes/test
 test.pdf
+
+# Private templates
+now_lms/templates/themes/sunshine
+now_lms/templates/themes/nowlearninginstitute
+now_lms/static/files/public/themes/sunshine
+now_lms/static/files/public/themes/nowlearninginstitute

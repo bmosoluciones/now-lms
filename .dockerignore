@@ -63,3 +63,9 @@ run_mail.sh
 test.pdf
 .prettierrc.yaml
 node_modules
+
+# Private templates
+now_lms/templates/themes/sunshine
+now_lms/templates/themes/nowlearninginstitute
+now_lms/static/files/public/themes/sunshine
+now_lms/static/files/public/themes/nowlearninginstitute
