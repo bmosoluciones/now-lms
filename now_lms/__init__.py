@@ -418,8 +418,8 @@ def command(as_module=False) -> None:  # pragma: no cover
 @lms_app.cli.command()
 @click.option("--with-examples", is_flag=True, default=False, help="Load example data at setup.")
 @click.option("--with-testdata", is_flag=True, default=False, help="Load data for testing.")
-def setup(with_examples=False, with_testdata=False):  # pragma: no cover
-    """Inicia al aplicacion."""
+def db_init(with_examples=False, with_testdata=False):  # pragma: no cover
+    """Init a new database."""
     with lms_app.app_context():
         from now_lms.db.tools import database_is_populated
 
@@ -435,38 +435,69 @@ def setup(with_examples=False, with_testdata=False):  # pragma: no cover
 
 
 @lms_app.cli.command()
-def release():  # pragma: no cover
-    """Devuelve la versión actual del programa."""
-    print(VERSION)
+def db_seed():
+    """Setup a new develoment database."""
+
+    from now_lms.db.data_test import crear_data_para_pruebas
+
+    with lms_app.app_context():
+        initial_setup(with_examples)
+        crear_data_para_pruebas()
 
 
 @lms_app.cli.command()
-def upgrade_db():  # pragma: no cover
-    """Actualiza esquema de base de datos."""
+def db_migrate():  # pragma: no cover
+    """Update dabatase schema."""
     alembic.upgrade()
 
 
 @lms_app.cli.command()
-def deletedb():  # pragma: no cover
-    """Elimina base de datos."""
+def db_backup():  # pragma: no cover
+    """Make a backup of system data."""
+    pass
+
+
+@lms_app.cli.command()
+def db_backup_restore():  # pragma: no cover
+    """Restore the system from a backup."""
+    pass
+
+
+@lms_app.cli.command()
+def db_migrate():  # pragma: no cover
+    """Update dabatase schema."""
+    alembic.upgrade()
+
+
+@lms_app.cli.command()
+def db_drop():  # pragma: no cover
+    """Delete database schema and all the data in it."""
     with lms_app.app_context():
-        database.drop_all()
+        if click.confirm("This will delete the database and all the data on it. Do you want to continue?", abort=True):
+            database.drop_all()
 
 
 @lms_app.cli.command()
 @click.option("--with-examples", is_flag=True, default=False, help="Load example data at setup.")
 @click.option("--with-tests", is_flag=True, default=False, help="Load data for testing.")
-def resetdb(with_examples=False, with_tests=False) -> None:  # pragma: no cover
-    """Elimina la base de datos actual e inicia una nueva."""
+def db_reset(with_examples=False, with_tests=False) -> None:  # pragma: no cover
+    """Drop the system database and populate with init a new one."""
     with lms_app.app_context():
-        cache.clear()
-        database.drop_all()
-        initial_setup(with_examples, with_tests)
+        if click.confirm("This will delete the current database and all the data on it. Do you want to continue?", abort=True):
+            cache.clear()
+            database.drop_all()
+            initial_setup(with_examples, with_tests)
+
+
+@lms_app.cli.command()
+def version():  # pragma: no cover
+    """Return the current versión of the software."""
+    click.echo(VERSION)
 
 
 @lms_app.cli.command()
 def serve():  # pragma: no cover
-    """Servidor WSGI predeterminado."""
+    """Serve NOW LMS with the default WSGi server."""
     from waitress import serve as server
 
     if environ.get("LMS_PORT"):
