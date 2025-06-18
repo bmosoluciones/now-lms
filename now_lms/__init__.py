@@ -446,12 +446,6 @@ def db_seed():
 
 
 @lms_app.cli.command()
-def db_migrate():  # pragma: no cover
-    """Update dabatase schema."""
-    alembic.upgrade()
-
-
-@lms_app.cli.command()
 def db_backup():  # pragma: no cover
     """Make a backup of system data."""
     pass
