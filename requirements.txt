@@ -6,7 +6,7 @@ babel
 bleach
 cuid2
 flask
-flask[async]
+flask
 flask-alembic
 flask-babel
 flask-caching
