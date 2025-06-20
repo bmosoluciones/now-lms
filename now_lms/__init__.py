@@ -110,6 +110,7 @@ from now_lms.misc import (
 )
 from now_lms.themes import current_theme
 from now_lms.version import VERSION
+from now_lms.vistas._helpers import get_current_course_logo, get_site_logo
 from now_lms.vistas.categories import category
 from now_lms.vistas.certificates import certificate
 from now_lms.vistas.courses import course
@@ -337,6 +338,8 @@ lms_app.jinja_env.globals["adsense_code"] = get_addsense_code
 lms_app.jinja_env.globals["paypal_enabled"] = check_paypal_enabled
 lms_app.jinja_env.globals["paypal_id"] = get_paypal_id
 lms_app.jinja_env.globals["current_theme"] = current_theme
+lms_app.jinja_env.globals["course_logo"] = get_current_course_logo
+lms_app.jinja_env.globals["site_logo"] = get_site_logo
 
 
 # ---------------------------------------------------------------------------------------

@@ -33,9 +33,9 @@
 
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
           <div class="col-md-4 border-right">
-            {% if curso.portada %}
+            {% if curso.portada and course_logo(curso.codigo) %}
             <img
-              src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}"
+              src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/' + course_logo(curso.codigo) ) }}"
               width="100%"
               height="225"
               alt="Portada del Curso"

@@ -82,16 +82,19 @@
             </div>
 
             {% if curso.portada %}
-            <img
-              src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}"
-              alt="Portada del Curso"
-            />
+            <div>
+              <img
+                src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}"
+                alt="Portada del Curso"
+              />
+            </div>
+
             <a href="{{url_for('course.elimina_logo', course_code=curso.codigo)}}">Eliminar Portada</a>
             {% else %}
 
             <div class="col-md-4">
               <label for="logo" class="form-label">Portada</label>
-              <input type="file" name="logo" accept="image/jpeg" />
+              <input type="file" name="logo" accept="image/jpeg, image/png, image/gif, image/webp, image/bmp, image/svg+xml" />
             </div>
 
             {% endif %}

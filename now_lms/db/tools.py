@@ -230,29 +230,30 @@ def logo_perzonalizado():
 
 def elimina_logo_perzonalizado():
     """Elimina logo tipo perzonalizado."""
+    from now_lms.vistas._helpers import get_site_logo
 
-    consulta = Configuracion.query.first()
+    consulta = database.session.execute(database.select(Style)).first()[0]
     consulta.custom_logo = False
 
-    database.session.commit()
-
-    LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, "logotipo.jpg")
+    LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, get_site_logo())
 
     try:
         remove(LOGO)
+        database.session.commit()
     except FileNotFoundError:  # pragma: no cover
         pass
 
 
 def elimina_logo_perzonalizado_curso(course_code: str):
     """Elimina logo tipo perzonalizado."""
+    from now_lms.vistas._helpers import get_current_course_logo
 
     curso = Curso.query.filter_by(codigo=course_code).first()
     curso.portada = False
 
     database.session.commit()
 
-    LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, course_code, "logo.jpg")
+    LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, course_code, get_current_course_logo(course_code))
 
     remove(LOGO)
 
