@@ -502,7 +502,7 @@ def crear_certificados():
 def crear_certificacion():
     certificacion = Certificacion(
         id="01JS2NK7NJ74DBSHD83MGRH5HE",
-        usuario="lms-admin",
+        usuario=environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin",
         curso="now",
         certificado="1234567890",
     )
@@ -621,16 +621,12 @@ def crear_curso_predeterminado():
     log.debug("Curso de demostración creado correctamente.")
 
 
-ADMIN = environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin"
-PASSWD = environ.get("ADMIN_PSWD") or environ.get("LMS_PSWD") or "lms-admin"
-
-
 def crear_usuarios_predeterminados():
     """Crea en la base de datos los usuarios iniciales."""
     log.info("Creando usuario administrador.")
     administrador = Usuario(
-        usuario=ADMIN,
-        acceso=proteger_passwd(PASSWD),
+        usuario=environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin",
+        acceso=proteger_passwd(environ.get("ADMIN_PSWD") or environ.get("LMS_PSWD") or "lms-admin"),
         nombre="System",
         apellido="Administrator",
         tipo="admin",

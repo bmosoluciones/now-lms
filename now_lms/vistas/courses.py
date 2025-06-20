@@ -246,7 +246,10 @@ def nuevo_curso():
             asignar_curso_a_instructor(curso_codigo=form.codigo.data, usuario_id=current_user.usuario)
             if "logo" in request.files:
                 try:
-                    picture_file = images.save(request.files["logo"], folder=form.codigo.data, name="logo.jpg")
+                    logo = request.files["logo"]
+                    logo_name = logo.filename
+                    logo_ext = logo_name.split(".")[1]
+                    picture_file = images.save(request.files["logo"], folder=form.codigo.data, name="logo" + "." + logo_ext)
                     if picture_file:
                         _curso = database.session.execute(
                             database.select(Curso).filter(Curso.codigo == form.codigo.data)

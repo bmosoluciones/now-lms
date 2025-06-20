@@ -170,7 +170,6 @@ class Curso(database.Model, BaseTabla):
     nivel = database.Column(database.Integer())
     promocionado = database.Column(database.Boolean())
     fecha_promocionado = database.Column(database.DateTime, nullable=True)
-    certificado = database.Column(database.String(26), database.ForeignKey("certificado.id"), nullable=False, index=True)
 
 
 class ClaseMagistral(database.Model, BaseTabla):
@@ -484,8 +483,8 @@ class Certificado(database.Model, BaseTabla):
 
     titulo = database.Column(database.String(50))
     descripcion = database.Column(database.String(500))
-    html = database.Column(database.String(1000))
-    css = database.Column(database.String(1000))
+    html = database.Column(database.String(10000))
+    css = database.Column(database.String(10000))
     habilitado = database.Column(database.Boolean())
     publico = database.Column(database.Boolean())
     usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))

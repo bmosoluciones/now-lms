@@ -28,7 +28,7 @@ jobs:
         env:
           CI: True
         run: |
-          SECRET_KEY=ASD123klja+AddS lmsctl setup
+          SECRET_KEY=ASD123klja+AddS lmsctl db-init
       - name: Test with Postgresql + psycopg2
         env:
           CI: True
@@ -42,7 +42,7 @@ jobs:
           sudo -u postgres psql -c "ALTER ROLE lmsctl1 CREATEDB;"
           sudo -u postgres psql -c "GRANT USAGE ON SCHEMA public TO lmsctl1;"
           sudo -u postgres psql -c "GRANT CREATE ON SCHEMA public TO lmsctl1;"
-          SECRET_KEY=ASD123klja+AddS CACAO_DB=postgresql+psycopg2://lmsctl1:lmsctl1@localhost/lmsctl1 lmsctl setup
+          SECRET_KEY=ASD123klja+AddS CACAO_DB=postgresql+psycopg2://lmsctl1:lmsctl1@localhost/lmsctl1 lmsctl db-init
       - name: Test with Postgresql + pg8000
         env:
           CI: True
@@ -55,4 +55,4 @@ jobs:
           sudo -u postgres psql -c "ALTER ROLE lmsctl2 CREATEDB;"
           sudo -u postgres psql -c "GRANT USAGE ON SCHEMA public TO lmsctl2;"
           sudo -u postgres psql -c "GRANT CREATE ON SCHEMA public TO lmsctl2;"
-          SECRET_KEY=ASD123klj+aAddS CACAO_DB=postgresql+pg8000://lmsctl2:lmsctl2@localhost/lmsctl2 lmsctl setup
+          SECRET_KEY=ASD123klj+aAddS CACAO_DB=postgresql+pg8000://lmsctl2:lmsctl2@localhost/lmsctl2 lmsctl db-init

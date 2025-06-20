@@ -23,6 +23,7 @@
 # ---------------------------------------------------------------------------------------
 from os import path
 from pathlib import Path
+from types import SimpleNamespace
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -64,15 +65,16 @@ def get_home_template() -> str:
         return "inicio/home.html"
 
 
-def load_theme_variables(app):
+def current_theme():
     """Carga las variables de los temas en el contexto de la aplicacion."""
-    with app.app_context():
-        globals_ = app.jinja_env.globals
-        theme = get_current_theme
-        dir_ = THEMES_DIRECTORY
-        globals_["headertags"] = get_macro(dir_ + theme() + "/header.j2", "headertags")
-        globals_["jslibs"] = get_macro(dir_ + theme() + "/js.j2", "jslibs")
-        globals_["local_style"] = get_macro(dir_ + theme() + "/local_style.j2", "local_style")
-        globals_["navbar"] = get_macro(dir_ + theme() + "/navbar.j2", "navbar")
-        globals_["notify"] = get_macro(dir_ + theme() + "/notify.j2", "notify")
-        globals_["rendizar_paginacion"] = get_macro(dir_ + theme() + "/pagination.j2", "paginate")
+
+    theme = get_current_theme
+    dir_ = THEMES_DIRECTORY
+    return SimpleNamespace(
+        headertags=get_macro(dir_ + theme() + "/header.j2", "headertags"),
+        jslibs=get_macro(dir_ + theme() + "/js.j2", "jslibs"),
+        local_style=get_macro(dir_ + theme() + "/local_style.j2", "local_style"),
+        navbar=get_macro(dir_ + theme() + "/navbar.j2", "navbar"),
+        notify=get_macro(dir_ + theme() + "/notify.j2", "notify"),
+        rendizar_paginacion=get_macro(dir_ + theme() + "/pagination.j2", "paginate"),
+    )

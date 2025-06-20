@@ -64,7 +64,8 @@ def validar_acceso(usuario_id, acceso):
 
     if registro is not None:
         try:
-            clave_validada = ph.verify(registro.acceso, acceso.encode())
+            ph.verify(registro.acceso, acceso.encode())
+            clave_validada = True
         except VerifyMismatchError:
             clave_validada = False
     else:
