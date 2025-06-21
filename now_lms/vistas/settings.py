@@ -20,6 +20,8 @@
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
+from os import listdir
+from os.path import join
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -53,8 +55,16 @@ setting = Blueprint("setting", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 def personalizacion():
     """Personalizar el sistema."""
 
+    THEMES_PATH = join(str(DIRECTORIO_PLANTILLAS), "themes")
+    TEMPLATE_LIST = listdir(THEMES_PATH)
+    TEMPLATE_CHOICES = []
+
+    for template in TEMPLATE_LIST:
+        TEMPLATE_CHOICES.append((template, template))
+
     config = database.session.execute(database.select(Style)).first()[0]
     form = ThemeForm(style=config.theme)
+    form.style.choices = TEMPLATE_CHOICES
 
     if form.validate_on_submit() or request.method == "POST":  # pragma: no cover
         config.theme = form.style.data
