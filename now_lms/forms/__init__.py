@@ -19,8 +19,7 @@
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
-from os import listdir
-from os.path import join
+
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -56,13 +55,6 @@ MONEDAS = [
     ("USD", "Dólares"),
 ]
 
-THEMES_PATH = join(str(DIRECTORIO_PLANTILLAS), "themes")
-TEMPLATE_LIST = listdir(THEMES_PATH)
-TEMPLATE_CHOICES = []
-
-for template in TEMPLATE_LIST:
-    TEMPLATE_CHOICES.append((template, template))
-
 
 class ConfigForm(FlaskForm):
     """Formulario para editar la configuración del sistema."""
@@ -76,7 +68,7 @@ class ThemeForm(FlaskForm):
 
     style = SelectField(
         "Estilo",
-        choices=TEMPLATE_CHOICES,
+        choices=[],
     )
 
 
