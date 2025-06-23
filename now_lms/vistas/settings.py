@@ -163,6 +163,7 @@ def mail():
 @perfil_requerido("admin")
 def mail_check():
     """Configuración de Correo Electronico."""
+    log.trace("Enviando correo de prueba para verificar la configuración de correo electronico.")
     config = database.session.execute(database.select(MailConfig)).first()[0]
 
     form = CheckMailForm()
