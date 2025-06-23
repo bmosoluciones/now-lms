@@ -158,6 +158,22 @@ def mail():
         return render_template("admin/mail.html", form=form, config=config)
 
 
+mail_check_message = """
+<div class="container">
+    <div class="header">
+      <h1>Email Configuration Confirmed</h1>
+    </div>
+    <div class="content">
+      <p>We are pleased to inform you that your email configuration has been successfully validated.</p>
+      <p>You can now send emails using your configured settings without any issues.</p>
+    </div>
+    <div class="footer">
+      <p>This is an automated message. Please do not reply to this email.</p>
+    </div>
+  </div>
+"""
+
+
 @setting.route("/setting/mail/verify", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
@@ -177,9 +193,10 @@ def mail_check():
         mail = Mail()
         mail.init_app(app_)
         msg = Message(
-            subject="Hello",
+            subject="Email setup verification.",
             recipients=[form.email.data],
         )
+        msg.html = mail_check_message
         try:
             mail.send(msg)
             try:
