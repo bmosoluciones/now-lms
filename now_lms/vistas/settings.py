@@ -199,17 +199,24 @@ def mail_check():
         msg.html = mail_check_message
         try:
             mail.send(msg)
-            try:
-                config.email_verificado = True
-                database.session.commit()
-                flash("Correo de prueba enviado correctamente.", "success")
-                return redirect(url_for("setting.mail"))
-            except OperationalError:
-                flash("No se pudo actualizar la configuración de correo electronico.", "warning")
-                return redirect(url_for("setting.mail"))
-        except:  # noqa: E722
-            flash("No se puede enviar un correo de prueba. Revise su configuración.", "warning")
+            flash("Correo de prueba enviado correctamente.", "success")
+            config.email_verificado = True
+            database.session.commit()
             return redirect(url_for("setting.mail"))
+        except Exception as e:  # noqa: E722
+            flash("Hubo un error al enviar un correo de prueba. Revise su configuración.", "warning")
+
+            form = MailForm(
+                email=config.email,
+                MAIL_SERVER=config.MAIL_SERVER,
+                MAIL_PORT=config.MAIL_PORT,
+                MAIL_USERNAME=config.MAIL_USERNAME,
+                MAIL_PASSWORD=config.MAIL_PASSWORD,
+                MAIL_USE_TLS=config.MAIL_USE_TLS,
+                MAIL_USE_SSL=config.MAIL_USE_SSL,
+                MAIL_DEFAULT_SENDER=config.MAIL_DEFAULT_SENDER,
+            )
+            return render_template("admin/mail.html", form=form, config=config, error=str(e))
 
     else:
         return render_template("admin/mail _check.html", form=form)

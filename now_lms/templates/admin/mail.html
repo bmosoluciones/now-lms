@@ -19,6 +19,9 @@
 
       <div class="container px-4 py-5" id="icon-grid">
         <h5 class="pb-2 border-bottom">Configuración del Correo Electronico.</h5>
+        {% if error %}
+        <div class="alert alert-danger" role="alert">{{ error }}</div>
+        {% endif %}
         <form method="post">
           <div class="row">
             <div class="col-sm-6">
