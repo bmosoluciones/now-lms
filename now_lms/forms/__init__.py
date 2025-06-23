@@ -45,7 +45,6 @@ from wtforms.widgets import ColorInput, TextArea, html_params
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms.config import DIRECTORIO_PLANTILLAS
 
 # < --------------------------------------------------------------------------------------------- >
 # Definición de formularios

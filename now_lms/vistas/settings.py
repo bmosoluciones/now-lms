@@ -163,12 +163,13 @@ def mail():
 @perfil_requerido("admin")
 def mail_check():
     """Configuración de Correo Electronico."""
-    log.trace("Enviando correo de prueba para verificar la configuración de correo electronico.")
+
     config = database.session.execute(database.select(MailConfig)).first()[0]
 
     form = CheckMailForm()
 
     if form.validate_on_submit() or request.method == "POST":
+
         from flask_mail import Mail, Message
         from now_lms.mail import load_email_setup
 
