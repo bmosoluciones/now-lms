@@ -171,8 +171,9 @@ def mail_check():
         from flask_mail import Mail, Message
         from now_lms.mail import load_email_setup
 
+        app_ = load_email_setup(current_app)
         mail = Mail()
-        mail.init_app(load_email_setup(current_app))
+        mail.init_app(app_)
         msg = Message(
             subject="Hello",
             recipients=[form.email.data],
