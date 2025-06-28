@@ -53,6 +53,8 @@ def db_backup():
     TIME_STAMP = datetime.now().strftime("%Y%m%d-%H%M%S")
     BACKUP_FILE = os.path.join(BACKUP_DIR, "temp", f"nowlmsbackup_{TIME_STAMP}.sql")
     BACKUP_FILE = Path(BACKUP_FILE)
+    if not BACKUP_FILE.exists():
+        BACKUP_FILE.touch()
 
     with current_app.app_context():
         if "sqlite" in DBURI:
