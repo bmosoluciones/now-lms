@@ -53,6 +53,9 @@ def db_backup():
     TIME_STAMP = datetime.now().strftime("%Y%m%d-%H%M%S")
     BACKUP_FILE = os.path.join(BACKUP_DIR, f"nowlmsbackup_{TIME_STAMP}.sql")
     BACKUP_FILE = Path(BACKUP_FILE)
+
+    os.makedirs(BACKUP_DIR, exist_ok=True)
+
     
     if not BACKUP_FILE.exists():
         BACKUP_FILE.touch()
