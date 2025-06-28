@@ -62,6 +62,8 @@ class ConfigForm(FlaskForm):
     titulo = StringField(validators=[DataRequired()])
     descripcion = StringField(validators=[DataRequired()])
 
+    verify_user_by_email = BooleanField(validators=[])
+
 
 class ThemeForm(FlaskForm):
     """Formulario para editar el tema del sistema."""

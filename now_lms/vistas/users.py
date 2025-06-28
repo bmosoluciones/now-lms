@@ -18,7 +18,7 @@
 """
 NOW Learning Management System.
 
-Gestión de certificados.
+Gestión de usuarios.
 """
 
 # ---------------------------------------------------------------------------------------

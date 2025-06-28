@@ -359,16 +359,13 @@ class EstudianteCurso(database.Model, BaseTabla):
 
 
 class Configuracion(database.Model, BaseTabla):
-    """
-    Repositorio Central para la configuración de la aplicacion.
-
-    Realmente esta tabla solo va a contener un registro con una columna para cada opción, en las plantillas
-    va a estar disponible como la variable global config.
-    """
+    """Repositorio Central para la configuración de la aplicacion."""
 
     titulo = database.Column(database.String(150), nullable=False)
     descripcion = database.Column(database.String(500), nullable=False)
     moneda = database.Column(database.String(5))
+    # Send a message to the user to verify his email
+    verify_user_by_email = database.Column(database.Boolean())
     r = database.Column(database.LargeBinary())
 
 

@@ -98,18 +98,27 @@ def configuracion():
     """Configuración del sistema."""
 
     config = config = database.session.execute(database.select(Configuracion)).first()[0]
-    form = ConfigForm()
+    form = ConfigForm(titulo=config.titulo, descripcion=config.descripcion, verify_user_by_email=config.verify_user_by_email)
     if form.validate_on_submit() or request.method == "POST":
         config.titulo = form.titulo.data
         config.descripcion = form.descripcion.data
+
+        if form.verify_user_by_email.data:
+            config = database.session.execute(database.select(MailConfig)).first()[0]
+            if not config.email_verificado:
+                flash("Debe configurar el correo electronico antes de habilitar verificación por e-mail.", "warning")
+                config.verify_user_by_email = False
+            else:
+                config.verify_user_by_email = True
+
         try:
             database.session.commit()
             cache.delete("site_config")
             flash("Sitio web actualizado exitosamente.", "success")
-            return redirect("/admin")
+            return redirect(url_for("setting.configuracion"))
         except OperationalError:  # pragma: no cover
             flash("No se pudo actualizar la configuración del sitio web.", "warning")
-            return redirect("/admin")
+            return redirect(url_for("setting.configuracion"))
 
     else:
         return render_template("admin/config.html", form=form, config=config)

@@ -20,20 +20,35 @@
         <h4 class="pb-2 border-bottom">Editar configuración del sitio web.</h4>
         <form method="post">
           <div class="row">
+            <div class="col-sm-8">
+              <h5>Datos Generales del Sitio Web.</h5>
+            </div>
+          </div>
+          <div class="row">
             <div class="col-sm-6">
               <label for="titulo" class="form-label">Nombre del Sitio Web</label>
               {{ form.titulo(class="form-control", id="titulo", value=config.titulo) }}
             </div>
-          </div>
 
-          <div class="row">
             <div class="col-sm-6">
               <label for="descripcion" class="form-label">Descripción del Sitio</label>
               {{ form.descripcion(class="form-control", id="descripcion", value=config.descripcion) }}
             </div>
           </div>
+          <div class="row">
+            <div class="col-sm-8">
+              <br/>
+              <h5>Configuración de verificación de usuarios.</h5>
+            </div>
+          </div>
+          <div class="row"">
+            <div class="col-sm-6">
+              <label for="verificacion" class="form-label">Permitir a nuevos usuarios verificarse vía correo electronico:</label>
+              {{ form.verify_user_by_email(value=config.verify_user_by_email) }}
+            </div>
+          </div>
 
-          <br />
+          <br/>
           <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button">Cancelar</a>
           <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
         </form>
