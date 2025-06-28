@@ -53,6 +53,7 @@ def db_backup():
     TIME_STAMP = datetime.now().strftime("%Y%m%d-%H%M%S")
     BACKUP_FILE = os.path.join(BACKUP_DIR, "temp", f"nowlmsbackup_{TIME_STAMP}.sql")
     BACKUP_FILE = Path(BACKUP_FILE)
+    
     if not BACKUP_FILE.exists():
         BACKUP_FILE.touch()
 
@@ -62,13 +63,14 @@ def db_backup():
             shutil.copy2(ARCHIVO_ORIGEN, BACKUP_FILE)
         elif "postgresql" in DBURI:
             os.environ["PGPASSWORD"] = DBPASS
-            subprocess.run(
-                ["pg_dump", "-h", DBHOST, "-p", DBPORT, "-U", DBUSER, "-F", "c", "-b", "-v", "-f", BACKUP_FILE, DBNAME]
+            with open(BACKUP_FILE, 'w') as f:
+                subprocess.run(
+                ["pg_dump", "-h", DBHOST, "-p", DBPORT, "-U", DBUSER, "-F", "c", "-b", "-v", "-f", f, DBNAME]
             )
+                f.close()
         elif "mysql" in DBURI:
-            output_file = BACKUP_FILE
-
-            with open(output_file, "w") as f:
+            with open(BACKUP_FILE, "w") as f:
                 subprocess.run(
                     ["mysqldump", "-h", DBHOST, "-P", DBPORT, "-u", DBUSER, f"--password={DBPASS}", DBNAME], stdout=f
                 )
+                f.close()
