@@ -33,9 +33,7 @@ from sqlalchemy.engine import make_url
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms.config import DIRECTORIO_ARCHIVOS_PRIVADOS
-
-DIRECTORIO_PRINCICIPAL
+from now_lms.config import DIRECTORIO_ARCHIVOS_PRIVADOS, DIRECTORIO_PRINCICIPAL
 
 BACKUP_DIR = os.path.join(DIRECTORIO_ARCHIVOS_PRIVADOS, "database", "backup")
 
