@@ -51,7 +51,7 @@ with current_app.app_context():
 def db_backup():
     """Genera un respaldo de la base de datos."""
     TIME_STAMP = datetime.now().strftime("%Y%m%d-%H%M%S")
-    BACKUP_FILE = os.path.join(BACKUP_DIR, "temp", f"nowlmsbackup_{TIME_STAMP}.sql")
+    BACKUP_FILE = os.path.join(BACKUP_DIR, f"nowlmsbackup_{TIME_STAMP}.sql")
     BACKUP_FILE = Path(BACKUP_FILE)
     
     if not BACKUP_FILE.exists():
