@@ -44,7 +44,7 @@ with current_app.app_context():
     DBUSER = DBURL.username
     DBPASS = DBURL.password
     DBHOST = DBURL.host
-    DBPORT = DBURL.port
+    DBPORT = str(DBURL.port)
     DBENGINE = DBURL.drivername
 
 
