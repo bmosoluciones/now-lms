@@ -70,7 +70,8 @@ def db_backup():
             )
             os.environ["PGPASSWORD"] = ""
         elif "mysql" in DBURI:
-            subprocess.run(
-                ["mysqldump", "-h", DBHOST, "-P", DBPORT, "-u", DBUSER, f"--password={DBPASS}", DBNAME],
-                stdout=BACKUP_FILE.open("w"),
-            )
+            with BACKUP_FILE.open("w") as f:
+                subprocess.run(
+                    ["mysqldump", "-h", DBHOST, "-P", DBPORT, "-u", DBUSER, f"--password={DBPASS}", DBNAME],
+                    stdout=f,
+                )
