@@ -66,14 +66,12 @@ def db_backup():
             shutil.copy2(ARCHIVO_ORIGEN, BACKUP_FILE)
         elif "postgresql" in DBURI:
             os.environ["PGPASSWORD"] = DBPASS
-            with open(BACKUP_FILE, 'w') as f:
-                subprocess.run(
+            subprocess.run(
                 ["pg_dump", "-h", DBHOST, "-p", DBPORT, "-U", DBUSER, "-F", "c", "-b", "-v", "-f", f, DBNAME]
             )
-                f.close()
+            os.environ["PGPASSWORD"] = ""
         elif "mysql" in DBURI:
-            with open(BACKUP_FILE, "w") as f:
-                subprocess.run(
+            subprocess.run(
                     ["mysqldump", "-h", DBHOST, "-P", DBPORT, "-u", DBUSER, f"--password={DBPASS}", DBNAME], stdout=f
                 )
-                f.close()
+            
