@@ -22,7 +22,7 @@ import shutil
 import subprocess
 import os
 from datetime import datetime
-from path import Path
+from pathlib import Path
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
