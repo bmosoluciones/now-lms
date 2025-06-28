@@ -36,6 +36,7 @@ Visit http://127.0.0.1:8080/ in your browser, default user and password are lms-
 # ---------------------------------------------------------------------------------------
 import sys
 from os import cpu_count, environ
+from pathlib import Path
 from platform import python_version
 
 # ---------------------------------------------------------------------------------------
@@ -457,9 +458,17 @@ def db_backup():  # pragma: no cover
 
 
 @lms_app.cli.command()
-def db_backup_restore():  # pragma: no cover
+@click.argument(
+    "backup_sql_file",
+    type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True, path_type=Path),
+    help="Path to the sql backup file.",
+)
+def db_backup_restore(backup_sql_file: Path):  # pragma: no cover
     """Restore the system from a backup."""
-    pass
+    from now_lms.db.backup import db_backup_restore
+
+    click.echo(f"Processing back un from: {backup_sql_file}")
+    db_backup_restore(backup_sql_file)
 
 
 @lms_app.cli.command()

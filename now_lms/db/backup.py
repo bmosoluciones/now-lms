@@ -75,3 +75,65 @@ def db_backup():
                     ["mysqldump", "-h", DBHOST, "-P", DBPORT, "-u", DBUSER, f"--password={DBPASS}", DBNAME],
                     stdout=f,
                 )
+
+
+def _restaurar_postgresql(backup_sql_file):
+    comando = [
+        "psql",
+        f"--host={DBHOST}",
+        f"--port={DBPORT or 5432}",
+        f"--username={DBUSER}",
+        f"--dbname={DBNAME}",
+        "-f",
+        backup_sql_file,
+    ]
+
+    os.environ["PGPASSWORD"] = DBPASS
+
+    print(f"Ejecutando: {' '.join(comando)}")
+
+    resultado = subprocess.run(
+        comando,
+    )
+
+    os.environ["PGPASSWORD"] = ""
+
+    if resultado.returncode != 0:
+        raise RuntimeError("Error al restaurar la base de datos PostgreSQL con psql")
+
+
+def _restaurar_mysql(backup_sql_file):
+    comando = [
+        "mysql",
+        f"-h{DBHOST}",
+        f"-P{DBPORT or 3306}",
+        f"-u{DBUSER}",
+        f"-p{DBPASS}",
+        DBNAME,
+    ]
+
+    print(f"Ejecutando: {' '.join(comando[:-1])} [password oculto] {comando[-1]}")
+
+    with open(backup_sql_file, "rb") as sql_file:
+        resultado = subprocess.run(comando, stdin=sql_file)
+
+    if resultado.returncode != 0:
+        raise RuntimeError("Error al restaurar la base de datos MySQL con mysql")
+
+
+def _restaurar_sqlite(backup_sql_file):
+
+    ARCHIVO_DESTINO = Path(str(DIRECTORIO_PRINCICIPAL) + "/now_lms.db")
+    shutil.copy2(backup_sql_file, ARCHIVO_DESTINO)
+
+
+def db_backup_restore(backup_sql_file):
+    """Restaura la base de datos desde un respaldo."""
+
+    with current_app.app_context():
+        if "postgresql" in DBURI:
+            _restaurar_postgresql(backup_sql_file)
+        elif "mysql" in DBURI:
+            _restaurar_mysql(backup_sql_file)
+        elif "sqlite" in DBURI:
+            _restaurar_sqlite(backup_sql_file)
