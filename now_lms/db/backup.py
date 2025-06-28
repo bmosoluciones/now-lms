@@ -56,7 +56,6 @@ def db_backup():
 
     os.makedirs(BACKUP_DIR, exist_ok=True)
 
-    
     if not BACKUP_FILE.exists():
         BACKUP_FILE.touch()
 
@@ -67,11 +66,11 @@ def db_backup():
         elif "postgresql" in DBURI:
             os.environ["PGPASSWORD"] = DBPASS
             subprocess.run(
-                ["pg_dump", "-h", DBHOST, "-p", DBPORT, "-U", DBUSER, "-F", "c", "-b", "-v", "-f", f, DBNAME]
+                ["pg_dump", "-h", DBHOST, "-p", DBPORT, "-U", DBUSER, "-F", "c", "-b", "-v", "-f", BACKUP_FILE, DBNAME]
             )
             os.environ["PGPASSWORD"] = ""
         elif "mysql" in DBURI:
             subprocess.run(
-                    ["mysqldump", "-h", DBHOST, "-P", DBPORT, "-u", DBUSER, f"--password={DBPASS}", DBNAME], stdout=f
-                )
-            
+                ["mysqldump", "-h", DBHOST, "-P", DBPORT, "-u", DBUSER, f"--password={DBPASS}", DBNAME],
+                stdout=BACKUP_FILE.open("w"),
+            )
