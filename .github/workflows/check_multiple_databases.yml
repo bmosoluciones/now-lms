@@ -27,11 +27,17 @@ jobs:
       - name: Test with SQLite
         env:
           CI: True
+          SECRET_KEY: ASD123klj+aAddS
         run: |
-          SECRET_KEY=ASD123klja+AddS lmsctl db-init
+          lmsctl db-init
       - name: Test with Postgresql + psycopg2
         env:
           CI: True
+          SECRET_KEY: ASD123klj+aAddS
+          DATABASE_URL: postgresql+psycopg2://lmsctl1:lmsctl1@127.0.0.1:5432/lmsctl1
+          ADMIN_USER: hello
+          ADMIN_PSWD: world
+          FLASK_APP: now_lms
         run: |
           sudo systemctl start postgresql.service
           sudo -u postgres psql -c "CREATE USER lmsctl1 WITH PASSWORD 'lmsctl1';"
@@ -42,10 +48,15 @@ jobs:
           sudo -u postgres psql -c "ALTER ROLE lmsctl1 CREATEDB;"
           sudo -u postgres psql -c "GRANT USAGE ON SCHEMA public TO lmsctl1;"
           sudo -u postgres psql -c "GRANT CREATE ON SCHEMA public TO lmsctl1;"
-          SECRET_KEY=ASD123klja+AddS CACAO_DB=postgresql+psycopg2://lmsctl1:lmsctl1@localhost/lmsctl1 lmsctl db-init
+          lmsctl db-init
       - name: Test with Postgresql + pg8000
         env:
           CI: True
+          SECRET_KEY: ASD123klj+aAddS
+          DATABASE_URL: postgresql+pg8000://lmsctl2:lmsctl2@127.0.0.1:5432/lmsctl2
+          ADMIN_USER: hello
+          ADMIN_PSWD: world
+          FLASK_APP: now_lms
         run: |
           sudo -u postgres psql -c "CREATE USER lmsctl2 WITH PASSWORD 'lmsctl2';"
           sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON SCHEMA public TO lmsctl2;"
@@ -55,4 +66,20 @@ jobs:
           sudo -u postgres psql -c "ALTER ROLE lmsctl2 CREATEDB;"
           sudo -u postgres psql -c "GRANT USAGE ON SCHEMA public TO lmsctl2;"
           sudo -u postgres psql -c "GRANT CREATE ON SCHEMA public TO lmsctl2;"
-          SECRET_KEY=ASD123klj+aAddS CACAO_DB=postgresql+pg8000://lmsctl2:lmsctl2@localhost/lmsctl2 lmsctl db-init
+          lmsctl db-init
+      - name: Test with MySQL
+        env:
+          CI: True
+          SECRET_KEY: ASD123klj+aAddS
+          DATABASE_URL: mysql+pymysql://lmsctl:lmsctl@127.0.0.1/lmsctl
+          ADMIN_USER: hello
+          ADMIN_PSWD: world
+          FLASK_APP: now_lms
+        run: |
+          sudo systemctl start mysql.service
+          mysql -u root -proot -e "CREATE USER 'lmsctl'@'localhost' IDENTIFIED BY 'lmsctl';"
+          mysql -u root -proot -e "CREATE DATABASE lmsctl;"
+          mysql -u root -proot -e "GRANT ALL PRIVILEGES ON lmsctl.* TO 'lmsctl'@'localhost'; FLUSH PRIVILEGES;"
+          # lmsctl db-init
+          
+        

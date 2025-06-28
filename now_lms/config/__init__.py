@@ -132,22 +132,8 @@ else:
 # Se siguen las recomendaciones de "Twelve Factors App" y las opciones se leen del entorno.
 
 CONFIGURACION: Dict = {}
-
-if (
-    DESARROLLO is not False and environ.get("SECRET_KEY") and (environ.get("DATABASE_URL") or environ.get("LMS_DB"))
-):  # pragma: no cover
-    log.debug("Leyendo configuración desde variables de entorno.")
-    CONFIGURACION["SECRET_KEY"] = environ.get("SECRET_KEY")
-    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("LMS_DB") or environ.get("DATABASE_URL")
-
-else:  # pragma: no cover
-    log.warning("Utilizando configuración predeterminada.")
-    log.info("La configuración predeterminada no se recomienda para uso en entornos reales.")
-    CONFIGURACION["SECRET_KEY"] = "dev"  # nosec
-    CONFIGURACION["SQLALCHEMY_TRACK_MODIFICATIONS"] = "False"
-    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = SQLITE
-    CONFIGURACION["TEMPLATES_AUTO_RELOAD"] = True
-
+CONFIGURACION["SECRET_KEY"] = environ.get("SECRET_KEY") or "dev"  # nosec
+CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("LMS_DB") or environ.get("DATABASE_URL") or SQLITE  # nosec
 # Opciones comunes de configuración.
 CONFIGURACION["PRESERVE_CONTEXT_ON_EXCEPTION"] = False
 # Carga de Archivos: https://flask-reuploaded.readthedocs.io/en/latest/configuration/
@@ -156,11 +142,11 @@ CONFIGURACION["UPLOADED_FILES_DEST"] = DIRECTORIO_UPLOAD_ARCHIVOS
 CONFIGURACION["UPLOADED_IMAGES_DEST"] = DIRECTORIO_UPLOAD_IMAGENES
 CONFIGURACION["UPLOADED_AUDIO_DEST"] = DIRECTORIO_UPLOAD_AUDIO
 
-
-if environ.get("DATABASE_URL") and (environ.get("DATABASE_URL") != CONFIGURACION["SQLALCHEMY_DATABASE_URI"]):
-    log.warning("Se detecto URL de conexion vía variable de entorno.")
-    log.critical("URL de conexión a la base de datos sobre escrita por variable de entorno.")
-    CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("DATABASE_URL")
+if DESARROLLO:
+    log.warning("Utilizando configuración predeterminada.")
+    log.info("La configuración predeterminada no se recomienda para uso en entornos reales.")
+    CONFIGURACION["SQLALCHEMY_TRACK_MODIFICATIONS"] = "False"
+    CONFIGURACION["TEMPLATES_AUTO_RELOAD"] = True
 
 
 # Corrige URI de conexion a la base de datos si el usuario omite el driver apropiado.

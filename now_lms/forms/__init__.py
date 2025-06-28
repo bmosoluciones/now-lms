@@ -19,8 +19,7 @@
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
-from os import listdir
-from os.path import join
+
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -46,7 +45,7 @@ from wtforms.widgets import ColorInput, TextArea, html_params
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms.config import DIRECTORIO_PLANTILLAS
+
 
 # < --------------------------------------------------------------------------------------------- >
 # Definición de formularios
@@ -56,13 +55,6 @@ MONEDAS = [
     ("USD", "Dólares"),
 ]
 
-THEMES_PATH = join(str(DIRECTORIO_PLANTILLAS), "themes")
-TEMPLATE_LIST = listdir(THEMES_PATH)
-TEMPLATE_CHOICES = []
-
-for template in TEMPLATE_LIST:
-    TEMPLATE_CHOICES.append((template, template))
-
 
 class ConfigForm(FlaskForm):
     """Formulario para editar la configuración del sistema."""
@@ -70,13 +62,15 @@ class ConfigForm(FlaskForm):
     titulo = StringField(validators=[DataRequired()])
     descripcion = StringField(validators=[DataRequired()])
 
+    verify_user_by_email = BooleanField(validators=[])
+
 
 class ThemeForm(FlaskForm):
     """Formulario para editar el tema del sistema."""
 
     style = SelectField(
         "Estilo",
-        choices=TEMPLATE_CHOICES,
+        choices=[],
     )
 
 

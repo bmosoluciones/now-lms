@@ -20,6 +20,8 @@
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
+from os import listdir
+from os.path import join
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -53,8 +55,16 @@ setting = Blueprint("setting", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 def personalizacion():
     """Personalizar el sistema."""
 
+    THEMES_PATH = join(str(DIRECTORIO_PLANTILLAS), "themes")
+    TEMPLATE_LIST = listdir(THEMES_PATH)
+    TEMPLATE_CHOICES = []
+
+    for template in TEMPLATE_LIST:
+        TEMPLATE_CHOICES.append((template, template))
+
     config = database.session.execute(database.select(Style)).first()[0]
     form = ThemeForm(style=config.theme)
+    form.style.choices = TEMPLATE_CHOICES
 
     if form.validate_on_submit() or request.method == "POST":  # pragma: no cover
         config.theme = form.style.data
@@ -88,18 +98,27 @@ def configuracion():
     """Configuración del sistema."""
 
     config = config = database.session.execute(database.select(Configuracion)).first()[0]
-    form = ConfigForm()
+    form = ConfigForm(titulo=config.titulo, descripcion=config.descripcion, verify_user_by_email=config.verify_user_by_email)
     if form.validate_on_submit() or request.method == "POST":
         config.titulo = form.titulo.data
         config.descripcion = form.descripcion.data
+
+        if form.verify_user_by_email.data:
+            config = database.session.execute(database.select(MailConfig)).first()[0]
+            if not config.email_verificado:
+                flash("Debe configurar el correo electronico antes de habilitar verificación por e-mail.", "warning")
+                config.verify_user_by_email = False
+            else:
+                config.verify_user_by_email = True
+
         try:
             database.session.commit()
             cache.delete("site_config")
             flash("Sitio web actualizado exitosamente.", "success")
-            return redirect("/admin")
+            return redirect(url_for("setting.configuracion"))
         except OperationalError:  # pragma: no cover
             flash("No se pudo actualizar la configuración del sitio web.", "warning")
-            return redirect("/admin")
+            return redirect(url_for("setting.configuracion"))
 
     else:
         return render_template("admin/config.html", form=form, config=config)
@@ -148,39 +167,65 @@ def mail():
         return render_template("admin/mail.html", form=form, config=config)
 
 
+mail_check_message = """
+<div class="container">
+    <div class="header">
+      <h1>Email Configuration Confirmed</h1>
+    </div>
+    <div class="content">
+      <p>We are pleased to inform you that your email configuration has been successfully validated.</p>
+      <p>You can now send emails using your configured settings without any issues.</p>
+    </div>
+    <div class="footer">
+      <p>This is an automated message. Please do not reply to this email.</p>
+    </div>
+  </div>
+"""
+
+
 @setting.route("/setting/mail/verify", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
 def mail_check():
     """Configuración de Correo Electronico."""
+
     config = database.session.execute(database.select(MailConfig)).first()[0]
 
     form = CheckMailForm()
 
     if form.validate_on_submit() or request.method == "POST":
+
         from flask_mail import Mail, Message
         from now_lms.mail import load_email_setup
 
-        load_email_setup(current_app)
+        app_ = load_email_setup(current_app)
         mail = Mail()
-        mail.init_app(current_app)
+        mail.init_app(app_)
         msg = Message(
-            subject="Hello",
+            subject="Email setup verification.",
             recipients=[form.email.data],
         )
+        msg.html = mail_check_message
         try:
             mail.send(msg)
-            try:
-                config.email_verificado = True
-                database.session.commit()
-                flash("Correo de prueba enviado correctamente.", "success")
-                return redirect(url_for("setting.mail"))
-            except OperationalError:
-                flash("No se pudo actualizar la configuración de correo electronico.", "warning")
-                return redirect(url_for("setting.mail"))
-        except:  # noqa: E722
-            flash("No se puede enviar un correo de prueba. Revise su configuración.", "warning")
+            flash("Correo de prueba enviado correctamente.", "success")
+            config.email_verificado = True
+            database.session.commit()
             return redirect(url_for("setting.mail"))
+        except Exception as e:  # noqa: E722
+            flash("Hubo un error al enviar un correo de prueba. Revise su configuración.", "warning")
+
+            form = MailForm(
+                email=config.email,
+                MAIL_SERVER=config.MAIL_SERVER,
+                MAIL_PORT=config.MAIL_PORT,
+                MAIL_USERNAME=config.MAIL_USERNAME,
+                MAIL_PASSWORD=config.MAIL_PASSWORD,
+                MAIL_USE_TLS=config.MAIL_USE_TLS,
+                MAIL_USE_SSL=config.MAIL_USE_SSL,
+                MAIL_DEFAULT_SENDER=config.MAIL_DEFAULT_SENDER,
+            )
+            return render_template("admin/mail.html", form=form, config=config, error=str(e))
 
     else:
         return render_template("admin/mail _check.html", form=form)

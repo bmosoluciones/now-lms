@@ -451,7 +451,9 @@ def db_seed():
 @lms_app.cli.command()
 def db_backup():  # pragma: no cover
     """Make a backup of system data."""
-    pass
+    from now_lms.db.backup import db_backup
+
+    db_backup()
 
 
 @lms_app.cli.command()

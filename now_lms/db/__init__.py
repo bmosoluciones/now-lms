@@ -97,7 +97,7 @@ class Usuario(UserMixin, database.Model, BaseTabla):
     __table_args__ = (database.UniqueConstraint("usuario", name="id_usuario_unico"),)
     __table_args__ = (database.UniqueConstraint("correo_electronico", name="correo_usuario_unico"),)
     # Info de sistema
-    usuario = database.Column(database.String(20), nullable=False, index=True, unique=True)
+    usuario = database.Column(database.String(40), nullable=False, index=True, unique=True)
     acceso = database.Column(database.LargeBinary(), nullable=False)
     nombre = database.Column(database.String(100))
     apellido = database.Column(database.String(100))
@@ -359,16 +359,13 @@ class EstudianteCurso(database.Model, BaseTabla):
 
 
 class Configuracion(database.Model, BaseTabla):
-    """
-    Repositorio Central para la configuración de la aplicacion.
-
-    Realmente esta tabla solo va a contener un registro con una columna para cada opción, en las plantillas
-    va a estar disponible como la variable global config.
-    """
+    """Repositorio Central para la configuración de la aplicacion."""
 
     titulo = database.Column(database.String(150), nullable=False)
     descripcion = database.Column(database.String(500), nullable=False)
     moneda = database.Column(database.String(5))
+    # Send a message to the user to verify his email
+    verify_user_by_email = database.Column(database.Boolean())
     r = database.Column(database.LargeBinary())
 
 

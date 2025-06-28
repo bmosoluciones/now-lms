@@ -19,6 +19,9 @@
 
       <div class="container px-4 py-5" id="icon-grid">
         <h5 class="pb-2 border-bottom">Configuración del Correo Electronico.</h5>
+        {% if error %}
+        <div class="alert alert-danger" role="alert">{{ error }}</div>
+        {% endif %}
         <form method="post">
           <div class="row">
             <div class="col-sm-6">
@@ -82,7 +85,6 @@
           <div class="row"><br /></div>
 
           <div class="row">
-            {% if not config.email_verificado %}
             <br />
             <h6>La configuración de correo electronico no se ha sido verificada.</h6>
             <div>
@@ -90,7 +92,6 @@
                 >Validar configuración de correo electronico</a
               >
             </div>
-            {% endif %}
           </div>
 
           <div class="row">
