@@ -23,17 +23,16 @@ from os import environ
 from typing import TYPE_CHECKING
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
-# ---------------------------------------------------------------------------------------
-
-
-# ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import descifrar_secreto
 from now_lms.config import DESARROLLO
 from now_lms.db import MailConfig, database
 from now_lms.logs import log as logger
+
+# ---------------------------------------------------------------------------------------
+# Librerias de terceros
+# ---------------------------------------------------------------------------------------
 
 
 if TYPE_CHECKING:

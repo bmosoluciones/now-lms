@@ -271,6 +271,7 @@ def crear_usuarios_de_prueba():
         facebook="user",
         twitter="user",
         github="user",
+        correo_electronico_verificado=True,
     )
     student1 = Usuario(
         id="01HNZXJRD65A55BJACFEFNZ88D",
@@ -291,6 +292,7 @@ def crear_usuarios_de_prueba():
         facebook="user",
         twitter="user",
         github="user",
+        correo_electronico_verificado=True,
     )
     student2 = Usuario(
         id="01HNZXK9VV54MGQ9KANEGN4V5W",
@@ -311,6 +313,7 @@ def crear_usuarios_de_prueba():
         facebook="user",
         twitter="user",
         github="user",
+        correo_electronico_verificado=True,
     )
     student3 = Usuario(
         id="01HNZXKTK3KBT63R2QV87X8WVP",
@@ -331,6 +334,7 @@ def crear_usuarios_de_prueba():
         facebook="user",
         twitter="user",
         github="user",
+        correo_electronico_verificado=True,
     )
     for i in student, student1, student2, student3:
         i.fecha_registro = datetime.today()
@@ -364,6 +368,7 @@ def crear_usuarios_de_prueba():
         facebook="user",
         twitter="user",
         github="user",
+        correo_electronico_verificado=True,
     )
     database.session.add(instructor)
     database.session.commit()
@@ -385,6 +390,7 @@ def crear_usuarios_de_prueba():
         facebook="user",
         twitter="user",
         github="user",
+        correo_electronico_verificado=False,
     )
     database.session.add(moderator)
     database.session.commit()

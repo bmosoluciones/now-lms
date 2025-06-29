@@ -37,7 +37,7 @@ from sqlalchemy.exc import OperationalError
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido, proteger_passwd, validar_acceso
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import Usuario, database
+from now_lms.db import Configuracion, Usuario, database
 from now_lms.forms import LoginForm, LogonForm
 from now_lms.misc import INICIO_SESION, PANEL_DE_USUARIO
 
@@ -92,6 +92,7 @@ def crear_cuenta():
 
     else:
         form = LogonForm()
+        config = database.session.execute(database.select(Configuracion)).first()[0]
         if form.validate_on_submit() or request.method == "POST":
             usuario_ = Usuario(
                 usuario=form.usuario.data,
@@ -107,6 +108,11 @@ def crear_cuenta():
                 database.session.add(usuario_)
                 database.session.commit()
                 flash("Cuenta creada exitosamente.", "success")
+                if config.verify_user_by_email:
+                    from now_lms.auth import send_confirmation_email
+
+                    send_confirmation_email(usuario_)
+
                 return INICIO_SESION
             except OperationalError:  # pragma: no cover
                 flash("Error al crear la cuenta.", "warning")
@@ -145,3 +151,25 @@ def crear_usuario():  # pragma: no cover
             "learning/nuevo_usuario.html",
             form=form,
         )
+
+
+@user.route("/user/check_mail/<token>")
+@login_required
+def check_mail(token):
+    """Verifica correo electronico."""
+    from now_lms.auth import validate_confirmation_token
+
+    _token = validate_confirmation_token(token)
+    if _token:
+        consulta = database.session.execute(database.select(Configuracion)).first()[0]
+        if consulta.verify_user_by_email:
+            user_ = database.session.execute(database.select(Usuario).filter_by(id=current_user.id)).first()[0]
+            user_.activo = True
+            database.session.commit()
+        return redirect(url_for("home.pagina_de_inicio"))
+    else:
+        from now_lms.auth import send_confirmation_email
+
+        send_confirmation_email(current_user)
+        flash("Token de verificación invalido, se ha enviado un nuevo correo de verificación.", "warning")
+        return redirect(url_for("user.cerrar_sesion"))
