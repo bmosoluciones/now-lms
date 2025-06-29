@@ -39,7 +39,7 @@ from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
 from now_lms.db import AdSense, Configuracion, MailConfig, PaypalConfig, Style, database
 from now_lms.db.tools import elimina_logo_perzonalizado
-from now_lms.forms import AdSenseForm, ConfigForm, MailForm, PayaplForm, ThemeForm, CheckMailForm
+from now_lms.forms import AdSenseForm, CheckMailForm, ConfigForm, MailForm, PayaplForm, ThemeForm
 from now_lms.logs import log
 
 # ---------------------------------------------------------------------------------------
@@ -196,6 +196,7 @@ def mail_check():
     if form.validate_on_submit() or request.method == "POST":
 
         from flask_mail import Mail, Message
+
         from now_lms.mail import load_email_setup
 
         app_ = load_email_setup(current_app)

@@ -19,6 +19,7 @@ flask_weasyprint
 flask-wtf
 loguru
 markdown
+pyjwt
 python-ulid
 qrcode
 sqlalchemy

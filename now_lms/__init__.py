@@ -43,7 +43,7 @@ from platform import python_version
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
 import click
-from flask import Flask, flash, render_template
+from flask import Flask, flash, render_template, request
 from flask.cli import FlaskGroup
 from flask_alembic import Alembic
 from flask_login import LoginManager, current_user
@@ -94,21 +94,15 @@ from now_lms.db.tools import (
     cuenta_cursos_por_programa,
     get_addsense_code,
     get_addsense_meta,
+    get_paypal_id,
     logo_perzonalizado,
     verifica_docente_asignado_a_curso,
     verifica_estudiante_asignado_a_curso,
     verifica_moderador_asignado_a_curso,
     verificar_avance_recurso,
-    get_paypal_id,
 )
 from now_lms.logs import log
-from now_lms.misc import (
-    ESTILO_ALERTAS,
-    ICONOS_RECURSOS,
-    INICIO_SESION,
-    concatenar_parametros_a_url,
-    markdown_to_clean_hmtl,
-)
+from now_lms.misc import ESTILO_ALERTAS, ICONOS_RECURSOS, INICIO_SESION, concatenar_parametros_a_url, markdown_to_clean_hmtl
 from now_lms.themes import current_theme
 from now_lms.version import VERSION
 from now_lms.vistas._helpers import get_current_course_logo, get_site_logo
@@ -526,6 +520,22 @@ def serve():  # pragma: no cover
 
     with lms_app.app_context():
         server(app=lms_app, port=int(PORT), threads=THREADS)
+
+
+# ---------------------------------------------------------------------------------------
+# Verifica si el usuario esta activo antes de procesar la solicitud.
+# ---------------------------------------------------------------------------------------
+@lms_app.before_request
+def before_request():
+    if (
+        current_user.is_authenticated
+        and not current_user.activo
+        and not current_user.tipo == "admin"
+        and request != "static"
+        and request.blueprint != "user"
+        and request.endpoint != "static"
+    ):
+        return render_template("error_pages/401.html")
 
 
 # ---------------------------------------------------------------------------------------
