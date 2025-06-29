@@ -21,13 +21,13 @@ jobs:
           CI: True
         run: |
           python -m pip install --upgrade pip
-          python -m pip install python-coveralls coveralls
+          python -m pip install python-coveralls coveralls pytest-cov
           python -m pip install -r test.txt
       - name: Test package
         env:
           CI: True
           SECRET_KEY: ASD123klj+aAddSskadjandsASVNASJVNSAJIDVSVIAO
         run: |
-          pytest  -v --exitfirst --slow=True
+          pytest  -v --cov=now_lms --exitfirst --slow=True
       - name: Coveralls GitHub Action
         uses: coverallsapp/github-action@v2.3.6
