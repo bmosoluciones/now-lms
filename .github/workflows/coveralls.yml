@@ -1,4 +1,4 @@
-name: Databases
+name: Coveralls CI
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   multiple_db_check:
-    name: Test with multiple databases
+    name: Coverage report
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
