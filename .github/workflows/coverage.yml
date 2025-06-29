@@ -3,8 +3,6 @@ name: Coveralls CI
 on:
   push:
     branches: [development]
-  pull_request:
-    branches: [development]
 
 jobs:
   multiple_db_check:
