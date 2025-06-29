@@ -461,7 +461,6 @@ def db_backup():  # pragma: no cover
 @click.argument(
     "backup_sql_file",
     type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True, path_type=Path),
-    help="Path to the sql backup file.",
 )
 def db_backup_restore(backup_sql_file: Path):  # pragma: no cover
     """Restore the system from a backup."""
