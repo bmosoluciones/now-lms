@@ -78,4 +78,4 @@ jobs:
           mysql -u root -proot -e "CREATE USER 'lmsctl'@'localhost' IDENTIFIED BY 'lmsctl';"
           mysql -u root -proot -e "CREATE DATABASE lmsctl;"
           mysql -u root -proot -e "GRANT ALL PRIVILEGES ON lmsctl.* TO 'lmsctl'@'localhost'; FLUSH PRIVILEGES;"
-          lmsctl db-init
+          # lmsctl db-init
