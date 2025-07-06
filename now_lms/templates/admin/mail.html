@@ -88,9 +88,9 @@
         <div class="row">
           <br />
           {% if config.email_verificado %}
-          <h6>La configuración de correo electronico no se ha sido verificada.</h6>
+          <h6>La configuración de correo electronico no se ha verificado.</h6>
           {% else %}
-          <h6>La configuración de correo electronico ha sido verificada.</h6>
+          <h6>La configuración de correo electronico ha sido verificada correctamente.</h6>
           {% endif %}
           <div>
             <a href="{{ url_for('setting.mail_check') }}" type="button" class="btn btn-primary">Enviar Correo de

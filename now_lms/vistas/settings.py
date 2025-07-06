@@ -215,17 +215,6 @@ def mail_check():
             return redirect(url_for("setting.mail"))
         except Exception as e:  # noqa: E722
             flash("Hubo un error al enviar un correo de prueba. Revise su configuración.", "warning")
-
-            form = MailForm(
-                email=config.email,
-                MAIL_SERVER=config.MAIL_SERVER,
-                MAIL_PORT=config.MAIL_PORT,
-                MAIL_USERNAME=config.MAIL_USERNAME,
-                MAIL_PASSWORD=config.MAIL_PASSWORD,
-                MAIL_USE_TLS=config.MAIL_USE_TLS,
-                MAIL_USE_SSL=config.MAIL_USE_SSL,
-                MAIL_DEFAULT_SENDER=config.MAIL_DEFAULT_SENDER,
-            )
             return render_template("admin/mail.html", form=form, config=config, error=str(e))
 
     else:
