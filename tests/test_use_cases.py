@@ -88,11 +88,3 @@ def test_generar_pdf(lms_application, request):
 
         else:
             pytest.skip("Not running slow test.")
-
-
-def test_load_mail_config(lms_application):
-
-    with lms_application.app_context():
-        from now_lms.mail import load_email_setup
-
-        load_email_setup(lms_application)

@@ -27,7 +27,8 @@ from os import environ
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms import init_app, serve
+from now_lms import init_app
+from now_lms.cli import serve
 from now_lms.config import DESARROLLO
 from now_lms.logs import log
 

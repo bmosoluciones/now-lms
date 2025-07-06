@@ -34,7 +34,11 @@ class TestBasicos(TestCase):
         assert self.app
 
     def test_cli(self):
-        self.app.test_cli_runner()
+        runner = self.app.test_cli_runner()
+        runner.invoke(args=["info", "path"])
+        runner.invoke(args=["info", "system"])
+        runner.invoke(args=["info", "course", "now"])
+        runner.invoke(args=["database"])
 
 
 class TestInstanciasDeClases(TestCase):

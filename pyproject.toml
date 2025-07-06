@@ -22,7 +22,7 @@ classifiers = [
 dynamic = ["version", "dependencies"]
 
 [project.scripts]
-lmsctl = "now_lms:command"
+lmsctl = "now_lms.cli:command"
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
