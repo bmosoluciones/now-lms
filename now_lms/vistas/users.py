@@ -95,7 +95,7 @@ def crear_cuenta():
         config = database.session.execute(database.select(Configuracion)).first()[0]
         if form.validate_on_submit() or request.method == "POST":
             usuario_ = Usuario(
-                usuario=form.usuario.data,
+                usuario=form.correo_electronico.data,
                 acceso=proteger_passwd(form.acceso.data),
                 nombre=form.nombre.data,
                 apellido=form.apellido.data,
