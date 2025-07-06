@@ -23,9 +23,6 @@
       {% if error %}
       <div class="alert alert-danger" role="alert">{{ error }}</div>
       {% endif %}
-      {% if config.email_verificado %}
-      <div class="alert alert-success" role="alert">La configuración de correo electronico ha sido verificada.</div>
-      {% endif %}
       <form method="post">
         <div class="row">
           <div class="col-sm-6">
@@ -92,6 +89,8 @@
           <br />
           {% if config.email_verificado %}
           <h6>La configuración de correo electronico no se ha sido verificada.</h6>
+          {% else %}
+          <h6>La configuración de correo electronico ha sido verificada.</h6>
           {% endif %}
           <div>
             <a href="{{ url_for('setting.mail_check') }}" type="button" class="btn btn-primary">Enviar Correo de
