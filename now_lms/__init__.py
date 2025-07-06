@@ -402,5 +402,21 @@ def before_request():
 
 
 # ---------------------------------------------------------------------------------------
+# Verifica si el usuario esta activo antes de procesar la solicitud.
+# ---------------------------------------------------------------------------------------
+@lms_app.before_request
+def before_request():
+    if (
+        current_user.is_authenticated
+        and not current_user.activo
+        and not current_user.tipo == "admin"
+        and request != "static"
+        and request.blueprint != "user"
+        and request.endpoint != "static"
+    ):
+        return render_template("error_pages/401.html")
+
+
+# ---------------------------------------------------------------------------------------
 # Las vistas de la aplicación se definen su modulos respectivos.
 # ---------------------------------------------------------------------------------------
