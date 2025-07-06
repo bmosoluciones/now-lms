@@ -22,7 +22,8 @@ Varios servicios prefieren tener un servidor archivo wsgi.py
 
 """
 
-from now_lms import serve, init_app, lms_app as app
+from now_lms import init_app, lms_app as app
+from now_lms.cli import serve
 
 app.app_context().push()
 

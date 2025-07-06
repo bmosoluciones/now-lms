@@ -15,19 +15,23 @@
 # Contributors:
 # - William José Moreno Reyes
 
+import platform
+
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
+from types import SimpleNamespace
 from typing import TYPE_CHECKING, Union
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-
+from flask import current_app
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
+from now_lms.db import database
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -55,3 +59,68 @@ def app_info(flask_app: "Flask") -> dict:
         DBENGINE = None
 
     return {"DBENGINE": DBENGINE, "CACHE": CTYPE}
+
+
+def course_info(course_code: str) -> SimpleNamespace:
+    """
+    Returns a SimpleNamespace with course information.
+    """
+
+    from sqlalchemy import func
+
+    from now_lms.db import Curso, CursoRecurso, CursoSeccion, EstudianteCurso
+
+    curso = database.session.execute(database.select(Curso).where(Curso.codigo == course_code)).first()[0]
+    resources_count = database.session.execute(
+        database.select(func.count()).select_from(CursoRecurso).where(CursoRecurso.curso == course_code)
+    ).scalar_one()
+    sections_count = database.session.execute(
+        database.select(func.count()).select_from(CursoSeccion).where(CursoSeccion.curso == course_code)
+    ).scalar_one()
+    student_count = database.session.execute(
+        database.select(func.count()).select_from(EstudianteCurso).where(EstudianteCurso.curso == course_code)
+    ).scalar_one()
+
+    return SimpleNamespace(
+        course=curso,
+        resources_count=resources_count,
+        sections_count=sections_count,
+        student_count=student_count,
+    )
+
+
+def _obtener_info_sistema():
+    info = SimpleNamespace(
+        _system=platform.system(),
+        _system_version=platform.version(),
+        _arch=platform.architecture(),
+        _python_version=platform.python_version(),
+        _python_implementation=platform.python_implementation(),
+    )
+    return info
+
+
+def config_info() -> SimpleNamespace:
+    """
+    Returns a SimpleNamespace with system information.
+    """
+
+    with current_app.app_context():
+        from now_lms.config import (
+            DIRECTORIO_APP,
+            DIRECTORIO_ARCHIVOS_BASE,
+            DIRECTORIO_ARCHIVOS_PRIVADOS,
+            DIRECTORIO_ARCHIVOS_PUBLICOS,
+        )
+        from now_lms.themes import DIRECTORIO_TEMAS as TEMPLATES_DIR
+
+    return SimpleNamespace(
+        sys=_obtener_info_sistema(),
+        _dbengine=app_info(current_app)["DBENGINE"],
+        _cache_type=app_info(current_app)["CACHE"],
+        _app_dir=DIRECTORIO_APP,
+        _base_files_dir=DIRECTORIO_ARCHIVOS_BASE,
+        _private_files_dir=DIRECTORIO_ARCHIVOS_PRIVADOS,
+        _public_files_dir=DIRECTORIO_ARCHIVOS_PUBLICOS,
+        _templates_dir=TEMPLATES_DIR,
+    )
