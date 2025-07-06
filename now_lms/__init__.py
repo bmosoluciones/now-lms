@@ -405,7 +405,7 @@ def before_request():
 # Verifica si el usuario esta activo antes de procesar la solicitud.
 # ---------------------------------------------------------------------------------------
 @lms_app.before_request
-def before_request():
+def before_request_user_active():
     if (
         current_user.is_authenticated
         and not current_user.activo
