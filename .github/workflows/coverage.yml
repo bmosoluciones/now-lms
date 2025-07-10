@@ -25,6 +25,7 @@ jobs:
         env:
           CI: True
           SECRET_KEY: ASD123klj+aAddSskadjandsASVNASJVNSAJIDVSVIAO
+          LOG_LEVEL: TRACE
         run: |
           pytest  -v --cov=now_lms --exitfirst --slow=True
       - name: Coveralls GitHub Action

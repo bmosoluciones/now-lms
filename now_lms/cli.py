@@ -21,11 +21,12 @@ Command line interface for NOW LMS.
 
 """
 
+from os import cpu_count, environ
+
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
 from pathlib import Path
-from os import environ, cpu_count
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -33,20 +34,16 @@ from os import environ, cpu_count
 import click
 from flask.cli import FlaskGroup
 
-
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms import lms_app, initial_setup, alembic
+from now_lms import alembic, initial_setup, lms_app
 from now_lms.cache import cache
-from now_lms.config import (
-    DESARROLLO,
-)
+from now_lms.config import DESARROLLO
 from now_lms.db import database as db
-from now_lms.db.info import course_info
+from now_lms.db.info import config_info, course_info
 from now_lms.logs import log
 from now_lms.version import VERSION
-from now_lms.db.info import config_info
 
 
 # ---------------------------------------------------------------------------------------

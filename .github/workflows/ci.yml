@@ -34,6 +34,7 @@ jobs:
       - name: Ejecutar pruebas automáticas
         env:
           CI: True
+          LOG_LEVEL: TRACE
         run: |
           pytest  -v --exitfirst --slow=True
       - name: Linting

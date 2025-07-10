@@ -103,9 +103,9 @@ def configuracion():
         config.titulo = form.titulo.data
         config.descripcion = form.descripcion.data
 
-        if form.verify_user_by_email.data:
-            config = database.session.execute(database.select(MailConfig)).first()[0]
-            if not config.email_verificado:
+        if form.verify_user_by_email.data is True:
+            config_mail = database.session.execute(database.select(MailConfig)).first()[0]
+            if not config_mail.email_verificado:
                 flash("Debe configurar el correo electronico antes de habilitar verificación por e-mail.", "warning")
                 config.verify_user_by_email = False
             else:
@@ -215,6 +215,15 @@ def mail_check():
             return redirect(url_for("setting.mail"))
         except Exception as e:  # noqa: E722
             flash("Hubo un error al enviar un correo de prueba. Revise su configuración.", "warning")
+            from now_lms.db import Configuracion
+
+            config_g = database.session.execute(database.select(Configuracion)).first()[0]
+            config.email_verificado = False
+            config.email = False
+            config_g.verify_user_by_email = False
+            database.session.commit()
+            log.error(f"Error al enviar correo de prueba: {e}")
+            # Re-render the form with the error message
             form_email = MailForm(
                 email=config.email,
                 MAIL_SERVER=config.MAIL_SERVER,

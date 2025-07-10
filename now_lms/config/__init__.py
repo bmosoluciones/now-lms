@@ -21,7 +21,6 @@
 # ---------------------------------------------------------------------------------------
 from os import R_OK, W_OK, access, environ, makedirs, name, path
 from pathlib import Path
-from sys import stderr
 from typing import TYPE_CHECKING, Dict
 
 # ---------------------------------------------------------------------------------------
@@ -33,7 +32,7 @@ from flask_uploads import AUDIO, DOCUMENTS, IMAGES, UploadSet
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms.logs import LOG_FORMAT, log
+from now_lms.logs import log
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -41,12 +40,6 @@ if TYPE_CHECKING:
 # < --------------------------------------------------------------------------------------------- >
 # Configuración central de la aplicación.
 DESARROLLO = environ.get("CI") or environ.get("DEBUG") or False
-
-
-if DESARROLLO:
-    log.remove()
-    log.add(stderr, level="TRACE", format=LOG_FORMAT, colorize=True)
-    log.warning("Opciones de desarrollo detectadas.")
 
 
 # < --------------------------------------------------------------------------------------------- >
@@ -58,19 +51,6 @@ DIRECTORIO_ARCHIVOS_BASE: str = path.join(DIRECTORIO_APP, "static")
 DIRECTORIO_BASE_APP: AppDirs = AppDirs("NOW-LMS", "BMO Soluciones")
 DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
 
-LOGS_MAX_MB = "10 MB"
-
-# < --------------------------------------------------------------------------------------------- >
-if not DESARROLLO or environ.get("NOTLOGTOFILE") == "1":
-    LOG_FILE = "now_lms.log"
-    GLOBAL_LOG_FILE = path.join("/var/log/nowlms", LOG_FILE)
-    LOCAL_LOG_FILE = path.join(DIRECTORIO_BASE_APP.user_log_dir, LOG_FILE)
-    if access(GLOBAL_LOG_FILE, W_OK):
-        log.add(GLOBAL_LOG_FILE, rotation=LOGS_MAX_MB, level="INFO", format=LOG_FORMAT)
-    elif access(LOCAL_LOG_FILE, W_OK):
-        log.add(LOCAL_LOG_FILE, rotation=LOGS_MAX_MB, level="INFO", format=LOG_FORMAT)
-    else:
-        log.add(LOG_FILE, rotation=LOGS_MAX_MB, level="INFO", format=LOG_FORMAT)
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios personalizados para la aplicación.
@@ -104,13 +84,11 @@ if not path.isdir(DIRECTORIO_BASE_ARCHIVOS_USUARIO):  # pragma: no cover
         makedirs(DIRECTORIO_UPLOAD_IMAGENES)
         makedirs(DIRECTORIO_UPLOAD_AUDIO)
     except OSError:  # pragma: no cover
-        log.warning(
-            "No se puede crear directorio para carga de archivos: {directorio}", directorio=DIRECTORIO_BASE_ARCHIVOS_USUARIO
-        )
+        log.warning(f"No se puede crear directorio para carga de archivos: {DIRECTORIO_BASE_ARCHIVOS_USUARIO}")
 if access(DIRECTORIO_BASE_ARCHIVOS_USUARIO, R_OK) and access(DIRECTORIO_BASE_ARCHIVOS_USUARIO, W_OK):  # pragma: no cover
-    log.trace("Acceso verificado a: {file}", file=DIRECTORIO_BASE_ARCHIVOS_USUARIO)
+    log.trace(f"Acceso verificado a: {DIRECTORIO_BASE_ARCHIVOS_USUARIO}")
 else:
-    log.error("No se tiene acceso a subir archivos al directorio: {dir}", dir=DIRECTORIO_BASE_ARCHIVOS_USUARIO)
+    log.warning(f"No se tiene acceso a subir archivos al directorio: {DIRECTORIO_BASE_ARCHIVOS_USUARIO}")
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorio base temas.
@@ -184,30 +162,101 @@ if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # pragma: no cover
         CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
 
 
-def log_messages(_app: "Flask"):
-    """Emite mensages de log luego de haber cargado la configuración."""
-
-    if "postgres" in _app.config.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-        DBType = "PostgreSQL"  # pragma: no cover
-    if "mysql" in _app.config.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-        DBType = "MySQL"  # pragma: no cover
-    if "mariadb" in _app.config.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-        DBType = "MariaDB"  # pragma: no cover
-    if "sqlite" in _app.config.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-        DBType = "SQLite"  # pragma: no cover
-
-    log.info("Utilizando el motor de base de datos {type}.", type=DBType)
-
-    log.trace("Directorio base de la aplicación es {dir}", dir=DIRECTORIO_APP)
-    log.trace("Directorio para cargas de archivos: {dir}", dir=DIRECTORIO_BASE_UPLOADS)
-    log.trace("Directorio de archivos publicos es {directorio}", directorio=DIRECTORIO_ARCHIVOS_PUBLICOS)
-    log.trace("Directorio de archivos privados es {directorio}", directorio=DIRECTORIO_ARCHIVOS_PRIVADOS)
-    log.trace("Directorio de imagenes es {directorio}", directorio=DIRECTORIO_UPLOAD_IMAGENES)
-    log.trace("Directorio de archivos es {directorio}", directorio=DIRECTORIO_UPLOAD_ARCHIVOS)
-    log.trace("Directorio de audios es {directorio}", directorio=DIRECTORIO_UPLOAD_AUDIO)
-
-
 # Configuración de Directorio de carga de archivos.
 images = UploadSet("images", IMAGES)
 files = UploadSet("files", DOCUMENTS)
 audio = UploadSet("audio", AUDIO)
+
+
+def is_running_in_container() -> bool:
+    """Detecta si se está ejecutando en un contenedor como Docker."""
+    # Revisión común en Docker/Linux
+    try:
+        with open("/proc/1/cgroup", "rt") as f:
+            content = f.read()
+            return "docker" in content or "kubepods" in content
+    except FileNotFoundError:
+        return False
+
+
+def log_system_info():
+    """Emite información útil del entorno del sistema."""
+    import os
+    import platform
+    import socket
+    import sys
+
+    log.info("=== Información del sistema ===")
+
+    os_name = platform.system()
+    os_version = platform.version()
+    os_release = platform.release()
+    architecture = platform.machine()
+    python_version = platform.python_version()
+    hostname = socket.gethostname()
+    container = is_running_in_container()
+    cpu_count = os.cpu_count()
+
+    log.info(f"Sistema operativo: {os_name} {os_release} (versión: {os_version})")
+    log.info(f"Arquitectura: {architecture}")
+    log.info(f"Versión de Python: {python_version}")
+    log.info(f"Hostname: {hostname}")
+    log.info(f"Número de CPUs: {cpu_count}")
+    log.info(f"¿En contenedor?: {'Sí' if container else 'No'}")
+
+    # Detalles adicionales como trace
+    log.trace(f"Ruta de ejecución: {sys.executable}")
+    log.trace(f"Argumentos del proceso: {sys.argv}")
+
+
+def log_messages(_app: "Flask"):
+    """Emite mensajes de log útiles para debugging luego de haber cargado la configuración."""
+
+    import logging
+
+    db_uri = _app.config.get("SQLALCHEMY_DATABASE_URI", "").lower()
+    db_type = "Desconocido"
+
+    if "postgres" in db_uri:
+        db_type = "PostgreSQL"
+    elif "mysql" in db_uri:
+        db_type = "MySQL"
+    elif "mariadb" in db_uri:
+        db_type = "MariaDB"
+    elif "sqlite" in db_uri:
+        db_type = "SQLite"
+
+    log.info(f"Motor de base de datos detectado: {db_type}")
+
+    # Log detallado de configuraciones clave
+    configuraciones_interes = [
+        "DEBUG",
+        "ENV",
+        "TESTING",
+        "MAX_CONTENT_LENGTH",
+        "SERVER_NAME",
+        "PREFERRED_URL_SCHEME",
+    ]
+    for clave in configuraciones_interes:
+        valor = _app.config.get(clave, "No definido")
+        log.trace(f"Configuración '{clave}': {valor}")
+
+    # Logueo de directorios relevantes
+    log.trace(f"Directorio base de la aplicación: {DIRECTORIO_APP}")
+    log.trace(f"Directorio para cargas de archivos: {DIRECTORIO_BASE_UPLOADS}")
+    log.trace(f"Directorio de archivos públicos: {DIRECTORIO_ARCHIVOS_PUBLICOS}")
+    log.trace(f"Directorio de archivos privados: {DIRECTORIO_ARCHIVOS_PRIVADOS}")
+    log.trace(f"Directorio de imágenes: {DIRECTORIO_UPLOAD_IMAGENES}")
+    log.trace(f"Directorio de archivos: {DIRECTORIO_UPLOAD_ARCHIVOS}")
+    log.trace(f"Directorio de audios: {DIRECTORIO_UPLOAD_AUDIO}")
+
+    # Rutas registradas en la aplicación (útil para depuración de endpoints)
+    for rule in _app.url_map.iter_rules():
+        log.trace(f"Ruta registrada: {rule.rule} -> {rule.endpoint} ({', '.join(rule.methods)})")  # type: ignore[arg-type]
+
+    # Extensiones activas (si aplica)
+    for ext_nombre, ext_instancia in _app.extensions.items():
+        log.trace(f"Extensión cargada: {ext_nombre} -> {type(ext_instancia)}")
+
+    if log.getEffectiveLevel() < logging.INFO:
+        log_system_info()

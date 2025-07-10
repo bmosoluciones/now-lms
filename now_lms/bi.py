@@ -145,7 +145,7 @@ def modificar_indice_seccion(
 
 def asignar_curso_a_instructor(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
     """Asigna un usuario como instructor de un curso."""
-    log.trace("Asignando {curso} a instructor {user}", curso=curso_codigo, user=usuario_id)
+    log.trace("Asignando {curso_codigo} a instructor {usuario_id}")
     ASIGNACION = DocenteCurso(curso=curso_codigo, usuario=usuario_id, vigente=True, creado_por=current_user.usuario)
     database.session.add(ASIGNACION)
     database.session.commit()
@@ -153,7 +153,7 @@ def asignar_curso_a_instructor(curso_codigo: Union[None, str] = None, usuario_id
 
 def asignar_curso_a_moderador(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
     """Asigna un usuario como moderador de un curso."""
-    log.trace("Asignando {curso} a moderador {user}", curso=curso_codigo, user=usuario_id)
+    log.trace("Asignando {curso_codigo} a moderador {usuario_id}")
     ASIGNACION = ModeradorCurso(usuario=usuario_id, curso=curso_codigo, vigente=True, creado_por=current_user.usuario)
     database.session.add(ASIGNACION)
     database.session.commit()
@@ -161,7 +161,7 @@ def asignar_curso_a_moderador(curso_codigo: Union[None, str] = None, usuario_id:
 
 def asignar_curso_a_estudiante(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
     """Asigna un usuario como moderador de un curso."""
-    log.trace("Asignando {curso} a estudiante {user}", curso=curso_codigo, user=usuario_id)
+    log.trace("Asignando {curso_codigo} a estudiante {usuario_id}")
     ASIGNACION = EstudianteCurso(
         creado_por=current_user.usuario,
         curso=curso_codigo,
@@ -180,7 +180,7 @@ def cambia_tipo_de_usuario_por_id(
 
     Los valores reconocidos por el sistema son: admin, user, instructor, moderator.
     """
-    log.trace("Asignando a usuario {user} el perfil: {perfil}", user=id_usuario, perfil=nuevo_tipo)
+    log.trace("Asignando a usuario {id_usuario} el perfil: {nuevo_tipo}")
     USUARIO = Usuario.query.filter_by(usuario=id_usuario).first()
     USUARIO.tipo = nuevo_tipo
     USUARIO.modificado_por = usuario

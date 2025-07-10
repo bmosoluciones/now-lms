@@ -16,8 +16,7 @@ flask-mde
 flask-reuploaded
 flask-sqlalchemy
 flask_weasyprint
-flask-wtf
-loguru
+flask-wtfgit
 markdown
 pyjwt
 python-ulid

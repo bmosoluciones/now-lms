@@ -60,7 +60,7 @@ def proteger_passwd(clave):
 def validar_acceso(usuario_id, acceso):
     """Verifica el inicio de sesión del usuario."""
 
-    log.trace("Verificando acceso de {usuario}", usuario=usuario_id)
+    log.trace("Verificando acceso de {usuario_id}")
     registro = Usuario.query.filter_by(usuario=usuario_id).first()
 
     if not registro:
@@ -73,10 +73,10 @@ def validar_acceso(usuario_id, acceso):
         except VerifyMismatchError:
             clave_validada = False
     else:
-        log.trace("No se encontro registro de usuario {usuario}", usuario=usuario_id)
+        log.trace("No se encontro registro de usuario {usuario_id}")
         clave_validada = False
 
-    log.trace("Resultado de validación de acceso es {resultado}", resultado=clave_validada)
+    log.trace("Resultado de validación de acceso es {clave_validada}")
     if clave_validada:
         registro.ultimo_acceso = datetime.now()
         database.session.commit()

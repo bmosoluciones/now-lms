@@ -20,15 +20,63 @@
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
+import logging
+from os import environ
 from sys import stdout
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from loguru import logger as log
 
-LOG_FORMAT = "{time:HH:mm:ss:ssss} - {level} - {name}:{line} : {message}"
 
-log.level("note", no=15, color="<blue>")
-log.remove(0)
-log.add(stdout, colorize=True, level="INFO", format=LOG_FORMAT)
+# Definir nivel TRACE
+TRACE_LEVEL_NUM = 5
+logging.addLevelName(TRACE_LEVEL_NUM, "TRACE")
+
+
+# Método adicional para usar logger.trace(...)
+def trace(self, message, *args, **kwargs):
+    if self.isEnabledFor(TRACE_LEVEL_NUM):
+        self._log(TRACE_LEVEL_NUM, message, args, **kwargs)
+
+
+logging.Logger.trace = trace
+
+
+# Configurar nivel desde variable de entorno (default: INFO)
+log_level_str = environ.get("LOG_LEVEL", "INFO").upper()
+
+# Soporte de niveles personalizados
+custom_levels = {
+    "TRACE": TRACE_LEVEL_NUM,
+    "DEBUG": logging.DEBUG,
+    "INFO": logging.INFO,
+    "WARNING": logging.WARNING,
+    "ERROR": logging.ERROR,
+    "CRITICAL": logging.CRITICAL,
+}
+
+# Nivel numérico, default INFO si no coincide
+numeric_level = custom_levels.get(log_level_str, logging.INFO)
+
+# Configurar logger raíz
+root_logger = logging.getLogger("now_lms")
+root_logger.setLevel(numeric_level)
+
+# Handler solo para stdout
+console_handler = logging.StreamHandler(stdout)
+console_handler.setLevel(numeric_level)
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s: %(message)s")
+console_handler.setFormatter(formatter)
+
+# Evitar duplicación de handlers
+if root_logger.hasHandlers():
+    root_logger.handlers.clear()
+
+root_logger.addHandler(console_handler)
+
+# Configurar logger de Flask y Werkzeug al mismo nivel
+logging.getLogger("flask").setLevel(numeric_level)
+logging.getLogger("werkzeug").setLevel(numeric_level)
+
+log = root_logger

@@ -24,12 +24,6 @@
       <div class="alert alert-danger" role="alert">{{ error }}</div>
       {% endif %}
       <form method="post">
-        <div class="row">
-          <div class="col-sm-6">
-            <label for="email" class="form-label">Permitir Correo Electronico:</label>
-            {{ form.email() }}
-          </div>
-        </div>
 
         <div class="row">
           <br />
@@ -89,6 +83,8 @@
           <br />
           {% if config.email_verificado %}
           <h6>La configuración de correo electronico ha sido verificada correctamente.</h6>
+          <label for="email" class="form-label">Permitir Correo Electronico:</label>
+          {{ form.email() }}
           {% else %}
           <h6>La configuración de correo electronico no se ha verificado.</h6>
           {% endif %}
