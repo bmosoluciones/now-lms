@@ -39,6 +39,7 @@ from now_lms.auth import perfil_requerido, proteger_passwd, validar_acceso
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import Configuracion, Usuario, database
 from now_lms.forms import LoginForm, LogonForm
+from now_lms.logs import log
 from now_lms.misc import INICIO_SESION, PANEL_DE_USUARIO
 
 # ---------------------------------------------------------------------------------------
@@ -109,6 +110,7 @@ def crear_cuenta():
                 database.session.commit()
                 flash("Cuenta creada exitosamente.", "success")
                 if config.verify_user_by_email:
+                    log.debug("Enviando correo de confirmación al usuario.")
                     from now_lms.auth import send_confirmation_email
 
                     send_confirmation_email(usuario_)

@@ -35,7 +35,7 @@ from flask_mail import Mail, Message
 from now_lms.auth import descifrar_secreto
 from now_lms.config import DESARROLLO
 from now_lms.db import MailConfig, database
-from now_lms.logs import log as logger
+from now_lms.logs import log
 
 
 if TYPE_CHECKING:
@@ -69,7 +69,7 @@ elif MAIL_USE_TLS == "True" or MAIL_USE_TLS == "true" or MAIL_USE_TLS == "TRUE":
 def load_email_setup(flask_app: "Flask"):
     """Inicia la configuración de correo electronico."""
 
-    logger.trace("Iniciando configuración correo electronico.")
+    log.trace("Iniciando configuración correo electronico.")
     with flask_app.app_context():
         mail_config = database.session.execute(database.select(MailConfig)).first()[0]
 
@@ -83,7 +83,7 @@ def load_email_setup(flask_app: "Flask"):
         flask_app.config["MAIL_DEFAULT_SENDER"] = MAIL_DEFAULT_SENDER or mail_config.MAIL_DEFAULT_SENDER
 
         if DESARROLLO:
-            logger.warning("Opciones de Desarollo activas. Correo electronico deshabilitado.")
+            log.warning("Opciones de Desarollo activas. Correo electronico deshabilitado.")
             flask_app.config["MAIL_SUPPRESS_SEND"] = True
             from now_lms.logs import log
 

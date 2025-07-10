@@ -210,6 +210,7 @@ def mail_check():
         try:
             mail.send(msg)
             flash("Correo de prueba enviado correctamente.", "success")
+            log.info(f"Correo de prueba enviado a {form.email.data}")
             config.email_verificado = True
             database.session.commit()
             return redirect(url_for("setting.mail"))

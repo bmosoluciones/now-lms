@@ -192,7 +192,7 @@ def validate_confirmation_token(token):
 def send_confirmation_email(user):
     from flask_mail import Mail, Message
 
-    from now_lms.mail import load_email_setup
+    from now_lms.mail import load_email_setup, enviar_correo_asincrono
 
     app_ = load_email_setup(current_app)
     mail = Mail()
@@ -220,7 +220,9 @@ def send_confirmation_email(user):
       </div>
     """
     try:
-        mail.send(msg)
+        enviar_correo_asincrono(mail, msg)
+        log.info(f"Correo de confirmación enviado al usuario {user.usuario}")
+        flash("Correo de confirmación enviado exitosamente.", "success")
         return redirect(url_for("home.pagina_de_inicio"))
     except Exception as e:  # noqa: E722
         log.warning(f"Error al enviar un correo de confirmació el usuario {user.usuario}: {e}")
