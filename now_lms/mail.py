@@ -35,7 +35,7 @@ from flask_mail import Mail, Message
 from now_lms.auth import descifrar_secreto
 from now_lms.config import DESARROLLO
 from now_lms.db import MailConfig, database
-from now_lms.logs import log
+from now_lms.logs import log as logger
 
 
 if TYPE_CHECKING:
@@ -69,7 +69,7 @@ elif MAIL_USE_TLS == "True" or MAIL_USE_TLS == "true" or MAIL_USE_TLS == "TRUE":
 def load_email_setup(flask_app: "Flask"):
     """Inicia la configuración de correo electronico."""
 
-    log.trace("Iniciando configuración correo electronico.")
+    logger.trace("Iniciando configuración correo electronico.")
     with flask_app.app_context():
         mail_config = database.session.execute(database.select(MailConfig)).first()[0]
 
@@ -83,7 +83,7 @@ def load_email_setup(flask_app: "Flask"):
         flask_app.config["MAIL_DEFAULT_SENDER"] = MAIL_DEFAULT_SENDER or mail_config.MAIL_DEFAULT_SENDER
 
         if DESARROLLO:
-            log.warning("Opciones de Desarollo activas. Correo electronico deshabilitado.")
+            logger.warning("Opciones de Desarollo activas. Correo electronico deshabilitado.")
             flask_app.config["MAIL_SUPPRESS_SEND"] = True
             from now_lms.logs import log
 
@@ -101,9 +101,9 @@ def send_async_email(mail: Mail, msg: Message):
     with app.app_context():
         try:
             mail.send(msg)
-            log.debug(f"Correo enviado exitosamente a: {msg.recipients}")
+            logger.debug(f"Correo enviado exitosamente a: {msg.recipients}")
         except Exception as e:
-            log.error(f"Error al enviar correo a {msg.recipients}: {e}")
+            logger.error(f"Error al enviar correo a {msg.recipients}: {e}")
 
 
 def enviar_correo_asincrono(mail: Mail, mensaje: Message):
@@ -117,6 +117,6 @@ def enviar_correo_asincrono(mail: Mail, mensaje: Message):
     try:
         p = Process(target=send_async_email, args=(mail, mensaje))
         p.start()
-        log.debug(f"Subproceso iniciado para enviar email a: {mensaje.recipients}")
+        logger.debug(f"Subproceso iniciado para enviar email a: {mensaje.recipients}")
     except Exception as e:
-        log.error(f"No se pudo iniciar el subproceso de envío de correo: {e}")
+        logger.error(f"No se pudo iniciar el subproceso de envío de correo: {e}")
