@@ -19,8 +19,15 @@
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
+from multiprocessing import Process
 from os import environ
 from typing import TYPE_CHECKING
+
+# ---------------------------------------------------------------------------------------
+# Librerias de terceros
+# ---------------------------------------------------------------------------------------
+from flask import current_app
+from flask_mail import Mail, Message
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
@@ -29,10 +36,6 @@ from now_lms.auth import descifrar_secreto
 from now_lms.config import DESARROLLO
 from now_lms.db import MailConfig, database
 from now_lms.logs import log as logger
-
-# ---------------------------------------------------------------------------------------
-# Librerias de terceros
-# ---------------------------------------------------------------------------------------
 
 
 if TYPE_CHECKING:
@@ -89,3 +92,31 @@ def load_email_setup(flask_app: "Flask"):
                     log.debug(f"{key} = {value}")
 
         return flask_app
+
+
+def send_async_email(mail: Mail, msg: Message):
+    """Función interna que se ejecuta en un subproceso para enviar el email."""
+    app = load_email_setup(current_app)
+
+    with app.app_context():
+        try:
+            mail.send(msg)
+            log.debug(f"Correo enviado exitosamente a: {msg.recipients}")
+        except Exception as e:
+            log.error(f"Error al enviar correo a {msg.recipients}: {e}")
+
+
+def enviar_correo_asincrono(mail: Mail, mensaje: Message):
+    """
+    Envía un mensaje de correo electrónico de forma asincrónica usando subprocesos.
+
+    :param app: Instancia de Flask configurada.
+    :param mail: Instancia de Flask-Mail.
+    :param mensaje: Instancia de flask_mail.Message.
+    """
+    try:
+        p = Process(target=send_async_email, args=(mail, mensaje))
+        p.start()
+        log.debug(f"Subproceso iniciado para enviar email a: {mensaje.recipients}")
+    except Exception as e:
+        log.error(f"No se pudo iniciar el subproceso de envío de correo: {e}")
