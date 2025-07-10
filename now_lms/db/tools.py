@@ -379,7 +379,7 @@ def database_is_populated(app):
             QUERY = database_select_version(app)
             if QUERY:
                 check = database.session.execute(text(QUERY)).first()
-                log.warning("Check table curso: {check}", check=check)
+                log.warning("Check table curso: {check}")
                 if check is not None:
                     return True
                 else:
