@@ -127,7 +127,7 @@ def send_threaded_email(mail: Mail, msg: Message):
     """Función interna que se ejecuta en un hilo para enviar el email."""
     logger.trace(f"Enviando correo a {msg.recipients} en segundo plano.")
     try:
-        result = mail.send(msg)
+        mail.send(msg)
         logger.trace(f"Correo enviado a {msg.recipients} con respuesta SMTP: {result}")
     except Exception as e:
         logger.error(f"Error al enviar correo a {msg.recipients}: {e}")
@@ -171,11 +171,11 @@ def send_mail(msg: Message, background: bool = True):
             try:
                 hilo = threading.Thread(target=send_threaded_email, args=(mail, msg))
                 hilo.start()
-                logger.debug(f"Hilo iniciado para enviar email a: {msg.recipients}")
+                logger.trace(f"Hilo iniciado para enviar email a: {msg.recipients}")
             except Exception as e:
                 logger.error(f"No se pudo iniciar el hilo de envío de correo: {e}")
         else:
-            result = mail.send(msg)
+            mail.send(msg)
             logger.trace(f"Correo enviado a {msg.recipients} con respuesta SMTP: {result}")
     else:
         logger.warning("No se ha configurado el correo electrónico.")
