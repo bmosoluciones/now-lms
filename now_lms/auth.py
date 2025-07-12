@@ -202,8 +202,13 @@ def send_confirmation_email(user, sender):
       </div>
     """
     try:
-        with current_app.app_context():
-            send_mail(msg)
-            return redirect(url_for("home.pagina_de_inicio"))
+        send_mail(
+            msg,
+            background=False,
+            no_config=True,
+            _log="Correo de confirmación enviado",
+            _flush="Correo de confirmación enviado.",
+        )
+        return redirect(url_for("home.pagina_de_inicio"))
     except Exception as e:  # noqa: E722
         log.warning(f"Error al enviar un correo de confirmació el usuario {user.usuario}: {e}")

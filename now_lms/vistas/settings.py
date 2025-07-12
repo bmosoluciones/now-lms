@@ -205,9 +205,13 @@ def mail_check():
         )
         msg.html = mail_check_message
         try:
-            send_mail(msg, background=False)
-            flash("Correo de prueba enviado correctamente.", "success")
-            log.info(f"Correo de prueba enviado a {form.email.data}")
+            send_mail(
+                msg,
+                background=False,
+                no_config=True,
+                _log="Correo de prueba enviado desde NOW LMS",
+                _flush="Correo de prueba enviado.",
+            )
             config.email_verificado = True
             database.session.commit()
             return redirect(url_for("setting.mail"))
