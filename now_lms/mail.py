@@ -149,6 +149,7 @@ def send_threaded_email(app: Flask, mail: Mail, msg: Message, _log: str = "", _f
     logger.trace(f"Enviando correo a {msg.recipients} en segundo plano.")
     try:
         with app.app_context():
+            logger.trace("Intentando enviar correo electrónico en segundo plano.")
             mail.send(msg)
             logger.trace(f"Correo enviado a {msg.recipients}.")
             if not _log == "":
@@ -181,13 +182,18 @@ def send_mail(msg: Message, background: bool = True, no_config: bool = False, _l
     if DESARROLLO:
         _app.config["MAIL_SUPPRESS_SEND"] = True
 
+    log.trace("Configuración de correo electrónico cargada en la aplicación Flask.")
+
+    log.trace("Creando instancia de Flask-Mail.")
     _mail = Mail(_app)
 
     assert isinstance(_mail, Mail), "La instancia de mail debe ser de tipo Mail."
     assert isinstance(msg, Message), "El mensaje debe ser una instancia de flask_mail.Message."
 
     if config.mail_configured or no_config:
+        log.trace("Configuración de correo electrónico verificada.")
         if background:
+            log.trace("Enviando correo en segundo plano.")
             try:
                 hilo = threading.Thread(target=send_threaded_email, args=(_app, _mail, msg, _log, _flush))
                 hilo.start()
@@ -195,6 +201,7 @@ def send_mail(msg: Message, background: bool = True, no_config: bool = False, _l
             except Exception as e:
                 logger.error(f"No se pudo iniciar el hilo de envío de correo: {e}")
         else:
+            logger.trace("Enviando correo de forma síncrona.")
             with _app.app_context():
                 _mail.send(msg)
                 logger.trace(f"Correo enviado a {msg.recipients}.")
