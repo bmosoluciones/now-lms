@@ -98,6 +98,7 @@ def configuracion():
     """Configuración del sistema."""
 
     config = config = database.session.execute(database.select(Configuracion)).first()[0]
+    config_mail = database.session.execute(database.select(MailConfig)).first()[0]
     form = ConfigForm(titulo=config.titulo, descripcion=config.descripcion, verify_user_by_email=config.verify_user_by_email)
     if form.validate_on_submit() or request.method == "POST":
         config.titulo = form.titulo.data
@@ -105,7 +106,7 @@ def configuracion():
         config.verify_user_by_email = form.verify_user_by_email.data
 
         if form.verify_user_by_email.data is True:
-            config_mail = database.session.execute(database.select(MailConfig)).first()[0]
+
             if not config_mail.email_verificado:
                 flash("Debe configurar el correo electronico antes de habilitar verificación por e-mail.", "warning")
                 config.verify_user_by_email = False
