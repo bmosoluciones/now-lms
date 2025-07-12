@@ -111,7 +111,6 @@ def crear_cuenta():
                 flash("Cuenta creada exitosamente.", "success")
                 if config.verify_user_by_email:
                     mail = database.session.execute(database.select(MailConfig)).first()[0]
-                    log.debug("Enviando correo de confirmación al usuario.")
                     from now_lms.auth import send_confirmation_email
 
                     send_confirmation_email(usuario_, mail.MAIL_DEFAULT_SENDER)

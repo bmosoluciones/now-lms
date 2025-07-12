@@ -204,5 +204,3 @@ def send_mail(msg: Message, background: bool = True, no_config: bool = False, _l
             with _app.app_context():
                 _mail.send(msg)
                 logger.trace(f"Correo enviado a {msg.recipients}.")
-    else:
-        logger.warning("No se ha configurado el correo electrónico.")
