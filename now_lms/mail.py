@@ -22,7 +22,7 @@
 import threading
 from os import environ
 from types import SimpleNamespace
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union, Mapping
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -43,6 +43,19 @@ if TYPE_CHECKING:
     pass
 
 mail = Mail()
+
+# ---------------------------------------------------------------------------------------
+# Configuración de tipos.
+# ---------------------------------------------------------------------------------------
+MAIL_SERVER: Union[str, bool, Mapping, None] = None
+MAIL_PORT: Union[str, bool, Mapping, None] = None
+MAIL_USERNAME: Union[str, bool, Mapping, None] = None
+MAIL_PASSWORD: Union[str, bool, Mapping, None] = None
+MAIL_USE_TLS: Union[str, bool, Mapping, None] = None
+MAIL_USE_SSL: Union[str, bool, Mapping, None] = None
+MAIL_DEFAULT_SENDER: Union[str, bool, Mapping, None] = None
+mail_configured: bool = False
+mail_enabled: bool = False
 
 
 # ---------------------------------------------------------------------------------------
@@ -73,13 +86,13 @@ def _load_mail_config_from_env() -> SimpleNamespace:
 
     # Strin to boolean
     if MAIL_USE_SSL == "FALSE":
-        MAIL_USE_SSL = False
+        MAIL_USE_SSL = False  # type: ignore[assignment]
     elif MAIL_USE_SSL == "TRUE":
-        MAIL_USE_SSL = True
+        MAIL_USE_SSL = True  # type: ignore[assignment]
     if MAIL_USE_TLS == "FALSE":
-        MAIL_USE_TLS = False
+        MAIL_USE_TLS = False  # type: ignore[assignment]
     elif MAIL_USE_TLS == "TRUE":
-        MAIL_USE_TLS = True
+        MAIL_USE_TLS = True  # type: ignore[assignment]
 
     return SimpleNamespace(
         mail_configured=mail_configured,
@@ -144,7 +157,7 @@ def _config() -> SimpleNamespace:
         return _load_mail_config_from_db()
 
 
-def _mail(config: SimpleNamespace) -> Mail:
+def _mail(config: SimpleNamespace):
     """Configura y devuelve una instancia de Flask-Mail."""
 
     app = current_app
