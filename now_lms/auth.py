@@ -36,11 +36,12 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from flask import abort, current_app, flash, redirect, url_for
 from flask_login import current_user
+from ulid import T
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms.db import Configuracion, MailConfig, Usuario, database
+from now_lms.db import MailConfig, Usuario, database
 from now_lms.logs import log
 
 ph = PasswordHasher()
@@ -160,21 +161,30 @@ def generate_confirmation_token(mail):
     return token
 
 
-def validate_confirmation_token(token, mail):
+def validate_confirmation_token(token):
     try:
         data = jwt.decode(token, current_app.secret_key, algorithms=["HS512"])
     except jwt.ExpiredSignatureError:
+        log.warning("Intento de verificación expirado.")
         return False
     except jwt.InvalidSignatureError:
+        log.warning("Intento de verificación invalido.")
         return False
 
-    if data.get("confirm_id") != mail:
-        return False
+    if data.get("confirm_id", None):
+        user = database.session.execute(
+            database.select(Usuario).filter_by(correo_electronico=data.get("confirm_id", None))
+        ).first()[0]
+        if user:
+            user.correo_electronico_verificado = True
+            database.session.commit()
+            log.trace(f"Usuario con correo {data.get('confirm_id', None)} encontrado.")
+            return True
+        else:
+            log.warning(f"Usuario con correo {data.get('confirm_id', None)} no encontrado.")
+            return False
     else:
-        consulta = database.session.execute(database.select(Configuracion)).first()[0]
-        consulta.email_verificado = True
-        database.session.commit()
-        return True
+        return False
 
 
 def send_confirmation_email(user):

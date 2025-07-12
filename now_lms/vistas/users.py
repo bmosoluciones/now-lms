@@ -156,22 +156,13 @@ def crear_usuario():  # pragma: no cover
 
 
 @user.route("/user/check_mail/<token>")
-@login_required
 def check_mail(token):
     """Verifica correo electronico."""
     from now_lms.auth import validate_confirmation_token
 
     _token = validate_confirmation_token(token)
     if _token:
-        consulta = database.session.execute(database.select(Configuracion)).first()[0]
-        if consulta.verify_user_by_email:
-            user_ = database.session.execute(database.select(Usuario).filter_by(id=current_user.id)).first()[0]
-            user_.activo = True
-            database.session.commit()
         return redirect(url_for("home.pagina_de_inicio"))
     else:
-        from now_lms.auth import send_confirmation_email
-
-        send_confirmation_email(current_user)
-        flash("Token de verificación invalido, se ha enviado un nuevo correo de verificación.", "warning")
+        flash("Token de verificación invalido.", "warning")
         return redirect(url_for("user.cerrar_sesion"))
