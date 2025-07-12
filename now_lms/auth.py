@@ -177,7 +177,7 @@ def validate_confirmation_token(token):
         return True
 
 
-def send_confirmation_email(user):
+def send_confirmation_email(user, sender):
     from flask_mail import Message
 
     from now_lms.mail import send_mail
@@ -185,6 +185,7 @@ def send_confirmation_email(user):
     msg = Message(
         subject="Email verification",
         recipients=[user.correo_electronico],
+        sender=sender
     )
     token = generate_confirmation_token()
     url = url_for("user.check_mail", token=token, _external=True)
