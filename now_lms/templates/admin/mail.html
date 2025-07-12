@@ -20,88 +20,89 @@
 
     <div class="container px-4 py-5" id="icon-grid">
       <h5 class="pb-2 border-bottom">Configuración del Correo Electronico.</h5>
-      {% if error %}
-      <div class="alert alert-danger" role="alert">{{ error }}</div>
+      {% if config.email_verificado %}
+      <div class="{{ estilo_alerta.clase[category] }} alert-dismissible fade show" role="alert">
+        La configuración de Correo Electronico actual ha sido validada exitosamente.
+      </div>
       {% endif %}
-      <form method="post">
-        <div class="row">
-          <br />
-          <h5 class="pb-2 border-bottom">Datos de acceso al servidor SMTP.</h5>
-
-          <div class="col-sm-6">
-            <label for="servidor" class="form-label">Servidor:</label>
-            {{ form.MAIL_SERVER(class="form-control", id="servidor",) }}
-          </div>
-
-          <div class="col-sm-6">
-            <label for="puerto" class="form-label">Puerto:</label>
-            {{ form.MAIL_PORT(class="form-control", id="puerto",) }}
-          </div>
-        </div>
-
-        <br />
-
-        <div class="row">
-          <div class="col-sm-6">
-            <label for="usuario" class="form-label">Usuario:</label>
-            {{ form.MAIL_USERNAME(class="form-control", id="usuario") }}
-          </div>
-
-          <div class="col-sm-6">
-            <label for="contrasena" class="form-label">Contraseña (Oculta por seguridad.):</label>
-            {{ form.MAIL_PASSWORD(class="form-control", id="contrasena") }}
-          </div>
-        </div>
-
-        <br />
-
-        <div class="row">
-          <div class="col-sm-6">
-            <label for="tls" class="form-label">Utilizar TLS.</label>
-            {{ form.MAIL_USE_TLS() }}
-          </div>
-
-          <div class="col-sm-6">
-            <label for="ssl" class="form-label">Utilizar SSL.</label>
-            {{ form.MAIL_USE_SSL() }}
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-sm-6">
+      <div>
+        {% if error %}
+        <div class="alert alert-danger" role="alert">{{ error }}</div>
+        {% endif %}
+        <form method="post">
+          <div class="row">
             <br />
-            <label for="default_sender" class="form-label">Default sender.</label>
-            {{ form.MAIL_DEFAULT_SENDER(class="form-control", id="default_sender") }}
-          </div>
-          <div class="col-sm-6">
-            <br />
-            <label for="default_sender_name" class="form-label">Default sender name.</label>
-            {{ form.MAIL_DEFAULT_SENDER_NAME(class="form-control", id="default_sender_name") }}
-          </div>
-        </div>
+            <h5 class="pb-2 border-bottom">Datos de acceso al servidor SMTP.</h5>
 
-        <div class="row"><br /></div>
-        <div class="row"><br /></div>
+            <div class="col-sm-6">
+              <label for="servidor" class="form-label">Servidor:</label>
+              {{ form.MAIL_SERVER(class="form-control", id="servidor",) }}
+            </div>
 
-        <div class="row">
+            <div class="col-sm-6">
+              <label for="puerto" class="form-label">Puerto:</label>
+              {{ form.MAIL_PORT(class="form-control", id="puerto",) }}
+            </div>
+          </div>
+
           <br />
-          {% if config.email_verificado %}
-          <h6>La configuración de correo electronico ha sido verificada correctamente.</h6>
-          <h6>La configuración de correo electronico no se ha verificado.</h6>
-          {% endif %}
-          <div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <label for="usuario" class="form-label">Usuario:</label>
+              {{ form.MAIL_USERNAME(class="form-control", id="usuario") }}
+            </div>
+
+            <div class="col-sm-6">
+              <label for="contrasena" class="form-label">Contraseña (Oculta por seguridad.):</label>
+              {{ form.MAIL_PASSWORD(class="form-control", id="contrasena") }}
+            </div>
+          </div>
+
+          <br />
+
+          <div class="row">
+            <div class="col-sm-6">
+              <label for="tls" class="form-label">Utilizar TLS.</label>
+              {{ form.MAIL_USE_TLS() }}
+            </div>
+
+            <div class="col-sm-6">
+              <label for="ssl" class="form-label">Utilizar SSL.</label>
+              {{ form.MAIL_USE_SSL() }}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <br />
+              <label for="default_sender" class="form-label">Default sender.</label>
+              {{ form.MAIL_DEFAULT_SENDER(class="form-control", id="default_sender") }}
+            </div>
+            <div class="col-sm-6">
+              <br />
+              <label for="default_sender_name" class="form-label">Default sender name.</label>
+              {{ form.MAIL_DEFAULT_SENDER_NAME(class="form-control", id="default_sender_name") }}
+            </div>
+          </div>
+
+          <div class="row"><br /></div>
+          <div class="row"><br /></div>
+
+          <div class="row">
+            <br />
             <a href="{{ url_for('setting.mail_check') }}" type="button" class="btn btn-primary">Enviar Correo de
               Prueba</a>
           </div>
-        </div>
+      </div>
 
-        <div class="row">
-          <div>
-            <br />
-            <a class="btn btn-danger" href="{{ url_for('admin_profile.pagina_admin') }}" role="button">Cancelar</a>
-            <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
-          </div>
+      <div class="row">
+        <div>
+          <br />
+          <a class="btn btn-danger" href="{{ url_for('admin_profile.pagina_admin') }}" role="button">Cancelar</a>
+          <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
         </div>
+      </div>
       </form>
     </div>
   </main>
