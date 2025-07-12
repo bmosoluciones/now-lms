@@ -139,6 +139,7 @@ def crear_usuario():  # pragma: no cover
             tipo="user",
             activo=False,
             creado_por=current_user.usuario,
+            correo_electronico_verificado=True,
         )
         try:
             database.session.add(usuario_)
