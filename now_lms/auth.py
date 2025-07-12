@@ -187,11 +187,7 @@ def send_confirmation_email(user):
     msg = Message(
         subject="Email verification",
         recipients=[user.correo_electronico],
-        sender=(
-            (config.MAIL_DEFAULT_SENDER_NAME or "NOW LMS", config.MAIL_DEFAULT_SENDER)
-            if config.MAIL_DEFAULT_SENDER_NAME
-            else config.MAIL_DEFAULT_SENDER
-        ),
+        sender=((config.MAIL_DEFAULT_SENDER_NAME or "NOW LMS"), config.MAIL_DEFAULT_SENDER),
     )
     token = generate_confirmation_token(user.correo_electronico)
     url = url_for("user.check_mail", token=token, _external=True)

@@ -204,11 +204,7 @@ def mail_check():
         msg = Message(
             subject="Email setup verification.",
             recipients=[form.email.data],
-            sender=(
-                (config.MAIL_DEFAULT_SENDER_NAME or "NOW LMS", config.MAIL_DEFAULT_SENDER)
-                if config.MAIL_DEFAULT_SENDER_NAME
-                else config.MAIL_DEFAULT_SENDER
-            ),
+            sender=((config.MAIL_DEFAULT_SENDER_NAME or "NOW LMS"), config.MAIL_DEFAULT_SENDER),
         )
         msg.html = mail_check_message
         try:
