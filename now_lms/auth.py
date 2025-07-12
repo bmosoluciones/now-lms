@@ -40,7 +40,7 @@ from flask_login import current_user
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms.db import Configuracion, Usuario, database
+from now_lms.db import Configuracion, MailConfig, Usuario, database
 from now_lms.logs import log
 
 ph = PasswordHasher()
@@ -177,12 +177,22 @@ def validate_confirmation_token(token, mail):
         return True
 
 
-def send_confirmation_email(user, sender):
-    from flask_mail import Message
+def send_confirmation_email(user):
 
+    from flask_mail import Message
     from now_lms.mail import send_mail
 
-    msg = Message(subject="Email verification", recipients=[user.correo_electronico], sender=sender)
+    config = database.session.execute(database.select(MailConfig)).first()[0]
+
+    msg = Message(
+        subject="Email verification",
+        recipients=[user.correo_electronico],
+        sender=(
+            (config.MAIL_DEFAULT_SENDER_NAME or "NOW LMS", config.MAIL_DEFAULT_SENDER)
+            if config.MAIL_DEFAULT_SENDER_NAME
+            else config.MAIL_DEFAULT_SENDER
+        ),
+    )
     token = generate_confirmation_token(user.correo_electronico)
     url = url_for("user.check_mail", token=token, _external=True)
     msg.html = f"""

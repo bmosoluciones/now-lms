@@ -141,6 +141,7 @@ def mail():
         MAIL_USE_TLS=config.MAIL_USE_TLS,
         MAIL_USE_SSL=config.MAIL_USE_SSL,
         MAIL_DEFAULT_SENDER=config.MAIL_DEFAULT_SENDER,
+        MAIL_DEFAULT_SENDER_NAME=config.MAIL_DEFAULT_SENDER_NAME,
     )
 
     if form.validate_on_submit() or request.method == "POST":
@@ -153,6 +154,7 @@ def mail():
         config.MAIL_USERNAME = form.MAIL_USERNAME.data
         config.MAIL_PASSWORD = proteger_secreto(form.MAIL_PASSWORD.data)
         config.MAIL_DEFAULT_SENDER = form.MAIL_DEFAULT_SENDER.data
+        config.MAIL_DEFAULT_SENDER_NAME = form.MAIL_DEFAULT_SENDER_NAME.data
         config.email_verificado = False
 
         try:  # pragma: no cover
@@ -202,6 +204,11 @@ def mail_check():
         msg = Message(
             subject="Email setup verification.",
             recipients=[form.email.data],
+            sender=(
+                (config.MAIL_DEFAULT_SENDER_NAME or "NOW LMS", config.MAIL_DEFAULT_SENDER)
+                if config.MAIL_DEFAULT_SENDER_NAME
+                else config.MAIL_DEFAULT_SENDER
+            ),
         )
         msg.html = mail_check_message
         try:

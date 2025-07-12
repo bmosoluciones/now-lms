@@ -88,6 +88,7 @@ class MailForm(FlaskForm):
     email = BooleanField(validators=[])
     MAIL_SERVER = StringField(validators=[DataRequired()])
     MAIL_DEFAULT_SENDER = StringField(validators=[])
+    MAIL_DEFAULT_SENDER_NAME = StringField(validators=[])
     MAIL_PORT = StringField(validators=[DataRequired()])
     MAIL_USERNAME = StringField(validators=[DataRequired()])
     MAIL_PASSWORD = PasswordField()
