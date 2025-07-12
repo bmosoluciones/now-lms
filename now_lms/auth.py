@@ -153,14 +153,14 @@ def descifrar_secreto(hash):
 # ---------------------------------------------------------------------------------------
 # Validación de tokens de confirmación de correo electrónico.
 # ---------------------------------------------------------------------------------------
-def generate_confirmation_token():
+def generate_confirmation_token(mail):
     expiration_time = datetime.utcnow() + timedelta(seconds=36000)
-    data = {"exp": expiration_time, "confirm_id": current_user.id}
+    data = {"exp": expiration_time, "confirm_id": mail}
     token = jwt.encode(data, current_app.secret_key, algorithm="HS512")
     return token
 
 
-def validate_confirmation_token(token):
+def validate_confirmation_token(token, mail):
     try:
         data = jwt.decode(token, current_app.secret_key, algorithms=["HS512"])
     except jwt.ExpiredSignatureError:
@@ -168,7 +168,7 @@ def validate_confirmation_token(token):
     except jwt.InvalidSignatureError:
         return False
 
-    if data.get("confirm_id") != current_user.id:
+    if data.get("confirm_id") != mail:
         return False
     else:
         consulta = database.session.execute(database.select(Configuracion)).first()[0]
@@ -187,7 +187,7 @@ def send_confirmation_email(user, sender):
         recipients=[user.correo_electronico],
         sender=sender
     )
-    token = generate_confirmation_token()
+    token = generate_confirmation_token(user.correo_electronico)
     url = url_for("user.check_mail", token=token, _external=True)
     msg.html = f"""
     <div class="container">
