@@ -163,7 +163,8 @@ def check_mail(token):
 
     _token = validate_confirmation_token(token)
     if _token:
-        return redirect(url_for("home.pagina_de_inicio"))
+        flash("Correo verificado exitosamente. Ya puede iniciar sesión en el sistema", "success")
+        return redirect(url_for("user.inicio_sesion"))
     else:
         flash("Token de verificación invalido.", "warning")
         return redirect(url_for("user.cerrar_sesion"))
