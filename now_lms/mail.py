@@ -138,8 +138,9 @@ def send_threaded_email(mail: Mail, msg: Message):
     """Función interna que se ejecuta en un hilo para enviar el email."""
     logger.trace(f"Enviando correo a {msg.recipients} en segundo plano.")
     try:
-        mail.send(msg)
-        logger.trace(f"Correo enviado a {msg.recipients}.")
+        with mail.app.app_context():
+            mail.mailer.send(msg)
+            logger.trace(f"Correo enviado a {msg.recipients}.")
     except Exception as e:
         logger.error(f"Error al enviar correo a {msg.recipients}: {e}")
 
@@ -169,7 +170,10 @@ def _mail(config: SimpleNamespace):
     if DESARROLLO:
         app.config["MAIL_SUPPRESS_SEND"] = True
 
-    return mail.init_app(app)
+    return SimpleNamespace(
+        mailer = mail.init_app(app)
+        app = app
+    )
 
 
 def send_mail(msg: Message, background: bool = True):
@@ -193,7 +197,8 @@ def send_mail(msg: Message, background: bool = True):
             except Exception as e:
                 logger.error(f"No se pudo iniciar el hilo de envío de correo: {e}")
         else:
-            mail.send(msg)
-            logger.trace(f"Correo enviado a {msg.recipients}.")
+            with mail.app.app_context():
+                mail.mailer.send(msg)
+                logger.trace(f"Correo enviado a {msg.recipients}.")
     else:
         logger.warning("No se ha configurado el correo electrónico.")
