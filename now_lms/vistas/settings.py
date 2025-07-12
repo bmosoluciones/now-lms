@@ -222,13 +222,11 @@ def mail_check():
 
             config_g = database.session.execute(database.select(Configuracion)).first()[0]
             config.email_verificado = False
-            config.email = False
             config_g.verify_user_by_email = False
             database.session.commit()
             log.error(f"Error al enviar correo de prueba: {e}")
             # Re-render the form with the error message
-            form_email = MailForm(
-                email=config.email,
+            form = MailForm(
                 MAIL_SERVER=config.MAIL_SERVER,
                 MAIL_PORT=config.MAIL_PORT,
                 MAIL_USERNAME=config.MAIL_USERNAME,
@@ -236,6 +234,7 @@ def mail_check():
                 MAIL_USE_TLS=config.MAIL_USE_TLS,
                 MAIL_USE_SSL=config.MAIL_USE_SSL,
                 MAIL_DEFAULT_SENDER=config.MAIL_DEFAULT_SENDER,
+                MAIL_DEFAULT_SENDER_NAME=config.MAIL_DEFAULT_SENDER_NAME,
             )
             return render_template("admin/mail.html", form=form_email, config=config, error=str(e))
 
