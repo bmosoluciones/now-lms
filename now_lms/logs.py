@@ -79,4 +79,9 @@ root_logger.addHandler(console_handler)
 logging.getLogger("flask").setLevel(numeric_level)
 logging.getLogger("werkzeug").setLevel(numeric_level)
 
+# Configurar logger de SQLAlchemy al nivel WARNING
+logging.getLogger("sqlalchemy").setLevel(logging.WARNING)
+
+LOG_LEVEL = root_logger.getEffectiveLevel()
+
 log = root_logger

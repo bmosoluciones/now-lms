@@ -39,7 +39,22 @@ if TYPE_CHECKING:
 
 # < --------------------------------------------------------------------------------------------- >
 # Configuración central de la aplicación.
-DESARROLLO = environ.get("CI") or environ.get("DEBUG") or False
+VALORES_TRUE = {"1", "true", "yes", "on", "development", "dev"}
+
+DESARROLLO = any(
+    str(environ.get(var, "")).strip().lower() in VALORES_TRUE
+    for var in [
+        "DEBUG",  # Variable común para activar modo debug
+        "CI",  # Continuous Integration flag (como GitHub Actions, Travis, etc.)
+        "DEV",  # General "development" flag
+        "DEVELOPMENT",  # Más explícita, común en Docker y algunas plantillas
+        "FLASK_ENV",  # 'development' en Flask
+        "DJANGO_DEBUG",  # Común en proyectos Django
+        "NODE_ENV",  # A veces usada también fuera de Node.js
+        "ENV",  # Genérica: 'development' vs 'production'
+        "APP_ENV",  # Usada en entornos cloud
+    ]
+)
 
 
 # < --------------------------------------------------------------------------------------------- >

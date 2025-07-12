@@ -178,13 +178,10 @@ def validate_confirmation_token(token):
 
 
 def send_confirmation_email(user):
-    from flask_mail import Mail, Message
+    from flask_mail import Message
 
-    from now_lms.mail import load_email_setup, enviar_correo_asincrono
+    from now_lms.mail import send_mail
 
-    app_ = load_email_setup(current_app)
-    mail = Mail()
-    mail.init_app(app_)
     msg = Message(
         subject="Email verification",
         recipients=[user.correo_electronico],
@@ -208,7 +205,7 @@ def send_confirmation_email(user):
       </div>
     """
     try:
-        enviar_correo_asincrono(mail, msg)
+        send_mail(msg)
         log.info(f"Correo de confirmación enviado al usuario {user.usuario}")
         flash("Correo de confirmación enviado exitosamente.", "success")
         return redirect(url_for("home.pagina_de_inicio"))

@@ -35,7 +35,8 @@ from flask_mail import Mail, Message
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import descifrar_secreto
 from now_lms.db import MailConfig, database
-from now_lms.logs import log as logger
+from now_lms.config import DESARROLLO
+from now_lms.logs import log as logger, LOG_LEVEL
 
 
 if TYPE_CHECKING:
@@ -128,7 +129,7 @@ def send_threaded_email(mail: Mail, msg: Message):
     logger.trace(f"Enviando correo a {msg.recipients} en segundo plano.")
     try:
         mail.send(msg)
-        logger.trace(f"Correo enviado a {msg.recipients} con respuesta SMTP: {result}")
+        logger.trace(f"Correo enviado a {msg.recipients}.")
     except Exception as e:
         logger.error(f"Error al enviar correo a {msg.recipients}: {e}")
 
@@ -149,7 +150,14 @@ def _mail(config: SimpleNamespace) -> Mail:
     app = current_app
 
     for key, value in vars(config).items():
-        app.config[key] = value
+        if key.startswith("MAIL_"):
+            app.config[key] = value
+
+    if LOG_LEVEL < 20:
+        app.config["MAIL_DEBUG"] = True
+
+    if DESARROLLO:
+        app.config["MAIL_SUPPRESS_SEND"] = True
 
     return mail.init_app(app)
 
@@ -176,6 +184,6 @@ def send_mail(msg: Message, background: bool = True):
                 logger.error(f"No se pudo iniciar el hilo de envío de correo: {e}")
         else:
             mail.send(msg)
-            logger.trace(f"Correo enviado a {msg.recipients} con respuesta SMTP: {result}")
+            logger.trace(f"Correo enviado a {msg.recipients}.")
     else:
         logger.warning("No se ha configurado el correo electrónico.")

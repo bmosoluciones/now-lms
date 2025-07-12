@@ -26,7 +26,7 @@ from os.path import join
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
 from flask_uploads import UploadNotAllowed
 from sqlalchemy.exc import OperationalError
@@ -195,20 +195,16 @@ def mail_check():
 
     if form.validate_on_submit() or request.method == "POST":
 
-        from flask_mail import Mail, Message
+        from now_lms.mail import send_mail
+        from flask_mail import Message
 
-        from now_lms.mail import load_email_setup
-
-        app_ = load_email_setup(current_app)
-        mail = Mail()
-        mail.init_app(app_)
         msg = Message(
             subject="Email setup verification.",
             recipients=[form.email.data],
         )
         msg.html = mail_check_message
         try:
-            mail.send(msg)
+            send_mail(msg, background=False)
             flash("Correo de prueba enviado correctamente.", "success")
             log.info(f"Correo de prueba enviado a {form.email.data}")
             config.email_verificado = True
