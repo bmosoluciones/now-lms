@@ -109,6 +109,7 @@ def _load_mail_config_from_db() -> SimpleNamespace:
     logger.trace("Obteniendo configuración de correo electronico desde base de datos.")
     with current_app.app_context():
         mail_config = database.session.execute(database.select(MailConfig)).first()[0]
+        config = database.session.execute(database.select(MailConfig)).first()[0]
 
         # If available, use the configuration from the database
         MAIL_SERVER = mail_config.MAIL_SERVER
@@ -119,7 +120,7 @@ def _load_mail_config_from_db() -> SimpleNamespace:
         MAIL_PASSWORD = descifrar_secreto(mail_config.MAIL_PASSWORD)
         MAIL_DEFAULT_SENDER = mail_config.MAIL_DEFAULT_SENDER
         mail_configured = mail_config.email_verificado
-        mail_enabled = mail_config.email_habilitado
+        mail_enabled = config.email
 
         return SimpleNamespace(
             mail_configured=mail_configured,
