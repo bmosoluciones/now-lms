@@ -172,13 +172,15 @@ def validate_confirmation_token(token):
         return False
 
     if data.get("confirm_id", None):
+        log.trace(f"Validando token de confirmación para {data.get('confirm_id', None)}")
         user = database.session.execute(
             database.select(Usuario).filter_by(correo_electronico=data.get("confirm_id", None))
         ).first()[0]
         if user:
+            log.trace(f"Usuario encontrado: {user.usuario}, activando cuenta.")
             user.correo_electronico_verificado = True
+            user.activo = True
             database.session.commit()
-            log.trace(f"Usuario con correo {data.get('confirm_id', None)} encontrado.")
             return True
         else:
             log.warning(f"Usuario con correo {data.get('confirm_id', None)} no encontrado.")
