@@ -45,7 +45,7 @@
               <tr>
                 <td>
                   <a href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}" class="link-dark">
-                    {{ item.usuario }}
+                    {{ item.usuario or item.correo_electronico }}
                   </a>
                 </td>
                 <td>

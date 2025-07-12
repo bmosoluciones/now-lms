@@ -60,7 +60,7 @@ def proteger_passwd(clave):
 def validar_acceso(usuario_id, acceso):
     """Verifica el inicio de sesión del usuario."""
 
-    log.trace("Verificando acceso de {usuario}", usuario=usuario_id)
+    log.trace(f"Verificando acceso de {usuario_id}")
     registro = Usuario.query.filter_by(usuario=usuario_id).first()
 
     if not registro:
@@ -73,10 +73,10 @@ def validar_acceso(usuario_id, acceso):
         except VerifyMismatchError:
             clave_validada = False
     else:
-        log.trace("No se encontro registro de usuario {usuario}", usuario=usuario_id)
+        log.trace(f"No se encontro registro de usuario {usuario_id}")
         clave_validada = False
 
-    log.trace("Resultado de validación de acceso es {resultado}", resultado=clave_validada)
+    log.trace(f"Resultado de validación de acceso es {clave_validada}")
     if clave_validada:
         registro.ultimo_acceso = datetime.now()
         database.session.commit()
@@ -109,13 +109,7 @@ def perfil_requerido(perfil_id):
 # Evita registrar información sensible en la base de datos en texto plano.
 # ---------------------------------------------------------------------------------------
 def proteger_secreto(password):
-    """
-    Devuelve el hash de una contraseña.
-
-    Se requiere que el parametro "SECRET_KEY" este establecido en la configuración de la aplicacion,
-    si cambia el valor de este parametro debera actualizar la configuración ya se utiliza el mismo
-    parametro para obtener la contraseña original.
-    """
+    """Devuelve el hash de una contraseña."""
 
     with current_app.app_context():
         from now_lms.db import Configuracion, database
@@ -134,13 +128,7 @@ def proteger_secreto(password):
 
 
 def descifrar_secreto(hash):
-    """
-    Devuelve el valor de una contraseña protegida.
-
-    Se utiliza el valor del parametro "SECRET_KEY" de la configuración de la aplicación para decodificar
-    la contraseña original, si el parametro "SECRET_KEY" cambia en la configuración no se posible desifrar
-    la contraseña original, debera generar una nueva.
-    """
+    """Devuelve el valor de una contraseña protegida."""
 
     with current_app.app_context():
         from now_lms.db import Configuracion, database
@@ -190,13 +178,10 @@ def validate_confirmation_token(token):
 
 
 def send_confirmation_email(user):
-    from flask_mail import Mail, Message
+    from flask_mail import Message
 
-    from now_lms.mail import load_email_setup
+    from now_lms.mail import send_mail
 
-    app_ = load_email_setup(current_app)
-    mail = Mail()
-    mail.init_app(app_)
     msg = Message(
         subject="Email verification",
         recipients=[user.correo_electronico],
@@ -220,7 +205,9 @@ def send_confirmation_email(user):
       </div>
     """
     try:
-        mail.send(msg)
+        send_mail(msg)
+        log.info(f"Correo de confirmación enviado al usuario {user.usuario}")
+        flash("Correo de confirmación enviado exitosamente.", "success")
         return redirect(url_for("home.pagina_de_inicio"))
     except Exception as e:  # noqa: E722
         log.warning(f"Error al enviar un correo de confirmació el usuario {user.usuario}: {e}")

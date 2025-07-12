@@ -17,6 +17,7 @@ jobs:
       - name: Install python package
         env:
           CI: True
+          LOG_LEVEL: TRACE
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r development.txt
@@ -26,6 +27,7 @@ jobs:
         env:
           CI: True
           SECRET_KEY: ASD123klj+aAddS
+          LOG_LEVEL: TRACE
         run: |
           lmsctl database init
       - name: Test with Postgresql + psycopg2
@@ -36,6 +38,7 @@ jobs:
           ADMIN_USER: hello
           ADMIN_PSWD: world
           FLASK_APP: now_lms
+          LOG_LEVEL: TRACE
         run: |
           sudo systemctl start postgresql.service
           sudo -u postgres psql -c "CREATE USER lmsctl1 WITH PASSWORD 'lmsctl1';"
@@ -55,6 +58,7 @@ jobs:
           ADMIN_USER: hello
           ADMIN_PSWD: world
           FLASK_APP: now_lms
+          LOG_LEVEL: TRACE
         run: |
           sudo -u postgres psql -c "CREATE USER lmsctl2 WITH PASSWORD 'lmsctl2';"
           sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON SCHEMA public TO lmsctl2;"
@@ -73,6 +77,7 @@ jobs:
           ADMIN_USER: hello
           ADMIN_PSWD: world
           FLASK_APP: now_lms
+          LOG_LEVEL: TRACE
         run: |
           sudo systemctl start mysql.service
           mysql -u root -proot -e "CREATE USER 'lmsctl'@'localhost' IDENTIFIED BY 'lmsctl';"

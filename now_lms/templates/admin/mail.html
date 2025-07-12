@@ -24,13 +24,6 @@
         {% endif %}
         <form method="post">
           <div class="row">
-            <div class="col-sm-6">
-              <label for="email" class="form-label">Permitir Correo Electronico:</label>
-              {{ form.email() }}
-            </div>
-          </div>
-
-          <div class="row">
             <br />
             <h5 class="pb-2 border-bottom">Datos de acceso al servidor SMTP.</h5>
 
@@ -86,11 +79,14 @@
 
           <div class="row">
             <br />
-            <h6>La configuración de correo electronico no se ha sido verificada.</h6>
+            {% if config.email_verificado %}
+            <h6>La configuración de correo electronico ha sido verificada correctamente.</h6>
+            <label for="email" class="form-label">Permitir Correo Electronico:</label>
+            {{ form.email() }} {% else %}
+            <h6>La configuración de correo electronico no se ha verificado.</h6>
+            {% endif %}
             <div>
-              <a href="{{ url_for('setting.mail_check') }}" type="button" class="btn btn-warning"
-                >Validar configuración de correo electronico</a
-              >
+              <a href="{{ url_for('setting.mail_check') }}" type="button" class="btn btn-primary">Enviar Correo de Prueba</a>
             </div>
           </div>
 

@@ -97,11 +97,11 @@ class Usuario(UserMixin, database.Model, BaseTabla):
     __table_args__ = (database.UniqueConstraint("usuario", name="id_usuario_unico"),)
     __table_args__ = (database.UniqueConstraint("correo_electronico", name="correo_usuario_unico"),)
     # Info de sistema
-    usuario = database.Column(database.String(40), nullable=False, index=True, unique=True)
+    usuario = database.Column(database.String(150), nullable=False, index=True, unique=True)
     acceso = database.Column(database.LargeBinary(), nullable=False)
     nombre = database.Column(database.String(100))
     apellido = database.Column(database.String(100))
-    correo_electronico = database.Column(database.String(100))
+    correo_electronico = database.Column(database.String(150))
     correo_electronico_verificado = database.Column(database.Boolean(), default=False)
     tipo = database.Column(database.String(20))  # Puede ser: admin, user, instructor, moderator
     activo = database.Column(database.Boolean())
@@ -140,7 +140,7 @@ class UsuarioGrupoMiembro(database.Model, BaseTabla):
     """Grupo de Usuarios"""
 
     grupo = database.Column(database.String(26), database.ForeignKey("usuario_grupo.id"))
-    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
+    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO))
 
 
 class UsuarioGrupoTutor(UsuarioGrupoMiembro):
@@ -243,7 +243,7 @@ class CursoRecursoAvance(database.Model, BaseTabla):
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
     seccion = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False, index=True)
     recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False, index=True)
-    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     # pendiente, iniciado, completado
     estado = database.Column(database.String(15))
     avance = database.Column(database.Float(asdecimal=True))
@@ -285,7 +285,7 @@ class CursoRecursoPreguntaRespuesta(database.Model, BaseTabla):
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
     recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False, index=True)
     pregunta = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_PREGUNTA), nullable=False, index=True)
-    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     texto = database.Column(database.String(500))
     boleano = database.Column(database.Boolean())
     correcta = database.Column(database.Boolean())
@@ -297,7 +297,7 @@ class CursoRecursoConsulta(database.Model, BaseTabla):
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
     recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False)
-    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False)
+    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False)
     pregunta = database.Column(database.String(500))
     respuesta = database.Column(database.String(500))
 
@@ -338,7 +338,7 @@ class DocenteCurso(database.Model, BaseTabla):
     """Uno o mas usuario de tipo intructor pueden estar a cargo de un curso."""
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     vigente = database.Column(database.Boolean())
 
 
@@ -346,7 +346,7 @@ class ModeradorCurso(database.Model, BaseTabla):
     """Uno o mas usuario de tipo moderator pueden estar a cargo de un curso."""
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     vigente = database.Column(database.Boolean())
 
 
@@ -354,7 +354,7 @@ class EstudianteCurso(database.Model, BaseTabla):
     """Uno o mas usuario de tipo user pueden estar a cargo de un curso."""
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     vigente = database.Column(database.Boolean())
 
 
@@ -451,7 +451,7 @@ class ProgramaCurso(database.Model, BaseTabla):
 class ProgramaEstudiante(database.Model, BaseTabla):
     """Cursos en un programa."""
 
-    usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     programa = database.Column(database.String(26), database.ForeignKey("programa.id"), nullable=False, index=True)
     relacion_usuario = database.relationship("Usuario", foreign_keys=usuario)
     relacion_programa = database.relationship("Programa", foreign_keys=programa)

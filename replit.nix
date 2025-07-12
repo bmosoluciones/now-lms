@@ -1,5 +1,7 @@
 {pkgs}: {
   deps = [
+    pkgs.ruff
+    pkgs.black
     pkgs.imagemagick
     pkgs.mkdocs
     pkgs.pango

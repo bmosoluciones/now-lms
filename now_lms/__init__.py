@@ -186,94 +186,6 @@ def no_autorizado():
 
 
 # ---------------------------------------------------------------------------------------
-# Definición de la aplicación principal.
-# ---------------------------------------------------------------------------------------
-lms_app = Flask(
-    "now_lms",
-    template_folder=DIRECTORIO_PLANTILLAS,
-    static_folder=DIRECTORIO_ARCHIVOS,
-)
-
-# Normalmente los servidores WSGI utilizan "app" or "application" por defecto.
-app = lms_app
-application = lms_app
-
-# ---------------------------------------------------------------------------------------
-# Iniciliazación y configuración de la aplicación principal.
-# ---------------------------------------------------------------------------------------
-log.trace("Configurando directorio de archivos estaticos: {dir}", dir=DIRECTORIO_ARCHIVOS)
-log.trace("Configurando directorio de plantillas: {dir}", dir=DIRECTORIO_PLANTILLAS)
-lms_app.config.from_mapping(CONFIGURACION)
-log.trace("Configuración de la aplicación cargada correctamente.")
-inicializa_extenciones_terceros(lms_app)
-registrar_modulos_en_la_aplicacion_principal(lms_app)
-log_messages(lms_app)
-log.trace("Configurando directorio de carga de imagenes.")
-configure_uploads(lms_app, images)
-configure_uploads(lms_app, files)
-configure_uploads(lms_app, audio)
-
-
-# ---------------------------------------------------------------------------------------
-# Páginas de error personalizadas.
-# ---------------------------------------------------------------------------------------
-
-
-# Reference: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/402
-class PaymentRequired(HTTPException):
-    """402 Payment Required"""
-
-    code = 402
-    description = """
-The HTTP 402 Payment Required is a nonstandard response status code that is reserved
-for future use. This status code was created to enable digital cash or (micro) payment
-systems and would indicate that the requested content is not available until the client
-makes a payment.
-"""
-
-
-# Errores personalizados
-def handle_402(error):
-    """Pagina personalizada para recursos que requieren pago."""
-
-    return render_template("error_pages/403.html", error=error)
-
-
-lms_app.register_error_handler(PaymentRequired, handle_402)
-
-
-# Errores standares
-@lms_app.errorhandler(403)
-@cache.cached()
-def error_403(error):
-    """Pagina personalizada para recursos no autorizados."""
-
-    return render_template("error_pages/403.html", error=error), 403
-
-
-@lms_app.errorhandler(404)
-@cache.cached()
-def error_404(error):
-    """Pagina personalizada para recursos no encontrados."""
-
-    return render_template("error_pages/404.html", error=error), 404
-
-
-@lms_app.errorhandler(405)
-@cache.cached()
-def error_405(error):
-    """Pagina personalizada para metodos no permitidos."""
-    return render_template("error_pages/405.html", error=error), 405
-
-
-@lms_app.errorhandler(500)
-@cache.cached()
-def error_500(error):
-    """Pagina personalizada para recursos no autorizados."""
-    return render_template("error_pages/500.html", error=error), 500
-
-
-# ---------------------------------------------------------------------------------------
 # Carga configuración del sitio web desde la base de datos.
 # ---------------------------------------------------------------------------------------
 @cache.cached(timeout=60, key_prefix="site_config")
@@ -299,29 +211,139 @@ def carga_configuracion_del_sitio_web_desde_db():  # pragma: no cover
 # ---------------------------------------------------------------------------------------
 # Definición de variables globales de Jinja2 para su disponibilidad en plantillas HTML
 # ---------------------------------------------------------------------------------------
-lms_app.jinja_env.globals["current_user"] = current_user
-lms_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
-lms_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
-lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
-lms_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
-lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
-lms_app.jinja_env.globals["estilo_alerta"] = ESTILO_ALERTAS
-lms_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
-lms_app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
-lms_app.jinja_env.globals["config"] = carga_configuracion_del_sitio_web_desde_db
-lms_app.jinja_env.globals["version"] = VERSION
-lms_app.jinja_env.globals["info"] = app_info(lms_app)
-lms_app.jinja_env.globals["pyversion"] = python_version()
-lms_app.jinja_env.globals["mkdonw2thml"] = markdown_to_clean_hmtl
-lms_app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
-lms_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
-lms_app.jinja_env.globals["adsense_code"] = get_addsense_code
-lms_app.jinja_env.globals["paypal_enabled"] = check_paypal_enabled
-lms_app.jinja_env.globals["paypal_id"] = get_paypal_id
-lms_app.jinja_env.globals["current_theme"] = current_theme
-lms_app.jinja_env.globals["course_logo"] = get_current_course_logo
-lms_app.jinja_env.globals["site_logo"] = get_site_logo
-lms_app.jinja_env.globals["course_info"] = course_info
+def define_variables_globales_jinja2(lms_app: Flask):
+    """Define variables globales de Jinja2 para su disponibilidad en plantillas HTML."""
+
+    log.trace("Definiendo variables globales de Jinja2.")
+    lms_app.jinja_env.globals["current_user"] = current_user
+    lms_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
+    lms_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
+    lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
+    lms_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
+    lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
+    lms_app.jinja_env.globals["estilo_alerta"] = ESTILO_ALERTAS
+    lms_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
+    lms_app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
+    lms_app.jinja_env.globals["config"] = carga_configuracion_del_sitio_web_desde_db
+    lms_app.jinja_env.globals["version"] = VERSION
+    lms_app.jinja_env.globals["info"] = app_info(lms_app)
+    lms_app.jinja_env.globals["pyversion"] = python_version()
+    lms_app.jinja_env.globals["mkdonw2thml"] = markdown_to_clean_hmtl
+    lms_app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
+    lms_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
+    lms_app.jinja_env.globals["adsense_code"] = get_addsense_code
+    lms_app.jinja_env.globals["paypal_enabled"] = check_paypal_enabled
+    lms_app.jinja_env.globals["paypal_id"] = get_paypal_id
+    lms_app.jinja_env.globals["current_theme"] = current_theme
+    lms_app.jinja_env.globals["course_logo"] = get_current_course_logo
+    lms_app.jinja_env.globals["site_logo"] = get_site_logo
+    lms_app.jinja_env.globals["course_info"] = course_info
+
+
+# ---------------------------------------------------------------------------------------
+# Definición de la aplicación principal.
+# ---------------------------------------------------------------------------------------
+lms_app = Flask(
+    "now_lms",
+    template_folder=DIRECTORIO_PLANTILLAS,
+    static_folder=DIRECTORIO_ARCHIVOS,
+)
+
+# Normalmente los servidores WSGI utilizan "app" or "application" por defecto.
+app = lms_app
+application = lms_app
+
+# ---------------------------------------------------------------------------------------
+# Iniciliazación y configuración de la aplicación principal.
+# ---------------------------------------------------------------------------------------
+log.trace(f"Directorio de archivos estaticos: {DIRECTORIO_ARCHIVOS}")
+log.trace(f"Directorio de plantillas: {DIRECTORIO_PLANTILLAS}")
+lms_app.config.from_mapping(CONFIGURACION)
+inicializa_extenciones_terceros(lms_app)
+registrar_modulos_en_la_aplicacion_principal(lms_app)
+log_messages(lms_app)
+configure_uploads(lms_app, images)
+configure_uploads(lms_app, files)
+configure_uploads(lms_app, audio)
+define_variables_globales_jinja2(lms_app)
+
+
+# ---------------------------------------------------------------------------------------
+# Páginas de error personalizadas.
+# ---------------------------------------------------------------------------------------
+
+
+# Reference: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/402
+class PaymentRequired(HTTPException):
+    """402 Payment Required"""
+
+    code = 402
+    description = """
+The HTTP 402 Payment Required is a nonstandard response status code that is reserved
+for future use. This status code was created to enable digital cash or (micro) payment
+systems and would indicate that the requested content is not available until the client
+makes a payment.
+"""
+
+
+# Errores personalizados
+def handle_402(error):
+    """Pagina personalizada para recursos que requieren pago."""
+
+    if not current_user.is_authenticated:
+        flash("Favor iniciar sesión para acceder a este recurso.", "warning")
+        log.warning(f"Recurso no disponible para usuario anonimo, pago requerido: {error}")
+    else:
+        log.warning(f"Recurso no disponible, pago requerido para {current_user.usuario}: {error}")
+
+    return render_template("error_pages/403.html", error=error)
+
+
+lms_app.register_error_handler(PaymentRequired, handle_402)
+
+
+# Errores standares
+@lms_app.errorhandler(403)
+@cache.cached()
+def error_403(error):
+    """Pagina personalizada para recursos no autorizados."""
+
+    if not current_user.is_authenticated:
+        flash("Favor iniciar sesión para acceder a este recurso.", "warning")
+        log.warning(f"Recurso no autorizado para usuario anonimo: {error}")
+    else:
+        log.warning(f"Recurso no autorizado para {current_user.usuario}: {error}")
+
+    return render_template("error_pages/403.html", error=error), 403
+
+
+@lms_app.errorhandler(404)
+@cache.cached()
+def error_404(error):
+    """Pagina personalizada para recursos no encontrados."""
+
+    if not current_user.is_authenticated:
+        log.warning(f"Recurso no encontrado para usuario anonimo: {error}")
+    else:
+        log.warning(f"Recurso no encontrado para {current_user.usuario}: {error}")
+
+    return render_template("error_pages/404.html", error=error), 404
+
+
+@lms_app.errorhandler(405)
+@cache.cached()
+def error_405(error):
+    """Pagina personalizada para metodos no permitidos."""
+
+    log.warning(f"Recurso no permitido: {error}")
+    return render_template("error_pages/405.html", error=error), 405
+
+
+@lms_app.errorhandler(500)
+@cache.cached()
+def error_500(error):
+    """Pagina personalizada para recursos no autorizados."""
+    return render_template("error_pages/500.html", error=error), 500
 
 
 # ---------------------------------------------------------------------------------------
@@ -357,6 +379,7 @@ def initial_setup(with_examples=False, with_tests=False):
             crear_recurso_descargable()
             log.debug("Datos de muestra cargados correctamente.")
         if with_tests:
+            log.trace("Cargando datos de prueba para testing.")
             from now_lms.db.data_test import crear_data_para_pruebas
 
             crear_data_para_pruebas()
@@ -381,24 +404,8 @@ def init_app(with_examples=False):
             initial_setup(with_examples=with_examples)
             return True
     else:
-        log.trace("No se pudo acceder a la base de datos.")
+        log.warning("No se pudo acceder a la base de datos.")
         return False
-
-
-# ---------------------------------------------------------------------------------------
-# Verifica si el usuario esta activo antes de procesar la solicitud.
-# ---------------------------------------------------------------------------------------
-@lms_app.before_request
-def before_request():
-    if (
-        current_user.is_authenticated
-        and not current_user.activo
-        and not current_user.tipo == "admin"
-        and request != "static"
-        and request.blueprint != "user"
-        and request.endpoint != "static"
-    ):
-        return render_template("error_pages/401.html")
 
 
 # ---------------------------------------------------------------------------------------

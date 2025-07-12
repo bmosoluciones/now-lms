@@ -26,7 +26,7 @@ from os.path import join
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
 from flask_uploads import UploadNotAllowed
 from sqlalchemy.exc import OperationalError
@@ -103,9 +103,9 @@ def configuracion():
         config.titulo = form.titulo.data
         config.descripcion = form.descripcion.data
 
-        if form.verify_user_by_email.data:
-            config = database.session.execute(database.select(MailConfig)).first()[0]
-            if not config.email_verificado:
+        if form.verify_user_by_email.data is True:
+            config_mail = database.session.execute(database.select(MailConfig)).first()[0]
+            if not config_mail.email_verificado:
                 flash("Debe configurar el correo electronico antes de habilitar verificación por e-mail.", "warning")
                 config.verify_user_by_email = False
             else:
@@ -195,28 +195,33 @@ def mail_check():
 
     if form.validate_on_submit() or request.method == "POST":
 
-        from flask_mail import Mail, Message
+        from now_lms.mail import send_mail
+        from flask_mail import Message
 
-        from now_lms.mail import load_email_setup
-
-        app_ = load_email_setup(current_app)
-        mail = Mail()
-        mail.init_app(app_)
         msg = Message(
             subject="Email setup verification.",
             recipients=[form.email.data],
         )
         msg.html = mail_check_message
         try:
-            mail.send(msg)
+            send_mail(msg, background=False)
             flash("Correo de prueba enviado correctamente.", "success")
+            log.info(f"Correo de prueba enviado a {form.email.data}")
             config.email_verificado = True
             database.session.commit()
             return redirect(url_for("setting.mail"))
         except Exception as e:  # noqa: E722
             flash("Hubo un error al enviar un correo de prueba. Revise su configuración.", "warning")
+            from now_lms.db import Configuracion
 
-            form = MailForm(
+            config_g = database.session.execute(database.select(Configuracion)).first()[0]
+            config.email_verificado = False
+            config.email = False
+            config_g.verify_user_by_email = False
+            database.session.commit()
+            log.error(f"Error al enviar correo de prueba: {e}")
+            # Re-render the form with the error message
+            form_email = MailForm(
                 email=config.email,
                 MAIL_SERVER=config.MAIL_SERVER,
                 MAIL_PORT=config.MAIL_PORT,
@@ -226,7 +231,7 @@ def mail_check():
                 MAIL_USE_SSL=config.MAIL_USE_SSL,
                 MAIL_DEFAULT_SENDER=config.MAIL_DEFAULT_SENDER,
             )
-            return render_template("admin/mail.html", form=form, config=config, error=str(e))
+            return render_template("admin/mail.html", form=form_email, config=config, error=str(e))
 
     else:
         return render_template("admin/mail _check.html", form=form)
