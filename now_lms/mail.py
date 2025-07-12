@@ -171,7 +171,7 @@ def _mail(config: SimpleNamespace):
         app.config["MAIL_SUPPRESS_SEND"] = True
 
     return SimpleNamespace(
-        mailer = mail.init_app(app)
+        mailer = mail.init_app(app),
         app = app
     )
 
