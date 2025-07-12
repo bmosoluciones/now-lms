@@ -37,7 +37,7 @@ from sqlalchemy.exc import OperationalError
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido, proteger_passwd, validar_acceso
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import Configuracion, MailConfig,Usuario, database
+from now_lms.db import Configuracion, MailConfig, Usuario, database
 from now_lms.forms import LoginForm, LogonForm
 from now_lms.logs import log
 from now_lms.misc import INICIO_SESION, PANEL_DE_USUARIO

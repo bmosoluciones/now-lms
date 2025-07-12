@@ -126,6 +126,7 @@ administrador_sesion: LoginManager = LoginManager()
 mde: Mde = Mde()
 mail = Mail()
 
+
 # ---------------------------------------------------------------------------------------
 # Funciones auxiliares para inicializar la aplicación principal.
 # ---------------------------------------------------------------------------------------

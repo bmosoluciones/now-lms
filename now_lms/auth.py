@@ -182,11 +182,7 @@ def send_confirmation_email(user, sender):
 
     from now_lms.mail import send_mail
 
-    msg = Message(
-        subject="Email verification",
-        recipients=[user.correo_electronico],
-        sender=sender
-    )
+    msg = Message(subject="Email verification", recipients=[user.correo_electronico], sender=sender)
     token = generate_confirmation_token(user.correo_electronico)
     url = url_for("user.check_mail", token=token, _external=True)
     msg.html = f"""
@@ -206,8 +202,8 @@ def send_confirmation_email(user, sender):
       </div>
     """
     try:
-        send_mail(msg)
-        log.info(f"Correo de confirmación enviado al usuario {user.usuario}")
-        return redirect(url_for("home.pagina_de_inicio"))
+        with current_app.app_context():
+            send_mail(msg)
+            return redirect(url_for("home.pagina_de_inicio"))
     except Exception as e:  # noqa: E722
         log.warning(f"Error al enviar un correo de confirmació el usuario {user.usuario}: {e}")
