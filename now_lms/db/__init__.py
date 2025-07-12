@@ -377,8 +377,6 @@ class Style(database.Model, BaseTabla):
 class MailConfig(database.Model, BaseTabla):
     """E-mail settings."""
 
-    # Email settings
-    email = database.Column(database.Boolean())
     MAIL_SERVER = database.Column(database.String(100))
     MAIL_PORT = database.Column(database.String(6))
     MAIL_USERNAME = database.Column(database.String(100))

@@ -133,7 +133,6 @@ def mail():
     config = database.session.execute(database.select(MailConfig)).first()[0]
 
     form = MailForm(
-        email=config.email,
         MAIL_SERVER=config.MAIL_SERVER,
         MAIL_PORT=config.MAIL_PORT,
         MAIL_USERNAME=config.MAIL_USERNAME,
@@ -146,7 +145,6 @@ def mail():
 
     if form.validate_on_submit() or request.method == "POST":
 
-        config.email = form.email.data
         config.MAIL_SERVER = form.MAIL_SERVER.data
         config.MAIL_PORT = form.MAIL_PORT.data
         config.MAIL_USE_TLS = form.MAIL_USE_TLS.data

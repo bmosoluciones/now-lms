@@ -50,7 +50,6 @@ MAIL_USE_TLS: Union[str, bool, Mapping, None] = None
 MAIL_USE_SSL: Union[str, bool, Mapping, None] = None
 MAIL_DEFAULT_SENDER: Union[str, bool, Mapping, None] = None
 mail_configured: bool = False
-mail_enabled: bool = False
 
 
 # ---------------------------------------------------------------------------------------
@@ -68,11 +67,9 @@ def _load_mail_config_from_env() -> SimpleNamespace:
     if MAIL_SERVER and MAIL_PORT and MAIL_USERNAME and MAIL_PASSWORD:
         logger.debug("Configuración de correo electrónico cargada desde variables de entorno.")
         mail_configured = True
-        mail_enabled = True
     else:
         logger.trace("No se encontró configuración de correo electrónico en variables de entorno.")
         mail_configured = False
-        mail_enabled = False
     # TLS/SSL settings
     MAIL_USE_TLS = environ.get("MAIL_USE_TLS", "False").capitalize()
     MAIL_USE_SSL = environ.get("MAIL_USE_SSL", "False").capitalize()
@@ -91,7 +88,6 @@ def _load_mail_config_from_env() -> SimpleNamespace:
 
     return SimpleNamespace(
         mail_configured=mail_configured,
-        mail_enabled=mail_enabled,
         MAIL_SERVER=MAIL_SERVER,
         MAIL_PORT=MAIL_PORT,
         MAIL_USERNAME=MAIL_USERNAME,
@@ -118,11 +114,9 @@ def _load_mail_config_from_db() -> SimpleNamespace:
         MAIL_PASSWORD = descifrar_secreto(mail_config.MAIL_PASSWORD)
         MAIL_DEFAULT_SENDER = mail_config.MAIL_DEFAULT_SENDER
         mail_configured = mail_config.email_verificado
-        mail_enabled = config.email
 
         return SimpleNamespace(
             mail_configured=mail_configured,
-            mail_enabled=mail_enabled,
             MAIL_SERVER=MAIL_SERVER,
             MAIL_PORT=MAIL_PORT,
             MAIL_USERNAME=MAIL_USERNAME,
@@ -192,7 +186,7 @@ def send_mail(msg: Message, background: bool = True, no_config: bool = False, _l
     assert isinstance(_mail, Mail), "La instancia de mail debe ser de tipo Mail."
     assert isinstance(msg, Message), "El mensaje debe ser una instancia de flask_mail.Message."
 
-    if (config.mail_configured and config.mail_enabled) or no_config:
+    if config.mail_configured or no_config:
         if background:
             try:
                 hilo = threading.Thread(target=send_threaded_email, args=(_app, _mail, msg, _log, _flush))

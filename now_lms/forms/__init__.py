@@ -85,7 +85,6 @@ class LoginForm(FlaskForm):
 class MailForm(FlaskForm):
     """Formulario de configuración de correo electronico."""
 
-    email = BooleanField(validators=[])
     MAIL_SERVER = StringField(validators=[DataRequired()])
     MAIL_DEFAULT_SENDER = StringField(validators=[])
     MAIL_DEFAULT_SENDER_NAME = StringField(validators=[])
