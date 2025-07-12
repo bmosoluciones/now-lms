@@ -22,7 +22,7 @@
 import threading
 from os import environ
 from types import SimpleNamespace
-from typing import TYPE_CHECKING, Union, Mapping
+from typing import Union, Mapping
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -38,9 +38,6 @@ from now_lms.db import MailConfig, database
 from now_lms.config import DESARROLLO
 from now_lms.logs import log as logger, LOG_LEVEL
 
-
-if TYPE_CHECKING:
-    pass
 
 mail = Mail()
 
