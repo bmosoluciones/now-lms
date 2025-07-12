@@ -182,16 +182,16 @@ def send_mail(msg: Message, background: bool = True, no_config: bool = False, _l
     if DESARROLLO:
         _app.config["MAIL_SUPPRESS_SEND"] = True
 
-    log.trace("Configuración de correo electrónico cargada en la aplicación Flask.")
+    logger.trace("Configuración de correo electrónico cargada en la aplicación Flask.")
 
-    log.trace("Creando instancia de Flask-Mail.")
+    logger.trace("Creando instancia de Flask-Mail.")
     _mail = Mail(_app)
 
     assert isinstance(_mail, Mail), "La instancia de mail debe ser de tipo Mail."
     assert isinstance(msg, Message), "El mensaje debe ser una instancia de flask_mail.Message."
 
     if config.mail_configured or no_config:
-        log.trace("Configuración de correo electrónico verificada.")
+        logger.trace("Configuración de correo electrónico verificada.")
         if background:
             log.trace("Enviando correo en segundo plano.")
             try:
