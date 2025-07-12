@@ -113,7 +113,7 @@ def crear_cuenta():
                     mail = database.session.execute(database.select(MailConfig)).first()[0]
                     from now_lms.auth import send_confirmation_email
 
-                    send_confirmation_email(usuario_, mail.MAIL_DEFAULT_SENDER)
+                    send_confirmation_email(usuario_)
 
                 return INICIO_SESION
             except OperationalError:  # pragma: no cover
