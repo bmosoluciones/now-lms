@@ -208,7 +208,6 @@ def send_confirmation_email(user, sender):
     try:
         send_mail(msg)
         log.info(f"Correo de confirmación enviado al usuario {user.usuario}")
-        flash("Correo de confirmación enviado exitosamente.", "success")
         return redirect(url_for("home.pagina_de_inicio"))
     except Exception as e:  # noqa: E722
         log.warning(f"Error al enviar un correo de confirmació el usuario {user.usuario}: {e}")

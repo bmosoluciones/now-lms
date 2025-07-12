@@ -139,7 +139,7 @@ def send_threaded_email(mail: Mail, msg: Message):
     """Función interna que se ejecuta en un hilo para enviar el email."""
     logger.trace(f"Enviando correo a {msg.recipients} en segundo plano.")
     try:
-        with mail.app.app_context():
+        with current_app.app_context():
             mail.mailer.send(msg)
             logger.trace(f"Correo enviado a {msg.recipients}.")
     except Exception as e:
@@ -198,7 +198,7 @@ def send_mail(msg: Message, background: bool = True):
             except Exception as e:
                 logger.error(f"No se pudo iniciar el hilo de envío de correo: {e}")
         else:
-            with mail.app.app_context():
+            with current_app.app_context():
                 mail.mailer.send(msg)
                 logger.trace(f"Correo enviado a {msg.recipients}.")
     else:
