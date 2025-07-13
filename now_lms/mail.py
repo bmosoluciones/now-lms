@@ -27,7 +27,7 @@ from typing import Union, Mapping
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import current_app
+from flask import Flask, current_app, flash
 from flask_mail import Mail, Message
 
 # ---------------------------------------------------------------------------------------
@@ -38,8 +38,6 @@ from now_lms.db import MailConfig, database
 from now_lms.config import DESARROLLO
 from now_lms.logs import log as logger, LOG_LEVEL
 
-
-mail = Mail()
 
 # ---------------------------------------------------------------------------------------
 # Configuración de tipos.
@@ -52,7 +50,6 @@ MAIL_USE_TLS: Union[str, bool, Mapping, None] = None
 MAIL_USE_SSL: Union[str, bool, Mapping, None] = None
 MAIL_DEFAULT_SENDER: Union[str, bool, Mapping, None] = None
 mail_configured: bool = False
-mail_enabled: bool = False
 
 
 # ---------------------------------------------------------------------------------------
@@ -70,11 +67,9 @@ def _load_mail_config_from_env() -> SimpleNamespace:
     if MAIL_SERVER and MAIL_PORT and MAIL_USERNAME and MAIL_PASSWORD:
         logger.debug("Configuración de correo electrónico cargada desde variables de entorno.")
         mail_configured = True
-        mail_enabled = True
     else:
         logger.trace("No se encontró configuración de correo electrónico en variables de entorno.")
         mail_configured = False
-        mail_enabled = False
     # TLS/SSL settings
     MAIL_USE_TLS = environ.get("MAIL_USE_TLS", "False").capitalize()
     MAIL_USE_SSL = environ.get("MAIL_USE_SSL", "False").capitalize()
@@ -93,7 +88,6 @@ def _load_mail_config_from_env() -> SimpleNamespace:
 
     return SimpleNamespace(
         mail_configured=mail_configured,
-        mail_enabled=mail_enabled,
         MAIL_SERVER=MAIL_SERVER,
         MAIL_PORT=MAIL_PORT,
         MAIL_USERNAME=MAIL_USERNAME,
@@ -119,11 +113,9 @@ def _load_mail_config_from_db() -> SimpleNamespace:
         MAIL_PASSWORD = descifrar_secreto(mail_config.MAIL_PASSWORD)
         MAIL_DEFAULT_SENDER = mail_config.MAIL_DEFAULT_SENDER
         mail_configured = mail_config.email_verificado
-        mail_enabled = mail_config.email_habilitado
 
         return SimpleNamespace(
             mail_configured=mail_configured,
-            mail_enabled=mail_enabled,
             MAIL_SERVER=MAIL_SERVER,
             MAIL_PORT=MAIL_PORT,
             MAIL_USERNAME=MAIL_USERNAME,
@@ -132,16 +124,6 @@ def _load_mail_config_from_db() -> SimpleNamespace:
             MAIL_USE_SSL=MAIL_USE_SSL,
             MAIL_DEFAULT_SENDER=MAIL_DEFAULT_SENDER,
         )
-
-
-def send_threaded_email(mail: Mail, msg: Message):
-    """Función interna que se ejecuta en un hilo para enviar el email."""
-    logger.trace(f"Enviando correo a {msg.recipients} en segundo plano.")
-    try:
-        mail.send(msg)
-        logger.trace(f"Correo enviado a {msg.recipients}.")
-    except Exception as e:
-        logger.error(f"Error al enviar correo a {msg.recipients}: {e}")
 
 
 def _config() -> SimpleNamespace:
@@ -154,25 +136,30 @@ def _config() -> SimpleNamespace:
         return _load_mail_config_from_db()
 
 
-def _mail(config: SimpleNamespace):
-    """Configura y devuelve una instancia de Flask-Mail."""
+def send_threaded_email(app: Flask, mail: Mail, msg: Message, _log: str = "", _flush: str = ""):
+    """
+    Función interna que se ejecuta en un hilo para enviar el email.
 
-    app = current_app
+    :param app: Instancia de Flask.
+    :param mail: Instancia de Flask-Mail.
+    :param msg: Instancia de flask_mail.Message.
+    """
 
-    for key, value in vars(config).items():
-        if key.startswith("MAIL_"):
-            app.config[key] = value
+    logger.trace(f"Enviando correo a {msg.recipients} en segundo plano.")
+    try:
+        with app.app_context():
+            logger.trace("Intentando enviar correo electrónico en segundo plano.")
+            mail.send(msg)
+            logger.trace(f"Correo enviado a {msg.recipients}.")
+            if not _log == "":
+                logger.info(_log)
+            if not _flush == "":
+                flash(_flush)
+    except Exception as e:
+        logger.error(f"Error al enviar correo a {msg.recipients}: {e}")
 
-    if LOG_LEVEL < 20:
-        app.config["MAIL_DEBUG"] = True
 
-    if DESARROLLO:
-        app.config["MAIL_SUPPRESS_SEND"] = True
-
-    return mail.init_app(app)
-
-
-def send_mail(msg: Message, background: bool = True):
+def send_mail(msg: Message, background: bool = True, no_config: bool = False, _log: str = "", _flush: str = ""):
     """
     Envía un mensaje de correo electrónico de forma asincrónica usando hilos.
 
@@ -181,19 +168,39 @@ def send_mail(msg: Message, background: bool = True):
     :param background: Si es True, envía el correo en segundo plano.
     """
 
+    _app = current_app
     config = _config()
-    mail = _mail(config)
 
-    if config.mail_configured and config.mail_enabled:
+    for key, value in vars(config).items():
+        if key.startswith("MAIL_"):
+            _app.config[key] = value
+
+    if LOG_LEVEL < 20:
+        _app.config["MAIL_DEBUG"] = True
+
+    if DESARROLLO:
+        _app.config["MAIL_SUPPRESS_SEND"] = True
+
+    logger.trace("Configuración de correo electrónico cargada en la aplicación Flask.")
+
+    logger.trace("Creando instancia de Flask-Mail.")
+    _mail = Mail(_app)
+
+    assert isinstance(_mail, Mail), "La instancia de mail debe ser de tipo Mail."
+    assert isinstance(msg, Message), "El mensaje debe ser una instancia de flask_mail.Message."
+
+    if config.mail_configured or no_config:
+        logger.trace("Configuración de correo electrónico verificada.")
         if background:
+            logger.trace("Enviando correo en segundo plano.")
             try:
-                hilo = threading.Thread(target=send_threaded_email, args=(mail, msg))
+                hilo = threading.Thread(target=send_threaded_email, args=(_app, _mail, msg, _log, _flush))
                 hilo.start()
                 logger.trace(f"Hilo iniciado para enviar email a: {msg.recipients}")
             except Exception as e:
                 logger.error(f"No se pudo iniciar el hilo de envío de correo: {e}")
         else:
-            mail.send(msg)
-            logger.trace(f"Correo enviado a {msg.recipients}.")
-    else:
-        logger.warning("No se ha configurado el correo electrónico.")
+            logger.trace("Enviando correo de forma síncrona.")
+            with _app.app_context():
+                _mail.send(msg)
+                logger.trace(f"Correo enviado a {msg.recipients}.")

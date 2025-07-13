@@ -37,7 +37,7 @@ from sqlalchemy.exc import OperationalError
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido, proteger_passwd, validar_acceso
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import Configuracion, Usuario, database
+from now_lms.db import Configuracion, MailConfig, Usuario, database
 from now_lms.forms import LoginForm, LogonForm
 from now_lms.logs import log
 from now_lms.misc import INICIO_SESION, PANEL_DE_USUARIO
@@ -108,14 +108,19 @@ def crear_cuenta():
             try:
                 database.session.add(usuario_)
                 database.session.commit()
-                flash("Cuenta creada exitosamente.", "success")
+                log.info(f"Se ha creado una cuenta de usuario: {usuario_.usuario}")
                 if config.verify_user_by_email:
-                    log.debug("Enviando correo de confirmación al usuario.")
+                    mail_config = database.session.execute(database.select(MailConfig)).first()[0]
                     from now_lms.auth import send_confirmation_email
 
                     send_confirmation_email(usuario_)
+                    return render_template(
+                        "error_pages/verify_mail.html",
+                        mail_config=mail_config,
+                    )
 
-                return INICIO_SESION
+                else:
+                    return INICIO_SESION
             except OperationalError:  # pragma: no cover
                 flash("Error al crear la cuenta.", "warning")
                 return redirect("/logon")
@@ -139,6 +144,7 @@ def crear_usuario():  # pragma: no cover
             tipo="user",
             activo=False,
             creado_por=current_user.usuario,
+            correo_electronico_verificado=True,
         )
         try:
             database.session.add(usuario_)
@@ -156,22 +162,14 @@ def crear_usuario():  # pragma: no cover
 
 
 @user.route("/user/check_mail/<token>")
-@login_required
 def check_mail(token):
     """Verifica correo electronico."""
     from now_lms.auth import validate_confirmation_token
 
     _token = validate_confirmation_token(token)
     if _token:
-        consulta = database.session.execute(database.select(Configuracion)).first()[0]
-        if consulta.verify_user_by_email:
-            user_ = database.session.execute(database.select(Usuario).filter_by(id=current_user.id)).first()[0]
-            user_.activo = True
-            database.session.commit()
-        return redirect(url_for("home.pagina_de_inicio"))
+        flash("Correo verificado exitosamente. Ya puede iniciar sesión en el sistema", "success")
+        return redirect(url_for("user.inicio_sesion"))
     else:
-        from now_lms.auth import send_confirmation_email
-
-        send_confirmation_email(current_user)
-        flash("Token de verificación invalido, se ha enviado un nuevo correo de verificación.", "warning")
+        flash("Token de verificación invalido.", "warning")
         return redirect(url_for("user.cerrar_sesion"))

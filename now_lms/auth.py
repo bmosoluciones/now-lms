@@ -34,13 +34,13 @@ from argon2.exceptions import VerifyMismatchError
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from flask import abort, current_app, flash, redirect, url_for
+from flask import abort, current_app, flash, url_for
 from flask_login import current_user
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
-from now_lms.db import Configuracion, Usuario, database
+from now_lms.db import MailConfig, Usuario, database
 from now_lms.logs import log
 
 ph = PasswordHasher()
@@ -153,9 +153,9 @@ def descifrar_secreto(hash):
 # ---------------------------------------------------------------------------------------
 # Validación de tokens de confirmación de correo electrónico.
 # ---------------------------------------------------------------------------------------
-def generate_confirmation_token():
+def generate_confirmation_token(mail):
     expiration_time = datetime.utcnow() + timedelta(seconds=36000)
-    data = {"exp": expiration_time, "confirm_id": current_user.id}
+    data = {"exp": expiration_time, "confirm_id": mail}
     token = jwt.encode(data, current_app.secret_key, algorithm="HS512")
     return token
 
@@ -163,30 +163,45 @@ def generate_confirmation_token():
 def validate_confirmation_token(token):
     try:
         data = jwt.decode(token, current_app.secret_key, algorithms=["HS512"])
+        log.trace(f"Token de confirmación decodificado: {data}")
     except jwt.ExpiredSignatureError:
+        log.warning("Intento de verificación expirado.")
         return False
     except jwt.InvalidSignatureError:
+        log.warning("Intento de verificación invalido.")
         return False
 
-    if data.get("confirm_id") != current_user.id:
-        return False
+    if data.get("confirm_id", None):
+        log.trace(f"Validando token de confirmación para {data.get('confirm_id', None)}")
+        user = database.session.execute(
+            database.select(Usuario).filter_by(correo_electronico=data.get("confirm_id", None))
+        ).first()[0]
+        if user:
+            log.info(f"Se ha verificado el usuario {user.usuario}, la cuenta se encuentra activa.")
+            user.correo_electronico_verificado = True
+            user.activo = True
+            database.session.commit()
+            return True
+        else:
+            log.warning(f"Usuario con correo {data.get('confirm_id', None)} no encontrado.")
+            return False
     else:
-        consulta = database.session.execute(database.select(Configuracion)).first()[0]
-        consulta.email_verificado = True
-        database.session.commit()
-        return True
+        return False
 
 
 def send_confirmation_email(user):
-    from flask_mail import Message
 
+    from flask_mail import Message
     from now_lms.mail import send_mail
+
+    config = database.session.execute(database.select(MailConfig)).first()[0]
 
     msg = Message(
         subject="Email verification",
         recipients=[user.correo_electronico],
+        sender=((config.MAIL_DEFAULT_SENDER_NAME or "NOW LMS"), config.MAIL_DEFAULT_SENDER),
     )
-    token = generate_confirmation_token()
+    token = generate_confirmation_token(user.correo_electronico)
     url = url_for("user.check_mail", token=token, _external=True)
     msg.html = f"""
     <div class="container">
@@ -205,9 +220,13 @@ def send_confirmation_email(user):
       </div>
     """
     try:
-        send_mail(msg)
+        send_mail(
+            msg,
+            background=False,
+            no_config=True,
+            _log="Correo de confirmación enviado",
+            _flush="Correo de confirmación enviado.",
+        )
         log.info(f"Correo de confirmación enviado al usuario {user.usuario}")
-        flash("Correo de confirmación enviado exitosamente.", "success")
-        return redirect(url_for("home.pagina_de_inicio"))
     except Exception as e:  # noqa: E722
         log.warning(f"Error al enviar un correo de confirmació el usuario {user.usuario}: {e}")

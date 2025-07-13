@@ -101,7 +101,6 @@ def crear_configuracion_predeterminada():
         r=urandom(16),
     )
     mail_config = MailConfig(
-        email=False,
         MAIL_USE_TLS=False,
         MAIL_USE_SSL=False,
         email_verificado=False,

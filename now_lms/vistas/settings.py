@@ -98,10 +98,12 @@ def configuracion():
     """Configuración del sistema."""
 
     config = config = database.session.execute(database.select(Configuracion)).first()[0]
+    config_mail = database.session.execute(database.select(MailConfig)).first()[0]
     form = ConfigForm(titulo=config.titulo, descripcion=config.descripcion, verify_user_by_email=config.verify_user_by_email)
     if form.validate_on_submit() or request.method == "POST":
         config.titulo = form.titulo.data
         config.descripcion = form.descripcion.data
+        config.verify_user_by_email = form.verify_user_by_email.data
 
         if form.verify_user_by_email.data is True:
             config_mail = database.session.execute(database.select(MailConfig)).first()[0]
@@ -132,7 +134,6 @@ def mail():
     config = database.session.execute(database.select(MailConfig)).first()[0]
 
     form = MailForm(
-        email=config.email,
         MAIL_SERVER=config.MAIL_SERVER,
         MAIL_PORT=config.MAIL_PORT,
         MAIL_USERNAME=config.MAIL_USERNAME,
@@ -140,11 +141,11 @@ def mail():
         MAIL_USE_TLS=config.MAIL_USE_TLS,
         MAIL_USE_SSL=config.MAIL_USE_SSL,
         MAIL_DEFAULT_SENDER=config.MAIL_DEFAULT_SENDER,
+        MAIL_DEFAULT_SENDER_NAME=config.MAIL_DEFAULT_SENDER_NAME,
     )
 
     if form.validate_on_submit() or request.method == "POST":
 
-        config.email = form.email.data
         config.MAIL_SERVER = form.MAIL_SERVER.data
         config.MAIL_PORT = form.MAIL_PORT.data
         config.MAIL_USE_TLS = form.MAIL_USE_TLS.data
@@ -152,6 +153,7 @@ def mail():
         config.MAIL_USERNAME = form.MAIL_USERNAME.data
         config.MAIL_PASSWORD = proteger_secreto(form.MAIL_PASSWORD.data)
         config.MAIL_DEFAULT_SENDER = form.MAIL_DEFAULT_SENDER.data
+        config.MAIL_DEFAULT_SENDER_NAME = form.MAIL_DEFAULT_SENDER_NAME.data
         config.email_verificado = False
 
         try:  # pragma: no cover
@@ -201,12 +203,17 @@ def mail_check():
         msg = Message(
             subject="Email setup verification.",
             recipients=[form.email.data],
+            sender=((config.MAIL_DEFAULT_SENDER_NAME or "NOW LMS"), config.MAIL_DEFAULT_SENDER),
         )
         msg.html = mail_check_message
         try:
-            send_mail(msg, background=False)
-            flash("Correo de prueba enviado correctamente.", "success")
-            log.info(f"Correo de prueba enviado a {form.email.data}")
+            send_mail(
+                msg,
+                background=False,
+                no_config=True,
+                _log="Correo de prueba enviado desde NOW LMS",
+                _flush="Correo de prueba enviado.",
+            )
             config.email_verificado = True
             database.session.commit()
             return redirect(url_for("setting.mail"))
@@ -216,13 +223,11 @@ def mail_check():
 
             config_g = database.session.execute(database.select(Configuracion)).first()[0]
             config.email_verificado = False
-            config.email = False
             config_g.verify_user_by_email = False
             database.session.commit()
             log.error(f"Error al enviar correo de prueba: {e}")
             # Re-render the form with the error message
-            form_email = MailForm(
-                email=config.email,
+            form = MailForm(
                 MAIL_SERVER=config.MAIL_SERVER,
                 MAIL_PORT=config.MAIL_PORT,
                 MAIL_USERNAME=config.MAIL_USERNAME,
@@ -230,8 +235,9 @@ def mail_check():
                 MAIL_USE_TLS=config.MAIL_USE_TLS,
                 MAIL_USE_SSL=config.MAIL_USE_SSL,
                 MAIL_DEFAULT_SENDER=config.MAIL_DEFAULT_SENDER,
+                MAIL_DEFAULT_SENDER_NAME=config.MAIL_DEFAULT_SENDER_NAME,
             )
-            return render_template("admin/mail.html", form=form_email, config=config, error=str(e))
+            return render_template("admin/mail.html", form=form, config=config, error=str(e))
 
     else:
         return render_template("admin/mail _check.html", form=form)
