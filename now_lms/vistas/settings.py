@@ -106,7 +106,7 @@ def configuracion():
         config.verify_user_by_email = form.verify_user_by_email.data
 
         if form.verify_user_by_email.data is True:
-
+            config_mail = database.session.execute(database.select(MailConfig)).first()[0]
             if not config_mail.email_verificado:
                 flash("Debe configurar el correo electronico antes de habilitar verificación por e-mail.", "warning")
                 config.verify_user_by_email = False
@@ -237,7 +237,7 @@ def mail_check():
                 MAIL_DEFAULT_SENDER=config.MAIL_DEFAULT_SENDER,
                 MAIL_DEFAULT_SENDER_NAME=config.MAIL_DEFAULT_SENDER_NAME,
             )
-            return render_template("admin/mail.html", form=form, config=config, error=str(e))
+            return render_template("admin/mail.html", form=form_email, config=config, error=str(e))
 
     else:
         return render_template("admin/mail _check.html", form=form)
