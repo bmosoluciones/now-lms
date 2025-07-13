@@ -108,14 +108,19 @@ def crear_cuenta():
             try:
                 database.session.add(usuario_)
                 database.session.commit()
-                flash("Cuenta creada exitosamente.", "success")
+                log.info(f"Se ha creado una cuenta de usuario: {usuario_.usuario}")
                 if config.verify_user_by_email:
-                    mail = database.session.execute(database.select(MailConfig)).first()[0]
+                    mail_config = database.session.execute(database.select(MailConfig)).first()[0]
                     from now_lms.auth import send_confirmation_email
 
                     send_confirmation_email(usuario_)
+                    return render_template(
+                        "error_pages/verify_mail.html",
+                        mail_config=mail_config,
+                    )
 
-                return INICIO_SESION
+                else:
+                    return INICIO_SESION
             except OperationalError:  # pragma: no cover
                 flash("Error al crear la cuenta.", "warning")
                 return redirect("/logon")

@@ -34,9 +34,8 @@ from argon2.exceptions import VerifyMismatchError
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from flask import abort, current_app, flash, redirect, url_for
+from flask import abort, current_app, flash, url_for
 from flask_login import current_user
-from ulid import T
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
@@ -164,6 +163,7 @@ def generate_confirmation_token(mail):
 def validate_confirmation_token(token):
     try:
         data = jwt.decode(token, current_app.secret_key, algorithms=["HS512"])
+        log.trace(f"Token de confirmación decodificado: {data}")
     except jwt.ExpiredSignatureError:
         log.warning("Intento de verificación expirado.")
         return False
@@ -177,7 +177,7 @@ def validate_confirmation_token(token):
             database.select(Usuario).filter_by(correo_electronico=data.get("confirm_id", None))
         ).first()[0]
         if user:
-            log.trace(f"Usuario encontrado: {user.usuario}, activando cuenta.")
+            log.info(f"Se ha verificado el usuario {user.usuario}, la cuenta se encuentra activa.")
             user.correo_electronico_verificado = True
             user.activo = True
             database.session.commit()
@@ -227,6 +227,6 @@ def send_confirmation_email(user):
             _log="Correo de confirmación enviado",
             _flush="Correo de confirmación enviado.",
         )
-        return redirect(url_for("home.pagina_de_inicio"))
+        log.info(f"Correo de confirmación enviado al usuario {user.usuario}")
     except Exception as e:  # noqa: E722
         log.warning(f"Error al enviar un correo de confirmació el usuario {user.usuario}: {e}")

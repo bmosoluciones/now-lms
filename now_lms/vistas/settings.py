@@ -237,7 +237,7 @@ def mail_check():
                 MAIL_DEFAULT_SENDER=config.MAIL_DEFAULT_SENDER,
                 MAIL_DEFAULT_SENDER_NAME=config.MAIL_DEFAULT_SENDER_NAME,
             )
-            return render_template("admin/mail.html", form=form_email, config=config, error=str(e))
+            return render_template("admin/mail.html", form=form, config=config, error=str(e))
 
     else:
         return render_template("admin/mail _check.html", form=form)

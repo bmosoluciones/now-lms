@@ -103,7 +103,6 @@ def _load_mail_config_from_db() -> SimpleNamespace:
     logger.trace("Obteniendo configuración de correo electronico desde base de datos.")
     with current_app.app_context():
         mail_config = database.session.execute(database.select(MailConfig)).first()[0]
-        config = database.session.execute(database.select(MailConfig)).first()[0]
 
         # If available, use the configuration from the database
         MAIL_SERVER = mail_config.MAIL_SERVER
@@ -193,7 +192,7 @@ def send_mail(msg: Message, background: bool = True, no_config: bool = False, _l
     if config.mail_configured or no_config:
         logger.trace("Configuración de correo electrónico verificada.")
         if background:
-            log.trace("Enviando correo en segundo plano.")
+            logger.trace("Enviando correo en segundo plano.")
             try:
                 hilo = threading.Thread(target=send_threaded_email, args=(_app, _mail, msg, _log, _flush))
                 hilo.start()
