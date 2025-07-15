@@ -218,7 +218,7 @@ def serve():  # pragma: no cover
         else:
             THREADS = (cpu_count() * 2) + 1
 
-    log.info("Iniciando servidor WSGI en puerto {puerto} con {threads} hilos.", puerto=PORT, threads=THREADS)
+    log.info(f"Iniciando servidor WSGI en puerto {PORT} con {THREADS} hilos.")
 
     with lms_app.app_context():
         server(app=lms_app, port=int(PORT), threads=THREADS)
