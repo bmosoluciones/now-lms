@@ -6,7 +6,7 @@ There are many ways to get paid from your courses.
 
 ## Including Payments Instructions
 
-May the easy way to get paid on line is to include Payments Instructions
+Maybe the easy way to get paid on line is to include Payments Instructions
 
     Bank: ##########
 
