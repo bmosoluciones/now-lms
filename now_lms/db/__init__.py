@@ -156,10 +156,10 @@ class Curso(database.Model, BaseTabla):
     codigo = database.Column(database.String(10), unique=True, index=True)
     descripcion = database.Column(database.String(1000), nullable=False)
     portada = database.Column(database.Boolean())
-    nivel = database.Column(database.Integer()) # 0: Introductorio, 1: Principiante, 2: Intermedio, 3: Avanzado
+    nivel = database.Column(database.Integer())  # 0: Introductorio, 1: Principiante, 2: Intermedio, 3: Avanzado
     duracion = database.Column(database.Integer())
     # Estado de publicación
-    estado = database.Column(database.String(6), nullable=False, index=True) # draft, open, closed
+    estado = database.Column(database.String(6), nullable=False, index=True)  # draft, open, closed
     publico = database.Column(database.Boolean(), index=True)
     # Modalidad
     modalidad = database.Column(database.String(10))  # self_paced, time_based, live
@@ -177,6 +177,7 @@ class Curso(database.Model, BaseTabla):
     auditable = database.Column(database.Boolean())
     precio = database.Column(database.Numeric())
     certificado = database.Column(database.Boolean())
+
 
 class CursoRecursoDescargable(database.Model, BaseTabla):
     """Los cursos pueden tener recursos descargables incluidos."""
