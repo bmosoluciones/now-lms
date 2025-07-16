@@ -13,7 +13,7 @@ from flask_login import current_user, login_required
 # ---------------------------------------------------------------------------------------
 from now_lms.cache import cache, no_guardar_en_cache_global
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS
-from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Curso, CursoRecurso, Usuario, database
+from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Certificacion, Curso, CursoRecurso, Usuario, database
 from now_lms.themes import get_home_template
 
 home = Blueprint("home", __name__, template_folder=DIRECTORIO_PLANTILLAS)
@@ -48,18 +48,22 @@ def pagina_de_inicio():
 def panel():
     """Panel principal de la aplicacion luego de inicar sesión."""
     if not current_user.is_authenticated:
-        return redirect("/home")
+        return redirect("/")
     elif current_user.tipo == "admin":
         cursos_actuales = Curso.query.count()
         usuarios_registrados = Usuario.query.count()
         recursos_creados = CursoRecurso.query.count()
+        certificados_emitidos = Certificacion.query.count()
         cursos_por_fecha = Curso.query.order_by(Curso.creado).limit(5).all()
         return render_template(
-            "inicio/panel.html",
+            "inicio/panel_admin.html",
             cursos_actuales=cursos_actuales,
             usuarios_registrados=usuarios_registrados,
             recursos_creados=recursos_creados,
             cursos_por_fecha=cursos_por_fecha,
+            certificados_emitidos=certificados_emitidos,
         )
+    elif current_user.tipo == "user":
+        return render_template("inicio/panel_user.html")
     else:
         return redirect("/")

@@ -151,43 +151,32 @@ class Curso(database.Model, BaseTabla):
     """Un curso es la base del aprendizaje en NOW LMS."""
 
     __table_args__ = (database.UniqueConstraint("codigo", name="curso_codigo_unico"),)
+    # Información básica
     nombre = database.Column(database.String(150), nullable=False)
     codigo = database.Column(database.String(10), unique=True, index=True)
     descripcion = database.Column(database.String(1000), nullable=False)
-    # draft, open, closed
-    estado = database.Column(database.String(10), nullable=False, index=True)
-    # mooc
+    portada = database.Column(database.Boolean())
+    nivel = database.Column(database.Integer()) # 0: Introductorio, 1: Principiante, 2: Intermedio, 3: Avanzado
+    duracion = database.Column(database.Integer())
+    # Estado de publicación
+    estado = database.Column(database.String(6), nullable=False, index=True) # draft, open, closed
     publico = database.Column(database.Boolean(), index=True)
-    certificado = database.Column(database.Boolean())
-    auditable = database.Column(database.Boolean())
-    pagado = database.Column(database.Boolean())
-    precio = database.Column(database.Numeric())
+    # Modalidad
+    modalidad = database.Column(database.String(10))  # self_paced, time_based, live
+    # Disponibilidad de cupos
+    limitado = database.Column(database.Boolean())
     capacidad = database.Column(database.Integer())
+    # Fechas de inicio y fin
     fecha_inicio = database.Column(database.Date())
     fecha_fin = database.Column(database.Date())
-    duracion = database.Column(database.Integer())
-    portada = database.Column(database.Boolean())
-    nivel = database.Column(database.Integer())
+    # Información de marketing
     promocionado = database.Column(database.Boolean())
     fecha_promocionado = database.Column(database.DateTime, nullable=True)
-
-
-class ClaseMagistral(database.Model, BaseTabla):
-    """Clase Magistral."""
-
-    __table_args__ = (database.UniqueConstraint("codigo", name="clase_codigo_unico"),)
-    nombre = database.Column(database.String(150), nullable=False)
-    codigo = database.Column(database.String(10), unique=True, index=True)
-    descripcion = database.Column(database.String(1000), nullable=False)
-    estado = database.Column(database.String(10), nullable=False, index=True)
-    publico = database.Column(database.Boolean(), index=True)
-    certificado = database.Column(database.Boolean())
-    auditable = database.Column(database.Boolean())
+    # Información de pago
     pagado = database.Column(database.Boolean())
+    auditable = database.Column(database.Boolean())
     precio = database.Column(database.Numeric())
-    portada = database.Column(database.Boolean())
-    promocionado = database.Column(database.Boolean())
-
+    certificado = database.Column(database.Boolean())
 
 class CursoRecursoDescargable(database.Model, BaseTabla):
     """Los cursos pueden tener recursos descargables incluidos."""

@@ -3,19 +3,7 @@ run = "LOG_LEVEL=TRACE /home/runner/workspace/venv/bin/flask run --debug --reloa
 
 [nix]
 channel = "stable-24_05"
-packages = [
-    "cargo",
-    "fontconfig",
-    "ghostscript",
-    "glib",
-    "harfbuzz",
-    "libiconv",
-    "libxcrypt",
-    "openssl",
-    "pango",
-    "pkg-config",
-    "rustc",
-]
+packages = ["cargo", "fontconfig", "ghostscript", "glib", "harfbuzz", "libiconv", "libxcrypt", "openssl", "pango", "pkg-config", "rustc"]
 
 [deployment]
 run = "/home/runner/workspace/venv/bin/python -m now_lms"

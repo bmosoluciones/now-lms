@@ -33,30 +33,36 @@
             <tbody>
               <tr>
                 <td>
-                  <a class="link-dark" href="{{ url_for('usuario', id_usuario=item.usuario) }}"> {{ item.usuario }} </a>
+                  <a class="link-dark" href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}">
+                    {{ item.usuario }}
+                  </a>
                 </td>
                 <td>
-                  <a class="link-dark" href="{{ url_for('usuario', id_usuario=item.usuario) }}"> {{ item.nombre }} </a>
+                  <a class="link-dark" href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}">
+                    {{ item.nombre }}
+                  </a>
                 </td>
                 <td>
-                  <a class="link-dark" href="{{ url_for('usuario', id_usuario=item.usuario) }}"> {{ item.apellido }} </a>
+                  <a class="link-dark" href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}">
+                    {{ item.apellido }}
+                  </a>
                 </td>
                 <td>
-                  <a class="link-dark" href="{{ url_for('usuario', id_usuario=item.usuario) }}">
+                  <a class="link-dark" href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}">
                     {{ item.correo_electronico }}
                   </a>
                 </td>
                 <td>
                   <span class="badge bg-success">
                     <a
-                      href="{{ url_for('activar_usuario', user_id=item.usuario, ruta='usuarios_inactivos') }}"
+                      href="{{ url_for('admin_profile.activar_usuario', user_id=item.id, ruta='usuarios_inactivos') }}"
                       class="link-light"
                       >Aprobar</a
                     >
                   </span>
                   <span class="badge bg-danger">
                     <a
-                      href="{{ url_for('eliminar_usuario', user_id=item.usuario, ruta='usuarios_inactivos') }}"
+                      href="{{ url_for('admin_profile.eliminar_usuario', user_id=item.id, ruta='usuarios_inactivos') }}"
                       class="link-light"
                       >Rechazar</a
                     >

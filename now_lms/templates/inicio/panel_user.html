@@ -17,15 +17,17 @@
 
       <div class="container px-0 py-3" id="icon-grid">
         <h4 class="pb-2 border-bottom">
-          Bienvenido {% if current_user.tipo == "admin" %} Administrador del Sistema. {% else %} {{ current_user.nombre}} {{
-          current_user.apellido}} {% endif %}
+          Bienvenido {{ current_user.nombre}} {{
+          current_user.apellido}} 
         </h4>
-        {% if current_user.tipo == "admin" %}
         <div class="row mb-2 mb-xl-3">
           <div class="col-auto d-none d-sm-block">
             <h3>Información del sistema.</h3>
           </div>
-
+        </div>
+      </div>
+      
+      <div class="container px-0 py-3" id="main">
           <div class="col-auto ms-auto text-end mt-n1">
             <span class="badge bg-success">
               <a href="{{ url_for('user.crear_usuario') }}" class="link-light">Nuevo Usuario</a>
@@ -105,8 +107,9 @@
                           </div>
                         </div>
                       </div>
-                      <h1 class="mt-1 mb-3">{{ certificados_emitidos                      <h1 class="mt-1 mb-3">{{ certificados_emitidos }}</h1>
- }}</h1>
+                      <h1 class="mt-1 mb-3">
+                        <h1 class="mt-1 mb-3">{{ certificados_emitidos }}</h1>
+                      </h1>
                     </div>
                   </div>
                 </div>
@@ -129,7 +132,6 @@
             </div>
           </div>
         </div>
-        {% elif current_user.tipo == "instructor" %} {% elif current_user.tipo == "moderator" %} {% else %} {% endif %}
       </div>
     </main>
   </body>
