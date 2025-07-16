@@ -21,11 +21,10 @@ Command line interface for NOW LMS.
 
 """
 
-from os import cpu_count, environ
-
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
+from os import cpu_count, environ
 from pathlib import Path
 
 # ---------------------------------------------------------------------------------------
@@ -196,6 +195,14 @@ def path():  # pragma: no cover
         click.echo(f"  Private Files Directory: {info._private_files_dir}")
         click.echo(f"  Public Files Directory: {info._public_files_dir}")
         click.echo(f"  Templates Directory: {info._templates_dir}")
+
+
+@info.command()
+def routes():
+    """List all the routes defined in the application."""
+    with lms_app.app_context():
+        for rule in lms_app.url_map.iter_rules():
+            click.echo(f"{rule.endpoint} -> {rule.rule}")
 
 
 @lms_app.cli.command()
