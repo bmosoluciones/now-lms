@@ -353,7 +353,7 @@ def editar_curso(course_code):
             flash("Hubo en error al actualizar el curso.", "warning")
             return redirect(curso_url)
 
-    return render_template("learning/nuevo_curso.html", form=form, curso=curso_a_editar, edit=False)
+    return render_template("learning/nuevo_curso.html", form=form, curso=curso_a_editar, edit=True)
 
 
 @course.route("/course/<course_code>/new_seccion", methods=["GET", "POST"])
