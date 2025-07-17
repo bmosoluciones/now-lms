@@ -177,7 +177,7 @@ rutas_estaticas = [
             "Aplicación para gestión del aprendizaje.".encode("utf-8"),
             "NOW LMS".encode("utf-8"),
             "Sistema de aprendizaje en linea.".encode("utf-8"),
-            "Welcome! This is your first course.".encode("utf-8"),
+            "This is your first course.".encode("utf-8"),
         ],
         como_user=[b"Dania", b"Mendez"],
         como_moderador=[b"Abner", b"Romero"],

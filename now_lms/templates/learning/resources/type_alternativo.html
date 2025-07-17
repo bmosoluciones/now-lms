@@ -1,7 +1,17 @@
-{% set current_theme = current_theme() %} {% import "learning/resources/type_macros.html" as r_macros %} {% set
-permitir_docente = docente_asignado(id_curso=curso.codigo) %} {% set permitir_moderador =
-moderador_asignado(id_curso=curso.codigo) %} {% set permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %} {% set
-permitir_editar = current_user.tipo == "admin" or permitir_docente %}
+{% set current_theme = current_theme() %} {% import "learning/resources/type_macros.html" as r_macros %}
+{%
+  set
+  permitir_docente = docente_asignado(id_curso=curso.codigo)
+%}
+{%
+  set permitir_moderador =
+  moderador_asignado(id_curso=curso.codigo)
+%}
+{% set permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %}
+{%
+  set
+  permitir_editar = current_user.tipo == "admin" or permitir_docente
+%}
 
 <!doctype html>
 <html lang="es" class="h-100">
@@ -40,20 +50,20 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
         <div class="row">
           <div class="col-sm-8">
             <ul class="list-group list-group-flush">
-              {% for recurso in recursos %} {% if recurso.requerido == 3 %}
-              <li class="list-group-item">
-                <div class="d-flex justify-content-between">
-                  <a
-                    class="link-dark"
-                    href="{{ url_for('course.pagina_recurso', curso_id=recurso.curso, resource_type=recurso.tipo, codigo=recurso.id) }} "
-                  >
-                    <div class="fw-bold">
-                      <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i> {{ recurso.nombre }}
-                    </div>
-                  </a>
-                </div>
-              </li>
-              {% endif %} {% endfor %}
+              {% for recurso in recursos %}{% if recurso.requerido == 3 %}
+                <li class="list-group-item">
+                  <div class="d-flex justify-content-between">
+                    <a
+                      class="link-dark"
+                      href="{{ url_for('course.pagina_recurso', curso_id=recurso.curso, resource_type=recurso.tipo, codigo=recurso.id) }} "
+                    >
+                      <div class="fw-bold">
+                        <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i> {{ recurso.nombre }}
+                      </div>
+                    </a>
+                  </div>
+                </li>
+              {% endif %}{% endfor %}
             </ul>
           </div>
 

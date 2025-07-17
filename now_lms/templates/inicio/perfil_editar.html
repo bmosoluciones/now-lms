@@ -18,22 +18,21 @@
       <div class="container px-4 py-5" id="icon-grid">
         <h4 class="pb-2 border-bottom">Editar perfil del usuario: {{ usuario.usuario }}</h4>
         <form method="post" action="{{ url_for('edit_perfil', ulid=usuario.id) }}" enctype="multipart/form-data">
-          {{ form.csrf_token }} {% if usuario.portada %}
-          <img
-            src="{{ url_for('static', filename='/files/public/images/usuarios/' + usuario.id + '.jpg') }}"
-            alt="{{ usuario.usuario }}"
-            width="200"
-            height="225"
-          />
-          <br />
-          <a href="{{url_for('elimina_logo_usuario', ulid=usuario.id)}}">Eliminar Imagen de Perfil</a>
+          {{ form.csrf_token }}
+          {% if usuario.portada %}
+            <img
+              src="{{ url_for('static', filename='/files/public/images/usuarios/' + usuario.id + '.jpg') }}"
+              alt="{{ usuario.usuario }}"
+              width="200"
+              height="225"
+            />
+            <br />
+            <a href="{{ url_for('elimina_logo_usuario', ulid=usuario.id) }}">Eliminar Imagen de Perfil</a>
           {% else %}
-
-          <div class="col-md-4">
-            <label for="logo" class="form-label">Imagen de Perfil</label>
-            <input type="file" name="logo" accept="image/jpeg" />
-          </div>
-
+            <div class="col-md-4">
+              <label for="logo" class="form-label">Imagen de Perfil</label>
+              <input type="file" name="logo" accept="image/jpeg" />
+            </div>
           {% endif %}
 
           <div class="row g-3">

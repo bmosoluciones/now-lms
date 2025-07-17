@@ -208,6 +208,7 @@ def crear_curso_demo():
     demo = Curso(
         nombre="Demo Course",
         codigo="resources",
+        descripcion_corta="Demo Course for resources types.",
         descripcion="This course will let you learn resource types.",
         estado="open",
         certificado=False,
@@ -518,6 +519,7 @@ def crear_curso_predeterminado():
     demo = Curso(
         nombre="OnLine Teaching 101",
         codigo="now",
+        descripcion_corta="This is your first course.",
         descripcion="Welcome! This is your first course.",
         estado="open",
         certificado=True,
@@ -536,6 +538,7 @@ def crear_curso_predeterminado():
     form = Curso(
         nombre="Course Details",
         codigo="details",
+        descripcion_corta="This is a course details example.",
         descripcion="#Course Details Example",
         portada=True,
         nivel=2,
@@ -675,6 +678,7 @@ def crear_curso_demo1():
     demo = Curso(
         nombre="PostgreSQL",
         codigo="postgresql",
+        descripcion_corta="A course about PostgreSQL.",
         descripcion="This is a course about PostgreSQL.",
         estado="open",
         certificado=False,
@@ -701,6 +705,7 @@ def crear_curso_demo2():
     demo = Curso(
         nombre="Python",
         codigo="python",
+        descripcion_corta="A course about Python.",
         descripcion="This is a course about Python.",
         estado="open",
         certificado=False,
@@ -727,6 +732,7 @@ def crear_curso_demo3():
     demo = Curso(
         nombre="HTML",
         codigo="html",
+        descripcion_corta="A course about HTML.",
         descripcion="This is a course about HTML.",
         estado="open",
         certificado=False,

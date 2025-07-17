@@ -80,6 +80,7 @@ def crear_curso_para_pruebas():
         id="01HNZY78P2PW3R46BW447FH816",
         nombre="Demo Course",
         codigo="test",
+        descripcion_corta="This course will let you learn resource types.",
         descripcion="This course will let you learn resource types.",
         estado="open",
         certificado=False,

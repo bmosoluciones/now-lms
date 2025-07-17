@@ -34,7 +34,7 @@
               >
               <select class="select2-usuario" name="usuario">
                 {% for student in estudiantes %}
-                <option value="{{ student.usuario }}">{{ student.nombre }} {{ student.apellido }}</option>
+                  <option value="{{ student.usuario }}">{{ student.nombre }} {{ student.apellido }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -49,7 +49,7 @@
             <div class="col-auto">
               <select class="select2-usuario" name="tutor">
                 {% for tutor in tutores %}
-                <option value="{{ tutor.usuario }}">{{ tutor.nombre }} {{ tutor.apellido }}</option>
+                  <option value="{{ tutor.usuario }}">{{ tutor.nombre }} {{ tutor.apellido }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -73,70 +73,63 @@
             </tr>
           </thead>
           {% for item in consulta.items -%}
-          <tbody>
-            <tr>
-              <td>
-                <a href="{{ url_for('usuario', id_usuario=item.usuario) }}" class="link-dark text-reset">
-                  {{ item.nombre }} {{ item.apellido }}
-                </a>
-              </td>
-              <td>
-                {% if item.tipo == "student" %}
-                <span class="badge p-1 bg-success border border-light rounded-circle">
-                  <span class="visually-hidden">Usuario</span>
-                </span>
-                {% elif item.tipo == "moderator" %}
-                <span class="badge p-1 bg-info border border-light rounded-circle">
-                  <span class="visually-hidden">Moderador</span>
-                </span>
-                {% elif item.tipo == "instructor" %}
-                <span class="badge p-1 bg-primary border border-light rounded-circle">
-                  <span class="visually-hidden">Moderador</span>
-                </span>
+            <tbody>
+              <tr>
+                <td>
+                  <a href="{{ url_for('usuario', id_usuario=item.usuario) }}" class="link-dark text-reset">
+                    {{ item.nombre }} {{ item.apellido }}
+                  </a>
+                </td>
+                <td>
+                  {% if item.tipo == "student" %}
+                    <span class="badge p-1 bg-success border border-light rounded-circle">
+                      <span class="visually-hidden">Usuario</span>
+                    </span>
+                  {% elif item.tipo == "moderator" %}
+                    <span class="badge p-1 bg-info border border-light rounded-circle">
+                      <span class="visually-hidden">Moderador</span>
+                    </span>
+                  {% elif item.tipo == "instructor" %}
+                    <span class="badge p-1 bg-primary border border-light rounded-circle">
+                      <span class="visually-hidden">Moderador</span>
+                    </span>
+                  {% else %}
+                    <span class="badge p-1 bg-warning border border-light rounded-circle">
+                      <span class="visually-hidden">Instructor</span>
+                    </span>
+                  {% endif %}
 
-                {% else %}
+                  <a href="{{ url_for('usuario', id_usuario=item.usuario) }}" class="link-dark text-reset">
+                    {{ item.tipo | capitalize }}
+                  </a>
+                </td>
+                <td>
+                  {% if item.activo %}
+                    <span class="badge p-1 bg-primary border border-light rounded-circle">
+                      <span class="visually-hidden">Usuario Activo</span>
+                    </span>
+                  {% else %}
+                    <span class="badge p-1 bg-danger border border-light rounded-circle">
+                      <span class="visually-hidden">Usuario Inactivo</span>
+                    </span>
+                  {% endif %}
 
-                <span class="badge p-1 bg-warning border border-light rounded-circle">
-                  <span class="visually-hidden">Instructor</span>
-                </span>
-
-                {% endif %}
-
-                <a href="{{ url_for('usuario', id_usuario=item.usuario) }}" class="link-dark text-reset">
-                  {{ item.tipo | capitalize }}
-                </a>
-              </td>
-              <td>
-                {% if item.activo %}
-
-                <span class="badge p-1 bg-primary border border-light rounded-circle">
-                  <span class="visually-hidden">Usuario Activo</span>
-                </span>
-
-                {% else %}
-
-                <span class="badge p-1 bg-danger border border-light rounded-circle">
-                  <span class="visually-hidden">Usuario Inactivo</span>
-                </span>
-
-                {% endif %}
-
-                <a href="{{ url_for('usuario', id_usuario=item.usuario) }}" class="link-dark">
-                  {{ item.activo | replace("True", "Activo") | replace("False", "Inactivo") }}
-                </a>
-              </td>
-              <td>
-                <a href="{{ url_for('usuario', id_usuario=item.usuario) }}" class="link-dark"> {{ item.creado }} </a>
-              </td>
-              <td>
-                <span class="badge bg-danger">
-                  <a href="{{ url_for('elimina_usuario__grupo', group=grupo.id, user=item.usuario) }}" class="link-light"
-                    >Eliminar</a
-                  >
-                </span>
-              </td>
-            </tr>
-          </tbody>
+                  <a href="{{ url_for('usuario', id_usuario=item.usuario) }}" class="link-dark">
+                    {{ item.activo | replace("True", "Activo") | replace("False", "Inactivo") }}
+                  </a>
+                </td>
+                <td>
+                  <a href="{{ url_for('usuario', id_usuario=item.usuario) }}" class="link-dark"> {{ item.creado }} </a>
+                </td>
+                <td>
+                  <span class="badge bg-danger">
+                    <a href="{{ url_for('elimina_usuario__grupo', group=grupo.id, user=item.usuario) }}" class="link-light"
+                      >Eliminar</a
+                    >
+                  </span>
+                </td>
+              </tr>
+            </tbody>
           {% endfor %}
         </table>
       </div>

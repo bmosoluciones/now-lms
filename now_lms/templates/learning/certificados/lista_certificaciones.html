@@ -26,46 +26,45 @@
         </div>
 
         {% if consulta %}
-
-        <div class="container" id="curse_table">
-          <table class="table table-sm table-borderless">
-            <caption>
-              Lista de certificados disponibles en el sistema.
-            </caption>
-            <thead>
-              <tr>
-                <th scope="col">ID Unico</th>
-                <th scope="col">Codigo de Curso</th>
-                <th scope="col">Codigo de usuario</th>
-                <th></th>
-              </tr>
-            </thead>
-            {% for item in consulta.items -%}
-            <tbody>
-              <tr>
-                <td>
-                  <a href="" class="link-dark"> {{ item.id }} </a>
-                </td>
-                <td>{{ item.curso }}</td>
-                <td>{{ item.usuario }}</td>
-                <td>
-                  <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
-                    <a
-                      href="{{ url_for('certificate.certificado', ulid=item.id) }}"
-                      target="_blank"
-                      type="button"
-                      class="btn btn-primary"
-                      ><ion-icon name="eye-sharp"></ion-icon> Visualizar</a
-                    >
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-            {% endfor %}
-          </table>
-        </div>
+          <div class="container" id="curse_table">
+            <table class="table table-sm table-borderless">
+              <caption>
+                Lista de certificados disponibles en el sistema.
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">ID Unico</th>
+                  <th scope="col">Codigo de Curso</th>
+                  <th scope="col">Codigo de usuario</th>
+                  <th></th>
+                </tr>
+              </thead>
+              {% for item in consulta.items -%}
+                <tbody>
+                  <tr>
+                    <td>
+                      <a href="" class="link-dark"> {{ item.id }} </a>
+                    </td>
+                    <td>{{ item.curso }}</td>
+                    <td>{{ item.usuario }}</td>
+                    <td>
+                      <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
+                        <a
+                          href="{{ url_for('certificate.certificado', ulid=item.id) }}"
+                          target="_blank"
+                          type="button"
+                          class="btn btn-primary"
+                          ><ion-icon name="eye-sharp"></ion-icon> Visualizar</a
+                        >
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              {% endfor %}
+            </table>
+          </div>
         {% else %}
-        <p>Usted no ha creado ninguna etiqueta todavia.</p>
+          <p>Usted no ha creado ninguna etiqueta todavia.</p>
         {% endif %}
 
         <div class="container" id="user_pagination">

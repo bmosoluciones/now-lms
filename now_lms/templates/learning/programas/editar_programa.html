@@ -62,18 +62,15 @@
           <br />
           <div>
             {% if programa.logo %}
-            <img
-              src="{{ url_for('static', filename='/files/public/images/'+ 'program' + programa.codigo + '/logo.jpg') }}"
-              alt="Portada del programa"
-            />
-            <br />
-            <a href="#">Eliminar Portada</a>
-
+              <img
+                src="{{ url_for('static', filename='/files/public/images/'+ 'program' + programa.codigo + '/logo.jpg') }}"
+                alt="Portada del programa"
+              />
+              <br />
+              <a href="#">Eliminar Portada</a>
             {% else %}
-
-            <label for="logo" class="form-label">Portada</label>
-            <input type="file" name="logo" accept="image/jpeg" />
-
+              <label for="logo" class="form-label">Portada</label>
+              <input type="file" name="logo" accept="image/jpeg" />
             {% endif %}
           </div>
 

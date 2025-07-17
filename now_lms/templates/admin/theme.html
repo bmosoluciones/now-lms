@@ -22,13 +22,13 @@
         <form method="post" enctype="multipart/form-data">
           <div class="row">
             {% if logo_perzonalizado() %}
-            <div>
-              <img src="{{ url_for('static', filename='/files/public/images/' + site_logo() ) }}" alt="NOW LMS" />
-            </div>
-            <a href="{{ url_for('setting.elimina_logo') }}">Eliminar Logo actual</a>
+              <div>
+                <img src="{{ url_for('static', filename='/files/public/images/' + site_logo() ) }}" alt="NOW LMS" />
+              </div>
+              <a href="{{ url_for('setting.elimina_logo') }}">Eliminar Logo actual</a>
             {% else %}
-            <label for="logo" class="form-label">Logotipo</label>
-            <input type="file" name="logo" accept="image/jpeg, image/png, image/gif, image/webp, image/bmp, image/svg+xml" />
+              <label for="logo" class="form-label">Logotipo</label>
+              <input type="file" name="logo" accept="image/jpeg, image/png, image/gif, image/webp, image/bmp, image/svg+xml" />
             {% endif %}
           </div>
 

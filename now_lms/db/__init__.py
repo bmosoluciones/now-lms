@@ -154,6 +154,7 @@ class Curso(database.Model, BaseTabla):
     # Información básica
     nombre = database.Column(database.String(150), nullable=False)
     codigo = database.Column(database.String(10), unique=True, index=True)
+    descripcion_corta = database.Column(database.String(280), nullable=False)
     descripcion = database.Column(database.String(1000), nullable=False)
     portada = database.Column(database.Boolean())
     nivel = database.Column(database.Integer())  # 0: Introductorio, 1: Principiante, 2: Intermedio, 3: Avanzado

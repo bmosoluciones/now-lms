@@ -1,7 +1,17 @@
-{% set current_theme = current_theme() %} {% import "learning/resources/type_macros.html" as r_macros %} {% set
-permitir_docente = docente_asignado(id_curso=curso.codigo) %} {% set permitir_moderador =
-moderador_asignado(id_curso=curso.codigo) %} {% set permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %} {% set
-permitir_editar = current_user.tipo == "admin" or permitir_docente %}
+{% set current_theme = current_theme() %} {% import "learning/resources/type_macros.html" as r_macros %}
+{%
+  set
+  permitir_docente = docente_asignado(id_curso=curso.codigo)
+%}
+{%
+  set permitir_moderador =
+  moderador_asignado(id_curso=curso.codigo)
+%}
+{% set permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %}
+{%
+  set
+  permitir_editar = current_user.tipo == "admin" or permitir_docente
+%}
 
 <!doctype html>
 <html lang="es" class="h-100">
@@ -73,8 +83,10 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
         </div>
       </div>
 
-      {{ r_macros.nav_footer(indice=indice, curso=recurso.curso, type=recurso.tipo, codigo=recurso.id,
-      avance=verificar_avance_recurso(recurso.id, current_user.id)) }}
+      {{
+        r_macros.nav_footer(indice=indice, curso=recurso.curso, type=recurso.tipo, codigo=recurso.id,
+        avance=verificar_avance_recurso(recurso.id, current_user.id))
+      }}
     </main>
   </body>
 </html>

@@ -228,6 +228,7 @@ def nuevo_curso():
             nombre=form.nombre.data,
             codigo=form.codigo.data,
             descripcion=form.descripcion.data,
+            descripcion_corta=form.descripcion_corta.data,
             nivel=form.nivel.data,
             duracion=form.duracion.data,
             # Estado de publicación
@@ -290,6 +291,7 @@ def editar_curso(course_code):
     form = CurseForm()
     form.nombre.data = curso_a_editar.nombre
     form.codigo.data = curso_a_editar.codigo
+    form.descripcion_corta.data = curso_a_editar.descripcion_corta
     form.descripcion.data = curso_a_editar.descripcion
     form.nivel.data = curso_a_editar.nivel
     form.duracion.data = curso_a_editar.duracion
@@ -308,6 +310,7 @@ def editar_curso(course_code):
         # Información básica
         curso_a_editar.nombre = form.nombre.data
         curso_a_editar.codigo = form.codigo.data
+        curso_a_editar.descripcion_corta = form.descripcion_corta.data
         curso_a_editar.descripcion = form.descripcion.data
         curso_a_editar.nivel = form.nivel.data
         curso_a_editar.duracion = form.duracion.data

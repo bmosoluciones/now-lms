@@ -20,12 +20,13 @@
       <div class="container px-4 py-5" id="icon-grid">
         <h5 class="pb-2 border-bottom">Configuración del Correo Electronico.</h5>
         {% if error %}
-        <div class="alert alert-danger" role="alert">{{ error }}</div>
-        {% endif %} {% if config.email_verificado %}
-        <div class="alert alert-success" role="alert">
-          <i class="bi bi-check-circle" aria-hidden="true"></i> La configuración de correo electrónico ha sido verificada
-          correctamente.
-        </div>
+          <div class="alert alert-danger" role="alert">{{ error }}</div>
+        {% endif %}
+        {% if config.email_verificado %}
+          <div class="alert alert-success" role="alert">
+            <i class="bi bi-check-circle" aria-hidden="true"></i> La configuración de correo electrónico ha sido verificada
+            correctamente.
+          </div>
         {% endif %}
         <form method="post">
           <div class="row">

@@ -43,7 +43,7 @@
                 <a href="{{ url_for('admin_profile.usuarios') }}" class="link-dark">Usuarios</a>
                 -
                 <a href="{{ url_for('admin_profile.usuarios_inactivos') }}" class="link-dark"
-                  >Usuarios Inactivos {% if inactivos > 0 %} ({{ inactivos | int }}) {% endif %}
+                  >Usuarios Inactivos {% if inactivos > 0 %}({{ inactivos | int }}){% endif %}
                 </a>
                 -
                 <a href="{{ url_for('user.crear_usuario') }}" class="link-dark">Nuevo Usuario</a>
@@ -59,7 +59,7 @@
               </h4>
               <p>
                 <a href="{{ url_for('instructor_profile.lista_grupos') }}" class="link-dark">Grupos</a> -
-                <a href="{{ url_for('group.nuevo_grupo')  }}" class="link-dark">Nuevo Grupo</a>
+                <a href="{{ url_for('group.nuevo_grupo') }}" class="link-dark">Nuevo Grupo</a>
               </p>
               <p></p>
             </div>

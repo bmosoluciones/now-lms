@@ -122,6 +122,7 @@ class CurseForm(BaseForm):
     # Datos basicos del curso.
     # Nombre y descripción de la base.
     codigo = StringField(validators=[DataRequired()])
+    descripcion_corta = StringField(validators=[DataRequired()])
     nivel = SelectField("User", choices=[(0, "Introductorio"), (1, "Principiante"), (2, "Intermedio"), (3, "Avanzado")])
     duracion = IntegerField(validators=[])
     # Estado de publicación

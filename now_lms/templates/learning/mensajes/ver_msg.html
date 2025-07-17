@@ -49,16 +49,21 @@
             </div>
             <div class="row">
               <h5>Respuestas:</h5>
-              {% if respuestas %} {% for respuesta in respuestas %} {{ respuesta.creado }}
-              <strong>{{ respuesta[1].nombre }} {{ respuesta[1].apellido }}</strong> respondio: {{
-              mkdonw2thml(respuesta[0].texto) | safe }} {% endfor %} {% else %} No hay respuestas publicadas a este mensaje. {%
-              endif %}
+              {% if respuestas %}
+                {% for respuesta in respuestas %}
+                  {{ respuesta.creado }}
+                  <strong>{{ respuesta[1].nombre }} {{ respuesta[1].apellido }}</strong> respondio:
+                  {{ mkdonw2thml(respuesta[0].texto) | safe }}
+                {% endfor %}
+              {% else %}
+                No hay respuestas publicadas a este mensaje.
+              {% endif %}
             </div>
             <div class="row">
               <br />
               <h5>Publicar una respuesta:</h5>
               <form action="{{ url_for('msg.nuevo_mensaje') }}" method="post">
-                {{ form.csrf_token }} {{ form.parent }} {{form.editor}} {{mde.preview}} {{mde.js}}
+                {{ form.csrf_token }} {{ form.parent }} {{ form.editor }} {{ mde.preview }} {{ mde.js }}
 
                 <button class="w-10 btn btn-sml btn-primary btn-block" type="submit">
                   <i class="bi bi-envelope-plus" aria-hidden="true"></i> Publicar Respuesta

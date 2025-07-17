@@ -36,19 +36,19 @@
               </tr>
             </thead>
             {% for item in grupos.items -%}
-            <tbody>
-              <tr>
-                <td>
-                  <a href="{{ url_for('group.grupo', id=item.id) }}" class="link-dark">{{ item.nombre }}</a>
-                </td>
-                <td>
-                  <a href="{{ url_for('group.grupo', id=item.id) }}" class="link-dark">{{ item.activo }}</a>
-                </td>
-                <td>
-                  <a href="{{ url_for('group.grupo', id=item.id) }}" class="link-dark">{{ item.tutor }}</a>
-                </td>
-              </tr>
-            </tbody>
+              <tbody>
+                <tr>
+                  <td>
+                    <a href="{{ url_for('group.grupo', id=item.id) }}" class="link-dark">{{ item.nombre }}</a>
+                  </td>
+                  <td>
+                    <a href="{{ url_for('group.grupo', id=item.id) }}" class="link-dark">{{ item.activo }}</a>
+                  </td>
+                  <td>
+                    <a href="{{ url_for('group.grupo', id=item.id) }}" class="link-dark">{{ item.tutor }}</a>
+                  </td>
+                </tr>
+              </tbody>
             {% endfor %}
           </table>
         </div>

@@ -26,47 +26,46 @@
         </div>
 
         {% if consulta %}
-
-        <div class="container" id="curse_table">
-          <table class="table table-sm table-borderless">
-            <caption>
-              Lista de etiquetas disponibles en el sistema.
-            </caption>
-            <thead>
-              <tr>
-                <th scope="col">Etiqueta</th>
-                <th scope="col">Color</th>
-                <th>Cursos</th>
-                <th></th>
-              </tr>
-            </thead>
-            {% for item in consulta.items -%}
-            <tbody>
-              <tr>
-                <td>
-                  <a href="" class="link-dark"> {{ item.nombre }} </a>
-                </td>
-                <td>
-                  <span style="color:{{ item.color }};">
-                    <i class="bi bi-square-fill" aria-hidden="true"></i>
-                  </span>
-                </td>
-                <td>{{ cursos_por_etiqueta(item.id) }}</td>
-                <td>
-                  <span class="badge bg-danger">
-                    <a href="{{ url_for('tag.delete_tag', ulid=item.id) }}" class="link-light">Eliminar Etiqueta</a>
-                  </span>
-                  <span class="badge bg-info">
-                    <a href="{{ url_for('tag.edit_tag', ulid=item.id) }}" class="link-light">Editar Etiqueta</a>
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-            {% endfor %}
-          </table>
-        </div>
+          <div class="container" id="curse_table">
+            <table class="table table-sm table-borderless">
+              <caption>
+                Lista de etiquetas disponibles en el sistema.
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Etiqueta</th>
+                  <th scope="col">Color</th>
+                  <th>Cursos</th>
+                  <th></th>
+                </tr>
+              </thead>
+              {% for item in consulta.items -%}
+                <tbody>
+                  <tr>
+                    <td>
+                      <a href="" class="link-dark"> {{ item.nombre }} </a>
+                    </td>
+                    <td>
+                      <span style="color:{{ item.color }};">
+                        <i class="bi bi-square-fill" aria-hidden="true"></i>
+                      </span>
+                    </td>
+                    <td>{{ cursos_por_etiqueta(item.id) }}</td>
+                    <td>
+                      <span class="badge bg-danger">
+                        <a href="{{ url_for('tag.delete_tag', ulid=item.id) }}" class="link-light">Eliminar Etiqueta</a>
+                      </span>
+                      <span class="badge bg-info">
+                        <a href="{{ url_for('tag.edit_tag', ulid=item.id) }}" class="link-light">Editar Etiqueta</a>
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              {% endfor %}
+            </table>
+          </div>
         {% else %}
-        <p>Usted no ha creado ninguna etiqueta todavia.</p>
+          <p>Usted no ha creado ninguna etiqueta todavia.</p>
         {% endif %}
 
         <div class="container" id="user_pagination">

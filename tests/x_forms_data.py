@@ -18,7 +18,7 @@ forms = [
     ),
     Form(
         ruta="/course/new_curse",
-        data={"nombre": "nombre", "codigo": "codigo", "descripcion": "descripcion"},
+        data={"nombre": "nombre", "codigo": "codigo", "descripcion": "descripcion", "descripcion_corta": "descripcion_corta"},
         file={"name": "logo", "bytes": (BytesIO(b"abcdef"), "logo.jpg")},
         flash=None,
     ),

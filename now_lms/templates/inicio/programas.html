@@ -34,95 +34,95 @@
 
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
               {% for curso in cursos.items %}
-              <div class="col">
-                <div class="card shadow-sm">
-                  {% if curso.logo %}
-                  <img
-                    src="{{ url_for('static', filename='/files/public/images/'+ 'program' + curso.codigo + '/logo.jpg') }}"
-                    alt=" {{ curso.nombre }}"
-                    width="100%"
-                    height="200"
-                  />
-
-                  {% else %}
-                  <svg
-                    class="bd-placeholder-img card-img-top"
-                    width="100%"
-                    height="225"
-                    xmlns="http://www.w3.org/2000/svg"
-                    role="img"
-                    aria-label="Placeholder: Thumbnail"
-                    preserveAspectRatio="xMidYMid slice"
-                    focusable="false"
-                  >
-                    <title>{{ curso.nombre }}</title>
-                    <rect width="100%" height="100%" fill="#55595c" />
-                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{ curso.nombre }}</text>
-                  </svg>
-                  {% endif %}
-
-                  <div class="card-body">
-                    <div class="d-flex d-flex justify-content-between">
-                      <strong>{{ curso.nombre }}</strong>
-
-                      {% if curso.nivel == 0 %}
+                <div class="col">
+                  <div class="card shadow-sm">
+                    {% if curso.logo %}
                       <img
-                        src="{{ url_for('static', filename='/icons/curso-level0.svg') }}"
-                        alt="{{ curso.nombre }}"
-                        width="20"
-                        height="20"
-                        alt="Nivel Introductorio"
+                        src="{{ url_for('static', filename='/files/public/images/'+ 'program' + curso.codigo + '/logo.jpg') }}"
+                        alt=" {{ curso.nombre }}"
+                        width="100%"
+                        height="200"
                       />
-                      {% elif curso.nivel == 1 %}
-                      <img
-                        src="{{ url_for('static', filename='/icons/curso-level1.svg') }}"
-                        alt="{{ curso.nombre }}"
-                        width="20"
-                        height="20"
-                        alt="Nivel Principiante"
-                      />
-                      {% elif curso.nivel == 2 %}
-                      <img
-                        src="{{ url_for('static', filename='/icons/curso-level2.svg') }}"
-                        alt="{{ curso.nombre }}"
-                        width="20"
-                        height="20"
-                        alt="Nivel Intermedio"
-                      />
-                      {% elif curso.nivel == 3 %}
-                      <img
-                        src="{{ url_for('static', filename='/icons/curso-level3.svg') }}"
-                        alt="{{ curso.nombre }}"
-                        width="20"
-                        height="20"
-                        alt="Nivel Avanzado"
-                      />
-                      {% endif %}
-                    </div>
-                    {{ curso.descripcion | truncate(120) }}
+                    {% else %}
+                      <svg
+                        class="bd-placeholder-img card-img-top"
+                        width="100%"
+                        height="225"
+                        xmlns="http://www.w3.org/2000/svg"
+                        role="img"
+                        aria-label="Placeholder: Thumbnail"
+                        preserveAspectRatio="xMidYMid slice"
+                        focusable="false"
+                      >
+                        <title>{{ curso.nombre }}</title>
+                        <rect width="100%" height="100%" fill="#55595c" />
+                        <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{ curso.nombre }}</text>
+                      </svg>
+                    {% endif %}
 
-                    <div class="d-flex justify-content-between align-items-center">
-                      <div class="btn-group">
-                        <a
-                          href="{{ url_for('program.pagina_programa', codigo=curso.codigo )}}"
-                          class="btn btn-sm btn-outline-secondary"
-                          role="button"
-                          aria-disabled="true"
-                        >
-                          Ver Programa
-                        </a>
+                    <div class="card-body">
+                      <div class="d-flex d-flex justify-content-between">
+                        <strong>{{ curso.nombre }}</strong>
+
+                        {% if curso.nivel == 0 %}
+                          <img
+                            src="{{ url_for('static', filename='/icons/curso-level0.svg') }}"
+                            alt="{{ curso.nombre }}"
+                            width="20"
+                            height="20"
+                            alt="Nivel Introductorio"
+                          />
+                        {% elif curso.nivel == 1 %}
+                          <img
+                            src="{{ url_for('static', filename='/icons/curso-level1.svg') }}"
+                            alt="{{ curso.nombre }}"
+                            width="20"
+                            height="20"
+                            alt="Nivel Principiante"
+                          />
+                        {% elif curso.nivel == 2 %}
+                          <img
+                            src="{{ url_for('static', filename='/icons/curso-level2.svg') }}"
+                            alt="{{ curso.nombre }}"
+                            width="20"
+                            height="20"
+                            alt="Nivel Intermedio"
+                          />
+                        {% elif curso.nivel == 3 %}
+                          <img
+                            src="{{ url_for('static', filename='/icons/curso-level3.svg') }}"
+                            alt="{{ curso.nombre }}"
+                            width="20"
+                            height="20"
+                            alt="Nivel Avanzado"
+                          />
+                        {% endif %}
                       </div>
-                      {% if curso.duracion %}
-                      <small class="text-muted">{{ curso.duracion }} mins</small>
-                      {% endif %} {% if curso.precio %}
-                      <small>{{ curso.precio | float }} {{ config.moneda }}</small>
-                      {% else %}
-                      <small>Gratis</small>
-                      {% endif %}
+                      {{ curso.descripcion | truncate(120) }}
+
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                          <a
+                            href="{{ url_for('program.pagina_programa', codigo=curso.codigo ) }}"
+                            class="btn btn-sm btn-outline-secondary"
+                            role="button"
+                            aria-disabled="true"
+                          >
+                            Ver Programa
+                          </a>
+                        </div>
+                        {% if curso.duracion %}
+                          <small class="text-muted">{{ curso.duracion }} mins</small>
+                        {% endif %}
+                        {% if curso.precio %}
+                          <small>{{ curso.precio | float }} {{ config.moneda }}</small>
+                        {% else %}
+                          <small>Gratis</small>
+                        {% endif %}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
               {% endfor %}
             </div>
 
@@ -150,7 +150,7 @@
                   <div class="collapse show" id="home-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                       {% for categoria in categorias %}
-                      <li><a href="#" class="link-dark rounded">{{ categoria.nombre }}</a></li>
+                        <li><a href="#" class="link-dark rounded">{{ categoria.nombre }}</a></li>
                       {% endfor %}
                     </ul>
                   </div>
@@ -167,7 +167,7 @@
                   <div class="collapse" id="dashboard-collapse">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                       {% for etiqueta in etiquetas %}
-                      <li><a href="#" class="link-dark rounded">{{ etiqueta.nombre }}</a></li>
+                        <li><a href="#" class="link-dark rounded">{{ etiqueta.nombre }}</a></li>
                       {% endfor %}
                     </ul>
                   </div>

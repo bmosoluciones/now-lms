@@ -31,17 +31,19 @@
         <p><strong>Nombre del Curso:</strong>: {{ curso.nombre }}</p>
         <p><strong>Descripción del Curso:</strong>: {{ curso.descripcion }}</p>
         {% if curso.fecha_inicio %}
-        <p><strong>Fecha de Inicio:</strong> {{ curso.fecha_inicio }}</p>
-        {% endif %} {% if curso.fecha_fin %}
-        <p><strong>Fecha de Inicio:</strong> {{ curso.fecha_fin }}</p>
-        {% endif %} {% if curso.duracion %}
-        <p><strong>Duración:</strong> {{ curso.duracion }} horas</p>
+          <p><strong>Fecha de Inicio:</strong> {{ curso.fecha_inicio }}</p>
+        {% endif %}
+        {% if curso.fecha_fin %}
+          <p><strong>Fecha de Inicio:</strong> {{ curso.fecha_fin }}</p>
+        {% endif %}
+        {% if curso.duracion %}
+          <p><strong>Duración:</strong> {{ curso.duracion }} horas</p>
         {% endif %}
 
         <h5>Datos del Certicado:</h5>
         <p><strong>Fecha de Emisión:</strong> {{ certificacion.fecha }}</p>
         {% if certificacion.nota %}
-        <p><strong>Nota:</strong> {{ certificacion.nota }}</p>
+          <p><strong>Nota:</strong> {{ certificacion.nota }}</p>
         {% endif %}
 
         <br />

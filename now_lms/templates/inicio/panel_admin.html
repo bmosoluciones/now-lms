@@ -17,8 +17,13 @@
 
       <div class="container px-0 py-3" id="icon-grid">
         <h4 class="pb-2 border-bottom">
-          Bienvenido {% if current_user.tipo == "admin" %} Administrador del Sistema. {% else %} {{ current_user.nombre}} {{
-          current_user.apellido}} {% endif %}
+          Bienvenido
+          {% if current_user.tipo == "admin" %}
+            Administrador del Sistema.
+          {% else %}
+            {{ current_user.nombre }}
+            {{ current_user.apellido }}
+          {% endif %}
         </h4>
         <div class="row mb-2 mb-xl-3">
           <div class="col-auto d-none d-sm-block">
@@ -122,7 +127,7 @@
               <div class="card-body pt-2 pb-3">
                 <ul>
                   {% for curso in cursos_por_fecha %}
-                  <li><a href="{{ url_for('course.curso', course_code=curso.codigo) }}">{{ curso.nombre }}</a></li>
+                    <li><a href="{{ url_for('course.curso', course_code=curso.codigo) }}">{{ curso.nombre }}</a></li>
                   {% endfor %}
                 </ul>
               </div>
