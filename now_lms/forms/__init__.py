@@ -119,18 +119,30 @@ class GrupoForm(BaseForm):
 class CurseForm(BaseForm):
     """Formulario para crear un nuevo curso."""
 
+    # Datos basicos del curso.
+    # Nombre y descripción de la base.
     codigo = StringField(validators=[DataRequired()])
+    nivel = SelectField("User", choices=[(0, "Introductorio"), (1, "Principiante"), (2, "Intermedio"), (3, "Avanzado")])
+    duracion = IntegerField(validators=[])
+    # Estado de publicación
     publico = BooleanField(validators=[])
+    # Modalidad
+    modalidad = SelectField(
+        "Modalidad", choices=[("self_paced", "A su propio ritmo"), ("time_based", "Con tiempo definido"), ("live", "En vivo")]
+    )
+    # Disponibilidad de cupos
+    limitado = BooleanField(validators=[])
+    capacidad = IntegerField(validators=[])
+    # Fechas de inicio y fin
+    fecha_inicio = DateField(validators=[])
+    fecha_fin = DateField(validators=[])
+    # Información de marketing
+    promocionado = BooleanField(validators=[])
+    # Información de pago
+    pagado = BooleanField(validators=[])
     auditable = BooleanField(validators=[])
     certificado = BooleanField(validators=[])
     precio = DecimalField(validators=[])
-    capacidad = IntegerField(validators=[])
-    fecha_inicio = DateField(validators=[])
-    fecha_fin = DateField(validators=[])
-    duracion = IntegerField(validators=[])
-    nivel = SelectField("User", choices=[(0, "Introductorio"), (1, "Principiante"), (2, "Intermedio"), (3, "Avanzado")])
-    promocionado = BooleanField(validators=[])
-    pagado = BooleanField(validators=[])
 
 
 class CursoSeccionForm(BaseForm):

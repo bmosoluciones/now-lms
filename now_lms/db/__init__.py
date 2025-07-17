@@ -160,7 +160,7 @@ class Curso(database.Model, BaseTabla):
     duracion = database.Column(database.Integer())
     # Estado de publicación
     estado = database.Column(database.String(6), nullable=False, index=True)  # draft, open, closed
-    publico = database.Column(database.Boolean(), index=True)
+    publico = database.Column(database.Boolean())
     # Modalidad
     modalidad = database.Column(database.String(10))  # self_paced, time_based, live
     # Disponibilidad de cupos

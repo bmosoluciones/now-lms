@@ -24,7 +24,7 @@ forms = [
     ),
     Form(
         ruta="/course/now/edit",
-        data={"nombre": "nombre", "codigo": "codigo", "descripcion": "descripcion"},
+        data={"nombre": "nombre", "publico": True},
         file={"name": "logo", "bytes": (BytesIO(b"abcdefkkkk"), "logo.jpg")},
         flash=None,
     ),

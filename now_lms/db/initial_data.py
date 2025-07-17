@@ -225,6 +225,7 @@ def crear_curso_demo():
     database.session.add(demo)
     database.session.commit()
     curse_logo("resources", "11372802.jpg")
+    curse_logo("details", "11372802.jpg")
 
     ramdon1 = ULID()
     seccion_id = str(ramdon1)
@@ -532,9 +533,38 @@ def crear_curso_predeterminado():
         promocionado=True,
         fecha_promocionado=datetime.today(),
     )
+    form = Curso(
+        nombre="Course Details",
+        codigo="details",
+        descripcion="#Course Details Example",
+        portada=True,
+        nivel=2,
+        duracion=40,
+        # Estado de publicación
+        estado="draft",
+        publico=True,
+        # Modalidad
+        modalidad="time_based",
+        # Disponibilidad de cupos
+        limitado=True,
+        capacidad=100,
+        # Fechas de inicio y fin
+        fecha_inicio=datetime.today() + timedelta(days=7),
+        fecha_fin=datetime.today() + timedelta(days=14),
+        # Información de marketing
+        promocionado=True,
+        fecha_promocionado=datetime.today(),
+        # Información de pago
+        pagado=True,
+        auditable=True,
+        precio=100,
+        certificado=True,
+    )
     database.session.add(demo)
+    database.session.add(form)
     database.session.commit()
     curse_logo("now", "5218255.jpg")
+    curse_logo("details", "5218255.jpg")
 
     seccion1_id = "01HPB1MZXBHZETC4ZH0HV4G39Q"
     nueva_seccion1 = CursoSeccion(
