@@ -26,17 +26,6 @@
           </div>
         </div>
       </div>
-      
-      <div class="container px-0 py-3" id="main">
-          <div class="col-auto ms-auto text-end mt-n1">
-            <span class="badge bg-success">
-              <a href="{{ url_for('user.crear_usuario') }}" class="link-light">Nuevo Usuario</a>
-            </span>
-            <span class="badge bg-success">
-              <a href="{{ url_for('course.nuevo_curso') }}" class="link-light">Nuevo Curso</a>
-            </span>
-          </div>
-        </div>
         <div class="row">
           <div class="col-xl-6 col-xxl-5 d-flex">
             <div class="w-100">
@@ -55,14 +44,14 @@
                           </div>
                         </div>
                       </div>
-                      <h1 class="mt-1 mb-3">{{ cursos_actuales }}</h1>
+                      <h1 class="mt-1 mb-3"></h1>
                     </div>
                   </div>
                   <div class="card">
                     <div class="card-body">
                       <div class="row">
                         <div class="col mt-0">
-                          <h5 class="card-title"><i class="bi bi-people-fill" aria-hidden="true"></i> Usuarios Registrados</h5>
+                          <h5 class="card-title"><i class="bi bi-bookmarks-fill" aria-hidden="true"></i> Programas</h5>
                         </div>
 
                         <div class="col-auto">
@@ -80,7 +69,7 @@
                     <div class="card-body">
                       <div class="row">
                         <div class="col mt-0">
-                          <h5 class="card-title"><i class="bi bi-card-checklist" aria-hidden="true"></i> Recursos Creados</h5>
+                          <h5 class="card-title"><i class="bi  bi-book-fill" aria-hidden="true"></i> Recursos</h5>
                         </div>
 
                         <div class="col-auto">
@@ -89,27 +78,23 @@
                           </div>
                         </div>
                       </div>
-                      <h1 class="mt-1 mb-3">{{ recursos_creados }}</h1>
+                      <h1 class="mt-1 mb-3"></h1>
                     </div>
                   </div>
                   <div class="card">
                     <div class="card-body">
                       <div class="row">
                         <div class="col mt-0">
-                          <h5 class="card-title">
-                            <i class="bi bi-award-fill" aria-hidden="true"></i> Certificados Extendidos
-                          </h5>
+                          <h5 class="card-title"><i class="bi bi-award-fill" aria-hidden="true"></i> Certificaciones</h5>
                         </div>
 
                         <div class="col-auto">
                           <div class="stat text-primary">
-                            <i class="align-middle" data-feather="shopping-cart"></i>
+                            <i class="align-middle" data-feather="dollar-sign"></i>
                           </div>
                         </div>
                       </div>
-                      <h1 class="mt-1 mb-3">
-                        <h1 class="mt-1 mb-3">{{ certificados_emitidos }}</h1>
-                      </h1>
+                      <h1 class="mt-1 mb-3"></h1>
                     </div>
                   </div>
                 </div>
@@ -120,7 +105,7 @@
           <div class="col-xl-6 col-xxl-7">
             <div class="card flex-fill w-100">
               <div class="card-header">
-                <h5 class="card-title mb-0">Cursos Recientes</h5>
+                <h5 class="card-title mb-0">Mis Cursos</h5>
               </div>
               <div class="card-body pt-2 pb-3">
                 <ul>
