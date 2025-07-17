@@ -64,7 +64,9 @@ from now_lms.db import (
     CursoSeccion,
     DocenteCurso,
     Etiqueta,
+    Pago,
     Recurso,
+    Usuario,
     database,
 )
 from now_lms.db.tools import crear_indice_recurso
@@ -139,15 +141,25 @@ def curso(course_code):
         abort(403)
 
 
-@course.route("/course/<course_code>/enroll")
+@course.route("/course/<course_code>/enroll", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("student")
 def course_enroll(course_code):
     """Pagina para inscribirse a un curso."""
+    from now_lms.forms import PagoForm
 
     _curso = Curso.query.filter_by(codigo=course_code).first()
+    _usuario = Usuario.query.filter_by(usuario=current_user.usuario).first()
 
-    return render_template("learning/curso/enroll.html", curso=_curso)
+    form = PagoForm()
+    form.nombre.data = _usuario.nombre
+    form.apellido.data = _usuario.apellido
+    form.correo_electronico.data = _usuario.correo_electronico
+
+    if request.method == "POST":
+        pago = Pago()
+
+    return render_template("learning/curso/enroll.html", curso=_curso, usuario=_usuario, form=form)
 
 
 @course.route("/course/<course_code>/take")

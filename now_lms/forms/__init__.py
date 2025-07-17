@@ -393,3 +393,16 @@ class CheckMailForm(FlaskForm):
     """Formulario para crear un certificado en el sistema."""
 
     email = StringField(validators=[])
+
+
+class PagoForm(FlaskForm):
+    """Formulario para crear un pago."""
+
+    nombre = StringField(validators=[DataRequired()])
+    apellido = StringField(validators=[DataRequired()])
+    correo_electronico = StringField(validators=[DataRequired()])
+    direccion1 = StringField(validators=[DataRequired()])
+    direccion2 = StringField()
+    pais = StringField(validators=[DataRequired()])
+    provincia = StringField(validators=[DataRequired()])
+    codigo_postal = StringField(validators=[DataRequired()])

@@ -526,3 +526,29 @@ class PaypalConfig(database.Model):
     sandbox = database.Column(database.Boolean(), default=False)
     paypal_id = database.Column(database.String(100))
     paypal_sandbox = database.Column(database.String(100))
+
+
+class Pago(database.Model):
+    """Registro de pagos."""
+
+    id = database.Column(
+        database.String(26), primary_key=True, nullable=False, index=True, default=generador_de_codigos_unicos
+    )
+    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
+    moneda = database.Column(database.String(5), nullable=False)  # Ejemplo: USD, EUR, CRC
+    monto = database.Column(database.Numeric(asdecimal=True))
+    fecha = database.Column(database.DateTime, default=database.func.now())
+    estado = database.Column(database.String(20))  # pending, completed, failed
+    metodo = database.Column(database.String(20))  # paypal, stripe, bank_transfer
+    referencia = database.Column(database.String(100), nullable=True)  # Referencia de pago
+    descripcion = database.Column(database.String(500), nullable=True)  # Descripción del pago
+    # Información de facturación
+    nombre = database.Column(database.String(100), nullable=True)
+    apellido = database.Column(database.String(100), nullable=True)
+    correo_electronico = database.Column(database.String(150), nullable=True)
+    direccion1 = database.Column(database.String(200), nullable=True)
+    direccion2 = database.Column(database.String(200), nullable=True)
+    pais = database.Column(database.String(100), nullable=True)
+    provincia = database.Column(database.String(100), nullable=True)
+    codigo_postal = database.Column(database.String(20), nullable=True)
