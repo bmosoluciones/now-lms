@@ -103,7 +103,7 @@ def crear_cuenta():
                 correo_electronico=form.correo_electronico.data,
                 tipo="student",
                 activo=False,
-                creado_por=form.usuario.data,
+                creado_por=form.correo_electronico.data,
             )
             try:
                 database.session.add(usuario_)

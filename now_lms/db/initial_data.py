@@ -563,11 +563,41 @@ def crear_curso_predeterminado():
         precio=100,
         certificado=True,
     )
+    free = Curso(
+        nombre="Free Course",
+        codigo="free",
+        descripcion_corta="This is a free course.",
+        descripcion="#Free demo course",
+        portada=True,
+        nivel=0,
+        duracion=1,
+        # Estado de publicación
+        estado="open",
+        publico=True,
+        # Modalidad
+        modalidad="self_paced",
+        # Disponibilidad de cupos
+        limitado=False,
+        capacidad=0,
+        # Fechas de inicio y fin
+        fecha_inicio=datetime.today() + timedelta(days=7),
+        fecha_fin=datetime.today() + timedelta(days=14),
+        # Información de marketing
+        promocionado=True,
+        fecha_promocionado=datetime.today(),
+        # Información de pago
+        pagado=False,
+        auditable=False,
+        precio=0,
+        certificado=True,
+    )
     database.session.add(demo)
     database.session.add(form)
+    database.session.add(free)
     database.session.commit()
     curse_logo("now", "5218255.jpg")
     curse_logo("details", "5218255.jpg")
+    curse_logo("free", "5218255.jpg")
 
     seccion1_id = "01HPB1MZXBHZETC4ZH0HV4G39Q"
     nueva_seccion1 = CursoSeccion(

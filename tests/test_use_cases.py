@@ -38,53 +38,68 @@ def lms_application():
             "PRESERVE_CONTEXT_ON_EXCEPTION": True,
             "SQLALCHEMY_ECHO": True,
             "SQLALCHEMY_DATABASE_URI": "sqlite://",
+            "MAIL_SUPPRESS_SEND": True,
         }
     )
 
     yield app
 
 
-def test_contraseña_incorrecta(lms_application, request):
-
-    if request.config.getoption("--slow") == "True":
-
+def test_user_registration_to_free_course_enroll(lms_application, request):
+    if request.config.getoption("--use-cases") == "True":
         from now_lms import database, initial_setup
-        from now_lms.auth import validar_acceso
+        from now_lms.db import Curso, Usuario
 
         with lms_application.app_context():
-            from flask_login import current_user
-            from flask_login.mixins import AnonymousUserMixin
-
             database.drop_all()
             initial_setup(with_tests=False, with_examples=False)
-
             with lms_application.test_client() as client:
-                # Keep the session alive until the with clausule closes
-                client.post("/user/login", data={"usuario": "lms-admin", "acceso": "lms_admin"})
-                assert isinstance(current_user, AnonymousUserMixin)
-                assert validar_acceso("lms-admn", "lms-admin") is False
+                post = client.post(
+                    "/user/logon",
+                    data={
+                        "nombre": "Brenda",
+                        "apellido": "Mercado",
+                        "correo_electronico": "bmercado@nowlms.com",
+                        "acceso": "bmercado",
+                    },
+                    follow_redirects=True,
+                )
+                assert post.status_code == 200
 
+                # User must be created
+                user = database.session.execute(
+                    database.select(Usuario).filter_by(correo_electronico="bmercado@nowlms.com")
+                ).first()[0]
+                assert user is not None
+                assert user.activo is False
 
-def test_generar_pdf(lms_application, request):
+                # User must be able to verify his account by email
+                from now_lms.auth import generate_confirmation_token, validate_confirmation_token, send_confirmation_email
 
-    if name == "nt":
-        pytest.skip("PDF generation likelly to fail in Windows.")
+                token = generate_confirmation_token("bmercado@nowlms.com")
+                send_confirmation_email(user)  # Just to cover the code
+                assert validate_confirmation_token(token) is True
+                assert user.activo is True
+
+                # Once active, cliente must be able to login
+                from flask_login import current_user
+
+                client.post("/user/login", data={"usuario": "bmercado@nowlms.com", "acceso": "bmercado"})
+                assert current_user.is_authenticated
+                assert current_user.tipo == "student"
+
+                # User must be able to enroll to a free course
+                view_course = client.get("/course/free/view", follow_redirects=True)
+                assert view_course.status_code == 200
+                assert b"Free Course" in view_course.data
+                assert b"Inscribirse al Curso" in view_course.data
+                assert b"/course/free/enroll" in view_course.data
+                enroll_view = client.get("/course/free/enroll")
+                assert enroll_view.status_code == 200
+                assert b"Esta a punto de inscribirse al curso FREE - FREE COURSE" in enroll_view.data
+                assert b"Free Course" in enroll_view.data
+                assert b"This is a free course." in enroll_view.data
+                assert b"Inscribirse al curso" in enroll_view.data
 
     else:
-
-        if request.config.getoption("--testpdf") == "True":
-
-            from now_lms import initial_setup
-            from now_lms.db import database
-
-            with lms_application.app_context():
-
-                database.drop_all()
-                initial_setup(with_tests=False, with_examples=False)
-
-                from now_lms.misc import check_generate_pdf
-
-                check_generate_pdf()
-
-        else:
-            pytest.skip("Not running slow test.")
+        pytest.skip("Not running use cases test.")

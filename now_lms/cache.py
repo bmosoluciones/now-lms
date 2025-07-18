@@ -44,9 +44,9 @@ if (environ.get("CACHE_REDIS_HOST")) and (environ.get("CACHE_REDIS_PORT")):
     CACHE_CONFIG["CACHE_REDIS_HOST"] = environ.get("CACHE_REDIS_HOST")
     CACHE_CONFIG["CACHE_REDIS_PORT"] = environ.get("CACHE_REDIS_PORT")
 
-    
+
 elif (environ.get("CACHE_REDIS_URL")) or (environ.get("REDIS_URL")):
-    #EXAMPLE= REDIS_URL=redis://localhost:6379/0
+    # EXAMPLE= REDIS_URL=redis://localhost:6379/0
     CTYPE = "RedisCache"
     CACHE_CONFIG["CACHE_REDIS_URL"] = environ.get("CACHE_REDIS_URL") or environ.get("REDIS_URL")
 

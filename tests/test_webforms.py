@@ -85,3 +85,5 @@ def test_fill_all_forms(lms_application, request):
                         assert session["_flashes"][0][1] == form.flash[0]
 
                 client.get("/user/logout")
+    else:
+        pytest.skip("Not running slow test.")
