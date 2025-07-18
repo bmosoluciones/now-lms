@@ -52,6 +52,7 @@ from now_lms.db import (
     EtiquetaCurso,
     MailConfig,
     ModeradorCurso,
+    Pago,
     PaypalConfig,
     Programa,
     ProgramaCurso,
@@ -84,7 +85,20 @@ def verifica_moderador_asignado_a_curso(id_curso: Union[None, str] = None):
 def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
     """Si el usuario no esta asignado como estudiante al curso devuelve None."""
     if current_user.is_authenticated:
-        return EstudianteCurso.query.filter(EstudianteCurso.usuario == current_user.usuario, EstudianteCurso.curso == id_curso)
+        regitro = EstudianteCurso.query.filter(
+            EstudianteCurso.usuario == current_user.usuario, EstudianteCurso.curso == id_curso
+        ).first()
+        if regitro:
+            pago = Pago.query.filter(Pago.id == regitro.pago).first()
+            if pago:
+                if pago.estado == "completed" or pago.audit:
+                    return True
+                else:
+                    return False
+            else:
+                return False
+        else:
+            return False
     else:
         return False
 

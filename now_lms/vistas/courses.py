@@ -146,19 +146,51 @@ def curso(course_code):
 @perfil_requerido("student")
 def course_enroll(course_code):
     """Pagina para inscribirse a un curso."""
+    from now_lms.db import EstudianteCurso
     from now_lms.forms import PagoForm
 
     _curso = Curso.query.filter_by(codigo=course_code).first()
     _usuario = Usuario.query.filter_by(usuario=current_user.usuario).first()
+
+    _modo = request.args.get("modo", "")
 
     form = PagoForm()
     form.nombre.data = _usuario.nombre
     form.apellido.data = _usuario.apellido
     form.correo_electronico.data = _usuario.correo_electronico
 
-    if request.method == "POST":
+    if form.validate_on_submit() or request.method == "POST":
         pago = Pago()
-
+        pago.usuario = _usuario.usuario
+        pago.curso = _curso.codigo
+        pago.nombre = form.nombre.data
+        pago.apellido = form.apellido.data
+        pago.correo_electronico = form.correo_electronico.data
+        pago.direccion1 = form.direccion1.data
+        pago.direccion2 = form.direccion2.data
+        pago.provincia = form.provincia.data
+        pago.codigo_postal = form.codigo_postal.data
+        pago.pais = form.pais.data
+        if not _curso.pagado:
+            pago.estado = "completed"
+        if _modo == "audit" and _curso.auditable:
+            pago.audit = True
+            pago.estado = "pending"
+        try:
+            database.session.add(pago)
+            database.session.flush()
+            registro = EstudianteCurso(
+                curso=pago.curso,
+                usuario=pago.usuario,
+                vigente=True,
+                pago=pago.id,  # Relaciona el pago con el registro del curso.
+            )
+            database.session.add(registro)
+            database.session.commit()
+            return redirect(url_for("course.tomar_curso", course_code=course_code))
+        except OperationalError:  # pragma: no cover
+            flash("Hubo en error al crear el registro de pago.", "warning")
+            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
     return render_template("learning/curso/enroll.html", curso=_curso, usuario=_usuario, form=form)
 
 

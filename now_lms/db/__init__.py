@@ -347,6 +347,7 @@ class EstudianteCurso(database.Model, BaseTabla):
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
     usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     vigente = database.Column(database.Boolean())
+    pago = database.Column(database.String(26), database.ForeignKey("pago.id"), nullable=True, index=True)
 
 
 class Configuracion(database.Model, BaseTabla):
@@ -536,17 +537,18 @@ class Pago(database.Model):
     )
     usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    moneda = database.Column(database.String(5), nullable=False)  # Ejemplo: USD, EUR, CRC
+    moneda = database.Column(database.String(5))  # Ejemplo: USD, EUR, CRC
     monto = database.Column(database.Numeric(asdecimal=True))
     fecha = database.Column(database.DateTime, default=database.func.now())
-    estado = database.Column(database.String(20))  # pending, completed, failed
+    estado = database.Column(database.String(20), default="pending")  # pending, completed, failed
     metodo = database.Column(database.String(20))  # paypal, stripe, bank_transfer
     referencia = database.Column(database.String(100), nullable=True)  # Referencia de pago
     descripcion = database.Column(database.String(500), nullable=True)  # Descripción del pago
+    audit = database.Column(database.Boolean(), default=False)
     # Información de facturación
-    nombre = database.Column(database.String(100), nullable=True)
-    apellido = database.Column(database.String(100), nullable=True)
-    correo_electronico = database.Column(database.String(150), nullable=True)
+    nombre = database.Column(database.String(100), nullable=False)
+    apellido = database.Column(database.String(100), nullable=False)
+    correo_electronico = database.Column(database.String(150), nullable=False)
     direccion1 = database.Column(database.String(200), nullable=True)
     direccion2 = database.Column(database.String(200), nullable=True)
     pais = database.Column(database.String(100), nullable=True)
