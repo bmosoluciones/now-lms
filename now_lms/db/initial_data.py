@@ -596,7 +596,7 @@ def crear_curso_predeterminado():
     database.session.add(free)
     database.session.commit()
     curse_logo("now", "5218255.jpg")
-    curse_logo("details", "5218255.jpg")
+    curse_logo("details", "online-course.jpg")
     curse_logo("free", "manos-trabajando.jpg")
 
     seccion1_id = "01HPB1MZXBHZETC4ZH0HV4G39Q"
@@ -609,7 +609,18 @@ def crear_curso_predeterminado():
         indice=1,
     )
 
+    seccion1a_id = "02HPB1MZXBHZETC4ZH0HV4G39A"
+    nueva_seccion1a = CursoSeccion(
+        id=seccion1a_id,
+        curso="free",
+        nombre="Welcome to your free course.",
+        descripcion="Welcome to your free course.",
+        estado=False,
+        indice=1,
+    )
+
     database.session.add(nueva_seccion1)
+    database.session.add(nueva_seccion1a)
     database.session.commit()
 
     seccion2_id = "01HPB1Q1R4HGJPG3C5NSFX3GH2"
@@ -636,7 +647,19 @@ def crear_curso_predeterminado():
         indice=1,
         publico=True,
     )
+    nuevo_recurso1a = CursoRecurso(
+        id="02HPB3AP3QNVK9ES6JGG5YK7CA",
+        curso="free",
+        seccion=seccion1a_id,
+        tipo="youtube",
+        nombre="The Evolution of Online Learning with Dhawal Shah",
+        descripcion="Dhawal's journey into the world of online education is as inspiring as it is insightful.",
+        url="https://www.youtube.com/watch?v=mMvRbZtqg5o",
+        indice=1,
+        publico=False,
+    )
     database.session.add(nuevo_recurso1)
+    database.session.add(nuevo_recurso1a)
     database.session.commit()
 
     nuevo_recurso2 = CursoRecurso(
