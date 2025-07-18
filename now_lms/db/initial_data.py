@@ -597,7 +597,7 @@ def crear_curso_predeterminado():
     database.session.commit()
     curse_logo("now", "5218255.jpg")
     curse_logo("details", "5218255.jpg")
-    curse_logo("free", "5218255.jpg")
+    curse_logo("free", "manos-trabajando.jpg")
 
     seccion1_id = "01HPB1MZXBHZETC4ZH0HV4G39Q"
     nueva_seccion1 = CursoSeccion(
