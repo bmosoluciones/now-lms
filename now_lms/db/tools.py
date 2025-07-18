@@ -391,15 +391,16 @@ def database_is_populated(app):
         try:
             QUERY = database_select_version(app)
             if QUERY:
-                check = database.session.execute(text(QUERY)).first()
-                log.warning("Check table curso: {check}")
-                if check is not None:
-                    return True
+                version = database.session.execute(text(QUERY)).first()
+                if version:
+                    log.debug("Database conection verified.")
+                    check = True
                 else:
-                    return False
+                    check = False
+                    log.warning(f"Check table curso: {check}")
+                return check
             else:
                 return False
-
         except AttributeError:
             return False
         except OperationalError:

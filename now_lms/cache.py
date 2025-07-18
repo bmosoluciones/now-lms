@@ -37,34 +37,32 @@ from now_lms.logs import log
 # < --------------------------------------------------------------------------------------------- >
 # Configuracion de Cache
 CACHE_CONFIG: dict = {"CACHE_KEY_PREFIX": "now_lms:"}
+CACHE_CONFIG["CACHE_DEFAULT_TIMEOUT"] = 300
 
-if not environ.get("NO_LMS_CACHE"):
-    CACHE_CONFIG["CACHE_DEFAULT_TIMEOUT"] = 300
-    if (environ.get("CACHE_REDIS_HOST")) and (environ.get("CACHE_REDIS_PORT")):
-        CTYPE = "RedisCache"
-        CACHE_CONFIG["CACHE_REDIS_HOST"] = environ.get("CACHE_REDIS_HOST")
-        CACHE_CONFIG["CACHE_REDIS_PORT"] = environ.get("CACHE_REDIS_PORT")
+if (environ.get("CACHE_REDIS_HOST")) and (environ.get("CACHE_REDIS_PORT")):
+    CTYPE = "RedisCache"
+    CACHE_CONFIG["CACHE_REDIS_HOST"] = environ.get("CACHE_REDIS_HOST")
+    CACHE_CONFIG["CACHE_REDIS_PORT"] = environ.get("CACHE_REDIS_PORT")
 
-    # CACHE_REDIS_URL=redis://localhost:6379/0
-    elif (environ.get("CACHE_REDIS_URL")) or (environ.get("REDIS_URL")):
-        CTYPE = "RedisCache"
-        CACHE_CONFIG["CACHE_REDIS_URL"] = environ.get("CACHE_REDIS_URL") or environ.get("REDIS_URL")
+    
+elif (environ.get("CACHE_REDIS_URL")) or (environ.get("REDIS_URL")):
+    #EXAMPLE= REDIS_URL=redis://localhost:6379/0
+    CTYPE = "RedisCache"
+    CACHE_CONFIG["CACHE_REDIS_URL"] = environ.get("CACHE_REDIS_URL") or environ.get("REDIS_URL")
 
-    elif environ.get("CACHE_MEMCACHED_SERVERS"):
-        CTYPE = "MemcachedCache"
-        CACHE_CONFIG["CACHE_MEMCACHED_SERVERS"] = environ.get("CACHE_MEMCACHED_SERVERS")
+elif environ.get("CACHE_MEMCACHED_SERVERS"):
+    CTYPE = "MemcachedCache"
+    CACHE_CONFIG["CACHE_MEMCACHED_SERVERS"] = environ.get("CACHE_MEMCACHED_SERVERS")
 
-    else:
-        CTYPE = "NullCache"
-        log.debug("No cache service configured.")
-
-else:  # pragma: no cover
+else:
     CTYPE = "NullCache"
+    log.debug("No cache service configured.")
+
 
 CACHE_CONFIG["CACHE_TYPE"] = CTYPE
 
 if not CTYPE == "NullCache":
-    log.trace("Utilizando para almacenamiento el servicio {type}", type=CTYPE)
+    log.trace(f"Utilizando para almacenamiento el servicio {CTYPE}")
 
 cache: Cache = Cache(config=CACHE_CONFIG)
 
