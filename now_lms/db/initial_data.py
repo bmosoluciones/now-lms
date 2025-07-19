@@ -221,6 +221,7 @@ def crear_curso_demo():
         fecha_fin=datetime.today() + timedelta(days=14),
         promocionado=True,
         fecha_promocionado=datetime.today(),
+        plantilla_certificado="horizontal",
     )
 
     database.session.add(demo)
@@ -480,6 +481,7 @@ def crear_certificados():
         css=CSS,
         titulo="Demo Certificado",
         descripcion="Puede verificar la generación de PDF con este certificado.",
+        code="demo",
         habilitado=False,
         publico=False,
     )
@@ -494,6 +496,7 @@ def crear_certificados():
             descripcion=certificado[1],
             html=certificado[2],
             css=certificado[3],
+            code=certificado[4],
             habilitado=True,
             publico=True,
         )
@@ -506,7 +509,7 @@ def crear_certificacion():
         id="01JS2NK7NJ74DBSHD83MGRH5HE",
         usuario=environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin",
         curso="now",
-        certificado="1234567890",
+        certificado="demo",
     )
     database.session.add(certificacion)
     database.session.commit()
@@ -562,6 +565,7 @@ def crear_curso_predeterminado():
         auditable=True,
         precio=100,
         certificado=True,
+        plantilla_certificado="horizontal",
     )
     free = Curso(
         nombre="Free Course",
@@ -590,6 +594,7 @@ def crear_curso_predeterminado():
         auditable=False,
         precio=0,
         certificado=True,
+        plantilla_certificado="horizontal",
     )
     database.session.add(demo)
     database.session.add(form)

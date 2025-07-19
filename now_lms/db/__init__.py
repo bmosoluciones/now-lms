@@ -178,6 +178,9 @@ class Curso(database.Model, BaseTabla):
     auditable = database.Column(database.Boolean())
     precio = database.Column(database.Numeric())
     certificado = database.Column(database.Boolean())
+    plantilla_certificado = database.Column(
+        database.String(10), database.ForeignKey("certificado.code"), nullable=True, index=True
+    )
 
 
 class CursoRecursoDescargable(database.Model, BaseTabla):
@@ -235,7 +238,19 @@ class CursoRecursoAvance(database.Model, BaseTabla):
     recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False, index=True)
     usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     completado = database.Column(database.Boolean(), default=False)
-    tipo = database.Column(database.String(10))
+    requerido = database.Column(database.String(10))
+
+
+class CursoUsuarioAvance(database.Model, BaseTabla):
+    """Control del avance de un usuario en un curso."""
+
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
+    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    recursos_requeridos = database.Column(database.Integer, default=0)  # Cantidad de recursos requeridos
+    recursos_completados = database.Column(database.Integer, default=0)  # Cantidad de recursos completados
+    avance = database.Column(database.Float(asdecimal=True), default=0.0)  # Porcentaje de avance del curso
+    completado = database.Column(database.Boolean(), default=False)  # Indica si el curso ha sido completado
+    fecha_inicio = database.Column(database.DateTime, default=database.func.now())  # Fecha de inicio del curso
 
 
 class CursoRecursoPregunta(database.Model, BaseTabla):
@@ -467,6 +482,7 @@ class Recurso(database.Model, BaseTabla):
 class Certificado(database.Model, BaseTabla):
     """Plantilla para generar un certificado."""
 
+    code = database.Column(database.String(10), unique=True, index=True)
     titulo = database.Column(database.String(50))
     descripcion = database.Column(database.String(500))
     html = database.Column(database.String(10000))

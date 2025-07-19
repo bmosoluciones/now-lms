@@ -496,5 +496,5 @@ def generate_template_choices():
     templates = database.session.execute(database.select(Certificado)).all()
     choices = []
     for template in templates:
-        choices.append((template[0].id, template[0].titulo))
+        choices.append((template[0].code, template[0].titulo))
     return choices

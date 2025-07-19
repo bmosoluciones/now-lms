@@ -219,7 +219,7 @@ def certificacion(ulid: str):
     certificacion = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
     certificacion = certificacion[0]
 
-    certificado = database.session.execute(database.select(Certificado).filter_by(id=certificacion.certificado)).first()
+    certificado = database.session.execute(database.select(Certificado).filter_by(code=certificacion.certificado)).first()
     certificado = certificado[0]
 
     curso = database.session.execute(database.select(Curso).filter_by(codigo=certificacion.curso)).first()
@@ -289,7 +289,7 @@ def certificado(ulid):
     certificacion = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
     certificacion = certificacion[0]
 
-    certificado = database.session.execute(database.select(Certificado).filter_by(id=certificacion.certificado)).first()
+    certificado = database.session.execute(database.select(Certificado).filter_by(code=certificacion.certificado)).first()
     certificado = certificado[0]
 
     curso = database.session.execute(database.select(Curso).filter_by(codigo=certificacion.curso)).first()

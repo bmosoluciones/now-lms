@@ -143,6 +143,9 @@ class CurseForm(BaseForm):
     pagado = BooleanField(validators=[])
     auditable = BooleanField(validators=[])
     certificado = BooleanField(validators=[])
+    plantilla_certificado = SelectField(
+        "Plantilla de certificado",
+    )
     precio = DecimalField(validators=[])
 
 

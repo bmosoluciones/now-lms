@@ -159,7 +159,7 @@ def _crear_indice_avance_curso(course_code):
                 curso=course_code,
                 recurso=recurso.id,
                 completado=False,
-                tipo=recurso.tipo,
+                requerido=recurso.requerido,
             )
             database.session.add(avance)
             database.session.commit()
@@ -290,7 +290,10 @@ def administrar_curso(course_code):
 @perfil_requerido("instructor")
 def nuevo_curso():
     """Formulario para crear un nuevo usuario."""
+    from now_lms.db.tools import generate_template_choices
+
     form = CurseForm()
+    form.plantilla_certificado.choices = generate_template_choices()
     if form.validate_on_submit() or request.method == "POST":
         nuevo_curso_ = Curso(
             # Información básica
@@ -315,6 +318,7 @@ def nuevo_curso():
             pagado=form.pagado.data,
             auditable=form.auditable.data,
             certificado=form.certificado.data,
+            plantilla_certificado=form.plantilla_certificado.data,
             precio=form.precio.data,
             # Información adicional
             creado_por=current_user.usuario,
@@ -356,8 +360,13 @@ def nuevo_curso():
 def editar_curso(course_code):
     """Editar pagina del curso."""
 
-    curso_a_editar = Curso.query.filter_by(codigo=course_code).first()
+    from now_lms.db.tools import generate_template_choices
+
     form = CurseForm()
+    form.plantilla_certificado.choices = generate_template_choices()
+
+    curso_a_editar = Curso.query.filter_by(codigo=course_code).first()
+
     form.nombre.data = curso_a_editar.nombre
     form.codigo.data = curso_a_editar.codigo
     form.descripcion_corta.data = curso_a_editar.descripcion_corta
@@ -373,6 +382,7 @@ def editar_curso(course_code):
     form.pagado.data = curso_a_editar.pagado
     form.auditable.data = curso_a_editar.auditable
     form.certificado.data = curso_a_editar.certificado
+    form.plantilla_certificado.data = curso_a_editar.plantilla_certificado
     form.precio.data = curso_a_editar.precio
     curso_url = url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code)
     if form.validate_on_submit() or request.method == "POST":
@@ -397,6 +407,7 @@ def editar_curso(course_code):
         curso_a_editar.pagado = form.pagado.data
         curso_a_editar.auditable = form.auditable.data
         curso_a_editar.certificado = form.certificado.data
+        curso_a_editar.plantilla_certificado = form.plantilla_certificado.data
         curso_a_editar.precio = form.precio.data
         # Información de marketing
         if curso_a_editar.promocionado is False and form.promocionado.data is True:
@@ -626,6 +637,72 @@ def pagina_recurso(curso_id, resource_type, codigo):
         return abort(403)
 
 
+def _emitir_certificado(curso_id, usuario, plantilla):
+    """Emite un certificado para un usuario en un curso."""
+
+    from now_lms.db import Certificacion
+
+    certificado = Certificacion(
+        curso=curso_id,
+        usuario=usuario,
+        certificado=plantilla,
+    )
+    database.session.add(certificado)
+    database.session.commit()
+    flash("Certificado de finalización emitido.", "success")
+
+
+def _actualizar_avance_curso(curso_id, usuario):
+    """Actualiza el avance de un usuario en un curso."""
+    from now_lms.db import CursoUsuarioAvance, CursoRecursoAvance
+
+    _avance = (
+        database.session.query(CursoUsuarioAvance)
+        .filter(CursoUsuarioAvance.curso == curso_id, CursoUsuarioAvance.usuario == usuario)
+        .first()
+    )
+
+    if not _avance:
+        _avance = CursoUsuarioAvance(
+            curso=curso_id,
+            usuario=usuario,
+            recursos_requeridos=0,
+            recursos_completados=0,
+        )
+        database.session.add(_avance)
+        database.session.commit()
+
+    _recursos_requeridos = (
+        database.session.query(CursoRecurso)
+        .filter(CursoRecurso.curso == curso_id, CursoRecurso.requerido == "required")
+        .count()
+    )
+
+    _recursos_completados = (
+        database.session.query(CursoRecursoAvance)
+        .filter(
+            CursoRecursoAvance.curso == curso_id,
+            CursoRecursoAvance.usuario == usuario,
+            CursoRecursoAvance.completado == True,  # noqa: E712
+            CursoRecursoAvance.requerido == "required",
+        )
+        .count()
+    )
+    log.warning("Recursos requeridos: %s, Completados: %s", _recursos_requeridos, _recursos_completados)
+
+    _avance.recursos_requeridos = _recursos_requeridos
+    _avance.recursos_completados = _recursos_completados
+    _avance.avance = (_recursos_completados / _recursos_requeridos) * 100
+    if _avance.avance >= 100:
+        _avance.completado = True
+        flash("Curso completado", "success")
+        curso = database.session.query(Curso).filter(Curso.codigo == curso_id).first()
+        log.warning(curso)
+        if curso.certificado:
+            _emitir_certificado(curso_id, usuario, curso.plantilla_certificado)
+    database.session.commit()
+
+
 @course.route("/course/<curso_id>/resource/<resource_type>/<codigo>/complete")
 @login_required
 @perfil_requerido("student")
@@ -645,7 +722,6 @@ def marcar_recurso_completado(curso_id, resource_type, codigo):
                     )
                     .first()
                 )
-                log.warning(avance)
                 if avance:
                     avance.completado = True
                     database.session.commit()
@@ -661,7 +737,7 @@ def marcar_recurso_completado(curso_id, resource_type, codigo):
                     database.session.add(avance)
                     database.session.commit()
                     flash("Recurso marcado como completado.", "success")
-                # Redirige a la pagina del recurso.
+                _actualizar_avance_curso(curso_id, current_user.usuario)
                 return redirect(
                     url_for("course.pagina_recurso", curso_id=curso_id, resource_type=resource_type, codigo=codigo)
                 )

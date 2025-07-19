@@ -175,3 +175,21 @@ def test_user_registration_to_free_course_enroll(lms_application, request):
                 recurso = client.get("/course/free/resource/youtube/02HPB3AP3QNVK9ES6JGG5YK7CA", follow_redirects=True)
                 assert recurso.status_code == 200
                 assert b"Recurso Completado" in recurso.data
+
+                # User must be able to complete the course
+                from now_lms.db import CursoUsuarioAvance
+
+                course_progress = database.session.execute(
+                    database.select(CursoUsuarioAvance).filter_by(usuario="bmercado@nowlms.com", curso="free")
+                ).first()[0]
+                assert course_progress is not None
+                assert course_progress.completado is True
+
+                # A certificate must be issued
+                from now_lms.db import Certificacion
+
+                certificate = database.session.execute(
+                    database.select(Certificacion).filter_by(usuario="bmercado@nowlms.com", curso="free")
+                ).first()[0]
+                assert certificate is not None
+                assert certificate.certificado == "horizontal"
