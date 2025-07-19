@@ -60,7 +60,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
             </div>
 
             {{ r_macros.nav_footer(indice=indice, curso=recurso.curso, type=recurso.tipo, codigo=recurso.id,
-            avance=verificar_avance_recurso(recurso.id, current_user.id)) }}
+            recurso_completado=recurso_completado) }}
         </main>
     </body>
 </html>

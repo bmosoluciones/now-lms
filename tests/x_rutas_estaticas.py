@@ -772,7 +772,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/course/test/resource/mp3/01HNZYDA9WKT2FHCBZSFV7JQBR/complete",
         no_session=302,
-        admin=302,
+        admin=403,
         user=403,
         moderator=403,
         instructor=403,

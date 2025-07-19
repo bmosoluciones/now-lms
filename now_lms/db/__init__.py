@@ -232,12 +232,9 @@ class CursoRecursoAvance(database.Model, BaseTabla):
     """
 
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    seccion = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False, index=True)
     recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False, index=True)
     usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
-    # pendiente, iniciado, completado
-    estado = database.Column(database.String(15))
-    avance = database.Column(database.Float(asdecimal=True))
+    completado = database.Column(database.Boolean(), default=False)
 
 
 class CursoRecursoPregunta(database.Model, BaseTabla):

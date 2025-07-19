@@ -551,6 +551,7 @@ def cambiar_seccion_publico():
 @course.route("/course/<curso_id>/resource/<resource_type>/<codigo>")
 def pagina_recurso(curso_id, resource_type, codigo):
     """Pagina de un recurso."""
+    from now_lms.db.tools import verifica_estudiante_asignado_a_curso
 
     CURSO = database.session.query(Curso).filter(Curso.codigo == curso_id).first()
     RECURSO = database.session.query(CursoRecurso).filter(CursoRecurso.id == codigo).first()
@@ -560,9 +561,40 @@ def pagina_recurso(curso_id, resource_type, codigo):
     TEMPLATE = "learning/resources/" + TEMPLATES_BY_TYPE[resource_type]
     INDICE = crear_indice_recurso(codigo)
 
-    if (current_user.is_authenticated and current_user.tipo == "admin") or RECURSO.publico is True:
+    if current_user.is_authenticated:
+        if current_user.tipo == "admin":
+            show_resource = True
+        elif current_user.tipo == "student":
+            if verifica_estudiante_asignado_a_curso(curso_id):
+                show_resource = True
+            else:
+                show_resource = False
+        else:
+            show_resource = False
+    else:
+        if RECURSO.publico is True:
+            # Si el recurso es público, se permite el acceso sin autenticación.
+            show_resource = True
+        else:
+            show_resource = False
+
+    if show_resource:
+        resource_progress = database.session.execute(
+            database.select(CursoRecursoAvance).filter_by(usuario=current_user.usuario, curso=curso_id, recurso=codigo)
+        ).first()
+        if resource_progress:
+            recurso_completado = resource_progress[0].completado
+        else:
+            recurso_completado = False
         return render_template(
-            TEMPLATE, curso=CURSO, recurso=RECURSO, recursos=RECURSOS, seccion=SECCION, secciones=SECCIONES, indice=INDICE
+            TEMPLATE,
+            curso=CURSO,
+            recurso=RECURSO,
+            recursos=RECURSOS,
+            seccion=SECCION,
+            secciones=SECCIONES,
+            indice=INDICE,
+            recurso_completado=recurso_completado,
         )
     else:
         flash(NO_AUTORIZADO_MSG, "warning")
@@ -574,22 +606,29 @@ def pagina_recurso(curso_id, resource_type, codigo):
 @perfil_requerido("student")
 def marcar_recurso_completado(curso_id, resource_type, codigo):
     """Registra avance de un 100% en un recurso."""
+    from now_lms.db.tools import verifica_estudiante_asignado_a_curso
 
-    if current_user.is_authenticated and current_user.tipo == "admin":
-        RECURSO = database.session.query(CursoRecurso).filter(CursoRecurso.id == codigo).first()
-
-        if RECURSO:
-            avance = CursoRecursoAvance(
-                curso=curso_id,
-                seccion=RECURSO.seccion,
-                recurso=RECURSO.id,
-                usuario=current_user.id,
-                avance=100,
-            )
-            database.session.add(avance)
-            database.session.commit()
-
-        return redirect(url_for("course.pagina_recurso", curso_id=curso_id, resource_type=resource_type, codigo=RECURSO.id))
+    if current_user.is_authenticated:
+        if current_user.tipo == "student":
+            if verifica_estudiante_asignado_a_curso(curso_id):
+                avance = CursoRecursoAvance(
+                    usuario=current_user.usuario,
+                    curso=curso_id,
+                    recurso=codigo,
+                    completado=True,
+                )
+                database.session.add(avance)
+                database.session.commit()
+                flash("Recurso marcado como completado.", "success")
+                return redirect(
+                    url_for("course.pagina_recurso", curso_id=curso_id, resource_type=resource_type, codigo=codigo)
+                )
+            else:
+                flash(NO_AUTORIZADO_MSG, "warning")
+                return abort(403)
+        else:
+            flash(NO_AUTORIZADO_MSG, "warning")
+            return abort(403)
     else:
         flash(NO_AUTORIZADO_MSG, "warning")
         return abort(403)
