@@ -210,8 +210,8 @@ class CursoRecurso(database.Model, BaseTabla):
     descripcion = database.Column(database.String(1000), nullable=False)
     # Uno de: mp3, pdf, meet, img, text, html, link, slides, youtube
     tipo = database.Column(database.String(150), nullable=False)
-    # 1: Requerido, 2: Optional, 3: Alternativo
-    requerido = database.Column(database.Integer(), default=1)
+    # required: Requerido, optional: Optional, substitute: Alternativo
+    requerido = database.Column(database.String(10), default="required")
     url = database.Column(database.String(250), unique=False)
     fecha = database.Column(database.Date())
     hora_inicio = database.Column(database.Time())
@@ -235,6 +235,7 @@ class CursoRecursoAvance(database.Model, BaseTabla):
     recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False, index=True)
     usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     completado = database.Column(database.Boolean(), default=False)
+    tipo = database.Column(database.String(10))
 
 
 class CursoRecursoPregunta(database.Model, BaseTabla):

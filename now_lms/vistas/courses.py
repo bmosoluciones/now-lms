@@ -141,6 +141,30 @@ def curso(course_code):
         abort(403)
 
 
+def _crear_indice_avance_curso(course_code):
+    """Crea el índice de avance del curso."""
+
+    from now_lms.db import CursoRecursoAvance, CursoRecurso
+
+    recursos = database.session.execute(
+        database.select(CursoRecurso).filter(CursoRecurso.curso == course_code).order_by(CursoRecurso.indice)
+    ).all()
+    usuario = current_user.usuario
+
+    if recursos:
+        for recurso in recursos:
+            recurso = recurso[0]
+            avance = CursoRecursoAvance(
+                usuario=usuario,
+                curso=course_code,
+                recurso=recurso.id,
+                completado=False,
+                tipo=recurso.tipo,
+            )
+            database.session.add(avance)
+            database.session.commit()
+
+
 @course.route("/course/<course_code>/enroll", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("student")
@@ -187,6 +211,7 @@ def course_enroll(course_code):
             )
             database.session.add(registro)
             database.session.commit()
+            _crear_indice_avance_curso(course_code)
             return redirect(url_for("course.tomar_curso", course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear el registro de pago.", "warning")
@@ -611,15 +636,32 @@ def marcar_recurso_completado(curso_id, resource_type, codigo):
     if current_user.is_authenticated:
         if current_user.tipo == "student":
             if verifica_estudiante_asignado_a_curso(curso_id):
-                avance = CursoRecursoAvance(
-                    usuario=current_user.usuario,
-                    curso=curso_id,
-                    recurso=codigo,
-                    completado=True,
+                avance = (
+                    database.session.query(CursoRecursoAvance)
+                    .filter(
+                        CursoRecursoAvance.usuario == current_user.usuario,
+                        CursoRecursoAvance.curso == curso_id,
+                        CursoRecursoAvance.recurso == codigo,
+                    )
+                    .first()
                 )
-                database.session.add(avance)
-                database.session.commit()
-                flash("Recurso marcado como completado.", "success")
+                log.warning(avance)
+                if avance:
+                    avance.completado = True
+                    database.session.commit()
+                    flash("Recurso marcado como completado.", "success")
+                else:
+                    avance = CursoRecursoAvance(
+                        usuario=current_user.usuario,
+                        curso=curso_id,
+                        recurso=codigo,
+                        completado=True,
+                        tipo=resource_type,
+                    )
+                    database.session.add(avance)
+                    database.session.commit()
+                    flash("Recurso marcado como completado.", "success")
+                # Redirige a la pagina del recurso.
                 return redirect(
                     url_for("course.pagina_recurso", curso_id=curso_id, resource_type=resource_type, codigo=codigo)
                 )

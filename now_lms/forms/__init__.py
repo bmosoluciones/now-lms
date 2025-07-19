@@ -153,7 +153,9 @@ class CursoSeccionForm(BaseForm):
 class CursoRecursoForm(BaseForm):
     """Base para los recursos del curso."""
 
-    requerido = SelectField("Requerido", choices=[(1, "Requerido"), (2, "Opcional"), (3, "Alternativo")])
+    requerido = SelectField(
+        "Requerido", choices=[("required", "Requerido"), ("optional", "Opcional"), ("substitute", "Alternativo")]
+    )
 
 
 class CursoRecursoVideoYoutube(CursoRecursoForm):
