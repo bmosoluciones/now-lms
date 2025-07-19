@@ -16,6 +16,7 @@
 # - William José Moreno Reyes
 
 from os import name
+from re import A
 import pytest
 
 
@@ -38,53 +39,139 @@ def lms_application():
             "PRESERVE_CONTEXT_ON_EXCEPTION": True,
             "SQLALCHEMY_ECHO": True,
             "SQLALCHEMY_DATABASE_URI": "sqlite://",
+            "MAIL_SUPPRESS_SEND": True,
         }
     )
 
     yield app
 
 
-def test_contraseña_incorrecta(lms_application, request):
-
-    if request.config.getoption("--slow") == "True":
-
+def test_user_registration_to_free_course_enroll(lms_application, request):
+    if request.config.getoption("--use-cases") == "True":
         from now_lms import database, initial_setup
-        from now_lms.auth import validar_acceso
+        from now_lms.db import Curso, Usuario
 
         with lms_application.app_context():
-            from flask_login import current_user
-            from flask_login.mixins import AnonymousUserMixin
-
             database.drop_all()
             initial_setup(with_tests=False, with_examples=False)
-
             with lms_application.test_client() as client:
-                # Keep the session alive until the with clausule closes
-                client.post("/user/login", data={"usuario": "lms-admin", "acceso": "lms_admin"})
-                assert isinstance(current_user, AnonymousUserMixin)
-                assert validar_acceso("lms-admn", "lms-admin") is False
+                post = client.post(
+                    "/user/logon",
+                    data={
+                        "nombre": "Brenda",
+                        "apellido": "Mercado",
+                        "correo_electronico": "bmercado@nowlms.com",
+                        "acceso": "bmercado",
+                    },
+                    follow_redirects=True,
+                )
+                assert post.status_code == 200
 
+                # User must be created
+                user = database.session.execute(
+                    database.select(Usuario).filter_by(correo_electronico="bmercado@nowlms.com")
+                ).first()[0]
+                assert user is not None
+                assert user.activo is False
 
-def test_generar_pdf(lms_application, request):
+                # User must be able to verify his account by email
+                from now_lms.auth import generate_confirmation_token, validate_confirmation_token, send_confirmation_email
 
-    if name == "nt":
-        pytest.skip("PDF generation likelly to fail in Windows.")
+                token = generate_confirmation_token("bmercado@nowlms.com")
+                send_confirmation_email(user)  # Just to cover the code
+                assert validate_confirmation_token(token) is True
+                assert user.activo is True
 
-    else:
+                # User must be able to navigate to the free course
+                client.get("/course/free/view", follow_redirects=True)
+                assert b"Free Course" in client.get("/course/free/view").data
+                assert b"Iniciar Sesi" in client.get("/course/free/view").data
+                assert b"Crear Cuenta" in client.get("/course/free/view").data
 
-        if request.config.getoption("--testpdf") == "True":
+                # Once active, cliente must be able to login
+                from flask_login import current_user
 
-            from now_lms import initial_setup
-            from now_lms.db import database
+                client.post("/user/login", data={"usuario": "bmercado@nowlms.com", "acceso": "bmercado"})
+                assert current_user.is_authenticated
+                assert current_user.tipo == "student"
 
-            with lms_application.app_context():
+                # User must be able to enroll to a free course
+                view_course = client.get("/course/free/view", follow_redirects=True)
+                assert view_course.status_code == 200
+                assert b"Free Course" in view_course.data
+                assert b"Inscribirse al Curso" in view_course.data
+                assert b"/course/free/enroll" in view_course.data
+                enroll_view = client.get("/course/free/enroll")
+                assert enroll_view.status_code == 200
+                assert b"Esta a punto de inscribirse al curso FREE - FREE COURSE" in enroll_view.data
+                assert b"Free Course" in enroll_view.data
+                assert b"This is a free course." in enroll_view.data
+                assert b"Inscribirse al curso" in enroll_view.data
+                enroll = client.post(
+                    "/course/free/enroll",
+                    data={
+                        "nombre": "Brenda",
+                        "apellido": "Mercado",
+                        "correo_electronico": "bmercado@nowlms.com",
+                        "direccion1": "Calle Falsa 123",
+                        "direccion2": "Apto. 456",
+                        "pais": "Mexico",
+                        "provincia": "CDMX",
+                        "codigo_postal": "01234",
+                    },
+                    follow_redirects=True,
+                )
+                assert enroll.status_code == 200
 
-                database.drop_all()
-                initial_setup(with_tests=False, with_examples=False)
+                # A payment must be created
+                from now_lms.db import Pago
 
-                from now_lms.misc import check_generate_pdf
+                payment = database.session.execute(
+                    database.select(Pago).filter_by(usuario="bmercado@nowlms.com", curso="free")
+                ).first()[0]
+                assert payment is not None
+                assert payment.estado == "completed"
 
-                check_generate_pdf()
+                # User must be enrolled to the course
+                from now_lms.db import EstudianteCurso
 
-        else:
-            pytest.skip("Not running slow test.")
+                enrollment = database.session.execute(
+                    database.select(EstudianteCurso).filter_by(usuario="bmercado@nowlms.com", curso="free")
+                ).first()[0]
+                assert enrollment is not None
+                assert enrollment.vigente is True
+
+                # User must be able to see the course
+                course_view = client.get("/course/free/view", follow_redirects=True)
+                assert course_view.status_code == 200
+                assert b"Free Course" in course_view.data
+                assert b"Inscribirse al Curso" not in course_view.data
+
+                # User must be able to access the course content
+                content_view = client.get("/course/free/resource/youtube/02HPB3AP3QNVK9ES6JGG5YK7CA", follow_redirects=True)
+                assert content_view.status_code == 200
+                assert b"Free Course" in content_view.data
+                assert b"Contenido del Curso" in content_view.data
+                assert b"Marcar Completado" in content_view.data
+
+                # User must be able to mark the content as completed
+                complete_resource = client.get(
+                    "/course/free/resource/youtube/02HPB3AP3QNVK9ES6JGG5YK7CA/complete", follow_redirects=True
+                )
+                assert complete_resource.status_code == 200
+                assert b"Recurso marcado como completado" in complete_resource.data
+
+                # Recurso must be marked as completed
+                from now_lms.db import CursoRecursoAvance
+
+                resource_progress = database.session.execute(
+                    database.select(CursoRecursoAvance).filter_by(
+                        usuario="bmercado@nowlms.com", curso="free", recurso="02HPB3AP3QNVK9ES6JGG5YK7CA"
+                    )
+                ).first()[0]
+                assert resource_progress is not None
+                assert resource_progress.completado is True
+
+                recurso = client.get("/course/free/resource/youtube/02HPB3AP3QNVK9ES6JGG5YK7CA", follow_redirects=True)
+                assert recurso.status_code == 200
+                assert b"Recurso Completado" in recurso.data

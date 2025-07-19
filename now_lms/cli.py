@@ -21,11 +21,10 @@ Command line interface for NOW LMS.
 
 """
 
-from os import cpu_count, environ
-
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
+from os import cpu_count, environ
 from pathlib import Path
 
 # ---------------------------------------------------------------------------------------
@@ -198,6 +197,14 @@ def path():  # pragma: no cover
         click.echo(f"  Templates Directory: {info._templates_dir}")
 
 
+@info.command()
+def routes():
+    """List all the routes defined in the application."""
+    with lms_app.app_context():
+        for rule in lms_app.url_map.iter_rules():
+            click.echo(f"{rule.endpoint} -> {rule.rule}")
+
+
 @lms_app.cli.command()
 def serve():  # pragma: no cover
     """Serve NOW LMS with the default WSGi server."""
@@ -218,7 +225,7 @@ def serve():  # pragma: no cover
         else:
             THREADS = (cpu_count() * 2) + 1
 
-    log.info("Iniciando servidor WSGI en puerto {puerto} con {threads} hilos.", puerto=PORT, threads=THREADS)
+    log.info(f"Iniciando servidor WSGI en puerto {PORT} con {THREADS} hilos.")
 
     with lms_app.app_context():
         server(app=lms_app, port=int(PORT), threads=THREADS)

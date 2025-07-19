@@ -64,7 +64,9 @@ from now_lms.db import (
     CursoSeccion,
     DocenteCurso,
     Etiqueta,
+    Pago,
     Recurso,
+    Usuario,
     database,
 )
 from now_lms.db.tools import crear_indice_recurso
@@ -139,15 +141,57 @@ def curso(course_code):
         abort(403)
 
 
-@course.route("/course/<course_code>/enroll")
+@course.route("/course/<course_code>/enroll", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("student")
 def course_enroll(course_code):
     """Pagina para inscribirse a un curso."""
+    from now_lms.db import EstudianteCurso
+    from now_lms.forms import PagoForm
 
     _curso = Curso.query.filter_by(codigo=course_code).first()
+    _usuario = Usuario.query.filter_by(usuario=current_user.usuario).first()
 
-    return render_template("learning/curso/enroll.html", curso=_curso)
+    _modo = request.args.get("modo", "")
+
+    form = PagoForm()
+    form.nombre.data = _usuario.nombre
+    form.apellido.data = _usuario.apellido
+    form.correo_electronico.data = _usuario.correo_electronico
+
+    if form.validate_on_submit() or request.method == "POST":
+        pago = Pago()
+        pago.usuario = _usuario.usuario
+        pago.curso = _curso.codigo
+        pago.nombre = form.nombre.data
+        pago.apellido = form.apellido.data
+        pago.correo_electronico = form.correo_electronico.data
+        pago.direccion1 = form.direccion1.data
+        pago.direccion2 = form.direccion2.data
+        pago.provincia = form.provincia.data
+        pago.codigo_postal = form.codigo_postal.data
+        pago.pais = form.pais.data
+        if not _curso.pagado:
+            pago.estado = "completed"
+        if _modo == "audit" and _curso.auditable:
+            pago.audit = True
+            pago.estado = "pending"
+        try:
+            database.session.add(pago)
+            database.session.flush()
+            registro = EstudianteCurso(
+                curso=pago.curso,
+                usuario=pago.usuario,
+                vigente=True,
+                pago=pago.id,  # Relaciona el pago con el registro del curso.
+            )
+            database.session.add(registro)
+            database.session.commit()
+            return redirect(url_for("course.tomar_curso", course_code=course_code))
+        except OperationalError:  # pragma: no cover
+            flash("Hubo en error al crear el registro de pago.", "warning")
+            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+    return render_template("learning/curso/enroll.html", curso=_curso, usuario=_usuario, form=form)
 
 
 @course.route("/course/<course_code>/take")
@@ -224,21 +268,31 @@ def nuevo_curso():
     form = CurseForm()
     if form.validate_on_submit() or request.method == "POST":
         nuevo_curso_ = Curso(
+            # Información básica
             nombre=form.nombre.data,
             codigo=form.codigo.data,
             descripcion=form.descripcion.data,
+            descripcion_corta=form.descripcion_corta.data,
+            nivel=form.nivel.data,
+            duracion=form.duracion.data,
+            # Estado de publicación
             estado="draft",
             publico=form.publico.data,
+            # Modalidad
+            modalidad=form.modalidad.data,
+            # Disponibilidad de cupos
+            limitado=form.limitado.data,
+            capacidad=form.capacidad.data,
+            # Fechas de inicio y fin
+            fecha_inicio=form.fecha_inicio.data,
+            fecha_fin=form.fecha_fin.data,
+            # Información de pago
+            pagado=form.pagado.data,
             auditable=form.auditable.data,
             certificado=form.certificado.data,
             precio=form.precio.data,
-            capacidad=form.capacidad.data,
-            fecha_inicio=form.fecha_inicio.data,
-            fecha_fin=form.fecha_fin.data,
-            duracion=form.duracion.data,
+            # Información adicional
             creado_por=current_user.usuario,
-            nivel=form.nivel.data,
-            pagado=form.pagado.data,
         )
         try:
             database.session.add(nuevo_curso_)
@@ -268,7 +322,7 @@ def nuevo_curso():
             flash("Hubo en error al crear su curso.", "warning")
             return redirect("/instructor")
     else:  # pragma: no cover
-        return render_template("learning/nuevo_curso.html", form=form)
+        return render_template("learning/nuevo_curso.html", form=form, curso=None, edit=False)
 
 
 @course.route("/course/<course_code>/edit", methods=["GET", "POST"])
@@ -278,27 +332,53 @@ def editar_curso(course_code):
     """Editar pagina del curso."""
 
     curso_a_editar = Curso.query.filter_by(codigo=course_code).first()
-    form = CurseForm(
-        nivel=curso_a_editar.nivel, descripcion=curso_a_editar.descripcion, promocionado=curso_a_editar.promocionado
-    )
+    form = CurseForm()
+    form.nombre.data = curso_a_editar.nombre
+    form.codigo.data = curso_a_editar.codigo
+    form.descripcion_corta.data = curso_a_editar.descripcion_corta
+    form.descripcion.data = curso_a_editar.descripcion
+    form.nivel.data = curso_a_editar.nivel
+    form.duracion.data = curso_a_editar.duracion
+    form.publico.data = curso_a_editar.publico
+    form.modalidad.data = curso_a_editar.modalidad
+    form.limitado.data = curso_a_editar.limitado
+    form.capacidad.data = curso_a_editar.capacidad
+    form.fecha_inicio.data = curso_a_editar.fecha_inicio
+    form.fecha_fin.data = curso_a_editar.fecha_fin
+    form.pagado.data = curso_a_editar.pagado
+    form.auditable.data = curso_a_editar.auditable
+    form.certificado.data = curso_a_editar.certificado
+    form.precio.data = curso_a_editar.precio
     curso_url = url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code)
     if form.validate_on_submit() or request.method == "POST":
-        if curso_a_editar.promocionado is False and form.promocionado.data is True:
-            curso_a_editar.promocionado = datetime.today()
+        # Información básica
         curso_a_editar.nombre = form.nombre.data
+        curso_a_editar.codigo = form.codigo.data
+        curso_a_editar.descripcion_corta = form.descripcion_corta.data
         curso_a_editar.descripcion = form.descripcion.data
+        curso_a_editar.nivel = form.nivel.data
+        curso_a_editar.duracion = form.duracion.data
+        # Estado de publicación
         curso_a_editar.publico = form.publico.data
+        # Modalidad
+        curso_a_editar.modalidad = form.modalidad.data
+        # Disponibilidad de cupos
+        curso_a_editar.limitado = form.limitado.data
+        curso_a_editar.capacidad = form.capacidad.data
+        # Fechas de inicio y fin
+        curso_a_editar.fecha_inicio = form.fecha_inicio.data
+        curso_a_editar.fecha_fin = form.fecha_fin.data
+        # Información de pago
+        curso_a_editar.pagado = form.pagado.data
         curso_a_editar.auditable = form.auditable.data
         curso_a_editar.certificado = form.certificado.data
         curso_a_editar.precio = form.precio.data
-        curso_a_editar.capacidad = form.capacidad.data
-        curso_a_editar.fecha_inicio = form.fecha_inicio.data
-        curso_a_editar.fecha_fin = form.fecha_fin.data
-        curso_a_editar.duracion = form.duracion.data
-        curso_a_editar.modificado_por = current_user.usuario
-        curso_a_editar.nivel = form.nivel.data
+        # Información de marketing
+        if curso_a_editar.promocionado is False and form.promocionado.data is True:
+            curso_a_editar.promocionado = datetime.today()
         curso_a_editar.promocionado = form.promocionado.data
-        curso_a_editar.pagado = form.pagado.data
+        # Información adicional
+        curso_a_editar.modificado_por = current_user.usuario
 
         try:
             database.session.commit()
@@ -317,7 +397,7 @@ def editar_curso(course_code):
             flash("Hubo en error al actualizar el curso.", "warning")
             return redirect(curso_url)
 
-    return render_template("learning/edit_curso.html", form=form, curso=curso_a_editar)
+    return render_template("learning/nuevo_curso.html", form=form, curso=curso_a_editar, edit=True)
 
 
 @course.route("/course/<course_code>/new_seccion", methods=["GET", "POST"])
@@ -471,6 +551,7 @@ def cambiar_seccion_publico():
 @course.route("/course/<curso_id>/resource/<resource_type>/<codigo>")
 def pagina_recurso(curso_id, resource_type, codigo):
     """Pagina de un recurso."""
+    from now_lms.db.tools import verifica_estudiante_asignado_a_curso
 
     CURSO = database.session.query(Curso).filter(Curso.codigo == curso_id).first()
     RECURSO = database.session.query(CursoRecurso).filter(CursoRecurso.id == codigo).first()
@@ -480,9 +561,40 @@ def pagina_recurso(curso_id, resource_type, codigo):
     TEMPLATE = "learning/resources/" + TEMPLATES_BY_TYPE[resource_type]
     INDICE = crear_indice_recurso(codigo)
 
-    if (current_user.is_authenticated and current_user.tipo == "admin") or RECURSO.publico is True:
+    if current_user.is_authenticated:
+        if current_user.tipo == "admin":
+            show_resource = True
+        elif current_user.tipo == "student":
+            if verifica_estudiante_asignado_a_curso(curso_id):
+                show_resource = True
+            else:
+                show_resource = False
+        else:
+            show_resource = False
+    else:
+        if RECURSO.publico is True:
+            # Si el recurso es público, se permite el acceso sin autenticación.
+            show_resource = True
+        else:
+            show_resource = False
+
+    if show_resource:
+        resource_progress = database.session.execute(
+            database.select(CursoRecursoAvance).filter_by(usuario=current_user.usuario, curso=curso_id, recurso=codigo)
+        ).first()
+        if resource_progress:
+            recurso_completado = resource_progress[0].completado
+        else:
+            recurso_completado = False
         return render_template(
-            TEMPLATE, curso=CURSO, recurso=RECURSO, recursos=RECURSOS, seccion=SECCION, secciones=SECCIONES, indice=INDICE
+            TEMPLATE,
+            curso=CURSO,
+            recurso=RECURSO,
+            recursos=RECURSOS,
+            seccion=SECCION,
+            secciones=SECCIONES,
+            indice=INDICE,
+            recurso_completado=recurso_completado,
         )
     else:
         flash(NO_AUTORIZADO_MSG, "warning")
@@ -494,22 +606,29 @@ def pagina_recurso(curso_id, resource_type, codigo):
 @perfil_requerido("student")
 def marcar_recurso_completado(curso_id, resource_type, codigo):
     """Registra avance de un 100% en un recurso."""
+    from now_lms.db.tools import verifica_estudiante_asignado_a_curso
 
-    if current_user.is_authenticated and current_user.tipo == "admin":
-        RECURSO = database.session.query(CursoRecurso).filter(CursoRecurso.id == codigo).first()
-
-        if RECURSO:
-            avance = CursoRecursoAvance(
-                curso=curso_id,
-                seccion=RECURSO.seccion,
-                recurso=RECURSO.id,
-                usuario=current_user.id,
-                avance=100,
-            )
-            database.session.add(avance)
-            database.session.commit()
-
-        return redirect(url_for("course.pagina_recurso", curso_id=curso_id, resource_type=resource_type, codigo=RECURSO.id))
+    if current_user.is_authenticated:
+        if current_user.tipo == "student":
+            if verifica_estudiante_asignado_a_curso(curso_id):
+                avance = CursoRecursoAvance(
+                    usuario=current_user.usuario,
+                    curso=curso_id,
+                    recurso=codigo,
+                    completado=True,
+                )
+                database.session.add(avance)
+                database.session.commit()
+                flash("Recurso marcado como completado.", "success")
+                return redirect(
+                    url_for("course.pagina_recurso", curso_id=curso_id, resource_type=resource_type, codigo=codigo)
+                )
+            else:
+                flash(NO_AUTORIZADO_MSG, "warning")
+                return abort(403)
+        else:
+            flash(NO_AUTORIZADO_MSG, "warning")
+            return abort(403)
     else:
         flash(NO_AUTORIZADO_MSG, "warning")
         return abort(403)

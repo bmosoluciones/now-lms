@@ -52,6 +52,7 @@ from now_lms.db import (
     EtiquetaCurso,
     MailConfig,
     ModeradorCurso,
+    Pago,
     PaypalConfig,
     Programa,
     ProgramaCurso,
@@ -84,7 +85,20 @@ def verifica_moderador_asignado_a_curso(id_curso: Union[None, str] = None):
 def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
     """Si el usuario no esta asignado como estudiante al curso devuelve None."""
     if current_user.is_authenticated:
-        return EstudianteCurso.query.filter(EstudianteCurso.usuario == current_user.usuario, EstudianteCurso.curso == id_curso)
+        regitro = EstudianteCurso.query.filter(
+            EstudianteCurso.usuario == current_user.usuario, EstudianteCurso.curso == id_curso
+        ).first()
+        if regitro:
+            pago = Pago.query.filter(Pago.id == regitro.pago).first()
+            if pago:
+                if pago.estado == "completed" or pago.audit:
+                    return True
+                else:
+                    return False
+            else:
+                return False
+        else:
+            return False
     else:
         return False
 
@@ -377,15 +391,16 @@ def database_is_populated(app):
         try:
             QUERY = database_select_version(app)
             if QUERY:
-                check = database.session.execute(text(QUERY)).first()
-                log.warning("Check table curso: {check}")
-                if check is not None:
-                    return True
+                version = database.session.execute(text(QUERY)).first()
+                if version:
+                    log.debug("Database conection verified.")
+                    check = True
                 else:
-                    return False
+                    check = False
+                    log.warning(f"Check table curso: {check}")
+                return check
             else:
                 return False
-
         except AttributeError:
             return False
         except OperationalError:

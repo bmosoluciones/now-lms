@@ -101,9 +101,9 @@ def crear_cuenta():
                 nombre=form.nombre.data,
                 apellido=form.apellido.data,
                 correo_electronico=form.correo_electronico.data,
-                tipo="user",
+                tipo="student",
                 activo=False,
-                creado_por=form.usuario.data,
+                creado_por=form.correo_electronico.data,
             )
             try:
                 database.session.add(usuario_)
@@ -141,7 +141,7 @@ def crear_usuario():  # pragma: no cover
             nombre=form.nombre.data,
             apellido=form.apellido.data,
             correo_electronico=form.correo_electronico.data,
-            tipo="user",
+            tipo="student",
             activo=False,
             creado_por=current_user.usuario,
             correo_electronico_verificado=True,

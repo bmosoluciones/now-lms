@@ -1,6 +1,6 @@
 # Database setup
 
-NOW Learning Management System requires access to a database engine to store and consult data,
+NOW Learning Management System requires access to a database engine to store and consult data
 like users, courses, programs, etc, etc.
 
 We support by default SQLite, MySQL and PostgreSQL.

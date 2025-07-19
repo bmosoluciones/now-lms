@@ -1,21 +1,9 @@
 modules = ["web", "python-base-3.13", "nodejs-22"]
-run = "/home/runner/workspace/venv/bin/python -m now_lms"
+run = "LOG_LEVEL=TRACE /home/runner/workspace/venv/bin/flask run --debug --reload --port 8080 --extra-files 'now_lms/templates/'"
 
 [nix]
 channel = "stable-24_05"
-packages = [
-    "cargo",
-    "fontconfig",
-    "ghostscript",
-    "glib",
-    "harfbuzz",
-    "libiconv",
-    "libxcrypt",
-    "openssl",
-    "pango",
-    "pkg-config",
-    "rustc",
-]
+packages = ["cargo", "fontconfig", "ghostscript", "glib", "harfbuzz", "libiconv", "libxcrypt", "openssl", "pango", "pkg-config", "rustc"]
 
 [deployment]
 run = "/home/runner/workspace/venv/bin/python -m now_lms"

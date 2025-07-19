@@ -70,7 +70,10 @@ nav:
           - CentOS / Alma / Rocky: rocky.md
       - Other Deployment options:
           - Server less: dev_ops.md
-  - Configure Payments: payments.md
+  - Configure:
+      - Configure: configure.md
+      - Mail: mail.md
+      - Payments: payments.md
   - About:
       - About: faq.md
       - Releases: release.md

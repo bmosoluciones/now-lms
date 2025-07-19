@@ -177,7 +177,7 @@ rutas_estaticas = [
             "Aplicación para gestión del aprendizaje.".encode("utf-8"),
             "NOW LMS".encode("utf-8"),
             "Sistema de aprendizaje en linea.".encode("utf-8"),
-            "Welcome! This is your first course.".encode("utf-8"),
+            "This is your first course.".encode("utf-8"),
         ],
         como_user=[b"Dania", b"Mendez"],
         como_moderador=[b"Abner", b"Romero"],
@@ -772,7 +772,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/course/test/resource/mp3/01HNZYDA9WKT2FHCBZSFV7JQBR/complete",
         no_session=302,
-        admin=302,
+        admin=403,
         user=403,
         moderator=403,
         instructor=403,

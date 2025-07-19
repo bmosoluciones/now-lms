@@ -208,6 +208,7 @@ def crear_curso_demo():
     demo = Curso(
         nombre="Demo Course",
         codigo="resources",
+        descripcion_corta="Demo Course for resources types.",
         descripcion="This course will let you learn resource types.",
         estado="open",
         certificado=False,
@@ -225,6 +226,7 @@ def crear_curso_demo():
     database.session.add(demo)
     database.session.commit()
     curse_logo("resources", "11372802.jpg")
+    curse_logo("details", "11372802.jpg")
 
     ramdon1 = ULID()
     seccion_id = str(ramdon1)
@@ -517,6 +519,7 @@ def crear_curso_predeterminado():
     demo = Curso(
         nombre="OnLine Teaching 101",
         codigo="now",
+        descripcion_corta="This is your first course.",
         descripcion="Welcome! This is your first course.",
         estado="open",
         certificado=True,
@@ -532,9 +535,69 @@ def crear_curso_predeterminado():
         promocionado=True,
         fecha_promocionado=datetime.today(),
     )
+    form = Curso(
+        nombre="Course Details",
+        codigo="details",
+        descripcion_corta="This is a course details example.",
+        descripcion="#Course Details Example",
+        portada=True,
+        nivel=2,
+        duracion=40,
+        # Estado de publicación
+        estado="draft",
+        publico=True,
+        # Modalidad
+        modalidad="time_based",
+        # Disponibilidad de cupos
+        limitado=True,
+        capacidad=100,
+        # Fechas de inicio y fin
+        fecha_inicio=datetime.today() + timedelta(days=7),
+        fecha_fin=datetime.today() + timedelta(days=14),
+        # Información de marketing
+        promocionado=True,
+        fecha_promocionado=datetime.today(),
+        # Información de pago
+        pagado=True,
+        auditable=True,
+        precio=100,
+        certificado=True,
+    )
+    free = Curso(
+        nombre="Free Course",
+        codigo="free",
+        descripcion_corta="This is a free course.",
+        descripcion="#Free demo course",
+        portada=True,
+        nivel=0,
+        duracion=1,
+        # Estado de publicación
+        estado="open",
+        publico=True,
+        # Modalidad
+        modalidad="self_paced",
+        # Disponibilidad de cupos
+        limitado=False,
+        capacidad=0,
+        # Fechas de inicio y fin
+        fecha_inicio=datetime.today() + timedelta(days=7),
+        fecha_fin=datetime.today() + timedelta(days=14),
+        # Información de marketing
+        promocionado=True,
+        fecha_promocionado=datetime.today(),
+        # Información de pago
+        pagado=False,
+        auditable=False,
+        precio=0,
+        certificado=True,
+    )
     database.session.add(demo)
+    database.session.add(form)
+    database.session.add(free)
     database.session.commit()
     curse_logo("now", "5218255.jpg")
+    curse_logo("details", "online-course.jpg")
+    curse_logo("free", "manos-trabajando.jpg")
 
     seccion1_id = "01HPB1MZXBHZETC4ZH0HV4G39Q"
     nueva_seccion1 = CursoSeccion(
@@ -546,7 +609,18 @@ def crear_curso_predeterminado():
         indice=1,
     )
 
+    seccion1a_id = "02HPB1MZXBHZETC4ZH0HV4G39A"
+    nueva_seccion1a = CursoSeccion(
+        id=seccion1a_id,
+        curso="free",
+        nombre="Welcome to your free course.",
+        descripcion="Welcome to your free course.",
+        estado=False,
+        indice=1,
+    )
+
     database.session.add(nueva_seccion1)
+    database.session.add(nueva_seccion1a)
     database.session.commit()
 
     seccion2_id = "01HPB1Q1R4HGJPG3C5NSFX3GH2"
@@ -573,7 +647,19 @@ def crear_curso_predeterminado():
         indice=1,
         publico=True,
     )
+    nuevo_recurso1a = CursoRecurso(
+        id="02HPB3AP3QNVK9ES6JGG5YK7CA",
+        curso="free",
+        seccion=seccion1a_id,
+        tipo="youtube",
+        nombre="The Evolution of Online Learning with Dhawal Shah",
+        descripcion="Dhawal's journey into the world of online education is as inspiring as it is insightful.",
+        url="https://www.youtube.com/watch?v=mMvRbZtqg5o",
+        indice=1,
+        publico=False,
+    )
     database.session.add(nuevo_recurso1)
+    database.session.add(nuevo_recurso1a)
     database.session.commit()
 
     nuevo_recurso2 = CursoRecurso(
@@ -645,6 +731,7 @@ def crear_curso_demo1():
     demo = Curso(
         nombre="PostgreSQL",
         codigo="postgresql",
+        descripcion_corta="A course about PostgreSQL.",
         descripcion="This is a course about PostgreSQL.",
         estado="open",
         certificado=False,
@@ -671,6 +758,7 @@ def crear_curso_demo2():
     demo = Curso(
         nombre="Python",
         codigo="python",
+        descripcion_corta="A course about Python.",
         descripcion="This is a course about Python.",
         estado="open",
         certificado=False,
@@ -697,6 +785,7 @@ def crear_curso_demo3():
     demo = Curso(
         nombre="HTML",
         codigo="html",
+        descripcion_corta="A course about HTML.",
         descripcion="This is a course about HTML.",
         estado="open",
         certificado=False,

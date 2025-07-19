@@ -121,8 +121,8 @@
                 <br>
                 <strong>Versión:</strong> {{ version }}
                 <br>
-                <strong>Python:</strong> {{ pyversion }}
                 {% if current_user.tipo == "admin" %}
+                <strong>Python:</strong> {{ pyversion }}
                 <br>
                 <strong>Database:</strong> {{ info["DBENGINE"] }}
                 <br>
@@ -143,55 +143,13 @@
                         <a href="https://bmosoluciones.github.io/now-lms/" "button" class="btn btn-sm btn-secondary"
                             data-dismiss="modal"><i class="bi bi-book" aria-hidden="true"></i>
                             Manual de Administración</a>
+                        {% endif %}
                     </div>
                 </div>
-                {% endif %}
             </div>
-
-
-
         </div>
     </div>
 </div>
 {% endif %}
-
-{% endmacro %}
-
-{% macro notify() %}
-
-{% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-{% for category, message in messages %}
-
-<div class="{{estilo_alerta.clase[category]}} alert-dismissible fade show" role="alert">
-    <i class="{{estilo_alerta.icono[category]}}" aria-hidden="true"></i> {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-
-{% endfor %}
-{% endif %}
-{% endwith %}
-
-{% endmacro %}
-
-{% macro local_style() -%}
-
-<style>
-    .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-    }
-
-    @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-            font-size: 3.5rem;
-        }
-    }
-
-</style>
-
 
 {% endmacro %}
