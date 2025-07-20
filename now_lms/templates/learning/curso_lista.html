@@ -1,0 +1,154 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Listado de cursos.</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-0 py-3" id="curse_list">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>Lista de Cursos Disponibles.</h4>
+
+                    <p>
+                        <span class="badge bg-success">
+                            <a href="{{ url_for('course.nuevo_curso') }}" class="link-light">Nuevo Curso</a>
+                        </span>
+                    </p>
+                </div>
+
+                {% if consulta %}
+                <div class="container" id="curse_table">
+                    <table class="table table-sm table-borderless">
+                        <caption>
+                            Lista de cursos disponibles en el sistema.
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Codigo Curso</th>
+                                <th scope="col">Nombre Curso</th>
+                                <th scope="col">Fecha Inicio</th>
+                                <th scope="col">Fecha Fin</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Público</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        {% for item in consulta.items -%}
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a
+                                        href="{{ url_for('course.curso', course_code=item.codigo, inspect=True) }}"
+                                        class="link-dark"
+                                    >
+                                        {{ item.codigo }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a
+                                        href="{{ url_for('course.curso', course_code=item.codigo, inspect=True) }}"
+                                        class="link-dark"
+                                    >
+                                        {{ item.nombre }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a
+                                        href="{{ url_for('course.curso', course_code=item.codigo, inspect=True) }}"
+                                        class="link-dark"
+                                    >
+                                        {{ item.fecha_inicio }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a
+                                        href="{{ url_for('course.curso', course_code=item.codigo, inspect=True) }}"
+                                        class="link-dark"
+                                    >
+                                        {{ item.fecha_fin }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {% if item.estado == "draft" %}
+                                    <span class="badge p-1 bg-secondary border border-light rounded-circle">
+                                        <span class="visually-hidden">Borrador</span>
+                                    </span>
+                                    {% elif item.estado == "open" %}
+                                    <span class="badge p-1 bg-info border border-light rounded-circle">
+                                        <span class="visually-hidden">Abierto</span>
+                                    </span>
+                                    {% else %}
+                                    <span class="badge p-1 bg-danger border border-light rounded-circle">
+                                        <span class="visually-hidden">Cerrado</span>
+                                    </span>
+                                    {% endif %}
+
+                                    <a
+                                        href="{{ url_for('course.curso', course_code=item.codigo, inspect=True) }}"
+                                        class="link-dark"
+                                    >
+                                        {{ item.estado | capitalize }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {% if item.publico %}
+                                    <span class="badge p-1 bg-primary border border-light rounded-circle">
+                                        <span class="visually-hidden">Curso Publico</span>
+                                    </span>
+                                    {% else %}
+                                    <span class="badge p-1 bg-danger border border-light rounded-circle">
+                                        <span class="visually-hidden">Curso Privado</span>
+                                    </span>
+                                    {% endif %}
+
+                                    <a
+                                        href="{{ url_for('course.curso', course_code=item.codigo, inspect=True) }}"
+                                        class="link-dark"
+                                    >
+                                        {{ item.publico | replace("True", "Publico") | replace("False", "Privado") |
+                                        replace("None", "Privado") }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a
+                                        href="{{ url_for('course.administrar_curso', course_code=item.codigo) }}"
+                                        class="btn btn-primary btn-sm"
+                                        tabindex="-1"
+                                        role="button"
+                                        aria-disabled="false"
+                                        ><i class="bi bi-pencil-square" aria-hidden="true"></i> Editar</a
+                                    >
+                                    <a
+                                        href="{{ url_for('course.curso', course_code=item.codigo, inspect=True) }}"
+                                        class="btn btn-primary btn-sm"
+                                        tabindex="-1"
+                                        role="button"
+                                        aria-disabled="false"
+                                        ><i class="bi bi-eye-fill" aria-hidden="true"></i> Visualizar</a
+                                    >
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% else %}
+                <p>Usted no ha creado ningun curso todavia.</p>
+                {% endif %}
+
+                <div class="container" id="user_paginatios">
+                    {{ current_theme.rendizar_paginacion(consulta=consulta, vista="cursos") }}
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

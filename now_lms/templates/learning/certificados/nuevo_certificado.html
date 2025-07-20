@@ -1,0 +1,50 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Crear Nueva Plantilla</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Crear nuevo Certificado.</h4>
+                <form method="post" enctype="multipart/form-data">
+                    {{ form.csrf_token }}
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="titulo" class="form-label">Certificado</label>
+                            {{ form.titulo(class="form-control", id="titulo", placeholder="Certificado") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="descripcion" class="form-label">Descripcion</label>
+                            {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripcion") }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <label for="html" class="form-label">HTML</label>
+                        {{ form.html(class="form-control", id="html", rows="15") | safe }}
+                    </div>
+                    <div class="row g-3">
+                        <br />
+                        <label for="css" class="form-label">CSS</label>
+                        {{ form.css(class="form-control", id="css", rows="15") | safe }}
+                    </div>
+
+                    <br />
+
+                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Certificado</button>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>

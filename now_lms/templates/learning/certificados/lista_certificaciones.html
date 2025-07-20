@@ -1,0 +1,80 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Lista de Certificaciones emitidas.</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-0 py-3" id="curse_list">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>Lista de Certificados Disponibles.</h4>
+
+                    <p>
+                        <span class="badge bg-success">
+                            <a href="{{ url_for('certificate.certificacion_generar') }}" class="link-light"
+                                >Nuevo Certificado</a
+                            >
+                        </span>
+                    </p>
+                </div>
+
+                {% if consulta %}
+                <div class="container" id="curse_table">
+                    <table class="table table-sm table-borderless">
+                        <caption>
+                            Lista de certificados disponibles en el sistema.
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">ID Unico</th>
+                                <th scope="col">Codigo de Curso</th>
+                                <th scope="col">Codigo de usuario</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        {% for item in consulta.items -%}
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a href="" class="link-dark"> {{ item.id }} </a>
+                                </td>
+                                <td>{{ item.curso }}</td>
+                                <td>{{ item.usuario }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
+                                        <a
+                                            href="{{ url_for('certificate.certificado', ulid=item.id) }}"
+                                            target="_blank"
+                                            type="button"
+                                            class="btn btn-primary"
+                                            ><ion-icon name="eye-sharp"></ion-icon> Visualizar</a
+                                        >
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% else %}
+                <p>Usted no ha creado ninguna etiqueta todavia.</p>
+                {% endif %}
+
+                <div class="container" id="user_pagination">
+                    {{ current_theme.rendizar_paginacion(consulta=consulta, vista="program.programs") }}
+                </div>
+            </div>
+        </main>
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    </body>
+</html>

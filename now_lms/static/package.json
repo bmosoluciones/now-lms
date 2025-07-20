@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "bootstrap": "^5.3.6",
+    "bootstrap-icons": "^1.10.3",
+    "jquery": "^3.6.4",
+    "reveal.js": "^4.4.0",
+    "select2": "^4.1.0-rc.0"
+  }
+}
