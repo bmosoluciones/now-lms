@@ -500,7 +500,7 @@ class Certificacion(database.Model, BaseTabla):
 
     usuario = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    certificado = database.Column(database.String(26), database.ForeignKey("certificado.id"), nullable=False, index=True)
+    certificado = database.Column(database.String(26), database.ForeignKey("certificado.code"), nullable=False, index=True)
     fecha = database.Column(database.Date, default=database.func.date(database.func.now()), nullable=False)
     nota = database.Column(database.Numeric())
 
