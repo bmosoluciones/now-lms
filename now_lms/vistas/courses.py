@@ -598,13 +598,10 @@ def pagina_recurso(curso_id, resource_type, codigo):
     INDICE = crear_indice_recurso(codigo)
 
     if current_user.is_authenticated:
-        if current_user.tipo == "admin":
+        if current_user.tipo == "admin" or current_user.tipo == "instructor":
             show_resource = True
-        elif current_user.tipo == "student":
-            if verifica_estudiante_asignado_a_curso(curso_id):
-                show_resource = True
-            else:
-                show_resource = False
+        elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(curso_id):
+            show_resource = True
         else:
             show_resource = False
     else:
