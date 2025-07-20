@@ -608,13 +608,9 @@ def pagina_recurso(curso_id, resource_type, codigo):
         else:
             show_resource = False
     else:
-        if RECURSO.publico is True:
-            # Si el recurso es público, se permite el acceso sin autenticación.
-            show_resource = True
-        else:
-            show_resource = False
+        show_resource = False
 
-    if show_resource:
+    if show_resource or RECURSO.publico:
         resource_progress = database.session.execute(
             database.select(CursoRecursoAvance).filter_by(usuario=current_user.usuario, curso=curso_id, recurso=codigo)
         ).first()
