@@ -38,7 +38,7 @@ from sqlalchemy.exc import OperationalError
 from now_lms.auth import perfil_requerido, proteger_passwd, validar_acceso
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import Configuracion, MailConfig, Usuario, database
-from now_lms.forms import LoginForm, LogonForm
+from now_lms.forms import LoginForm, LogonForm, ForgotPasswordForm, ResetPasswordForm
 from now_lms.logs import log
 from now_lms.misc import INICIO_SESION, PANEL_DE_USUARIO
 
@@ -56,6 +56,11 @@ def inicio_sesion():
         flash("Su usuario ya tiene una sesión iniciada.", "info")
         return PANEL_DE_USUARIO
     form = LoginForm()
+    
+    # Check if password recovery is available
+    mail_config = database.session.execute(database.select(MailConfig)).first()
+    show_forgot_password = mail_config and mail_config[0].email_verificado
+    
     if form.validate_on_submit():
         if validar_acceso(form.usuario.data, form.acceso.data):
             identidad = Usuario.query.filter_by(usuario=form.usuario.data).first()
@@ -68,7 +73,7 @@ def inicio_sesion():
         else:  # pragma: no cover
             flash("Inicio de Sesion Incorrecto.", "warning")
             return INICIO_SESION
-    return render_template("auth/login.html", form=form, titulo="Inicio de Sesion - NOW LMS")
+    return render_template("auth/login.html", form=form, titulo="Inicio de Sesion - NOW LMS", show_forgot_password=show_forgot_password)
 
 
 @user.route("/user/logout")
@@ -179,3 +184,70 @@ def check_mail(token):
     else:
         flash("Token de verificación invalido.", "warning")
         return redirect(url_for("user.cerrar_sesion"))
+
+
+@user.route("/user/forgot_password", methods=["GET", "POST"])
+def forgot_password():
+    """Solicitar recuperación de contraseña."""
+    if current_user.is_authenticated:
+        flash("Su usuario ya tiene una sesión iniciada.", "info")
+        return PANEL_DE_USUARIO
+    
+    form = ForgotPasswordForm()
+    if form.validate_on_submit():
+        # Check if user exists and has verified email
+        user = Usuario.query.filter_by(correo_electronico=form.email.data).first()
+        if user and user.correo_electronico_verificado:
+            # Check if email system is configured
+            mail_config = database.session.execute(database.select(MailConfig)).first()
+            if mail_config and mail_config[0].email_verificado:
+                from now_lms.auth import send_password_reset_email
+                if send_password_reset_email(user):
+                    flash("Se ha enviado un correo con instrucciones para recuperar su contraseña.", "success")
+                else:
+                    flash("Error al enviar el correo de recuperación. Intente más tarde.", "error")
+            else:
+                flash("El sistema de correo no está configurado. Contacte al administrador.", "warning")
+        else:
+            # For security, we show the same message even if user doesn't exist or email not verified
+            flash("Se ha enviado un correo con instrucciones para recuperar su contraseña.", "success")
+        
+        return redirect(url_for("user.inicio_sesion"))
+    
+    return render_template("auth/forgot_password.html", form=form, titulo="Recuperar Contraseña - NOW LMS")
+
+
+@user.route("/user/reset_password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    """Restablecer contraseña con token."""
+    if current_user.is_authenticated:
+        flash("Su usuario ya tiene una sesión iniciada.", "info")
+        return PANEL_DE_USUARIO
+    
+    from now_lms.auth import validate_password_reset_token
+    
+    email = validate_password_reset_token(token)
+    if not email:
+        flash("El enlace de recuperación es inválido o ha expirado.", "error")
+        return redirect(url_for("user.inicio_sesion"))
+    
+    user = Usuario.query.filter_by(correo_electronico=email).first()
+    if not user:
+        flash("Usuario no encontrado.", "error")
+        return redirect(url_for("user.inicio_sesion"))
+    
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        if form.new_password.data != form.confirm_password.data:
+            flash("Las nuevas contraseñas no coinciden.", "error")
+            return render_template("auth/reset_password.html", form=form, titulo="Restablecer Contraseña - NOW LMS")
+        
+        # Update password
+        user.acceso = proteger_passwd(form.new_password.data)
+        database.session.commit()
+        
+        flash("Contraseña actualizada exitosamente. Ya puede iniciar sesión.", "success")
+        log.info(f"Contraseña restablecida para el usuario {user.usuario}")
+        return redirect(url_for("user.inicio_sesion"))
+    
+    return render_template("auth/reset_password.html", form=form, titulo="Restablecer Contraseña - NOW LMS")

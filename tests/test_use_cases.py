@@ -276,3 +276,130 @@ def test_user_password_change(lms_application, request):
                     "acceso": "newpassword123"
                 })
                 assert new_login.status_code == 302  # Successful login redirect
+
+
+def test_password_recovery_functionality(lms_application, request):
+    """Test the complete password recovery flow."""
+    if request.config.getoption("--use-cases") == "True":
+        from now_lms import database, initial_setup
+        from now_lms.db import Usuario, Configuracion, MailConfig
+        from now_lms.auth import proteger_passwd, validar_acceso
+
+        with lms_application.app_context():
+            database.drop_all()
+            initial_setup(with_tests=False, with_examples=False)
+            
+            # Update the default mail configuration to enable email verification
+            mail_config = database.session.execute(database.select(MailConfig)).first()[0]
+            mail_config.MAIL_SERVER = "smtp.test.com"
+            mail_config.MAIL_PORT = "587"
+            mail_config.MAIL_USERNAME = "test@nowlms.com"
+            mail_config.MAIL_DEFAULT_SENDER = "test@nowlms.com"
+            mail_config.MAIL_DEFAULT_SENDER_NAME = "Test LMS"
+            mail_config.MAIL_USE_TLS = True
+            mail_config.email_verificado = True
+            
+            # Create a test user with verified email
+            test_user = Usuario(
+                usuario="testuser2",
+                correo_electronico="testuser2@nowlms.com",
+                acceso=proteger_passwd("originalpassword"),
+                nombre="Test",
+                apellido="User",
+                tipo="student",
+                activo=True,
+                correo_electronico_verificado=True,
+                creado_por="system"
+            )
+            database.session.add(test_user)
+            database.session.commit()
+            
+        with lms_application.test_client() as client:
+            
+            # Test that forgot password link shows on login page when email is configured
+            login_response = client.get("/user/login")
+            assert login_response.status_code == 200
+            assert "¿Olvidaste tu contraseña?".encode('utf-8') in login_response.data
+            
+            # Test forgot password form
+            forgot_password_response = client.get("/user/forgot_password")
+            assert forgot_password_response.status_code == 200
+            assert "Recuperar Contraseña".encode('utf-8') in forgot_password_response.data
+            
+            # Test submitting forgot password form with valid email
+            from unittest.mock import patch
+            with patch('now_lms.mail.send_mail') as mock_send_mail:
+                mock_send_mail.return_value = True
+                forgot_post = client.post("/user/forgot_password", data={
+                    "email": "testuser2@nowlms.com"
+                }, follow_redirects=True)
+                assert forgot_post.status_code == 200
+                assert "Se ha enviado un correo".encode('utf-8') in forgot_post.data
+                mock_send_mail.assert_called_once()
+            
+            # Test submitting forgot password form with unverified email
+            with lms_application.app_context():
+                unverified_user = Usuario(
+                    usuario="unverified",
+                    correo_electronico="unverified@nowlms.com",
+                    acceso=proteger_passwd("password"),
+                    nombre="Unverified",
+                    apellido="User",
+                    tipo="student",
+                    activo=True,
+                    correo_electronico_verificado=False,
+                    creado_por="system"
+                )
+                database.session.add(unverified_user)
+                database.session.commit()
+            
+            forgot_unverified = client.post("/user/forgot_password", data={
+                "email": "unverified@nowlms.com"
+            }, follow_redirects=True)
+            assert forgot_unverified.status_code == 200
+            # Should still show success message for security
+            assert "Se ha enviado un correo".encode('utf-8') in forgot_unverified.data
+            
+            # Test password reset with valid token
+            with lms_application.app_context():
+                from now_lms.auth import generate_password_reset_token
+                reset_token = generate_password_reset_token("testuser2@nowlms.com")
+            
+            reset_form_response = client.get(f"/user/reset_password/{reset_token}")
+            assert reset_form_response.status_code == 200
+            assert "Restablecer Contraseña".encode('utf-8') in reset_form_response.data
+            
+            # Test password reset with mismatched passwords
+            reset_mismatch = client.post(f"/user/reset_password/{reset_token}", data={
+                "new_password": "newpassword123",
+                "confirm_password": "differentpassword"
+            })
+            assert reset_mismatch.status_code == 200
+            assert "Las nuevas contraseñas no coinciden".encode('utf-8') in reset_mismatch.data
+            
+            # Test successful password reset
+            reset_success = client.post(f"/user/reset_password/{reset_token}", data={
+                "new_password": "newpassword456", 
+                "confirm_password": "newpassword456"
+            }, follow_redirects=True)
+            assert reset_success.status_code == 200
+            assert "Contraseña actualizada exitosamente".encode('utf-8') in reset_success.data
+            
+            # Verify password was actually changed
+            with lms_application.app_context():
+                updated_user = database.session.execute(
+                    database.select(Usuario).filter_by(correo_electronico="testuser2@nowlms.com")
+                ).first()[0]
+                assert validar_acceso("testuser2@nowlms.com", "newpassword456")
+                assert not validar_acceso("testuser2@nowlms.com", "originalpassword")
+            
+            # Test password reset with invalid token
+            invalid_token_response = client.get("/user/reset_password/invalidtoken")
+            assert invalid_token_response.status_code == 302  # Redirect to login
+            
+            # Test that token validation works
+            with lms_application.app_context():
+                from now_lms.auth import validate_password_reset_token, generate_password_reset_token
+                valid_token = generate_password_reset_token("testuser2@nowlms.com")
+                email = validate_password_reset_token(valid_token)
+                assert email == "testuser2@nowlms.com"  # Fresh token should work

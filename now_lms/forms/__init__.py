@@ -408,6 +408,19 @@ class ChangePasswordForm(FlaskForm):
     confirm_password = PasswordField("Confirmar Nueva Contraseña", validators=[DataRequired()])
 
 
+class ForgotPasswordForm(FlaskForm):
+    """Formulario para solicitar recuperación de contraseña."""
+
+    email = StringField("Correo Electrónico", validators=[DataRequired()])
+
+
+class ResetPasswordForm(FlaskForm):
+    """Formulario para restablecer contraseña con token."""
+
+    new_password = PasswordField("Nueva Contraseña", validators=[DataRequired()])
+    confirm_password = PasswordField("Confirmar Nueva Contraseña", validators=[DataRequired()])
+
+
 class PagoForm(FlaskForm):
     """Formulario para crear un pago."""
 
