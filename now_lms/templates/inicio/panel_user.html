@@ -44,43 +44,11 @@
                           </div>
                         </div>
                       </div>
-                      <h1 class="mt-1 mb-3"></h1>
-                    </div>
-                  </div>
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col mt-0">
-                          <h5 class="card-title"><i class="bi bi-bookmarks-fill" aria-hidden="true"></i> Programas</h5>
-                        </div>
-
-                        <div class="col-auto">
-                          <div class="stat text-primary">
-                            <i class="align-middle" data-feather="users"></i>
-                          </div>
-                        </div>
-                      </div>
-                      <h1 class="mt-1 mb-3">{{ usuarios_registrados }}</h1>
+                      <h1 class="mt-1 mb-3">{{ cuenta_cursos }}</h1>
                     </div>
                   </div>
                 </div>
                 <div class="col-sm-6">
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col mt-0">
-                          <h5 class="card-title"><i class="bi  bi-book-fill" aria-hidden="true"></i> Recursos</h5>
-                        </div>
-
-                        <div class="col-auto">
-                          <div class="stat text-primary">
-                            <i class="align-middle" data-feather="dollar-sign"></i>
-                          </div>
-                        </div>
-                      </div>
-                      <h1 class="mt-1 mb-3"></h1>
-                    </div>
-                  </div>
                   <div class="card">
                     <div class="card-body">
                       <div class="row">
@@ -94,7 +62,7 @@
                           </div>
                         </div>
                       </div>
-                      <h1 class="mt-1 mb-3"></h1>
+                      <h1 class="mt-1 mb-3">{{ cuenta_certificados }}</h1>
                     </div>
                   </div>
                 </div>
@@ -109,8 +77,8 @@
               </div>
               <div class="card-body pt-2 pb-3">
                 <ul>
-                  {% for curso in cursos_por_fecha %}
-                  <li><a href="{{ url_for('course.curso', course_code=curso.codigo) }}">{{ curso.nombre }}</a></li>
+                  {% for curso in mis_cursos %}
+                  <li><a href="{{ url_for('course.tomar_curso', course_code=curso.codigo) }}">{{ curso.nombre }}</a></li>
                   {% endfor %}
                 </ul>
               </div>

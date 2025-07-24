@@ -26,6 +26,7 @@ Gestión de certificados.
 # ---------------------------------------------------------------------------------------
 from collections import OrderedDict
 from datetime import datetime
+from os.path import splitext
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -325,24 +326,28 @@ def nuevo_curso():
         )
         try:
             database.session.add(nuevo_curso_)
-            database.session.commit()
             asignar_curso_a_instructor(curso_codigo=form.codigo.data, usuario_id=current_user.usuario)
             if "logo" in request.files:
-                try:
-                    logo = request.files["logo"]
-                    logo_name = logo.filename
-                    logo_ext = logo_name.split(".")[1]
-                    picture_file = images.save(request.files["logo"], folder=form.codigo.data, name="logo" + "." + logo_ext)
-                    if picture_file:
-                        _curso = database.session.execute(
-                            database.select(Curso).filter(Curso.codigo == form.codigo.data)
-                        ).first()[0]
-                        _curso.portada = True
-                        database.session.commit()
-                except UploadNotAllowed:  # pragma: no cover
-                    log.warning("No se pudo actualizar la foto de perfil.")
-                except AttributeError:  # pragma: no cover
-                    log.warning("No se pudo actualizar la foto de perfil.")
+                logo = request.files["logo"]
+                if logo and logo.filename:  # Verifica si se subió un archivo
+                    try:
+                        logo_name = logo.filename
+                        logo_ext = splitext(logo_name)
+                        if logo_ext:  # logo_ext incluye el punto, por ejemplo '.png'
+                            logo_ext = logo_ext.lstrip(".")  # Si solo quieres la extensión sin el punto
+                            picture_file = images.save(logo, folder=form.codigo.data, name=f"logo.{logo_ext}")
+                        if picture_file:
+                            _curso = database.session.execute(
+                                database.select(Curso).filter(Curso.codigo == form.codigo.data)
+                            ).first()[0]
+                            _curso.portada = True
+                    except UploadNotAllowed:  # pragma: no cover
+                        log.warning("No se pudo actualizar la foto de perfil.")
+                        database.session.rollback()
+                    except AttributeError:  # pragma: no cover
+                        log.warning("No se pudo actualizar la foto de perfil.")
+                        database.session.rollback()
+            database.session.commit()
 
             flash("Curso creado exitosamente.", "success")
             cache.delete("view/" + url_for("home.pagina_de_inicio"))
@@ -1119,7 +1124,7 @@ def elimina_logo(course_code):
 
     if current_user.tipo == "admin":
         elimina_logo_perzonalizado_curso(course_code=course_code)
-        return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+        return redirect(url_for("course.editar_curso", course_code=course_code))
     else:
         flash(NO_AUTORIZADO_MSG, "warning")
         return abort(403)

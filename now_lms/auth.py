@@ -22,7 +22,7 @@
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
 import base64
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from functools import wraps
 
 # ---------------------------------------------------------------------------------------
@@ -154,7 +154,7 @@ def descifrar_secreto(hash):
 # Validación de tokens de confirmación de correo electrónico.
 # ---------------------------------------------------------------------------------------
 def generate_confirmation_token(mail):
-    expiration_time = datetime.utcnow() + timedelta(seconds=36000)
+    expiration_time = datetime.now(timezone.utc) + timedelta(seconds=36000)
     data = {"exp": expiration_time, "confirm_id": mail}
     token = jwt.encode(data, current_app.secret_key, algorithm="HS512")
     return token
@@ -230,3 +230,87 @@ def send_confirmation_email(user):
         log.info(f"Correo de confirmación enviado al usuario {user.usuario}")
     except Exception as e:  # noqa: E722
         log.warning(f"Error al enviar un correo de confirmació el usuario {user.usuario}: {e}")
+
+
+# ---------------------------------------------------------------------------------------
+# Password reset functionality
+# ---------------------------------------------------------------------------------------
+def generate_password_reset_token(email):
+    """Generate a password reset token."""
+    expiration_time = datetime.now(timezone.utc) + timedelta(seconds=3600)  # 1 hour expiration
+    data = {"exp": expiration_time, "reset_email": email, "action": "password_reset"}
+    token = jwt.encode(data, current_app.secret_key, algorithm="HS512")
+    return token
+
+
+def validate_password_reset_token(token):
+    """Validate a password reset token and return the email if valid."""
+    try:
+        data = jwt.decode(token, current_app.secret_key, algorithms=["HS512"])
+        log.trace(f"Token de restablecimiento decodificado: {data}")
+    except jwt.ExpiredSignatureError:
+        log.warning("Token de restablecimiento expirado.")
+        return None
+    except jwt.InvalidSignatureError:
+        log.warning("Token de restablecimiento inválido.")
+        return None
+    except jwt.DecodeError:
+        log.warning("Token de restablecimiento con formato inválido.")
+        return None
+    except Exception as e:
+        log.warning(f"Error al validar token de restablecimiento: {e}")
+        return None
+
+    if data.get("reset_email", None) and data.get("action") == "password_reset":
+        return data.get("reset_email")
+    return None
+
+
+def send_password_reset_email(user):
+    """Send password reset email to user."""
+    from flask_mail import Message
+    from now_lms.mail import send_mail
+
+    config = database.session.execute(database.select(MailConfig)).first()[0]
+
+    msg = Message(
+        subject="Recuperación de Contraseña - NOW LMS",
+        recipients=[user.correo_electronico],
+        sender=((config.MAIL_DEFAULT_SENDER_NAME or "NOW LMS"), config.MAIL_DEFAULT_SENDER),
+    )
+    token = generate_password_reset_token(user.correo_electronico)
+    url = url_for("user.reset_password", token=token, _external=True)
+    msg.html = f"""
+    <div class="container">
+        <div class="header">
+          <h1>Recuperación de Contraseña</h1>
+        </div>
+        <div class="content">
+          <p>Hola {user.nombre},</p>
+          <p>Has solicitado recuperar tu contraseña. Haz clic en el siguiente enlace para establecer una nueva contraseña:</p>
+          <p>
+              <a href="{url}" style="background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">Restablecer Contraseña</a>
+          </p>
+          <p>Si no puedes hacer clic en el botón, copia y pega la siguiente URL en tu navegador:</p>
+          <p>{url}</p>
+          <p>Este enlace expirará en 1 hora por seguridad.</p>
+          <p>Si no solicitaste este cambio, puedes ignorar este correo.</p>
+        </div>
+        <div class="footer">
+          <p>Este es un mensaje automático. Por favor no respondas a este correo.</p>
+        </div>
+      </div>
+    """
+    try:
+        send_mail(
+            msg,
+            background=False,
+            no_config=True,
+            _log="Correo de recuperación de contraseña enviado",
+            _flush="Correo de recuperación de contraseña enviado.",
+        )
+        log.info(f"Correo de recuperación enviado al usuario {user.usuario}")
+        return True
+    except Exception as e:  # noqa: E722
+        log.warning(f"Error al enviar correo de recuperación al usuario {user.usuario}: {e}")
+        return False

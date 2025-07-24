@@ -2,10 +2,11 @@
 <!doctype html>
 <html lang="es" class="h-100">
     <head>
-        {{ current_theme.headertags() }} {{ mde.css }}
+        {{ current_theme.headertags() }} {{ mde.css }} {% if edit %}
+        <title>Editar curso {{ curso.nombre }}</title>
+        {% else %}
         <title>Crear un nuevo curso</title>
-
-        {{ current_theme.local_style() }}
+        {% endif %} {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
         <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
     </head>
@@ -15,9 +16,12 @@
 
         <main>
             {{ current_theme.notify() }}
-
             <div class="container px-4 py-5" id="icon-grid">
+                {% if edit %}
+                <h4 class="pb-2 border-bottom">Editar curso {{ curso.nombre }}.</h4>
+                {% else %}
                 <h4 class="pb-2 border-bottom">Crear nuevo curso.</h4>
+                {% endif %}
                 <form method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }}
                     <div class="row g-3">
@@ -113,15 +117,17 @@
                     </div>
                     <div class="row g-3">
                         <h6>Portada del curso</h6>
-                        {% if edit %} {% if curso.portada %}
+                        {% if curso.portada %}
                         <div>
                             <img
                                 src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}"
                                 alt="Portada del Curso"
+                                height="200"
+                                width="400"
                             />
                         </div>
                         <a href="{{url_for('course.elimina_logo', course_code=curso.codigo)}}">Eliminar Portada</a>
-                        {% endif %} {% else %}
+                        {% else %}
                         <div class="col-md-4">
                             <label for="logo" class="form-label">Portada</label>
                             <input

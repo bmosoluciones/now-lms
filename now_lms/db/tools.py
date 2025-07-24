@@ -261,14 +261,12 @@ def elimina_logo_perzonalizado_curso(course_code: str):
     """Elimina logo tipo perzonalizado."""
     from now_lms.vistas._helpers import get_current_course_logo
 
+    LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, course_code, get_current_course_logo(course_code))
+    remove(LOGO)
+
     curso = Curso.query.filter_by(codigo=course_code).first()
     curso.portada = False
-
     database.session.commit()
-
-    LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, course_code, get_current_course_logo(course_code))
-
-    remove(LOGO)
 
 
 def elimina_logo_perzonalizado_programa(course_code: str):

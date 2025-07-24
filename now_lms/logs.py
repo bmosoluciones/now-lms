@@ -85,3 +85,4 @@ logging.getLogger("sqlalchemy").setLevel(logging.WARNING)
 LOG_LEVEL = root_logger.getEffectiveLevel()
 
 log = root_logger
+logger = root_logger

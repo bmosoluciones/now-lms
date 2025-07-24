@@ -240,7 +240,7 @@ def mail_check():
             return render_template("admin/mail.html", form=form, config=config, error=str(e))
 
     else:
-        return render_template("admin/mail _check.html", form=form)
+        return render_template("admin/mail_check.html", form=form)
 
 
 @setting.route("/setting/adsense", methods=["GET", "POST"])

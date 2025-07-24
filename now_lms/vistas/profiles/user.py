@@ -17,7 +17,7 @@ from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
 from now_lms.db import Usuario, database
 from now_lms.db.tools import elimina_imagen_usuario
-from now_lms.forms import UserForm
+from now_lms.forms import UserForm, ChangePasswordForm
 from now_lms.logs import log
 from now_lms.misc import GENEROS
 
@@ -120,3 +120,41 @@ def elimina_logo_usuario(ulid: str):
 
     elimina_imagen_usuario(ulid=ulid)
     return redirect("/perfil")
+
+
+@user_profile.route("/perfil/cambiar_contraseña/<ulid>", methods=["GET", "POST"])
+@login_required
+def cambiar_contraseña(ulid: str):
+    """Cambiar contraseña del usuario."""
+    if current_user.id != ulid:
+        abort(403)
+
+    usuario_ = database.session.get(Usuario, ulid)
+    if not usuario_:
+        abort(404)
+
+    form = ChangePasswordForm()
+
+    if request.method == "POST" and form.validate_on_submit():
+        from now_lms.auth import validar_acceso, proteger_passwd
+
+        # Verificar contraseña actual
+        if not validar_acceso(usuario_.usuario, form.current_password.data):
+            flash("La contraseña actual es incorrecta.", "error")
+            return render_template("inicio/cambiar_contraseña.html", form=form, usuario=usuario_)
+
+        # Verificar que las nuevas contraseñas coincidan
+        if form.new_password.data != form.confirm_password.data:
+            flash("Las nuevas contraseñas no coinciden.", "error")
+            return render_template("inicio/cambiar_contraseña.html", form=form, usuario=usuario_)
+
+        # Actualizar contraseña
+        try:
+            usuario_.acceso = proteger_passwd(form.new_password.data)
+            database.session.commit()
+            flash("Contraseña actualizada exitosamente.", "success")
+            return redirect("/perfil")
+        except OperationalError:  # pragma: no cover
+            flash("Error al actualizar la contraseña.", "error")
+
+    return render_template("inicio/cambiar_contraseña.html", form=form, usuario=usuario_)
