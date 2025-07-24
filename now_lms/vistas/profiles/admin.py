@@ -26,7 +26,9 @@ admin_profile = Blueprint("admin_profile", __name__, template_folder=DIRECTORIO_
 @cache.cached(timeout=90)
 def pagina_admin():
     """Perfil de usuario administrador."""
-    return render_template("perfiles/admin.html", inactivos=Usuario.query.filter_by(activo=False).count() or 0)
+    return render_template(
+        "perfiles/admin.html", inactivos=database.session.query(Usuario).filter_by(activo=False).count() or 0
+    )
 
 
 @admin_profile.route("/admin/users/list")
@@ -85,7 +87,7 @@ def inactivar_usuario(user_id):
 @perfil_requerido("admin")
 def eliminar_usuario(user_id):
     """Elimina un usuario por su id y redirecciona a la vista dada."""
-    Usuario.query.filter(Usuario.id == user_id).delete()
+    database.session.query(Usuario).filter(Usuario.id == user_id).delete()
     database.session.commit()
     cache.delete("view/" + url_for("usuarios"))
     flash("Usuario eliminado correctamente.", "info")

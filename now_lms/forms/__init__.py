@@ -213,7 +213,9 @@ class CursoRecursoSlides(CursoRecursoForm):
             ("simple", "Simple"),
             ("sky", "Sky"),
             ("solarized", "Solarized"),
-            ("white", "White"),
+            ("ocean_blue", "Ocean Blue"),
+            ("rose_pink", "Rose Pink"),
+            ("corporativo", "Corporativo"),
         ],
     )
 

@@ -59,11 +59,11 @@ def panel():
     if not current_user.is_authenticated:
         return redirect("/")
     elif current_user.tipo == "admin":
-        cursos_actuales = Curso.query.count()
-        usuarios_registrados = Usuario.query.count()
-        recursos_creados = CursoRecurso.query.count()
-        certificados_emitidos = Certificacion.query.count()
-        cursos_por_fecha = Curso.query.order_by(Curso.creado).limit(5).all()
+        cursos_actuales = database.session.query(Curso).count()
+        usuarios_registrados = database.session.query(Usuario).count()
+        recursos_creados = database.session.query(CursoRecurso).count()
+        certificados_emitidos = database.session.query(Certificacion).count()
+        cursos_por_fecha = database.session.query(Curso).order_by(Curso.creado).limit(5).all()
         return render_template(
             "inicio/panel_admin.html",
             cursos_actuales=cursos_actuales,

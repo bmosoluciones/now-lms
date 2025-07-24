@@ -92,7 +92,7 @@ def categories():
 @perfil_requerido("instructor")
 def delete_category(ulid: str):
     """Elimina categoria."""
-    Categoria.query.filter(Categoria.id == ulid).delete()
+    database.session.query(Categoria).filter(Categoria.id == ulid).delete()
     database.session.commit()
     return redirect("/categories")
 
@@ -102,7 +102,7 @@ def delete_category(ulid: str):
 @perfil_requerido("instructor")
 def edit_category(ulid: str):
     """Editar categoria."""
-    categoria = Categoria.query.filter(Categoria.id == ulid).first()
+    categoria = database.session.query(Categoria).filter(Categoria.id == ulid).first()
     form = CategoriaForm(nombre=categoria.nombre, descripcion=categoria.descripcion)
     if form.validate_on_submit() or request.method == "POST":
         categoria.nombre = form.nombre.data

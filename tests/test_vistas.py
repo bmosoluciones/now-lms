@@ -89,9 +89,14 @@ def test_visit_views_admin(lms_application, request):
 
             database.drop_all()
             initial_setup(with_tests=True, with_examples=False)
+            
+            # Get admin username from environment, just like in initial_data.py
+            admin_username = os.environ.get("ADMIN_USER") or os.environ.get("LMS_USER") or "lms-admin"
+            admin_password = os.environ.get("ADMIN_PSWD") or os.environ.get("LMS_PSWD") or "lms-admin"
+            
             with lms_application.test_client() as client:
                 # Keep the session alive until the with clausule closes
-                client.post("/user/login", data={"usuario": "lms-admin", "acceso": "lms-admin"})
+                client.post("/user/login", data={"usuario": admin_username, "acceso": admin_password})
                 assert current_user.is_authenticated
                 assert current_user.tipo == "admin"
                 for ruta in rutas_estaticas:
@@ -106,7 +111,6 @@ def test_visit_views_admin(lms_application, request):
                 client.get("/user/logout")
 
 
-"""
 def test_visit_views_student(lms_application, request):
 
     if request.config.getoption("--slow") == "True":
@@ -134,8 +138,7 @@ def test_visit_views_student(lms_application, request):
                 client.get("/user/logout")
     else:
         pytest.skip("Not running slow test.")
-"""
-"""
+
 def test_visit_views_moderator(lms_application, request):
 
     if request.config.getoption("--slow") == "True":
@@ -163,8 +166,9 @@ def test_visit_views_moderator(lms_application, request):
                 client.get("/user/logout")
     else:
         pytest.skip("Not running slow test.")
-"""
-"""
+
+
+
 def test_visit_views_instructor(lms_application, request):
 
     if request.config.getoption("--slow") == "True":
@@ -192,7 +196,7 @@ def test_visit_views_instructor(lms_application, request):
                 client.get("/user/logout")
     else:
         pytest.skip("Not running slow test.")
-"""
+
 
 
 def test_error_pages(lms_application, request):

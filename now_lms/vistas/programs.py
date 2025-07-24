@@ -115,7 +115,7 @@ def programas():
 @perfil_requerido("instructor")
 def delete_program(ulid: str):
     """Elimina programa."""
-    Programa.query.filter(Programa.id == ulid).delete()
+    database.session.query(Programa).filter(Programa.id == ulid).delete()
 
     if current_user.tipo == "admin":
         database.session.commit()
@@ -130,7 +130,7 @@ def delete_program(ulid: str):
 @perfil_requerido("instructor")
 def edit_program(ulid: str):
     """Editar programa."""
-    programa = Programa.query.filter(Programa.id == ulid).first()
+    programa = database.session.query(Programa).filter(Programa.id == ulid).first()
 
     form = ProgramaForm(
         nombre=programa.nombre,
@@ -201,7 +201,7 @@ def programa_cursos(codigo):
 def pagina_programa(codigo):
     """Pagina principal del curso."""
 
-    program = Programa.query.filter(Programa.codigo == codigo).first()
+    program = database.session.query(Programa).filter(Programa.codigo == codigo).first()
 
     return render_template("learning/programa.html", programa=program)
 
@@ -216,8 +216,8 @@ def lista_programas():
     else:
         MAX_COUNT = 30
 
-    etiquetas = Etiqueta.query.all()
-    categorias = Categoria.query.all()
+    etiquetas = database.session.query(Etiqueta).all()
+    categorias = database.session.query(Categoria).all()
     consulta_cursos = database.paginate(
         database.select(Programa).filter(Programa.publico == True, Programa.estado == "open"),  # noqa: E712
         page=request.args.get("page", default=1, type=int),

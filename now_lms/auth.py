@@ -61,10 +61,10 @@ def validar_acceso(usuario_id, acceso):
     """Verifica el inicio de sesión del usuario."""
 
     log.trace(f"Verificando acceso de {usuario_id}")
-    registro = Usuario.query.filter_by(usuario=usuario_id).first()
+    registro = database.session.query(Usuario).filter_by(usuario=usuario_id).first()
 
     if not registro:
-        registro = Usuario.query.filter_by(correo_electronico=usuario_id).first()
+        registro = database.session.query(Usuario).filter_by(correo_electronico=usuario_id).first()
 
     if registro is not None:
         try:

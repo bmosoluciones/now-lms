@@ -197,7 +197,7 @@ def carga_configuracion_del_sitio_web_desde_db():  # pragma: no cover
 
     with lms_app.app_context():
         try:
-            CONFIG = Configuracion.query.first()
+            CONFIG = database.session.query(Configuracion).first()
         # Si no existe una entrada en la tabla de configuración uno de los siguientes errores puede ocurrir
         # en dependencia del motor de base de datos utilizado.
         except OperationalError:

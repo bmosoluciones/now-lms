@@ -501,8 +501,10 @@ def crear_mensaje_test():
 
 def id_usuario_admin():
     from now_lms.db import Usuario
+    from os import environ
 
-    user = database.session.execute(database.select(Usuario).filter(Usuario.usuario == "lms-admin")).first()[0]
+    admin_username = environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin"
+    user = database.session.execute(database.select(Usuario).filter(Usuario.usuario == admin_username)).first()[0]
     user.id = "01HNZYGXRRWKJ8GXVXYZY8S994"
     database.session.add(user)
     database.session.commit()

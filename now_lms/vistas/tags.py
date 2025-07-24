@@ -92,7 +92,7 @@ def tags():
 @perfil_requerido("instructor")
 def delete_tag(ulid: str):
     """Elimina una etiqueta."""
-    Etiqueta.query.filter(Etiqueta.id == ulid).delete()
+    database.session.query(Etiqueta).filter(Etiqueta.id == ulid).delete()
     database.session.commit()
     return redirect(url_for("tag.tags"))
 
@@ -102,7 +102,7 @@ def delete_tag(ulid: str):
 @perfil_requerido("instructor")
 def edit_tag(ulid: str):
     """Edita una etiqueta."""
-    etiqueta = Etiqueta.query.filter(Etiqueta.id == ulid).first()
+    etiqueta = database.session.query(Etiqueta).filter(Etiqueta.id == ulid).first()
     form = EtiquetaForm(color=etiqueta.color, nombre=etiqueta.nombre)
     if form.validate_on_submit() or request.method == "POST":
         etiqueta.nombre = form.nombre.data

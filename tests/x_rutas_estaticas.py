@@ -553,7 +553,7 @@ rutas_estaticas = [
         admin=200,
         user=403,
         moderator=403,
-        instructor=403,
+        instructor=200,
         texto=[],
         como_user=[],
         como_moderador=[],
@@ -566,7 +566,7 @@ rutas_estaticas = [
         admin=200,
         user=403,
         moderator=403,
-        instructor=403,
+        instructor=200,
         texto=[],
         como_user=[],
         como_moderador=[],
@@ -579,7 +579,7 @@ rutas_estaticas = [
         admin=200,
         user=403,
         moderator=403,
-        instructor=403,
+        instructor=200,
         texto=[],
         como_user=[],
         como_moderador=[],
@@ -592,7 +592,7 @@ rutas_estaticas = [
         admin=200,
         user=403,
         moderator=403,
-        instructor=403,
+        instructor=200,
         texto=[],
         como_user=[],
         como_moderador=[],
@@ -605,7 +605,7 @@ rutas_estaticas = [
         admin=200,
         user=403,
         moderator=403,
-        instructor=403,
+        instructor=200,
         texto=[],
         como_user=[],
         como_moderador=[],
@@ -618,7 +618,7 @@ rutas_estaticas = [
         admin=200,
         user=403,
         moderator=403,
-        instructor=403,
+        instructor=200,
         texto=[],
         como_user=[],
         como_moderador=[],
@@ -631,7 +631,7 @@ rutas_estaticas = [
         admin=200,
         user=403,
         moderator=403,
-        instructor=403,
+        instructor=200,
         texto=[],
         como_user=[],
         como_moderador=[],
@@ -644,7 +644,7 @@ rutas_estaticas = [
         admin=200,
         user=403,
         moderator=403,
-        instructor=403,
+        instructor=200,
         texto=[],
         como_user=[],
         como_moderador=[],
@@ -657,7 +657,7 @@ rutas_estaticas = [
         admin=200,
         user=403,
         moderator=403,
-        instructor=403,
+        instructor=200,
         texto=[],
         como_user=[],
         como_moderador=[],
@@ -925,10 +925,23 @@ rutas_estaticas = [
         como_admin=[],
     ),
     Ruta(
+        ruta="/admin/panel",
+        no_session=302,
+        admin=200,
+        user=403,
+        moderator=403,
+        instructor=403,
+        texto=[],
+        como_user=[],
+        como_moderador=[],
+        como_instructor=[],
+        como_admin=[],
+    ),
+    Ruta(
         ruta="/home/panel",
         no_session=302,
         admin=200,
-        user=302,
+        user=200,
         moderator=302,
         instructor=302,
         texto=[],
@@ -1314,4 +1327,115 @@ rutas_estaticas = [
         como_instructor=[],
         como_admin=[],
     ),
+    # <---------------------------------------------------------------------> #
+    # Root page (same as /home)
+    # <---------------------------------------------------------------------> #
+    Ruta(
+        ruta="/",
+        admin=200,
+        no_session=200,
+        user=200,
+        moderator=200,
+        instructor=200,
+        texto=[
+            "NOW LMS".encode("utf-8"),
+            "Aplicación para gestión del aprendizaje.".encode("utf-8"),
+            "Sistema de aprendizaje en linea.".encode("utf-8"),
+        ],
+        como_user=[],
+        como_moderador=[],
+        como_instructor=[],
+        como_admin=[],
+    ),
+    # <---------------------------------------------------------------------> #
+    # Ads.txt for advertising platforms
+    # <---------------------------------------------------------------------> #
+    Ruta(
+        ruta="/ads.txt",
+        no_session=200,
+        admin=200,
+        user=200,
+        moderator=200,
+        instructor=200,
+        texto=[],
+        como_user=[],
+        como_moderador=[],
+        como_instructor=[],
+        como_admin=[],
+    ),
+    # <---------------------------------------------------------------------> #
+    # Instructor profile and views
+    # <---------------------------------------------------------------------> #
+    # <---------------------------------------------------------------------> #
+    # Message management
+    # <---------------------------------------------------------------------> #
+    # <---------------------------------------------------------------------> #
+    # Moderator profile
+    # <---------------------------------------------------------------------> #
+    # <---------------------------------------------------------------------> #
+    # Student profile
+    # <---------------------------------------------------------------------> #
+    # <---------------------------------------------------------------------> #
+    # Additional settings pages
+    # <---------------------------------------------------------------------> #
+    # <---------------------------------------------------------------------> #
+    # User profile management with specific test user IDs
+    # <---------------------------------------------------------------------> #
+    # <---------------------------------------------------------------------> #
+    # Group management
+    # <---------------------------------------------------------------------> #
+    # <---------------------------------------------------------------------> #
+    # Error pages testing
+    # <---------------------------------------------------------------------> #
+    Ruta(
+        ruta="/http/error/403",
+        no_session=200,
+        admin=200,
+        user=200,
+        moderator=200,
+        instructor=200,
+        texto=[],
+        como_user=[],
+        como_moderador=[],
+        como_instructor=[],
+        como_admin=[],
+    ),
+    Ruta(
+        ruta="/http/error/404",
+        no_session=200,
+        admin=200,
+        user=200,
+        moderator=200,
+        instructor=200,
+        texto=[],
+        como_user=[],
+        como_moderador=[],
+        como_instructor=[],
+        como_admin=[],
+    ),
+    # <---------------------------------------------------------------------> #
+    # Password recovery and mail routes
+    # <---------------------------------------------------------------------> #
+    Ruta(
+        ruta="/user/forgot_password",
+        no_session=200,
+        admin=200,
+        user=200,
+        moderator=200,
+        instructor=200,
+        texto=[],
+        como_user=[],
+        como_moderador=[],
+        como_instructor=[],
+        como_admin=[],
+    ),
+    # <---------------------------------------------------------------------> #
+    # Admin user type changes
+    # <---------------------------------------------------------------------> #
+    # <---------------------------------------------------------------------> #
+    # Site settings
+    # <---------------------------------------------------------------------> #
+    # <---------------------------------------------------------------------> #
+    # Certificate release functionality
+    # <---------------------------------------------------------------------> #
 ]
