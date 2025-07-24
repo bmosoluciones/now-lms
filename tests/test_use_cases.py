@@ -193,3 +193,86 @@ def test_user_registration_to_free_course_enroll(lms_application, request):
                 ).first()[0]
                 assert certificate is not None
                 assert certificate.certificado == "horizontal"
+
+
+def test_user_password_change(lms_application, request):
+    """Test password change functionality for users."""
+    if request.config.getoption("--use-cases") == "True":
+        from now_lms import database, initial_setup
+        from now_lms.db import Usuario
+        from now_lms.auth import proteger_passwd, validar_acceso
+
+        with lms_application.app_context():
+            database.drop_all()
+            initial_setup(with_tests=False, with_examples=False)
+            
+            # Create a test user
+            test_user = Usuario(
+                usuario="testuser@nowlms.com",
+                acceso=proteger_passwd("oldpassword"),
+                nombre="Test",
+                apellido="User",
+                correo_electronico="testuser@nowlms.com",
+                tipo="student",
+                activo=True,
+                correo_electronico_verificado=True,
+            )
+            database.session.add(test_user)
+            database.session.commit()
+
+            with lms_application.test_client() as client:
+                # User logs in with old password
+                login = client.post("/user/login", data={
+                    "usuario": "testuser@nowlms.com", 
+                    "acceso": "oldpassword"
+                })
+                assert login.status_code == 302  # Redirect after successful login
+
+                # Access password change page
+                password_change_page = client.get(f"/perfil/cambiar_contraseña/{test_user.id}")
+                assert password_change_page.status_code == 200
+                assert "Cambiar Contraseña".encode('utf-8') in password_change_page.data
+                assert "Contraseña Actual".encode('utf-8') in password_change_page.data
+                assert "Nueva Contraseña".encode('utf-8') in password_change_page.data
+
+                # Try to change password with wrong current password
+                wrong_password_change = client.post(f"/perfil/cambiar_contraseña/{test_user.id}", data={
+                    "current_password": "wrongpassword",
+                    "new_password": "newpassword123", 
+                    "confirm_password": "newpassword123"
+                })
+                assert wrong_password_change.status_code == 200
+                assert "La contraseña actual es incorrecta".encode('utf-8') in wrong_password_change.data
+
+                # Try to change password with mismatched new passwords
+                mismatched_change = client.post(f"/perfil/cambiar_contraseña/{test_user.id}", data={
+                    "current_password": "oldpassword",
+                    "new_password": "newpassword123", 
+                    "confirm_password": "differentpassword"
+                })
+                assert mismatched_change.status_code == 200
+                assert "Las nuevas contraseñas no coinciden".encode('utf-8') in mismatched_change.data
+
+                # Successfully change password
+                successful_change = client.post(f"/perfil/cambiar_contraseña/{test_user.id}", data={
+                    "current_password": "oldpassword",
+                    "new_password": "newpassword123", 
+                    "confirm_password": "newpassword123"
+                }, follow_redirects=True)
+                assert successful_change.status_code == 200
+                assert "Contraseña actualizada exitosamente".encode('utf-8') in successful_change.data
+
+                # Verify password was actually changed in database
+                updated_user = database.session.execute(
+                    database.select(Usuario).filter_by(correo_electronico="testuser@nowlms.com")
+                ).first()[0]
+                assert validar_acceso("testuser@nowlms.com", "newpassword123")
+                assert not validar_acceso("testuser@nowlms.com", "oldpassword")
+
+                # Log out and log in with new password
+                client.get("/user/logout")
+                new_login = client.post("/user/login", data={
+                    "usuario": "testuser@nowlms.com", 
+                    "acceso": "newpassword123"
+                })
+                assert new_login.status_code == 302  # Successful login redirect

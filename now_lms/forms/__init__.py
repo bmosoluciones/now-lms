@@ -400,6 +400,14 @@ class CheckMailForm(FlaskForm):
     email = StringField(validators=[])
 
 
+class ChangePasswordForm(FlaskForm):
+    """Formulario para cambiar la contraseña del usuario."""
+
+    current_password = PasswordField("Contraseña Actual", validators=[DataRequired()])
+    new_password = PasswordField("Nueva Contraseña", validators=[DataRequired()])
+    confirm_password = PasswordField("Confirmar Nueva Contraseña", validators=[DataRequired()])
+
+
 class PagoForm(FlaskForm):
     """Formulario para crear un pago."""
 
