@@ -30,7 +30,7 @@ wtforms
 
 # Soporte a Bases de datos
 #MySQL
-PyMySQL
+mysqlclient
 cryptography
 # Postgresql
 pg8000

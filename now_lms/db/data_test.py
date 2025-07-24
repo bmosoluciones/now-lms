@@ -42,6 +42,7 @@ from now_lms.db import (
     database,
 )
 from now_lms.db.initial_data import copy_sample_audio, copy_sample_img, copy_sample_pdf, curse_logo, demo_external_code
+from now_lms.logs import logger as log
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -445,9 +446,9 @@ def crear_recurso_prueba():
         makedirs(directorio_destino_archivo)
         makedirs(directorio_destino_imagen)
     except FileExistsError:  # pragma: no cover
-        pass
+        log.trace("Directorios de recursos ya existen.")
     except FileNotFoundError:  # pragma: no cover
-        pass
+        log.trace("Directorios de recursos no encontrados.")
 
     # Copiar pdf de ejemplo.
     archivos = [
@@ -459,9 +460,9 @@ def crear_recurso_prueba():
         try:  # pragma: no cover
             copyfile(origen, destino)
         except FileExistsError:  # pragma: no cover
-            pass
+            log.trace("Archivo de recurso ya existe.")
         except FileNotFoundError:  # pragma: no cover
-            pass
+            log.trace("Archivo de recurso no encontrado.")
 
     # Copiar img de ejemplo.
     imagenes = [
@@ -473,9 +474,9 @@ def crear_recurso_prueba():
         try:  # pragma: no cover
             copyfile(origen, destino)
         except FileExistsError:  # pragma: no cover
-            pass
+            log.trace("Imagen de recurso ya existe.")
         except FileNotFoundError:  # pragma: no cover
-            pass
+            log.trace("Imagen de recurso no encontrada.")
 
     database.session.commit()
 

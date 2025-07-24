@@ -43,7 +43,7 @@ def lms_application():
             "DEBUG": True,
             "PRESERVE_CONTEXT_ON_EXCEPTION": True,
             "SQLALCHEMY_ECHO": True,
-            "SQLALCHEMY_DATABASE_URI": "sqlite://",
+            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
         }
     )
 
