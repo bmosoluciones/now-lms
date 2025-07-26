@@ -135,5 +135,8 @@ def list_themes():
     from os.path import join
 
     THEMES_PATH = join(str(DIRECTORIO_PLANTILLAS), "themes")
-    TEMPLATE_LIST = listdir(THEMES_PATH)
+    TEMPLATE_LIST = []
+    for template in listdir(THEMES_PATH):
+        TEMPLATE_LIST.append(template)
+    TEMPLATE_LIST.sort()
     return TEMPLATE_LIST
