@@ -39,6 +39,7 @@
         font-family: "Times New Roman", Times, serif;
         color: var(--finance-dark);
         position: relative;
+        overflow-x: hidden; /* Prevent horizontal scrolling */
     }
 
     /* Subtle currency-like background pattern */
@@ -69,19 +70,11 @@
         opacity: 0.3;
     }
 
-    /* Custom Navbar Styling - $100 Bill Inspired Design */
+    /* Custom Navbar Styling - Solid Color Design */
     .navbar-finance {
-        background: 
-            linear-gradient(90deg, var(--finance-primary) 0%, var(--finance-secondary) 50%, var(--finance-security) 100%),
-            repeating-linear-gradient(
-                90deg,
-                transparent 0px,
-                rgba(255, 255, 255, 0.1) 1px,
-                transparent 2px,
-                transparent 20px
-            ) !important;
+        background: var(--finance-secondary) !important;
         box-shadow: 
-            0 4px 8px rgba(0, 102, 71, 0.3),
+            0 4px 8px rgba(30, 77, 58, 0.3),
             inset 0 1px 0 rgba(255, 255, 255, 0.2),
             inset 0 -1px 0 rgba(0, 0, 0, 0.1);
         border-bottom: 3px solid var(--finance-warning);
@@ -181,9 +174,9 @@
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
     }
 
-    /* Custom Button Styles */
+    /* Custom Button Styles - Solid Colors */
     .btn-finance-primary {
-        background: linear-gradient(45deg, var(--finance-primary), var(--finance-accent));
+        background: var(--finance-primary);
         border: 2px solid var(--finance-primary);
         color: white;
         border-radius: 8px;
@@ -196,15 +189,15 @@
     }
 
     .btn-finance-primary:hover {
-        background: linear-gradient(45deg, var(--finance-accent), var(--finance-primary));
+        background: var(--finance-accent);
         border-color: var(--finance-accent);
         color: white;
         transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0, 103, 71, 0.3);
+        box-shadow: 0 6px 12px rgba(74, 111, 165, 0.3);
     }
 
     .btn-finance-secondary {
-        background: linear-gradient(45deg, var(--finance-gray), var(--finance-dark));
+        background: var(--finance-gray);
         border: 2px solid var(--finance-gray);
         color: white;
         border-radius: 8px;
@@ -212,16 +205,16 @@
         font-weight: 600;
         font-family: "Arial", sans-serif;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 8px rgba(117, 117, 117, 0.2);
+        box-shadow: 0 4px 8px rgba(112, 128, 144, 0.2);
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
     .btn-finance-secondary:hover {
-        background: linear-gradient(45deg, var(--finance-dark), var(--finance-gray));
+        background: var(--finance-dark);
         border-color: var(--finance-dark);
         color: white;
         transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(117, 117, 117, 0.3);
+        box-shadow: 0 6px 12px rgba(26, 26, 26, 0.3);
     }
 
     /* Card Enhancements */
@@ -499,5 +492,35 @@
         }
         100% {
             transform: translateX(-100%);
+        }
+    }
+
+    /* New ticker scroll animation - text moves from right to left */
+    @keyframes ticker-scroll {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+
+    /* Simple ticker animation - moves text from right edge to left edge */
+    @keyframes simple-scroll {
+        0% {
+            transform: translateX(100%);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+
+    /* Constrained ticker animation - keeps text within visible container boundaries */
+    @keyframes constrained-scroll {
+        0% {
+            left: 100%;
+        }
+        100% {
+            left: -100%;
         }
     }
