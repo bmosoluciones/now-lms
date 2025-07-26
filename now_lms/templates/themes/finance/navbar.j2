@@ -37,48 +37,48 @@
                 {% if not current_user.is_authenticated %}
                 <li>
                     <a href="{{ url_for('home.pagina_de_inicio') }}" class="nav-link px-2"
-                        ><i class="bi bi-house-door-fill" aria-hidden="true"></i> 🏛️ Inicio</a
+                        >🏛️ Inicio</a
                     >
                 </li>
                 {% else %}
                 <li>
                     <a href="{{ url_for('home.panel') }}" class="nav-link px-2"
-                        ><i class="bi bi-house-door-fill" aria-hidden="true"></i> 🏛️ Panel Federal</a
+                        >🏛️ Panel Federal</a
                     >
                 </li>
                 {% endif %}
                 <li>
                     <a href="{{ url_for('course.lista_cursos', page=1) }}" class="nav-link px-2"
-                        ><i class="bi bi-mortarboard-fill" aria-hidden="true"></i> 💰 Cursos Financieros</a
+                        >💰 Cursos Financieros</a
                     >
                 </li>
                 <li>
                     <a href="{{ url_for('program.lista_programas', page=1) }}" class="nav-link px-2"
-                        ><i class="bi bi-collection-fill" aria-hidden="true"></i> 📊 Programas</a
+                        >📊 Programas</a
                     >
                 </li>
                 <li>
                     <a href="{{ url_for('resource.lista_de_recursos', page=1) }}" class="nav-link px-2"
-                        ><i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i> 💼 Recursos</a
+                        >💼 Recursos</a
                     >
                 </li>
                 {% if current_user.is_authenticated %} {% if current_user.tipo == "moderator" or current_user.tipo ==
                 "instructor" or current_user.tipo == "admin" %}
                 <li>
                     <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link px-2"
-                        ><i class="bi bi-shield-fill-check" aria-hidden="true"></i> 🏦 Moderación</a
+                        >🏦 Moderación</a
                     >
                 </li>
                 {% endif %} {% if current_user.tipo == "instructor" or current_user.tipo == "admin" %}
                 <li>
                     <a href="{{ url_for('instructor_profile.pagina_instructor') }}" class="nav-link px-2"
-                        ><i class="bi bi-person-workspace" aria-hidden="true"></i> 📈 Docente</a
+                        >📈 Docente</a
                     >
                 </li>
                 {% endif %} {% if current_user.tipo == "admin" %}
                 <li>
                     <a href="{{ url_for('admin_profile.pagina_admin') }}" class="nav-link px-2"
-                        ><i class="bi bi-gear-fill" aria-hidden="true"></i> 💵 Administración</a
+                        >💵 Administración</a
                     >
                 </li>
                 {% endif %} {% endif %}
@@ -86,10 +86,10 @@
             <div class="text-end">
                 {% if not current_user.is_authenticated %}
                 <a class="btn btn-finance-primary me-2" href="{{ url_for('user.inicio_sesion') }}" role="button">
-                    <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> 💳 Iniciar Sesión
+                    💳 Iniciar Sesión
                 </a>
                 <a class="btn btn-finance-secondary me-2" href="{{ url_for('user.crear_cuenta') }}" role="button">
-                    <i class="bi bi-person-plus-fill" aria-hidden="true"></i> 🏛️ Crear Cuenta
+                    🏛️ Crear Cuenta
                 </a>
                 {% else %}
                 <ul class="navbar-nav">
