@@ -71,11 +71,12 @@ def test_visit_views_anonimus(lms_application, request):
             initial_setup(with_tests=True, with_examples=False)
             with lms_application.test_client() as client:
                 for ruta in rutas_estaticas:
-                    log.warning(ruta.ruta)
                     consulta = client.get(ruta.ruta)
                     assert consulta.status_code == ruta.no_session
                     if consulta.status_code == 200 and ruta.texto:
                         for t in ruta.texto:
+                            log.warning(ruta.ruta)
+                            log.warning(t)
                             assert t in consulta.data
 
 

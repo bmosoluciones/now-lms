@@ -69,9 +69,7 @@ rutas_estaticas = [
         instructor=200,
         texto=[
             "NOW LMS".encode("utf-8"),
-            "Aplicación para gestión del aprendizaje.".encode("utf-8"),
-            "NOW LMS".encode("utf-8"),
-            "Sistema de aprendizaje en linea.".encode("utf-8"),
+            "Aprende con Nosotros".encode("utf-8"),
             "This is your first course.".encode("utf-8"),
         ],
         como_user=[b"Dania", b"Mendez"],
