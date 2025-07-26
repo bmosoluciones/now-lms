@@ -56,7 +56,7 @@ def personalizacion():
 
     TEMPLATE_CHOICES = []
 
-    for template in list_themes:
+    for template in list_themes():
         TEMPLATE_CHOICES.append((template, template))
 
     config = database.session.execute(database.select(Style)).first()[0]
