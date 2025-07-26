@@ -86,6 +86,7 @@ from now_lms.forms import (
 )
 from now_lms.logs import log
 from now_lms.misc import CURSO_NIVEL, HTML_TAGS, INICIO_SESION, TEMPLATES_BY_TYPE, TIPOS_RECURSOS
+from now_lms.themes import get_course_list_template, get_course_view_template
 
 # ---------------------------------------------------------------------------------------
 # Gestión de cursos.
@@ -126,7 +127,7 @@ def curso(course_code):
 
     if acceso:
         return render_template(
-            "learning/curso/curso.html",
+            get_course_view_template(),
             curso=_curso,
             secciones=database.session.query(CursoSeccion).filter_by(curso=course_code).order_by(CursoSeccion.indice).all(),
             recursos=database.session.query(CursoRecurso).filter_by(curso=course_code).order_by(CursoRecurso.indice).all(),
@@ -1262,5 +1263,5 @@ def lista_cursos():
         PARAMETROS = None
 
     return render_template(
-        "inicio/cursos.html", cursos=consulta_cursos, etiquetas=etiquetas, categorias=categorias, parametros=PARAMETROS
+        get_course_list_template(), cursos=consulta_cursos, etiquetas=etiquetas, categorias=categorias, parametros=PARAMETROS
     )

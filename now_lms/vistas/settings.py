@@ -20,8 +20,6 @@
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
-from os import listdir
-from os.path import join
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
@@ -35,7 +33,7 @@ from sqlalchemy.exc import OperationalError
 # Recursos locales
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido, proteger_secreto
-from now_lms.cache import cache
+from now_lms.cache import cache, invalidate_all_cache
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
 from now_lms.db import AdSense, Configuracion, MailConfig, PaypalConfig, Style, database
 from now_lms.db.tools import elimina_logo_perzonalizado
@@ -54,12 +52,11 @@ setting = Blueprint("setting", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 @perfil_requerido("admin")
 def personalizacion():
     """Personalizar el sistema."""
+    from now_lms.themes import list_themes
 
-    THEMES_PATH = join(str(DIRECTORIO_PLANTILLAS), "themes")
-    TEMPLATE_LIST = listdir(THEMES_PATH)
     TEMPLATE_CHOICES = []
 
-    for template in TEMPLATE_LIST:
+    for template in list_themes:
         TEMPLATE_CHOICES.append((template, template))
 
     config = database.session.execute(database.select(Style)).first()[0]
@@ -67,7 +64,12 @@ def personalizacion():
     form.style.choices = TEMPLATE_CHOICES
 
     if form.validate_on_submit() or request.method == "POST":  # pragma: no cover
-        config.theme = form.style.data
+        # Check if theme is changing
+        old_theme = config.theme
+        new_theme = form.style.data
+        theme_changed = old_theme != new_theme
+
+        config.theme = new_theme
 
         if "logo" in request.files:
             try:
@@ -81,6 +83,12 @@ def personalizacion():
 
         try:
             database.session.commit()
+
+            # Invalidate all cache if theme changed
+            if theme_changed:
+                invalidate_all_cache()
+                log.trace(f"Tema cambiado de {old_theme} a {new_theme}, cache invalidada")
+
             flash("Tema del sitio web actualizado exitosamente.", "success")
             return redirect(url_for("setting.personalizacion"))
         except OperationalError:  # pragma: no cover

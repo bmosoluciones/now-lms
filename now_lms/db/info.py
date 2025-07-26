@@ -67,7 +67,6 @@ def course_info(course_code: str) -> SimpleNamespace:
     """
 
     from sqlalchemy import func
-
     from now_lms.db import Curso, CursoRecurso, CursoSeccion, EstudianteCurso
 
     curso = database.session.execute(database.select(Curso).where(Curso.codigo == course_code)).first()[0]
@@ -86,6 +85,32 @@ def course_info(course_code: str) -> SimpleNamespace:
         resources_count=resources_count,
         sections_count=sections_count,
         student_count=student_count,
+    )
+
+
+def lms_info() -> SimpleNamespace:
+    """
+    Returns a SimpleNamespace with LMS information.
+    """
+    from sqlalchemy import func
+    from now_lms.db import Curso, Usuario
+
+    courses_count = database.session.execute(database.select(func.count()).select_from(Curso)).scalar_one()
+    students_count = database.session.execute(
+        database.select(func.count()).select_from(Usuario).where(Usuario.tipo == "student")
+    ).scalar_one()
+    teachers_count = database.session.execute(
+        database.select(func.count()).select_from(Usuario).where(Usuario.tipo == "instructor")
+    ).scalar_one()
+    moderators_count = database.session.execute(
+        database.select(func.count()).select_from(Usuario).where(Usuario.tipo == "moderator")
+    ).scalar_one()
+
+    return SimpleNamespace(
+        courses_count=courses_count,
+        students_count=students_count,
+        teachers_count=teachers_count,
+        moderators_count=moderators_count,
     )
 
 

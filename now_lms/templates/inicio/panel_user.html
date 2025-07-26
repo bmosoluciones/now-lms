@@ -1,91 +1,95 @@
 <!doctype html>
 <html lang="es" class="h-100">
-  {% set current_theme = current_theme() %}
+    {% set current_theme = current_theme() %}
 
-  <head>
-    {{ current_theme.headertags() }}
-    <title>Panel del usuario</title>
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Panel del usuario</title>
 
-    {{ current_theme.local_style() }}
-  </head>
+        {{ current_theme.local_style() }}
+    </head>
 
-  <body>
-    {{ current_theme.navbar() }}
+    <body>
+        {{ current_theme.navbar() }}
 
-    <main>
-      {{ current_theme.notify() }}
+        <main>
+            {{ current_theme.notify() }}
 
-      <div class="container px-0 py-3" id="icon-grid">
-        <h4 class="pb-2 border-bottom">
-          Bienvenido {{ current_user.nombre}} {{
-          current_user.apellido}} 
-        </h4>
-        <div class="row mb-2 mb-xl-3">
-          <div class="col-auto d-none d-sm-block">
-            <h3>Información del sistema.</h3>
-          </div>
-        </div>
-      </div>
-        <div class="row">
-          <div class="col-xl-6 col-xxl-5 d-flex">
-            <div class="w-100">
-              <div class="row">
-                <div class="col-sm-6">
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col mt-0">
-                          <h5 class="card-title"><i class="bi bi-person-vcard-fill" aria-hidden="true"></i> Cursos</h5>
-                        </div>
-
-                        <div class="col-auto">
-                          <div class="stat text-primary">
-                            <i class="align-middle" data-feather="truck"></i>
-                          </div>
-                        </div>
-                      </div>
-                      <h1 class="mt-1 mb-3">{{ cuenta_cursos }}</h1>
+            <div class="container px-0 py-3" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Bienvenido {{ current_user.nombre}} {{ current_user.apellido}}</h4>
+                <div class="row mb-2 mb-xl-3">
+                    <div class="col-auto d-none d-sm-block">
+                        <h3>Información del sistema.</h3>
                     </div>
-                  </div>
                 </div>
-                <div class="col-sm-6">
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col mt-0">
-                          <h5 class="card-title"><i class="bi bi-award-fill" aria-hidden="true"></i> Certificaciones</h5>
-                        </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-6 col-xxl-5 d-flex">
+                    <div class="w-100">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col mt-0">
+                                                <h5 class="card-title">
+                                                    <i class="bi bi-person-vcard-fill" aria-hidden="true"></i> Cursos
+                                                </h5>
+                                            </div>
 
-                        <div class="col-auto">
-                          <div class="stat text-primary">
-                            <i class="align-middle" data-feather="dollar-sign"></i>
-                          </div>
+                                            <div class="col-auto">
+                                                <div class="stat text-primary">
+                                                    <i class="align-middle" data-feather="truck"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h1 class="mt-1 mb-3">{{ cuenta_cursos }}</h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col mt-0">
+                                                <h5 class="card-title">
+                                                    <i class="bi bi-award-fill" aria-hidden="true"></i> Certificaciones
+                                                </h5>
+                                            </div>
+
+                                            <div class="col-auto">
+                                                <div class="stat text-primary">
+                                                    <i class="align-middle" data-feather="dollar-sign"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h1 class="mt-1 mb-3">{{ cuenta_certificados }}</h1>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                      </div>
-                      <h1 class="mt-1 mb-3">{{ cuenta_certificados }}</h1>
                     </div>
-                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
 
-          <div class="col-xl-6 col-xxl-7">
-            <div class="card flex-fill w-100">
-              <div class="card-header">
-                <h5 class="card-title mb-0">Mis Cursos</h5>
-              </div>
-              <div class="card-body pt-2 pb-3">
-                <ul>
-                  {% for curso in mis_cursos %}
-                  <li><a href="{{ url_for('course.tomar_curso', course_code=curso.codigo) }}">{{ curso.nombre }}</a></li>
-                  {% endfor %}
-                </ul>
-              </div>
+                <div class="col-xl-6 col-xxl-7">
+                    <div class="card flex-fill w-100">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Mis Cursos</h5>
+                        </div>
+                        <div class="card-body pt-2 pb-3">
+                            <ul>
+                                {% for curso in mis_cursos %}
+                                <li>
+                                    <a href="{{ url_for('course.tomar_curso', course_code=curso.codigo) }}"
+                                        >{{ curso.nombre }}</a
+                                    >
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </main>
-  </body>
+        </main>
+    </body>
 </html>

@@ -36,60 +36,44 @@
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 {% if not current_user.is_authenticated %}
                 <li>
-                    <a href="{{ url_for('home.pagina_de_inicio') }}" class="nav-link px-2"
-                        ><i class="bi bi-house-fill" aria-hidden="true"></i> Inicio</a
-                    >
+                    <a href="{{ url_for('home.pagina_de_inicio') }}" class="nav-link px-2">🏢 Workspace</a>
                 </li>
                 {% else %}
                 <li>
-                    <a href="{{ url_for('home.panel') }}" class="nav-link px-2"
-                        ><i class="bi bi-house-fill" aria-hidden="true"></i> Inicio</a
-                    >
+                    <a href="{{ url_for('home.panel') }}" class="nav-link px-2">🏢 Dashboard</a>
                 </li>
                 {% endif %}
                 <li>
-                    <a href="{{ url_for('course.lista_cursos', page=1) }}" class="nav-link px-2"
-                        ><i class="bi bi-book-fill" aria-hidden="true"></i> Cursos</a
-                    >
+                    <a href="{{ url_for('course.lista_cursos', page=1) }}" class="nav-link px-2">📚 Learning Modules</a>
                 </li>
                 <li>
-                    <a href="{{ url_for('program.lista_programas', page=1) }}" class="nav-link px-2"
-                        ><i class="bi bi-grid-fill" aria-hidden="true"></i> Programas</a
-                    >
+                    <a href="{{ url_for('program.lista_programas', page=1) }}" class="nav-link px-2">🎯 Training Programs</a>
                 </li>
                 <li>
-                    <a href="{{ url_for('resource.lista_de_recursos', page=1) }}" class="nav-link px-2"
-                        ><i class="bi bi-folder-fill" aria-hidden="true"></i> Recursos</a
-                    >
+                    <a href="{{ url_for('resource.lista_de_recursos', page=1) }}" class="nav-link px-2">📋 Resources</a>
                 </li>
                 {% if current_user.is_authenticated %} {% if current_user.tipo == "moderator" or current_user.tipo ==
                 "instructor" or current_user.tipo == "admin" %}
                 <li>
-                    <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link px-2"
-                        ><i class="bi bi-shield-fill-check" aria-hidden="true"></i> Moderación</a
-                    >
+                    <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link px-2">⚙️ System Admin</a>
                 </li>
                 {% endif %} {% if current_user.tipo == "instructor" or current_user.tipo == "admin" %}
                 <li>
-                    <a href="{{ url_for('instructor_profile.pagina_instructor') }}" class="nav-link px-2"
-                        ><i class="bi bi-person-workspace" aria-hidden="true"></i> Docente</a
-                    >
+                    <a href="{{ url_for('instructor_profile.pagina_instructor') }}" class="nav-link px-2">👨‍🏫 Trainer Portal</a>
                 </li>
                 {% endif %} {% if current_user.tipo == "admin" %}
                 <li>
-                    <a href="{{ url_for('admin_profile.pagina_admin') }}" class="nav-link px-2"
-                        ><i class="bi bi-gear-fill" aria-hidden="true"></i> Administración</a
-                    >
+                    <a href="{{ url_for('admin_profile.pagina_admin') }}" class="nav-link px-2">🔧 Configuration</a>
                 </li>
                 {% endif %} {% endif %}
             </ul>
             <div class="text-end">
                 {% if not current_user.is_authenticated %}
                 <a class="btn btn-corporate-primary me-2" href="{{ url_for('user.inicio_sesion') }}" role="button">
-                    <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Iniciar Sesión
+                    🔐 Sign In
                 </a>
                 <a class="btn btn-corporate-secondary me-2" href="{{ url_for('user.crear_cuenta') }}" role="button">
-                    <i class="bi bi-person-plus-fill" aria-hidden="true"></i> Crear Cuenta
+                    👤 Register
                 </a>
                 {% else %}
                 <ul class="navbar-nav">
@@ -103,13 +87,10 @@
                             aria-expanded="false"
                             style="font-weight: 500"
                             >Bienvenido: {{ current_user.nombre }} {{ current_user.apellido }}
-                            <i class="bi bi-chevron-down" aria-hidden="true"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg-end">
                             <li>
-                                <a class="dropdown-item" href="{{ url_for('user_profile.perfil') }}">
-                                    <i class="bi bi-person-circle" aria-hidden="true"></i> Perfil de Usuario</a
-                                >
+                                <a class="dropdown-item" href="{{ url_for('user_profile.perfil') }}"> Perfil de Usuario</a>
                             </li>
                             <li><a class="dropdown-item" href="#"> </a></li>
                             <li>
@@ -122,7 +103,7 @@
                                     data-bs-toggle="modal"
                                     data-bs-target="#exampleModal"
                                 >
-                                    <i class="bi bi-info-circle-fill" aria-hidden="true"></i> Información
+                                    Información
                                 </a>
                             </li>
                             <li>
@@ -130,7 +111,7 @@
                             </li>
                             <li>
                                 <a class="dropdown-item text-decoration-none" href="{{ url_for('user.cerrar_sesion') }}">
-                                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Cerrar Sesión
+                                    Cerrar Sesión
                                 </a>
                             </li>
                         </ul>

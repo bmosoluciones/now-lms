@@ -57,12 +57,60 @@ def get_home_template() -> str:
     """Devuelve la ruta del template de la pagina de inicio."""
     THEME = get_current_theme()
 
-    HOME = Path(path.join(get_theme_path(), "home.j2"))
+    HOME = Path(path.join(get_theme_path(), "overrides", "home.j2"))
 
     if HOME.exists():
-        return THEMES_DIRECTORY + str(THEME) + "/home.j2"
+        return THEMES_DIRECTORY + str(THEME) + "/overrides/home.j2"
     else:
         return "inicio/home.html"
+
+
+def get_course_list_template() -> str:
+    """Devuelve la ruta del template de la lista de cursos."""
+    THEME = get_current_theme()
+
+    COURSE_LIST = Path(path.join(get_theme_path(), "overrides", "course_list.j2"))
+
+    if COURSE_LIST.exists():
+        return THEMES_DIRECTORY + str(THEME) + "/overrides/course_list.j2"
+    else:
+        return "inicio/cursos.html"
+
+
+def get_program_list_template() -> str:
+    """Devuelve la ruta del template de la lista de programas."""
+    THEME = get_current_theme()
+
+    PROGRAM_LIST = Path(path.join(get_theme_path(), "overrides", "program_list.j2"))
+
+    if PROGRAM_LIST.exists():
+        return THEMES_DIRECTORY + str(THEME) + "/overrides/program_list.j2"
+    else:
+        return "inicio/programas.html"
+
+
+def get_course_view_template() -> str:
+    """Devuelve la ruta del template de vista de curso."""
+    THEME = get_current_theme()
+
+    COURSE_VIEW = Path(path.join(get_theme_path(), "overrides", "course_view.j2"))
+
+    if COURSE_VIEW.exists():
+        return THEMES_DIRECTORY + str(THEME) + "/overrides/course_view.j2"
+    else:
+        return "learning/curso/curso.html"
+
+
+def get_program_view_template() -> str:
+    """Devuelve la ruta del template de vista de programa."""
+    THEME = get_current_theme()
+
+    PROGRAM_VIEW = Path(path.join(get_theme_path(), "overrides", "program_view.j2"))
+
+    if PROGRAM_VIEW.exists():
+        return THEMES_DIRECTORY + str(THEME) + "/overrides/program_view.j2"
+    else:
+        return "learning/programa.html"
 
 
 def current_theme():
@@ -78,3 +126,14 @@ def current_theme():
         notify=get_macro(dir_ + theme() + "/notify.j2", "notify"),
         rendizar_paginacion=get_macro(dir_ + theme() + "/pagination.j2", "paginate"),
     )
+
+
+def list_themes():
+    """Devuelve una lista de los temas disponibles."""
+
+    from os import listdir
+    from os.path import join
+
+    THEMES_PATH = join(str(DIRECTORIO_PLANTILLAS), "themes")
+    TEMPLATE_LIST = listdir(THEMES_PATH)
+    return TEMPLATE_LIST

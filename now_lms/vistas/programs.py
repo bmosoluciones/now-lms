@@ -45,6 +45,7 @@ from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, images
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Categoria, Etiqueta, Programa, database
 from now_lms.db.tools import cuenta_cursos_por_programa
 from now_lms.forms import ProgramaForm
+from now_lms.themes import get_program_list_template, get_program_view_template
 
 # ---------------------------------------------------------------------------------------
 # Interfaz de gestión de programas
@@ -203,7 +204,7 @@ def pagina_programa(codigo):
 
     program = database.session.query(Programa).filter(Programa.codigo == codigo).first()
 
-    return render_template("learning/programa.html", programa=program)
+    return render_template(get_program_view_template(), programa=program)
 
 
 @program.route("/program/explore")
@@ -239,5 +240,5 @@ def lista_programas():
         PARAMETROS = None
 
     return render_template(
-        "inicio/programas.html", cursos=consulta_cursos, etiquetas=etiquetas, categorias=categorias, parametros=PARAMETROS
+        get_program_list_template(), cursos=consulta_cursos, etiquetas=etiquetas, categorias=categorias, parametros=PARAMETROS
     )

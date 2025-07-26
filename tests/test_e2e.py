@@ -47,7 +47,7 @@ def lms_application():
 def test_user_registration_to_free_course_enroll(lms_application, request):
     if request.config.getoption("--use-cases") == "True":
         from now_lms import database, initial_setup
-        from now_lms.db import Curso, Usuario
+        from now_lms.db import Usuario
 
         with lms_application.app_context():
             database.drop_all()
@@ -203,7 +203,7 @@ def test_user_password_change(lms_application, request):
         with lms_application.app_context():
             database.drop_all()
             initial_setup(with_tests=False, with_examples=False)
-            
+
             # Create a test user
             test_user = Usuario(
                 usuario="testuser@nowlms.com",
@@ -220,45 +220,52 @@ def test_user_password_change(lms_application, request):
 
             with lms_application.test_client() as client:
                 # User logs in with old password
-                login = client.post("/user/login", data={
-                    "usuario": "testuser@nowlms.com", 
-                    "acceso": "oldpassword"
-                })
+                login = client.post("/user/login", data={"usuario": "testuser@nowlms.com", "acceso": "oldpassword"})
                 assert login.status_code == 302  # Redirect after successful login
 
                 # Access password change page
                 password_change_page = client.get(f"/perfil/cambiar_contraseña/{test_user.id}")
                 assert password_change_page.status_code == 200
-                assert "Cambiar Contraseña".encode('utf-8') in password_change_page.data
-                assert "Contraseña Actual".encode('utf-8') in password_change_page.data
-                assert "Nueva Contraseña".encode('utf-8') in password_change_page.data
+                assert "Cambiar Contraseña".encode("utf-8") in password_change_page.data
+                assert "Contraseña Actual".encode("utf-8") in password_change_page.data
+                assert "Nueva Contraseña".encode("utf-8") in password_change_page.data
 
                 # Try to change password with wrong current password
-                wrong_password_change = client.post(f"/perfil/cambiar_contraseña/{test_user.id}", data={
-                    "current_password": "wrongpassword",
-                    "new_password": "newpassword123", 
-                    "confirm_password": "newpassword123"
-                })
+                wrong_password_change = client.post(
+                    f"/perfil/cambiar_contraseña/{test_user.id}",
+                    data={
+                        "current_password": "wrongpassword",
+                        "new_password": "newpassword123",
+                        "confirm_password": "newpassword123",
+                    },
+                )
                 assert wrong_password_change.status_code == 200
-                assert "La contraseña actual es incorrecta".encode('utf-8') in wrong_password_change.data
+                assert "La contraseña actual es incorrecta".encode("utf-8") in wrong_password_change.data
 
                 # Try to change password with mismatched new passwords
-                mismatched_change = client.post(f"/perfil/cambiar_contraseña/{test_user.id}", data={
-                    "current_password": "oldpassword",
-                    "new_password": "newpassword123", 
-                    "confirm_password": "differentpassword"
-                })
+                mismatched_change = client.post(
+                    f"/perfil/cambiar_contraseña/{test_user.id}",
+                    data={
+                        "current_password": "oldpassword",
+                        "new_password": "newpassword123",
+                        "confirm_password": "differentpassword",
+                    },
+                )
                 assert mismatched_change.status_code == 200
-                assert "Las nuevas contraseñas no coinciden".encode('utf-8') in mismatched_change.data
+                assert "Las nuevas contraseñas no coinciden".encode("utf-8") in mismatched_change.data
 
                 # Successfully change password
-                successful_change = client.post(f"/perfil/cambiar_contraseña/{test_user.id}", data={
-                    "current_password": "oldpassword",
-                    "new_password": "newpassword123", 
-                    "confirm_password": "newpassword123"
-                }, follow_redirects=True)
+                successful_change = client.post(
+                    f"/perfil/cambiar_contraseña/{test_user.id}",
+                    data={
+                        "current_password": "oldpassword",
+                        "new_password": "newpassword123",
+                        "confirm_password": "newpassword123",
+                    },
+                    follow_redirects=True,
+                )
                 assert successful_change.status_code == 200
-                assert "Contraseña actualizada exitosamente".encode('utf-8') in successful_change.data
+                assert "Contraseña actualizada exitosamente".encode("utf-8") in successful_change.data
 
                 # Verify password was actually changed in database
                 updated_user = database.session.execute(
@@ -269,10 +276,7 @@ def test_user_password_change(lms_application, request):
 
                 # Log out and log in with new password
                 client.get("/user/logout")
-                new_login = client.post("/user/login", data={
-                    "usuario": "testuser@nowlms.com", 
-                    "acceso": "newpassword123"
-                })
+                new_login = client.post("/user/login", data={"usuario": "testuser@nowlms.com", "acceso": "newpassword123"})
                 assert new_login.status_code == 302  # Successful login redirect
 
 
@@ -280,13 +284,13 @@ def test_password_recovery_functionality(lms_application, request):
     """Test the complete password recovery flow."""
     if request.config.getoption("--use-cases") == "True":
         from now_lms import database, initial_setup
-        from now_lms.db import Usuario, Configuracion, MailConfig
+        from now_lms.db import Usuario, MailConfig
         from now_lms.auth import proteger_passwd, validar_acceso
 
         with lms_application.app_context():
             database.drop_all()
             initial_setup(with_tests=False, with_examples=False)
-            
+
             # Update the default mail configuration to enable email verification
             mail_config = database.session.execute(database.select(MailConfig)).first()[0]
             mail_config.MAIL_SERVER = "smtp.test.com"
@@ -296,7 +300,7 @@ def test_password_recovery_functionality(lms_application, request):
             mail_config.MAIL_DEFAULT_SENDER_NAME = "Test LMS"
             mail_config.MAIL_USE_TLS = True
             mail_config.email_verificado = True
-            
+
             # Create a test user with verified email
             test_user = Usuario(
                 usuario="testuser2",
@@ -307,34 +311,35 @@ def test_password_recovery_functionality(lms_application, request):
                 tipo="student",
                 activo=True,
                 correo_electronico_verificado=True,
-                creado_por="system"
+                creado_por="system",
             )
             database.session.add(test_user)
             database.session.commit()
-            
+
         with lms_application.test_client() as client:
-            
+
             # Test that forgot password link shows on login page when email is configured
             login_response = client.get("/user/login")
             assert login_response.status_code == 200
-            assert "¿Olvidaste tu contraseña?".encode('utf-8') in login_response.data
-            
+            assert "¿Olvidaste tu contraseña?".encode("utf-8") in login_response.data
+
             # Test forgot password form
             forgot_password_response = client.get("/user/forgot_password")
             assert forgot_password_response.status_code == 200
-            assert "Recuperar Contraseña".encode('utf-8') in forgot_password_response.data
-            
+            assert "Recuperar Contraseña".encode("utf-8") in forgot_password_response.data
+
             # Test submitting forgot password form with valid email
             from unittest.mock import patch
-            with patch('now_lms.mail.send_mail') as mock_send_mail:
+
+            with patch("now_lms.mail.send_mail") as mock_send_mail:
                 mock_send_mail.return_value = True
-                forgot_post = client.post("/user/forgot_password", data={
-                    "email": "testuser2@nowlms.com"
-                }, follow_redirects=True)
+                forgot_post = client.post(
+                    "/user/forgot_password", data={"email": "testuser2@nowlms.com"}, follow_redirects=True
+                )
                 assert forgot_post.status_code == 200
-                assert "Se ha enviado un correo".encode('utf-8') in forgot_post.data
+                assert "Se ha enviado un correo".encode("utf-8") in forgot_post.data
                 mock_send_mail.assert_called_once()
-            
+
             # Test submitting forgot password form with unverified email
             with lms_application.app_context():
                 unverified_user = Usuario(
@@ -346,43 +351,45 @@ def test_password_recovery_functionality(lms_application, request):
                     tipo="student",
                     activo=True,
                     correo_electronico_verificado=False,
-                    creado_por="system"
+                    creado_por="system",
                 )
                 database.session.add(unverified_user)
                 database.session.commit()
-            
-            forgot_unverified = client.post("/user/forgot_password", data={
-                "email": "unverified@nowlms.com"
-            }, follow_redirects=True)
+
+            forgot_unverified = client.post(
+                "/user/forgot_password", data={"email": "unverified@nowlms.com"}, follow_redirects=True
+            )
             assert forgot_unverified.status_code == 200
             # Should still show success message for security
-            assert "Se ha enviado un correo".encode('utf-8') in forgot_unverified.data
-            
+            assert "Se ha enviado un correo".encode("utf-8") in forgot_unverified.data
+
             # Test password reset with valid token
             with lms_application.app_context():
                 from now_lms.auth import generate_password_reset_token
+
                 reset_token = generate_password_reset_token("testuser2@nowlms.com")
-            
+
             reset_form_response = client.get(f"/user/reset_password/{reset_token}")
             assert reset_form_response.status_code == 200
-            assert "Restablecer Contraseña".encode('utf-8') in reset_form_response.data
-            
+            assert "Restablecer Contraseña".encode("utf-8") in reset_form_response.data
+
             # Test password reset with mismatched passwords
-            reset_mismatch = client.post(f"/user/reset_password/{reset_token}", data={
-                "new_password": "newpassword123",
-                "confirm_password": "differentpassword"
-            })
+            reset_mismatch = client.post(
+                f"/user/reset_password/{reset_token}",
+                data={"new_password": "newpassword123", "confirm_password": "differentpassword"},
+            )
             assert reset_mismatch.status_code == 200
-            assert "Las nuevas contraseñas no coinciden".encode('utf-8') in reset_mismatch.data
-            
+            assert "Las nuevas contraseñas no coinciden".encode("utf-8") in reset_mismatch.data
+
             # Test successful password reset
-            reset_success = client.post(f"/user/reset_password/{reset_token}", data={
-                "new_password": "newpassword456", 
-                "confirm_password": "newpassword456"
-            }, follow_redirects=True)
+            reset_success = client.post(
+                f"/user/reset_password/{reset_token}",
+                data={"new_password": "newpassword456", "confirm_password": "newpassword456"},
+                follow_redirects=True,
+            )
             assert reset_success.status_code == 200
-            assert "Contraseña actualizada exitosamente".encode('utf-8') in reset_success.data
-            
+            assert "Contraseña actualizada exitosamente".encode("utf-8") in reset_success.data
+
             # Verify password was actually changed
             with lms_application.app_context():
                 updated_user = database.session.execute(
@@ -390,14 +397,170 @@ def test_password_recovery_functionality(lms_application, request):
                 ).first()[0]
                 assert validar_acceso("testuser2@nowlms.com", "newpassword456")
                 assert not validar_acceso("testuser2@nowlms.com", "originalpassword")
-            
+
             # Test password reset with invalid token
             invalid_token_response = client.get("/user/reset_password/invalidtoken")
             assert invalid_token_response.status_code == 302  # Redirect to login
-            
+
             # Test that token validation works
             with lms_application.app_context():
                 from now_lms.auth import validate_password_reset_token, generate_password_reset_token
+
                 valid_token = generate_password_reset_token("testuser2@nowlms.com")
                 email = validate_password_reset_token(valid_token)
                 assert email == "testuser2@nowlms.com"  # Fresh token should work
+
+
+def test_theme_functionality_comprehensive(lms_application, request):
+    """Test comprehensive theme functionality including overrides and custom pages."""
+    if request.config.getoption("--use-cases") == "True":
+        from now_lms import database, initial_setup
+        from now_lms.themes import (
+            get_home_template,
+            get_course_list_template,
+            get_program_list_template,
+            get_course_view_template,
+            get_program_view_template,
+        )
+
+        with lms_application.app_context():
+            database.drop_all()
+            initial_setup(with_tests=False, with_examples=False)
+
+            # Test default template returns
+            assert get_home_template() == "inicio/home.html"
+            assert get_course_list_template() == "inicio/cursos.html"
+            assert get_program_list_template() == "inicio/programas.html"
+            assert get_course_view_template() == "learning/curso/curso.html"
+            assert get_program_view_template() == "learning/programa.html"
+
+            # Test theme configuration change
+            from now_lms.db import Style
+
+            config = database.session.execute(database.select(Style)).first()[0]
+            original_theme = config.theme
+
+            # Change to Harvard theme
+            config.theme = "harvard"
+            database.session.commit()
+
+            # Test template override detection
+            expected_harvard_home = "themes/harvard/overrides/home.j2"
+            expected_harvard_course_list = "themes/harvard/overrides/course_list.j2"
+            expected_harvard_program_list = "themes/harvard/overrides/program_list.j2"
+            expected_harvard_course_view = "themes/harvard/overrides/course_view.j2"
+            expected_harvard_program_view = "themes/harvard/overrides/program_view.j2"
+
+            assert get_home_template() == expected_harvard_home
+            assert get_course_list_template() == expected_harvard_course_list
+            assert get_program_list_template() == expected_harvard_program_list
+            assert get_course_view_template() == expected_harvard_course_view
+            assert get_program_view_template() == expected_harvard_program_view
+
+            # Test Cambridge theme
+            config.theme = "cambridge"
+            database.session.commit()
+
+            assert get_home_template() == "themes/cambridge/overrides/home.j2"
+            assert get_course_list_template() == "themes/cambridge/overrides/course_list.j2"
+
+            # Test Oxford theme
+            config.theme = "oxford"
+            database.session.commit()
+
+            assert get_home_template() == "themes/oxford/overrides/home.j2"
+            assert get_course_view_template() == "themes/oxford/overrides/course_view.j2"
+
+            # Test all other themes have override templates
+            themes_to_test = ["classic", "corporative", "finance", "ocean_blue", "rose_pink"]
+
+            for theme in themes_to_test:
+                config.theme = theme
+                database.session.commit()
+
+                # All themes should have override templates
+                assert get_home_template() == f"themes/{theme}/overrides/home.j2"
+                assert get_course_list_template() == f"themes/{theme}/overrides/course_list.j2"
+                assert get_program_list_template() == f"themes/{theme}/overrides/program_list.j2"
+                assert get_course_view_template() == f"themes/{theme}/overrides/course_view.j2"
+                assert get_program_view_template() == f"themes/{theme}/overrides/program_view.j2"
+
+            # Restore original theme
+            config.theme = original_theme
+            database.session.commit()
+
+        with lms_application.test_client() as client:
+            # Test custom pages functionality
+
+            # Test valid custom page access with Harvard theme
+            with lms_application.app_context():
+                config = database.session.execute(database.select(Style)).first()[0]
+                config.theme = "harvard"
+                database.session.commit()
+
+            # Test invalid page name security
+            invalid_page_response = client.get("/custom/../../etc/passwd")
+            assert invalid_page_response.status_code == 404
+
+            # Test invalid characters in page name
+            invalid_chars_response = client.get("/custom/test$page")
+            assert invalid_chars_response.status_code == 302
+
+            # Test non-existent custom page
+            nonexistent_response = client.get("/custom/nonexistent")
+            assert nonexistent_response.status_code == 302
+
+            # Test theme access to home page with override
+            home_response = client.get("/")
+            assert home_response.status_code == 200
+            assert "Harvard Academic LMS" in home_response.data.decode("utf-8")
+
+            # Test course listing with theme override
+            course_list_response = client.get("/course/explore")
+            assert course_list_response.status_code == 200
+
+            # Test program listing with theme override
+            program_list_response = client.get("/program/explore")
+            assert program_list_response.status_code == 200
+
+            # Test CSS file loading for Harvard theme
+            css_response = client.get("/static/themes/harvard/theme.min.css")
+            assert css_response.status_code == 200
+            assert "harvard-primary" in css_response.data.decode("utf-8")
+
+            # Test other academic theme CSS files
+            cambridge_css = client.get("/static/themes/cambridge/theme.min.css")
+            assert cambridge_css.status_code == 200
+            assert "cambridge-primary" in cambridge_css.data.decode("utf-8")
+
+            oxford_css = client.get("/static/themes/oxford/theme.min.css")
+            assert oxford_css.status_code == 200
+
+            # Test cache invalidation works with theme changes
+            # This should be handled by the cache invalidation system
+
+            # Test theme switching functionality
+
+            # Switch between themes and verify template resolution
+            themes = ["harvard", "cambridge", "oxford", "classic", "corporative"]
+            config = database.session.execute(database.select(Style)).first()[0]
+
+            for theme in themes:
+                config.theme = theme
+                database.session.commit()
+
+                # Verify template resolution works
+                home_template = get_home_template()
+                assert theme in home_template
+                assert "overrides/home.j2" in home_template
+
+                for s in ("/", "/course/explore", "/program/explore", "/course/free/view"):
+                    response = client.get(s)
+                    assert response.status_code == 200
+
+            # Restore original theme
+            config.theme = "now_lms"
+            database.session.commit()
+
+            # Verify default templates are used when no override exists
+            assert get_home_template() == "inicio/home.html"

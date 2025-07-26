@@ -24,6 +24,9 @@ from now_lms.db import (
 )
 from now_lms.logs import log
 from now_lms.themes import get_home_template
+from os import path
+from pathlib import Path
+from now_lms.db.tools import get_current_theme
 
 home = Blueprint("home", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
@@ -92,3 +95,28 @@ def panel():
         )
     else:
         return redirect("/")
+
+
+@home.route("/custom/<page>")
+@cache.cached(timeout=180)
+def custom_page(page):
+    """Muestra páginas personalizadas por tema."""
+    THEME = get_current_theme()
+
+    if any(c in page for c in ["/", "\\", ".", "$"]):
+        return redirect("/")
+
+    if THEME and THEME != "now_lms":
+        from now_lms.config import DIRECTORIO_PLANTILLAS
+
+        THEMES_DIRECTORY = "themes/"
+        custom_page_path = Path(path.join(str(DIRECTORIO_PLANTILLAS), THEMES_DIRECTORY, THEME, "custom_pages", f"{page}.j2"))
+
+        if custom_page_path.exists():
+            template_path = f"{THEMES_DIRECTORY}{THEME}/custom_pages/{page}.j2"
+            return render_template(template_path)
+        else:
+            return redirect("/")
+
+    # Si no existe la página personalizada, redirigir al inicio
+    return redirect("/")
