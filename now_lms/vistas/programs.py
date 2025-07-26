@@ -204,7 +204,7 @@ def pagina_programa(codigo):
 
     program = database.session.query(Programa).filter(Programa.codigo == codigo).first()
 
-    return render_template(get_program_view_template(), programa=program)
+    return render_template(get_program_view_template(), programa=program, cuenta_cursos=cuenta_cursos_por_programa)
 
 
 @program.route("/program/explore")
