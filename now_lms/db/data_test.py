@@ -21,7 +21,7 @@
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
 from datetime import datetime, time, timedelta
-from os import makedirs, path
+from os import environ, makedirs, path
 from shutil import copyfile
 
 # ---------------------------------------------------------------------------------------
