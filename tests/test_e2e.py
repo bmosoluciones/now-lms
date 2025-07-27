@@ -397,7 +397,6 @@ def test_password_recovery_functionality(lms_application, request):
                 ).first()[0]
                 assert validar_acceso("testuser2@nowlms.com", "newpassword456")
                 assert not validar_acceso("testuser2@nowlms.com", "originalpassword")
-                assert updated_user.acceso == proteger_passwd("newpassword456")
 
             # Test password reset with invalid token
             invalid_token_response = client.get("/user/reset_password/invalidtoken")

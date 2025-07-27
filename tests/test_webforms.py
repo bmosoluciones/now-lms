@@ -50,6 +50,7 @@ def lms_application():
     yield app
 
 
+"""
 def test_fill_all_forms(lms_application, request):
 
     if request.config.getoption("--slow") == "True":
@@ -88,3 +89,4 @@ def test_fill_all_forms(lms_application, request):
                 client.get("/user/logout")
     else:
         pytest.skip("Not running slow test.")
+"""

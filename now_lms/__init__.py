@@ -223,7 +223,7 @@ def define_variables_globales_jinja2(lms_app: Flask):
     lms_app.jinja_env.globals["config"] = config
     lms_app.jinja_env.globals["course_info"] = course_info
     lms_app.jinja_env.globals["course_logo"] = get_current_course_logo
-    lms_app.jinja_env.globals["cuenta_cursos_programa"] = cuenta_cursos_por_programa
+    lms_app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
     lms_app.jinja_env.globals["current_theme"] = current_theme
     lms_app.jinja_env.globals["current_user"] = current_user
     lms_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
