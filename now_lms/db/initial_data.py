@@ -959,7 +959,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R005.pdf",
         tipo="ebook",
-        usuario="instructor",
+        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
     )
     for i in recurso1, recurso2, recurso3, recurso4:
         database.session.add(i)
