@@ -17,7 +17,8 @@ COPY requirements.txt /app/requirements.txt
 
 RUN microdnf update -y --nodocs --best --refresh \
     && microdnf install -y --nodocs --best  nodejs npm pango python3.12 python3.12-pip python3.12-cryptography \
-    && /usr/bin/python3.12 -m pip --no-cache-dir install -r /app/requirements.txt && /usr/bin/python3.12 -m pip --no-cache-dir install mysqlclient pg8000 \
+    && /usr/bin/python3.12 -m pip --no-cache-dir install -r /app/requirements.txt  \
+    && /usr/bin/python3.12 -m pip --no-cache-dir install mysqlclient \
     && cd /app/now_lms/static && npm install --ignore-scripts \
     && rm -rf /root/.cache/pip && rm -rf /tmp && microdnf remove -y --best python3.12-pip nodejs* npm \
     && microdnf clean all
