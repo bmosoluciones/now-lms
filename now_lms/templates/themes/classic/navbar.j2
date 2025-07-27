@@ -79,19 +79,21 @@
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
                         <a
-                            class="text-decoration-none text-dark"
+                            class="text-decoration-none"
                             href="#"
                             role="button"
                             data-bs-toggle="dropdown"
                             data-bs-display="static"
                             aria-expanded="false"
-                            style="font-weight: 500"
+                            style="color: var(--classic-dark);"
                             >Bienvenido: {{ current_user.nombre }} {{ current_user.apellido }}
                             <i class="bi bi-list" aria-hidden="true"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg-end">
                             <li>
-                                <a class="dropdown-item" href="{{ url_for('user_profile.perfil') }}"> Perfil de Usuario</a>
+                                <a class="dropdown-item" href="{{ url_for('user_profile.perfil') }}">
+                                    <i class="bi bi-person-circle" aria-hidden="true"></i> Perfil de Usuario</a
+                                >
                             </li>
                             <li><a class="dropdown-item" href="#"> </a></li>
                             <li>
@@ -104,7 +106,7 @@
                                     data-bs-toggle="modal"
                                     data-bs-target="#exampleModal"
                                 >
-                                    Información
+                                    <i class="bi bi-info-circle" aria-hidden="true"></i> Información
                                 </a>
                             </li>
                             <li>
@@ -112,7 +114,7 @@
                             </li>
                             <li>
                                 <a class="dropdown-item text-decoration-none" href="{{ url_for('user.cerrar_sesion') }}">
-                                    Cerrar Sesión
+                                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Cerrar Sesión
                                 </a>
                             </li>
                         </ul>
