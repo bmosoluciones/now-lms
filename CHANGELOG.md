@@ -5,7 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),  
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+> This project also follows [Conventional Commits](https://www.conventionalcommits.org/), using prefixes such as:  
+> `fix:`, `feat:`, `refactor:`, `release:`, `docs:`, `build:`, `ci:` to clearly describe changes.
+
 ---
+
+## [v0.0.1a1.dev20250728] - 2025-07-28
+
+### Added
+- 7 functional themes added to the application: `cambridge_classic`, `corporative_finance`, `harvard`, `now_lms`, `ocean_blue`, `oxford`, `rose_pink`
+
+---
+
+## [v0.0.1a1.dev20250725] - 2025-07-25
+
+### Added
+- Complete rework of the theming system
+- Documentation for graphic designers to create custom themes
+- End-to-end testing setup for core application flows
+
+---
+
+## [v0.0.1a1.dev20250724] - 2025-07-24
+
+### Added
+- Users can change their password from their profile
+- Password reset flow via email token if email is verified
+- 5 additional visual themes for homepage customization
+
+### Changed
+- Upgraded SQLAlchemy to the latest stable version
+- Code coverage improved from ~70% to 74%
+
+### Fixed
+- Course creation form error when cover image not attached
+- Course edit page now displays the cover ima
+
 
 ## [v0.0.1a1.dev20250720] - 2025-07-20
 
@@ -38,4 +73,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved file storage system and moderation tools
 
 ---
-
