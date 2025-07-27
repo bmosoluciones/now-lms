@@ -29,7 +29,6 @@ dependencies = {file = ["requirements.txt"]}
 version = {attr = "now_lms.version.VERSION"}
 
 [project.optional-dependencies]
-postgresql = ["pg8000"]
 mysql = [
   "mysqlclient",
   "cryptography",

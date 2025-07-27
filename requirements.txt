@@ -18,6 +18,7 @@ flask-sqlalchemy
 flask_weasyprint
 flask-wtf
 markdown
+pg8000
 pyjwt
 python-ulid
 qrcode
