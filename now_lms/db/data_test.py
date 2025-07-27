@@ -435,7 +435,7 @@ def crear_recurso_prueba():
         logo=True,
         file_name="R005.pdf",
         tipo="ebook",
-        usuario="instructor",
+        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
     )
     database.session.add(recurso)
     database.session.commit()
