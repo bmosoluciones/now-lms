@@ -103,6 +103,13 @@ npm install
 cd ..
 dc ..
 pip install -e .
+
+
+# Postgresql
+pip install pg8000
+
+# MySQL
+pip install mysqlclient
 ```
 
 ### Create a start script

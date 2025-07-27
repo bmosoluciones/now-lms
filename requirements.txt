@@ -27,10 +27,3 @@ redis
 waitress
 weasyprint
 wtforms
-
-# Soporte a Bases de datos
-#MySQL
-mysqlclient
-cryptography
-# Postgresql
-pg8000

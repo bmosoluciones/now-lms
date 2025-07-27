@@ -28,6 +28,13 @@ lmsctl = "now_lms.cli:command"
 dependencies = {file = ["requirements.txt"]}
 version = {attr = "now_lms.version.VERSION"}
 
+[project.optional-dependencies]
+postgresql = ["pg8000"]
+mysql = [
+  "mysqlclient",
+  "cryptography",
+]
+
 [build-system]
 requires = ["setuptools", "wheel"]  # PEP 508 specifications.
 build-backend = "setuptools.build_meta"
