@@ -124,7 +124,7 @@ def lista_de_recursos():
 @perfil_requerido("user")
 def descargar_recurso(resource_code):
     """Genera link para descargar recurso."""
-    recurso = Recurso.query.filter(Recurso.id == resource_code).first()
+    recurso = database.session.query(Recurso).filter(Recurso.id == resource_code).first()
     config = current_app.upload_set_config.get("files")
     directorio = path.join(config.destination, "resources_files")
 
@@ -143,7 +143,7 @@ def descargar_recurso(resource_code):
 def delete_resource(ulid: str):
     """Elimina recurso."""
     if current_user.tipo == "admin":
-        Recurso.query.filter(Recurso.id == ulid).delete()
+        database.session.query(Recurso).filter(Recurso.id == ulid).delete()
         database.session.commit()
         return redirect("/resources_list")
     else:
@@ -156,7 +156,7 @@ def delete_resource(ulid: str):
 def edit_resource(ulid: str):
     """Actualiza recurso."""
 
-    recurso = Recurso.query.filter(Recurso.id == ulid).first()
+    recurso = database.session.query(Recurso).filter(Recurso.id == ulid).first()
     form = RecursoForm(nombre=recurso.nombre, descripcion=recurso.descripcion, tipo=recurso.tipo)
 
     if form.validate_on_submit() or request.method == "POST":
@@ -188,7 +188,7 @@ def vista_recurso(resource_code):
 
     return render_template(
         "learning/recursos/recurso.html",
-        curso=Recurso.query.filter_by(codigo=resource_code).first(),
+        curso=database.session.query(Recurso).filter_by(codigo=resource_code).first(),
         tipo=TIPOS_RECURSOS,
     )
 
@@ -203,8 +203,8 @@ def lista_recursos():
     else:
         MAX_COUNT = 30
 
-    etiquetas = Etiqueta.query.all()
-    categorias = Categoria.query.all()
+    etiquetas = database.session.query(Etiqueta).all()
+    categorias = database.session.query(Categoria).all()
     consulta_cursos = database.paginate(
         database.select(Recurso).filter(Recurso.publico == True),  # noqa: E712
         page=request.args.get("page", default=1, type=int),

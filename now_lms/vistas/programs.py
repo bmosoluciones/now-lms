@@ -45,6 +45,7 @@ from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, images
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Categoria, Etiqueta, Programa, database
 from now_lms.db.tools import cuenta_cursos_por_programa
 from now_lms.forms import ProgramaForm
+from now_lms.themes import get_program_list_template, get_program_view_template
 
 # ---------------------------------------------------------------------------------------
 # Interfaz de gestión de programas
@@ -115,7 +116,7 @@ def programas():
 @perfil_requerido("instructor")
 def delete_program(ulid: str):
     """Elimina programa."""
-    Programa.query.filter(Programa.id == ulid).delete()
+    database.session.query(Programa).filter(Programa.id == ulid).delete()
 
     if current_user.tipo == "admin":
         database.session.commit()
@@ -130,7 +131,7 @@ def delete_program(ulid: str):
 @perfil_requerido("instructor")
 def edit_program(ulid: str):
     """Editar programa."""
-    programa = Programa.query.filter(Programa.id == ulid).first()
+    programa = database.session.query(Programa).filter(Programa.id == ulid).first()
 
     form = ProgramaForm(
         nombre=programa.nombre,
@@ -201,9 +202,9 @@ def programa_cursos(codigo):
 def pagina_programa(codigo):
     """Pagina principal del curso."""
 
-    program = Programa.query.filter(Programa.codigo == codigo).first()
+    program = database.session.query(Programa).filter(Programa.codigo == codigo).first()
 
-    return render_template("learning/programa.html", programa=program)
+    return render_template(get_program_view_template(), programa=program, cuenta_cursos=cuenta_cursos_por_programa)
 
 
 @program.route("/program/explore")
@@ -216,8 +217,8 @@ def lista_programas():
     else:
         MAX_COUNT = 30
 
-    etiquetas = Etiqueta.query.all()
-    categorias = Categoria.query.all()
+    etiquetas = database.session.query(Etiqueta).all()
+    categorias = database.session.query(Categoria).all()
     consulta_cursos = database.paginate(
         database.select(Programa).filter(Programa.publico == True, Programa.estado == "open"),  # noqa: E712
         page=request.args.get("page", default=1, type=int),
@@ -239,5 +240,5 @@ def lista_programas():
         PARAMETROS = None
 
     return render_template(
-        "inicio/programas.html", cursos=consulta_cursos, etiquetas=etiquetas, categorias=categorias, parametros=PARAMETROS
+        get_program_list_template(), cursos=consulta_cursos, etiquetas=etiquetas, categorias=categorias, parametros=PARAMETROS
     )

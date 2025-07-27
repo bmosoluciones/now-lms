@@ -229,3 +229,40 @@ def serve():  # pragma: no cover
 
     with lms_app.app_context():
         server(app=lms_app, port=int(PORT), threads=THREADS)
+
+
+@lms_app.cli.group()
+def settings():
+    """Settings administration tools."""
+    pass
+
+
+@settings.command()
+def theme_set():
+    """Set the current theme."""
+    from now_lms.db import Style
+
+    with lms_app.app_context():
+        theme = click.prompt("Enter the theme name", type=str)
+        style = db.session.query(Style).first()
+        style.theme = theme
+        db.session.commit()
+
+
+@settings.command()
+def theme_get():
+    """Get the current theme."""
+    from now_lms.db import Style
+
+    with lms_app.app_context():
+        style = db.session.query(Style).first()
+        click.echo(f"Current theme: {style.theme}")
+
+
+@settings.command()
+def theme_list():
+    """List all the themes available."""
+    from now_lms.themes import list_themes
+
+    for theme in list_themes():
+        click.echo(theme)

@@ -14,135 +14,249 @@
         <main>
             {{ current_theme.notify() }}
 
-            <section class="py-5 text-center container">
-                <div class="row py-lg-5">
-                    <div class="col-lg-6 col-md-8 mx-auto">
-                        <h1 class="fw-light">{{ config.titulo }}</h1>
-                        <p class="lead text-muted">{{ config.descripcion }}</p>
+            <!-- Hero Section -->
+            <section class="bg-primary text-white py-5">
+                <div class="container py-5">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <div class="hero-content">
+                                <h1 class="display-4 fw-bold mb-4">Bienvenido a {{ config.titulo }}</h1>
+                                <p class="lead mb-4">
+                                    Sumérgete en un océano de conocimiento con nuestra plataforma educativa. Nuestra plataforma
+                                    está diseñada para brindar una experiencia de aprendizaje excepcional.
+                                </p>
+                                <div class="d-flex gap-3 flex-wrap">
+                                    {% if not current_user.is_authenticated %}
+                                    <a href="{{ url_for('user.crear_cuenta') }}" class="btn btn-light btn-lg">
+                                        <strong>Comenzar Ahora</strong>
+                                    </a>
+                                    <a
+                                        href="{{ url_for('course.lista_cursos', page=1) }}"
+                                        class="btn btn-outline-light btn-lg"
+                                    >
+                                        Explorar Cursos
+                                    </a>
+                                    {% else %}
+                                    <a href="{{ url_for('home.panel') }}" class="btn btn-light btn-lg">
+                                        <strong>Mi Panel</strong>
+                                    </a>
+                                    <a
+                                        href="{{ url_for('course.lista_cursos', page=1) }}"
+                                        class="btn btn-outline-light btn-lg"
+                                    >
+                                        Ver Cursos
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 text-center">
+                            <div class="hero-visual">
+                                <div
+                                    class="bg-light bg-opacity-10 rounded-circle mx-auto d-flex align-items-center justify-content-center border border-light border-opacity-25"
+                                    style="width: 250px; height: 250px"
+                                >
+                                    <div class="text-center text-white">
+                                        <div class="fs-1 mb-2">📚</div>
+                                        <div class="h5 fw-semibold">Aprendizaje</div>
+                                        <div class="small opacity-75">Digital</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {% if cursos.total > 0 %}
-            <div class="album py-5 bg-light">
+            <!-- Features Section -->
+            <section class="py-5 bg-light">
                 <div class="container">
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                        {% for curso in cursos.items %}
+                    <div class="row">
+                        <div class="col-12 text-center mb-5">
+                            <h2 class="display-5 fw-bold mb-4">Aprende con Nosotros</h2>
+                            <p class="lead">
+                                Descubre una nueva forma de aprender con nuestra plataforma educativa moderna y eficiente.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100 border-0 shadow">
+                                <div class="card-body text-center">
+                                    <div
+                                        class="bg-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                                        style="width: 60px; height: 60px"
+                                    >
+                                        <span class="text-white fs-4">🎯</span>
+                                    </div>
+                                    <h4 class="card-title mb-3">Cursos Especializados</h4>
+                                    <p class="card-text">
+                                        Accede a una amplia variedad de cursos diseñados por expertos en cada área de
+                                        conocimiento.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 border-0 shadow">
+                                <div class="card-body text-center">
+                                    <div
+                                        class="bg-info rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                                        style="width: 60px; height: 60px"
+                                    >
+                                        <span class="text-white fs-4">👥</span>
+                                    </div>
+                                    <h4 class="card-title mb-3">Comunidad Activa</h4>
+                                    <p class="card-text">
+                                        Únete a una comunidad de estudiantes y profesionales que comparten tus intereses y
+                                        objetivos.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 border-0 shadow">
+                                <div class="card-body text-center">
+                                    <div
+                                        class="bg-success rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                                        style="width: 60px; height: 60px"
+                                    >
+                                        <span class="text-white fs-4">🏆</span>
+                                    </div>
+                                    <h4 class="card-title mb-3">Certificaciones</h4>
+                                    <p class="card-text">
+                                        Obtén certificaciones reconocidas que validen tu conocimiento y impulsen tu carrera
+                                        profesional.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Featured Courses Section -->
+            {% if cursos.total > 0 %}
+            <section class="py-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 text-center mb-5">
+                            <h2 class="display-6 fw-bold mb-4 text-primary">Navega por el Océano del Conocimiento</h2>
+                            <p class="lead">Sumérgete en cursos que fluyen como las corrientes marinas del saber.</p>
+                        </div>
+                    </div>
+                    <div class="row row-cols-1 row-cols-sm-2 g-4">
+                        {% for curso in cursos.items[:4] %}
                         <div class="col">
-                            <div class="card shadow-sm">
+                            <div class="card h-100 border-0 shadow">
                                 {% if curso.portada and course_logo(curso.codigo) %}
                                 <img
                                     src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/' + course_logo(curso.codigo)) }}"
                                     alt="{{ curso.nombre }}"
-                                    width="100%"
-                                    height="225"
+                                    class="card-img-top"
+                                    style="height: 200px; object-fit: cover"
                                 />
                                 {% else %}
-                                <svg
-                                    class="bd-placeholder-img card-img-top"
-                                    width="100%"
-                                    height="225"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    role="img"
-                                    aria-label="Placeholder: Thumbnail"
-                                    preserveAspectRatio="xMidYMid slice"
-                                    focusable="false"
+                                <div
+                                    class="card-img-top bg-primary text-white d-flex align-items-center justify-content-center"
+                                    style="height: 200px"
                                 >
-                                    <title>{{ curso.nombre }}</title>
-                                    <rect width="100%" height="100%" fill="#55595c" />
-                                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{ curso.nombre }}</text>
-                                </svg>
+                                    <div class="text-center">
+                                        <div class="fs-1 mb-2">📚</div>
+                                        <div class="h6 fw-semibold">{{ curso.nombre }}</div>
+                                    </div>
+                                </div>
                                 {% endif %}
 
-                                <div class="card-body">
-                                    <div class="d-flex d-flex justify-content-between">
-                                        <strong>{{ curso.nombre }}</strong>
-
-                                        {% if curso.nivel == 0 %}
-                                        <img
-                                            src="{{ url_for('static', filename='/icons/curso-level0.svg') }}"
-                                            alt="{{ curso.nombre }}"
-                                            width="20"
-                                            height="20"
-                                            alt="Nivel Introductorio"
-                                        />
-                                        {% elif curso.nivel == 1 %}
-                                        <img
-                                            src="{{ url_for('static', filename='/icons/curso-level1.svg') }}"
-                                            alt="{{ curso.nombre }}"
-                                            width="20"
-                                            height="20"
-                                            alt="Nivel Principiante"
-                                        />
-                                        {% elif curso.nivel == 2 %}
-                                        <img
-                                            src="{{ url_for('static', filename='/icons/curso-level2.svg') }}"
-                                            alt="{{ curso.nombre }}"
-                                            width="20"
-                                            height="20"
-                                            alt="Nivel Intermedio"
-                                        />
-                                        {% elif curso.nivel == 3 %}
-                                        <img
-                                            src="{{ url_for('static', filename='/icons/curso-level3.svg') }}"
-                                            alt="{{ curso.nombre }}"
-                                            width="20"
-                                            height="20"
-                                            alt="Nivel Avanzado"
-                                        />
-                                        {% endif %}
-                                    </div>
-                                    {{ curso.descripcion_corta | truncate(120) }}
-
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="btn-group">
-                                            <a
-                                                href="{{ url_for('course.curso', course_code=curso.codigo ) }}"
-                                                class="btn btn-sm btn-outline-secondary"
-                                                role="button"
-                                                aria-disabled="true"
-                                            >
-                                                Ver Curso
-                                            </a>
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title mb-0 text-primary">{{ curso.nombre }}</h5>
+                                        <div class="d-flex align-items-center gap-2">
+                                            {% if not curso.precio %}
+                                            <span class="badge bg-success">Gratis</span>
+                                            {% endif %} {% if curso.nivel == 0 %}
+                                            <span class="badge bg-info">Intro</span>
+                                            {% elif curso.nivel == 1 %}
+                                            <span class="badge bg-primary">Principiante</span>
+                                            {% elif curso.nivel == 2 %}
+                                            <span class="badge bg-warning">Intermedio</span>
+                                            {% elif curso.nivel == 3 %}
+                                            <span class="badge bg-danger">Avanzado</span>
+                                            {% endif %}
                                         </div>
-                                        {% if curso.duracion %}
-                                        <small class="text-muted">{{ curso.duracion }} mins</small>
-                                        {% endif %} {% if curso.precio %}
-                                        <small>{{ curso.precio | float }} {{ config.moneda }} </small>
-                                        {% else %}
-                                        <small>Gratis</small>
-                                        {% endif %}
+                                    </div>
+                                    <p class="card-text flex-grow-1">{{ curso.descripcion_corta | truncate(100) }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <a
+                                            href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+                                            class="btn btn-primary btn-sm"
+                                            >Ver Curso</a
+                                        >
+                                        <div class="text-end">
+                                            {% if curso.duracion %}
+                                            <small class="text-muted d-block">{{ curso.duracion }} mins</small>
+                                            {% endif %} {% if curso.precio %}
+                                            <small class="fw-bold text-success">
+                                                {{ curso.precio | float }} {{ config.moneda }}
+                                            </small>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('course.lista_cursos', page=1) }}" class="btn btn-primary btn-lg">
+                            Explorar Todos los Cursos
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="text-center">
-                <p>{{ cursos.total }} cursos disponibles.</p>
-                {% if cursos.has_prev %}
-                <a class="link-dark" href="{{ url_for('home.pagina_de_inicio', page=cursos.prev_num) }}"
-                    ><i class="bi bi-arrow-left-short" aria-hidden="true"></i>Anterior</a
-                >
-                {% endif %} Página {{ cursos.page }} de {{ cursos.pages }} {% if cursos.has_next %}
-                <a class="link-dark" href="{{ url_for('home.pagina_de_inicio', page=cursos.next_num) }}"
-                    >Siguiente <i class="bi bi-arrow-right-short" aria-hidden="true"></i
-                ></a>
-                {% endif %}
-            </div>
+            </section>
             {% else %}
-            <div class="text-center">
-                {% if current_user.is_authenticated %}
-                <a href="{{ url_for('nuevo_curso') }}" class="btn btn-primary" role="button" aria-disabled="true"
-                    >Crear Curso</a
-                >
-                {% else %}
-                <p>No hay cursos disponibles en este momento.</p>
-                {% endif %}
-            </div>
+            <section class="py-5 text-center">
+                <div class="container">
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('nuevo_curso') }}" class="btn btn-primary" role="button" aria-disabled="true"
+                        >Crear Curso</a
+                    >
+                    {% else %}
+                    <p>No hay cursos disponibles en este momento.</p>
+                    {% endif %}
+                </div>
+            </section>
             {% endif %}
+
+            <!-- Call to Action Section -->
+            <section class="py-5 bg-light">
+                <div class="container">
+                    <div class="row justify-content-center text-center">
+                        <div class="col-lg-8">
+                            {% if not current_user.is_authenticated %}
+                            <h3 class="mb-4">¿Listo para Comenzar?</h3>
+                            <p class="lead mb-4">
+                                Únete a nuestra plataforma educativa y comienza tu viaje de aprendizaje hoy mismo.
+                            </p>
+                            <a href="{{ url_for('user.crear_cuenta') }}" class="btn btn-primary btn-lg">
+                                Registrarse Gratis
+                            </a>
+                            {% else %}
+                            <h3 class="mb-4">Bienvenido de vuelta, {{ current_user.nombre }}</h3>
+                            <p class="lead mb-4">
+                                Continúa tu viaje de aprendizaje y explora nuevas oportunidades educativas.
+                            </p>
+                            <a href="{{ url_for('home.panel') }}" class="btn btn-primary btn-lg me-3"> Ir a Mi Panel </a>
+                            <a href="{{ url_for('course.lista_cursos', page=1) }}" class="btn btn-outline-primary btn-lg">
+                                Explorar Cursos
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
+
+        {{ current_theme.jslibs() }}
     </body>
 </html>

@@ -126,7 +126,7 @@ else:
 
 CONFIGURACION: Dict = {}
 CONFIGURACION["SECRET_KEY"] = environ.get("SECRET_KEY") or "dev"  # nosec
-CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("LMS_DB") or environ.get("DATABASE_URL") or SQLITE  # nosec
+CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("DATABASE_URL") or SQLITE  # nosec
 # Opciones comunes de configuración.
 CONFIGURACION["PRESERVE_CONTEXT_ON_EXCEPTION"] = False
 # Carga de Archivos: https://flask-reuploaded.readthedocs.io/en/latest/configuration/

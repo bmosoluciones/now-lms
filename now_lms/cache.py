@@ -73,3 +73,15 @@ cache: Cache = Cache(config=CACHE_CONFIG)
 def no_guardar_en_cache_global():
     """Si el usuario es anomino preferimos usar el sistema de cache."""
     return current_user and current_user.is_authenticated
+
+
+def invalidate_all_cache():
+    """Invalida toda la cache del sistema cuando cambia el tema."""
+    try:
+        if CTYPE != "NullCache":
+            cache.clear()
+            log.trace("Cache invalidada debido a cambio de tema")
+        return True
+    except Exception as e:
+        log.error(f"Error invalidating cache: {e}")
+        return False

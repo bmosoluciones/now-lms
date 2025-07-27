@@ -811,10 +811,10 @@ def crear_curso_demo3():
 def asignar_cursos_a_etiquetas():
     """Asigna cursos a Categorias."""
     log.trace("Asignando etiquetas a cursos.")
-    etiqueta_python = Etiqueta.query.filter(Etiqueta.nombre == "Python").first()
-    etiqueta_postgresql = Etiqueta.query.filter(Etiqueta.nombre == "Postgresql").first()
-    etiqueta_html = Etiqueta.query.filter(Etiqueta.nombre == "HTML").first()
-    etiqueta_learning = Etiqueta.query.filter(Etiqueta.nombre == "Learning").first()
+    etiqueta_python = database.session.query(Etiqueta).filter(Etiqueta.nombre == "Python").first()
+    etiqueta_postgresql = database.session.query(Etiqueta).filter(Etiqueta.nombre == "Postgresql").first()
+    etiqueta_html = database.session.query(Etiqueta).filter(Etiqueta.nombre == "HTML").first()
+    etiqueta_learning = database.session.query(Etiqueta).filter(Etiqueta.nombre == "Learning").first()
 
     registro1 = EtiquetaCurso(curso="postgresql", etiqueta=etiqueta_postgresql.id)
     registro2 = EtiquetaCurso(curso="python", etiqueta=etiqueta_python.id)
@@ -832,8 +832,8 @@ def asignar_cursos_a_etiquetas():
 
 def asignar_cursos_a_categoria():
     """Asigna cursos a Categorias."""
-    categoria_learning = Categoria.query.filter(Categoria.nombre == "Learning").first()
-    categoria_programing = Categoria.query.filter(Categoria.nombre == "Programing").first()
+    categoria_learning = database.session.query(Categoria).filter(Categoria.nombre == "Learning").first()
+    categoria_programing = database.session.query(Categoria).filter(Categoria.nombre == "Programing").first()
 
     registro1 = CategoriaCurso(curso="postgresql", categoria=categoria_programing.id)
     registro2 = CategoriaCurso(curso="python", categoria=categoria_programing.id)
@@ -892,9 +892,9 @@ def crear_programa():
     database.session.commit()
 
     # Asigna cursos a programa
-    programa = Programa.query.filter(Programa.codigo == "P001").first()
+    programa = database.session.query(Programa).filter(Programa.codigo == "P001").first()
     for curso in ["postgresql", "python", "html"]:
-        curso = Curso.query.filter(Curso.codigo == curso).first()
+        curso = database.session.query(Curso).filter(Curso.codigo == curso).first()
         registro = ProgramaCurso(
             curso=curso.codigo,
             programa=programa.codigo,
@@ -915,7 +915,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R001.pdf",
         tipo="ebook",
-        usuario="admin",
+        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
     )
     recurso2 = Recurso(
         nombre="Alice's Adventures in Wonderland",
@@ -926,7 +926,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R002.pdf",
         tipo="ebook",
-        usuario="admin",
+        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
     )
     recurso3 = Recurso(
         nombre="Dracula",
@@ -937,7 +937,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R003.pdf",
         tipo="ebook",
-        usuario="admin",
+        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
     )
     recurso4 = Recurso(
         nombre="The War of the Worlds",
@@ -948,7 +948,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R004.pdf",
         tipo="ebook",
-        usuario="admin",
+        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
     )
     recurso4 = Recurso(
         nombre="Think Python",
@@ -959,7 +959,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R005.pdf",
         tipo="ebook",
-        usuario="instructor",
+        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
     )
     for i in recurso1, recurso2, recurso3, recurso4:
         database.session.add(i)

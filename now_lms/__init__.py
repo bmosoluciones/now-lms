@@ -56,7 +56,7 @@ from werkzeug.exceptions import HTTPException
 from now_lms.cache import cache
 from now_lms.config import CONFIGURACION, DIRECTORIO_ARCHIVOS, DIRECTORIO_PLANTILLAS, audio, files, images, log_messages
 from now_lms.db import Configuracion, Usuario, database
-from now_lms.db.info import app_info, course_info
+from now_lms.db.info import app_info, course_info, lms_info
 from now_lms.db.initial_data import (
     asignar_cursos_a_categoria,
     asignar_cursos_a_etiquetas,
@@ -192,12 +192,12 @@ def no_autorizado():
 # Carga configuración del sitio web desde la base de datos.
 # ---------------------------------------------------------------------------------------
 @cache.cached(timeout=60, key_prefix="site_config")
-def carga_configuracion_del_sitio_web_desde_db():  # pragma: no cover
+def config():  # pragma: no cover
     """Obtiene configuración del sitio web desde la base de datos."""
 
     with lms_app.app_context():
         try:
-            CONFIG = Configuracion.query.first()
+            CONFIG = database.session.query(Configuracion).first()
         # Si no existe una entrada en la tabla de configuración uno de los siguientes errores puede ocurrir
         # en dependencia del motor de base de datos utilizado.
         except OperationalError:
@@ -218,29 +218,30 @@ def define_variables_globales_jinja2(lms_app: Flask):
     """Define variables globales de Jinja2 para su disponibilidad en plantillas HTML."""
 
     log.trace("Definiendo variables globales de Jinja2.")
+    lms_app.jinja_env.globals["adsense_code"] = get_addsense_code
+    lms_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
+    lms_app.jinja_env.globals["config"] = config
+    lms_app.jinja_env.globals["course_info"] = course_info
+    lms_app.jinja_env.globals["course_logo"] = get_current_course_logo
+    lms_app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
+    lms_app.jinja_env.globals["current_theme"] = current_theme
     lms_app.jinja_env.globals["current_user"] = current_user
     lms_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
-    lms_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
-    lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
-    lms_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
-    lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
     lms_app.jinja_env.globals["estilo_alerta"] = ESTILO_ALERTAS
-    lms_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
-    lms_app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
-    lms_app.jinja_env.globals["config"] = carga_configuracion_del_sitio_web_desde_db
-    lms_app.jinja_env.globals["version"] = VERSION
+    lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
+    lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
     lms_app.jinja_env.globals["info"] = app_info(lms_app)
-    lms_app.jinja_env.globals["pyversion"] = python_version()
+    lms_app.jinja_env.globals["lms_info"] = lms_info
+    lms_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
     lms_app.jinja_env.globals["mkdonw2thml"] = markdown_to_clean_hmtl
-    lms_app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
-    lms_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
-    lms_app.jinja_env.globals["adsense_code"] = get_addsense_code
+    lms_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
+    lms_app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
     lms_app.jinja_env.globals["paypal_enabled"] = check_paypal_enabled
     lms_app.jinja_env.globals["paypal_id"] = get_paypal_id
-    lms_app.jinja_env.globals["current_theme"] = current_theme
-    lms_app.jinja_env.globals["course_logo"] = get_current_course_logo
+    lms_app.jinja_env.globals["pyversion"] = python_version()
     lms_app.jinja_env.globals["site_logo"] = get_site_logo
-    lms_app.jinja_env.globals["course_info"] = course_info
+    lms_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
+    lms_app.jinja_env.globals["version"] = VERSION
 
 
 # ---------------------------------------------------------------------------------------

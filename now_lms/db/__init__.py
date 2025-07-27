@@ -490,9 +490,6 @@ class Certificado(database.Model, BaseTabla):
     habilitado = database.Column(database.Boolean())
     publico = database.Column(database.Boolean())
     usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
-    id = database.Column(
-        database.String(10), primary_key=True, nullable=False, index=True, default=generador_codigos_unicos_cuid
-    )
 
 
 class Certificacion(database.Model, BaseTabla):

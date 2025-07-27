@@ -52,9 +52,21 @@ def modificar_indice_curso(
     indice_next = indice + 1
     indice_back = indice - 1
 
-    actual = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_current).first()
-    superior = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_next).first()
-    inferior = CursoSeccion.query.filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_back).first()
+    actual = (
+        database.session.query(CursoSeccion)
+        .filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_current)
+        .first()
+    )
+    superior = (
+        database.session.query(CursoSeccion)
+        .filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_next)
+        .first()
+    )
+    inferior = (
+        database.session.query(CursoSeccion)
+        .filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_back)
+        .first()
+    )
 
     if task == "increment":
         actual.indice = indice_next
@@ -79,7 +91,9 @@ def modificar_indice_curso(
 def reorganiza_indice_curso(codigo_curso: Union[None, str] = None):
     """Al eliminar una sección de un curso se debe generar el indice nuevamente."""
 
-    secciones = secciones = CursoSeccion.query.filter_by(curso=codigo_curso).order_by(CursoSeccion.indice).all()
+    secciones = secciones = (
+        database.session.query(CursoSeccion).filter_by(curso=codigo_curso).order_by(CursoSeccion.indice).all()
+    )
     if secciones:
         indice = 1
         for seccion in secciones:
@@ -92,7 +106,7 @@ def reorganiza_indice_curso(codigo_curso: Union[None, str] = None):
 def reorganiza_indice_seccion(seccion: Union[None, str] = None):
     """Al eliminar una sección de un curso se debe generar el indice nuevamente."""
 
-    recursos = CursoRecurso.query.filter_by(seccion=seccion).order_by(CursoRecurso.indice).all()
+    recursos = database.session.query(CursoRecurso).filter_by(seccion=seccion).order_by(CursoRecurso.indice).all()
     if recursos:
         indice = 1
         for recurso in recursos:
@@ -116,17 +130,23 @@ def modificar_indice_seccion(
     NO_INDICE_POSTERIOR = NO_INDICE_ACTUAL + 1
 
     # Obtenemos lista de recursos de la base de datos.
-    RECURSO_ACTUAL = CursoRecurso.query.filter(
-        CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_ACTUAL
-    ).first()
+    RECURSO_ACTUAL = (
+        database.session.query(CursoRecurso)
+        .filter(CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_ACTUAL)
+        .first()
+    )
 
-    RECURSO_ANTERIOR = CursoRecurso.query.filter(
-        CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_ANTERIOR
-    ).first()
+    RECURSO_ANTERIOR = (
+        database.session.query(CursoRecurso)
+        .filter(CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_ANTERIOR)
+        .first()
+    )
 
-    RECURSO_POSTERIOR = CursoRecurso.query.filter(
-        CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_POSTERIOR
-    ).first()
+    RECURSO_POSTERIOR = (
+        database.session.query(CursoRecurso)
+        .filter(CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_POSTERIOR)
+        .first()
+    )
 
     if task == "increment" and RECURSO_POSTERIOR:
         RECURSO_ACTUAL.indice = NO_INDICE_POSTERIOR
@@ -181,7 +201,7 @@ def cambia_tipo_de_usuario_por_id(
     Los valores reconocidos por el sistema son: admin, user, instructor, moderator.
     """
     log.trace("Asignando a usuario {id_usuario} el perfil: {nuevo_tipo}")
-    USUARIO = Usuario.query.filter_by(usuario=id_usuario).first()
+    USUARIO = database.session.query(Usuario).filter_by(usuario=id_usuario).first()
     USUARIO.tipo = nuevo_tipo
     USUARIO.modificado_por = usuario
     database.session.commit()
@@ -226,7 +246,7 @@ def cambia_curso_publico(id_curso: Union[None, str, int] = None):
 def cambia_seccion_publico(codigo: Union[None, str, int] = None):
     """Cambia el estatus publico de una sección."""
 
-    SECCION = CursoSeccion.query.filter_by(id=codigo).first()
+    SECCION = database.session.query(CursoSeccion).filter_by(id=codigo).first()
     if SECCION.estado:
         SECCION.estado = False
     else:

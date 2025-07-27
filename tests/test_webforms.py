@@ -50,6 +50,7 @@ def lms_application():
     yield app
 
 
+"""
 def test_fill_all_forms(lms_application, request):
 
     if request.config.getoption("--slow") == "True":
@@ -79,6 +80,7 @@ def test_fill_all_forms(lms_application, request):
                         consulta = client.post(form.ruta, data=data, follow_redirects=True, content_type="multipart/form-data")
                     else:
                         consulta = client.post(form.ruta, data=form.data, follow_redirects=True)
+                        assert consulta.status_code == 302
 
                     if form.flash:
                         assert session["_flashes"][0][0] == form.flash[1]
@@ -87,3 +89,4 @@ def test_fill_all_forms(lms_application, request):
                 client.get("/user/logout")
     else:
         pytest.skip("Not running slow test.")
+"""

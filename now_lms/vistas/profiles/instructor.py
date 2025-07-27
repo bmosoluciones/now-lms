@@ -86,15 +86,15 @@ def lista_grupos():
 def grupo(ulid: str):
     """Grupo de usuarios"""
     id_ = request.args.get("id", type=str)
-    grupo_ = UsuarioGrupo.query.get(ulid)
+    grupo_ = database.session.get(UsuarioGrupo, ulid)
     CONSULTA = database.paginate(
         database.select(Usuario).join(UsuarioGrupoMiembro).filter(UsuarioGrupoMiembro.grupo == id_),
         page=request.args.get("page", default=1, type=int),
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,
     )
-    estudiantes = Usuario.query.filter(Usuario.tipo == "student").all()
-    tutores = Usuario.query.filter(Usuario.tipo == "instructor").all()
+    estudiantes = database.session.query(Usuario).filter(Usuario.tipo == "student").all()
+    tutores = database.session.query(Usuario).filter(Usuario.tipo == "instructor").all()
     return render_template(
         "admin/grupos/grupo.html", consulta=CONSULTA, grupo=grupo_, tutores=tutores, estudiantes=estudiantes
     )
@@ -108,7 +108,9 @@ def grupo(ulid: str):
 def elimina_usuario__grupo(group: str, user: str):
     """Elimina usuario de grupo."""
 
-    UsuarioGrupoMiembro.query.filter(UsuarioGrupoMiembro.usuario == user, UsuarioGrupoMiembro.grupo == group).delete()
+    database.session.query(UsuarioGrupoMiembro).filter(
+        UsuarioGrupoMiembro.usuario == user, UsuarioGrupoMiembro.grupo == group
+    ).delete()
     database.session.commit()
     return redirect(url_for("grupo", id=group))
 

@@ -4,42 +4,42 @@
 name: CI
 
 on:
-  push:
-    branches: [main, development]
-  pull_request:
-    branches: [main, development]
+    push:
+        branches: [main, development]
+    pull_request:
+        branches: [main, development]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: [3.9, "3.10", 3.11, 3.12, 3.13]
+    build:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                python-version: [3.9, "3.10", 3.11, 3.12, 3.13]
 
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -r test.txt
-      - name: Check python package
-        run: |
-          python -m build
-          python -m twine check dist/*
-      - name: Ejecutar pruebas automáticas
-        env:
-          CI: True
-          LOG_LEVEL: TRACE
-        run: |
-          pytest  -v --exitfirst --slow=True --use-cases=True
-      - name: Linting
-        run: |
-          flake8 --max-line-length=120 --ignore=E501,E203,E266,W503,E722 now_lms
-          black --check --diff now_lms
-          mypy now_lms --install-types --non-interactive --ignore-missing-imports
-          ruff check now_lms
+        steps:
+            - uses: actions/checkout@v3
+            - name: Set up Python ${{ matrix.python-version }}
+              uses: actions/setup-python@v3
+              with:
+                  python-version: ${{ matrix.python-version }}
+            - name: Install dependencies
+              run: |
+                  python -m pip install --upgrade pip pg8000
+                  python -m pip install -r test.txt
+            - name: Check python package
+              run: |
+                  python -m build
+                  python -m twine check dist/*
+            - name: Ejecutar pruebas automáticas
+              env:
+                  CI: True
+                  LOG_LEVEL: TRACE
+              run: |
+                  pytest  -v --exitfirst --slow=True --use-cases=True
+            - name: Linting
+              run: |
+                  flake8 --max-line-length=120 --ignore=E501,E203,E266,W503,E722 now_lms
+                  black --check --diff now_lms
+                  mypy now_lms --install-types --non-interactive --ignore-missing-imports
+                  ruff check now_lms

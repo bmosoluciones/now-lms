@@ -45,11 +45,10 @@ def lms_application():
 
 
 def test_postgress_pg8000(lms_application):
-    if environ.get("DATABASE_URL","").startswith("postgresql+pg8000"):
+    if environ.get("DATABASE_URL", "").startswith("postgresql+pg8000"):
         lms_application.config.update({"SQLALCHEMY_DATABASE_URI": environ.get("DATABASE_URL")})
         assert lms_application.config.get("SQLALCHEMY_DATABASE_URI") == environ.get("DATABASE_URL")
         from now_lms import database, initial_setup
-        from now_lms.db import Curso, Usuario
 
         with lms_application.app_context():
             database.drop_all()
@@ -59,11 +58,10 @@ def test_postgress_pg8000(lms_application):
 
 
 def test_postgress_psycopg2(lms_application):
-    if environ.get("DATABASE_URL","").startswith("postgresql+psycopg2"):
+    if environ.get("DATABASE_URL", "").startswith("postgresql+psycopg2"):
         lms_application.config.update({"SQLALCHEMY_DATABASE_URI": environ.get("DATABASE_URL")})
         assert lms_application.config.get("SQLALCHEMY_DATABASE_URI") == environ.get("DATABASE_URL")
         from now_lms import database, initial_setup
-        from now_lms.db import Curso, Usuario
 
         with lms_application.app_context():
             database.drop_all()
@@ -73,11 +71,10 @@ def test_postgress_psycopg2(lms_application):
 
 
 def test_mysql_mysqldb(lms_application, request):
-    if environ.get("DATABASE_URL","").startswith("mysql+mysqldb"):
+    if environ.get("DATABASE_URL", "").startswith("mysql+mysqldb"):
         lms_application.config.update({"SQLALCHEMY_DATABASE_URI": environ.get("DATABASE_URL")})
         assert lms_application.config.get("SQLALCHEMY_DATABASE_URI") == environ.get("DATABASE_URL")
         from now_lms import database, initial_setup
-        from now_lms.db import Curso, Usuario
 
         with lms_application.app_context():
             database.drop_all()

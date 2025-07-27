@@ -1,73 +1,71 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
 <html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }} {{ mde.css }}
+        <title>Editar configuracion</title>
 
-<head>
-  {{ current_theme.headertags() }} {{ mde.css }}
-  <title>Editar configuracion</title>
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
 
-  {{ current_theme.local_style() }}
-  <!-- Custom styles for this template -->
-  <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
-</head>
+    <body>
+        {{ current_theme.navbar() }}
 
-<body>
-  {{ current_theme.navbar() }}
+        <main>
+            {{ current_theme.notify() }}
 
-  <main>
-    {{ current_theme.notify() }}
+            <div class="container px-4 py-5" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Editar configuración del sitio web.</h4>
+                <form method="post">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <h5>Datos Generales del Sitio Web.</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="titulo" class="form-label">Nombre del Sitio Web</label>
+                            {{ form.titulo(class="form-control", id="titulo", value=config.titulo) }}
+                        </div>
 
-    <div class="container px-4 py-5" id="icon-grid">
-      <h4 class="pb-2 border-bottom">Editar configuración del sitio web.</h4>
-      <form method="post">
-        <div class="row">
-          <div class="col-sm-8">
-            <h5>Datos Generales del Sitio Web.</h5>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-6">
-            <label for="titulo" class="form-label">Nombre del Sitio Web</label>
-            {{ form.titulo(class="form-control", id="titulo", value=config.titulo) }}
-          </div>
+                        <div class="col-sm-6">
+                            <label for="descripcion" class="form-label">Descripción del Sitio</label>
+                            {{ form.descripcion(class="form-control", id="descripcion", value=config.descripcion) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <br />
+                            <h5>Configuración de verificación de usuarios.</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            {% if config.email_verificado %}
+                            <div class="alert alert-success" role="alert">
+                                <i class="bi bi-check-circle" aria-hidden="true"></i> La configuración de correo electrónico ha
+                                sido verificada correctamente.
+                            </div>
+                            {% else %}
+                            <div class="alert alert-warning" role="alert">
+                                <i class="bi bi-dash-circle-dotted" aria-hidden="true"></i> La configuración de correo
+                                electrónico no ha sido verificada.
+                            </div>
+                            {% endif %}
+                            <label for="verificacion" class="form-label"
+                                >Permitir a nuevos usuarios verificarse vía correo electronico:</label
+                            >
+                            {{ form.verify_user_by_email(value=config.verify_user_by_email) }}
+                        </div>
+                    </div>
 
-          <div class="col-sm-6">
-            <label for="descripcion" class="form-label">Descripción del Sitio</label>
-            {{ form.descripcion(class="form-control", id="descripcion", value=config.descripcion) }}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-8">
-            <br />
-            <h5>Configuración de verificación de usuarios.</h5>
-          </div>
-        </div>
-        <div class="row"">
-            <div class=" col-sm-6">
-          {% if config.email_verificado %}
-          <div class="alert alert-success" role="alert">
-            <i class="bi bi-check-circle" aria-hidden="true"></i> La configuración de correo electrónico ha sido
-            verificada correctamente.
-          </div>
-          {% else %}
-          <div class="alert alert-warning" role="alert">
-            <i class="bi bi-dash-circle-dotted" aria-hidden="true"></i> La configuración de correo electrónico no ha
-            sido
-            verificada.
-          </div>
-          {% endif %}
-          <label for="verificacion" class="form-label">Permitir a nuevos usuarios verificarse vía correo
-            electronico:</label>
-          {{ form.verify_user_by_email(value=config.verify_user_by_email) }}
-        </div>
-    </div>
-
-    <br />
-    <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button">Cancelar</a>
-    <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
-    </form>
-    </div>
-  </main>
-</body>
-
+                    <br />
+                    <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button">Cancelar</a>
+                    <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
+                </form>
+            </div>
+        </main>
+    </body>
 </html>

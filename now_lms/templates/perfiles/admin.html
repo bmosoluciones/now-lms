@@ -3,7 +3,7 @@
     {% set current_theme = current_theme() %}
 
     <head>
-        {{ current_theme.headertags() }}
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
         <title>Administración</title>
 
         <style>
