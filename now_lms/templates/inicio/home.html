@@ -30,14 +30,20 @@
                                     <a href="{{ url_for('user.crear_cuenta') }}" class="btn btn-light btn-lg">
                                         <strong>Comenzar Ahora</strong>
                                     </a>
-                                    <a href="{{ url_for('course.lista_cursos', page=1) }}" class="btn btn-outline-light btn-lg">
+                                    <a
+                                        href="{{ url_for('course.lista_cursos', page=1) }}"
+                                        class="btn btn-outline-light btn-lg"
+                                    >
                                         Explorar Cursos
                                     </a>
                                     {% else %}
                                     <a href="{{ url_for('home.panel') }}" class="btn btn-light btn-lg">
                                         <strong>Mi Panel</strong>
                                     </a>
-                                    <a href="{{ url_for('course.lista_cursos', page=1) }}" class="btn btn-outline-light btn-lg">
+                                    <a
+                                        href="{{ url_for('course.lista_cursos', page=1) }}"
+                                        class="btn btn-outline-light btn-lg"
+                                    >
                                         Ver Cursos
                                     </a>
                                     {% endif %}
@@ -46,7 +52,10 @@
                         </div>
                         <div class="col-lg-4 text-center">
                             <div class="hero-visual">
-                                <div class="bg-light bg-opacity-10 rounded-circle mx-auto d-flex align-items-center justify-content-center border border-light border-opacity-25" style="width: 250px; height: 250px;">
+                                <div
+                                    class="bg-light bg-opacity-10 rounded-circle mx-auto d-flex align-items-center justify-content-center border border-light border-opacity-25"
+                                    style="width: 250px; height: 250px"
+                                >
                                     <div class="text-center text-white">
                                         <div class="fs-1 mb-2">📚</div>
                                         <div class="h5 fw-semibold">Aprendizaje</div>
@@ -74,12 +83,16 @@
                         <div class="col-md-4">
                             <div class="card h-100 border-0 shadow">
                                 <div class="card-body text-center">
-                                    <div class="bg-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                    <div
+                                        class="bg-primary rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                                        style="width: 60px; height: 60px"
+                                    >
                                         <span class="text-white fs-4">🎯</span>
                                     </div>
                                     <h4 class="card-title mb-3">Cursos Especializados</h4>
                                     <p class="card-text">
-                                        Accede a una amplia variedad de cursos diseñados por expertos en cada área de conocimiento.
+                                        Accede a una amplia variedad de cursos diseñados por expertos en cada área de
+                                        conocimiento.
                                     </p>
                                 </div>
                             </div>
@@ -87,12 +100,16 @@
                         <div class="col-md-4">
                             <div class="card h-100 border-0 shadow">
                                 <div class="card-body text-center">
-                                    <div class="bg-info rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                    <div
+                                        class="bg-info rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                                        style="width: 60px; height: 60px"
+                                    >
                                         <span class="text-white fs-4">👥</span>
                                     </div>
                                     <h4 class="card-title mb-3">Comunidad Activa</h4>
                                     <p class="card-text">
-                                        Únete a una comunidad de estudiantes y profesionales que comparten tus intereses y objetivos.
+                                        Únete a una comunidad de estudiantes y profesionales que comparten tus intereses y
+                                        objetivos.
                                     </p>
                                 </div>
                             </div>
@@ -100,7 +117,10 @@
                         <div class="col-md-4">
                             <div class="card h-100 border-0 shadow">
                                 <div class="card-body text-center">
-                                    <div class="bg-success rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                    <div
+                                        class="bg-success rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                                        style="width: 60px; height: 60px"
+                                    >
                                         <span class="text-white fs-4">🏆</span>
                                     </div>
                                     <h4 class="card-title mb-3">Certificaciones</h4>
@@ -134,15 +154,16 @@
                                     src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/' + course_logo(curso.codigo)) }}"
                                     alt="{{ curso.nombre }}"
                                     class="card-img-top"
-                                    style="height: 200px; object-fit: cover;"
+                                    style="height: 200px; object-fit: cover"
                                 />
                                 {% else %}
-                                <div class="card-img-top bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <div
+                                    class="card-img-top bg-primary text-white d-flex align-items-center justify-content-center"
+                                    style="height: 200px"
+                                >
                                     <div class="text-center">
                                         <div class="fs-1 mb-2">📚</div>
-                                        <div class="h6 fw-semibold">
-                                            {{ curso.nombre }}
-                                        </div>
+                                        <div class="h6 fw-semibold">{{ curso.nombre }}</div>
                                     </div>
                                 </div>
                                 {% endif %}
@@ -153,8 +174,7 @@
                                         <div class="d-flex align-items-center gap-2">
                                             {% if not curso.precio %}
                                             <span class="badge bg-success">Gratis</span>
-                                            {% endif %} 
-                                            {% if curso.nivel == 0 %}
+                                            {% endif %} {% if curso.nivel == 0 %}
                                             <span class="badge bg-info">Intro</span>
                                             {% elif curso.nivel == 1 %}
                                             <span class="badge bg-primary">Principiante</span>
@@ -175,8 +195,7 @@
                                         <div class="text-end">
                                             {% if curso.duracion %}
                                             <small class="text-muted d-block">{{ curso.duracion }} mins</small>
-                                            {% endif %} 
-                                            {% if curso.precio %}
+                                            {% endif %} {% if curso.precio %}
                                             <small class="fw-bold text-success">
                                                 {{ curso.precio | float }} {{ config.moneda }}
                                             </small>
@@ -224,10 +243,10 @@
                             </a>
                             {% else %}
                             <h3 class="mb-4">Bienvenido de vuelta, {{ current_user.nombre }}</h3>
-                            <p class="lead mb-4">Continúa tu viaje de aprendizaje y explora nuevas oportunidades educativas.</p>
-                            <a href="{{ url_for('home.panel') }}" class="btn btn-primary btn-lg me-3">
-                                Ir a Mi Panel
-                            </a>
+                            <p class="lead mb-4">
+                                Continúa tu viaje de aprendizaje y explora nuevas oportunidades educativas.
+                            </p>
+                            <a href="{{ url_for('home.panel') }}" class="btn btn-primary btn-lg me-3"> Ir a Mi Panel </a>
                             <a href="{{ url_for('course.lista_cursos', page=1) }}" class="btn btn-outline-primary btn-lg">
                                 Explorar Cursos
                             </a>

@@ -105,19 +105,13 @@ def lms_info() -> SimpleNamespace:
     moderators_count = database.session.execute(
         database.select(func.count()).select_from(Usuario).where(Usuario.tipo == "moderator")
     ).scalar_one()
-    
+
     # Additional metrics for enhanced user experience
-    enrollments_count = database.session.execute(
-        database.select(func.count()).select_from(EstudianteCurso)
-    ).scalar_one()
-    
-    certificates_count = database.session.execute(
-        database.select(func.count()).select_from(Certificado)
-    ).scalar_one()
-    
-    programs_count = database.session.execute(
-        database.select(func.count()).select_from(Programa)
-    ).scalar_one()
+    enrollments_count = database.session.execute(database.select(func.count()).select_from(EstudianteCurso)).scalar_one()
+
+    certificates_count = database.session.execute(database.select(func.count()).select_from(Certificado)).scalar_one()
+
+    programs_count = database.session.execute(database.select(func.count()).select_from(Programa)).scalar_one()
 
     return SimpleNamespace(
         courses_count=courses_count,

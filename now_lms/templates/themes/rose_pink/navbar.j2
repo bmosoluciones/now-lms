@@ -36,50 +36,34 @@
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 {% if not current_user.is_authenticated %}
                 <li>
-                    <a href="{{ url_for('home.pagina_de_inicio') }}" class="nav-link px-2"
-                        >🌸 Jardín</a
-                    >
+                    <a href="{{ url_for('home.pagina_de_inicio') }}" class="nav-link px-2">🌸 Jardín</a>
                 </li>
                 {% else %}
                 <li>
-                    <a href="{{ url_for('home.panel') }}" class="nav-link px-2"
-                        >🌸 Mi Jardín</a
-                    >
+                    <a href="{{ url_for('home.panel') }}" class="nav-link px-2">🌸 Mi Jardín</a>
                 </li>
                 {% endif %}
                 <li>
-                    <a href="{{ url_for('course.lista_cursos', page=1) }}" class="nav-link px-2"
-                        >🌺 Cursos Florales</a
-                    >
+                    <a href="{{ url_for('course.lista_cursos', page=1) }}" class="nav-link px-2">🌺 Cursos Florales</a>
                 </li>
                 <li>
-                    <a href="{{ url_for('program.lista_programas', page=1) }}" class="nav-link px-2"
-                        >💐 Programas</a
-                    >
+                    <a href="{{ url_for('program.lista_programas', page=1) }}" class="nav-link px-2">💐 Programas</a>
                 </li>
                 <li>
-                    <a href="{{ url_for('resource.lista_de_recursos', page=1) }}" class="nav-link px-2"
-                        >🌹 Recursos</a
-                    >
+                    <a href="{{ url_for('resource.lista_de_recursos', page=1) }}" class="nav-link px-2">🌹 Recursos</a>
                 </li>
                 {% if current_user.is_authenticated %} {% if current_user.tipo == "moderator" or current_user.tipo ==
                 "instructor" or current_user.tipo == "admin" %}
                 <li>
-                    <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link px-2"
-                        >Moderación</a
-                    >
+                    <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link px-2">Moderación</a>
                 </li>
                 {% endif %} {% if current_user.tipo == "instructor" or current_user.tipo == "admin" %}
                 <li>
-                    <a href="{{ url_for('instructor_profile.pagina_instructor') }}" class="nav-link px-2"
-                        >Docente</a
-                    >
+                    <a href="{{ url_for('instructor_profile.pagina_instructor') }}" class="nav-link px-2">Docente</a>
                 </li>
                 {% endif %} {% if current_user.tipo == "admin" %}
                 <li>
-                    <a href="{{ url_for('admin_profile.pagina_admin') }}" class="nav-link px-2"
-                        >Administración</a
-                    >
+                    <a href="{{ url_for('admin_profile.pagina_admin') }}" class="nav-link px-2">Administración</a>
                 </li>
                 {% endif %} {% endif %}
             </ul>
@@ -101,7 +85,7 @@
                             data-bs-toggle="dropdown"
                             data-bs-display="static"
                             aria-expanded="false"
-                            style="color: white;"
+                            style="color: white"
                             >Bienvenido: {{ current_user.nombre }} {{ current_user.apellido }}
                             <i class="bi bi-list" aria-hidden="true"></i>
                         </a>
@@ -147,9 +131,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">
-                    NOW - Learning Management System
-                </h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">NOW - Learning Management System</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

@@ -90,7 +90,9 @@
                                     Acceder Gratis
                                 </a>
                                 {% elif not current_user.is_authenticated %}
-                                <a href="{{ url_for('user.inicio_sesion') }}" class="btn btn-outline-primary"> Iniciar Sesión </a>
+                                <a href="{{ url_for('user.inicio_sesion') }}" class="btn btn-outline-primary">
+                                    Iniciar Sesión
+                                </a>
                                 {% endif %}
                             </div>
                         </div>
