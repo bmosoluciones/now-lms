@@ -481,24 +481,6 @@ def crear_recurso_prueba():
     database.session.commit()
 
 
-def crear_mensaje_test():
-    """Crea un mensaje para ejecutar pruebas unitarias."""
-    from now_lms.db import Mensaje
-
-    mensaje = Mensaje(
-        id="01HPMH3TYC30S59FG7B9Z23FSS",
-        usuario="01HNZYGXRRWKJ8GXVXYZY8S994",
-        curso="test",
-        recurso="01HNZYGXRRWXJ8GXVXYZY8S994",
-        cerrado=False,
-        publico=False,
-        titulo="Hello",
-        texto="hi",
-    )
-    database.session.add(mensaje)
-    database.session.commit()
-
-
 def id_usuario_admin():
     from now_lms.db import Usuario
     from os import environ
@@ -519,4 +501,3 @@ def crear_data_para_pruebas():
     crear_programa_prueba()
     crear_curso_para_pruebas()
     id_usuario_admin()
-    crear_mensaje_test()
