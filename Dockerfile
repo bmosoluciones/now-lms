@@ -18,9 +18,12 @@ COPY requirements.txt /app/requirements.txt
 RUN microdnf update -y --nodocs --best --refresh \
     && microdnf install -y --nodocs --best  nodejs npm pango python3.12 python3.12-pip python3.12-cryptography \
     && /usr/bin/python3.12 -m pip --no-cache-dir install -r /app/requirements.txt  \
+    && microdnf install -y --nodocs --best python3.12-devel mysql-devel pkgconfig\
     && /usr/bin/python3.12 -m pip --no-cache-dir install mysqlclient \
     && cd /app/now_lms/static && npm install --ignore-scripts \
-    && rm -rf /root/.cache/pip && rm -rf /tmp && microdnf remove -y --best python3.12-pip nodejs* npm \
+    && rm -rf /root/.cache/pip && rm -rf /tmp \
+    && microdnf install mysql postgresql \
+    && microdnf remove -y --best python3.12-pip python3.12-devel mysql-devel pkgconfig nodejs* npm \
     && microdnf clean all
 
 COPY . /app
