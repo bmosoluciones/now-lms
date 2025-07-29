@@ -100,22 +100,27 @@
                             </div>
                             <br />
                             {% if curso.pagado %} {% if curso.auditable %}
-                            <a class="w-100 btn btn-warning" name="metodo" value="audit" type="submit"
-                                >Auditar contenido del curso</a
-                            >
-                            <br />
-                            <p>
-                                Puede acceder al contenido del curso pero no podra resolver las evaluaciones u obtener un
+
+                            <button class="w-100 btn btn-warning mb-2" name="modo" value="audit" type="submit">
+                                Auditar contenido del curso
+                            </button>
+                            <p class="small text-muted">
+                                Puede acceder al contenido del curso pero no podrá resolver las evaluaciones u obtener un
                                 certificado al finalizar.
                                 <br />
-                                Puede cancelar el valor curso antes de finalizarlo y accerder a las evaluaciones y la
+                                Puede pagar el valor del curso antes de finalizarlo y acceder a las evaluaciones y la
+
                                 certificación.
                             </p>
                             <br />
                             {% endif %}
-                            <a class="w-100 btn btn-primary" name="metodo" value="take" type="submit">Proceder al pago</a>
+
+                            <button class="w-100 btn btn-primary" name="modo" value="paid" type="submit">
+                                Proceder al pago
+                            </button>
                             {% else %}
-                            <button class="w-100 btn btn-primary" name="metodo" value="free" type="submit">
+                            <button class="w-100 btn btn-primary" name="modo" value="free" type="submit">
+
                                 Inscribirse al curso
                             </button>
                             {% endif %}

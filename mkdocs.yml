@@ -74,6 +74,7 @@ nav:
       - Configure: configure.md
       - Mail: mail.md
       - Payments: payments.md
+      - AdSense: adsense.md
       - Theming: theming.md
   - About:
       - About: faq.md

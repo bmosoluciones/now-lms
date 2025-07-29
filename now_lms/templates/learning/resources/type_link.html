@@ -52,6 +52,15 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                             title="{{ recurso.codigo }}"
                             src="{{ url_for('course.recurso_descripcion_a_html', course_code=recurso.curso, resource=recurso.id) }}"
                         ></iframe>
+
+                        <!-- AdSense Ad after resource description for free courses -->
+                        {% if adsense_enabled() and not curso.pagado %} {% set ad_code = ad_large_rectangle() %} {% if ad_code
+                        %}
+                        <div class="mt-4 mb-4" style="text-align: center">
+                            <small class="text-muted">Publicidad</small>
+                            {{ ad_code | safe }}
+                        </div>
+                        {% endif %} {% endif %}
                     </div>
 
                     <div class="col-sm-4">{{ r_macros.resource_nav(recursos=recursos, secciones=secciones) }}</div>

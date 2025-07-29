@@ -365,7 +365,7 @@ class CertificateForm(FlaskForm):
 
 
 class AdSenseForm(FlaskForm):
-    """AdSbse"""
+    """AdSense form with specific ad sizes"""
 
     meta_tag = TextAreaField(validators=[])
     meta_tag_include = BooleanField(validators=[])
@@ -373,11 +373,26 @@ class AdSenseForm(FlaskForm):
     add_code = TextAreaField(validators=[])
     show_ads = BooleanField(validators=[])
 
+    # Specific ad size fields
+    add_leaderboard = TextAreaField(validators=[])  # 728x90
+    add_medium_rectangle = TextAreaField(validators=[])  # 300x250
+    add_large_rectangle = TextAreaField(validators=[])  # 336x280
+    add_mobile_banner = TextAreaField(validators=[])  # 300x50
+    add_wide_skyscraper = TextAreaField(validators=[])  # 160x600
+    add_skyscraper = TextAreaField(validators=[])  # 120x600
+    add_large_skyscraper = TextAreaField(validators=[])  # 300x600
+    add_billboard = TextAreaField(validators=[])  # 970x250
+
 
 class PayaplForm(FlaskForm):
     """Paypal"""
 
     habilitado = BooleanField(validators=[])
+    sandbox = BooleanField(validators=[])
+    paypal_id = StringField(validators=[])
+    paypal_sandbox = StringField(validators=[])
+    paypal_secret = PasswordField(validators=[])
+    paypal_sandbox_secret = PasswordField(validators=[])
 
 
 class EmitCertificateForm(FlaskForm):

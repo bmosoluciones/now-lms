@@ -78,7 +78,34 @@ permitir_docente %}
 
                         <br />
 
-                        {% if current_user.is_authenticated %} {% else %}
+                        {% if current_user.is_authenticated %} {% if current_user.tipo == "student" and not permitir_estudiante
+                        %}
+                        <div class="d-grid gap-2">
+                            {% if curso.pagado %} {% if curso.auditable %}
+                            <a
+                                href="{{ url_for('course.course_enroll', course_code=curso.codigo, modo='audit') }}"
+                                class="btn btn-warning"
+                            >
+                                Auditar contenido del curso
+                            </a>
+                            <p class="small text-muted">
+                                Puede acceder al contenido del curso pero no podrá resolver las evaluaciones u obtener un
+                                certificado al finalizar.
+                                <br />
+                                Puede pagar el valor del curso antes de finalizarlo y acceder a las evaluaciones y la
+                                certificación.
+                            </p>
+                            {% endif %}
+                            <a href="{{ url_for('paypal.payment_page', course_code=curso.codigo) }}" class="btn btn-primary">
+                                Proceder al pago
+                            </a>
+                            {% else %}
+                            <a href="{{ url_for('course.course_enroll', course_code=curso.codigo) }}" class="btn btn-success">
+                                Inscribirse al curso
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% endif %} {% else %}
                         <div class="d-flex d-flex justify-content-around">
                             <a
                                 href="{{ url_for('user.inicio_sesion')}}"
@@ -98,6 +125,15 @@ permitir_docente %}
                             </a>
                         </div>
                         {% endif %}
+
+                        <!-- AdSense Ad for Free Courses -->
+                        {% if adsense_enabled() and not curso.pagado %} {% set ad_code = ad_medium_rectangle() %} {% if ad_code
+                        %}
+                        <div class="mt-4 mb-3" style="text-align: center">
+                            <small class="text-muted">Publicidad</small>
+                            {{ ad_code | safe }}
+                        </div>
+                        {% endif %} {% endif %}
                     </div>
                     <div class="col-md-8">
                         <h3>Contenido del curso.</h3>

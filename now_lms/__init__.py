@@ -79,8 +79,17 @@ from now_lms.db.initial_data import (
 from now_lms.db.tools import (
     crear_configuracion_predeterminada,
     cuenta_cursos_por_programa,
+    get_ad_billboard,
+    get_ad_large_rectangle,
+    get_ad_large_skyscraper,
+    get_ad_leaderboard,
+    get_ad_medium_rectangle,
+    get_ad_mobile_banner,
+    get_ad_skyscraper,
+    get_ad_wide_skyscraper,
     get_addsense_code,
     get_addsense_meta,
+    get_adsense_enabled,
     get_paypal_id,
     logo_perzonalizado,
     verifica_docente_asignado_a_curso,
@@ -220,6 +229,15 @@ def define_variables_globales_jinja2(lms_app: Flask):
     log.trace("Definiendo variables globales de Jinja2.")
     lms_app.jinja_env.globals["adsense_code"] = get_addsense_code
     lms_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
+    lms_app.jinja_env.globals["adsense_enabled"] = get_adsense_enabled
+    lms_app.jinja_env.globals["ad_billboard"] = get_ad_billboard
+    lms_app.jinja_env.globals["ad_large_rectangle"] = get_ad_large_rectangle
+    lms_app.jinja_env.globals["ad_large_skyscraper"] = get_ad_large_skyscraper
+    lms_app.jinja_env.globals["ad_leaderboard"] = get_ad_leaderboard
+    lms_app.jinja_env.globals["ad_medium_rectangle"] = get_ad_medium_rectangle
+    lms_app.jinja_env.globals["ad_mobile_banner"] = get_ad_mobile_banner
+    lms_app.jinja_env.globals["ad_skyscraper"] = get_ad_skyscraper
+    lms_app.jinja_env.globals["ad_wide_skyscraper"] = get_ad_wide_skyscraper
     lms_app.jinja_env.globals["config"] = config
     lms_app.jinja_env.globals["course_info"] = course_info
     lms_app.jinja_env.globals["course_logo"] = get_current_course_logo

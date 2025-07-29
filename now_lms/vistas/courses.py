@@ -178,7 +178,7 @@ def course_enroll(course_code):
     _curso = database.session.query(Curso).filter_by(codigo=course_code).first()
     _usuario = database.session.query(Usuario).filter_by(usuario=current_user.usuario).first()
 
-    _modo = request.args.get("modo", "")
+    _modo = request.args.get("modo", "") or request.form.get("modo", "")
 
     form = PagoForm()
     form.nombre.data = _usuario.nombre
@@ -197,27 +197,66 @@ def course_enroll(course_code):
         pago.provincia = form.provincia.data
         pago.codigo_postal = form.codigo_postal.data
         pago.pais = form.pais.data
+        pago.monto = _curso.precio if _curso.pagado else 0
+        pago.metodo = "paypal" if _curso.pagado else "free"
+
+        # Handle different enrollment modes
         if not _curso.pagado:
+            # Free course - complete enrollment immediately
             pago.estado = "completed"
-        if _modo == "audit" and _curso.auditable:
+            try:
+                database.session.add(pago)
+                database.session.flush()
+                registro = EstudianteCurso(
+                    curso=pago.curso,
+                    usuario=pago.usuario,
+                    vigente=True,
+                    pago=pago.id,
+                )
+                database.session.add(registro)
+                database.session.commit()
+                _crear_indice_avance_curso(course_code)
+                return redirect(url_for("course.tomar_curso", course_code=course_code))
+            except OperationalError:  # pragma: no cover
+                flash("Hubo en error al crear el registro de pago.", "warning")
+                return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+
+        elif _modo == "audit" and _curso.auditable:
+            # Audit mode - allow access without payment but mark as audit
             pago.audit = True
-            pago.estado = "pending"
-        try:
-            database.session.add(pago)
-            database.session.flush()
-            registro = EstudianteCurso(
-                curso=pago.curso,
-                usuario=pago.usuario,
-                vigente=True,
-                pago=pago.id,  # Relaciona el pago con el registro del curso.
+            pago.estado = "completed"  # Audit enrollment is completed immediately
+            pago.monto = 0
+            pago.metodo = "audit"
+            try:
+                database.session.add(pago)
+                database.session.flush()
+                registro = EstudianteCurso(
+                    curso=pago.curso,
+                    usuario=pago.usuario,
+                    vigente=True,
+                    pago=pago.id,
+                )
+                database.session.add(registro)
+                database.session.commit()
+                _crear_indice_avance_curso(course_code)
+                return redirect(url_for("course.tomar_curso", course_code=course_code))
+            except OperationalError:  # pragma: no cover
+                flash("Hubo en error al crear el registro de pago.", "warning")
+                return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+
+        else:
+            # Paid course - check for existing pending payment first
+            existing = (
+                database.session.query(Pago)
+                .filter_by(usuario=current_user.usuario, curso=course_code, estado="pending")
+                .first()
             )
-            database.session.add(registro)
-            database.session.commit()
-            _crear_indice_avance_curso(course_code)
-            return redirect(url_for("course.tomar_curso", course_code=course_code))
-        except OperationalError:  # pragma: no cover
-            flash("Hubo en error al crear el registro de pago.", "warning")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+            if existing:
+                return redirect(url_for("paypal.resume_payment", payment_id=existing.id))
+
+            # Redirect to PayPal payment page
+            return redirect(url_for("paypal.payment_page", course_code=course_code))
+
     return render_template("learning/curso/enroll.html", curso=_curso, usuario=_usuario, form=form)
 
 

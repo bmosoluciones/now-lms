@@ -105,6 +105,16 @@
                                 {% endif %}
                             </div>
                         </div>
+
+                        <!-- AdSense Ad for Free Courses -->
+                        {% if adsense_enabled() and not curso.pagado %} {% set ad_code = ad_medium_rectangle() %} {% if ad_code
+                        %}
+                        <div class="mt-4 mb-3" style="text-align: center">
+                            <small class="text-muted">Publicidad</small>
+                            {{ ad_code | safe }}
+                        </div>
+                        {% endif %} {% endif %}
+
                     </div>
 
                     <div class="col-md-8">
