@@ -100,6 +100,7 @@
                             </div>
                             <br />
                             {% if curso.pagado %} {% if curso.auditable %}
+
                             <button class="w-100 btn btn-warning mb-2" name="modo" value="audit" type="submit">
                                 Auditar contenido del curso
                             </button>
@@ -108,15 +109,18 @@
                                 certificado al finalizar.
                                 <br />
                                 Puede pagar el valor del curso antes de finalizarlo y acceder a las evaluaciones y la
+
                                 certificación.
                             </p>
                             <br />
                             {% endif %}
+
                             <button class="w-100 btn btn-primary" name="modo" value="paid" type="submit">
                                 Proceder al pago
                             </button>
                             {% else %}
                             <button class="w-100 btn btn-primary" name="modo" value="free" type="submit">
+
                                 Inscribirse al curso
                             </button>
                             {% endif %}
