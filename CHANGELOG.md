@@ -8,6 +8,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > This project also follows [Conventional Commits](https://www.conventionalcommits.org/), using prefixes such as:  
 > `fix:`, `feat:`, `refactor:`, `release:`, `docs:`, `build:`, `ci:` to clearly describe changes.
 
+
+## [v0.0.1a2.dev20250729] - 2025-07-29
+
+### Added
+- Full integration with Google AdSense across public-facing pages (homepage, course pages, and student dashboard)
+- Initial implementation of PayPal Checkout for paid course enrollment (in sandbox/testing mode)
+- System automatically creates and confirms PayPal orders, registers successful enrollments, and issues receipts
+
+### Changed
+- Minor UI refactors to support advertisement blocks and sponsored content
+- Theme rendering updated to accommodate monetization components
+
+### In Progress
+- Manual and automated testing of PayPal payment flow
+- Google AdSense optimization and responsive behavior
+
+### Notes
+- This release focuses on enabling revenue generation features
+- Monetization functionality is currently in an experimental state
+
 ---
 
 ## [v0.0.1a1.dev20250728] - 2025-07-28
