@@ -124,6 +124,9 @@ def configuracion():
         try:
             database.session.commit()
             cache.delete("site_config")
+            # Invalidate site currency cache when configuration changes
+            from now_lms.vistas.paypal import get_site_currency
+            cache.delete_memoized(get_site_currency)
             flash("Sitio web actualizado exitosamente.", "success")
             return redirect(url_for("setting.configuracion"))
         except OperationalError:  # pragma: no cover
@@ -355,11 +358,52 @@ def paypal():
     """Configuración de Paypal."""
 
     config = database.session.execute(database.select(PaypalConfig)).first()[0]
-    form = PayaplForm(habilitado=config.enable)
+    form = PayaplForm(
+        habilitado=config.enable,
+        sandbox=config.sandbox,
+        paypal_id=config.paypal_id,
+        paypal_sandbox=config.paypal_sandbox
+    )
 
     if form.validate_on_submit() or request.method == "POST":
+        
+        # Validate PayPal configuration if enabling PayPal
+        if form.habilitado.data:
+            from now_lms.vistas.paypal import validate_paypal_configuration
+            from now_lms.auth import descifrar_secreto
+            
+            # Get the appropriate credentials based on sandbox mode
+            client_id = form.paypal_sandbox.data if form.sandbox.data else form.paypal_id.data
+            
+            # Get the secret - either from form or existing config
+            if form.sandbox.data and form.paypal_sandbox_secret.data:
+                client_secret = form.paypal_sandbox_secret.data
+            elif not form.sandbox.data and form.paypal_secret.data:
+                client_secret = form.paypal_secret.data
+            elif form.sandbox.data and config.paypal_sandbox_secret:
+                client_secret = descifrar_secreto(config.paypal_sandbox_secret).decode()
+            elif not form.sandbox.data and config.paypal_secret:
+                client_secret = descifrar_secreto(config.paypal_secret).decode()
+            else:
+                client_secret = None
+            
+            # Validate if we have both client ID and secret
+            if client_id and client_secret:
+                validation = validate_paypal_configuration(client_id, client_secret, form.sandbox.data)
+                if not validation['valid']:
+                    flash(f"Error en la configuración de PayPal: {validation['message']}", "error")
+                    return render_template("admin/paypal.html", form=form, config=config, with_paypal=True)
 
         config.enable = form.habilitado.data
+        config.sandbox = form.sandbox.data
+        config.paypal_id = form.paypal_id.data
+        config.paypal_sandbox = form.paypal_sandbox.data
+        
+        # Only update secrets if provided (to avoid clearing them)
+        if form.paypal_secret.data:
+            config.paypal_secret = proteger_secreto(form.paypal_secret.data)
+        if form.paypal_sandbox_secret.data:
+            config.paypal_sandbox_secret = proteger_secreto(form.paypal_sandbox_secret.data)
 
         try:  # pragma: no cover
             database.session.commit()

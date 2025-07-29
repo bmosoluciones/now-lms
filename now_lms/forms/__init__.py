@@ -388,6 +388,11 @@ class PayaplForm(FlaskForm):
     """Paypal"""
 
     habilitado = BooleanField(validators=[])
+    sandbox = BooleanField(validators=[])
+    paypal_id = StringField(validators=[])
+    paypal_sandbox = StringField(validators=[])
+    paypal_secret = PasswordField(validators=[])
+    paypal_sandbox_secret = PasswordField(validators=[])
 
 
 class EmitCertificateForm(FlaskForm):

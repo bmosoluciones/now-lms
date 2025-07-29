@@ -548,6 +548,8 @@ class PaypalConfig(database.Model):
     sandbox = database.Column(database.Boolean(), default=False)
     paypal_id = database.Column(database.String(100))
     paypal_sandbox = database.Column(database.String(100))
+    paypal_secret = database.Column(database.String(100))
+    paypal_sandbox_secret = database.Column(database.String(100))
 
 
 class Pago(database.Model):
