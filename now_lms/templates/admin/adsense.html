@@ -63,6 +63,61 @@
 
                     <br />
 
+                    <h4>Anuncios específicos por tamaño</h4>
+                    <p class="text-muted">Configure códigos de anuncios específicos para diferentes tamaños. Solo se mostrarán en cursos gratuitos.</p>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="add_leaderboard" class="form-label">Leaderboard (728×90):</label>
+                            {{ form.add_leaderboard(class="form-control", id="add_leaderboard",) }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="add_medium_rectangle" class="form-label">Medium Rectangle (300×250):</label>
+                            {{ form.add_medium_rectangle(class="form-control", id="add_medium_rectangle",) }}
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="add_large_rectangle" class="form-label">Large Rectangle (336×280):</label>
+                            {{ form.add_large_rectangle(class="form-control", id="add_large_rectangle",) }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="add_mobile_banner" class="form-label">Mobile Banner (300×50):</label>
+                            {{ form.add_mobile_banner(class="form-control", id="add_mobile_banner",) }}
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="add_wide_skyscraper" class="form-label">Wide Skyscraper (160×600):</label>
+                            {{ form.add_wide_skyscraper(class="form-control", id="add_wide_skyscraper",) }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="add_skyscraper" class="form-label">Skyscraper (120×600):</label>
+                            {{ form.add_skyscraper(class="form-control", id="add_skyscraper",) }}
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="add_large_skyscraper" class="form-label">Large Skyscraper (300×600):</label>
+                            {{ form.add_large_skyscraper(class="form-control", id="add_large_skyscraper",) }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="add_billboard" class="form-label">Billboard (970×250):</label>
+                            {{ form.add_billboard(class="form-control", id="add_billboard",) }}
+                        </div>
+                    </div>
+
+                    <br />
+
                     <a class="btn btn-success" target="_blank" href="{{ url_for('setting.ads_txt') }}" role="button"
                         >Verificar archivo ads.txt</a
                     >

@@ -264,6 +264,14 @@ def adsense():
         pub_id=config.pub_id,
         add_code=config.add_code,
         show_ads=config.show_ads,
+        add_leaderboard=config.add_leaderboard,
+        add_medium_rectangle=config.add_medium_rectangle,
+        add_large_rectangle=config.add_large_rectangle,
+        add_mobile_banner=config.add_mobile_banner,
+        add_wide_skyscraper=config.add_wide_skyscraper,
+        add_skyscraper=config.add_skyscraper,
+        add_large_skyscraper=config.add_large_skyscraper,
+        add_billboard=config.add_billboard,
     )
 
     if form.validate_on_submit() or request.method == "POST":
@@ -273,6 +281,14 @@ def adsense():
         config.pub_id = form.pub_id.data
         config.add_code = form.add_code.data
         config.show_ads = form.show_ads.data
+        config.add_leaderboard = form.add_leaderboard.data
+        config.add_medium_rectangle = form.add_medium_rectangle.data
+        config.add_large_rectangle = form.add_large_rectangle.data
+        config.add_mobile_banner = form.add_mobile_banner.data
+        config.add_wide_skyscraper = form.add_wide_skyscraper.data
+        config.add_skyscraper = form.add_skyscraper.data
+        config.add_large_skyscraper = form.add_large_skyscraper.data
+        config.add_billboard = form.add_billboard.data
 
         try:  # pragma: no cover
             database.session.commit()
@@ -290,12 +306,19 @@ def adsense():
 @setting.route("/ads.txt")
 def ads_txt():
     """Información de ads.txt para anuncios."""
+    try:
+        config = database.session.execute(database.select(AdSense)).first()[0]
+        pub_id = config.pub_id if config.pub_id else ""
+    except (OperationalError, TypeError):
+        pub_id = ""
 
-    config = database.session.execute(database.select(AdSense)).first()[0]
-
-    pub_id = config.pub_id
-
-    return render_template("ads.txt", pub_id=pub_id)
+    # Return ads.txt with proper content type for Google compliance
+    if pub_id:
+        content = f"google.com, pub-{pub_id}, DIRECT, f08c47fec0942fa0\n"
+    else:
+        content = "# No AdSense publisher ID configured\n"
+    
+    return content, 200, {'Content-Type': 'text/plain; charset=utf-8'}
 
 
 @setting.route("/setting/mail_check", methods=["GET", "POST"])

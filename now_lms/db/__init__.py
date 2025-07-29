@@ -530,6 +530,16 @@ class AdSense(database.Model):
     pub_id = database.Column(database.String(20))
     add_code = database.Column(database.String(500))
     show_ads = database.Column(database.Boolean(), default=False)
+    
+    # Specific ad size codes
+    add_leaderboard = database.Column(database.Text())  # 728x90
+    add_medium_rectangle = database.Column(database.Text())  # 300x250
+    add_large_rectangle = database.Column(database.Text())  # 336x280
+    add_mobile_banner = database.Column(database.Text())  # 300x50
+    add_wide_skyscraper = database.Column(database.Text())  # 160x600
+    add_skyscraper = database.Column(database.Text())  # 120x600
+    add_large_skyscraper = database.Column(database.Text())  # 300x600
+    add_billboard = database.Column(database.Text())  # 970x250
 
 
 class PaypalConfig(database.Model):

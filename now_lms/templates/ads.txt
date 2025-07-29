@@ -1,1 +1,0 @@
-google.com, pub-{{ pub_id }}, DIRECT, f08c47fec0942fa0

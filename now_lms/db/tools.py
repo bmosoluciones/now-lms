@@ -125,7 +125,17 @@ def crear_configuracion_predeterminada():
         MAIL_USE_SSL=False,
         email_verificado=False,
     )
-    adsense_config = AdSense(meta_tag_include=False)
+    adsense_config = AdSense(
+        meta_tag_include=False,
+        add_leaderboard="",
+        add_medium_rectangle="",
+        add_large_rectangle="",
+        add_mobile_banner="",
+        add_wide_skyscraper="",
+        add_skyscraper="",
+        add_large_skyscraper="",
+        add_billboard=""
+    )
     paypal_config = PaypalConfig(enable=False)
     theme = Style(
         theme="now_lms",
@@ -370,6 +380,131 @@ def get_addsense_code():
             return ""
     else:
         return ""
+
+
+def get_adsense_enabled():
+    """Check if ads are globally enabled."""
+    try:
+        query = database.session.execute(database.select(AdSense)).first()
+    except (AttributeError, OperationalError):
+        return False
+
+    if query:
+        data = query[0]
+        return data.show_ads
+    return False
+
+
+def get_ad_leaderboard():
+    """Get leaderboard ad code (728x90)."""
+    try:
+        query = database.session.execute(database.select(AdSense)).first()
+    except (AttributeError, OperationalError):
+        return ""
+
+    if query:
+        data = query[0]
+        if data.show_ads and data.add_leaderboard:
+            return data.add_leaderboard
+    return ""
+
+
+def get_ad_medium_rectangle():
+    """Get medium rectangle ad code (300x250)."""
+    try:
+        query = database.session.execute(database.select(AdSense)).first()
+    except (AttributeError, OperationalError):
+        return ""
+
+    if query:
+        data = query[0]
+        if data.show_ads and data.add_medium_rectangle:
+            return data.add_medium_rectangle
+    return ""
+
+
+def get_ad_large_rectangle():
+    """Get large rectangle ad code (336x280)."""
+    try:
+        query = database.session.execute(database.select(AdSense)).first()
+    except (AttributeError, OperationalError):
+        return ""
+
+    if query:
+        data = query[0]
+        if data.show_ads and data.add_large_rectangle:
+            return data.add_large_rectangle
+    return ""
+
+
+def get_ad_mobile_banner():
+    """Get mobile banner ad code (300x50)."""
+    try:
+        query = database.session.execute(database.select(AdSense)).first()
+    except (AttributeError, OperationalError):
+        return ""
+
+    if query:
+        data = query[0]
+        if data.show_ads and data.add_mobile_banner:
+            return data.add_mobile_banner
+    return ""
+
+
+def get_ad_wide_skyscraper():
+    """Get wide skyscraper ad code (160x600)."""
+    try:
+        query = database.session.execute(database.select(AdSense)).first()
+    except (AttributeError, OperationalError):
+        return ""
+
+    if query:
+        data = query[0]
+        if data.show_ads and data.add_wide_skyscraper:
+            return data.add_wide_skyscraper
+    return ""
+
+
+def get_ad_skyscraper():
+    """Get skyscraper ad code (120x600)."""
+    try:
+        query = database.session.execute(database.select(AdSense)).first()
+    except (AttributeError, OperationalError):
+        return ""
+
+    if query:
+        data = query[0]
+        if data.show_ads and data.add_skyscraper:
+            return data.add_skyscraper
+    return ""
+
+
+def get_ad_large_skyscraper():
+    """Get large skyscraper ad code (300x600)."""
+    try:
+        query = database.session.execute(database.select(AdSense)).first()
+    except (AttributeError, OperationalError):
+        return ""
+
+    if query:
+        data = query[0]
+        if data.show_ads and data.add_large_skyscraper:
+            return data.add_large_skyscraper
+    return ""
+
+
+def get_ad_billboard():
+    """Get billboard ad code (970x250)."""
+    try:
+        query = database.session.execute(database.select(AdSense)).first()
+    except (AttributeError, OperationalError):
+        return ""
+
+    if query:
+        data = query[0]
+        if data.show_ads and data.add_billboard:
+            return data.add_billboard
+    return ""
 
 
 def database_select_version(app):
