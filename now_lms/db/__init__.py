@@ -530,7 +530,7 @@ class AdSense(database.Model):
     pub_id = database.Column(database.String(20))
     add_code = database.Column(database.String(500))
     show_ads = database.Column(database.Boolean(), default=False)
-    
+
     # Specific ad size codes
     add_leaderboard = database.Column(database.Text())  # 728x90
     add_medium_rectangle = database.Column(database.Text())  # 300x250

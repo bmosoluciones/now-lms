@@ -99,8 +99,7 @@
                                 </div>
                             </div>
                             <br />
-                            {% if curso.pagado %} 
-                            {% if curso.auditable %}
+                            {% if curso.pagado %} {% if curso.auditable %}
                             <button class="w-100 btn btn-warning mb-2" name="modo" value="audit" type="submit">
                                 Auditar contenido del curso
                             </button>

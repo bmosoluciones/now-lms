@@ -134,7 +134,7 @@ def crear_configuracion_predeterminada():
         add_wide_skyscraper="",
         add_skyscraper="",
         add_large_skyscraper="",
-        add_billboard=""
+        add_billboard="",
     )
     paypal_config = PaypalConfig(enable=False)
     theme = Style(

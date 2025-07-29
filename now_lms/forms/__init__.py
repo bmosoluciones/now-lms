@@ -372,7 +372,7 @@ class AdSenseForm(FlaskForm):
     pub_id = StringField(validators=[])
     add_code = TextAreaField(validators=[])
     show_ads = BooleanField(validators=[])
-    
+
     # Specific ad size fields
     add_leaderboard = TextAreaField(validators=[])  # 728x90
     add_medium_rectangle = TextAreaField(validators=[])  # 300x250
