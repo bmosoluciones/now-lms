@@ -33,7 +33,7 @@ from sqlalchemy.exc import OperationalError
 from now_lms.auth import perfil_requerido
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import Configuracion, EstudianteCurso, Pago, PaypalConfig, database
+from now_lms.db import Configuracion, Pago, PaypalConfig, database
 
 paypal = Blueprint("paypal", __name__, template_folder=DIRECTORIO_PLANTILLAS, url_prefix="/paypal_checkout")
 
