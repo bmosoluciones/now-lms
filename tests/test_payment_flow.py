@@ -106,6 +106,7 @@ def test_free_course_enrollment_completes_immediately(lms_application):
     from now_lms.db import Usuario, Curso, Pago, EstudianteCurso
 
     with lms_application.app_context():
+        database.drop_all()
         initial_setup()
         
         # Create test user
@@ -178,6 +179,7 @@ def test_audit_mode_enrollment(lms_application):
     from now_lms.db import Usuario, Curso, Pago, EstudianteCurso
 
     with lms_application.app_context():
+        database.drop_all()
         initial_setup()
         
         # Create test user
@@ -250,6 +252,7 @@ def test_paypal_payment_confirmation_success(lms_application):
     import json
 
     with lms_application.app_context():
+        database.drop_all()
         initial_setup()
         
         # Configure PayPal
@@ -349,6 +352,7 @@ def test_paypal_client_id_endpoint(lms_application):
     import json
 
     with lms_application.app_context():
+        database.drop_all()
         initial_setup()
         
         # Configure PayPal
