@@ -105,7 +105,31 @@ permitir_docente %}
                             </a>
                             {% endif %}
                         </div>
-                        {% endif %} {% else %}
+                        {% endif %}
+                        
+                        <!-- Messages Section for Enrolled Students -->
+                        {% if current_user.tipo == "student" and permitir_estudiante %}
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <i class="bi bi-chat-left-text"></i> Mensajes
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">¿Tienes alguna pregunta sobre el curso? Contacta a tus instructores.</p>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ url_for('msg.course_messages', course_code=curso.codigo) }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-list"></i> Ver Mensajes
+                                    </a>
+                                    <a href="{{ url_for('msg.new_thread', course_code=curso.codigo) }}" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-plus-circle"></i> Nuevo Mensaje
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% else %}
                         <div class="d-flex d-flex justify-content-around">
                             <a
                                 href="{{ url_for('user.inicio_sesion')}}"

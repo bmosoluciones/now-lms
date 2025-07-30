@@ -503,7 +503,7 @@ class Certificacion(database.Model, BaseTabla):
 
 
 class Mensaje(database.Model, BaseTabla):
-    """Mensajes de usuarios."""
+    """Mensajes de usuarios - DEPRECATED: Use MessageThread and Message instead."""
 
     usuario = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_USUARIO), index=True)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), index=True)
@@ -513,6 +513,34 @@ class Mensaje(database.Model, BaseTabla):
     titulo = database.Column(database.String(100))
     texto = database.Column(database.String(1000))
     parent = database.Column(database.String(26), database.ForeignKey("mensaje.id"), nullable=True, index=True)
+
+
+class MessageThread(database.Model, BaseTabla):
+    """Message threads for course communication between students and instructors/moderators."""
+
+    course_id = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
+    student_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False)
+    status = database.Column(database.String(10), default="open", nullable=False)  # open, fixed, closed
+    closed_at = database.Column(database.DateTime, nullable=True)
+
+    # Relationships
+    course = database.relationship("Curso", foreign_keys=[course_id])
+    student = database.relationship("Usuario", foreign_keys=[student_id])
+    messages = database.relationship("Message", backref="thread", lazy="dynamic", cascade="all, delete-orphan")
+
+
+class Message(database.Model, BaseTabla):
+    """Individual messages within a thread."""
+
+    thread_id = database.Column(database.String(26), database.ForeignKey("message_thread.id"), nullable=False)
+    sender_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False)
+    content = database.Column(database.Text, nullable=False)
+    read_at = database.Column(database.DateTime, nullable=True)
+    is_reported = database.Column(database.Boolean(), default=False, nullable=False)
+    reported_reason = database.Column(database.Text, nullable=True)
+
+    # Relationships
+    sender = database.relationship("Usuario", foreign_keys=[sender_id])
 
 
 class PagosConfig(database.Model):

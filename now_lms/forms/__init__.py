@@ -379,11 +379,34 @@ class UserForm(FlaskForm):
 
 
 class MsgForm(FlaskForm):
-    """Formulario para crear un mensaje en el sistema."""
+    """Formulario para crear un mensaje en el sistema - DEPRECATED."""
 
     titulo = StringField(validators=[])
     editor = MdeField()
     parent = HiddenField(validators=[])
+
+
+class MessageThreadForm(FlaskForm):
+    """Form for creating a new message thread."""
+
+    subject = StringField("Asunto", validators=[DataRequired()])
+    content = MdeField("Mensaje", validators=[DataRequired()])
+    course_id = HiddenField(validators=[DataRequired()])
+
+
+class MessageReplyForm(FlaskForm):
+    """Form for replying to a message thread."""
+
+    content = MdeField("Respuesta", validators=[DataRequired()])
+    thread_id = HiddenField(validators=[DataRequired()])
+
+
+class MessageReportForm(FlaskForm):
+    """Form for reporting a message or thread."""
+
+    reason = TextAreaField("Motivo del reporte", validators=[DataRequired()])
+    message_id = HiddenField(validators=[])
+    thread_id = HiddenField(validators=[])
 
 
 class TextAreaNoEscape(TextArea):

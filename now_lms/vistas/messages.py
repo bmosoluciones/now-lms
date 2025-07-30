@@ -18,26 +18,37 @@
 """
 NOW Learning Management System.
 
-Gestión de certificados.
+Gestión del sistema de mensajería.
 """
 
 # ---------------------------------------------------------------------------------------
 # Libreria estandar
 # ---------------------------------------------------------------------------------------
-
+from datetime import datetime
 
 # ---------------------------------------------------------------------------------------
 # Librerias de terceros
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, abort, redirect, render_template, url_for
+from flask import Blueprint, abort, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
 
 # ---------------------------------------------------------------------------------------
 # Recursos locales
 # ---------------------------------------------------------------------------------------
+from now_lms.auth import perfil_requerido
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import Mensaje, Usuario, database
-from now_lms.forms import MsgForm
+from now_lms.db import (
+    Curso,
+    DocenteCurso,
+    EstudianteCurso,
+    Message,
+    MessageThread,
+    Mensaje,
+    ModeradorCurso,
+    Usuario,
+    database,
+)
+from now_lms.forms import MessageReplyForm, MessageReportForm, MessageThreadForm, MsgForm
 from now_lms.misc import INICIO_SESION
 
 # ---------------------------------------------------------------------------------------
@@ -47,10 +58,331 @@ from now_lms.misc import INICIO_SESION
 msg = Blueprint("msg", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
+def check_course_access(course_code, user):
+    """Check if user has access to course messaging."""
+    if user.tipo == "admin":
+        return True
+
+    if user.tipo == "student":
+        return (
+            database.session.query(EstudianteCurso).filter_by(curso=course_code, usuario=user.usuario, vigente=True).first()
+            is not None
+        )
+
+    if user.tipo == "instructor":
+        return (
+            database.session.query(DocenteCurso).filter_by(curso=course_code, usuario=user.usuario, vigente=True).first()
+            is not None
+        )
+
+    if user.tipo == "moderator":
+        return (
+            database.session.query(ModeradorCurso).filter_by(curso=course_code, usuario=user.usuario, vigente=True).first()
+            is not None
+        )
+
+    return False
+
+
+def check_thread_access(thread, user):
+    """Check if user can access a specific thread."""
+    if user.tipo == "admin":
+        return True
+
+    # Student can only access their own threads
+    if user.tipo == "student":
+        return thread.student_id == user.usuario
+
+    # Instructors and moderators can access threads in their courses
+    if user.tipo in ["instructor", "moderator"]:
+        return check_course_access(thread.course_id, user)
+
+    return False
+
+
+@msg.route("/course/<course_code>/messages")
+@login_required
+def course_messages(course_code):
+    """List all message threads for a specific course."""
+
+    if not check_course_access(course_code, current_user):
+        return abort(403)
+
+    # Get course info
+    course = database.session.query(Curso).filter_by(codigo=course_code).first()
+    if not course:
+        return abort(404)
+
+    # Build query based on user role
+    if current_user.tipo == "student":
+        # Students only see their own threads
+        threads = (
+            database.session.query(MessageThread)
+            .filter_by(course_id=course_code, student_id=current_user.usuario)
+            .order_by(MessageThread.timestamp.desc())
+            .all()
+        )
+    else:
+        # Instructors, moderators, and admins see all threads in the course
+        threads = (
+            database.session.query(MessageThread)
+            .filter_by(course_id=course_code)
+            .order_by(MessageThread.timestamp.desc())
+            .all()
+        )
+
+    return render_template("learning/mensajes/course_messages.html", course=course, threads=threads)
+
+
+@msg.route("/user/messages")
+@login_required
+def user_messages():
+    """List all message threads for the current user across all courses."""
+
+    if current_user.tipo == "student":
+        # Students see their own threads
+        threads = (
+            database.session.query(MessageThread)
+            .filter_by(student_id=current_user.usuario)
+            .order_by(MessageThread.timestamp.desc())
+            .all()
+        )
+    else:
+        # Instructors and moderators see threads from their courses
+        if current_user.tipo == "instructor":
+            course_codes = [
+                dc.curso
+                for dc in database.session.query(DocenteCurso).filter_by(usuario=current_user.usuario, vigente=True).all()
+            ]
+        elif current_user.tipo == "moderator":
+            course_codes = [
+                mc.curso
+                for mc in database.session.query(ModeradorCurso).filter_by(usuario=current_user.usuario, vigente=True).all()
+            ]
+        else:  # admin
+            course_codes = [c.codigo for c in database.session.query(Curso).all()]
+
+        threads = (
+            database.session.query(MessageThread)
+            .filter(MessageThread.course_id.in_(course_codes))
+            .order_by(MessageThread.timestamp.desc())
+            .all()
+        )
+
+    return render_template("learning/mensajes/user_messages.html", threads=threads)
+
+
+@msg.route("/course/<course_code>/messages/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("student")
+def new_thread(course_code):
+    """Create a new message thread."""
+
+    if not check_course_access(course_code, current_user):
+        return abort(403)
+
+    # Only students can create threads
+    if current_user.tipo != "student":
+        return abort(403)
+
+    course = database.session.query(Curso).filter_by(codigo=course_code).first()
+    if not course:
+        return abort(404)
+
+    form = MessageThreadForm()
+    form.course_id.data = course_code
+
+    if form.validate_on_submit():
+        # Create new thread
+        thread = MessageThread()
+        thread.course_id = course_code
+        thread.student_id = current_user.usuario
+        thread.status = "open"
+
+        database.session.add(thread)
+        database.session.flush()  # Get the ID
+
+        # Create first message
+        message = Message()
+        message.thread_id = thread.id
+        message.sender_id = current_user.usuario
+        message.content = f"**{form.subject.data}**\n\n{form.content.data}"
+
+        database.session.add(message)
+        database.session.commit()
+
+        flash("Mensaje enviado correctamente.", "success")
+        return redirect(url_for("msg.view_thread", thread_id=thread.id))
+
+    return render_template("learning/mensajes/new_thread.html", form=form, course=course)
+
+
+@msg.route("/thread/<thread_id>")
+@login_required
+def view_thread(thread_id):
+    """View a message thread and its messages."""
+
+    thread = database.session.query(MessageThread).filter_by(id=thread_id).first()
+    if not thread:
+        return abort(404)
+
+    if not check_thread_access(thread, current_user):
+        return abort(403)
+
+    # Get all messages in the thread
+    messages = database.session.query(Message).filter_by(thread_id=thread_id).order_by(Message.timestamp.asc()).all()
+
+    # Mark messages as read for non-students
+    if current_user.tipo != "student":
+        for message in messages:
+            if not message.read_at and message.sender_id != current_user.usuario:
+                message.read_at = datetime.now()
+        database.session.commit()
+
+    # Create reply form
+    reply_form = MessageReplyForm()
+    reply_form.thread_id.data = thread_id
+
+    # Create report form
+    report_form = MessageReportForm()
+    report_form.thread_id.data = thread_id
+
+    return render_template(
+        "learning/mensajes/view_thread.html", thread=thread, messages=messages, reply_form=reply_form, report_form=report_form
+    )
+
+
+@msg.route("/thread/<thread_id>/reply", methods=["POST"])
+@login_required
+def reply_to_thread(thread_id):
+    """Reply to a message thread."""
+
+    thread = database.session.query(MessageThread).filter_by(id=thread_id).first()
+    if not thread:
+        return abort(404)
+
+    if not check_thread_access(thread, current_user):
+        return abort(403)
+
+    # Check if thread is closed
+    if thread.status == "closed":
+        flash("No se puede responder a un hilo cerrado.", "error")
+        return redirect(url_for("msg.view_thread", thread_id=thread_id))
+
+    form = MessageReplyForm()
+
+    if form.validate_on_submit():
+        # Create reply message
+        message = Message()
+        message.thread_id = thread_id
+        message.sender_id = current_user.usuario
+        message.content = form.content.data
+
+        database.session.add(message)
+        database.session.commit()
+
+        flash("Respuesta enviada correctamente.", "success")
+
+    return redirect(url_for("msg.view_thread", thread_id=thread_id))
+
+
+@msg.route("/thread/<thread_id>/status/<new_status>")
+@login_required
+def change_thread_status(thread_id, new_status):
+    """Change thread status."""
+
+    thread = database.session.query(MessageThread).filter_by(id=thread_id).first()
+    if not thread:
+        return abort(404)
+
+    if not check_thread_access(thread, current_user):
+        return abort(403)
+
+    # Check permissions for status changes
+    if new_status == "fixed" and current_user.tipo != "student":
+        return abort(403)
+
+    if new_status == "closed" and current_user.tipo not in ["instructor", "moderator", "admin"]:
+        return abort(403)
+
+    # Validate status transitions
+    valid_transitions = {"open": ["fixed", "closed"], "fixed": ["closed"], "closed": []}
+
+    if new_status not in valid_transitions.get(thread.status, []):
+        flash("Transición de estado no válida.", "error")
+        return redirect(url_for("msg.view_thread", thread_id=thread_id))
+
+    thread.status = new_status
+    if new_status == "closed":
+        thread.closed_at = datetime.now()
+
+    database.session.commit()
+
+    flash(f"Estado del hilo cambiado a {new_status}.", "success")
+    return redirect(url_for("msg.view_thread", thread_id=thread_id))
+
+
+@msg.route("/message/<message_id>/report", methods=["POST"])
+@login_required
+def report_message(message_id):
+    """Report a message."""
+
+    message = database.session.query(Message).filter_by(id=message_id).first()
+    if not message:
+        return abort(404)
+
+    thread = database.session.query(MessageThread).filter_by(id=message.thread_id).first()
+    if not check_thread_access(thread, current_user):
+        return abort(403)
+
+    form = MessageReportForm()
+
+    if form.validate_on_submit():
+        message.is_reported = True
+        message.reported_reason = form.reason.data
+
+        database.session.commit()
+
+        flash("Mensaje reportado correctamente.", "success")
+
+    return redirect(url_for("msg.view_thread", thread_id=message.thread_id))
+
+
+@msg.route("/admin/flagged-messages")
+@login_required
+@perfil_requerido("admin")
+def admin_flagged_messages():
+    """Admin view for flagged messages."""
+
+    # Get all reported messages
+    flagged_messages = database.session.query(Message).filter_by(is_reported=True).order_by(Message.timestamp.desc()).all()
+
+    return render_template("admin/flagged_messages.html", flagged_messages=flagged_messages)
+
+
+@msg.route("/admin/resolve-report/<message_id>", methods=["POST"])
+@login_required
+@perfil_requerido("admin")
+def resolve_report(message_id):
+    """Mark a reported message as resolved."""
+    from flask import jsonify
+
+    message = database.session.query(Message).filter_by(id=message_id).first()
+    if not message:
+        return jsonify({"success": False, "message": "Mensaje no encontrado"})
+
+    message.is_reported = False
+    message.reported_reason = None
+    database.session.commit()
+
+    return jsonify({"success": True, "message": "Reporte resuelto"})
+
+
+# Legacy routes for backward compatibility
 @msg.route("/message/<ulid>")
 @login_required
 def mensaje(ulid: str):
-    """Mensaje."""
+    """Mensaje - DEPRECATED."""
 
     mensaje = database.session.execute(database.select(Mensaje).filter(Mensaje.id == ulid)).first()[0]
     usuario = database.session.execute(database.select(Usuario).filter(Usuario.id == mensaje.usuario)).first()[0]
@@ -71,7 +403,7 @@ def mensaje(ulid: str):
 @msg.route("/message/new", methods=["GET", "POST"])
 @login_required
 def nuevo_mensaje():
-    """Nuevo Mensaje."""
+    """Nuevo Mensaje - DEPRECATED."""
 
     form = MsgForm()
     mensaje = Mensaje()
