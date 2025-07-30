@@ -138,6 +138,51 @@ def panel():
             issued_certificates=issued_certificates,
             cursos_por_fecha=cursos_por_fecha,
         )
+    elif current_user.tipo == "moderator":
+        from now_lms.db import ModeradorCurso
+
+        # Get courses moderated by this moderator
+        created_courses = (
+            database.session.query(Curso)
+            .join(ModeradorCurso)
+            .filter(ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.vigente)
+            .count()
+        )
+
+        # Get enrolled students across moderator's courses
+        enrolled_students = (
+            database.session.query(EstudianteCurso.usuario)
+            .distinct()
+            .join(ModeradorCurso, EstudianteCurso.curso == ModeradorCurso.curso)
+            .filter(ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.vigente, EstudianteCurso.vigente)
+            .count()
+        )
+
+        # Get certificates issued for courses moderated by this moderator
+        issued_certificates = (
+            database.session.query(Certificacion)
+            .join(ModeradorCurso, Certificacion.curso == ModeradorCurso.curso)
+            .filter(ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.vigente)
+            .count()
+        )
+
+        # Get recent courses by this moderator
+        cursos_por_fecha = (
+            database.session.query(Curso)
+            .join(ModeradorCurso)
+            .filter(ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.vigente)
+            .order_by(Curso.creado)
+            .limit(5)
+            .all()
+        )
+
+        return render_template(
+            "inicio/panel_instructor.html",
+            created_courses=created_courses,
+            enrolled_students=enrolled_students,
+            issued_certificates=issued_certificates,
+            cursos_por_fecha=cursos_por_fecha,
+        )
     else:
         return redirect("/")
 
