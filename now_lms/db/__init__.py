@@ -482,7 +482,7 @@ class Recurso(database.Model, BaseTabla):
 class Certificado(database.Model, BaseTabla):
     """Plantilla para generar un certificado."""
 
-    code = database.Column(database.String(10), unique=True, index=True)
+    code = database.Column(database.String(11), unique=True, index=True)
     titulo = database.Column(database.String(50))
     descripcion = database.Column(database.String(500))
     html = database.Column(database.Text())
