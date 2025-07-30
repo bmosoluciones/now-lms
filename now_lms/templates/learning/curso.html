@@ -106,30 +106,32 @@ permitir_docente %}
                             {% endif %}
                         </div>
                         {% endif %}
-                        
+
                         <!-- Messages Section for Enrolled Students -->
                         {% if current_user.tipo == "student" and permitir_estudiante %}
                         <div class="card mt-3">
                             <div class="card-header">
-                                <h6 class="mb-0">
-                                    <i class="bi bi-chat-left-text"></i> Mensajes
-                                </h6>
+                                <h6 class="mb-0"><i class="bi bi-chat-left-text"></i> Mensajes</h6>
                             </div>
                             <div class="card-body">
                                 <p class="card-text">¿Tienes alguna pregunta sobre el curso? Contacta a tus instructores.</p>
                                 <div class="d-flex gap-2">
-                                    <a href="{{ url_for('msg.course_messages', course_code=curso.codigo) }}" class="btn btn-outline-primary btn-sm">
+                                    <a
+                                        href="{{ url_for('msg.course_messages', course_code=curso.codigo) }}"
+                                        class="btn btn-outline-primary btn-sm"
+                                    >
                                         <i class="bi bi-list"></i> Ver Mensajes
                                     </a>
-                                    <a href="{{ url_for('msg.new_thread', course_code=curso.codigo) }}" class="btn btn-primary btn-sm">
+                                    <a
+                                        href="{{ url_for('msg.new_thread', course_code=curso.codigo) }}"
+                                        class="btn btn-primary btn-sm"
+                                    >
                                         <i class="bi bi-plus-circle"></i> Nuevo Mensaje
                                     </a>
                                 </div>
                             </div>
                         </div>
-                        {% endif %}
-                        
-                        {% else %}
+                        {% endif %} {% else %}
                         <div class="d-flex d-flex justify-content-around">
                             <a
                                 href="{{ url_for('user.inicio_sesion')}}"
@@ -226,97 +228,79 @@ permitir_docente %}
                                                     {% endif %}
                                                 </div>
                                             </li>
-                                            {% endif %} {% endfor %}
-                                            
-                                            {# Show evaluations for this section #}
-                                            {% set section_evaluations = [] %}
-                                            {% if evaluaciones %}
-                                                {% for eval in evaluaciones %}
-                                                    {% if eval.section_id == seccion.id %}
-                                                        {% set _ = section_evaluations.append(eval) %}
-                                                    {% endif %}
-                                                {% endfor %}
-                                            {% endif %}
-                                            
-                                            {% for eval in section_evaluations %}
+                                            {% endif %} {% endfor %} {# Show evaluations for this section #} {% set
+                                            section_evaluations = [] %} {% if evaluaciones %} {% for eval in evaluaciones %} {%
+                                            if eval.section_id == seccion.id %} {% set _ = section_evaluations.append(eval) %}
+                                            {% endif %} {% endfor %} {% endif %} {% for eval in section_evaluations %}
                                             <li class="list-group-item">
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    {% if current_user.tipo == "admin" or permitir_estudiante %}
-                                                        {% if not curso.pagado or (curso.pagado and current_user.is_authenticated and user_has_paid) %}
-                                                            <a class="link-dark text-decoration-none" href="{{ url_for('evaluation.take_evaluation', evaluation_id=eval.id) }}">
-                                                                <div class="fw-bold">
-                                                                    <i class="bi bi-clipboard-check" aria-hidden="true"></i>
-                                                                    {{ eval.title }}
-                                                                    {% if eval.is_exam %}
-                                                                    <span class="badge bg-danger">Examen</span>
-                                                                    {% else %}
-                                                                    <span class="badge bg-primary">Quiz</span>
-                                                                    {% endif %}
-                                                                </div>
-                                                            </a>
-                                                            
-                                                            {# Show evaluation status #}
-                                                            {% set user_attempts = [] %}
-                                                            {% if evaluation_attempts %}
-                                                                {% for attempt in evaluation_attempts %}
-                                                                    {% if attempt.evaluation_id == eval.id and attempt.user_id == current_user.usuario %}
-                                                                        {% set _ = user_attempts.append(attempt) %}
-                                                                    {% endif %}
-                                                                {% endfor %}
-                                                            {% endif %}
-                                                            
-                                                            {% if user_attempts %}
-                                                                {% set best_attempt = user_attempts | sort(attribute='score', reverse=True) | first %}
-                                                                {% if best_attempt.passed %}
-                                                                    <span class="badge bg-success">Aprobado ({{ "%.1f"|format(best_attempt.score) }}%)</span>
-                                                                {% else %}
-                                                                    <span class="badge bg-danger">No Aprobado ({{ "%.1f"|format(best_attempt.score) }}%)</span>
-                                                                    
-                                                                    {# Show request reopen option if applicable #}
-                                                                    {% if eval.max_attempts and user_attempts|length >= eval.max_attempts %}
-                                                                        {% set pending_request = false %}
-                                                                        {% if reopen_requests %}
-                                                                            {% for req in reopen_requests %}
-                                                                                {% if req.evaluation_id == eval.id and req.user_id == current_user.usuario and req.status == 'pending' %}
-                                                                                    {% set pending_request = true %}
-                                                                                {% endif %}
-                                                                            {% endfor %}
-                                                                        {% endif %}
-                                                                        
-                                                                        {% if curso.modalidad == 'self_paced' %}
-                                                                            {% if pending_request %}
-                                                                                <br><small class="text-muted">Solicitud de reapertura pendiente</small>
-                                                                            {% else %}
-                                                                                <br><a href="{{ url_for('evaluation.request_reopen', evaluation_id=eval.id) }}" class="btn btn-sm btn-outline-warning">Solicitar nuevo intento</a>
-                                                                            {% endif %}
-                                                                        {% endif %}
-                                                                    {% endif %}
-                                                                {% endif %}
-                                                            {% else %}
-                                                                <span class="badge bg-secondary">Pendiente</span>
-                                                            {% endif %}
-                                                        {% else %}
-                                                            <div class="fw-bold text-muted">
-                                                                <i class="bi bi-clipboard-check" aria-hidden="true"></i>
-                                                                {{ eval.title }}
-                                                                {% if eval.is_exam %}
-                                                                <span class="badge bg-danger">Examen</span>
-                                                                {% else %}
-                                                                <span class="badge bg-primary">Quiz</span>
-                                                                {% endif %}
-                                                            </div>
-                                                            <span class="badge bg-warning">Pago requerido</span>
-                                                        {% endif %}
-                                                    {% else %}
-                                                        <div class="fw-bold text-muted">
+                                                    {% if current_user.tipo == "admin" or permitir_estudiante %} {% if not
+                                                    curso.pagado or (curso.pagado and current_user.is_authenticated and
+                                                    user_has_paid) %}
+                                                    <a
+                                                        class="link-dark text-decoration-none"
+                                                        href="{{ url_for('evaluation.take_evaluation', evaluation_id=eval.id) }}"
+                                                    >
+                                                        <div class="fw-bold">
                                                             <i class="bi bi-clipboard-check" aria-hidden="true"></i>
-                                                            {{ eval.title }}
-                                                            {% if eval.is_exam %}
+                                                            {{ eval.title }} {% if eval.is_exam %}
                                                             <span class="badge bg-danger">Examen</span>
                                                             {% else %}
                                                             <span class="badge bg-primary">Quiz</span>
                                                             {% endif %}
                                                         </div>
+                                                    </a>
+
+                                                    {# Show evaluation status #} {% set user_attempts = [] %} {% if
+                                                    evaluation_attempts %} {% for attempt in evaluation_attempts %} {% if
+                                                    attempt.evaluation_id == eval.id and attempt.user_id ==
+                                                    current_user.usuario %} {% set _ = user_attempts.append(attempt) %} {%
+                                                    endif %} {% endfor %} {% endif %} {% if user_attempts %} {% set
+                                                    best_attempt = user_attempts | sort(attribute='score', reverse=True) |
+                                                    first %} {% if best_attempt.passed %}
+                                                    <span class="badge bg-success"
+                                                        >Aprobado ({{ "%.1f"|format(best_attempt.score) }}%)</span
+                                                    >
+                                                    {% else %}
+                                                    <span class="badge bg-danger"
+                                                        >No Aprobado ({{ "%.1f"|format(best_attempt.score) }}%)</span
+                                                    >
+
+                                                    {# Show request reopen option if applicable #} {% if eval.max_attempts and
+                                                    user_attempts|length >= eval.max_attempts %} {% set pending_request = false
+                                                    %} {% if reopen_requests %} {% for req in reopen_requests %} {% if
+                                                    req.evaluation_id == eval.id and req.user_id == current_user.usuario and
+                                                    req.status == 'pending' %} {% set pending_request = true %} {% endif %} {%
+                                                    endfor %} {% endif %} {% if curso.modalidad == 'self_paced' %} {% if
+                                                    pending_request %}
+                                                    <br /><small class="text-muted">Solicitud de reapertura pendiente</small>
+                                                    {% else %}
+                                                    <br /><a
+                                                        href="{{ url_for('evaluation.request_reopen', evaluation_id=eval.id) }}"
+                                                        class="btn btn-sm btn-outline-warning"
+                                                        >Solicitar nuevo intento</a
+                                                    >
+                                                    {% endif %} {% endif %} {% endif %} {% endif %} {% else %}
+                                                    <span class="badge bg-secondary">Pendiente</span>
+                                                    {% endif %} {% else %}
+                                                    <div class="fw-bold text-muted">
+                                                        <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                                                        {{ eval.title }} {% if eval.is_exam %}
+                                                        <span class="badge bg-danger">Examen</span>
+                                                        {% else %}
+                                                        <span class="badge bg-primary">Quiz</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <span class="badge bg-warning">Pago requerido</span>
+                                                    {% endif %} {% else %}
+                                                    <div class="fw-bold text-muted">
+                                                        <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                                                        {{ eval.title }} {% if eval.is_exam %}
+                                                        <span class="badge bg-danger">Examen</span>
+                                                        {% else %}
+                                                        <span class="badge bg-primary">Quiz</span>
+                                                        {% endif %}
+                                                    </div>
                                                     {% endif %}
                                                 </div>
                                             </li>

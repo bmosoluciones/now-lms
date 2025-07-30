@@ -61,7 +61,7 @@ def check_user_evaluations_completed(course_code, user_id):
                 and_(
                     EvaluationAttempt.evaluation_id == evaluation.id,
                     EvaluationAttempt.user_id == user_id,
-                    EvaluationAttempt.passed == True,
+                    EvaluationAttempt.passed is True,
                 )
             )
             .first()

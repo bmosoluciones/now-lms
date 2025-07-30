@@ -2,8 +2,7 @@
 <!doctype html>
 <html lang="es" class="h-100">
     <head>
-        {{ current_theme.headertags() }} 
-        {{ mde.css }}
+        {{ current_theme.headertags() }} {{ mde.css }}
         <title>Nuevo Mensaje - {{ course.nombre }}</title>
         {{ current_theme.local_style() }}
     </head>
@@ -25,12 +24,18 @@
                                     </a>
                                 </li>
                                 <li class="breadcrumb-item">
-                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('course.curso', course_code=course.codigo) }}">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('course.curso', course_code=course.codigo) }}"
+                                    >
                                         {{ course.nombre }}
                                     </a>
                                 </li>
                                 <li class="breadcrumb-item">
-                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('msg.course_messages', course_code=course.codigo) }}">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('msg.course_messages', course_code=course.codigo) }}"
+                                    >
                                         Mensajes
                                     </a>
                                 </li>
@@ -43,41 +48,41 @@
                 <div class="row justify-content-center">
                     <div class="col-md-8">
                         <form method="post">
-                            {{ form.csrf_token }}
-                            {{ form.course_id }}
-                            
+                            {{ form.csrf_token }} {{ form.course_id }}
+
                             <div class="mb-3">
                                 <label for="subject" class="form-label">Asunto</label>
                                 {{ form.subject(class="form-control", id="subject", placeholder="¿En qué podemos ayudarte?") }}
                                 {% if form.subject.errors %}
-                                    <div class="text-danger small">
-                                        {% for error in form.subject.errors %}
-                                            <div>{{ error }}</div>
-                                        {% endfor %}
-                                    </div>
+                                <div class="text-danger small">
+                                    {% for error in form.subject.errors %}
+                                    <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                             </div>
 
                             <div class="mb-3">
                                 <label for="content" class="form-label">Mensaje</label>
-                                {{ form.content }}
-                                {% if form.content.errors %}
-                                    <div class="text-danger small">
-                                        {% for error in form.content.errors %}
-                                            <div>{{ error }}</div>
-                                        {% endfor %}
-                                    </div>
+                                {{ form.content }} {% if form.content.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.content.errors %}
+                                    <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                             </div>
 
-                            {{ mde.preview }}
-                            {{ mde.js }}
+                            {{ mde.preview }} {{ mde.js }}
 
                             <div class="d-flex gap-2">
                                 <button class="btn btn-primary" type="submit">
                                     <i class="bi bi-envelope-plus"></i> Enviar Mensaje
                                 </button>
-                                <a href="{{ url_for('msg.course_messages', course_code=course.codigo) }}" class="btn btn-secondary">
+                                <a
+                                    href="{{ url_for('msg.course_messages', course_code=course.codigo) }}"
+                                    class="btn btn-secondary"
+                                >
                                     Cancelar
                                 </a>
                             </div>
