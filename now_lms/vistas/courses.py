@@ -64,7 +64,11 @@ from now_lms.db import (
     CursoRecursoSlideShow,
     CursoSeccion,
     DocenteCurso,
+    EstudianteCurso,
     Etiqueta,
+    Evaluation,
+    EvaluationAttempt,
+    EvaluationReopenRequest,
     Pago,
     Recurso,
     Usuario,
@@ -268,9 +272,27 @@ def tomar_curso(course_code):
     """Pagina principal del curso."""
 
     if current_user.tipo == "student":
+        # Get evaluations for this course
+        evaluaciones = database.session.query(Evaluation).join(CursoSeccion).filter(CursoSeccion.curso == course_code).all()
+
+        # Get user's evaluation attempts
+        evaluation_attempts = database.session.query(EvaluationAttempt).filter_by(user_id=current_user.usuario).all()
+
+        # Get reopen requests
+        reopen_requests = database.session.query(EvaluationReopenRequest).filter_by(user_id=current_user.usuario).all()
+
+        # Check if user has paid for course (for paid courses)
+        curso_obj = database.session.query(Curso).filter_by(codigo=course_code).first()
+        user_has_paid = True  # Default for free courses
+        if curso_obj and curso_obj.pagado:
+            enrollment = (
+                database.session.query(EstudianteCurso).filter_by(curso=course_code, usuario=current_user.usuario).first()
+            )
+            user_has_paid = enrollment and enrollment.pago
+
         return render_template(
             "learning/curso.html",
-            curso=database.session.query(Curso).filter_by(codigo=course_code).first(),
+            curso=curso_obj,
             secciones=database.session.query(CursoSeccion).filter_by(curso=course_code).order_by(CursoSeccion.indice).all(),
             recursos=database.session.query(CursoRecurso).filter_by(curso=course_code).order_by(CursoRecurso.indice).all(),
             descargas=database.session.execute(
@@ -278,6 +300,10 @@ def tomar_curso(course_code):
             ).all(),  # El join devuelve una tuple.
             nivel=CURSO_NIVEL,
             tipo=TIPOS_RECURSOS,
+            evaluaciones=evaluaciones,
+            evaluation_attempts=evaluation_attempts,
+            reopen_requests=reopen_requests,
+            user_has_paid=user_has_paid,
         )
     else:
         return redirect(url_for(VISTA_CURSOS, course_code=course_code))

@@ -605,3 +605,111 @@ class Pago(database.Model):
     pais = database.Column(database.String(100), nullable=True)
     provincia = database.Column(database.String(100), nullable=True)
     codigo_postal = database.Column(database.String(20), nullable=True)
+
+
+# ---------------------------------------------------------------------------------------
+# Evaluations System Models
+# ---------------------------------------------------------------------------------------
+
+
+class Evaluation(database.Model, BaseTabla):
+    """An evaluation (quiz/exam) associated with a course section."""
+
+    __tablename__ = "evaluation"
+
+    section_id = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=False, index=True)
+    title = database.Column(database.String(200), nullable=False)
+    description = database.Column(database.String(1000), nullable=True)
+    is_exam = database.Column(database.Boolean(), default=False)
+    passing_score = database.Column(database.Float(), nullable=False, default=70.0)
+    max_attempts = database.Column(database.Integer(), nullable=True)  # null = unlimited
+    available_until = database.Column(database.DateTime(), nullable=True)
+    reopened_at = database.Column(database.DateTime(), nullable=True)
+    reopened_for_user_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=True)
+    penalty_percent = database.Column(database.Float(), nullable=True, default=0.0)
+
+    # Relationships
+    section = database.relationship("CursoSeccion", foreign_keys=[section_id])
+    questions = database.relationship("Question", back_populates="evaluation", cascade="all, delete-orphan")
+    attempts = database.relationship("EvaluationAttempt", back_populates="evaluation", cascade="all, delete-orphan")
+
+
+class Question(database.Model, BaseTabla):
+    """A question within an evaluation."""
+
+    __tablename__ = "question"
+
+    evaluation_id = database.Column(database.String(26), database.ForeignKey("evaluation.id"), nullable=False, index=True)
+    type = database.Column(database.String(20), nullable=False)  # 'multiple' or 'boolean'
+    text = database.Column(database.String(1000), nullable=False)
+    explanation = database.Column(database.String(1000), nullable=True)
+    order = database.Column(database.Integer(), nullable=False, default=1)
+
+    # Relationships
+    evaluation = database.relationship("Evaluation", back_populates="questions")
+    options = database.relationship("QuestionOption", back_populates="question", cascade="all, delete-orphan")
+    answers = database.relationship("Answer", back_populates="question", cascade="all, delete-orphan")
+
+
+class QuestionOption(database.Model, BaseTabla):
+    """An option for a multiple choice question."""
+
+    __tablename__ = "question_option"
+
+    question_id = database.Column(database.String(26), database.ForeignKey("question.id"), nullable=False, index=True)
+    text = database.Column(database.String(500), nullable=False)
+    is_correct = database.Column(database.Boolean(), default=False)
+
+    # Relationships
+    question = database.relationship("Question", back_populates="options")
+
+
+class EvaluationAttempt(database.Model, BaseTabla):
+    """A student's attempt at an evaluation."""
+
+    __tablename__ = "evaluation_attempt"
+
+    evaluation_id = database.Column(database.String(26), database.ForeignKey("evaluation.id"), nullable=False, index=True)
+    user_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    score = database.Column(database.Float(), nullable=True)  # null until submitted
+    passed = database.Column(database.Boolean(), nullable=True)  # null until graded
+    started_at = database.Column(database.DateTime(), default=database.func.now())
+    submitted_at = database.Column(database.DateTime(), nullable=True)
+    was_late = database.Column(database.Boolean(), default=False)
+
+    # Relationships
+    evaluation = database.relationship("Evaluation", back_populates="attempts")
+    user = database.relationship("Usuario", foreign_keys=[user_id])
+    answers = database.relationship("Answer", back_populates="attempt", cascade="all, delete-orphan")
+
+
+class Answer(database.Model, BaseTabla):
+    """A student's answer to a question in an evaluation attempt."""
+
+    __tablename__ = "answer"
+
+    attempt_id = database.Column(database.String(26), database.ForeignKey("evaluation_attempt.id"), nullable=False, index=True)
+    question_id = database.Column(database.String(26), database.ForeignKey("question.id"), nullable=False, index=True)
+    selected_option_ids = database.Column(database.Text(), nullable=True)  # JSON array of UUIDs
+
+    # Relationships
+    attempt = database.relationship("EvaluationAttempt", back_populates="answers")
+    question = database.relationship("Question", back_populates="answers")
+
+
+class EvaluationReopenRequest(database.Model, BaseTabla):
+    """A student's request to reopen an evaluation after exhausting attempts."""
+
+    __tablename__ = "evaluation_reopen_request"
+
+    user_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    evaluation_id = database.Column(database.String(26), database.ForeignKey("evaluation.id"), nullable=False, index=True)
+    justification_text = database.Column(database.String(1000), nullable=False)
+    status = database.Column(database.String(20), default="pending")  # 'pending', 'approved', 'rejected'
+    reviewed_at = database.Column(database.DateTime(), nullable=True)
+    approved_by = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=True)
+
+    # Relationships
+    user = database.relationship("Usuario", foreign_keys=[user_id])
+    evaluation = database.relationship("Evaluation")
+    reviewer = database.relationship("Usuario", foreign_keys=[approved_by])

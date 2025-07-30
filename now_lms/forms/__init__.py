@@ -523,3 +523,47 @@ class PagoForm(FlaskForm):
     pais = StringField(validators=[DataRequired()])
     provincia = StringField(validators=[DataRequired()])
     codigo_postal = StringField(validators=[DataRequired()])
+
+
+# ---------------------------------------------------------------------------------------
+# Evaluation Forms
+# ---------------------------------------------------------------------------------------
+
+
+class EvaluationForm(FlaskForm):
+    """Formulario para crear/editar una evaluación."""
+
+    title = StringField("Título", validators=[DataRequired()])
+    description = TextAreaField("Descripción")
+    is_exam = BooleanField("Es un examen")
+    passing_score = DecimalField("Puntuación mínima para aprobar", default=70.0, validators=[DataRequired()])
+    max_attempts = IntegerField("Máximo número de intentos (vacío = ilimitado)")
+
+
+class QuestionForm(FlaskForm):
+    """Formulario para crear/editar una pregunta."""
+
+    text = TextAreaField("Texto de la pregunta", validators=[DataRequired()])
+    type = SelectField(
+        "Tipo", choices=[("multiple", "Opción múltiple"), ("boolean", "Verdadero/Falso")], validators=[DataRequired()]
+    )
+    explanation = TextAreaField("Explicación (opcional)")
+
+
+class QuestionOptionForm(FlaskForm):
+    """Formulario para crear/editar una opción de pregunta."""
+
+    text = StringField("Texto de la opción", validators=[DataRequired()])
+    is_correct = BooleanField("Es correcta")
+
+
+class EvaluationReopenRequestForm(FlaskForm):
+    """Formulario para solicitar reabrir una evaluación."""
+
+    justification_text = TextAreaField("Justificación", validators=[DataRequired()], render_kw={"rows": 4})
+
+
+class TakeEvaluationForm(FlaskForm):
+    """Formulario dinámico para tomar una evaluación."""
+
+    pass  # This will be dynamically populated with questions

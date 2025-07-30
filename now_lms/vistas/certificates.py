@@ -313,6 +313,14 @@ def certificado(ulid):
 def certificacion_crear(course, user, template):
     """Generar un nuevo certificado."""
 
+    # Check if user meets all requirements including evaluations
+    from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
+
+    can_receive, reason = can_user_receive_certificate(course, user)
+    if not can_receive:
+        flash(f"No se puede emitir el certificado: {reason}", "warning")
+        return redirect(url_for("certificate.certificaciones"))
+
     cert = Certificacion(usuario=user, curso=course, certificado=template)
 
     database.session.add(cert)
@@ -336,12 +344,21 @@ def certificacion_generar():
     form.template.choices = generate_template_choices()
 
     if form.validate_on_submit() or request.method == "POST":
+        # Check if user meets all requirements including evaluations
+        from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
+
+        can_receive, reason = can_user_receive_certificate(form.curso.data, form.usuario.data)
+        if not can_receive:
+            flash(f"No se puede emitir el certificado: {reason}", "warning")
+            return render_template("learning/certificados/generar_certificado.html", form=form)
+
         cert = Certificacion(
             usuario=form.usuario.data, curso=form.curso.data, certificado=form.template.data, nota=form.nota.data
         )
         try:
             database.session.add(cert)
             database.session.commit()
+            flash("Certificado generado correctamente.", "success")
             return redirect(url_for("certificate.certificaciones"))
 
         except OperationalError:  # pragma: no cover
