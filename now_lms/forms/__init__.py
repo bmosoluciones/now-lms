@@ -51,8 +51,62 @@ from wtforms.widgets import ColorInput, TextArea, html_params
 # Definición de formularios
 
 MONEDAS = [
-    ("C$", "Córdobas Oro"),
-    ("USD", "Dólares"),
+    # América del Norte
+    ("USD", "Dólar Estadounidense"),
+    ("CAD", "Dólar Canadiense"),
+    ("MXN", "Peso Mexicano"),
+    
+    # América Central
+    ("GTQ", "Quetzal Guatemalteco"),
+    ("BZD", "Dólar de Belice"),
+    ("HNL", "Lempira Hondureño"),
+    ("NIO", "Córdoba Nicaragüense"),
+    ("CRC", "Colón Costarricense"),
+    ("PAB", "Balboa Panameño"),
+    
+    # El Caribe
+    ("DOP", "Peso Dominicano"),
+    ("CUP", "Peso Cubano"),
+    ("JMD", "Dólar Jamaicano"),
+    ("TTD", "Dólar de Trinidad y Tobago"),
+    ("BBD", "Dólar de Barbados"),
+    
+    # América del Sur
+    ("COP", "Peso Colombiano"),
+    ("VES", "Bolívar Venezolano"),
+    ("GYD", "Dólar Guyanés"),
+    ("SRD", "Dólar Surinamés"),
+    ("BRL", "Real Brasileño"),
+    ("PEN", "Sol Peruano"),
+    ("BOB", "Boliviano"),
+    ("PYG", "Guaraní Paraguayo"),
+    ("UYU", "Peso Uruguayo"),
+    ("ARS", "Peso Argentino"),
+    ("CLP", "Peso Chileno"),
+    
+    # Europa
+    ("EUR", "Euro"),
+    ("GBP", "Libra Esterlina"),
+    ("CHF", "Franco Suizo"),
+    ("NOK", "Corona Noruega"),
+    ("SEK", "Corona Sueca"),
+    ("DKK", "Corona Danesa"),
+    ("PLN", "Zloty Polaco"),
+    ("CZK", "Corona Checa"),
+    ("HUF", "Florín Húngaro"),
+    ("RON", "Leu Rumano"),
+    ("BGN", "Lev Búlgaro"),
+    ("HRK", "Kuna Croata"),
+    ("RSD", "Dinar Serbio"),
+    ("BAM", "Marco Bosnio"),
+    ("MKD", "Denar Macedonio"),
+    ("ALL", "Lek Albanés"),
+    ("MDL", "Leu Moldavo"),
+    ("UAH", "Grivna Ucraniana"),
+    ("BYN", "Rublo Bielorruso"),
+    ("RUB", "Rublo Ruso"),
+    ("TRY", "Lira Turca"),
+    ("ISK", "Corona Islandesa"),
 ]
 
 
@@ -61,6 +115,7 @@ class ConfigForm(FlaskForm):
 
     titulo = StringField(validators=[DataRequired()])
     descripcion = StringField(validators=[DataRequired()])
+    moneda = SelectField("Moneda", choices=MONEDAS, validators=[])
 
     verify_user_by_email = BooleanField(validators=[])
 

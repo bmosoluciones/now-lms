@@ -107,10 +107,11 @@ def configuracion():
 
     config = config = database.session.execute(database.select(Configuracion)).first()[0]
     config_mail = database.session.execute(database.select(MailConfig)).first()[0]
-    form = ConfigForm(titulo=config.titulo, descripcion=config.descripcion, verify_user_by_email=config.verify_user_by_email)
+    form = ConfigForm(titulo=config.titulo, descripcion=config.descripcion, moneda=config.moneda, verify_user_by_email=config.verify_user_by_email)
     if form.validate_on_submit() or request.method == "POST":
         config.titulo = form.titulo.data
         config.descripcion = form.descripcion.data
+        config.moneda = form.moneda.data
         config.verify_user_by_email = form.verify_user_by_email.data
 
         if form.verify_user_by_email.data is True:
