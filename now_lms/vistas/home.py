@@ -93,6 +93,45 @@ def panel():
             cuenta_certificados=cuenta_certificados,
             mis_cursos=mis_cursos,
         )
+    elif current_user.tipo == "instructor":
+        from now_lms.db import DocenteCurso
+        
+        # Get courses created by this instructor
+        created_courses = database.session.query(Curso).join(DocenteCurso).filter(
+            DocenteCurso.usuario == current_user.usuario,
+            DocenteCurso.vigente
+        ).count()
+        
+        # Get enrolled students across instructor's courses
+        enrolled_students = database.session.query(EstudianteCurso.usuario).distinct().join(
+            DocenteCurso, EstudianteCurso.curso == DocenteCurso.curso
+        ).filter(
+            DocenteCurso.usuario == current_user.usuario,
+            DocenteCurso.vigente,
+            EstudianteCurso.vigente
+        ).count()
+        
+        # Get certificates issued for courses taught by this instructor
+        issued_certificates = database.session.query(Certificacion).join(
+            DocenteCurso, Certificacion.curso == DocenteCurso.curso
+        ).filter(
+            DocenteCurso.usuario == current_user.usuario,
+            DocenteCurso.vigente
+        ).count()
+        
+        # Get recent courses by this instructor
+        cursos_por_fecha = database.session.query(Curso).join(DocenteCurso).filter(
+            DocenteCurso.usuario == current_user.usuario,
+            DocenteCurso.vigente
+        ).order_by(Curso.creado).limit(5).all()
+        
+        return render_template(
+            "inicio/panel_instructor.html",
+            created_courses=created_courses,
+            enrolled_students=enrolled_students,
+            issued_certificates=issued_certificates,
+            cursos_por_fecha=cursos_por_fecha,
+        )
     else:
         return redirect("/")
 
