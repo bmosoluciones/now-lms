@@ -39,7 +39,9 @@
                         <div class="col-sm-6">
                             <label for="moneda" class="form-label">Moneda del Sitio</label>
                             {{ form.moneda(class="form-control form-select", id="moneda", value=config.moneda) }}
-                            <div class="form-text">Seleccione la moneda predeterminada para procesar pagos y mostrar precios.</div>
+                            <div class="form-text">
+                                Seleccione la moneda predeterminada para procesar pagos y mostrar precios.
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -77,81 +79,83 @@
 
         <!-- Script para hacer el selector de moneda más fácil de usar -->
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const select = document.getElementById('moneda');
-                
+            document.addEventListener("DOMContentLoaded", function () {
+                const select = document.getElementById("moneda")
+
                 // Crear un input de búsqueda
-                const searchContainer = document.createElement('div');
-                searchContainer.className = 'position-relative';
-                
-                const searchInput = document.createElement('input');
-                searchInput.type = 'text';
-                searchInput.className = 'form-control mb-2';
-                searchInput.placeholder = 'Buscar moneda...';
-                searchInput.style.display = 'none';
-                
+                const searchContainer = document.createElement("div")
+                searchContainer.className = "position-relative"
+
+                const searchInput = document.createElement("input")
+                searchInput.type = "text"
+                searchInput.className = "form-control mb-2"
+                searchInput.placeholder = "Buscar moneda..."
+                searchInput.style.display = "none"
+
                 // Insertar el input de búsqueda antes del select
-                select.parentNode.insertBefore(searchContainer, select);
-                searchContainer.appendChild(searchInput);
-                searchContainer.appendChild(select);
-                
+                select.parentNode.insertBefore(searchContainer, select)
+                searchContainer.appendChild(searchInput)
+                searchContainer.appendChild(select)
+
                 // Guardar las opciones originales
-                const originalOptions = Array.from(select.options);
-                
+                const originalOptions = Array.from(select.options)
+
                 // Función para filtrar opciones
                 function filterOptions() {
-                    const searchTerm = searchInput.value.toLowerCase();
-                    
+                    const searchTerm = searchInput.value.toLowerCase()
+
                     // Limpiar select
-                    select.innerHTML = '';
-                    
+                    select.innerHTML = ""
+
                     // Filtrar y añadir opciones que coincidan
-                    originalOptions.forEach(option => {
-                        if (option.text.toLowerCase().includes(searchTerm) || 
-                            option.value.toLowerCase().includes(searchTerm)) {
-                            select.appendChild(option.cloneNode(true));
+                    originalOptions.forEach((option) => {
+                        if (
+                            option.text.toLowerCase().includes(searchTerm) ||
+                            option.value.toLowerCase().includes(searchTerm)
+                        ) {
+                            select.appendChild(option.cloneNode(true))
                         }
-                    });
-                    
+                    })
+
                     // Si no hay término de búsqueda, mostrar todas las opciones
-                    if (searchTerm === '') {
-                        originalOptions.forEach(option => {
-                            select.appendChild(option.cloneNode(true));
-                        });
+                    if (searchTerm === "") {
+                        originalOptions.forEach((option) => {
+                            select.appendChild(option.cloneNode(true))
+                        })
                     }
                 }
-                
+
                 // Event listeners
-                searchInput.addEventListener('input', filterOptions);
-                
+                searchInput.addEventListener("input", filterOptions)
+
                 // Mostrar/ocultar búsqueda al hacer click en el select
-                select.addEventListener('focus', function() {
-                    searchInput.style.display = 'block';
-                    searchInput.focus();
-                });
-                
+                select.addEventListener("focus", function () {
+                    searchInput.style.display = "block"
+                    searchInput.focus()
+                })
+
                 // Ocultar búsqueda cuando se pierde el foco
-                document.addEventListener('click', function(e) {
+                document.addEventListener("click", function (e) {
                     if (!searchContainer.contains(e.target)) {
-                        searchInput.style.display = 'none';
-                        searchInput.value = '';
-                        filterOptions(); // Restaurar todas las opciones
+                        searchInput.style.display = "none"
+                        searchInput.value = ""
+                        filterOptions() // Restaurar todas las opciones
                     }
-                });
-                
+                })
+
                 // Permitir selección con Enter
-                searchInput.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
+                searchInput.addEventListener("keydown", function (e) {
+                    if (e.key === "Enter") {
+                        e.preventDefault()
                         if (select.options.length > 0) {
-                            select.value = select.options[0].value;
-                            searchInput.style.display = 'none';
-                            searchInput.value = '';
-                            filterOptions();
+                            select.value = select.options[0].value
+                            searchInput.style.display = "none"
+                            searchInput.value = ""
+                            filterOptions()
                         }
                     }
-                });
-            });
+                })
+            })
         </script>
     </body>
 </html>

@@ -55,7 +55,6 @@ MONEDAS = [
     ("USD", "Dólar Estadounidense"),
     ("CAD", "Dólar Canadiense"),
     ("MXN", "Peso Mexicano"),
-    
     # América Central
     ("GTQ", "Quetzal Guatemalteco"),
     ("BZD", "Dólar de Belice"),
@@ -63,14 +62,12 @@ MONEDAS = [
     ("NIO", "Córdoba Nicaragüense"),
     ("CRC", "Colón Costarricense"),
     ("PAB", "Balboa Panameño"),
-    
     # El Caribe
     ("DOP", "Peso Dominicano"),
     ("CUP", "Peso Cubano"),
     ("JMD", "Dólar Jamaicano"),
     ("TTD", "Dólar de Trinidad y Tobago"),
     ("BBD", "Dólar de Barbados"),
-    
     # América del Sur
     ("COP", "Peso Colombiano"),
     ("VES", "Bolívar Venezolano"),
@@ -83,7 +80,6 @@ MONEDAS = [
     ("UYU", "Peso Uruguayo"),
     ("ARS", "Peso Argentino"),
     ("CLP", "Peso Chileno"),
-    
     # Europa
     ("EUR", "Euro"),
     ("GBP", "Libra Esterlina"),
