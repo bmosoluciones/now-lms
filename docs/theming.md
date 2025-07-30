@@ -55,8 +55,6 @@ NOW LMS comes with several built-in themes:
 - **classic**: Minimalist white/gray design with clean typography
 - **corporative**: Professional blue theme for corporate environments
 - **finance**: Federal green theme inspired by financial institutions
-- **ocean_blue**: Ocean-inspired blue color scheme
-- **rose_pink**: Warm pink and rose color palette
 
 ### Academic Themes
 
