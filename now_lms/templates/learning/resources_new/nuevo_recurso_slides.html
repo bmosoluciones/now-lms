@@ -26,6 +26,11 @@
                             {{ form.nombre(class="form-control", id="nombre", placeholder="Titulo del Video") }}
                         </div>
 
+                        <div class="col-sm-6">
+                            <label for="requerido" class="form-label">Tipo de Recurso</label>
+                            {{ form.requerido(class="form-control", id="requerido") }}
+                        </div>
+
                         {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
 
                         <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Agregar Recurso</button>
