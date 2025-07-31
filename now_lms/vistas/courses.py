@@ -383,6 +383,8 @@ def nuevo_curso():
             publico=form.publico.data,
             # Modalidad
             modalidad=form.modalidad.data,
+            # Configuración del foro
+            foro_habilitado=form.foro_habilitado.data if form.modalidad.data != "self_paced" else False,
             # Disponibilidad de cupos
             limitado=form.limitado.data,
             capacidad=form.capacidad.data,
@@ -454,6 +456,7 @@ def editar_curso(course_code):
     form.duracion.data = curso_a_editar.duracion
     form.publico.data = curso_a_editar.publico
     form.modalidad.data = curso_a_editar.modalidad
+    form.foro_habilitado.data = curso_a_editar.foro_habilitado
     form.limitado.data = curso_a_editar.limitado
     form.capacidad.data = curso_a_editar.capacidad
     form.fecha_inicio.data = curso_a_editar.fecha_inicio
@@ -476,6 +479,11 @@ def editar_curso(course_code):
         curso_a_editar.publico = form.publico.data
         # Modalidad
         curso_a_editar.modalidad = form.modalidad.data
+        # Configuración del foro (validar restricción self-paced)
+        if form.modalidad.data == "self_paced":
+            curso_a_editar.foro_habilitado = False
+        else:
+            curso_a_editar.foro_habilitado = form.foro_habilitado.data
         # Disponibilidad de cupos
         curso_a_editar.limitado = form.limitado.data
         curso_a_editar.capacidad = form.capacidad.data

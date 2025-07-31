@@ -157,7 +157,36 @@ permitir_docente %}
                                 </div>
                             </div>
                         </div>
-                        {% endif %} {% else %}
+
+                        <!-- Forum Section for Enrolled Students -->
+                        {% if curso.foro_habilitado %}
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="bi bi-people"></i> Foro del Curso</h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    Participa en discusiones con otros estudiantes y compartir conocimientos.
+                                </p>
+                                <div class="d-flex gap-2">
+                                    <a
+                                        href="{{ url_for('forum.ver_foro', course_code=curso.codigo) }}"
+                                        class="btn btn-outline-success btn-sm"
+                                    >
+                                        <i class="bi bi-forum"></i> Ver Foro
+                                    </a>
+                                    {% if curso.estado != "finalizado" %}
+                                    <a
+                                        href="{{ url_for('forum.nuevo_mensaje', course_code=curso.codigo) }}"
+                                        class="btn btn-success btn-sm"
+                                    >
+                                        <i class="bi bi-plus-circle"></i> Nuevo Mensaje en Foro
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %} {% endif %} {% else %}
                         <div class="d-flex d-flex justify-content-around">
                             <a
                                 href="{{ url_for('user.inicio_sesion')}}"

@@ -182,6 +182,8 @@ class CurseForm(BaseForm):
     modalidad = SelectField(
         "Modalidad", choices=[("self_paced", "A su propio ritmo"), ("time_based", "Con tiempo definido"), ("live", "En vivo")]
     )
+    # Configuración del foro
+    foro_habilitado = BooleanField("Habilitar foro", validators=[])
     # Disponibilidad de cupos
     limitado = BooleanField(validators=[])
     capacidad = IntegerField(validators=[])
@@ -198,6 +200,11 @@ class CurseForm(BaseForm):
         "Plantilla de certificado",
     )
     precio = DecimalField(validators=[])
+
+    def validate_foro_habilitado(self, field):
+        """Validación personalizada para el campo foro_habilitado."""
+        if field.data and self.modalidad.data == "self_paced":
+            raise ValueError("El foro no puede habilitarse en cursos con modalidad self-paced")
 
 
 class CursoSeccionForm(BaseForm):
@@ -567,3 +574,16 @@ class TakeEvaluationForm(FlaskForm):
     """Formulario dinámico para tomar una evaluación."""
 
     pass  # This will be dynamically populated with questions
+
+
+class ForoMensajeForm(FlaskForm):
+    """Formulario para crear un nuevo mensaje del foro."""
+
+    contenido = MdeField("Mensaje", validators=[DataRequired()])
+    parent_id = HiddenField()
+
+
+class ForoMensajeRespuestaForm(FlaskForm):
+    """Formulario para responder a un mensaje del foro."""
+
+    contenido = MdeField("Respuesta", validators=[DataRequired()])

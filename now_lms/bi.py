@@ -213,19 +213,36 @@ def cambia_estado_curso_por_id(
     """
     Cambia el estatus de un curso.
 
-    Los valores reconocidos por el sistema son: draft, public, open, closed.
+    Los valores reconocidos por el sistema son: draft, public, open, closed, finalizado.
     """
 
     CURSO = database.session.execute(database.select(Curso).filter(Curso.codigo == id_curso)).first()[0]
+    estado_anterior = CURSO.estado
     CURSO.estado = nuevo_estado
     CURSO.modificado_por = usuario
     database.session.commit()
+
+    # Si el curso se finaliza, cerrar todos los mensajes del foro
+    if nuevo_estado == "finalizado" and estado_anterior != "finalizado":
+        from now_lms.db import ForoMensaje
+
+        ForoMensaje.close_all_for_course(id_curso)
+        # Solo mostrar flash si estamos en contexto de request
+        try:
+            flash("Curso finalizado. Todos los mensajes del foro han sido cerrados.", "info")
+        except RuntimeError:
+            # No estamos en contexto de request (ej: durante pruebas)
+            pass
 
     database.session.refresh(CURSO)
     if CURSO.estado != "open":
         CURSO.publico = False
         database.session.commit()
-        flash("Curso eliminado del sitio Web.", "info")
+        try:
+            flash("Curso eliminado del sitio Web.", "info")
+        except RuntimeError:
+            # No estamos en contexto de request (ej: durante pruebas)
+            pass
 
 
 def cambia_curso_publico(id_curso: Union[None, str, int] = None):

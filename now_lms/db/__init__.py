@@ -48,6 +48,7 @@ LLAVE_FORANEA_USUARIO: str = "usuario.usuario"
 LLAVE_FORANEA_SECCION: str = "curso_seccion.id"
 LLAVE_FORANEA_RECURSO: str = "curso_recurso.id"
 LLAVE_FORANEA_PREGUNTA: str = "curso_recurso_pregunta.id"
+LLAVE_FORANEA_FORO_MENSAJE: str = "foro_mensaje.id"
 
 
 def generador_de_codigos_unicos() -> str:
@@ -160,10 +161,12 @@ class Curso(database.Model, BaseTabla):
     nivel = database.Column(database.Integer())  # 0: Introductorio, 1: Principiante, 2: Intermedio, 3: Avanzado
     duracion = database.Column(database.Integer())
     # Estado de publicación
-    estado = database.Column(database.String(6), nullable=False, index=True)  # draft, open, closed
+    estado = database.Column(database.String(6), nullable=False, index=True)  # draft, open, closed, finalizado
     publico = database.Column(database.Boolean())
     # Modalidad
     modalidad = database.Column(database.String(10))  # self_paced, time_based, live
+    # Configuración del foro
+    foro_habilitado = database.Column(database.Boolean(), default=False, nullable=False)
     # Disponibilidad de cupos
     limitado = database.Column(database.Boolean())
     capacidad = database.Column(database.Integer())
@@ -181,6 +184,27 @@ class Curso(database.Model, BaseTabla):
     plantilla_certificado = database.Column(
         database.String(10), database.ForeignKey("certificado.code"), nullable=True, index=True
     )
+
+    def validar_foro_habilitado(self):
+        """Valida que el foro solo pueda habilitarse en cursos no self-paced."""
+        if self.foro_habilitado and self.modalidad == "self_paced":
+            return False, "El foro no puede habilitarse en cursos con modalidad self-paced"
+        return True, ""
+
+    @database.validates("foro_habilitado")
+    def validate_foro_habilitado(self, key, value):
+        """Validación de SQLAlchemy para foro_habilitado."""
+        if value and self.modalidad == "self_paced":
+            raise ValueError("El foro no puede habilitarse en cursos con modalidad self-paced")
+        return value
+
+    def is_self_paced(self):
+        """Retorna True si el curso es self-paced."""
+        return self.modalidad == "self_paced"
+
+    def puede_habilitar_foro(self):
+        """Retorna True si el foro puede ser habilitado para este curso."""
+        return not self.is_self_paced()
 
 
 class CursoRecursoDescargable(database.Model, BaseTabla):
@@ -541,6 +565,54 @@ class Message(database.Model, BaseTabla):
 
     # Relationships
     sender = database.relationship("Usuario", foreign_keys=[sender_id])
+
+
+class ForoMensaje(database.Model, BaseTabla):
+    """Mensajes del foro de un curso."""
+
+    curso_id = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
+    usuario_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    parent_id = database.Column(database.String(26), database.ForeignKey("foro_mensaje.id"), nullable=True, index=True)
+    contenido = database.Column(database.Text, nullable=False)
+    fecha_creacion = database.Column(database.DateTime, default=database.func.now(), nullable=False)
+    fecha_modificacion = database.Column(database.DateTime, onupdate=database.func.now(), nullable=True)
+    estado = database.Column(database.String(10), default="abierto", nullable=False)  # abierto, cerrado
+
+    # Relationships
+    curso = database.relationship("Curso", foreign_keys=[curso_id])
+    usuario = database.relationship("Usuario", foreign_keys=[usuario_id])
+    parent = database.relationship("ForoMensaje", remote_side="ForoMensaje.id", backref="replies")
+
+    def is_thread_open(self):
+        """Retorna True si el hilo está abierto para nuevas respuestas."""
+        if self.parent_id:
+            # Es una respuesta, verificar el mensaje padre
+            return self.parent.estado == "abierto"
+        else:
+            # Es un hilo principal
+            return self.estado == "abierto"
+
+    def is_course_forum_active(self):
+        """Retorna True si el foro del curso está activo."""
+        return self.curso.foro_habilitado and self.curso.estado != "finalizado"
+
+    def can_reply(self):
+        """Retorna True si se puede responder a este mensaje."""
+        return self.is_thread_open() and self.is_course_forum_active()
+
+    def get_thread_root(self):
+        """Retorna el mensaje raíz del hilo."""
+        if self.parent_id:
+            return self.parent.get_thread_root()
+        return self
+
+    @classmethod
+    def close_all_for_course(cls, curso_codigo):
+        """Cierra todos los mensajes del foro cuando un curso se finaliza."""
+        mensajes = database.session.query(cls).filter_by(curso_id=curso_codigo).all()
+        for mensaje in mensajes:
+            mensaje.estado = "cerrado"
+        database.session.commit()
 
 
 class PagosConfig(database.Model):
