@@ -42,6 +42,8 @@
         background: linear-gradient(90deg, var(--nebula-primary) 0%, var(--nebula-secondary) 100%) !important;
         box-shadow: 0 4px 6px rgba(91, 44, 111, 0.3);
         border-bottom: 2px solid var(--nebula-accent);
+        position: relative;
+        z-index: 1030;
     }
 
     .navbar-nebula .navbar-brand,
@@ -355,6 +357,7 @@
         border-radius: 8px;
         background-color: var(--nebula-surface);
         backdrop-filter: blur(10px);
+        z-index: 1050;
     }
 
     .dropdown-item:hover {
