@@ -52,6 +52,7 @@
             0 8px 16px rgba(124, 181, 24, 0.1);
         border-bottom: 3px solid var(--lime-grass);
         position: relative;
+        z-index: 1030;
         overflow: hidden;
     }
 
@@ -179,6 +180,7 @@
         background: var(--lime-surface);
         backdrop-filter: blur(10px);
         border: 1px solid var(--lime-border);
+        z-index: 1040;
     }
 
     .dropdown-item {
@@ -423,4 +425,10 @@
 
     .breadcrumb-item.active {
         color: var(--lime-text);
+    }
+
+    /* Hero section z-index fix */
+    .hero-section {
+        position: relative;
+        z-index: 1;
     }
