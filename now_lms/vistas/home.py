@@ -139,7 +139,7 @@ def panel():
             cursos_por_fecha=cursos_por_fecha,
         )
     elif current_user.tipo == "moderator":
-        from now_lms.db import ModeradorCurso
+        from now_lms.db import ModeradorCurso, MessageThread
 
         # Get courses moderated by this moderator
         created_courses = (
@@ -158,14 +158,6 @@ def panel():
             .count()
         )
 
-        # Get certificates issued for courses moderated by this moderator
-        issued_certificates = (
-            database.session.query(Certificacion)
-            .join(ModeradorCurso, Certificacion.curso == ModeradorCurso.curso)
-            .filter(ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.vigente)
-            .count()
-        )
-
         # Get recent courses by this moderator
         cursos_por_fecha = (
             database.session.query(Curso)
@@ -176,12 +168,18 @@ def panel():
             .all()
         )
 
+        # Get open and closed message counts for moderator
+        open_messages = database.session.query(MessageThread).filter(MessageThread.status == "open").count()
+
+        closed_messages = database.session.query(MessageThread).filter(MessageThread.status == "closed").count()
+
         return render_template(
-            "inicio/panel_instructor.html",
+            "inicio/panel_moderator.html",
             created_courses=created_courses,
             enrolled_students=enrolled_students,
-            issued_certificates=issued_certificates,
             cursos_por_fecha=cursos_por_fecha,
+            open_messages=open_messages,
+            closed_messages=closed_messages,
         )
     else:
         return redirect("/")

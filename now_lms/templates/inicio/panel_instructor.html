@@ -26,8 +26,8 @@
                     <div class="col-xl-6 col-xxl-5 d-flex">
                         <div class="w-100">
                             <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="card">
+                                <div class="col-sm-6 mb-3">
+                                    <div class="card h-100">
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col mt-0">
@@ -46,28 +46,9 @@
                                             <h1 class="mt-1 mb-3">{{ created_courses }}</h1>
                                         </div>
                                     </div>
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">
-                                                        <i class="bi bi-people-fill" aria-hidden="true"></i> Estudiantes
-                                                        Inscritos
-                                                    </h5>
-                                                </div>
-
-                                                <div class="col-auto">
-                                                    <div class="stat text-success">
-                                                        <i class="align-middle" data-feather="users"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <h1 class="mt-1 mb-3">{{ enrolled_students }}</h1>
-                                        </div>
-                                    </div>
                                 </div>
-                                <div class="col-sm-6">
-                                    <div class="card">
+                                <div class="col-sm-6 mb-3">
+                                    <div class="card h-100">
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col mt-0">
@@ -84,6 +65,27 @@
                                                 </div>
                                             </div>
                                             <h1 class="mt-1 mb-3">{{ issued_certificates }}</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col mt-0">
+                                                    <h5 class="card-title">
+                                                        <i class="bi bi-people-fill" aria-hidden="true"></i> Estudiantes
+                                                        Inscritos
+                                                    </h5>
+                                                </div>
+
+                                                <div class="col-auto">
+                                                    <div class="stat text-success">
+                                                        <i class="align-middle" data-feather="users"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <h1 class="mt-1 mb-3">{{ enrolled_students }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -106,6 +108,19 @@
                                     </li>
                                     {% endfor %}
                                 </ul>
+                            </div>
+                        </div>
+
+                        <!-- Messages Section for Instructor -->
+                        <div class="card flex-fill w-100 mt-3">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0"><i class="bi bi-chat-left-text"></i> Mensajes</h5>
+                            </div>
+                            <div class="card-body pt-2 pb-3">
+                                <p class="text-muted">Gestiona tus conversaciones con estudiantes.</p>
+                                <a href="{{ url_for('msg.user_messages') }}" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-envelope"></i> Ver Mis Mensajes
+                                </a>
                             </div>
                         </div>
                     </div>
