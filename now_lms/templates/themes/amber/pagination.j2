@@ -1,0 +1,23 @@
+{% macro paginate(consulta=None, vista=None, id=None, parametros=None) %}
+<p>
+    {{ consulta.total }} items encontrados.
+    <br />
+    {% if consulta.has_prev %}{% if id %}
+    <a href="{{ url_for(vista,id=id, page=consulta.prev_num) }}" class="link-dark"
+        ><i class="bi bi-arrow-left-short" aria-hidden="true"></i>Anterior</a
+    >
+    {% else %}
+    <a href="{{ url_for(vista, page=consulta.prev_num) }}" class="link-dark"
+        ><i class="bi bi-arrow-left-short" aria-hidden="true"></i>Anterior</a
+    >
+    {% endif %}{% endif %} Página {{ consulta.page }} de {{ consulta.pages }} {% if consulta.has_next %}{% if id %}
+    <a href="{{ url_for(vista,id=id, page=consulta.next_num) }}" class="link-dark"
+        >Siguiente <i class="bi bi-arrow-right-short" aria-hidden="true"></i
+    ></a>
+    {% else %}
+    <a href="{{ url_for(vista, page=consulta.next_num) }}" class="link-dark"
+        >Siguiente <i class="bi bi-arrow-right-short" aria-hidden="true"></i
+    ></a>
+    {% endif %}{% endif %}
+</p>
+{% endmacro %}
