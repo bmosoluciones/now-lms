@@ -42,6 +42,8 @@
     .navbar-amber {
         background: var(--amber-surface) !important;
         box-shadow: 0 2px 4px rgba(201, 124, 16, 0.1);
+        position: relative;
+        z-index: 1030;
     }
 
     .navbar-amber .navbar-brand,
@@ -296,6 +298,7 @@
         box-shadow: 0 4px 16px rgba(201, 124, 16, 0.15);
         border-radius: 6px;
         background: var(--amber-surface);
+        z-index: 1050;
     }
 
     .dropdown-item:hover {
