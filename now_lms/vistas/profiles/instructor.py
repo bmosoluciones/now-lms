@@ -22,6 +22,7 @@ from now_lms.db import (
     CursoSeccion,
     DocenteCurso,
     Evaluation,
+    Question,
     Usuario,
     UsuarioGrupo,
     UsuarioGrupoMiembro,
@@ -225,3 +226,128 @@ def new_evaluation(course_code, section_id):
             return redirect(url_for("instructor_profile.course_evaluations", course_code=course_code))
 
     return render_template("instructor/new_evaluation.html", form=form, seccion=seccion)
+
+
+@instructor_profile.route("/instructor/evaluaciones")
+@login_required
+@perfil_requerido("instructor")
+def evaluaciones_lista():
+    """Lista todas las evaluaciones creadas por el instructor."""
+
+    if current_user.tipo == "admin":
+        # Admin can see all evaluations
+        evaluaciones = database.session.query(Evaluation).all()
+    else:
+        # Filter evaluations created by current instructor
+        evaluaciones = database.session.query(Evaluation).filter_by(creado_por=current_user.usuario).all()
+
+    # Get course information for each evaluation
+    evaluaciones_con_curso = []
+    for eval in evaluaciones:
+        seccion = database.session.get(CursoSeccion, eval.section_id)
+        curso = database.session.query(Curso).filter_by(codigo=seccion.curso).first() if seccion else None
+        evaluaciones_con_curso.append({"evaluacion": eval, "seccion": seccion, "curso": curso})
+
+    return render_template("instructor/evaluaciones_lista.html", evaluaciones=evaluaciones_con_curso)
+
+
+@instructor_profile.route("/instructor/nueva-evaluacion")
+@login_required
+@perfil_requerido("instructor")
+def nueva_evaluacion_global():
+    """Página para seleccionar curso y sección antes de crear una evaluación."""
+
+    if current_user.tipo == "admin":
+        cursos = database.session.query(Curso).all()
+    else:
+        # Get courses assigned to this instructor
+        cursos = (
+            database.session.query(Curso)
+            .join(DocenteCurso)
+            .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.vigente == True)
+            .all()
+        )
+
+    return render_template("instructor/nueva_evaluacion_global.html", cursos=cursos)
+
+
+@instructor_profile.route("/instructor/evaluations/<evaluation_id>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def edit_evaluation(evaluation_id):
+    """Editar una evaluación existente."""
+
+    evaluacion = database.session.get(Evaluation, evaluation_id)
+    if not evaluacion:
+        flash("Evaluación no encontrada.", "danger")
+        return redirect(url_for("instructor_profile.evaluaciones_lista"))
+
+    # Check permissions
+    if current_user.tipo != "admin" and evaluacion.creado_por != current_user.usuario:
+        flash("No tiene permisos para editar esta evaluación.", "danger")
+        return redirect(url_for("instructor_profile.evaluaciones_lista"))
+
+    seccion = database.session.get(CursoSeccion, evaluacion.section_id)
+    curso = database.session.query(Curso).filter_by(codigo=seccion.curso).first() if seccion else None
+
+    form = EvaluationForm(obj=evaluacion)
+
+    if form.validate_on_submit():
+        evaluacion.title = form.title.data
+        evaluacion.description = form.description.data
+        evaluacion.is_exam = form.is_exam.data
+        evaluacion.passing_score = float(form.passing_score.data)
+        evaluacion.max_attempts = form.max_attempts.data
+
+        try:
+            database.session.commit()
+            flash("Evaluación actualizada correctamente.", "success")
+        except OperationalError:
+            flash("Error al actualizar la evaluación.", "danger")
+
+    # Get questions for this evaluation
+    preguntas = database.session.query(Question).filter_by(evaluation_id=evaluation_id).order_by(Question.order).all()
+
+    course_code = curso.codigo if curso else ""
+
+    return render_template(
+        "instructor/edit_evaluation.html", form=form, evaluacion=evaluacion, preguntas=preguntas, course_code=course_code
+    )
+
+
+@instructor_profile.route("/instructor/evaluations/<evaluation_id>/toggle", methods=["POST"])
+@login_required
+@perfil_requerido("instructor")
+def toggle_evaluation_status(evaluation_id):
+    """Habilitar o deshabilitar una evaluación."""
+
+    evaluacion = database.session.get(Evaluation, evaluation_id)
+    if not evaluacion:
+        flash("Evaluación no encontrada.", "danger")
+        return redirect(url_for("instructor_profile.evaluaciones_lista"))
+
+    # Check permissions
+    if current_user.tipo != "admin" and evaluacion.creado_por != current_user.usuario:
+        flash("No tiene permisos para modificar esta evaluación.", "danger")
+        return redirect(url_for("instructor_profile.evaluaciones_lista"))
+
+    # Toggle enabled status (assuming we need to add this field to the model)
+    # For now, we'll add a basic implementation
+    try:
+        # We'll use available_until field to enable/disable
+        if evaluacion.available_until is None:
+            # Disable by setting past date
+            from datetime import datetime, timedelta
+
+            evaluacion.available_until = datetime.now() - timedelta(days=1)
+            flash("Evaluación deshabilitada.", "info")
+        else:
+            # Enable by removing the restriction
+            evaluacion.available_until = None
+            flash("Evaluación habilitada.", "success")
+
+        database.session.commit()
+    except OperationalError:
+        flash("Error al cambiar el estado de la evaluación.", "danger")
+
+    return redirect(url_for("instructor_profile.evaluaciones_lista"))
