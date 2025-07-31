@@ -2,11 +2,13 @@
 <!doctype html>
 <html lang="es" class="h-100">
     <head>
-        {{ current_theme.headertags() }} {{ mde.css }} {% if edit %}
-        <title>Editar curso {{ curso.nombre }}</title>
+        {{ current_theme.headertags() }} {{ mde.css }} 
+        {% if edit %}
+        <title>Editar Curso: {{ curso.nombre }} - NOW LMS</title>
         {% else %}
-        <title>Crear un nuevo curso</title>
-        {% endif %} {{ current_theme.local_style() }}
+        <title>Crear Nuevo Curso - NOW LMS</title>
+        {% endif %} 
+        {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
         <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
     </head>
