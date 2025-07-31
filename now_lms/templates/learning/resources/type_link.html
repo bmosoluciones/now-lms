@@ -63,7 +63,10 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         {% endif %} {% endif %}
                     </div>
 
-                    <div class="col-sm-4">{{ r_macros.resource_nav(recursos=recursos, secciones=secciones) }}</div>
+                    <div class="col-sm-4">
+                        {{ r_macros.resource_nav(recursos=recursos, secciones=secciones, user_progress=user_progress,
+                        evaluaciones=evaluaciones, evaluation_attempts=evaluation_attempts) }}
+                    </div>
                 </div>
             </div>
 

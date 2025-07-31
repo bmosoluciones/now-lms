@@ -665,6 +665,40 @@ def cambiar_seccion_publico():
     return redirect(url_for(VISTA_CURSOS, course_code=request.args.get("course_code")))
 
 
+def _get_user_resource_progress(curso_id, usuario=None):
+    """Obtiene el progreso del usuario en todos los recursos del curso."""
+    if not usuario:
+        return {}
+
+    progress_data = database.session.query(CursoRecursoAvance).filter_by(usuario=usuario, curso=curso_id).all()
+
+    return {p.recurso: {"completado": p.completado} for p in progress_data}
+
+
+def _get_course_evaluations_and_attempts(curso_id, usuario=None):
+    """Obtiene las evaluaciones del curso y los intentos del usuario."""
+    # Obtener las secciones del curso
+    secciones = database.session.query(CursoSeccion).filter_by(curso=curso_id).all()
+    section_ids = [s.id for s in secciones]
+
+    # Obtener evaluaciones de todas las secciones del curso
+    evaluaciones = database.session.query(Evaluation).filter(Evaluation.section_id.in_(section_ids)).all()
+
+    evaluation_attempts = {}
+    if usuario:
+        # Obtener intentos del usuario para cada evaluación
+        for eval in evaluaciones:
+            attempts = (
+                database.session.query(EvaluationAttempt)
+                .filter_by(evaluation_id=eval.id, user_id=usuario)
+                .order_by(EvaluationAttempt.started_at)
+                .all()
+            )
+            evaluation_attempts[eval.id] = attempts
+
+    return evaluaciones, evaluation_attempts
+
+
 @course.route("/course/<curso_id>/resource/<resource_type>/<codigo>")
 def pagina_recurso(curso_id, resource_type, codigo):
     """Pagina de un recurso."""
@@ -689,6 +723,7 @@ def pagina_recurso(curso_id, resource_type, codigo):
         show_resource = False
 
     if show_resource or RECURSO.publico:
+        # Obtener progreso del recurso actual
         resource_progress = database.session.execute(
             database.select(CursoRecursoAvance).filter_by(usuario=current_user.usuario, curso=curso_id, recurso=codigo)
         ).first()
@@ -696,6 +731,16 @@ def pagina_recurso(curso_id, resource_type, codigo):
             recurso_completado = resource_progress[0].completado
         else:
             recurso_completado = False
+
+        # Obtener datos adicionales para el sidebar mejorado
+        user_progress = {}
+        evaluaciones = []
+        evaluation_attempts = {}
+
+        if current_user.is_authenticated:
+            user_progress = _get_user_resource_progress(curso_id, current_user.usuario)
+            evaluaciones, evaluation_attempts = _get_course_evaluations_and_attempts(curso_id, current_user.usuario)
+
         return render_template(
             TEMPLATE,
             curso=CURSO,
@@ -705,6 +750,9 @@ def pagina_recurso(curso_id, resource_type, codigo):
             secciones=SECCIONES,
             indice=INDICE,
             recurso_completado=recurso_completado,
+            user_progress=user_progress,
+            evaluaciones=evaluaciones,
+            evaluation_attempts=evaluation_attempts,
         )
     else:
         flash(NO_AUTORIZADO_MSG, "warning")
