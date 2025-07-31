@@ -332,8 +332,16 @@ def report_message(message_id):
         return abort(404)
 
     thread = database.session.query(MessageThread).filter_by(id=message.thread_id).first()
-    if not check_thread_access(thread, current_user):
-        return abort(403)
+
+    # For reporting, students should be able to report messages in any thread
+    # within courses they have access to, not just their own threads
+    if current_user.tipo == "student":
+        if not check_course_access(thread.course_id, current_user):
+            return abort(403)
+    else:
+        # For non-students, use the standard thread access check
+        if not check_thread_access(thread, current_user):
+            return abort(403)
 
     form = MessageReportForm()
 
@@ -378,14 +386,117 @@ def resolve_report(message_id):
     return jsonify({"success": True, "message": "Reporte resuelto"})
 
 
+@msg.route("/message/report/", methods=["GET", "POST"])
+@login_required
+def standalone_report_message():
+    """Standalone page for reporting messages."""
+    from flask import request
+
+    # Get messages accessible to the current user
+    accessible_messages = []
+
+    if current_user.tipo == "student":
+        # Students can see messages in threads from courses they're enrolled in
+        student_courses = database.session.query(EstudianteCurso).filter_by(usuario=current_user.usuario, vigente=True).all()
+        course_codes = [sc.curso for sc in student_courses]
+
+        if course_codes:
+            threads = database.session.query(MessageThread).filter(MessageThread.course_id.in_(course_codes)).all()
+
+            for thread in threads:
+                messages = database.session.query(Message).filter_by(thread_id=thread.id).all()
+                for message in messages:
+                    accessible_messages.append(
+                        {
+                            "id": message.id,
+                            "content": message.content[:100] + "..." if len(message.content) > 100 else message.content,
+                            "sender": f"{message.sender.nombre} {message.sender.apellido}",
+                            "thread_title": f"Curso: {thread.course.nombre}",
+                            "timestamp": message.timestamp.strftime("%d/%m/%Y %H:%M"),
+                        }
+                    )
+    else:
+        # For instructors, moderators, and admins
+        if current_user.tipo == "instructor":
+            course_codes = [
+                dc.curso
+                for dc in database.session.query(DocenteCurso).filter_by(usuario=current_user.usuario, vigente=True).all()
+            ]
+        elif current_user.tipo == "moderator":
+            course_codes = [
+                mc.curso
+                for mc in database.session.query(ModeradorCurso).filter_by(usuario=current_user.usuario, vigente=True).all()
+            ]
+        else:  # admin
+            course_codes = [c.codigo for c in database.session.query(Curso).all()]
+
+        if course_codes:
+            threads = database.session.query(MessageThread).filter(MessageThread.course_id.in_(course_codes)).all()
+
+            for thread in threads:
+                messages = database.session.query(Message).filter_by(thread_id=thread.id).all()
+                for message in messages:
+                    accessible_messages.append(
+                        {
+                            "id": message.id,
+                            "content": message.content[:100] + "..." if len(message.content) > 100 else message.content,
+                            "sender": f"{message.sender.nombre} {message.sender.apellido}",
+                            "thread_title": f"Curso: {thread.course.nombre}",
+                            "timestamp": message.timestamp.strftime("%d/%m/%Y %H:%M"),
+                        }
+                    )
+
+    if request.method == "POST":
+        message_id = request.form.get("message_id")
+        reason = request.form.get("reason")
+
+        if not message_id or not reason:
+            flash("Debe seleccionar un mensaje y proporcionar un motivo.", "error")
+            return render_template("learning/mensajes/standalone_report.html", messages=accessible_messages)
+
+        # Find the message
+        message = database.session.query(Message).filter_by(id=message_id).first()
+        if not message:
+            flash("Mensaje no encontrado.", "error")
+            return render_template("learning/mensajes/standalone_report.html", messages=accessible_messages)
+
+        # Verify user has access to this message
+        thread = database.session.query(MessageThread).filter_by(id=message.thread_id).first()
+
+        # Check access permissions
+        if current_user.tipo == "student":
+            if not check_course_access(thread.course_id, current_user):
+                return abort(403)
+        else:
+            if not check_thread_access(thread, current_user):
+                return abort(403)
+
+        # Report the message
+        message.is_reported = True
+        message.reported_reason = reason
+        database.session.commit()
+
+        flash("Mensaje reportado correctamente. El administrador será notificado.", "success")
+        return redirect(url_for("home.panel"))
+
+    return render_template("learning/mensajes/standalone_report.html", messages=accessible_messages)
+
+
 # Legacy routes for backward compatibility
 @msg.route("/message/<ulid>")
 @login_required
 def mensaje(ulid: str):
     """Mensaje - DEPRECATED."""
 
-    mensaje = database.session.execute(database.select(Mensaje).filter(Mensaje.id == ulid)).first()[0]
-    usuario = database.session.execute(database.select(Usuario).filter(Usuario.id == mensaje.usuario)).first()[0]
+    mensaje_result = database.session.execute(database.select(Mensaje).filter(Mensaje.id == ulid)).first()
+    if not mensaje_result:
+        return abort(404)
+    mensaje = mensaje_result[0]
+
+    usuario_result = database.session.execute(database.select(Usuario).filter(Usuario.id == mensaje.usuario)).first()
+    if not usuario_result:
+        return abort(404)
+    usuario = usuario_result[0]
     respuestas = database.session.execute(database.select(Mensaje, Usuario).filter(Mensaje.parent == ulid)).all()
     form = MsgForm(es_respuesta=True, parent=mensaje.id)
 
