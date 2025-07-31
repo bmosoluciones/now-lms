@@ -42,6 +42,9 @@ from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Etiqueta, databas
 from now_lms.db.tools import cursos_por_etiqueta
 from now_lms.forms import EtiquetaForm
 
+# Constants
+TAG_TAGS_ROUTE = "tag.tags"
+
 # ---------------------------------------------------------------------------------------
 # Administración de Etiquetas.
 # ---------------------------------------------------------------------------------------
@@ -66,7 +69,7 @@ def new_tag():
             flash("Nueva etiqueta creada.", "successs")
         except OperationalError:  # pragma: no cover
             flash("Hubo un error al crear la etiqueta.", "warning")
-        return redirect(url_for("tag.tags"))
+        return redirect(url_for(TAG_TAGS_ROUTE))
 
     return render_template("learning/etiquetas/nueva_etiqueta.html", form=form)
 
@@ -94,7 +97,7 @@ def delete_tag(ulid: str):
     """Elimina una etiqueta."""
     database.session.query(Etiqueta).filter(Etiqueta.id == ulid).delete()
     database.session.commit()
-    return redirect(url_for("tag.tags"))
+    return redirect(url_for(TAG_TAGS_ROUTE))
 
 
 @tag.route("/tag/<ulid>/edit", methods=["GET", "POST"])
@@ -113,6 +116,6 @@ def edit_tag(ulid: str):
             flash("Etiqueta editada correctamente.", "success")
         except OperationalError:  # pragma: no cover
             flash("No se puedo editar la etiqueta.", "warning")
-        return redirect(url_for("tag.tags"))
+        return redirect(url_for(TAG_TAGS_ROUTE))
 
     return render_template("learning/etiquetas/editar_etiqueta.html", form=form)

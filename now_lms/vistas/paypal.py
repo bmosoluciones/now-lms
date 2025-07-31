@@ -35,6 +35,11 @@ from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import Configuracion, Pago, PaypalConfig, database
 
+# Constants for PayPal API URLs
+PAYPAL_SANDBOX_API_URL = "https://api.sandbox.paypal.com"
+PAYPAL_PRODUCTION_API_URL = "https://api.paypal.com"
+HOME_PAGE_ROUTE = "home.pagina_de_inicio"
+
 paypal = Blueprint("paypal", __name__, template_folder=DIRECTORIO_PLANTILLAS, url_prefix="/paypal_checkout")
 
 
@@ -64,7 +69,7 @@ def validate_paypal_configuration(client_id, client_secret, sandbox=False):
     """Validate PayPal configuration by attempting to get an access token."""
     try:
         # Get access token from PayPal
-        base_url = "https://api.sandbox.paypal.com" if sandbox else "https://api.paypal.com"
+        base_url = PAYPAL_SANDBOX_API_URL if sandbox else PAYPAL_PRODUCTION_API_URL
         token_url = f"{base_url}/v1/oauth2/token"
 
         headers = {
@@ -117,7 +122,7 @@ def get_paypal_access_token():
             return None
 
         # Get access token from PayPal
-        base_url = "https://api.sandbox.paypal.com" if config_data.sandbox else "https://api.paypal.com"
+        base_url = PAYPAL_SANDBOX_API_URL if config_data.sandbox else PAYPAL_PRODUCTION_API_URL
         token_url = f"{base_url}/v1/oauth2/token"
 
         headers = {
@@ -153,7 +158,7 @@ def verify_paypal_payment(order_id, access_token):
     """Verify a PayPal payment by order ID."""
     try:
         paypal_config = database.session.execute(database.select(PaypalConfig)).first()[0]
-        base_url = "https://api.sandbox.paypal.com" if paypal_config.sandbox else "https://api.paypal.com"
+        base_url = PAYPAL_SANDBOX_API_URL if paypal_config.sandbox else PAYPAL_PRODUCTION_API_URL
         order_url = f"{base_url}/v2/checkout/orders/{order_id}"
 
         headers = {
@@ -360,7 +365,7 @@ def resume_payment(payment_id):
 
         if not pago:
             flash("Pago no encontrado o ya procesado.", "error")
-            return redirect(url_for("home.pagina_de_inicio"))
+            return redirect(url_for(HOME_PAGE_ROUTE))
 
         # Redirect to the payment page for this course
         return redirect(url_for("paypal.payment_page", course_code=pago.curso))
@@ -368,7 +373,7 @@ def resume_payment(payment_id):
     except Exception as e:
         logging.error(f"Error resuming payment: {e}")
         flash("Error al reanudar el pago.", "error")
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_PAGE_ROUTE))
 
 
 @paypal.route("/payment/<course_code>")
@@ -381,7 +386,7 @@ def payment_page(course_code):
     curso = database.session.query(Curso).filter_by(codigo=course_code).first()
     if not curso:
         flash("Curso no encontrado.", "error")
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_PAGE_ROUTE))
 
     if not curso.pagado:
         flash("Este curso es gratuito.", "info")

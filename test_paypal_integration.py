@@ -34,23 +34,23 @@ def test_paypal_configuration():
                 paypal_configs = database.session.execute(database.select(PaypalConfig)).all()
                 site_configs = database.session.execute(database.select(Configuracion)).all()
                 
-                print(f"   ✅ Database connected")
-                print(f"   📊 PayPal configs found: {len(paypal_configs)}")
-                print(f"   📊 Site configs found: {len(site_configs)}")
+                print(f"   [OK] Database connected")
+                print(f"   [INFO] PayPal configs found: {len(paypal_configs)}")
+                print(f"   [INFO] Site configs found: {len(site_configs)}")
                 
             except Exception as e:
-                print(f"   ❌ Database error: {e}")
+                print(f"   [ERROR] Database error: {e}")
                 return False
             
             print("\n2. Testing PayPal Configuration...")
             if paypal_configs:
                 config = paypal_configs[0][0]
-                print(f"   PayPal Enabled: {'✅' if config.enable else '❌'}")
-                print(f"   Sandbox Mode: {'✅' if config.sandbox else '❌'}")
-                print(f"   Client ID (Live): {'✅' if config.paypal_id else '❌'}")
-                print(f"   Client ID (Sandbox): {'✅' if config.paypal_sandbox else '❌'}")
-                print(f"   Secret (Live): {'✅' if config.paypal_secret else '❌'}")
-                print(f"   Secret (Sandbox): {'✅' if config.paypal_sandbox_secret else '❌'}")
+                print(f"   PayPal Enabled: {'[OK]' if config.enable else '[NO]'}")
+                print(f"   Sandbox Mode: {'[OK]' if config.sandbox else '[NO]'}")
+                print(f"   Client ID (Live): {'[OK]' if config.paypal_id else '[NO]'}")
+                print(f"   Client ID (Sandbox): {'[OK]' if config.paypal_sandbox else '[NO]'}")
+                print(f"   Secret (Live): {'[OK]' if config.paypal_secret else '[NO]'}")
+                print(f"   Secret (Sandbox): {'[OK]' if config.paypal_sandbox_secret else '[NO]'}")
                 
                 # Test current configuration
                 if config.enable:
@@ -63,18 +63,18 @@ def test_paypal_configuration():
                             # Note: This would normally test the API but the firewall blocks it
                             # Instead, we'll validate the configuration format
                             if len(client_id) > 10 and client_secret:
-                                print(f"   ✅ Configuration format appears valid")
-                                print(f"   🔧 Mode: {'Sandbox' if config.sandbox else 'Production'}")
+                                print(f"   [OK] Configuration format appears valid")
+                                print(f"   [MODE] Mode: {'Sandbox' if config.sandbox else 'Production'}")
                             else:
-                                print(f"   ⚠️  Configuration format may be invalid")
+                                print(f"   [WARN] Configuration format may be invalid")
                         except Exception as e:
-                            print(f"   ⚠️  API test failed: {e}")
+                            print(f"   [WARN] API test failed: {e}")
                     else:
-                        print(f"   ❌ Missing client credentials")
+                        print(f"   [ERROR] Missing client credentials")
                 else:
-                    print(f"   ⚠️  PayPal is disabled")
+                    print(f"   [WARN] PayPal is disabled")
             else:
-                print(f"   ❌ No PayPal configuration found")
+                print(f"   [ERROR] No PayPal configuration found")
             
             print("\n3. Testing Site Currency Configuration...")
             try:
@@ -88,7 +88,7 @@ def test_paypal_configuration():
                     print(f"   Description: {site_config.descripcion[:50]}..." if site_config.descripcion else "   Description: Not set")
                 
             except Exception as e:
-                print(f"   ❌ Currency configuration error: {e}")
+                print(f"   [ERROR] Currency configuration error: {e}")
             
             print("\n4. Testing Application Routes...")
             try:
@@ -102,13 +102,13 @@ def test_paypal_configuration():
                     for route, description in routes_to_test:
                         try:
                             response = client.get(route)
-                            status = "✅" if response.status_code in [200, 302, 401, 403] else "❌"
+                            status = "[OK]" if response.status_code in [200, 302, 401, 403] else "[ERROR]"
                             print(f"   {status} {route} ({description}): HTTP {response.status_code}")
                         except Exception as e:
-                            print(f"   ❌ {route}: Error - {e}")
+                            print(f"   [ERROR] {route}: Error - {e}")
                             
             except Exception as e:
-                print(f"   ❌ Route testing error: {e}")
+                print(f"   [ERROR] Route testing error: {e}")
             
             print("\n5. Configuration Summary for Manual Testing...")
             print("   " + "=" * 50)
@@ -118,7 +118,7 @@ def test_paypal_configuration():
                 mode = "Sandbox" if config.sandbox else "Production"
                 print(f"   PayPal Status: ENABLED ({mode})")
                 print(f"   Currency: {get_site_currency()}")
-                print(f"   Ready for testing: {'✅' if (config.paypal_sandbox and config.paypal_sandbox_secret) or (config.paypal_id and config.paypal_secret) else '❌'}")
+                print(f"   Ready for testing: {'[OK]' if (config.paypal_sandbox and config.paypal_sandbox_secret) or (config.paypal_id and config.paypal_secret) else '[NO]'}")
             else:
                 print(f"   PayPal Status: DISABLED or NOT CONFIGURED")
                 print(f"   Action Required: Configure PayPal in admin panel")
@@ -139,18 +139,18 @@ def test_paypal_configuration():
             ]
             
             for item in checklist:
-                print(f"   ☐ {item}")
+                print(f"   [ ] {item}")
             
-            print(f"\n   📖 See PAYPAL_MANUAL_TESTING.md for detailed testing instructions")
+            print(f"\n   [DOC] See PAYPAL_MANUAL_TESTING.md for detailed testing instructions")
             
             return True
             
     except ImportError as e:
-        print(f"❌ Failed to import application: {e}")
+        print(f"[ERROR] Failed to import application: {e}")
         print("Make sure you're running this from the project root directory")
         return False
     except Exception as e:
-        print(f"❌ Unexpected error: {e}")
+        print(f"[ERROR] Unexpected error: {e}")
         return False
 
 
@@ -178,7 +178,7 @@ def generate_test_report():
     print(f"\nFile Availability Check:")
     for file_path in required_files:
         exists = os.path.exists(file_path)
-        status = "✅" if exists else "❌"
+        status = "[OK]" if exists else "[MISSING]"
         print(f"   {status} {file_path}")
     
     print(f"\nFor detailed manual testing, run:")
@@ -193,10 +193,10 @@ if __name__ == "__main__":
     generate_test_report()
     
     if success:
-        print(f"\n✅ PayPal integration testing completed successfully!")
-        print(f"💡 Ready for manual testing - follow PAYPAL_MANUAL_TESTING.md")
+        print(f"\n[SUCCESS] PayPal integration testing completed successfully!")
+        print(f"[INFO] Ready for manual testing - follow PAYPAL_MANUAL_TESTING.md")
         sys.exit(0)
     else:
-        print(f"\n❌ PayPal integration testing failed!")
-        print(f"🔧 Please check the configuration and try again")
+        print(f"\n[FAILED] PayPal integration testing failed!")
+        print(f"[FIX] Please check the configuration and try again")
         sys.exit(1)

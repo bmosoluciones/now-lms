@@ -61,7 +61,7 @@ else:
 
 CACHE_CONFIG["CACHE_TYPE"] = CTYPE
 
-if not CTYPE == "NullCache":
+if CTYPE != "NullCache":
     log.trace(f"Utilizando para almacenamiento el servicio {CTYPE}")
 
 cache: Cache = Cache(config=CACHE_CONFIG)

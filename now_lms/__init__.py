@@ -440,7 +440,7 @@ def before_request_user_active():
     if (
         current_user.is_authenticated
         and not current_user.activo
-        and not current_user.tipo == "admin"
+        and current_user.tipo != "admin"
         and request != "static"
         and request.blueprint != "user"
         and request.endpoint != "static"

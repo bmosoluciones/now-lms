@@ -1038,11 +1038,9 @@ def populate_custom_theme_dir():
 
     from now_lms.config import DIRECTORIO_PLANTILLAS, DIRECTORIO_PLANTILLAS_BASE
 
-    if not DIRECTORIO_PLANTILLAS == DIRECTORIO_PLANTILLAS_BASE:
+    if DIRECTORIO_PLANTILLAS != DIRECTORIO_PLANTILLAS_BASE:
 
-        if path.isdir(DIRECTORIO_PLANTILLAS) and bool(listdir(DIRECTORIO_PLANTILLAS)):
-            pass
-        else:
+        if not (path.isdir(DIRECTORIO_PLANTILLAS) and bool(listdir(DIRECTORIO_PLANTILLAS))):
             try:
                 copytree(DIRECTORIO_PLANTILLAS_BASE, DIRECTORIO_PLANTILLAS, dirs_exist_ok=True)
             except FileExistsError:

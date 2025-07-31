@@ -62,6 +62,26 @@ permitir_docente %}
                         {% endif %}
 
                         <h2>{{ curso.nombre }}</h2>
+                        
+                        <!-- Certificate completion indicator -->
+                        {% if current_user.is_authenticated and current_user.tipo == "student" and user_certificate %}
+                        <div class="alert alert-success" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-trophy-fill me-2" style="font-size: 1.5rem;"></i>
+                                <div>
+                                    <h6 class="alert-heading mb-1">¡Curso Completado con Éxito!</h6>
+                                    <p class="mb-2">Has obtenido la certificación de este curso.</p>
+                                    <a href="{{ url_for('certificate.certificado', ulid=user_certificate.id) }}" class="btn btn-success btn-sm">
+                                        <i class="bi bi-award"></i> Ver Certificado
+                                    </a>
+                                    <a href="{{ url_for('certificate.certificate_serve_pdf', ulid=user_certificate.id) }}" class="btn btn-outline-success btn-sm">
+                                        <i class="bi bi-download"></i> Descargar PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
                         <iframe
                             title="{{ curso.codigo }}"
                             src="{{ url_for('course.curso_descripcion_a_html', course_code=curso.codigo) }}"

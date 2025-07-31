@@ -151,9 +151,9 @@ def send_threaded_email(app: Flask, mail: Mail, msg: Message, _log: str = "", _f
             logger.trace("Intentando enviar correo electrónico en segundo plano.")
             mail.send(msg)
             logger.trace(f"Correo enviado a {msg.recipients}.")
-            if not _log == "":
+            if _log != "":
                 logger.info(_log)
-            if not _flush == "":
+            if _flush != "":
                 flash(_flush)
     except Exception as e:
         logger.error(f"Error al enviar correo a {msg.recipients}: {e}")

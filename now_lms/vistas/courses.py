@@ -290,6 +290,12 @@ def tomar_curso(course_code):
             )
             user_has_paid = enrollment and enrollment.pago
 
+        # Check if user has a certificate for this course
+        from now_lms.db import Certificacion
+        user_certificate = database.session.query(Certificacion).filter_by(
+            curso=course_code, usuario=current_user.usuario
+        ).first()
+
         return render_template(
             "learning/curso.html",
             curso=curso_obj,
@@ -304,6 +310,7 @@ def tomar_curso(course_code):
             evaluation_attempts=evaluation_attempts,
             reopen_requests=reopen_requests,
             user_has_paid=user_has_paid,
+            user_certificate=user_certificate,
         )
     else:
         return redirect(url_for(VISTA_CURSOS, course_code=course_code))

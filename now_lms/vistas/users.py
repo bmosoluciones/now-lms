@@ -42,6 +42,11 @@ from now_lms.forms import LoginForm, LogonForm, ForgotPasswordForm, ResetPasswor
 from now_lms.logs import log
 from now_lms.misc import INICIO_SESION, PANEL_DE_USUARIO
 
+# Constants
+USER_ALREADY_LOGGED_IN_MSG = "Su usuario ya tiene una sesión iniciada."
+ACCOUNT_CREATION_ERROR_MSG = "Error al crear la cuenta."
+USER_LOGIN_ROUTE = "user.inicio_sesion"
+
 # ---------------------------------------------------------------------------------------
 # Administración de Usuarios.
 # ---------------------------------------------------------------------------------------
@@ -53,7 +58,7 @@ user = Blueprint("user", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 def inicio_sesion():
     """Inicio de sesión del usuario."""
     if current_user.is_authenticated:
-        flash("Su usuario ya tiene una sesión iniciada.", "info")
+        flash(USER_ALREADY_LOGGED_IN_MSG, "info")
         return PANEL_DE_USUARIO
     form = LoginForm()
 
@@ -132,10 +137,10 @@ def crear_cuenta():
                 else:
                     return INICIO_SESION
             except OperationalError:  # pragma: no cover
-                flash("Error al crear la cuenta.", "warning")
+                flash(ACCOUNT_CREATION_ERROR_MSG, "warning")
                 return redirect("/")
             except PendingRollbackError:  # pragma: no cover
-                flash("Error al crear la cuenta.", "warning")
+                flash(ACCOUNT_CREATION_ERROR_MSG, "warning")
                 return redirect("/")
         else:
             return render_template("auth/logon.html", form=form, titulo="Crear cuenta - NOW LMS")
@@ -165,7 +170,7 @@ def crear_usuario():  # pragma: no cover
             flash("Usuario creado exitosamente.", "success")
             return redirect(url_for("user_profile.usuario", id_usuario=form.usuario.data))
         except OperationalError:  # pragma: no cover
-            flash("Error al crear la cuenta.", "warning")
+            flash(ACCOUNT_CREATION_ERROR_MSG, "warning")
             return redirect("/new_user")
     else:
         return render_template(
@@ -182,7 +187,7 @@ def check_mail(token):
     _token = validate_confirmation_token(token)
     if _token:
         flash("Correo verificado exitosamente. Ya puede iniciar sesión en el sistema", "success")
-        return redirect(url_for("user.inicio_sesion"))
+        return redirect(url_for(USER_LOGIN_ROUTE))
     else:
         flash("Token de verificación invalido.", "warning")
         return redirect(url_for("user.cerrar_sesion"))
@@ -192,7 +197,7 @@ def check_mail(token):
 def forgot_password():
     """Solicitar recuperación de contraseña."""
     if current_user.is_authenticated:
-        flash("Su usuario ya tiene una sesión iniciada.", "info")
+        flash(USER_ALREADY_LOGGED_IN_MSG, "info")
         return PANEL_DE_USUARIO
 
     form = ForgotPasswordForm()
@@ -215,7 +220,7 @@ def forgot_password():
             # For security, we show the same message even if user doesn't exist or email not verified
             flash("Se ha enviado un correo con instrucciones para recuperar su contraseña.", "success")
 
-        return redirect(url_for("user.inicio_sesion"))
+        return redirect(url_for(USER_LOGIN_ROUTE))
 
     return render_template("auth/forgot_password.html", form=form, titulo="Recuperar Contraseña - NOW LMS")
 
@@ -224,7 +229,7 @@ def forgot_password():
 def reset_password(token):
     """Restablecer contraseña con token."""
     if current_user.is_authenticated:
-        flash("Su usuario ya tiene una sesión iniciada.", "info")
+        flash(USER_ALREADY_LOGGED_IN_MSG, "info")
         return PANEL_DE_USUARIO
 
     from now_lms.auth import validate_password_reset_token
@@ -232,12 +237,12 @@ def reset_password(token):
     email = validate_password_reset_token(token)
     if not email:
         flash("El enlace de recuperación es inválido o ha expirado.", "error")
-        return redirect(url_for("user.inicio_sesion"))
+        return redirect(url_for(USER_LOGIN_ROUTE))
 
     user = database.session.query(Usuario).filter_by(correo_electronico=email).first()
     if not user:
         flash("Usuario no encontrado.", "error")
-        return redirect(url_for("user.inicio_sesion"))
+        return redirect(url_for(USER_LOGIN_ROUTE))
 
     form = ResetPasswordForm()
     if form.validate_on_submit():
@@ -251,6 +256,6 @@ def reset_password(token):
 
         flash("Contraseña actualizada exitosamente. Ya puede iniciar sesión.", "success")
         log.info(f"Contraseña restablecida para el usuario {user.usuario}")
-        return redirect(url_for("user.inicio_sesion"))
+        return redirect(url_for(USER_LOGIN_ROUTE))
 
     return render_template("auth/reset_password.html", form=form, titulo="Restablecer Contraseña - NOW LMS")

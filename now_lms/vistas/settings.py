@@ -40,6 +40,10 @@ from now_lms.db.tools import elimina_logo_perzonalizado
 from now_lms.forms import AdSenseForm, CheckMailForm, ConfigForm, MailForm, PayaplForm, ThemeForm
 from now_lms.logs import log
 
+# Constants
+SETTING_PERSONALIZACION_ROUTE = "setting.personalizacion"
+SETTING_MAIL_ROUTE = "setting.mail"
+
 # ---------------------------------------------------------------------------------------
 # Administración de la configuración del sistema.
 # ---------------------------------------------------------------------------------------
@@ -90,10 +94,10 @@ def personalizacion():
                 log.trace(f"Tema cambiado de {old_theme} a {new_theme}, cache invalidada")
 
             flash("Tema del sitio web actualizado exitosamente.", "success")
-            return redirect(url_for("setting.personalizacion"))
+            return redirect(url_for(SETTING_PERSONALIZACION_ROUTE))
         except OperationalError:  # pragma: no cover
             flash("No se pudo actualizar el tema del sitio web.", "warning")
-            return redirect(url_for("setting.personalizacion"))
+            return redirect(url_for(SETTING_PERSONALIZACION_ROUTE))
 
     else:  # pragma: no cover
         return render_template("admin/theme.html", form=form, config=config)
@@ -177,11 +181,11 @@ def mail():
         try:  # pragma: no cover
             database.session.commit()
             flash("Configuración de correo electronico actualizada exitosamente.", "success")
-            return redirect(url_for("setting.mail"))
+            return redirect(url_for(SETTING_MAIL_ROUTE))
 
         except OperationalError:  # pragma: no cover
             flash("No se pudo actualizar la configuración de correo electronico.", "warning")
-            return redirect(url_for("setting.mail"))
+            return redirect(url_for(SETTING_MAIL_ROUTE))
 
     else:  # pragma: no cover
         return render_template("admin/mail.html", form=form, config=config)
@@ -234,7 +238,7 @@ def mail_check():
             )
             config.email_verificado = True
             database.session.commit()
-            return redirect(url_for("setting.mail"))
+            return redirect(url_for(SETTING_MAIL_ROUTE))
         except Exception as e:  # noqa: E722
             flash("Hubo un error al enviar un correo de prueba. Revise su configuración.", "warning")
             from now_lms.db import Configuracion
@@ -337,7 +341,7 @@ def ads_txt():
 def test_mail():
     """Envia un correo de prueba."""
 
-    return redirect(url_for("setting.mail"))
+    return redirect(url_for(SETTING_MAIL_ROUTE))
 
 
 @setting.route("/setting/delete_site_logo")
@@ -346,7 +350,7 @@ def test_mail():
 def elimina_logo():
     """Elimina logo"""
     elimina_logo_perzonalizado()
-    return redirect(url_for("setting.personalizacion"))
+    return redirect(url_for(SETTING_PERSONALIZACION_ROUTE))
 
 
 @setting.route("/setting/stripe", methods=["GET", "POST"])

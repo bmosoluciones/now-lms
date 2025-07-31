@@ -47,6 +47,9 @@ from now_lms.db.tools import cuenta_cursos_por_programa
 from now_lms.forms import ProgramaForm
 from now_lms.themes import get_program_list_template, get_program_view_template
 
+# Constants
+PROGRAMS_ROUTE = "program.programas"
+
 # ---------------------------------------------------------------------------------------
 # Interfaz de gestión de programas
 # ---------------------------------------------------------------------------------------
@@ -75,11 +78,11 @@ def nuevo_programa():
             database.session.add(programa)
             try:
                 database.session.commit()
-                cache.delete("view/" + url_for("program.programas"))
+                cache.delete("view/" + url_for(PROGRAMS_ROUTE))
                 flash("Nuevo Programa creado.", "success")
             except OperationalError:  # pragma: no cover
                 flash("Hubo un error al crear el programa.", "warning")
-            return redirect(url_for("program.programas"))
+            return redirect(url_for(PROGRAMS_ROUTE))
         else:
             return abort(403)
 
@@ -120,8 +123,8 @@ def delete_program(ulid: str):
 
     if current_user.tipo == "admin":
         database.session.commit()
-        cache.delete("view/" + url_for("program.programas"))
-        return redirect(url_for("program.programas"))
+        cache.delete("view/" + url_for(PROGRAMS_ROUTE))
+        return redirect(url_for(PROGRAMS_ROUTE))
     else:
         return abort(403)
 
@@ -141,7 +144,7 @@ def edit_program(ulid: str):
         estado=programa.estado,
         promocionado=programa.promocionado,
     )
-    if not current_user.tipo == "admin":
+    if current_user.tipo != "admin":
         return abort(403)
 
     if form.validate_on_submit() or request.method == "POST":
@@ -179,7 +182,7 @@ def edit_program(ulid: str):
             flash("Programa editado correctamente.", "success")
         except OperationalError:  # pragma: no cover
             flash("No se puedo editar el programa.")
-        return redirect(url_for("program.programas"))
+        return redirect(url_for(PROGRAMS_ROUTE))
 
     return render_template("learning/programas/editar_programa.html", form=form, programa=programa)
 
