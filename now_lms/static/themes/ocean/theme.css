@@ -60,6 +60,8 @@
         box-shadow: 0 4px 8px rgba(0, 95, 115, 0.3);
         border-bottom: 3px solid var(--ocean-accent);
         padding: 0.75rem 0;
+        position: relative;
+        z-index: 1030;
     }
 
     .navbar-ocean .navbar-brand,
@@ -99,6 +101,12 @@
     .navbar-ocean .navbar-brand i,
     .navbar-ocean .navbar-brand .bi {
         display: none;
+    }
+
+    /* Dropdown Menu Z-Index Fix */
+    .dropdown-menu {
+        z-index: 1031 !important;
+        position: absolute;
     }
 
     /* Custom Button Styles */
@@ -269,6 +277,12 @@
         padding: 1.5rem;
         margin: 1.5rem 0;
         font-family: "Merriweather", serif;
+    }
+
+    /* Hero Section Z-Index Management */
+    .hero-section {
+        position: relative;
+        z-index: 1;
     }
 
     /* Wave Elements */
