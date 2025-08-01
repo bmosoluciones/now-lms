@@ -49,17 +49,17 @@ POST = False
 
 # <--------------------------------------------------------------------------> #
 # Pre release not for production
-PRERELEASE = "a2"
+PRERELEASE = "a3"
 
 # <--------------------------------------------------------------------------> #
 # Date of release
-REVISION = "20250729"
+REVISION = "20250801"
 
 # <--------------------------------------------------------------------------> #
 # Release string
 # Refences:
 #  - https://peps.python.org/pep-0440/
-# 0.0.1a2.dev20250729
+# 0.0.1a3.dev20250801
 if PRERELEASE:
     VERSION = MAYOR + "." + MENOR + "." + PATCH + PRERELEASE + ".dev" + REVISION
 else:
