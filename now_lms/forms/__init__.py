@@ -310,7 +310,7 @@ class SlideForm(FlaskForm):
 class SlideShowEditForm(SlideShowForm):
     """Formulario para editar una presentación existente."""
 
-    slides = []  # Will be populated dynamically with slide forms
+    slides = []  # type: ignore[var-annotated]
 
 
 class CursoRecursoMeet(CursoRecursoForm):
