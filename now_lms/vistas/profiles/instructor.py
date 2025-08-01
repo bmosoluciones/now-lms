@@ -264,7 +264,7 @@ def nueva_evaluacion_global():
         cursos = (
             database.session.query(Curso)
             .join(DocenteCurso)
-            .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.vigente == True)
+            .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.vigente == True)  # noqa: E712
             .all()
         )
 

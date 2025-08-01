@@ -90,7 +90,6 @@ from now_lms.forms import (
     CursoRecursoExternalCode,
     CursoRecursoExternalLink,
     CursoRecursoMeet,
-    CursoRecursoSlides,
     CursoRecursoVideoYoutube,
     CursoSeccionForm,
     SlideShowForm,

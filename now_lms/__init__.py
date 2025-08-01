@@ -55,7 +55,7 @@ from werkzeug.exceptions import HTTPException
 # ---------------------------------------------------------------------------------------
 from now_lms.cache import cache
 from now_lms.config import CONFIGURACION, DIRECTORIO_ARCHIVOS, DIRECTORIO_PLANTILLAS, audio, files, images, log_messages
-from now_lms.db import Announcement, Configuracion, Usuario, database
+from now_lms.db import Configuracion, Usuario, database
 from now_lms.db.info import app_info, course_info, lms_info
 from now_lms.db.initial_data import (
     asignar_cursos_a_categoria,
