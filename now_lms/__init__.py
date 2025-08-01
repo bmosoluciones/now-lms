@@ -55,7 +55,7 @@ from werkzeug.exceptions import HTTPException
 # ---------------------------------------------------------------------------------------
 from now_lms.cache import cache
 from now_lms.config import CONFIGURACION, DIRECTORIO_ARCHIVOS, DIRECTORIO_PLANTILLAS, audio, files, images, log_messages
-from now_lms.db import Configuracion, Usuario, database
+from now_lms.db import Announcement, Configuracion, Usuario, database
 from now_lms.db.info import app_info, course_info, lms_info
 from now_lms.db.initial_data import (
     asignar_cursos_a_categoria,
@@ -122,6 +122,9 @@ from now_lms.vistas.settings import setting
 from now_lms.vistas.tags import tag
 from now_lms.vistas.users import user
 from now_lms.vistas.web_error_codes import web_error
+from now_lms.vistas.announcements.admin import admin_announcements
+from now_lms.vistas.announcements.instructor import instructor_announcements
+from now_lms.vistas.announcements.public import public_announcements
 
 # ---------------------------------------------------------------------------------------
 # Metadatos
@@ -183,6 +186,10 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
         flask_app.register_blueprint(moderator_profile)
         flask_app.register_blueprint(user_profile)
         flask_app.register_blueprint(web_error)
+        # Announcements
+        flask_app.register_blueprint(admin_announcements)
+        flask_app.register_blueprint(instructor_announcements)
+        flask_app.register_blueprint(public_announcements)
 
 
 # ---------------------------------------------------------------------------------------

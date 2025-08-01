@@ -875,6 +875,48 @@ class EvaluationReopenRequest(database.Model, BaseTabla):
     reviewer = database.relationship("Usuario", foreign_keys=[approved_by])
 
 
+
+class Announcement(database.Model, BaseTabla):
+    """Sistema de anuncios para administradores e instructores."""
+
+    __tablename__ = "announcement"
+
+    # Información básica del anuncio
+    title = database.Column(database.String(255), nullable=False)
+    message = database.Column(database.Text, nullable=False)  # Formato Markdown
+    
+    # Relaciones
+    course_id = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=True, index=True)
+    created_by_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    
+    # Fechas
+    expires_at = database.Column(database.DateTime, nullable=True)  # Fecha de expiración opcional
+    
+    # Configuración
+    is_sticky = database.Column(database.Boolean, default=False, nullable=False)  # Anuncio destacado
+    
+    # Relationships
+    course = database.relationship("Curso", foreign_keys=[course_id])
+    created_by = database.relationship("Usuario", foreign_keys=[created_by_id])
+    
+    def is_global(self):
+        """Retorna True si es un anuncio global (sin curso asignado)."""
+        return self.course_id is None
+    
+    def is_course_announcement(self):
+        """Retorna True si es un anuncio de curso específico."""
+        return self.course_id is not None
+    
+    def is_active(self):
+        """Retorna True si el anuncio está activo (no ha expirado)."""
+        if self.expires_at is None:
+            return True
+        from datetime import datetime
+        return datetime.now() <= self.expires_at
+    
+    def __repr__(self):
+        return f"<Announcement {self.title}>"
+
 # Blog feature models
 blog_post_tags = database.Table('blog_post_tags',
     database.Column('post_id', database.String(26), database.ForeignKey('blog_post.id'), primary_key=True),
@@ -923,3 +965,4 @@ class BlogComment(database.Model, BaseTabla):
 
     # Relationships
     user = database.relationship("Usuario", backref="blog_comments")
+

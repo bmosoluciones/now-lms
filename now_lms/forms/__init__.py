@@ -625,6 +625,26 @@ class ForoMensajeRespuestaForm(FlaskForm):
 
 
 
+class AnnouncementForm(BaseForm):
+    """Formulario base para crear/editar anuncios."""
+
+    title = StringField("Título", validators=[DataRequired()])
+    message = MdeField("Mensaje", validators=[DataRequired()])
+    expires_at = DateField("Fecha de expiración", validators=[], render_kw={"placeholder": "Opcional"})
+
+
+class GlobalAnnouncementForm(AnnouncementForm):
+    """Formulario para anuncios globales (solo administradores)."""
+
+    is_sticky = BooleanField("Anuncio destacado")
+
+
+class CourseAnnouncementForm(AnnouncementForm):
+    """Formulario para anuncios de curso (instructores)."""
+
+    course_id = SelectField("Curso", coerce=str, validators=[DataRequired()])
+
+
 # ---------------------------------------------------------------------------------------
 # Coupon Forms
 # ---------------------------------------------------------------------------------------
@@ -679,4 +699,5 @@ class BlogCommentForm(BaseForm):
     """Formulario para comentarios de blog."""
 
     content = TextAreaField("Comentario", validators=[DataRequired()])
+
 
