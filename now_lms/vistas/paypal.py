@@ -242,7 +242,7 @@ def confirm_payment():
             logging.error(f"PayPal payment verification failed for order {order_id}, user {current_user.usuario}: {error_msg}")
             return jsonify({"success": False, "error": f"Payment verification failed: {error_msg}"}), 400
 
-        # Check if payment amount matches course price
+        # Check if payment amount matches expected amount (considering coupons)
         from now_lms.db import Curso
 
         curso = database.session.query(Curso).filter_by(codigo=course_code).first()
@@ -250,8 +250,20 @@ def confirm_payment():
             logging.warning(f"Course {course_code} not found for payment confirmation by user {current_user.usuario}")
             return jsonify({"success": False, "error": "Course not found"}), 404
 
+        # First check if there's a pending payment record for this user/course with coupon discount applied
+        pending_payment = (
+            database.session.query(Pago)
+            .filter_by(usuario=current_user.usuario, curso=course_code, estado="pending")
+            .first()
+        )
+        
+        # Determine expected amount - either from pending payment (with coupon) or course price
+        if pending_payment:
+            expected_amount = float(pending_payment.monto)
+        else:
+            expected_amount = float(curso.precio)
+        
         # Compare amounts with tolerance for floating point precision
-        expected_amount = float(curso.precio)
         verified_amount = float(verification["amount"])
         amount_tolerance = 0.01  # 1 cent tolerance
 
@@ -328,6 +340,24 @@ def confirm_payment():
                 existing_enrollment.pago = pago.id
 
             database.session.commit()
+
+            # Update coupon usage if payment had coupon applied
+            if pago.descripcion and "Cupón aplicado:" in pago.descripcion:
+                try:
+                    # Extract coupon code from payment description
+                    coupon_code = pago.descripcion.split("Cupón aplicado: ")[1].split(" ")[0]
+                    from now_lms.db import Coupon
+                    
+                    coupon = database.session.query(Coupon).filter_by(
+                        course_id=course_code, code=coupon_code
+                    ).first()
+                    
+                    if coupon:
+                        coupon.current_uses += 1
+                        database.session.commit()
+                        logging.info(f"Updated coupon {coupon_code} usage count to {coupon.current_uses}")
+                except Exception as e:
+                    logging.warning(f"Failed to update coupon usage for payment {order_id}: {e}")
 
             # Create course progress index
             from now_lms.vistas.courses import _crear_indice_avance_curso

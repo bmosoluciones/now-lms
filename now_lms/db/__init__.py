@@ -800,6 +800,63 @@ class Answer(database.Model, BaseTabla):
     question = database.relationship("Question", back_populates="answers")
 
 
+# ---------------------------------------------------------------------------------------
+# Coupon System Models
+# ---------------------------------------------------------------------------------------
+
+
+class Coupon(database.Model, BaseTabla):
+    """Discount coupons for paid courses."""
+
+    __tablename__ = "coupon"
+
+    course_id = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
+    code = database.Column(database.String(50), nullable=False, index=True)
+    discount_type = database.Column(database.String(20), nullable=False)  # 'percentage' or 'fixed'
+    discount_value = database.Column(database.Float(), nullable=False)
+    max_uses = database.Column(database.Integer(), nullable=True)  # null = unlimited
+    expires_at = database.Column(database.DateTime(), nullable=True)  # null = no expiration
+    current_uses = database.Column(database.Integer(), nullable=False, default=0)
+    created_by = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+
+    # Constraints
+    __table_args__ = (database.UniqueConstraint("course_id", "code", name="unique_coupon_per_course"),)
+
+    # Relationships
+    course = database.relationship("Curso", foreign_keys=[course_id])
+    creator = database.relationship("Usuario", foreign_keys=[created_by])
+
+    def is_valid(self):
+        """Check if coupon is valid (not expired and under usage limit)."""
+        from datetime import datetime
+        
+        # Check expiration
+        if self.expires_at and datetime.now() > self.expires_at:
+            return False, "Cupón expirado"
+        
+        # Check usage limit
+        current_uses = self.current_uses or 0
+        if self.max_uses and current_uses >= self.max_uses:
+            return False, "Cupón ha alcanzado el límite de usos"
+        
+        return True, ""
+
+    def calculate_discount(self, original_price):
+        """Calculate the discount amount for a given price."""
+        if self.discount_type == "percentage":
+            discount = float(original_price) * (self.discount_value / 100)
+        else:  # fixed
+            discount = min(self.discount_value, float(original_price))
+        
+        return min(discount, float(original_price))  # Cannot discount more than original price
+
+    def calculate_final_price(self, original_price):
+        """Calculate the final price after applying the coupon."""
+        discount = self.calculate_discount(original_price)
+        final_price = float(original_price) - discount
+        return max(0, final_price)  # Price cannot be negative
+
+
 class EvaluationReopenRequest(database.Model, BaseTabla):
     """A student's request to reopen an evaluation after exhausting attempts."""
 

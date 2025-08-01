@@ -624,6 +624,32 @@ class ForoMensajeRespuestaForm(FlaskForm):
     contenido = MdeField("Respuesta", validators=[DataRequired()])
 
 
+
+# ---------------------------------------------------------------------------------------
+# Coupon Forms
+# ---------------------------------------------------------------------------------------
+
+
+class CouponForm(BaseForm):
+    """Formulario para crear y editar cupones de descuento."""
+
+    code = StringField("Código del Cupón", validators=[DataRequired()], render_kw={"placeholder": "Ej: DESCUENTO50"})
+    discount_type = SelectField(
+        "Tipo de Descuento",
+        choices=[("percentage", "Porcentaje"), ("fixed", "Cantidad Fija")],
+        default="percentage",
+        validators=[DataRequired()],
+    )
+    discount_value = DecimalField("Valor del Descuento", validators=[DataRequired()], render_kw={"min": "0"})
+    max_uses = IntegerField("Máximo de Usos", render_kw={"min": "1", "placeholder": "Dejar vacío para ilimitado"})
+    expires_at = DateField("Fecha de Expiración", render_kw={"placeholder": "Dejar vacío si no expira"})
+
+
+class CouponApplicationForm(FlaskForm):
+    """Formulario para aplicar un cupón durante la inscripción."""
+
+    coupon_code = StringField("Código de Cupón", render_kw={"placeholder": "Código de cupón (opcional)"})
+
 # Blog forms
 class BlogPostForm(BaseForm):
     """Formulario para crear/editar entradas de blog."""
@@ -653,3 +679,4 @@ class BlogCommentForm(BaseForm):
     """Formulario para comentarios de blog."""
 
     content = TextAreaField("Comentario", validators=[DataRequired()])
+
