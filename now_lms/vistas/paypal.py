@@ -15,12 +15,12 @@
 """Paypal Payments"""
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 import logging
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 import requests
 from flask import Blueprint, current_app, flash, jsonify, redirect, render_template, request, url_for
@@ -28,7 +28,7 @@ from flask_login import current_user, login_required
 from sqlalchemy.exc import OperationalError
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
 from now_lms.cache import cache

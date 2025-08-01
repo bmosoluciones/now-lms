@@ -12,21 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 
-"""Control de acceso a la aplicacion."""
+"""Access control for the application."""
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 import base64
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 import jwt
 from argon2 import PasswordHasher
@@ -38,7 +36,7 @@ from flask import abort, current_app, flash, url_for
 from flask_login import current_user
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.db import MailConfig, Usuario, database
 from now_lms.logs import log

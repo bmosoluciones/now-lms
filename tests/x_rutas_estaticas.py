@@ -12,48 +12,75 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 
-from collections import namedtuple
+"""Static routes definition for testing different user roles and expected responses."""
+"""Static routes definition for testing different user roles and expected responses."""
 
-Ruta = namedtuple(
-    "Ruta",
-    [
-        # Route to test
-        "ruta",
-        # Expected HTTP response
-        "admin",
-        "no_session",
-        "user",
-        "moderator",
-        "instructor",
-        # Test text to compare aganist page content
-        "texto",
-        "como_user",
-        "como_moderador",
-        "como_instructor",
-        "como_admin",
-    ],
-)
+from types import SimpleNamespace
+
+
+def Ruta(
+    ruta: str,
+    admin: int,
+    no_session: int,
+    user: int,
+    moderator: int,
+    instructor: int,
+    texto: list,
+    como_user: list,
+    como_moderador: list,
+    como_instructor: list,
+    como_admin: list,
+) -> SimpleNamespace:
+    """Create a route test configuration using SimpleNamespace.
+    
+    Args:
+        ruta: Route to test
+        admin: Expected HTTP response for admin role
+        no_session: Expected HTTP response for anonymous users
+        user: Expected HTTP response for user role
+        moderator: Expected HTTP response for moderator role
+        instructor: Expected HTTP response for instructor role
+        texto: Test text to compare against page content
+        como_user: Text to verify when testing as user
+        como_moderador: Text to verify when testing as moderator
+        como_instructor: Text to verify when testing as instructor
+        como_admin: Text to verify when testing as admin
+        
+    Returns:
+        SimpleNamespace containing the route test configuration
+    """
+    return SimpleNamespace(
+        ruta=ruta,
+        admin=admin,
+        no_session=no_session,
+        user=user,
+        moderator=moderator,
+        instructor=instructor,
+        texto=texto,
+        como_user=como_user,
+        como_moderador=como_moderador,
+        como_instructor=como_instructor,
+        como_admin=como_admin,
+    )
 
 """
-Copy pasta to create a new route to test.
+Example template to create a new route test:
 
 Ruta(
-        ruta="",
-        no_session=100,
-        admin=100,
-        user=100,
-        moderator=100,
-        instructor=100,
-        texto=[],
-        como_user=[],
-        como_moderador=[],
-        como_instructor=[],
-        como_admin=[],
-    ),
+    ruta="",
+    no_session=100,
+    admin=100,
+    user=100,
+    moderator=100,
+    instructor=100,
+    texto=[],
+    como_user=[],
+    como_moderador=[],
+    como_instructor=[],
+    como_admin=[],
+),
 """
 
 rutas_estaticas = [

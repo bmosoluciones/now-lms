@@ -12,28 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 
-"""Utilerias varias."""
+"""Miscellaneous utilities."""
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 from collections import OrderedDict
 from os import getcwd
 from typing import NamedTuple, Union
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 from bleach import clean, linkify
 from flask import redirect
 from markdown import markdown
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 
 
@@ -44,7 +42,17 @@ PANEL_DE_USUARIO = redirect("/home/panel")
 def concatenar_parametros_a_url(
     parametros: Union[OrderedDict, None], arg: Union[str, None], val: Union[str, None], char: str = ""
 ) -> str:
-    """Devuelve lista de paramentros como una cadena de URL."""
+    """Return list of parameters as a URL string.
+
+    Args:
+        parametros: Dictionary of existing parameters
+        arg: New parameter name to add
+        val: New parameter value to add
+        char: Character to prefix the string with
+
+    Returns:
+        String representation of URL parameters
+    """
 
     argumentos: str = char
 
@@ -79,7 +87,14 @@ ICONOS_RECURSOS: dict = {
 
 
 class EstiloLocal(NamedTuple):
-    """Configuraciòn de estilo personalizable."""
+    """Customizable style configuration.
+
+    Attributes:
+        navbar: Navigation bar style settings
+        texto: Text style settings
+        logo: Logo style settings
+        buttom: Button style settings
+    """
 
     navbar: dict
     texto: dict
@@ -139,7 +154,14 @@ HTML_TAGS = [
 
 
 def markdown_to_clean_hmtl(text: str):
-    """Devuelve HTML limpio a partir de un texto en MarkDown."""
+    """Return clean HTML from a MarkDown text.
+
+    Args:
+        text: MarkDown formatted text
+
+    Returns:
+        Clean HTML string with allowed tags and attributes
+    """
     allowed_tags = HTML_TAGS
     allowed_attrs = {"*": ["class"], "a": ["href", "rel"], "img": ["src", "alt"]}
 
@@ -190,7 +212,12 @@ TIPOS_RECURSOS: dict = {
 
 
 class EstiloAlterta(NamedTuple):
-    """Estilo de alertas."""
+    """Alert style configuration.
+
+    Attributes:
+        icono: Icon styles for alerts
+        clase: CSS class styles for alerts
+    """
 
     icono: dict
     clase: dict

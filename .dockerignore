@@ -1,4 +1,4 @@
-# Control de Versiones
+# Version Control
 .git
 .github
 .gitignore
@@ -13,15 +13,15 @@
 Procfile
 README.md
 
-# Documentacion
+# Documentation
 mkdocs.yml
 docs
 
-# No necesitamos docker files en el contenedor
+# No need for docker files in the container
 Dockerfile
 docker-compose.yml
 
-# Archivos para colaboradores
+# Contributor files
 .theia
 .coveragerc
 .pylintrc

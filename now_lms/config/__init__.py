@@ -12,25 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
-"""Configuración de la aplicación."""
+"""Application configuration."""
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 from os import R_OK, W_OK, access, environ, makedirs, name, path
 from pathlib import Path
 from typing import TYPE_CHECKING, Dict
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 from appdirs import AppDirs
 from flask_uploads import AUDIO, DOCUMENTS, IMAGES, UploadSet
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.logs import log
 
@@ -136,8 +134,8 @@ CONFIGURACION["UPLOADED_IMAGES_DEST"] = DIRECTORIO_UPLOAD_IMAGENES
 CONFIGURACION["UPLOADED_AUDIO_DEST"] = DIRECTORIO_UPLOAD_AUDIO
 
 if DESARROLLO:
-    log.warning("Utilizando configuración predeterminada.")
-    log.info("La configuración predeterminada no se recomienda para uso en entornos reales.")
+    log.warning("Using default configuration.")
+    log.info("Default configuration is not recommended for use in production environments.")
     CONFIGURACION["SQLALCHEMY_TRACK_MODIFICATIONS"] = "False"
     CONFIGURACION["TEMPLATES_AUTO_RELOAD"] = True
 
