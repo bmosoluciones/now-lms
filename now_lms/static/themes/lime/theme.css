@@ -53,7 +53,6 @@
         border-bottom: 3px solid var(--lime-grass);
         position: relative;
         z-index: 1030;
-        overflow: hidden;
     }
 
     /* Animated nature-inspired effect */
@@ -175,16 +174,14 @@
     /* Dropdown Styling */
     .dropdown-menu {
         border: none;
-        border-radius: 10px;
-        box-shadow: 0 8px 16px rgba(124, 181, 24, 0.2);
+        border-radius: 8px;
+        box-shadow: 0 4px 16px rgba(124, 181, 24, 0.15);
         background: var(--lime-surface);
-        backdrop-filter: blur(10px);
-        border: 1px solid var(--lime-border);
         z-index: 1040;
     }
 
     .dropdown-item {
-        border-radius: 8px;
+        border-radius: 6px;
         margin: 2px 8px;
         transition: all 0.2s ease;
         color: var(--lime-text);
@@ -193,7 +190,6 @@
     .dropdown-item:hover {
         background: var(--lime-light);
         color: var(--lime-text);
-        transform: translateX(4px);
     }
 
     /* Alert Styling */
