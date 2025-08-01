@@ -4,15 +4,15 @@
     <head>
         <meta charset="utf-8" />
         <title>{% if slideshow %}{{ slideshow.title }}{% else %}{{ resource.titulo }}{% endif %} - Presentación</title>
-        
+
         <!-- Reveal.js CSS -->
         <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/reveal.js/dist/reveal.css') }}" />
-        <link 
-            rel="stylesheet" 
-            href="{{ url_for('static', filename='node_modules/reveal.js/dist/theme/' + (slideshow.theme if slideshow else 'simple') + '.css') }}" 
-            id="theme" 
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='node_modules/reveal.js/dist/theme/' + (slideshow.theme if slideshow else 'simple') + '.css') }}"
+            id="theme"
         />
-        
+
         <!-- Custom styles for better integration -->
         <style>
             body {
@@ -38,7 +38,7 @@
                 top: 20px;
                 right: 20px;
                 z-index: 1000;
-                background: rgba(0,0,0,0.7);
+                background: rgba(0, 0, 0, 0.7);
                 padding: 10px;
                 border-radius: 5px;
             }
@@ -47,12 +47,12 @@
                 text-decoration: none;
                 margin: 0 5px;
                 padding: 5px 10px;
-                background: rgba(255,255,255,0.2);
+                background: rgba(255, 255, 255, 0.2);
                 border-radius: 3px;
                 display: inline-block;
             }
             .slide-navigation a:hover {
-                background: rgba(255,255,255,0.4);
+                background: rgba(255, 255, 255, 0.4);
             }
         </style>
     </head>
@@ -74,27 +74,25 @@
         <div class="reveal">
             <div class="slides">
                 {% if slideshow and slides %}
-                    <!-- New slideshow format -->
-                    {% for slide in slides %}
-                    <section>
-                        <h2>{{ slide.title }}</h2>
-                        <div>{{ slide.content|safe }}</div>
-                    </section>
-                    {% endfor %}
-                {% elif resource and slides %}
-                    <!-- Legacy slideshow format -->
-                    {% for slide in slides %}
-                    <section>
-                        <h2>{{ slide.titulo }}</h2>
-                        <div>{{ slide.texto|safe }}</div>
-                    </section>
-                    {% endfor %}
-                {% else %}
-                    <!-- Default slide if no content -->
-                    <section>
-                        <h2>Presentación</h2>
-                        <p>No hay diapositivas disponibles en esta presentación.</p>
-                    </section>
+                <!-- New slideshow format -->
+                {% for slide in slides %}
+                <section>
+                    <h2>{{ slide.title }}</h2>
+                    <div>{{ slide.content|safe }}</div>
+                </section>
+                {% endfor %} {% elif resource and slides %}
+                <!-- Legacy slideshow format -->
+                {% for slide in slides %}
+                <section>
+                    <h2>{{ slide.titulo }}</h2>
+                    <div>{{ slide.texto|safe }}</div>
+                </section>
+                {% endfor %} {% else %}
+                <!-- Default slide if no content -->
+                <section>
+                    <h2>Presentación</h2>
+                    <p>No hay diapositivas disponibles en esta presentación.</p>
+                </section>
                 {% endif %}
             </div>
         </div>
@@ -115,44 +113,44 @@
                 rtl: false,
                 keyboard: {
                     // ESC key for overview
-                    27: function() {
-                        Reveal.toggleOverview();
+                    27: function () {
+                        Reveal.toggleOverview()
                     },
                     // F key for fullscreen
-                    70: function() {
+                    70: function () {
                         if (document.fullscreenElement) {
-                            document.exitFullscreen();
+                            document.exitFullscreen()
                         } else {
-                            document.documentElement.requestFullscreen();
+                            document.documentElement.requestFullscreen()
                         }
-                    }
+                    },
                 },
                 // Transition styles: none/fade/slide/convex/concave/zoom
-                transition: 'slide',
-                transitionSpeed: 'default', // default/fast/slow
-                backgroundTransition: 'fade'
-            });
+                transition: "slide",
+                transitionSpeed: "default", // default/fast/slow
+                backgroundTransition: "fade",
+            })
 
             // Custom keyboard shortcuts
-            document.addEventListener('keydown', function(event) {
+            document.addEventListener("keydown", function (event) {
                 // 'H' key for help
-                if (event.key === 'h' || event.key === 'H') {
-                    Reveal.toggleHelp();
+                if (event.key === "h" || event.key === "H") {
+                    Reveal.toggleHelp()
                 }
                 // 'O' key for overview
-                if (event.key === 'o' || event.key === 'O') {
-                    Reveal.toggleOverview();
+                if (event.key === "o" || event.key === "O") {
+                    Reveal.toggleOverview()
                 }
-            });
+            })
 
             // Add custom event listeners
-            Reveal.addEventListener('ready', function(event) {
-                console.log('Presentación lista:', event.currentSlide);
-            });
+            Reveal.addEventListener("ready", function (event) {
+                console.log("Presentación lista:", event.currentSlide)
+            })
 
-            Reveal.addEventListener('slidechanged', function(event) {
-                console.log('Diapositiva cambiada a:', event.indexh + 1);
-            });
+            Reveal.addEventListener("slidechanged", function (event) {
+                console.log("Diapositiva cambiada a:", event.indexh + 1)
+            })
         </script>
     </body>
 </html>

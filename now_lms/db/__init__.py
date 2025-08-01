@@ -334,11 +334,11 @@ class SlideShowResource(database.Model, BaseTabla):
     """Una presentación basada en reveal.js que hereda de BaseResource"""
 
     __tablename__ = "slide_show_resource"
-    
+
     course_id = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
     title = database.Column(database.String(150), nullable=False)
     theme = database.Column(database.String(20), nullable=False, default="simple")
-    
+
     # Relationships
     course = database.relationship("Curso", foreign_keys=[course_id])
     slides = database.relationship("Slide", back_populates="slide_show", cascade="all, delete-orphan", order_by="Slide.order")
@@ -348,12 +348,14 @@ class Slide(database.Model, BaseTabla):
     """Una diapositiva individual dentro de una presentación"""
 
     __tablename__ = "slide"
-    
-    slide_show_id = database.Column(database.String(26), database.ForeignKey("slide_show_resource.id"), nullable=False, index=True)
+
+    slide_show_id = database.Column(
+        database.String(26), database.ForeignKey("slide_show_resource.id"), nullable=False, index=True
+    )
     title = database.Column(database.String(150), nullable=False)
     content = database.Column(database.Text, nullable=False)
     order = database.Column(database.Integer, nullable=False, default=1)
-    
+
     # Relationships
     slide_show = database.relationship("SlideShowResource", back_populates="slides")
 

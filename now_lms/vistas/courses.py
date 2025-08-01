@@ -1285,11 +1285,12 @@ def elimina_logo(course_code):
 @perfil_requerido("instructor")
 def nuevo_recurso_slideshow(course_code, seccion):
     """Crear una nueva presentación de diapositivas."""
-    if not (current_user.tipo == "admin" or 
-            database.session.query(DocenteCurso).filter(
-                DocenteCurso.usuario == current_user.usuario, 
-                DocenteCurso.curso == course_code
-            ).first()):
+    if not (
+        current_user.tipo == "admin"
+        or database.session.query(DocenteCurso)
+        .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == course_code)
+        .first()
+    ):
         flash("No tienes permisos para crear recursos en este curso.", "warning")
         return abort(403)
 
@@ -1299,7 +1300,7 @@ def nuevo_recurso_slideshow(course_code, seccion):
             # Crear el recurso en CursoRecurso
             consulta_recursos = database.session.query(CursoRecurso).filter_by(seccion=seccion).count()
             nuevo_indice = int(consulta_recursos + 1)
-            
+
             nuevo_recurso = CursoRecurso(
                 curso=course_code,
                 seccion=seccion,
@@ -1308,39 +1309,31 @@ def nuevo_recurso_slideshow(course_code, seccion):
                 descripcion=form.descripcion.data,
                 indice=nuevo_indice,
                 publico=False,
-                requerido="required"
+                requerido="required",
             )
             database.session.add(nuevo_recurso)
             database.session.flush()  # Para obtener el ID
-            
+
             # Crear la presentación SlideShowResource
             slideshow = SlideShowResource(
-                course_id=course_code,
-                title=form.nombre.data,
-                theme=form.theme.data,
-                creado_por=current_user.usuario
+                course_id=course_code, title=form.nombre.data, theme=form.theme.data, creado_por=current_user.usuario
             )
             database.session.add(slideshow)
             database.session.flush()
-            
+
             # Agregar el ID del slideshow al recurso como referencia
             nuevo_recurso.external_code = slideshow.id
-            
+
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
-            return redirect(url_for("course.editar_slideshow", 
-                                  course_code=course_code, 
-                                  slideshow_id=slideshow.id))
-            
+            return redirect(url_for("course.editar_slideshow", course_code=course_code, slideshow_id=slideshow.id))
+
         except Exception as e:
             database.session.rollback()
             flash(f"Error al crear la presentación: {str(e)}", "error")
-            
+
     return render_template(
-        "learning/resources_new/nuevo_recurso_slides.html",
-        id_curso=course_code,
-        id_seccion=seccion,
-        form=form
+        "learning/resources_new/nuevo_recurso_slides.html", id_curso=course_code, id_seccion=seccion, form=form
     )
 
 
@@ -1353,49 +1346,50 @@ def editar_slideshow(course_code, slideshow_id):
     if not slideshow or slideshow.course_id != course_code:
         flash("Presentación no encontrada.", "error")
         return abort(404)
-        
-    if not (current_user.tipo == "admin" or 
-            database.session.query(DocenteCurso).filter(
-                DocenteCurso.usuario == current_user.usuario, 
-                DocenteCurso.curso == course_code
-            ).first()):
+
+    if not (
+        current_user.tipo == "admin"
+        or database.session.query(DocenteCurso)
+        .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == course_code)
+        .first()
+    ):
         flash("No tienes permisos para editar este recurso.", "warning")
         return abort(403)
 
     # Obtener slides existentes
     slides = database.session.query(Slide).filter_by(slide_show_id=slideshow_id).order_by(Slide.order).all()
-    
+
     if request.method == "POST":
         try:
             # Actualizar información del slideshow
             slideshow.title = request.form.get("title", slideshow.title)
             slideshow.theme = request.form.get("theme", slideshow.theme)
             slideshow.modificado_por = current_user.usuario
-            
+
             # Procesar slides
             slide_count = int(request.form.get("slide_count", 0))
-            
+
             # Eliminar slides que ya no existen
             existing_orders = []
             for i in range(slide_count):
                 order = int(request.form.get(f"slide_{i}_order", i + 1))
                 existing_orders.append(order)
-            
+
             for slide in slides:
                 if slide.order not in existing_orders:
                     database.session.delete(slide)
-            
+
             # Actualizar o crear slides
             for i in range(slide_count):
                 slide_title = request.form.get(f"slide_{i}_title", "")
                 slide_content = request.form.get(f"slide_{i}_content", "")
                 slide_order = int(request.form.get(f"slide_{i}_order", i + 1))
                 slide_id = request.form.get(f"slide_{i}_id")
-                
+
                 if slide_title and slide_content:
                     # Sanitizar contenido
                     clean_content = sanitize_slide_content(slide_content)
-                    
+
                     if slide_id:
                         # Actualizar slide existente
                         slide = database.session.get(Slide, slide_id)
@@ -1411,26 +1405,21 @@ def editar_slideshow(course_code, slideshow_id):
                             title=slide_title,
                             content=clean_content,
                             order=slide_order,
-                            creado_por=current_user.usuario
+                            creado_por=current_user.usuario,
                         )
                         database.session.add(new_slide)
-            
+
             database.session.commit()
             flash("Presentación actualizada correctamente.", "success")
-            
+
         except Exception as e:
             database.session.rollback()
             flash(f"Error al actualizar la presentación: {str(e)}", "error")
-            
-        return redirect(url_for("course.editar_slideshow", 
-                              course_code=course_code, 
-                              slideshow_id=slideshow_id))
-    
+
+        return redirect(url_for("course.editar_slideshow", course_code=course_code, slideshow_id=slideshow_id))
+
     return render_template(
-        "learning/resources_new/editar_slideshow.html",
-        slideshow=slideshow,
-        slides=slides,
-        course_code=course_code
+        "learning/resources_new/editar_slideshow.html", slideshow=slideshow, slides=slides, course_code=course_code
     )
 
 
@@ -1441,27 +1430,23 @@ def preview_slideshow(course_code, slideshow_id):
     slideshow = database.session.get(SlideShowResource, slideshow_id)
     if not slideshow or slideshow.course_id != course_code:
         abort(404)
-        
+
     # Verificar permisos (estudiantes, instructores o admin)
-    if not (current_user.tipo == "admin" or 
-            database.session.query(DocenteCurso).filter(
-                DocenteCurso.usuario == current_user.usuario, 
-                DocenteCurso.curso == course_code
-            ).first() or
-            database.session.query(EstudianteCurso).filter(
-                EstudianteCurso.usuario == current_user.usuario, 
-                EstudianteCurso.curso == course_code
-            ).first()):
+    if not (
+        current_user.tipo == "admin"
+        or database.session.query(DocenteCurso)
+        .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == course_code)
+        .first()
+        or database.session.query(EstudianteCurso)
+        .filter(EstudianteCurso.usuario == current_user.usuario, EstudianteCurso.curso == course_code)
+        .first()
+    ):
         flash("No tienes acceso a este curso.", "warning")
         return abort(403)
-    
+
     slides = database.session.query(Slide).filter_by(slide_show_id=slideshow_id).order_by(Slide.order).all()
-    
-    return render_template(
-        "learning/resources/slide_show.html",
-        slideshow=slideshow,
-        slides=slides
-    )
+
+    return render_template("learning/resources/slide_show.html", slideshow=slideshow, slides=slides)
 
 
 # ---------------------------------------------------------------------------------------
@@ -1509,41 +1494,27 @@ def external_code(course_code, recurso_code):
 @course.route("/course/slide_show/<recurso_code>")
 def slide_show(recurso_code):
     """Renderiza una presentación de diapositivas."""
-    
+
     # Primero buscar el recurso para obtener la referencia al slideshow
     recurso = database.session.query(CursoRecurso).filter(CursoRecurso.id == recurso_code).first()
-    
+
     if not recurso:
         abort(404)
-    
+
     if recurso.external_code:
         # Usar nuevo modelo SlideShowResource
         slideshow = database.session.get(SlideShowResource, recurso.external_code)
         if slideshow:
             slides = database.session.query(Slide).filter_by(slide_show_id=slideshow.id).order_by(Slide.order).all()
-            return render_template(
-                "learning/resources/slide_show.html", 
-                slideshow=slideshow, 
-                slides=slides,
-                resource=recurso
-            )
-    
+            return render_template("learning/resources/slide_show.html", slideshow=slideshow, slides=slides, resource=recurso)
+
     # Fallback a modelos legacy para compatibilidad
-    legacy_slide = database.session.query(CursoRecursoSlideShow).filter(
-        CursoRecursoSlideShow.recurso == recurso_code
-    ).first()
-    legacy_slides = database.session.query(CursoRecursoSlides).filter(
-        CursoRecursoSlides.recurso == recurso_code
-    ).all()
-    
+    legacy_slide = database.session.query(CursoRecursoSlideShow).filter(CursoRecursoSlideShow.recurso == recurso_code).first()
+    legacy_slides = database.session.query(CursoRecursoSlides).filter(CursoRecursoSlides.recurso == recurso_code).all()
+
     if legacy_slide:
-        return render_template(
-            "learning/resources/slide_show.html", 
-            resource=legacy_slide, 
-            slides=legacy_slides,
-            legacy=True
-        )
-    
+        return render_template("learning/resources/slide_show.html", resource=legacy_slide, slides=legacy_slides, legacy=True)
+
     # No se encontró presentación
     flash("Presentación no encontrada.", "error")
     abort(404)

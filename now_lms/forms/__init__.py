@@ -280,7 +280,7 @@ class CursoRecursoSlides(CursoRecursoForm):
 
 class SlideShowForm(BaseForm):
     """Formulario para crear una nueva presentación de diapositivas."""
-    
+
     theme = SelectField(
         "Tema Reveal.js",
         choices=[
@@ -295,13 +295,13 @@ class SlideShowForm(BaseForm):
             ("solarized", "Solarized"),
         ],
         default="simple",
-        validators=[DataRequired()]
+        validators=[DataRequired()],
     )
 
 
 class SlideForm(FlaskForm):
     """Formulario para crear/editar una diapositiva individual."""
-    
+
     title = StringField("Título de la Diapositiva", validators=[DataRequired()])
     content = MdeField("Contenido de la Diapositiva", validators=[DataRequired()])
     order = IntegerField("Orden", validators=[DataRequired()], default=1)
@@ -309,7 +309,7 @@ class SlideForm(FlaskForm):
 
 class SlideShowEditForm(SlideShowForm):
     """Formulario para editar una presentación existente."""
-    
+
     slides = []  # Will be populated dynamically with slide forms
 
 
