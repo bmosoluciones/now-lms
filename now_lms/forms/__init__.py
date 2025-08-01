@@ -622,3 +622,34 @@ class ForoMensajeRespuestaForm(FlaskForm):
     """Formulario para responder a un mensaje del foro."""
 
     contenido = MdeField("Respuesta", validators=[DataRequired()])
+
+
+# Blog forms
+class BlogPostForm(BaseForm):
+    """Formulario para crear/editar entradas de blog."""
+
+    title = StringField("Título", validators=[DataRequired()])
+    content = MdeField("Contenido", validators=[DataRequired()])
+    allow_comments = BooleanField("Permitir comentarios", default=True)
+    tags = StringField("Etiquetas (separadas por comas)")
+    status = SelectField(
+        "Estado",
+        choices=[
+            ("draft", "Borrador"),
+            ("pending", "Pendiente"),
+            ("published", "Publicado"),
+            ("banned", "Baneado")
+        ]
+    )
+
+
+class BlogTagForm(BaseForm):
+    """Formulario para crear etiquetas de blog."""
+
+    name = StringField("Nombre", validators=[DataRequired()])
+
+
+class BlogCommentForm(BaseForm):
+    """Formulario para comentarios de blog."""
+
+    content = TextAreaField("Comentario", validators=[DataRequired()])

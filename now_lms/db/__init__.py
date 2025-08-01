@@ -816,3 +816,53 @@ class EvaluationReopenRequest(database.Model, BaseTabla):
     user = database.relationship("Usuario", foreign_keys=[user_id])
     evaluation = database.relationship("Evaluation")
     reviewer = database.relationship("Usuario", foreign_keys=[approved_by])
+
+
+# Blog feature models
+blog_post_tags = database.Table('blog_post_tags',
+    database.Column('post_id', database.String(26), database.ForeignKey('blog_post.id'), primary_key=True),
+    database.Column('tag_id', database.String(26), database.ForeignKey('blog_tag.id'), primary_key=True)
+)
+
+
+class BlogPost(database.Model, BaseTabla):
+    """Blog post model."""
+
+    __tablename__ = 'blog_post'
+
+    title = database.Column(database.String(200), nullable=False)
+    slug = database.Column(database.String(250), unique=True, nullable=False, index=True)
+    content = database.Column(database.Text, nullable=False)
+    author_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    status = database.Column(database.String(20), default='draft', nullable=False, index=True)  # draft, pending, published, banned
+    allow_comments = database.Column(database.Boolean(), default=True, nullable=False)
+    published_at = database.Column(database.DateTime(), nullable=True)
+    comment_count = database.Column(database.Integer(), default=0, nullable=False)
+
+    # Relationships
+    author = database.relationship("Usuario", backref="blog_posts")
+    tags = database.relationship("BlogTag", secondary=blog_post_tags, backref="posts")
+    comments = database.relationship("BlogComment", backref="post", cascade="all, delete-orphan")
+
+
+class BlogTag(database.Model, BaseTabla):
+    """Blog tag model."""
+
+    __tablename__ = 'blog_tag'
+
+    name = database.Column(database.String(50), unique=True, nullable=False, index=True)
+    slug = database.Column(database.String(60), unique=True, nullable=False, index=True)
+
+
+class BlogComment(database.Model, BaseTabla):
+    """Blog comment model."""
+
+    __tablename__ = 'blog_comment'
+
+    post_id = database.Column(database.String(26), database.ForeignKey('blog_post.id'), nullable=False, index=True)
+    user_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    content = database.Column(database.Text, nullable=False)
+    status = database.Column(database.String(20), default='visible', nullable=False, index=True)  # visible, flagged, banned
+
+    # Relationships
+    user = database.relationship("Usuario", backref="blog_comments")

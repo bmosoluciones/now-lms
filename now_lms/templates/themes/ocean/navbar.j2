@@ -44,6 +44,9 @@
                 <li class="nav-item">
                     <a href="{{ url_for('resource.lista_de_recursos', page=1) }}" class="nav-link">Recursos</a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('blog.blog_index') }}" class="nav-link">Blog</a>
+                </li>
                 {% if current_user.is_authenticated %} {% if current_user.tipo == "moderator" or current_user.tipo ==
                 "instructor" or current_user.tipo == "admin" %}
                 <li class="nav-item">

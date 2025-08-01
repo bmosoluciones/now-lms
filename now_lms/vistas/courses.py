@@ -90,7 +90,6 @@ from now_lms.forms import (
     CursoRecursoSlides,
     CursoRecursoVideoYoutube,
     CursoSeccionForm,
-    SlideForm,
     SlideShowForm,
 )
 from now_lms.logs import log

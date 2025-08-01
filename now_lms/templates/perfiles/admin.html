@@ -119,6 +119,20 @@
                     <div class="col d-flex align-items-start">
                         <div>
                             <h4 class="fw-bold mb-0">
+                                <i class="bi bi-journal-text" aria-hidden="true"></i>
+                                Blog
+                            </h4>
+                            <p>
+                                <a href="{{ url_for('blog.admin_blog_index') }}" class="link-dark">Gestionar Entradas</a>
+                                -
+                                <a href="{{ url_for('blog.admin_tags') }}" class="link-dark">Etiquetas</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col d-flex align-items-start">
+                        <div>
+                            <h4 class="fw-bold mb-0">
                                 <i class="bi bi-chat-left-text-fill" aria-hidden="true"></i>
                                 Mensajes
                             </h4>

@@ -102,6 +102,7 @@ from now_lms.misc import ESTILO_ALERTAS, ICONOS_RECURSOS, INICIO_SESION, concate
 from now_lms.themes import current_theme
 from now_lms.version import VERSION
 from now_lms.vistas._helpers import get_current_course_logo, get_site_logo
+from now_lms.vistas.blog import blog
 from now_lms.vistas.categories import category
 from now_lms.vistas.certificates import certificate
 from now_lms.vistas.courses import course
@@ -161,6 +162,7 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
     log.trace("Registrando modulos en la aplicación principal.")
 
     with flask_app.app_context():
+        flask_app.register_blueprint(blog)
         flask_app.register_blueprint(category)
         flask_app.register_blueprint(certificate)
         flask_app.register_blueprint(course)
