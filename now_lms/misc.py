@@ -149,6 +149,32 @@ def markdown_to_clean_hmtl(text: str):
     return html_limpio
 
 
+def sanitize_slide_content(html_content: str) -> str:
+    """Sanitiza el contenido HTML de una diapositiva según los requerimientos."""
+    # Etiquetas permitidas según la especificación
+    allowed_tags = [
+        "p", "b", "i", "ul", "li", "strong", "em", "a", "br", "img", 
+        "h1", "h2", "h3", "h4"
+    ]
+    
+    # Atributos permitidos
+    allowed_attrs = {
+        "a": ["href", "rel", "target"],
+        "img": ["src", "alt", "width", "height", "class"],
+        "*": ["class", "id"]
+    }
+    
+    # Limpiar el HTML
+    clean_html = clean(
+        html_content, 
+        tags=allowed_tags, 
+        attributes=allowed_attrs,
+        strip=True
+    )
+    
+    return clean_html
+
+
 CURSO_NIVEL: dict = {
     0: """<i class="bi bi-circle" aria-hidden="true"></i> Nivel Introductorio""",
     1: """<i class="bi bi-circle-fill" aria-hidden="true"></i> Nivel Principiante""",

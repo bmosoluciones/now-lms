@@ -121,12 +121,12 @@
                             <use xlink:href="#cpu-fill" />
                         </svg>
                         <div>
-                            <h5 class="fw-bold mb-0"><i class="bi bi-projector" aria-hidden="true"></i> Diapositivas</h5>
-                            <p>Cree una presentación de diapositivas para sus estudiantes.</p>
+                            <h5 class="fw-bold mb-0"><i class="bi bi-file-slides" aria-hidden="true"></i> Diapositivas</h5>
+                            <p>Cree una presentación de diapositivas interactiva para sus estudiantes.</p>
                             <p>
                                 <span class="badge bg-success">
                                     <a
-                                        href="{{ url_for('course.nuevo_recurso_text', course_code=id_curso, seccion=id_seccion) }}"
+                                        href="{{ url_for('course.nuevo_recurso_slideshow', course_code=id_curso, seccion=id_seccion) }}"
                                         class="link-light"
                                         >Agregar al curso.</a
                                     >

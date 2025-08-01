@@ -330,12 +330,41 @@ class CursoRecursoConsulta(database.Model, BaseTabla):
     respuesta = database.Column(database.String(500))
 
 
+class SlideShowResource(database.Model, BaseTabla):
+    """Una presentación basada en reveal.js que hereda de BaseResource"""
+
+    __tablename__ = "slide_show_resource"
+    
+    course_id = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
+    title = database.Column(database.String(150), nullable=False)
+    theme = database.Column(database.String(20), nullable=False, default="simple")
+    
+    # Relationships
+    course = database.relationship("Curso", foreign_keys=[course_id])
+    slides = database.relationship("Slide", back_populates="slide_show", cascade="all, delete-orphan", order_by="Slide.order")
+
+
+class Slide(database.Model, BaseTabla):
+    """Una diapositiva individual dentro de una presentación"""
+
+    __tablename__ = "slide"
+    
+    slide_show_id = database.Column(database.String(26), database.ForeignKey("slide_show_resource.id"), nullable=False, index=True)
+    title = database.Column(database.String(150), nullable=False)
+    content = database.Column(database.Text, nullable=False)
+    order = database.Column(database.Integer, nullable=False, default=1)
+    
+    # Relationships
+    slide_show = database.relationship("SlideShowResource", back_populates="slides")
+
+
+# Keep legacy models for backward compatibility but mark as deprecated
 class CursoRecursoSlideShow(database.Model, BaseTabla):
-    """Una presentación basada en reveal.js"""
+    """DEPRECATED: Una presentación basada en reveal.js - use SlideShowResource instead"""
 
     __table_args__ = (database.UniqueConstraint("codigo", name="codigo_slideshow_unico"),)
-    titulo = database.Column(database.String(100), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
-    descripcion = database.Column(database.String(250), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
+    titulo = database.Column(database.String(100), nullable=False)
+    descripcion = database.Column(database.String(250), nullable=False)
     codigo = database.Column(database.String(32), unique=False)
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
     recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False, index=True)
@@ -343,10 +372,10 @@ class CursoRecursoSlideShow(database.Model, BaseTabla):
 
 
 class CursoRecursoSlides(database.Model, BaseTabla):
-    """Una presentación basada en reveal.js"""
+    """DEPRECATED: Una diapositiva individual - use Slide instead"""
 
-    titulo = database.Column(database.String(100), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
-    texto = database.Column(database.String(250), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
+    titulo = database.Column(database.String(100), nullable=False)
+    texto = database.Column(database.String(500), nullable=False)
     indice = database.Column(database.Integer())
     curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False)
     recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False)

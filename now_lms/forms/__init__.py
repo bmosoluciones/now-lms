@@ -278,6 +278,41 @@ class CursoRecursoSlides(CursoRecursoForm):
     )
 
 
+class SlideShowForm(BaseForm):
+    """Formulario para crear una nueva presentación de diapositivas."""
+    
+    theme = SelectField(
+        "Tema Reveal.js",
+        choices=[
+            ("black", "Black"),
+            ("white", "White"),
+            ("league", "League"),
+            ("beige", "Beige"),
+            ("sky", "Sky"),
+            ("night", "Night"),
+            ("serif", "Serif"),
+            ("simple", "Simple"),
+            ("solarized", "Solarized"),
+        ],
+        default="simple",
+        validators=[DataRequired()]
+    )
+
+
+class SlideForm(FlaskForm):
+    """Formulario para crear/editar una diapositiva individual."""
+    
+    title = StringField("Título de la Diapositiva", validators=[DataRequired()])
+    content = MdeField("Contenido de la Diapositiva", validators=[DataRequired()])
+    order = IntegerField("Orden", validators=[DataRequired()], default=1)
+
+
+class SlideShowEditForm(SlideShowForm):
+    """Formulario para editar una presentación existente."""
+    
+    slides = []  # Will be populated dynamically with slide forms
+
+
 class CursoRecursoMeet(CursoRecursoForm):
     """Formulario para insertar un Meet"""
 
