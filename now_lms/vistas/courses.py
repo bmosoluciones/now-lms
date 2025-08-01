@@ -190,7 +190,7 @@ def course_enroll(course_code):
     _usuario = database.session.query(Usuario).filter_by(usuario=current_user.usuario).first()
 
     _modo = request.args.get("modo", "") or request.form.get("modo", "")
-    
+
     # Check for coupon code in URL or form
     coupon_code = request.args.get("coupon_code", "") or request.form.get("coupon_code", "")
     applied_coupon = None
@@ -210,7 +210,7 @@ def course_enroll(course_code):
 
     form = PagoForm()
     coupon_form = CouponApplicationForm()
-    
+
     # Pre-fill form data
     form.nombre.data = _usuario.nombre
     form.apellido.data = _usuario.apellido
@@ -232,7 +232,7 @@ def course_enroll(course_code):
         pago.pais = form.pais.data
         pago.monto = final_price
         pago.metodo = "paypal" if final_price > 0 else "free"
-        
+
         # Add coupon information to payment description
         if applied_coupon:
             pago.descripcion = f"Cupón aplicado: {applied_coupon.code} (Descuento: {discount_amount})"
@@ -244,11 +244,11 @@ def course_enroll(course_code):
             try:
                 database.session.add(pago)
                 database.session.flush()
-                
+
                 # Update coupon usage if applied
                 if applied_coupon:
                     applied_coupon.current_uses += 1
-                
+
                 registro = EstudianteCurso(
                     curso=pago.curso,
                     usuario=pago.usuario,
@@ -258,12 +258,12 @@ def course_enroll(course_code):
                 database.session.add(registro)
                 database.session.commit()
                 _crear_indice_avance_curso(course_code)
-                
+
                 if applied_coupon and final_price == 0:
                     flash(f"¡Cupón aplicado exitosamente! Inscripción gratuita con código {applied_coupon.code}", "success")
                 elif applied_coupon:
                     flash(f"¡Cupón aplicado! Descuento de {discount_amount} aplicado", "success")
-                
+
                 return redirect(url_for("course.tomar_curso", course_code=course_code))
             except OperationalError:  # pragma: no cover
                 database.session.rollback()
@@ -307,7 +307,7 @@ def course_enroll(course_code):
             try:
                 database.session.add(pago)
                 database.session.commit()
-                
+
                 # Redirect to PayPal payment page with payment ID
                 return redirect(url_for("paypal.payment_page", course_code=course_code, payment_id=pago.id))
             except OperationalError:  # pragma: no cover
@@ -316,15 +316,15 @@ def course_enroll(course_code):
                 return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
     return render_template(
-        "learning/curso/enroll.html", 
-        curso=_curso, 
-        usuario=_usuario, 
+        "learning/curso/enroll.html",
+        curso=_curso,
+        usuario=_usuario,
         form=form,
         coupon_form=coupon_form,
         applied_coupon=applied_coupon,
         original_price=original_price,
         final_price=final_price,
-        discount_amount=discount_amount
+        discount_amount=discount_amount,
     )
 
     return render_template("learning/curso/enroll.html", curso=_curso, usuario=_usuario, form=form)
@@ -1671,18 +1671,18 @@ def _validate_coupon_permissions(course_code, user):
     curso = database.session.query(Curso).filter_by(codigo=course_code).first()
     if not curso:
         return None, "Curso no encontrado"
-    
+
     if not curso.pagado:
         return None, "Los cupones solo están disponibles para cursos pagados"
-    
+
     # Check if user is instructor for this course
-    instructor_assignment = database.session.query(DocenteCurso).filter_by(
-        curso=course_code, usuario=user.usuario, vigente=True
-    ).first()
-    
+    instructor_assignment = (
+        database.session.query(DocenteCurso).filter_by(curso=course_code, usuario=user.usuario, vigente=True).first()
+    )
+
     if not instructor_assignment and user.tipo != "admin":
         return None, "Solo el instructor del curso puede gestionar cupones"
-    
+
     return curso, None
 
 
@@ -1690,28 +1690,26 @@ def _validate_coupon_for_enrollment(course_code, coupon_code, user):
     """Validate coupon for enrollment use."""
     if not coupon_code:
         return None, None, "No se proporcionó código de cupón"
-    
+
     # Find coupon
-    coupon = database.session.query(Coupon).filter_by(
-        course_id=course_code, code=coupon_code.upper()
-    ).first()
-    
+    coupon = database.session.query(Coupon).filter_by(course_id=course_code, code=coupon_code.upper()).first()
+
     if not coupon:
         return None, None, "Código de cupón inválido"
-    
+
     # Check if user is already enrolled
-    existing_enrollment = database.session.query(EstudianteCurso).filter_by(
-        curso=course_code, usuario=user.usuario, vigente=True
-    ).first()
-    
+    existing_enrollment = (
+        database.session.query(EstudianteCurso).filter_by(curso=course_code, usuario=user.usuario, vigente=True).first()
+    )
+
     if existing_enrollment:
         return None, None, "No puede aplicar cupón - ya está inscrito en el curso"
-    
+
     # Validate coupon
     is_valid, error_message = coupon.is_valid()
     if not is_valid:
         return None, None, error_message
-    
+
     return coupon, None, None
 
 
@@ -1724,9 +1722,9 @@ def list_coupons(course_code):
     if error:
         flash(error, "warning")
         return redirect(url_for("course.administrar_curso", course_code=course_code))
-    
+
     coupons = database.session.query(Coupon).filter_by(course_id=course_code).order_by(Coupon.timestamp.desc()).all()
-    
+
     return render_template("learning/curso/coupons/list.html", curso=curso, coupons=coupons)
 
 
@@ -1739,28 +1737,26 @@ def create_coupon(course_code):
     if error:
         flash(error, "warning")
         return redirect(url_for("course.administrar_curso", course_code=course_code))
-    
+
     form = CouponForm()
-    
+
     if form.validate_on_submit():
         # Check if coupon code already exists for this course
-        existing = database.session.query(Coupon).filter_by(
-            course_id=course_code, code=form.code.data.upper()
-        ).first()
-        
+        existing = database.session.query(Coupon).filter_by(course_id=course_code, code=form.code.data.upper()).first()
+
         if existing:
             flash("Ya existe un cupón con este código para este curso", "warning")
             return render_template("learning/curso/coupons/create.html", curso=curso, form=form)
-        
+
         # Validate discount value
         if form.discount_type.data == "percentage" and form.discount_value.data > 100:
             flash("El descuento porcentual no puede ser mayor al 100%", "warning")
             return render_template("learning/curso/coupons/create.html", curso=curso, form=form)
-        
+
         if form.discount_type.data == "fixed" and form.discount_value.data > curso.precio:
             flash("El descuento fijo no puede ser mayor al precio del curso", "warning")
             return render_template("learning/curso/coupons/create.html", curso=curso, form=form)
-        
+
         try:
             coupon = Coupon(
                 course_id=course_code,
@@ -1771,18 +1767,18 @@ def create_coupon(course_code):
                 expires_at=form.expires_at.data if form.expires_at.data else None,
                 created_by=current_user.usuario,
             )
-            
+
             database.session.add(coupon)
             database.session.commit()
-            
+
             flash("Cupón creado exitosamente", "success")
             return redirect(url_for("course.list_coupons", course_code=course_code))
-            
+
         except Exception as e:
             database.session.rollback()
             flash("Error al crear el cupón", "danger")
             log.error(f"Error creating coupon: {e}")
-    
+
     return render_template("learning/curso/coupons/create.html", curso=curso, form=form)
 
 
@@ -1795,35 +1791,35 @@ def edit_coupon(course_code, coupon_id):
     if error:
         flash(error, "warning")
         return redirect(url_for("course.administrar_curso", course_code=course_code))
-    
+
     coupon = database.session.query(Coupon).filter_by(id=coupon_id, course_id=course_code).first()
     if not coupon:
         flash("Cupón no encontrado", "warning")
         return redirect(url_for("course.list_coupons", course_code=course_code))
-    
+
     form = CouponForm(obj=coupon)
-    
+
     if form.validate_on_submit():
         # Check if coupon code already exists for this course (excluding current coupon)
-        existing = database.session.query(Coupon).filter(
-            Coupon.course_id == course_code,
-            Coupon.code == form.code.data.upper(),
-            Coupon.id != coupon_id
-        ).first()
-        
+        existing = (
+            database.session.query(Coupon)
+            .filter(Coupon.course_id == course_code, Coupon.code == form.code.data.upper(), Coupon.id != coupon_id)
+            .first()
+        )
+
         if existing:
             flash("Ya existe un cupón con este código para este curso", "warning")
             return render_template("learning/curso/coupons/edit.html", curso=curso, coupon=coupon, form=form)
-        
+
         # Validate discount value
         if form.discount_type.data == "percentage" and form.discount_value.data > 100:
             flash("El descuento porcentual no puede ser mayor al 100%", "warning")
             return render_template("learning/curso/coupons/edit.html", curso=curso, coupon=coupon, form=form)
-        
+
         if form.discount_type.data == "fixed" and form.discount_value.data > curso.precio:
             flash("El descuento fijo no puede ser mayor al precio del curso", "warning")
             return render_template("learning/curso/coupons/edit.html", curso=curso, coupon=coupon, form=form)
-        
+
         try:
             coupon.code = form.code.data.upper()
             coupon.discount_type = form.discount_type.data
@@ -1831,17 +1827,17 @@ def edit_coupon(course_code, coupon_id):
             coupon.max_uses = form.max_uses.data if form.max_uses.data else None
             coupon.expires_at = form.expires_at.data if form.expires_at.data else None
             coupon.modificado_por = current_user.usuario
-            
+
             database.session.commit()
-            
+
             flash("Cupón actualizado exitosamente", "success")
             return redirect(url_for("course.list_coupons", course_code=course_code))
-            
+
         except Exception as e:
             database.session.rollback()
             flash("Error al actualizar el cupón", "danger")
             log.error(f"Error updating coupon: {e}")
-    
+
     return render_template("learning/curso/coupons/edit.html", curso=curso, coupon=coupon, form=form)
 
 
@@ -1854,12 +1850,12 @@ def delete_coupon(course_code, coupon_id):
     if error:
         flash(error, "warning")
         return redirect(url_for("course.administrar_curso", course_code=course_code))
-    
+
     coupon = database.session.query(Coupon).filter_by(id=coupon_id, course_id=course_code).first()
     if not coupon:
         flash("Cupón no encontrado", "warning")
         return redirect(url_for("course.list_coupons", course_code=course_code))
-    
+
     try:
         database.session.delete(coupon)
         database.session.commit()
@@ -1868,5 +1864,5 @@ def delete_coupon(course_code, coupon_id):
         database.session.rollback()
         flash("Error al eliminar el cupón", "danger")
         log.error(f"Error deleting coupon: {e}")
-    
+
     return redirect(url_for("course.list_coupons", course_code=course_code))

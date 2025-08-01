@@ -624,7 +624,6 @@ class ForoMensajeRespuestaForm(FlaskForm):
     contenido = MdeField("Respuesta", validators=[DataRequired()])
 
 
-
 class AnnouncementForm(BaseForm):
     """Formulario base para crear/editar anuncios."""
 
@@ -670,6 +669,7 @@ class CouponApplicationForm(FlaskForm):
 
     coupon_code = StringField("Código de Cupón", render_kw={"placeholder": "Código de cupón (opcional)"})
 
+
 # Blog forms
 class BlogPostForm(BaseForm):
     """Formulario para crear/editar entradas de blog."""
@@ -679,13 +679,7 @@ class BlogPostForm(BaseForm):
     allow_comments = BooleanField("Permitir comentarios", default=True)
     tags = StringField("Etiquetas (separadas por comas)")
     status = SelectField(
-        "Estado",
-        choices=[
-            ("draft", "Borrador"),
-            ("pending", "Pendiente"),
-            ("published", "Publicado"),
-            ("banned", "Baneado")
-        ]
+        "Estado", choices=[("draft", "Borrador"), ("pending", "Pendiente"), ("published", "Publicado"), ("banned", "Baneado")]
     )
 
 
@@ -699,5 +693,3 @@ class BlogCommentForm(BaseForm):
     """Formulario para comentarios de blog."""
 
     content = TextAreaField("Comentario", validators=[DataRequired()])
-
-

@@ -47,10 +47,12 @@ def get_instructor_courses(instructor_user):
         return database.session.query(Curso).filter(Curso.estado != "draft").all()
     else:
         # Los instructores solo pueden crear anuncios para sus cursos asignados
-        return database.session.query(Curso).join(DocenteCurso).filter(
-            DocenteCurso.usuario == instructor_user.usuario,
-            Curso.estado != "draft"
-        ).all()
+        return (
+            database.session.query(Curso)
+            .join(DocenteCurso)
+            .filter(DocenteCurso.usuario == instructor_user.usuario, Curso.estado != "draft")
+            .all()
+        )
 
 
 @instructor_announcements.route("/instructor/announcements")
@@ -59,16 +61,16 @@ def get_instructor_courses(instructor_user):
 @cache.cached(timeout=60)
 def list_announcements():
     """Lista de anuncios de curso para instructores."""
-    
+
     # Obtener cursos del instructor
     instructor_courses = get_instructor_courses(current_user)
     course_ids = [course.codigo for course in instructor_courses]
-    
+
     if course_ids:
         consulta = database.paginate(
-            database.select(Announcement).filter(
-                Announcement.course_id.in_(course_ids)
-            ).order_by(Announcement.timestamp.desc()),
+            database.select(Announcement)
+            .filter(Announcement.course_id.in_(course_ids))
+            .order_by(Announcement.timestamp.desc()),
             page=request.args.get("page", default=1, type=int),
             max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
             count=True,
@@ -76,7 +78,7 @@ def list_announcements():
     else:
         # No hay cursos asignados
         consulta = None
-    
+
     return render_template("announcements/instructor_list.html", consulta=consulta, courses=instructor_courses)
 
 
@@ -85,24 +87,24 @@ def list_announcements():
 @perfil_requerido("instructor")
 def new_announcement():
     """Formulario para crear un nuevo anuncio de curso."""
-    
+
     form = CourseAnnouncementForm()
-    
+
     # Poblar choices del campo curso
     instructor_courses = get_instructor_courses(current_user)
     form.course_id.choices = [(course.codigo, course.nombre) for course in instructor_courses]
-    
+
     if not instructor_courses:
         flash("No tienes cursos asignados para crear anuncios.", "warning")
         return redirect(url_for("instructor_announcements.list_announcements"))
-    
+
     if form.validate_on_submit():
         # Verificar que el instructor tenga acceso al curso
         selected_course = database.session.get(Curso, form.course_id.data)
         if not selected_course or selected_course not in instructor_courses:
             flash("No tienes permisos para crear anuncios en ese curso.", "error")
             return redirect(url_for("instructor_announcements.new_announcement"))
-        
+
         announcement = Announcement(
             title=form.title.data,
             message=form.message.data,
@@ -111,13 +113,13 @@ def new_announcement():
             created_by_id=current_user.usuario,
             creado_por=current_user.usuario,
         )
-        
+
         database.session.add(announcement)
         database.session.commit()
-        
+
         flash("Anuncio de curso creado exitosamente.", "success")
         return redirect(url_for("instructor_announcements.list_announcements"))
-    
+
     return render_template("announcements/instructor_form.html", form=form, title="Nuevo Anuncio de Curso")
 
 
@@ -126,41 +128,43 @@ def new_announcement():
 @perfil_requerido("instructor")
 def edit_announcement(announcement_id):
     """Formulario para editar un anuncio de curso."""
-    
+
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is None:
         flash("Anuncio no encontrado o no es un anuncio de curso.", "error")
         return redirect(url_for("instructor_announcements.list_announcements"))
-    
+
     # Verificar que el instructor tenga acceso al curso
     instructor_courses = get_instructor_courses(current_user)
     course_ids = [course.codigo for course in instructor_courses]
-    
+
     if announcement.course_id not in course_ids:
         flash("No tienes permisos para editar este anuncio.", "error")
         return redirect(url_for("instructor_announcements.list_announcements"))
-    
+
     form = CourseAnnouncementForm(obj=announcement)
     form.course_id.choices = [(course.codigo, course.nombre) for course in instructor_courses]
-    
+
     if form.validate_on_submit():
         # Verificar nuevamente el permiso del curso seleccionado
         if form.course_id.data not in course_ids:
             flash("No tienes permisos para asignar este anuncio a ese curso.", "error")
             return redirect(url_for("instructor_announcements.edit_announcement", announcement_id=announcement_id))
-        
+
         announcement.title = form.title.data
         announcement.message = form.message.data
         announcement.expires_at = form.expires_at.data
         announcement.course_id = form.course_id.data
         announcement.modificado_por = current_user.usuario
-        
+
         database.session.commit()
-        
+
         flash("Anuncio de curso actualizado exitosamente.", "success")
         return redirect(url_for("instructor_announcements.list_announcements"))
-    
-    return render_template("announcements/instructor_form.html", form=form, title="Editar Anuncio de Curso", announcement=announcement)
+
+    return render_template(
+        "announcements/instructor_form.html", form=form, title="Editar Anuncio de Curso", announcement=announcement
+    )
 
 
 @instructor_announcements.route("/instructor/announcements/<announcement_id>/delete", methods=["POST"])
@@ -168,22 +172,22 @@ def edit_announcement(announcement_id):
 @perfil_requerido("instructor")
 def delete_announcement(announcement_id):
     """Eliminar un anuncio de curso."""
-    
+
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is None:
         flash("Anuncio no encontrado o no es un anuncio de curso.", "error")
         return redirect(url_for("instructor_announcements.list_announcements"))
-    
+
     # Verificar que el instructor tenga acceso al curso
     instructor_courses = get_instructor_courses(current_user)
     course_ids = [course.codigo for course in instructor_courses]
-    
+
     if announcement.course_id not in course_ids:
         flash("No tienes permisos para eliminar este anuncio.", "error")
         return redirect(url_for("instructor_announcements.list_announcements"))
-    
+
     database.session.delete(announcement)
     database.session.commit()
-    
+
     flash("Anuncio de curso eliminado exitosamente.", "success")
     return redirect(url_for("instructor_announcements.list_announcements"))

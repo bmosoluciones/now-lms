@@ -19,18 +19,16 @@
                     </a>
                 </div>
 
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-
-                {% if coupons %}
+                {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in
+                messages %}
+                <div
+                    class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show"
+                    role="alert"
+                >
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endfor %} {% endif %} {% endwith %} {% if coupons %}
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
@@ -52,49 +50,44 @@
                                         <td><strong>{{ coupon.code }}</strong></td>
                                         <td>
                                             {% if coupon.discount_type == 'percentage' %}
-                                                <span class="badge bg-primary">Porcentaje</span>
+                                            <span class="badge bg-primary">Porcentaje</span>
                                             {% else %}
-                                                <span class="badge bg-info">Fijo</span>
+                                            <span class="badge bg-info">Fijo</span>
                                             {% endif %}
                                         </td>
                                         <td>
-                                            {% if coupon.discount_type == 'percentage' %}
-                                                {{ coupon.discount_value }}%
-                                            {% else %}
-                                                ${{ coupon.discount_value }}
-                                            {% endif %}
+                                            {% if coupon.discount_type == 'percentage' %} {{ coupon.discount_value }}% {% else
+                                            %} ${{ coupon.discount_value }} {% endif %}
                                         </td>
                                         <td>
-                                            {{ coupon.current_uses }}
-                                            {% if coupon.max_uses %}
-                                                / {{ coupon.max_uses }}
-                                            {% else %}
-                                                / ∞
-                                            {% endif %}
+                                            {{ coupon.current_uses }} {% if coupon.max_uses %} / {{ coupon.max_uses }} {% else
+                                            %} / ∞ {% endif %}
                                         </td>
                                         <td>
-                                            {% if coupon.expires_at %}
-                                                {{ coupon.expires_at.strftime('%d/%m/%Y') }}
-                                            {% else %}
-                                                Sin expiración
-                                            {% endif %}
+                                            {% if coupon.expires_at %} {{ coupon.expires_at.strftime('%d/%m/%Y') }} {% else %}
+                                            Sin expiración {% endif %}
                                         </td>
                                         <td>
-                                            {% set is_valid, error_msg = coupon.is_valid() %}
-                                            {% if is_valid %}
-                                                <span class="badge bg-success">Activo</span>
+                                            {% set is_valid, error_msg = coupon.is_valid() %} {% if is_valid %}
+                                            <span class="badge bg-success">Activo</span>
                                             {% else %}
-                                                <span class="badge bg-danger">{{ error_msg }}</span>
+                                            <span class="badge bg-danger">{{ error_msg }}</span>
                                             {% endif %}
                                         </td>
                                         <td>
                                             <div class="btn-group" role="group">
-                                                <a href="{{ url_for('course.edit_coupon', course_code=curso.codigo, coupon_id=coupon.id) }}" 
-                                                   class="btn btn-sm btn-outline-primary">
+                                                <a
+                                                    href="{{ url_for('course.edit_coupon', course_code=curso.codigo, coupon_id=coupon.id) }}"
+                                                    class="btn btn-sm btn-outline-primary"
+                                                >
                                                     <i class="bi bi-pencil"></i> Editar
                                                 </a>
-                                                <form method="post" action="{{ url_for('course.delete_coupon', course_code=curso.codigo, coupon_id=coupon.id) }}" 
-                                                      style="display: inline;" onsubmit="return confirm('¿Está seguro de que desea eliminar este cupón?')">
+                                                <form
+                                                    method="post"
+                                                    action="{{ url_for('course.delete_coupon', course_code=curso.codigo, coupon_id=coupon.id) }}"
+                                                    style="display: inline"
+                                                    onsubmit="return confirm('¿Está seguro de que desea eliminar este cupón?')"
+                                                >
                                                     <button type="submit" class="btn btn-sm btn-outline-danger">
                                                         <i class="bi bi-trash"></i> Eliminar
                                                     </button>

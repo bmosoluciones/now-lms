@@ -39,8 +39,7 @@
                                         <small class="text-body-secondary">{{ curso.descripcion_corta }}</small>
                                     </div>
                                 </li>
-                                {% if curso.pagado %}
-                                {% if applied_coupon %}
+                                {% if curso.pagado %} {% if applied_coupon %}
                                 <li class="list-group-item d-flex justify-content-between lh-sm">
                                     <div>
                                         <h6 class="my-0">Precio Original</h6>
@@ -51,11 +50,8 @@
                                     <div>
                                         <h6 class="my-0">Descuento ({{ applied_coupon.code }})</h6>
                                         <small class="text-body-secondary">
-                                            {% if applied_coupon.discount_type == 'percentage' %}
-                                                {{ applied_coupon.discount_value }}% descuento
-                                            {% else %}
-                                                Descuento fijo
-                                            {% endif %}
+                                            {% if applied_coupon.discount_type == 'percentage' %} {{
+                                            applied_coupon.discount_value }}% descuento {% else %} Descuento fijo {% endif %}
                                         </small>
                                     </div>
                                     <span>-{{ discount_amount | round(2) }}</span>
@@ -72,13 +68,14 @@
                                     <span>Total (USD)</span>
                                     <strong>{{ final_price | round(2) }}</strong>
                                     {% if final_price == 0 %}
-                                        <span class="badge bg-success ms-2">¡GRATIS!</span>
-                                    {% endif %}
-                                {% else %}
+                                    <span class="badge bg-success ms-2">¡GRATIS!</span>
+                                    {% endif %} {% else %}
+                                </li>
+
                                 <li class="list-group-item d-flex justify-content-between">
                                     <span>Total</span>
                                     <strong>GRATIS</strong>
-                                {% endif %}
+                                    {% endif %}
                                 </li>
                             </ul>
                         </div>
@@ -127,9 +124,9 @@
                                     <div class="invalid-feedback">Zip code required.</div>
                                 </div>
                             </div>
-                            
+
                             {% if curso.pagado %}
-                            <hr class="my-4">
+                            <hr class="my-4" />
                             <h4 class="mb-3">Código de Cupón</h4>
                             <div class="row g-3">
                                 <div class="col-12">
@@ -137,18 +134,19 @@
                                     <label for="coupon_code" class="form-label">Código de Cupón (Opcional)</label>
                                     <div class="input-group">
                                         {{ coupon_form.coupon_code(class="form-control", id="coupon_code") }}
-                                        <button class="btn btn-outline-secondary" type="button" onclick="applyCoupon()">Aplicar</button>
+                                        <button class="btn btn-outline-secondary" type="button" onclick="applyCoupon()">
+                                            Aplicar
+                                        </button>
                                     </div>
                                     {% if applied_coupon %}
-                                        <small class="text-success">✓ Cupón {{ applied_coupon.code }} aplicado exitosamente</small>
+                                    <small class="text-success">✓ Cupón {{ applied_coupon.code }} aplicado exitosamente</small>
                                     {% endif %}
                                 </div>
                             </div>
                             {% endif %}
-                            
+
                             <br />
-                            {% if curso.pagado %} 
-                            {% if curso.auditable %}
+                            {% if curso.pagado %} {% if curso.auditable %}
                             <button class="w-100 btn btn-warning mb-2" name="modo" value="audit" type="submit">
                                 Auditar contenido del curso
                             </button>
@@ -160,18 +158,15 @@
                                 certificación.
                             </p>
                             <br />
-                            {% endif %}
-
-                            {% if final_price == 0 %}
-                                <button class="w-100 btn btn-success" name="modo" value="free" type="submit">
-                                    ¡Inscribirse Gratis con Cupón!
-                                </button>
+                            {% endif %} {% if final_price == 0 %}
+                            <button class="w-100 btn btn-success" name="modo" value="free" type="submit">
+                                ¡Inscribirse Gratis con Cupón!
+                            </button>
                             {% else %}
-                                <button class="w-100 btn btn-primary" name="modo" value="paid" type="submit">
-                                    Proceder al pago ({{ final_price | round(2) }} USD)
-                                </button>
-                            {% endif %}
-                            {% else %}
+                            <button class="w-100 btn btn-primary" name="modo" value="paid" type="submit">
+                                Proceder al pago ({{ final_price | round(2) }} USD)
+                            </button>
+                            {% endif %} {% else %}
                             <button class="w-100 btn btn-primary" name="modo" value="free" type="submit">
                                 Inscribirse al curso
                             </button>
@@ -180,30 +175,35 @@
                     </div>
                 </div>
                 <!-- Hidden field to pass coupon code to backend -->
-                <input type="hidden" name="coupon_code" id="hidden_coupon_code" value="{{ coupon_form.coupon_code.data or '' }}">
+                <input
+                    type="hidden"
+                    name="coupon_code"
+                    id="hidden_coupon_code"
+                    value="{{ coupon_form.coupon_code.data or '' }}"
+                />
             </form>
         </main>
 
         <script>
             function applyCoupon() {
-                const couponCode = document.getElementById('coupon_code').value;
+                const couponCode = document.getElementById("coupon_code").value
                 if (couponCode.trim()) {
                     // Update hidden field
-                    document.getElementById('hidden_coupon_code').value = couponCode;
+                    document.getElementById("hidden_coupon_code").value = couponCode
                     // Redirect with coupon code in URL
-                    const currentUrl = new URL(window.location);
-                    currentUrl.searchParams.set('coupon_code', couponCode);
-                    window.location.href = currentUrl.toString();
+                    const currentUrl = new URL(window.location)
+                    currentUrl.searchParams.set("coupon_code", couponCode)
+                    window.location.href = currentUrl.toString()
                 }
             }
-            
+
             // Handle Enter key in coupon input
-            document.getElementById('coupon_code').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    applyCoupon();
+            document.getElementById("coupon_code").addEventListener("keypress", function (e) {
+                if (e.key === "Enter") {
+                    e.preventDefault()
+                    applyCoupon()
                 }
-            });
+            })
         </script>
     </body>
 </html>

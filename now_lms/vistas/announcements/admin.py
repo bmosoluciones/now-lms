@@ -46,14 +46,16 @@ admin_announcements = Blueprint("admin_announcements", __name__, template_folder
 @cache.cached(timeout=60)
 def list_announcements():
     """Lista de anuncios globales para administradores."""
-    
+
     consulta = database.paginate(
-        database.select(Announcement).filter(Announcement.course_id.is_(None)).order_by(Announcement.is_sticky.desc(), Announcement.timestamp.desc()),
+        database.select(Announcement)
+        .filter(Announcement.course_id.is_(None))
+        .order_by(Announcement.is_sticky.desc(), Announcement.timestamp.desc()),
         page=request.args.get("page", default=1, type=int),
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,
     )
-    
+
     return render_template("announcements/admin_list.html", consulta=consulta)
 
 
@@ -62,9 +64,9 @@ def list_announcements():
 @perfil_requerido("admin")
 def new_announcement():
     """Formulario para crear un nuevo anuncio global."""
-    
+
     form = GlobalAnnouncementForm()
-    
+
     if form.validate_on_submit():
         announcement = Announcement(
             title=form.title.data,
@@ -74,13 +76,13 @@ def new_announcement():
             created_by_id=current_user.usuario,
             creado_por=current_user.usuario,
         )
-        
+
         database.session.add(announcement)
         database.session.commit()
-        
+
         flash("Anuncio global creado exitosamente.", "success")
         return redirect(url_for("admin_announcements.list_announcements"))
-    
+
     return render_template("announcements/admin_form.html", form=form, title="Nuevo Anuncio Global")
 
 
@@ -89,27 +91,29 @@ def new_announcement():
 @perfil_requerido("admin")
 def edit_announcement(announcement_id):
     """Formulario para editar un anuncio global."""
-    
+
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is not None:
         flash("Anuncio no encontrado o no es un anuncio global.", "error")
         return redirect(url_for("admin_announcements.list_announcements"))
-    
+
     form = GlobalAnnouncementForm(obj=announcement)
-    
+
     if form.validate_on_submit():
         announcement.title = form.title.data
         announcement.message = form.message.data
         announcement.expires_at = form.expires_at.data
         announcement.is_sticky = form.is_sticky.data
         announcement.modificado_por = current_user.usuario
-        
+
         database.session.commit()
-        
+
         flash("Anuncio global actualizado exitosamente.", "success")
         return redirect(url_for("admin_announcements.list_announcements"))
-    
-    return render_template("announcements/admin_form.html", form=form, title="Editar Anuncio Global", announcement=announcement)
+
+    return render_template(
+        "announcements/admin_form.html", form=form, title="Editar Anuncio Global", announcement=announcement
+    )
 
 
 @admin_announcements.route("/admin/announcements/<announcement_id>/delete", methods=["POST"])
@@ -117,14 +121,14 @@ def edit_announcement(announcement_id):
 @perfil_requerido("admin")
 def delete_announcement(announcement_id):
     """Eliminar un anuncio global."""
-    
+
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is not None:
         flash("Anuncio no encontrado o no es un anuncio global.", "error")
         return redirect(url_for("admin_announcements.list_announcements"))
-    
+
     database.session.delete(announcement)
     database.session.commit()
-    
+
     flash("Anuncio global eliminado exitosamente.", "success")
     return redirect(url_for("admin_announcements.list_announcements"))

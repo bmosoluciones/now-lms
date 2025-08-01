@@ -252,17 +252,15 @@ def confirm_payment():
 
         # First check if there's a pending payment record for this user/course with coupon discount applied
         pending_payment = (
-            database.session.query(Pago)
-            .filter_by(usuario=current_user.usuario, curso=course_code, estado="pending")
-            .first()
+            database.session.query(Pago).filter_by(usuario=current_user.usuario, curso=course_code, estado="pending").first()
         )
-        
+
         # Determine expected amount - either from pending payment (with coupon) or course price
         if pending_payment:
             expected_amount = float(pending_payment.monto)
         else:
             expected_amount = float(curso.precio)
-        
+
         # Compare amounts with tolerance for floating point precision
         verified_amount = float(verification["amount"])
         amount_tolerance = 0.01  # 1 cent tolerance
@@ -347,11 +345,9 @@ def confirm_payment():
                     # Extract coupon code from payment description
                     coupon_code = pago.descripcion.split("Cupón aplicado: ")[1].split(" ")[0]
                     from now_lms.db import Coupon
-                    
-                    coupon = database.session.query(Coupon).filter_by(
-                        course_id=course_code, code=coupon_code
-                    ).first()
-                    
+
+                    coupon = database.session.query(Coupon).filter_by(course_id=course_code, code=coupon_code).first()
+
                     if coupon:
                         coupon.current_uses += 1
                         database.session.commit()

@@ -46,9 +46,9 @@ blog = Blueprint("blog", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 def create_slug(title):
     """Create a URL-friendly slug from title."""
-    slug = re.sub(r'[^\w\s-]', '', title.lower())
-    slug = re.sub(r'[-\s]+', '-', slug)
-    return slug.strip('-')
+    slug = re.sub(r"[^\w\s-]", "", title.lower())
+    slug = re.sub(r"[-\s]+", "-", slug)
+    return slug.strip("-")
 
 
 def ensure_unique_slug(title, post_id=None):
@@ -56,18 +56,18 @@ def ensure_unique_slug(title, post_id=None):
     base_slug = create_slug(title)
     slug = base_slug
     counter = 1
-    
+
     while True:
         query = database.session.query(BlogPost).filter(BlogPost.slug == slug)
         if post_id:
             query = query.filter(BlogPost.id != post_id)
-        
+
         if not query.first():
             break
-            
+
         slug = f"{base_slug}-{counter}"
         counter += 1
-    
+
     return slug
 
 
@@ -75,98 +75,90 @@ def ensure_unique_slug(title, post_id=None):
 @blog.route("/blog")
 def blog_index():
     """Public blog index page."""
-    page = request.args.get('page', 1, type=int)
-    tag_slug = request.args.get('tag')
-    author_id = request.args.get('author')
-    
-    query = database.session.query(BlogPost).filter(BlogPost.status == 'published')
-    
+    page = request.args.get("page", 1, type=int)
+    tag_slug = request.args.get("tag")
+    author_id = request.args.get("author")
+
+    query = database.session.query(BlogPost).filter(BlogPost.status == "published")
+
     if tag_slug:
         tag = database.session.query(BlogTag).filter(BlogTag.slug == tag_slug).first()
         if tag:
             query = query.filter(BlogPost.tags.contains(tag))
-    
+
     if author_id:
         query = query.filter(BlogPost.author_id == author_id)
-    
+
     query = query.order_by(BlogPost.published_at.desc())
-    
+
     pagination = database.paginate(
         query,
         page=page,
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,
     )
-    
+
     # Get all tags for filter
     tags = database.session.query(BlogTag).order_by(BlogTag.name).all()
-    
+
     return render_template(
         "blog/public_index.html",
         posts=pagination.items,
         pagination=pagination,
         tags=tags,
         current_tag=tag_slug,
-        current_author=author_id
+        current_author=author_id,
     )
 
 
 @blog.route("/blog/<slug>")
 def blog_post(slug):
     """Display a single blog post."""
-    post = database.session.query(BlogPost).filter(
-        and_(BlogPost.slug == slug, BlogPost.status == 'published')
-    ).first_or_404()
-    
+    post = database.session.query(BlogPost).filter(and_(BlogPost.slug == slug, BlogPost.status == "published")).first_or_404()
+
     # Get comments for this post
-    comments = database.session.query(BlogComment).filter(
-        and_(BlogComment.post_id == post.id, BlogComment.status == 'visible')
-    ).order_by(BlogComment.timestamp).all()
-    
+    comments = (
+        database.session.query(BlogComment)
+        .filter(and_(BlogComment.post_id == post.id, BlogComment.status == "visible"))
+        .order_by(BlogComment.timestamp)
+        .all()
+    )
+
     # Comment form
     comment_form = BlogCommentForm() if current_user.is_authenticated and post.allow_comments else None
-    
-    return render_template(
-        "blog/post_detail.html",
-        post=post,
-        comments=comments,
-        comment_form=comment_form
-    )
+
+    return render_template("blog/post_detail.html", post=post, comments=comments, comment_form=comment_form)
 
 
 @blog.route("/blog/<slug>/comments", methods=["POST"])
 @login_required
 def add_comment(slug):
     """Add a comment to a blog post."""
-    post = database.session.query(BlogPost).filter(
-        and_(BlogPost.slug == slug, BlogPost.status == 'published')
-    ).first_or_404()
-    
+    post = database.session.query(BlogPost).filter(and_(BlogPost.slug == slug, BlogPost.status == "published")).first_or_404()
+
     if not post.allow_comments:
         flash("Los comentarios están deshabilitados para esta entrada.", "warning")
-        return redirect(url_for('blog.blog_post', slug=slug))
-    
+        return redirect(url_for("blog.blog_post", slug=slug))
+
     form = BlogCommentForm()
     if form.validate_on_submit():
-        comment = BlogComment(
-            post_id=post.id,
-            user_id=current_user.usuario,
-            content=form.content.data,
-            status='visible'
-        )
+        comment = BlogComment(post_id=post.id, user_id=current_user.usuario, content=form.content.data, status="visible")
         database.session.add(comment)
-        
+
         # Update comment count
-        post.comment_count = database.session.query(BlogComment).filter(
-            and_(BlogComment.post_id == post.id, BlogComment.status == 'visible')
-        ).count() + 1
-        
+        post.comment_count = (
+            database.session.query(BlogComment)
+            .filter(and_(BlogComment.post_id == post.id, BlogComment.status == "visible"))
+            .count()
+            + 1
+        )
+
         database.session.commit()
         flash("Comentario agregado exitosamente.", "success")
     else:
         flash("Error al agregar el comentario.", "error")
-    
-    return redirect(url_for('blog.blog_post', slug=slug))
+
+    return redirect(url_for("blog.blog_post", slug=slug))
 
 
 @blog.route("/blog/comments/<comment_id>/flag", methods=["POST"])
@@ -176,12 +168,12 @@ def flag_comment(comment_id):
     comment = database.session.get(BlogComment, comment_id)
     if not comment:
         abort(404)
-    
-    comment.status = 'flagged'
+
+    comment.status = "flagged"
     database.session.commit()
-    
+
     flash("Comentario marcado como inapropiado.", "info")
-    return redirect(url_for('blog.blog_post', slug=comment.post.slug))
+    return redirect(url_for("blog.blog_post", slug=comment.post.slug))
 
 
 # Admin blog routes
@@ -190,28 +182,25 @@ def flag_comment(comment_id):
 @perfil_requerido("admin")
 def admin_blog_index():
     """Admin blog management index."""
-    page = request.args.get('page', 1, type=int)
-    status_filter = request.args.get('status', 'all')
-    
+    page = request.args.get("page", 1, type=int)
+    status_filter = request.args.get("status", "all")
+
     query = database.session.query(BlogPost)
-    
-    if status_filter != 'all':
+
+    if status_filter != "all":
         query = query.filter(BlogPost.status == status_filter)
-    
+
     query = query.order_by(BlogPost.timestamp.desc())
-    
+
     pagination = database.paginate(
         query,
         page=page,
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,
     )
-    
+
     return render_template(
-        "blog/admin_index.html",
-        posts=pagination.items,
-        pagination=pagination,
-        current_status=status_filter
+        "blog/admin_index.html", posts=pagination.items, pagination=pagination, current_status=status_filter
     )
 
 
@@ -221,7 +210,7 @@ def admin_blog_index():
 def admin_create_post():
     """Create a new blog post."""
     form = BlogPostForm()
-    
+
     # Set initial status based on user role
     if current_user.tipo == "admin":
         form.status.data = "published"
@@ -229,28 +218,28 @@ def admin_create_post():
         form.status.data = "pending"
         # Instructors can only create drafts or pending posts
         form.status.choices = [("draft", "Borrador"), ("pending", "Pendiente")]
-    
+
     if form.validate_on_submit():
         slug = ensure_unique_slug(form.title.data)
-        
+
         post = BlogPost(
             title=form.title.data,
             slug=slug,
             content=form.content.data,
             author_id=current_user.usuario,
             status=form.status.data,
-            allow_comments=form.allow_comments.data
+            allow_comments=form.allow_comments.data,
         )
-        
-        if form.status.data == 'published':
+
+        if form.status.data == "published":
             post.published_at = datetime.utcnow()
-        
+
         database.session.add(post)
         database.session.flush()
-        
+
         # Handle tags
         if form.tags.data:
-            tag_names = [name.strip() for name in form.tags.data.split(',') if name.strip()]
+            tag_names = [name.strip() for name in form.tags.data.split(",") if name.strip()]
             for tag_name in tag_names:
                 tag_slug = create_slug(tag_name)
                 tag = database.session.query(BlogTag).filter(BlogTag.slug == tag_slug).first()
@@ -260,18 +249,18 @@ def admin_create_post():
                         tag = BlogTag(name=tag_name, slug=tag_slug)
                         database.session.add(tag)
                         database.session.flush()
-                
+
                 if tag and tag not in post.tags:
                     post.tags.append(tag)
-        
+
         database.session.commit()
         flash("Entrada de blog creada exitosamente.", "success")
-        
+
         if current_user.tipo == "admin":
-            return redirect(url_for('blog.admin_blog_index'))
+            return redirect(url_for("blog.admin_blog_index"))
         else:
-            return redirect(url_for('blog.instructor_blog_index'))
-    
+            return redirect(url_for("blog.instructor_blog_index"))
+
     return render_template("blog/post_form.html", form=form, title="Nueva Entrada")
 
 
@@ -282,42 +271,42 @@ def admin_edit_post(post_id):
     post = database.session.get(BlogPost, post_id)
     if not post:
         abort(404)
-    
+
     # Check permissions
     if current_user.tipo != "admin" and post.author_id != current_user.usuario:
         abort(403)
-    
+
     form = BlogPostForm(obj=post)
-    
+
     # Set form choices based on user role
     if current_user.tipo != "admin":
         form.status.choices = [("draft", "Borrador"), ("pending", "Pendiente")]
-    
+
     # Pre-populate tags
     tag_names = [tag.name for tag in post.tags]
-    form.tags.data = ', '.join(tag_names)
-    
+    form.tags.data = ", ".join(tag_names)
+
     if form.validate_on_submit():
         post.title = form.title.data
         post.slug = ensure_unique_slug(form.title.data, post.id)
         post.content = form.content.data
         post.allow_comments = form.allow_comments.data
-        
+
         # Only allow status change if admin or if changing to pending
         if current_user.tipo == "admin" or (form.status.data == "pending" and post.status == "draft"):
             old_status = post.status
             post.status = form.status.data
-            
+
             # Set published_at if publishing for first time
-            if form.status.data == 'published' and old_status != 'published':
+            if form.status.data == "published" and old_status != "published":
                 post.published_at = datetime.utcnow()
-        
+
         # Clear existing tags
         post.tags.clear()
-        
+
         # Handle tags
         if form.tags.data:
-            tag_names = [name.strip() for name in form.tags.data.split(',') if name.strip()]
+            tag_names = [name.strip() for name in form.tags.data.split(",") if name.strip()]
             for tag_name in tag_names:
                 tag_slug = create_slug(tag_name)
                 tag = database.session.query(BlogTag).filter(BlogTag.slug == tag_slug).first()
@@ -325,18 +314,18 @@ def admin_edit_post(post_id):
                     tag = BlogTag(name=tag_name, slug=tag_slug)
                     database.session.add(tag)
                     database.session.flush()
-                
+
                 if tag:
                     post.tags.append(tag)
-        
+
         database.session.commit()
         flash("Entrada de blog actualizada exitosamente.", "success")
-        
+
         if current_user.tipo == "admin":
-            return redirect(url_for('blog.admin_blog_index'))
+            return redirect(url_for("blog.admin_blog_index"))
         else:
-            return redirect(url_for('blog.instructor_blog_index'))
-    
+            return redirect(url_for("blog.instructor_blog_index"))
+
     return render_template("blog/post_form.html", form=form, title="Editar Entrada", post=post)
 
 
@@ -348,13 +337,13 @@ def approve_post(post_id):
     post = database.session.get(BlogPost, post_id)
     if not post:
         abort(404)
-    
-    post.status = 'published'
+
+    post.status = "published"
     post.published_at = datetime.utcnow()
     database.session.commit()
-    
+
     flash(f"Entrada '{post.title}' aprobada y publicada.", "success")
-    return redirect(url_for('blog.admin_blog_index'))
+    return redirect(url_for("blog.admin_blog_index"))
 
 
 @blog.route("/admin/blog/posts/<post_id>/ban", methods=["POST"])
@@ -365,12 +354,12 @@ def ban_post(post_id):
     post = database.session.get(BlogPost, post_id)
     if not post:
         abort(404)
-    
-    post.status = 'banned'
+
+    post.status = "banned"
     database.session.commit()
-    
+
     flash(f"Entrada '{post.title}' ha sido baneada.", "warning")
-    return redirect(url_for('blog.admin_blog_index'))
+    return redirect(url_for("blog.admin_blog_index"))
 
 
 # Tag management routes
@@ -379,23 +368,18 @@ def ban_post(post_id):
 @perfil_requerido("admin")
 def admin_tags():
     """Manage blog tags."""
-    page = request.args.get('page', 1, type=int)
-    
+    page = request.args.get("page", 1, type=int)
+
     pagination = database.paginate(
         database.select(BlogTag).order_by(BlogTag.name),
         page=page,
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,
     )
-    
+
     form = BlogTagForm()
-    
-    return render_template(
-        "blog/admin_tags.html",
-        tags=pagination.items,
-        pagination=pagination,
-        form=form
-    )
+
+    return render_template("blog/admin_tags.html", tags=pagination.items, pagination=pagination, form=form)
 
 
 @blog.route("/admin/blog/tags", methods=["POST"])
@@ -404,15 +388,15 @@ def admin_tags():
 def create_tag():
     """Create a new blog tag."""
     form = BlogTagForm()
-    
+
     if form.validate_on_submit():
         slug = create_slug(form.name.data)
-        
+
         # Check if tag already exists
-        existing_tag = database.session.query(BlogTag).filter(
-            or_(BlogTag.name == form.name.data, BlogTag.slug == slug)
-        ).first()
-        
+        existing_tag = (
+            database.session.query(BlogTag).filter(or_(BlogTag.name == form.name.data, BlogTag.slug == slug)).first()
+        )
+
         if existing_tag:
             flash("Una etiqueta con ese nombre ya existe.", "error")
         else:
@@ -420,8 +404,8 @@ def create_tag():
             database.session.add(tag)
             database.session.commit()
             flash("Etiqueta creada exitosamente.", "success")
-    
-    return redirect(url_for('blog.admin_tags'))
+
+    return redirect(url_for("blog.admin_tags"))
 
 
 @blog.route("/admin/blog/tags/<tag_id>", methods=["DELETE"])
@@ -432,12 +416,12 @@ def delete_tag(tag_id):
     tag = database.session.get(BlogTag, tag_id)
     if not tag:
         abort(404)
-    
+
     database.session.delete(tag)
     database.session.commit()
-    
+
     flash(f"Etiqueta '{tag.name}' eliminada.", "info")
-    return redirect(url_for('blog.admin_tags'))
+    return redirect(url_for("blog.admin_tags"))
 
 
 # Comment management routes
@@ -448,22 +432,24 @@ def ban_comment(comment_id):
     comment = database.session.get(BlogComment, comment_id)
     if not comment:
         abort(404)
-    
+
     # Check permissions - admin or post author
     if current_user.tipo != "admin" and comment.post.author_id != current_user.usuario:
         abort(403)
-    
-    comment.status = 'banned'
-    
+
+    comment.status = "banned"
+
     # Update comment count
-    comment.post.comment_count = database.session.query(BlogComment).filter(
-        and_(BlogComment.post_id == comment.post_id, BlogComment.status == 'visible')
-    ).count()
-    
+    comment.post.comment_count = (
+        database.session.query(BlogComment)
+        .filter(and_(BlogComment.post_id == comment.post_id, BlogComment.status == "visible"))
+        .count()
+    )
+
     database.session.commit()
-    
+
     flash("Comentario baneado.", "warning")
-    return redirect(url_for('blog.blog_post', slug=comment.post.slug))
+    return redirect(url_for("blog.blog_post", slug=comment.post.slug))
 
 
 @blog.route("/admin/blog/comments/<comment_id>", methods=["DELETE"])
@@ -473,24 +459,26 @@ def delete_comment(comment_id):
     comment = database.session.get(BlogComment, comment_id)
     if not comment:
         abort(404)
-    
+
     # Check permissions - admin or post author
     if current_user.tipo != "admin" and comment.post.author_id != current_user.usuario:
         abort(403)
-    
+
     post_slug = comment.post.slug
     database.session.delete(comment)
-    
+
     # Update comment count
     post = comment.post
-    post.comment_count = database.session.query(BlogComment).filter(
-        and_(BlogComment.post_id == post.id, BlogComment.status == 'visible')
-    ).count()
-    
+    post.comment_count = (
+        database.session.query(BlogComment)
+        .filter(and_(BlogComment.post_id == post.id, BlogComment.status == "visible"))
+        .count()
+    )
+
     database.session.commit()
-    
+
     flash("Comentario eliminado.", "info")
-    return redirect(url_for('blog.blog_post', slug=post_slug))
+    return redirect(url_for("blog.blog_post", slug=post_slug))
 
 
 # Instructor blog routes
@@ -499,24 +487,20 @@ def delete_comment(comment_id):
 @perfil_requerido(("instructor", "admin"))
 def instructor_blog_index():
     """Instructor blog management index."""
-    page = request.args.get('page', 1, type=int)
-    
+    page = request.args.get("page", 1, type=int)
+
     if current_user.tipo == "admin":
         query = database.session.query(BlogPost)
     else:
         query = database.session.query(BlogPost).filter(BlogPost.author_id == current_user.usuario)
-    
+
     query = query.order_by(BlogPost.timestamp.desc())
-    
+
     pagination = database.paginate(
         query,
         page=page,
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,
     )
-    
-    return render_template(
-        "blog/instructor_index.html",
-        posts=pagination.items,
-        pagination=pagination
-    )
+
+    return render_template("blog/instructor_index.html", posts=pagination.items, pagination=pagination)

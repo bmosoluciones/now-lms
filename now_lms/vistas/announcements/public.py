@@ -43,26 +43,24 @@ public_announcements = Blueprint("public_announcements", __name__, template_fold
 @cache.cached(timeout=60)
 def global_announcements():
     """Ver anuncios globales para todos los usuarios autenticados."""
-    
+
     # Filtrar anuncios globales activos (no expirados)
     now = datetime.now()
-    
+
     consulta = database.paginate(
-        database.select(Announcement).filter(
+        database.select(Announcement)
+        .filter(
             Announcement.course_id.is_(None),  # Solo anuncios globales
             database.or_(
-                Announcement.expires_at.is_(None),  # Sin fecha de expiración
-                Announcement.expires_at >= now  # No expirados
-            )
-        ).order_by(
-            Announcement.is_sticky.desc(),  # Destacados primero
-            Announcement.timestamp.desc()  # Más recientes primero
-        ),
+                Announcement.expires_at.is_(None), Announcement.expires_at >= now  # Sin fecha de expiración  # No expirados
+            ),
+        )
+        .order_by(Announcement.is_sticky.desc(), Announcement.timestamp.desc()),  # Destacados primero  # Más recientes primero
         page=request.args.get("page", default=1, type=int),
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,
     )
-    
+
     return render_template("announcements/global.html", consulta=consulta)
 
 
@@ -71,34 +69,33 @@ def global_announcements():
 @cache.cached(timeout=60)
 def course_announcements(course_id):
     """Ver anuncios específicos de un curso."""
-    
+
     # Verificar que el curso existe
     course = database.session.get(Curso, course_id)
     if not course:
         flash("Curso no encontrado.", "error")
         return redirect(url_for("public_announcements.global_announcements"))
-    
+
     # Verificar que el usuario está inscrito en el curso
     # (Administradores e instructores pueden ver todos los anuncios)
     if current_user.tipo not in ["admin", "instructor"]:
         # Verificar si es estudiante del curso
-        enrollment = database.session.query(EstudianteCurso).filter(
-            EstudianteCurso.usuario == current_user.usuario,
-            EstudianteCurso.curso == course_id
-        ).first()
-        
+        enrollment = (
+            database.session.query(EstudianteCurso)
+            .filter(EstudianteCurso.usuario == current_user.usuario, EstudianteCurso.curso == course_id)
+            .first()
+        )
+
         if not enrollment:
             flash("No tienes acceso a los anuncios de este curso.", "error")
             return redirect(url_for("public_announcements.global_announcements"))
-    
+
     # Obtener anuncios del curso
     consulta = database.paginate(
-        database.select(Announcement).filter(
-            Announcement.course_id == course_id
-        ).order_by(Announcement.timestamp.desc()),
+        database.select(Announcement).filter(Announcement.course_id == course_id).order_by(Announcement.timestamp.desc()),
         page=request.args.get("page", default=1, type=int),
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,
     )
-    
+
     return render_template("announcements/course.html", consulta=consulta, course=course)

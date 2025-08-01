@@ -25,28 +25,26 @@
                     <div class="col-md-8">
                         <form method="POST">
                             {{ form.hidden_tag() }}
-                            
+
                             <div class="mb-3">
-                                {{ form.title.label(class="form-label") }}
-                                {{ form.title(class="form-control") }}
-                                {% if form.title.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.title.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
+                                {{ form.title.label(class="form-label") }} {{ form.title(class="form-control") }} {% if
+                                form.title.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.title.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                             </div>
 
                             <div class="mb-3">
-                                {{ form.message.label(class="form-label") }}
-                                {{ form.message(class="form-control", rows="10") }}
-                                {% if form.message.errors %}
-                                    <div class="text-danger">
-                                        {% for error in form.message.errors %}
-                                            <small>{{ error }}</small>
-                                        {% endfor %}
-                                    </div>
+                                {{ form.message.label(class="form-label") }} {{ form.message(class="form-control", rows="10")
+                                }} {% if form.message.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.message.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                                 <div class="form-text">Puedes usar Markdown para formatear el contenido.</div>
                             </div>
@@ -54,14 +52,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3">
-                                        {{ form.expires_at.label(class="form-label") }}
-                                        {{ form.expires_at(class="form-control") }}
-                                        {% if form.expires_at.errors %}
-                                            <div class="text-danger">
-                                                {% for error in form.expires_at.errors %}
-                                                    <small>{{ error }}</small>
-                                                {% endfor %}
-                                            </div>
+                                        {{ form.expires_at.label(class="form-label") }} {{
+                                        form.expires_at(class="form-control") }} {% if form.expires_at.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.expires_at.errors %}
+                                            <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
                                         {% endif %}
                                         <div class="form-text">Deja vacío si no quieres que expire.</div>
                                     </div>
@@ -69,8 +66,8 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <div class="form-check">
-                                            {{ form.is_sticky(class="form-check-input") }}
-                                            {{ form.is_sticky.label(class="form-check-label") }}
+                                            {{ form.is_sticky(class="form-check-input") }} {{
+                                            form.is_sticky.label(class="form-check-label") }}
                                         </div>
                                         <div class="form-text">Los anuncios destacados aparecen al principio de la lista.</div>
                                     </div>
@@ -78,11 +75,14 @@
                             </div>
 
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <a href="{{ url_for('admin_announcements.list_announcements') }}" class="btn btn-secondary me-md-2">
+                                <a
+                                    href="{{ url_for('admin_announcements.list_announcements') }}"
+                                    class="btn btn-secondary me-md-2"
+                                >
                                     Cancelar
                                 </a>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-check-circle"></i> 
+                                    <i class="bi bi-check-circle"></i>
                                     {% if announcement %}Actualizar{% else %}Crear{% endif %} Anuncio
                                 </button>
                             </div>
@@ -91,22 +91,23 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-header">
-                                <h6 class="card-title mb-0">
-                                    <i class="bi bi-info-circle"></i> Información
-                                </h6>
+                                <h6 class="card-title mb-0"><i class="bi bi-info-circle"></i> Información</h6>
                             </div>
                             <div class="card-body">
                                 <p class="card-text small">
                                     Los anuncios globales son visibles para todos los usuarios autenticados en el sistema.
                                 </p>
                                 <p class="card-text small">
-                                    <strong>Markdown:</strong> Puedes usar formato Markdown para enriquecer el contenido del anuncio.
+                                    <strong>Markdown:</strong> Puedes usar formato Markdown para enriquecer el contenido del
+                                    anuncio.
                                 </p>
                                 <p class="card-text small">
-                                    <strong>Destacado:</strong> Los anuncios destacados aparecen fijados al principio de la lista.
+                                    <strong>Destacado:</strong> Los anuncios destacados aparecen fijados al principio de la
+                                    lista.
                                 </p>
                                 <p class="card-text small">
-                                    <strong>Expiración:</strong> Si defines una fecha de expiración, el anuncio dejará de mostrarse automáticamente.
+                                    <strong>Expiración:</strong> Si defines una fecha de expiración, el anuncio dejará de
+                                    mostrarse automáticamente.
                                 </p>
                             </div>
                         </div>

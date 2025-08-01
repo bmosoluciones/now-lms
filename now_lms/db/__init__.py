@@ -829,16 +829,16 @@ class Coupon(database.Model, BaseTabla):
     def is_valid(self):
         """Check if coupon is valid (not expired and under usage limit)."""
         from datetime import datetime
-        
+
         # Check expiration
         if self.expires_at and datetime.now() > self.expires_at:
             return False, "Cupón expirado"
-        
+
         # Check usage limit
         current_uses = self.current_uses or 0
         if self.max_uses and current_uses >= self.max_uses:
             return False, "Cupón ha alcanzado el límite de usos"
-        
+
         return True, ""
 
     def calculate_discount(self, original_price):
@@ -847,7 +847,7 @@ class Coupon(database.Model, BaseTabla):
             discount = float(original_price) * (self.discount_value / 100)
         else:  # fixed
             discount = min(self.discount_value, float(original_price))
-        
+
         return min(discount, float(original_price))  # Cannot discount more than original price
 
     def calculate_final_price(self, original_price):
@@ -875,7 +875,6 @@ class EvaluationReopenRequest(database.Model, BaseTabla):
     reviewer = database.relationship("Usuario", foreign_keys=[approved_by])
 
 
-
 class Announcement(database.Model, BaseTabla):
     """Sistema de anuncios para administradores e instructores."""
 
@@ -884,56 +883,63 @@ class Announcement(database.Model, BaseTabla):
     # Información básica del anuncio
     title = database.Column(database.String(255), nullable=False)
     message = database.Column(database.Text, nullable=False)  # Formato Markdown
-    
+
     # Relaciones
     course_id = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=True, index=True)
-    created_by_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
-    
+    created_by_id = database.Column(
+        database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True
+    )
+
     # Fechas
     expires_at = database.Column(database.DateTime, nullable=True)  # Fecha de expiración opcional
-    
+
     # Configuración
     is_sticky = database.Column(database.Boolean, default=False, nullable=False)  # Anuncio destacado
-    
+
     # Relationships
     course = database.relationship("Curso", foreign_keys=[course_id])
     created_by = database.relationship("Usuario", foreign_keys=[created_by_id])
-    
+
     def is_global(self):
         """Retorna True si es un anuncio global (sin curso asignado)."""
         return self.course_id is None
-    
+
     def is_course_announcement(self):
         """Retorna True si es un anuncio de curso específico."""
         return self.course_id is not None
-    
+
     def is_active(self):
         """Retorna True si el anuncio está activo (no ha expirado)."""
         if self.expires_at is None:
             return True
         from datetime import datetime
+
         return datetime.now() <= self.expires_at
-    
+
     def __repr__(self):
         return f"<Announcement {self.title}>"
 
+
 # Blog feature models
-blog_post_tags = database.Table('blog_post_tags',
-    database.Column('post_id', database.String(26), database.ForeignKey('blog_post.id'), primary_key=True),
-    database.Column('tag_id', database.String(26), database.ForeignKey('blog_tag.id'), primary_key=True)
+blog_post_tags = database.Table(
+    "blog_post_tags",
+    database.Column("post_id", database.String(26), database.ForeignKey("blog_post.id"), primary_key=True),
+    database.Column("tag_id", database.String(26), database.ForeignKey("blog_tag.id"), primary_key=True),
 )
 
 
 class BlogPost(database.Model, BaseTabla):
     """Blog post model."""
 
-    __tablename__ = 'blog_post'
+    __tablename__ = "blog_post"
 
     title = database.Column(database.String(200), nullable=False)
     slug = database.Column(database.String(250), unique=True, nullable=False, index=True)
     content = database.Column(database.Text, nullable=False)
     author_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
-    status = database.Column(database.String(20), default='draft', nullable=False, index=True)  # draft, pending, published, banned
+    status = database.Column(
+        database.String(20), default="draft", nullable=False, index=True
+    )  # draft, pending, published, banned
     allow_comments = database.Column(database.Boolean(), default=True, nullable=False)
     published_at = database.Column(database.DateTime(), nullable=True)
     comment_count = database.Column(database.Integer(), default=0, nullable=False)
@@ -947,7 +953,7 @@ class BlogPost(database.Model, BaseTabla):
 class BlogTag(database.Model, BaseTabla):
     """Blog tag model."""
 
-    __tablename__ = 'blog_tag'
+    __tablename__ = "blog_tag"
 
     name = database.Column(database.String(50), unique=True, nullable=False, index=True)
     slug = database.Column(database.String(60), unique=True, nullable=False, index=True)
@@ -956,13 +962,12 @@ class BlogTag(database.Model, BaseTabla):
 class BlogComment(database.Model, BaseTabla):
     """Blog comment model."""
 
-    __tablename__ = 'blog_comment'
+    __tablename__ = "blog_comment"
 
-    post_id = database.Column(database.String(26), database.ForeignKey('blog_post.id'), nullable=False, index=True)
+    post_id = database.Column(database.String(26), database.ForeignKey("blog_post.id"), nullable=False, index=True)
     user_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     content = database.Column(database.Text, nullable=False)
-    status = database.Column(database.String(20), default='visible', nullable=False, index=True)  # visible, flagged, banned
+    status = database.Column(database.String(20), default="visible", nullable=False, index=True)  # visible, flagged, banned
 
     # Relationships
     user = database.relationship("Usuario", backref="blog_comments")
-
