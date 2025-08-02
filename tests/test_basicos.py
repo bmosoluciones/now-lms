@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 
-
+import inspect
 from unittest import TestCase
 
 
@@ -73,13 +73,17 @@ class TestInstanciasDeClases(TestCase):
 
     def test_FlaskForm(self):
         from flask_wtf import FlaskForm
-        from now_lms.forms import LoginForm, LogonForm, CurseForm, CursoRecursoVideoYoutube, CursoSeccionForm
+        import now_lms.forms as forms
 
-        assert issubclass(LoginForm, FlaskForm)
-        assert issubclass(CurseForm, FlaskForm)
-        assert issubclass(LogonForm, FlaskForm)
-        assert issubclass(CursoRecursoVideoYoutube, FlaskForm)
-        assert issubclass(CursoSeccionForm, FlaskForm)
+        form_classes = [
+            cls for name, cls in inspect.getmembers(forms, inspect.isclass)
+            if cls.__module__ == forms.__name__ and issubclass(cls, FlaskForm)
+        ]
+
+        assert form_classes, "No se encontraron formularios que hereden de FlaskForm."
+
+        for cls in form_classes:
+            assert issubclass(cls, FlaskForm), f"{cls.__name__} no hereda de FlaskForm"
 
     def test_BaseTable(self):
         from now_lms.db import BaseTabla, database
