@@ -45,16 +45,24 @@ now_lms/static/themes/your_theme_name/
 └── videos/              # Theme-specific videos
 ```
 
-For more details on managing static assets, see the [Static Assets README](../now_lms/static/themes/README.md).
+For more details on managing static assets, see the [Static Assets README](https://github.com/bmosoluciones/now-lms/blob/main/now_lms/static/themes/README.md).
 
 ## Available Themes
 
 NOW LMS comes with several built-in themes:
 
-- **now_lms**: Default theme with modern design
-- **classic**: Minimalist white/gray design with clean typography
-- **corporative**: Professional blue theme for corporate environments
-- **finance**: Federal green theme inspired by financial institutions
+- **now_lms**: Default theme made with vanilla Boostrap5.
+
+- **corporative**: Professional blue theme for corporate environments.
+- **finance**: Federal green theme inspired by financial institutions.
+
+### Colors variations of the base theme:
+ - **classic**: Minimalist white/gray design with clean typography.
+- **amber**: A warm, autumn-inspired theme.
+- **lime**: A green based theme.
+- **nebula**: A purple based theme.
+- **ocean**: A blue based theme.
+- **sakira:**: 
 
 ### Academic Themes
 
