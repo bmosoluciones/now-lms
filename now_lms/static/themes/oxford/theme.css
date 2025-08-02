@@ -13,6 +13,9 @@
         --oxford-text-light: #FFFFFF; /* White Text */
     }
 
+    /* Import medieval-style fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Cardo:ital,wght@0,400;0,700;1,400&display=swap');
+
     .bd-placeholder-img {
         font-size: 1.125rem;
         text-anchor: middle;
@@ -27,12 +30,92 @@
         }
     }
 
-    /* Oxford Theme Styles */
+    /* Oxford Medieval Manuscript Theme Styles */
     body {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        font-family: "Georgia", "Times New Roman", serif;
+        background: linear-gradient(135deg, #f4f1eb 0%, #e8dcc8 100%);
+        font-family: "Cardo", "Georgia", "Times New Roman", serif;
         color: var(--oxford-text);
         line-height: 1.6;
+    }
+
+    /* Medieval manuscript elements */
+    .oxford-hero {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .oxford-manuscript-bg {
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f4f1eb"/><path d="M10,10 L90,10 L90,90 L10,90 Z" fill="none" stroke="%23C5B358" stroke-width="2"/></svg>');
+        background-size: cover;
+        padding: 5rem 0;
+        border-top: 15px solid #C5B358;
+        border-bottom: 15px solid #C5B358;
+    }
+
+    .oxford-folio-bg {
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%23f9f7f5"/><path d="M20,20 L180,20 L180,180 L20,180 Z" fill="none" stroke="%23C5B358" stroke-width="1" opacity="0.3"/></svg>');
+        padding: 2rem;
+        border: 1px solid #C5B358;
+        box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+        position: relative;
+        margin-bottom: 3rem;
+    }
+
+    .oxford-manuscript {
+        position: relative;
+        z-index: 2;
+    }
+
+    .oxford-dropcap {
+        position: relative;
+        text-shadow: 3px 3px 6px rgba(139, 0, 0, 0.5);
+    }
+
+    .oxford-dropcap::before {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        background: radial-gradient(circle, rgba(197, 179, 88, 0.3), transparent);
+        z-index: -1;
+        border-radius: 50%;
+    }
+
+    .oxford-folio {
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .oxford-folio:hover {
+        transform: translateY(-3px) rotate(0.5deg);
+        box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .oxford-marginalia {
+        opacity: 0.7;
+        transition: all 0.3s ease;
+    }
+
+    .oxford-marginalia:hover {
+        opacity: 1;
+        transform: rotate(0deg) scale(1.1);
+    }
+
+    /* Responsive improvements for medieval theme */
+    @media (max-width: 768px) {
+        .oxford-marginalia {
+            display: none;
+        }
+        
+        .oxford-dropcap {
+            float: none;
+            font-size: 4rem;
+            margin: 0;
+            display: block;
+            text-align: center;
+        }
     }
 
     /* Custom Oxford Navbar Styling */
