@@ -723,7 +723,7 @@ class Evaluation(database.Model, BaseTabla):
     description = database.Column(database.String(1000), nullable=True)
     is_exam = database.Column(database.Boolean(), default=False)
     passing_score = database.Column(database.Float(), nullable=False, default=70.0)
-    max_attempts = database.Column(database.Integer(), nullable=True)  # null = unlimited
+    max_attempts = database.Column(database.Integer(), nullable=True)  # null means unlimited
     available_until = database.Column(database.DateTime(), nullable=True)
     reopened_at = database.Column(database.DateTime(), nullable=True)
     reopened_for_user_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=True)
@@ -812,8 +812,8 @@ class Coupon(database.Model, BaseTabla):
     code = database.Column(database.String(50), nullable=False, index=True)
     discount_type = database.Column(database.String(20), nullable=False)  # 'percentage' or 'fixed'
     discount_value = database.Column(database.Float(), nullable=False)
-    max_uses = database.Column(database.Integer(), nullable=True)  # null = unlimited
-    expires_at = database.Column(database.DateTime(), nullable=True)  # null = no expiration
+    max_uses = database.Column(database.Integer(), nullable=True)  # null means unlimited
+    expires_at = database.Column(database.DateTime(), nullable=True)  # null means no expiration
     current_uses = database.Column(database.Integer(), nullable=False, default=0)
     created_by = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
 

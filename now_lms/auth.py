@@ -92,7 +92,7 @@ def perfil_requerido(perfil_id):
         @wraps(func)
         def wrapper(*args, **kwargs):
             if not current_user.is_authenticated:
-                flash("No se encuentra autorizado a acceder al recurso solicitado.", "error")
+                flash("Favor iniciar sesión.", "warning")
                 return abort(403)
 
             # Always allow admin access
@@ -100,16 +100,17 @@ def perfil_requerido(perfil_id):
                 return func(*args, **kwargs)
 
             # Handle tuple format for multiple allowed profiles
-            if isinstance(perfil_id, tuple):
+            elif isinstance(perfil_id, tuple):
                 if current_user.tipo in perfil_id:
                     return func(*args, **kwargs)
             # Handle string format for single profile
-            elif isinstance(perfil_id, str):
-                if current_user.tipo == perfil_id:
-                    return func(*args, **kwargs)
+            elif isinstance(perfil_id, str) and current_user.tipo == perfil_id:
+                return func(*args, **kwargs)
 
-            flash("No se encuentra autorizado a acceder al recurso solicitado.", "error")
-            return abort(403)
+            # Deny access if the user does not have the required profile
+            else:
+                flash("No se encuentra autorizado a acceder al recurso solicitado.", "error")
+                return abort(403)
 
         return wrapper
 
