@@ -71,3 +71,5 @@ now_lms/static/files/public/themes/sunshine
 now_lms/static/files/public/themes/nowlearninginstitute
 
 dev/*
+
+sonar.exclusions
