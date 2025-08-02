@@ -45,8 +45,8 @@ from wtforms.widgets import ColorInput, TextArea, html_params
 # ---------------------------------------------------------------------------------------
 
 
-# < --------------------------------------------------------------------------------------------- >
-# Definición de formularios
+# Form label constants
+LABEL_TITULO: str = "Título"
 
 MONEDAS = [
     # América del Norte
@@ -573,7 +573,7 @@ class PagoForm(FlaskForm):
 class EvaluationForm(FlaskForm):
     """Formulario para crear/editar una evaluación."""
 
-    title = StringField("Título", validators=[DataRequired()])
+    title = StringField(LABEL_TITULO, validators=[DataRequired()])
     description = TextAreaField("Descripción")
     is_exam = BooleanField("Es un examen")
     passing_score = DecimalField("Puntuación mínima para aprobar", default=70.0, validators=[DataRequired()])
@@ -625,7 +625,7 @@ class ForoMensajeRespuestaForm(FlaskForm):
 class AnnouncementForm(BaseForm):
     """Formulario base para crear/editar anuncios."""
 
-    title = StringField("Título", validators=[DataRequired()])
+    title = StringField(LABEL_TITULO, validators=[DataRequired()])
     message = MdeField("Mensaje", validators=[DataRequired()])
     expires_at = DateField("Fecha de expiración", validators=[], render_kw={"placeholder": "Opcional"})
 
@@ -672,7 +672,7 @@ class CouponApplicationForm(FlaskForm):
 class BlogPostForm(BaseForm):
     """Formulario para crear/editar entradas de blog."""
 
-    title = StringField("Título", validators=[DataRequired()])
+    title = StringField(LABEL_TITULO, validators=[DataRequired()])
     content = MdeField("Contenido", validators=[DataRequired()])
     allow_comments = BooleanField("Permitir comentarios", default=True)
     tags = StringField("Etiquetas (separadas por comas)")

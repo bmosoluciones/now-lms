@@ -57,6 +57,9 @@ ALLOWED_HTML_ATTRS = {
     "img": ["src", "alt", "title", "width", "height"],
 }
 
+# Route constants
+ROUTE_FORUM_VER_FORO = "forum.ver_foro"
+
 forum = Blueprint("forum", __name__)
 
 
@@ -143,7 +146,7 @@ def nuevo_mensaje(course_code):
     # Verificar que el curso no esté finalizado
     if curso.estado == "finalizado":
         flash("No se pueden crear mensajes en cursos finalizados.", "error")
-        return redirect(url_for("forum.ver_foro", course_code=course_code))
+        return redirect(url_for(ROUTE_FORUM_VER_FORO, course_code=course_code))
 
     form = ForoMensajeForm()
 
@@ -156,7 +159,7 @@ def nuevo_mensaje(course_code):
         database.session.commit()
 
         flash("Mensaje creado exitosamente.", "success")
-        return redirect(url_for("forum.ver_foro", course_code=course_code))
+        return redirect(url_for(ROUTE_FORUM_VER_FORO, course_code=course_code))
 
     return render_template("forum/new_message.html", curso=curso, form=form)
 
@@ -277,7 +280,7 @@ def cerrar_mensaje(course_code, message_id):
     if request.headers.get("Content-Type") == "application/json":
         return jsonify({"status": "success", "message": "Mensaje cerrado exitosamente"})
 
-    return redirect(url_for("forum.ver_foro", course_code=course_code))
+    return redirect(url_for(ROUTE_FORUM_VER_FORO, course_code=course_code))
 
 
 @forum.route("/course/<course_code>/forum/message/<message_id>/open", methods=["POST"])
@@ -298,7 +301,7 @@ def abrir_mensaje(course_code, message_id):
     # Verificar que el curso no esté finalizado
     if curso.estado == "finalizado":
         flash("No se pueden abrir mensajes en cursos finalizados.", "error")
-        return redirect(url_for("forum.ver_foro", course_code=course_code))
+        return redirect(url_for(ROUTE_FORUM_VER_FORO, course_code=course_code))
 
     # Abrir el mensaje
     mensaje.estado = "abierto"
@@ -310,4 +313,4 @@ def abrir_mensaje(course_code, message_id):
     if request.headers.get("Content-Type") == "application/json":
         return jsonify({"status": "success", "message": "Mensaje abierto exitosamente"})
 
-    return redirect(url_for("forum.ver_foro", course_code=course_code))
+    return redirect(url_for(ROUTE_FORUM_VER_FORO, course_code=course_code))

@@ -48,6 +48,10 @@ LLAVE_FORANEA_RECURSO: str = "curso_recurso.id"
 LLAVE_FORANEA_PREGUNTA: str = "curso_recurso_pregunta.id"
 LLAVE_FORANEA_FORO_MENSAJE: str = "foro_mensaje.id"
 
+# Cascade constants
+CASCADE_ALL_DELETE_ORPHAN: str = "all, delete-orphan"
+FOREIGN_KEY_EVALUATION_ID: str = "evaluation.id"
+
 
 def generador_de_codigos_unicos() -> str:
     """Genera codigo unicos basados en ULID."""
@@ -339,7 +343,9 @@ class SlideShowResource(database.Model, BaseTabla):
 
     # Relationships
     course = database.relationship("Curso", foreign_keys=[course_id])
-    slides = database.relationship("Slide", back_populates="slide_show", cascade="all, delete-orphan", order_by="Slide.order")
+    slides = database.relationship(
+        "Slide", back_populates="slide_show", cascade=CASCADE_ALL_DELETE_ORPHAN, order_by="Slide.order"
+    )
 
 
 class Slide(database.Model, BaseTabla):
@@ -579,7 +585,7 @@ class MessageThread(database.Model, BaseTabla):
     # Relationships
     course = database.relationship("Curso", foreign_keys=[course_id])
     student = database.relationship("Usuario", foreign_keys=[student_id])
-    messages = database.relationship("Message", backref="thread", lazy="dynamic", cascade="all, delete-orphan")
+    messages = database.relationship("Message", backref="thread", lazy="dynamic", cascade=CASCADE_ALL_DELETE_ORPHAN)
 
 
 class Message(database.Model, BaseTabla):
@@ -731,8 +737,8 @@ class Evaluation(database.Model, BaseTabla):
 
     # Relationships
     section = database.relationship("CursoSeccion", foreign_keys=[section_id])
-    questions = database.relationship("Question", back_populates="evaluation", cascade="all, delete-orphan")
-    attempts = database.relationship("EvaluationAttempt", back_populates="evaluation", cascade="all, delete-orphan")
+    questions = database.relationship("Question", back_populates="evaluation", cascade=CASCADE_ALL_DELETE_ORPHAN)
+    attempts = database.relationship("EvaluationAttempt", back_populates="evaluation", cascade=CASCADE_ALL_DELETE_ORPHAN)
 
 
 class Question(database.Model, BaseTabla):
@@ -740,7 +746,9 @@ class Question(database.Model, BaseTabla):
 
     __tablename__ = "question"
 
-    evaluation_id = database.Column(database.String(26), database.ForeignKey("evaluation.id"), nullable=False, index=True)
+    evaluation_id = database.Column(
+        database.String(26), database.ForeignKey(FOREIGN_KEY_EVALUATION_ID), nullable=False, index=True
+    )
     type = database.Column(database.String(20), nullable=False)  # 'multiple' or 'boolean'
     text = database.Column(database.String(1000), nullable=False)
     explanation = database.Column(database.String(1000), nullable=True)
@@ -748,8 +756,8 @@ class Question(database.Model, BaseTabla):
 
     # Relationships
     evaluation = database.relationship("Evaluation", back_populates="questions")
-    options = database.relationship("QuestionOption", back_populates="question", cascade="all, delete-orphan")
-    answers = database.relationship("Answer", back_populates="question", cascade="all, delete-orphan")
+    options = database.relationship("QuestionOption", back_populates="question", cascade=CASCADE_ALL_DELETE_ORPHAN)
+    answers = database.relationship("Answer", back_populates="question", cascade=CASCADE_ALL_DELETE_ORPHAN)
 
 
 class QuestionOption(database.Model, BaseTabla):
@@ -770,7 +778,9 @@ class EvaluationAttempt(database.Model, BaseTabla):
 
     __tablename__ = "evaluation_attempt"
 
-    evaluation_id = database.Column(database.String(26), database.ForeignKey("evaluation.id"), nullable=False, index=True)
+    evaluation_id = database.Column(
+        database.String(26), database.ForeignKey(FOREIGN_KEY_EVALUATION_ID), nullable=False, index=True
+    )
     user_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     score = database.Column(database.Float(), nullable=True)  # null until submitted
     passed = database.Column(database.Boolean(), nullable=True)  # null until graded
@@ -781,7 +791,7 @@ class EvaluationAttempt(database.Model, BaseTabla):
     # Relationships
     evaluation = database.relationship("Evaluation", back_populates="attempts")
     user = database.relationship("Usuario", foreign_keys=[user_id])
-    answers = database.relationship("Answer", back_populates="attempt", cascade="all, delete-orphan")
+    answers = database.relationship("Answer", back_populates="attempt", cascade=CASCADE_ALL_DELETE_ORPHAN)
 
 
 class Answer(database.Model, BaseTabla):
@@ -861,7 +871,9 @@ class EvaluationReopenRequest(database.Model, BaseTabla):
     __tablename__ = "evaluation_reopen_request"
 
     user_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
-    evaluation_id = database.Column(database.String(26), database.ForeignKey("evaluation.id"), nullable=False, index=True)
+    evaluation_id = database.Column(
+        database.String(26), database.ForeignKey(FOREIGN_KEY_EVALUATION_ID), nullable=False, index=True
+    )
     justification_text = database.Column(database.String(1000), nullable=False)
     status = database.Column(database.String(20), default="pending")  # 'pending', 'approved', 'rejected'
     reviewed_at = database.Column(database.DateTime(), nullable=True)
@@ -945,7 +957,7 @@ class BlogPost(database.Model, BaseTabla):
     # Relationships
     author = database.relationship("Usuario", backref="blog_posts")
     tags = database.relationship("BlogTag", secondary=blog_post_tags, backref="posts")
-    comments = database.relationship("BlogComment", backref="post", cascade="all, delete-orphan")
+    comments = database.relationship("BlogComment", backref="post", cascade=CASCADE_ALL_DELETE_ORPHAN)
 
 
 class BlogTag(database.Model, BaseTabla):

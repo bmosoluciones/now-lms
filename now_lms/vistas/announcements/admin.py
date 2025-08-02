@@ -34,6 +34,9 @@ from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Announcement, database
 from now_lms.forms import GlobalAnnouncementForm
 
+# Route constants
+ROUTE_ADMIN_ANNOUNCEMENTS_LIST = "admin_announcements.list_announcements"
+
 admin_announcements = Blueprint("admin_announcements", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
@@ -78,7 +81,7 @@ def new_announcement():
         database.session.commit()
 
         flash("Anuncio global creado exitosamente.", "success")
-        return redirect(url_for("admin_announcements.list_announcements"))
+        return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))
 
     return render_template("announcements/admin_form.html", form=form, title="Nuevo Anuncio Global")
 
@@ -92,7 +95,7 @@ def edit_announcement(announcement_id):
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is not None:
         flash("Anuncio no encontrado o no es un anuncio global.", "error")
-        return redirect(url_for("admin_announcements.list_announcements"))
+        return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))
 
     form = GlobalAnnouncementForm(obj=announcement)
 
@@ -106,7 +109,7 @@ def edit_announcement(announcement_id):
         database.session.commit()
 
         flash("Anuncio global actualizado exitosamente.", "success")
-        return redirect(url_for("admin_announcements.list_announcements"))
+        return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))
 
     return render_template(
         "announcements/admin_form.html", form=form, title="Editar Anuncio Global", announcement=announcement
@@ -122,10 +125,10 @@ def delete_announcement(announcement_id):
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is not None:
         flash("Anuncio no encontrado o no es un anuncio global.", "error")
-        return redirect(url_for("admin_announcements.list_announcements"))
+        return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))
 
     database.session.delete(announcement)
     database.session.commit()
 
     flash("Anuncio global eliminado exitosamente.", "success")
-    return redirect(url_for("admin_announcements.list_announcements"))
+    return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))

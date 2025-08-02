@@ -54,6 +54,10 @@ from now_lms.db import (
 from now_lms.logs import log
 from now_lms.version import MAYOR, MENOR, VERSION
 
+# User constants
+ADMIN_USER = environ.get("ADMIN_USER", None) or "lms-admin"
+ADMIN_USER_WITH_FALLBACK = environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin"
+
 if TYPE_CHECKING:
     from flask import Flask
 
@@ -505,7 +509,7 @@ def crear_certificados():
 def crear_certificacion():
     certificacion = Certificacion(
         id="01JS2NK7NJ74DBSHD83MGRH5HE",
-        usuario=environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin",
+        usuario=ADMIN_USER_WITH_FALLBACK,
         curso="now",
         certificado="demo",
     )
@@ -714,7 +718,7 @@ def crear_usuarios_predeterminados():
     """Crea en la base de datos los usuarios iniciales."""
     log.info("Creando usuario administrador.")
     administrador = Usuario(
-        usuario=environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin",
+        usuario=ADMIN_USER_WITH_FALLBACK,
         acceso=proteger_passwd(environ.get("ADMIN_PSWD") or environ.get("LMS_PSWD") or "lms-admin"),
         nombre="System",
         apellido="Administrator",
@@ -913,7 +917,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R001.pdf",
         tipo="ebook",
-        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
+        usuario=ADMIN_USER,
     )
     recurso2 = Recurso(
         nombre="Alice's Adventures in Wonderland",
@@ -924,7 +928,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R002.pdf",
         tipo="ebook",
-        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
+        usuario=ADMIN_USER,
     )
     recurso3 = Recurso(
         nombre="Dracula",
@@ -935,7 +939,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R003.pdf",
         tipo="ebook",
-        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
+        usuario=ADMIN_USER,
     )
     recurso4 = Recurso(
         nombre="The War of the Worlds",
@@ -946,7 +950,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R004.pdf",
         tipo="ebook",
-        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
+        usuario=ADMIN_USER,
     )
     recurso4 = Recurso(
         nombre="Think Python",
@@ -957,7 +961,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R005.pdf",
         tipo="ebook",
-        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
+        usuario=ADMIN_USER,
     )
     for i in recurso1, recurso2, recurso3, recurso4:
         database.session.add(i)

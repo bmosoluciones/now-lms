@@ -51,6 +51,9 @@ from now_lms.forms import EvaluationReopenRequestForm
 # Blueprint definition
 # ---------------------------------------------------------------------------------------
 
+# Route constants
+ROUTE_COURSE_TOMAR_CURSO = "course.tomar_curso"
+
 evaluation = Blueprint("evaluation", __name__)
 
 EVALUATION_CREATED = "Evaluación creada correctamente."
@@ -171,7 +174,7 @@ def take_evaluation(evaluation_id):
     if not can_user_attempt_evaluation(eval_obj, current_user):
         flash("No puede realizar más intentos en esta evaluación.", "warning")
         section = database.session.get(CursoSeccion, eval_obj.section_id)
-        return redirect(url_for("course.tomar_curso", course_code=section.curso))
+        return redirect(url_for(ROUTE_COURSE_TOMAR_CURSO, course_code=section.curso))
 
     if request.method == "POST":
         # Create new attempt
@@ -249,7 +252,7 @@ def request_reopen(evaluation_id):
     if not eval_obj.max_attempts or attempts_count < eval_obj.max_attempts:
         flash("Aún tiene intentos disponibles.", "info")
         section = database.session.get(CursoSeccion, eval_obj.section_id)
-        return redirect(url_for("course.tomar_curso", course_code=section.curso))
+        return redirect(url_for(ROUTE_COURSE_TOMAR_CURSO, course_code=section.curso))
 
     # Check if user has passed any attempt
     passed_attempt = (
@@ -261,7 +264,7 @@ def request_reopen(evaluation_id):
     if passed_attempt:
         flash("Ya ha aprobado esta evaluación.", "info")
         section = database.session.get(CursoSeccion, eval_obj.section_id)
-        return redirect(url_for("course.tomar_curso", course_code=section.curso))
+        return redirect(url_for(ROUTE_COURSE_TOMAR_CURSO, course_code=section.curso))
 
     form = EvaluationReopenRequestForm()
 
@@ -276,7 +279,7 @@ def request_reopen(evaluation_id):
         if existing_request:
             flash("Ya tiene una solicitud pendiente para esta evaluación.", "warning")
             section = database.session.get(CursoSeccion, eval_obj.section_id)
-            return redirect(url_for("course.tomar_curso", course_code=section.curso))
+            return redirect(url_for(ROUTE_COURSE_TOMAR_CURSO, course_code=section.curso))
 
         reopen_request = EvaluationReopenRequest(
             user_id=current_user.usuario, evaluation_id=evaluation_id, justification_text=form.justification_text.data
@@ -287,7 +290,7 @@ def request_reopen(evaluation_id):
 
         flash(REOPEN_REQUEST_SUBMITTED, "success")
         section = database.session.get(CursoSeccion, eval_obj.section_id)
-        return redirect(url_for("course.tomar_curso", course_code=section.curso))
+        return redirect(url_for(ROUTE_COURSE_TOMAR_CURSO, course_code=section.curso))
 
     return render_template("evaluations/request_reopen.html", evaluation=eval_obj, form=form)
 

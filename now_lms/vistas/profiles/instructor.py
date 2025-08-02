@@ -30,6 +30,10 @@ from now_lms.db import (
 )
 from now_lms.forms import EvaluationForm
 
+# Route constants
+ROUTE_INSTRUCTOR_PROFILE_CURSOS = "instructor_profile.cursos"
+ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA = "instructor_profile.evaluaciones_lista"
+
 instructor_profile = Blueprint("instructor_profile", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
@@ -165,12 +169,12 @@ def course_evaluations(course_code):
         )
         if not instructor_assignment:
             flash("No tiene permisos para acceder a este curso.", "danger")
-            return redirect(url_for("instructor_profile.cursos"))
+            return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_CURSOS))
 
     curso = database.session.query(Curso).filter_by(codigo=course_code).first()
     if not curso:
         flash("Curso no encontrado.", "danger")
-        return redirect(url_for("instructor_profile.cursos"))
+        return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_CURSOS))
 
     # Get course sections and their evaluations
     secciones = database.session.query(CursoSeccion).filter_by(curso=course_code).order_by(CursoSeccion.indice).all()
@@ -194,7 +198,7 @@ def new_evaluation(course_code, section_id):
         )
         if not instructor_assignment:
             flash("No tiene permisos para acceder a este curso.", "danger")
-            return redirect(url_for("instructor_profile.cursos"))
+            return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_CURSOS))
 
     seccion = database.session.get(CursoSeccion, section_id)
     if not seccion or seccion.curso != course_code:
@@ -280,12 +284,12 @@ def edit_evaluation(evaluation_id):
     evaluacion = database.session.get(Evaluation, evaluation_id)
     if not evaluacion:
         flash("Evaluación no encontrada.", "danger")
-        return redirect(url_for("instructor_profile.evaluaciones_lista"))
+        return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     # Check permissions
     if current_user.tipo != "admin" and evaluacion.creado_por != current_user.usuario:
         flash("No tiene permisos para editar esta evaluación.", "danger")
-        return redirect(url_for("instructor_profile.evaluaciones_lista"))
+        return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     seccion = database.session.get(CursoSeccion, evaluacion.section_id)
     curso = database.session.query(Curso).filter_by(codigo=seccion.curso).first() if seccion else None
@@ -324,12 +328,12 @@ def toggle_evaluation_status(evaluation_id):
     evaluacion = database.session.get(Evaluation, evaluation_id)
     if not evaluacion:
         flash("Evaluación no encontrada.", "danger")
-        return redirect(url_for("instructor_profile.evaluaciones_lista"))
+        return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     # Check permissions
     if current_user.tipo != "admin" and evaluacion.creado_por != current_user.usuario:
         flash("No tiene permisos para modificar esta evaluación.", "danger")
-        return redirect(url_for("instructor_profile.evaluaciones_lista"))
+        return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     # Toggle enabled status (assuming we need to add this field to the model)
     # For now, we'll add a basic implementation
@@ -350,4 +354,4 @@ def toggle_evaluation_status(evaluation_id):
     except OperationalError:
         flash("Error al cambiar el estado de la evaluación.", "danger")
 
-    return redirect(url_for("instructor_profile.evaluaciones_lista"))
+    return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))

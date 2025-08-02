@@ -53,6 +53,12 @@ from now_lms.misc import INICIO_SESION
 # Interfaz de mensajes
 # ---------------------------------------------------------------------------------------
 
+# Route constants
+ROUTE_MSG_VIEW_THREAD = "msg.view_thread"
+
+# Template constants
+TEMPLATE_STANDALONE_REPORT = "learning/mensajes/standalone_report.html"
+
 msg = Blueprint("msg", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
@@ -210,7 +216,7 @@ def new_thread(course_code):
         database.session.commit()
 
         flash("Mensaje enviado correctamente.", "success")
-        return redirect(url_for("msg.view_thread", thread_id=thread.id))
+        return redirect(url_for(ROUTE_MSG_VIEW_THREAD, thread_id=thread.id))
 
     return render_template("learning/mensajes/new_thread.html", form=form, course=course)
 
@@ -265,7 +271,7 @@ def reply_to_thread(thread_id):
     # Check if thread is closed
     if thread.status == "closed":
         flash("No se puede responder a un hilo cerrado.", "error")
-        return redirect(url_for("msg.view_thread", thread_id=thread_id))
+        return redirect(url_for(ROUTE_MSG_VIEW_THREAD, thread_id=thread_id))
 
     form = MessageReplyForm()
 
@@ -281,7 +287,7 @@ def reply_to_thread(thread_id):
 
         flash("Respuesta enviada correctamente.", "success")
 
-    return redirect(url_for("msg.view_thread", thread_id=thread_id))
+    return redirect(url_for(ROUTE_MSG_VIEW_THREAD, thread_id=thread_id))
 
 
 @msg.route("/thread/<thread_id>/status/<new_status>")
@@ -308,7 +314,7 @@ def change_thread_status(thread_id, new_status):
 
     if new_status not in valid_transitions.get(thread.status, []):
         flash("Transición de estado no válida.", "error")
-        return redirect(url_for("msg.view_thread", thread_id=thread_id))
+        return redirect(url_for(ROUTE_MSG_VIEW_THREAD, thread_id=thread_id))
 
     thread.status = new_status
     if new_status == "closed":
@@ -317,7 +323,7 @@ def change_thread_status(thread_id, new_status):
     database.session.commit()
 
     flash(f"Estado del hilo cambiado a {new_status}.", "success")
-    return redirect(url_for("msg.view_thread", thread_id=thread_id))
+    return redirect(url_for(ROUTE_MSG_VIEW_THREAD, thread_id=thread_id))
 
 
 @msg.route("/message/<message_id>/report", methods=["POST"])
@@ -351,7 +357,7 @@ def report_message(message_id):
 
         flash("Mensaje reportado correctamente.", "success")
 
-    return redirect(url_for("msg.view_thread", thread_id=message.thread_id))
+    return redirect(url_for(ROUTE_MSG_VIEW_THREAD, thread_id=message.thread_id))
 
 
 @msg.route("/admin/flagged-messages")
@@ -450,13 +456,13 @@ def standalone_report_message():
 
         if not message_id or not reason:
             flash("Debe seleccionar un mensaje y proporcionar un motivo.", "error")
-            return render_template("learning/mensajes/standalone_report.html", messages=accessible_messages)
+            return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
 
         # Find the message
         message = database.session.query(Message).filter_by(id=message_id).first()
         if not message:
             flash("Mensaje no encontrado.", "error")
-            return render_template("learning/mensajes/standalone_report.html", messages=accessible_messages)
+            return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
 
         # Verify user has access to this message
         thread = database.session.query(MessageThread).filter_by(id=message.thread_id).first()
@@ -477,7 +483,7 @@ def standalone_report_message():
         flash("Mensaje reportado correctamente. El administrador será notificado.", "success")
         return redirect(url_for("home.panel"))
 
-    return render_template("learning/mensajes/standalone_report.html", messages=accessible_messages)
+    return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
 
 
 # Legacy routes for backward compatibility

@@ -40,7 +40,7 @@ from now_lms.config import DESARROLLO
 from now_lms.db import database as db
 from now_lms.db.info import config_info, course_info
 from now_lms.logs import log
-from now_lms.version import CODE_NAME,VERSION
+from now_lms.version import CODE_NAME, VERSION
 
 
 # ---------------------------------------------------------------------------------------

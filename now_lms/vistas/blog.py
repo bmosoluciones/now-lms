@@ -41,6 +41,10 @@ from now_lms.db import (
 )
 from now_lms.forms import BlogPostForm, BlogTagForm, BlogCommentForm
 
+# Route constants
+ROUTE_BLOG_POST = "blog.blog_post"
+ROUTE_BLOG_ADMIN_INDEX = "blog.admin_blog_index"
+
 blog = Blueprint("blog", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
@@ -138,7 +142,7 @@ def add_comment(slug):
 
     if not post.allow_comments:
         flash("Los comentarios están deshabilitados para esta entrada.", "warning")
-        return redirect(url_for("blog.blog_post", slug=slug))
+        return redirect(url_for(ROUTE_BLOG_POST, slug=slug))
 
     form = BlogCommentForm()
     if form.validate_on_submit():
@@ -158,7 +162,7 @@ def add_comment(slug):
     else:
         flash("Error al agregar el comentario.", "error")
 
-    return redirect(url_for("blog.blog_post", slug=slug))
+    return redirect(url_for(ROUTE_BLOG_POST, slug=slug))
 
 
 @blog.route("/blog/comments/<comment_id>/flag", methods=["POST"])
@@ -173,7 +177,7 @@ def flag_comment(comment_id):
     database.session.commit()
 
     flash("Comentario marcado como inapropiado.", "info")
-    return redirect(url_for("blog.blog_post", slug=comment.post.slug))
+    return redirect(url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
 
 
 # Admin blog routes
@@ -257,7 +261,7 @@ def admin_create_post():
         flash("Entrada de blog creada exitosamente.", "success")
 
         if current_user.tipo == "admin":
-            return redirect(url_for("blog.admin_blog_index"))
+            return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
         else:
             return redirect(url_for("blog.instructor_blog_index"))
 
@@ -322,7 +326,7 @@ def admin_edit_post(post_id):
         flash("Entrada de blog actualizada exitosamente.", "success")
 
         if current_user.tipo == "admin":
-            return redirect(url_for("blog.admin_blog_index"))
+            return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
         else:
             return redirect(url_for("blog.instructor_blog_index"))
 
@@ -343,7 +347,7 @@ def approve_post(post_id):
     database.session.commit()
 
     flash(f"Entrada '{post.title}' aprobada y publicada.", "success")
-    return redirect(url_for("blog.admin_blog_index"))
+    return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
 
 
 @blog.route("/admin/blog/posts/<post_id>/ban", methods=["POST"])
@@ -359,7 +363,7 @@ def ban_post(post_id):
     database.session.commit()
 
     flash(f"Entrada '{post.title}' ha sido baneada.", "warning")
-    return redirect(url_for("blog.admin_blog_index"))
+    return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
 
 
 # Tag management routes
@@ -449,7 +453,7 @@ def ban_comment(comment_id):
     database.session.commit()
 
     flash("Comentario baneado.", "warning")
-    return redirect(url_for("blog.blog_post", slug=comment.post.slug))
+    return redirect(url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
 
 
 @blog.route("/admin/blog/comments/<comment_id>", methods=["DELETE"])
@@ -478,7 +482,7 @@ def delete_comment(comment_id):
     database.session.commit()
 
     flash("Comentario eliminado.", "info")
-    return redirect(url_for("blog.blog_post", slug=post_slug))
+    return redirect(url_for(ROUTE_BLOG_POST, slug=post_slug))
 
 
 # Instructor blog routes

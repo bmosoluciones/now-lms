@@ -106,6 +106,14 @@ VISTA_CURSOS = "course.curso"
 VISTA_ADMINISTRAR_CURSO = "course.administrar_curso"
 NO_AUTORIZADO_MSG = "No se encuentra autorizado a acceder al recurso solicitado."
 
+# Template constants
+TEMPLATE_SLIDE_SHOW = "learning/resources/slide_show.html"
+TEMPLATE_COUPON_CREATE = "learning/curso/coupons/create.html"
+TEMPLATE_COUPON_EDIT = "learning/curso/coupons/edit.html"
+
+# Route constants
+ROUTE_LIST_COUPONS = "course.list_coupons"
+
 course = Blueprint("course", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
@@ -1504,7 +1512,7 @@ def preview_slideshow(course_code, slideshow_id):
 
     slides = database.session.query(Slide).filter_by(slide_show_id=slideshow_id).order_by(Slide.order).all()
 
-    return render_template("learning/resources/slide_show.html", slideshow=slideshow, slides=slides)
+    return render_template(TEMPLATE_SLIDE_SHOW, slideshow=slideshow, slides=slides)
 
 
 # ---------------------------------------------------------------------------------------
@@ -1564,14 +1572,14 @@ def slide_show(recurso_code):
         slideshow = database.session.get(SlideShowResource, recurso.external_code)
         if slideshow:
             slides = database.session.query(Slide).filter_by(slide_show_id=slideshow.id).order_by(Slide.order).all()
-            return render_template("learning/resources/slide_show.html", slideshow=slideshow, slides=slides, resource=recurso)
+            return render_template(TEMPLATE_SLIDE_SHOW, slideshow=slideshow, slides=slides, resource=recurso)
 
     # Fallback a modelos legacy para compatibilidad
     legacy_slide = database.session.query(CursoRecursoSlideShow).filter(CursoRecursoSlideShow.recurso == recurso_code).first()
     legacy_slides = database.session.query(CursoRecursoSlides).filter(CursoRecursoSlides.recurso == recurso_code).all()
 
     if legacy_slide:
-        return render_template("learning/resources/slide_show.html", resource=legacy_slide, slides=legacy_slides, legacy=True)
+        return render_template(TEMPLATE_SLIDE_SHOW, resource=legacy_slide, slides=legacy_slides, legacy=True)
 
     # No se encontró presentación
     flash("Presentación no encontrada.", "error")
@@ -1743,16 +1751,16 @@ def create_coupon(course_code):
 
         if existing:
             flash("Ya existe un cupón con este código para este curso", "warning")
-            return render_template("learning/curso/coupons/create.html", curso=curso, form=form)
+            return render_template(TEMPLATE_COUPON_CREATE, curso=curso, form=form)
 
         # Validate discount value
         if form.discount_type.data == "percentage" and form.discount_value.data > 100:
             flash("El descuento porcentual no puede ser mayor al 100%", "warning")
-            return render_template("learning/curso/coupons/create.html", curso=curso, form=form)
+            return render_template(TEMPLATE_COUPON_CREATE, curso=curso, form=form)
 
         if form.discount_type.data == "fixed" and form.discount_value.data > curso.precio:
             flash("El descuento fijo no puede ser mayor al precio del curso", "warning")
-            return render_template("learning/curso/coupons/create.html", curso=curso, form=form)
+            return render_template(TEMPLATE_COUPON_CREATE, curso=curso, form=form)
 
         try:
             coupon = Coupon(
@@ -1769,14 +1777,14 @@ def create_coupon(course_code):
             database.session.commit()
 
             flash("Cupón creado exitosamente", "success")
-            return redirect(url_for("course.list_coupons", course_code=course_code))
+            return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
 
         except Exception as e:
             database.session.rollback()
             flash("Error al crear el cupón", "danger")
             log.error(f"Error creating coupon: {e}")
 
-    return render_template("learning/curso/coupons/create.html", curso=curso, form=form)
+    return render_template(TEMPLATE_COUPON_CREATE, curso=curso, form=form)
 
 
 @course.route("/course/<course_code>/coupons/<coupon_id>/edit", methods=["GET", "POST"])
@@ -1792,7 +1800,7 @@ def edit_coupon(course_code, coupon_id):
     coupon = database.session.query(Coupon).filter_by(id=coupon_id, course_id=course_code).first()
     if not coupon:
         flash("Cupón no encontrado", "warning")
-        return redirect(url_for("course.list_coupons", course_code=course_code))
+        return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
 
     form = CouponForm(obj=coupon)
 
@@ -1806,16 +1814,16 @@ def edit_coupon(course_code, coupon_id):
 
         if existing:
             flash("Ya existe un cupón con este código para este curso", "warning")
-            return render_template("learning/curso/coupons/edit.html", curso=curso, coupon=coupon, form=form)
+            return render_template(TEMPLATE_COUPON_EDIT, curso=curso, coupon=coupon, form=form)
 
         # Validate discount value
         if form.discount_type.data == "percentage" and form.discount_value.data > 100:
             flash("El descuento porcentual no puede ser mayor al 100%", "warning")
-            return render_template("learning/curso/coupons/edit.html", curso=curso, coupon=coupon, form=form)
+            return render_template(TEMPLATE_COUPON_EDIT, curso=curso, coupon=coupon, form=form)
 
         if form.discount_type.data == "fixed" and form.discount_value.data > curso.precio:
             flash("El descuento fijo no puede ser mayor al precio del curso", "warning")
-            return render_template("learning/curso/coupons/edit.html", curso=curso, coupon=coupon, form=form)
+            return render_template(TEMPLATE_COUPON_EDIT, curso=curso, coupon=coupon, form=form)
 
         try:
             coupon.code = form.code.data.upper()
@@ -1828,14 +1836,14 @@ def edit_coupon(course_code, coupon_id):
             database.session.commit()
 
             flash("Cupón actualizado exitosamente", "success")
-            return redirect(url_for("course.list_coupons", course_code=course_code))
+            return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
 
         except Exception as e:
             database.session.rollback()
             flash("Error al actualizar el cupón", "danger")
             log.error(f"Error updating coupon: {e}")
 
-    return render_template("learning/curso/coupons/edit.html", curso=curso, coupon=coupon, form=form)
+    return render_template(TEMPLATE_COUPON_EDIT, curso=curso, coupon=coupon, form=form)
 
 
 @course.route("/course/<course_code>/coupons/<coupon_id>/delete", methods=["POST"])
@@ -1851,7 +1859,7 @@ def delete_coupon(course_code, coupon_id):
     coupon = database.session.query(Coupon).filter_by(id=coupon_id, course_id=course_code).first()
     if not coupon:
         flash("Cupón no encontrado", "warning")
-        return redirect(url_for("course.list_coupons", course_code=course_code))
+        return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
 
     try:
         database.session.delete(coupon)
@@ -1862,4 +1870,4 @@ def delete_coupon(course_code, coupon_id):
         flash("Error al eliminar el cupón", "danger")
         log.error(f"Error deleting coupon: {e}")
 
-    return redirect(url_for("course.list_coupons", course_code=course_code))
+    return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
