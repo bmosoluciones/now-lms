@@ -40,7 +40,7 @@ from now_lms.config import DESARROLLO
 from now_lms.db import database as db
 from now_lms.db.info import config_info, course_info
 from now_lms.logs import log
-from now_lms.version import VERSION
+from now_lms.version import CODE_NAME,VERSION
 
 
 # ---------------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ def reset(with_examples=False, with_tests=False) -> None:  # pragma: no cover
 @lms_app.cli.command()
 def version():  # pragma: no cover
     """Return the current version of the software."""
-    click.echo(VERSION)
+    click.echo(f"NOW - LMS code name {CODE_NAME} release: {VERSION} ")
 
 
 @lms_app.cli.group()
