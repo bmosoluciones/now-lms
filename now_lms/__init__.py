@@ -156,7 +156,7 @@ def inicializa_extenciones_terceros(flask_app: Flask):
         cache.init_app(flask_app)
         mde.init_app(flask_app)
         mail.init_app(flask_app)
-        csrf.init_app(flask_app)
+        # csrf.init_app(flask_app)
     log.trace("Extensiones de terceros iniciadas correctamente.")
 
 
