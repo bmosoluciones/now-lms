@@ -184,9 +184,6 @@ def send_mail(msg: Message, background: bool = True, no_config: bool = False, _l
     logger.trace("Creando instancia de Flask-Mail.")
     _mail = Mail(_app)
 
-    assert isinstance(_mail, Mail), "La instancia de mail debe ser de tipo Mail."
-    assert isinstance(msg, Message), "El mensaje debe ser una instancia de flask_mail.Message."
-
     if config.mail_configured or no_config:
         logger.trace("Configuración de correo electrónico verificada.")
         if background:
