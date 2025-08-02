@@ -17,6 +17,9 @@
     --harvard-info: #474340;
 }
 
+/* Import Charter and fallback fonts */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap');
+
 .bd-placeholder-img {
     font-size: 1.125rem;
     text-anchor: middle;
@@ -34,18 +37,63 @@
 /* Harvard Academic Theme Styles */
 body {
     background: linear-gradient(135deg, var(--harvard-light) 0%, var(--harvard-beige) 100%);
-    font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: "Charter", "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: var(--harvard-text);
     line-height: 1.6;
 }
 
-/* Typography */
+/* Typography - Harvard Case Study Style */
 h1, h2, h3, h4, h5, h6 {
-    font-family: "Merriweather", "Playfair Display", Georgia, serif;
+    font-family: "Charter", "Merriweather", "Playfair Display", Georgia, serif;
     color: var(--harvard-text);
     font-weight: 700;
     line-height: 1.3;
     margin-bottom: 1rem;
+}
+
+/* Harvard-specific elements */
+.harvard-hero {
+    position: relative;
+    overflow: hidden;
+}
+
+.harvard-podium {
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 10px 30px rgba(164, 16, 52, 0.2);
+}
+
+.harvard-case-card {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.harvard-case-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(164, 16, 52, 0.15);
+}
+
+.case-footnotes {
+    z-index: 10;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive improvements for Harvard theme */
+@media (max-width: 768px) {
+    .harvard-podium {
+        clip-path: none;
+        padding: 2rem;
+    }
+    
+    .case-footnotes {
+        position: static;
+        width: 100%;
+        opacity: 1 !important;
+        background: #f9f7f5;
+        border: 1px solid #d8b866;
+        border-radius: 5px;
+        margin-top: 1rem;
+    }
 }
 
 h1 { font-size: 2.5rem; }

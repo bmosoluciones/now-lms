@@ -1,21 +1,24 @@
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
 from now_lms.bi import cambia_tipo_de_usuario_por_id
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Usuario, database
+
+# Constants
+ADMIN_USERS_ROUTE = "admin_profile.usuarios"
 
 admin_profile = Blueprint("admin_profile", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
@@ -62,8 +65,8 @@ def activar_usuario(user_id):
         flash("Usuario definido como activo", "info")
     else:
         flash("Usuario ya se encuentra definido como activo", "warning")
-    cache.delete("view/" + url_for("admin_profile.usuarios"))
-    return redirect(url_for("admin_profile.usuarios"))
+    cache.delete("view/" + url_for(ADMIN_USERS_ROUTE))
+    return redirect(url_for(ADMIN_USERS_ROUTE))
 
 
 @admin_profile.route("/admin/users/set_inactive/<user_id>")
@@ -78,8 +81,8 @@ def inactivar_usuario(user_id):
         flash("Usuario definido como inactivo", "info")
     else:
         flash("Usuario ya se encuentra definido como inactivo", "warning")
-    cache.delete("view/" + url_for("admin_profile.usuarios"))
-    return redirect(url_for("admin_profile.usuarios"))
+    cache.delete("view/" + url_for(ADMIN_USERS_ROUTE))
+    return redirect(url_for(ADMIN_USERS_ROUTE))
 
 
 @admin_profile.route("/admin/users/delete/<user_id>")

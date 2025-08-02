@@ -1,0 +1,430 @@
+    /* Lime Theme Custom Variables */
+    :root {
+        --lime-primary: #7cb518;
+        --lime-secondary: #4e6e00;
+        --lime-accent: #d0f0c0;
+        --lime-light: #f6fff0;
+        --lime-background: #fafff5;
+        --lime-surface: #ffffff;
+        --lime-border: #c2e59c;
+        --lime-text: #2f3e1c;
+        --lime-text-secondary: #6a7d42;
+        --lime-mint: #b9e4c9;
+        --lime-grass: #a8d65e;
+
+        --lime-success: #58a700;
+        --lime-warning: #f4d35e;
+        --lime-danger: #bf3b3b;
+        --lime-info: #5dade2;
+    }
+
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+        }
+    }
+
+    /* Lime Theme Styles */
+    body {
+        background: linear-gradient(135deg, var(--lime-background) 0%, var(--lime-light) 100%);
+        font-family: "Open Sans", "Lato", "Roboto", "Segoe UI", sans-serif;
+        color: var(--lime-text);
+    }
+
+    /* Custom Lime Navbar Styling */
+    .navbar-lime {
+        background: 
+            linear-gradient(90deg, var(--lime-primary) 0%, var(--lime-secondary) 100%),
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20'%3E%3Cpath d='M0,10 Q25,0 50,10 T100,10 V20 H0 Z' fill='rgba(255,255,255,0.1)'/%3E%3C/svg%3E") !important;
+        background-size: 100% 100%, 200px 20px;
+        background-repeat: no-repeat, repeat-x;
+        background-position: center, bottom;
+        box-shadow: 
+            0 4px 6px rgba(124, 181, 24, 0.2),
+            0 8px 16px rgba(124, 181, 24, 0.1);
+        border-bottom: 3px solid var(--lime-grass);
+        position: relative;
+        z-index: 1030;
+    }
+
+    /* Animated nature-inspired effect */
+    .navbar-lime::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 200%;
+        height: 100%;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(255, 255, 255, 0.1) 50%, 
+            transparent 100%);
+        animation: lime-shimmer 4s ease-in-out infinite;
+    }
+
+    @keyframes lime-shimmer {
+        0% { transform: translateX(-100%); }
+        50% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+    }
+
+    .navbar-lime .navbar-brand,
+    .navbar-lime .nav-link {
+        color: white !important;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .navbar-lime .nav-link:hover {
+        color: var(--lime-light) !important;
+        transform: translateY(-1px);
+        text-shadow: 
+            0 2px 4px rgba(0, 0, 0, 0.3),
+            0 0 8px rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 0.5rem 1rem;
+    }
+
+    .navbar-lime .navbar-toggler {
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Lime Theme Buttons */
+    .btn-lime-primary {
+        background: linear-gradient(45deg, var(--lime-primary), var(--lime-grass));
+        border: none;
+        color: white;
+        font-weight: 500;
+        border-radius: 25px;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(124, 181, 24, 0.3);
+    }
+
+    .btn-lime-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(124, 181, 24, 0.4);
+        background: linear-gradient(45deg, var(--lime-grass), var(--lime-primary));
+        color: white;
+    }
+
+    .btn-lime-secondary {
+        background: linear-gradient(45deg, var(--lime-secondary), var(--lime-primary));
+        border: none;
+        color: white;
+        font-weight: 500;
+        border-radius: 25px;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(78, 110, 0, 0.2);
+    }
+
+    .btn-lime-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(78, 110, 0, 0.3);
+        background: linear-gradient(45deg, var(--lime-primary), var(--lime-secondary));
+        color: white;
+    }
+
+    /* Card Styling */
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(124, 181, 24, 0.1);
+        transition: all 0.3s ease;
+        background: var(--lime-surface);
+        backdrop-filter: blur(10px);
+    }
+
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(124, 181, 24, 0.15);
+    }
+
+    .card-header {
+        background: linear-gradient(45deg, var(--lime-light), var(--lime-accent));
+        border-bottom: 2px solid var(--lime-primary);
+        border-radius: 15px 15px 0 0 !important;
+        font-weight: 600;
+        color: var(--lime-text);
+    }
+
+    /* Icon Styling */
+    .bi {
+        filter: drop-shadow(0 1px 2px rgba(124, 181, 24, 0.3));
+        transition: all 0.2s ease;
+    }
+
+    .navbar-lime .bi {
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+    }
+
+    /* Dropdown Styling */
+    .dropdown-menu {
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 16px rgba(124, 181, 24, 0.15);
+        background: var(--lime-surface);
+        z-index: 1040;
+    }
+
+    .dropdown-item {
+        border-radius: 6px;
+        margin: 2px 8px;
+        transition: all 0.2s ease;
+        color: var(--lime-text);
+    }
+
+    .dropdown-item:hover {
+        background: var(--lime-light);
+        color: var(--lime-text);
+    }
+
+    /* Alert Styling */
+    .alert {
+        border: none;
+        border-radius: 10px;
+        border-left: 4px solid var(--lime-primary);
+        background: var(--lime-light);
+        backdrop-filter: blur(5px);
+        color: var(--lime-text);
+    }
+
+    .alert-success {
+        border-left-color: var(--lime-success);
+        background: rgba(88, 167, 0, 0.1);
+    }
+
+    .alert-warning {
+        border-left-color: var(--lime-warning);
+        background: rgba(244, 211, 94, 0.1);
+    }
+
+    .alert-danger {
+        border-left-color: var(--lime-danger);
+        background: rgba(191, 59, 59, 0.1);
+    }
+
+    .alert-info {
+        border-left-color: var(--lime-info);
+        background: rgba(93, 173, 226, 0.1);
+    }
+
+    /* Form Elements */
+    .form-control {
+        border: 2px solid var(--lime-border);
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        color: var(--lime-text);
+    }
+
+    .form-control:focus {
+        border-color: var(--lime-primary);
+        box-shadow: 0 0 0 0.2rem rgba(124, 181, 24, 0.25);
+        color: var(--lime-text);
+    }
+
+    .form-control::placeholder {
+        color: var(--lime-text-secondary);
+    }
+
+    /* Modal Styling */
+    .modal-content {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 16px 32px rgba(124, 181, 24, 0.2);
+        background: var(--lime-surface);
+        backdrop-filter: blur(15px);
+    }
+
+    .modal-header {
+        border-bottom: 2px solid var(--lime-border);
+        background: linear-gradient(45deg, var(--lime-light), var(--lime-accent));
+        border-radius: 15px 15px 0 0;
+    }
+
+    .modal-title {
+        color: var(--lime-text);
+        font-weight: 600;
+    }
+
+    /* Link styling */
+    a {
+        color: var(--lime-primary);
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: var(--lime-secondary);
+        text-decoration: underline;
+    }
+
+    .link-dark {
+        color: var(--lime-text) !important;
+    }
+
+    .link-dark:hover {
+        color: var(--lime-primary) !important;
+    }
+
+    /* Text colors */
+    .text-primary {
+        color: var(--lime-primary) !important;
+    }
+
+    .text-success {
+        color: var(--lime-success) !important;
+    }
+
+    .text-warning {
+        color: var(--lime-warning) !important;
+    }
+
+    .text-info {
+        color: var(--lime-info) !important;
+    }
+
+    /* Table styling */
+    .table {
+        color: var(--lime-text);
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > td,
+    .table-striped > tbody > tr:nth-of-type(odd) > th {
+        background-color: var(--lime-light);
+    }
+
+    .table th {
+        background-color: var(--lime-accent);
+        color: var(--lime-text);
+        border-bottom: 2px solid var(--lime-primary);
+    }
+
+    /* Responsive Design Enhancements */
+    @media (max-width: 768px) {
+        .navbar-lime {
+            background: var(--lime-primary) !important;
+        }
+
+        .btn-lime-primary,
+        .btn-lime-secondary {
+            border-radius: 20px;
+            padding: 8px 16px;
+        }
+    }
+
+    /* Animation for page elements */
+    .card,
+    .btn,
+    .alert {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Natural scrollbar styling */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--lime-light);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--lime-primary);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--lime-secondary);
+    }
+
+    /* Badge styling */
+    .badge {
+        background-color: var(--lime-primary);
+        color: white;
+    }
+
+    .badge.bg-success {
+        background-color: var(--lime-success) !important;
+    }
+
+    .badge.bg-warning {
+        background-color: var(--lime-warning) !important;
+        color: var(--lime-text) !important;
+    }
+
+    .badge.bg-danger {
+        background-color: var(--lime-danger) !important;
+    }
+
+    .badge.bg-info {
+        background-color: var(--lime-info) !important;
+    }
+
+    /* Pagination styling */
+    .pagination .page-link {
+        color: var(--lime-primary);
+        border-color: var(--lime-border);
+    }
+
+    .pagination .page-link:hover {
+        color: var(--lime-secondary);
+        background-color: var(--lime-light);
+        border-color: var(--lime-primary);
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: var(--lime-primary);
+        border-color: var(--lime-primary);
+    }
+
+    /* Progress bar styling */
+    .progress {
+        background-color: var(--lime-light);
+    }
+
+    .progress-bar {
+        background-color: var(--lime-primary);
+    }
+
+    /* Navigation breadcrumb */
+    .breadcrumb {
+        background-color: var(--lime-light);
+    }
+
+    .breadcrumb-item a {
+        color: var(--lime-primary);
+    }
+
+    .breadcrumb-item.active {
+        color: var(--lime-text);
+    }
+
+    /* Hero section z-index fix */
+    .hero-section {
+        position: relative;
+        z-index: 1;
+    }

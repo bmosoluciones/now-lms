@@ -1,0 +1,362 @@
+    /* Amber Theme Custom Variables - Warm Autumn Colors */
+    :root {
+        --amber-primary: #c97c10;
+        --amber-secondary: #5c3d21;
+        --amber-accent: #f1c27d;
+        --amber-light: #fff8ef;
+        --amber-background: #fdf6e4;
+        --amber-surface: #ffffff;
+        --amber-border: #ddb892;
+        --amber-text: #3e2c20;
+        --amber-text-secondary: #82654d;
+        --amber-blush: #f4e2d8;
+
+        --amber-success: #6c9a8b;
+        --amber-warning: #e4a11b;
+        --amber-danger: #a03e3e;
+        --amber-info: #7c8d99;
+    }
+
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+        }
+    }
+
+    /* Amber Theme Styles */
+    body {
+        background: var(--amber-background);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--amber-text);
+    }
+
+    /* Custom Navbar Styling */
+    .navbar-amber {
+        background: var(--amber-surface) !important;
+        box-shadow: 0 2px 4px rgba(201, 124, 16, 0.1);
+        position: relative;
+        z-index: 1030;
+    }
+
+    .navbar-amber .navbar-brand,
+    .navbar-amber .nav-link {
+        color: var(--amber-text) !important;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .navbar-amber .nav-link:hover {
+        color: var(--amber-primary) !important;
+        background-color: var(--amber-light);
+        border-radius: 4px;
+        transform: translateY(-1px);
+    }
+
+    .navbar-amber .navbar-toggler {
+        border-color: rgba(201, 124, 16, 0.3);
+    }
+
+    .navbar-amber .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28201, 124, 16, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    /* Custom Button Styles */
+    .btn-amber-primary {
+        background-color: var(--amber-primary);
+        border-color: var(--amber-primary);
+        color: white;
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-amber-primary:hover {
+        background-color: var(--amber-secondary);
+        border-color: var(--amber-secondary);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(201, 124, 16, 0.2);
+    }
+
+    .btn-amber-secondary {
+        background-color: var(--amber-secondary);
+        border-color: var(--amber-secondary);
+        color: white;
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-amber-secondary:hover {
+        background-color: var(--amber-accent);
+        border-color: var(--amber-accent);
+        color: var(--amber-text);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(92, 61, 33, 0.2);
+    }
+
+    /* Card Enhancements */
+    .card {
+        border: 1px solid var(--amber-border);
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(201, 124, 16, 0.1);
+        transition: all 0.2s ease;
+        background: var(--amber-surface);
+    }
+
+    .card:hover {
+        box-shadow: 0 4px 12px rgba(201, 124, 16, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .card-header {
+        background-color: var(--amber-light);
+        border-bottom: 1px solid var(--amber-border);
+        font-weight: 600;
+        color: var(--amber-text);
+    }
+
+    /* Modal Enhancements */
+    .modal-content {
+        border-radius: 6px;
+        border: none;
+        box-shadow: 0 8px 32px rgba(201, 124, 16, 0.15);
+        background: var(--amber-surface);
+    }
+
+    .modal-header {
+        background-color: var(--amber-primary);
+        color: white;
+        border-radius: 6px 6px 0 0;
+    }
+
+    .modal-header .btn-close {
+        filter: invert(1);
+    }
+
+    .modal-title {
+        font-weight: 600;
+    }
+
+    /* Form Enhancements */
+    .form-control:focus {
+        border-color: var(--amber-primary);
+        box-shadow: 0 0 0 0.2rem rgba(201, 124, 16, 0.25);
+    }
+
+    .form-select:focus {
+        border-color: var(--amber-primary);
+        box-shadow: 0 0 0 0.2rem rgba(201, 124, 16, 0.25);
+    }
+
+    /* Alert Enhancements */
+    .alert {
+        border-radius: 6px;
+        border: none;
+    }
+
+    .alert-primary {
+        background-color: var(--amber-blush);
+        color: var(--amber-primary);
+        border-left: 4px solid var(--amber-primary);
+    }
+
+    .alert-secondary {
+        background-color: var(--amber-light);
+        color: var(--amber-secondary);
+        border-left: 4px solid var(--amber-secondary);
+    }
+
+    .alert-success {
+        background-color: rgba(108, 154, 139, 0.1);
+        color: var(--amber-success);
+        border-left: 4px solid var(--amber-success);
+    }
+
+    .alert-warning {
+        background-color: rgba(228, 161, 27, 0.1);
+        color: var(--amber-warning);
+        border-left: 4px solid var(--amber-warning);
+    }
+
+    .alert-danger {
+        background-color: rgba(160, 62, 62, 0.1);
+        color: var(--amber-danger);
+        border-left: 4px solid var(--amber-danger);
+    }
+
+    .alert-info {
+        background-color: rgba(124, 141, 153, 0.1);
+        color: var(--amber-info);
+        border-left: 4px solid var(--amber-info);
+    }
+
+    /* Navigation Breadcrumb */
+    .breadcrumb {
+        background-color: var(--amber-light);
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+    }
+
+    .breadcrumb-item.active {
+        color: var(--amber-primary);
+        font-weight: 500;
+    }
+
+    /* Table Enhancements */
+    .table-striped > tbody > tr:nth-of-type(odd) > td,
+    .table-striped > tbody > tr:nth-of-type(odd) > th {
+        background-color: var(--amber-light);
+    }
+
+    .table th {
+        background-color: var(--amber-primary);
+        color: white;
+        border: none;
+        font-weight: 600;
+    }
+
+    /* Pagination */
+    .page-link {
+        color: var(--amber-primary);
+        border-color: var(--amber-border);
+    }
+
+    .page-link:hover {
+        color: white;
+        background-color: var(--amber-primary);
+        border-color: var(--amber-primary);
+    }
+
+    .page-item.active .page-link {
+        background-color: var(--amber-primary);
+        border-color: var(--amber-primary);
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+        background-color: var(--amber-primary);
+    }
+
+    /* Badge Enhancements */
+    .badge.bg-primary {
+        background-color: var(--amber-primary) !important;
+    }
+
+    .badge.bg-secondary {
+        background-color: var(--amber-secondary) !important;
+    }
+
+    .badge.bg-success {
+        background-color: var(--amber-success) !important;
+    }
+
+    .badge.bg-warning {
+        background-color: var(--amber-warning) !important;
+    }
+
+    .badge.bg-danger {
+        background-color: var(--amber-danger) !important;
+    }
+
+    .badge.bg-info {
+        background-color: var(--amber-info) !important;
+    }
+
+    /* Link Colors */
+    a {
+        color: var(--amber-primary);
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: var(--amber-secondary);
+        text-decoration: underline;
+    }
+
+    /* Footer */
+    .footer {
+        background-color: var(--amber-secondary);
+        color: white;
+        margin-top: 3rem;
+        padding: 2rem 0;
+    }
+
+    /* Dropdown Enhancements */
+    .dropdown-menu {
+        border: none;
+        box-shadow: 0 4px 16px rgba(201, 124, 16, 0.15);
+        border-radius: 6px;
+        background: var(--amber-surface);
+        z-index: 1050;
+    }
+
+    .dropdown-item:hover {
+        background-color: var(--amber-light);
+        color: var(--amber-primary);
+    }
+
+    /* Text Colors */
+    .text-muted {
+        color: var(--amber-text-secondary) !important;
+    }
+
+    /* Button primary and secondary overrides for bootstrap classes */
+    .btn-primary {
+        background-color: var(--amber-primary);
+        border-color: var(--amber-primary);
+        color: white;
+    }
+
+    .btn-primary:hover,
+    .btn-primary:focus,
+    .btn-primary:active {
+        background-color: var(--amber-secondary);
+        border-color: var(--amber-secondary);
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: var(--amber-secondary);
+        border-color: var(--amber-secondary);
+        color: white;
+    }
+
+    .btn-secondary:hover,
+    .btn-secondary:focus,
+    .btn-secondary:active {
+        background-color: var(--amber-accent);
+        border-color: var(--amber-accent);
+        color: var(--amber-text);
+    }
+
+    /* Success, Warning, Danger, Info button styles */
+    .btn-success {
+        background-color: var(--amber-success);
+        border-color: var(--amber-success);
+    }
+
+    .btn-warning {
+        background-color: var(--amber-warning);
+        border-color: var(--amber-warning);
+    }
+
+    .btn-danger {
+        background-color: var(--amber-danger);
+        border-color: var(--amber-danger);
+    }
+
+    .btn-info {
+        background-color: var(--amber-info);
+        border-color: var(--amber-info);
+    }

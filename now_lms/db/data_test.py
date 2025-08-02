@@ -12,24 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
-"""Codigo para crear cursos iniciales."""
+
+"""Code to create initial test courses and data."""
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 from datetime import datetime, time, timedelta
 from os import environ, makedirs, path
 from shutil import copyfile
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import proteger_passwd
 from now_lms.config import DIRECTORIO_ARCHIVOS, DIRECTORIO_BASE_ARCHIVOS_USUARIO
 from now_lms.db import (
+    Announcement,
+    BlogPost,
+    BlogTag,
     Categoria,
     Curso,
     CursoRecurso,
@@ -45,7 +47,7 @@ from now_lms.db.initial_data import copy_sample_audio, copy_sample_img, copy_sam
 from now_lms.logs import logger as log
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 
 
@@ -492,6 +494,53 @@ def id_usuario_admin():
     database.session.commit()
 
 
+def crear_announcement_prueba():
+    """Crea anuncio de prueba para admin."""
+    from datetime import datetime, timedelta
+
+    announcement = Announcement(
+        id=1,  # Static ID for testing
+        title="Anuncio de prueba",
+        message="Este es un anuncio de prueba para testing",
+        created_by_id="01HNZYGXRRWKJ8GXVXYZY8S994",  # Admin user ID
+        creado_por="01HNZYGXRRWKJ8GXVXYZY8S994",
+        expires_at=datetime.utcnow() + timedelta(days=30),
+        is_sticky=True,
+        course_id=None,  # Global announcement
+    )
+    database.session.add(announcement)
+    database.session.commit()
+
+
+def crear_blog_prueba():
+    """Crea blog post y tag de prueba."""
+    from datetime import datetime
+
+    # Create blog tag first
+    tag = BlogTag(id=1, name="Educación", slug="educacion")  # Static ID for testing
+    database.session.add(tag)
+    database.session.flush()  # Flush to get the ID
+
+    # Create blog post
+    post = BlogPost(
+        id=1,  # Static ID for testing
+        title="Post de prueba",
+        slug="post-de-prueba",
+        content="Este es un contenido de prueba para el blog",
+        author_id="01HNZYGXRRWKJ8GXVXYZY8S994",  # Admin user ID
+        status="published",
+        allow_comments=True,
+        published_at=datetime.utcnow(),
+    )
+    database.session.add(post)
+    database.session.flush()
+
+    # Associate tag with post
+    post.tags.append(tag)
+
+    database.session.commit()
+
+
 def crear_data_para_pruebas():
     crear_etiqueta_prueba()
     crear_categoria_prueba()
@@ -501,3 +550,5 @@ def crear_data_para_pruebas():
     crear_programa_prueba()
     crear_curso_para_pruebas()
     id_usuario_admin()
+    crear_announcement_prueba()
+    crear_blog_prueba()

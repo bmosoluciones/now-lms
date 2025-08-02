@@ -158,7 +158,11 @@ permitir_docente %}
                             ><i class="bi bi-bookmark-plus-fill" aria-hidden="true"></i> Nueva Sección</a
                         >
 
-                        {% if secciones %}
+                        {% if curso.pagado %}
+                        <a href="{{ url_for('course.list_coupons', course_code=curso.codigo) }}" class="btn btn-sm btn-primary"
+                            ><i class="bi bi-tags" aria-hidden="true"></i> Gestionar Cupones</a
+                        >
+                        {% endif %} {% if secciones %}
                         <div class="accordion accordion-flush" id="accordionSeccionesCurso">
                             {% for seccion in secciones %}
                             <div class="d-flex justify-content-between border-bottom">

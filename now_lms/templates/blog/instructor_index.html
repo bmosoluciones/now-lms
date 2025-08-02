@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es" class="h-100">
+    {% set current_theme = current_theme() %}
+
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>Mis Publicaciones - Blog</title>
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h1>Mis Publicaciones</h1>
+                            <a href="{{ url_for('blog.admin_create_post') }}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Nueva entrada
+                            </a>
+                        </div>
+
+                        {% if posts %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Título</th>
+                                        <th>Estado</th>
+                                        <th>Comentarios</th>
+                                        <th>Fecha</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for post in posts %}
+                                    <tr>
+                                        <td>
+                                            {% if post.status == 'published' %}
+                                            <a href="{{ url_for('blog.blog_post', slug=post.slug) }}" target="_blank">
+                                                {{ post.title }}
+                                            </a>
+                                            {% else %} {{ post.title }} {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if post.status == 'draft' %}
+                                            <span class="badge bg-secondary">Borrador</span>
+                                            {% elif post.status == 'pending' %}
+                                            <span class="badge bg-warning">Pendiente aprobación</span>
+                                            {% elif post.status == 'published' %}
+                                            <span class="badge bg-success">Publicada</span>
+                                            {% elif post.status == 'banned' %}
+                                            <span class="badge bg-danger">Baneada</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if post.allow_comments %} {{ post.comment_count }} {% else %}
+                                            <span class="text-muted">Deshabilitados</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if post.published_at %} {{ post.published_at.strftime('%d/%m/%Y') }} {% else %}
+                                            {{ post.fecha_alta.strftime('%d/%m/%Y') }} {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if post.status != 'banned' %}
+                                            <a
+                                                href="{{ url_for('blog.admin_edit_post', post_id=post.id) }}"
+                                                class="btn btn-outline-primary btn-sm"
+                                                title="Editar"
+                                            >
+                                                <i class="fas fa-edit"></i> Editar
+                                            </a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        {% if pagination.pages > 1 %}
+                        <nav>
+                            <ul class="pagination">
+                                {% if pagination.has_prev %}
+                                <li class="page-item">
+                                    <a
+                                        class="page-link"
+                                        href="{{ url_for('blog.instructor_blog_index', page=pagination.prev_num) }}"
+                                    >
+                                        Anterior
+                                    </a>
+                                </li>
+                                {% endif %} {% for page_num in pagination.iter_pages() %} {% if page_num %} {% if page_num !=
+                                pagination.page %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('blog.instructor_blog_index', page=page_num) }}">
+                                        {{ page_num }}
+                                    </a>
+                                </li>
+                                {% else %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_num }}</span>
+                                </li>
+                                {% endif %} {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                                {% endif %} {% endfor %} {% if pagination.has_next %}
+                                <li class="page-item">
+                                    <a
+                                        class="page-link"
+                                        href="{{ url_for('blog.instructor_blog_index', page=pagination.next_num) }}"
+                                    >
+                                        Siguiente
+                                    </a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %} {% else %}
+                        <div class="alert alert-info">
+                            No tienes entradas de blog en este momento.
+                            <a href="{{ url_for('blog.admin_create_post') }}" class="alert-link">Crear tu primera entrada</a>.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

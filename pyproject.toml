@@ -31,7 +31,6 @@ version = {attr = "now_lms.version.VERSION"}
 [project.optional-dependencies]
 mysql = [
   "mysqlclient",
-  "cryptography",
 ]
 
 [build-system]

@@ -1,0 +1,94 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Mis Mensajes</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5">
+                <div class="d-flex justify-content-between align-items-center pb-2 border-bottom">
+                    <h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}">
+                                        Inicio
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active">Mis Mensajes</li>
+                            </ol>
+                        </nav>
+                    </h4>
+                </div>
+
+                {% if threads %}
+                <div class="row">
+                    <div class="col-12">
+                        {% for thread in threads %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="card-title">
+                                            <a
+                                                href="{{ url_for('msg.view_thread', thread_id=thread.id) }}"
+                                                class="text-decoration-none"
+                                            >
+                                                {% set first_message = thread.messages.first() %} {% if first_message %} {{
+                                                first_message.content.split('\n')[0][:100] }}... {% else %} Thread #{{
+                                                thread.id[:8] }} {% endif %}
+                                            </a>
+                                        </h6>
+                                        <p class="card-text">
+                                            <small class="text-muted">
+                                                Curso:
+                                                <a
+                                                    href="{{ url_for('course.curso', course_code=thread.course_id) }}"
+                                                    class="text-decoration-none"
+                                                >
+                                                    {{ thread.course.nombre }}
+                                                </a>
+                                                | Por: {{ thread.student.nombre }} {{ thread.student.apellido }} | {{
+                                                thread.timestamp.strftime('%d/%m/%Y %H:%M') }} | Mensajes: {{
+                                                thread.messages.count() }}
+                                            </small>
+                                        </p>
+                                    </div>
+                                    <div class="ms-3">
+                                        {% if thread.status == "open" %}
+                                        <span class="badge bg-success">Abierto</span>
+                                        {% elif thread.status == "fixed" %}
+                                        <span class="badge bg-warning">Resuelto</span>
+                                        {% elif thread.status == "closed" %}
+                                        <span class="badge bg-secondary">Cerrado</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-chat-left-text" style="font-size: 3rem; color: #6c757d"></i>
+                    <h5 class="mt-3 text-muted">No hay mensajes</h5>
+                    {% if current_user.tipo == "student" %}
+                    <p class="text-muted">No has enviado ningún mensaje aún.</p>
+                    {% else %}
+                    <p class="text-muted">No hay mensajes de estudiantes en tus cursos.</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </main>
+    </body>
+</html>

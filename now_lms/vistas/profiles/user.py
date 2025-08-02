@@ -1,9 +1,9 @@
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
@@ -11,7 +11,7 @@ from flask_uploads import UploadNotAllowed
 from sqlalchemy.exc import OperationalError
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
@@ -20,6 +20,9 @@ from now_lms.db.tools import elimina_imagen_usuario
 from now_lms.forms import UserForm, ChangePasswordForm
 from now_lms.logs import log
 from now_lms.misc import GENEROS
+
+# Constants
+PROFILE_ROUTE = "/perfil"
 
 user_profile = Blueprint("user_profile", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
@@ -105,7 +108,7 @@ def edit_perfil(ulid: str):
         except OperationalError:  # pragma: no cover
             flash("Error al editar el perfil.", "error")
 
-        return redirect("/perfil")
+        return redirect(PROFILE_ROUTE)
 
     else:  # pragma: no cover
         return render_template("inicio/perfil_editar.html", form=form, usuario=usuario_)
@@ -119,7 +122,7 @@ def elimina_logo_usuario(ulid: str):
         abort(403)
 
     elimina_imagen_usuario(ulid=ulid)
-    return redirect("/perfil")
+    return redirect(PROFILE_ROUTE)
 
 
 @user_profile.route("/perfil/cambiar_contraseña/<ulid>", methods=["GET", "POST"])
@@ -153,7 +156,7 @@ def cambiar_contraseña(ulid: str):
             usuario_.acceso = proteger_passwd(form.new_password.data)
             database.session.commit()
             flash("Contraseña actualizada exitosamente.", "success")
-            return redirect("/perfil")
+            return redirect(PROFILE_ROUTE)
         except OperationalError:  # pragma: no cover
             flash("Error al actualizar la contraseña.", "error")
 

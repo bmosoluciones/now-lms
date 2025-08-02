@@ -15,12 +15,12 @@
 """Paypal Payments"""
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 import logging
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 import requests
 from flask import Blueprint, current_app, flash, jsonify, redirect, render_template, request, url_for
@@ -28,12 +28,17 @@ from flask_login import current_user, login_required
 from sqlalchemy.exc import OperationalError
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import Configuracion, Pago, PaypalConfig, database
+
+# Constants for PayPal API URLs
+PAYPAL_SANDBOX_API_URL = "https://api.sandbox.paypal.com"
+PAYPAL_PRODUCTION_API_URL = "https://api.paypal.com"
+HOME_PAGE_ROUTE = "home.pagina_de_inicio"
 
 paypal = Blueprint("paypal", __name__, template_folder=DIRECTORIO_PLANTILLAS, url_prefix="/paypal_checkout")
 
@@ -64,7 +69,7 @@ def validate_paypal_configuration(client_id, client_secret, sandbox=False):
     """Validate PayPal configuration by attempting to get an access token."""
     try:
         # Get access token from PayPal
-        base_url = "https://api.sandbox.paypal.com" if sandbox else "https://api.paypal.com"
+        base_url = PAYPAL_SANDBOX_API_URL if sandbox else PAYPAL_PRODUCTION_API_URL
         token_url = f"{base_url}/v1/oauth2/token"
 
         headers = {
@@ -117,7 +122,7 @@ def get_paypal_access_token():
             return None
 
         # Get access token from PayPal
-        base_url = "https://api.sandbox.paypal.com" if config_data.sandbox else "https://api.paypal.com"
+        base_url = PAYPAL_SANDBOX_API_URL if config_data.sandbox else PAYPAL_PRODUCTION_API_URL
         token_url = f"{base_url}/v1/oauth2/token"
 
         headers = {
@@ -153,7 +158,7 @@ def verify_paypal_payment(order_id, access_token):
     """Verify a PayPal payment by order ID."""
     try:
         paypal_config = database.session.execute(database.select(PaypalConfig)).first()[0]
-        base_url = "https://api.sandbox.paypal.com" if paypal_config.sandbox else "https://api.paypal.com"
+        base_url = PAYPAL_SANDBOX_API_URL if paypal_config.sandbox else PAYPAL_PRODUCTION_API_URL
         order_url = f"{base_url}/v2/checkout/orders/{order_id}"
 
         headers = {
@@ -237,7 +242,7 @@ def confirm_payment():
             logging.error(f"PayPal payment verification failed for order {order_id}, user {current_user.usuario}: {error_msg}")
             return jsonify({"success": False, "error": f"Payment verification failed: {error_msg}"}), 400
 
-        # Check if payment amount matches course price
+        # Check if payment amount matches expected amount (considering coupons)
         from now_lms.db import Curso
 
         curso = database.session.query(Curso).filter_by(codigo=course_code).first()
@@ -245,8 +250,18 @@ def confirm_payment():
             logging.warning(f"Course {course_code} not found for payment confirmation by user {current_user.usuario}")
             return jsonify({"success": False, "error": "Course not found"}), 404
 
+        # First check if there's a pending payment record for this user/course with coupon discount applied
+        pending_payment = (
+            database.session.query(Pago).filter_by(usuario=current_user.usuario, curso=course_code, estado="pending").first()
+        )
+
+        # Determine expected amount - either from pending payment (with coupon) or course price
+        if pending_payment:
+            expected_amount = float(pending_payment.monto)
+        else:
+            expected_amount = float(curso.precio)
+
         # Compare amounts with tolerance for floating point precision
-        expected_amount = float(curso.precio)
         verified_amount = float(verification["amount"])
         amount_tolerance = 0.01  # 1 cent tolerance
 
@@ -324,6 +339,22 @@ def confirm_payment():
 
             database.session.commit()
 
+            # Update coupon usage if payment had coupon applied
+            if pago.descripcion and "Cupón aplicado:" in pago.descripcion:
+                try:
+                    # Extract coupon code from payment description
+                    coupon_code = pago.descripcion.split("Cupón aplicado: ")[1].split(" ")[0]
+                    from now_lms.db import Coupon
+
+                    coupon = database.session.query(Coupon).filter_by(course_id=course_code, code=coupon_code).first()
+
+                    if coupon:
+                        coupon.current_uses += 1
+                        database.session.commit()
+                        logging.info(f"Updated coupon {coupon_code} usage count to {coupon.current_uses}")
+                except Exception as e:
+                    logging.warning(f"Failed to update coupon usage for payment {order_id}: {e}")
+
             # Create course progress index
             from now_lms.vistas.courses import _crear_indice_avance_curso
 
@@ -360,7 +391,7 @@ def resume_payment(payment_id):
 
         if not pago:
             flash("Pago no encontrado o ya procesado.", "error")
-            return redirect(url_for("home.pagina_de_inicio"))
+            return redirect(url_for(HOME_PAGE_ROUTE))
 
         # Redirect to the payment page for this course
         return redirect(url_for("paypal.payment_page", course_code=pago.curso))
@@ -368,7 +399,7 @@ def resume_payment(payment_id):
     except Exception as e:
         logging.error(f"Error resuming payment: {e}")
         flash("Error al reanudar el pago.", "error")
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_PAGE_ROUTE))
 
 
 @paypal.route("/payment/<course_code>")
@@ -381,7 +412,7 @@ def payment_page(course_code):
     curso = database.session.query(Curso).filter_by(codigo=course_code).first()
     if not curso:
         flash("Curso no encontrado.", "error")
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_PAGE_ROUTE))
 
     if not curso.pagado:
         flash("Este curso es gratuito.", "info")

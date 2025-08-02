@@ -1,0 +1,143 @@
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Gestión de Evaluaciones - {{ curso.nombre }}</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('instructor_profile.pagina_instructor') }}"
+                                        >Panel Instructor</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('instructor_profile.cursos') }}"
+                                        >Cursos</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Evaluaciones - {{ curso.nombre }}</li>
+                            </ol>
+                        </nav>
+                    </h4>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h3>Evaluaciones del Curso: {{ curso.nombre }}</h3>
+                                <span class="badge bg-info">{{ evaluaciones|length }} evaluación(es)</span>
+                            </div>
+
+                            <div class="card-body">
+                                {% if secciones %} {% for seccion in secciones %}
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h5 class="mb-0">{{ seccion.nombre }}</h5>
+                                            <a
+                                                href="{{ url_for('instructor_profile.new_evaluation', course_code=curso.codigo, section_id=seccion.id) }}"
+                                                class="btn btn-primary btn-sm"
+                                            >
+                                                <i class="bi bi-plus"></i> Nueva Evaluación
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">{{ seccion.descripcion }}</p>
+
+                                        {% set section_evaluations = evaluaciones | selectattr("section_id", "equalto",
+                                        seccion.id) | list %} {% if section_evaluations %}
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Título</th>
+                                                        <th>Tipo</th>
+                                                        <th>Puntuación Mínima</th>
+                                                        <th>Máx. Intentos</th>
+                                                        <th>Preguntas</th>
+                                                        <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for eval in section_evaluations %}
+                                                    <tr>
+                                                        <td>{{ eval.title }}</td>
+                                                        <td>
+                                                            {% if eval.is_exam %}
+                                                            <span class="badge bg-danger">Examen</span>
+                                                            {% else %}
+                                                            <span class="badge bg-primary">Quiz</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ eval.passing_score }}%</td>
+                                                        <td>
+                                                            {% if eval.max_attempts %} {{ eval.max_attempts }} {% else %}
+                                                            <span class="text-muted">Ilimitado</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ eval.questions|length }}</td>
+                                                        <td>
+                                                            <div class="btn-group" role="group">
+                                                                <a
+                                                                    href="{{ url_for('instructor_profile.edit_evaluation', course_code=curso.codigo, evaluation_id=eval.id) }}"
+                                                                    class="btn btn-outline-primary btn-sm"
+                                                                >
+                                                                    <i class="bi bi-pencil"></i> Editar
+                                                                </a>
+                                                                <a
+                                                                    href="{{ url_for('instructor_profile.evaluation_results', evaluation_id=eval.id) }}"
+                                                                    class="btn btn-outline-info btn-sm"
+                                                                >
+                                                                    <i class="bi bi-graph-up"></i> Resultados
+                                                                </a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {% else %}
+                                        <div class="alert alert-info">
+                                            <i class="bi bi-info-circle"></i>
+                                            No hay evaluaciones creadas para esta sección.
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %} {% else %}
+                                <div class="alert alert-warning">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    Este curso no tiene secciones creadas. Debe crear secciones antes de poder agregar
+                                    evaluaciones.
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

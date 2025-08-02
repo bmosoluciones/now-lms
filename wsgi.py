@@ -12,14 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 """
-Modulo para ejecutar NOW LMS.
+Module to run NOW LMS.
 
-Varios servicios prefieren tener un servidor archivo wsgi.py
-
+Several services prefer to have a wsgi.py server file.
 """
 
 from now_lms import init_app, lms_app as app

@@ -1,0 +1,359 @@
+    /* Ocean Theme Custom Variables */
+    :root {
+        --ocean-primary: #005f73;       /* Deep Blue - Color base */
+        --ocean-secondary: #0a3d4d;     /* Abyss Blue - Contraste oscuro */
+        --ocean-accent: #94d2bd;        /* Foam Green - Acentos suaves */
+        --ocean-light: #e0fbfc;         /* Blue Mist - Fondo claro general */
+        --ocean-background: #f7fefe;    /* Blue Mist - Fondo base */
+        --ocean-surface: #ffffff;       /* White - Superficies limpias */
+        --ocean-border: #a8dadc;        /* Turquoise Clear - Bordes y detalles */
+        --ocean-text: #0a3d4d;          /* Abyss Blue - Texto principal */
+        --ocean-text-secondary: #457b9d; /* Soft Blue - Texto secundario */
+        --ocean-wave: #caf0f8;          /* Blue Wave - Fondos decorativos */
+        --ocean-deep: #023047;          /* Deep Sea Blue - Elementos clave */
+        
+        /* Feedback Colors */
+        --ocean-success: #38b000;       /* Green Algae - Confirmaciones */
+        --ocean-warning: #fcbf49;       /* Sand Yellow - Advertencias */
+        --ocean-danger: #d00000;        /* Coral Red - Errores */
+        --ocean-info: #219ebc;          /* Light Blue - Notificaciones */
+    }
+
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+        }
+    }
+
+    /* Ocean Theme Styles */
+    body {
+        background: linear-gradient(135deg, var(--ocean-background) 0%, var(--ocean-light) 100%);
+        font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        color: var(--ocean-text);
+        line-height: 1.6;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4, h5, h6 {
+        font-family: "Merriweather", "Open Sans", Georgia, serif;
+        color: var(--ocean-text);
+        font-weight: 600;
+        line-height: 1.3;
+        margin-bottom: 1rem;
+    }
+
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 2rem; }
+    h3 { font-size: 1.75rem; }
+
+    /* Custom Navbar Styling */
+    .navbar-ocean {
+        background: linear-gradient(90deg, var(--ocean-primary) 0%, var(--ocean-deep) 100%) !important;
+        box-shadow: 0 4px 8px rgba(0, 95, 115, 0.3);
+        border-bottom: 3px solid var(--ocean-accent);
+        padding: 0.75rem 0;
+        position: relative;
+        z-index: 1030;
+    }
+
+    .navbar-ocean .navbar-brand,
+    .navbar-ocean .nav-link {
+        color: white !important;
+        font-weight: 600;
+        font-family: "Merriweather", serif;
+        transition: all 0.3s ease;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        text-decoration: none;
+    }
+
+    .navbar-ocean .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .navbar-ocean .nav-link:hover {
+        color: var(--ocean-accent) !important;
+        background-color: rgba(255, 255, 255, 0.15);
+        border-radius: 6px;
+        transform: translateY(-1px);
+    }
+
+    .navbar-ocean .navbar-toggler {
+        border-color: rgba(255, 255, 255, 0.3);
+        padding: 0.5rem;
+    }
+
+    .navbar-ocean .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    /* Remove all icons from navbar */
+    .navbar-ocean .navbar-nav .nav-link i,
+    .navbar-ocean .navbar-nav .nav-link .bi,
+    .navbar-ocean .navbar-brand i,
+    .navbar-ocean .navbar-brand .bi {
+        display: none;
+    }
+
+    /* Dropdown Menu Z-Index Fix */
+    .dropdown-menu {
+        z-index: 1031 !important;
+        position: absolute;
+    }
+
+    /* Custom Button Styles */
+    .btn-ocean-primary {
+        background: linear-gradient(45deg, var(--ocean-primary), var(--ocean-accent));
+        border: 2px solid var(--ocean-primary);
+        color: white;
+        border-radius: 8px;
+        padding: 0.7rem 1.5rem;
+        font-weight: 600;
+        font-family: "Merriweather", serif;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 95, 115, 0.3);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-ocean-primary:hover {
+        background: linear-gradient(45deg, var(--ocean-accent), var(--ocean-primary));
+        border-color: var(--ocean-accent);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 95, 115, 0.4);
+    }
+
+    .btn-ocean-secondary {
+        background: linear-gradient(45deg, var(--ocean-text), var(--ocean-border));
+        border: 2px solid var(--ocean-text);
+        color: white;
+        border-radius: 8px;
+        padding: 0.7rem 1.5rem;
+        font-weight: 600;
+        font-family: "Open Sans", sans-serif;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(10, 61, 77, 0.3);
+    }
+
+    .btn-ocean-secondary:hover {
+        background: linear-gradient(45deg, var(--ocean-border), var(--ocean-text));
+        border-color: var(--ocean-border);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(10, 61, 77, 0.4);
+    }
+
+    /* Card Enhancements */
+    .card {
+        border: 2px solid var(--ocean-border);
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 95, 115, 0.1);
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, var(--ocean-surface) 0%, rgba(224, 251, 252, 0.7) 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--ocean-primary), var(--ocean-accent));
+    }
+
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 95, 115, 0.2);
+        border-color: var(--ocean-primary);
+    }
+
+    .card-header {
+        background: linear-gradient(45deg, var(--ocean-wave), rgba(148, 210, 189, 0.8));
+        border-bottom: 2px solid var(--ocean-primary);
+        border-radius: 10px 10px 0 0 !important;
+        font-weight: 700;
+        color: var(--ocean-text);
+        font-family: "Merriweather", serif;
+    }
+
+    /* Link Colors */
+    a {
+        color: var(--ocean-info);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    a:hover {
+        color: var(--ocean-primary);
+        text-decoration: underline;
+    }
+
+    /* Form Enhancements */
+    .form-control {
+        border: 2px solid var(--ocean-border);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        background: var(--ocean-surface);
+        font-family: "Open Sans", sans-serif;
+    }
+
+    .form-control:focus {
+        border-color: var(--ocean-primary);
+        box-shadow: 0 0 0 0.3rem rgba(0, 95, 115, 0.25);
+        background: var(--ocean-light);
+    }
+
+    /* Table Enhancements */
+    .table th {
+        background: linear-gradient(45deg, var(--ocean-primary), var(--ocean-accent));
+        color: white;
+        border: none;
+        font-weight: 700;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        font-family: "Merriweather", serif;
+    }
+
+    .table {
+        border: 2px solid var(--ocean-border);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    /* Alert Enhancements */
+    .alert {
+        border-radius: 10px;
+        border: 2px solid;
+        font-weight: 600;
+        font-family: "Open Sans", sans-serif;
+    }
+
+    .alert-primary {
+        background: linear-gradient(135deg, rgba(0, 95, 115, 0.1), rgba(148, 210, 189, 0.1));
+        color: var(--ocean-primary);
+        border-color: var(--ocean-primary);
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, rgba(56, 176, 0, 0.1), rgba(148, 210, 189, 0.1));
+        color: var(--ocean-success);
+        border-color: var(--ocean-success);
+    }
+
+    .alert-warning {
+        background: linear-gradient(135deg, rgba(252, 191, 73, 0.1), rgba(224, 251, 252, 0.1));
+        color: var(--ocean-warning);
+        border-color: var(--ocean-warning);
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, rgba(208, 0, 0, 0.1), rgba(224, 251, 252, 0.1));
+        color: var(--ocean-danger);
+        border-color: var(--ocean-danger);
+    }
+
+    .alert-info {
+        background: linear-gradient(135deg, rgba(33, 158, 188, 0.1), rgba(202, 240, 248, 0.1));
+        color: var(--ocean-info);
+        border-color: var(--ocean-info);
+    }
+
+    /* Ocean Elements */
+    .ocean-depth {
+        background: linear-gradient(45deg, rgba(0, 95, 115, 0.1), rgba(202, 240, 248, 0.2));
+        border: 2px solid var(--ocean-primary);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        font-family: "Merriweather", serif;
+    }
+
+    /* Hero Section Z-Index Management */
+    .hero-section {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Wave Elements */
+    .wave-style {
+        border-left: 4px solid var(--ocean-accent);
+        background: var(--ocean-wave);
+        padding: 1rem 1.5rem;
+        margin: 1rem 0;
+        font-style: italic;
+        font-family: "Merriweather", serif;
+        color: var(--ocean-text);
+    }
+
+    /* Navigation Pills */
+    .nav-pills .nav-link.active {
+        background-color: var(--ocean-primary);
+        color: white;
+    }
+
+    .nav-pills .nav-link {
+        color: var(--ocean-text-secondary);
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: var(--ocean-wave);
+        color: var(--ocean-text);
+    }
+
+    /* Progress Bars */
+    .progress {
+        background-color: var(--ocean-light);
+    }
+
+    .progress-bar {
+        background: linear-gradient(45deg, var(--ocean-primary), var(--ocean-accent));
+    }
+
+    /* Badges */
+    .badge-primary {
+        background-color: var(--ocean-primary);
+    }
+
+    .badge-secondary {
+        background-color: var(--ocean-text-secondary);
+    }
+
+    .badge-success {
+        background-color: var(--ocean-success);
+    }
+
+    .badge-warning {
+        background-color: var(--ocean-warning);
+        color: var(--ocean-text);
+    }
+
+    .badge-danger {
+        background-color: var(--ocean-danger);
+    }
+
+    .badge-info {
+        background-color: var(--ocean-info);
+    }
+
+    /* Responsive Typography */
+    @media (max-width: 768px) {
+        h1 { font-size: 2rem; }
+        h2 { font-size: 1.75rem; }
+        h3 { font-size: 1.5rem; }
+        
+        .btn-ocean-primary,
+        .btn-ocean-secondary {
+            padding: 0.6rem 1.2rem;
+        }
+    }

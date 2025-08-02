@@ -8,86 +8,122 @@
     <body>
         {{ current_theme.navbar() }}
 
-        <!-- Harvard Hero Section -->
-        <section
-            class="hero-section py-5"
-            style="
-                background: linear-gradient(135deg, #a41034 0%, #7a5e49 100%);
-                min-height: 60vh;
-                display: flex;
-                align-items: center;
-            "
-        >
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-6 text-white">
-                        <div class="hero-content">
-                            <h1
-                                class="display-4 fw-bold mb-4"
-                                style="font-family: &quot;Merriweather&quot;, serif; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3)"
-                            >
-                                Veritas et Scientia
+        <!-- Harvard Leadership Symposium Hero Section -->
+        <section class="harvard-hero" style="background: linear-gradient(45deg, #a41034 30%, #820000 100%)">
+            <div class="container-fluid">
+                <div class="row">
+                    <!-- Texto principal con efecto "pódium" (70% asymmetric layout) -->
+                    <div class="col-md-7 py-5 ps-5 pe-0 position-relative" style="min-height: 70vh">
+                        <div
+                            class="harvard-podium"
+                            style="background: white; padding: 3rem; clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%)"
+                        >
+                            <h1 class="display-3 fw-bold" style="font-family: &quot;Charter&quot;, serif; color: #a41034">
+                                <span class="d-block mb-3">Discute.</span>
+                                <span class="d-block mb-3">Analiza.</span>
+                                <span class="d-block">Transforma.</span>
                             </h1>
-                            <p class="lead mb-4" style="font-size: 1.3rem; line-height: 1.6">
-                                Bienvenido a {{ site_config.nombre }}, donde la tradición académica se encuentra con la
-                                innovación educativa. Nuestra plataforma está diseñada para brindar una experiencia de
-                                aprendizaje de excelencia.
-                            </p>
-                            <div class="d-flex gap-3 flex-wrap">
+                            <div
+                                class="harvard-divider"
+                                style="width: 80px; height: 4px; background: #d8b866; margin: 2rem 0"
+                            ></div>
+                            <p class="lead" style="max-width: 80%">El conocimiento no se memoriza, se debate.</p>
+                            <div class="d-flex gap-3 flex-wrap mt-4">
                                 {% if not current_user.is_authenticated %}
-                                <a href="{{ url_for('user.crear_cuenta') }}" class="btn btn-light btn-lg px-4 py-2">
-                                    <strong>Comenzar Ahora</strong>
+                                <a
+                                    href="{{ url_for('user.crear_cuenta') }}"
+                                    class="btn btn-lg px-4 py-2"
+                                    style="background: #a41034; color: white; border: none"
+                                >
+                                    <strong>Unirse al Debate</strong>
                                 </a>
                                 <a
                                     href="{{ url_for('course.lista_cursos', page=1) }}"
-                                    class="btn btn-outline-light btn-lg px-4 py-2"
+                                    class="btn btn-outline-dark btn-lg px-4 py-2"
                                 >
-                                    Explorar Cursos
+                                    Explorar Casos
                                 </a>
                                 {% else %}
-                                <a href="{{ url_for('home.panel') }}" class="btn btn-light btn-lg px-4 py-2">
+                                <a
+                                    href="{{ url_for('home.panel') }}"
+                                    class="btn btn-lg px-4 py-2"
+                                    style="background: #a41034; color: white; border: none"
+                                >
                                     <strong>Mi Panel</strong>
                                 </a>
                                 <a
                                     href="{{ url_for('course.lista_cursos', page=1) }}"
-                                    class="btn btn-outline-light btn-lg px-4 py-2"
+                                    class="btn btn-outline-dark btn-lg px-4 py-2"
                                 >
-                                    Ver Cursos
+                                    Ver Casos
                                 </a>
                                 {% endif %}
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 text-center">
-                        <div class="hero-visual">
-                            <!-- Placeholder for Harvard-themed educational imagery -->
+
+                    <!-- Visual 3D de anfiteatro (30% asymmetric layout) -->
+                    <div class="col-md-5 p-0 d-none d-md-block">
+                        <div
+                            class="harvard-amphitheater position-relative"
+                            style="
+                                height: 70vh;
+                                clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
+                                background: linear-gradient(135deg, rgba(164, 16, 52, 0.8), rgba(130, 0, 0, 0.9));
+                            "
+                        >
+                            <!-- Simulated amphitheater with tiered seating -->
                             <div
-                                class="academic-shield"
-                                style="
-                                    background: rgba(255, 255, 255, 0.1);
-                                    border-radius: 50%;
-                                    width: 300px;
-                                    height: 300px;
-                                    margin: 0 auto;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    border: 4px solid rgba(255, 255, 255, 0.3);
-                                "
+                                class="amphitheater-tiers position-absolute w-100 h-100 d-flex flex-column justify-content-center align-items-center"
                             >
-                                <div class="text-center text-white">
-                                    <div
-                                        style="
-                                            font-size: 4rem;
-                                            font-family: &quot;Merriweather&quot;, serif;
-                                            font-weight: 700;
-                                            margin-bottom: 0.5rem;
-                                        "
-                                    >
-                                        H
-                                    </div>
-                                    <div style="font-size: 1.2rem; font-weight: 600">Learning Excellence</div>
-                                    <div style="font-size: 0.9rem; opacity: 0.8">Since Academic Tradition</div>
+                                <div
+                                    style="
+                                        background: rgba(255, 255, 255, 0.1);
+                                        width: 80%;
+                                        height: 15px;
+                                        margin: 5px 0;
+                                        border-radius: 10px;
+                                    "
+                                ></div>
+                                <div
+                                    style="
+                                        background: rgba(255, 255, 255, 0.15);
+                                        width: 75%;
+                                        height: 15px;
+                                        margin: 5px 0;
+                                        border-radius: 10px;
+                                    "
+                                ></div>
+                                <div
+                                    style="
+                                        background: rgba(255, 255, 255, 0.2);
+                                        width: 70%;
+                                        height: 15px;
+                                        margin: 5px 0;
+                                        border-radius: 10px;
+                                    "
+                                ></div>
+                                <div
+                                    style="
+                                        background: rgba(255, 255, 255, 0.25);
+                                        width: 65%;
+                                        height: 15px;
+                                        margin: 5px 0;
+                                        border-radius: 10px;
+                                    "
+                                ></div>
+                                <div
+                                    style="
+                                        background: rgba(255, 255, 255, 0.3);
+                                        width: 60%;
+                                        height: 20px;
+                                        margin: 10px 0;
+                                        border-radius: 10px;
+                                    "
+                                ></div>
+                                <div class="text-white text-center mt-3">
+                                    <div style="font-size: 2rem; margin-bottom: 0.5rem">🏛️</div>
+                                    <div style="font-size: 1rem; font-weight: 600">Harvard Case Method</div>
                                 </div>
                             </div>
                         </div>
@@ -255,95 +291,139 @@
             <div class="container">
                 <div class="row">
                     <div class="col-12 text-center mb-5">
-                        <h2 class="display-6 fw-bold mb-4" style="color: #a41e22">🏛️ Harvard Excellence in Education</h2>
-                        <p class="lead" style="color: #2c3e50">
-                            Cursos de calidad mundial con la tradición académica de Harvard.
+                        <h2 class="display-6 fw-bold mb-4" style="color: #a41034; font-family: &quot;Charter&quot;, serif">
+                            📋 Harvard Case Study Collection
+                        </h2>
+                        <p class="lead" style="color: #474340; font-family: &quot;Charter&quot;, serif">
+                            Casos reales. Debates auténticos. Soluciones transformadoras.
                         </p>
+                        <div style="width: 120px; height: 3px; background: #d8b866; margin: 1rem auto"></div>
                     </div>
                 </div>
                 <div class="row row-cols-1 row-cols-sm-2 g-4">
                     {% for curso in cursos.items[:4] %}
                     <div class="col">
+                        <!-- Tarjeta "Caso de Estudio" Harvard Business School style -->
                         <div
-                            class="card h-100"
+                            class="harvard-case-card position-relative"
                             style="
-                                border: 2px solid #a41e22;
-                                border-radius: 10px;
-                                box-shadow: 0 8px 25px rgba(164, 30, 34, 0.1);
-                                background: #ffffff;
+                                border-left: 5px solid #d8b866;
+                                background: white;
+                                border-radius: 8px;
+                                box-shadow: 0 8px 25px rgba(164, 16, 52, 0.1);
+                                overflow: hidden;
                             "
                         >
-                            {% if curso.portada and course_logo(curso.codigo) %}
-                            <img
-                                src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/' + course_logo(curso.codigo)) }}"
-                                alt="{{ curso.nombre }}"
-                                class="card-img-top"
-                                style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0"
-                            />
-                            {% else %}
-                            <div
-                                class="card-img-top d-flex align-items-center justify-content-center text-white"
-                                style="
-                                    height: 200px;
-                                    background: linear-gradient(135deg, #a41e22 0%, #2c3e50 100%);
-                                    border-radius: 8px 8px 0 0;
-                                "
-                            >
-                                <div class="text-center">
-                                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem">🎓</div>
-                                    <div style="font-size: 1rem; font-weight: 600">{{ curso.nombre }}</div>
+                            <div class="case-header" style="background: #f5f3f2; padding: 1.5rem; position: relative">
+                                <span
+                                    class="case-number"
+                                    style="
+                                        position: absolute;
+                                        top: -15px;
+                                        left: -15px;
+                                        background: #a41034;
+                                        color: white;
+                                        width: 40px;
+                                        height: 40px;
+                                        border-radius: 50%;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        font-weight: bold;
+                                        font-family: &quot;Charter&quot;, serif;
+                                    "
+                                    >{{ loop.index }}</span
+                                >
+                                <h3 style="font-family: &quot;Charter&quot;, serif; color: #474340; margin-bottom: 1rem">
+                                    {{ curso.nombre }}
+                                </h3>
+                                <div class="case-meta" style="display: flex; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap">
+                                    {% if curso.duracion %}
+                                    <span
+                                        style="
+                                            font-size: 0.8rem;
+                                            background: #e8dcc8;
+                                            padding: 0.2rem 0.8rem;
+                                            border-radius: 3px;
+                                        "
+                                        >{{ curso.duracion }}h</span
+                                    >
+                                    {% endif %}
+                                    <span
+                                        style="
+                                            font-size: 0.8rem;
+                                            background: #e8dcc8;
+                                            padding: 0.2rem 0.8rem;
+                                            border-radius: 3px;
+                                        "
+                                    >
+                                        {% if curso.nivel == 0 %}Intro{% else %}Nivel {{ curso.nivel }}{% endif %}
+                                    </span>
+                                    {% if not curso.precio %}
+                                    <span
+                                        style="
+                                            font-size: 0.8rem;
+                                            background: #d8b866;
+                                            color: white;
+                                            padding: 0.2rem 0.8rem;
+                                            border-radius: 3px;
+                                        "
+                                        >Full Scholarship</span
+                                    >
+                                    {% endif %}
                                 </div>
                             </div>
-                            {% endif %}
-
-                            <div class="card-body d-flex flex-column" style="background: #ffffff">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5
-                                        class="card-title mb-0"
-                                        style="color: #a41e22; font-weight: 700; font-family: Georgia, serif"
-                                    >
-                                        {{ curso.nombre }}
-                                    </h5>
-                                    <div class="d-flex align-items-center gap-2">
-                                        {% if not curso.precio %}
-                                        <span class="badge" style="background: #2c3e50; color: white">Full Scholarship</span>
-                                        {% endif %} {% if curso.nivel == 0 %}
-                                        <span class="badge bg-light text-dark border" title="Nivel Introductorio"
-                                            >Freshman</span
-                                        >
-                                        {% elif curso.nivel == 1 %}
-                                        <span class="badge" style="background: #a41e22" title="Nivel Principiante"
-                                            >Sophomore</span
-                                        >
-                                        {% elif curso.nivel == 2 %}
-                                        <span class="badge" style="background: #2c3e50" title="Nivel Intermedio">Junior</span>
-                                        {% elif curso.nivel == 3 %}
-                                        <span class="badge bg-dark" title="Nivel Avanzado">Senior</span>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <p
-                                    class="card-text flex-grow-1"
-                                    style="color: #6c757d; font-family: Georgia, serif; font-style: italic"
-                                >
+                            <div
+                                class="case-body"
+                                style="padding: 1.5rem; background: white; position: relative"
+                                onmouseenter="this.querySelector('.case-footnotes').style.opacity='1'"
+                                onmouseleave="this.querySelector('.case-footnotes').style.opacity='0'"
+                            >
+                                <p style="font-family: &quot;Charter&quot;, serif; line-height: 1.6; color: #474340">
                                     {{ curso.descripcion_corta | truncate(100) }}
                                 </p>
-                                <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex justify-content-between align-items-center mt-3">
                                     <a
                                         href="{{ url_for('course.curso', course_code=curso.codigo) }}"
                                         class="btn btn-sm"
-                                        style="background: #a41e22; color: white; border: none; font-family: Georgia, serif"
-                                        >⚡ Apply Now</a
+                                        style="
+                                            background: #a41034;
+                                            color: white;
+                                            border: none;
+                                            font-family: &quot;Charter&quot;, serif;
+                                        "
                                     >
-                                    <div class="text-end">
-                                        {% if curso.duracion %}
-                                        <small class="text-muted d-block">📖 {{ curso.duracion }} minutes</small>
-                                        {% endif %} {% if curso.precio %}
-                                        <small class="fw-bold" style="color: #a41e22; font-family: Georgia, serif"
-                                            >${{ curso.precio | float }}</small
-                                        >
-                                        {% endif %}
+                                        📋 Analizar Caso
+                                    </a>
+                                    {% if curso.precio %}
+                                    <div style="font-weight: bold; color: #a41034; font-family: &quot;Charter&quot;, serif">
+                                        ${{ curso.precio | float }}
                                     </div>
+                                    {% endif %}
+                                </div>
+                                <!-- Harvard-style marginalia notes that appear on hover -->
+                                <div
+                                    class="case-footnotes"
+                                    style="
+                                        position: absolute;
+                                        right: -25%;
+                                        top: 0;
+                                        width: 25%;
+                                        padding: 1rem;
+                                        background: #f9f7f5;
+                                        border-left: 1px dashed #d8b866;
+                                        opacity: 0;
+                                        transition: all 0.3s;
+                                        font-size: 0.75rem;
+                                        font-family: &quot;Charter&quot;, serif;
+                                    "
+                                >
+                                    <small style="color: #7a5e49">
+                                        <strong>Recomendado</strong><br />
+                                        por 92% de los participantes<br /><br />
+                                        <em>Case Study Method</em><br />
+                                        Harvard Business School
+                                    </small>
                                 </div>
                             </div>
                         </div>
@@ -354,9 +434,9 @@
                     <a
                         href="{{ url_for('course.lista_cursos', page=1) }}"
                         class="btn btn-lg px-4 py-2"
-                        style="background: #a41e22; color: white; border: none; font-family: Georgia, serif"
+                        style="background: #a41034; color: white; border: none; font-family: &quot;Charter&quot;, serif"
                     >
-                        🏛️ Explore Harvard Course Catalog
+                        📚 Explorar Biblioteca de Casos
                     </a>
                 </div>
             </div>

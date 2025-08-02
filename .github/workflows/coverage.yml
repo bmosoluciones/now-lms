@@ -27,6 +27,7 @@ jobs:
           SECRET_KEY: ASD123klj+aAddSskadjandsASVNASJVNSAJIDVSVIAO
           LOG_LEVEL: TRACE
         run: |
-          pytest  -v --cov=now_lms --exitfirst --slow=True --use-cases=True
+          # pytest  -v --cov=now_lms --exitfirst --slow=True --use-cases=True --cov-report=xml
+           pytest  -v --cov=now_lms --exitfirst --cov-report=xml
       - name: Coveralls GitHub Action
         uses: coverallsapp/github-action@v2.3.6

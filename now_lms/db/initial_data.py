@@ -12,13 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 """Codigo para crear cursos iniciales.s"""
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 from datetime import datetime, time, timedelta
 from os import environ, listdir, makedirs, path
@@ -26,12 +24,12 @@ from shutil import copyfile, copytree
 from typing import TYPE_CHECKING
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 from ulid import ULID
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import proteger_passwd
 from now_lms.config import DIRECTORIO_ARCHIVOS, DIRECTORIO_BASE_ARCHIVOS_USUARIO
@@ -55,6 +53,10 @@ from now_lms.db import (
 )
 from now_lms.logs import log
 from now_lms.version import MAYOR, MENOR, VERSION
+
+# User constants
+ADMIN_USER = environ.get("ADMIN_USER", None) or "lms-admin"
+ADMIN_USER_WITH_FALLBACK = environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin"
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -507,7 +509,7 @@ def crear_certificados():
 def crear_certificacion():
     certificacion = Certificacion(
         id="01JS2NK7NJ74DBSHD83MGRH5HE",
-        usuario=environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin",
+        usuario=ADMIN_USER_WITH_FALLBACK,
         curso="now",
         certificado="demo",
     )
@@ -716,7 +718,7 @@ def crear_usuarios_predeterminados():
     """Crea en la base de datos los usuarios iniciales."""
     log.info("Creando usuario administrador.")
     administrador = Usuario(
-        usuario=environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin",
+        usuario=ADMIN_USER_WITH_FALLBACK,
         acceso=proteger_passwd(environ.get("ADMIN_PSWD") or environ.get("LMS_PSWD") or "lms-admin"),
         nombre="System",
         apellido="Administrator",
@@ -915,7 +917,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R001.pdf",
         tipo="ebook",
-        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
+        usuario=ADMIN_USER,
     )
     recurso2 = Recurso(
         nombre="Alice's Adventures in Wonderland",
@@ -926,7 +928,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R002.pdf",
         tipo="ebook",
-        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
+        usuario=ADMIN_USER,
     )
     recurso3 = Recurso(
         nombre="Dracula",
@@ -937,7 +939,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R003.pdf",
         tipo="ebook",
-        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
+        usuario=ADMIN_USER,
     )
     recurso4 = Recurso(
         nombre="The War of the Worlds",
@@ -948,7 +950,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R004.pdf",
         tipo="ebook",
-        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
+        usuario=ADMIN_USER,
     )
     recurso4 = Recurso(
         nombre="Think Python",
@@ -959,7 +961,7 @@ def crear_recurso_descargable():
         logo=True,
         file_name="R005.pdf",
         tipo="ebook",
-        usuario=environ.get("ADMIN_USER", None) or "lms-admin",
+        usuario=ADMIN_USER,
     )
     for i in recurso1, recurso2, recurso3, recurso4:
         database.session.add(i)
@@ -1038,11 +1040,9 @@ def populate_custom_theme_dir():
 
     from now_lms.config import DIRECTORIO_PLANTILLAS, DIRECTORIO_PLANTILLAS_BASE
 
-    if not DIRECTORIO_PLANTILLAS == DIRECTORIO_PLANTILLAS_BASE:
+    if DIRECTORIO_PLANTILLAS != DIRECTORIO_PLANTILLAS_BASE:
 
-        if path.isdir(DIRECTORIO_PLANTILLAS) and bool(listdir(DIRECTORIO_PLANTILLAS)):
-            pass
-        else:
+        if not (path.isdir(DIRECTORIO_PLANTILLAS) and bool(listdir(DIRECTORIO_PLANTILLAS))):
             try:
                 copytree(DIRECTORIO_PLANTILLAS_BASE, DIRECTORIO_PLANTILLAS, dirs_exist_ok=True)
             except FileExistsError:

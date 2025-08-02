@@ -1,0 +1,166 @@
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Resultado de Evaluación</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
+                                        >Inicio</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('course.tomar_curso', course_code=attempt.evaluation.section.curso) }}"
+                                        >Curso</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Resultado</li>
+                            </ol>
+                        </nav>
+                    </h4>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>{{ attempt.evaluation.title }}</h3>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Resultado del intento</span>
+                                    {% if attempt.passed %}
+                                    <span class="badge bg-success fs-6">APROBADO</span>
+                                    {% else %}
+                                    <span class="badge bg-danger fs-6">NO APROBADO</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-md-4">
+                                        <div class="border rounded p-3">
+                                            <h4 class="{% if attempt.passed %}text-success{% else %}text-danger{% endif %}">
+                                                {{ "%.1f"|format(attempt.score) }}%
+                                            </h4>
+                                            <p class="text-muted mb-0">Puntuación obtenida</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="border rounded p-3">
+                                            <h4 class="text-info">{{ attempt.evaluation.passing_score }}%</h4>
+                                            <p class="text-muted mb-0">Puntuación mínima</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="border rounded p-3">
+                                            <h4 class="text-secondary">
+                                                {{ attempt.submitted_at.strftime('%d/%m/%Y %H:%M') }}
+                                            </h4>
+                                            <p class="text-muted mb-0">Fecha de envío</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if attempt.was_late %}
+                                <div class="alert alert-warning mt-3">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    Este intento fue enviado después de la fecha límite y se aplicó una penalización.
+                                </div>
+                                {% endif %}
+
+                                <div class="mt-4">
+                                    <h5>Detalles de respuestas</h5>
+                                    {% for answer in attempt.answers %} {% set question = answer.question %}
+                                    <div class="card mb-2">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div class="flex-grow-1">
+                                                    <h6>Pregunta {{ loop.index }}</h6>
+                                                    <p>{{ question.text }}</p>
+
+                                                    {% if question.type == "boolean" %} {% if answer.selected_option_ids %} {%
+                                                    set selected_ids = answer.selected_option_ids | fromjson %} {% for
+                                                    option_id in selected_ids %} {% set option = question.options |
+                                                    selectattr("id", "equalto", option_id) | first %}
+                                                    <p><strong>Tu respuesta:</strong> {{ option.text }}</p>
+                                                    {% endfor %} {% endif %} {% elif question.type == "multiple" %} {% if
+                                                    answer.selected_option_ids %} {% set selected_ids =
+                                                    answer.selected_option_ids | fromjson %}
+                                                    <p><strong>Tus respuestas:</strong></p>
+                                                    <ul>
+                                                        {% for option_id in selected_ids %} {% set option = question.options |
+                                                        selectattr("id", "equalto", option_id) | first %}
+                                                        <li>{{ option.text }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                    {% endif %} {% endif %}
+
+                                                    <div class="mt-2">
+                                                        <p><strong>Respuestas correctas:</strong></p>
+                                                        <ul>
+                                                            {% for option in question.options %} {% if option.is_correct %}
+                                                            <li class="text-success">{{ option.text }}</li>
+                                                            {% endif %} {% endfor %}
+                                                        </ul>
+                                                    </div>
+
+                                                    {% if question.explanation %}
+                                                    <div class="mt-2">
+                                                        <p><strong>Explicación:</strong></p>
+                                                        <p class="text-muted">{{ question.explanation }}</p>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+
+                                                <div class="ms-3">
+                                                    {% set is_correct = false %} {% if answer.selected_option_ids %} {% set
+                                                    selected_ids = answer.selected_option_ids | fromjson %} {% set correct_ids
+                                                    = question.options | selectattr("is_correct", "equalto", true) |
+                                                    map(attribute="id") | list %} {% if selected_ids | sort == correct_ids |
+                                                    sort %} {% set is_correct = true %} {% endif %} {% endif %} {% if
+                                                    is_correct %}
+                                                    <span class="badge bg-success">Correcta</span>
+                                                    {% else %}
+                                                    <span class="badge bg-danger">Incorrecta</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="d-grid gap-2 mt-4">
+                                    <a
+                                        href="{{ url_for('course.tomar_curso', course_code=attempt.evaluation.section.curso) }}"
+                                        class="btn btn-primary"
+                                    >
+                                        Volver al curso
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

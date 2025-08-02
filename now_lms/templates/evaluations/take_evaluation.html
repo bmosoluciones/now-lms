@@ -1,0 +1,154 @@
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ evaluation.title }} - Evaluación</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
+                                        >Inicio</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('course.tomar_curso', course_code=evaluation.section.curso) }}"
+                                        >Curso</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ evaluation.title }}</li>
+                            </ol>
+                        </nav>
+                    </h4>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>{{ evaluation.title }}</h3>
+                                {% if evaluation.is_exam %}
+                                <span class="badge bg-danger">Examen</span>
+                                {% else %}
+                                <span class="badge bg-primary">Quiz</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="card-body">
+                                {% if evaluation.description %}
+                                <p class="card-text">{{ evaluation.description }}</p>
+                                {% endif %}
+
+                                <div class="alert alert-info">
+                                    <strong>Instrucciones:</strong>
+                                    <ul class="mb-0">
+                                        <li>Puntuación mínima para aprobar: {{ evaluation.passing_score }}%</li>
+                                        {% if evaluation.max_attempts %}
+                                        <li>Número máximo de intentos: {{ evaluation.max_attempts }}</li>
+                                        {% else %}
+                                        <li>Intentos ilimitados</li>
+                                        {% endif %} {% if evaluation.available_until %}
+                                        <li>Disponible hasta: {{ evaluation.available_until.strftime('%d/%m/%Y %H:%M') }}</li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+
+                                <form method="POST">
+                                    {{ csrf_token() }} {% for question in evaluation.questions %}
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Pregunta {{ loop.index }}</h6>
+                                            <p class="card-text">{{ question.text }}</p>
+
+                                            {% if question.type == "boolean" %}
+                                            <div class="form-check">
+                                                <input
+                                                    class="form-check-input"
+                                                    type="radio"
+                                                    name="question_{{ question.id }}"
+                                                    id="q{{ question.id }}_true"
+                                                    value="Verdadero"
+                                                    required
+                                                />
+                                                <label class="form-check-label" for="q{{ question.id }}_true">
+                                                    Verdadero
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input
+                                                    class="form-check-input"
+                                                    type="radio"
+                                                    name="question_{{ question.id }}"
+                                                    id="q{{ question.id }}_false"
+                                                    value="Falso"
+                                                    required
+                                                />
+                                                <label class="form-check-label" for="q{{ question.id }}_false"> Falso </label>
+                                            </div>
+
+                                            {% elif question.type == "multiple" %} {% set correct_count = question.options |
+                                            selectattr("is_correct", "equalto", true) | list | length %} {% if correct_count >
+                                            1 %}
+                                            <p class="small text-muted">Seleccione todas las opciones correctas:</p>
+                                            {% for option in question.options %}
+                                            <div class="form-check">
+                                                <input
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    name="question_{{ question.id }}"
+                                                    id="q{{ question.id }}_{{ option.id }}"
+                                                    value="{{ option.id }}"
+                                                />
+                                                <label class="form-check-label" for="q{{ question.id }}_{{ option.id }}">
+                                                    {{ option.text }}
+                                                </label>
+                                            </div>
+                                            {% endfor %} {% else %}
+                                            <p class="small text-muted">Seleccione una opción:</p>
+                                            {% for option in question.options %}
+                                            <div class="form-check">
+                                                <input
+                                                    class="form-check-input"
+                                                    type="radio"
+                                                    name="question_{{ question.id }}"
+                                                    id="q{{ question.id }}_{{ option.id }}"
+                                                    value="{{ option.id }}"
+                                                    required
+                                                />
+                                                <label class="form-check-label" for="q{{ question.id }}_{{ option.id }}">
+                                                    {{ option.text }}
+                                                </label>
+                                            </div>
+                                            {% endfor %} {% endif %} {% endif %}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-primary btn-lg">Enviar Evaluación</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

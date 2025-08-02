@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 import pytest
 
@@ -472,7 +470,7 @@ def test_theme_functionality_comprehensive(lms_application, request):
             assert get_course_view_template() == "themes/oxford/overrides/course_view.j2"
 
             # Test all other themes have override templates
-            themes_to_test = ["classic", "corporative", "finance", "ocean_blue", "rose_pink"]
+            themes_to_test = ["classic", "corporative", "finance", "oxford", "cambridge", "harvard"]
 
             for theme in themes_to_test:
                 config.theme = theme

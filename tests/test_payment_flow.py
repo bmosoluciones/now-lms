@@ -17,7 +17,7 @@ Test cases for PayPal payment functionality.
 """
 
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 
 @pytest.fixture
@@ -49,9 +49,10 @@ def test_paid_course_enrollment_redirects_to_paypal_page(lms_application):
     with lms_application.app_context():
         database.drop_all()
         initial_setup()
-        
+
         # Create test user
         from now_lms.auth import proteger_secreto
+
         user = Usuario(
             usuario="test_user",
             acceso=proteger_secreto("test_password"),
@@ -59,10 +60,10 @@ def test_paid_course_enrollment_redirects_to_paypal_page(lms_application):
             apellido="User",
             correo_electronico="test@example.com",
             activo=True,
-            tipo="student"
+            tipo="student",
         )
         database.session.add(user)
-        
+
         # Create paid course
         curso = Curso(
             nombre="Test Paid Course",
@@ -72,32 +73,35 @@ def test_paid_course_enrollment_redirects_to_paypal_page(lms_application):
             pagado=True,
             precio=99.99,
             publico=True,
-            estado="open"
+            estado="open",
         )
         database.session.add(curso)
         database.session.commit()
-        
+
         # Test enrollment
         with lms_application.test_client() as client:
             # Login as test user
             with client.session_transaction() as sess:
-                sess['_user_id'] = user.id
-                sess['_fresh'] = True
-            
+                sess["_user_id"] = user.id
+                sess["_fresh"] = True
+
             # Submit enrollment form for paid course
-            response = client.post(f'/course/PAID001/enroll', data={
-                'nombre': 'Test',
-                'apellido': 'User',
-                'correo_electronico': 'test@example.com',
-                'direccion1': 'Test Address',
-                'pais': 'US',
-                'provincia': 'CA',
-                'codigo_postal': '12345'
-            })
-            
+            response = client.post(
+                "/course/PAID001/enroll",
+                data={
+                    "nombre": "Test",
+                    "apellido": "User",
+                    "correo_electronico": "test@example.com",
+                    "direccion1": "Test Address",
+                    "pais": "US",
+                    "provincia": "CA",
+                    "codigo_postal": "12345",
+                },
+            )
+
             # Check redirect to PayPal payment page
             assert response.status_code == 302
-            assert '/paypal_checkout/payment/PAID001' in response.location
+            assert "/paypal_checkout/payment/PAID001" in response.location
 
 
 @pytest.mark.slow
@@ -109,9 +113,10 @@ def test_free_course_enrollment_completes_immediately(lms_application):
     with lms_application.app_context():
         database.drop_all()
         initial_setup()
-        
+
         # Create test user
         from now_lms.auth import proteger_secreto
+
         user = Usuario(
             usuario="test_user_free",
             acceso=proteger_secreto("test_password"),
@@ -119,10 +124,10 @@ def test_free_course_enrollment_completes_immediately(lms_application):
             apellido="User",
             correo_electronico="test_free@example.com",
             activo=True,
-            tipo="student"
+            tipo="student",
         )
         database.session.add(user)
-        
+
         # Create free course
         curso = Curso(
             nombre="Test Free Course",
@@ -132,45 +137,48 @@ def test_free_course_enrollment_completes_immediately(lms_application):
             pagado=False,
             precio=0,
             publico=True,
-            estado="open"
+            estado="open",
         )
         database.session.add(curso)
         database.session.commit()
-        
+
         # Test enrollment
         with lms_application.test_client() as client:
             # Login as test user
             with client.session_transaction() as sess:
-                sess['_user_id'] = user.id
-                sess['_fresh'] = True
-            
+                sess["_user_id"] = user.id
+                sess["_fresh"] = True
+
             # Submit enrollment form
-            response = client.post(f'/course/FREE001/enroll', data={
-                'nombre': 'Test',
-                'apellido': 'User',
-                'correo_electronico': 'test_free@example.com',
-                'direccion1': 'Test Address',
-                'pais': 'US',
-                'provincia': 'CA',
-                'codigo_postal': '12345',
-                'modo': 'free'
-            })
-            
+            response = client.post(
+                "/course/FREE001/enroll",
+                data={
+                    "nombre": "Test",
+                    "apellido": "User",
+                    "correo_electronico": "test_free@example.com",
+                    "direccion1": "Test Address",
+                    "pais": "US",
+                    "provincia": "CA",
+                    "codigo_postal": "12345",
+                    "modo": "free",
+                },
+            )
+
             # Check that payment was created with completed status
-            payment = database.session.query(Pago).filter_by(usuario=user.usuario, curso='FREE001').first()
+            payment = database.session.query(Pago).filter_by(usuario=user.usuario, curso="FREE001").first()
             assert payment is not None
             assert payment.estado == "completed"
             assert float(payment.monto) == 0
             assert payment.metodo == "free"
-            
+
             # Check that EstudianteCurso record was created
-            enrollment = database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso='FREE001').first()
+            enrollment = database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso="FREE001").first()
             assert enrollment is not None
             assert enrollment.vigente is True
-            
+
             # Check redirect to course
             assert response.status_code == 302
-            assert '/course/FREE001/take' in response.location
+            assert "/course/FREE001/take" in response.location
 
 
 @pytest.mark.slow
@@ -182,9 +190,10 @@ def test_audit_mode_enrollment(lms_application):
     with lms_application.app_context():
         database.drop_all()
         initial_setup()
-        
+
         # Create test user
         from now_lms.auth import proteger_secreto
+
         user = Usuario(
             usuario="test_user_audit",
             acceso=proteger_secreto("test_password"),
@@ -192,10 +201,10 @@ def test_audit_mode_enrollment(lms_application):
             apellido="User",
             correo_electronico="test_audit@example.com",
             activo=True,
-            tipo="student"
+            tipo="student",
         )
         database.session.add(user)
-        
+
         # Create auditable paid course
         curso = Curso(
             nombre="Test Auditable Course",
@@ -206,40 +215,43 @@ def test_audit_mode_enrollment(lms_application):
             auditable=True,
             precio=99.99,
             publico=True,
-            estado="open"
+            estado="open",
         )
         database.session.add(curso)
         database.session.commit()
-        
+
         # Test audit enrollment
         with lms_application.test_client() as client:
             # Login as test user
             with client.session_transaction() as sess:
-                sess['_user_id'] = user.id
-                sess['_fresh'] = True
-            
+                sess["_user_id"] = user.id
+                sess["_fresh"] = True
+
             # Submit enrollment form for audit mode
-            response = client.post(f'/course/AUDIT001/enroll', data={
-                'nombre': 'Test',
-                'apellido': 'User',
-                'correo_electronico': 'test_audit@example.com',
-                'direccion1': 'Test Address',
-                'pais': 'US',
-                'provincia': 'CA',
-                'codigo_postal': '12345',
-                'modo': 'audit'
-            })
-            
+            response = client.post(
+                "/course/AUDIT001/enroll",
+                data={
+                    "nombre": "Test",
+                    "apellido": "User",
+                    "correo_electronico": "test_audit@example.com",
+                    "direccion1": "Test Address",
+                    "pais": "US",
+                    "provincia": "CA",
+                    "codigo_postal": "12345",
+                    "modo": "audit",
+                },
+            )
+
             # Check that payment was created with completed status and audit flag
-            payment = database.session.query(Pago).filter_by(usuario=user.usuario, curso='AUDIT001').first()
+            payment = database.session.query(Pago).filter_by(usuario=user.usuario, curso="AUDIT001").first()
             assert payment is not None
             assert payment.estado == "completed"
             assert payment.audit is True
             assert float(payment.monto) == 0
             assert payment.metodo == "audit"
-            
+
             # Check that EstudianteCurso record was created
-            enrollment = database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso='AUDIT001').first()
+            enrollment = database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso="AUDIT001").first()
             assert enrollment is not None
             assert enrollment.vigente is True
 
@@ -249,27 +261,24 @@ def test_paypal_payment_confirmation_success(lms_application):
     """Test successful PayPal payment confirmation."""
     from now_lms import database, initial_setup
     from now_lms.db import Usuario, Curso, Pago, EstudianteCurso, PaypalConfig
-    from unittest.mock import patch
     import json
 
     with lms_application.app_context():
         database.drop_all()
         initial_setup()
-        
+
         # Configure PayPal
         paypal_config = PaypalConfig(
-            enable=True,
-            sandbox=True,
-            paypal_id="test_client_id",
-            paypal_sandbox="test_sandbox_client_id"
+            enable=True, sandbox=True, paypal_id="test_client_id", paypal_sandbox="test_sandbox_client_id"
         )
-        
+
         from now_lms.auth import proteger_secreto
+
         paypal_config.paypal_secret = proteger_secreto("test_secret")
         paypal_config.paypal_sandbox_secret = proteger_secreto("test_sandbox_secret")
-        
+
         database.session.add(paypal_config)
-        
+
         # Create test user
         user = Usuario(
             usuario="test_user_payment",
@@ -278,10 +287,10 @@ def test_paypal_payment_confirmation_success(lms_application):
             apellido="User",
             correo_electronico="test_payment@example.com",
             activo=True,
-            tipo="student"
+            tipo="student",
         )
         database.session.add(user)
-        
+
         # Create paid course
         curso = Curso(
             nombre="Test Payment Course",
@@ -291,56 +300,61 @@ def test_paypal_payment_confirmation_success(lms_application):
             pagado=True,
             precio=50.00,
             publico=True,
-            estado="open"
+            estado="open",
         )
         database.session.add(curso)
         database.session.commit()
-        
+
         # Mock PayPal API responses
-        with patch('now_lms.vistas.paypal.get_paypal_access_token') as mock_token, \
-             patch('now_lms.vistas.paypal.verify_paypal_payment') as mock_verify:
-            
+        with (
+            patch("now_lms.vistas.paypal.get_paypal_access_token") as mock_token,
+            patch("now_lms.vistas.paypal.verify_paypal_payment") as mock_verify,
+        ):
+
             mock_token.return_value = "mock_access_token"
             mock_verify.return_value = {
-                'verified': True,
-                'status': 'COMPLETED',
-                'amount': '50.00',
-                'currency': 'USD',
-                'payer_id': 'test_payer_id'
+                "verified": True,
+                "status": "COMPLETED",
+                "amount": "50.00",
+                "currency": "USD",
+                "payer_id": "test_payer_id",
             }
-            
+
             with lms_application.test_client() as client:
                 # Login as test user
                 with client.session_transaction() as sess:
-                    sess['_user_id'] = user.id
-                    sess['_fresh'] = True
-                
+                    sess["_user_id"] = user.id
+                    sess["_fresh"] = True
+
                 # Send payment confirmation
-                response = client.post('/paypal_checkout/confirm_payment', 
-                    data=json.dumps({
-                        'orderID': 'test_order_id',
-                        'payerID': 'test_payer_id',
-                        'courseCode': 'PAY001',
-                        'amount': 50.00,
-                        'currency': 'USD'
-                    }),
-                    content_type='application/json'
+                response = client.post(
+                    "/paypal_checkout/confirm_payment",
+                    data=json.dumps(
+                        {
+                            "orderID": "test_order_id",
+                            "payerID": "test_payer_id",
+                            "courseCode": "PAY001",
+                            "amount": 50.00,
+                            "currency": "USD",
+                        }
+                    ),
+                    content_type="application/json",
                 )
-                
+
                 assert response.status_code == 200
                 response_data = json.loads(response.data)
-                assert response_data['success'] is True
-                
+                assert response_data["success"] is True
+
                 # Check that payment record was created
-                payment = database.session.query(Pago).filter_by(usuario=user.usuario, curso='PAY001').first()
+                payment = database.session.query(Pago).filter_by(usuario=user.usuario, curso="PAY001").first()
                 assert payment is not None
                 assert payment.estado == "completed"
                 assert float(payment.monto) == 50.00
                 assert payment.metodo == "paypal"
                 assert payment.referencia == "test_order_id"
-                
+
                 # Check that enrollment was created
-                enrollment = database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso='PAY001').first()
+                enrollment = database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso="PAY001").first()
                 assert enrollment is not None
                 assert enrollment.vigente is True
 
@@ -350,43 +364,38 @@ def test_paypal_client_id_endpoint(lms_application):
     """Test PayPal client ID endpoint."""
     from now_lms import database, initial_setup
     from now_lms.db import Usuario, PaypalConfig
-    import json
 
     with lms_application.app_context():
         database.drop_all()
         initial_setup()
-        
+
         # Configure PayPal
-        paypal_config = PaypalConfig(
-            enable=True,
-            sandbox=True,
-            paypal_id="live_client_id",
-            paypal_sandbox="sandbox_client_id"
-        )
+        paypal_config = PaypalConfig(enable=True, sandbox=True, paypal_id="live_client_id", paypal_sandbox="sandbox_client_id")
         database.session.add(paypal_config)
-        
+
         # Create test user
         from now_lms.auth import proteger_secreto
+
         user = Usuario(
             usuario="test_user_client_id",
             acceso=proteger_secreto("test_password"),
             nombre="Test",
-            apellido="User", 
+            apellido="User",
             correo_electronico="test_client@example.com",
             activo=True,
-            tipo="student"
+            tipo="student",
         )
         database.session.add(user)
         database.session.commit()
-        
+
         with lms_application.test_client() as client:
             # Login as test user
             with client.session_transaction() as sess:
-                sess['_user_id'] = user.id
-                sess['_fresh'] = True
-            
-            response = client.get('/paypal_checkout/get_client_id')
-            
+                sess["_user_id"] = user.id
+                sess["_fresh"] = True
+
+            response = client.get("/paypal_checkout/get_client_id")
+
             """
             assert response.status_code == 200
             response_data = json.loads(response.data)

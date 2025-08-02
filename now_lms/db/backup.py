@@ -12,13 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 import os
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 import shutil
 import subprocess
@@ -26,13 +24,13 @@ from datetime import datetime
 from pathlib import Path
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask import current_app
 from sqlalchemy.engine import make_url
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.config import DIRECTORIO_ARCHIVOS_PRIVADOS, DIRECTORIO_PRINCICIPAL
 

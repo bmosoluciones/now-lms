@@ -12,12 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 import threading
 from os import environ
@@ -25,13 +23,13 @@ from types import SimpleNamespace
 from typing import Union, Mapping
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask import Flask, current_app, flash
 from flask_mail import Mail, Message
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import descifrar_secreto
 from now_lms.db import MailConfig, database
@@ -151,9 +149,9 @@ def send_threaded_email(app: Flask, mail: Mail, msg: Message, _log: str = "", _f
             logger.trace("Intentando enviar correo electrónico en segundo plano.")
             mail.send(msg)
             logger.trace(f"Correo enviado a {msg.recipients}.")
-            if not _log == "":
+            if _log != "":
                 logger.info(_log)
-            if not _flush == "":
+            if _flush != "":
                 flash(_flush)
     except Exception as e:
         logger.error(f"Error al enviar correo a {msg.recipients}: {e}")
@@ -185,9 +183,6 @@ def send_mail(msg: Message, background: bool = True, no_config: bool = False, _l
 
     logger.trace("Creando instancia de Flask-Mail.")
     _mail = Mail(_app)
-
-    assert isinstance(_mail, Mail), "La instancia de mail debe ser de tipo Mail."
-    assert isinstance(msg, Message), "El mensaje debe ser una instancia de flask_mail.Message."
 
     if config.mail_configured or no_config:
         logger.trace("Configuración de correo electrónico verificada.")

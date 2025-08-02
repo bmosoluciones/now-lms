@@ -1,0 +1,437 @@
+    /* Sakura Theme Custom Variables */
+    :root {
+        --sakura-primary: #e89cae;
+        --sakura-secondary: #5c3c47;
+        --sakura-accent: #f4c2c2;
+        --sakura-light: #fef6f8;
+        --sakura-background: #fffafb;
+        --sakura-surface: #ffffff;
+        --sakura-border: #d8a1b0;
+        --sakura-text: #5c3c47;
+        --sakura-text-secondary: #b58a99;
+        --sakura-sage: #e7d9dc;
+        --sakura-blue: #8aa1b1;
+        --sakura-success: #a3c9a8;
+        --sakura-warning: #f2b5a0;
+        --sakura-danger: #c97c7c;
+        --sakura-info: #8aa1b1;
+    }
+
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+        }
+    }
+
+    /* Sakura Theme Styles */
+    body {
+        background: linear-gradient(135deg, var(--sakura-background) 0%, var(--sakura-light) 100%);
+        font-family: "Open Sans", "Noto Sans JP", "Segoe UI", "Roboto", sans-serif;
+        color: var(--sakura-text);
+    }
+
+    /* Custom Sakura Navbar Styling */
+    .navbar-sakura {
+        background: 
+            linear-gradient(90deg, var(--sakura-primary) 0%, var(--sakura-secondary) 100%),
+            radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 10%, transparent 30%),
+            radial-gradient(circle at 80% 50%, rgba(255, 255, 255, 0.05) 15%, transparent 35%) !important;
+        box-shadow: 
+            0 4px 6px rgba(232, 156, 174, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        border-bottom: 3px solid var(--sakura-border);
+        position: relative;
+        z-index: 1030;
+    }
+
+    /* Subtle sakura pattern overlay */
+    .navbar-sakura::before {
+        content: "🌸🌺🌸🌺🌸🌺🌸🌺🌸🌺🌸🌺🌸🌺🌸🌺🌸🌺🌸🌺";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        font-size: 6px;
+        opacity: 0.08;
+        pointer-events: none;
+        letter-spacing: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        animation: sakura-float 25s linear infinite;
+    }
+
+    @keyframes sakura-float {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    .navbar-sakura .navbar-brand,
+    .navbar-sakura .nav-link {
+        color: white !important;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .navbar-sakura .nav-link:hover {
+        color: var(--sakura-light) !important;
+        transform: translateY(-1px);
+        text-shadow: 
+            0 2px 4px rgba(0, 0, 0, 0.3),
+            0 0 8px rgba(255, 255, 255, 0.6);
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 15px;
+        padding: 0.5rem 1rem;
+        box-shadow: 0 2px 8px rgba(232, 156, 174, 0.3);
+    }
+
+    .navbar-sakura .navbar-toggler {
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Sakura Buttons */
+    .btn-sakura-primary {
+        background: linear-gradient(45deg, var(--sakura-primary), var(--sakura-secondary));
+        border: none;
+        color: white;
+        font-weight: 500;
+        border-radius: 25px;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(92, 60, 71, 0.3);
+    }
+
+    .btn-sakura-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(92, 60, 71, 0.4);
+        background: linear-gradient(45deg, var(--sakura-secondary), var(--sakura-primary));
+        color: white;
+    }
+
+    .btn-sakura-secondary {
+        background: linear-gradient(45deg, var(--sakura-accent), var(--sakura-primary));
+        border: none;
+        color: var(--sakura-text);
+        font-weight: 500;
+        border-radius: 25px;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(244, 194, 194, 0.2);
+    }
+
+    .btn-sakura-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(244, 194, 194, 0.3);
+        background: linear-gradient(45deg, var(--sakura-primary), var(--sakura-accent));
+        color: white;
+    }
+
+    /* Card Styling */
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(232, 156, 174, 0.1);
+        transition: all 0.3s ease;
+        background: var(--sakura-surface);
+        backdrop-filter: blur(10px);
+    }
+
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(232, 156, 174, 0.15);
+    }
+
+    .card-header {
+        background: linear-gradient(45deg, var(--sakura-light), var(--sakura-sage));
+        border-bottom: 2px solid var(--sakura-primary);
+        border-radius: 15px 15px 0 0 !important;
+        font-weight: 600;
+        color: var(--sakura-text);
+    }
+
+    /* Icon Styling */
+    .bi {
+        filter: drop-shadow(0 1px 2px rgba(232, 156, 174, 0.3));
+        transition: all 0.2s ease;
+    }
+
+    .navbar-sakura .bi {
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+    }
+
+    /* Dropdown Styling */
+    .dropdown-menu {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 8px 16px rgba(232, 156, 174, 0.2);
+        background: var(--sakura-surface);
+        backdrop-filter: blur(10px);
+        z-index: 1050 !important;
+    }
+
+    .dropdown-item {
+        border-radius: 8px;
+        margin: 2px 8px;
+        transition: all 0.2s ease;
+        color: var(--sakura-text);
+    }
+
+    .dropdown-item:hover {
+        background: var(--sakura-light);
+        color: var(--sakura-text);
+        transform: translateX(4px);
+    }
+
+    /* Alert Styling */
+    .alert {
+        border: none;
+        border-radius: 10px;
+        border-left: 4px solid var(--sakura-primary);
+        background: var(--sakura-light);
+        backdrop-filter: blur(5px);
+        color: var(--sakura-text);
+    }
+
+    .alert-success {
+        border-left-color: var(--sakura-success);
+        background: rgba(163, 201, 168, 0.1);
+    }
+
+    .alert-warning {
+        border-left-color: var(--sakura-warning);
+        background: rgba(242, 181, 160, 0.1);
+    }
+
+    .alert-danger {
+        border-left-color: var(--sakura-danger);
+        background: rgba(201, 124, 124, 0.1);
+    }
+
+    .alert-info {
+        border-left-color: var(--sakura-info);
+        background: rgba(138, 161, 177, 0.1);
+    }
+
+    /* Form Elements */
+    .form-control {
+        border: 2px solid var(--sakura-border);
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        color: var(--sakura-text);
+    }
+
+    .form-control:focus {
+        border-color: var(--sakura-primary);
+        box-shadow: 0 0 0 0.2rem rgba(232, 156, 174, 0.25);
+    }
+
+    /* Modal Styling */
+    .modal-content {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 16px 32px rgba(232, 156, 174, 0.2);
+        background: var(--sakura-surface);
+        backdrop-filter: blur(15px);
+    }
+
+    .modal-header {
+        border-bottom: 2px solid var(--sakura-light);
+        background: linear-gradient(45deg, var(--sakura-light), var(--sakura-sage));
+        border-radius: 15px 15px 0 0;
+    }
+
+    .modal-title {
+        color: var(--sakura-text);
+        font-weight: 600;
+    }
+
+    /* Primary button override for this theme */
+    .btn-primary {
+        background: linear-gradient(45deg, var(--sakura-primary), var(--sakura-secondary));
+        border: none;
+        color: white;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(45deg, var(--sakura-secondary), var(--sakura-primary));
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(92, 60, 71, 0.3);
+    }
+
+    /* Secondary button override for this theme */
+    .btn-secondary {
+        background: var(--sakura-sage);
+        border: 1px solid var(--sakura-border);
+        color: var(--sakura-text);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        background: var(--sakura-accent);
+        color: var(--sakura-text);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(244, 194, 194, 0.3);
+    }
+
+    /* Warning button override */
+    .btn-warning {
+        background: var(--sakura-warning);
+        border: none;
+        color: var(--sakura-text);
+        border-radius: 8px;
+    }
+
+    .btn-warning:hover {
+        background: #e8a089;
+        color: var(--sakura-text);
+    }
+
+    /* Success button override */
+    .btn-success {
+        background: var(--sakura-success);
+        border: none;
+        color: white;
+        border-radius: 8px;
+    }
+
+    .btn-success:hover {
+        background: #8fb394;
+        color: white;
+    }
+
+    /* Danger button override */
+    .btn-danger {
+        background: var(--sakura-danger);
+        border: none;
+        color: white;
+        border-radius: 8px;
+    }
+
+    .btn-danger:hover {
+        background: #b56666;
+        color: white;
+    }
+
+    /* Info button override */
+    .btn-info {
+        background: var(--sakura-info);
+        border: none;
+        color: white;
+        border-radius: 8px;
+    }
+
+    .btn-info:hover {
+        background: #7a91a1;
+        color: white;
+    }
+
+    /* Text color overrides */
+    .text-primary {
+        color: var(--sakura-primary) !important;
+    }
+
+    .text-secondary {
+        color: var(--sakura-text-secondary) !important;
+    }
+
+    /* Link styling */
+    a {
+        color: var(--sakura-primary);
+        transition: color 0.2s ease;
+    }
+
+    a:hover {
+        color: var(--sakura-secondary);
+    }
+
+    /* Responsive Design Enhancements */
+    @media (max-width: 768px) {
+        .navbar-sakura {
+            background: var(--sakura-primary) !important;
+        }
+
+        .btn-sakura-primary,
+        .btn-sakura-secondary {
+            border-radius: 20px;
+            padding: 8px 16px;
+        }
+    }
+
+    /* Animation for page elements */
+    .card,
+    .btn,
+    .alert {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Typography enhancements */
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--sakura-text);
+        font-family: "Cormorant Garamond", "Noto Serif JP", "EB Garamond", "Georgia", serif;
+    }
+
+    /* Table styling */
+    .table {
+        color: var(--sakura-text);
+    }
+
+    .table thead th {
+        background: var(--sakura-light);
+        border-bottom: 2px solid var(--sakura-border);
+        color: var(--sakura-text);
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > td,
+    .table-striped > tbody > tr:nth-of-type(odd) > th {
+        background-color: var(--sakura-sage);
+    }
+
+    /* Pagination styling */
+    .pagination .page-link {
+        color: var(--sakura-primary);
+        border-color: var(--sakura-border);
+    }
+
+    .pagination .page-link:hover {
+        background-color: var(--sakura-light);
+        border-color: var(--sakura-primary);
+        color: var(--sakura-secondary);
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: var(--sakura-primary);
+        border-color: var(--sakura-primary);
+        color: white;
+    }
+
+    /* Hero section z-index fix */
+    .hero-section {
+        position: relative;
+        z-index: 1;
+    }
