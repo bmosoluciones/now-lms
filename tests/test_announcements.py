@@ -35,7 +35,7 @@ class TestAnnouncementsModel(TestCase):
 
         # Create test user
         self.test_user = Usuario(
-            usuario="test_user",
+            usuario="test_usera",
             acceso=b"test_password",
             nombre="Test",
             apellido="User",
@@ -85,7 +85,7 @@ class TestAnnouncementsModel(TestCase):
         # Create test course
         course = Curso(
             nombre="Test Course",
-            codigo="TEST01",
+            codigo="TEST001",
             descripcion="Test course description",
             descripcion_corta="Test course",
             estado="open",

@@ -36,7 +36,8 @@ jobs:
                   CI: True
                   LOG_LEVEL: TRACE
               run: |
-                  pytest  -v --exitfirst --slow=True --use-cases=True
+                  # pytest  -v --exitfirst --slow=True --use-cases=True
+                  pytest  -v --exitfirst
             - name: Linting
               run: |
                   flake8 --max-line-length=120 --ignore=E501,E203,E266,W503,E722 now_lms

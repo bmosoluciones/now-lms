@@ -99,7 +99,7 @@ from now_lms.db.tools import (
 from now_lms.logs import log
 from now_lms.misc import ESTILO_ALERTAS, ICONOS_RECURSOS, INICIO_SESION, concatenar_parametros_a_url, markdown_to_clean_hmtl
 from now_lms.themes import current_theme
-from now_lms.version import CODE_NAME,VERSION
+from now_lms.version import CODE_NAME, VERSION
 from now_lms.vistas._helpers import get_current_course_logo, get_site_logo
 from now_lms.vistas.blog import blog
 from now_lms.vistas.categories import category
