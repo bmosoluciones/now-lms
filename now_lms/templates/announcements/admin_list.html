@@ -44,7 +44,6 @@
                                         action="{{ url_for('admin_announcements.delete_announcement', announcement_id=announcement.id) }}"
                                         style="display: inline"
                                     >
-                                        {{ csrf_token() }}
                                         <button
                                             type="submit"
                                             class="btn btn-sm btn-outline-danger"

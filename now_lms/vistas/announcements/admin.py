@@ -113,7 +113,7 @@ def edit_announcement(announcement_id):
     )
 
 
-@admin_announcements.route("/admin/announcements/<announcement_id>/delete", methods=["POST"])
+@admin_announcements.route("/admin/announcements/<announcement_id>/delete")
 @login_required
 @perfil_requerido("admin")
 def delete_announcement(announcement_id):

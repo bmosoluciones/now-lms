@@ -22,7 +22,7 @@ from now_lms.db import database, Curso, ForoMensaje, Usuario
 
 class TestForum(TestCase):
     """Pruebas para la funcionalidad del foro."""
-    
+
     def setUp(self):
         """Configuración inicial para cada prueba."""
         self.app = app
@@ -34,7 +34,7 @@ class TestForum(TestCase):
         with self.app.app_context():
             database.session.remove()
             database.drop_all()
-    
+
     def create_test_user(self):
         """Crea un usuario de prueba para los tests."""
         usuario = Usuario(
@@ -44,7 +44,7 @@ class TestForum(TestCase):
             apellido="User",
             correo_electronico="test@example.com",
             tipo="student",
-            activo=True
+            activo=True,
         )
         database.session.add(usuario)
         database.session.commit()
@@ -54,7 +54,7 @@ class TestForum(TestCase):
         """Verifica que el campo foro_habilitado existe en el modelo Curso."""
         with self.app.app_context():
             database.create_all()
-            
+
             curso = Curso(
                 nombre="Curso de Prueba",
                 codigo="TEST001",
@@ -62,11 +62,11 @@ class TestForum(TestCase):
                 descripcion="Descripción completa",
                 estado="draft",
                 modalidad="time_based",
-                foro_habilitado=True
+                foro_habilitado=True,
             )
             database.session.add(curso)
             database.session.commit()
-            
+
             # Verificar que el curso se guardó correctamente
             curso_db = database.session.query(Curso).filter_by(codigo="TEST001").first()
             self.assertIsNotNone(curso_db)
@@ -76,7 +76,7 @@ class TestForum(TestCase):
         """Verifica que cursos self-paced no pueden tener foro habilitado."""
         with self.app.app_context():
             database.create_all()
-            
+
             curso = Curso(
                 nombre="Curso Self-Paced",
                 codigo="SELF001",
@@ -84,30 +84,30 @@ class TestForum(TestCase):
                 descripcion="Descripción completa",
                 estado="draft",
                 modalidad="self_paced",
-                foro_habilitado=False
+                foro_habilitado=False,
             )
-            
+
             # Verificar que puede_habilitar_foro retorna False
             self.assertFalse(curso.puede_habilitar_foro())
-            
+
             # Verificar que is_self_paced retorna True
             self.assertTrue(curso.is_self_paced())
-            
+
             # Verificar validación
             valid, message = curso.validar_foro_habilitado()
             self.assertTrue(valid)  # Debería ser válido cuando foro_habilitado=False
-            
+
             # Intentar habilitar foro en curso self-paced debería lanzar error
             with self.assertRaises(ValueError) as context:
                 curso.foro_habilitado = True
-            
+
             self.assertIn("self-paced", str(context.exception))
 
     def test_curso_time_based_puede_tener_foro(self):
         """Verifica que cursos time-based pueden tener foro habilitado."""
         with self.app.app_context():
             database.create_all()
-            
+
             curso = Curso(
                 nombre="Curso Time-Based",
                 codigo="TIME001",
@@ -115,15 +115,15 @@ class TestForum(TestCase):
                 descripcion="Descripción completa",
                 estado="draft",
                 modalidad="time_based",
-                foro_habilitado=True
+                foro_habilitado=True,
             )
-            
+
             # Verificar que puede_habilitar_foro retorna True
             self.assertTrue(curso.puede_habilitar_foro())
-            
+
             # Verificar que is_self_paced retorna False
             self.assertFalse(curso.is_self_paced())
-            
+
             # Verificar validación
             valid, message = curso.validar_foro_habilitado()
             self.assertTrue(valid)
@@ -133,7 +133,7 @@ class TestForum(TestCase):
         with self.app.app_context():
             database.create_all()
             usuario = self.create_test_user()
-            
+
             # Crear curso
             curso = Curso(
                 nombre="Curso con Foro",
@@ -142,21 +142,21 @@ class TestForum(TestCase):
                 descripcion="Descripción completa",
                 estado="open",
                 modalidad="time_based",
-                foro_habilitado=True
+                foro_habilitado=True,
             )
             database.session.add(curso)
             database.session.commit()
-            
+
             # Crear mensaje del foro
             mensaje = ForoMensaje(
                 curso_id=curso.codigo,
                 usuario_id=usuario.usuario,
                 contenido="Este es un mensaje de prueba en markdown",
-                estado="abierto"
+                estado="abierto",
             )
             database.session.add(mensaje)
             database.session.commit()
-            
+
             # Verificar que el mensaje se guardó correctamente
             mensaje_db = database.session.query(ForoMensaje).filter_by(curso_id=curso.codigo).first()
             self.assertIsNotNone(mensaje_db)
@@ -169,7 +169,7 @@ class TestForum(TestCase):
         with self.app.app_context():
             database.create_all()
             usuario = self.create_test_user()
-            
+
             # Crear curso
             curso = Curso(
                 nombre="Curso con Foro",
@@ -178,32 +178,29 @@ class TestForum(TestCase):
                 descripcion="Descripción completa",
                 estado="open",
                 modalidad="time_based",
-                foro_habilitado=True
+                foro_habilitado=True,
             )
             database.session.add(curso)
             database.session.commit()
-            
+
             # Crear mensaje principal
             mensaje_principal = ForoMensaje(
-                curso_id=curso.codigo,
-                usuario_id=usuario.usuario,
-                contenido="Mensaje principal del hilo",
-                estado="abierto"
+                curso_id=curso.codigo, usuario_id=usuario.usuario, contenido="Mensaje principal del hilo", estado="abierto"
             )
             database.session.add(mensaje_principal)
             database.session.commit()
-            
+
             # Crear respuesta
             respuesta = ForoMensaje(
                 curso_id=curso.codigo,
                 usuario_id=usuario.usuario,
                 parent_id=mensaje_principal.id,
                 contenido="Esta es una respuesta al mensaje principal",
-                estado="abierto"
+                estado="abierto",
             )
             database.session.add(respuesta)
             database.session.commit()
-            
+
             # Verificar relaciones
             self.assertEqual(respuesta.parent_id, mensaje_principal.id)
             self.assertEqual(respuesta.get_thread_root().id, mensaje_principal.id)
@@ -213,7 +210,7 @@ class TestForum(TestCase):
         with self.app.app_context():
             database.create_all()
             usuario = self.create_test_user()
-            
+
             # Crear curso con foro habilitado
             curso = Curso(
                 nombre="Curso Activo",
@@ -222,28 +219,25 @@ class TestForum(TestCase):
                 descripcion="Descripción completa",
                 estado="open",
                 modalidad="time_based",
-                foro_habilitado=True
+                foro_habilitado=True,
             )
             database.session.add(curso)
             database.session.commit()
-            
+
             # Crear mensaje
             mensaje = ForoMensaje(
-                curso_id=curso.codigo,
-                usuario_id=usuario.usuario,
-                contenido="Mensaje en curso activo",
-                estado="abierto"
+                curso_id=curso.codigo, usuario_id=usuario.usuario, contenido="Mensaje en curso activo", estado="abierto"
             )
             database.session.add(mensaje)
             database.session.commit()
-            
+
             # Verificar que se puede responder
             self.assertTrue(mensaje.can_reply())
-            
+
             # Deshabilitar foro
             curso.foro_habilitado = False
             database.session.commit()
-            
+
             # Verificar que ya no se puede responder
             self.assertFalse(mensaje.can_reply())
 
@@ -252,7 +246,7 @@ class TestForum(TestCase):
         with self.app.app_context():
             database.create_all()
             usuario = self.create_test_user()
-            
+
             # Crear curso
             curso = Curso(
                 nombre="Curso a Finalizar",
@@ -261,30 +255,24 @@ class TestForum(TestCase):
                 descripcion="Descripción completa",
                 estado="open",
                 modalidad="time_based",
-                foro_habilitado=True
+                foro_habilitado=True,
             )
             database.session.add(curso)
             database.session.commit()
-            
+
             # Crear varios mensajes
             mensaje1 = ForoMensaje(
-                curso_id=curso.codigo,
-                usuario_id=usuario.usuario,
-                contenido="Primer mensaje",
-                estado="abierto"
+                curso_id=curso.codigo, usuario_id=usuario.usuario, contenido="Primer mensaje", estado="abierto"
             )
             mensaje2 = ForoMensaje(
-                curso_id=curso.codigo,
-                usuario_id=usuario.usuario,
-                contenido="Segundo mensaje",
-                estado="abierto"
+                curso_id=curso.codigo, usuario_id=usuario.usuario, contenido="Segundo mensaje", estado="abierto"
             )
             database.session.add_all([mensaje1, mensaje2])
             database.session.commit()
-            
+
             # Cerrar todos los mensajes del curso
             ForoMensaje.close_all_for_course(curso.codigo)
-            
+
             # Verificar que todos los mensajes están cerrados
             mensajes = database.session.query(ForoMensaje).filter_by(curso_id=curso.codigo).all()
             for mensaje in mensajes:

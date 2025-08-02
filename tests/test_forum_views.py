@@ -22,14 +22,14 @@ from now_lms.db import database, Curso, ForoMensaje, Usuario, EstudianteCurso
 
 class TestForumViews(TestCase):
     """Pruebas para las vistas del foro."""
-    
+
     def setUp(self):
         """Configuración inicial para cada prueba."""
         self.app = app
         self.app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
         self.app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
         self.app.config["WTF_CSRF_ENABLED"] = False  # Disable CSRF for testing
-        
+
         with self.app.app_context():
             database.create_all()
 
@@ -38,7 +38,7 @@ class TestForumViews(TestCase):
         with self.app.app_context():
             database.session.remove()
             database.drop_all()
-    
+
     def create_test_user_and_course(self):
         """Crea un usuario y curso de prueba."""
         usuario = Usuario(
@@ -48,10 +48,10 @@ class TestForumViews(TestCase):
             apellido="Student",
             correo_electronico="student@example.com",
             tipo="student",
-            activo=True
+            activo=True,
         )
         database.session.add(usuario)
-        
+
         curso = Curso(
             nombre="Curso con Foro",
             codigo="FORUM001",
@@ -59,18 +59,14 @@ class TestForumViews(TestCase):
             descripcion="Descripción completa",
             estado="open",
             modalidad="time_based",
-            foro_habilitado=True
+            foro_habilitado=True,
         )
         database.session.add(curso)
-        
+
         # Inscribir al usuario en el curso
-        estudiante = EstudianteCurso(
-            curso=curso.codigo,
-            usuario=usuario.usuario,
-            vigente=True
-        )
+        estudiante = EstudianteCurso(curso=curso.codigo, usuario=usuario.usuario, vigente=True)
         database.session.add(estudiante)
-        
+
         database.session.commit()
         return usuario, curso
 
@@ -78,65 +74,62 @@ class TestForumViews(TestCase):
         """Verifica que el blueprint del foro esté registrado."""
         with self.app.app_context():
             client = self.app.test_client()
-            
+
             # Test that forum routes exist (should return 401/403, not 404)
-            response = client.get('/course/TEST001/forum')
+            response = client.get("/course/TEST001/forum")
             self.assertNotEqual(response.status_code, 404)
 
     def test_forum_access_requires_login(self):
         """Verifica que el acceso al foro requiere autenticación."""
         with self.app.app_context():
             usuario, curso = self.create_test_user_and_course()
-            
+
             client = self.app.test_client()
-            
+
             # Try to access forum without login
-            response = client.get(f'/course/{curso.codigo}/forum')
+            response = client.get(f"/course/{curso.codigo}/forum")
             self.assertEqual(response.status_code, 302)  # Redirect to login
 
     def test_forum_disabled_course_redirect(self):
         """Verifica que cursos sin foro habilitado redirijan correctamente."""
         with self.app.app_context():
             usuario, curso = self.create_test_user_and_course()
-            
+
             # Disable forum
             curso.foro_habilitado = False
             database.session.commit()
-            
+
             client = self.app.test_client()
-            
+
             # Login as student
             with client.session_transaction() as sess:
-                sess['_user_id'] = usuario.id
-                sess['_fresh'] = True
-            
+                sess["_user_id"] = usuario.id
+                sess["_fresh"] = True
+
             # Try to access forum
-            response = client.get(f'/course/{curso.codigo}/forum')
+            response = client.get(f"/course/{curso.codigo}/forum")
             self.assertEqual(response.status_code, 302)  # Should redirect
 
     def test_forum_course_finalization_closes_messages(self):
         """Verifica que finalizar un curso cierre los mensajes del foro."""
         with self.app.app_context():
             from now_lms.bi import cambia_estado_curso_por_id
-            
+
             usuario, curso = self.create_test_user_and_course()
-            
+
             # Crear un mensaje en el foro
             mensaje = ForoMensaje(
-                curso_id=curso.codigo,
-                usuario_id=usuario.usuario,
-                contenido="Mensaje de prueba",
-                estado="abierto"
+                curso_id=curso.codigo, usuario_id=usuario.usuario, contenido="Mensaje de prueba", estado="abierto"
             )
             database.session.add(mensaje)
             database.session.commit()
-            
+
             # Verificar que el mensaje está abierto
             self.assertEqual(mensaje.estado, "abierto")
-            
+
             # Finalizar el curso
             cambia_estado_curso_por_id(curso.codigo, "finalizado", usuario.usuario)
-            
+
             # Verificar que el mensaje se cerró
             mensaje_actualizado = database.session.query(ForoMensaje).filter_by(id=mensaje.id).first()
             self.assertEqual(mensaje_actualizado.estado, "cerrado")
@@ -144,27 +137,27 @@ class TestForumViews(TestCase):
     def test_markdown_to_html_conversion(self):
         """Verifica que la conversión de markdown a HTML funcione correctamente."""
         from now_lms.vistas.forum import markdown_to_html
-        
+
         # Test basic markdown
         markdown_text = "# Título\n\nEste es un **texto en negrita** con un [enlace](http://example.com)"
         html_output = markdown_to_html(markdown_text)
-        
+
         self.assertIn("<h1>", html_output)
         self.assertIn("<strong>", html_output)
         self.assertIn("<a href=", html_output)
-        
+
     def test_access_verification_function(self):
         """Verifica que la función de verificación de acceso funcione."""
         with self.app.app_context():
             from now_lms.vistas.forum import verificar_acceso_curso
-            
+
             usuario, curso = self.create_test_user_and_course()
-            
+
             # Verificar acceso como estudiante
             tiene_acceso, role = verificar_acceso_curso(curso.codigo, usuario.usuario)
             self.assertTrue(tiene_acceso)
             self.assertEqual(role, "estudiante")
-            
+
             # Verificar acceso de usuario no inscrito
             usuario_no_inscrito = Usuario(
                 usuario="no_enrolled",
@@ -173,11 +166,11 @@ class TestForumViews(TestCase):
                 apellido="Enrolled",
                 correo_electronico="not@enrolled.com",
                 tipo="student",
-                activo=True
+                activo=True,
             )
             database.session.add(usuario_no_inscrito)
             database.session.commit()
-            
+
             tiene_acceso, role = verificar_acceso_curso(curso.codigo, usuario_no_inscrito.usuario)
             self.assertFalse(tiene_acceso)
             self.assertIsNone(role)
@@ -185,15 +178,15 @@ class TestForumViews(TestCase):
     def test_forum_permissions(self):
         """Verifica los permisos para cerrar mensajes."""
         from now_lms.vistas.forum import puede_cerrar_mensajes
-        
+
         # Admin puede cerrar mensajes
         self.assertTrue(puede_cerrar_mensajes("estudiante", "admin"))
-        
+
         # Instructor puede cerrar mensajes
         self.assertTrue(puede_cerrar_mensajes("instructor", "instructor"))
-        
+
         # Moderador puede cerrar mensajes
         self.assertTrue(puede_cerrar_mensajes("moderador", "moderator"))
-        
+
         # Estudiante no puede cerrar mensajes
         self.assertFalse(puede_cerrar_mensajes("estudiante", "student"))

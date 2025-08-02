@@ -91,12 +91,25 @@ def perfil_requerido(perfil_id):
     def decorator_verifica_acceso(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            if (current_user.is_authenticated and current_user.tipo == perfil_id) or current_user.tipo == "admin":
-                return func(*args, **kwargs)
-
-            else:
+            if not current_user.is_authenticated:
                 flash("No se encuentra autorizado a acceder al recurso solicitado.", "error")
                 return abort(403)
+
+            # Always allow admin access
+            if current_user.tipo == "admin":
+                return func(*args, **kwargs)
+
+            # Handle tuple format for multiple allowed profiles
+            if isinstance(perfil_id, tuple):
+                if current_user.tipo in perfil_id:
+                    return func(*args, **kwargs)
+            # Handle string format for single profile
+            elif isinstance(perfil_id, str):
+                if current_user.tipo == perfil_id:
+                    return func(*args, **kwargs)
+
+            flash("No se encuentra autorizado a acceder al recurso solicitado.", "error")
+            return abort(403)
 
         return wrapper
 

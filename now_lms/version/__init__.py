@@ -36,6 +36,9 @@ APPNAME = "NOW lms"
 APPAUTHOR = "BMO Soluciones, S.A."
 
 # <--------------------------------------------------------------------------> #
+CODE_NAME = "Karla"
+
+# <--------------------------------------------------------------------------> #
 # SemVer (https://semver.org)
 MAYOR = "0"
 MENOR = "0"
@@ -47,17 +50,17 @@ POST = False
 
 # <--------------------------------------------------------------------------> #
 # Pre release not for production
-PRERELEASE = "a3"
+PRERELEASE = "b1"
 
 # <--------------------------------------------------------------------------> #
 # Date of release
-REVISION = "20250801"
+REVISION = "20250802"
 
 # <--------------------------------------------------------------------------> #
 # Release string
 # Refences:
 #  - https://peps.python.org/pep-0440/
-# 0.0.1a3.dev20250801
+# 0.0.1b1.dev20250802
 if PRERELEASE:
     VERSION = MAYOR + "." + MENOR + "." + PATCH + PRERELEASE + ".dev" + REVISION
 else:

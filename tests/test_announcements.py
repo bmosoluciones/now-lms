@@ -19,7 +19,7 @@ from unittest import TestCase
 from datetime import datetime, timedelta
 
 from now_lms import app
-from now_lms.db import Announcement, Curso, Usuario, DocenteCurso, EstudianteCurso, database
+from now_lms.db import Announcement, Curso, Usuario, DocenteCurso, database
 
 
 class TestAnnouncementsModel(TestCase):
@@ -160,11 +160,11 @@ class TestAnnouncementsViews(TestCase):
         self.app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
         self.app.config["TESTING"] = True
         self.app.config["WTF_CSRF_ENABLED"] = False
-        
+
         self.client = self.app.test_client()
         self.app_context = self.app.app_context()
         self.app_context.push()
-        
+
         database.create_all()
 
         # Create test admin user
@@ -177,7 +177,7 @@ class TestAnnouncementsViews(TestCase):
             activo=True,
         )
         database.session.add(self.admin_user)
-        
+
         # Create test instructor user
         self.instructor_user = Usuario(
             usuario="instructor",
@@ -188,7 +188,7 @@ class TestAnnouncementsViews(TestCase):
             activo=True,
         )
         database.session.add(self.instructor_user)
-        
+
         # Create test student user
         self.student_user = Usuario(
             usuario="student",
@@ -199,7 +199,7 @@ class TestAnnouncementsViews(TestCase):
             activo=True,
         )
         database.session.add(self.student_user)
-        
+
         # Create test course
         self.test_course = Curso(
             nombre="Test Course",
@@ -209,7 +209,7 @@ class TestAnnouncementsViews(TestCase):
             estado="open",
         )
         database.session.add(self.test_course)
-        
+
         database.session.commit()
 
     def tearDown(self):
@@ -244,11 +244,11 @@ class TestAnnouncementsIntegration(TestCase):
         self.app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
         self.app.config["TESTING"] = True
         self.app.config["WTF_CSRF_ENABLED"] = False
-        
+
         self.client = self.app.test_client()
         self.app_context = self.app.app_context()
         self.app_context.push()
-        
+
         database.create_all()
 
         # Create test users and course
@@ -261,7 +261,7 @@ class TestAnnouncementsIntegration(TestCase):
             activo=True,
         )
         database.session.add(self.admin_user)
-        
+
         self.instructor_user = Usuario(
             usuario="instructor",
             acceso=b"instructor_password",
@@ -271,7 +271,7 @@ class TestAnnouncementsIntegration(TestCase):
             activo=True,
         )
         database.session.add(self.instructor_user)
-        
+
         self.test_course = Curso(
             nombre="Test Course",
             codigo="TEST01",
@@ -280,15 +280,13 @@ class TestAnnouncementsIntegration(TestCase):
             estado="open",
         )
         database.session.add(self.test_course)
-        
+
         # Assign instructor to course
         instructor_assignment = DocenteCurso(
-            curso=self.test_course.codigo,
-            usuario=self.instructor_user.usuario,
-            creado_por="system"
+            curso=self.test_course.codigo, usuario=self.instructor_user.usuario, creado_por="system"
         )
         database.session.add(instructor_assignment)
-        
+
         database.session.commit()
 
     def tearDown(self):
@@ -308,7 +306,7 @@ class TestAnnouncementsIntegration(TestCase):
             is_sticky=True,
         )
         database.session.add(global_announcement)
-        
+
         # Create a course announcement
         course_announcement = Announcement(
             title="Course Test Announcement",
@@ -318,19 +316,19 @@ class TestAnnouncementsIntegration(TestCase):
             creado_por=self.instructor_user.usuario,
         )
         database.session.add(course_announcement)
-        
+
         database.session.commit()
 
         # Verify announcements were created
         self.assertEqual(Announcement.query.count(), 2)
-        
+
         # Verify global announcement properties
         global_ann = Announcement.query.filter_by(title="Global Test Announcement").first()
         self.assertIsNotNone(global_ann)
         self.assertTrue(global_ann.is_global())
         self.assertTrue(global_ann.is_sticky)
         self.assertTrue(global_ann.is_active())
-        
+
         # Verify course announcement properties
         course_ann = Announcement.query.filter_by(title="Course Test Announcement").first()
         self.assertIsNotNone(course_ann)
@@ -342,9 +340,9 @@ class TestAnnouncementsIntegration(TestCase):
         """Test that announcements are ordered correctly."""
         # Create multiple announcements with different timestamps
         from datetime import datetime, timedelta
-        
+
         base_time = datetime.now()
-        
+
         announcements = [
             Announcement(
                 title="Old Announcement",
@@ -366,18 +364,18 @@ class TestAnnouncementsIntegration(TestCase):
                 timestamp=base_time,
             ),
         ]
-        
+
         for ann in announcements:
             database.session.add(ann)
         database.session.commit()
 
         # Query announcements in the order they should appear
-        ordered_announcements = database.session.query(Announcement).filter(
-            Announcement.course_id.is_(None)
-        ).order_by(
-            Announcement.is_sticky.desc(),
-            Announcement.timestamp.desc()
-        ).all()
+        ordered_announcements = (
+            database.session.query(Announcement)
+            .filter(Announcement.course_id.is_(None))
+            .order_by(Announcement.is_sticky.desc(), Announcement.timestamp.desc())
+            .all()
+        )
 
         # Verify ordering: sticky first, then by timestamp desc
         titles = [ann.title for ann in ordered_announcements]
