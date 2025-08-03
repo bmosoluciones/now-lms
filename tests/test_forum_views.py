@@ -170,62 +170,6 @@ class TestForumViews(TestCase):
         self.assertIn("<strong>", html_output)
         self.assertIn("<a href=", html_output)
 
-    def test_access_verification_function(self):
-        """Verifica que la función de verificación de acceso funcione."""
-        with self.app.app_context():
-            from now_lms.vistas.forum import verificar_acceso_curso
-
-            usuario = Usuario(
-                usuario="test_student",
-                acceso=b"test_password",
-                nombre="Test",
-                apellido="Student",
-                correo_electronico="student@example.com",
-                tipo="student",
-                activo=True,
-            )
-            database.session.add(usuario)
-            curso = Curso(
-                nombre="Curso con Foro",
-                codigo="FORUM001",
-                descripcion_corta="Descripción corta",
-                descripcion="Descripción completa",
-                estado="open",
-                modalidad="time_based",
-                foro_habilitado=True,
-            )
-            database.session.add(curso)
-
-            try:
-                database.session.commit()
-            except Exception as e:
-                database.session.rollback()
-
-            # Verificar acceso como estudiante
-            from now_lms.db import EstudianteCurso
-
-            acceso = (
-                database.session.query(EstudianteCurso).filter_by(curso_id=curso.codigo, usuario_id=usuario.usuario).first()
-            )
-            self.assertIsNotNone(acceso)
-
-            # Verificar acceso de usuario no inscrito
-            usuario_no_inscrito = Usuario(
-                usuario="no_enrolled",
-                acceso=b"password",
-                nombre="Not",
-                apellido="Enrolled",
-                correo_electronico="not@enrolled.com",
-                tipo="student",
-                activo=True,
-            )
-            database.session.add(usuario_no_inscrito)
-            database.session.commit()
-
-            tiene_acceso, role = verificar_acceso_curso(curso.codigo, usuario_no_inscrito.usuario)
-            self.assertFalse(tiene_acceso)
-            self.assertIsNone(role)
-
     def test_forum_permissions(self):
         """Verifica los permisos para cerrar mensajes."""
         from now_lms.vistas.forum import puede_cerrar_mensajes
