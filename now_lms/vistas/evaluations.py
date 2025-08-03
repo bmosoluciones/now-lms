@@ -51,11 +51,9 @@ from now_lms.forms import EvaluationReopenRequestForm
 # Blueprint definition
 # ---------------------------------------------------------------------------------------
 
+# <--------------------------------------------------------------------------> #
 # Route constants
 ROUTE_COURSE_TOMAR_CURSO = "course.tomar_curso"
-
-evaluation = Blueprint("evaluation", __name__)
-
 EVALUATION_CREATED = "Evaluación creada correctamente."
 EVALUATION_UPDATED = "Evaluación actualizada correctamente."
 EVALUATION_DELETED = "Evaluación eliminada correctamente."
@@ -68,10 +66,13 @@ REOPEN_REQUEST_APPROVED = "Solicitud aprobada. El estudiante puede realizar un n
 REOPEN_REQUEST_REJECTED = "Solicitud rechazada."
 NO_AUTHORIZED_MSG = "No se encuentra autorizado a acceder al recurso solicitado."
 
+# <--------------------------------------------------------------------------> #
+# Blueprint for evaluation management
+evaluation = Blueprint("evaluation", __name__)
+
 
 def can_user_access_evaluation(evaluation_obj, user):
     """Check if user can access evaluation based on course payment status."""
-    from now_lms.db.tools import verifica_estudiante_asignado_a_curso
 
     # Get the course from the section
     section = database.session.get(CursoSeccion, evaluation_obj.section_id)
@@ -81,7 +82,8 @@ def can_user_access_evaluation(evaluation_obj, user):
     course_code = section.curso
 
     # Check if user is enrolled in the course
-    if not verifica_estudiante_asignado_a_curso(course_code, user.usuario):
+    inscription = database.session.query(EstudianteCurso).filter_by(curso=course_code, usuario=user.usuario).first()
+    if not inscription:
         return False
 
     # Check if course is paid and user has paid

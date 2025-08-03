@@ -545,10 +545,15 @@ def database_is_populated(app):
                 version = database.session.execute(text(QUERY)).first()
                 if version:
                     log.debug("Database conection verified.")
+                    log.trace("Verificando si la base de datos esta poblada.")
                     check = True
                 else:
                     check = False
-                    log.warning(f"Check table curso: {check}")
+                if check:
+                    log.trace("Base de datos poblada.")
+                else:
+                    log.trace("Base de datos no poblada.")
+                    log.info("Base de datos no poblada, creando configuracion predeterminada.")
                 return check
             else:
                 return False
