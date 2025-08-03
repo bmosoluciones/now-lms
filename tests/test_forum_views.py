@@ -175,7 +175,31 @@ class TestForumViews(TestCase):
         with self.app.app_context():
             from now_lms.vistas.forum import verificar_acceso_curso
 
-            usuario, curso = self.create_test_user_and_course()
+            usuario = Usuario(
+                usuario="test_student",
+                acceso=b"test_password",
+                nombre="Test",
+                apellido="Student",
+                correo_electronico="student@example.com",
+                tipo="student",
+                activo=True,
+            )
+            database.session.add(usuario)
+            curso = Curso(
+                nombre="Curso con Foro",
+                codigo="FORUM001",
+                descripcion_corta="Descripción corta",
+                descripcion="Descripción completa",
+                estado="open",
+                modalidad="time_based",
+                foro_habilitado=True,
+            )
+            database.session.add(curso)
+
+            try:
+                database.session.commit()
+            except Exception as e:
+                database.session.rollback()
 
             # Verificar acceso como estudiante
             tiene_acceso, role = verificar_acceso_curso(curso.codigo, usuario.usuario)
