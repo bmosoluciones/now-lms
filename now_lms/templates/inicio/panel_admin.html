@@ -38,7 +38,7 @@
                     <div class="col-xl-6 col-xxl-5 d-flex">
                         <div class="w-100">
                             <div class="row">
-                                <div class="col-sm-6">
+                                <div class="col-sm-6 mb-3">
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="row">
@@ -57,6 +57,29 @@
                                             <h1 class="mt-1 mb-3">{{ cursos_actuales }}</h1>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col mt-0">
+                                                    <h5 class="card-title">
+                                                        <i class="bi bi-card-checklist" aria-hidden="true"></i> Recursos
+                                                        Creados
+                                                    </h5>
+                                                </div>
+
+                                                <div class="col-auto">
+                                                    <div class="stat text-primary">
+                                                        <i class="align-middle" data-feather="dollar-sign"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <h1 class="mt-1 mb-3">{{ recursos_creados }}</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="row">
@@ -77,26 +100,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">
-                                                        <i class="bi bi-card-checklist" aria-hidden="true"></i> Recursos
-                                                        Creados
-                                                    </h5>
-                                                </div>
-
-                                                <div class="col-auto">
-                                                    <div class="stat text-primary">
-                                                        <i class="align-middle" data-feather="dollar-sign"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <h1 class="mt-1 mb-3">{{ recursos_creados }}</h1>
-                                        </div>
-                                    </div>
+                                <div class="col-sm-6 mb-3">
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="row">
@@ -113,9 +117,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <h1 class="mt-1 mb-3">
-                                                <h1 class="mt-1 mb-3">{{ certificados_emitidos }}</h1>
-                                            </h1>
+                                            <h1 class="mt-1 mb-3">{{ certificados_emitidos }}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -138,6 +140,19 @@
                                     </li>
                                     {% endfor %}
                                 </ul>
+                            </div>
+                        </div>
+
+                        <!-- Messages Section for Admin -->
+                        <div class="card flex-fill w-100 mt-3">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0"><i class="bi bi-chat-left-text"></i> Mensajes Reportados</h5>
+                            </div>
+                            <div class="card-body pt-2 pb-3">
+                                <p class="text-muted">Gestiona los mensajes reportados por los usuarios del sistema.</p>
+                                <a href="{{ url_for('msg.admin_flagged_messages') }}" class="btn btn-warning btn-sm">
+                                    <i class="bi bi-exclamation-triangle"></i> Ver Mensajes Reportados
+                                </a>
                             </div>
                         </div>
                     </div>

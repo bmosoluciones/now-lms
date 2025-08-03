@@ -12,20 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 """
 Modulo para ejecutar NOW LMS.
 
 """
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 from os import environ
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms import init_app
 from now_lms.cli import serve
@@ -33,7 +31,7 @@ from now_lms.config import DESARROLLO
 from now_lms.logs import log
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 
 

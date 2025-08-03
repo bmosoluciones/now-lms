@@ -12,24 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 import platform
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Union
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask import current_app
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.db import database
 
@@ -67,6 +65,7 @@ def course_info(course_code: str) -> SimpleNamespace:
     """
 
     from sqlalchemy import func
+
     from now_lms.db import Curso, CursoRecurso, CursoSeccion, EstudianteCurso
 
     curso = database.session.execute(database.select(Curso).where(Curso.codigo == course_code)).first()[0]
@@ -93,6 +92,7 @@ def lms_info() -> SimpleNamespace:
     Returns a SimpleNamespace with LMS information.
     """
     from sqlalchemy import func
+
     from now_lms.db import Certificado, Curso, EstudianteCurso, Programa, Usuario
 
     courses_count = database.session.execute(database.select(func.count()).select_from(Curso)).scalar_one()

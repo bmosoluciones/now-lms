@@ -31,6 +31,11 @@
                             {{ form.url(class="form-control", id="url", placeholder="Link Externo") }}
                         </div>
 
+                        <div class="col-sm-6">
+                            <label for="requerido" class="form-label">Tipo de Recurso</label>
+                            {{ form.requerido(class="form-control", id="requerido") }}
+                        </div>
+
                         <div>
                             <label for="descripcion" class="form-label">Descripción</label>
                             {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}

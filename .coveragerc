@@ -1,5 +1,6 @@
 [run]
 source = now_lms
+relative_files = True
 
 [report]
 exclude_lines =
@@ -14,7 +15,6 @@ omit =
     "now_lms/__main__.py",
     "now_lms/version.py",
     "now_lms/config/parse_config_file.py",
-    "now_lms/cache.py ",
+    "now_lms/cache.py",
     "now_lms/auth.py",
-    "now_lms/config/__init__.py "
-relative_files = True
+    "now_lms/config/__init__.py"

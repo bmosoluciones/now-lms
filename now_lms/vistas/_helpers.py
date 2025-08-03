@@ -12,21 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 from pathlib import Path
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.config import DIRECTORIO_ARCHIVOS_PUBLICOS
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 
 

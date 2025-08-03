@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 
 """
@@ -32,12 +30,12 @@ Visit http://127.0.0.1:8080/ in your browser, default user and password are lms-
 """
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 from platform import python_version
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask import Flask, flash, render_template, request
 from flask_alembic import Alembic
@@ -45,13 +43,14 @@ from flask_login import LoginManager, current_user
 from flask_mail import Mail
 from flask_mde import Mde
 from flask_uploads import configure_uploads
+from flask_wtf.csrf import CSRFProtect
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
 from sqlalchemy.exc import OperationalError, ProgrammingError
 from werkzeug.exceptions import HTTPException
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.cache import cache
 from now_lms.config import CONFIGURACION, DIRECTORIO_ARCHIVOS, DIRECTORIO_PLANTILLAS, audio, files, images, log_messages
@@ -100,11 +99,17 @@ from now_lms.db.tools import (
 from now_lms.logs import log
 from now_lms.misc import ESTILO_ALERTAS, ICONOS_RECURSOS, INICIO_SESION, concatenar_parametros_a_url, markdown_to_clean_hmtl
 from now_lms.themes import current_theme
-from now_lms.version import VERSION
+from now_lms.version import CODE_NAME, VERSION
 from now_lms.vistas._helpers import get_current_course_logo, get_site_logo
+from now_lms.vistas.announcements.admin import admin_announcements
+from now_lms.vistas.announcements.instructor import instructor_announcements
+from now_lms.vistas.announcements.public import public_announcements
+from now_lms.vistas.blog import blog
 from now_lms.vistas.categories import category
 from now_lms.vistas.certificates import certificate
 from now_lms.vistas.courses import course
+from now_lms.vistas.evaluations import evaluation
+from now_lms.vistas.forum import forum
 from now_lms.vistas.groups import group
 from now_lms.vistas.home import home
 from now_lms.vistas.messages import msg
@@ -134,6 +139,7 @@ alembic: Alembic = Alembic()
 administrador_sesion: LoginManager = LoginManager()
 mde: Mde = Mde()
 mail = Mail()
+csrf = CSRFProtect()
 
 
 # ---------------------------------------------------------------------------------------
@@ -150,6 +156,7 @@ def inicializa_extenciones_terceros(flask_app: Flask):
         cache.init_app(flask_app)
         mde.init_app(flask_app)
         mail.init_app(flask_app)
+        # csrf.init_app(flask_app)
     log.trace("Extensiones de terceros iniciadas correctamente.")
 
 
@@ -159,9 +166,12 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
     log.trace("Registrando modulos en la aplicación principal.")
 
     with flask_app.app_context():
+        flask_app.register_blueprint(blog)
         flask_app.register_blueprint(category)
         flask_app.register_blueprint(certificate)
         flask_app.register_blueprint(course)
+        flask_app.register_blueprint(evaluation)
+        flask_app.register_blueprint(forum)
         flask_app.register_blueprint(group)
         flask_app.register_blueprint(home)
         flask_app.register_blueprint(msg)
@@ -177,6 +187,10 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
         flask_app.register_blueprint(moderator_profile)
         flask_app.register_blueprint(user_profile)
         flask_app.register_blueprint(web_error)
+        # Announcements
+        flask_app.register_blueprint(admin_announcements)
+        flask_app.register_blueprint(instructor_announcements)
+        flask_app.register_blueprint(public_announcements)
 
 
 # ---------------------------------------------------------------------------------------
@@ -238,6 +252,7 @@ def define_variables_globales_jinja2(lms_app: Flask):
     lms_app.jinja_env.globals["ad_mobile_banner"] = get_ad_mobile_banner
     lms_app.jinja_env.globals["ad_skyscraper"] = get_ad_skyscraper
     lms_app.jinja_env.globals["ad_wide_skyscraper"] = get_ad_wide_skyscraper
+    lms_app.jinja_env.globals["code_name"] = CODE_NAME
     lms_app.jinja_env.globals["config"] = config
     lms_app.jinja_env.globals["course_info"] = course_info
     lms_app.jinja_env.globals["course_logo"] = get_current_course_logo
@@ -405,6 +420,7 @@ def initial_setup(with_examples=False, with_tests=False):
             from now_lms.db.data_test import crear_data_para_pruebas
 
             crear_data_para_pruebas()
+    log.info(f"Bienvenido a NOW LMS versión: {VERSION}, release: {CODE_NAME} ")
     log.info("NOW - LMS iniciado correctamente.")
 
 
@@ -438,7 +454,7 @@ def before_request_user_active():
     if (
         current_user.is_authenticated
         and not current_user.activo
-        and not current_user.tipo == "admin"
+        and current_user.tipo != "admin"
         and request != "static"
         and request.blueprint != "user"
         and request.endpoint != "static"

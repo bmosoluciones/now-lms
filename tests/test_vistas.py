@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 
 import os
@@ -73,6 +71,7 @@ def test_visit_views_anonimus(lms_application, request):
                 for ruta in rutas_estaticas:
                     route = ruta.ruta
                     text = ruta.texto
+                    log.warning(route)
                     consulta = client.get(route)
                     assert consulta.status_code == ruta.no_session
                     """if consulta.status_code == 200 and text:

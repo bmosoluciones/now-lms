@@ -1,15 +1,18 @@
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 
+from os import path
+from pathlib import Path
+
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, redirect, render_template, request
 from flask_login import current_user, login_required
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.cache import cache, no_guardar_en_cache_global
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS
@@ -22,11 +25,9 @@ from now_lms.db import (
     Usuario,
     database,
 )
+from now_lms.db.tools import get_current_theme
 from now_lms.logs import log
 from now_lms.themes import get_home_template
-from os import path
-from pathlib import Path
-from now_lms.db.tools import get_current_theme
 
 home = Blueprint("home", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
@@ -92,6 +93,94 @@ def panel():
             cuenta_cursos=cuenta_cursos,
             cuenta_certificados=cuenta_certificados,
             mis_cursos=mis_cursos,
+        )
+    elif current_user.tipo == "instructor":
+        from now_lms.db import DocenteCurso
+
+        # Get courses created by this instructor
+        created_courses = (
+            database.session.query(Curso)
+            .join(DocenteCurso)
+            .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.vigente)
+            .count()
+        )
+
+        # Get enrolled students across instructor's courses
+        enrolled_students = (
+            database.session.query(EstudianteCurso.usuario)
+            .distinct()
+            .join(DocenteCurso, EstudianteCurso.curso == DocenteCurso.curso)
+            .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.vigente, EstudianteCurso.vigente)
+            .count()
+        )
+
+        # Get certificates issued for courses taught by this instructor
+        issued_certificates = (
+            database.session.query(Certificacion)
+            .join(DocenteCurso, Certificacion.curso == DocenteCurso.curso)
+            .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.vigente)
+            .count()
+        )
+
+        # Get recent courses by this instructor
+        cursos_por_fecha = (
+            database.session.query(Curso)
+            .join(DocenteCurso)
+            .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.vigente)
+            .order_by(Curso.creado)
+            .limit(5)
+            .all()
+        )
+
+        return render_template(
+            "inicio/panel_instructor.html",
+            created_courses=created_courses,
+            enrolled_students=enrolled_students,
+            issued_certificates=issued_certificates,
+            cursos_por_fecha=cursos_por_fecha,
+        )
+    elif current_user.tipo == "moderator":
+        from now_lms.db import MessageThread, ModeradorCurso
+
+        # Get courses moderated by this moderator
+        created_courses = (
+            database.session.query(Curso)
+            .join(ModeradorCurso)
+            .filter(ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.vigente)
+            .count()
+        )
+
+        # Get enrolled students across moderator's courses
+        enrolled_students = (
+            database.session.query(EstudianteCurso.usuario)
+            .distinct()
+            .join(ModeradorCurso, EstudianteCurso.curso == ModeradorCurso.curso)
+            .filter(ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.vigente, EstudianteCurso.vigente)
+            .count()
+        )
+
+        # Get recent courses by this moderator
+        cursos_por_fecha = (
+            database.session.query(Curso)
+            .join(ModeradorCurso)
+            .filter(ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.vigente)
+            .order_by(Curso.creado)
+            .limit(5)
+            .all()
+        )
+
+        # Get open and closed message counts for moderator
+        open_messages = database.session.query(MessageThread).filter(MessageThread.status == "open").count()
+
+        closed_messages = database.session.query(MessageThread).filter(MessageThread.status == "closed").count()
+
+        return render_template(
+            "inicio/panel_moderator.html",
+            created_courses=created_courses,
+            enrolled_students=enrolled_students,
+            cursos_por_fecha=cursos_por_fecha,
+            open_messages=open_messages,
+            closed_messages=closed_messages,
         )
     else:
         return redirect("/")

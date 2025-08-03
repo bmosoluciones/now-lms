@@ -1,0 +1,159 @@
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Nueva Evaluación</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('instructor_profile.pagina_instructor') }}"
+                                        >Panel Instructor</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('instructor_profile.cursos') }}"
+                                        >Cursos</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('instructor_profile.course_evaluations', course_code=seccion.curso) }}"
+                                        >Evaluaciones</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Nueva Evaluación</li>
+                            </ol>
+                        </nav>
+                    </h4>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Nueva Evaluación</h3>
+                                <p class="mb-0 text-muted">Sección: {{ seccion.nombre }}</p>
+                            </div>
+
+                            <div class="card-body">
+                                <form method="POST">
+                                    {{ form.hidden_tag() }}
+
+                                    <div class="mb-3">
+                                        {{ form.title.label(class="form-label") }} {{ form.title(class="form-control") }} {% if
+                                        form.title.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.title.errors %}
+                                            <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="mb-3">
+                                        {{ form.description.label(class="form-label") }} {{
+                                        form.description(class="form-control", rows="3") }} {% if form.description.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.description.errors %}
+                                            <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <div class="form-check">
+                                                    {{ form.is_exam(class="form-check-input") }} {{
+                                                    form.is_exam.label(class="form-check-label") }}
+                                                </div>
+                                                <div class="form-text">
+                                                    Los exámenes aparecen marcados de manera diferente a los quizzes.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form.passing_score.label(class="form-label") }}
+                                                <div class="input-group">
+                                                    {{ form.passing_score(class="form-control") }}
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                                {% if form.passing_score.errors %}
+                                                <div class="text-danger small">
+                                                    {% for error in form.passing_score.errors %}
+                                                    <div>{{ error }}</div>
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        {{ form.max_attempts.label(class="form-label") }} {{
+                                        form.max_attempts(class="form-control") }}
+                                        <div class="form-text">Deje vacío para permitir intentos ilimitados.</div>
+                                        {% if form.max_attempts.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in form.max_attempts.errors %}
+                                            <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="alert alert-info">
+                                        <h6>Información:</h6>
+                                        <ul class="mb-0">
+                                            <li>Después de crear la evaluación, podrá agregar preguntas.</li>
+                                            <li>
+                                                Las evaluaciones solo son visibles para estudiantes que hayan pagado el curso
+                                                (si es de pago).
+                                            </li>
+                                            <li>
+                                                Los estudiantes deben completar todos los recursos antes de ver las
+                                                evaluaciones.
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <a
+                                            href="{{ url_for('instructor_profile.course_evaluations', course_code=seccion.curso) }}"
+                                            class="btn btn-secondary me-md-2"
+                                        >
+                                            Cancelar
+                                        </a>
+                                        <button type="submit" class="btn btn-primary">Crear Evaluación</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

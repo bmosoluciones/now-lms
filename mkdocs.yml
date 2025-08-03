@@ -76,6 +76,16 @@ nav:
       - Payments: payments.md
       - AdSense: adsense.md
       - Theming: theming.md
+  - Course Creator:
+      - Overview: course-creator/index.md
+      - Course Creation Flow: course-creator/course-creation.md
+      - Course Configuration: course-creator/course-configuration.md
+      - Sections and Resources: course-creator/sections-resources.md
+      - Markdown Formatting: course-creator/markdown-guide.md
+      - Slide Shows: course-creator/slideshow-setup.md
+      - Certificates: course-creator/certificate-customization.md
+      - Forums and Messaging: course-creator/forum-messaging.md
+      - Moderator Management: course-creator/moderator-management.md
   - About:
       - About: faq.md
       - Releases: release.md

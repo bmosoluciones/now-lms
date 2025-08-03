@@ -12,23 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 
 """Definición unica de la version de la aplicación."""
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 
 
@@ -36,6 +34,9 @@
 # Basic info:
 APPNAME = "NOW lms"
 APPAUTHOR = "BMO Soluciones, S.A."
+
+# <--------------------------------------------------------------------------> #
+CODE_NAME = "Karla"
 
 # <--------------------------------------------------------------------------> #
 # SemVer (https://semver.org)
@@ -49,17 +50,17 @@ POST = False
 
 # <--------------------------------------------------------------------------> #
 # Pre release not for production
-PRERELEASE = "a2"
+PRERELEASE = "b1"
 
 # <--------------------------------------------------------------------------> #
 # Date of release
-REVISION = "20250729"
+REVISION = "20250802"
 
 # <--------------------------------------------------------------------------> #
 # Release string
 # Refences:
 #  - https://peps.python.org/pep-0440/
-# 0.0.1a2.dev20250729
+# 0.0.1b1.dev20250802
 if PRERELEASE:
     VERSION = MAYOR + "." + MENOR + "." + PATCH + PRERELEASE + ".dev" + REVISION
 else:

@@ -12,17 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 """Definición de formularios."""
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask_mde import MdeField
 from flask_wtf import FlaskForm
@@ -43,16 +41,66 @@ from wtforms.validators import DataRequired
 from wtforms.widgets import ColorInput, TextArea, html_params
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 
 
-# < --------------------------------------------------------------------------------------------- >
-# Definición de formularios
+# Form label constants
+LABEL_TITULO: str = "Título"
 
 MONEDAS = [
-    ("C$", "Córdobas Oro"),
-    ("USD", "Dólares"),
+    # América del Norte
+    ("USD", "Dólar Estadounidense"),
+    ("CAD", "Dólar Canadiense"),
+    ("MXN", "Peso Mexicano"),
+    # América Central
+    ("GTQ", "Quetzal Guatemalteco"),
+    ("BZD", "Dólar de Belice"),
+    ("HNL", "Lempira Hondureño"),
+    ("NIO", "Córdoba Nicaragüense"),
+    ("CRC", "Colón Costarricense"),
+    ("PAB", "Balboa Panameño"),
+    # El Caribe
+    ("DOP", "Peso Dominicano"),
+    ("CUP", "Peso Cubano"),
+    ("JMD", "Dólar Jamaicano"),
+    ("TTD", "Dólar de Trinidad y Tobago"),
+    ("BBD", "Dólar de Barbados"),
+    # América del Sur
+    ("COP", "Peso Colombiano"),
+    ("VES", "Bolívar Venezolano"),
+    ("GYD", "Dólar Guyanés"),
+    ("SRD", "Dólar Surinamés"),
+    ("BRL", "Real Brasileño"),
+    ("PEN", "Sol Peruano"),
+    ("BOB", "Boliviano"),
+    ("PYG", "Guaraní Paraguayo"),
+    ("UYU", "Peso Uruguayo"),
+    ("ARS", "Peso Argentino"),
+    ("CLP", "Peso Chileno"),
+    # Europa
+    ("EUR", "Euro"),
+    ("GBP", "Libra Esterlina"),
+    ("CHF", "Franco Suizo"),
+    ("NOK", "Corona Noruega"),
+    ("SEK", "Corona Sueca"),
+    ("DKK", "Corona Danesa"),
+    ("PLN", "Zloty Polaco"),
+    ("CZK", "Corona Checa"),
+    ("HUF", "Florín Húngaro"),
+    ("RON", "Leu Rumano"),
+    ("BGN", "Lev Búlgaro"),
+    ("HRK", "Kuna Croata"),
+    ("RSD", "Dinar Serbio"),
+    ("BAM", "Marco Bosnio"),
+    ("MKD", "Denar Macedonio"),
+    ("ALL", "Lek Albanés"),
+    ("MDL", "Leu Moldavo"),
+    ("UAH", "Grivna Ucraniana"),
+    ("BYN", "Rublo Bielorruso"),
+    ("RUB", "Rublo Ruso"),
+    ("TRY", "Lira Turca"),
+    ("ISK", "Corona Islandesa"),
 ]
 
 
@@ -61,6 +109,7 @@ class ConfigForm(FlaskForm):
 
     titulo = StringField(validators=[DataRequired()])
     descripcion = StringField(validators=[DataRequired()])
+    moneda = SelectField("Moneda", choices=MONEDAS, validators=[])
 
     verify_user_by_email = BooleanField(validators=[])
 
@@ -131,6 +180,8 @@ class CurseForm(BaseForm):
     modalidad = SelectField(
         "Modalidad", choices=[("self_paced", "A su propio ritmo"), ("time_based", "Con tiempo definido"), ("live", "En vivo")]
     )
+    # Configuración del foro
+    foro_habilitado = BooleanField("Habilitar foro", validators=[])
     # Disponibilidad de cupos
     limitado = BooleanField(validators=[])
     capacidad = IntegerField(validators=[])
@@ -147,6 +198,11 @@ class CurseForm(BaseForm):
         "Plantilla de certificado",
     )
     precio = DecimalField(validators=[])
+
+    def validate_foro_habilitado(self, field):
+        """Validación personalizada para el campo foro_habilitado."""
+        if field.data and self.modalidad.data == "self_paced":
+            raise ValueError("El foro no puede habilitarse en cursos con modalidad self-paced")
 
 
 class CursoSeccionForm(BaseForm):
@@ -218,6 +274,41 @@ class CursoRecursoSlides(CursoRecursoForm):
             ("corporativo", "Corporativo"),
         ],
     )
+
+
+class SlideShowForm(BaseForm):
+    """Formulario para crear una nueva presentación de diapositivas."""
+
+    theme = SelectField(
+        "Tema Reveal.js",
+        choices=[
+            ("black", "Black"),
+            ("white", "White"),
+            ("league", "League"),
+            ("beige", "Beige"),
+            ("sky", "Sky"),
+            ("night", "Night"),
+            ("serif", "Serif"),
+            ("simple", "Simple"),
+            ("solarized", "Solarized"),
+        ],
+        default="simple",
+        validators=[DataRequired()],
+    )
+
+
+class SlideForm(FlaskForm):
+    """Formulario para crear/editar una diapositiva individual."""
+
+    title = StringField("Título de la Diapositiva", validators=[DataRequired()])
+    content = MdeField("Contenido de la Diapositiva", validators=[DataRequired()])
+    order = IntegerField("Orden", validators=[DataRequired()], default=1)
+
+
+class SlideShowEditForm(SlideShowForm):
+    """Formulario para editar una presentación existente."""
+
+    slides = []  # type: ignore[var-annotated]
 
 
 class CursoRecursoMeet(CursoRecursoForm):
@@ -328,11 +419,34 @@ class UserForm(FlaskForm):
 
 
 class MsgForm(FlaskForm):
-    """Formulario para crear un mensaje en el sistema."""
+    """Formulario para crear un mensaje en el sistema - DEPRECATED."""
 
     titulo = StringField(validators=[])
     editor = MdeField()
     parent = HiddenField(validators=[])
+
+
+class MessageThreadForm(FlaskForm):
+    """Form for creating a new message thread."""
+
+    subject = StringField("Asunto", validators=[DataRequired()])
+    content = MdeField("Mensaje", validators=[DataRequired()])
+    course_id = HiddenField(validators=[DataRequired()])
+
+
+class MessageReplyForm(FlaskForm):
+    """Form for replying to a message thread."""
+
+    content = MdeField("Respuesta", validators=[DataRequired()])
+    thread_id = HiddenField(validators=[DataRequired()])
+
+
+class MessageReportForm(FlaskForm):
+    """Form for reporting a message or thread."""
+
+    reason = TextAreaField("Motivo del reporte", validators=[DataRequired()])
+    message_id = HiddenField(validators=[])
+    thread_id = HiddenField(validators=[])
 
 
 class TextAreaNoEscape(TextArea):
@@ -449,3 +563,131 @@ class PagoForm(FlaskForm):
     pais = StringField(validators=[DataRequired()])
     provincia = StringField(validators=[DataRequired()])
     codigo_postal = StringField(validators=[DataRequired()])
+
+
+# ---------------------------------------------------------------------------------------
+# Evaluation Forms
+# ---------------------------------------------------------------------------------------
+
+
+class EvaluationForm(FlaskForm):
+    """Formulario para crear/editar una evaluación."""
+
+    title = StringField(LABEL_TITULO, validators=[DataRequired()])
+    description = TextAreaField("Descripción")
+    is_exam = BooleanField("Es un examen")
+    passing_score = DecimalField("Puntuación mínima para aprobar", default=70.0, validators=[DataRequired()])
+    max_attempts = IntegerField("Máximo número de intentos (vacío = ilimitado)")
+
+
+class QuestionForm(FlaskForm):
+    """Formulario para crear/editar una pregunta."""
+
+    text = TextAreaField("Texto de la pregunta", validators=[DataRequired()])
+    type = SelectField(
+        "Tipo", choices=[("multiple", "Opción múltiple"), ("boolean", "Verdadero/Falso")], validators=[DataRequired()]
+    )
+    explanation = TextAreaField("Explicación (opcional)")
+
+
+class QuestionOptionForm(FlaskForm):
+    """Formulario para crear/editar una opción de pregunta."""
+
+    text = StringField("Texto de la opción", validators=[DataRequired()])
+    is_correct = BooleanField("Es correcta")
+
+
+class EvaluationReopenRequestForm(FlaskForm):
+    """Formulario para solicitar reabrir una evaluación."""
+
+    justification_text = TextAreaField("Justificación", validators=[DataRequired()], render_kw={"rows": 4})
+
+
+class TakeEvaluationForm(FlaskForm):
+    """Formulario dinámico para tomar una evaluación."""
+
+    pass  # This will be dynamically populated with questions
+
+
+class ForoMensajeForm(FlaskForm):
+    """Formulario para crear un nuevo mensaje del foro."""
+
+    contenido = MdeField("Mensaje", validators=[DataRequired()])
+    parent_id = HiddenField()
+
+
+class ForoMensajeRespuestaForm(FlaskForm):
+    """Formulario para responder a un mensaje del foro."""
+
+    contenido = MdeField("Respuesta", validators=[DataRequired()])
+
+
+class AnnouncementForm(BaseForm):
+    """Formulario base para crear/editar anuncios."""
+
+    title = StringField(LABEL_TITULO, validators=[DataRequired()])
+    message = MdeField("Mensaje", validators=[DataRequired()])
+    expires_at = DateField("Fecha de expiración", validators=[], render_kw={"placeholder": "Opcional"})
+
+
+class GlobalAnnouncementForm(AnnouncementForm):
+    """Formulario para anuncios globales (solo administradores)."""
+
+    is_sticky = BooleanField("Anuncio destacado")
+
+
+class CourseAnnouncementForm(AnnouncementForm):
+    """Formulario para anuncios de curso (instructores)."""
+
+    course_id = SelectField("Curso", coerce=str, validators=[DataRequired()])
+
+
+# ---------------------------------------------------------------------------------------
+# Coupon Forms
+# ---------------------------------------------------------------------------------------
+
+
+class CouponForm(BaseForm):
+    """Formulario para crear y editar cupones de descuento."""
+
+    code = StringField("Código del Cupón", validators=[DataRequired()], render_kw={"placeholder": "Ej: DESCUENTO50"})
+    discount_type = SelectField(
+        "Tipo de Descuento",
+        choices=[("percentage", "Porcentaje"), ("fixed", "Cantidad Fija")],
+        default="percentage",
+        validators=[DataRequired()],
+    )
+    discount_value = DecimalField("Valor del Descuento", validators=[DataRequired()], render_kw={"min": "0"})
+    max_uses = IntegerField("Máximo de Usos", render_kw={"min": "1", "placeholder": "Dejar vacío para ilimitado"})
+    expires_at = DateField("Fecha de Expiración", render_kw={"placeholder": "Dejar vacío si no expira"})
+
+
+class CouponApplicationForm(FlaskForm):
+    """Formulario para aplicar un cupón durante la inscripción."""
+
+    coupon_code = StringField("Código de Cupón", render_kw={"placeholder": "Código de cupón (opcional)"})
+
+
+# Blog forms
+class BlogPostForm(BaseForm):
+    """Formulario para crear/editar entradas de blog."""
+
+    title = StringField(LABEL_TITULO, validators=[DataRequired()])
+    content = MdeField("Contenido", validators=[DataRequired()])
+    allow_comments = BooleanField("Permitir comentarios", default=True)
+    tags = StringField("Etiquetas (separadas por comas)")
+    status = SelectField(
+        "Estado", choices=[("draft", "Borrador"), ("pending", "Pendiente"), ("published", "Publicado"), ("banned", "Baneado")]
+    )
+
+
+class BlogTagForm(BaseForm):
+    """Formulario para crear etiquetas de blog."""
+
+    name = StringField("Nombre", validators=[DataRequired()])
+
+
+class BlogCommentForm(BaseForm):
+    """Formulario para comentarios de blog."""
+
+    content = TextAreaField("Comentario", validators=[DataRequired()])

@@ -12,24 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
-"""Codigo para crear cursos iniciales."""
+
+"""Code to create initial test courses and data."""
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 from datetime import datetime, time, timedelta
 from os import environ, makedirs, path
 from shutil import copyfile
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import proteger_passwd
 from now_lms.config import DIRECTORIO_ARCHIVOS, DIRECTORIO_BASE_ARCHIVOS_USUARIO
 from now_lms.db import (
+    Announcement,
+    BlogPost,
+    BlogTag,
     Categoria,
     Curso,
     CursoRecurso,
@@ -45,8 +47,12 @@ from now_lms.db.initial_data import copy_sample_audio, copy_sample_img, copy_sam
 from now_lms.logs import logger as log
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
+
+# <--------------------------------------------------------------------------> #
+# Data constants
+USUARIO_ADMINISTRADOR = environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin"
 
 
 def crear_etiqueta_prueba():
@@ -481,14 +487,47 @@ def crear_recurso_prueba():
     database.session.commit()
 
 
-def id_usuario_admin():
-    from now_lms.db import Usuario
-    from os import environ
+def crear_announcement_prueba():
+    """Crea anuncio de prueba para admin."""
+    from datetime import datetime, timedelta
 
-    admin_username = environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin"
-    user = database.session.execute(database.select(Usuario).filter(Usuario.usuario == admin_username)).first()[0]
-    user.id = "01HNZYGXRRWKJ8GXVXYZY8S994"
-    database.session.add(user)
+    announcement = Announcement(
+        id=1,  # Static ID for testing
+        title="Anuncio de prueba",
+        message="Este es un anuncio de prueba para testing",
+        created_by_id=USUARIO_ADMINISTRADOR,
+        creado_por=USUARIO_ADMINISTRADOR,
+        expires_at=datetime.now() + timedelta(days=30),
+        is_sticky=True,
+        course_id=None,  # Global announcement
+    )
+    database.session.add(announcement)
+    database.session.commit()
+
+
+def crear_blog_prueba():
+    """Crea blog post y tag de prueba."""
+    from datetime import datetime
+
+    # Create blog tag first
+    tag = BlogTag(id=1, name="Educación", slug="educacion")  # Static ID for testing
+    database.session.add(tag)
+    database.session.flush()  # Flush to get the ID
+
+    # Create blog post
+    post = BlogPost(
+        id=1,  # Static ID for testing
+        title="Post de prueba",
+        slug="post-de-prueba",
+        content="Este es un contenido de prueba para el blog",
+        author_id=USUARIO_ADMINISTRADOR,
+        status="published",
+        allow_comments=True,
+        published_at=datetime.now(),
+    )
+    database.session.add(post)
+    database.session.flush()
+
     database.session.commit()
 
 
@@ -500,4 +539,5 @@ def crear_data_para_pruebas():
     crear_recurso_prueba()
     crear_programa_prueba()
     crear_curso_para_pruebas()
-    id_usuario_admin()
+    crear_announcement_prueba()
+    crear_blog_prueba()

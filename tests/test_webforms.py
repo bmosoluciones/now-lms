@@ -12,22 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 
 import os
 import sys
 import pytest
 
-from flask import session
 
-from now_lms import log
 
 # Add currect dir to path to import the list of static views to test
 sys.path.append(os.path.join(os.path.dirname(__file__)))
 
-from x_forms_data import forms
 
 
 @pytest.fixture

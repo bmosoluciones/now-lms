@@ -12,25 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 """Configuración de cache."""
 
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 from os import environ
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask_caching import Cache
 from flask_login import current_user
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.logs import log
 
@@ -61,7 +59,7 @@ else:
 
 CACHE_CONFIG["CACHE_TYPE"] = CTYPE
 
-if not CTYPE == "NullCache":
+if CTYPE != "NullCache":
     log.trace(f"Utilizando para almacenamiento el servicio {CTYPE}")
 
 cache: Cache = Cache(config=CACHE_CONFIG)

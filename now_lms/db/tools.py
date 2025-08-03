@@ -12,20 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 """Definición de base de datos."""
 
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 from os import path, remove
 from typing import NamedTuple, Union
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask import flash
 from flask_login import current_user
@@ -34,7 +32,7 @@ from pg8000.exceptions import DatabaseError
 from sqlalchemy.exc import OperationalError, ProgrammingError
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_UPLOAD_IMAGENES
@@ -547,10 +545,15 @@ def database_is_populated(app):
                 version = database.session.execute(text(QUERY)).first()
                 if version:
                     log.debug("Database conection verified.")
+                    log.trace("Verificando si la base de datos esta poblada.")
                     check = True
                 else:
                     check = False
-                    log.warning(f"Check table curso: {check}")
+                if check:
+                    log.trace("Base de datos poblada.")
+                else:
+                    log.trace("Base de datos no poblada.")
+                    log.info("Base de datos no poblada, creando configuracion predeterminada.")
                 return check
             else:
                 return False

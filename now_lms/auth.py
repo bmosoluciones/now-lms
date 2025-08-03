@@ -12,21 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 
-"""Control de acceso a la aplicacion."""
+"""Access control for the application."""
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 import base64
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 import jwt
 from argon2 import PasswordHasher
@@ -38,7 +36,7 @@ from flask import abort, current_app, flash, url_for
 from flask_login import current_user
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.db import MailConfig, Usuario, database
 from now_lms.logs import log
@@ -93,9 +91,23 @@ def perfil_requerido(perfil_id):
     def decorator_verifica_acceso(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            if (current_user.is_authenticated and current_user.tipo == perfil_id) or current_user.tipo == "admin":
+            if not current_user.is_authenticated:
+                flash("Favor iniciar sesión.", "warning")
+                return abort(403)
+
+            # Always allow admin access
+            if current_user.tipo == "admin":
                 return func(*args, **kwargs)
 
+            # Handle tuple format for multiple allowed profiles
+            elif isinstance(perfil_id, tuple):
+                if current_user.tipo in perfil_id:
+                    return func(*args, **kwargs)
+            # Handle string format for single profile
+            elif isinstance(perfil_id, str) and current_user.tipo == perfil_id:
+                return func(*args, **kwargs)
+
+            # Deny access if the user does not have the required profile
             else:
                 flash("No se encuentra autorizado a acceder al recurso solicitado.", "error")
                 return abort(403)
@@ -192,6 +204,7 @@ def validate_confirmation_token(token):
 def send_confirmation_email(user):
 
     from flask_mail import Message
+
     from now_lms.mail import send_mail
 
     config = database.session.execute(database.select(MailConfig)).first()[0]
@@ -269,6 +282,7 @@ def validate_password_reset_token(token):
 def send_password_reset_email(user):
     """Send password reset email to user."""
     from flask_mail import Message
+
     from now_lms.mail import send_mail
 
     config = database.session.execute(database.select(MailConfig)).first()[0]

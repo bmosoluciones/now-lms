@@ -8,71 +8,89 @@
     <body>
         {{ current_theme.navbar() }}
 
-        <!-- Hero Section -->
-        <section
-            class="hero-section py-5"
-            style="
-                background: linear-gradient(135deg, #4a7b6d 0%, #b08b5c 100%);
-                min-height: 60vh;
-                display: flex;
-                align-items: center;
-            "
-        >
+        <!-- Cambridge Scientific Laboratory Hero Section -->
+        <section class="cambridge-hero" style="background: #4a7b6d; padding: 4rem 0; position: relative; overflow: hidden">
+            <!-- Fórmulas como fondo -->
+            <div
+                class="cambridge-formulas"
+                style="
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    opacity: 0.1;
+                    color: white;
+                    font-family: &quot;Cambria&quot;, serif;
+                "
+            >
+                <div style="position: absolute; top: 10%; left: 5%; transform: rotate(-5deg); font-size: 2rem">E=mc²</div>
+                <div style="position: absolute; top: 30%; right: 10%; transform: rotate(3deg); font-size: 1.8rem">F=ma</div>
+                <div style="position: absolute; bottom: 20%; left: 15%; transform: rotate(-2deg); font-size: 1.6rem">H₂O</div>
+                <div style="position: absolute; top: 50%; right: 25%; transform: rotate(8deg); font-size: 1.4rem">∫dx</div>
+                <div style="position: absolute; bottom: 40%; right: 5%; transform: rotate(-3deg); font-size: 1.5rem">
+                    π = 3.14159
+                </div>
+            </div>
+
             <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-8 text-white">
-                        <div class="hero-content">
-                            <h1 class="display-4 fw-bold mb-4">Bienvenido a {{ site_config.nombre }}</h1>
-                            <p class="lead mb-4" style="font-size: 1.3rem; line-height: 1.6">
-                                Descubre la tradición académica y la excelencia educativa que caracterizan a Cambridge. Nuestra
-                                plataforma está diseñada para brindar una experiencia de aprendizaje excepcional.
-                            </p>
-                            <div class="d-flex gap-3 flex-wrap">
-                                {% if not current_user.is_authenticated %}
-                                <a href="{{ url_for('user.crear_cuenta') }}" class="btn btn-light btn-lg px-4 py-2">
-                                    <strong>Comenzar Ahora</strong>
-                                </a>
-                                <a
-                                    href="{{ url_for('course.lista_cursos', page=1) }}"
-                                    class="btn btn-outline-light btn-lg px-4 py-2"
-                                >
-                                    Explorar Cursos
-                                </a>
-                                {% else %}
-                                <a href="{{ url_for('home.panel') }}" class="btn btn-light btn-lg px-4 py-2">
-                                    <strong>Mi Panel</strong>
-                                </a>
-                                <a
-                                    href="{{ url_for('course.lista_cursos', page=1) }}"
-                                    class="btn btn-outline-light btn-lg px-4 py-2"
-                                >
-                                    Ver Cursos
-                                </a>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 text-center">
-                        <div class="hero-visual">
-                            <div
-                                class="learning-icon"
-                                style="
-                                    background: rgba(255, 255, 255, 0.1);
-                                    border-radius: 50%;
-                                    width: 250px;
-                                    height: 250px;
-                                    margin: 0 auto;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    border: 4px solid rgba(255, 255, 255, 0.3);
-                                "
+                <div class="row">
+                    <div class="col-md-8 mx-auto text-center">
+                        <h1
+                            style="
+                                font-family: &quot;Cambria&quot;, serif;
+                                color: white;
+                                font-size: 3.5rem;
+                                margin-bottom: 2rem;
+                            "
+                        >
+                            <span style="display: inline-block; border-bottom: 3px solid #b08b5c; padding-bottom: 0.5rem"
+                                >{{ site_config.nombre }}</span
                             >
-                                <div class="text-center text-white">
-                                    <div style="font-size: 3rem; margin-bottom: 0.5rem">📚</div>
-                                    <div style="font-size: 1.2rem; font-weight: 600">Aprendizaje</div>
-                                    <div style="font-size: 0.9rem; opacity: 0.8">Digital</div>
-                                </div>
+                        </h1>
+                        <p class="lead" style="color: #f3f1e7; max-width: 80%; margin: 0 auto 2rem auto">
+                            <span
+                                style="
+                                    background: rgba(0, 0, 0, 0.3);
+                                    padding: 0.3rem 0.8rem;
+                                    border-radius: 3px;
+                                    font-family: &quot;Cambria&quot;, serif;
+                                "
+                                >Hypotheses non fingo</span
+                            >
+                        </p>
+                        <div style="display: inline-flex; flex-direction: column; align-items: center; gap: 1rem">
+                            {% if not current_user.is_authenticated %}
+                            <a
+                                href="{{ url_for('user.crear_cuenta') }}"
+                                class="btn btn-lg"
+                                style="background: #b08b5c; color: white; font-family: &quot;Cambria&quot;, serif"
+                                >Iniciar Experimentación</a
+                            >
+                            <a
+                                href="{{ url_for('course.lista_cursos', page=1) }}"
+                                class="btn btn-outline-light btn-lg"
+                                style="font-family: &quot;Cambria&quot;, serif"
+                                >Explorar Laboratorio</a
+                            >
+                            {% else %}
+                            <a
+                                href="{{ url_for('home.panel') }}"
+                                class="btn btn-lg"
+                                style="background: #b08b5c; color: white; font-family: &quot;Cambria&quot;, serif"
+                                >Mi Laboratorio</a
+                            >
+                            <a
+                                href="{{ url_for('course.lista_cursos', page=1) }}"
+                                class="btn btn-outline-light btn-lg"
+                                style="font-family: &quot;Cambria&quot;, serif"
+                                >Ver Protocolos</a
+                            >
+                            {% endif %}
+                            <div style="display: flex; align-items: center; gap: 1rem">
+                                <div style="width: 30px; height: 2px; background: #f3f1e7"></div>
+                                <small style="color: #f3f1e7; font-family: &quot;Cambria&quot;, serif">Laboratorium</small>
+                                <div style="width: 30px; height: 2px; background: #f3f1e7"></div>
                             </div>
                         </div>
                     </div>
@@ -190,88 +208,139 @@
             </div>
         </section>
 
-        <!-- Featured Courses Section - Cambridge Academic Themed -->
+        <!-- Featured Courses Section - Cambridge Scientific Laboratory Themed -->
         {% if cursos and cursos.total > 0 %}
-        <section class="py-5" style="background: #ffffff">
+        <section class="py-5 cambridge-lab-bg" style="border-top: 3px solid #4a7b6d">
             <div class="container">
                 <div class="row">
                     <div class="col-12 text-center mb-5">
-                        <h2 class="display-6 fw-bold mb-4" style="color: #003f5c">🎓 Excelencia Académica Cambridge</h2>
-                        <p class="lead">Cursos de prestigio mundial con los más altos estándares académicos.</p>
+                        <h2 class="display-6 fw-bold mb-4" style="color: #4a7b6d; font-family: &quot;Cambria&quot;, serif">
+                            🔬 Laboratorio de Investigación
+                        </h2>
+                        <p class="lead" style="color: #2e2b28; font-family: &quot;Cambria&quot;, serif">
+                            Protocolos experimentales para el aprendizaje avanzado
+                        </p>
+                        <div style="width: 120px; height: 3px; background: #b08b5c; margin: 1rem auto"></div>
                     </div>
                 </div>
-                <div class="row row-cols-1 row-cols-sm-2 g-4">
+                <div class="row row-cols-1 row-cols-md-2 g-4">
                     {% for curso in cursos.items[:4] %}
                     <div class="col">
+                        <!-- Tarjeta "Muestra de Laboratorio" Cambridge style -->
                         <div
-                            class="card h-100"
-                            style="border: 2px solid #003f5c; border-radius: 10px; box-shadow: 0 6px 20px rgba(0, 63, 92, 0.1)"
+                            class="cambridge-lab-sample"
+                            style="
+                                background: white;
+                                border: 1px solid #a8a39b;
+                                padding: 1.5rem;
+                                position: relative;
+                                margin-bottom: 2rem;
+                                border-radius: 8px;
+                                box-shadow: 0 4px 12px rgba(74, 123, 109, 0.1);
+                            "
                         >
-                            {% if curso.portada and course_logo(curso.codigo) %}
-                            <img
-                                src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/' + course_logo(curso.codigo)) }}"
-                                alt="{{ curso.nombre }}"
-                                class="card-img-top"
-                                style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0"
-                            />
-                            {% else %}
+                            <!-- Etiqueta como tubo de ensayo -->
                             <div
-                                class="card-img-top d-flex align-items-center justify-content-center text-white"
+                                class="cambridge-tube-label"
                                 style="
-                                    height: 200px;
-                                    background: linear-gradient(135deg, #003f5c 0%, #bc6c25 100%);
-                                    border-radius: 8px 8px 0 0;
+                                    position: absolute;
+                                    top: -10px;
+                                    left: 20px;
+                                    background: #4a7b6d;
+                                    color: white;
+                                    padding: 0.2rem 1rem;
+                                    clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
+                                    font-family: &quot;Cambria&quot;, serif;
                                 "
                             >
-                                <div class="text-center">
-                                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem">🏛️</div>
-                                    <div style="font-size: 1rem; font-weight: 600">{{ curso.nombre }}</div>
-                                </div>
+                                <small>MUESTRA #{{ curso.codigo or (loop.index | string).zfill(3) }}</small>
                             </div>
-                            {% endif %}
 
-                            <div class="card-body d-flex flex-column">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="card-title mb-0" style="color: #003f5c; font-weight: 700">
-                                        {{ curso.nombre }}
-                                    </h5>
-                                    <div class="d-flex align-items-center gap-2">
-                                        {% if not curso.precio %}
-                                        <span class="badge" style="background: #bc6c25; color: white">Scholarship</span>
-                                        {% endif %} {% if curso.nivel == 0 %}
-                                        <span class="badge bg-light text-dark border" title="Nivel Introductorio"
-                                            >Foundation</span
-                                        >
-                                        {% elif curso.nivel == 1 %}
-                                        <span class="badge" style="background: #003f5c" title="Nivel Principiante"
-                                            >Undergraduate</span
-                                        >
-                                        {% elif curso.nivel == 2 %}
-                                        <span class="badge" style="background: #bc6c25" title="Nivel Intermedio"
-                                            >Graduate</span
-                                        >
-                                        {% elif curso.nivel == 3 %}
-                                        <span class="badge bg-dark" title="Nivel Avanzado">Doctorate</span>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                <p class="card-text flex-grow-1" style="color: #6c757d; font-style: italic">
-                                    {{ curso.descripcion_corta | truncate(100) }}
-                                </p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <a
-                                        href="{{ url_for('course.curso', course_code=curso.codigo) }}"
-                                        class="btn btn-sm"
-                                        style="background: #003f5c; color: white; border: none"
-                                        >🎓 Enroll Now</a
+                            <h3
+                                style="
+                                    font-family: &quot;Cambria&quot;, serif;
+                                    color: #2e2b28;
+                                    margin-bottom: 1rem;
+                                    margin-top: 0.5rem;
+                                "
+                            >
+                                {{ curso.nombre }}
+                            </h3>
+                            <p
+                                style="
+                                    margin-bottom: 1.5rem;
+                                    font-size: 0.95rem;
+                                    line-height: 1.6;
+                                    color: #2e2b28;
+                                    font-family: &quot;Cambria&quot;, serif;
+                                "
+                            >
+                                {{ curso.descripcion_corta | truncate(100) }}
+                            </p>
+
+                            <!-- Etiquetas científicas -->
+                            <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap">
+                                {% if curso.duracion %}
+                                <span
+                                    style="
+                                        font-size: 0.8rem;
+                                        background: #b6c7bf;
+                                        padding: 0.2rem 0.8rem;
+                                        border-radius: 3px;
+                                        font-family: &quot;Cambria&quot;, serif;
+                                    "
+                                    >{{ curso.duracion }}h de experimento</span
+                                >
+                                {% endif %}
+                                <span
+                                    style="
+                                        font-size: 0.8rem;
+                                        background: #b6c7bf;
+                                        padding: 0.2rem 0.8rem;
+                                        border-radius: 3px;
+                                        font-family: &quot;Cambria&quot;, serif;
+                                    "
+                                >
+                                    {% if curso.nivel == 0 %}Básico{% elif curso.nivel == 1 %}Intermedio{% elif curso.nivel ==
+                                    2 %}Avanzado{% else %}Experto{% endif %}
+                                </span>
+                                {% if not curso.precio %}
+                                <span
+                                    style="
+                                        font-size: 0.8rem;
+                                        background: #b08b5c;
+                                        color: white;
+                                        padding: 0.2rem 0.8rem;
+                                        border-radius: 3px;
+                                        font-family: &quot;Cambria&quot;, serif;
+                                    "
+                                    >OPEN ACCESS</span
+                                >
+                                {% endif %}
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center">
+                                <a
+                                    href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+                                    style="
+                                        color: #2e2b28;
+                                        text-decoration: none;
+                                        font-size: 0.9rem;
+                                        font-family: &quot;Cambria&quot;, serif;
+                                        background: #4a7b6d;
+                                        color: white;
+                                        padding: 0.5rem 1rem;
+                                        border-radius: 4px;
+                                    "
+                                >
+                                    🔬 Ver Protocolo <span style="color: #b08b5c">→</span>
+                                </a>
+                                <div>
+                                    {% if curso.precio %}
+                                    <span style="font-weight: bold; color: #4a7b6d; font-family: &quot;Cambria&quot;, serif"
+                                        >{{ curso.precio | float }} {{ config.moneda if config.moneda else 'units' }}</span
                                     >
-                                    <div class="text-end">
-                                        {% if curso.duracion %}
-                                        <small class="text-muted d-block">📚 {{ curso.duracion }} minutes</small>
-                                        {% endif %} {% if curso.precio %}
-                                        <small class="fw-bold" style="color: #bc6c25">£{{ curso.precio | float }}</small>
-                                        {% endif %}
-                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -282,9 +351,9 @@
                     <a
                         href="{{ url_for('course.lista_cursos', page=1) }}"
                         class="btn btn-lg px-4 py-2"
-                        style="background: #003f5c; color: white; border: none"
+                        style="background: #4a7b6d; color: white; border: none; font-family: &quot;Cambria&quot;, serif"
                     >
-                        🏛️ View Complete Academic Catalogue
+                        🧪 Explorar Todo el Laboratorio
                     </a>
                 </div>
             </div>

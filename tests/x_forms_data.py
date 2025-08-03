@@ -1,32 +1,50 @@
-from collections import namedtuple
+from types import SimpleNamespace
 from io import BytesIO
 
-Form = namedtuple("form", ["ruta", "data", "file", "flash"])
+
+def Form(
+    ruta: str,
+    data: dict,
+    file: dict = None,
+    flash: tuple = None,
+) -> SimpleNamespace:
+    """Create a form test configuration using SimpleNamespace.
+
+    Args:
+        ruta: Form route to test
+        data: Form data to submit
+        file: File upload configuration (optional)
+        flash: Expected flash message tuple (message, category) (optional)
+
+    Returns:
+        SimpleNamespace containing the form test configuration
+    """
+    return SimpleNamespace(
+        ruta=ruta,
+        data=data,
+        file=file,
+        flash=flash,
+    )
+
 
 forms = [
     Form(
         ruta="/category/new",
         data={"nombre": "test", "descripcion": "#6f0asñlaskdñlad000"},
-        file=None,
-        flash=None,
     ),
     Form(
         ruta="/category/01HNP0TTQNTR03J7ZQHR09YMJK/edit",
         data={"nombre": "testing", "descripcion": "sñjdakjdalkdlka"},
-        file=None,
-        flash=None,
     ),
     Form(
         ruta="/course/new_curse",
         data={"nombre": "nombre", "codigo": "codigo", "descripcion": "descripcion", "descripcion_corta": "descripcion_corta"},
         file={"name": "logo", "bytes": (BytesIO(b"abcdef"), "logo.jpg")},
-        flash=None,
     ),
     Form(
         ruta="/course/now/edit",
         data={"nombre": "nombre", "publico": True},
         file={"name": "logo", "bytes": (BytesIO(b"abcdefkkkk"), "logo.jpg")},
-        flash=None,
     ),
     Form(
         ruta="course/test/new_seccion",
@@ -34,8 +52,6 @@ forms = [
             "nombre": "nombre",
             "descripcion": "descripcion",
         },
-        file=None,
-        flash=None,
     ),
     Form(
         ruta="/course/now/01HPB1MZXBHZETC4ZH0HV4G39Q/edit",
@@ -43,8 +59,6 @@ forms = [
             "nombre": "nombreaaa",
             "descripcion": "descaaaripcion",
         },
-        file=None,
-        flash=None,
     ),
     Form(
         ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/youtube/new",
@@ -53,8 +67,6 @@ forms = [
             "descripcion": "descaaaripcion",
             "youtube_url": "sssssssssss",
         },
-        file=None,
-        flash=None,
     ),
     Form(
         ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/text/new",
@@ -63,8 +75,6 @@ forms = [
             "descripcion": "adadadadadadescaaaripcion",
             "editor": "aaaaaa",
         },
-        file=None,
-        flash=None,
     ),
     Form(
         ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/link/new",
@@ -73,8 +83,6 @@ forms = [
             "descripcion": "adadadadadadescripcion",
             "editor": "aaaaaa",
         },
-        file=None,
-        flash=None,
     ),
     Form(
         ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/pdf/new",
@@ -84,7 +92,6 @@ forms = [
             "editor": "aaaaaa",
         },
         file={"name": "pdf", "bytes": (BytesIO(b"asdfkkkk"), "archivo.pdf")},
-        flash=None,
     ),
     Form(
         ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/meet/new",
@@ -93,8 +100,6 @@ forms = [
             "descripcion": "adadadadadadescripcion",
             "editor": "aaaaaa",
         },
-        file=None,
-        flash=None,
     ),
     Form(
         ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/img/new",
@@ -104,7 +109,6 @@ forms = [
             "editor": "aaaaaa",
         },
         file={"name": "img", "bytes": (BytesIO(b"aasdfkkkk"), "imagen.jpg")},
-        flash=None,
     ),
     Form(
         ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/audio/new",
@@ -114,7 +118,6 @@ forms = [
             "editor": "aaaaaa",
         },
         file={"name": "audio", "bytes": (BytesIO(b"aasdfkkakk"), "imagen.ogg")},
-        flash=None,
     ),
     Form(
         ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/html/new",
@@ -123,8 +126,6 @@ forms = [
             "descripcion": "adadadadadadescripcion",
             "html_externo": "<h1>Hello</h1>",
         },
-        file=None,
-        flash=None,
     ),
     Form(
         ruta="/group/new",
@@ -132,7 +133,6 @@ forms = [
             "nombre": "nombrekk",
             "descripcion": "adadadadadadescripcion",
         },
-        file=None,
         flash=("Grupo creado correctamente", "success"),
     ),
     Form(
@@ -141,8 +141,6 @@ forms = [
             "titulo": "nombrekk",
             "editor": "adadadadadadescripcion",
         },
-        file=None,
-        flash=None,
     ),
     Form(
         ruta="/user/logon",
@@ -153,8 +151,6 @@ forms = [
             "apellido": "Duck",
             "correo_electronico": "d.duck@disneylatino.com",
         },
-        file=None,
-        flash=None,
     ),
     Form(
         ruta="/certificate/new",
@@ -162,8 +158,6 @@ forms = [
             "titulo": "cert",
             "descripcion": "cert",
         },
-        file=None,
-        flash=None,
     ),
     Form(
         ruta="/program/new",
@@ -173,7 +167,6 @@ forms = [
             "codigo": "cert",
             "precio": 100,
         },
-        file=None,
         flash=("Nuevo Programa creado.", "success"),
     ),
     Form(
@@ -218,7 +211,6 @@ forms = [
             "descripcion": "form.descripcion.data",
         },
         file={"name": "img", "bytes": (BytesIO(b"aasdfkkakk"), "imagen.jpg")},
-        flash=None,
     ),
     Form(
         ruta="/setting/general",
@@ -226,8 +218,6 @@ forms = [
             "titulo": "Hi",
             "descripcion": "hi",
         },
-        file=None,
-        flash=None,
     ),
     Form(
         ruta="/tag/new",
@@ -235,8 +225,6 @@ forms = [
             "nombre": "Hilll",
             "color": "#eb4034",
         },
-        file=None,
-        flash=None,
     ),
     Form(
         ruta="/user/logon",
@@ -247,8 +235,6 @@ forms = [
             "apellido": "Leon",
             "correo_electronico": "hakuna@matata.com",
         },
-        file=None,
-        flash=None,
     ),
     Form(
         ruta="/user/new_user",
@@ -259,7 +245,42 @@ forms = [
             "apellido": "Leon",
             "correo_electronico": "pumba_hakuna@matata.com",
         },
-        file=None,
-        flash=None,
+    ),
+    # Additional missing forms that are important for testing
+    Form(
+        ruta="/user/login",
+        data={
+            "usuario": "admin",
+            "acceso": "password",
+        },
+    ),
+    Form(
+        ruta="/user/forgot_password",
+        data={
+            "correo_electronico": "test@example.com",
+        },
+    ),
+    Form(
+        ruta="/course/test/01HNZY7Y81RR4EFMDQX8F2XWHE/slides/new",
+        data={
+            "nombre": "presentation",
+            "descripcion": "test slides",
+            "editor": "slide content",
+        },
+        file={"name": "slides", "bytes": (BytesIO(b"slide_data"), "presentation.pptx")},
+    ),
+    Form(
+        ruta="/setting/theming",
+        data={
+            "tema": "default",
+            "color_primario": "#0066cc",
+        },
+    ),
+    Form(
+        ruta="/tag/01HNP0TTQNTR03J7ZQHR09YMJJ/edit",
+        data={
+            "nombre": "updated_tag",
+            "color": "#ff0000",
+        },
     ),
 ]

@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Contributors:
-# - William José Moreno Reyes
 
 """
 NOW Learning Management System.
@@ -22,14 +20,14 @@ Gestión de certificados.
 """
 
 # ---------------------------------------------------------------------------------------
-# Libreria estandar
+# Standard library
 # ---------------------------------------------------------------------------------------
 from collections import OrderedDict
 from datetime import datetime
 from os.path import splitext
 
 # ---------------------------------------------------------------------------------------
-# Librerias de terceros
+# Third-party libraries
 # ---------------------------------------------------------------------------------------
 from bleach import clean, linkify
 from flask import Blueprint, abort, current_app, flash, redirect, render_template, request, send_from_directory, url_for
@@ -40,7 +38,7 @@ from sqlalchemy.exc import OperationalError
 from ulid import ULID
 
 # ---------------------------------------------------------------------------------------
-# Recursos locales
+# Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
 from now_lms.bi import (
@@ -57,21 +55,31 @@ from now_lms.cache import cache, no_guardar_en_cache_global
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, audio, files, images
 from now_lms.db import (
     Categoria,
+    Coupon,
     Curso,
     CursoRecurso,
     CursoRecursoAvance,
     CursoRecursoDescargable,
+    CursoRecursoSlides,
     CursoRecursoSlideShow,
     CursoSeccion,
     DocenteCurso,
+    EstudianteCurso,
     Etiqueta,
+    Evaluation,
+    EvaluationAttempt,
+    EvaluationReopenRequest,
     Pago,
     Recurso,
+    Slide,
+    SlideShowResource,
     Usuario,
     database,
 )
 from now_lms.db.tools import crear_indice_recurso
 from now_lms.forms import (
+    CouponApplicationForm,
+    CouponForm,
     CurseForm,
     CursoRecursoArchivoAudio,
     CursoRecursoArchivoImagen,
@@ -80,12 +88,12 @@ from now_lms.forms import (
     CursoRecursoExternalCode,
     CursoRecursoExternalLink,
     CursoRecursoMeet,
-    CursoRecursoSlides,
     CursoRecursoVideoYoutube,
     CursoSeccionForm,
+    SlideShowForm,
 )
 from now_lms.logs import log
-from now_lms.misc import CURSO_NIVEL, HTML_TAGS, INICIO_SESION, TEMPLATES_BY_TYPE, TIPOS_RECURSOS
+from now_lms.misc import CURSO_NIVEL, HTML_TAGS, INICIO_SESION, TEMPLATES_BY_TYPE, TIPOS_RECURSOS, sanitize_slide_content
 from now_lms.themes import get_course_list_template, get_course_view_template
 
 # ---------------------------------------------------------------------------------------
@@ -97,6 +105,14 @@ ERROR_AL_AGREGAR_CURSO = "Hubo en error al crear el recurso."
 VISTA_CURSOS = "course.curso"
 VISTA_ADMINISTRAR_CURSO = "course.administrar_curso"
 NO_AUTORIZADO_MSG = "No se encuentra autorizado a acceder al recurso solicitado."
+
+# Template constants
+TEMPLATE_SLIDE_SHOW = "learning/resources/slide_show.html"
+TEMPLATE_COUPON_CREATE = "learning/curso/coupons/create.html"
+TEMPLATE_COUPON_EDIT = "learning/curso/coupons/edit.html"
+
+# Route constants
+ROUTE_LIST_COUPONS = "course.list_coupons"
 
 course = Blueprint("course", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
@@ -146,7 +162,7 @@ def curso(course_code):
 def _crear_indice_avance_curso(course_code):
     """Crea el índice de avance del curso."""
 
-    from now_lms.db import CursoRecursoAvance, CursoRecurso
+    from now_lms.db import CursoRecurso, CursoRecursoAvance
 
     recursos = database.session.execute(
         database.select(CursoRecurso).filter(CursoRecurso.curso == course_code).order_by(CursoRecurso.indice)
@@ -180,10 +196,32 @@ def course_enroll(course_code):
 
     _modo = request.args.get("modo", "") or request.form.get("modo", "")
 
+    # Check for coupon code in URL or form
+    coupon_code = request.args.get("coupon_code", "") or request.form.get("coupon_code", "")
+    applied_coupon = None
+    original_price = _curso.precio if _curso.pagado else 0
+    final_price = original_price
+    discount_amount = 0
+
+    # Validate and apply coupon if provided
+    if coupon_code and _curso.pagado:
+        coupon, coupon_error, validation_error = _validate_coupon_for_enrollment(course_code, coupon_code, _usuario)
+        if coupon:
+            applied_coupon = coupon
+            discount_amount = coupon.calculate_discount(original_price)
+            final_price = coupon.calculate_final_price(original_price)
+        elif validation_error:
+            flash(validation_error, "warning")
+
     form = PagoForm()
+    coupon_form = CouponApplicationForm()
+
+    # Pre-fill form data
     form.nombre.data = _usuario.nombre
     form.apellido.data = _usuario.apellido
     form.correo_electronico.data = _usuario.correo_electronico
+    if coupon_code:
+        coupon_form.coupon_code.data = coupon_code
 
     if form.validate_on_submit() or request.method == "POST":
         pago = Pago()
@@ -197,16 +235,25 @@ def course_enroll(course_code):
         pago.provincia = form.provincia.data
         pago.codigo_postal = form.codigo_postal.data
         pago.pais = form.pais.data
-        pago.monto = _curso.precio if _curso.pagado else 0
-        pago.metodo = "paypal" if _curso.pagado else "free"
+        pago.monto = final_price
+        pago.metodo = "paypal" if final_price > 0 else "free"
+
+        # Add coupon information to payment description
+        if applied_coupon:
+            pago.descripcion = f"Cupón aplicado: {applied_coupon.code} (Descuento: {discount_amount})"
 
         # Handle different enrollment modes
-        if not _curso.pagado:
-            # Free course - complete enrollment immediately
+        if not _curso.pagado or final_price == 0:
+            # Free course or 100% discount coupon - complete enrollment immediately
             pago.estado = "completed"
             try:
                 database.session.add(pago)
                 database.session.flush()
+
+                # Update coupon usage if applied
+                if applied_coupon:
+                    applied_coupon.current_uses += 1
+
                 registro = EstudianteCurso(
                     curso=pago.curso,
                     usuario=pago.usuario,
@@ -216,8 +263,15 @@ def course_enroll(course_code):
                 database.session.add(registro)
                 database.session.commit()
                 _crear_indice_avance_curso(course_code)
+
+                if applied_coupon and final_price == 0:
+                    flash(f"¡Cupón aplicado exitosamente! Inscripción gratuita con código {applied_coupon.code}", "success")
+                elif applied_coupon:
+                    flash(f"¡Cupón aplicado! Descuento de {discount_amount} aplicado", "success")
+
                 return redirect(url_for("course.tomar_curso", course_code=course_code))
             except OperationalError:  # pragma: no cover
+                database.session.rollback()
                 flash("Hubo en error al crear el registro de pago.", "warning")
                 return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
@@ -245,7 +299,7 @@ def course_enroll(course_code):
                 return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
         else:
-            # Paid course - check for existing pending payment first
+            # Paid course with amount > 0 - check for existing pending payment first
             existing = (
                 database.session.query(Pago)
                 .filter_by(usuario=current_user.usuario, curso=course_code, estado="pending")
@@ -254,8 +308,29 @@ def course_enroll(course_code):
             if existing:
                 return redirect(url_for("paypal.resume_payment", payment_id=existing.id))
 
-            # Redirect to PayPal payment page
-            return redirect(url_for("paypal.payment_page", course_code=course_code))
+            # Store payment with coupon information for PayPal processing
+            try:
+                database.session.add(pago)
+                database.session.commit()
+
+                # Redirect to PayPal payment page with payment ID
+                return redirect(url_for("paypal.payment_page", course_code=course_code, payment_id=pago.id))
+            except OperationalError:  # pragma: no cover
+                database.session.rollback()
+                flash("Error al procesar el pago", "warning")
+                return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+
+    return render_template(
+        "learning/curso/enroll.html",
+        curso=_curso,
+        usuario=_usuario,
+        form=form,
+        coupon_form=coupon_form,
+        applied_coupon=applied_coupon,
+        original_price=original_price,
+        final_price=final_price,
+        discount_amount=discount_amount,
+    )
 
     return render_template("learning/curso/enroll.html", curso=_curso, usuario=_usuario, form=form)
 
@@ -268,9 +343,34 @@ def tomar_curso(course_code):
     """Pagina principal del curso."""
 
     if current_user.tipo == "student":
+        # Get evaluations for this course
+        evaluaciones = database.session.query(Evaluation).join(CursoSeccion).filter(CursoSeccion.curso == course_code).all()
+
+        # Get user's evaluation attempts
+        evaluation_attempts = database.session.query(EvaluationAttempt).filter_by(user_id=current_user.usuario).all()
+
+        # Get reopen requests
+        reopen_requests = database.session.query(EvaluationReopenRequest).filter_by(user_id=current_user.usuario).all()
+
+        # Check if user has paid for course (for paid courses)
+        curso_obj = database.session.query(Curso).filter_by(codigo=course_code).first()
+        user_has_paid = True  # Default for free courses
+        if curso_obj and curso_obj.pagado:
+            enrollment = (
+                database.session.query(EstudianteCurso).filter_by(curso=course_code, usuario=current_user.usuario).first()
+            )
+            user_has_paid = enrollment and enrollment.pago
+
+        # Check if user has a certificate for this course
+        from now_lms.db import Certificacion
+
+        user_certificate = (
+            database.session.query(Certificacion).filter_by(curso=course_code, usuario=current_user.usuario).first()
+        )
+
         return render_template(
             "learning/curso.html",
-            curso=database.session.query(Curso).filter_by(codigo=course_code).first(),
+            curso=curso_obj,
             secciones=database.session.query(CursoSeccion).filter_by(curso=course_code).order_by(CursoSeccion.indice).all(),
             recursos=database.session.query(CursoRecurso).filter_by(curso=course_code).order_by(CursoRecurso.indice).all(),
             descargas=database.session.execute(
@@ -278,6 +378,11 @@ def tomar_curso(course_code):
             ).all(),  # El join devuelve una tuple.
             nivel=CURSO_NIVEL,
             tipo=TIPOS_RECURSOS,
+            evaluaciones=evaluaciones,
+            evaluation_attempts=evaluation_attempts,
+            reopen_requests=reopen_requests,
+            user_has_paid=user_has_paid,
+            user_certificate=user_certificate,
         )
     else:
         return redirect(url_for(VISTA_CURSOS, course_code=course_code))
@@ -349,6 +454,8 @@ def nuevo_curso():
             publico=form.publico.data,
             # Modalidad
             modalidad=form.modalidad.data,
+            # Configuración del foro
+            foro_habilitado=form.foro_habilitado.data if form.modalidad.data != "self_paced" else False,
             # Disponibilidad de cupos
             limitado=form.limitado.data,
             capacidad=form.capacidad.data,
@@ -420,6 +527,7 @@ def editar_curso(course_code):
     form.duracion.data = curso_a_editar.duracion
     form.publico.data = curso_a_editar.publico
     form.modalidad.data = curso_a_editar.modalidad
+    form.foro_habilitado.data = curso_a_editar.foro_habilitado
     form.limitado.data = curso_a_editar.limitado
     form.capacidad.data = curso_a_editar.capacidad
     form.fecha_inicio.data = curso_a_editar.fecha_inicio
@@ -442,6 +550,11 @@ def editar_curso(course_code):
         curso_a_editar.publico = form.publico.data
         # Modalidad
         curso_a_editar.modalidad = form.modalidad.data
+        # Configuración del foro (validar restricción self-paced)
+        if form.modalidad.data == "self_paced":
+            curso_a_editar.foro_habilitado = False
+        else:
+            curso_a_editar.foro_habilitado = form.foro_habilitado.data
         # Disponibilidad de cupos
         curso_a_editar.limitado = form.limitado.data
         curso_a_editar.capacidad = form.capacidad.data
@@ -631,6 +744,40 @@ def cambiar_seccion_publico():
     return redirect(url_for(VISTA_CURSOS, course_code=request.args.get("course_code")))
 
 
+def _get_user_resource_progress(curso_id, usuario=None):
+    """Obtiene el progreso del usuario en todos los recursos del curso."""
+    if not usuario:
+        return {}
+
+    progress_data = database.session.query(CursoRecursoAvance).filter_by(usuario=usuario, curso=curso_id).all()
+
+    return {p.recurso: {"completado": p.completado} for p in progress_data}
+
+
+def _get_course_evaluations_and_attempts(curso_id, usuario=None):
+    """Obtiene las evaluaciones del curso y los intentos del usuario."""
+    # Obtener las secciones del curso
+    secciones = database.session.query(CursoSeccion).filter_by(curso=curso_id).all()
+    section_ids = [s.id for s in secciones]
+
+    # Obtener evaluaciones de todas las secciones del curso
+    evaluaciones = database.session.query(Evaluation).filter(Evaluation.section_id.in_(section_ids)).all()
+
+    evaluation_attempts = {}
+    if usuario:
+        # Obtener intentos del usuario para cada evaluación
+        for eval in evaluaciones:
+            attempts = (
+                database.session.query(EvaluationAttempt)
+                .filter_by(evaluation_id=eval.id, user_id=usuario)
+                .order_by(EvaluationAttempt.started_at)
+                .all()
+            )
+            evaluation_attempts[eval.id] = attempts
+
+    return evaluaciones, evaluation_attempts
+
+
 @course.route("/course/<curso_id>/resource/<resource_type>/<codigo>")
 def pagina_recurso(curso_id, resource_type, codigo):
     """Pagina de un recurso."""
@@ -655,6 +802,7 @@ def pagina_recurso(curso_id, resource_type, codigo):
         show_resource = False
 
     if show_resource or RECURSO.publico:
+        # Obtener progreso del recurso actual
         resource_progress = database.session.execute(
             database.select(CursoRecursoAvance).filter_by(usuario=current_user.usuario, curso=curso_id, recurso=codigo)
         ).first()
@@ -662,6 +810,16 @@ def pagina_recurso(curso_id, resource_type, codigo):
             recurso_completado = resource_progress[0].completado
         else:
             recurso_completado = False
+
+        # Obtener datos adicionales para el sidebar mejorado
+        user_progress = {}
+        evaluaciones = []
+        evaluation_attempts = {}
+
+        if current_user.is_authenticated:
+            user_progress = _get_user_resource_progress(curso_id, current_user.usuario)
+            evaluaciones, evaluation_attempts = _get_course_evaluations_and_attempts(curso_id, current_user.usuario)
+
         return render_template(
             TEMPLATE,
             curso=CURSO,
@@ -671,6 +829,9 @@ def pagina_recurso(curso_id, resource_type, codigo):
             secciones=SECCIONES,
             indice=INDICE,
             recurso_completado=recurso_completado,
+            user_progress=user_progress,
+            evaluaciones=evaluaciones,
+            evaluation_attempts=evaluation_attempts,
         )
     else:
         flash(NO_AUTORIZADO_MSG, "warning")
@@ -694,7 +855,7 @@ def _emitir_certificado(curso_id, usuario, plantilla):
 
 def _actualizar_avance_curso(curso_id, usuario):
     """Actualiza el avance de un usuario en un curso."""
-    from now_lms.db import CursoUsuarioAvance, CursoRecursoAvance
+    from now_lms.db import CursoRecursoAvance, CursoUsuarioAvance
 
     _avance = (
         database.session.query(CursoUsuarioAvance)
@@ -864,6 +1025,7 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
             url=form.youtube_url.data,
+            requerido=form.requerido.data,
             indice=nuevo_indice,
             creado_por=current_user.usuario,
         )
@@ -900,6 +1062,7 @@ def nuevo_recurso_text(course_code, seccion):
             tipo="text",
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
+            requerido=form.requerido.data,
             indice=nuevo_indice,
             text=form.editor.data,
             creado_por=current_user.usuario,
@@ -937,6 +1100,7 @@ def nuevo_recurso_link(course_code, seccion):
             tipo="link",
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
+            requerido=form.requerido.data,
             indice=nuevo_indice,
             url=form.url.data,
             creado_por=current_user.usuario,
@@ -976,6 +1140,7 @@ def nuevo_recurso_pdf(course_code, seccion):
             tipo="pdf",
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
+            requerido=form.requerido.data,
             indice=nuevo_indice,
             base_doc_url=files.name,
             doc=pdf_file,
@@ -1014,6 +1179,7 @@ def nuevo_recurso_meet(course_code, seccion):
             tipo="meet",
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
+            requerido=form.requerido.data,
             indice=nuevo_indice,
             creado_por=current_user.usuario,
             url=form.url.data,
@@ -1058,6 +1224,7 @@ def nuevo_recurso_img(course_code, seccion):
             tipo="img",
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
+            requerido=form.requerido.data,
             indice=nuevo_indice,
             base_doc_url=images.name,
             doc=picture_file,
@@ -1099,6 +1266,7 @@ def nuevo_recurso_audio(course_code, seccion):
             tipo="mp3",
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
+            requerido=form.requerido.data,
             indice=nuevo_indice,
             base_doc_url=audio.name,
             doc=audio_file,
@@ -1137,6 +1305,7 @@ def nuevo_recurso_html(course_code, seccion):
             tipo="html",
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
+            requerido=form.requerido.data,
             external_code=form.html_externo.data,
             indice=nuevo_indice,
             creado_por=current_user.usuario,
@@ -1172,6 +1341,178 @@ def elimina_logo(course_code):
     else:
         flash(NO_AUTORIZADO_MSG, "warning")
         return abort(403)
+
+
+# ---------------------------------------------------------------------------------------
+# Slideshow Resource Routes
+# ---------------------------------------------------------------------------------------
+@course.route("/course/<course_code>/<seccion>/slides/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_recurso_slideshow(course_code, seccion):
+    """Crear una nueva presentación de diapositivas."""
+    if not (
+        current_user.tipo == "admin"
+        or database.session.query(DocenteCurso)
+        .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == course_code)
+        .first()
+    ):
+        flash("No tienes permisos para crear recursos en este curso.", "warning")
+        return abort(403)
+
+    form = SlideShowForm()
+    if form.validate_on_submit():
+        try:
+            # Crear el recurso en CursoRecurso
+            consulta_recursos = database.session.query(CursoRecurso).filter_by(seccion=seccion).count()
+            nuevo_indice = int(consulta_recursos + 1)
+
+            nuevo_recurso = CursoRecurso(
+                curso=course_code,
+                seccion=seccion,
+                tipo="slides",
+                nombre=form.nombre.data,
+                descripcion=form.descripcion.data,
+                indice=nuevo_indice,
+                publico=False,
+                requerido="required",
+            )
+            database.session.add(nuevo_recurso)
+            database.session.flush()  # Para obtener el ID
+
+            # Crear la presentación SlideShowResource
+            slideshow = SlideShowResource(
+                course_id=course_code, title=form.nombre.data, theme=form.theme.data, creado_por=current_user.usuario
+            )
+            database.session.add(slideshow)
+            database.session.flush()
+
+            # Agregar el ID del slideshow al recurso como referencia
+            nuevo_recurso.external_code = slideshow.id
+
+            database.session.commit()
+            flash(RECURSO_AGREGADO, "success")
+            return redirect(url_for("course.editar_slideshow", course_code=course_code, slideshow_id=slideshow.id))
+
+        except Exception as e:
+            database.session.rollback()
+            flash(f"Error al crear la presentación: {str(e)}", "error")
+
+    return render_template(
+        "learning/resources_new/nuevo_recurso_slides.html", id_curso=course_code, id_seccion=seccion, form=form
+    )
+
+
+@course.route("/course/<course_code>/slideshow/<slideshow_id>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def editar_slideshow(course_code, slideshow_id):
+    """Editar una presentación de diapositivas."""
+    slideshow = database.session.get(SlideShowResource, slideshow_id)
+    if not slideshow or slideshow.course_id != course_code:
+        flash("Presentación no encontrada.", "error")
+        return abort(404)
+
+    if not (
+        current_user.tipo == "admin"
+        or database.session.query(DocenteCurso)
+        .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == course_code)
+        .first()
+    ):
+        flash("No tienes permisos para editar este recurso.", "warning")
+        return abort(403)
+
+    # Obtener slides existentes
+    slides = database.session.query(Slide).filter_by(slide_show_id=slideshow_id).order_by(Slide.order).all()
+
+    if request.method == "POST":
+        try:
+            # Actualizar información del slideshow
+            slideshow.title = request.form.get("title", slideshow.title)
+            slideshow.theme = request.form.get("theme", slideshow.theme)
+            slideshow.modificado_por = current_user.usuario
+
+            # Procesar slides
+            slide_count = int(request.form.get("slide_count", 0))
+
+            # Eliminar slides que ya no existen
+            existing_orders = []
+            for i in range(slide_count):
+                order = int(request.form.get(f"slide_{i}_order", i + 1))
+                existing_orders.append(order)
+
+            for slide in slides:
+                if slide.order not in existing_orders:
+                    database.session.delete(slide)
+
+            # Actualizar o crear slides
+            for i in range(slide_count):
+                slide_title = request.form.get(f"slide_{i}_title", "")
+                slide_content = request.form.get(f"slide_{i}_content", "")
+                slide_order = int(request.form.get(f"slide_{i}_order", i + 1))
+                slide_id = request.form.get(f"slide_{i}_id")
+
+                if slide_title and slide_content:
+                    # Sanitizar contenido
+                    clean_content = sanitize_slide_content(slide_content)
+
+                    if slide_id:
+                        # Actualizar slide existente
+                        slide = database.session.get(Slide, slide_id)
+                        if slide and slide.slide_show_id == slideshow_id:
+                            slide.title = slide_title
+                            slide.content = clean_content
+                            slide.order = slide_order
+                            slide.modificado_por = current_user.usuario
+                    else:
+                        # Crear nuevo slide
+                        new_slide = Slide(
+                            slide_show_id=slideshow_id,
+                            title=slide_title,
+                            content=clean_content,
+                            order=slide_order,
+                            creado_por=current_user.usuario,
+                        )
+                        database.session.add(new_slide)
+
+            database.session.commit()
+            flash("Presentación actualizada correctamente.", "success")
+
+        except Exception as e:
+            database.session.rollback()
+            flash(f"Error al actualizar la presentación: {str(e)}", "error")
+
+        return redirect(url_for("course.editar_slideshow", course_code=course_code, slideshow_id=slideshow_id))
+
+    return render_template(
+        "learning/resources_new/editar_slideshow.html", slideshow=slideshow, slides=slides, course_code=course_code
+    )
+
+
+@course.route("/course/<course_code>/slideshow/<slideshow_id>/preview")
+@login_required
+def preview_slideshow(course_code, slideshow_id):
+    """Previsualizar una presentación de diapositivas."""
+    slideshow = database.session.get(SlideShowResource, slideshow_id)
+    if not slideshow or slideshow.course_id != course_code:
+        abort(404)
+
+    # Verificar permisos (estudiantes, instructores o admin)
+    if not (
+        current_user.tipo == "admin"
+        or database.session.query(DocenteCurso)
+        .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == course_code)
+        .first()
+        or database.session.query(EstudianteCurso)
+        .filter(EstudianteCurso.usuario == current_user.usuario, EstudianteCurso.curso == course_code)
+        .first()
+    ):
+        flash("No tienes acceso a este curso.", "warning")
+        return abort(403)
+
+    slides = database.session.query(Slide).filter_by(slide_show_id=slideshow_id).order_by(Slide.order).all()
+
+    return render_template(TEMPLATE_SLIDE_SHOW, slideshow=slideshow, slides=slides)
 
 
 # ---------------------------------------------------------------------------------------
@@ -1218,12 +1559,31 @@ def external_code(course_code, recurso_code):
 
 @course.route("/course/slide_show/<recurso_code>")
 def slide_show(recurso_code):
-    """Devuelve un archivo desde el sistema de archivos."""
+    """Renderiza una presentación de diapositivas."""
 
-    slide = database.session.query(CursoRecursoSlideShow).filter(CursoRecursoSlideShow.recurso == recurso_code).first()
-    slides = database.session.query(CursoRecursoSlides).filter(CursoRecursoSlides.recurso == recurso_code).all()
+    # Primero buscar el recurso para obtener la referencia al slideshow
+    recurso = database.session.query(CursoRecurso).filter(CursoRecurso.id == recurso_code).first()
 
-    return render_template("/learning/resources/slide_show.html", resource=slide, slides=slides)
+    if not recurso:
+        abort(404)
+
+    if recurso.external_code:
+        # Usar nuevo modelo SlideShowResource
+        slideshow = database.session.get(SlideShowResource, recurso.external_code)
+        if slideshow:
+            slides = database.session.query(Slide).filter_by(slide_show_id=slideshow.id).order_by(Slide.order).all()
+            return render_template(TEMPLATE_SLIDE_SHOW, slideshow=slideshow, slides=slides, resource=recurso)
+
+    # Fallback a modelos legacy para compatibilidad
+    legacy_slide = database.session.query(CursoRecursoSlideShow).filter(CursoRecursoSlideShow.recurso == recurso_code).first()
+    legacy_slides = database.session.query(CursoRecursoSlides).filter(CursoRecursoSlides.recurso == recurso_code).all()
+
+    if legacy_slide:
+        return render_template(TEMPLATE_SLIDE_SHOW, resource=legacy_slide, slides=legacy_slides, legacy=True)
+
+    # No se encontró presentación
+    flash("Presentación no encontrada.", "error")
+    abort(404)
 
 
 @course.route("/course/<course_code>/md_to_html/<recurso_code>")
@@ -1304,3 +1664,210 @@ def lista_cursos():
     return render_template(
         get_course_list_template(), cursos=consulta_cursos, etiquetas=etiquetas, categorias=categorias, parametros=PARAMETROS
     )
+
+
+# ---------------------------------------------------------------------------------------
+# Coupon Management Functions
+# ---------------------------------------------------------------------------------------
+
+
+def _validate_coupon_permissions(course_code, user):
+    """Validate that user can manage coupons for this course."""
+    curso = database.session.query(Curso).filter_by(codigo=course_code).first()
+    if not curso:
+        return None, "Curso no encontrado"
+
+    if not curso.pagado:
+        return None, "Los cupones solo están disponibles para cursos pagados"
+
+    # Check if user is instructor for this course
+    instructor_assignment = (
+        database.session.query(DocenteCurso).filter_by(curso=course_code, usuario=user.usuario, vigente=True).first()
+    )
+
+    if not instructor_assignment and user.tipo != "admin":
+        return None, "Solo el instructor del curso puede gestionar cupones"
+
+    return curso, None
+
+
+def _validate_coupon_for_enrollment(course_code, coupon_code, user):
+    """Validate coupon for enrollment use."""
+    if not coupon_code:
+        return None, None, "No se proporcionó código de cupón"
+
+    # Find coupon
+    coupon = database.session.query(Coupon).filter_by(course_id=course_code, code=coupon_code.upper()).first()
+
+    if not coupon:
+        return None, None, "Código de cupón inválido"
+
+    # Check if user is already enrolled
+    existing_enrollment = (
+        database.session.query(EstudianteCurso).filter_by(curso=course_code, usuario=user.usuario, vigente=True).first()
+    )
+
+    if existing_enrollment:
+        return None, None, "No puede aplicar cupón - ya está inscrito en el curso"
+
+    # Validate coupon
+    is_valid, error_message = coupon.is_valid()
+    if not is_valid:
+        return None, None, error_message
+
+    return coupon, None, None
+
+
+@course.route("/course/<course_code>/coupons/")
+@login_required
+@perfil_requerido("instructor")
+def list_coupons(course_code):
+    """Lista cupones existentes para un curso."""
+    curso, error = _validate_coupon_permissions(course_code, current_user)
+    if error:
+        flash(error, "warning")
+        return redirect(url_for("course.administrar_curso", course_code=course_code))
+
+    coupons = database.session.query(Coupon).filter_by(course_id=course_code).order_by(Coupon.timestamp.desc()).all()
+
+    return render_template("learning/curso/coupons/list.html", curso=curso, coupons=coupons)
+
+
+@course.route("/course/<course_code>/coupons/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def create_coupon(course_code):
+    """Crear nuevo cupón para un curso."""
+    curso, error = _validate_coupon_permissions(course_code, current_user)
+    if error:
+        flash(error, "warning")
+        return redirect(url_for("course.administrar_curso", course_code=course_code))
+
+    form = CouponForm()
+
+    if form.validate_on_submit():
+        # Check if coupon code already exists for this course
+        existing = database.session.query(Coupon).filter_by(course_id=course_code, code=form.code.data.upper()).first()
+
+        if existing:
+            flash("Ya existe un cupón con este código para este curso", "warning")
+            return render_template(TEMPLATE_COUPON_CREATE, curso=curso, form=form)
+
+        # Validate discount value
+        if form.discount_type.data == "percentage" and form.discount_value.data > 100:
+            flash("El descuento porcentual no puede ser mayor al 100%", "warning")
+            return render_template(TEMPLATE_COUPON_CREATE, curso=curso, form=form)
+
+        if form.discount_type.data == "fixed" and form.discount_value.data > curso.precio:
+            flash("El descuento fijo no puede ser mayor al precio del curso", "warning")
+            return render_template(TEMPLATE_COUPON_CREATE, curso=curso, form=form)
+
+        try:
+            coupon = Coupon(
+                course_id=course_code,
+                code=form.code.data.upper(),
+                discount_type=form.discount_type.data,
+                discount_value=float(form.discount_value.data),
+                max_uses=form.max_uses.data if form.max_uses.data else None,
+                expires_at=form.expires_at.data if form.expires_at.data else None,
+                created_by=current_user.usuario,
+            )
+
+            database.session.add(coupon)
+            database.session.commit()
+
+            flash("Cupón creado exitosamente", "success")
+            return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
+
+        except Exception as e:
+            database.session.rollback()
+            flash("Error al crear el cupón", "danger")
+            log.error(f"Error creating coupon: {e}")
+
+    return render_template(TEMPLATE_COUPON_CREATE, curso=curso, form=form)
+
+
+@course.route("/course/<course_code>/coupons/<coupon_id>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def edit_coupon(course_code, coupon_id):
+    """Editar cupón existente."""
+    curso, error = _validate_coupon_permissions(course_code, current_user)
+    if error:
+        flash(error, "warning")
+        return redirect(url_for("course.administrar_curso", course_code=course_code))
+
+    coupon = database.session.query(Coupon).filter_by(id=coupon_id, course_id=course_code).first()
+    if not coupon:
+        flash("Cupón no encontrado", "warning")
+        return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
+
+    form = CouponForm(obj=coupon)
+
+    if form.validate_on_submit():
+        # Check if coupon code already exists for this course (excluding current coupon)
+        existing = (
+            database.session.query(Coupon)
+            .filter(Coupon.course_id == course_code, Coupon.code == form.code.data.upper(), Coupon.id != coupon_id)
+            .first()
+        )
+
+        if existing:
+            flash("Ya existe un cupón con este código para este curso", "warning")
+            return render_template(TEMPLATE_COUPON_EDIT, curso=curso, coupon=coupon, form=form)
+
+        # Validate discount value
+        if form.discount_type.data == "percentage" and form.discount_value.data > 100:
+            flash("El descuento porcentual no puede ser mayor al 100%", "warning")
+            return render_template(TEMPLATE_COUPON_EDIT, curso=curso, coupon=coupon, form=form)
+
+        if form.discount_type.data == "fixed" and form.discount_value.data > curso.precio:
+            flash("El descuento fijo no puede ser mayor al precio del curso", "warning")
+            return render_template(TEMPLATE_COUPON_EDIT, curso=curso, coupon=coupon, form=form)
+
+        try:
+            coupon.code = form.code.data.upper()
+            coupon.discount_type = form.discount_type.data
+            coupon.discount_value = float(form.discount_value.data)
+            coupon.max_uses = form.max_uses.data if form.max_uses.data else None
+            coupon.expires_at = form.expires_at.data if form.expires_at.data else None
+            coupon.modificado_por = current_user.usuario
+
+            database.session.commit()
+
+            flash("Cupón actualizado exitosamente", "success")
+            return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
+
+        except Exception as e:
+            database.session.rollback()
+            flash("Error al actualizar el cupón", "danger")
+            log.error(f"Error updating coupon: {e}")
+
+    return render_template(TEMPLATE_COUPON_EDIT, curso=curso, coupon=coupon, form=form)
+
+
+@course.route("/course/<course_code>/coupons/<coupon_id>/delete", methods=["POST"])
+@login_required
+@perfil_requerido("instructor")
+def delete_coupon(course_code, coupon_id):
+    """Eliminar cupón."""
+    curso, error = _validate_coupon_permissions(course_code, current_user)
+    if error:
+        flash(error, "warning")
+        return redirect(url_for("course.administrar_curso", course_code=course_code))
+
+    coupon = database.session.query(Coupon).filter_by(id=coupon_id, course_id=course_code).first()
+    if not coupon:
+        flash("Cupón no encontrado", "warning")
+        return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
+
+    try:
+        database.session.delete(coupon)
+        database.session.commit()
+        flash("Cupón eliminado exitosamente", "success")
+    except Exception as e:
+        database.session.rollback()
+        flash("Error al eliminar el cupón", "danger")
+        log.error(f"Error deleting coupon: {e}")
+
+    return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
