@@ -2,254 +2,450 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
         <loc>None./</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="None"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/"/>
     </url>
     <url>
         <loc>NoneCONTRIBUTING/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="NoneCONTRIBUTING/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/CONTRIBUTING/"/>
     </url>
     <url>
-        <loc>Nonechanges/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <loc>Noneadsense/</loc>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="Nonechanges/"/>
-        <xhtml:link rel="alternate" hreflang="es" href="Nonees/changes/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneadsense/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/adsense/"/>
+    </url>
+    <url>
+        <loc>Noneconfigure/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneconfigure/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/configure/"/>
     </url>
     <url>
         <loc>Nonedb/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Nonedb/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/db/"/>
     </url>
     <url>
         <loc>Nonedev_ops/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Nonedev_ops/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/dev_ops/"/>
     </url>
     <url>
         <loc>Nonedreamhost/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Nonedreamhost/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/dreamhost/"/>
     </url>
     <url>
         <loc>Nonefaq/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Nonefaq/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/faq/"/>
     </url>
     <url>
         <loc>Nonelogo/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Nonelogo/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/logo/"/>
     </url>
     <url>
+        <loc>Nonemail/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonemail/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/mail/"/>
+    </url>
+    <url>
         <loc>Noneoci/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneoci/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/oci/"/>
     </url>
     <url>
         <loc>Nonepayments/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Nonepayments/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/payments/"/>
     </url>
     <url>
+        <loc>Nonepaypal_integration/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonepaypal_integration/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/paypal_integration/"/>
+    </url>
+    <url>
         <loc>Nonepypi/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Nonepypi/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/pypi/"/>
     </url>
     <url>
         <loc>Nonereferences/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Nonereferences/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/references/"/>
     </url>
     <url>
         <loc>Nonerelease/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Nonerelease/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/release/"/>
     </url>
     <url>
         <loc>Nonerocky/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Nonerocky/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/rocky/"/>
     </url>
     <url>
         <loc>Nonesetup-conf/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Nonesetup-conf/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/setup-conf/"/>
     </url>
     <url>
         <loc>Nonesetup/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Nonesetup/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/setup/"/>
     </url>
     <url>
         <loc>Nonesing-off/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Nonesing-off/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/sing-off/"/>
     </url>
     <url>
+        <loc>Nonetheming/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonetheming/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/theming/"/>
+    </url>
+    <url>
         <loc>Noneblog/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Noneblog/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/blog/"/>
     </url>
     <url>
+        <loc>Nonecourse-creator/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/"/>
+    </url>
+    <url>
+        <loc>Nonecourse-creator/certificate-customization/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/certificate-customization/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/certificate-customization/"/>
+    </url>
+    <url>
+        <loc>Nonecourse-creator/course-configuration/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/course-configuration/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/course-configuration/"/>
+    </url>
+    <url>
+        <loc>Nonecourse-creator/course-creation/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/course-creation/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/course-creation/"/>
+    </url>
+    <url>
+        <loc>Nonecourse-creator/forum-messaging/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/forum-messaging/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/forum-messaging/"/>
+    </url>
+    <url>
+        <loc>Nonecourse-creator/markdown-guide/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/markdown-guide/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/markdown-guide/"/>
+    </url>
+    <url>
+        <loc>Nonecourse-creator/moderator-management/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/moderator-management/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/moderator-management/"/>
+    </url>
+    <url>
+        <loc>Nonecourse-creator/sections-resources/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/sections-resources/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/sections-resources/"/>
+    </url>
+    <url>
+        <loc>Nonecourse-creator/slideshow-setup/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/slideshow-setup/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/slideshow-setup/"/>
+    </url>
+    <url>
+        <loc>Nonedevelopment/PAYPAL_MANUAL_TESTING/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedevelopment/PAYPAL_MANUAL_TESTING/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/development/PAYPAL_MANUAL_TESTING/"/>
+    </url>
+    <url>
         <loc>Nonees/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/"/>
         <xhtml:link rel="alternate" hreflang="en" href="None"/>
     </url>
     <url>
         <loc>Nonees/CONTRIBUTING/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/CONTRIBUTING/"/>
         <xhtml:link rel="alternate" hreflang="en" href="NoneCONTRIBUTING/"/>
     </url>
     <url>
-        <loc>Nonees/changes/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <loc>Nonees/adsense/</loc>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="es" href="Nonees/changes/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="Nonechanges/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/adsense/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneadsense/"/>
+    </url>
+    <url>
+        <loc>Nonees/configure/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/configure/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneconfigure/"/>
     </url>
     <url>
         <loc>Nonees/db/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/db/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonedb/"/>
     </url>
     <url>
         <loc>Nonees/dev_ops/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/dev_ops/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonedev_ops/"/>
     </url>
     <url>
         <loc>Nonees/dreamhost/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/dreamhost/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonedreamhost/"/>
     </url>
     <url>
         <loc>Nonees/faq/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/faq/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonefaq/"/>
     </url>
     <url>
         <loc>Nonees/logo/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/logo/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonelogo/"/>
     </url>
     <url>
+        <loc>Nonees/mail/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/mail/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonemail/"/>
+    </url>
+    <url>
         <loc>Nonees/oci/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/oci/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneoci/"/>
     </url>
     <url>
         <loc>Nonees/payments/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/payments/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonepayments/"/>
     </url>
     <url>
+        <loc>Nonees/paypal_integration/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/paypal_integration/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonepaypal_integration/"/>
+    </url>
+    <url>
         <loc>Nonees/pypi/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/pypi/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonepypi/"/>
     </url>
     <url>
         <loc>Nonees/references/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/references/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonereferences/"/>
     </url>
     <url>
         <loc>Nonees/release/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/release/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonerelease/"/>
     </url>
     <url>
         <loc>Nonees/rocky/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/rocky/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonerocky/"/>
     </url>
     <url>
         <loc>Nonees/setup-conf/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/setup-conf/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonesetup-conf/"/>
     </url>
     <url>
         <loc>Nonees/setup/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/setup/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonesetup/"/>
     </url>
     <url>
         <loc>Nonees/sing-off/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/sing-off/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonesing-off/"/>
     </url>
     <url>
+        <loc>Nonees/theming/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/theming/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonetheming/"/>
+    </url>
+    <url>
         <loc>Nonees/blog/</loc>
-        <lastmod>2025-05-04</lastmod>
+        <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/blog/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneblog/"/>
+    </url>
+    <url>
+        <loc>Nonees/course-creator/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/"/>
+    </url>
+    <url>
+        <loc>Nonees/course-creator/certificate-customization/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/certificate-customization/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/certificate-customization/"/>
+    </url>
+    <url>
+        <loc>Nonees/course-creator/course-configuration/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/course-configuration/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/course-configuration/"/>
+    </url>
+    <url>
+        <loc>Nonees/course-creator/course-creation/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/course-creation/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/course-creation/"/>
+    </url>
+    <url>
+        <loc>Nonees/course-creator/forum-messaging/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/forum-messaging/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/forum-messaging/"/>
+    </url>
+    <url>
+        <loc>Nonees/course-creator/markdown-guide/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/markdown-guide/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/markdown-guide/"/>
+    </url>
+    <url>
+        <loc>Nonees/course-creator/moderator-management/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/moderator-management/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/moderator-management/"/>
+    </url>
+    <url>
+        <loc>Nonees/course-creator/sections-resources/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/sections-resources/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/sections-resources/"/>
+    </url>
+    <url>
+        <loc>Nonees/course-creator/slideshow-setup/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/course-creator/slideshow-setup/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonecourse-creator/slideshow-setup/"/>
+    </url>
+    <url>
+        <loc>Nonees/development/PAYPAL_MANUAL_TESTING/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/development/PAYPAL_MANUAL_TESTING/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedevelopment/PAYPAL_MANUAL_TESTING/"/>
     </url>
 </urlset>
