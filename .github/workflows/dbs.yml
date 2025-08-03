@@ -29,7 +29,7 @@ jobs:
                   SECRET_KEY: ASD123klj+aAddS
                   LOG_LEVEL: TRACE
               run: |
-                  pytest  -v --exitfirst --cov=now_lms --slow=True --testpdf=True --use-cases=True
+                  pytest  -v --exitfirst --cov=now_lms
             - name: Test with Postgresql + psycopg2
               env:
                   CI: True
