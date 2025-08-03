@@ -17,7 +17,7 @@ from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
 from now_lms.db import Usuario, database
 from now_lms.db.tools import elimina_imagen_usuario
-from now_lms.forms import UserForm, ChangePasswordForm
+from now_lms.forms import ChangePasswordForm, UserForm
 from now_lms.logs import log
 from now_lms.misc import GENEROS
 
@@ -139,7 +139,7 @@ def cambiar_contraseña(ulid: str):
     form = ChangePasswordForm()
 
     if request.method == "POST" and form.validate_on_submit():
-        from now_lms.auth import validar_acceso, proteger_passwd
+        from now_lms.auth import proteger_passwd, validar_acceso
 
         # Verificar contraseña actual
         if not validar_acceso(usuario_.usuario, form.current_password.data):

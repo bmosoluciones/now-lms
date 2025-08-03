@@ -15,19 +15,12 @@
 
 """Vistas para la funcionalidad del foro."""
 
-from flask import Blueprint, abort, flash, redirect, render_template, request, url_for, jsonify
-from flask_login import current_user, login_required
 from bleach import clean
+from flask import Blueprint, abort, flash, jsonify, redirect, render_template, request, url_for
+from flask_login import current_user, login_required
 from markdown import markdown
 
-from now_lms.db import (
-    Curso,
-    ForoMensaje,
-    DocenteCurso,
-    ModeradorCurso,
-    EstudianteCurso,
-    database,
-)
+from now_lms.db import Curso, DocenteCurso, EstudianteCurso, ForoMensaje, ModeradorCurso, database
 from now_lms.forms import ForoMensajeForm, ForoMensajeRespuestaForm
 
 # Configuración de HTML permitido para sanitización

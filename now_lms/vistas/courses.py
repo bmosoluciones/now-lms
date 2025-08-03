@@ -60,8 +60,8 @@ from now_lms.db import (
     CursoRecurso,
     CursoRecursoAvance,
     CursoRecursoDescargable,
-    CursoRecursoSlideShow,
     CursoRecursoSlides,
+    CursoRecursoSlideShow,
     CursoSeccion,
     DocenteCurso,
     EstudianteCurso,
@@ -162,7 +162,7 @@ def curso(course_code):
 def _crear_indice_avance_curso(course_code):
     """Crea el índice de avance del curso."""
 
-    from now_lms.db import CursoRecursoAvance, CursoRecurso
+    from now_lms.db import CursoRecurso, CursoRecursoAvance
 
     recursos = database.session.execute(
         database.select(CursoRecurso).filter(CursoRecurso.curso == course_code).order_by(CursoRecurso.indice)
@@ -855,7 +855,7 @@ def _emitir_certificado(curso_id, usuario, plantilla):
 
 def _actualizar_avance_curso(curso_id, usuario):
     """Actualiza el avance de un usuario en un curso."""
-    from now_lms.db import CursoUsuarioAvance, CursoRecursoAvance
+    from now_lms.db import CursoRecursoAvance, CursoUsuarioAvance
 
     _avance = (
         database.session.query(CursoUsuarioAvance)

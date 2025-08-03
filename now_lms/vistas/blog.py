@@ -14,16 +14,17 @@
 
 """Blog views."""
 
+import re
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
 from datetime import datetime
-import re
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, flash, redirect, render_template, request, url_for, abort
+from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import and_, or_
 
@@ -32,14 +33,8 @@ from sqlalchemy import and_, or_
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import (
-    MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
-    BlogPost,
-    BlogTag,
-    BlogComment,
-    database,
-)
-from now_lms.forms import BlogPostForm, BlogTagForm, BlogCommentForm
+from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, BlogComment, BlogPost, BlogTag, database
+from now_lms.forms import BlogCommentForm, BlogPostForm, BlogTagForm
 
 # Route constants
 ROUTE_BLOG_POST = "blog.blog_post"

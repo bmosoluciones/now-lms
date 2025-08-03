@@ -2,6 +2,9 @@
 # Standard library
 # ---------------------------------------------------------------------------------------
 
+from os import path
+from pathlib import Path
+
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
@@ -22,11 +25,9 @@ from now_lms.db import (
     Usuario,
     database,
 )
+from now_lms.db.tools import get_current_theme
 from now_lms.logs import log
 from now_lms.themes import get_home_template
-from os import path
-from pathlib import Path
-from now_lms.db.tools import get_current_theme
 
 home = Blueprint("home", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
@@ -139,7 +140,7 @@ def panel():
             cursos_por_fecha=cursos_por_fecha,
         )
     elif current_user.tipo == "moderator":
-        from now_lms.db import ModeradorCurso, MessageThread
+        from now_lms.db import MessageThread, ModeradorCurso
 
         # Get courses moderated by this moderator
         created_courses = (

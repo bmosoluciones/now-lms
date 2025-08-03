@@ -20,7 +20,7 @@
 import threading
 from os import environ
 from types import SimpleNamespace
-from typing import Union, Mapping
+from typing import Mapping, Union
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -32,10 +32,10 @@ from flask_mail import Mail, Message
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import descifrar_secreto
-from now_lms.db import MailConfig, database
 from now_lms.config import DESARROLLO
-from now_lms.logs import log as logger, LOG_LEVEL
-
+from now_lms.db import MailConfig, database
+from now_lms.logs import LOG_LEVEL
+from now_lms.logs import log as logger
 
 # ---------------------------------------------------------------------------------------
 # Configuración de tipos.

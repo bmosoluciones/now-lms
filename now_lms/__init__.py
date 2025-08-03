@@ -101,6 +101,9 @@ from now_lms.misc import ESTILO_ALERTAS, ICONOS_RECURSOS, INICIO_SESION, concate
 from now_lms.themes import current_theme
 from now_lms.version import CODE_NAME, VERSION
 from now_lms.vistas._helpers import get_current_course_logo, get_site_logo
+from now_lms.vistas.announcements.admin import admin_announcements
+from now_lms.vistas.announcements.instructor import instructor_announcements
+from now_lms.vistas.announcements.public import public_announcements
 from now_lms.vistas.blog import blog
 from now_lms.vistas.categories import category
 from now_lms.vistas.certificates import certificate
@@ -121,9 +124,6 @@ from now_lms.vistas.settings import setting
 from now_lms.vistas.tags import tag
 from now_lms.vistas.users import user
 from now_lms.vistas.web_error_codes import web_error
-from now_lms.vistas.announcements.admin import admin_announcements
-from now_lms.vistas.announcements.instructor import instructor_announcements
-from now_lms.vistas.announcements.public import public_announcements
 
 # ---------------------------------------------------------------------------------------
 # Metadatos

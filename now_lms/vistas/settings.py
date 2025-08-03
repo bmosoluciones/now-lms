@@ -217,8 +217,9 @@ def mail_check():
 
     if form.validate_on_submit() or request.method == "POST":
 
-        from now_lms.mail import send_mail
         from flask_mail import Message
+
+        from now_lms.mail import send_mail
 
         msg = Message(
             subject="Email setup verification.",
@@ -375,8 +376,8 @@ def paypal():
 
         # Validate PayPal configuration if enabling PayPal
         if form.habilitado.data:
-            from now_lms.vistas.paypal import validate_paypal_configuration
             from now_lms.auth import descifrar_secreto
+            from now_lms.vistas.paypal import validate_paypal_configuration
 
             # Get the appropriate credentials based on sandbox mode
             client_id = form.paypal_sandbox.data if form.sandbox.data else form.paypal_id.data

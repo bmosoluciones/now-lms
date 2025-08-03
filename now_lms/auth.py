@@ -204,6 +204,7 @@ def validate_confirmation_token(token):
 def send_confirmation_email(user):
 
     from flask_mail import Message
+
     from now_lms.mail import send_mail
 
     config = database.session.execute(database.select(MailConfig)).first()[0]
@@ -281,6 +282,7 @@ def validate_password_reset_token(token):
 def send_password_reset_email(user):
     """Send password reset email to user."""
     from flask_mail import Message
+
     from now_lms.mail import send_mail
 
     config = database.session.execute(database.select(MailConfig)).first()[0]
