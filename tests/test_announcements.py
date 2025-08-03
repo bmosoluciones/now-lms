@@ -15,11 +15,17 @@
 
 """Tests for announcements functionality."""
 
+from re import U
 from unittest import TestCase
 from datetime import datetime, timedelta
-
+from os import environ
 from now_lms import app
 from now_lms.db import Announcement, Curso, Usuario, DocenteCurso, database
+
+
+# <--------------------------------------------------------------------------> #
+# Constants
+USUARIO_ADMINISTRADOR = environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin"
 
 
 class TestAnnouncementsModel(TestCase):
@@ -347,20 +353,20 @@ class TestAnnouncementsIntegration(TestCase):
             Announcement(
                 title="Old Announcement",
                 message="Old announcement",
-                created_by_id=self.admin_user.usuario,
+                created_by_id=USUARIO_ADMINISTRADOR,
                 timestamp=base_time - timedelta(hours=2),
             ),
             Announcement(
                 title="Sticky Announcement",
                 message="Sticky announcement",
-                created_by_id=self.admin_user.usuario,
+                created_by_id=USUARIO_ADMINISTRADOR,
                 is_sticky=True,
                 timestamp=base_time - timedelta(hours=1),
             ),
             Announcement(
                 title="New Announcement",
                 message="New announcement",
-                created_by_id=self.admin_user.usuario,
+                created_by_id=USUARIO_ADMINISTRADOR,
                 timestamp=base_time,
             ),
         ]
