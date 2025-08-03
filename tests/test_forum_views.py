@@ -82,7 +82,31 @@ class TestForumViews(TestCase):
     def test_forum_access_requires_login(self):
         """Verifica que el acceso al foro requiere autenticación."""
         with self.app.app_context():
-            usuario, curso = self.create_test_user_and_course()
+            usuario = Usuario(
+                usuario="test_student",
+                acceso=b"test_password",
+                nombre="Test",
+                apellido="Student",
+                correo_electronico="student@example.com",
+                tipo="student",
+                activo=True,
+            )
+            database.session.add(usuario)
+            curso = Curso(
+                nombre="Curso con Foro",
+                codigo="FORUM001",
+                descripcion_corta="Descripción corta",
+                descripcion="Descripción completa",
+                estado="open",
+                modalidad="time_based",
+                foro_habilitado=True,
+            )
+            database.session.add(curso)
+
+            try:
+                database.session.commit()
+            except Exception as e:
+                database.session.rollback()
 
             client = self.app.test_client()
 
@@ -93,7 +117,31 @@ class TestForumViews(TestCase):
     def test_forum_disabled_course_redirect(self):
         """Verifica que cursos sin foro habilitado redirijan correctamente."""
         with self.app.app_context():
-            usuario, curso = self.create_test_user_and_course()
+            usuario = Usuario(
+                usuario="test_student",
+                acceso=b"test_password",
+                nombre="Test",
+                apellido="Student",
+                correo_electronico="student@example.com",
+                tipo="student",
+                activo=True,
+            )
+            database.session.add(usuario)
+            curso = Curso(
+                nombre="Curso con Foro",
+                codigo="FORUM001",
+                descripcion_corta="Descripción corta",
+                descripcion="Descripción completa",
+                estado="open",
+                modalidad="time_based",
+                foro_habilitado=True,
+            )
+            database.session.add(curso)
+
+            try:
+                database.session.commit()
+            except Exception as e:
+                database.session.rollback()
 
             # Disable forum
             curso.foro_habilitado = False
