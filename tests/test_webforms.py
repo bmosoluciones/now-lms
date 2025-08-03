@@ -19,10 +19,8 @@ import sys
 import pytest
 
 
-
 # Add currect dir to path to import the list of static views to test
 sys.path.append(os.path.join(os.path.dirname(__file__)))
-
 
 
 @pytest.fixture

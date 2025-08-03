@@ -1817,19 +1817,19 @@ rutas_estaticas = [
         como_instructor=[],
         como_admin=[],
     ),
-     Ruta(
-         ruta="/message/report/",
-         no_session=302,
-         admin=302,
-         user=200,
-         moderator=200,
-         instructor=200,
-         texto=[],
-         como_user=[],
-         como_moderador=[],
-         como_instructor=[],
-         como_admin=[],
-     ),
+    Ruta(
+        ruta="/message/report/",
+        no_session=302,
+        admin=302,
+        user=200,
+        moderator=200,
+        instructor=200,
+        texto=[],
+        como_user=[],
+        como_moderador=[],
+        como_instructor=[],
+        como_admin=[],
+    ),
     # <---------------------------------------------------------------------> #
     # Additional settings routes
     # <---------------------------------------------------------------------> #

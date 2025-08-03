@@ -76,7 +76,8 @@ class TestInstanciasDeClases(TestCase):
         import now_lms.forms as forms
 
         form_classes = [
-            cls for name, cls in inspect.getmembers(forms, inspect.isclass)
+            cls
+            for name, cls in inspect.getmembers(forms, inspect.isclass)
             if cls.__module__ == forms.__name__ and issubclass(cls, FlaskForm)
         ]
 

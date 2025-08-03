@@ -62,7 +62,6 @@ def test_evaluation_views():
     """Test that evaluation views can be imported."""
     print("\nTesting evaluation views...")
 
-
     print("✓ Evaluation blueprint imported")
 
     # Test that key functions exist
