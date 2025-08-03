@@ -50,6 +50,10 @@ from now_lms.logs import logger as log
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 
+# <--------------------------------------------------------------------------> #
+# Data constants
+USUARIO_ADMINISTRADOR = environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin"
+
 
 def crear_etiqueta_prueba():
     """Crea etiquetas de demostración."""
@@ -483,17 +487,6 @@ def crear_recurso_prueba():
     database.session.commit()
 
 
-def id_usuario_admin():
-    from now_lms.db import Usuario
-    from os import environ
-
-    admin_username = environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin"
-    user = database.session.execute(database.select(Usuario).filter(Usuario.usuario == admin_username)).first()[0]
-    user.id = "01HNZYGXRRWKJ8GXVXYZY8S994"
-    database.session.add(user)
-    database.session.commit()
-
-
 def crear_announcement_prueba():
     """Crea anuncio de prueba para admin."""
     from datetime import datetime, timedelta
@@ -502,9 +495,9 @@ def crear_announcement_prueba():
         id=1,  # Static ID for testing
         title="Anuncio de prueba",
         message="Este es un anuncio de prueba para testing",
-        created_by_id="01HNZYGXRRWKJ8GXVXYZY8S994",  # Admin user ID
-        creado_por="01HNZYGXRRWKJ8GXVXYZY8S994",
-        expires_at=datetime.utcnow() + timedelta(days=30),
+        created_by_id=USUARIO_ADMINISTRADOR,
+        creado_por=USUARIO_ADMINISTRADOR,
+        expires_at=datetime.now() + timedelta(days=30),
         is_sticky=True,
         course_id=None,  # Global announcement
     )
@@ -527,10 +520,10 @@ def crear_blog_prueba():
         title="Post de prueba",
         slug="post-de-prueba",
         content="Este es un contenido de prueba para el blog",
-        author_id="01HNZYGXRRWKJ8GXVXYZY8S994",  # Admin user ID
+        author_id=USUARIO_ADMINISTRADOR,
         status="published",
         allow_comments=True,
-        published_at=datetime.utcnow(),
+        published_at=datetime.now(),
     )
     database.session.add(post)
     database.session.flush()
@@ -549,6 +542,5 @@ def crear_data_para_pruebas():
     crear_recurso_prueba()
     crear_programa_prueba()
     crear_curso_para_pruebas()
-    id_usuario_admin()
     crear_announcement_prueba()
     crear_blog_prueba()
