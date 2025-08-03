@@ -286,10 +286,12 @@ class TestAnnouncementsIntegration(TestCase):
             estado="open",
         )
         database.session.add(self.test_course)
+        database.session.commit()
 
         # Assign instructor to course
         instructor_assignment = DocenteCurso(
-            curso=self.test_course.codigo, usuario=self.instructor_user.usuario, creado_por="system"
+            curso=self.test_course.codigo,
+            usuario=self.instructor_user.usuario,
         )
         database.session.add(instructor_assignment)
 
