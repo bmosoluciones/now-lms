@@ -163,7 +163,7 @@ class Curso(database.Model, BaseTabla):
     nivel = database.Column(database.Integer())  # 0: Introductorio, 1: Principiante, 2: Intermedio, 3: Avanzado
     duracion = database.Column(database.Integer())
     # Estado de publicación
-    estado = database.Column(database.String(6), nullable=False, index=True)  # draft, open, closed
+    estado = database.Column(database.String(9), nullable=False, index=True)  # draft, open, closed, finalized
     publico = database.Column(database.Boolean())
     # Modalidad
     modalidad = database.Column(database.String(10))  # self_paced, time_based, live
