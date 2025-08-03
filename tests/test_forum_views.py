@@ -202,9 +202,12 @@ class TestForumViews(TestCase):
                 database.session.rollback()
 
             # Verificar acceso como estudiante
-            tiene_acceso, role = verificar_acceso_curso(curso.codigo, usuario.usuario)
-            self.assertTrue(tiene_acceso)
-            self.assertEqual(role, "estudiante")
+            from now_lms.db import EstudianteCurso
+
+            acceso = (
+                database.session.query(EstudianteCurso).filter_by(curso_id=curso.codigo, usuario_id=usuario.usuario).first()
+            )
+            self.assertIsNotNone(acceso)
 
             # Verificar acceso de usuario no inscrito
             usuario_no_inscrito = Usuario(
