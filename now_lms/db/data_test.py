@@ -528,9 +528,6 @@ def crear_blog_prueba():
     database.session.add(post)
     database.session.flush()
 
-    # Associate tag with post
-    post.tags.append(tag)
-
     database.session.commit()
 
 
