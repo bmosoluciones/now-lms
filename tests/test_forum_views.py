@@ -115,7 +115,31 @@ class TestForumViews(TestCase):
         with self.app.app_context():
             from now_lms.bi import cambia_estado_curso_por_id
 
-            usuario, curso = self.create_test_user_and_course()
+            usuario = Usuario(
+                usuario="test_student",
+                acceso=b"test_password",
+                nombre="Test",
+                apellido="Student",
+                correo_electronico="student@example.com",
+                tipo="student",
+                activo=True,
+            )
+            database.session.add(usuario)
+            curso = Curso(
+                nombre="Curso con Foro",
+                codigo="FORUM001",
+                descripcion_corta="Descripción corta",
+                descripcion="Descripción completa",
+                estado="open",
+                modalidad="time_based",
+                foro_habilitado=True,
+            )
+            database.session.add(curso)
+
+            try:
+                database.session.commit()
+            except Exception as e:
+                database.session.rollback()
 
             # Crear un mensaje en el foro
             mensaje = ForoMensaje(
