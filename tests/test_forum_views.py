@@ -197,10 +197,10 @@ class TestForumViews(TestCase):
             database.session.commit()
 
             # Verificar que el mensaje está abierto
-            self.assertEqual(mensaje.estado, "abierto")
+            self.assertEqual(mensaje.estado, "open")
 
             # Finalizar el curso
-            cambia_estado_curso_por_id(curso.codigo, "finalizado", usuario.usuario)
+            cambia_estado_curso_por_id(curso.codigo, "closed", usuario.usuario)
 
             # Verificar que el mensaje se cerró
             mensaje_actualizado = database.session.query(ForoMensaje).filter_by(id=mensaje.id).first()
