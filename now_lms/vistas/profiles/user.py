@@ -15,7 +15,7 @@ from sqlalchemy.exc import OperationalError
 # ---------------------------------------------------------------------------------------
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
-from now_lms.db import Usuario, database
+from now_lms.db import Usuario, Curso, EstudianteCurso, DocenteCurso, Certificacion, database
 from now_lms.db.tools import elimina_imagen_usuario
 from now_lms.forms import ChangePasswordForm, UserForm
 from now_lms.logs import log
@@ -42,8 +42,49 @@ def pagina_estudiante():
 def perfil():
     """Perfil del usuario."""
     registro_usuario = database.session.execute(database.select(Usuario).filter(Usuario.id == current_user.id)).first()[0]
+    
+    # Initialize context data
+    cursos_inscritos = []
+    certificaciones = []
+    cursos_creados = []
+    
+    # Fetch data based on user type
+    if registro_usuario.tipo == "student":
+        # Get enrolled courses for students
+        cursos_inscritos_query = database.session.execute(
+            database.select(Curso)
+            .join(EstudianteCurso, Curso.codigo == EstudianteCurso.curso)
+            .filter(EstudianteCurso.usuario == current_user.usuario)
+            .filter(EstudianteCurso.vigente == True)
+        ).fetchall()
+        cursos_inscritos = [curso[0] for curso in cursos_inscritos_query]
+        
+        # Get certifications for students
+        certificaciones_query = database.session.execute(
+            database.select(Certificacion, Curso)
+            .join(Curso, Certificacion.curso == Curso.codigo)
+            .filter(Certificacion.usuario == current_user.id)
+        ).fetchall()
+        certificaciones = [{"certificacion": cert[0], "curso": cert[1]} for cert in certificaciones_query]
+        
+    elif registro_usuario.tipo == "instructor":
+        # Get courses created by instructors
+        cursos_creados_query = database.session.execute(
+            database.select(Curso)
+            .join(DocenteCurso, Curso.codigo == DocenteCurso.curso)
+            .filter(DocenteCurso.usuario == current_user.usuario)
+            .filter(DocenteCurso.vigente == True)
+        ).fetchall()
+        cursos_creados = [curso[0] for curso in cursos_creados_query]
 
-    return render_template("inicio/perfil.html", perfil=registro_usuario, genero=GENEROS)
+    return render_template(
+        "inicio/perfil.html", 
+        perfil=registro_usuario, 
+        genero=GENEROS,
+        cursos_inscritos=cursos_inscritos,
+        certificaciones=certificaciones,
+        cursos_creados=cursos_creados
+    )
 
 
 @user_profile.route("/user/<id_usuario>")
