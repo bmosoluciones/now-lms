@@ -32,7 +32,7 @@ from argon2.exceptions import VerifyMismatchError
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from flask import abort, current_app, flash, url_for
+from flask import abort, current_app, flash, redirect, url_for
 from flask_login import current_user
 
 # ---------------------------------------------------------------------------------------
@@ -93,24 +93,25 @@ def perfil_requerido(perfil_id):
         def wrapper(*args, **kwargs):
             if not current_user.is_authenticated:
                 flash("Favor iniciar sesión.", "warning")
-                return abort(403)
+                return redirect(url_for("user.login"))
 
-            # Always allow admin access
-            if current_user.tipo == "admin":
-                return func(*args, **kwargs)
-
-            # Handle tuple format for multiple allowed profiles
-            elif isinstance(perfil_id, tuple):
-                if current_user.tipo in perfil_id:
-                    return func(*args, **kwargs)
-            # Handle string format for single profile
-            elif isinstance(perfil_id, str) and current_user.tipo == perfil_id:
-                return func(*args, **kwargs)
-
-            # Deny access if the user does not have the required profile
             else:
-                flash("No se encuentra autorizado a acceder al recurso solicitado.", "error")
-                return abort(403)
+                log.trace(f"Verificando acceso para el usuario {current_user.usuario} para el perfil {perfil_id}")
+                # Always allow admin access
+                if current_user.tipo == "admin":
+                    return func(*args, **kwargs)
+
+                # Handle tuple format for multiple allowed profiles
+                elif isinstance(perfil_id, tuple):
+                    if current_user.tipo in perfil_id or "admin" in perfil_id:
+                        return func(*args, **kwargs)
+                # Handle string format for single profile
+                elif isinstance(perfil_id, str) and current_user.tipo == perfil_id:
+                    return func(*args, **kwargs)
+                else:
+                    log.warning(f"Acceso denegado para el usuario {current_user.usuario} con perfil {current_user.tipo}")
+                    flash("No se encuentra autorizado a acceder al recurso solicitado.", "error")
+                    return abort(403)
 
         return wrapper
 
