@@ -20,7 +20,7 @@ RUN microdnf update -y --nodocs --best --refresh \
     && /usr/bin/python3.12 -m pip --no-cache-dir install -r /app/requirements.txt  \
     && cd /app/now_lms/static && npm install --ignore-scripts \
     && rm -rf /root/.cache/pip && rm -rf /tmp \
-    && microdnf remove -y --best python3.12-pip python3.12-devel nodejs* npm \
+    && microdnf remove -y --best python3.12-pip nodejs* npm \
     && microdnf clean all
 
 COPY . /app
