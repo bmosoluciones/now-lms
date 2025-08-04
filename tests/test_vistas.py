@@ -28,15 +28,11 @@ from x_rutas_estaticas import rutas_estaticas
 """
 Todas las vistas que expone el programa deben de poderse "visitar" sin mostrar
 errores al usuario, si el perfil del usuario no tiene permisos para acceder a
-la vista mencionada se debe de redireccionar apropiadamente.
-
-Para ver una lista de vistas ejecutar:
-
->>> from now_lms import app
->>> app.url_map
-
-Error codes se verifican al final.
+la vista mencionada se debe de redireccionar apropiadamente.gi
 """
+
+DB_URL = os.environ.get("DATABASE_URL") or "sqlite:///:memory:"
+log.warning("Using database URL: %s", DB_URL)
 
 
 @pytest.fixture
@@ -52,7 +48,7 @@ def lms_application():
             "DEBUG": True,
             "PRESERVE_CONTEXT_ON_EXCEPTION": True,
             "SQLALCHEMY_ECHO": True,
-            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
+            "SQLALCHEMY_DATABASE_URI": DB_URL,
         }
     )
 
