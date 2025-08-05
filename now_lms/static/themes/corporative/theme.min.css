@@ -395,3 +395,189 @@ body {
 .bg-corporate-secondary {
     background-color: var(--corporate-secondary) !important;
 }
+
+/* Hero Section with Animated Bars */
+.hero {
+    position: relative;
+    min-height: 35vh;
+    background: linear-gradient(135deg, var(--corporate-primary) 0%, var(--corporate-accent) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: -1px;
+}
+
+.hero p {
+    font-size: 1.5rem;
+    color: white;
+    margin: 1rem 0 0 0;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+}
+
+.bars {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 10;
+}
+
+.bar {
+    width: 4px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+    animation: bars 1.5s ease-in-out infinite;
+}
+
+.bar1 {
+    height: 20px;
+    animation-delay: 0s;
+}
+
+.bar2 {
+    height: 30px;
+    animation-delay: 0.1s;
+}
+
+.bar3 {
+    height: 40px;
+    animation-delay: 0.2s;
+}
+
+.bar4 {
+    height: 30px;
+    animation-delay: 0.3s;
+}
+
+.bar5 {
+    height: 20px;
+    animation-delay: 0.4s;
+}
+
+@keyframes bars {
+    0%, 100% {
+        transform: scaleY(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scaleY(1.5);
+        opacity: 1;
+    }
+}
+
+/* Hero Content Styling */
+.hero-content {
+    text-align: center;
+    z-index: 5;
+    position: relative;
+}
+
+/* Hero Background Pattern */
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    z-index: 1;
+}
+
+/* CTA Buttons in Hero */
+.hero .btn {
+    margin: 2rem 0.5rem 0 0.5rem;
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    border-radius: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.hero .btn-light {
+    background: white;
+    color: var(--corporate-primary);
+    border-color: white;
+}
+
+.hero .btn-light:hover {
+    background: transparent;
+    color: white;
+    border-color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+}
+
+.hero .btn-outline-light {
+    background: transparent;
+    color: white;
+    border-color: white;
+}
+
+.hero .btn-outline-light:hover {
+    background: white;
+    color: var(--corporate-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive Design for Hero */
+@media (max-width: 768px) {
+    .hero {
+        min-height: 40vh;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+        line-height: 1.2;
+    }
+
+    .hero p {
+        font-size: 1.2rem;
+        margin: 0.8rem 0 0 0;
+    }
+
+    .bars {
+        bottom: 1rem;
+        gap: 0.3rem;
+    }
+
+    .bar {
+        width: 3px;
+    }
+
+    .bar1, .bar5 {
+        height: 15px;
+    }
+
+    .bar2, .bar4 {
+        height: 22px;
+    }
+
+    .bar3 {
+        height: 30px;
+    }
+
+    .hero .btn {
+        padding: 0.6rem 1.5rem;
+        margin: 1rem 0.3rem 0 0.3rem;
+        font-size: 0.9rem;
+    }
+}

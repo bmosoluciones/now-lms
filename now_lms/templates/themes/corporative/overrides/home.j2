@@ -9,74 +9,36 @@
         {{ current_theme.navbar() }}
 
         <!-- Hero Section -->
-        <section
-            class="hero-section py-5"
-            style="
-                background: linear-gradient(135deg, #a3c6e4 0%, #7d9fb8 100%);
-                min-height: 60vh;
-                display: flex;
-                align-items: center;
-            "
-        >
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-8 text-white">
-                        <div class="hero-content">
-                            <h1 class="display-4 fw-bold mb-4">Bienvenido a {{ site_config.nombre }}</h1>
-                            <p class="lead mb-4" style="font-size: 1.3rem; line-height: 1.6">
-                                Soluciones de aprendizaje corporativo diseñadas para el crecimiento profesional. Nuestra
-                                plataforma está diseñada para brindar una experiencia de aprendizaje excepcional.
-                            </p>
-                            <div class="d-flex gap-3 flex-wrap">
-                                {% if not current_user.is_authenticated %}
-                                <a href="{{ url_for('user.crear_cuenta') }}" class="btn btn-light btn-lg px-4 py-2">
-                                    <strong>Comenzar Ahora</strong>
-                                </a>
-                                <a
-                                    href="{{ url_for('course.lista_cursos', page=1) }}"
-                                    class="btn btn-outline-light btn-lg px-4 py-2"
-                                >
-                                    Explorar Cursos
-                                </a>
-                                {% else %}
-                                <a href="{{ url_for('home.panel') }}" class="btn btn-light btn-lg px-4 py-2">
-                                    <strong>Mi Panel</strong>
-                                </a>
-                                <a
-                                    href="{{ url_for('course.lista_cursos', page=1) }}"
-                                    class="btn btn-outline-light btn-lg px-4 py-2"
-                                >
-                                    Ver Cursos
-                                </a>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 text-center">
-                        <div class="hero-visual">
-                            <div
-                                class="learning-icon"
-                                style="
-                                    background: rgba(255, 255, 255, 0.1);
-                                    border-radius: 50%;
-                                    width: 250px;
-                                    height: 250px;
-                                    margin: 0 auto;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    border: 4px solid rgba(255, 255, 255, 0.3);
-                                "
-                            >
-                                <div class="text-center text-white">
-                                    <div style="font-size: 3rem; margin-bottom: 0.5rem">📚</div>
-                                    <div style="font-size: 1.2rem; font-weight: 600">Aprendizaje</div>
-                                    <div style="font-size: 0.9rem; opacity: 0.8">Digital</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Bienvenido a {{ site_config.nombre }}</h1>
+                <p>Capacitación que impulsa tu negocio.</p>
+                
+                <div class="d-flex gap-3 flex-wrap justify-content-center">
+                    {% if not current_user.is_authenticated %}
+                    <a href="{{ url_for('user.crear_cuenta') }}" class="btn btn-light btn-lg">
+                        <strong>ACCEDER</strong>
+                    </a>
+                    <a href="{{ url_for('course.lista_cursos', page=1) }}" class="btn btn-outline-light btn-lg">
+                        VER CURSOS
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('home.panel') }}" class="btn btn-light btn-lg">
+                        <strong>MI PANEL</strong>
+                    </a>
+                    <a href="{{ url_for('course.lista_cursos', page=1) }}" class="btn btn-outline-light btn-lg">
+                        VER CURSOS
+                    </a>
+                    {% endif %}
                 </div>
+            </div>
+
+            <div class="bars">
+                <div class="bar bar1"></div>
+                <div class="bar bar2"></div>
+                <div class="bar bar3"></div>
+                <div class="bar bar4"></div>
+                <div class="bar bar5"></div>
             </div>
         </section>
 
