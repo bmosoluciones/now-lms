@@ -258,10 +258,12 @@ class TestMasterClassCertificates(TestCase):
         
         # Create certificate template
         cert_template = Certificado(
+            code="TESTCERT",
             titulo="Test Certificate",
             descripcion="Test certificate template"
         )
         database.session.add(cert_template)
+        database.session.commit()
         
         # Create master class
         future_date = date.today() + timedelta(days=1)
@@ -322,16 +324,20 @@ class TestMasterClassCertificates(TestCase):
         
         # Create certificate template
         cert_template = Certificado(
+            code="TEST_CERT",
             titulo="Test Certificate",
             descripcion="Test certificate template"
         )
         database.session.add(cert_template)
+        database.session.commit()
         
         # Create course
         course = Curso(
             nombre="Test Course",
             codigo="test-course",
-            descripcion_corta="Test description"
+            descripcion_corta="Test description",
+            descripcion="Test description",
+            estado="open",
         )
         database.session.add(course)
         database.session.commit()
