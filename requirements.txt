@@ -21,6 +21,7 @@ flask-wtf
 markdown
 pg8000
 pyjwt
+python-slugify
 python-ulid
 qrcode
 sqlalchemy
