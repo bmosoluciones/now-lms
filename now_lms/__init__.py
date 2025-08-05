@@ -167,7 +167,6 @@ def inicializa_extenciones_terceros(flask_app: Flask):
         app.config["BABEL_SUPPORTED_LOCALES"] = ["es", "en"]
         babel.init_app(flask_app, locale_selector=_get_locales, timezone_selector=_get_locales)
     log.trace("Third-party extensions started successfully.")
->>>>>>> f537943 (feat: i18n)
 
 
 def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
