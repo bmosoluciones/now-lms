@@ -60,7 +60,7 @@ else:
 CACHE_CONFIG["CACHE_TYPE"] = CTYPE
 
 if CTYPE != "NullCache":
-    log.trace(f"Utilizando para almacenamiento el servicio {CTYPE}")
+    log.trace(f"Using {CTYPE} service for storage")
 
 cache: Cache = Cache(config=CACHE_CONFIG)
 
@@ -78,7 +78,7 @@ def invalidate_all_cache():
     try:
         if CTYPE != "NullCache":
             cache.clear()
-            log.trace("Cache invalidada debido a cambio de tema")
+            log.trace("Cache invalidated due to theme change")
         return True
     except Exception as e:
         log.error(f"Error invalidating cache: {e}")

@@ -544,16 +544,16 @@ def database_is_populated(app):
             if QUERY:
                 version = database.session.execute(text(QUERY)).first()
                 if version:
-                    log.debug("Database conection verified.")
-                    log.trace("Verificando si la base de datos esta poblada.")
+                    log.debug("Database connection verified.")
+                    log.trace("Checking if database is populated.")
                     check = True
                 else:
                     check = False
                 if check:
-                    log.trace("Base de datos poblada.")
+                    log.trace("Database populated.")
                 else:
-                    log.trace("Base de datos no poblada.")
-                    log.info("Base de datos no poblada, creando configuracion predeterminada.")
+                    log.trace("Database not populated.")
+                    log.info("Database not populated, creating default configuration.")
                 return check
             else:
                 return False
@@ -592,13 +592,13 @@ def check_db_access(app):
     with app.app_context():
         from sqlalchemy.sql import text
 
-        log.trace("Verificando acceso a base de datos.")
+        log.trace("Verifying database access.")
         try:
             QUERY = database_select_version_query(app)
             if QUERY:
                 consulta = database.session.execute(text(QUERY)).first()
                 if consulta:
-                    log.trace("Acceso a base de datos verificado.")
+                    log.trace("Database access verified.")
                     return True
                 else:
                     return False

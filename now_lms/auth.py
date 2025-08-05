@@ -58,7 +58,7 @@ def proteger_passwd(clave):
 def validar_acceso(usuario_id, acceso):
     """Verifica el inicio de sesión del usuario."""
 
-    log.trace(f"Verificando acceso de {usuario_id}")
+    log.trace(f"Verifying access for {usuario_id}")
     registro = database.session.query(Usuario).filter_by(usuario=usuario_id).first()
 
     if not registro:
@@ -71,10 +71,10 @@ def validar_acceso(usuario_id, acceso):
         except VerifyMismatchError:
             clave_validada = False
     else:
-        log.trace(f"No se encontro registro de usuario {usuario_id}")
+        log.trace(f"User record not found for {usuario_id}")
         clave_validada = False
 
-    log.trace(f"Resultado de validación de acceso es {clave_validada}")
+    log.trace(f"Access validation result is {clave_validada}")
     if clave_validada:
         registro.ultimo_acceso = datetime.now()
         database.session.commit()
@@ -96,7 +96,11 @@ def perfil_requerido(perfil_id):
                 return redirect(url_for("user.login"))
 
             else:
+<<<<<<< HEAD
                 log.trace(f"Verificando acceso para el usuario {current_user.usuario} para el perfil {perfil_id}")
+=======
+                log.trace(f"Verifying access for user {current_user.usuario} with profile {perfil_id}")
+>>>>>>> ia/copilot/fix-19
                 # Always allow admin access
                 if current_user.tipo == "admin":
                     return func(*args, **kwargs)
@@ -109,7 +113,7 @@ def perfil_requerido(perfil_id):
                 elif isinstance(perfil_id, str) and current_user.tipo == perfil_id:
                     return func(*args, **kwargs)
                 else:
-                    log.warning(f"Acceso denegado para el usuario {current_user.usuario} con perfil {current_user.tipo}")
+                    log.warning(f"Access denied for user {current_user.usuario} with profile {current_user.tipo}")
                     flash("No se encuentra autorizado a acceder al recurso solicitado.", "error")
                     return abort(403)
 
@@ -176,27 +180,27 @@ def generate_confirmation_token(mail):
 def validate_confirmation_token(token):
     try:
         data = jwt.decode(token, current_app.secret_key, algorithms=["HS512"])
-        log.trace(f"Token de confirmación decodificado: {data}")
+        log.trace(f"Confirmation token decoded: {data}")
     except jwt.ExpiredSignatureError:
-        log.warning("Intento de verificación expirado.")
+        log.warning("Verification attempt expired.")
         return False
     except jwt.InvalidSignatureError:
-        log.warning("Intento de verificación invalido.")
+        log.warning("Invalid verification attempt.")
         return False
 
     if data.get("confirm_id", None):
-        log.trace(f"Validando token de confirmación para {data.get('confirm_id', None)}")
+        log.trace(f"Validating confirmation token for {data.get('confirm_id', None)}")
         user = database.session.execute(
             database.select(Usuario).filter_by(correo_electronico=data.get("confirm_id", None))
         ).first()[0]
         if user:
-            log.info(f"Se ha verificado el usuario {user.usuario}, la cuenta se encuentra activa.")
+            log.info(f"User {user.usuario} has been verified, the account is now active.")
             user.correo_electronico_verificado = True
             user.activo = True
             database.session.commit()
             return True
         else:
-            log.warning(f"Usuario con correo {data.get('confirm_id', None)} no encontrado.")
+            log.warning(f"User with email {data.get('confirm_id', None)} not found.")
             return False
     else:
         return False
@@ -241,9 +245,9 @@ def send_confirmation_email(user):
             _log="Correo de confirmación enviado",
             _flush="Correo de confirmación enviado.",
         )
-        log.info(f"Correo de confirmación enviado al usuario {user.usuario}")
+        log.info(f"Confirmation email sent to user {user.usuario}")
     except Exception as e:  # noqa: E722
-        log.warning(f"Error al enviar un correo de confirmació el usuario {user.usuario}: {e}")
+        log.warning(f"Error sending confirmation email to user {user.usuario}: {e}")
 
 
 # ---------------------------------------------------------------------------------------
@@ -261,18 +265,18 @@ def validate_password_reset_token(token):
     """Validate a password reset token and return the email if valid."""
     try:
         data = jwt.decode(token, current_app.secret_key, algorithms=["HS512"])
-        log.trace(f"Token de restablecimiento decodificado: {data}")
+        log.trace(f"Password reset token decoded: {data}")
     except jwt.ExpiredSignatureError:
-        log.warning("Token de restablecimiento expirado.")
+        log.warning("Password reset token expired.")
         return None
     except jwt.InvalidSignatureError:
-        log.warning("Token de restablecimiento inválido.")
+        log.warning("Invalid password reset token.")
         return None
     except jwt.DecodeError:
-        log.warning("Token de restablecimiento con formato inválido.")
+        log.warning("Password reset token has invalid format.")
         return None
     except Exception as e:
-        log.warning(f"Error al validar token de restablecimiento: {e}")
+        log.warning(f"Error validating password reset token: {e}")
         return None
 
     if data.get("reset_email", None) and data.get("action") == "password_reset":
@@ -324,8 +328,8 @@ def send_password_reset_email(user):
             _log="Correo de recuperación de contraseña enviado",
             _flush="Correo de recuperación de contraseña enviado.",
         )
-        log.info(f"Correo de recuperación enviado al usuario {user.usuario}")
+        log.info(f"Recovery email sent to user {user.usuario}")
         return True
     except Exception as e:  # noqa: E722
-        log.warning(f"Error al enviar correo de recuperación al usuario {user.usuario}: {e}")
+        log.warning(f"Error sending recovery email to user {user.usuario}: {e}")
         return False

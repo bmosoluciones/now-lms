@@ -81,7 +81,7 @@ def personalizacion():
                     cache.delete("cached_logo")
                     cache.delete("cached_style")
             except UploadNotAllowed:  # pragma: no cover
-                log.warning("Ocurrio un error al actualizar el logotipo del sitio web.")
+                log.warning("An error occurred while updating the website logo.")
 
         try:
             database.session.commit()
@@ -89,7 +89,7 @@ def personalizacion():
             # Invalidate all cache if theme changed
             if theme_changed:
                 invalidate_all_cache()
-                log.trace(f"Tema cambiado de {old_theme} a {new_theme}, cache invalidada")
+                log.trace(f"Theme changed from {old_theme} to {new_theme}, cache invalidated")
 
             flash("Tema del sitio web actualizado exitosamente.", "success")
             return redirect(url_for(SETTING_PERSONALIZACION_ROUTE))
@@ -247,7 +247,7 @@ def mail_check():
             config.email_verificado = False
             config_g.verify_user_by_email = False
             database.session.commit()
-            log.error(f"Error al enviar correo de prueba: {e}")
+            log.error(f"Error sending test email: {e}")
             # Re-render the form with the error message
             form = MailForm(
                 MAIL_SERVER=config.MAIL_SERVER,

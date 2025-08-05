@@ -68,13 +68,13 @@ DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
 # < --------------------------------------------------------------------------------------------- >
 # Directorios personalizados para la aplicación.
 if environ.get("CUSTOM_DATA_DIR"):
-    log.trace("Configuración de directorio de datos encontrada en variables de entorno.")
+    log.trace("Data directory configuration found in environment variables.")
     DIRECTORIO_ARCHIVOS = environ.get("CUSTOM_DATA_DIR")
 else:
     DIRECTORIO_ARCHIVOS = DIRECTORIO_ARCHIVOS_BASE
 
 if environ.get("CUSTOM_THEMES_DIR"):
-    log.trace("Configuración de directorio de temas encontrada en variables de entorno.")
+    log.trace("Themes directory configuration found in environment variables.")
     DIRECTORIO_PLANTILLAS = environ.get("CUSTOM_THEMES_DIR")
 else:
     DIRECTORIO_PLANTILLAS = DIRECTORIO_PLANTILLAS_BASE
@@ -97,11 +97,11 @@ if not path.isdir(DIRECTORIO_BASE_ARCHIVOS_USUARIO):  # pragma: no cover
         makedirs(DIRECTORIO_UPLOAD_IMAGENES)
         makedirs(DIRECTORIO_UPLOAD_AUDIO)
     except OSError:  # pragma: no cover
-        log.warning(f"No se puede crear directorio para carga de archivos: {DIRECTORIO_BASE_ARCHIVOS_USUARIO}")
+        log.warning(f"Cannot create directory for file uploads: {DIRECTORIO_BASE_ARCHIVOS_USUARIO}")
 if access(DIRECTORIO_BASE_ARCHIVOS_USUARIO, R_OK) and access(DIRECTORIO_BASE_ARCHIVOS_USUARIO, W_OK):  # pragma: no cover
-    log.trace(f"Acceso verificado a: {DIRECTORIO_BASE_ARCHIVOS_USUARIO}")
+    log.trace(f"Access verified to: {DIRECTORIO_BASE_ARCHIVOS_USUARIO}")
 else:
-    log.warning(f"No se tiene acceso a subir archivos al directorio: {DIRECTORIO_BASE_ARCHIVOS_USUARIO}")
+    log.warning(f"No access to upload files to directory: {DIRECTORIO_BASE_ARCHIVOS_USUARIO}")
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorio base temas.
@@ -199,7 +199,7 @@ def log_system_info():
     import socket
     import sys
 
-    log.info("=== Información del sistema ===")
+    log.info("=== System Information ===")
 
     os_name = platform.system()
     os_version = platform.version()
@@ -210,16 +210,16 @@ def log_system_info():
     container = is_running_in_container()
     cpu_count = os.cpu_count()
 
-    log.info(f"Sistema operativo: {os_name} {os_release} (versión: {os_version})")
-    log.info(f"Arquitectura: {architecture}")
-    log.info(f"Versión de Python: {python_version}")
+    log.info(f"Operating system: {os_name} {os_release} (version: {os_version})")
+    log.info(f"Architecture: {architecture}")
+    log.info(f"Python version: {python_version}")
     log.info(f"Hostname: {hostname}")
-    log.info(f"Número de CPUs: {cpu_count}")
-    log.info(f"¿En contenedor?: {'Sí' if container else 'No'}")
+    log.info(f"Number of CPUs: {cpu_count}")
+    log.info(f"In container?: {'Yes' if container else 'No'}")
 
     # Detalles adicionales como trace
-    log.trace(f"Ruta de ejecución: {sys.executable}")
-    log.trace(f"Argumentos del proceso: {sys.argv}")
+    log.trace(f"Execution path: {sys.executable}")
+    log.trace(f"Process arguments: {sys.argv}")
 
 
 def log_messages(_app: "Flask"):
@@ -239,7 +239,7 @@ def log_messages(_app: "Flask"):
     elif "sqlite" in db_uri:
         db_type = "SQLite"
 
-    log.info(f"Motor de base de datos detectado: {db_type}")
+    log.info(f"Database engine detected: {db_type}")
 
     # Log detallado de configuraciones clave
     configuraciones_interes = [
@@ -252,24 +252,24 @@ def log_messages(_app: "Flask"):
     ]
     for clave in configuraciones_interes:
         valor = _app.config.get(clave, "No definido")
-        log.trace(f"Configuración '{clave}': {valor}")
+        log.trace(f"Configuration '{clave}': {valor}")
 
     # Logueo de directorios relevantes
-    log.trace(f"Directorio base de la aplicación: {DIRECTORIO_APP}")
-    log.trace(f"Directorio para cargas de archivos: {DIRECTORIO_BASE_UPLOADS}")
-    log.trace(f"Directorio de archivos públicos: {DIRECTORIO_ARCHIVOS_PUBLICOS}")
-    log.trace(f"Directorio de archivos privados: {DIRECTORIO_ARCHIVOS_PRIVADOS}")
-    log.trace(f"Directorio de imágenes: {DIRECTORIO_UPLOAD_IMAGENES}")
-    log.trace(f"Directorio de archivos: {DIRECTORIO_UPLOAD_ARCHIVOS}")
-    log.trace(f"Directorio de audios: {DIRECTORIO_UPLOAD_AUDIO}")
+    log.trace(f"Application base directory: {DIRECTORIO_APP}")
+    log.trace(f"File uploads directory: {DIRECTORIO_BASE_UPLOADS}")
+    log.trace(f"Public files directory: {DIRECTORIO_ARCHIVOS_PUBLICOS}")
+    log.trace(f"Private files directory: {DIRECTORIO_ARCHIVOS_PRIVADOS}")
+    log.trace(f"Images directory: {DIRECTORIO_UPLOAD_IMAGENES}")
+    log.trace(f"Files directory: {DIRECTORIO_UPLOAD_ARCHIVOS}")
+    log.trace(f"Audio directory: {DIRECTORIO_UPLOAD_AUDIO}")
 
     # Rutas registradas en la aplicación (útil para depuración de endpoints)
     for rule in _app.url_map.iter_rules():
-        log.trace(f"Ruta registrada: {rule.rule} -> {rule.endpoint} ({', '.join(rule.methods)})")  # type: ignore[arg-type]
+        log.trace(f"Registered route: {rule.rule} -> {rule.endpoint} ({', '.join(rule.methods)})")  # type: ignore[arg-type]
 
     # Extensiones activas (si aplica)
     for ext_nombre, ext_instancia in _app.extensions.items():
-        log.trace(f"Extensión cargada: {ext_nombre} -> {type(ext_instancia)}")
+        log.trace(f"Loaded extension: {ext_nombre} -> {type(ext_instancia)}")
 
     if log.getEffectiveLevel() < logging.INFO:
         log_system_info()

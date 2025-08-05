@@ -148,7 +148,7 @@ csrf = CSRFProtect()
 def inicializa_extenciones_terceros(flask_app: Flask):
     """Inicia extensiones de terceros."""
 
-    log.trace("Iniciando extensiones de terceros")
+    log.trace("Starting third-party extensions")
     with flask_app.app_context():
         database.init_app(flask_app)
         alembic.init_app(flask_app)
@@ -157,13 +157,13 @@ def inicializa_extenciones_terceros(flask_app: Flask):
         mde.init_app(flask_app)
         mail.init_app(flask_app)
         # csrf.init_app(flask_app)
-    log.trace("Extensiones de terceros iniciadas correctamente.")
+    log.trace("Third-party extensions started successfully.")
 
 
 def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
     """Registro modulos en la aplicación principal."""
 
-    log.trace("Registrando modulos en la aplicación principal.")
+    log.trace("Registering modules in the main application.")
 
     with flask_app.app_context():
         flask_app.register_blueprint(blog)
@@ -240,7 +240,7 @@ def config():  # pragma: no cover
 def define_variables_globales_jinja2(lms_app: Flask):
     """Define variables globales de Jinja2 para su disponibilidad en plantillas HTML."""
 
-    log.trace("Definiendo variables globales de Jinja2.")
+    log.trace("Defining Jinja2 global variables.")
     lms_app.jinja_env.globals["adsense_code"] = get_addsense_code
     lms_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
     lms_app.jinja_env.globals["adsense_enabled"] = get_adsense_enabled
@@ -293,8 +293,8 @@ application = lms_app
 # ---------------------------------------------------------------------------------------
 # Iniciliazación y configuración de la aplicación principal.
 # ---------------------------------------------------------------------------------------
-log.trace(f"Directorio de archivos estaticos: {DIRECTORIO_ARCHIVOS}")
-log.trace(f"Directorio de plantillas: {DIRECTORIO_PLANTILLAS}")
+log.trace(f"Static files directory: {DIRECTORIO_ARCHIVOS}")
+log.trace(f"Templates directory: {DIRECTORIO_PLANTILLAS}")
 lms_app.config.from_mapping(CONFIGURACION)
 inicializa_extenciones_terceros(lms_app)
 registrar_modulos_en_la_aplicacion_principal(lms_app)
@@ -329,9 +329,9 @@ def handle_402(error):
 
     if not current_user.is_authenticated:
         flash("Favor iniciar sesión para acceder a este recurso.", "warning")
-        log.warning(f"Recurso no disponible para usuario anonimo, pago requerido: {error}")
+        log.warning(f"Resource not available for anonymous user, payment required: {error}")
     else:
-        log.warning(f"Recurso no disponible, pago requerido para {current_user.usuario}: {error}")
+        log.warning(f"Resource not available, payment required for {current_user.usuario}: {error}")
 
     return render_template("error_pages/403.html", error=error)
 
@@ -347,9 +347,9 @@ def error_403(error):
 
     if not current_user.is_authenticated:
         flash("Favor iniciar sesión para acceder a este recurso.", "warning")
-        log.warning(f"Recurso no autorizado para usuario anonimo: {error}")
+        log.warning(f"Resource not authorized for anonymous user: {error}")
     else:
-        log.warning(f"Recurso no autorizado para {current_user.usuario}: {error}")
+        log.warning(f"Resource not authorized for {current_user.usuario}: {error}")
 
     return render_template("error_pages/403.html", error=error), 403
 
@@ -360,9 +360,9 @@ def error_404(error):
     """Pagina personalizada para recursos no encontrados."""
 
     if not current_user.is_authenticated:
-        log.warning(f"Recurso no encontrado para usuario anonimo: {error}")
+        log.warning(f"Resource not found for anonymous user: {error}")
     else:
-        log.warning(f"Recurso no encontrado para {current_user.usuario}: {error}")
+        log.warning(f"Resource not found for {current_user.usuario}: {error}")
 
     return render_template("error_pages/404.html", error=error), 404
 
@@ -372,7 +372,7 @@ def error_404(error):
 def error_405(error):
     """Pagina personalizada para metodos no permitidos."""
 
-    log.warning(f"Recurso no permitido: {error}")
+    log.warning(f"Method not allowed: {error}")
     return render_template("error_pages/405.html", error=error), 405
 
 
@@ -389,11 +389,11 @@ def error_500(error):
 def initial_setup(with_examples=False, with_tests=False):
     """Inicializa una nueva bases de datos"""
     with lms_app.app_context():
-        log.info("Creando esquema de base de datos.")
+        log.info("Creating database schema.")
         database.create_all()
         system_info(lms_app)
-        log.debug("Esquema de base de datos creado correctamente.")
-        log.debug("Cargando datos de muestra.")
+        log.debug("Database schema created successfully.")
+        log.debug("Loading sample data.")
         crear_configuracion_predeterminada()
         crear_certificados()
         crear_curso_predeterminado()
@@ -401,9 +401,9 @@ def initial_setup(with_examples=False, with_tests=False):
         crear_certificacion()
         populate_custmon_data_dir()
         populate_custom_theme_dir()
-        log.debug("Datos de muestra cargado correctamente.")
+        log.debug("Sample data loaded successfully.")
         if with_examples:
-            log.debug("Cargando datos de prueba.")
+            log.debug("Loading test data.")
             crear_categorias()
             crear_etiquetas()
             crear_curso_demo()
@@ -414,14 +414,14 @@ def initial_setup(with_examples=False, with_tests=False):
             asignar_cursos_a_categoria()
             crear_programa()
             crear_recurso_descargable()
-            log.debug("Datos de muestra cargados correctamente.")
+            log.debug("Sample data loaded successfully.")
         if with_tests:
-            log.trace("Cargando datos de prueba para testing.")
+            log.trace("Loading test data for testing.")
             from now_lms.db.data_test import crear_data_para_pruebas
 
             crear_data_para_pruebas()
-    log.info(f"Bienvenido a NOW LMS versión: {VERSION}, release: {CODE_NAME} ")
-    log.info("NOW - LMS iniciado correctamente.")
+    log.info(f"Welcome to NOW LMS version: {VERSION}, release: {CODE_NAME} ")
+    log.info("NOW - LMS started successfully.")
 
 
 def init_app(with_examples=False):
@@ -433,16 +433,16 @@ def init_app(with_examples=False):
     DB_INICIALIZADA = database_is_populated(lms_app)
 
     if DB_ACCESS:
-        log.trace("Acceso a base de datos verificado.")
+        log.trace("Database access verified.")
         if DB_INICIALIZADA:
-            log.trace("Base de datos inicializada.")
+            log.trace("Database initialized.")
             return True
         else:
-            log.info("Iniciando nueva base de datos.")
+            log.info("Starting new database.")
             initial_setup(with_examples=with_examples)
             return True
     else:
-        log.warning("No se pudo acceder a la base de datos.")
+        log.warning("Could not access the database.")
         return False
 
 

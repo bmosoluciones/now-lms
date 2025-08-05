@@ -489,10 +489,10 @@ def nuevo_curso():
                             ).first()[0]
                             _curso.portada = True
                     except UploadNotAllowed:  # pragma: no cover
-                        log.warning("No se pudo actualizar la foto de perfil.")
+                        log.warning("Could not update profile photo.")
                         database.session.rollback()
                     except AttributeError:  # pragma: no cover
-                        log.warning("No se pudo actualizar la foto de perfil.")
+                        log.warning("Could not update profile photo.")
                         database.session.rollback()
             database.session.commit()
 
@@ -583,7 +583,7 @@ def editar_curso(course_code):
                         curso_a_editar.portada = True
                         database.session.commit()
                 except UploadNotAllowed:  # pragma: no cover
-                    log.warning("No se pudo actualizar la portada del curso.")
+                    log.warning("Could not update course cover.")
             flash("Curso actualizado exitosamente.", "success")
             return redirect(curso_url)
 
@@ -889,7 +889,7 @@ def _actualizar_avance_curso(curso_id, usuario):
         )
         .count()
     )
-    log.warning("Recursos requeridos: %s, Completados: %s", _recursos_requeridos, _recursos_completados)
+    log.warning("Required resources: %s, Completed: %s", _recursos_requeridos, _recursos_completados)
 
     _avance.recursos_requeridos = _recursos_requeridos
     _avance.recursos_completados = _recursos_completados

@@ -121,7 +121,7 @@ def crear_cuenta():
 
                 database.session.add(usuario_)
                 database.session.commit()
-                log.info(f"Se ha creado una cuenta de usuario: {usuario_.usuario}")
+                log.info(f"User account created: {usuario_.usuario}")
                 if config.verify_user_by_email:
                     mail_config = database.session.execute(database.select(MailConfig)).first()[0]
                     from now_lms.auth import send_confirmation_email
@@ -253,7 +253,7 @@ def reset_password(token):
         database.session.commit()
 
         flash("Contraseña actualizada exitosamente. Ya puede iniciar sesión.", "success")
-        log.info(f"Contraseña restablecida para el usuario {user.usuario}")
+        log.info(f"Password reset for user {user.usuario}")
         return redirect(url_for(USER_LOGIN_ROUTE))
 
     return render_template("auth/reset_password.html", form=form, titulo="Restablecer Contraseña - NOW LMS")

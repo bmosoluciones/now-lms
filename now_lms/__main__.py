@@ -37,11 +37,11 @@ from now_lms.logs import log
 
 if __name__ == "__main__":
     environ["FLASK_APP"] = "now_lms"
-    log.info("Iniciando NOW Learning Management System.")
+    log.info("Starting NOW Learning Management System.")
     if DESARROLLO:
-        log.trace("Ejecutando NOW-LMS con opciones de desarrollo.")
+        log.trace("Running NOW-LMS with development options.")
         init_app(with_examples=True)
     else:
-        log.trace("Iniciando NOW-MLS como modulo importable.")
+        log.trace("Starting NOW-LMS as importable module.")
         init_app(with_examples=False)
     serve()

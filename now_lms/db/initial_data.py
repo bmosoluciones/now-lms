@@ -78,7 +78,7 @@ def system_info(app: "Flask"):
 
 def crear_etiquetas():
     """Crea etiquetas de demostración."""
-    log.trace("Creando etiquetas de demostración.")
+    log.trace("Creating demonstration tags.")
     etiqueta1 = Etiqueta(nombre="Python", color="#FFD43B")
     etiqueta2 = Etiqueta(nombre="Postgresql", color="#0064a5")
     etiqueta3 = Etiqueta(nombre="HTML", color="#cc3b03")
@@ -92,7 +92,7 @@ def crear_etiquetas():
 
 def crear_categorias():
     """Crea categorias de demostración."""
-    log.trace("Creando categorias de demostración.")
+    log.trace("Creating demonstration categories.")
     cat1 = Categoria(nombre="Learning", descripcion="Cursos sobre aprendizaje")
     cat2 = Categoria(nombre="Programing", descripcion="Cursos sobre programación")
     database.session.add(cat1)
@@ -103,7 +103,7 @@ def crear_categorias():
 def copy_sample_pdf():
     """Crea un archivo PDF de ejemplo."""
 
-    log.trace("Creando archivo PDF de prueba.")
+    log.trace("Creating test PDF file.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "NOW_Learning_Management_System.pdf")
     directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "files", "resources")
     try:  # pragma: no cover
@@ -124,7 +124,7 @@ def copy_sample_pdf():
 def copy_sample_audio():
     """Crea un archivo audio de ejemplo."""
 
-    log.trace("Creando archivo de audio de prueba.")
+    log.trace("Creating test audio file.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "En-us-hello.ogg")
     directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "audio", "resources")
     try:
@@ -145,7 +145,7 @@ def copy_sample_audio():
 def copy_sample_img():
     """Crea un archivo de imagen de ejemplo."""
 
-    log.trace("Creando archivo de imagen de prueba.")
+    log.trace("Creating test image file.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "icons", "logo", "logo_large.png")
     directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "images", "resources")
     try:
@@ -166,7 +166,7 @@ def copy_sample_img():
 def curse_logo(curso: str, image: str, program=False):
     """Crea un archivo de imagen de ejemplo."""
 
-    log.trace("Estableciendo logo tipo de curso de demostración.")
+    log.trace("Setting demonstration course logo.")
     origen = path.join(str(DIRECTORIO_ARCHIVOS), "img", image)
     if program:
         directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "images", "program" + curso)
@@ -206,7 +206,7 @@ demo_external_code = """
 def crear_curso_demo():
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
-    log.trace("Creando curso de demo de recursos.")
+    log.trace("Creating resource demo course.")
     demo = Curso(
         nombre="Demo Course",
         codigo="resources",
@@ -375,7 +375,7 @@ def crear_curso_demo():
     database.session.add(nuevo_recurso9)
     database.session.commit()
 
-    log.debug("Curso de demo de recursos creado correctamente.")
+    log.debug("Resource demo course created successfully.")
 
 
 # https://medium.com/printcss/printcss-create-your-certificate-pdfs-with-html-and-css-926e7dcf6281
@@ -475,7 +475,7 @@ p{
 
 def crear_certificados():
     """Crea un certificado de prueba."""
-    log.trace("Crea un certificado demo.")
+    log.trace("Creating demo certificate.")
 
     demo = Certificado(
         id="1234567890",
@@ -520,7 +520,7 @@ def crear_certificacion():
 def crear_curso_predeterminado():
     # pylint: disable=too-many-locals
     """Crea un recurso publico."""
-    log.trace("Creando curso de demostración.")
+    log.trace("Creating demonstration course.")
     demo = Curso(
         nombre="OnLine Teaching 101",
         codigo="now",
@@ -711,12 +711,12 @@ def crear_curso_predeterminado():
     database.session.add(nuevo_recurso3)
     database.session.commit()
 
-    log.debug("Curso de demostración creado correctamente.")
+    log.debug("Demonstration course created successfully.")
 
 
 def crear_usuarios_predeterminados():
     """Crea en la base de datos los usuarios iniciales."""
-    log.info("Creando usuario administrador.")
+    log.info("Creating administrator user.")
     administrador = Usuario(
         usuario=ADMIN_USER_WITH_FALLBACK,
         acceso=proteger_passwd(environ.get("ADMIN_PSWD") or environ.get("LMS_PSWD") or "lms-admin"),
@@ -728,13 +728,13 @@ def crear_usuarios_predeterminados():
     )
     database.session.add(administrador)
     database.session.commit()
-    log.debug("Usuario administrador creado correctamente.")
+    log.debug("Administrator user created successfully.")
 
 
 def crear_curso_demo1():
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
-    log.trace("Creando curso de demostración PostgreSQL.")
+    log.trace("Creating PostgreSQL demonstration course.")
     demo = Curso(
         nombre="PostgreSQL",
         codigo="postgresql",
@@ -761,7 +761,7 @@ def crear_curso_demo1():
 def crear_curso_demo2():
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
-    log.trace("Creando curso de demostración Python.")
+    log.trace("Creating Python demonstration course.")
     demo = Curso(
         nombre="Python",
         codigo="python",
@@ -788,7 +788,7 @@ def crear_curso_demo2():
 def crear_curso_demo3():
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
-    log.trace("Creando curso de demostración HTML.")
+    log.trace("Creating HTML demonstration course.")
     demo = Curso(
         nombre="HTML",
         codigo="html",
@@ -812,7 +812,7 @@ def crear_curso_demo3():
 
 def asignar_cursos_a_etiquetas():
     """Asigna cursos a Categorias."""
-    log.trace("Asignando etiquetas a cursos.")
+    log.trace("Assigning tags to courses.")
     etiqueta_python = database.session.query(Etiqueta).filter(Etiqueta.nombre == "Python").first()
     etiqueta_postgresql = database.session.query(Etiqueta).filter(Etiqueta.nombre == "Postgresql").first()
     etiqueta_html = database.session.query(Etiqueta).filter(Etiqueta.nombre == "HTML").first()
