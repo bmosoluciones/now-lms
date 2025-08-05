@@ -131,6 +131,7 @@ def certificate_new():
             database.session.commit()
             flash("Nuevo certificado creado correctamente.", "success")
         except OperationalError:  # pragma: no cover
+            database.session.rollback()
             flash("Hubo un error al crear el certificado.", "warning")
         return redirect(url_for(VISTA_CERTIFICADOS))
 

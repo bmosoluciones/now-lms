@@ -147,6 +147,7 @@ def edit_perfil(ulid: str):
                 except UploadNotAllowed:  # pragma: no cover
                     log.warning("No se pudo actualizar la imagen de perfil.", "error")
         except OperationalError:  # pragma: no cover
+            database.session.rollback()
             flash("Error al editar el perfil.", "error")
 
         return redirect(PROFILE_ROUTE)

@@ -94,6 +94,7 @@ def personalizacion():
             flash("Tema del sitio web actualizado exitosamente.", "success")
             return redirect(url_for(SETTING_PERSONALIZACION_ROUTE))
         except OperationalError:  # pragma: no cover
+            database.session.rollback()
             flash("No se pudo actualizar el tema del sitio web.", "warning")
             return redirect(url_for(SETTING_PERSONALIZACION_ROUTE))
 
@@ -309,6 +310,7 @@ def adsense():
             return redirect(url_for("setting.adsense"))
 
         except OperationalError:  # pragma: no cover
+            database.session.rollback()
             flash("No se pudo actualizar la configuración de Google AdSense.", "warning")
             return redirect(url_for("setting.adsense"))
 
@@ -418,6 +420,7 @@ def paypal():
             return redirect(url_for("setting.paypal"))
 
         except OperationalError:  # pragma: no cover
+            database.session.rollback()
             flash("No se pudo actualizar la configuración de Paypal.", "warning")
             return redirect(url_for("setting.paypal"))
 

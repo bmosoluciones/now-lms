@@ -179,6 +179,7 @@ def edit_program(ulid: str):
 
             flash("Programa editado correctamente.", "success")
         except OperationalError:  # pragma: no cover
+            database.session.rollback()
             flash("No se puedo editar el programa.")
         return redirect(url_for(PROGRAMS_ROUTE))
 

@@ -40,6 +40,7 @@ def nuevo_grupo():
             flash("Grupo creado correctamente", "success")
             return redirect("/admin/panel")
         except OperationalError:  # pragma: no cover
+            database.session.rollback()
             flash("Error al crear el nuevo grupo.", "warning")
             return redirect("/new_group")
     else:
@@ -68,5 +69,6 @@ def agrega_tutor_a_grupo():
         flash("Usuario Agregado Correctamente.", "success")
         return redirect(url_grupo)
     except OperationalError:  # pragma: no cover
+        database.session.rollback()
         flash("No se pudo agregar al usuario.", "warning")
         return redirect(url_grupo)
