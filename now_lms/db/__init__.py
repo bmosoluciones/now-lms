@@ -430,6 +430,9 @@ class Configuracion(database.Model, BaseTabla):
     moneda = database.Column(database.String(5))
     # Send a message to the user to verify his email
     verify_user_by_email = database.Column(database.Boolean())
+    # Internationalization
+    lang = database.Column(database.String(5), default="en")
+    time_zone = database.Column(database.String(50), default="UTC")
     r = database.Column(database.LargeBinary())
 
     # Navigation configuration options

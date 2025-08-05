@@ -39,11 +39,11 @@ from platform import python_version
 # ---------------------------------------------------------------------------------------
 from flask import Flask, flash, render_template, request
 from flask_alembic import Alembic
+from flask_babel import Babel
 from flask_login import LoginManager, current_user
 from flask_mail import Mail
 from flask_mde import Mde
 from flask_uploads import configure_uploads
-from flask_wtf.csrf import CSRFProtect
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
 from sqlalchemy.exc import OperationalError, ProgrammingError
@@ -140,10 +140,10 @@ APPNAME: str = "NOW LMS"
 # Extensiones de terceros
 # ---------------------------------------------------------------------------------------
 alembic: Alembic = Alembic()
+babel = Babel()
 administrador_sesion: LoginManager = LoginManager()
 mde: Mde = Mde()
 mail = Mail()
-csrf = CSRFProtect()
 
 
 # ---------------------------------------------------------------------------------------
@@ -154,14 +154,20 @@ def inicializa_extenciones_terceros(flask_app: Flask):
 
     log.trace("Starting third-party extensions")
     with flask_app.app_context():
+        from now_lms.i18n import _get_locales, _get_timezone
+
         database.init_app(flask_app)
         alembic.init_app(flask_app)
         administrador_sesion.init_app(flask_app)
         cache.init_app(flask_app)
         mde.init_app(flask_app)
         mail.init_app(flask_app)
-        # csrf.init_app(flask_app)
+        flask_app.config["BABEL_DEFAULT_LOCALE"] = "es"
+        flask_app.config["BABEL_TRANSLATION_DIRECTORIES"] = "translations"
+        app.config["BABEL_SUPPORTED_LOCALES"] = ["es", "en"]
+        babel.init_app(flask_app, locale_selector=_get_locales, timezone_selector=_get_locales)
     log.trace("Third-party extensions started successfully.")
+>>>>>>> f537943 (feat: i18n)
 
 
 def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
