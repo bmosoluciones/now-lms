@@ -432,6 +432,11 @@ class Configuracion(database.Model, BaseTabla):
     verify_user_by_email = database.Column(database.Boolean())
     r = database.Column(database.LargeBinary())
 
+    # Navigation configuration options
+    enable_programs = database.Column(database.Boolean(), default=False, nullable=False)
+    enable_masterclass = database.Column(database.Boolean(), default=False, nullable=False)
+    enable_resources = database.Column(database.Boolean(), default=False, nullable=False)
+
 
 class Style(database.Model, BaseTabla):
     theme = database.Column(database.String(15))
@@ -555,10 +560,30 @@ class Certificacion(database.Model, BaseTabla):
     """Una certificación generada a un estudiante."""
 
     usuario = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
-    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
+    curso = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=True, index=True)
+    master_class_id = database.Column(database.String(26), database.ForeignKey("master_classes.id"), nullable=True, index=True)
     certificado = database.Column(database.String(26), database.ForeignKey("certificado.code"), nullable=False, index=True)
     fecha = database.Column(database.Date, default=database.func.date(database.func.now()), nullable=False)
     nota = database.Column(database.Numeric())
+
+    # Relationships
+    master_class_rel = database.relationship("MasterClass", foreign_keys=[master_class_id])
+
+    def get_content_info(self):
+        """Get the course or master class information for this certificate."""
+        if self.curso:
+            return database.session.execute(database.select(Curso).filter_by(codigo=self.curso)).first()[0]
+        elif self.master_class_id:
+            return database.session.execute(database.select(MasterClass).filter_by(id=self.master_class_id)).first()[0]
+        return None
+
+    def get_content_type(self):
+        """Return 'course' or 'masterclass' depending on the content type."""
+        if self.curso:
+            return "course"
+        elif self.master_class_id:
+            return "masterclass"
+        return None
 
 
 class Mensaje(database.Model, BaseTabla):
@@ -928,6 +953,118 @@ class Announcement(database.Model, BaseTabla):
 
     def __repr__(self):
         return f"<Announcement {self.title}>"
+
+
+# Master Class System Models
+class MasterClass(database.Model, BaseTabla):
+    """Master Class live sessions with optional certification and payment."""
+
+    __tablename__ = "master_classes"
+
+    # Basic information
+    title = database.Column(database.String(150), nullable=False)
+    slug = database.Column(database.String(200), unique=True, nullable=False, index=True)
+    description_public = database.Column(database.Text, nullable=False)
+    description_private = database.Column(database.Text, nullable=True)
+
+    # Scheduling
+    date = database.Column(database.Date, nullable=False)
+    start_time = database.Column(database.Time, nullable=False)
+    end_time = database.Column(database.Time, nullable=False)
+
+    # Payment configuration
+    is_paid = database.Column(database.Boolean, default=False, nullable=False)
+    price = database.Column(database.Numeric(precision=10, scale=2), nullable=True)
+    early_discount = database.Column(database.Numeric(precision=5, scale=2), nullable=True)  # Percentage
+    discount_deadline = database.Column(database.DateTime, nullable=True)
+
+    # Platform information
+    platform_name = database.Column(database.String(50), nullable=False)  # Zoom, Google Meet, etc.
+    platform_url = database.Column(database.String(500), nullable=False)  # Join link
+
+    # Certification
+    is_certificate = database.Column(database.Boolean, default=False, nullable=False)
+    diploma_template_id = database.Column(
+        database.String(26), database.ForeignKey("certificado.code"), nullable=True, index=True
+    )
+
+    # Media
+    video_recording_url = database.Column(database.String(500), nullable=True)  # After event
+    image_path = database.Column(database.String(200), nullable=True)  # Cover image
+
+    # Ownership
+    instructor_id = database.Column(
+        database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True
+    )
+
+    # Relationships
+    instructor = database.relationship("Usuario", foreign_keys=[instructor_id])
+    diploma_template = database.relationship("Certificado", foreign_keys=[diploma_template_id])
+    enrollments = database.relationship(
+        "MasterClassEnrollment", back_populates="master_class", cascade=CASCADE_ALL_DELETE_ORPHAN
+    )
+
+    def __repr__(self):
+        return f"<MasterClass {self.title}>"
+
+    def is_upcoming(self):
+        """Check if the master class is in the future."""
+        from datetime import datetime, time
+
+        event_datetime = datetime.combine(self.date, self.start_time)
+        return event_datetime > datetime.now()
+
+    def is_ongoing(self):
+        """Check if the master class is currently happening."""
+        from datetime import datetime, time
+
+        now = datetime.now()
+        event_date = self.date
+        start_datetime = datetime.combine(event_date, self.start_time)
+        end_datetime = datetime.combine(event_date, self.end_time)
+        return start_datetime <= now <= end_datetime
+
+    def is_finished(self):
+        """Check if the master class has ended."""
+        from datetime import datetime, time
+
+        end_datetime = datetime.combine(self.date, self.end_time)
+        return end_datetime < datetime.now()
+
+    def get_effective_price(self):
+        """Get the current effective price considering early discount."""
+        # Master Classes are now always free for marketing purposes
+        return 0
+
+
+class MasterClassEnrollment(database.Model, BaseTabla):
+    """User enrollment in a Master Class."""
+
+    __tablename__ = "master_class_enrollments"
+
+    master_class_id = database.Column(
+        database.String(26), database.ForeignKey("master_classes.id"), nullable=False, index=True
+    )
+    user_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    is_confirmed = database.Column(database.Boolean, default=False, nullable=False)
+    payment_id = database.Column(database.String(26), database.ForeignKey("pago.id"), nullable=True, index=True)
+    enrolled_at = database.Column(database.DateTime, default=database.func.now(), nullable=False)
+
+    # Constraints
+    __table_args__ = (database.UniqueConstraint("master_class_id", "user_id", name="unique_enrollment_per_user"),)
+
+    # Relationships
+    master_class = database.relationship("MasterClass", back_populates="enrollments")
+    user = database.relationship("Usuario", foreign_keys=[user_id])
+    payment = database.relationship("Pago", foreign_keys=[payment_id])
+
+    def __repr__(self):
+        return f"<MasterClassEnrollment {self.user_id} in {self.master_class_id}>"
+
+    def is_access_granted(self):
+        """Check if user has access to private content."""
+        # Since Master Classes are now free, just check if confirmed
+        return self.is_confirmed
 
 
 # Blog feature models

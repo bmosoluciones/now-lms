@@ -33,10 +33,14 @@ from now_lms.db import (
     BlogPost,
     BlogTag,
     Categoria,
+    Certificacion,
+    Certificado,
     Curso,
     CursoRecurso,
     CursoSeccion,
     Etiqueta,
+    MasterClass,
+    MasterClassEnrollment,
     Programa,
     Recurso,
     Usuario,
@@ -78,6 +82,52 @@ def crear_certificado_prueba():
     certificado = Certificado(id="01HNP0TTQNTR03J7ZQHR09YMKK", titulo="Certficado Test", descripcion="Certificado Test")
     database.session.add(certificado)
     database.session.commit()
+
+
+def crear_masterclass_prueba():
+    """Crea una clase magistral de prueba con inscripción para el admin."""
+    from datetime import date, time, timedelta
+
+    # Create a future master class
+    future_date = date.today() + timedelta(days=30)
+
+    masterclass = MasterClass(
+        title="Introducción al Machine Learning",
+        slug="intro-machine-learning",
+        description_public="Aprende los fundamentos del Machine Learning en esta clase magistral gratuita.",
+        description_private="Contenido exclusivo para estudiantes inscritos: ejercicios prácticos y Q&A session.",
+        date=future_date,
+        start_time=time(14, 0),  # 2:00 PM
+        end_time=time(16, 0),  # 4:00 PM
+        is_paid=False,
+        price=None,
+        platform_name="Zoom",
+        platform_url="https://zoom.us/j/1234567890",
+        is_certificate=True,
+        diploma_template_id="01HNP0TTQNTR03J7ZQHR09YMKK",  # Reference to test certificate
+        instructor_id="admin",  # Admin user as instructor
+    )
+
+    database.session.add(masterclass)
+    database.session.commit()
+    database.session.refresh(masterclass)
+
+    # Enroll admin user in the master class
+    enrollment = MasterClassEnrollment(master_class_id=masterclass.id, user_id="admin", is_confirmed=True, payment_id=None)
+
+    database.session.add(enrollment)
+    database.session.commit()
+
+    # Create a certificate for the admin user
+    certificacion = Certificacion(
+        usuario="admin", curso=None, master_class_id=masterclass.id, certificado="01HNP0TTQNTR03J7ZQHR09YMKK", nota=95.0
+    )
+
+    database.session.add(certificacion)
+    database.session.commit()
+
+    log.info(f"Created master class test data: {masterclass.title} with certificate for admin user")
+    return masterclass
 
 
 def crear_curso_para_pruebas():
@@ -539,5 +589,6 @@ def crear_data_para_pruebas():
     crear_recurso_prueba()
     crear_programa_prueba()
     crear_curso_para_pruebas()
+    crear_masterclass_prueba()  # Add master class test data
     crear_announcement_prueba()
     crear_blog_prueba()

@@ -17,6 +17,13 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
+                {% if not is_programs_enabled() %}
+                <div class="alert alert-warning" role="alert">
+                    <strong>⚠️ Aviso:</strong> Los programas están deshabilitados en la configuración principal del sitio. Los
+                    usuarios no verán este programa en el menú de navegación hasta que se habilite la opción "Habilitar
+                    Programas" en la configuración general.
+                </div>
+                {% endif %}
                 <div class="d-flex justify-content-between border-bottom">
                     <h4 class="pb-2 border-bottom">Editar Programa.</h4>
 

@@ -25,8 +25,20 @@
                         </div>
 
                         <div class="col-sm-6">
+                            <label for="content_type" class="form-label">Tipo de Contenido</label>
+                            {{ form.content_type(class="form-control", id="content_type") }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-sm-6" id="curso_field">
                             <label for="curso" class="form-label">Curso</label>
                             {{ form.curso(class="form-control") }}
+                        </div>
+
+                        <div class="col-sm-6" id="master_class_field" style="display: none">
+                            <label for="master_class" class="form-label">Clase Magistral</label>
+                            {{ form.master_class(class="form-control") }}
                         </div>
                     </div>
 
@@ -48,5 +60,23 @@
                 </form>
             </div>
         </main>
+
+        <script>
+            document.getElementById("content_type").addEventListener("change", function () {
+                var cursoField = document.getElementById("curso_field")
+                var masterClassField = document.getElementById("master_class_field")
+
+                if (this.value === "course") {
+                    cursoField.style.display = "block"
+                    masterClassField.style.display = "none"
+                } else if (this.value === "masterclass") {
+                    cursoField.style.display = "none"
+                    masterClassField.style.display = "block"
+                }
+            })
+
+            // Initialize the form display based on default selection
+            document.getElementById("content_type").dispatchEvent(new Event("change"))
+        </script>
     </body>
 </html>

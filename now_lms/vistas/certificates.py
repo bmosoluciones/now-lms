@@ -36,7 +36,16 @@ from sqlalchemy.exc import OperationalError
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Certificacion, Certificado, Curso, Usuario, database
+from now_lms.db import (
+    MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+    Certificacion,
+    Certificado,
+    Curso,
+    Usuario,
+    MasterClass,
+    MasterClassEnrollment,
+    database,
+)
 from now_lms.forms import CertificateForm, EmitCertificateForm
 
 # ---------------------------------------------------------------------------------------
@@ -221,15 +230,32 @@ def certificacion(ulid: str):
     certificado = database.session.execute(database.select(Certificado).filter_by(code=certificacion.certificado)).first()
     certificado = certificado[0]
 
-    curso = database.session.execute(database.select(Curso).filter_by(codigo=certificacion.curso)).first()
-    curso = curso[0]
+    # Get course or master class information
+    content = certificacion.get_content_info()
+    content_type = certificacion.get_content_type()
 
     usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion.usuario)).first()
     usuario = usuario[0]
 
     template = Environment(loader=BaseLoader, autoescape=True).from_string(insert_style_in_html(certificado))  # type: ignore[arg-type]
 
-    return template.render(curso=curso, usuario=usuario, certificacion=certificacion, certificado=certificado, url_for=url_for)
+    # Create context with both curso and master_class for template compatibility
+    context = {
+        "usuario": usuario,
+        "certificacion": certificacion,
+        "certificado": certificado,
+        "url_for": url_for,
+        "content_type": content_type,
+    }
+
+    if content_type == "course":
+        context["curso"] = content
+        context["master_class"] = None
+    else:
+        context["curso"] = content  # For backward compatibility with templates that expect 'curso'
+        context["master_class"] = content
+
+    return template.render(**context)
 
 
 @certificate.route("/certificate/download/<ulid>/")
@@ -245,24 +271,33 @@ def certificate_serve_pdf(ulid: str):
     certificado = database.session.execute(database.select(Certificado).filter_by(code=certificacion.certificado)).first()
     certificado = certificado[0]
 
-    curso = database.session.execute(database.select(Curso).filter_by(codigo=certificacion.curso)).first()
-    curso = curso[0]
+    # Get course or master class information
+    content = certificacion.get_content_info()
+    content_type = certificacion.get_content_type()
 
     usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion.usuario)).first()
     usuario = usuario[0]
 
     rtemplate = Environment(loader=BaseLoader, autoescape=True).from_string(certificado.html)  # type: ignore[arg-type]
 
+    # Create context with both curso and master_class for template compatibility
+    context = {
+        "usuario": usuario,
+        "certificacion": certificacion,
+        "certificado": certificado,
+        "url_for": url_for,
+        "content_type": content_type,
+    }
+
+    if content_type == "course":
+        context["curso"] = content
+        context["master_class"] = None
+    else:
+        context["curso"] = content  # For backward compatibility with templates that expect 'curso'
+        context["master_class"] = content
+
     return render_pdf(
-        HTML(
-            string=rtemplate.render(
-                curso=curso,
-                usuario=usuario,
-                certificacion=certificacion,
-                certificado=certificado,
-                url_for=url_for,
-            )
-        ),
+        HTML(string=rtemplate.render(**context)),
         stylesheets=[CSS(string=certificado.css)],
     )
 
@@ -291,19 +326,24 @@ def certificado(ulid):
     certificado = database.session.execute(database.select(Certificado).filter_by(code=certificacion.certificado)).first()
     certificado = certificado[0]
 
-    curso = database.session.execute(database.select(Curso).filter_by(codigo=certificacion.curso)).first()
-    curso = curso[0]
+    # Get course or master class information
+    content = certificacion.get_content_info()
+    content_type = certificacion.get_content_type()
 
     usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion.usuario)).first()
     usuario = usuario[0]
 
-    return render_template(
-        "learning/certificados/certificado.html",
-        curso=curso,
-        usuario=usuario,
-        certificacion=certificacion,
-        certificado=certificado,
-    )
+    # Create context with both curso and master_class for template compatibility
+    context = {"usuario": usuario, "certificacion": certificacion, "certificado": certificado, "content_type": content_type}
+
+    if content_type == "course":
+        context["curso"] = content
+        context["master_class"] = None
+    else:
+        context["curso"] = content  # For backward compatibility with templates that expect 'curso'
+        context["master_class"] = content
+
+    return render_template("learning/certificados/certificado.html", **context)
 
 
 @certificate.route("/certificate/issue/<course>/<user>/<template>/")
@@ -334,26 +374,67 @@ def certificacion_crear(course, user, template):
 @perfil_requerido("instructor")
 def certificacion_generar():
     """Generar un nuevo certificado."""
-    from now_lms.db.tools import generate_cource_choices, generate_template_choices, generate_user_choices
+    from now_lms.db.tools import (
+        generate_cource_choices,
+        generate_template_choices,
+        generate_user_choices,
+        generate_masterclass_choices,
+    )
 
     form = EmitCertificateForm()
 
     form.usuario.choices = generate_user_choices()
     form.curso.choices = generate_cource_choices()
+    form.master_class.choices = generate_masterclass_choices()
     form.template.choices = generate_template_choices()
 
     if form.validate_on_submit() or request.method == "POST":
-        # Check if user meets all requirements including evaluations
-        from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
+        content_type = form.content_type.data
 
-        can_receive, reason = can_user_receive_certificate(form.curso.data, form.usuario.data)
-        if not can_receive:
-            flash(f"No se puede emitir el certificado: {reason}", "warning")
-            return render_template("learning/certificados/generar_certificado.html", form=form)
+        # Validate that either curso or master_class is selected based on content_type
+        if content_type == "course" and not form.curso.data:
+            flash("Por favor selecciona un curso.", "warning")
+            return render_template("learning/certificados/emitir_certificado.html", form=form)
+        elif content_type == "masterclass" and not form.master_class.data:
+            flash("Por favor selecciona una clase magistral.", "warning")
+            return render_template("learning/certificados/emitir_certificado.html", form=form)
 
-        cert = Certificacion(
-            usuario=form.usuario.data, curso=form.curso.data, certificado=form.template.data, nota=form.nota.data
-        )
+        # Check if user meets requirements for courses
+        if content_type == "course":
+            from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
+
+            can_receive, reason = can_user_receive_certificate(form.curso.data, form.usuario.data)
+            if not can_receive:
+                flash(f"No se puede emitir el certificado: {reason}", "warning")
+                return render_template("learning/certificados/emitir_certificado.html", form=form)
+
+            cert = Certificacion(
+                usuario=form.usuario.data,
+                curso=form.curso.data,
+                master_class_id=None,
+                certificado=form.template.data,
+                nota=form.nota.data,
+            )
+        else:  # masterclass
+            # For master classes, check if user is enrolled and confirmed
+            enrollment = database.session.execute(
+                database.select(MasterClassEnrollment).filter_by(
+                    master_class_id=form.master_class.data, user_id=form.usuario.data
+                )
+            ).first()
+
+            if not enrollment or not enrollment[0].is_confirmed:
+                flash("El usuario debe estar inscrito y confirmado en la clase magistral.", "warning")
+                return render_template("learning/certificados/emitir_certificado.html", form=form)
+
+            cert = Certificacion(
+                usuario=form.usuario.data,
+                curso=None,
+                master_class_id=form.master_class.data,
+                certificado=form.template.data,
+                nota=form.nota.data,
+            )
+
         try:
             database.session.add(cert)
             database.session.commit()

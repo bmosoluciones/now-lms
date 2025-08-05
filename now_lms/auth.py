@@ -96,11 +96,7 @@ def perfil_requerido(perfil_id):
                 return redirect(url_for("user.login"))
 
             else:
-<<<<<<< HEAD
-                log.trace(f"Verificando acceso para el usuario {current_user.usuario} para el perfil {perfil_id}")
-=======
                 log.trace(f"Verifying access for user {current_user.usuario} with profile {perfil_id}")
->>>>>>> ia/copilot/fix-19
                 # Always allow admin access
                 if current_user.tipo == "admin":
                     return func(*args, **kwargs)

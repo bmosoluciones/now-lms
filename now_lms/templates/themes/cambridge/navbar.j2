@@ -38,14 +38,20 @@
                 <li class="nav-item">
                     <a href="{{ url_for('course.lista_cursos', page=1) }}" class="nav-link">Cursos</a>
                 </li>
+                {% if is_programs_enabled() %}
                 <li class="nav-item">
                     <a href="{{ url_for('program.lista_programas', page=1) }}" class="nav-link">Programas</a>
                 </li>
+                {% endif %} {% if is_resources_enabled() %}
                 <li class="nav-item">
                     <a href="{{ url_for('resource.lista_de_recursos', page=1) }}" class="nav-link">Recursos</a>
                 </li>
-                {% if current_user.is_authenticated %} {% if current_user.tipo == "moderator" or current_user.tipo ==
-                "instructor" or current_user.tipo == "admin" %}
+                {% endif %} {% if is_masterclass_enabled() %}
+                <li class="nav-item">
+                    <a href="{{ url_for('masterclass.list_public') }}" class="nav-link">Clases Magistrales</a>
+                </li>
+                {% endif %} {% if current_user.is_authenticated %} {% if current_user.tipo == "moderator" or current_user.tipo
+                == "instructor" or current_user.tipo == "admin" %}
                 <li class="nav-item">
                     <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link">Moderación</a>
                 </li>

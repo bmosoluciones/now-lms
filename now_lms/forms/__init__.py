@@ -113,6 +113,11 @@ class ConfigForm(FlaskForm):
 
     verify_user_by_email = BooleanField(validators=[])
 
+    # Navigation configuration
+    enable_programs = BooleanField("Habilitar Programas", default=False, validators=[])
+    enable_masterclass = BooleanField("Habilitar Master Class", default=False, validators=[])
+    enable_resources = BooleanField("Habilitar Recursos descargables", default=False, validators=[])
+
 
 class ThemeForm(FlaskForm):
     """Formulario para editar el tema del sistema."""
@@ -515,8 +520,14 @@ class EmitCertificateForm(FlaskForm):
         "Usuario",
     )
 
+    content_type = SelectField("Tipo de Contenido", choices=[("course", "Curso"), ("masterclass", "Clase Magistral")])
+
     curso = SelectField(
         "Curso",
+    )
+
+    master_class = SelectField(
+        "Clase Magistral",
     )
 
     template = SelectField(

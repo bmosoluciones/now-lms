@@ -90,6 +90,9 @@ from now_lms.db.tools import (
     get_addsense_meta,
     get_adsense_enabled,
     get_paypal_id,
+    is_masterclass_enabled,
+    is_programs_enabled,
+    is_resources_enabled,
     logo_perzonalizado,
     verifica_docente_asignado_a_curso,
     verifica_estudiante_asignado_a_curso,
@@ -123,6 +126,7 @@ from now_lms.vistas.resources import resource_d
 from now_lms.vistas.settings import setting
 from now_lms.vistas.tags import tag
 from now_lms.vistas.users import user
+from now_lms.vistas.masterclass import masterclass
 from now_lms.vistas.web_error_codes import web_error
 
 # ---------------------------------------------------------------------------------------
@@ -180,6 +184,7 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
         flask_app.register_blueprint(setting)
         flask_app.register_blueprint(tag)
         flask_app.register_blueprint(user)
+        flask_app.register_blueprint(masterclass)
         flask_app.register_blueprint(paypal)
         # User profiles
         flask_app.register_blueprint(admin_profile)
@@ -264,6 +269,9 @@ def define_variables_globales_jinja2(lms_app: Flask):
     lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
     lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
     lms_app.jinja_env.globals["info"] = app_info(lms_app)
+    lms_app.jinja_env.globals["is_masterclass_enabled"] = is_masterclass_enabled
+    lms_app.jinja_env.globals["is_programs_enabled"] = is_programs_enabled
+    lms_app.jinja_env.globals["is_resources_enabled"] = is_resources_enabled
     lms_app.jinja_env.globals["lms_info"] = lms_info
     lms_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
     lms_app.jinja_env.globals["mkdonw2thml"] = markdown_to_clean_hmtl

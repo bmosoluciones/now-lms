@@ -44,6 +44,48 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <br />
+                            <h5>Configuración de Navegación.</h5>
+                            <p class="text-muted">
+                                Configure qué elementos del menú de navegación estarán visibles para los usuarios.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-check">
+                                {{ form.enable_programs(class="form-check-input", id="enable_programs",
+                                checked=config.enable_programs) }}
+                                <label class="form-check-label" for="enable_programs"> Habilitar Programas </label>
+                            </div>
+                            <div class="form-text">Los usuarios verán la opción "Programas" en el menú de navegación.</div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-check">
+                                {{ form.enable_masterclass(class="form-check-input", id="enable_masterclass",
+                                checked=config.enable_masterclass) }}
+                                <label class="form-check-label" for="enable_masterclass"> Habilitar Master Class </label>
+                            </div>
+                            <div class="form-text">
+                                Los usuarios verán la opción "Clases Magistrales" en el menú de navegación.
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-check">
+                                {{ form.enable_resources(class="form-check-input", id="enable_resources",
+                                checked=config.enable_resources) }}
+                                <label class="form-check-label" for="enable_resources">
+                                    Habilitar Recursos descargables
+                                </label>
+                            </div>
+                            <div class="form-text">Los usuarios verán la opción "Recursos" en el menú de navegación.</div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-sm-8">
                             <br />
