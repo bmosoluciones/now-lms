@@ -37,7 +37,7 @@ from platform import python_version
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import Flask, flash, render_template, request
+from flask import Flask, flash, g, render_template, request
 from flask_alembic import Alembic
 from flask_babel import Babel
 from flask_login import LoginManager, current_user
@@ -154,7 +154,7 @@ def inicializa_extenciones_terceros(flask_app: Flask):
 
     log.trace("Starting third-party extensions")
     with flask_app.app_context():
-        from now_lms.i18n import _get_locales, _get_timezone
+        from now_lms.i18n import get_locale, get_timezone
 
         database.init_app(flask_app)
         alembic.init_app(flask_app)
@@ -164,8 +164,8 @@ def inicializa_extenciones_terceros(flask_app: Flask):
         mail.init_app(flask_app)
         flask_app.config["BABEL_DEFAULT_LOCALE"] = "es"
         flask_app.config["BABEL_TRANSLATION_DIRECTORIES"] = "translations"
-        app.config["BABEL_SUPPORTED_LOCALES"] = ["es", "en"]
-        babel.init_app(flask_app, locale_selector=_get_locales, timezone_selector=_get_locales)
+        flask_app.config["BABEL_SUPPORTED_LOCALES"] = ["es", "en"]
+        babel.init_app(flask_app, locale_selector=get_locale, timezone_selector=get_timezone)
     log.trace("Third-party extensions started successfully.")
 
 
@@ -462,6 +462,19 @@ def init_app(with_examples=False):
 # ---------------------------------------------------------------------------------------
 # Verifica si el usuario esta activo antes de procesar la solicitud.
 # ---------------------------------------------------------------------------------------
+@lms_app.before_request
+def load_configuracion_global():
+    """Carga la configuración global en g para su uso en la aplicación."""
+    if not hasattr(g, "configuracion"):
+        from now_lms.i18n import get_configuracion
+
+        try:
+            g.configuracion = get_configuracion()
+        except Exception as e:
+            log.error(f"Error loading global configuration: {e}")
+            g.configuracion = None
+
+
 @lms_app.before_request
 def before_request_user_active():
     if (

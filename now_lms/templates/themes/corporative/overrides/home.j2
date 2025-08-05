@@ -13,7 +13,7 @@
             <div class="hero-content">
                 <h1>Bienvenido a {{ site_config.nombre }}</h1>
                 <p>Capacitación que impulsa tu negocio.</p>
-                
+
                 <div class="d-flex gap-3 flex-wrap justify-content-center">
                     {% if not current_user.is_authenticated %}
                     <a href="{{ url_for('user.crear_cuenta') }}" class="btn btn-light btn-lg">

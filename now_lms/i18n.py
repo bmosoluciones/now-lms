@@ -23,40 +23,61 @@
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import current_app, request
+from flask import current_app, g, request
 from flask_babel import gettext as _
 
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
+from now_lms.cache import cache
 from now_lms.logs import log
 
 
-def _get_locales():
-    """Get the list of available locales."""
-    with current_app.app_context():
-        from now_lms.db import Configuracion, database
+@cache.cached(key_prefix="configuracion_global")
+def get_configuracion():
+    """Obtiene configuración del sitio web desde la base de datos (usando Flask-Caching)."""
+    from now_lms.db import Configuracion, database
 
-        config = database.session.query(Configuracion).first()
-        if config:
-            log.trace(_("Configuración consultada correctamente desde la base de datos."))
-            log.trace(f"Configuración de idioma: {config.lang}")
-            return config.lang
-        else:
-            return request.accept_languages.best_match(["es", "en"])
+    config = database.session.query(Configuracion).first()
+    if not config:
+        # Fallback en caso de que no haya configuración cargada
+        from now_lms.db import Configuracion
+
+        config = Configuracion(lang="en", time_zone="UTC", titulo="Título por defecto", descripcion="Descripción")
+    return config
+
+
+def get_locale():
+    """Obtiene el idioma desde la configuración en g."""
+    if hasattr(g, "configuracion") and g.configuracion:
+        return getattr(g.configuracion, "lang", "en")
+    # Fallback si no hay configuración disponible
+    return request.accept_languages.best_match(["es", "en"]) or "en"
+
+
+def get_timezone():
+    """Obtiene la zona horaria desde la configuración en g."""
+    if hasattr(g, "configuracion") and g.configuracion:
+        return getattr(g.configuracion, "time_zone", "UTC")
+    # Fallback si no hay configuración disponible
+    return "UTC"
+
+
+def invalidate_configuracion_cache():
+    """Invalida la caché de configuración cuando se actualice."""
+    cache.delete("configuracion_global")
+    log.trace("Cache de configuración invalidada")
+
+
+# Funciones legacy para compatibilidad
+def _get_locales():
+    """Get the list of available locales. DEPRECATED: Use get_locale() instead."""
+    return get_locale()
 
 
 def _get_timezone():
-    """Get the list of available locales."""
-    with current_app.app_context():
-        from now_lms.db import Configuracion, database
-
-        config = database.session.query(Configuracion).first()
-        if config:
-            log.trace(f"Configuración de zona horaria: {config.time_zone}")
-            return config.time_zone
-        else:
-            return request.accept_languages.best_match(["es", "en"])
+    """Get the timezone. DEPRECATED: Use get_timezone() instead."""
+    return get_timezone()
 
 
 """Guia de uso:
