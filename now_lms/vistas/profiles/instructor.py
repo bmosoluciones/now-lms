@@ -39,6 +39,7 @@ instructor_profile = Blueprint("instructor_profile", __name__, template_folder=D
 
 @instructor_profile.route("/instructor")
 @login_required
+@perfil_requerido("instructor")
 def pagina_instructor():
     """Perfil de usuario instructor."""
     return render_template("perfiles/instructor.html")
@@ -46,6 +47,7 @@ def pagina_instructor():
 
 @instructor_profile.route("/instructor/courses_list")
 @login_required
+@perfil_requerido("instructor")
 def cursos():
     """Lista de cursos disponibles en el sistema."""
     if current_user.tipo == "admin":

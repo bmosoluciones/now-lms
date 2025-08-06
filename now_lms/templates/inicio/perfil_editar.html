@@ -17,7 +17,11 @@
 
             <div class="container px-4 py-5" id="icon-grid">
                 <h4 class="pb-2 border-bottom">Editar perfil del usuario: {{ usuario.usuario }}</h4>
-                <form method="post" action="{{ url_for('edit_perfil', ulid=usuario.id) }}" enctype="multipart/form-data">
+                <form
+                    method="post"
+                    action="{{ url_for('user_profile.edit_perfil', ulid=usuario.id) }}"
+                    enctype="multipart/form-data"
+                >
                     {{ form.csrf_token }} {% if usuario.portada %}
                     <img
                         src="{{ url_for('static', filename='/files/public/images/usuarios/' + usuario.id + '.jpg') }}"
@@ -109,7 +113,7 @@
                         </div>
                     </div>
 
-                    <a class="btn btn-warning" href="{{ url_for('perfil') }}" role="button">Cancelar</a>
+                    <a class="btn btn-warning" href="{{ url_for('user_profile.perfil') }}" role="button">Cancelar</a>
                     <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Perfil</button>
                 </form>
             </div>
