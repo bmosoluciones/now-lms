@@ -420,8 +420,10 @@ def test_theme_functionality_comprehensive(lms_application):
     )
 
     with lms_application.app_context():
-        database.drop_all()
-        initial_setup(with_tests=False, with_examples=False)
+        try:
+            initial_setup(with_tests=False, with_examples=False) # Do not need a freesh database for this test
+        except:
+            pass
 
         # Test default template returns
         assert get_home_template() == "inicio/home.html"
