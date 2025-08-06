@@ -36,7 +36,7 @@ jobs:
                   CI: True
                   LOG_LEVEL: TRACE
               run: |
-                  # pytest  -v --exitfirst --slow=True --use-cases=True
+                  # pytest  -v --exitfirst
                   pytest  -v --exitfirst
             - name: Linting
               run: |
