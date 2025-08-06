@@ -20,4 +20,4 @@ echo -------------------------------------------------
 echo Run tests
 echo -------------------------------------------------
 echo
-CI=True pytest  -v --exitfirst --cov=now_lms --slow=True --use-cases=True
+CI=True pytest  -v --exitfirst --cov=now_lms

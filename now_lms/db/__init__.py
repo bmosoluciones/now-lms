@@ -1012,14 +1012,14 @@ class MasterClass(database.Model, BaseTabla):
 
     def is_upcoming(self):
         """Check if the master class is in the future."""
-        from datetime import datetime, time
+        from datetime import datetime
 
         event_datetime = datetime.combine(self.date, self.start_time)
         return event_datetime > datetime.now()
 
     def is_ongoing(self):
         """Check if the master class is currently happening."""
-        from datetime import datetime, time
+        from datetime import datetime
 
         now = datetime.now()
         event_date = self.date
@@ -1029,7 +1029,7 @@ class MasterClass(database.Model, BaseTabla):
 
     def is_finished(self):
         """Check if the master class has ended."""
-        from datetime import datetime, time
+        from datetime import datetime
 
         end_datetime = datetime.combine(self.date, self.end_time)
         return end_datetime < datetime.now()

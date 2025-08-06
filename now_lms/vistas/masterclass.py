@@ -15,17 +15,16 @@
 
 """Master Class views."""
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from flask import Blueprint, flash, redirect, render_template, request, url_for, abort
 from flask_login import current_user, login_required
 from slugify import slugify
-from sqlalchemy import and_, or_
+from sqlalchemy import and_
 
 from now_lms.db import (
     MasterClass,
     MasterClassEnrollment,
     Usuario,
-    Certificado,
     database,
 )
 from now_lms.forms.masterclass import MasterClassForm, MasterClassEnrollmentForm

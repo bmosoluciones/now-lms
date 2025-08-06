@@ -77,7 +77,6 @@ def crear_categoria_prueba():
 
 def crear_certificado_prueba():
     """Crea certificado de prueba"""
-    from now_lms.db import Certificado
 
     certificado = Certificado(id="01HNP0TTQNTR03J7ZQHR09YMKK", titulo="Certficado Test", descripcion="Certificado Test")
     database.session.add(certificado)

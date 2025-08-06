@@ -103,7 +103,7 @@ def perfil_requerido(perfil_id):
 
                 # Handle tuple format for multiple allowed profiles
                 elif isinstance(perfil_id, tuple):
-                    if current_user.tipo in perfil_id or "admin" in perfil_id:
+                    if current_user.tipo in perfil_id:
                         return func(*args, **kwargs)
                 # Handle string format for single profile
                 elif isinstance(perfil_id, str) and current_user.tipo == perfil_id:

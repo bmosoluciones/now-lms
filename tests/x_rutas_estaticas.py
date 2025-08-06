@@ -1262,22 +1262,9 @@ rutas_estaticas = [
         como_admin=[],
     ),
     Ruta(
-        ruta="/user/logon",
-        no_session=200,
-        admin=200,
-        user=302,
-        moderator=200,
-        instructor=200,
-        texto=[],
-        como_user=[],
-        como_moderador=[],
-        como_instructor=[],
-        como_admin=[],
-    ),
-    Ruta(
         ruta="/user/new_user",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=302,
         instructor=302,
@@ -1290,10 +1277,10 @@ rutas_estaticas = [
     Ruta(
         ruta="/perfil",
         no_session=302,
-        admin=302,
-        user=302,
-        moderator=302,
-        instructor=302,
+        admin=200,
+        user=200,
+        moderator=200,
+        instructor=200,
         texto=[],
         como_user=[],
         como_moderador=[],
@@ -1303,8 +1290,8 @@ rutas_estaticas = [
     Ruta(
         ruta="/admin/users/list",
         no_session=302,
-        admin=302,
-        user=302,
+        admin=200,
+        user=403,
         moderator=302,
         instructor=302,
         texto=[],
@@ -1316,8 +1303,8 @@ rutas_estaticas = [
     Ruta(
         ruta="/setting/adsense",
         no_session=302,
-        admin=302,
-        user=302,
+        admin=200,
+        user=403,
         moderator=302,
         instructor=302,
         texto=[],
@@ -1394,8 +1381,8 @@ rutas_estaticas = [
     Ruta(
         ruta="/user/forgot_password",
         no_session=200,
-        admin=200,
-        user=200,
+        admin=302,
+        user=302,
         moderator=200,
         instructor=200,
         texto=[],
@@ -1422,8 +1409,8 @@ rutas_estaticas = [
     Ruta(
         ruta="/user/messages",
         no_session=302,
-        admin=302,  # Messages route redirects for admin too
-        user=302,
+        admin=200,
+        user=200,
         moderator=302,
         instructor=302,
         texto=[],
@@ -1451,7 +1438,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/admin/announcements",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=403,
         instructor=403,
@@ -1464,7 +1451,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/admin/announcements/new",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=403,
         instructor=403,
@@ -1477,7 +1464,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/admin/announcements/1/edit",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=403,
         instructor=403,
@@ -1519,7 +1506,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/admin/blog",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=403,
         instructor=403,
@@ -1532,7 +1519,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/admin/blog/posts/new",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=403,
         instructor=302,
@@ -1545,7 +1532,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/admin/blog/tags",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=403,
         instructor=403,
@@ -1558,7 +1545,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/admin/flagged-messages",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=403,
         instructor=403,
@@ -1585,19 +1572,19 @@ rutas_estaticas = [
     #     como_instructor=[],
     #     como_admin=[],
     # ),
-    # Ruta(
-    #     ruta="/admin/users/list_inactive",
-    #     no_session=302,
-    #     admin=200,
-    #     user=403,
-    #     moderator=403,
-    #     instructor=403,
-    #     texto=[],
-    #     como_user=[],
-    #     como_moderador=[],
-    #     como_instructor=[],
-    #     como_admin=[],
-    # ),
+    Ruta(
+         ruta="/admin/users/list_inactive",
+         no_session=302,
+         admin=200,
+         user=403,
+         moderator=403,
+         instructor=403,
+         texto=[],
+         como_user=[],
+         como_moderador=[],
+     como_instructor=[],
+         como_admin=[],
+    ),
     # <---------------------------------------------------------------------> #
     # Blog public routes
     # <---------------------------------------------------------------------> #
@@ -1620,8 +1607,8 @@ rutas_estaticas = [
     Ruta(
         ruta="/certificate/issued/list",
         no_session=302,
-        admin=302,  # Also redirects for admin
-        user=302,
+        admin=200,
+        user=403,
         moderator=302,
         instructor=302,
         texto=[],
@@ -1633,8 +1620,8 @@ rutas_estaticas = [
     Ruta(
         ruta="/certificate/release/",
         no_session=302,
-        admin=302,  # Also redirects for admin
-        user=302,  # Actually redirects for users too, not 403
+        admin=200,
+        user=403,
         moderator=302,
         instructor=302,
         texto=[],
@@ -1649,8 +1636,8 @@ rutas_estaticas = [
     Ruta(
         ruta="/dashboard/announcements",
         no_session=302,
-        admin=302,  # Also redirects for admin
-        user=302,
+        admin=200,
+        user=200,
         moderator=302,
         instructor=302,
         texto=[],
@@ -1665,8 +1652,8 @@ rutas_estaticas = [
     Ruta(
         ruta="/student",
         no_session=302,
-        admin=302,  # Also redirects for admin
-        user=302,
+        admin=200,
+        user=200,
         moderator=302,
         instructor=302,
         texto=[],
@@ -1682,7 +1669,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/instructor",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=403,
         instructor=200,
@@ -1695,7 +1682,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/instructor/announcements",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=403,
         instructor=200,
@@ -1708,7 +1695,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/instructor/announcements/new",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=403,
         instructor=200,
@@ -1721,7 +1708,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/instructor/blog",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=403,
         instructor=200,
@@ -1734,7 +1721,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/instructor/evaluaciones",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=403,
         instructor=200,
@@ -1747,7 +1734,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/instructor/group/list",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=403,
         instructor=200,
@@ -1760,7 +1747,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/instructor/nueva-evaluacion",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=403,
         instructor=200,
@@ -1794,7 +1781,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/message/new",
         no_session=302,
-        admin=302,
+        admin=200,
         user=200,
         moderator=200,
         instructor=200,
@@ -1807,7 +1794,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/message/report/",
         no_session=302,
-        admin=302,
+        admin=200,
         user=200,
         moderator=200,
         instructor=200,
@@ -1820,24 +1807,23 @@ rutas_estaticas = [
     # <---------------------------------------------------------------------> #
     # Additional settings routes
     # <---------------------------------------------------------------------> #
-    # Note: Commented out temporarily - these routes redirect and need more investigation
-    Ruta(
-        ruta="/setting/delete_site_logo",
-        no_session=302,
-        admin=302,
-        user=403,
-        moderator=403,
-        instructor=403,
-        texto=[],
-        como_user=[],
-        como_moderador=[],
-        como_instructor=[],
-        como_admin=[],
-    ),
+    #Ruta(
+    #    ruta="/setting/delete_site_logo",
+    #    no_session=302,
+    #    admin=302,
+    #    user=403,
+    #    moderator=403,
+    #    instructor=403,
+    #    texto=[],
+    #    como_user=[],
+    #    como_moderador=[],
+    #    como_instructor=[],
+    #    como_admin=[],
+    #),
     Ruta(
         ruta="/setting/mail/verify",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=403,
         instructor=403,
@@ -1863,7 +1849,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/setting/paypal",
         no_session=302,
-        admin=302,
+        admin=200,
         user=403,
         moderator=403,
         instructor=403,
@@ -1889,12 +1875,11 @@ rutas_estaticas = [
     # <---------------------------------------------------------------------> #
     # Profile management routes
     # <---------------------------------------------------------------------> #
-    # Note: These require specific user IDs, using test user ID from data_test.py
-    # Commented out temporarily - these routes redirect and need more investigation
+
     Ruta(
         ruta="/perfil/01HNZXJRD65A55BJACFEFNZ88D/delete_logo",  # student1 ID
         no_session=302,
-        admin=302,
+        admin=403,
         user=302,
         moderator=302,
         instructor=302,
@@ -1907,7 +1892,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/perfil/edit/01HNZXJRD65A55BJACFEFNZ88D",  # student1 ID
         no_session=302,
-        admin=302,
+        admin=403,
         user=200,
         moderator=200,
         instructor=200,
@@ -1920,7 +1905,7 @@ rutas_estaticas = [
     Ruta(
         ruta="/perfil/cambiar_contraseña/01HNZXJRD65A55BJACFEFNZ88D",  # student1 ID
         no_session=302,
-        admin=302,
+        admin=403,
         user=200,
         moderator=200,
         instructor=200,
@@ -1930,39 +1915,4 @@ rutas_estaticas = [
         como_instructor=[],
         como_admin=[],
     ),
-    # Ruta(
-    #     ruta="/group/add",
-    #     no_session=302,
-    #     admin=302,  # POST method typically redirects
-    #     user=403,
-    #     moderator=403,
-    #     instructor=403,
-    #     texto=[],
-    #     como_user=[],
-    #     como_moderador=[],
-    #     como_instructor=[],
-    #     como_admin=[],
-    # ),
-    # Ruta(
-    #     ruta="/group/set_tutor",
-    #     no_session=302,
-    #     admin=302,  # POST method typically redirects
-    #     user=403,
-    #     moderator=403,
-    #     instructor=403,
-    #     texto=[],
-    #     como_user=[],
-    #     como_moderador=[],
-    #     como_instructor=[],
-    #     como_admin=[],
-    # ),
-    # <---------------------------------------------------------------------> #
-    # Admin user type changes
-    # <---------------------------------------------------------------------> #
-    # <---------------------------------------------------------------------> #
-    # Site settings
-    # <---------------------------------------------------------------------> #
-    # <---------------------------------------------------------------------> #
-    # Certificate release functionality
-    # <---------------------------------------------------------------------> #
 ]

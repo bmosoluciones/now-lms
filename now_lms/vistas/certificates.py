@@ -40,9 +40,7 @@ from now_lms.db import (
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
     Certificacion,
     Certificado,
-    Curso,
     Usuario,
-    MasterClass,
     MasterClassEnrollment,
     database,
 )

@@ -16,9 +16,9 @@
 """Master Class forms."""
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, DateField, TimeField, BooleanField, DecimalField, SelectField, DateTimeField
-from wtforms.validators import DataRequired, Length, Optional, NumberRange, URL, ValidationError
-from datetime import datetime, date, time
+from wtforms import StringField, TextAreaField, DateField, TimeField, BooleanField, SelectField
+from wtforms.validators import DataRequired, Length, Optional, URL, ValidationError
+from datetime import date
 
 from now_lms.db import Certificado, database
 

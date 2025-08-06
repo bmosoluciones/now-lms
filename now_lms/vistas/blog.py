@@ -205,7 +205,7 @@ def admin_blog_index():
 
 @blog.route("/admin/blog/posts/new", methods=["GET", "POST"])
 @login_required
-@perfil_requerido(("admin", "instructor"))
+@perfil_requerido("instructor")
 def admin_create_post():
     """Create a new blog post."""
     form = BlogPostForm()
@@ -265,6 +265,7 @@ def admin_create_post():
 
 @blog.route("/admin/blog/posts/<post_id>/edit", methods=["GET", "POST"])
 @login_required
+@perfil_requerido("instructor")
 def admin_edit_post(post_id):
     """Edit a blog post."""
     post = database.session.get(BlogPost, post_id)
@@ -426,6 +427,7 @@ def delete_tag(tag_id):
 # Comment management routes
 @blog.route("/admin/blog/comments/<comment_id>/ban", methods=["POST"])
 @login_required
+@perfil_requerido("admin")
 def ban_comment(comment_id):
     """Ban a comment."""
     comment = database.session.get(BlogComment, comment_id)
@@ -453,6 +455,7 @@ def ban_comment(comment_id):
 
 @blog.route("/admin/blog/comments/<comment_id>", methods=["DELETE"])
 @login_required
+@perfil_requerido("admin")
 def delete_comment(comment_id):
     """Delete a comment."""
     comment = database.session.get(BlogComment, comment_id)
@@ -483,7 +486,7 @@ def delete_comment(comment_id):
 # Instructor blog routes
 @blog.route("/instructor/blog")
 @login_required
-@perfil_requerido(("instructor", "admin"))
+@perfil_requerido("instructor")
 def instructor_blog_index():
     """Instructor blog management index."""
     page = request.args.get("page", 1, type=int)
