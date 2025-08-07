@@ -58,19 +58,6 @@ def test_evaluation_forms():
     print("Evaluation forms test completed! ✓")
 
 
-def test_evaluation_views():
-    """Test that evaluation views can be imported."""
-    print("\nTesting evaluation views...")
-
-    print("✓ Evaluation blueprint imported")
-
-    # Test that key functions exist
-
-    print("✓ Core evaluation functions imported")
-
-    print("Evaluation views test completed! ✓")
-
-
 def test_app_integration():
     """Test that the app loads with evaluation system."""
     print("\nTesting app integration...")
@@ -109,28 +96,3 @@ def test_app_integration():
                 print(f"✗ Database table '{table}' not found")
 
     print("App integration test completed! ✓")
-
-
-def main():
-    """Run all tests."""
-    print("=== NOW-LMS Evaluations System Test ===\n")
-
-    try:
-        test_evaluation_models()
-        test_evaluation_forms()
-        test_evaluation_views()
-        test_app_integration()
-
-        print("\n=== All Tests Completed Successfully! ===")
-        print("The evaluations system has been successfully integrated into NOW-LMS.")
-
-    except Exception as e:
-        print(f"\n✗ Test failed with error: {e}")
-        import traceback
-
-        traceback.print_exc()
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    main()
