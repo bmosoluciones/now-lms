@@ -30,25 +30,20 @@ jobs:
                   LOG_LEVEL: TRACE
               run: |
                   pytest  -v --exitfirst --cov=now_lms
-            - name: Test with Postgresql + psycopg2
+            - name: Test with MySQL
               env:
                   CI: True
-                  SECRET_KEY: ASD123klj+aAddSadasaaafsfafaSASASSAGSGSGSGSGSGSSDFASFAS
-                  DATABASE_URL: postgresql+psycopg2://lmsctl1:lmsctl1@127.0.0.1:5432/lmsctl1
+                  SECRET_KEY: ASD123klj+aAddS
+                  DATABASE_URL: mysql+mysqldb://lmsctl:lmsctl@127.0.0.1/lmsctl
                   ADMIN_USER: hello
                   ADMIN_PSWD: world
                   FLASK_APP: now_lms
                   LOG_LEVEL: TRACE
               run: |
-                  sudo systemctl start postgresql.service
-                  sudo -u postgres psql -c "CREATE USER lmsctl1 WITH PASSWORD 'lmsctl1';"
-                  sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON SCHEMA public TO lmsctl1;"
-                  sudo -u postgres psql -c "CREATE DATABASE lmsctl1;"
-                  sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE lmsctl1 TO lmsctl1;"
-                  sudo -u postgres psql -c "ALTER DATABASE lmsctl1 OWNER TO lmsctl1;"
-                  sudo -u postgres psql -c "ALTER ROLE lmsctl1 CREATEDB;"
-                  sudo -u postgres psql -c "GRANT USAGE ON SCHEMA public TO lmsctl1;"
-                  sudo -u postgres psql -c "GRANT CREATE ON SCHEMA public TO lmsctl1;"
+                  sudo systemctl start mysql.service
+                  mysql -u root -proot -e "CREATE USER 'lmsctl'@'localhost' IDENTIFIED BY 'lmsctl';"
+                  mysql -u root -proot -e "CREATE DATABASE lmsctl;"
+                  mysql -u root -proot -e "GRANT ALL PRIVILEGES ON lmsctl.* TO 'lmsctl'@'localhost'; FLUSH PRIVILEGES;"
                   pytest  -v --exitfirst --cov=now_lms --cov-append
             - name: Test with Postgresql + pg8000
               env:
@@ -68,21 +63,6 @@ jobs:
                   sudo -u postgres psql -c "ALTER ROLE lmsctl2 CREATEDB;"
                   sudo -u postgres psql -c "GRANT USAGE ON SCHEMA public TO lmsctl2;"
                   sudo -u postgres psql -c "GRANT CREATE ON SCHEMA public TO lmsctl2;"
-                  pytest  -v --exitfirst --cov=now_lms --cov-append
-            - name: Test with MySQL
-              env:
-                  CI: True
-                  SECRET_KEY: ASD123klj+aAddS
-                  DATABASE_URL: mysql+mysqldb://lmsctl:lmsctl@127.0.0.1/lmsctl
-                  ADMIN_USER: hello
-                  ADMIN_PSWD: world
-                  FLASK_APP: now_lms
-                  LOG_LEVEL: TRACE
-              run: |
-                  sudo systemctl start mysql.service
-                  mysql -u root -proot -e "CREATE USER 'lmsctl'@'localhost' IDENTIFIED BY 'lmsctl';"
-                  mysql -u root -proot -e "CREATE DATABASE lmsctl;"
-                  mysql -u root -proot -e "GRANT ALL PRIVILEGES ON lmsctl.* TO 'lmsctl'@'localhost'; FLUSH PRIVILEGES;"
                   pytest  -v --exitfirst --cov=now_lms --cov-append
             - uses: codecov/codecov-action@v5
               with:
