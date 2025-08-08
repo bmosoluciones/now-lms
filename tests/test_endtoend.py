@@ -14,23 +14,21 @@
 #
 
 import pytest
-
+from now_lms.db import database
 
 """
 Casos de uso mas comunes.
 """
 
 
-def test_user_registration_to_free_course_enroll(basic_config_setup):
+def test_user_registration_to_free_course_enroll(full_db_setup):
 
-    from now_lms import database, initial_setup
+    basic_config_setup = full_db_setup
     from now_lms.db import eliminar_base_de_datos_segura
     from now_lms.db import Usuario
 
     with basic_config_setup.app_context():
         # This test needs a specific setup, so we recreate the database
-        eliminar_base_de_datos_segura()
-        initial_setup(with_tests=False, with_examples=False)
         with basic_config_setup.test_client() as client:
             post = client.post(
                 "/user/logon",
@@ -175,14 +173,10 @@ def test_user_registration_to_free_course_enroll(basic_config_setup):
 def test_user_password_change(basic_config_setup):
     """Test password change functionality for users."""
 
-    from now_lms import database, initial_setup
-    from now_lms.db import eliminar_base_de_datos_segura
     from now_lms.db import Usuario
     from now_lms.auth import proteger_passwd, validar_acceso
 
     with basic_config_setup.app_context():
-        eliminar_base_de_datos_segura()
-        initial_setup(with_tests=False, with_examples=False)
 
         # Create a test user
         test_user = Usuario(
@@ -263,14 +257,10 @@ def test_user_password_change(basic_config_setup):
 def test_password_recovery_functionality(basic_config_setup):
     """Test the complete password recovery flow."""
 
-    from now_lms import database, initial_setup
-    from now_lms.db import eliminar_base_de_datos_segura
     from now_lms.db import Usuario, MailConfig
     from now_lms.auth import proteger_passwd, validar_acceso
 
     with basic_config_setup.app_context():
-        eliminar_base_de_datos_segura()
-        initial_setup(with_tests=False, with_examples=False)
 
         # Update the default mail configuration to enable email verification
         mail_config = database.session.execute(database.select(MailConfig)).first()[0]
@@ -314,9 +304,7 @@ def test_password_recovery_functionality(basic_config_setup):
 
         with patch("now_lms.mail.send_mail") as mock_send_mail:
             mock_send_mail.return_value = True
-            forgot_post = client.post(
-                "/user/forgot_password", data={"email": "testuser2@nowlms.com"}, follow_redirects=True
-            )
+            forgot_post = client.post("/user/forgot_password", data={"email": "testuser2@nowlms.com"}, follow_redirects=True)
             assert forgot_post.status_code == 200
             assert "Se ha enviado un correo".encode("utf-8") in forgot_post.data
             mock_send_mail.assert_called_once()
@@ -406,10 +394,6 @@ def test_theme_functionality_comprehensive(basic_config_setup):
     )
 
     with basic_config_setup.app_context():
-        try:
-            initial_setup(with_tests=False, with_examples=False)  # Do not need a freesh database for this test
-        except:
-            pass
 
         # Test default template returns
         assert get_home_template() == "inicio/home.html"

@@ -104,6 +104,10 @@ def full_db_setup(lms_application):
     from now_lms import database, initial_setup
     from now_lms.db import eliminar_base_de_datos_segura
 
+    # Get admin username from environment, just like in initial_data.py
+    admin_username = os.environ.get("ADMIN_USER") or os.environ.get("LMS_USER") or "lms-admin"
+    admin_password = os.environ.get("ADMIN_PSWD") or os.environ.get("LMS_PSWD") or "lms-admin"
+
     with lms_application.app_context():
         try:
             # For PostgreSQL, ensure clean state before setup
@@ -118,6 +122,53 @@ def full_db_setup(lms_application):
             # Full database setup with test data
             eliminar_base_de_datos_segura()
             initial_setup(with_tests=True, with_examples=False)
+            log.debug("Full database setup completed.")
+        except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError) as e:
+            log.warning(f"Full database setup error (continuing): {e}")
+
+    yield lms_application  # Return the application with the full database setup
+
+    # Clean up after test
+    with lms_application.app_context():
+        try:
+            # For PostgreSQL, handle potential rollback issues
+            db_url = lms_application.config.get("SQLALCHEMY_DATABASE_URI", "")
+            if "postgresql" in db_url.lower():
+                database.session.rollback()
+                database.session.close()
+            eliminar_base_de_datos_segura()
+            log.debug("Full database cleaned up.")
+        except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError) as e:
+            log.warning(f"Database cleanup warning: {e}")
+
+
+@pytest.fixture
+def full_db_setup_with_examples(lms_application):
+    """
+    Full database setup with complete data population.
+    Use this for tests that need the complete populated database (like test_vistas).
+    """
+    from now_lms import database, initial_setup
+    from now_lms.db import eliminar_base_de_datos_segura
+
+    # Get admin username from environment, just like in initial_data.py
+    admin_username = os.environ.get("ADMIN_USER") or os.environ.get("LMS_USER") or "lms-admin"
+    admin_password = os.environ.get("ADMIN_PSWD") or os.environ.get("LMS_PSWD") or "lms-admin"
+
+    with lms_application.app_context():
+        try:
+            # For PostgreSQL, ensure clean state before setup
+            db_url = lms_application.config.get("SQLALCHEMY_DATABASE_URI", "")
+            if "postgresql" in db_url.lower():
+                try:
+                    database.session.rollback()
+                    database.session.close()
+                except:
+                    pass
+
+            # Full database setup with test data
+            eliminar_base_de_datos_segura()
+            initial_setup(with_tests=True, with_examples=True)
             log.debug("Full database setup completed.")
         except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError) as e:
             log.warning(f"Full database setup error (continuing): {e}")

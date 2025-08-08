@@ -29,17 +29,18 @@ def test_eliminar_base_de_datos_segura_basic(lms_application):
         try:
             # Set up a basic database
             database.create_all()
-            
+
             # Verify tables exist by checking we can create basic config
             from now_lms.db.tools import crear_configuracion_predeterminada
+
             crear_configuracion_predeterminada()
-            
+
             # Use the safe deletion function
             eliminar_base_de_datos_segura()
-            
+
             # Verify the database is clean - this should not raise an error
             database.create_all()
-            
+
         except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError) as e:
             pytest.skip(f"Database test skipped due to error: {e}")
 
@@ -58,16 +59,16 @@ def test_eliminar_base_de_datos_segura_with_postgresql_sessions(lms_application)
         try:
             # Set up database and create some data
             database.create_all()
-            
+
             # Simulate having active sessions by starting a transaction
             database.session.begin()
-            
+
             # Use the safe deletion function - it should handle session cleanup
             eliminar_base_de_datos_segura()
-            
+
             # Verify we can recreate the database without issues
             database.create_all()
-            
+
         except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError) as e:
             pytest.skip(f"PostgreSQL test skipped due to error: {e}")
 
@@ -82,14 +83,14 @@ def test_eliminar_base_de_datos_segura_error_handling(lms_application):
     with lms_application.app_context():
         try:
             database.create_all()
-            
+
             # Mock drop_all to raise an error and verify error handling
-            with patch.object(database, 'drop_all') as mock_drop_all:
+            with patch.object(database, "drop_all") as mock_drop_all:
                 mock_drop_all.side_effect = SQLAlchemyError("Test error")
-                
+
                 # The function should raise the error after attempting rollback
                 with pytest.raises(SQLAlchemyError):
                     eliminar_base_de_datos_segura()
-                    
+
         except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError) as e:
             pytest.skip(f"Database test skipped due to error: {e}")

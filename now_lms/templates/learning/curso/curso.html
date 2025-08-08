@@ -103,8 +103,8 @@
                         <strong>Recursos disponibles con este curso:</strong>
                         <br />
                         {% for item in descargas %}
-                        <a href="{{ url_for('resource.vista_recurso', resource_code=item[0].codigo) }}" class="link-dark"
-                            >{{ tipo[item[0].tipo] | safe }} {{ item[0].nombre }}</a
+                        <a href="{{ url_for('resource.vista_recurso', resource_code=item.codigo) }}" class="link-dark"
+                            >{{ tipo[item.tipo] | safe }} {{ item.nombre }}</a
                         ><br />
                         {% endfor %} {% endif %}
 

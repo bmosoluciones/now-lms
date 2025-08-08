@@ -49,14 +49,15 @@ def test_visit_views_anonimus(full_db_setup):
                             assert t in consulta.data"""
 
 
-def test_visit_views_admin(full_db_setup):
+def test_visit_views_admin(full_db_setup_with_examples):
+
+    full_db_setup = full_db_setup_with_examples
+    # Get admin username from environment, just like in initial_data.py
+    admin_username = os.environ.get("ADMIN_USER") or os.environ.get("LMS_USER") or "lms-admin"
+    admin_password = os.environ.get("ADMIN_PSWD") or os.environ.get("LMS_PSWD") or "lms-admin"
 
     with full_db_setup.app_context():
         from flask_login import current_user
-
-        # Get admin username from environment, just like in initial_data.py
-        admin_username = os.environ.get("ADMIN_USER") or os.environ.get("LMS_USER") or "lms-admin"
-        admin_password = os.environ.get("ADMIN_PSWD") or os.environ.get("LMS_PSWD") or "lms-admin"
 
         with full_db_setup.test_client() as client:
             # Keep the session alive until the with clausule closes

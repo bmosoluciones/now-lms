@@ -76,6 +76,13 @@ class TestCouponSystem(TestCase):
             database.session.add(self.free_course)
             database.session.commit()
 
+    def tearDown(self):
+        """Clean up after tests."""
+        database.session.remove()
+        eliminar_base_de_datos_segura()
+        database.session.close()
+        self.app_context.pop()
+
     def test_coupon_model_creation(self):
         """Test basic coupon model creation and validation."""
         from now_lms.db import Coupon, database

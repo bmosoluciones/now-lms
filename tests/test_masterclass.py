@@ -37,9 +37,10 @@ class TestMasterClassBasic(TestCase):
 
     def tearDown(self):
         from now_lms.db import eliminar_base_de_datos_segura
-        
+
         database.session.remove()
         eliminar_base_de_datos_segura()
+        database.session.close()
 
     def test_master_class_model_exists(self):
         """Test that MasterClass model can be imported."""
@@ -220,7 +221,7 @@ class TestMasterClassCertificates(TestCase):
 
     def tearDown(self):
         from now_lms.db import eliminar_base_de_datos_segura
-        
+
         database.session.remove()
         eliminar_base_de_datos_segura()
 
@@ -315,9 +316,7 @@ class TestMasterClassCertificates(TestCase):
         database.session.add(user)
 
         # Create certificate template
-        cert_template = Certificado(
-            code="TEST_CERT", titulo="Test Certificate", descripcion="Test certificate template"
-        )
+        cert_template = Certificado(code="TEST_CERT", titulo="Test Certificate", descripcion="Test certificate template")
         database.session.add(cert_template)
         database.session.commit()
 

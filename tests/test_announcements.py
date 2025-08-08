@@ -51,6 +51,7 @@ class TestAnnouncementsModel(TestCase):
         """Clean up after tests."""
         database.session.remove()
         eliminar_base_de_datos_segura()
+        database.session.close()
 
     def test_announcement_creation(self):
         """Test creating an announcement."""
@@ -218,6 +219,7 @@ class TestAnnouncementsViews(TestCase):
         """Clean up after tests."""
         database.session.remove()
         eliminar_base_de_datos_segura()
+        database.session.close()
         self.app_context.pop()
 
     def test_admin_announcements_list_unauthorized(self):
@@ -297,6 +299,7 @@ class TestAnnouncementsIntegration(TestCase):
         """Clean up after tests."""
         database.session.remove()
         eliminar_base_de_datos_segura()
+        database.session.close()
         self.app_context.pop()
 
     def test_full_announcement_workflow(self):

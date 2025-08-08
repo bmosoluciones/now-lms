@@ -174,9 +174,7 @@ def test_free_course_enrollment_completes_immediately(lms_application):
             assert payment.metodo == "free"
 
             # Check that EstudianteCurso record was created
-            enrollment = (
-                database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso="FREE001").first()
-            )
+            enrollment = database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso="FREE001").first()
             assert enrollment is not None
             assert enrollment.vigente is True
 
@@ -256,9 +254,7 @@ def test_audit_mode_enrollment(lms_application):
             assert payment.metodo == "audit"
 
             # Check that EstudianteCurso record was created
-            enrollment = (
-                database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso="AUDIT001").first()
-            )
+            enrollment = database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso="AUDIT001").first()
             assert enrollment is not None
             assert enrollment.vigente is True
 
@@ -362,9 +358,7 @@ def test_paypal_payment_confirmation_success(lms_application):
                 assert payment.referencia == "test_order_id"
 
                 # Check that enrollment was created
-                enrollment = (
-                    database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso="PAY001").first()
-                )
+                enrollment = database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso="PAY001").first()
                 assert enrollment is not None
                 assert enrollment.vigente is True
 
@@ -381,9 +375,7 @@ def test_paypal_client_id_endpoint(lms_application):
         initial_setup()
 
         # Configure PayPal
-        paypal_config = PaypalConfig(
-            enable=True, sandbox=True, paypal_id="live_client_id", paypal_sandbox="sandbox_client_id"
-        )
+        paypal_config = PaypalConfig(enable=True, sandbox=True, paypal_id="live_client_id", paypal_sandbox="sandbox_client_id")
         database.session.add(paypal_config)
 
         # Create test user
