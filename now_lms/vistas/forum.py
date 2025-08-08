@@ -20,7 +20,7 @@ from flask import Blueprint, abort, flash, jsonify, redirect, render_template, r
 from flask_login import current_user, login_required
 from markdown import markdown
 
-from now_lms.db import Curso, DocenteCurso, EstudianteCurso, ForoMensaje, ModeradorCurso, database
+from now_lms.db import Curso, DocenteCurso, EstudianteCurso, ForoMensaje, ModeradorCurso, database, select
 from now_lms.forms import ForoMensajeForm, ForoMensajeRespuestaForm
 
 # Configuración de HTML permitido para sanitización
@@ -59,17 +59,29 @@ forum = Blueprint("forum", __name__)
 def verificar_acceso_curso(course_code, usuario_id):
     """Verifica si un usuario tiene acceso al curso."""
     # Verificar si es instructor
-    instructor = database.session.query(DocenteCurso).filter_by(curso=course_code, usuario=usuario_id, vigente=True).first()
+    instructor = (
+        database.session.execute(select(DocenteCurso).filter_by(curso=course_code, usuario=usuario_id, vigente=True))
+        .scalars()
+        .first()
+    )
     if instructor:
         return True, "instructor"
 
     # Verificar si es moderador
-    moderador = database.session.query(ModeradorCurso).filter_by(curso=course_code, usuario=usuario_id, vigente=True).first()
+    moderador = (
+        database.session.execute(select(ModeradorCurso).filter_by(curso=course_code, usuario=usuario_id, vigente=True))
+        .scalars()
+        .first()
+    )
     if moderador:
         return True, "moderador"
 
     # Verificar si es estudiante
-    estudiante = database.session.query(EstudianteCurso).filter_by(curso=course_code, usuario=usuario_id, vigente=True).first()
+    estudiante = (
+        database.session.execute(select(EstudianteCurso).filter_by(curso=course_code, usuario=usuario_id, vigente=True))
+        .scalars()
+        .first()
+    )
     if estudiante:
         return True, "estudiante"
 
@@ -92,7 +104,7 @@ def markdown_to_html(contenido_markdown):
 def ver_foro(course_code):
     """Página principal del foro de un curso."""
     # Verificar que el curso existe y tiene foro habilitado
-    curso = database.session.query(Curso).filter_by(codigo=course_code).first()
+    curso = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
     if not curso:
         abort(404)
 
@@ -107,11 +119,11 @@ def ver_foro(course_code):
 
     # Obtener mensajes principales (sin parent_id) paginados
     page = request.args.get("page", 1, type=int)
-    mensajes = (
-        database.session.query(ForoMensaje)
-        .filter_by(curso_id=course_code, parent_id=None)
-        .order_by(ForoMensaje.fecha_creacion.desc())
-        .paginate(page=page, per_page=10, error_out=False)
+    mensajes = database.paginate(
+        select(ForoMensaje).filter_by(curso_id=course_code, parent_id=None).order_by(ForoMensaje.fecha_creacion.desc()),
+        page=page,
+        per_page=10,
+        error_out=False,
     )
 
     # Procesar contenido markdown
@@ -128,7 +140,7 @@ def ver_foro(course_code):
 def nuevo_mensaje(course_code):
     """Crear un nuevo mensaje en el foro."""
     # Verificar curso y permisos
-    curso = database.session.query(Curso).filter_by(codigo=course_code).first()
+    curso = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
     if not curso or not curso.foro_habilitado:
         abort(404)
 
@@ -162,8 +174,8 @@ def nuevo_mensaje(course_code):
 def ver_mensaje(course_code, message_id):
     """Ver un mensaje específico con sus respuestas."""
     # Verificar curso y mensaje
-    curso = database.session.query(Curso).filter_by(codigo=course_code).first()
-    mensaje = database.session.query(ForoMensaje).filter_by(id=message_id, curso_id=course_code).first()
+    curso = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
+    mensaje = database.session.execute(select(ForoMensaje).filter_by(id=message_id, curso_id=course_code)).scalars().first()
 
     if not curso or not mensaje or not curso.foro_habilitado:
         abort(404)
@@ -177,9 +189,12 @@ def ver_mensaje(course_code, message_id):
 
     # Obtener todas las respuestas del hilo
     respuestas = (
-        database.session.query(ForoMensaje)
-        .filter_by(curso_id=course_code, parent_id=mensaje_raiz.id)
-        .order_by(ForoMensaje.fecha_creacion.asc())
+        database.session.execute(
+            select(ForoMensaje)
+            .filter_by(curso_id=course_code, parent_id=mensaje_raiz.id)
+            .order_by(ForoMensaje.fecha_creacion.asc())
+        )
+        .scalars()
         .all()
     )
 
@@ -207,8 +222,8 @@ def ver_mensaje(course_code, message_id):
 def responder_mensaje(course_code, message_id):
     """Responder a un mensaje del foro."""
     # Verificar curso y mensaje
-    curso = database.session.query(Curso).filter_by(codigo=course_code).first()
-    mensaje = database.session.query(ForoMensaje).filter_by(id=message_id, curso_id=course_code).first()
+    curso = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
+    mensaje = database.session.execute(select(ForoMensaje).filter_by(id=message_id, curso_id=course_code)).scalars().first()
 
     if not curso or not mensaje or not curso.foro_habilitado:
         abort(404)
@@ -253,8 +268,8 @@ def responder_mensaje(course_code, message_id):
 def cerrar_mensaje(course_code, message_id):
     """Cerrar un mensaje/hilo del foro (solo instructores, moderadores y admins)."""
     # Verificar curso y mensaje
-    curso = database.session.query(Curso).filter_by(codigo=course_code).first()
-    mensaje = database.session.query(ForoMensaje).filter_by(id=message_id, curso_id=course_code).first()
+    curso = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
+    mensaje = database.session.execute(select(ForoMensaje).filter_by(id=message_id, curso_id=course_code)).scalars().first()
 
     if not curso or not mensaje:
         abort(404)
@@ -281,8 +296,8 @@ def cerrar_mensaje(course_code, message_id):
 def abrir_mensaje(course_code, message_id):
     """Abrir un mensaje/hilo del foro (solo instructores, moderadores y admins)."""
     # Verificar curso y mensaje
-    curso = database.session.query(Curso).filter_by(codigo=course_code).first()
-    mensaje = database.session.query(ForoMensaje).filter_by(id=message_id, curso_id=course_code).first()
+    curso = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
+    mensaje = database.session.execute(select(ForoMensaje).filter_by(id=message_id, curso_id=course_code)).scalars().first()
 
     if not curso or not mensaje:
         abort(404)

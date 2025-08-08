@@ -39,7 +39,7 @@ def test_paypal_configuration():
 
             except Exception as e:
                 print(f"   [ERROR] Database error: {e}")
-                return False
+                assert False, f"Database error: {e}"
 
             print("\n2. Testing PayPal Configuration...")
             if paypal_configs:
@@ -148,15 +148,16 @@ def test_paypal_configuration():
 
             print("\n   [DOC] See PAYPAL_MANUAL_TESTING.md for detailed testing instructions")
 
-            return True
+            # Test passed - PayPal configuration is accessible
+            assert True
 
     except ImportError as e:
         print(f"[ERROR] Failed to import application: {e}")
         print("Make sure you're running this from the project root directory")
-        return False
+        assert False, f"Failed to import application: {e}"
     except Exception as e:
         print(f"[ERROR] Unexpected error: {e}")
-        return False
+        assert False, f"Unexpected error: {e}"
 
 
 def generate_test_report():

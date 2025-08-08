@@ -100,7 +100,13 @@ from now_lms.db.tools import (
     verificar_avance_recurso,
 )
 from now_lms.logs import log
-from now_lms.misc import ESTILO_ALERTAS, ICONOS_RECURSOS, INICIO_SESION, concatenar_parametros_a_url, markdown_to_clean_hmtl
+from now_lms.misc import (
+    ESTILO_ALERTAS,
+    ICONOS_RECURSOS,
+    INICIO_SESION,
+    concatenar_parametros_a_url,
+    markdown_to_clean_hmtl,
+)
 from now_lms.themes import current_theme
 from now_lms.version import CODE_NAME, VERSION
 from now_lms.vistas._helpers import get_current_course_logo, get_site_logo
@@ -230,7 +236,7 @@ def config():  # pragma: no cover
 
     with lms_app.app_context():
         try:
-            CONFIG = database.session.query(Configuracion).first()
+            CONFIG = database.session.execute(database.select(Configuracion)).scalars().first()
         # Si no existe una entrada en la tabla de configuración uno de los siguientes errores puede ocurrir
         # en dependencia del motor de base de datos utilizado.
         except OperationalError:

@@ -10,6 +10,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, redirect, render_template, request
 from flask_login import current_user, login_required
+from sqlalchemy import func
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -24,6 +25,7 @@ from now_lms.db import (
     EstudianteCurso,
     Usuario,
     database,
+    select,
 )
 from now_lms.db.tools import get_current_theme
 from now_lms.logs import log
@@ -63,11 +65,11 @@ def panel():
     if not current_user.is_authenticated:
         return redirect("/")
     elif current_user.tipo == "admin":
-        cursos_actuales = database.session.query(Curso).count()
-        usuarios_registrados = database.session.query(Usuario).count()
-        recursos_creados = database.session.query(CursoRecurso).count()
-        certificados_emitidos = database.session.query(Certificacion).count()
-        cursos_por_fecha = database.session.query(Curso).order_by(Curso.creado).limit(5).all()
+        cursos_actuales = database.session.execute(select(func.count(Curso.id))).scalar()
+        usuarios_registrados = database.session.execute(select(func.count(Usuario.usuario))).scalar()
+        recursos_creados = database.session.execute(select(func.count(CursoRecurso.id))).scalar()
+        certificados_emitidos = database.session.execute(select(func.count(Certificacion.id))).scalar()
+        cursos_por_fecha = database.session.execute(select(Curso).order_by(Curso.creado).limit(5)).scalars().all()
         return render_template(
             "inicio/panel_admin.html",
             cursos_actuales=cursos_actuales,
@@ -77,14 +79,19 @@ def panel():
             certificados_emitidos=certificados_emitidos,
         )
     elif current_user.tipo == "student":
-        cuenta_cursos = database.session.query(EstudianteCurso).filter(EstudianteCurso.usuario == current_user.usuario).count()
-        cuenta_certificados = (
-            database.session.query(Certificacion).filter(Certificacion.usuario == current_user.usuario).count()
-        )
+        cuenta_cursos = database.session.execute(
+            select(func.count(EstudianteCurso.id)).filter(EstudianteCurso.usuario == current_user.usuario)
+        ).scalar()
+        cuenta_certificados = database.session.execute(
+            select(func.count(Certificacion.id)).filter(Certificacion.usuario == current_user.usuario)
+        ).scalar()
         mis_cursos = (
-            database.session.query(Curso)
-            .join(EstudianteCurso, EstudianteCurso.curso == Curso.codigo)
-            .filter(EstudianteCurso.usuario == current_user.usuario)
+            database.session.execute(
+                select(Curso)
+                .join(EstudianteCurso, EstudianteCurso.curso == Curso.codigo)
+                .filter(EstudianteCurso.usuario == current_user.usuario)
+            )
+            .scalars()
             .all()
         )
         log.warning(mis_cursos)
@@ -98,37 +105,36 @@ def panel():
         from now_lms.db import DocenteCurso
 
         # Get courses created by this instructor
-        created_courses = (
-            database.session.query(Curso)
+        created_courses = database.session.execute(
+            select(func.count(Curso.id))
             .join(DocenteCurso)
             .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.vigente)
-            .count()
-        )
+        ).scalar()
 
         # Get enrolled students across instructor's courses
-        enrolled_students = (
-            database.session.query(EstudianteCurso.usuario)
-            .distinct()
+        enrolled_students = database.session.execute(
+            select(func.count(EstudianteCurso.usuario.distinct()))
             .join(DocenteCurso, EstudianteCurso.curso == DocenteCurso.curso)
             .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.vigente, EstudianteCurso.vigente)
-            .count()
-        )
+        ).scalar()
 
         # Get certificates issued for courses taught by this instructor
-        issued_certificates = (
-            database.session.query(Certificacion)
+        issued_certificates = database.session.execute(
+            select(func.count(Certificacion.id))
             .join(DocenteCurso, Certificacion.curso == DocenteCurso.curso)
             .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.vigente)
-            .count()
-        )
+        ).scalar()
 
         # Get recent courses by this instructor
         cursos_por_fecha = (
-            database.session.query(Curso)
-            .join(DocenteCurso)
-            .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.vigente)
-            .order_by(Curso.creado)
-            .limit(5)
+            database.session.execute(
+                select(Curso)
+                .join(DocenteCurso)
+                .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.vigente)
+                .order_by(Curso.creado)
+                .limit(5)
+            )
+            .scalars()
             .all()
         )
 
@@ -143,36 +149,40 @@ def panel():
         from now_lms.db import MessageThread, ModeradorCurso
 
         # Get courses moderated by this moderator
-        created_courses = (
-            database.session.query(Curso)
+        created_courses = database.session.execute(
+            select(func.count(Curso.id))
             .join(ModeradorCurso)
             .filter(ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.vigente)
-            .count()
-        )
+        ).scalar()
 
         # Get enrolled students across moderator's courses
-        enrolled_students = (
-            database.session.query(EstudianteCurso.usuario)
-            .distinct()
+        enrolled_students = database.session.execute(
+            select(func.count(EstudianteCurso.usuario.distinct()))
             .join(ModeradorCurso, EstudianteCurso.curso == ModeradorCurso.curso)
             .filter(ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.vigente, EstudianteCurso.vigente)
-            .count()
-        )
+        ).scalar()
 
         # Get recent courses by this moderator
         cursos_por_fecha = (
-            database.session.query(Curso)
-            .join(ModeradorCurso)
-            .filter(ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.vigente)
-            .order_by(Curso.creado)
-            .limit(5)
+            database.session.execute(
+                select(Curso)
+                .join(ModeradorCurso)
+                .filter(ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.vigente)
+                .order_by(Curso.creado)
+                .limit(5)
+            )
+            .scalars()
             .all()
         )
 
         # Get open and closed message counts for moderator
-        open_messages = database.session.query(MessageThread).filter(MessageThread.status == "open").count()
+        open_messages = database.session.execute(
+            select(func.count(MessageThread.id)).filter(MessageThread.status == "open")
+        ).scalar()
 
-        closed_messages = database.session.query(MessageThread).filter(MessageThread.status == "closed").count()
+        closed_messages = database.session.execute(
+            select(func.count(MessageThread.id)).filter(MessageThread.status == "closed")
+        ).scalar()
 
         return render_template(
             "inicio/panel_moderator.html",

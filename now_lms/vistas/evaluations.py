@@ -37,6 +37,7 @@ from flask_login import current_user, login_required
 from now_lms.auth import perfil_requerido
 from now_lms.db import (
     Answer,
+    Curso,
     CursoSeccion,
     EstudianteCurso,
     Evaluation,
@@ -45,6 +46,7 @@ from now_lms.db import (
     QuestionOption,
     database,
 )
+from sqlalchemy import func
 from now_lms.forms import EvaluationReopenRequestForm
 
 # ---------------------------------------------------------------------------------------
@@ -82,17 +84,24 @@ def can_user_access_evaluation(evaluation_obj, user):
     course_code = section.curso
 
     # Check if user is enrolled in the course
-    inscription = database.session.query(EstudianteCurso).filter_by(curso=course_code, usuario=user.usuario).first()
+    inscription = (
+        database.session.execute(database.select(EstudianteCurso).filter_by(curso=course_code, usuario=user.usuario))
+        .scalars()
+        .first()
+    )
     if not inscription:
         return False
 
     # Check if course is paid and user has paid
-    from now_lms.db import Curso
 
-    course = database.session.query(Curso).filter_by(codigo=course_code).first()
+    course = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalars().first()
     if course and course.pagado:
         # Check if user has paid for the course
-        enrollment = database.session.query(EstudianteCurso).filter_by(curso=course_code, usuario=user.usuario).first()
+        enrollment = (
+            database.session.execute(database.select(EstudianteCurso).filter_by(curso=course_code, usuario=user.usuario))
+            .scalars()
+            .first()
+        )
 
         if not enrollment or not enrollment.pago:
             return False  # User hasn't paid for paid course
@@ -109,7 +118,9 @@ def is_evaluation_available(evaluation_obj):
 
 def get_user_attempts_count(evaluation_id, user_id):
     """Get the number of attempts a user has made for an evaluation."""
-    return database.session.query(EvaluationAttempt).filter_by(evaluation_id=evaluation_id, user_id=user_id).count()
+    return database.session.execute(
+        database.select(func.count(EvaluationAttempt.id)).filter_by(evaluation_id=evaluation_id, user_id=user_id)
+    ).scalar()
 
 
 def can_user_attempt_evaluation(evaluation_obj, user):
@@ -195,7 +206,13 @@ def take_evaluation(evaluation_id):
                 for value in selected_values:
                     if question.type == "boolean":
                         # For boolean questions, value is "true" or "false"
-                        option = database.session.query(QuestionOption).filter_by(question_id=question.id, text=value).first()
+                        option = (
+                            database.session.execute(
+                                database.select(QuestionOption).filter_by(question_id=question.id, text=value)
+                            )
+                            .scalars()
+                            .first()
+                        )
                         if option:
                             selected_option_ids.append(option.id)
                     else:
@@ -258,8 +275,12 @@ def request_reopen(evaluation_id):
 
     # Check if user has passed any attempt
     passed_attempt = (
-        database.session.query(EvaluationAttempt)
-        .filter_by(evaluation_id=evaluation_id, user_id=current_user.usuario, passed=True)
+        database.session.execute(
+            database.select(EvaluationAttempt).filter_by(
+                evaluation_id=evaluation_id, user_id=current_user.usuario, passed=True
+            )
+        )
+        .scalars()
         .first()
     )
 
@@ -273,8 +294,12 @@ def request_reopen(evaluation_id):
     if form.validate_on_submit():
         # Check if there's already a pending request
         existing_request = (
-            database.session.query(EvaluationReopenRequest)
-            .filter_by(user_id=current_user.usuario, evaluation_id=evaluation_id, status="pending")
+            database.session.execute(
+                database.select(EvaluationReopenRequest).filter_by(
+                    user_id=current_user.usuario, evaluation_id=evaluation_id, status="pending"
+                )
+            )
+            .scalars()
             .first()
         )
 

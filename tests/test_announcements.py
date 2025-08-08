@@ -20,6 +20,7 @@ from unittest import TestCase
 from datetime import datetime, timedelta
 
 from now_lms import app
+from now_lms.db import eliminar_base_de_datos_segura
 from now_lms.db import Announcement, Curso, Usuario, DocenteCurso, database
 
 
@@ -49,7 +50,7 @@ class TestAnnouncementsModel(TestCase):
     def tearDown(self):
         """Clean up after tests."""
         database.session.remove()
-        database.drop_all()
+        eliminar_base_de_datos_segura()
 
     def test_announcement_creation(self):
         """Test creating an announcement."""
@@ -216,7 +217,7 @@ class TestAnnouncementsViews(TestCase):
     def tearDown(self):
         """Clean up after tests."""
         database.session.remove()
-        database.drop_all()
+        eliminar_base_de_datos_segura()
         self.app_context.pop()
 
     def test_admin_announcements_list_unauthorized(self):
@@ -295,7 +296,7 @@ class TestAnnouncementsIntegration(TestCase):
     def tearDown(self):
         """Clean up after tests."""
         database.session.remove()
-        database.drop_all()
+        eliminar_base_de_datos_segura()
         self.app_context.pop()
 
     def test_full_announcement_workflow(self):

@@ -44,10 +44,11 @@ def lms_application():
 def test_paid_course_enrollment_redirects_to_paypal_page(lms_application):
     """Test that enrolling in a paid course redirects to PayPal payment page."""
     from now_lms import database, initial_setup
+    from now_lms.db import eliminar_base_de_datos_segura
     from now_lms.db import Usuario, Curso
 
     with lms_application.app_context():
-        database.drop_all()
+        eliminar_base_de_datos_segura()
         initial_setup()
 
         # Create test user
@@ -108,10 +109,11 @@ def test_paid_course_enrollment_redirects_to_paypal_page(lms_application):
 def test_free_course_enrollment_completes_immediately(lms_application):
     """Test that enrolling in a free course completes immediately."""
     from now_lms import database, initial_setup
+    from now_lms.db import eliminar_base_de_datos_segura
     from now_lms.db import Usuario, Curso, Pago, EstudianteCurso
 
     with lms_application.app_context():
-        database.drop_all()
+        eliminar_base_de_datos_segura()
         initial_setup()
 
         # Create test user
@@ -172,7 +174,9 @@ def test_free_course_enrollment_completes_immediately(lms_application):
             assert payment.metodo == "free"
 
             # Check that EstudianteCurso record was created
-            enrollment = database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso="FREE001").first()
+            enrollment = (
+                database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso="FREE001").first()
+            )
             assert enrollment is not None
             assert enrollment.vigente is True
 
@@ -185,10 +189,11 @@ def test_free_course_enrollment_completes_immediately(lms_application):
 def test_audit_mode_enrollment(lms_application):
     """Test that audit mode enrollment works correctly."""
     from now_lms import database, initial_setup
+    from now_lms.db import eliminar_base_de_datos_segura
     from now_lms.db import Usuario, Curso, Pago, EstudianteCurso
 
     with lms_application.app_context():
-        database.drop_all()
+        eliminar_base_de_datos_segura()
         initial_setup()
 
         # Create test user
@@ -251,7 +256,9 @@ def test_audit_mode_enrollment(lms_application):
             assert payment.metodo == "audit"
 
             # Check that EstudianteCurso record was created
-            enrollment = database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso="AUDIT001").first()
+            enrollment = (
+                database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso="AUDIT001").first()
+            )
             assert enrollment is not None
             assert enrollment.vigente is True
 
@@ -260,11 +267,12 @@ def test_audit_mode_enrollment(lms_application):
 def test_paypal_payment_confirmation_success(lms_application):
     """Test successful PayPal payment confirmation."""
     from now_lms import database, initial_setup
+    from now_lms.db import eliminar_base_de_datos_segura
     from now_lms.db import Usuario, Curso, Pago, EstudianteCurso, PaypalConfig
     import json
 
     with lms_application.app_context():
-        database.drop_all()
+        eliminar_base_de_datos_segura()
         initial_setup()
 
         # Configure PayPal
@@ -354,7 +362,9 @@ def test_paypal_payment_confirmation_success(lms_application):
                 assert payment.referencia == "test_order_id"
 
                 # Check that enrollment was created
-                enrollment = database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso="PAY001").first()
+                enrollment = (
+                    database.session.query(EstudianteCurso).filter_by(usuario=user.usuario, curso="PAY001").first()
+                )
                 assert enrollment is not None
                 assert enrollment.vigente is True
 
@@ -363,14 +373,17 @@ def test_paypal_payment_confirmation_success(lms_application):
 def test_paypal_client_id_endpoint(lms_application):
     """Test PayPal client ID endpoint."""
     from now_lms import database, initial_setup
+    from now_lms.db import eliminar_base_de_datos_segura
     from now_lms.db import Usuario, PaypalConfig
 
     with lms_application.app_context():
-        database.drop_all()
+        eliminar_base_de_datos_segura()
         initial_setup()
 
         # Configure PayPal
-        paypal_config = PaypalConfig(enable=True, sandbox=True, paypal_id="live_client_id", paypal_sandbox="sandbox_client_id")
+        paypal_config = PaypalConfig(
+            enable=True, sandbox=True, paypal_id="live_client_id", paypal_sandbox="sandbox_client_id"
+        )
         database.session.add(paypal_config)
 
         # Create test user

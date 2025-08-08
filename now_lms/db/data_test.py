@@ -78,7 +78,14 @@ def crear_categoria_prueba():
 def crear_certificado_prueba():
     """Crea certificado de prueba"""
 
-    certificado = Certificado(id="01HNP0TTQNTR03J7ZQHR09YMKK", titulo="Certficado Test", descripcion="Certificado Test")
+    certificado = Certificado(
+        id="01HNP0TTQNTR03J7ZQHR09YMKK",
+        code="lala",
+        titulo="Certficado Test",
+        descripcion="Certificado Test",
+        habilitado=True,
+        publico=True,
+    )
     database.session.add(certificado)
     database.session.commit()
 

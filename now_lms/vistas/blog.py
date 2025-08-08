@@ -26,14 +26,14 @@ from datetime import datetime
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, func
 
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, BlogComment, BlogPost, BlogTag, database
+from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, BlogComment, BlogPost, BlogTag, database, select
 from now_lms.forms import BlogCommentForm, BlogPostForm, BlogTagForm
 
 # Route constants
@@ -57,11 +57,11 @@ def ensure_unique_slug(title, post_id=None):
     counter = 1
 
     while True:
-        query = database.session.query(BlogPost).filter(BlogPost.slug == slug)
+        query = database.select(BlogPost).filter(BlogPost.slug == slug)
         if post_id:
             query = query.filter(BlogPost.id != post_id)
 
-        if not query.first():
+        if not database.session.execute(query).scalars().first():
             break
 
         slug = f"{base_slug}-{counter}"
@@ -78,10 +78,10 @@ def blog_index():
     tag_slug = request.args.get("tag")
     author_id = request.args.get("author")
 
-    query = database.session.query(BlogPost).filter(BlogPost.status == "published")
+    query = select(BlogPost).filter(BlogPost.status == "published")
 
     if tag_slug:
-        tag = database.session.query(BlogTag).filter(BlogTag.slug == tag_slug).first()
+        tag = database.session.execute(select(BlogTag).filter(BlogTag.slug == tag_slug)).scalar_one_or_none()
         if tag:
             query = query.filter(BlogPost.tags.contains(tag))
 
@@ -98,7 +98,7 @@ def blog_index():
     )
 
     # Get all tags for filter
-    tags = database.session.query(BlogTag).order_by(BlogTag.name).all()
+    tags = database.session.execute(database.select(BlogTag).order_by(BlogTag.name)).scalars().all()
 
     return render_template(
         "blog/public_index.html",
@@ -113,13 +113,20 @@ def blog_index():
 @blog.route("/blog/<slug>")
 def blog_post(slug):
     """Display a single blog post."""
-    post = database.session.query(BlogPost).filter(and_(BlogPost.slug == slug, BlogPost.status == "published")).first_or_404()
+    post = database.session.execute(
+        database.select(BlogPost).filter(and_(BlogPost.slug == slug, BlogPost.status == "published"))
+    ).scalar_one_or_none()
+    if not post:
+        abort(404)
 
     # Get comments for this post
     comments = (
-        database.session.query(BlogComment)
-        .filter(and_(BlogComment.post_id == post.id, BlogComment.status == "visible"))
-        .order_by(BlogComment.timestamp)
+        database.session.execute(
+            database.select(BlogComment)
+            .filter(and_(BlogComment.post_id == post.id, BlogComment.status == "visible"))
+            .order_by(BlogComment.timestamp)
+        )
+        .scalars()
         .all()
     )
 
@@ -133,7 +140,11 @@ def blog_post(slug):
 @login_required
 def add_comment(slug):
     """Add a comment to a blog post."""
-    post = database.session.query(BlogPost).filter(and_(BlogPost.slug == slug, BlogPost.status == "published")).first_or_404()
+    post = database.session.execute(
+        database.select(BlogPost).filter(and_(BlogPost.slug == slug, BlogPost.status == "published"))
+    ).scalar_one_or_none()
+    if not post:
+        abort(404)
 
     if not post.allow_comments:
         flash("Los comentarios están deshabilitados para esta entrada.", "warning")
@@ -146,9 +157,11 @@ def add_comment(slug):
 
         # Update comment count
         post.comment_count = (
-            database.session.query(BlogComment)
-            .filter(and_(BlogComment.post_id == post.id, BlogComment.status == "visible"))
-            .count()
+            database.session.execute(
+                database.select(func.count(BlogComment.id)).filter(
+                    and_(BlogComment.post_id == post.id, BlogComment.status == "visible")
+                )
+            ).scalar()
             + 1
         )
 
@@ -184,7 +197,7 @@ def admin_blog_index():
     page = request.args.get("page", 1, type=int)
     status_filter = request.args.get("status", "all")
 
-    query = database.session.query(BlogPost)
+    query = select(BlogPost)
 
     if status_filter != "all":
         query = query.filter(BlogPost.status == status_filter)
@@ -241,7 +254,7 @@ def admin_create_post():
             tag_names = [name.strip() for name in form.tags.data.split(",") if name.strip()]
             for tag_name in tag_names:
                 tag_slug = create_slug(tag_name)
-                tag = database.session.query(BlogTag).filter(BlogTag.slug == tag_slug).first()
+                tag = database.session.execute(select(BlogTag).filter(BlogTag.slug == tag_slug)).scalars().first()
                 if not tag:
                     # Only admins can create new tags
                     if current_user.tipo == "admin":
@@ -309,7 +322,7 @@ def admin_edit_post(post_id):
             tag_names = [name.strip() for name in form.tags.data.split(",") if name.strip()]
             for tag_name in tag_names:
                 tag_slug = create_slug(tag_name)
-                tag = database.session.query(BlogTag).filter(BlogTag.slug == tag_slug).first()
+                tag = database.session.execute(select(BlogTag).filter(BlogTag.slug == tag_slug)).scalars().first()
                 if not tag and current_user.tipo == "admin":
                     tag = BlogTag(name=tag_name, slug=tag_slug)
                     database.session.add(tag)
@@ -394,7 +407,9 @@ def create_tag():
 
         # Check if tag already exists
         existing_tag = (
-            database.session.query(BlogTag).filter(or_(BlogTag.name == form.name.data, BlogTag.slug == slug)).first()
+            database.session.execute(select(BlogTag).filter(or_(BlogTag.name == form.name.data, BlogTag.slug == slug)))
+            .scalars()
+            .first()
         )
 
         if existing_tag:
@@ -441,11 +456,11 @@ def ban_comment(comment_id):
     comment.status = "banned"
 
     # Update comment count
-    comment.post.comment_count = (
-        database.session.query(BlogComment)
-        .filter(and_(BlogComment.post_id == comment.post_id, BlogComment.status == "visible"))
-        .count()
-    )
+    comment.post.comment_count = database.session.execute(
+        select(func.count(BlogComment.id)).filter(
+            and_(BlogComment.post_id == comment.post_id, BlogComment.status == "visible")
+        )
+    ).scalar()
 
     database.session.commit()
 
@@ -471,11 +486,9 @@ def delete_comment(comment_id):
 
     # Update comment count
     post = comment.post
-    post.comment_count = (
-        database.session.query(BlogComment)
-        .filter(and_(BlogComment.post_id == post.id, BlogComment.status == "visible"))
-        .count()
-    )
+    post.comment_count = database.session.execute(
+        select(func.count(BlogComment.id)).filter(and_(BlogComment.post_id == post.id, BlogComment.status == "visible"))
+    ).scalar()
 
     database.session.commit()
 
@@ -492,9 +505,9 @@ def instructor_blog_index():
     page = request.args.get("page", 1, type=int)
 
     if current_user.tipo == "admin":
-        query = database.session.query(BlogPost)
+        query = select(BlogPost)
     else:
-        query = database.session.query(BlogPost).filter(BlogPost.author_id == current_user.usuario)
+        query = select(BlogPost).filter(BlogPost.author_id == current_user.usuario)
 
     query = query.order_by(BlogPost.timestamp.desc())
 

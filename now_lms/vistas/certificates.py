@@ -332,7 +332,12 @@ def certificado(ulid):
     usuario = usuario[0]
 
     # Create context with both curso and master_class for template compatibility
-    context = {"usuario": usuario, "certificacion": certificacion, "certificado": certificado, "content_type": content_type}
+    context = {
+        "usuario": usuario,
+        "certificacion": certificacion,
+        "certificado": certificado,
+        "content_type": content_type,
+    }
 
     if content_type == "course":
         context["curso"] = content

@@ -1573,17 +1573,17 @@ rutas_estaticas = [
     #     como_admin=[],
     # ),
     Ruta(
-         ruta="/admin/users/list_inactive",
-         no_session=302,
-         admin=200,
-         user=403,
-         moderator=403,
-         instructor=403,
-         texto=[],
-         como_user=[],
-         como_moderador=[],
-     como_instructor=[],
-         como_admin=[],
+        ruta="/admin/users/list_inactive",
+        no_session=302,
+        admin=200,
+        user=403,
+        moderator=403,
+        instructor=403,
+        texto=[],
+        como_user=[],
+        como_moderador=[],
+        como_instructor=[],
+        como_admin=[],
     ),
     # <---------------------------------------------------------------------> #
     # Blog public routes
@@ -1764,8 +1764,8 @@ rutas_estaticas = [
         no_session=302,
         admin=302,
         user=302,
-        moderator=302, 
-        instructor=302,  
+        moderator=302,
+        instructor=302,
         texto=[],
         como_user=[],
         como_moderador=[],
@@ -1804,7 +1804,7 @@ rutas_estaticas = [
     # <---------------------------------------------------------------------> #
     # Additional settings routes
     # <---------------------------------------------------------------------> #
-    #Ruta(
+    # Ruta(
     #    ruta="/setting/delete_site_logo",
     #    no_session=302,
     #    admin=302,
@@ -1816,7 +1816,7 @@ rutas_estaticas = [
     #    como_moderador=[],
     #    como_instructor=[],
     #    como_admin=[],
-    #),
+    # ),
     Ruta(
         ruta="/setting/mail/verify",
         no_session=302,
@@ -1872,7 +1872,6 @@ rutas_estaticas = [
     # <---------------------------------------------------------------------> #
     # Profile management routes
     # <---------------------------------------------------------------------> #
-
     Ruta(
         ruta="/perfil/01HNZXJRD65A55BJACFEFNZ88D/delete_logo",  # student1 ID
         no_session=302,

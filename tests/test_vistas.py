@@ -31,38 +31,11 @@ errores al usuario, si el perfil del usuario no tiene permisos para acceder a
 la vista mencionada se debe de redireccionar apropiadamente.gi
 """
 
-DB_URL = os.environ.get("DATABASE_URL") or "sqlite:///:memory:"
-log.warning("Using database URL: %s", DB_URL)
 
+def test_visit_views_anonimus(full_db_setup):
 
-@pytest.fixture
-def lms_application():
-    from now_lms import app
-
-    app.config.update(
-        {
-            "TESTING": True,
-            "SECRET_KEY": "jgjañlsldaksjdklasjfkjj",
-            "SQLALCHEMY_TRACK_MODIFICATIONS": False,
-            "WTF_CSRF_ENABLED": False,
-            "DEBUG": True,
-            "PRESERVE_CONTEXT_ON_EXCEPTION": True,
-            "SQLALCHEMY_ECHO": True,
-            "SQLALCHEMY_DATABASE_URI": DB_URL,
-        }
-    )
-
-    yield app
-
-
-def test_visit_views_anonimus(lms_application):
-
-    with lms_application.app_context():
-        from now_lms import database, initial_setup
-
-        database.drop_all()
-        initial_setup(with_tests=True, with_examples=False)
-        with lms_application.test_client() as client:
+    with full_db_setup.app_context():
+        with full_db_setup.test_client() as client:
             for ruta in rutas_estaticas:
                 route = ruta.ruta
                 text = ruta.texto
@@ -76,21 +49,16 @@ def test_visit_views_anonimus(lms_application):
                             assert t in consulta.data"""
 
 
-def test_visit_views_admin(lms_application):
+def test_visit_views_admin(full_db_setup):
 
-    from now_lms import database, initial_setup
-
-    with lms_application.app_context():
+    with full_db_setup.app_context():
         from flask_login import current_user
-
-        database.drop_all()
-        initial_setup(with_tests=True, with_examples=False)
 
         # Get admin username from environment, just like in initial_data.py
         admin_username = os.environ.get("ADMIN_USER") or os.environ.get("LMS_USER") or "lms-admin"
         admin_password = os.environ.get("ADMIN_PSWD") or os.environ.get("LMS_PSWD") or "lms-admin"
 
-        with lms_application.test_client() as client:
+        with full_db_setup.test_client() as client:
             # Keep the session alive until the with clausule closes
             client.get("/user/logout")
             client.post("/user/login", data={"usuario": admin_username, "acceso": admin_password})
@@ -108,16 +76,12 @@ def test_visit_views_admin(lms_application):
             client.get("/user/logout")
 
 
-def test_visit_views_student(lms_application):
+def test_visit_views_student(full_db_setup):
 
-    from now_lms import database, initial_setup
-
-    with lms_application.app_context():
+    with full_db_setup.app_context():
         from flask_login import current_user
 
-        database.drop_all()
-        initial_setup(with_tests=True, with_examples=False)
-        with lms_application.test_client() as client:
+        with full_db_setup.test_client() as client:
             # Keep the session alive until the with clausule closes
             client.get("/user/logout")
             client.post("/user/login", data={"usuario": "student1", "acceso": "student1"})
@@ -135,16 +99,12 @@ def test_visit_views_student(lms_application):
             client.get("/user/logout")
 
 
-def test_visit_views_moderator(lms_application):
+def test_visit_views_moderator(full_db_setup):
 
-    from now_lms import database, initial_setup
-
-    with lms_application.app_context():
+    with full_db_setup.app_context():
         from flask_login import current_user
 
-        database.drop_all()
-        initial_setup(with_tests=True, with_examples=False)
-        with lms_application.test_client() as client:
+        with full_db_setup.test_client() as client:
             # Keep the session alive until the with clausule closes
             client.get("/user/logout")
             client.post("/user/login", data={"usuario": "moderator", "acceso": "moderator"})
@@ -162,16 +122,12 @@ def test_visit_views_moderator(lms_application):
             client.get("/user/logout")
 
 
-def test_visit_views_instructor(lms_application):
+def test_visit_views_instructor(full_db_setup):
 
-    from now_lms import database, initial_setup
-
-    with lms_application.app_context():
+    with full_db_setup.app_context():
         from flask_login import current_user
 
-        database.drop_all()
-        initial_setup(with_tests=True, with_examples=False)
-        with lms_application.test_client() as client:
+        with full_db_setup.test_client() as client:
             # Keep the session alive until the with clausule closes
             client.get("/user/logout")
             client.post("/user/login", data={"usuario": "instructor", "acceso": "instructor"})
@@ -189,33 +145,32 @@ def test_visit_views_instructor(lms_application):
             client.get("/user/logout")
 
 
-def test_error_pages(lms_application):
+def test_error_pages(basic_config_setup):
 
     error_codes = [402, 403, 404, 405, 500]
-    with lms_application.test_client() as client:
+    with basic_config_setup.test_client() as client:
         for error in error_codes:
             url = "/http/error/" + str(error)
             client.get(url)
 
 
-def test_demo_course(lms_application):
+def test_demo_course(full_db_setup):
 
     from now_lms import database, initial_setup
+    from now_lms.db import eliminar_base_de_datos_segura
 
-    with lms_application.app_context():
-        database.drop_all()
+    with full_db_setup.app_context():
+        # This test specifically needs examples, so we need to recreate with examples
+        eliminar_base_de_datos_segura()
         initial_setup(with_tests=True, with_examples=True)
-        with lms_application.test_client() as client:
+        with full_db_setup.test_client() as client:
             client.get("/course/resources/view")
 
 
-def test_email_backend(lms_application):
-    from now_lms import database, initial_setup
+def test_email_backend(basic_config_setup):
 
-    with lms_application.app_context():
-        database.drop_all()
-        initial_setup(with_tests=False, with_examples=False)
-        with lms_application.test_client() as client:
+    with basic_config_setup.app_context():
+        with basic_config_setup.test_client() as client:
             client.get("/setting/mail")
             client.get("/setting/mail_check")
             data = {
@@ -237,13 +192,14 @@ def test_email_backend(lms_application):
 def test_contraseña_incorrecta(lms_application):
 
     from now_lms import database, initial_setup
+    from now_lms.db import eliminar_base_de_datos_segura
     from now_lms.auth import validar_acceso
 
     with lms_application.app_context():
         from flask_login import current_user
         from flask_login.mixins import AnonymousUserMixin
 
-        database.drop_all()
+        eliminar_base_de_datos_segura()
         initial_setup(with_tests=False, with_examples=False)
         with lms_application.test_client() as client:
             # Keep the session alive until the with clausule closes

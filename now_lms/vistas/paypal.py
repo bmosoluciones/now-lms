@@ -33,7 +33,7 @@ from sqlalchemy.exc import OperationalError
 from now_lms.auth import perfil_requerido
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import Configuracion, Pago, PaypalConfig, database
+from now_lms.db import Configuracion, Curso, Pago, PaypalConfig, database
 
 # Constants for PayPal API URLs
 PAYPAL_SANDBOX_API_URL = "https://api.sandbox.paypal.com"
@@ -219,7 +219,10 @@ def confirm_payment():
                 if not value
             ]
             logging.warning(f"Payment confirmation missing fields {missing_fields} for user {current_user.usuario}")
-            return jsonify({"success": False, "error": f'Missing required payment data: {", ".join(missing_fields)}'}), 400
+            return (
+                jsonify({"success": False, "error": f'Missing required payment data: {", ".join(missing_fields)}'}),
+                400,
+            )
 
         # Validate amount is numeric and positive
         try:
@@ -245,14 +248,18 @@ def confirm_payment():
         # Check if payment amount matches expected amount (considering coupons)
         from now_lms.db import Curso
 
-        curso = database.session.query(Curso).filter_by(codigo=course_code).first()
+        curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalars().first()
         if not curso:
             logging.warning(f"Course {course_code} not found for payment confirmation by user {current_user.usuario}")
             return jsonify({"success": False, "error": "Course not found"}), 404
 
         # First check if there's a pending payment record for this user/course with coupon discount applied
         pending_payment = (
-            database.session.query(Pago).filter_by(usuario=current_user.usuario, curso=course_code, estado="pending").first()
+            database.session.execute(
+                database.select(Pago).filter_by(usuario=current_user.usuario, curso=course_code, estado="pending")
+            )
+            .scalars()
+            .first()
         )
 
         # Determine expected amount - either from pending payment (with coupon) or course price
@@ -280,7 +287,7 @@ def confirm_payment():
             )
 
         # Check if this payment has already been processed
-        existing_payment = database.session.query(Pago).filter_by(referencia=order_id).first()
+        existing_payment = database.session.execute(database.select(Pago).filter_by(referencia=order_id)).scalars().first()
         if existing_payment:
             if existing_payment.estado == "completed":
                 logging.info(f"Payment {order_id} already completed for user {current_user.usuario}")
@@ -320,7 +327,11 @@ def confirm_payment():
             from now_lms.db import EstudianteCurso
 
             existing_enrollment = (
-                database.session.query(EstudianteCurso).filter_by(usuario=current_user.usuario, curso=course_code).first()
+                database.session.execute(
+                    database.select(EstudianteCurso).filter_by(usuario=current_user.usuario, curso=course_code)
+                )
+                .scalars()
+                .first()
             )
 
             if not existing_enrollment:
@@ -346,7 +357,11 @@ def confirm_payment():
                     coupon_code = pago.descripcion.split("Cupón aplicado: ")[1].split(" ")[0]
                     from now_lms.db import Coupon
 
-                    coupon = database.session.query(Coupon).filter_by(course_id=course_code, code=coupon_code).first()
+                    coupon = (
+                        database.session.execute(database.select(Coupon).filter_by(course_id=course_code, code=coupon_code))
+                        .scalars()
+                        .first()
+                    )
 
                     if coupon:
                         coupon.current_uses += 1
@@ -387,7 +402,13 @@ def resume_payment(payment_id):
     """Resume an existing pending payment."""
     try:
         # Find the pending payment
-        pago = database.session.query(Pago).filter_by(id=payment_id, usuario=current_user.usuario, estado="pending").first()
+        pago = (
+            database.session.execute(
+                database.select(Pago).filter_by(id=payment_id, usuario=current_user.usuario, estado="pending")
+            )
+            .scalars()
+            .first()
+        )
 
         if not pago:
             flash("Pago no encontrado o ya procesado.", "error")
@@ -407,9 +428,8 @@ def resume_payment(payment_id):
 @perfil_requerido("student")
 def payment_page(course_code):
     """Display PayPal payment page for a course."""
-    from now_lms.db import Curso
 
-    curso = database.session.query(Curso).filter_by(codigo=course_code).first()
+    curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalars().first()
     if not curso:
         flash("Curso no encontrado.", "error")
         return redirect(url_for(HOME_PAGE_ROUTE))
@@ -459,22 +479,27 @@ def payment_status(course_code):
         from now_lms.db import Curso, EstudianteCurso
 
         # Check if course exists
-        curso = database.session.query(Curso).filter_by(codigo=course_code).first()
+        curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalars().first()
         if not curso:
             return jsonify({"error": "Course not found"}), 404
 
         # Check enrollment status
         enrollment = (
-            database.session.query(EstudianteCurso)
-            .filter_by(usuario=current_user.usuario, curso=course_code, vigente=True)
+            database.session.execute(
+                database.select(EstudianteCurso).filter_by(usuario=current_user.usuario, curso=course_code, vigente=True)
+            )
+            .scalars()
             .first()
         )
 
         # Check payment records
         payments = (
-            database.session.query(Pago)
-            .filter_by(usuario=current_user.usuario, curso=course_code)
-            .order_by(Pago.fecha_creacion.desc())
+            database.session.execute(
+                database.select(Pago)
+                .filter_by(usuario=current_user.usuario, curso=course_code)
+                .order_by(Pago.fecha_creacion.desc())
+            )
+            .scalars()
             .all()
         )
 

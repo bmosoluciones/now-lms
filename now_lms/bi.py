@@ -35,7 +35,16 @@ from flask_login import current_user
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
-from now_lms.db import Curso, CursoRecurso, CursoSeccion, DocenteCurso, EstudianteCurso, ModeradorCurso, Usuario, database
+from now_lms.db import (
+    Curso,
+    CursoRecurso,
+    CursoSeccion,
+    DocenteCurso,
+    EstudianteCurso,
+    ModeradorCurso,
+    Usuario,
+    database,
+)
 from now_lms.logs import log
 
 
@@ -50,21 +59,15 @@ def modificar_indice_curso(
     indice_next = indice + 1
     indice_back = indice - 1
 
-    actual = (
-        database.session.query(CursoSeccion)
-        .filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_current)
-        .first()
-    )
-    superior = (
-        database.session.query(CursoSeccion)
-        .filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_next)
-        .first()
-    )
-    inferior = (
-        database.session.query(CursoSeccion)
-        .filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_back)
-        .first()
-    )
+    actual = database.session.execute(
+        database.select(CursoSeccion).filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_current)
+    ).scalar_one_or_none()
+    superior = database.session.execute(
+        database.select(CursoSeccion).filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_next)
+    ).scalar_one_or_none()
+    inferior = database.session.execute(
+        database.select(CursoSeccion).filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_back)
+    ).scalar_one_or_none()
 
     if task == "increment":
         actual.indice = indice_next
@@ -89,8 +92,10 @@ def modificar_indice_curso(
 def reorganiza_indice_curso(codigo_curso: Union[None, str] = None):
     """Al eliminar una sección de un curso se debe generar el indice nuevamente."""
 
-    secciones = secciones = (
-        database.session.query(CursoSeccion).filter_by(curso=codigo_curso).order_by(CursoSeccion.indice).all()
+    secciones = (
+        database.session.execute(database.select(CursoSeccion).filter_by(curso=codigo_curso).order_by(CursoSeccion.indice))
+        .scalars()
+        .all()
     )
     if secciones:
         indice = 1
@@ -104,7 +109,11 @@ def reorganiza_indice_curso(codigo_curso: Union[None, str] = None):
 def reorganiza_indice_seccion(seccion: Union[None, str] = None):
     """Al eliminar una sección de un curso se debe generar el indice nuevamente."""
 
-    recursos = database.session.query(CursoRecurso).filter_by(seccion=seccion).order_by(CursoRecurso.indice).all()
+    recursos = (
+        database.session.execute(database.select(CursoRecurso).filter_by(seccion=seccion).order_by(CursoRecurso.indice))
+        .scalars()
+        .all()
+    )
     if recursos:
         indice = 1
         for recurso in recursos:
@@ -128,23 +137,17 @@ def modificar_indice_seccion(
     NO_INDICE_POSTERIOR = NO_INDICE_ACTUAL + 1
 
     # Obtenemos lista de recursos de la base de datos.
-    RECURSO_ACTUAL = (
-        database.session.query(CursoRecurso)
-        .filter(CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_ACTUAL)
-        .first()
-    )
+    RECURSO_ACTUAL = database.session.execute(
+        database.select(CursoRecurso).filter(CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_ACTUAL)
+    ).scalar_one_or_none()
 
-    RECURSO_ANTERIOR = (
-        database.session.query(CursoRecurso)
-        .filter(CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_ANTERIOR)
-        .first()
-    )
+    RECURSO_ANTERIOR = database.session.execute(
+        database.select(CursoRecurso).filter(CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_ANTERIOR)
+    ).scalar_one_or_none()
 
-    RECURSO_POSTERIOR = (
-        database.session.query(CursoRecurso)
-        .filter(CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_POSTERIOR)
-        .first()
-    )
+    RECURSO_POSTERIOR = database.session.execute(
+        database.select(CursoRecurso).filter(CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_POSTERIOR)
+    ).scalar_one_or_none()
 
     if task == "increment" and RECURSO_POSTERIOR:
         RECURSO_ACTUAL.indice = NO_INDICE_POSTERIOR
@@ -199,7 +202,7 @@ def cambia_tipo_de_usuario_por_id(
     Los valores reconocidos por el sistema son: admin, user, instructor, moderator.
     """
     log.trace("Assigning user {id_usuario} the profile: {nuevo_tipo}")
-    USUARIO = database.session.query(Usuario).filter_by(usuario=id_usuario).first()
+    USUARIO = database.session.execute(database.select(Usuario).filter_by(usuario=id_usuario)).scalar_one_or_none()
     USUARIO.tipo = nuevo_tipo
     USUARIO.modificado_por = usuario
     database.session.commit()
@@ -261,7 +264,7 @@ def cambia_curso_publico(id_curso: Union[None, str, int] = None):
 def cambia_seccion_publico(codigo: Union[None, str, int] = None):
     """Cambia el estatus publico de una sección."""
 
-    SECCION = database.session.query(CursoSeccion).filter_by(id=codigo).first()
+    SECCION = database.session.execute(database.select(CursoSeccion).filter_by(id=codigo)).scalar_one_or_none()
     if SECCION.estado:
         SECCION.estado = False
     else:

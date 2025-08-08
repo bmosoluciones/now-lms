@@ -66,7 +66,9 @@ def inicio_sesion():
 
     if form.validate_on_submit():
         if validar_acceso(form.usuario.data, form.acceso.data):
-            identidad = database.session.query(Usuario).filter_by(usuario=form.usuario.data).first()
+            identidad = database.session.execute(
+                database.select(Usuario).filter_by(usuario=form.usuario.data)
+            ).scalar_one_or_none()
             if identidad.activo:
                 login_user(identidad)
                 return PANEL_DE_USUARIO
@@ -201,7 +203,9 @@ def forgot_password():
     form = ForgotPasswordForm()
     if form.validate_on_submit():
         # Check if user exists and has verified email
-        user = database.session.query(Usuario).filter_by(correo_electronico=form.email.data).first()
+        user = database.session.execute(
+            database.select(Usuario).filter_by(correo_electronico=form.email.data)
+        ).scalar_one_or_none()
         if user and user.correo_electronico_verificado:
             # Check if email system is configured
             mail_config = database.session.execute(database.select(MailConfig)).first()
@@ -237,7 +241,7 @@ def reset_password(token):
         flash("El enlace de recuperación es inválido o ha expirado.", "error")
         return redirect(url_for(USER_LOGIN_ROUTE))
 
-    user = database.session.query(Usuario).filter_by(correo_electronico=email).first()
+    user = database.session.execute(database.select(Usuario).filter_by(correo_electronico=email)).scalar_one_or_none()
     if not user:
         flash("Usuario no encontrado.", "error")
         return redirect(url_for(USER_LOGIN_ROUTE))

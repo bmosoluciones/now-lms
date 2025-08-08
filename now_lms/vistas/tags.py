@@ -94,7 +94,9 @@ def tags():
 @perfil_requerido("instructor")
 def delete_tag(ulid: str):
     """Elimina una etiqueta."""
-    database.session.query(Etiqueta).filter(Etiqueta.id == ulid).delete()
+    from sqlalchemy import delete
+
+    database.session.execute(delete(Etiqueta).where(Etiqueta.id == ulid))
     database.session.commit()
     return redirect(url_for(TAG_TAGS_ROUTE))
 
@@ -104,7 +106,7 @@ def delete_tag(ulid: str):
 @perfil_requerido("instructor")
 def edit_tag(ulid: str):
     """Edita una etiqueta."""
-    etiqueta = database.session.query(Etiqueta).filter(Etiqueta.id == ulid).first()
+    etiqueta = database.session.execute(database.select(Etiqueta).filter(Etiqueta.id == ulid)).scalar_one_or_none()
     form = EtiquetaForm(color=etiqueta.color, nombre=etiqueta.nombre)
     if form.validate_on_submit() or request.method == "POST":
         etiqueta.nombre = form.nombre.data

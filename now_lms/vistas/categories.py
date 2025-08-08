@@ -90,7 +90,9 @@ def categories():
 @perfil_requerido("instructor")
 def delete_category(ulid: str):
     """Elimina categoria."""
-    database.session.query(Categoria).filter(Categoria.id == ulid).delete()
+    from sqlalchemy import delete
+
+    database.session.execute(delete(Categoria).where(Categoria.id == ulid))
     database.session.commit()
     return redirect("/categories")
 
@@ -100,7 +102,7 @@ def delete_category(ulid: str):
 @perfil_requerido("instructor")
 def edit_category(ulid: str):
     """Editar categoria."""
-    categoria = database.session.query(Categoria).filter(Categoria.id == ulid).first()
+    categoria = database.session.execute(database.select(Categoria).filter(Categoria.id == ulid)).scalar_one_or_none()
     form = CategoriaForm(nombre=categoria.nombre, descripcion=categoria.descripcion)
     if form.validate_on_submit() or request.method == "POST":
         categoria.nombre = form.nombre.data

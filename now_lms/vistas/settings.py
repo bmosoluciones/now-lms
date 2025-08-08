@@ -381,7 +381,10 @@ def paypal():
 
     config = database.session.execute(database.select(PaypalConfig)).first()[0]
     form = PayaplForm(
-        habilitado=config.enable, sandbox=config.sandbox, paypal_id=config.paypal_id, paypal_sandbox=config.paypal_sandbox
+        habilitado=config.enable,
+        sandbox=config.sandbox,
+        paypal_id=config.paypal_id,
+        paypal_sandbox=config.paypal_sandbox,
     )
 
     if form.validate_on_submit() or request.method == "POST":

@@ -9,6 +9,7 @@ from datetime import datetime
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy.exc import ArgumentError, OperationalError
+from sqlalchemy import delete
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -27,6 +28,7 @@ from now_lms.db import (
     UsuarioGrupo,
     UsuarioGrupoMiembro,
     database,
+    select,
 )
 from now_lms.forms import EvaluationForm
 
@@ -103,8 +105,8 @@ def grupo(ulid: str):
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,
     )
-    estudiantes = database.session.query(Usuario).filter(Usuario.tipo == "student").all()
-    tutores = database.session.query(Usuario).filter(Usuario.tipo == "instructor").all()
+    estudiantes = database.session.execute(select(Usuario).filter(Usuario.tipo == "student")).scalars().all()
+    tutores = database.session.execute(select(Usuario).filter(Usuario.tipo == "instructor")).scalars().all()
     return render_template(
         "admin/grupos/grupo.html", consulta=CONSULTA, grupo=grupo_, tutores=tutores, estudiantes=estudiantes
     )
@@ -118,9 +120,9 @@ def grupo(ulid: str):
 def elimina_usuario__grupo(group: str, user: str):
     """Elimina usuario de grupo."""
 
-    database.session.query(UsuarioGrupoMiembro).filter(
-        UsuarioGrupoMiembro.usuario == user, UsuarioGrupoMiembro.grupo == group
-    ).delete()
+    database.session.execute(
+        delete(UsuarioGrupoMiembro).where((UsuarioGrupoMiembro.usuario == user) & (UsuarioGrupoMiembro.grupo == group))
+    )
     database.session.commit()
     return redirect(url_for("grupo", id=group))
 
@@ -165,22 +167,32 @@ def course_evaluations(course_code):
     # Check if instructor has access to this course
     if current_user.tipo != "admin":
         instructor_assignment = (
-            database.session.query(DocenteCurso)
-            .filter_by(curso=course_code, usuario=current_user.usuario, vigente=True)
+            database.session.execute(
+                select(DocenteCurso).filter_by(curso=course_code, usuario=current_user.usuario, vigente=True)
+            )
+            .scalars()
             .first()
         )
         if not instructor_assignment:
             flash("No tiene permisos para acceder a este curso.", "danger")
             return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_CURSOS))
 
-    curso = database.session.query(Curso).filter_by(codigo=course_code).first()
+    curso = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
     if not curso:
         flash("Curso no encontrado.", "danger")
         return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_CURSOS))
 
     # Get course sections and their evaluations
-    secciones = database.session.query(CursoSeccion).filter_by(curso=course_code).order_by(CursoSeccion.indice).all()
-    evaluaciones = database.session.query(Evaluation).join(CursoSeccion).filter(CursoSeccion.curso == course_code).all()
+    secciones = (
+        database.session.execute(select(CursoSeccion).filter_by(curso=course_code).order_by(CursoSeccion.indice))
+        .scalars()
+        .all()
+    )
+    evaluaciones = (
+        database.session.execute(select(Evaluation).join(CursoSeccion).filter(CursoSeccion.curso == course_code))
+        .scalars()
+        .all()
+    )
 
     return render_template("instructor/course_evaluations.html", curso=curso, secciones=secciones, evaluaciones=evaluaciones)
 
@@ -194,8 +206,10 @@ def new_evaluation(course_code, section_id):
     # Check permissions
     if current_user.tipo != "admin":
         instructor_assignment = (
-            database.session.query(DocenteCurso)
-            .filter_by(curso=course_code, usuario=current_user.usuario, vigente=True)
+            database.session.execute(
+                select(DocenteCurso).filter_by(curso=course_code, usuario=current_user.usuario, vigente=True)
+            )
+            .scalars()
             .first()
         )
         if not instructor_assignment:
@@ -242,16 +256,16 @@ def evaluaciones_lista():
 
     if current_user.tipo == "admin":
         # Admin can see all evaluations
-        evaluaciones = database.session.query(Evaluation).all()
+        evaluaciones = database.session.execute(select(Evaluation)).scalars().all()
     else:
         # Filter evaluations created by current instructor
-        evaluaciones = database.session.query(Evaluation).filter_by(creado_por=current_user.usuario).all()
+        evaluaciones = database.session.execute(select(Evaluation).filter_by(creado_por=current_user.usuario)).scalars().all()
 
     # Get course information for each evaluation
     evaluaciones_con_curso = []
     for eval in evaluaciones:
         seccion = database.session.get(CursoSeccion, eval.section_id)
-        curso = database.session.query(Curso).filter_by(codigo=seccion.curso).first() if seccion else None
+        curso = database.session.execute(select(Curso).filter_by(codigo=seccion.curso)).scalars().first() if seccion else None
         evaluaciones_con_curso.append({"evaluacion": eval, "seccion": seccion, "curso": curso})
 
     return render_template("instructor/evaluaciones_lista.html", evaluaciones=evaluaciones_con_curso)
@@ -264,13 +278,14 @@ def nueva_evaluacion_global():
     """Página para seleccionar curso y sección antes de crear una evaluación."""
 
     if current_user.tipo == "admin":
-        cursos = database.session.query(Curso).all()
+        cursos = database.session.execute(select(Curso)).scalars().all()
     else:
         # Get courses assigned to this instructor
         cursos = (
-            database.session.query(Curso)
-            .join(DocenteCurso)
-            .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.vigente == True)  # noqa: E712
+            database.session.execute(
+                select(Curso).join(DocenteCurso).filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.vigente)
+            )  # noqa: E712
+            .scalars()
             .all()
         )
 
@@ -294,7 +309,7 @@ def edit_evaluation(evaluation_id):
         return redirect(url_for(ROUTE_INSTRUCTOR_PROFILE_EVALUACIONES_LISTA))
 
     seccion = database.session.get(CursoSeccion, evaluacion.section_id)
-    curso = database.session.query(Curso).filter_by(codigo=seccion.curso).first() if seccion else None
+    curso = database.session.execute(select(Curso).filter_by(codigo=seccion.curso)).scalars().first() if seccion else None
 
     form = EvaluationForm(obj=evaluacion)
 
@@ -312,12 +327,20 @@ def edit_evaluation(evaluation_id):
             flash("Error al actualizar la evaluación.", "danger")
 
     # Get questions for this evaluation
-    preguntas = database.session.query(Question).filter_by(evaluation_id=evaluation_id).order_by(Question.order).all()
+    preguntas = (
+        database.session.execute(select(Question).filter_by(evaluation_id=evaluation_id).order_by(Question.order))
+        .scalars()
+        .all()
+    )
 
     course_code = curso.codigo if curso else ""
 
     return render_template(
-        "instructor/edit_evaluation.html", form=form, evaluacion=evaluacion, preguntas=preguntas, course_code=course_code
+        "instructor/edit_evaluation.html",
+        form=form,
+        evaluacion=evaluacion,
+        preguntas=preguntas,
+        course_code=course_code,
     )
 
 

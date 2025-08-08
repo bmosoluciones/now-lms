@@ -50,7 +50,8 @@ def global_announcements():
         .filter(
             Announcement.course_id.is_(None),  # Solo anuncios globales
             database.or_(
-                Announcement.expires_at.is_(None), Announcement.expires_at >= now  # Sin fecha de expiración  # No expirados
+                Announcement.expires_at.is_(None),
+                Announcement.expires_at >= now,  # Sin fecha de expiración  # No expirados
             ),
         )
         .order_by(Announcement.is_sticky.desc(), Announcement.timestamp.desc()),  # Destacados primero  # Más recientes primero
@@ -78,11 +79,11 @@ def course_announcements(course_id):
     # (Administradores e instructores pueden ver todos los anuncios)
     if current_user.tipo not in ["admin", "instructor"]:
         # Verificar si es estudiante del curso
-        enrollment = (
-            database.session.query(EstudianteCurso)
-            .filter(EstudianteCurso.usuario == current_user.usuario, EstudianteCurso.curso == course_id)
-            .first()
-        )
+        enrollment = database.session.execute(
+            database.select(EstudianteCurso).filter(
+                EstudianteCurso.usuario == current_user.usuario, EstudianteCurso.curso == course_id
+            )
+        ).scalar_one_or_none()
 
         if not enrollment:
             flash("No tienes acceso a los anuncios de este curso.", "error")

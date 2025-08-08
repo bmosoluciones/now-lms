@@ -261,11 +261,11 @@ class TestCouponSystem(TestCase):
             self.assertEqual(error2, "Código de cupón inválido")
 
     def tearDown(self):
-        from now_lms.db import database
+        from now_lms.db import database, eliminar_base_de_datos_segura
 
         with self.app.app_context():
             database.session.remove()
-            database.drop_all()
+            eliminar_base_de_datos_segura()
 
 
 if __name__ == "__main__":

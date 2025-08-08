@@ -33,6 +33,7 @@ from flask import Blueprint, abort, flash, redirect, render_template, request, u
 from flask_login import current_user, login_required
 from flask_uploads import UploadNotAllowed
 from sqlalchemy.exc import OperationalError
+from sqlalchemy import delete
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -117,7 +118,7 @@ def programas():
 @perfil_requerido("instructor")
 def delete_program(ulid: str):
     """Elimina programa."""
-    database.session.query(Programa).filter(Programa.id == ulid).delete()
+    database.session.execute(delete(Programa).where(Programa.id == ulid))
 
     if current_user.tipo == "admin":
         database.session.commit()
@@ -132,7 +133,7 @@ def delete_program(ulid: str):
 @perfil_requerido("instructor")
 def edit_program(ulid: str):
     """Editar programa."""
-    programa = database.session.query(Programa).filter(Programa.id == ulid).first()
+    programa = database.session.execute(database.select(Programa).filter(Programa.id == ulid)).scalars().first()
 
     form = ProgramaForm(
         nombre=programa.nombre,
@@ -204,7 +205,7 @@ def programa_cursos(codigo):
 def pagina_programa(codigo):
     """Pagina principal del curso."""
 
-    program = database.session.query(Programa).filter(Programa.codigo == codigo).first()
+    program = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalars().first()
 
     return render_template(get_program_view_template(), programa=program, cuenta_cursos=cuenta_cursos_por_programa)
 
@@ -219,8 +220,8 @@ def lista_programas():
     else:
         MAX_COUNT = 30
 
-    etiquetas = database.session.query(Etiqueta).all()
-    categorias = database.session.query(Categoria).all()
+    etiquetas = database.session.execute(database.select(Etiqueta)).scalars().all()
+    categorias = database.session.execute(database.select(Categoria)).scalars().all()
     consulta_cursos = database.paginate(
         database.select(Programa).filter(Programa.publico == True, Programa.estado == "open"),  # noqa: E712
         page=request.args.get("page", default=1, type=int),
@@ -242,5 +243,9 @@ def lista_programas():
         PARAMETROS = None
 
     return render_template(
-        get_program_list_template(), cursos=consulta_cursos, etiquetas=etiquetas, categorias=categorias, parametros=PARAMETROS
+        get_program_list_template(),
+        cursos=consulta_cursos,
+        etiquetas=etiquetas,
+        categorias=categorias,
+        parametros=PARAMETROS,
     )

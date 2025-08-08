@@ -33,6 +33,7 @@ from os import path
 from flask import Blueprint, abort, current_app, flash, redirect, render_template, request, send_from_directory, url_for
 from flask_login import current_user, login_required
 from sqlalchemy.exc import OperationalError
+from sqlalchemy import delete
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -122,7 +123,7 @@ def lista_de_recursos():
 @perfil_requerido("user")
 def descargar_recurso(resource_code):
     """Genera link para descargar recurso."""
-    recurso = database.session.query(Recurso).filter(Recurso.id == resource_code).first()
+    recurso = database.session.execute(database.select(Recurso).filter(Recurso.id == resource_code)).scalars().first()
     config = current_app.upload_set_config.get("files")
     directorio = path.join(config.destination, "resources_files")
 
@@ -141,7 +142,7 @@ def descargar_recurso(resource_code):
 def delete_resource(ulid: str):
     """Elimina recurso."""
     if current_user.tipo == "admin":
-        database.session.query(Recurso).filter(Recurso.id == ulid).delete()
+        database.session.execute(delete(Recurso).where(Recurso.id == ulid))
         database.session.commit()
         return redirect("/resources_list")
     else:
@@ -154,7 +155,7 @@ def delete_resource(ulid: str):
 def edit_resource(ulid: str):
     """Actualiza recurso."""
 
-    recurso = database.session.query(Recurso).filter(Recurso.id == ulid).first()
+    recurso = database.session.execute(database.select(Recurso).filter(Recurso.id == ulid)).scalars().first()
     form = RecursoForm(nombre=recurso.nombre, descripcion=recurso.descripcion, tipo=recurso.tipo)
 
     if form.validate_on_submit() or request.method == "POST":
@@ -186,7 +187,7 @@ def vista_recurso(resource_code):
 
     return render_template(
         "learning/recursos/recurso.html",
-        curso=database.session.query(Recurso).filter_by(codigo=resource_code).first(),
+        curso=database.session.execute(database.select(Recurso).filter_by(codigo=resource_code)).scalars().first(),
         tipo=TIPOS_RECURSOS,
     )
 
@@ -201,8 +202,8 @@ def lista_recursos():
     else:
         MAX_COUNT = 30
 
-    etiquetas = database.session.query(Etiqueta).all()
-    categorias = database.session.query(Categoria).all()
+    etiquetas = database.session.execute(database.select(Etiqueta)).scalars().all()
+    categorias = database.session.execute(database.select(Categoria)).scalars().all()
     consulta_cursos = database.paginate(
         database.select(Recurso).filter(Recurso.publico == True),  # noqa: E712
         page=request.args.get("page", default=1, type=int),

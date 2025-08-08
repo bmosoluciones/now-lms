@@ -101,7 +101,7 @@ class MasterClassForm(FlaskForm):
         super().__init__(*args, **kwargs)
 
         # Populate diploma template choices
-        templates = database.session.query(Certificado).filter_by(habilitado=True).all()
+        templates = database.session.execute(database.select(Certificado).filter_by(habilitado=True)).scalars().all()
         self.diploma_template_id.choices = [("", "Seleccionar plantilla")] + [
             (template.code, template.titulo) for template in templates
         ]

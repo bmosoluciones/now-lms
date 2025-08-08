@@ -19,6 +19,7 @@ from unittest import TestCase
 from unittest.mock import patch, MagicMock
 from sqlalchemy.exc import OperationalError
 from now_lms import app
+from now_lms.db import eliminar_base_de_datos_segura
 from now_lms.db import database, Etiqueta, Certificado, Usuario, UsuarioGrupo
 
 
@@ -39,7 +40,7 @@ class TestDatabaseRollback(TestCase):
         """Clean up after each test."""
         with self.app.app_context():
             database.session.remove()
-            database.drop_all()
+            eliminar_base_de_datos_segura()
 
     def test_database_session_consistency_after_rollback(self):
         """Test that database session is consistent after rollback."""

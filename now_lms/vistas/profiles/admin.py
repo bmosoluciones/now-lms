@@ -16,6 +16,7 @@ from now_lms.bi import cambia_tipo_de_usuario_por_id
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Usuario, database
+from sqlalchemy import delete, func
 
 # Constants
 ADMIN_USERS_ROUTE = "admin_profile.usuarios"
@@ -30,7 +31,8 @@ admin_profile = Blueprint("admin_profile", __name__, template_folder=DIRECTORIO_
 def pagina_admin():
     """Perfil de usuario administrador."""
     return render_template(
-        "perfiles/admin.html", inactivos=database.session.query(Usuario).filter_by(activo=False).count() or 0
+        "perfiles/admin.html",
+        inactivos=database.session.execute(database.select(func.count(Usuario.id)).filter_by(activo=False)).scalar() or 0,
     )
 
 
@@ -90,7 +92,7 @@ def inactivar_usuario(user_id):
 @perfil_requerido("admin")
 def eliminar_usuario(user_id):
     """Elimina un usuario por su id y redirecciona a la vista dada."""
-    database.session.query(Usuario).filter(Usuario.id == user_id).delete()
+    database.session.execute(delete(Usuario).where(Usuario.id == user_id))
     database.session.commit()
     cache.delete("view/" + url_for("usuarios"))
     flash("Usuario eliminado correctamente.", "info")

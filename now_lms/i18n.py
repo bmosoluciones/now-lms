@@ -37,7 +37,7 @@ def get_configuracion():
     """Obtiene configuración del sitio web desde la base de datos (usando Flask-Caching)."""
     from now_lms.db import Configuracion, database
 
-    config = database.session.query(Configuracion).first()
+    config = database.session.execute(database.select(Configuracion)).scalars().first()
     if not config:
         # Fallback en caso de que no haya configuración cargada
         from now_lms.db import Configuracion

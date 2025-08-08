@@ -177,7 +177,11 @@ def sanitize_slide_content(html_content: str) -> str:
     allowed_tags = ["p", "b", "i", "ul", "li", "strong", "em", "a", "br", "img", "h1", "h2", "h3", "h4"]
 
     # Atributos permitidos
-    allowed_attrs = {"a": ["href", "rel", "target"], "img": ["src", "alt", "width", "height", "class"], "*": ["class", "id"]}
+    allowed_attrs = {
+        "a": ["href", "rel", "target"],
+        "img": ["src", "alt", "width", "height", "class"],
+        "*": ["class", "id"],
+    }
 
     # Limpiar el HTML
     clean_html = clean(html_content, tags=allowed_tags, attributes=allowed_attrs, strip=True)

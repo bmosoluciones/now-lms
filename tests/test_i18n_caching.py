@@ -20,40 +20,15 @@ import pytest
 from unittest import mock
 
 
-@pytest.fixture
-def lms_application():
-    """Create test application with in-memory database."""
-    from now_lms import app
-
-    app.config.update(
-        {
-            "TESTING": True,
-            "SECRET_KEY": "test-secret-key-for-testing",
-            "SQLALCHEMY_TRACK_MODIFICATIONS": False,
-            "WTF_CSRF_ENABLED": False,
-            "DEBUG": True,
-            "PRESERVE_CONTEXT_ON_EXCEPTION": True,
-            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
-        }
-    )
-
-    yield app
-
-
-def test_i18n_configuration_caching(lms_application):
+def test_i18n_configuration_caching(full_db_setup):
     """Test that Flask-Babel configuration is cached and doesn't cause excessive database queries."""
 
-    with lms_application.app_context():
-        from now_lms import database, initial_setup
+    with full_db_setup.app_context():
         from now_lms.i18n import get_configuracion, invalidate_configuracion_cache
         from now_lms.cache import cache
 
         # Clear any existing cache
         cache.clear()
-
-        # Setup database with initial configuration
-        database.drop_all()
-        initial_setup(with_tests=True, with_examples=False)
 
         # Test that get_configuracion works and returns configuration
         config = get_configuracion()
@@ -80,21 +55,16 @@ def test_i18n_configuration_caching(lms_application):
         assert config3 is not None
 
 
-def test_multiple_view_requests_use_cached_configuration(lms_application):
+def test_multiple_view_requests_use_cached_configuration(full_db_setup):
     """Test that multiple requests to different views use cached configuration in g."""
 
-    with lms_application.app_context():
-        from now_lms import database, initial_setup
+    with full_db_setup.app_context():
         from now_lms.cache import cache
 
         # Clear any existing cache
         cache.clear()
 
-        # Setup database with initial configuration
-        database.drop_all()
-        initial_setup(with_tests=True, with_examples=False)
-
-        with lms_application.test_client() as client:
+        with full_db_setup.test_client() as client:
             # Make multiple requests to different views
             response1 = client.get("/")
             response2 = client.get("/user/login")
@@ -110,11 +80,10 @@ def test_multiple_view_requests_use_cached_configuration(lms_application):
             # requests complete without 500 errors indicates the caching is working
 
 
-def test_babel_selectors_use_g_configuration(lms_application):
+def test_babel_selectors_use_g_configuration(full_db_setup):
     """Test that Flask-Babel locale and timezone selectors use configuration from g."""
 
-    with lms_application.app_context():
-        from now_lms import database, initial_setup
+    with full_db_setup.app_context():
         from now_lms.i18n import get_locale, get_timezone
         from flask import g
         from now_lms.cache import cache
@@ -122,12 +91,8 @@ def test_babel_selectors_use_g_configuration(lms_application):
         # Clear any existing cache
         cache.clear()
 
-        # Setup database with initial configuration
-        database.drop_all()
-        initial_setup(with_tests=True, with_examples=False)
-
         # Test with a request context (required for Flask-Babel selectors)
-        with lms_application.test_request_context("/"):
+        with full_db_setup.test_request_context("/"):
             # Test with configuration in g
             from now_lms.i18n import get_configuracion
 
@@ -150,21 +115,16 @@ def test_babel_selectors_use_g_configuration(lms_application):
             assert timezone_fallback == "UTC"  # Should fallback to 'UTC'
 
 
-def test_request_level_configuration_loading(lms_application):
+def test_request_level_configuration_loading(full_db_setup):
     """Test that configuration is loaded into g once per request."""
 
-    with lms_application.app_context():
-        from now_lms import database, initial_setup
+    with full_db_setup.app_context():
         from now_lms.cache import cache
 
         # Clear any existing cache
         cache.clear()
 
-        # Setup database with initial configuration
-        database.drop_all()
-        initial_setup(with_tests=True, with_examples=False)
-
-        with lms_application.test_client() as client:
+        with full_db_setup.test_client() as client:
             # Make a request - this should trigger the before_request handler
             response = client.get("/")
 
@@ -178,20 +138,15 @@ def test_request_level_configuration_loading(lms_application):
             assert response2.status_code in [200, 302, 404]
 
 
-def test_configuration_fallback_when_no_config_exists(lms_application):
+def test_configuration_fallback_when_no_config_exists(minimal_db_setup):
     """Test that the system handles missing configuration gracefully."""
 
-    with lms_application.app_context():
-        from now_lms import database
+    with minimal_db_setup.app_context():
         from now_lms.i18n import get_configuracion, get_locale, get_timezone
         from now_lms.cache import cache
 
         # Clear any existing cache
         cache.clear()
-
-        # Create empty database (no configuration)
-        database.drop_all()
-        database.create_all()
 
         # Test that get_configuracion handles missing config
         config = get_configuracion()
@@ -200,7 +155,7 @@ def test_configuration_fallback_when_no_config_exists(lms_application):
         assert config.lang == "en"  # Should use fallback values
 
         # Test that selectors work with fallback in request context
-        with lms_application.test_request_context("/"):
+        with minimal_db_setup.test_request_context("/"):
             locale = get_locale()
             assert locale == "en"
 

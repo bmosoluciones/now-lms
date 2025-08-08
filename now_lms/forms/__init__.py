@@ -183,7 +183,8 @@ class CurseForm(BaseForm):
     publico = BooleanField(validators=[])
     # Modalidad
     modalidad = SelectField(
-        "Modalidad", choices=[("self_paced", "A su propio ritmo"), ("time_based", "Con tiempo definido"), ("live", "En vivo")]
+        "Modalidad",
+        choices=[("self_paced", "A su propio ritmo"), ("time_based", "Con tiempo definido"), ("live", "En vivo")],
     )
     # Configuración del foro
     foro_habilitado = BooleanField("Habilitar foro", validators=[])
@@ -688,7 +689,8 @@ class BlogPostForm(BaseForm):
     allow_comments = BooleanField("Permitir comentarios", default=True)
     tags = StringField("Etiquetas (separadas por comas)")
     status = SelectField(
-        "Estado", choices=[("draft", "Borrador"), ("pending", "Pendiente"), ("published", "Publicado"), ("banned", "Baneado")]
+        "Estado",
+        choices=[("draft", "Borrador"), ("pending", "Pendiente"), ("published", "Publicado"), ("banned", "Baneado")],
     )
 
 
