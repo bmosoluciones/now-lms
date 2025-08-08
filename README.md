@@ -40,7 +40,7 @@ Thanks for your interest in the NOW - LMS project.
 
 ### Dependencies
 
--   Requires python >= 3.9
+-   Requires python >= 3.11
 -   Requires minimal resources to run
 
 ### Quick Start

@@ -15,7 +15,7 @@ Online education can be used as a primary source of knowledge or as a reinforcem
 NOW-LMS is available as a Python Package in [Pypi](https://pypi.org/project/now-lms/), to run it you just have a recent Python interpreter and run the following commands:
 
 ```
-# Python >= 3.9
+# Python >= 3.11
 python3 -m venv venv
 source venv/bin/activate
 python -m pip install now_lms
