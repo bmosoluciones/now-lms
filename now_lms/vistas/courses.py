@@ -1083,11 +1083,8 @@ def pagina_recurso_alternativo(curso_id, codigo, order):
 @perfil_requerido("instructor")
 def nuevo_recurso(course_code, seccion):
     """Página para seleccionar tipo de recurso."""
-    if current_user.is_authenticated and current_user.tipo == "admin":
-        return render_template("learning/resources_new/nuevo_recurso.html", id_curso=course_code, id_seccion=seccion)
-    else:
-        flash(NO_AUTORIZADO_MSG, "warning")
-        return abort(403)
+    
+    return render_template("learning/resources_new/nuevo_recurso.html", id_curso=course_code, id_seccion=seccion)
 
 
 @course.route("/course/<course_code>/<seccion>/youtube/new", methods=["GET", "POST"])
