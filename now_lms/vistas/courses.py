@@ -1083,7 +1083,7 @@ def pagina_recurso_alternativo(curso_id, codigo, order):
 @perfil_requerido("instructor")
 def nuevo_recurso(course_code, seccion):
     """Página para seleccionar tipo de recurso."""
-    
+
     return render_template("learning/resources_new/nuevo_recurso.html", id_curso=course_code, id_seccion=seccion)
 
 
@@ -1429,15 +1429,6 @@ def elimina_logo(course_code):
 @perfil_requerido("instructor")
 def nuevo_recurso_slideshow(course_code, seccion):
     """Crear una nueva presentación de diapositivas."""
-    if not (
-        current_user.tipo == "admin"
-        or database.session.execute(select(DocenteCurso))
-        .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == course_code)
-        .scalars()
-        .first()
-    ):
-        flash("No tienes permisos para crear recursos en este curso.", "warning")
-        return abort(403)
 
     form = SlideShowForm()
     if form.validate_on_submit():
@@ -1493,16 +1484,6 @@ def editar_slideshow(course_code, slideshow_id):
     if not slideshow or slideshow.course_id != course_code:
         flash("Presentación no encontrada.", "error")
         return abort(404)
-
-    if not (
-        current_user.tipo == "admin"
-        or database.session.execute(select(DocenteCurso))
-        .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == course_code)
-        .scalars()
-        .first()
-    ):
-        flash("No tienes permisos para editar este recurso.", "warning")
-        return abort(403)
 
     # Obtener slides existentes
     slides = (
@@ -1580,21 +1561,6 @@ def preview_slideshow(course_code, slideshow_id):
     slideshow = database.session.get(SlideShowResource, slideshow_id)
     if not slideshow or slideshow.course_id != course_code:
         abort(404)
-
-    # Verificar permisos (estudiantes, instructores o admin)
-    if not (
-        current_user.tipo == "admin"
-        or database.session.execute(select(DocenteCurso))
-        .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == course_code)
-        .scalars()
-        .first()
-        or database.session.execute(select(EstudianteCurso))
-        .filter(EstudianteCurso.usuario == current_user.usuario, EstudianteCurso.curso == course_code)
-        .scalars()
-        .first()
-    ):
-        flash("No tienes acceso a este curso.", "warning")
-        return abort(403)
 
     slides = (
         database.session.execute(select(Slide).filter_by(slide_show_id=slideshow_id).order_by(Slide.order)).scalars().all()
