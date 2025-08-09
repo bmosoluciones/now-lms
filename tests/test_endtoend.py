@@ -483,12 +483,13 @@ def test_theme_functionality_comprehensive(basic_config_setup):
         oxford_css = client.get("/static/themes/oxford/theme.min.css")
         assert oxford_css.status_code == 200
 
+
 from io import BytesIO
+
 
 def test_course_administration_flow(basic_config_setup, client):
     """Test GET and POST for creating a new course."""
     app = basic_config_setup
-
 
     from now_lms.db import Usuario, Curso
     from now_lms.auth import proteger_passwd
@@ -549,17 +550,14 @@ def test_course_administration_flow(basic_config_setup, client):
 
     # Validar que el curso fue creado
     with app.app_context():
-        curso = database.session.execute(
-            database.select(Curso).filter_by(codigo="test_course")
-        ).scalars().first()
+        curso = database.session.execute(database.select(Curso).filter_by(codigo="test_course")).scalars().first()
         assert curso is not None
         assert curso.nombre == "Curso de Prueba"
         assert curso.estado == "draft"
         assert curso.portada is None
 
-
     # POST: enviar datos de un nuevo curso con logo
-    data={
+    data = {
         "nombre": "Curso con Logo",
         "codigo": "testlogo",
         "descripcion": "Descripcion completa del curso con logo.",
@@ -581,11 +579,11 @@ def test_course_administration_flow(basic_config_setup, client):
     }
 
     data = {key: str(value) for key, value in data.items()}
-    data['file'] = (BytesIO(b"abksakjdalksdjlkAFcdef"), 'logo.jpg')
+    data["logo"] = (BytesIO(b"abksakjdalksdjlkAFcdef"), "logo.jpg")
 
     post_response = client.post(
         "/course/new_curse",
-        data=data,        
+        data=data,
         content_type="multipart/form-data",  # Necesario para subir archivos
         follow_redirects=False,
     )
@@ -593,9 +591,7 @@ def test_course_administration_flow(basic_config_setup, client):
 
     # Validar que el curso fue creado con portada
     with app.app_context():
-        curso = database.session.execute(
-            database.select(Curso).filter_by(codigo="testlogo")
-        ).scalars().first()
+        curso = database.session.execute(database.select(Curso).filter_by(codigo="testlogo")).scalars().first()
         assert curso is not None
         assert curso.nombre == "Curso con Logo"
         assert curso.estado == "draft"
@@ -632,8 +628,8 @@ def test_course_administration_flow(basic_config_setup, client):
 
     admin_course = client.get("/course/testlogo/admin")
     assert admin_course.status_code == 200
-    
-    #Seccion administration
+
+    # Seccion administration
     create_seccion = client.get("/course/testlogo/new_seccion")
     assert create_seccion.status_code == 200
     create_seccion = client.post(
@@ -641,31 +637,34 @@ def test_course_administration_flow(basic_config_setup, client):
         data={
             "nombre": "Test Logo Seccion 1",
             "descripcion": "Descripcion de la seccion 1.",
-        })
+        },
+    )
     assert create_seccion.status_code == 302
     create_seccion = client.post(
         "/course/testlogo/new_seccion",
         data={
             "nombre": "Test Logo Seccion 2",
             "descripcion": "Descripcion de la seccion 2.",
-        })
+        },
+    )
     assert create_seccion.status_code == 302
-    
+
     # Get seccion from database
     from now_lms.db import CursoSeccion
+
     with app.app_context():
         # Seccion 1
-        seccion1 = database.session.execute(
-            database.select(CursoSeccion).filter_by(nombre="Test Logo Seccion 1")
-        ).scalars().first()
+        seccion1 = (
+            database.session.execute(database.select(CursoSeccion).filter_by(nombre="Test Logo Seccion 1")).scalars().first()
+        )
         assert seccion1 is not None
         assert seccion1.nombre == "Test Logo Seccion 1"
         assert seccion1.descripcion == "Descripcion de la seccion 1."
         assert seccion1.indice == 1
         # Seccion 2
-        seccion2 = database.session.execute(
-            database.select(CursoSeccion).filter_by(nombre="Test Logo Seccion 2")
-        ).scalars().first()
+        seccion2 = (
+            database.session.execute(database.select(CursoSeccion).filter_by(nombre="Test Logo Seccion 2")).scalars().first()
+        )
         assert seccion2 is not None
         assert seccion2.nombre == "Test Logo Seccion 2"
         assert seccion2.indice == 2
@@ -677,17 +676,22 @@ def test_course_administration_flow(basic_config_setup, client):
     edit_seccion1_get = client.get(seccion1_edit_url)
     assert edit_seccion1_get.status_code == 200
     # POST: editar seccion 1
-    edit_seccion1_post = client.post(seccion1_edit_url, data={
-        "nombre": "Test Logo Seccion 1 Editada",
-        "descripcion": "Descripcion de la seccion 1 editada.",
-    })
+    edit_seccion1_post = client.post(
+        seccion1_edit_url,
+        data={
+            "nombre": "Test Logo Seccion 1 Editada",
+            "descripcion": "Descripcion de la seccion 1 editada.",
+        },
+    )
     assert edit_seccion1_post.status_code == 302
 
     # Seccion 1 editada
     with app.app_context():
-        seccion1 = database.session.execute(
-            database.select(CursoSeccion).filter_by(nombre="Test Logo Seccion 1 Editada")
-        ).scalars().first()
+        seccion1 = (
+            database.session.execute(database.select(CursoSeccion).filter_by(nombre="Test Logo Seccion 1 Editada"))
+            .scalars()
+            .first()
+        )
         assert seccion1.nombre == "Test Logo Seccion 1 Editada"
 
     # New resource page
@@ -704,4 +708,129 @@ def test_course_administration_flow(basic_config_setup, client):
         log.warning(f"Testing {new_resource_url}")
         assert new_resource.status_code == 200
 
+    # Test resource creation
+    # Youtube resource
+    new_resource_url = f"/course/testlogo/{seccion1.id}/youtube/new"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    new_resource_post = client.post(
+        new_resource_url,
+        data={
+            "nombre": "Test Logo Recurso 1",
+            "descripcion": "Descripcion del recurso 1.",
+            "url": "https://www.youtube.com/watch?v=test",
+        },
+    )
+    assert new_resource_post.status_code == 302
 
+    # Text resource
+    new_resource_url = f"/course/testlogo/{seccion1.id}/text/new"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    new_resource_post = client.post(
+        new_resource_url,
+        data={
+            "nombre": "Test Logo Recurso 2",
+            "descripcion": "Descripcion del recurso 2.",
+            "text": "Contenido del recurso 2.",
+        },
+    )
+    assert new_resource_post.status_code == 302
+
+    # Test link resource
+    new_resource_url = f"/course/testlogo/{seccion1.id}/link/new"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    new_resource_post = client.post(
+        new_resource_url,
+        data={
+            "nombre": "Test Logo Recurso 3",
+            "descripcion": "Descripcion del recurso 3.",
+            "url": "https://www.google.com",
+        },
+    )
+    # Test PDF resource
+    new_resource_url = f"/course/testlogo/{seccion1.id}/pdf/new"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    data = {
+        "nombre": "Test Logo Recurso 4",
+        "descripcion": "Descripcion del recurso 4.",
+    }
+    data = {key: str(value) for key, value in data.items()}
+    data["pdf"] = (BytesIO(b"abksakjdalksdjlkAFcdef"), "file.pdf")
+    new_resource_post = client.post(
+        new_resource_url,
+        data=data,
+        content_type="multipart/form-data",
+    )
+    assert new_resource_post.status_code == 302
+
+    # Test meet resource
+    new_resource_url = f"/course/testlogo/{seccion1.id}/meet/new"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    new_resource_post = client.post(
+        new_resource_url,
+        data={
+            "nombre": "Test Logo Recurso 5",
+            "descripcion": "Descripcion del recurso 5.",
+            "url": "https://meet.google.com/test",
+            "fecha": "2025-08-15",
+            "hora_inicio": "10:00",
+            "hora_fin": "12:00",
+            "notes": "Notas del recurso 5.",
+        },
+    )
+    assert new_resource_post.status_code == 302
+
+    # Test img resource
+    new_resource_url = f"/course/testlogo/{seccion1.id}/img/new"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    data = {
+        "nombre": "Test Logo Recurso 6",
+        "descripcion": "Descripcion del recurso 6.",
+    }
+    data = {key: str(value) for key, value in data.items()}
+    data["img"] = (BytesIO(b"abksakjdalksdjlkAFcdef"), "hola.jpg")
+    new_resource_post = client.post(
+        new_resource_url,
+        data=data,
+        content_type="multipart/form-data",
+    )
+    assert new_resource_post.status_code == 302
+
+    # Test audio resource
+    new_resource_url = f"/course/testlogo/{seccion1.id}/audio/new"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    data = {
+        "nombre": "Test Logo Recurso 7",
+        "descripcion": "Descripcion del recurso 7.",
+    }
+    data = {key: str(value) for key, value in data.items()}
+    data["audio"] = (BytesIO(b"abksakjdalksdjlkAFcdef"), "audio.ogg")
+    new_resource_post = client.post(
+        new_resource_url,
+        data=data,
+        content_type="multipart/form-data",
+    )
+    assert new_resource_post.status_code == 302
+
+    # Test HTML resource
+    new_resource_url = f"/course/testlogo/{seccion1.id}/html/new"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    new_resource_post = client.post(
+        new_resource_url,
+        data={
+            "nombre": "Test Logo Recurso 8",
+            "descripcion": "Descripcion del recurso 8.",
+            "external_code": "<h1>Contenido del recurso 8.</h1>",
+        },
+    )
+
+    # Other admin pages
+    delete_logo = client.get("/course/testlogo/delete_logo")
+    assert delete_logo.status_code == 302
