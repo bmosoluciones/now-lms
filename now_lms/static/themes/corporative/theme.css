@@ -1,19 +1,31 @@
 /* Corporative Theme Custom Variables - Professional ERP Design */
 :root {
-    --corporate-primary: #0f7ba3; /* Professional Blue */
-    --corporate-secondary: #5bbadc; /* Professional Light Blue */
-    --corporate-accent: #1c4e80; /* Professional Dark Blue */
-    --corporate-light: #f8f9fa; /* Professional White */
-    --corporate-dark: #2c3e50; /* Corporate Dark Gray */
+    --corporate-primary: #0f7ba3;
+    /* Professional Blue */
+    --corporate-secondary: #5bbadc;
+    /* Professional Light Blue */
+    --corporate-accent: #1c4e80;
+    /* Professional Dark Blue */
+    --corporate-light: #f8f9fa;
+    /* Professional White */
+    --corporate-dark: #2c3e50;
+    /* Corporate Dark Gray */
     --corporate-blue: #0f7ba3;
-    --corporate-gray: #6c757d; /* Professional Gray */
-    --corporate-success: #28a745; /* Professional Green */
-    --corporate-warning: #ffc107; /* Professional Orange */
-    --corporate-danger: #dc3545; /* Professional Red */
+    --corporate-gray: #6c757d;
+    /* Professional Gray */
+    --corporate-success: #28a745;
+    /* Professional Green */
+    --corporate-warning: #ffc107;
+    /* Professional Orange */
+    --corporate-danger: #dc3545;
+    /* Professional Red */
     --corporate-white: #ffffff;
-    --corporate-border: #dee2e6; /* Subtle Border Gray */
-    --corporate-text: #495057; /* Professional Text */
-    --corporate-shadow: rgba(15, 123, 163, 0.15); /* Professional Blue Shadow */
+    --corporate-border: #dee2e6;
+    /* Subtle Border Gray */
+    --corporate-text: #495057;
+    /* Professional Text */
+    --corporate-shadow: rgba(15, 123, 163, 0.15);
+    /* Professional Blue Shadow */
 }
 
 .bd-placeholder-img {
@@ -33,10 +45,12 @@
 /* Corporate Theme Base Styles - Professional ERP Design */
 body {
     background: var(--corporate-white);
-    font-family: "Arial", "Helvetica", "Segoe UI", sans-serif; /* Professional font stack */
+    font-family: "Arial", "Helvetica", "Segoe UI", sans-serif;
+    /* Professional font stack */
     color: var(--corporate-text);
     line-height: 1.5;
-    font-size: 14px; /* Standard professional font size */
+    font-size: 14px;
+    /* Standard professional font size */
 }
 
 /* Professional Corporate Navbar */
@@ -46,7 +60,8 @@ body {
         0 2px 8px var(--corporate-shadow),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     border-bottom: 3px solid var(--corporate-secondary);
-    min-height: 56px; /* Standard professional header height */
+    min-height: 56px;
+    /* Standard professional header height */
     padding: 0;
 }
 
@@ -64,12 +79,14 @@ body {
 .navbar-corporate .navbar-brand,
 .navbar-corporate .nav-link {
     color: white !important;
-    font-weight: 500; /* Professional standard weight */
+    font-weight: 500;
+    /* Professional standard weight */
     transition: all 0.2s ease;
     letter-spacing: 0.3px;
     font-size: 14px;
     padding: 0.8rem 1rem;
-    border-radius: 0; /* Clean professional edges */
+    border-radius: 0;
+    /* Clean professional edges */
     position: relative;
 }
 
@@ -93,13 +110,15 @@ body {
 .navbar-corporate .nav-link:hover {
     color: white !important;
     background: rgba(255, 255, 255, 0.08);
-    transform: none; /* Professional clean design */
+    transform: none;
+    /* Professional clean design */
 }
 
 .navbar-corporate .navbar-toggler {
     border: 1px solid rgba(255, 255, 255, 0.3);
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px; /* Professional minimal radius */
+    border-radius: 2px;
+    /* Professional minimal radius */
 }
 
 .navbar-corporate .navbar-toggler-icon {
@@ -112,12 +131,14 @@ body {
     border: 1px solid var(--corporate-primary);
     color: white;
     font-weight: 500;
-    border-radius: 2px; /* Professional minimal border radius */
+    border-radius: 2px;
+    /* Professional minimal border radius */
     padding: 0.6rem 1.2rem;
     transition: all 0.2s ease;
     letter-spacing: 0.3px;
     font-size: 14px;
-    text-transform: none; /* Professional clean text */
+    text-transform: none;
+    /* Professional clean text */
 }
 
 .btn-corporate-primary:hover {
@@ -309,7 +330,7 @@ body {
     padding: 0.75rem 1rem;
 }
 
-.breadcrumb-item + .breadcrumb-item::before {
+.breadcrumb-item+.breadcrumb-item::before {
     color: var(--corporate-gray);
 }
 
@@ -399,7 +420,7 @@ body {
 /* Hero Section with Animated Bars */
 .hero {
     position: relative;
-    min-height: 35vh;
+    min-height: 40vh;
     background: linear-gradient(135deg, var(--corporate-primary) 0%, var(--corporate-accent) 100%);
     display: flex;
     align-items: center;
@@ -419,14 +440,14 @@ body {
 .hero p {
     font-size: 1.5rem;
     color: white;
-    margin: 1rem 0 0 0;
+    margin: 0.7rem 0 0 0;
     font-weight: 300;
     letter-spacing: 0.5px;
 }
 
 .bars {
     position: absolute;
-    bottom: 1rem;
+    bottom: 0.7rem;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -467,10 +488,13 @@ body {
 }
 
 @keyframes bars {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: scaleY(1);
         opacity: 0.8;
     }
+
     50% {
         transform: scaleY(1.5);
         opacity: 1;
@@ -482,6 +506,7 @@ body {
     text-align: center;
     z-index: 5;
     position: relative;
+    padding-bottom: 3rem;
 }
 
 /* Hero Background Pattern */
@@ -501,7 +526,7 @@ body {
 
 /* CTA Buttons in Hero */
 .hero .btn {
-    margin: 2rem 0.5rem 0 0.5rem;
+    margin: 1.8rem 0.5rem 0 0.5rem;
     padding: 0.8rem 2rem;
     font-weight: 600;
     border-radius: 30px;
@@ -563,11 +588,13 @@ body {
         width: 3px;
     }
 
-    .bar1, .bar5 {
+    .bar1,
+    .bar5 {
         height: 15px;
     }
 
-    .bar2, .bar4 {
+    .bar2,
+    .bar4 {
         height: 22px;
     }
 
