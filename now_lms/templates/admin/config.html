@@ -1,0 +1,203 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }} {{ mde.css }}
+        <title>Editar configuracion</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Editar configuración del sitio web.</h4>
+                <form method="post">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <h5>Datos Generales del Sitio Web.</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="titulo" class="form-label">Nombre del Sitio Web</label>
+                            {{ form.titulo(class="form-control", id="titulo", value=config.titulo) }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="descripcion" class="form-label">Descripción del Sitio</label>
+                            {{ form.descripcion(class="form-control", id="descripcion", value=config.descripcion) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="moneda" class="form-label">Moneda del Sitio</label>
+                            {{ form.moneda(class="form-control form-select", id="moneda", value=config.moneda) }}
+                            <div class="form-text">
+                                Seleccione la moneda predeterminada para procesar pagos y mostrar precios.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <br />
+                            <h5>Configuración de Navegación.</h5>
+                            <p class="text-muted">
+                                Configure qué elementos del menú de navegación estarán visibles para los usuarios.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-check">
+                                {{ form.enable_programs(class="form-check-input", id="enable_programs",
+                                checked=config.enable_programs) }}
+                                <label class="form-check-label" for="enable_programs"> Habilitar Programas </label>
+                            </div>
+                            <div class="form-text">Los usuarios verán la opción "Programas" en el menú de navegación.</div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-check">
+                                {{ form.enable_masterclass(class="form-check-input", id="enable_masterclass",
+                                checked=config.enable_masterclass) }}
+                                <label class="form-check-label" for="enable_masterclass"> Habilitar Master Class </label>
+                            </div>
+                            <div class="form-text">
+                                Los usuarios verán la opción "Clases Magistrales" en el menú de navegación.
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-check">
+                                {{ form.enable_resources(class="form-check-input", id="enable_resources",
+                                checked=config.enable_resources) }}
+                                <label class="form-check-label" for="enable_resources">
+                                    Habilitar Recursos descargables
+                                </label>
+                            </div>
+                            <div class="form-text">Los usuarios verán la opción "Recursos" en el menú de navegación.</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <br />
+                            <h5>Configuración de verificación de usuarios.</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            {% if config.email_verificado %}
+                            <div class="alert alert-success" role="alert">
+                                <i class="bi bi-check-circle" aria-hidden="true"></i> La configuración de correo electrónico ha
+                                sido verificada correctamente.
+                            </div>
+                            {% else %}
+                            <div class="alert alert-warning" role="alert">
+                                <i class="bi bi-dash-circle-dotted" aria-hidden="true"></i> La configuración de correo
+                                electrónico no ha sido verificada.
+                            </div>
+                            {% endif %}
+                            <label for="verificacion" class="form-label"
+                                >Permitir a nuevos usuarios verificarse vía correo electronico:</label
+                            >
+                            {{ form.verify_user_by_email(value=config.verify_user_by_email) }}
+                        </div>
+                    </div>
+
+                    <br />
+                    <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button">Cancelar</a>
+                    <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
+                </form>
+            </div>
+        </main>
+
+        <!-- Script para hacer el selector de moneda más fácil de usar -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const select = document.getElementById("moneda")
+
+                // Crear un input de búsqueda
+                const searchContainer = document.createElement("div")
+                searchContainer.className = "position-relative"
+
+                const searchInput = document.createElement("input")
+                searchInput.type = "text"
+                searchInput.className = "form-control mb-2"
+                searchInput.placeholder = "Buscar moneda..."
+                searchInput.style.display = "none"
+
+                // Insertar el input de búsqueda antes del select
+                select.parentNode.insertBefore(searchContainer, select)
+                searchContainer.appendChild(searchInput)
+                searchContainer.appendChild(select)
+
+                // Guardar las opciones originales
+                const originalOptions = Array.from(select.options)
+
+                // Función para filtrar opciones
+                function filterOptions() {
+                    const searchTerm = searchInput.value.toLowerCase()
+
+                    // Limpiar select
+                    select.innerHTML = ""
+
+                    // Filtrar y añadir opciones que coincidan
+                    originalOptions.forEach((option) => {
+                        if (
+                            option.text.toLowerCase().includes(searchTerm) ||
+                            option.value.toLowerCase().includes(searchTerm)
+                        ) {
+                            select.appendChild(option.cloneNode(true))
+                        }
+                    })
+
+                    // Si no hay término de búsqueda, mostrar todas las opciones
+                    if (searchTerm === "") {
+                        originalOptions.forEach((option) => {
+                            select.appendChild(option.cloneNode(true))
+                        })
+                    }
+                }
+
+                // Event listeners
+                searchInput.addEventListener("input", filterOptions)
+
+                // Mostrar/ocultar búsqueda al hacer click en el select
+                select.addEventListener("focus", function () {
+                    searchInput.style.display = "block"
+                    searchInput.focus()
+                })
+
+                // Ocultar búsqueda cuando se pierde el foco
+                document.addEventListener("click", function (e) {
+                    if (!searchContainer.contains(e.target)) {
+                        searchInput.style.display = "none"
+                        searchInput.value = ""
+                        filterOptions() // Restaurar todas las opciones
+                    }
+                })
+
+                // Permitir selección con Enter
+                searchInput.addEventListener("keydown", function (e) {
+                    if (e.key === "Enter") {
+                        e.preventDefault()
+                        if (select.options.length > 0) {
+                            select.value = select.options[0].value
+                            searchInput.style.display = "none"
+                            searchInput.value = ""
+                            filterOptions()
+                        }
+                    }
+                })
+            })
+        </script>
+    </body>
+</html>

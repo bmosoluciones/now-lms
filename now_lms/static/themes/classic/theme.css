@@ -1,0 +1,257 @@
+    /* Classic Theme Custom Variables - Minimalist Design */
+    :root {
+        --classic-primary: #2e2e2e; /* Gris Carbón - Changed for better button visibility */
+        --classic-secondary: #444444; /* Gris Medianoche - Changed for better contrast */
+        --classic-accent: #dadada; /* Gris Ceniza Claro */
+        --classic-light: #f5f5f5; /* Gris Niebla */
+        --classic-dark: #2e2e2e; /* Gris Carbón */
+        --classic-success: #444444; /* Gris Medianoche */
+        --classic-warning: #1a1a1a; /* Negro Suave */
+        --classic-danger: #2e2e2e;
+        --classic-info: #444444;
+        --classic-text: #2e2e2e; /* Texto principal */
+        --classic-text-secondary: #444444; /* Texto secundario */
+    }
+
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+        }
+    }
+
+    /* Classic Theme Styles */
+    body {
+        background: #ffffff;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Custom Navbar Styling */
+    .navbar-classic {
+        background: #ffffff !important; /* Keep navbar white */
+        box-shadow: 0 2px 4px rgba(15, 108, 191, 0.1);
+    }
+
+    .navbar-classic .navbar-brand,
+    .navbar-classic .nav-link {
+        color: var(--classic-dark) !important;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .navbar-classic .nav-link:hover {
+        color: var(--classic-light) !important;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        transform: translateY(-1px);
+    }
+
+    .navbar-classic .navbar-toggler {
+        border-color: rgba(46, 46, 46, 0.3);
+    }
+
+    .navbar-classic .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    /* Custom Button Styles */
+    .btn-classic-primary {
+        background-color: var(--classic-primary);
+        border-color: var(--classic-primary);
+        color: white;
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-classic-primary:hover {
+        background-color: var(--classic-accent);
+        border-color: var(--classic-accent);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(15, 108, 191, 0.2);
+    }
+
+    .btn-classic-secondary {
+        background-color: var(--classic-secondary);
+        border-color: var(--classic-secondary);
+        color: white;
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-classic-secondary:hover {
+        background-color: #666666;
+        border-color: #666666;
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(102, 102, 102, 0.2);
+    }
+
+    /* Card Enhancements */
+    .card {
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+        background: white;
+    }
+
+    .card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .card-header {
+        background-color: var(--classic-light);
+        border-bottom: 1px solid #dee2e6;
+        font-weight: 600;
+        color: var(--classic-dark);
+    }
+
+    /* Modal Enhancements */
+    .modal-content {
+        border-radius: 6px;
+        border: none;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+        background-color: var(--classic-primary);
+        color: white;
+        border-radius: 6px 6px 0 0;
+    }
+
+    .modal-header .btn-close {
+        filter: invert(1);
+    }
+
+    .modal-title {
+        font-weight: 600;
+    }
+
+    /* Form Enhancements */
+    .form-control:focus {
+        border-color: var(--classic-primary);
+        box-shadow: 0 0 0 0.2rem rgba(15, 108, 191, 0.25);
+    }
+
+    .form-select:focus {
+        border-color: var(--classic-primary);
+        box-shadow: 0 0 0 0.2rem rgba(15, 108, 191, 0.25);
+    }
+
+    /* Alert Enhancements */
+    .alert {
+        border-radius: 6px;
+        border: none;
+    }
+
+    .alert-primary {
+        background-color: rgba(15, 108, 191, 0.1);
+        color: var(--classic-primary);
+        border-left: 4px solid var(--classic-primary);
+    }
+
+    .alert-secondary {
+        background-color: rgba(255, 112, 67, 0.1);
+        color: var(--classic-secondary);
+        border-left: 4px solid var(--classic-secondary);
+    }
+
+    /* Navigation Breadcrumb */
+    .breadcrumb {
+        background-color: var(--classic-light);
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+    }
+
+    .breadcrumb-item.active {
+        color: var(--classic-primary);
+        font-weight: 500;
+    }
+
+    /* Table Enhancements */
+    .table-striped > tbody > tr:nth-of-type(odd) > td,
+    .table-striped > tbody > tr:nth-of-type(odd) > th {
+        background-color: rgba(46, 46, 46, 0.03);
+    }
+
+    .table th {
+        background-color: var(--classic-primary);
+        color: white;
+        border: none;
+        font-weight: 600;
+    }
+
+    /* Pagination */
+    .page-link {
+        color: var(--classic-primary);
+        border-color: #dee2e6;
+    }
+
+    .page-link:hover {
+        color: white;
+        background-color: var(--classic-primary);
+        border-color: var(--classic-primary);
+    }
+
+    .page-item.active .page-link {
+        background-color: var(--classic-primary);
+        border-color: var(--classic-primary);
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+        background-color: var(--classic-primary);
+    }
+
+    /* Badge Enhancements */
+    .badge.bg-primary {
+        background-color: var(--classic-primary) !important;
+    }
+
+    .badge.bg-secondary {
+        background-color: var(--classic-secondary) !important;
+    }
+
+    /* Link Colors */
+    a {
+        color: var(--classic-primary);
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: var(--classic-accent);
+        text-decoration: underline;
+    }
+
+    /* Footer */
+    .footer {
+        background-color: var(--classic-dark);
+        color: white;
+        margin-top: 3rem;
+        padding: 2rem 0;
+    }
+
+    /* Dropdown Enhancements */
+    .dropdown-menu {
+        border: none;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        border-radius: 6px;
+    }
+
+    .dropdown-item:hover {
+        background-color: var(--classic-light);
+        color: var(--classic-primary);
+    }

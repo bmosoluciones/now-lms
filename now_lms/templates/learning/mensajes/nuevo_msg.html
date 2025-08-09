@@ -1,0 +1,41 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }} {{ mde.css }}
+        <title>Nuevo Recurso - Documento</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Nuevo Mensaje.</h4>
+                <form method="post">
+                    {{ form.csrf_token }}
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="nombre" class="form-label">Asunto</label>
+                            {{ form.titulo(class="form-control", id="titulo", placeholder="Asunto") }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        {{ form.editor }} {{ mde.preview }} {{ mde.js }}
+
+                        <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">
+                            <i class="bi bi-envelope-plus" aria-hidden="true"></i> Publicar Nuevo Mensaje
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>

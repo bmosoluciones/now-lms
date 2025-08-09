@@ -1,0 +1,64 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }} {{ mde.css }}
+        <title>Nuevo Recurso - Presentación</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Agregar una nueva presentación de diapositivas</h4>
+                <p class="text-muted">Crear una presentación interactiva usando Reveal.js</p>
+
+                <form method="post">
+                    {{ form.csrf_token }}
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="nombre" class="form-label">Título de la Presentación</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder="Título de la Presentación",
+                            required=True) }}
+                            <div class="invalid-feedback">Ingrese un título válido para la presentación.</div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="theme" class="form-label">Tema de la Presentación</label>
+                            {{ form.theme(class="form-control", id="theme") }}
+                            <div class="form-text">Seleccione el tema visual para su presentación.</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            {{ form.descripcion(class="form-control", id="descripcion", rows="3") }}
+                            <div class="form-text">Descripción breve de la presentación.</div>
+                        </div>
+
+                        <div class="col-12">
+                            <hr class="my-4" />
+                            <button class="btn btn-primary btn-lg" type="submit">
+                                <i class="bi bi-file-slides me-2"></i>Crear Presentación
+                            </button>
+                            <a
+                                href="{{ url_for('course.curso', course_code=id_curso) }}"
+                                class="btn btn-secondary btn-lg ms-2"
+                            >
+                                <i class="bi bi-arrow-left me-2"></i>Cancelar
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        {{ mde.js }}
+    </body>
+</html>

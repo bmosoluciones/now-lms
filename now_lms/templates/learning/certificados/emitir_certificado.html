@@ -1,0 +1,82 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Crear Nueva Plantilla</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Emitir un nuevo Certificado.</h4>
+                <form method="post" enctype="multipart/form-data">
+                    {{ form.csrf_token }}
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="usuario" class="form-label">Usuario</label>
+                            {{ form.usuario(class="form-control") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="content_type" class="form-label">Tipo de Contenido</label>
+                            {{ form.content_type(class="form-control", id="content_type") }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-sm-6" id="curso_field">
+                            <label for="curso" class="form-label">Curso</label>
+                            {{ form.curso(class="form-control") }}
+                        </div>
+
+                        <div class="col-sm-6" id="master_class_field" style="display: none">
+                            <label for="master_class" class="form-label">Clase Magistral</label>
+                            {{ form.master_class(class="form-control") }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="template" class="form-label">Plantilla</label>
+                            {{ form.template(class="form-control") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="nota" class="form-label">Nota</label>
+                            {{ form.nota(class="form-control") }}
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Certificado</button>
+                </form>
+            </div>
+        </main>
+
+        <script>
+            document.getElementById("content_type").addEventListener("change", function () {
+                var cursoField = document.getElementById("curso_field")
+                var masterClassField = document.getElementById("master_class_field")
+
+                if (this.value === "course") {
+                    cursoField.style.display = "block"
+                    masterClassField.style.display = "none"
+                } else if (this.value === "masterclass") {
+                    cursoField.style.display = "none"
+                    masterClassField.style.display = "block"
+                }
+            })
+
+            // Initialize the form display based on default selection
+            document.getElementById("content_type").dispatchEvent(new Event("change"))
+        </script>
+    </body>
+</html>

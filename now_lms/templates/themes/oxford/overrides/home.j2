@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="es">
+    {% set current_theme = current_theme() %}{% set site_config = config() %}
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>Oxford Excellence - {{ site_config.nombre }}</title>
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+
+        <!-- Oxford Medieval Manuscript Hero Section -->
+        <section class="oxford-hero oxford-manuscript-bg">
+            <div class="container">
+                <div class="oxford-manuscript" style="max-width: 900px; margin: 0 auto; position: relative">
+                    <!-- Decoración marginal -->
+                    <div
+                        class="oxford-marginalia"
+                        style="
+                            position: absolute;
+                            left: -100px;
+                            top: 50px;
+                            width: 80px;
+                            text-align: center;
+                            transform: rotate(-10deg);
+                        "
+                    >
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem">🐉</div>
+                        <p style="font-size: 0.7rem; font-family: &quot;Cardo&quot;, serif; color: #002147">Nota marginalis</p>
+                    </div>
+
+                    <!-- Contenido principal -->
+                    <div class="text-center">
+                        <h1
+                            style="
+                                font-family: &quot;UnifrakturMaguntia&quot;, cursive, serif;
+                                font-size: 4rem;
+                                color: #002147;
+                                margin-bottom: 1rem;
+                                position: relative;
+                            "
+                        >
+                            {{ site_config.nombre if site_config.nombre else 'NOW-LMS' }}
+                        </h1>
+                        <p
+                            class="lead"
+                            style="
+                                font-family: &quot;Cardo&quot;, serif;
+                                font-size: 1.5rem;
+                                max-width: 80%;
+                                margin: 0 auto;
+                                border-top: 1px solid #c5b358;
+                                border-bottom: 1px solid #c5b358;
+                                padding: 1rem 0;
+                            "
+                        >
+                            <em>Dominus illuminatio mea</em>
+                        </p>
+                        <div class="d-flex gap-3 flex-wrap justify-content-center mt-4">
+                            {% if not current_user.is_authenticated %}
+                            <a
+                                href="{{ url_for('user.crear_cuenta') }}"
+                                class="btn btn-lg px-4 py-2"
+                                style="background: #002147; color: white; border: none; font-family: &quot;Cardo&quot;, serif"
+                            >
+                                <strong>Consultar el Manuscrito</strong>
+                            </a>
+                            <a
+                                href="{{ url_for('course.lista_cursos', page=1) }}"
+                                class="btn btn-outline-dark btn-lg px-4 py-2"
+                                style="font-family: &quot;Cardo&quot;, serif"
+                            >
+                                Explorar Biblioteca
+                            </a>
+                            {% else %}
+                            <a
+                                href="{{ url_for('home.panel') }}"
+                                class="btn btn-lg px-4 py-2"
+                                style="background: #002147; color: white; border: none; font-family: &quot;Cardo&quot;, serif"
+                            >
+                                <strong>Mi Códice</strong>
+                            </a>
+                            <a
+                                href="{{ url_for('course.lista_cursos', page=1) }}"
+                                class="btn btn-outline-dark btn-lg px-4 py-2"
+                                style="font-family: &quot;Cardo&quot;, serif"
+                            >
+                                Ver Textos
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center mb-5">
+                        <h2 class="display-5 fw-bold mb-4">Aprende con Nosotros</h2>
+                        <p class="lead">
+                            Descubre una nueva forma de aprender con nuestra plataforma educativa moderna y eficiente.
+                        </p>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div
+                            class="feature-card h-100"
+                            style="
+                                background: white;
+                                border-radius: 15px;
+                                padding: 2rem;
+                                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                                border-top: 4px solid #5a5f68;
+                            "
+                        >
+                            <div
+                                class="feature-icon mb-3"
+                                style="
+                                    background: #5a5f68;
+                                    width: 60px;
+                                    height: 60px;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                "
+                            >
+                                <span style="color: white; font-size: 1.5rem">🎯</span>
+                            </div>
+                            <h4 class="mb-3">Cursos Especializados</h4>
+                            <p style="line-height: 1.6">
+                                Accede a una amplia variedad de cursos diseñados por expertos en cada área de conocimiento.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div
+                            class="feature-card h-100"
+                            style="
+                                background: white;
+                                border-radius: 15px;
+                                padding: 2rem;
+                                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                                border-top: 4px solid #c5aa63;
+                            "
+                        >
+                            <div
+                                class="feature-icon mb-3"
+                                style="
+                                    background: #c5aa63;
+                                    width: 60px;
+                                    height: 60px;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                "
+                            >
+                                <span style="color: white; font-size: 1.5rem">👥</span>
+                            </div>
+                            <h4 class="mb-3">Comunidad Activa</h4>
+                            <p style="line-height: 1.6">
+                                Únete a una comunidad de estudiantes y profesionales que comparten tus intereses y objetivos.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div
+                            class="feature-card h-100"
+                            style="
+                                background: white;
+                                border-radius: 15px;
+                                padding: 2rem;
+                                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                                border-top: 4px solid #28a745;
+                            "
+                        >
+                            <div
+                                class="feature-icon mb-3"
+                                style="
+                                    background: #28a745;
+                                    width: 60px;
+                                    height: 60px;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                "
+                            >
+                                <span style="color: white; font-size: 1.5rem">🏆</span>
+                            </div>
+                            <h4 class="mb-3">Certificaciones</h4>
+                            <p style="line-height: 1.6">
+                                Obtén certificaciones reconocidas que validen tu conocimiento y impulsen tu carrera
+                                profesional.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Courses Section - Oxford Medieval Manuscript Themed -->
+        {% if cursos and cursos.total > 0 %}
+        <section class="py-5" style="background: #ffffff; border-top: 3px solid #c5b358">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center mb-5">
+                        <h2
+                            class="display-6 fw-bold mb-4"
+                            style="color: #002147; font-family: &quot;Cormorant Garamond&quot;, serif"
+                        >
+                            📜 Biblioteca Bodleiana Digital
+                        </h2>
+                        <p class="lead" style="color: #8b0000; font-family: &quot;Cardo&quot;, serif">
+                            <em>Manuscritos iluminados para mentes ilustradas</em>
+                        </p>
+                        <div style="width: 120px; height: 3px; background: #c5b358; margin: 1rem auto"></div>
+                    </div>
+                </div>
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    {% for curso in cursos.items[:4] %}
+                    <div class="col">
+                        <!-- Tarjeta "Folio" Oxford Medieval style -->
+                        <div class="oxford-folio oxford-folio-bg">
+                            <!-- Sello de certificación -->
+                            <div
+                                class="oxford-seal"
+                                style="
+                                    position: absolute;
+                                    right: -20px;
+                                    top: -20px;
+                                    width: 80px;
+                                    height: 80px;
+                                    background: radial-gradient(circle, #c5b358, #002147);
+                                    border-radius: 50%;
+                                    transform: rotate(15deg);
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    color: white;
+                                    font-size: 0.8rem;
+                                    text-align: center;
+                                    font-family: &quot;Cardo&quot;, serif;
+                                "
+                            >
+                                <div>
+                                    <div style="font-size: 1.2rem">⚜️</div>
+                                    <div style="font-size: 0.6rem">OXFORD</div>
+                                </div>
+                            </div>
+
+                            <h3
+                                style="
+                                    font-family: &quot;Cormorant Garamond&quot;, serif;
+                                    color: #002147;
+                                    border-bottom: 1px solid #c5b358;
+                                    padding-bottom: 0.5rem;
+                                    margin-bottom: 1rem;
+                                "
+                            >
+                                {{ curso.nombre }}
+                            </h3>
+                            <p style="font-family: &quot;Cardo&quot;, serif; margin: 1rem 0 2rem 0; line-height: 1.7">
+                                {{ curso.descripcion_corta | truncate(100) }}
+                            </p>
+
+                            <!-- Etiquetas medievales -->
+                            <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap">
+                                {% if curso.duracion %}
+                                <span
+                                    style="
+                                        font-size: 0.8rem;
+                                        background: #e8dcc8;
+                                        padding: 0.2rem 0.8rem;
+                                        border-radius: 3px;
+                                        font-family: &quot;Cardo&quot;, serif;
+                                    "
+                                    >{{ curso.duracion }}h horae</span
+                                >
+                                {% endif %}
+                                <span
+                                    style="
+                                        font-size: 0.8rem;
+                                        background: #e8dcc8;
+                                        padding: 0.2rem 0.8rem;
+                                        border-radius: 3px;
+                                        font-family: &quot;Cardo&quot;, serif;
+                                    "
+                                >
+                                    {% if curso.nivel == 0 %}Novicius{% elif curso.nivel == 1 %}Adeptus{% elif curso.nivel == 2
+                                    %}Magistratus{% else %}Doctoratus{% endif %}
+                                </span>
+                                {% if not curso.precio %}
+                                <span
+                                    style="
+                                        font-size: 0.8rem;
+                                        background: #c5b358;
+                                        color: white;
+                                        padding: 0.2rem 0.8rem;
+                                        border-radius: 3px;
+                                        font-family: &quot;Cardo&quot;, serif;
+                                    "
+                                    >Libertas</span
+                                >
+                                {% endif %}
+                            </div>
+
+                            <!-- Notas al pie estilo medieval -->
+                            <div
+                                style="
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                    font-size: 0.9rem;
+                                    font-family: &quot;Cardo&quot;, serif;
+                                "
+                            >
+                                <a
+                                    href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+                                    class="btn btn-sm"
+                                    style="
+                                        background: #002147;
+                                        color: white;
+                                        border: none;
+                                        font-family: &quot;Cardo&quot;, serif;
+                                    "
+                                >
+                                    📖 Leer Manuscrito
+                                </a>
+                                <div class="text-end">
+                                    {% if curso.precio %}
+                                    <span style="color: #8b0000; font-weight: bold">{{ curso.precio | float }} solidi</span>
+                                    {% endif %}
+                                    <div style="font-size: 0.8rem; color: #8b0000; margin-top: 0.25rem">Anno Domini MMXXV</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-center mt-4">
+                    <a
+                        href="{{ url_for('course.lista_cursos', page=1) }}"
+                        class="btn btn-lg px-4 py-2"
+                        style="background: #002147; color: white; border: none; font-family: &quot;Cardo&quot;, serif"
+                    >
+                        📚 Explorar Biblioteca Completa
+                    </a>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Call to Action Section -->
+        <section class="py-5" style="background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%)">
+            <div class="container">
+                <div class="row justify-content-center text-center">
+                    <div class="col-lg-8">
+                        {% if not current_user.is_authenticated %}
+                        <h3 class="mb-4">¿Listo para Comenzar?</h3>
+                        <p class="lead mb-4">
+                            Únete a nuestra plataforma educativa y comienza tu viaje de aprendizaje hoy mismo.
+                        </p>
+                        <a
+                            href="{{ url_for('user.crear_cuenta') }}"
+                            class="btn btn-lg px-5 py-3"
+                            style="
+                                background: #5a5f68;
+                                color: white;
+                                border: none;
+                                border-radius: 10px;
+                                font-weight: 600;
+                                text-decoration: none;
+                            "
+                        >
+                            Registrarse Gratis
+                        </a>
+                        {% else %}
+                        <h3 class="mb-4">Bienvenido de vuelta, {{ current_user.nombre }}</h3>
+                        <p class="lead mb-4">Continúa tu viaje de aprendizaje y explora nuevas oportunidades educativas.</p>
+                        <a
+                            href="{{ url_for('home.panel') }}"
+                            class="btn btn-lg px-5 py-3 me-3"
+                            style="
+                                background: #5a5f68;
+                                color: white;
+                                border: none;
+                                border-radius: 10px;
+                                font-weight: 600;
+                                text-decoration: none;
+                            "
+                        >
+                            Ir a Mi Panel
+                        </a>
+                        <a
+                            href="{{ url_for('course.lista_cursos', page=1) }}"
+                            class="btn btn-lg btn-outline-dark px-5 py-3"
+                            style="border-radius: 10px; font-weight: 600"
+                        >
+                            Explorar Cursos
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {{ current_theme.jslibs() }}
+    </body>
+</html>

@@ -1,0 +1,291 @@
+    /* Oxford Theme Custom Variables - Oxford University Inspired */
+    :root {
+        --oxford-primary: #002147; /* Oxford Blue - Dark Navy */
+        --oxford-secondary: #8B0000; /* Dark Red/Burgundy */
+        --oxford-accent: #C5B358; /* Oxford Gold */
+        --oxford-light: #F5F5F5; /* Light Grey */
+        --oxford-dark: #001829; /* Darker Oxford Blue */
+        --oxford-success: #2E8B57; /* Sea Green */
+        --oxford-warning: #FF8C00; /* Dark Orange */
+        --oxford-danger: #DC143C; /* Crimson */
+        --oxford-info: #4682B4; /* Steel Blue */
+        --oxford-text: #2C2C2C; /* Dark Grey Text */
+        --oxford-text-light: #FFFFFF; /* White Text */
+    }
+
+    /* Import medieval-style fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Cardo:ital,wght@0,400;0,700;1,400&display=swap');
+
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+        }
+    }
+
+    /* Oxford Medieval Manuscript Theme Styles */
+    body {
+        background: linear-gradient(135deg, #f4f1eb 0%, #e8dcc8 100%);
+        font-family: "Cardo", "Georgia", "Times New Roman", serif;
+        color: var(--oxford-text);
+        line-height: 1.6;
+    }
+
+    /* Medieval manuscript elements */
+    .oxford-hero {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .oxford-manuscript {
+        position: relative;
+        z-index: 2;
+    }
+
+    .oxford-dropcap {
+        position: relative;
+        text-shadow: 3px 3px 6px rgba(139, 0, 0, 0.5);
+    }
+
+    .oxford-dropcap::before {
+        content: '';
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        background: radial-gradient(circle, rgba(197, 179, 88, 0.3), transparent);
+        z-index: -1;
+        border-radius: 50%;
+    }
+
+    .oxford-folio {
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .oxford-folio:hover {
+        transform: translateY(-3px) rotate(0.5deg);
+        box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .oxford-marginalia {
+        opacity: 0.7;
+        transition: all 0.3s ease;
+    }
+
+    .oxford-marginalia:hover {
+        opacity: 1;
+        transform: rotate(0deg) scale(1.1);
+    }
+
+    /* Responsive improvements for medieval theme */
+    @media (max-width: 768px) {
+        .oxford-marginalia {
+            display: none;
+        }
+        
+        .oxford-dropcap {
+            float: none;
+            font-size: 4rem;
+            margin: 0;
+            display: block;
+            text-align: center;
+        }
+    }
+
+    /* Custom Oxford Navbar Styling */
+    .navbar-oxford {
+        background: linear-gradient(90deg, var(--oxford-primary) 0%, var(--oxford-dark) 100%) !important;
+        box-shadow: 
+            0 2px 4px rgba(0, 33, 71, 0.3),
+            0 4px 8px rgba(0, 33, 71, 0.15);
+        border-bottom: 2px solid var(--oxford-accent);
+        padding: 0.75rem 0;
+        position: relative;
+    }
+
+    /* Oxford crest-inspired accent line */
+    .navbar-oxford::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            var(--oxford-accent) 20%, 
+            var(--oxford-accent) 80%, 
+            transparent 100%);
+    }
+
+    .navbar-oxford .navbar-brand,
+    .navbar-oxford .nav-link {
+        color: var(--oxford-text-light) !important;
+        font-weight: 600;
+        font-family: "Georgia", "Times New Roman", serif;
+        transition: all 0.3s ease;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        text-decoration: none;
+    }
+
+    .navbar-oxford .navbar-brand {
+        font-size: 1.4rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .navbar-oxford .nav-link:hover {
+        color: var(--oxford-accent) !important;
+        background-color: rgba(197, 179, 88, 0.15);
+        border-radius: 6px;
+        transform: translateY(-1px);
+        text-shadow: 
+            0 1px 3px rgba(0, 0, 0, 0.4),
+            0 0 8px rgba(197, 179, 88, 0.3);
+    }
+
+    .navbar-oxford .navbar-toggler {
+        border-color: rgba(197, 179, 88, 0.4);
+        padding: 0.4rem 0.8rem;
+    }
+
+    .navbar-oxford .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28197, 179, 88, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    /* Custom Oxford Button Styles */
+    .btn-oxford-primary {
+        background: linear-gradient(45deg, var(--oxford-primary), var(--oxford-dark));
+        border: 2px solid var(--oxford-primary);
+        color: var(--oxford-text-light);
+        border-radius: 6px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 600;
+        font-family: "Georgia", serif;
+        transition: all 0.3s ease;
+        box-shadow: 0 3px 8px rgba(0, 33, 71, 0.3);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-oxford-primary:hover {
+        background: linear-gradient(45deg, var(--oxford-dark), var(--oxford-primary));
+        border-color: var(--oxford-accent);
+        color: var(--oxford-text-light);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 12px rgba(0, 33, 71, 0.4);
+    }
+
+    .btn-oxford-secondary {
+        background: linear-gradient(45deg, var(--oxford-secondary), #A0001A);
+        border: 2px solid var(--oxford-secondary);
+        color: var(--oxford-text-light);
+        border-radius: 6px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 600;
+        font-family: "Georgia", serif;
+        transition: all 0.3s ease;
+        box-shadow: 0 3px 8px rgba(139, 0, 0, 0.3);
+    }
+
+    .btn-oxford-secondary:hover {
+        background: linear-gradient(45deg, #A0001A, var(--oxford-secondary));
+        border-color: var(--oxford-accent);
+        color: var(--oxford-text-light);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 12px rgba(139, 0, 0, 0.4);
+    }
+
+    /* Card Enhancements with Oxford styling */
+    .card {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 33, 71, 0.1);
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        position: relative;
+    }
+
+    .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--oxford-primary), var(--oxford-accent));
+        border-radius: 8px 8px 0 0;
+    }
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 16px rgba(0, 33, 71, 0.15);
+        border-color: var(--oxford-primary);
+    }
+
+    .card-header {
+        background: linear-gradient(45deg, rgba(0, 33, 71, 0.05), rgba(197, 179, 88, 0.05));
+        border-bottom: 1px solid var(--oxford-primary);
+        border-radius: 8px 8px 0 0 !important;
+        font-weight: 700;
+        color: var(--oxford-text);
+        font-family: "Georgia", serif;
+    }
+
+    /* Form Enhancements */
+    .form-control:focus {
+        border-color: var(--oxford-primary);
+        box-shadow: 0 0 0 0.2rem rgba(0, 33, 71, 0.25);
+    }
+
+    .form-select:focus {
+        border-color: var(--oxford-primary);
+        box-shadow: 0 0 0 0.2rem rgba(0, 33, 71, 0.25);
+    }
+
+    /* Link Colors */
+    a {
+        color: var(--oxford-primary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    a:hover {
+        color: var(--oxford-secondary);
+        text-decoration: underline;
+    }
+
+    /* Alert Enhancements */
+    .alert {
+        border-radius: 8px;
+        border: none;
+        font-family: "Georgia", serif;
+    }
+
+    .alert-primary {
+        background: linear-gradient(135deg, rgba(0, 33, 71, 0.1), rgba(197, 179, 88, 0.1));
+        color: var(--oxford-primary);
+        border-left: 4px solid var(--oxford-primary);
+    }
+
+    /* Dropdown Enhancements */
+    .dropdown-menu {
+        border: none;
+        box-shadow: 0 6px 16px rgba(0, 33, 71, 0.15);
+        border-radius: 8px;
+        border-top: 2px solid var(--oxford-accent);
+    }
+
+    .dropdown-item:hover {
+        background: linear-gradient(45deg, rgba(0, 33, 71, 0.05), rgba(197, 179, 88, 0.05));
+        color: var(--oxford-primary);
+    }

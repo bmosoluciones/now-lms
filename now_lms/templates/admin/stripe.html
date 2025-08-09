@@ -1,0 +1,39 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+
+        <title>Editar configuracion</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h5 class="pb-2 border-bottom">Configuración del Correo Electronico.</h5>
+                <form method="post">
+                    <div class="row">
+                        <div class="col-sm-6"></div>
+                    </div>
+                    <div class="row">
+                        <div>
+                            <br />
+                            <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button"
+                                >Cancelar</a
+                            >
+                            <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>

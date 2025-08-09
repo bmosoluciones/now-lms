@@ -1,0 +1,156 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <title>{% if slideshow %}{{ slideshow.title }}{% else %}{{ resource.titulo }}{% endif %} - Presentación</title>
+
+        <!-- Reveal.js CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/reveal.js/dist/reveal.css') }}" />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='node_modules/reveal.js/dist/theme/' + (slideshow.theme if slideshow else 'simple') + '.css') }}"
+            id="theme"
+        />
+
+        <!-- Custom styles for better integration -->
+        <style>
+            body {
+                margin: 0;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            }
+            .reveal .slides section {
+                text-align: left;
+            }
+            .reveal .slides section h1,
+            .reveal .slides section h2,
+            .reveal .slides section h3,
+            .reveal .slides section h4 {
+                text-align: center;
+                margin-bottom: 1em;
+            }
+            .reveal .controls {
+                bottom: 12px;
+                right: 12px;
+            }
+            .slide-navigation {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1000;
+                background: rgba(0, 0, 0, 0.7);
+                padding: 10px;
+                border-radius: 5px;
+            }
+            .slide-navigation a {
+                color: white;
+                text-decoration: none;
+                margin: 0 5px;
+                padding: 5px 10px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 3px;
+                display: inline-block;
+            }
+            .slide-navigation a:hover {
+                background: rgba(255, 255, 255, 0.4);
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- Navigation controls -->
+        <div class="slide-navigation">
+            <a href="#" onclick="window.close(); return false;" title="Cerrar">
+                <i class="bi bi-x-lg"></i>
+            </a>
+            <a href="#" onclick="Reveal.toggleOverview(); return false;" title="Vista general">
+                <i class="bi bi-grid-3x3-gap"></i>
+            </a>
+            <a href="#" onclick="Reveal.toggleHelp(); return false;" title="Ayuda">
+                <i class="bi bi-question-circle"></i>
+            </a>
+        </div>
+
+        <div class="reveal">
+            <div class="slides">
+                {% if slideshow and slides %}
+                <!-- New slideshow format -->
+                {% for slide in slides %}
+                <section>
+                    <h2>{{ slide.title }}</h2>
+                    <div>{{ slide.content|safe }}</div>
+                </section>
+                {% endfor %} {% elif resource and slides %}
+                <!-- Legacy slideshow format -->
+                {% for slide in slides %}
+                <section>
+                    <h2>{{ slide.titulo }}</h2>
+                    <div>{{ slide.texto|safe }}</div>
+                </section>
+                {% endfor %} {% else %}
+                <!-- Default slide if no content -->
+                <section>
+                    <h2>Presentación</h2>
+                    <p>No hay diapositivas disponibles en esta presentación.</p>
+                </section>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Reveal.js JavaScript -->
+        <script src="{{ url_for('static', filename='node_modules/reveal.js/dist/reveal.js') }}"></script>
+        <script>
+            // Initialize Reveal.js
+            Reveal.initialize({
+                hash: true,
+                slideNumber: true,
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
+                touch: true,
+                loop: false,
+                rtl: false,
+                keyboard: {
+                    // ESC key for overview
+                    27: function () {
+                        Reveal.toggleOverview()
+                    },
+                    // F key for fullscreen
+                    70: function () {
+                        if (document.fullscreenElement) {
+                            document.exitFullscreen()
+                        } else {
+                            document.documentElement.requestFullscreen()
+                        }
+                    },
+                },
+                // Transition styles: none/fade/slide/convex/concave/zoom
+                transition: "slide",
+                transitionSpeed: "default", // default/fast/slow
+                backgroundTransition: "fade",
+            })
+
+            // Custom keyboard shortcuts
+            document.addEventListener("keydown", function (event) {
+                // 'H' key for help
+                if (event.key === "h" || event.key === "H") {
+                    Reveal.toggleHelp()
+                }
+                // 'O' key for overview
+                if (event.key === "o" || event.key === "O") {
+                    Reveal.toggleOverview()
+                }
+            })
+
+            // Add custom event listeners
+            Reveal.addEventListener("ready", function (event) {
+                console.log("Presentación lista:", event.currentSlide)
+            })
+
+            Reveal.addEventListener("slidechanged", function (event) {
+                console.log("Diapositiva cambiada a:", event.indexh + 1)
+            })
+        </script>
+    </body>
+</html>

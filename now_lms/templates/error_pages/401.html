@@ -1,0 +1,39 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html class="h-100" lang="es">
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>Favor verifique su correo electronico.</title>
+    </head>
+
+    <body class="d-flex text-center h-100">
+        <div class="cover-container d-flex w-100 h-100 mx-auto p-3 flex-column">
+            <header class="mb-auto">
+                <a class="navbar-brand col-md-3 col-lg-2 px-3 me-0" href="{{ url_for('home.pagina_de_inicio') }}">
+                    <img
+                        src="{{ url_for('static', filename='icons/logo/logo_large.png') }}"
+                        height="80"
+                        alt="NOW LMS"
+                        class="d-inline-block align-top"
+                    />
+                </a>
+            </header>
+
+            <main class="px-3">
+                <h1><i class="bi bi-credit-cardit" aria-hidden="true"></i></h1>
+                <h1>401</h1>
+                <p class="lead">Favor verifique su correo electronico.</p>
+                <p class="lead">
+                    <a class="btn btn-warning fw-bold" href="{{ url_for('home.pagina_de_inicio') }}"
+                        ><i class="bi bi-house" aria-hidden="true"></i> Regresar al inicio</a
+                    >
+                </p>
+            </main>
+
+            <footer class="mt-auto">
+                <p>BMO Soluciones</p>
+                <p>&copy; 2025</p>
+            </footer>
+        </div>
+    </body>
+</html>

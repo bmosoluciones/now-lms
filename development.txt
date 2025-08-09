@@ -1,0 +1,5 @@
+-r test.txt
+-r docs.txt
+
+bandit
+isort

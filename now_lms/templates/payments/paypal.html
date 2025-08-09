@@ -1,0 +1,37 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Procesando Pago - {{ title }}</title>
+
+        {{ current_theme.local_style() }}
+        <meta http-equiv="refresh" content="3; url={{ paypal_redirect_url }}" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div class="spinner-border text-primary mb-3" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <h4 class="card-title">Procesando su pago</h4>
+                            <p class="card-text">
+                                Por favor espere mientras lo redirigimos a PayPal para completar su pago de forma segura.
+                            </p>
+                            <p class="text-muted small">
+                                Si no es redirigido automáticamente,
+                                <a href="{{ paypal_redirect_url }}" class="text-decoration-none">haga clic aquí</a>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

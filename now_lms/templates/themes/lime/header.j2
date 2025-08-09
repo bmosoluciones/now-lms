@@ -1,0 +1,25 @@
+{% macro headertags() -%}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Aplicación para gestión del aprendizaje." />
+<meta name="author" content="BMO Moreno Berroteran Ortiz Soluciones Sociedad Anonima" />
+
+<meta name="theme-color" content="#7cb518" />
+<meta name="msapplication-TileColor" content="#7cb518" />
+
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css') }}" />
+<script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+
+<!-- Bootstrap Font -->
+<link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap-icons/font/bootstrap-icons.min.css') }}" />
+
+<!-- Favicons -->
+<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/favicon/apple-touch-icon.png') }}" />
+<link rel=" icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='icons/favicon/favicon-32x32.png') }}" />
+<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='icons/favicon/favicon-16x16.png') }}" />
+<link rel="manifest" href="{{ url_for('static', filename='icons/favicon/site.webmanifest') }}" />
+<meta name="msapplication-TileColor" content="#ffffff" />
+<meta name="theme-color" content="#ffffff" />
+
+{{ adsense_meta() | safe }} {{ adsense_code() | safe }} {%- endmacro %}

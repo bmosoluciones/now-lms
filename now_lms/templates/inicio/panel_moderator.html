@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es" class="h-100">
+    {% set current_theme = current_theme() %}
+
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Panel del moderador</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-0 py-3" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Bienvenido Moderador {{ current_user.nombre }} {{ current_user.apellido }}</h4>
+                <div class="row mb-2 mb-xl-3">
+                    <div class="col-auto d-none d-sm-block">
+                        <h3>Estadísticas de moderación.</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-6 col-xxl-5 d-flex">
+                        <div class="w-100">
+                            <div class="row">
+                                <div class="col-sm-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col mt-0">
+                                                    <h5 class="card-title">
+                                                        <i class="bi bi-person-vcard-fill" aria-hidden="true"></i> Cursos
+                                                        Moderados
+                                                    </h5>
+                                                </div>
+
+                                                <div class="col-auto">
+                                                    <div class="stat text-primary">
+                                                        <i class="align-middle" data-feather="book"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <h1 class="mt-1 mb-3">{{ created_courses }}</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col mt-0">
+                                                    <h5 class="card-title">
+                                                        <i class="bi bi-people-fill" aria-hidden="true"></i> Estudiantes
+                                                        Supervisados
+                                                    </h5>
+                                                </div>
+
+                                                <div class="col-auto">
+                                                    <div class="stat text-success">
+                                                        <i class="align-middle" data-feather="users"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <h1 class="mt-1 mb-3">{{ enrolled_students }}</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col mt-0">
+                                                    <h5 class="card-title">
+                                                        <i class="bi bi-chat-dots" aria-hidden="true"></i> Mensajes Abiertos
+                                                    </h5>
+                                                </div>
+
+                                                <div class="col-auto">
+                                                    <div class="stat text-warning">
+                                                        <i class="align-middle" data-feather="message-circle"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <h1 class="mt-1 mb-3">{{ open_messages|default(0) }}</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col mt-0">
+                                                    <h5 class="card-title">
+                                                        <i class="bi bi-check-circle" aria-hidden="true"></i> Mensajes Cerrados
+                                                    </h5>
+                                                </div>
+
+                                                <div class="col-auto">
+                                                    <div class="stat text-success">
+                                                        <i class="align-middle" data-feather="check-circle"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <h1 class="mt-1 mb-3">{{ closed_messages|default(0) }}</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-6 col-xxl-7">
+                        <div class="card flex-fill w-100">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Mis Cursos Moderados</h5>
+                            </div>
+                            <div class="card-body pt-2 pb-3">
+                                <ul>
+                                    {% for curso in cursos_por_fecha %}
+                                    <li>
+                                        <a href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+                                            >{{ curso.nombre }}</a
+                                        >
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Messages Management Section for Moderator -->
+                        <div class="card flex-fill w-100 mt-3">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0"><i class="bi bi-chat-left-text"></i> Gestión de Mensajes</h5>
+                            </div>
+                            <div class="card-body pt-2 pb-3">
+                                <p class="text-muted">
+                                    Como moderador, ayuda a contestar los requerimientos de los estudiantes vía mensajes
+                                    directos.
+                                </p>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ url_for('msg.user_messages') }}" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-envelope"></i> Mis Mensajes
+                                    </a>
+                                    <a href="{{ url_for('msg.admin_flagged_messages') }}" class="btn btn-warning btn-sm">
+                                        <i class="bi bi-exclamation-circle"></i> Mensajes Reportados
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

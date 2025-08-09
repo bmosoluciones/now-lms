@@ -1,0 +1,113 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Lista de Programas.</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-0 py-3" id="curse_list">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>Lista de Programas Disponibles.</h4>
+
+                    <p>
+                        <span class="badge bg-success">
+                            <a href="{{ url_for('program.nuevo_programa') }}" class="link-light">Nuevo Programa</a>
+                        </span>
+                    </p>
+                </div>
+
+                {% if consulta %}
+                <div class="container" id="curse_table">
+                    <table class="table table-sm table-borderless">
+                        <caption>
+                            Lista de programas disponibles en el sistema.
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Codigo</th>
+                                <th>Nombre</th>
+                                <th>Cursos</th>
+                                <th>Publico</th>
+                                <th>Precio</th>
+                                <th>Estatus</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        {% for item in consulta.items -%}
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('program.pagina_programa', codigo=item.codigo) }}" class="link-dark">
+                                        {{ item.codigo }}
+                                    </a>
+                                </td>
+
+                                <td>
+                                    <a href="{{ url_for('program.pagina_programa', codigo=item.codigo) }}" class="link-dark">
+                                        {{ item.nombre }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('program.pagina_programa', codigo=item.codigo) }}" class="link-dark">
+                                        {{ cuenta_cursos(item.codigo) }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('program.pagina_programa', codigo=item.codigo) }}" class="link-dark">
+                                        {{ item.publico }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('program.pagina_programa', codigo=item.codigo) }}" class="link-dark">
+                                        {{ item.precio }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('program.pagina_programa', codigo=item.codigo) }}" class="link-dark">
+                                        {{ item.estado }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="badge bg-danger">
+                                        <a href="{{ url_for('program.delete_program', ulid=item.id) }}" class="link-light"
+                                            >Eliminar Programa</a
+                                        >
+                                    </span>
+                                    <span class="badge bg-info">
+                                        <a href="{{ url_for('program.edit_program', ulid=item.id) }}" class="link-light"
+                                            >Editar Programa</a
+                                        >
+                                    </span>
+                                    <span class="badge bg-primary">
+                                        <a
+                                            href="{{ url_for('program.programa_cursos', codigo=item.codigo) }}"
+                                            class="link-light"
+                                            >Lista de Cursos</a
+                                        >
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% else %}
+                <p>Usted no ha creado ningun programa todavia.</p>
+                {% endif %}
+
+                <div class="container" id="user_paginatios">
+                    {{ current_theme.rendizar_paginacion(consulta=consulta, vista="cursos") }}
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

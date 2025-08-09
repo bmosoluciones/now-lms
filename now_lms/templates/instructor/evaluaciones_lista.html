@@ -1,0 +1,172 @@
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Mis Evaluaciones</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('instructor_profile.pagina_instructor') }}"
+                                        >Panel Instructor</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Mis Evaluaciones</li>
+                            </ol>
+                        </nav>
+                    </h4>
+                    <div>
+                        <a href="{{ url_for('instructor_profile.nueva_evaluacion_global') }}" class="btn btn-primary">
+                            <i class="bi bi-plus"></i> Nueva Evaluación
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h3>Mis Evaluaciones</h3>
+                                <span class="badge bg-info">{{ evaluaciones|length }} evaluación(es)</span>
+                            </div>
+
+                            <div class="card-body">
+                                {% if evaluaciones %}
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Título</th>
+                                                <th>Curso</th>
+                                                <th>Sección</th>
+                                                <th>Tipo</th>
+                                                <th>Puntuación Mínima</th>
+                                                <th>Preguntas</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in evaluaciones %} {% set eval = item.evaluacion %} {% set curso =
+                                            item.curso %} {% set seccion = item.seccion %}
+                                            <tr>
+                                                <td>
+                                                    <strong>{{ eval.title }}</strong>
+                                                    {% if eval.description %}
+                                                    <br /><small class="text-muted"
+                                                        >{{ eval.description[:50] }}{% if eval.description|length > 50 %}...{%
+                                                        endif %}</small
+                                                    >
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if curso %} {{ curso.nombre }}
+                                                    <br /><small class="text-muted">{{ curso.codigo }}</small>
+                                                    {% else %}
+                                                    <span class="text-muted">Curso eliminado</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if seccion %} {{ seccion.nombre }} {% else %}
+                                                    <span class="text-muted">Sección eliminada</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if eval.is_exam %}
+                                                    <span class="badge bg-danger">Examen</span>
+                                                    {% else %}
+                                                    <span class="badge bg-primary">Quiz</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ eval.passing_score }}%</td>
+                                                <td>
+                                                    <span class="badge bg-secondary">{{ eval.questions|length }}</span>
+                                                </td>
+                                                <td>
+                                                    {% if eval.available_until is none %}
+                                                    <span class="badge bg-success">Habilitada</span>
+                                                    {% else %}
+                                                    <span class="badge bg-warning">Deshabilitada</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <a
+                                                            href="{{ url_for('instructor_profile.edit_evaluation', evaluation_id=eval.id) }}"
+                                                            class="btn btn-outline-primary btn-sm"
+                                                        >
+                                                            <i class="bi bi-pencil"></i> Editar
+                                                        </a>
+
+                                                        {% if curso %}
+                                                        <a
+                                                            href="{{ url_for('instructor_profile.course_evaluations', course_code=curso.codigo) }}"
+                                                            class="btn btn-outline-info btn-sm"
+                                                        >
+                                                            <i class="bi bi-eye"></i> Ver Curso
+                                                        </a>
+                                                        {% endif %}
+
+                                                        <form
+                                                            method="POST"
+                                                            action="{{ url_for('instructor_profile.toggle_evaluation_status', evaluation_id=eval.id) }}"
+                                                            style="display: inline"
+                                                        >
+                                                            {% if eval.available_until is none %}
+                                                            <button
+                                                                type="submit"
+                                                                class="btn btn-outline-warning btn-sm"
+                                                                onclick="return confirm('¿Está seguro que desea deshabilitar esta evaluación?')"
+                                                            >
+                                                                <i class="bi bi-toggle-off"></i> Deshabilitar
+                                                            </button>
+                                                            {% else %}
+                                                            <button type="submit" class="btn btn-outline-success btn-sm">
+                                                                <i class="bi bi-toggle-on"></i> Habilitar
+                                                            </button>
+                                                            {% endif %}
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {% else %}
+                                <div class="alert alert-info text-center">
+                                    <i class="bi bi-info-circle"></i>
+                                    <h5>No hay evaluaciones creadas</h5>
+                                    <p>No ha creado evaluaciones aún. Comience creando su primera evaluación.</p>
+                                    <a
+                                        href="{{ url_for('instructor_profile.nueva_evaluacion_global') }}"
+                                        class="btn btn-primary"
+                                    >
+                                        <i class="bi bi-plus"></i> Crear Primera Evaluación
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

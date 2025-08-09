@@ -1,0 +1,43 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Editar Sección {{ seccion.nombre }}</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Editar sección.</h4>
+                <form method="post">
+                    {{ form.csrf_token }}
+                    <div class="row g-3">
+                        <div class="col-sm-12">
+                            <label for="nombre" class="form-label">Nombre de la Nueva Sección.</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder="Nombre de la Nueva Sección") }}
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="descripcion" class="form-label">Descripción de la Sección</label>
+                            {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripción de la nueva
+                            Sección.") }}
+                        </div>
+                    </div>
+                    <a class="btn btn-warning" href="{{ url_for('course.curso', course_code=seccion.curso) }}" role="button"
+                        >Cancelar</a
+                    >
+                    <button class="w-10 btn btn btn-primary btn-block" type="submit">Actualizar Sección</button>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>

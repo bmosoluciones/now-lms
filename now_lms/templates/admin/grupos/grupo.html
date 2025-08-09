@@ -1,0 +1,146 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <link href="{{ url_for('static', filename='node_modules/select2/dist/css/select2.css') }}" rel="stylesheet" />
+        <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.js') }}"></script>
+        <script src="{{ url_for('static', filename='node_modules/select2/dist/js/select2.min.js') }}"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $(".select2-usuario").select2()
+            })
+        </script>
+
+        <title>Miembros del Grupo {{ grupo.nombre }}</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            <div class="container px-0 py-3" id="lista-usarios">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>Miembros del Grupo {{ grupo.nombre }}.</h4>
+                </div>
+            </div>
+
+            <div class="container" id="user_table">
+                <div class="col-auto">
+                    <form action="{{ '/group/add?id=' + grupo.id }}" method="post" class="row g-3">
+                        <div class="col-auto">
+                            >
+                            <select class="select2-usuario" name="usuario">
+                                {% for student in estudiantes %}
+                                <option value="{{ student.usuario }}">{{ student.nombre }} {{ student.apellido }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-success btn-sm" type="submit">Agregar Usuario</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-auto">
+                    <form action="{{ '/group/set_tutor?id=' + grupo.id }}" method="post" class="row g-3">
+                        <div class="col-auto">
+                            <select class="select2-usuario" name="tutor">
+                                {% for tutor in tutores %}
+                                <option value="{{ tutor.usuario }}">{{ tutor.nombre }} {{ tutor.apellido }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-warning btn-sm" type="submit">Asignar Tutor</button>
+                        </div>
+                    </form>
+                </div>
+
+                <table class="table table-sm table-borderless">
+                    <caption>
+                        Lista de miembros del Grupo {{ grupo.nombre }}.
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Fecha registro</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    {% for item in consulta.items -%}
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('usuario', id_usuario=item.usuario) }}" class="link-dark text-reset">
+                                    {{ item.nombre }} {{ item.apellido }}
+                                </a>
+                            </td>
+                            <td>
+                                {% if item.tipo == "student" %}
+                                <span class="badge p-1 bg-success border border-light rounded-circle">
+                                    <span class="visually-hidden">Usuario</span>
+                                </span>
+                                {% elif item.tipo == "moderator" %}
+                                <span class="badge p-1 bg-info border border-light rounded-circle">
+                                    <span class="visually-hidden">Moderador</span>
+                                </span>
+                                {% elif item.tipo == "instructor" %}
+                                <span class="badge p-1 bg-primary border border-light rounded-circle">
+                                    <span class="visually-hidden">Moderador</span>
+                                </span>
+                                {% else %}
+                                <span class="badge p-1 bg-warning border border-light rounded-circle">
+                                    <span class="visually-hidden">Instructor</span>
+                                </span>
+                                {% endif %}
+
+                                <a href="{{ url_for('usuario', id_usuario=item.usuario) }}" class="link-dark text-reset">
+                                    {{ item.tipo | capitalize }}
+                                </a>
+                            </td>
+                            <td>
+                                {% if item.activo %}
+                                <span class="badge p-1 bg-primary border border-light rounded-circle">
+                                    <span class="visually-hidden">Usuario Activo</span>
+                                </span>
+                                {% else %}
+                                <span class="badge p-1 bg-danger border border-light rounded-circle">
+                                    <span class="visually-hidden">Usuario Inactivo</span>
+                                </span>
+                                {% endif %}
+
+                                <a href="{{ url_for('usuario', id_usuario=item.usuario) }}" class="link-dark">
+                                    {{ item.activo | replace("True", "Activo") | replace("False", "Inactivo") }}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('usuario', id_usuario=item.usuario) }}" class="link-dark">
+                                    {{ item.creado }}
+                                </a>
+                            </td>
+                            <td>
+                                <span class="badge bg-danger">
+                                    <a
+                                        href="{{ url_for('elimina_usuario__grupo', group=grupo.id, user=item.usuario) }}"
+                                        class="link-light"
+                                        >Eliminar</a
+                                    >
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="container" id="user_paginatios">
+                {{ current_theme.rendizar_paginacion(consulta=consulta, vista="grupo", id=grupo.id) }}
+            </div>
+        </main>
+    </body>
+</html>

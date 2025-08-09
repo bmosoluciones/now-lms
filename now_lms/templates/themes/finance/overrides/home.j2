@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="es">
+    {% set current_theme = current_theme() %}{% set site_config = config() %}{% set lms_info = lms_info() %}
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>Finance Academy - {{ site_config.nombre }}</title>
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+
+        <!-- Hero Section - Stock Market Inspired -->
+        <section
+            class="hero-section py-5"
+            style="
+                background: var(--finance-accent);
+                min-height: 60vh;
+                display: flex;
+                align-items: center;
+                position: relative;
+                overflow: hidden;
+            "
+        >
+            <!-- Static ticker background bar -->
+            <div
+                style="
+                    position: absolute;
+                    top: 10px;
+                    left: 0;
+                    width: 100%;
+                    height: 35px;
+                    background: #006647;
+                    display: flex;
+                    align-items: center;
+                    overflow: hidden;
+                    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+                    z-index: 10;
+                "
+            >
+                <!-- Scrolling ticker text container - constrained within visible area -->
+                <div
+                    style="width: 100%; height: 100%; display: flex; align-items: center; position: relative; overflow: hidden"
+                >
+                    <!-- Scrolling ticker text -->
+                    <div
+                        style="
+                            animation: constrained-scroll 30s linear infinite;
+                            font-family: &quot;Courier New&quot;, monospace;
+                            font-size: 14px;
+                            color: #ffffff;
+                            white-space: nowrap;
+                            font-weight: bold;
+                            display: flex;
+                            align-items: center;
+                            position: absolute;
+                            left: 100%;
+                        "
+                    >
+                        📚 CURSOS: {{ lms_info.courses_count }} • 👥 ESTUDIANTES: {{ lms_info.students_count }} • 👨‍🏫
+                        INSTRUCTORES: {{ lms_info.teachers_count }} • 🛡️ MODERADORES: {{ lms_info.moderators_count }} • 📋
+                        INSCRIPCIONES: {{ lms_info.enrollments_count }} • 🏆 CERTIFICADOS: {{ lms_info.certificates_count }} •
+                        🎓 PROGRAMAS: {{ lms_info.programs_count }} • 📈 PLATAFORMA EN CRECIMIENTO • 💎 EDUCACIÓN DE CALIDAD •
+                        🚀 APRENDIZAJE ACELERADO • 💼 OPORTUNIDADES PROFESIONALES
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8 text-white">
+                        <div class="hero-content">
+                            <h1 class="display-4 fw-bold mb-4">💰 Inversión en Conocimiento Financiero</h1>
+                            <p class="lead mb-4" style="font-size: 1.3rem; line-height: 1.6">
+                                📊 Maximiza tus retornos educativos con nuestra plataforma de aprendizaje financiero de alto
+                                rendimiento. Diversifica tu portafolio de conocimientos con cursos premium del mercado
+                                educativo.
+                            </p>
+                            <div class="d-flex gap-3 flex-wrap">
+                                {% if not current_user.is_authenticated %}
+                                <a href="{{ url_for('user.crear_cuenta') }}" class="btn btn-light btn-lg px-4 py-2">
+                                    <strong>💎 Invertir Ahora</strong>
+                                </a>
+                                <a
+                                    href="{{ url_for('course.lista_cursos', page=1) }}"
+                                    class="btn btn-outline-light btn-lg px-4 py-2"
+                                >
+                                    📈 Ver Oportunidades
+                                </a>
+                                {% else %}
+                                <a href="{{ url_for('home.panel') }}" class="btn btn-light btn-lg px-4 py-2">
+                                    <strong>💼 Mi Portafolio</strong>
+                                </a>
+                                <a
+                                    href="{{ url_for('course.lista_cursos', page=1) }}"
+                                    class="btn btn-outline-light btn-lg px-4 py-2"
+                                >
+                                    📊 Explorar Mercado
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                        <div class="hero-visual">
+                            <div
+                                class="learning-icon"
+                                style="
+                                    background: rgba(255, 255, 255, 0.1);
+                                    border-radius: 50%;
+                                    width: 250px;
+                                    height: 250px;
+                                    margin: 0 auto;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    border: 4px solid rgba(255, 255, 255, 0.3);
+                                    position: relative;
+                                    overflow: hidden;
+                                "
+                            >
+                                <!-- Stock chart background pattern -->
+                                <div
+                                    style="
+                                        position: absolute;
+                                        bottom: 20px;
+                                        left: 20px;
+                                        right: 20px;
+                                        height: 60px;
+                                        opacity: 0.3;
+                                    "
+                                >
+                                    <svg viewBox="0 0 200 60" style="width: 100%; height: 100%">
+                                        <polyline
+                                            points="10,50 30,40 50,45 70,30 90,35 110,20 130,25 150,15 170,20 190,10"
+                                            stroke="rgba(255,255,255,0.8)"
+                                            stroke-width="2"
+                                            fill="none"
+                                        />
+                                    </svg>
+                                </div>
+                                <div class="text-center text-white">
+                                    <div style="font-size: 3rem; margin-bottom: 0.5rem">📈</div>
+                                    <div style="font-size: 1.2rem; font-weight: 600">Educación</div>
+                                    <div style="font-size: 0.9rem; opacity: 0.8">Financiera</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section - Investment Focused -->
+        <section class="py-5" style="background: linear-gradient(135deg, #f5f3ea 0%, #faf8f0 100%)">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center mb-5">
+                        <h2 class="display-5 fw-bold mb-4" style="color: #006647">💼 Invierte en tu Futuro Financiero</h2>
+                        <p class="lead" style="color: #1e4d3a">
+                            Diversifica tu portafolio de conocimientos con nuestros activos educativos de alto rendimiento y
+                            bajo riesgo.
+                        </p>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div
+                            class="feature-card h-100"
+                            style="
+                                background: white;
+                                border-radius: 15px;
+                                padding: 2rem;
+                                box-shadow: 0 8px 16px rgba(0, 102, 71, 0.1);
+                                border-top: 4px solid #006647;
+                                border-left: 2px solid rgba(184, 134, 11, 0.3);
+                            "
+                        >
+                            <div
+                                class="feature-icon mb-3"
+                                style="
+                                    background: #006647;
+                                    width: 60px;
+                                    height: 60px;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                "
+                            >
+                                <span style="color: white; font-size: 1.5rem">💎</span>
+                            </div>
+                            <h4 class="mb-3" style="color: #006647">Activos Premium</h4>
+                            <p style="line-height: 1.6; color: #1e4d3a">
+                                Cursos de alto valor diseñados por analistas financieros y expertos en inversión para maximizar
+                                tu ROI educativo.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div
+                            class="feature-card h-100"
+                            style="
+                                background: white;
+                                border-radius: 15px;
+                                padding: 2rem;
+                                box-shadow: 0 8px 16px rgba(0, 102, 71, 0.1);
+                                border-top: 4px solid #4a6fa5;
+                                border-left: 2px solid rgba(184, 134, 11, 0.3);
+                            "
+                        >
+                            <div
+                                class="feature-icon mb-3"
+                                style="
+                                    background: #4a6fa5;
+                                    width: 60px;
+                                    height: 60px;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                "
+                            >
+                                <span style="color: white; font-size: 1.5rem">📊</span>
+                            </div>
+                            <h4 class="mb-3" style="color: #4a6fa5">Red de Inversores</h4>
+                            <p style="line-height: 1.6; color: #1e4d3a">
+                                Conecta con traders, analistas y gestores de fondos en nuestra exclusiva red de profesionales
+                                del sector financiero.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div
+                            class="feature-card h-100"
+                            style="
+                                background: white;
+                                border-radius: 15px;
+                                padding: 2rem;
+                                box-shadow: 0 8px 16px rgba(0, 102, 71, 0.1);
+                                border-top: 4px solid #806020;
+                                border-left: 2px solid rgba(184, 134, 11, 0.3);
+                            "
+                        >
+                            <div
+                                class="feature-icon mb-3"
+                                style="
+                                    background: #806020;
+                                    width: 60px;
+                                    height: 60px;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                "
+                            >
+                                <span style="color: white; font-size: 1.5rem">🏅</span>
+                            </div>
+                            <h4 class="mb-3" style="color: #806020">Certificaciones Oro</h4>
+                            <p style="line-height: 1.6; color: #1e4d3a">
+                                Credenciales de oro que acreditan tu expertise financiero ante instituciones y empleadores del
+                                sector bursátil.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Courses Section - Finance Themed -->
+        {% if cursos and cursos.total > 0 %}
+        <section class="py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center mb-5">
+                        <h2 class="display-6 fw-bold mb-4" style="color: #365c8d">💵 Inversión en tu Futuro Financiero</h2>
+                        <p class="lead">Cursos especializados en finanzas para profesionales y empresarios exitosos.</p>
+                    </div>
+                </div>
+                <div class="row row-cols-1 row-cols-sm-2 g-4">
+                    {% for curso in cursos.items[:4] %}
+                    <div class="col">
+                        <div
+                            class="card h-100 shadow-sm"
+                            style="
+                                border: 2px solid #9bae94;
+                                border-radius: 15px;
+                                background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+                            "
+                        >
+                            {% if curso.portada and course_logo(curso.codigo) %}
+                            <img
+                                src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/' + course_logo(curso.codigo)) }}"
+                                alt="{{ curso.nombre }}"
+                                class="card-img-top"
+                                style="height: 200px; object-fit: cover; border-radius: 13px 13px 0 0"
+                            />
+                            {% else %}
+                            <div
+                                class="card-img-top d-flex align-items-center justify-content-center text-white"
+                                style="
+                                    height: 200px;
+                                    background: linear-gradient(135deg, #9bae94 0%, #365c8d 100%);
+                                    border-radius: 13px 13px 0 0;
+                                "
+                            >
+                                <div class="text-center">
+                                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem">💰</div>
+                                    <div
+                                        style="font-size: 1rem; font-weight: 600; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3)"
+                                    >
+                                        {{ curso.nombre }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="card-body d-flex flex-column" style="position: relative">
+                                <!-- Dollar bill pattern subtle background -->
+                                <div
+                                    style="
+                                        position: absolute;
+                                        top: 10px;
+                                        right: 10px;
+                                        opacity: 0.1;
+                                        font-size: 0.8rem;
+                                        color: #9bae94;
+                                    "
+                                >
+                                    $$$
+                                </div>
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title mb-0" style="color: #365c8d">{{ curso.nombre }}</h5>
+                                    <div class="d-flex align-items-center gap-2">
+                                        {% if not curso.precio %}
+                                        <span class="badge" style="background: #9bae94; color: white">💸 Gratis</span>
+                                        {% endif %} {% if curso.nivel == 0 %}
+                                        <span class="badge bg-secondary" title="Nivel Introductorio">💹 Intro</span>
+                                        {% elif curso.nivel == 1 %}
+                                        <span class="badge" style="background: #9bae94" title="Nivel Principiante"
+                                            >💼 Principiante</span
+                                        >
+                                        {% elif curso.nivel == 2 %}
+                                        <span class="badge" style="background: #365c8d" title="Nivel Intermedio"
+                                            >📈 Intermedio</span
+                                        >
+                                        {% elif curso.nivel == 3 %}
+                                        <span class="badge bg-success" title="Nivel Avanzado">💎 Avanzado</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <p class="card-text flex-grow-1">{{ curso.descripcion_corta | truncate(100) }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a
+                                        href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+                                        class="btn btn-sm"
+                                        style="background: #9bae94; color: white; border: none"
+                                        >💰 Invertir en el Curso</a
+                                    >
+                                    <div class="text-end">
+                                        {% if curso.duracion %}
+                                        <small class="text-muted d-block">⏱️ {{ curso.duracion }} mins</small>
+                                        {% endif %} {% if curso.precio %}
+                                        <small class="fw-bold" style="color: #365c8d"
+                                            >💵 {{ curso.precio | float }} {{ site_config.moneda }}</small
+                                        >
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-center mt-4">
+                    <a
+                        href="{{ url_for('course.lista_cursos', page=1) }}"
+                        class="btn btn-lg px-4 py-2"
+                        style="background: #365c8d; color: white; border: none; border-radius: 10px"
+                    >
+                        💼 Ver Portafolio Completo de Cursos
+                    </a>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Call to Action Section -->
+        <section class="py-5" style="background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%)">
+            <div class="container">
+                <div class="row justify-content-center text-center">
+                    <div class="col-lg-8">
+                        {% if not current_user.is_authenticated %}
+                        <h3 class="mb-4">¿Listo para Comenzar?</h3>
+                        <p class="lead mb-4">
+                            Únete a nuestra plataforma educativa y comienza tu viaje de aprendizaje hoy mismo.
+                        </p>
+                        <a
+                            href="{{ url_for('user.crear_cuenta') }}"
+                            class="btn btn-lg px-5 py-3"
+                            style="
+                                background: #9bae94;
+                                color: white;
+                                border: none;
+                                border-radius: 10px;
+                                font-weight: 600;
+                                text-decoration: none;
+                            "
+                        >
+                            Registrarse Gratis
+                        </a>
+                        {% else %}
+                        <h3 class="mb-4">Bienvenido de vuelta, {{ current_user.nombre }}</h3>
+                        <p class="lead mb-4">Continúa tu viaje de aprendizaje y explora nuevas oportunidades educativas.</p>
+                        <a
+                            href="{{ url_for('home.panel') }}"
+                            class="btn btn-lg px-5 py-3 me-3"
+                            style="
+                                background: #9bae94;
+                                color: white;
+                                border: none;
+                                border-radius: 10px;
+                                font-weight: 600;
+                                text-decoration: none;
+                            "
+                        >
+                            Ir a Mi Panel
+                        </a>
+                        <a
+                            href="{{ url_for('course.lista_cursos', page=1) }}"
+                            class="btn btn-lg btn-outline-dark px-5 py-3"
+                            style="border-radius: 10px; font-weight: 600"
+                        >
+                            Explorar Cursos
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {{ current_theme.jslibs() }}
+    </body>
+</html>

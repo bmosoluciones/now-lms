@@ -1,0 +1,11 @@
+fixes:
+  - "/home/runner/work/now_lms/::"
+coverage:
+  status:
+    project:
+      default:
+        # basic
+        target: auto
+        threshold: 10%
+ignore:
+  - "now_lms/__main__.py"

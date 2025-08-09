@@ -1,0 +1,232 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Editar Cupón - {{ curso.nombre }}</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            <div class="container">
+                <div class="py-5 text-center">
+                    <h1 class="h2">Editar Cupón: {{ coupon.code }}</h1>
+                    <p class="lead">Curso: {{ curso.nombre }}</p>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6>Estado Actual del Cupón</h6>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <strong>Usos actuales:</strong> {{ coupon.current_uses }}
+                                        {% if coupon.max_uses %}
+                                            / {{ coupon.max_uses }}
+                                        {% else %}
+                                            (ilimitado)
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Estado:</strong>
+                                        {% set is_valid, error_msg = coupon.is_valid() %}
+                                        {% if is_valid %}
+                                            <span class="badge bg-success">Activo</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">{{ error_msg }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Creado:</strong> {{ coupon.timestamp.strftime('%d/%m/%Y') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form method="post">
+                            {{ form.csrf_token }}
+                            
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label for="code" class="form-label">Código del Cupón *</label>
+                                    {{ form.code(class="form-control", id="code", required=True) }}
+                                    <div class="form-text">Código único para el cupón</div>
+                                    {% if form.code.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.code.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="discount_type" class="form-label">Tipo de Descuento *</label>
+                                    {{ form.discount_type(class="form-select", id="discount_type", required=True, onchange="updateDiscountHelp()") }}
+                                    {% if form.discount_type.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.discount_type.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="discount_value" class="form-label">Valor del Descuento *</label>
+                                    {{ form.discount_value(class="form-control", id="discount_value", required=True, step="0.01", min="0") }}
+                                    <div class="form-text" id="discount_help">
+                                        Valor del descuento
+                                    </div>
+                                    {% if form.discount_value.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.discount_value.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="max_uses" class="form-label">Máximo de Usos</label>
+                                    {{ form.max_uses(class="form-control", id="max_uses", min=coupon.current_uses if coupon.current_uses > 0 else 1) }}
+                                    <div class="form-text">
+                                        Mínimo: {{ coupon.current_uses }} (usos actuales)
+                                        {% if not coupon.max_uses %}
+                                            <br>Actualmente: Ilimitado
+                                        {% endif %}
+                                    </div>
+                                    {% if form.max_uses.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.max_uses.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="expires_at" class="form-label">Fecha de Expiración</label>
+                                    {{ form.expires_at(class="form-control", id="expires_at") }}
+                                    <div class="form-text">Dejar vacío si no expira</div>
+                                    {% if form.expires_at.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.expires_at.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h6>Información del Curso</h6>
+                                            <p class="mb-1"><strong>Precio actual:</strong> ${{ curso.precio }} USD</p>
+                                            <p class="mb-0" id="preview_discount"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ url_for('course.list_coupons', course_code=curso.codigo) }}" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Actualizar Cupón
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            const coursePrice = {{ curso.precio }};
+            const currentUses = {{ coupon.current_uses }};
+            
+            function updateDiscountHelp() {
+                const discountType = document.getElementById('discount_type').value;
+                const helpText = document.getElementById('discount_help');
+                const discountValue = document.getElementById('discount_value');
+                
+                if (discountType === 'percentage') {
+                    helpText.textContent = 'Porcentaje de descuento (0-100)';
+                    discountValue.max = '100';
+                } else {
+                    helpText.textContent = `Cantidad fija de descuento (máximo $${coursePrice})`;
+                    discountValue.max = coursePrice;
+                }
+                updatePreview();
+            }
+            
+            function updatePreview() {
+                const discountType = document.getElementById('discount_type').value;
+                const discountValue = parseFloat(document.getElementById('discount_value').value) || 0;
+                const previewElement = document.getElementById('preview_discount');
+                
+                if (discountValue > 0) {
+                    let finalPrice, discountAmount;
+                    
+                    if (discountType === 'percentage') {
+                        discountAmount = coursePrice * (discountValue / 100);
+                        finalPrice = coursePrice - discountAmount;
+                    } else {
+                        discountAmount = Math.min(discountValue, coursePrice);
+                        finalPrice = coursePrice - discountAmount;
+                    }
+                    
+                    finalPrice = Math.max(0, finalPrice);
+                    
+                    previewElement.innerHTML = `
+                        <strong>Vista previa:</strong> 
+                        Descuento: $${discountAmount.toFixed(2)} USD | 
+                        Precio final: $${finalPrice.toFixed(2)} USD
+                        ${finalPrice === 0 ? '<span class="badge bg-success ms-2">¡GRATIS!</span>' : ''}
+                    `;
+                } else {
+                    previewElement.innerHTML = '';
+                }
+            }
+            
+            // Initialize
+            updateDiscountHelp();
+            
+            // Add event listeners
+            document.getElementById('discount_type').addEventListener('change', updateDiscountHelp);
+            document.getElementById('discount_value').addEventListener('input', updatePreview);
+            
+            // Set minimum date to today
+            document.getElementById('expires_at').min = new Date().toISOString().split('T')[0];
+            
+            // Validate max_uses against current uses
+            document.getElementById('max_uses').addEventListener('input', function() {
+                const value = parseInt(this.value);
+                if (value && value < currentUses) {
+                    this.setCustomValidity(`El máximo de usos no puede ser menor que los usos actuales (${currentUses})`);
+                } else {
+                    this.setCustomValidity('');
+                }
+            });
+        </script>
+    </body>
+</html>

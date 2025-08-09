@@ -1,0 +1,105 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+
+        <title>Configuración de Pagos con PayPal</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Configuración de pagos con PayPal</h4>
+                <form method="post">
+                    {{ form.csrf_token }}
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <h5>Configuración General</h5>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-check">
+                                {{ form.habilitado(class="form-check-input") }}
+                                <label for="habilitado" class="form-check-label"> Habilitar PayPal en el sitio web </label>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-check">
+                                {{ form.sandbox(class="form-check-input") }}
+                                <label for="sandbox" class="form-check-label"> Usar modo sandbox (desarrollo) </label>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <hr />
+                            <h5>Configuración de Producción</h5>
+                            <p class="text-muted small">Configure las credenciales de PayPal para producción.</p>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="paypal_id" class="form-label">Client ID (Producción)</label>
+                            {{ form.paypal_id(class="form-control", placeholder="Ingrese el Client ID de producción") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="paypal_secret" class="form-label">Client Secret (Producción)</label>
+                            {{ form.paypal_secret(class="form-control", placeholder="Ingrese el Client Secret de producción")
+                            }}
+                            <div class="form-text">Deje en blanco para mantener el valor actual.</div>
+                        </div>
+
+                        <div class="col-12">
+                            <hr />
+                            <h5>Configuración de Sandbox</h5>
+                            <p class="text-muted small">Configure las credenciales de PayPal para pruebas en sandbox.</p>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="paypal_sandbox" class="form-label">Client ID (Sandbox)</label>
+                            {{ form.paypal_sandbox(class="form-control", placeholder="Ingrese el Client ID de sandbox") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="paypal_sandbox_secret" class="form-label">Client Secret (Sandbox)</label>
+                            {{ form.paypal_sandbox_secret(class="form-control", placeholder="Ingrese el Client Secret de
+                            sandbox") }}
+                            <div class="form-text">Deje en blanco para mantener el valor actual.</div>
+                        </div>
+
+                        <div class="col-12">
+                            <hr />
+                            <div class="alert alert-info">
+                                <h6>Información importante:</h6>
+                                <ul class="mb-0">
+                                    <li>
+                                        Obtenga sus credenciales de PayPal desde
+                                        <a href="https://developer.paypal.com" target="_blank">PayPal Developer Dashboard</a>
+                                    </li>
+                                    <li>Use el modo sandbox para pruebas y desarrollo</li>
+                                    <li>Los secretos se almacenan de forma cifrada en la base de datos</li>
+                                    <li>Asegúrese de configurar las URLs de retorno correctamente en PayPal</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button">Cancelar</a>
+                    <button class="w-auto btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>
