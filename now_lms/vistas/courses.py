@@ -1389,12 +1389,8 @@ def elimina_logo(course_code):
     """Elimina logotipo del curso."""
     from now_lms.db.tools import elimina_logo_perzonalizado_curso
 
-    if current_user.tipo == "admin":
-        elimina_logo_perzonalizado_curso(course_code=course_code)
-        return redirect(url_for("course.editar_curso", course_code=course_code))
-    else:
-        flash(NO_AUTORIZADO_MSG, "warning")
-        return abort(403)
+    elimina_logo_perzonalizado_curso(course_code=course_code)
+    return redirect(url_for("course.editar_curso", course_code=course_code))
 
 
 # ---------------------------------------------------------------------------------------
