@@ -537,10 +537,13 @@ def nuevo_curso():
                 try:
                     log.trace("Saving logo")
                     picture_file = images.save(logo, folder=form.codigo.data, name=f"logo{logo_ext}")
-                    nuevo_curso_.portada = True
-                    nuevo_curso_.portada_ext = logo_ext
-                    database.session.commit()
-                    log.warning("Course Logo saved")
+                    if picture_file:
+                        nuevo_curso_.portada = True
+                        nuevo_curso_.portada_ext = logo_ext
+                        database.session.commit()
+                        log.info("Course Logo saved")
+                    else:
+                        log.warning("Course Logo not saved")
                 except UploadNotAllowed:  # pragma: no cover
                     log.warning("Could not update profile photo.")
                     database.session.rollback()
@@ -636,10 +639,15 @@ def editar_curso(course_code):
                 try:
                     log.trace("Saving logo")
                     picture_file = images.save(logo, folder=form.codigo.data, name=f"logo{logo_ext}")
-                    curso_a_editar.portada = True
-                    curso_a_editar.portada_ext = logo_ext
-                    database.session.commit()
-                    log.warning("Course Logo saved")
+                    if picture_file:
+                        curso_a_editar.portada = True
+                        curso_a_editar.portada_ext = logo_ext
+                        database.session.commit()
+                        log.info("Course Logo saved")
+                    else:
+                        curso_a_editar.portada = False
+                        database.session.commit()
+                        log.warning("Course Logo not saved")
                 except UploadNotAllowed:  # pragma: no cover
                     log.warning("Could not update profile photo.")
                     database.session.rollback()
