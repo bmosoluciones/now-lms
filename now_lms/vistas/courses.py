@@ -527,33 +527,28 @@ def nuevo_curso():
         )
         try:
             database.session.add(nuevo_curso_)
+            database.session.commit()
             asignar_curso_a_instructor(curso_codigo=form.codigo.data, usuario_id=current_user.usuario)
             if "logo" in request.files:
                 logo = request.files["logo"]
-                if logo and logo.filename:  # Verifica si se subió un archivo
-                    try:
-                        logo_name = logo.filename
-                        logo_ext = splitext(logo_name)
-                        if logo_ext:  # logo_ext incluye el punto, por ejemplo '.png'
-                            logo_ext = logo_ext.lstrip(".")  # Si solo quieres la extensión sin el punto
-                            picture_file = images.save(logo, folder=form.codigo.data, name=f"logo.{logo_ext}")
-                        if picture_file:
-                            _curso = (
-                                database.session.execute(database.select(Curso).filter(Curso.codigo == form.codigo.data))
-                                .scalars()
-                                .first()
-                            )
-                            _curso.portada = True
-                    except UploadNotAllowed:  # pragma: no cover
-                        log.warning("Could not update profile photo.")
-                        database.session.rollback()
-                    except AttributeError:  # pragma: no cover
-                        log.warning("Could not update profile photo.")
-                        database.session.rollback()
+                logo_name = logo.filename
+                logo_data = splitext(logo_name)
+                logo_ext = logo_data[1]
+                try:
+                    log.trace("Saving logo")
+                    picture_file = images.save(logo, folder=form.codigo.data, name=f"logo{logo_ext}")
+                    nuevo_curso_.portada = True
+                    nuevo_curso_.portada_ext = logo_ext
+                    database.session.commit()
+                    log.warning("Course Logo saved")
+                except UploadNotAllowed:  # pragma: no cover
+                    log.warning("Could not update profile photo.")
+                    database.session.rollback()
+                except AttributeError:  # pragma: no cover
+                    log.warning("Could not update profile photo.")
+                    database.session.rollback()
             database.session.commit()
-
             flash("Curso creado exitosamente.", "success")
-            cache.delete("view/" + url_for("home.pagina_de_inicio"))
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=form.codigo.data))
         except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear su curso.", "warning")
@@ -632,14 +627,25 @@ def editar_curso(course_code):
 
         try:
             database.session.commit()
+
             if "logo" in request.files:
+                logo = request.files["logo"]
+                logo_name = logo.filename
+                logo_data = splitext(logo_name)
+                logo_ext = logo_data[1]
                 try:
-                    picture_file = images.save(request.files["logo"], folder=curso_a_editar.codigo, name="logo.jpg")
-                    if picture_file:
-                        curso_a_editar.portada = True
-                        database.session.commit()
+                    log.trace("Saving logo")
+                    picture_file = images.save(logo, folder=form.codigo.data, name=f"logo{logo_ext}")
+                    curso_a_editar.portada = True
+                    curso_a_editar.portada_ext = logo_ext
+                    database.session.commit()
+                    log.warning("Course Logo saved")
                 except UploadNotAllowed:  # pragma: no cover
-                    log.warning("Could not update course cover.")
+                    log.warning("Could not update profile photo.")
+                    database.session.rollback()
+                except AttributeError:  # pragma: no cover
+                    log.warning("Could not update profile photo.")
+                    database.session.rollback()
             flash("Curso actualizado exitosamente.", "success")
             return redirect(curso_url)
 
