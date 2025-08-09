@@ -15,6 +15,7 @@
 
 import pytest
 from now_lms.db import database
+from now_lms.logs import log
 
 """
 Casos de uso mas comunes.
@@ -481,3 +482,226 @@ def test_theme_functionality_comprehensive(basic_config_setup):
 
         oxford_css = client.get("/static/themes/oxford/theme.min.css")
         assert oxford_css.status_code == 200
+
+from io import BytesIO
+
+def test_course_administration_flow(basic_config_setup, client):
+    """Test GET and POST for creating a new course."""
+    app = basic_config_setup
+
+
+    from now_lms.db import Usuario, Curso
+    from now_lms.auth import proteger_passwd
+    from os import environ
+
+    # Crear usuario instructor
+    with app.app_context():
+        instructor = Usuario(
+            usuario="instructor1",
+            acceso=proteger_passwd("testpass"),
+            nombre="Test",
+            apellido="Instructor",
+            tipo="instructor",  # Rol requerido por la vista
+            activo=True,
+            correo_electronico_verificado=True,
+        )
+        database.session.add(instructor)
+        database.session.commit()
+
+    # Iniciar sesión como instructor
+    login_response = client.post(
+        "/user/login",
+        data={"usuario": "instructor1", "acceso": "testpass"},
+        follow_redirects=True,
+    )
+    assert login_response.status_code == 200
+
+    # GET: acceder al formulario de creación de curso
+    get_response = client.get("/course/new_curse")
+    assert get_response.status_code == 200
+
+    # POST: enviar datos de un nuevo curso
+    post_response = client.post(
+        "/course/new_curse",
+        data={
+            "nombre": "Curso de Prueba",
+            "codigo": "test_course",
+            "descripcion": "Descripcion completa del curso.",
+            "descripcion_corta": "Descripcion corta.",
+            "nivel": "beginner",
+            "duracion": "4 semanas",
+            "publico": True,
+            "modalidad": "online",
+            "foro_habilitado": True,
+            "limitado": False,
+            "capacidad": 0,
+            "fecha_inicio": "2025-08-10",
+            "fecha_fin": "2025-09-10",
+            "pagado": False,
+            "auditable": True,
+            "certificado": True,
+            "plantilla_certificado": "default",
+            "precio": 0,
+        },
+        follow_redirects=False,
+    )
+    assert post_response.status_code == 302  # Redirección a vista de administrar curso
+
+    # Validar que el curso fue creado
+    with app.app_context():
+        curso = database.session.execute(
+            database.select(Curso).filter_by(codigo="test_course")
+        ).scalars().first()
+        assert curso is not None
+        assert curso.nombre == "Curso de Prueba"
+        assert curso.estado == "draft"
+        assert curso.portada is None
+
+
+    # POST: enviar datos de un nuevo curso con logo
+    data={
+        "nombre": "Curso con Logo",
+        "codigo": "testlogo",
+        "descripcion": "Descripcion completa del curso con logo.",
+        "descripcion_corta": "Descripcion corta.",
+        "nivel": "beginner",
+        "duracion": "4 semanas",
+        "publico": True,
+        "modalidad": "online",
+        "foro_habilitado": True,
+        "limitado": False,
+        "capacidad": 0,
+        "fecha_inicio": "2025-08-10",
+        "fecha_fin": "2025-09-10",
+        "pagado": False,
+        "auditable": True,
+        "certificado": True,
+        "plantilla_certificado": "default",
+        "precio": 0,
+    }
+
+    data = {key: str(value) for key, value in data.items()}
+    data['file'] = (BytesIO(b"abksakjdalksdjlkAFcdef"), 'logo.jpg')
+
+    post_response = client.post(
+        "/course/new_curse",
+        data=data,        
+        content_type="multipart/form-data",  # Necesario para subir archivos
+        follow_redirects=False,
+    )
+    assert post_response.status_code == 302  # Redirección a vista de administrar curso
+
+    # Validar que el curso fue creado con portada
+    with app.app_context():
+        curso = database.session.execute(
+            database.select(Curso).filter_by(codigo="testlogo")
+        ).scalars().first()
+        assert curso is not None
+        assert curso.nombre == "Curso con Logo"
+        assert curso.estado == "draft"
+
+    # --- PROBAR GET DE /course/<code>/edit ---
+    edit_get = client.get("/course/testlogo/edit")
+    assert edit_get.status_code == 200
+
+    # --- PROBAR POST DE /course/<code>/edit ---
+    edit_post = client.post(
+        "/course/testlogo/edit",
+        data={
+            "nombre": "Curso Editado",
+            "descripcion": "Descripcion actualizada del curso.",
+            "descripcion_corta": "Descripcion corta editada.",
+            "nivel": "intermediate",
+            "duracion": "6 semanas",
+            "publico": False,
+            "modalidad": "self_paced",
+            "foro_habilitado": False,  # Modalidad self_paced fuerza foro=False
+            "limitado": True,
+            "capacidad": 50,
+            "fecha_inicio": "2025-08-15",
+            "fecha_fin": "2025-09-20",
+            "pagado": True,
+            "auditable": False,
+            "certificado": True,
+            "plantilla_certificado": "default",
+            "precio": 199,
+        },
+        follow_redirects=False,
+    )
+    assert edit_post.status_code == 302  # Redirección después de editar
+
+    admin_course = client.get("/course/testlogo/admin")
+    assert admin_course.status_code == 200
+    
+    #Seccion administration
+    create_seccion = client.get("/course/testlogo/new_seccion")
+    assert create_seccion.status_code == 200
+    create_seccion = client.post(
+        "/course/testlogo/new_seccion",
+        data={
+            "nombre": "Test Logo Seccion 1",
+            "descripcion": "Descripcion de la seccion 1.",
+        })
+    assert create_seccion.status_code == 302
+    create_seccion = client.post(
+        "/course/testlogo/new_seccion",
+        data={
+            "nombre": "Test Logo Seccion 2",
+            "descripcion": "Descripcion de la seccion 2.",
+        })
+    assert create_seccion.status_code == 302
+    
+    # Get seccion from database
+    from now_lms.db import CursoSeccion
+    with app.app_context():
+        # Seccion 1
+        seccion1 = database.session.execute(
+            database.select(CursoSeccion).filter_by(nombre="Test Logo Seccion 1")
+        ).scalars().first()
+        assert seccion1 is not None
+        assert seccion1.nombre == "Test Logo Seccion 1"
+        assert seccion1.descripcion == "Descripcion de la seccion 1."
+        assert seccion1.indice == 1
+        # Seccion 2
+        seccion2 = database.session.execute(
+            database.select(CursoSeccion).filter_by(nombre="Test Logo Seccion 2")
+        ).scalars().first()
+        assert seccion2 is not None
+        assert seccion2.nombre == "Test Logo Seccion 2"
+        assert seccion2.indice == 2
+
+    seccion1_edit_url = f"/course/testlogo/{seccion1.id}/edit"
+    seccion2_edit_url = f"/course/testlogo/{seccion2.id}/edit"
+
+    # GET: editar seccion 1
+    edit_seccion1_get = client.get(seccion1_edit_url)
+    assert edit_seccion1_get.status_code == 200
+    # POST: editar seccion 1
+    edit_seccion1_post = client.post(seccion1_edit_url, data={
+        "nombre": "Test Logo Seccion 1 Editada",
+        "descripcion": "Descripcion de la seccion 1 editada.",
+    })
+    assert edit_seccion1_post.status_code == 302
+
+    # Seccion 1 editada
+    with app.app_context():
+        seccion1 = database.session.execute(
+            database.select(CursoSeccion).filter_by(nombre="Test Logo Seccion 1 Editada")
+        ).scalars().first()
+        assert seccion1.nombre == "Test Logo Seccion 1 Editada"
+
+    # New resource page
+    new_resource_url = f"/course/testlogo/{seccion1.id}/new_resource"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    assert "Seleccione un elemento a añadir al curso.".encode("utf-8") in new_resource.data
+
+    # Resources creation pages
+    types = ["youtube", "pdf", "audio", "img", "text", "slides", "link", "html", "meet"]
+    for type in types:
+        new_resource_url = f"/course/testlogo/{seccion1.id}/{type}/new"
+        new_resource = client.get(new_resource_url)
+        log.warning(f"Testing {new_resource_url}")
+        assert new_resource.status_code == 200
+
+
