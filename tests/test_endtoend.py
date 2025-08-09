@@ -834,3 +834,44 @@ def test_course_administration_flow(basic_config_setup, client):
     # Other admin pages
     delete_logo = client.get("/course/testlogo/delete_logo")
     assert delete_logo.status_code == 302
+
+def test_program_administration_flow(basic_config_setup, client):
+    """Test GET and POST for creating a new course."""
+    app = basic_config_setup
+    from now_lms.db import Usuario, Programa
+    from now_lms.auth import proteger_passwd
+    from os import environ
+
+    # Crear usuario instructor
+    with app.app_context():
+        instructor = Usuario(
+            usuario="instructor1",
+            acceso=proteger_passwd("testpass"),
+            nombre="Test",
+            apellido="Instructor",
+            tipo="instructor",  # Rol requerido por la vista
+            activo=True,
+            correo_electronico_verificado=True,
+        )
+        database.session.add(instructor)
+        database.session.commit()
+    
+    # Iniciar sesión como instructor
+    login_response = client.post(
+        "/user/login",
+        data={"usuario": "instructor1", "acceso": "testpass"},
+        follow_redirects=True,
+    )
+    assert login_response.status_code == 200
+
+    # GET: acceder al formulario de creación de programa
+    get_response = client.get("/program/new")
+    assert get_response.status_code == 200
+    post_response = client.post("/program/new", data={
+        "nombre": "Programa de Prueba",
+        "descripcion": "Descripcion completa del programa.",
+        "codigo": "test_program",
+        "precio": 0,
+    })
+    assert post_response.status_code == 302
+        
