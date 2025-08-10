@@ -1569,6 +1569,29 @@ def recurso_file(course_code, recurso_code):
         return redirect(INICIO_SESION)
 
 
+@course.route("/course/<course_code>/pdf_viewer/<recurso_code>")
+def pdf_viewer(course_code, recurso_code):
+    """Renderiza el visor PDF.js para un recurso PDF."""
+    recurso = (
+        database.session.execute(
+            select(CursoRecurso).filter(CursoRecurso.id == recurso_code, CursoRecurso.curso == course_code)
+        )
+        .scalars()
+        .first()
+    )
+
+    if not recurso:
+        return abort(404)
+
+    if current_user.is_authenticated:
+        if recurso.publico or current_user.tipo == "admin":
+            return render_template("learning/resources/pdf_viewer.html", recurso=recurso)
+        else:
+            return abort(403)
+    else:
+        return redirect(INICIO_SESION)
+
+
 @course.route("/course/<course_code>/external_code/<recurso_code>")
 def external_code(course_code, recurso_code):
     """Devuelve un archivo desde el sistema de archivos."""

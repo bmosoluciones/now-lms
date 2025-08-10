@@ -44,9 +44,10 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         <div id="pdf_container" class="d-flex justify-content-around">
                             <iframe
                                 title="{{ recurso.nombre + recurso.id }}"
-                                src="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
-                                width="75%"
-                                height="500px"
+                                src="{{ url_for('course.pdf_viewer', recurso_code=recurso.id, course_code=recurso.curso) }}"
+                                width="100%"
+                                height="600px"
+                                style="border: 1px solid #ddd; border-radius: 4px"
                             ></iframe>
                         </div>
 
