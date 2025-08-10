@@ -1,0 +1,77 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }} {{ mde.css }}
+        <title>Editar Recurso - Reunión</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Editar reunión: {{ recurso.nombre }}</h4>
+                <form method="post">
+                    {{ form.csrf_token }}
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="nombre" class="form-label">Titulo de la Reunión</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder="Titulo de la Reunión") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="url" class="form-label">Link de la reunión</label>
+                            {{ form.url(class="form-control", id="url", placeholder="Link de la reunión") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="fecha" class="form-label">Fecha</label>
+                            {{ form.fecha(class="form-control", id="fecha") }}
+                        </div>
+
+                        <div class="col-sm-3">
+                            <label for="hora_inicio" class="form-label">Hora de Inicio</label>
+                            {{ form.hora_inicio(class="form-control", id="hora_inicio") }}
+                        </div>
+
+                        <div class="col-sm-3">
+                            <label for="hora_fin" class="form-label">Hora Final</label>
+                            {{ form.hora_fin(class="form-control", id="hora_fin") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="requerido" class="form-label">Tipo de Recurso</label>
+                            {{ form.requerido(class="form-control", id="requerido") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="notes" class="form-label">Notas</label>
+                            {{ form.notes(class="form-control", id="notes", placeholder="Notas adicionales") }}
+                        </div>
+
+                        <div>
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-lg btn-primary" type="submit">Actualizar Recurso</button>
+                            <a
+                                href="{{ url_for('course.administrar_curso', course_code=id_curso) }}"
+                                class="btn btn-lg btn-secondary"
+                                >Cancelar</a
+                            >
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>

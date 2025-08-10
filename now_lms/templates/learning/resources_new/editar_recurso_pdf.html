@@ -1,0 +1,65 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }} {{ mde.css }}
+        <title>Editar Recurso - PDF</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Editar documento PDF: {{ recurso.nombre }}</h4>
+                <form method="post" enctype="multipart/form-data">
+                    {{ form.csrf_token }}
+                    <div class="row g-3">
+                        <div class="col-sm-12">
+                            <label for="nombre" class="form-label">Nombre del Documento</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder="Nombre del Documento") }}
+                        </div>
+
+                        {% if recurso.doc %}
+                        <div class="col-md-12">
+                            <label class="form-label">Documento Actual</label>
+                            <p class="text-muted">{{ recurso.doc }}</p>
+                        </div>
+                        {% endif %}
+
+                        <div class="col-md-12">
+                            <label for="file" class="form-label">Reemplazar Documento (opcional)</label>
+                            <input type="file" name="pdf" accept="application/pdf" />
+                            <div class="form-text">Deje vacío para mantener el archivo actual</div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="requerido" class="form-label">Tipo de Recurso</label>
+                            {{ form.requerido(class="form-control", id="requerido") }}
+                        </div>
+
+                        <div>
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-lg btn-primary" type="submit">Actualizar Recurso</button>
+                            <a
+                                href="{{ url_for('course.administrar_curso', course_code=id_curso) }}"
+                                class="btn btn-lg btn-secondary"
+                                >Cancelar</a
+                            >
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>
