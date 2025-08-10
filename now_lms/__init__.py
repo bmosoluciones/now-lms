@@ -297,6 +297,11 @@ def define_variables_globales_jinja2(lms_app: Flask):
     lms_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
     lms_app.jinja_env.globals["version"] = VERSION
 
+    # Add custom Jinja2 filters
+    import json
+
+    lms_app.jinja_env.filters["fromjson"] = json.loads
+
 
 # ---------------------------------------------------------------------------------------
 # Definición de la aplicación principal.
