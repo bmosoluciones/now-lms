@@ -105,7 +105,10 @@ def new_announcement():
 
     if form.validate_on_submit():
         # Verificar que el instructor tenga acceso al curso
-        selected_course = database.session.get(Curso, form.course_id.data)
+        selected_course = (
+            database.session.execute(database.select(Curso).filter_by(codigo=form.course_id.data)).scalars().first()
+        )
+
         if not selected_course or selected_course not in instructor_courses:
             flash("No tienes permisos para crear anuncios en ese curso.", "error")
             return redirect(url_for("instructor_announcements.new_announcement"))
