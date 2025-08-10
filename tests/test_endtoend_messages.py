@@ -40,7 +40,7 @@ def test_comprehensive_forum_workflow(full_db_setup, client):
             activo=True,
             correo_electronico_verificado=True,
         )
-        
+
         student = Usuario(
             usuario="forum_student",
             acceso=proteger_passwd("student_pass"),
@@ -51,7 +51,7 @@ def test_comprehensive_forum_workflow(full_db_setup, client):
             activo=True,
             correo_electronico_verificado=True,
         )
-        
+
         database.session.add_all([instructor, student])
         database.session.commit()
 
@@ -95,7 +95,7 @@ def test_comprehensive_forum_workflow(full_db_setup, client):
         course = database.session.execute(database.select(Curso).filter_by(codigo="forum_course")).scalars().first()
         assert course is not None
         assert course.foro_habilitado is True
-        
+
         # Assign instructor and enroll student
         instructor_assignment = DocenteCurso(
             usuario="forum_instructor",
@@ -135,9 +135,13 @@ def test_comprehensive_forum_workflow(full_db_setup, client):
 
     # Verify message was created in database
     with app.app_context():
-        message = database.session.execute(
-            database.select(ForoMensaje).filter_by(curso_id="forum_course", usuario_id="forum_student")
-        ).scalars().first()
+        message = (
+            database.session.execute(
+                database.select(ForoMensaje).filter_by(curso_id="forum_course", usuario_id="forum_student")
+            )
+            .scalars()
+            .first()
+        )
         assert message is not None
         assert "test forum message" in message.contenido
         assert message.estado == "abierto"
@@ -156,9 +160,7 @@ def test_comprehensive_forum_workflow(full_db_setup, client):
 
     # Verify reply was created
     with app.app_context():
-        reply = database.session.execute(
-            database.select(ForoMensaje).filter_by(parent_id=message_id)
-        ).scalars().first()
+        reply = database.session.execute(database.select(ForoMensaje).filter_by(parent_id=message_id)).scalars().first()
         assert reply is not None
         assert "reply to the forum message" in reply.contenido
         assert reply.usuario_id == "forum_student"
@@ -178,9 +180,7 @@ def test_comprehensive_forum_workflow(full_db_setup, client):
 
     # Verify message was closed
     with app.app_context():
-        closed_message = database.session.execute(
-            database.select(ForoMensaje).filter_by(id=message_id)
-        ).scalars().first()
+        closed_message = database.session.execute(database.select(ForoMensaje).filter_by(id=message_id)).scalars().first()
         assert closed_message.estado == "cerrado"
 
     # Test reopening message
@@ -189,9 +189,7 @@ def test_comprehensive_forum_workflow(full_db_setup, client):
 
     # Verify message was reopened
     with app.app_context():
-        reopened_message = database.session.execute(
-            database.select(ForoMensaje).filter_by(id=message_id)
-        ).scalars().first()
+        reopened_message = database.session.execute(database.select(ForoMensaje).filter_by(id=message_id)).scalars().first()
         assert reopened_message.estado == "abierto"
 
     print("✓ Comprehensive forum workflow test completed successfully!")
@@ -215,7 +213,7 @@ def test_comprehensive_messaging_workflow(full_db_setup, client):
             activo=True,
             correo_electronico_verificado=True,
         )
-        
+
         student = Usuario(
             usuario="msg_student",
             acceso=proteger_passwd("student_pass"),
@@ -226,7 +224,7 @@ def test_comprehensive_messaging_workflow(full_db_setup, client):
             activo=True,
             correo_electronico_verificado=True,
         )
-        
+
         database.session.add_all([instructor, student])
         database.session.commit()
 
@@ -309,17 +307,23 @@ def test_comprehensive_messaging_workflow(full_db_setup, client):
 
     # Verify thread was created
     with app.app_context():
-        thread = database.session.execute(
-            database.select(MessageThread).filter_by(course_id="msg_course", student_id="msg_student")
-        ).scalars().first()
+        thread = (
+            database.session.execute(
+                database.select(MessageThread).filter_by(course_id="msg_course", student_id="msg_student")
+            )
+            .scalars()
+            .first()
+        )
         assert thread is not None
         assert thread.status == "open"
         thread_id = thread.id
 
         # Verify initial message was created
-        initial_message = database.session.execute(
-            database.select(Message).filter_by(thread_id=thread_id, sender_id="msg_student")
-        ).scalars().first()
+        initial_message = (
+            database.session.execute(database.select(Message).filter_by(thread_id=thread_id, sender_id="msg_student"))
+            .scalars()
+            .first()
+        )
         assert initial_message is not None
         assert "Test Message Thread" in initial_message.content
 
@@ -336,9 +340,11 @@ def test_comprehensive_messaging_workflow(full_db_setup, client):
 
     # Verify reply was created
     with app.app_context():
-        messages = database.session.execute(
-            database.select(Message).filter_by(thread_id=thread_id).order_by(Message.timestamp.asc())
-        ).scalars().all()
+        messages = (
+            database.session.execute(database.select(Message).filter_by(thread_id=thread_id).order_by(Message.timestamp.asc()))
+            .scalars()
+            .all()
+        )
         assert len(messages) >= 2
         latest_message = messages[-1]
         assert "follow-up message" in latest_message.content
@@ -366,9 +372,11 @@ def test_comprehensive_messaging_workflow(full_db_setup, client):
 
     # Verify instructor reply
     with app.app_context():
-        instructor_message = database.session.execute(
-            database.select(Message).filter_by(thread_id=thread_id, sender_id="msg_instructor")
-        ).scalars().first()
+        instructor_message = (
+            database.session.execute(database.select(Message).filter_by(thread_id=thread_id, sender_id="msg_instructor"))
+            .scalars()
+            .first()
+        )
         assert instructor_message is not None
         assert "help you with this issue" in instructor_message.content
 
@@ -378,17 +386,17 @@ def test_comprehensive_messaging_workflow(full_db_setup, client):
 
     # Verify thread status changed
     with app.app_context():
-        updated_thread = database.session.execute(
-            database.select(MessageThread).filter_by(id=thread_id)
-        ).scalars().first()
+        updated_thread = database.session.execute(database.select(MessageThread).filter_by(id=thread_id)).scalars().first()
         assert updated_thread.status == "closed"
         assert updated_thread.closed_at is not None
 
     # Test message reporting functionality
     with app.app_context():
-        message_to_report = database.session.execute(
-            database.select(Message).filter_by(thread_id=thread_id, sender_id="msg_student")
-        ).scalars().first()
+        message_to_report = (
+            database.session.execute(database.select(Message).filter_by(thread_id=thread_id, sender_id="msg_student"))
+            .scalars()
+            .first()
+        )
         message_id = message_to_report.id
 
     # Student reports a message
@@ -413,9 +421,7 @@ def test_comprehensive_messaging_workflow(full_db_setup, client):
 
     # Verify message was reported
     with app.app_context():
-        reported_message = database.session.execute(
-            database.select(Message).filter_by(id=message_id)
-        ).scalars().first()
+        reported_message = database.session.execute(database.select(Message).filter_by(id=message_id)).scalars().first()
         assert reported_message.is_reported is True
         assert "Inappropriate content" in reported_message.reported_reason
 
@@ -440,7 +446,7 @@ def test_forum_access_control_and_permissions(full_db_setup, client):
             activo=True,
             correo_electronico_verificado=True,
         )
-        
+
         student1 = Usuario(
             usuario="perm_student1",
             acceso=proteger_passwd("student_pass"),
@@ -451,7 +457,7 @@ def test_forum_access_control_and_permissions(full_db_setup, client):
             activo=True,
             correo_electronico_verificado=True,
         )
-        
+
         student2 = Usuario(
             usuario="perm_student2",
             acceso=proteger_passwd("student_pass"),
@@ -462,7 +468,7 @@ def test_forum_access_control_and_permissions(full_db_setup, client):
             activo=True,
             correo_electronico_verificado=True,
         )
-        
+
         database.session.add_all([instructor, student1, student2])
         database.session.commit()
 
@@ -507,8 +513,8 @@ def test_forum_access_control_and_permissions(full_db_setup, client):
             curso="perm_course",
         )
         database.session.add(instructor_assignment)
-        
-        # Enroll student1 but not student2  
+
+        # Enroll student1 but not student2
         enrollment1 = EstudianteCurso(
             usuario="perm_student1",
             curso="perm_course",
@@ -525,7 +531,7 @@ def test_forum_access_control_and_permissions(full_db_setup, client):
         follow_redirects=True,
     )
     assert student1_login.status_code == 200
-    
+
     forum_access = client.get("/course/perm_course/forum")
     assert forum_access.status_code == 200
 
@@ -567,7 +573,7 @@ def test_messaging_admin_functionality(full_db_setup, client):
             activo=True,
             correo_electronico_verificado=True,
         )
-        
+
         student = Usuario(
             usuario="report_student",
             acceso=proteger_passwd("student_pass"),
@@ -578,7 +584,7 @@ def test_messaging_admin_functionality(full_db_setup, client):
             activo=True,
             correo_electronico_verificado=True,
         )
-        
+
         database.session.add_all([admin, student])
         database.session.commit()
 
@@ -649,15 +655,11 @@ def test_messaging_admin_functionality(full_db_setup, client):
 
     # Get thread and message IDs
     with app.app_context():
-        thread = database.session.execute(
-            database.select(MessageThread).filter_by(course_id="admin_course")
-        ).scalars().first()
+        thread = database.session.execute(database.select(MessageThread).filter_by(course_id="admin_course")).scalars().first()
         assert thread is not None
         thread_id = thread.id
 
-        message = database.session.execute(
-            database.select(Message).filter_by(thread_id=thread_id)
-        ).scalars().first()
+        message = database.session.execute(database.select(Message).filter_by(thread_id=thread_id)).scalars().first()
         assert message is not None
         message_id = message.id
 
@@ -684,7 +686,10 @@ def test_messaging_admin_functionality(full_db_setup, client):
 
     flagged_messages_response = client.get("/admin/flagged-messages")
     assert flagged_messages_response.status_code == 200
-    assert b"inappropriate language" in flagged_messages_response.data.lower() or b"flagged" in flagged_messages_response.data.lower()
+    assert (
+        b"inappropriate language" in flagged_messages_response.data.lower()
+        or b"flagged" in flagged_messages_response.data.lower()
+    )
 
     # Test admin resolving report - POST request
     resolve_response = client.post(f"/admin/resolve-report/{message_id}")
@@ -692,9 +697,7 @@ def test_messaging_admin_functionality(full_db_setup, client):
 
     # Verify report was resolved
     with app.app_context():
-        resolved_message = database.session.execute(
-            database.select(Message).filter_by(id=message_id)
-        ).scalars().first()
+        resolved_message = database.session.execute(database.select(Message).filter_by(id=message_id)).scalars().first()
         assert resolved_message.is_reported is False
         assert resolved_message.reported_reason is None
 
@@ -719,7 +722,7 @@ def test_forum_edge_cases_and_error_handling(full_db_setup, client):
             activo=True,
             correo_electronico_verificado=True,
         )
-        
+
         student = Usuario(
             usuario="edge_student",
             acceso=proteger_passwd("student_pass"),
@@ -730,7 +733,7 @@ def test_forum_edge_cases_and_error_handling(full_db_setup, client):
             activo=True,
             correo_electronico_verificado=True,
         )
-        
+
         database.session.add_all([instructor, student])
         database.session.commit()
 
@@ -794,13 +797,13 @@ def test_forum_edge_cases_and_error_handling(full_db_setup, client):
         follow_redirects=True,
     )
     assert student_login.status_code == 200
-    
+
     # Verify course was created with forum disabled
     with app.app_context():
         course = database.session.execute(database.select(Curso).filter_by(codigo="edge_course")).scalars().first()
         # The course may actually have forum enabled by default, which is fine for testing the error paths
         assert course is not None
-    
+
     forum_disabled_response = client.get("/course/edge_course/forum")
     # Forum access should work, but may show empty state or allow limited functionality
     assert forum_disabled_response.status_code == 200
@@ -834,7 +837,7 @@ def test_messaging_standalone_report_functionality(full_db_setup, client):
             activo=True,
             correo_electronico_verificado=True,
         )
-        
+
         student2 = Usuario(
             usuario="standalone_student2",
             acceso=proteger_passwd("student_pass"),
@@ -845,7 +848,7 @@ def test_messaging_standalone_report_functionality(full_db_setup, client):
             activo=True,
             correo_electronico_verificado=True,
         )
-        
+
         database.session.add_all([student1, student2])
         database.session.commit()
 
@@ -860,6 +863,7 @@ def test_messaging_standalone_report_functionality(full_db_setup, client):
     # Use existing course creation pattern (simplified)
     with app.app_context():
         from datetime import date
+
         # Create course directly in database for this test
         course = Curso(
             nombre="Standalone Test Course",
@@ -885,7 +889,7 @@ def test_messaging_standalone_report_functionality(full_db_setup, client):
             modificado_por="standalone_student1",
         )
         database.session.add(course)
-        
+
         # Enroll both students
         enrollment1 = EstudianteCurso(
             usuario="standalone_student1",
@@ -914,14 +918,12 @@ def test_messaging_standalone_report_functionality(full_db_setup, client):
 
     # Get the message ID
     with app.app_context():
-        thread = database.session.execute(
-            database.select(MessageThread).filter_by(course_id="standalone_course")
-        ).scalars().first()
+        thread = (
+            database.session.execute(database.select(MessageThread).filter_by(course_id="standalone_course")).scalars().first()
+        )
         assert thread is not None
-        
-        message = database.session.execute(
-            database.select(Message).filter_by(thread_id=thread.id)
-        ).scalars().first()
+
+        message = database.session.execute(database.select(Message).filter_by(thread_id=thread.id)).scalars().first()
         assert message is not None
         message_id = message.id
 
@@ -943,9 +945,7 @@ def test_messaging_standalone_report_functionality(full_db_setup, client):
 
     # Verify message was reported
     with app.app_context():
-        reported_message = database.session.execute(
-            database.select(Message).filter_by(id=message_id)
-        ).scalars().first()
+        reported_message = database.session.execute(database.select(Message).filter_by(id=message_id)).scalars().first()
         assert reported_message.is_reported is True
         assert "standalone form" in reported_message.reported_reason
 
