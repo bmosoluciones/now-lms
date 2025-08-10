@@ -15,7 +15,6 @@
 
 """Tests for announcements functionality."""
 
-from re import U
 from unittest import TestCase
 from datetime import datetime, timedelta
 

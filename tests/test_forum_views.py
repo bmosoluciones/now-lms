@@ -106,7 +106,7 @@ class TestForumViews(TestCase):
 
             try:
                 database.session.commit()
-            except Exception as e:
+            except Exception:
                 database.session.rollback()
 
             client = self.app.test_client()
@@ -141,7 +141,7 @@ class TestForumViews(TestCase):
 
             try:
                 database.session.commit()
-            except Exception as e:
+            except Exception:
                 database.session.rollback()
 
             # Disable forum
@@ -187,7 +187,7 @@ class TestForumViews(TestCase):
 
             try:
                 database.session.commit()
-            except Exception as e:
+            except Exception:
                 database.session.rollback()
 
             # Crear un mensaje en el foro

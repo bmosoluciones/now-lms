@@ -13,7 +13,6 @@
 # limitations under the License.
 #
 
-import pytest
 from now_lms.db import database
 from now_lms.logs import log
 
@@ -377,8 +376,7 @@ def test_password_recovery_functionality(basic_config_setup):
 def test_theme_functionality_comprehensive(basic_config_setup):
     """Test comprehensive theme functionality including overrides and custom pages."""
 
-    from now_lms import database, initial_setup
-    from now_lms.db import eliminar_base_de_datos_segura
+    from now_lms import database
     from now_lms.themes import (
         get_home_template,
         get_course_list_template,
@@ -493,7 +491,6 @@ def test_course_administration_flow(basic_config_setup, client):
 
     from now_lms.db import Usuario, Curso
     from now_lms.auth import proteger_passwd
-    from os import environ
 
     # Crear usuario instructor
     with app.app_context():
@@ -835,12 +832,12 @@ def test_course_administration_flow(basic_config_setup, client):
     delete_logo = client.get("/course/testlogo/delete_logo")
     assert delete_logo.status_code == 302
 
+
 def test_program_administration_flow(basic_config_setup, client):
     """Test GET and POST for creating a new course."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Programa
+    from now_lms.db import Usuario
     from now_lms.auth import proteger_passwd
-    from os import environ
 
     # Crear usuario instructor
     with app.app_context():
@@ -855,7 +852,7 @@ def test_program_administration_flow(basic_config_setup, client):
         )
         database.session.add(instructor)
         database.session.commit()
-    
+
     # Iniciar sesión como instructor
     login_response = client.post(
         "/user/login",
@@ -867,28 +864,31 @@ def test_program_administration_flow(basic_config_setup, client):
     # GET: acceder al formulario de creación de programa
     get_response = client.get("/program/new")
     assert get_response.status_code == 200
-    post_response = client.post("/program/new", data={
-        "nombre": "Programa de Prueba",
-        "descripcion": "Descripcion completa del programa.",
-        "codigo": "test_program",
-        "precio": 0,
-    })
+    post_response = client.post(
+        "/program/new",
+        data={
+            "nombre": "Programa de Prueba",
+            "descripcion": "Descripcion completa del programa.",
+            "codigo": "test_program",
+            "precio": 0,
+        },
+    )
     assert post_response.status_code == 302
 
 
 def test_masterclass_administration_flow(basic_config_setup, client):
     """Test comprehensive Master Class administration flow for instructor."""
     app = basic_config_setup
-    from now_lms.db import Usuario, MasterClass, MasterClassEnrollment, Certificado, Configuracion
+    from now_lms.db import Usuario, MasterClass, MasterClassEnrollment, Configuracion
     from now_lms.auth import proteger_passwd
-    from datetime import datetime, date, time
+    from datetime import datetime
 
     # Create instructor user and enable masterclass
     with app.app_context():
         # Enable master class in configuration
         config = database.session.execute(database.select(Configuracion)).first()[0]
         config.enable_masterclass = True
-        
+
         instructor = Usuario(
             usuario="instructor1",
             acceso=proteger_passwd("testpass"),
@@ -940,9 +940,11 @@ def test_masterclass_administration_flow(basic_config_setup, client):
 
     # Validate master class was created
     with app.app_context():
-        master_class = database.session.execute(
-            database.select(MasterClass).filter_by(title="Introduction to Python Programming")
-        ).scalars().first()
+        master_class = (
+            database.session.execute(database.select(MasterClass).filter_by(title="Introduction to Python Programming"))
+            .scalars()
+            .first()
+        )
         assert master_class is not None
         assert master_class.instructor_id == "instructor1"
         assert master_class.slug == "introduction-to-python-programming"
@@ -1010,7 +1012,7 @@ def test_masterclass_administration_flow(basic_config_setup, client):
 def test_certificate_management_flow(basic_config_setup, client):
     """Test certificate management flow for instructor."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Certificado, Certificacion, Curso, EstudianteCurso
+    from now_lms.db import Usuario
     from now_lms.auth import proteger_passwd
 
     # Create instructor user
@@ -1052,7 +1054,7 @@ def test_certificate_management_flow(basic_config_setup, client):
 def test_blog_management_flow(basic_config_setup, client):
     """Test blog management flow for instructor."""
     app = basic_config_setup
-    from now_lms.db import Usuario, BlogPost, BlogTag
+    from now_lms.db import Usuario, BlogPost
     from now_lms.auth import proteger_passwd
 
     # Create instructor user
@@ -1104,9 +1106,11 @@ def test_blog_management_flow(basic_config_setup, client):
 
     # Validate blog post was created
     with app.app_context():
-        blog_post = database.session.execute(
-            database.select(BlogPost).filter_by(title="Getting Started with Machine Learning")
-        ).scalars().first()
+        blog_post = (
+            database.session.execute(database.select(BlogPost).filter_by(title="Getting Started with Machine Learning"))
+            .scalars()
+            .first()
+        )
         assert blog_post is not None
         assert blog_post.author_id == "instructor1"
         assert blog_post.status == "pending"
@@ -1145,7 +1149,7 @@ def test_announcements_management_flow(basic_config_setup, client):
     app = basic_config_setup
     from now_lms.db import Usuario, Announcement, Curso, DocenteCurso
     from now_lms.auth import proteger_passwd
-    from datetime import datetime, date
+    from datetime import datetime
 
     # Create instructor user and course
     with app.app_context():
@@ -1159,7 +1163,7 @@ def test_announcements_management_flow(basic_config_setup, client):
             correo_electronico_verificado=True,
         )
         database.session.add(instructor)
-        
+
         # Create a course and assign instructor
         course = Curso(
             codigo="test_course",
@@ -1191,9 +1195,11 @@ def test_announcements_management_flow(basic_config_setup, client):
 
     # Debug: Check instructor-course assignment
     with app.app_context():
-        assignment = database.session.execute(
-            database.select(DocenteCurso).filter_by(usuario="instructor1", curso="test_course")
-        ).scalars().first()
+        assignment = (
+            database.session.execute(database.select(DocenteCurso).filter_by(usuario="instructor1", curso="test_course"))
+            .scalars()
+            .first()
+        )
         print(f"Instructor assignment found: {assignment is not None}")
         if assignment:
             print(f"Assignment: {assignment.usuario} -> {assignment.curso}")
@@ -1233,10 +1239,12 @@ def test_announcements_management_flow(basic_config_setup, client):
         print(f"Total announcements in database: {len(all_announcements)}")
         for ann in all_announcements:
             print(f"  - {ann.title} (course_id: {ann.course_id}, created_by: {ann.created_by_id})")
-        
-        announcement = database.session.execute(
-            database.select(Announcement).filter_by(title="Important Course Update")
-        ).scalars().first()
+
+        announcement = (
+            database.session.execute(database.select(Announcement).filter_by(title="Important Course Update"))
+            .scalars()
+            .first()
+        )
         assert announcement is not None
         assert announcement.course_id == "test_course"
         assert announcement.created_by_id == "instructor1"
@@ -1269,10 +1277,11 @@ def test_announcements_management_flow(basic_config_setup, client):
     delete_post = client.post(f"/instructor/announcements/{announcement_id}/delete")
     assert delete_post.status_code == 302  # Redirect after deletion
 
+
 def test_evaluations_management_basic_flow(basic_config_setup, client):
     """Test basic evaluations access for instructor."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Evaluation, Curso, CursoSeccion, DocenteCurso
+    from now_lms.db import Usuario, Curso, CursoSeccion, DocenteCurso
     from now_lms.auth import proteger_passwd
 
     # Create instructor user and course with section
@@ -1287,7 +1296,7 @@ def test_evaluations_management_basic_flow(basic_config_setup, client):
             correo_electronico_verificado=True,
         )
         database.session.add(instructor)
-        
+
         # Create a course and assign instructor
         course = Curso(
             codigo="test_course",
@@ -1331,7 +1340,8 @@ def test_evaluations_management_basic_flow(basic_config_setup, client):
     # Note: The evaluations module currently appears to be more student-focused
     # This test validates basic instructor access, but evaluation management routes
     # may need to be implemented in the instructor profiles or course views
-    
+
+
 def test_masterclass_basic_access_flow(basic_config_setup, client):
     """Test basic Master Class access for instructor (avoiding template issues)."""
     app = basic_config_setup
@@ -1343,7 +1353,7 @@ def test_masterclass_basic_access_flow(basic_config_setup, client):
         # Enable master class in configuration
         config = database.session.execute(database.select(Configuracion)).first()[0]
         config.enable_masterclass = True
-        
+
         instructor = Usuario(
             usuario="instructor1",
             acceso=proteger_passwd("testpass"),
@@ -1391,7 +1401,7 @@ def test_announcements_basic_access_flow(basic_config_setup, client):
             correo_electronico_verificado=True,
         )
         database.session.add(instructor)
-        
+
         # Create a course and assign instructor
         course = Curso(
             codigo="test_course",

@@ -22,7 +22,7 @@ from pg8000.exceptions import DatabaseError
 
 def test_eliminar_base_de_datos_segura_basic(lms_application):
     """Test that the safe database deletion function works correctly."""
-    from now_lms import database, initial_setup
+    from now_lms import database
     from now_lms.db import eliminar_base_de_datos_segura
 
     with lms_application.app_context():
@@ -52,7 +52,7 @@ def test_eliminar_base_de_datos_segura_with_postgresql_sessions(lms_application)
 
     # Only run this test if we're using PostgreSQL
     db_url = lms_application.config.get("SQLALCHEMY_DATABASE_URI", "")
-    if not ("postgresql" in db_url.lower()):
+    if "postgresql" not in db_url.lower():
         pytest.skip("This test is specific to PostgreSQL")
 
     with lms_application.app_context():

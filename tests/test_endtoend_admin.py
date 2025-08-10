@@ -13,7 +13,6 @@
 # limitations under the License.
 #
 
-import pytest
 from now_lms.db import database
 from now_lms.logs import log
 
@@ -75,7 +74,7 @@ def test_admin_users_list_inactive_view(full_db_setup, client):
             activo=True,
             correo_electronico_verificado=True,
         )
-        
+
         # Create inactive user for testing
         inactive_user = Usuario(
             usuario="inactive_test",
@@ -87,7 +86,7 @@ def test_admin_users_list_inactive_view(full_db_setup, client):
             activo=False,
             correo_electronico_verificado=True,
         )
-        
+
         database.session.add(admin_user)
         database.session.add(inactive_user)
         database.session.commit()
@@ -157,9 +156,7 @@ def test_admin_new_user_creation(full_db_setup, client):
 
     # Verify user was created
     with app.app_context():
-        new_user = database.session.execute(
-            database.select(Usuario).filter_by(usuario="newuser_test")
-        ).scalars().first()
+        new_user = database.session.execute(database.select(Usuario).filter_by(usuario="newuser_test")).scalars().first()
         assert new_user is not None
         assert new_user.nombre == "NewUser"
         assert new_user.tipo == "student"
@@ -246,9 +243,7 @@ def test_admin_group_creation(full_db_setup, client):
 
     # Verify group was created
     with app.app_context():
-        new_group = database.session.execute(
-            database.select(UsuarioGrupo).filter_by(nombre="Test Group")
-        ).scalars().first()
+        new_group = database.session.execute(database.select(UsuarioGrupo).filter_by(nombre="Test Group")).scalars().first()
         assert new_group is not None
         assert new_group.descripcion == "A test group for end-to-end testing"
 
@@ -529,9 +524,7 @@ def test_admin_blog_management(full_db_setup, client):
 
     # Verify blog post was created
     with app.app_context():
-        blog_post = database.session.execute(
-            database.select(BlogPost).filter_by(title="Test Blog Post")
-        ).scalars().first()
+        blog_post = database.session.execute(database.select(BlogPost).filter_by(title="Test Blog Post")).scalars().first()
         assert blog_post is not None
         assert blog_post.author_id == "admin_test"
 
@@ -574,7 +567,7 @@ def test_admin_blog_tags_management(full_db_setup, client):
         "/admin/blog/tags",
         data={
             "nombre": "Test Tag",  # BaseForm field
-            "descripcion": "A test tag for end-to-end testing",  # BaseForm field  
+            "descripcion": "A test tag for end-to-end testing",  # BaseForm field
             "name": "Test Tag",  # BlogTagForm field
         },
         follow_redirects=True,
@@ -583,9 +576,7 @@ def test_admin_blog_tags_management(full_db_setup, client):
 
     # Verify blog tag was created
     with app.app_context():
-        blog_tag = database.session.execute(
-            database.select(BlogTag).filter_by(name="Test Tag")
-        ).scalars().first()
+        blog_tag = database.session.execute(database.select(BlogTag).filter_by(name="Test Tag")).scalars().first()
         assert blog_tag is not None
         assert blog_tag.name == "Test Tag"
 
@@ -595,7 +586,7 @@ def test_admin_announcements_management(full_db_setup, client):
     app = full_db_setup
     from now_lms.db import Usuario, Announcement
     from now_lms.auth import proteger_passwd
-    from datetime import datetime, date
+    from datetime import datetime
 
     # Create admin user
     with app.app_context():
@@ -647,9 +638,11 @@ def test_admin_announcements_management(full_db_setup, client):
 
     # Verify announcement was created
     with app.app_context():
-        announcement = database.session.execute(
-            database.select(Announcement).filter_by(title="Test Global Announcement")
-        ).scalars().first()
+        announcement = (
+            database.session.execute(database.select(Announcement).filter_by(title="Test Global Announcement"))
+            .scalars()
+            .first()
+        )
         assert announcement is not None
         assert announcement.created_by_id == "admin_test"
         assert announcement.course_id is None  # Global announcement
@@ -688,7 +681,7 @@ def test_admin_comprehensive_flow(full_db_setup, client):
     # Test multiple admin views in sequence
     admin_routes = [
         "/admin/users/list",
-        "/admin/users/list_inactive", 
+        "/admin/users/list_inactive",
         "/user/new_user",
         "/group/new",
         "/setting/general",
