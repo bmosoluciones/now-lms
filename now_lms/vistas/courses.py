@@ -53,6 +53,7 @@ from now_lms.bi import (
     reorganiza_indice_seccion,
 )
 from now_lms.cache import cache, no_guardar_en_cache_global
+from now_lms.calendar_utils import create_events_for_student_enrollment, update_meet_resource_events
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, audio, files, images
 from now_lms.db import (
     Categoria,
@@ -287,6 +288,9 @@ def course_enroll(course_code):
                 database.session.commit()
                 _crear_indice_avance_curso(course_code)
 
+                # Create calendar events for the enrolled student
+                create_events_for_student_enrollment(pago.usuario, pago.curso)
+
                 if applied_coupon and final_price == 0:
                     flash(
                         f"¡Cupón aplicado exitosamente! Inscripción gratuita con código {applied_coupon.code}",
@@ -319,6 +323,10 @@ def course_enroll(course_code):
                 database.session.add(registro)
                 database.session.commit()
                 _crear_indice_avance_curso(course_code)
+
+                # Create calendar events for the enrolled student
+                create_events_for_student_enrollment(pago.usuario, pago.curso)
+
                 return redirect(url_for("course.tomar_curso", course_code=course_code))
             except OperationalError:  # pragma: no cover
                 flash("Hubo en error al crear el registro de pago.", "warning")
@@ -1480,6 +1488,8 @@ def editar_recurso_meet(course_code, seccion, resource_id):
 
         try:
             database.session.commit()
+            # Update calendar events for this meet resource
+            update_meet_resource_events(resource_id)
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:  # pragma: no cover

@@ -1,0 +1,137 @@
+{% set current_theme = current_theme() %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Próximos Eventos - Calendario</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container">
+                <div class="d-flex justify-content-between border-bottom mb-4">
+                    <h2>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
+                                        >Inicio</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('user_profile.pagina_estudiante') }}"
+                                        >Mi Perfil</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('calendar.calendar_view') }}"
+                                        >Calendario</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Próximos Eventos</li>
+                            </ol>
+                        </nav>
+                    </h2>
+
+                    <div class="btn-group" role="group">
+                        <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-calendar"></i> Ver Calendario
+                        </a>
+                    </div>
+                </div>
+
+                {% if events %}
+                <div class="row">
+                    {% for event in events %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header d-flex align-items-center">
+                                {% if event.resource_type == 'meet' %}
+                                <i class="fas fa-video text-success me-2"></i>
+                                <span class="badge bg-success me-2">Sesión en Vivo</span>
+                                {% else %}
+                                <i class="fas fa-clipboard-check text-danger me-2"></i>
+                                <span class="badge bg-danger me-2">Evaluación</span>
+                                {% endif %}
+                                <small class="text-muted">{{ event.start_time.strftime('%d/%m/%Y %H:%M') }}</small>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ event.title }}</h5>
+                                {% if event.description %}
+                                <p class="card-text text-muted">
+                                    {{ event.description[:100] }}{% if event.description|length > 100 %}...{% endif %}
+                                </p>
+                                {% endif %} {% if event.course %}
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        <i class="fas fa-book me-1"></i>
+                                        {{ event.course.nombre }}
+                                    </small>
+                                </p>
+                                {% endif %}
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        {% if event.status == 'pending' %}
+                                        <span class="badge bg-warning">Pendiente</span>
+                                        {% elif event.status == 'ongoing' %}
+                                        <span class="badge bg-info">En Curso</span>
+                                        {% elif event.status == 'completed' %}
+                                        <span class="badge bg-success">Completado</span>
+                                        {% endif %}
+                                    </small>
+                                    <a
+                                        href="{{ url_for('calendar.event_detail', event_id=event.id) }}"
+                                        class="btn btn-sm btn-outline-primary"
+                                    >
+                                        Ver Detalles
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12 text-center">
+                        <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-primary">
+                            <i class="fas fa-calendar"></i> Ver Calendario Completo
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body text-center py-5">
+                                <i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
+                                <h4>No tienes eventos próximos</h4>
+                                <p class="text-muted">
+                                    Cuando te inscribas en cursos, aquí aparecerán tus sesiones programadas y fechas límite de
+                                    evaluaciones.
+                                </p>
+                                <a href="{{ url_for('home.panel') }}" class="btn btn-primary">
+                                    <i class="fas fa-book"></i> Explorar Cursos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </main>
+    </body>
+</html>

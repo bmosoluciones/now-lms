@@ -1,0 +1,63 @@
+<!-- Upcoming Events Widget for Dashboard -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="fas fa-calendar-alt me-2"></i>
+            Próximos Eventos
+        </h5>
+        <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-sm btn-outline-primary"> Ver Calendario </a>
+    </div>
+    <div class="card-body">
+        {% if upcoming_events %} {% for event in upcoming_events %}
+        <div class="d-flex align-items-center mb-3 {% if not loop.last %}border-bottom pb-3{% endif %}">
+            <div class="flex-shrink-0 me-3">
+                {% if event.resource_type == 'meet' %}
+                <i class="fas fa-video text-success"></i>
+                {% else %}
+                <i class="fas fa-clipboard-check text-danger"></i>
+                {% endif %}
+            </div>
+            <div class="flex-grow-1">
+                <h6 class="mb-1">
+                    <a href="{{ url_for('calendar.event_detail', event_id=event.id) }}" class="text-decoration-none">
+                        {{ event.title }}
+                    </a>
+                </h6>
+                <small class="text-muted">
+                    <i class="fas fa-clock me-1"></i>
+                    {{ event.start_time.strftime('%d/%m/%Y %H:%M') }}
+                </small>
+                {% if event.course %}
+                <br />
+                <small class="text-muted">
+                    <i class="fas fa-book me-1"></i>
+                    {{ event.course.nombre }}
+                </small>
+                {% endif %}
+            </div>
+            <div class="flex-shrink-0">
+                {% if event.resource_type == 'meet' %}
+                <span class="badge bg-success">Sesión</span>
+                {% else %}
+                <span class="badge bg-danger">Evaluación</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="text-center mt-3">
+            <a href="{{ url_for('calendar.upcoming_events') }}" class="btn btn-sm btn-outline-primary">
+                Ver Todos los Eventos
+            </a>
+        </div>
+        {% else %}
+        <div class="text-center py-3">
+            <i class="fas fa-calendar-alt fa-2x text-muted mb-2"></i>
+            <p class="text-muted mb-0">No tienes eventos próximos</p>
+            <small class="text-muted">
+                <a href="{{ url_for('calendar.calendar_view') }}" class="text-decoration-none"> Ver calendario completo </a>
+            </small>
+        </div>
+        {% endif %}
+    </div>
+</div>
