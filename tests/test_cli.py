@@ -1,5 +1,6 @@
 from os import environ
 
+
 def test_command_line_interface(full_db_setup):
     environ["FLASK_APP"] = "now_lms"
     with full_db_setup.app_context():
