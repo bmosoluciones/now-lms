@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > This project also follows [Conventional Commits](https://www.conventionalcommits.org/), using prefixes such as:  
 > `fix:`, `feat:`, `refactor:`, `release:`, `docs:`, `build:`, `ci:` to clearly describe changes.
 
+## [v0.0.1b3.dev20250809] - 2025-08-09
+
+### Added
+- Implemented **Master Class** module with full support for creation, enrollment, and content delivery.
+- Integrated Master Class access control for enrolled students only.
+- Added unit tests for Master Class registration and access flows.
+
+### Changed
+- Expanded test suite to **131 unit tests** (**4 skipped**, **5 warnings**), execution time **26.79s**.
+- Increased code coverage to **70%**.
+- Prioritized testing for authentication, payments, enrollment, and content access modules.
+
+### Notes
+- Project remains in **Beta** — no new features will be added except for Master Class (special exception).
+- Focus remains on testing and system stability before the stable release.
+
 
 ## [v0.0.1b2.dev20250808] - 2025-08-08
 
