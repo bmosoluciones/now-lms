@@ -61,15 +61,15 @@
                 {% endif %} {% if current_user.is_authenticated %} {% if current_user.tipo == "moderator" or current_user.tipo
                 == "instructor" or current_user.tipo == "admin" %}
                 <li>
-                    <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link px-2">Moderación</a>
+                    <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link px-2">🍀 Moderación</a>
                 </li>
                 {% endif %} {% if current_user.tipo == "instructor" or current_user.tipo == "admin" %}
                 <li>
-                    <a href="{{ url_for('instructor_profile.pagina_instructor') }}" class="nav-link px-2">Docente</a>
+                    <a href="{{ url_for('instructor_profile.pagina_instructor') }}" class="nav-link px-2">🧑‍🌾 Docente</a>
                 </li>
                 {% endif %} {% if current_user.tipo == "admin" %}
                 <li>
-                    <a href="{{ url_for('admin_profile.pagina_admin') }}" class="nav-link px-2">Administración</a>
+                    <a href="{{ url_for('admin_profile.pagina_admin') }}" class="nav-link px-2">🏡 Administración</a>
                 </li>
                 {% endif %} {% endif %}
             </ul>

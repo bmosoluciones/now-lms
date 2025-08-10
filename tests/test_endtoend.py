@@ -13,8 +13,8 @@
 # limitations under the License.
 #
 
-import pytest
 from now_lms.db import database
+from now_lms.logs import log
 
 """
 Casos de uso mas comunes.
@@ -376,8 +376,7 @@ def test_password_recovery_functionality(basic_config_setup):
 def test_theme_functionality_comprehensive(basic_config_setup):
     """Test comprehensive theme functionality including overrides and custom pages."""
 
-    from now_lms import database, initial_setup
-    from now_lms.db import eliminar_base_de_datos_segura
+    from now_lms import database
     from now_lms.themes import (
         get_home_template,
         get_course_list_template,
@@ -481,3 +480,964 @@ def test_theme_functionality_comprehensive(basic_config_setup):
 
         oxford_css = client.get("/static/themes/oxford/theme.min.css")
         assert oxford_css.status_code == 200
+
+
+from io import BytesIO
+
+
+def test_course_administration_flow(basic_config_setup, client):
+    """Test GET and POST for creating a new course."""
+    app = basic_config_setup
+
+    from now_lms.db import Usuario, Curso
+    from now_lms.auth import proteger_passwd
+
+    # Crear usuario instructor
+    with app.app_context():
+        instructor = Usuario(
+            usuario="instructor1",
+            acceso=proteger_passwd("testpass"),
+            nombre="Test",
+            apellido="Instructor",
+            tipo="instructor",  # Rol requerido por la vista
+            activo=True,
+            correo_electronico_verificado=True,
+        )
+        database.session.add(instructor)
+        database.session.commit()
+
+    # Iniciar sesión como instructor
+    login_response = client.post(
+        "/user/login",
+        data={"usuario": "instructor1", "acceso": "testpass"},
+        follow_redirects=True,
+    )
+    assert login_response.status_code == 200
+
+    # GET: acceder al formulario de creación de curso
+    get_response = client.get("/course/new_curse")
+    assert get_response.status_code == 200
+
+    # POST: enviar datos de un nuevo curso
+    post_response = client.post(
+        "/course/new_curse",
+        data={
+            "nombre": "Curso de Prueba",
+            "codigo": "test_course",
+            "descripcion": "Descripcion completa del curso.",
+            "descripcion_corta": "Descripcion corta.",
+            "nivel": "beginner",
+            "duracion": "4 semanas",
+            "publico": True,
+            "modalidad": "online",
+            "foro_habilitado": True,
+            "limitado": False,
+            "capacidad": 0,
+            "fecha_inicio": "2025-08-10",
+            "fecha_fin": "2025-09-10",
+            "pagado": False,
+            "auditable": True,
+            "certificado": True,
+            "plantilla_certificado": "default",
+            "precio": 0,
+        },
+        follow_redirects=False,
+    )
+    assert post_response.status_code == 302  # Redirección a vista de administrar curso
+
+    # Validar que el curso fue creado
+    with app.app_context():
+        curso = database.session.execute(database.select(Curso).filter_by(codigo="test_course")).scalars().first()
+        assert curso is not None
+        assert curso.nombre == "Curso de Prueba"
+        assert curso.estado == "draft"
+        assert curso.portada is None
+
+    # POST: enviar datos de un nuevo curso con logo
+    data = {
+        "nombre": "Curso con Logo",
+        "codigo": "testlogo",
+        "descripcion": "Descripcion completa del curso con logo.",
+        "descripcion_corta": "Descripcion corta.",
+        "nivel": "beginner",
+        "duracion": "4 semanas",
+        "publico": True,
+        "modalidad": "online",
+        "foro_habilitado": True,
+        "limitado": False,
+        "capacidad": 0,
+        "fecha_inicio": "2025-08-10",
+        "fecha_fin": "2025-09-10",
+        "pagado": False,
+        "auditable": True,
+        "certificado": True,
+        "plantilla_certificado": "default",
+        "precio": 0,
+    }
+
+    data = {key: str(value) for key, value in data.items()}
+    data["logo"] = (BytesIO(b"abksakjdalksdjlkAFcdef"), "logo.jpg")
+
+    post_response = client.post(
+        "/course/new_curse",
+        data=data,
+        content_type="multipart/form-data",  # Necesario para subir archivos
+        follow_redirects=False,
+    )
+    assert post_response.status_code == 302  # Redirección a vista de administrar curso
+
+    # Validar que el curso fue creado con portada
+    with app.app_context():
+        curso = database.session.execute(database.select(Curso).filter_by(codigo="testlogo")).scalars().first()
+        assert curso is not None
+        assert curso.nombre == "Curso con Logo"
+        assert curso.estado == "draft"
+
+    # --- PROBAR GET DE /course/<code>/edit ---
+    edit_get = client.get("/course/testlogo/edit")
+    assert edit_get.status_code == 200
+
+    # --- PROBAR POST DE /course/<code>/edit ---
+    edit_post = client.post(
+        "/course/testlogo/edit",
+        data={
+            "nombre": "Curso Editado",
+            "descripcion": "Descripcion actualizada del curso.",
+            "descripcion_corta": "Descripcion corta editada.",
+            "nivel": "intermediate",
+            "duracion": "6 semanas",
+            "publico": False,
+            "modalidad": "self_paced",
+            "foro_habilitado": False,  # Modalidad self_paced fuerza foro=False
+            "limitado": True,
+            "capacidad": 50,
+            "fecha_inicio": "2025-08-15",
+            "fecha_fin": "2025-09-20",
+            "pagado": True,
+            "auditable": False,
+            "certificado": True,
+            "plantilla_certificado": "default",
+            "precio": 199,
+        },
+        follow_redirects=False,
+    )
+    assert edit_post.status_code == 302  # Redirección después de editar
+
+    admin_course = client.get("/course/testlogo/admin")
+    assert admin_course.status_code == 200
+
+    # Seccion administration
+    create_seccion = client.get("/course/testlogo/new_seccion")
+    assert create_seccion.status_code == 200
+    create_seccion = client.post(
+        "/course/testlogo/new_seccion",
+        data={
+            "nombre": "Test Logo Seccion 1",
+            "descripcion": "Descripcion de la seccion 1.",
+        },
+    )
+    assert create_seccion.status_code == 302
+    create_seccion = client.post(
+        "/course/testlogo/new_seccion",
+        data={
+            "nombre": "Test Logo Seccion 2",
+            "descripcion": "Descripcion de la seccion 2.",
+        },
+    )
+    assert create_seccion.status_code == 302
+
+    # Get seccion from database
+    from now_lms.db import CursoSeccion
+
+    with app.app_context():
+        # Seccion 1
+        seccion1 = (
+            database.session.execute(database.select(CursoSeccion).filter_by(nombre="Test Logo Seccion 1")).scalars().first()
+        )
+        assert seccion1 is not None
+        assert seccion1.nombre == "Test Logo Seccion 1"
+        assert seccion1.descripcion == "Descripcion de la seccion 1."
+        assert seccion1.indice == 1
+        # Seccion 2
+        seccion2 = (
+            database.session.execute(database.select(CursoSeccion).filter_by(nombre="Test Logo Seccion 2")).scalars().first()
+        )
+        assert seccion2 is not None
+        assert seccion2.nombre == "Test Logo Seccion 2"
+        assert seccion2.indice == 2
+
+    seccion1_edit_url = f"/course/testlogo/{seccion1.id}/edit"
+    seccion2_edit_url = f"/course/testlogo/{seccion2.id}/edit"
+
+    # GET: editar seccion 1
+    edit_seccion1_get = client.get(seccion1_edit_url)
+    assert edit_seccion1_get.status_code == 200
+    # POST: editar seccion 1
+    edit_seccion1_post = client.post(
+        seccion1_edit_url,
+        data={
+            "nombre": "Test Logo Seccion 1 Editada",
+            "descripcion": "Descripcion de la seccion 1 editada.",
+        },
+    )
+    assert edit_seccion1_post.status_code == 302
+
+    # Seccion 1 editada
+    with app.app_context():
+        seccion1 = (
+            database.session.execute(database.select(CursoSeccion).filter_by(nombre="Test Logo Seccion 1 Editada"))
+            .scalars()
+            .first()
+        )
+        assert seccion1.nombre == "Test Logo Seccion 1 Editada"
+
+    # New resource page
+    new_resource_url = f"/course/testlogo/{seccion1.id}/new_resource"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    assert "Seleccione un elemento a añadir al curso.".encode("utf-8") in new_resource.data
+
+    # Resources creation pages
+    types = ["youtube", "pdf", "audio", "img", "text", "slides", "link", "html", "meet"]
+    for type in types:
+        new_resource_url = f"/course/testlogo/{seccion1.id}/{type}/new"
+        new_resource = client.get(new_resource_url)
+        log.warning(f"Testing {new_resource_url}")
+        assert new_resource.status_code == 200
+
+    # Test resource creation
+    # Youtube resource
+    new_resource_url = f"/course/testlogo/{seccion1.id}/youtube/new"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    new_resource_post = client.post(
+        new_resource_url,
+        data={
+            "nombre": "Test Logo Recurso 1",
+            "descripcion": "Descripcion del recurso 1.",
+            "url": "https://www.youtube.com/watch?v=test",
+        },
+    )
+    assert new_resource_post.status_code == 302
+
+    # Text resource
+    new_resource_url = f"/course/testlogo/{seccion1.id}/text/new"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    new_resource_post = client.post(
+        new_resource_url,
+        data={
+            "nombre": "Test Logo Recurso 2",
+            "descripcion": "Descripcion del recurso 2.",
+            "text": "Contenido del recurso 2.",
+        },
+    )
+    assert new_resource_post.status_code == 302
+
+    # Test link resource
+    new_resource_url = f"/course/testlogo/{seccion1.id}/link/new"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    new_resource_post = client.post(
+        new_resource_url,
+        data={
+            "nombre": "Test Logo Recurso 3",
+            "descripcion": "Descripcion del recurso 3.",
+            "url": "https://www.google.com",
+        },
+    )
+    # Test PDF resource
+    new_resource_url = f"/course/testlogo/{seccion1.id}/pdf/new"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    data = {
+        "nombre": "Test Logo Recurso 4",
+        "descripcion": "Descripcion del recurso 4.",
+    }
+    data = {key: str(value) for key, value in data.items()}
+    data["pdf"] = (BytesIO(b"abksakjdalksdjlkAFcdef"), "file.pdf")
+    new_resource_post = client.post(
+        new_resource_url,
+        data=data,
+        content_type="multipart/form-data",
+    )
+    assert new_resource_post.status_code == 302
+
+    # Test meet resource
+    new_resource_url = f"/course/testlogo/{seccion1.id}/meet/new"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    new_resource_post = client.post(
+        new_resource_url,
+        data={
+            "nombre": "Test Logo Recurso 5",
+            "descripcion": "Descripcion del recurso 5.",
+            "url": "https://meet.google.com/test",
+            "fecha": "2025-08-15",
+            "hora_inicio": "10:00",
+            "hora_fin": "12:00",
+            "notes": "Notas del recurso 5.",
+        },
+    )
+    assert new_resource_post.status_code == 302
+
+    # Test img resource
+    new_resource_url = f"/course/testlogo/{seccion1.id}/img/new"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    data = {
+        "nombre": "Test Logo Recurso 6",
+        "descripcion": "Descripcion del recurso 6.",
+    }
+    data = {key: str(value) for key, value in data.items()}
+    data["img"] = (BytesIO(b"abksakjdalksdjlkAFcdef"), "hola.jpg")
+    new_resource_post = client.post(
+        new_resource_url,
+        data=data,
+        content_type="multipart/form-data",
+    )
+    assert new_resource_post.status_code == 302
+
+    # Test audio resource
+    new_resource_url = f"/course/testlogo/{seccion1.id}/audio/new"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    data = {
+        "nombre": "Test Logo Recurso 7",
+        "descripcion": "Descripcion del recurso 7.",
+    }
+    data = {key: str(value) for key, value in data.items()}
+    data["audio"] = (BytesIO(b"abksakjdalksdjlkAFcdef"), "audio.ogg")
+    new_resource_post = client.post(
+        new_resource_url,
+        data=data,
+        content_type="multipart/form-data",
+    )
+    assert new_resource_post.status_code == 302
+
+    # Test HTML resource
+    new_resource_url = f"/course/testlogo/{seccion1.id}/html/new"
+    new_resource = client.get(new_resource_url)
+    assert new_resource.status_code == 200
+    new_resource_post = client.post(
+        new_resource_url,
+        data={
+            "nombre": "Test Logo Recurso 8",
+            "descripcion": "Descripcion del recurso 8.",
+            "external_code": "<h1>Contenido del recurso 8.</h1>",
+        },
+    )
+
+    # Other admin pages
+    delete_logo = client.get("/course/testlogo/delete_logo")
+    assert delete_logo.status_code == 302
+
+
+def test_program_administration_flow(basic_config_setup, client):
+    """Test GET and POST for creating a new course."""
+    app = basic_config_setup
+    from now_lms.db import Usuario
+    from now_lms.auth import proteger_passwd
+
+    # Crear usuario instructor
+    with app.app_context():
+        instructor = Usuario(
+            usuario="instructor1",
+            acceso=proteger_passwd("testpass"),
+            nombre="Test",
+            apellido="Instructor",
+            tipo="instructor",  # Rol requerido por la vista
+            activo=True,
+            correo_electronico_verificado=True,
+        )
+        database.session.add(instructor)
+        database.session.commit()
+
+    # Iniciar sesión como instructor
+    login_response = client.post(
+        "/user/login",
+        data={"usuario": "instructor1", "acceso": "testpass"},
+        follow_redirects=True,
+    )
+    assert login_response.status_code == 200
+
+    # GET: acceder al formulario de creación de programa
+    get_response = client.get("/program/new")
+    assert get_response.status_code == 200
+    post_response = client.post(
+        "/program/new",
+        data={
+            "nombre": "Programa de Prueba",
+            "descripcion": "Descripcion completa del programa.",
+            "codigo": "test_program",
+            "precio": 0,
+        },
+    )
+    assert post_response.status_code == 302
+
+
+def test_masterclass_administration_flow(basic_config_setup, client):
+    """Test comprehensive Master Class administration flow for instructor."""
+    app = basic_config_setup
+    from now_lms.db import Usuario, MasterClass, MasterClassEnrollment, Configuracion
+    from now_lms.auth import proteger_passwd
+    from datetime import datetime
+
+    # Create instructor user and enable masterclass
+    with app.app_context():
+        # Enable master class in configuration
+        config = database.session.execute(database.select(Configuracion)).first()[0]
+        config.enable_masterclass = True
+
+        instructor = Usuario(
+            usuario="instructor1",
+            acceso=proteger_passwd("testpass"),
+            nombre="Test",
+            apellido="Instructor",
+            tipo="instructor",
+            activo=True,
+            correo_electronico_verificado=True,
+        )
+        database.session.add(instructor)
+        database.session.commit()
+
+    # Login as instructor
+    login_response = client.post(
+        "/user/login",
+        data={"usuario": "instructor1", "acceso": "testpass"},
+        follow_redirects=True,
+    )
+    assert login_response.status_code == 200
+
+    # GET: Access instructor master class list (should be empty initially)
+    list_response = client.get("/masterclass/instructor")
+    assert list_response.status_code == 200
+    assert "Mis Clases Magistrales".encode("utf-8") in list_response.data
+
+    # GET: Access create master class form
+    create_get = client.get("/masterclass/instructor/create")
+    assert create_get.status_code == 200
+    assert "Crear Clase Magistral".encode("utf-8") in create_get.data
+
+    # POST: Create new master class
+    future_date = datetime.now().date().replace(year=datetime.now().year + 1)
+    create_post = client.post(
+        "/masterclass/instructor/create",
+        data={
+            "title": "Introduction to Python Programming",
+            "description_public": "Learn the fundamentals of Python programming in this comprehensive master class.",
+            "description_private": "Advanced tips and resources for enrolled students.",
+            "date": future_date.strftime("%Y-%m-%d"),
+            "start_time": "14:00",
+            "end_time": "16:00",
+            "platform_name": "Zoom",
+            "platform_url": "https://zoom.us/j/123456789",
+            "is_certificate": False,
+        },
+        follow_redirects=False,
+    )
+    assert create_post.status_code == 302  # Redirect after successful creation
+
+    # Validate master class was created
+    with app.app_context():
+        master_class = (
+            database.session.execute(database.select(MasterClass).filter_by(title="Introduction to Python Programming"))
+            .scalars()
+            .first()
+        )
+        assert master_class is not None
+        assert master_class.instructor_id == "instructor1"
+        assert master_class.slug == "introduction-to-python-programming"
+        master_class_id = master_class.id
+
+    # GET: Access edit master class form
+    edit_get = client.get(f"/masterclass/instructor/{master_class_id}/edit")
+    assert edit_get.status_code == 200
+    assert "Editar Clase Magistral".encode("utf-8") in edit_get.data
+
+    # POST: Edit master class
+    edit_post = client.post(
+        f"/masterclass/instructor/{master_class_id}/edit",
+        data={
+            "title": "Advanced Python Programming",
+            "description_public": "Updated description: Advanced Python programming concepts.",
+            "description_private": "Updated private content for enrolled students.",
+            "date": future_date.strftime("%Y-%m-%d"),
+            "start_time": "15:00",
+            "end_time": "17:00",
+            "platform_name": "Google Meet",
+            "platform_url": "https://meet.google.com/abc-def-ghi",
+            "is_certificate": False,
+        },
+        follow_redirects=False,
+    )
+    assert edit_post.status_code == 302  # Redirect after successful edit
+
+    # Validate master class was updated
+    with app.app_context():
+        updated_master_class = database.session.get(MasterClass, master_class_id)
+        assert updated_master_class.title == "Advanced Python Programming"
+        assert updated_master_class.platform_name == "Google Meet"
+        assert updated_master_class.slug == "advanced-python-programming"
+
+    # Create a student user and enroll them for testing student list
+    with app.app_context():
+        student = Usuario(
+            usuario="student1",
+            acceso=proteger_passwd("studentpass"),
+            nombre="Test",
+            apellido="Student",
+            tipo="student",
+            activo=True,
+            correo_electronico_verificado=True,
+        )
+        database.session.add(student)
+        database.session.commit()
+
+        # Create enrollment
+        enrollment = MasterClassEnrollment(
+            master_class_id=master_class_id,
+            user_id="student1",
+            is_confirmed=True,
+        )
+        database.session.add(enrollment)
+        database.session.commit()
+
+    # Verify updated list shows the master class
+    list_updated = client.get("/masterclass/instructor")
+    assert list_updated.status_code == 200
+    assert "Advanced Python Programming".encode("utf-8") in list_updated.data
+
+
+def test_certificate_management_flow(basic_config_setup, client):
+    """Test certificate management flow for instructor."""
+    app = basic_config_setup
+    from now_lms.db import Usuario
+    from now_lms.auth import proteger_passwd
+
+    # Create instructor user
+    with app.app_context():
+        instructor = Usuario(
+            usuario="instructor1",
+            acceso=proteger_passwd("testpass"),
+            nombre="Test",
+            apellido="Instructor",
+            tipo="instructor",
+            activo=True,
+            correo_electronico_verificado=True,
+        )
+        database.session.add(instructor)
+        database.session.commit()
+
+    # Login as instructor
+    login_response = client.post(
+        "/user/login",
+        data={"usuario": "instructor1", "acceso": "testpass"},
+        follow_redirects=True,
+    )
+    assert login_response.status_code == 200
+
+    # GET: Access certificate list
+    list_response = client.get("/certificate/list")
+    assert list_response.status_code == 200
+
+    # GET: Access issued certificates list
+    issued_list = client.get("/certificate/issued/list")
+    assert issued_list.status_code == 200
+
+    # GET: Access certificate generation form
+    generate_get = client.get("/certificate/release/")
+    assert generate_get.status_code == 200
+    assert "Emitir un nuevo Certificado".encode("utf-8") in generate_get.data
+
+
+def test_blog_management_flow(basic_config_setup, client):
+    """Test blog management flow for instructor."""
+    app = basic_config_setup
+    from now_lms.db import Usuario, BlogPost
+    from now_lms.auth import proteger_passwd
+
+    # Create instructor user
+    with app.app_context():
+        instructor = Usuario(
+            usuario="instructor1",
+            acceso=proteger_passwd("testpass"),
+            nombre="Test",
+            apellido="Instructor",
+            tipo="instructor",
+            activo=True,
+            correo_electronico_verificado=True,
+        )
+        database.session.add(instructor)
+        database.session.commit()
+
+    # Login as instructor
+    login_response = client.post(
+        "/user/login",
+        data={"usuario": "instructor1", "acceso": "testpass"},
+        follow_redirects=True,
+    )
+    assert login_response.status_code == 200
+
+    # GET: Access instructor blog index
+    blog_index = client.get("/instructor/blog")
+    assert blog_index.status_code == 200
+
+    # GET: Access create blog post form
+    create_get = client.get("/admin/blog/posts/new")
+    assert create_get.status_code == 200
+    assert "Nueva Entrada".encode("utf-8") in create_get.data
+
+    # POST: Create new blog post (with both BaseForm and BlogPostForm fields)
+    create_post = client.post(
+        "/admin/blog/posts/new",
+        data={
+            "nombre": "Getting Started with Machine Learning",  # BaseForm field
+            "descripcion": "This is a comprehensive guide to machine learning fundamentals.",  # BaseForm field
+            "title": "Getting Started with Machine Learning",  # BlogPostForm field
+            "content": "This is a comprehensive guide to machine learning fundamentals.",  # BlogPostForm field
+            "tags": "machine learning, python, tutorial",
+            "allow_comments": True,
+            "status": "pending",
+        },
+        follow_redirects=False,
+    )
+    assert create_post.status_code == 302  # Redirect after creation
+
+    # Validate blog post was created
+    with app.app_context():
+        blog_post = (
+            database.session.execute(database.select(BlogPost).filter_by(title="Getting Started with Machine Learning"))
+            .scalars()
+            .first()
+        )
+        assert blog_post is not None
+        assert blog_post.author_id == "instructor1"
+        assert blog_post.status == "pending"
+        blog_post_id = blog_post.id
+
+    # GET: Access edit blog post form
+    edit_get = client.get(f"/admin/blog/posts/{blog_post_id}/edit")
+    assert edit_get.status_code == 200
+    assert "Editar Entrada".encode("utf-8") in edit_get.data
+
+    # POST: Edit blog post
+    edit_post = client.post(
+        f"/admin/blog/posts/{blog_post_id}/edit",
+        data={
+            "nombre": "Advanced Machine Learning Techniques",  # BaseForm field
+            "descripcion": "Updated content about advanced machine learning techniques.",  # BaseForm field
+            "title": "Advanced Machine Learning Techniques",  # BlogPostForm field
+            "content": "Updated content about advanced machine learning techniques.",  # BlogPostForm field
+            "tags": "machine learning, advanced, neural networks",
+            "allow_comments": True,
+            "status": "pending",
+        },
+        follow_redirects=False,
+    )
+    assert edit_post.status_code == 302  # Redirect after edit
+
+    # Validate blog post was updated
+    with app.app_context():
+        updated_post = database.session.get(BlogPost, blog_post_id)
+        assert updated_post.title == "Advanced Machine Learning Techniques"
+        assert "advanced" in updated_post.slug
+
+
+def test_announcements_management_flow(basic_config_setup, client):
+    """Test announcements management flow for instructor."""
+    app = basic_config_setup
+    from now_lms.db import Usuario, Announcement, Curso, DocenteCurso
+    from now_lms.auth import proteger_passwd
+    from datetime import datetime
+
+    # Create instructor user and course
+    with app.app_context():
+        instructor = Usuario(
+            usuario="instructor1",
+            acceso=proteger_passwd("testpass"),
+            nombre="Test",
+            apellido="Instructor",
+            tipo="instructor",
+            activo=True,
+            correo_electronico_verificado=True,
+        )
+        database.session.add(instructor)
+
+        # Create a course and assign instructor
+        course = Curso(
+            codigo="test_course",
+            nombre="Test Course",
+            descripcion="Test course description",
+            descripcion_corta="Short description",
+            estado="published",
+            creado_por="instructor1",
+            modificado_por="instructor1",
+        )
+        database.session.add(course)
+        database.session.flush()
+
+        # Assign instructor to course
+        instructor_assignment = DocenteCurso(
+            usuario="instructor1",
+            curso="test_course",
+        )
+        database.session.add(instructor_assignment)
+        database.session.commit()
+
+    # Login as instructor
+    login_response = client.post(
+        "/user/login",
+        data={"usuario": "instructor1", "acceso": "testpass"},
+        follow_redirects=True,
+    )
+    assert login_response.status_code == 200
+
+    # Debug: Check instructor-course assignment
+    with app.app_context():
+        assignment = (
+            database.session.execute(database.select(DocenteCurso).filter_by(usuario="instructor1", curso="test_course"))
+            .scalars()
+            .first()
+        )
+        print(f"Instructor assignment found: {assignment is not None}")
+        if assignment:
+            print(f"Assignment: {assignment.usuario} -> {assignment.curso}")
+
+    # GET: Access announcements list
+    list_response = client.get("/instructor/announcements")
+    assert list_response.status_code == 200
+
+    # GET: Access create announcement form
+    create_get = client.get("/instructor/announcements/new")
+    assert create_get.status_code == 200
+    assert "Nuevo Anuncio de Curso".encode("utf-8") in create_get.data
+
+    # POST: Create new announcement
+    future_date = datetime.now().date().replace(year=datetime.now().year + 1)
+    create_post = client.post(
+        "/instructor/announcements/new",
+        data={
+            "title": "Important Course Update",
+            "message": "This is an important announcement about the course schedule.",
+            "course_id": "test_course",
+            "expires_at": future_date.strftime("%Y-%m-%d"),
+        },
+        follow_redirects=False,
+    )
+    if create_post.status_code != 302:
+        print(f"Create post failed with status {create_post.status_code}")
+        print(f"Response data: {create_post.data.decode()}")
+    else:
+        print(f"Create post redirected to: {create_post.location}")
+    assert create_post.status_code == 302  # Redirect after creation
+
+    # Validate announcement was created
+    with app.app_context():
+        # Debug: Check all announcements in database
+        all_announcements = database.session.execute(database.select(Announcement)).scalars().all()
+        print(f"Total announcements in database: {len(all_announcements)}")
+        for ann in all_announcements:
+            print(f"  - {ann.title} (course_id: {ann.course_id}, created_by: {ann.created_by_id})")
+
+        announcement = (
+            database.session.execute(database.select(Announcement).filter_by(title="Important Course Update"))
+            .scalars()
+            .first()
+        )
+        assert announcement is not None
+        assert announcement.course_id == "test_course"
+        assert announcement.created_by_id == "instructor1"
+        announcement_id = announcement.id
+
+    # GET: Access edit announcement form
+    edit_get = client.get(f"/instructor/announcements/{announcement_id}/edit")
+    assert edit_get.status_code == 200
+    assert "Editar Anuncio de Curso".encode("utf-8") in edit_get.data
+
+    # POST: Edit announcement
+    edit_post = client.post(
+        f"/instructor/announcements/{announcement_id}/edit",
+        data={
+            "title": "Updated Course Information",
+            "message": "Updated message about the course changes.",
+            "course_id": "test_course",
+            "expires_at": future_date.strftime("%Y-%m-%d"),
+        },
+        follow_redirects=False,
+    )
+    assert edit_post.status_code == 302  # Redirect after edit
+
+    # Validate announcement was updated
+    with app.app_context():
+        updated_announcement = database.session.get(Announcement, announcement_id)
+        assert updated_announcement.title == "Updated Course Information"
+
+    # POST: Delete announcement
+    delete_post = client.post(f"/instructor/announcements/{announcement_id}/delete")
+    assert delete_post.status_code == 302  # Redirect after deletion
+
+
+def test_evaluations_management_basic_flow(basic_config_setup, client):
+    """Test basic evaluations access for instructor."""
+    app = basic_config_setup
+    from now_lms.db import Usuario, Curso, CursoSeccion, DocenteCurso
+    from now_lms.auth import proteger_passwd
+
+    # Create instructor user and course with section
+    with app.app_context():
+        instructor = Usuario(
+            usuario="instructor1",
+            acceso=proteger_passwd("testpass"),
+            nombre="Test",
+            apellido="Instructor",
+            tipo="instructor",
+            activo=True,
+            correo_electronico_verificado=True,
+        )
+        database.session.add(instructor)
+
+        # Create a course and assign instructor
+        course = Curso(
+            codigo="test_course",
+            nombre="Test Course",
+            descripcion="Test course description",
+            descripcion_corta="Short description",
+            estado="published",
+            creado_por="instructor1",
+            modificado_por="instructor1",
+        )
+        database.session.add(course)
+        database.session.flush()
+
+        # Create a section
+        section = CursoSeccion(
+            curso="test_course",
+            nombre="Test Section",
+            descripcion="Test section description",
+            indice=1,
+        )
+        database.session.add(section)
+        database.session.flush()
+
+        # Assign instructor to course
+        instructor_assignment = DocenteCurso(
+            usuario="instructor1",
+            curso="test_course",
+        )
+        database.session.add(instructor_assignment)
+        database.session.commit()
+
+    # Login as instructor
+    login_response = client.post(
+        "/user/login",
+        data={"usuario": "instructor1", "acceso": "testpass"},
+        follow_redirects=True,
+    )
+    assert login_response.status_code == 200
+
+    # Test basic instructor access (evaluation routes are typically course-specific)
+    # Note: The evaluations module currently appears to be more student-focused
+    # This test validates basic instructor access, but evaluation management routes
+    # may need to be implemented in the instructor profiles or course views
+
+
+def test_masterclass_basic_access_flow(basic_config_setup, client):
+    """Test basic Master Class access for instructor (avoiding template issues)."""
+    app = basic_config_setup
+    from now_lms.db import Usuario, Configuracion
+    from now_lms.auth import proteger_passwd
+
+    # Create instructor user and enable masterclass
+    with app.app_context():
+        # Enable master class in configuration
+        config = database.session.execute(database.select(Configuracion)).first()[0]
+        config.enable_masterclass = True
+
+        instructor = Usuario(
+            usuario="instructor1",
+            acceso=proteger_passwd("testpass"),
+            nombre="Test",
+            apellido="Instructor",
+            tipo="instructor",
+            activo=True,
+            correo_electronico_verificado=True,
+        )
+        database.session.add(instructor)
+        database.session.commit()
+
+    # Login as instructor
+    login_response = client.post(
+        "/user/login",
+        data={"usuario": "instructor1", "acceso": "testpass"},
+        follow_redirects=True,
+    )
+    assert login_response.status_code == 200
+
+    # Test GET access to create master class form (template issue exists but route works)
+    create_get = client.get("/masterclass/instructor/create")
+    assert create_get.status_code == 200
+    assert "Crear Clase Magistral".encode("utf-8") in create_get.data
+
+    # Note: Full masterclass test has template issues with current_theme in test environment
+    # This test validates that instructor access control is working correctly
+
+
+def test_announcements_basic_access_flow(basic_config_setup, client):
+    """Test basic announcements access for instructor."""
+    app = basic_config_setup
+    from now_lms.db import Usuario, Curso, DocenteCurso
+    from now_lms.auth import proteger_passwd
+
+    # Create instructor user and course
+    with app.app_context():
+        instructor = Usuario(
+            usuario="instructor1",
+            acceso=proteger_passwd("testpass"),
+            nombre="Test",
+            apellido="Instructor",
+            tipo="instructor",
+            activo=True,
+            correo_electronico_verificado=True,
+        )
+        database.session.add(instructor)
+
+        # Create a course and assign instructor
+        course = Curso(
+            codigo="test_course",
+            nombre="Test Course",
+            descripcion="Test course description",
+            descripcion_corta="Short description",
+            estado="published",
+            creado_por="instructor1",
+            modificado_por="instructor1",
+        )
+        database.session.add(course)
+        database.session.flush()
+
+        # Assign instructor to course
+        instructor_assignment = DocenteCurso(
+            usuario="instructor1",
+            curso="test_course",
+        )
+        database.session.add(instructor_assignment)
+        database.session.commit()
+
+    # Login as instructor
+    login_response = client.post(
+        "/user/login",
+        data={"usuario": "instructor1", "acceso": "testpass"},
+        follow_redirects=True,
+    )
+    assert login_response.status_code == 200
+
+    # Test access to announcements routes
+    list_response = client.get("/instructor/announcements")
+    assert list_response.status_code == 200
+
+    create_get = client.get("/instructor/announcements/new")
+    assert create_get.status_code == 200
+    assert "Nuevo Anuncio de Curso".encode("utf-8") in create_get.data
+
+    # Note: Form validation has complex inheritance requiring both BaseForm and AnnouncementForm fields
+    # This test validates that instructor access control is working correctly

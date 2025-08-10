@@ -1,16 +1,27 @@
     /* Cambridge Academic Theme Custom Variables */
     :root {
-        --cambridge-primary: #4a7b6d; /* Verde Pátina */
-        --cambridge-secondary: #2e2b28; /* Gris Carbón Cambridge */
-        --cambridge-accent: #b08b5c; /* Cobre Antiguo */
-        --cambridge-light: #f3f1e7; /* Marfil Piedra */
-        --cambridge-background: #f3f1e7; /* Marfil Piedra */
-        --cambridge-surface: #ffffff; /* White for cards */
-        --cambridge-border: #a8a39b; /* Gris Cálido */
-        --cambridge-text: #2e2b28; /* Gris Carbón Cambridge */
-        --cambridge-text-secondary: #a8a39b; /* Gris Cálido */
-        --cambridge-sage: #b6c7bf; /* Verde Salvia Claro */
-        --cambridge-blue: #5e7585; /* Azul Encapsulado */
+        --cambridge-primary: #4a7b6d;
+        /* Verde Pátina */
+        --cambridge-secondary: #2e2b28;
+        /* Gris Carbón Cambridge */
+        --cambridge-accent: #b08b5c;
+        /* Cobre Antiguo */
+        --cambridge-light: #f3f1e7;
+        /* Marfil Piedra */
+        --cambridge-background: #f3f1e7;
+        /* Marfil Piedra */
+        --cambridge-surface: #ffffff;
+        /* White for cards */
+        --cambridge-border: #a8a39b;
+        /* Gris Cálido */
+        --cambridge-text: #2e2b28;
+        /* Gris Carbón Cambridge */
+        --cambridge-text-secondary: #a8a39b;
+        /* Gris Cálido */
+        --cambridge-sage: #b6c7bf;
+        /* Verde Salvia Claro */
+        --cambridge-blue: #5e7585;
+        /* Azul Encapsulado */
         --cambridge-success: #4a7b6d;
         --cambridge-warning: #b08b5c;
         --cambridge-danger: #a8a39b;
@@ -43,7 +54,12 @@
     }
 
     /* Typography - Academic publication style */
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
         font-family: "Cambria", "Cormorant Garamond", "EB Garamond", Georgia, serif;
         color: var(--cambridge-text);
         font-weight: 600;
@@ -55,6 +71,7 @@
     .cambridge-hero {
         position: relative;
         overflow: hidden;
+        min-height: 40vh;
     }
 
     .cambridge-formulas {
@@ -62,8 +79,15 @@
     }
 
     @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
+
+        0%,
+        100% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
     }
 
     .cambridge-lab-sample {
@@ -95,7 +119,7 @@
         z-index: 1;
     }
 
-    .cambridge-lab-sample > * {
+    .cambridge-lab-sample>* {
         position: relative;
         z-index: 2;
     }
@@ -105,7 +129,7 @@
         .cambridge-formulas {
             display: none;
         }
-        
+
         .cambridge-tube-label {
             position: static;
             margin-bottom: 1rem;
@@ -114,9 +138,17 @@
         }
     }
 
-    h1 { font-size: 2.5rem; }
-    h2 { font-size: 2rem; }
-    h3 { font-size: 1.75rem; }
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    h3 {
+        font-size: 1.75rem;
+    }
 
     /* Custom Navbar Styling - No Icons */
     .navbar-cambridge {
@@ -324,10 +356,18 @@
 
     /* Responsive Typography */
     @media (max-width: 768px) {
-        h1 { font-size: 2rem; }
-        h2 { font-size: 1.75rem; }
-        h3 { font-size: 1.5rem; }
-        
+        h1 {
+            font-size: 2rem;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+        }
+
         .btn-cambridge-primary,
         .btn-cambridge-secondary {
             padding: 0.6rem 1.2rem;

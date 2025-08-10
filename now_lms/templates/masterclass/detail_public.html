@@ -206,7 +206,7 @@
             </div>
         </main>
 
-        {{ current_theme.footer() }} {{ current_theme.js() }} {% if master_class.is_upcoming() %}
+        {% if master_class.is_upcoming() %}
         <script>
             // Countdown timer
             const eventDate = new Date(

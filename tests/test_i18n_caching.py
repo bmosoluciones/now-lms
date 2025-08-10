@@ -15,10 +15,6 @@
 
 """Test Flask-Babel configuration caching to prevent DoS vulnerability."""
 
-import os
-import pytest
-from unittest import mock
-
 
 def test_i18n_configuration_caching(full_db_setup):
     """Test that Flask-Babel configuration is cached and doesn't cause excessive database queries."""

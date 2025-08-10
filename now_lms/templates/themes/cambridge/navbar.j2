@@ -10,7 +10,14 @@
                 alt="Cambridge LMS"
                 class="d-inline-block align-top me-2"
             />
-            {% else %} Cambridge LMS {% endif %}
+            {% else %}
+            <img
+                height="30"
+                src="{{ url_for('static', filename='/icons/logo/logo_white_large.png') }}"
+                alt="NOW LMS"
+                class="d-inline-block align-top me-2"
+            />
+            {% endif %}
         </a>
         <button
             class="navbar-toggler"

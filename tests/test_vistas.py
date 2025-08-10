@@ -16,7 +16,6 @@
 
 import os
 import sys
-import pytest
 
 from now_lms import log
 
@@ -157,7 +156,7 @@ def test_error_pages(basic_config_setup):
 
 def test_demo_course(full_db_setup):
 
-    from now_lms import database, initial_setup
+    from now_lms import initial_setup
     from now_lms.db import eliminar_base_de_datos_segura
 
     with full_db_setup.app_context():

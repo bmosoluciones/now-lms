@@ -16,11 +16,10 @@
 """Tests to verify database rollback behavior in exception handling."""
 
 from unittest import TestCase
-from unittest.mock import patch, MagicMock
 from sqlalchemy.exc import OperationalError
 from now_lms import app
 from now_lms.db import eliminar_base_de_datos_segura
-from now_lms.db import database, Etiqueta, Certificado, Usuario, UsuarioGrupo
+from now_lms.db import database, Etiqueta
 
 
 class TestDatabaseRollback(TestCase):

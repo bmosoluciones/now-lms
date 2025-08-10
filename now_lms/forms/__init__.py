@@ -634,8 +634,16 @@ class ForoMensajeRespuestaForm(FlaskForm):
     contenido = MdeField("Respuesta", validators=[DataRequired()])
 
 
+class AnnouncementBaseForm(FlaskForm):
+    """Formulario base para crear/editar anuncios sin campos de BaseForm."""
+
+    title = StringField(LABEL_TITULO, validators=[DataRequired()])
+    message = MdeField("Mensaje", validators=[DataRequired()])
+    expires_at = DateField("Fecha de expiración", validators=[], render_kw={"placeholder": "Opcional"})
+
+
 class AnnouncementForm(BaseForm):
-    """Formulario base para crear/editar anuncios."""
+    """Formulario para anuncios que requiere campos de BaseForm."""
 
     title = StringField(LABEL_TITULO, validators=[DataRequired()])
     message = MdeField("Mensaje", validators=[DataRequired()])
@@ -648,7 +656,7 @@ class GlobalAnnouncementForm(AnnouncementForm):
     is_sticky = BooleanField("Anuncio destacado")
 
 
-class CourseAnnouncementForm(AnnouncementForm):
+class CourseAnnouncementForm(AnnouncementBaseForm):
     """Formulario para anuncios de curso (instructores)."""
 
     course_id = SelectField("Curso", coerce=str, validators=[DataRequired()])

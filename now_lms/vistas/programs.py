@@ -63,27 +63,26 @@ def nuevo_programa():
     """Nueva programa."""
     form = ProgramaForm()
     if form.validate_on_submit() or request.method == "POST":
-        if current_user.tipo == "admin":
-            programa = Programa(
-                nombre=form.nombre.data,
-                descripcion=form.descripcion.data,
-                codigo=form.codigo.data,
-                precio=form.precio.data,
-                publico=False,
-                estado="draft",
-                logo=False,
-                creado_por=current_user.id,
-            )
-            database.session.add(programa)
-            try:
-                database.session.commit()
-                cache.delete("view/" + url_for(PROGRAMS_ROUTE))
-                flash("Nuevo Programa creado.", "success")
-            except OperationalError:  # pragma: no cover
-                flash("Hubo un error al crear el programa.", "warning")
+
+        programa = Programa(
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            codigo=form.codigo.data,
+            precio=form.precio.data,
+            publico=False,
+            estado="draft",
+            logo=False,
+            creado_por=current_user.id,
+        )
+        database.session.add(programa)
+        try:
+            database.session.commit()
+            cache.delete("view/" + url_for(PROGRAMS_ROUTE))
+            flash("Nuevo Programa creado.", "success")
+            return redirect(url_for("program.pagina_programa", codigo=programa.codigo))
+        except OperationalError:  # pragma: no cover
+            flash("Hubo un error al crear el programa.", "warning")
             return redirect(url_for(PROGRAMS_ROUTE))
-        else:
-            return abort(403)
 
     return render_template("learning/programas/nuevo_programa.html", form=form)
 

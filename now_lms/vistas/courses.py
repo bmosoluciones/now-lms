@@ -527,33 +527,31 @@ def nuevo_curso():
         )
         try:
             database.session.add(nuevo_curso_)
+            database.session.commit()
             asignar_curso_a_instructor(curso_codigo=form.codigo.data, usuario_id=current_user.usuario)
             if "logo" in request.files:
                 logo = request.files["logo"]
-                if logo and logo.filename:  # Verifica si se subió un archivo
-                    try:
-                        logo_name = logo.filename
-                        logo_ext = splitext(logo_name)
-                        if logo_ext:  # logo_ext incluye el punto, por ejemplo '.png'
-                            logo_ext = logo_ext.lstrip(".")  # Si solo quieres la extensión sin el punto
-                            picture_file = images.save(logo, folder=form.codigo.data, name=f"logo.{logo_ext}")
-                        if picture_file:
-                            _curso = (
-                                database.session.execute(database.select(Curso).filter(Curso.codigo == form.codigo.data))
-                                .scalars()
-                                .first()
-                            )
-                            _curso.portada = True
-                    except UploadNotAllowed:  # pragma: no cover
-                        log.warning("Could not update profile photo.")
-                        database.session.rollback()
-                    except AttributeError:  # pragma: no cover
-                        log.warning("Could not update profile photo.")
-                        database.session.rollback()
+                logo_name = logo.filename
+                logo_data = splitext(logo_name)
+                logo_ext = logo_data[1]
+                try:
+                    log.trace("Saving logo")
+                    picture_file = images.save(logo, folder=form.codigo.data, name=f"logo{logo_ext}")
+                    if picture_file:
+                        nuevo_curso_.portada = True
+                        nuevo_curso_.portada_ext = logo_ext
+                        database.session.commit()
+                        log.info("Course Logo saved")
+                    else:
+                        log.warning("Course Logo not saved")
+                except UploadNotAllowed:  # pragma: no cover
+                    log.warning("Could not update profile photo.")
+                    database.session.rollback()
+                except AttributeError:  # pragma: no cover
+                    log.warning("Could not update profile photo.")
+                    database.session.rollback()
             database.session.commit()
-
             flash("Curso creado exitosamente.", "success")
-            cache.delete("view/" + url_for("home.pagina_de_inicio"))
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=form.codigo.data))
         except OperationalError:  # pragma: no cover
             flash("Hubo en error al crear su curso.", "warning")
@@ -632,14 +630,30 @@ def editar_curso(course_code):
 
         try:
             database.session.commit()
+
             if "logo" in request.files:
+                logo = request.files["logo"]
+                logo_name = logo.filename
+                logo_data = splitext(logo_name)
+                logo_ext = logo_data[1]
                 try:
-                    picture_file = images.save(request.files["logo"], folder=curso_a_editar.codigo, name="logo.jpg")
+                    log.trace("Saving logo")
+                    picture_file = images.save(logo, folder=form.codigo.data, name=f"logo{logo_ext}")
                     if picture_file:
                         curso_a_editar.portada = True
+                        curso_a_editar.portada_ext = logo_ext
                         database.session.commit()
+                        log.info("Course Logo saved")
+                    else:
+                        curso_a_editar.portada = False
+                        database.session.commit()
+                        log.warning("Course Logo not saved")
                 except UploadNotAllowed:  # pragma: no cover
-                    log.warning("Could not update course cover.")
+                    log.warning("Could not update profile photo.")
+                    database.session.rollback()
+                except AttributeError:  # pragma: no cover
+                    log.warning("Could not update profile photo.")
+                    database.session.rollback()
             flash("Curso actualizado exitosamente.", "success")
             return redirect(curso_url)
 
@@ -1077,11 +1091,8 @@ def pagina_recurso_alternativo(curso_id, codigo, order):
 @perfil_requerido("instructor")
 def nuevo_recurso(course_code, seccion):
     """Página para seleccionar tipo de recurso."""
-    if current_user.is_authenticated and current_user.tipo == "admin":
-        return render_template("learning/resources_new/nuevo_recurso.html", id_curso=course_code, id_seccion=seccion)
-    else:
-        flash(NO_AUTORIZADO_MSG, "warning")
-        return abort(403)
+
+    return render_template("learning/resources_new/nuevo_recurso.html", id_curso=course_code, id_seccion=seccion)
 
 
 @course.route("/course/<course_code>/<seccion>/youtube/new", methods=["GET", "POST"])
@@ -1113,13 +1124,9 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_CURSOS, course_code=course_code))
     else:
-        if current_user.tipo == "admin":
-            return render_template(
-                "learning/resources_new/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form
-            )
-        else:
-            flash(NO_AUTORIZADO_MSG, "warning")
-            return abort(403)
+        return render_template(
+            "learning/resources_new/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
 
 
 @course.route("/course/<course_code>/<seccion>/text/new", methods=["GET", "POST"])
@@ -1151,13 +1158,9 @@ def nuevo_recurso_text(course_code, seccion):
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
-        if current_user.tipo == "admin":
-            return render_template(
-                "learning/resources_new/nuevo_recurso_text.html", id_curso=course_code, id_seccion=seccion, form=form
-            )
-        else:
-            flash(NO_AUTORIZADO_MSG, "warning")
-            return abort(403)
+        return render_template(
+            "learning/resources_new/nuevo_recurso_text.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
 
 
 @course.route("/course/<course_code>/<seccion>/link/new", methods=["GET", "POST"])
@@ -1189,13 +1192,9 @@ def nuevo_recurso_link(course_code, seccion):
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_CURSOS, course_code=course_code))
     else:
-        if current_user.tipo == "admin":
-            return render_template(
-                "learning/resources_new/nuevo_recurso_link.html", id_curso=course_code, id_seccion=seccion, form=form
-            )
-        else:
-            flash(NO_AUTORIZADO_MSG, "warning")
-            return abort(403)
+        return render_template(
+            "learning/resources_new/nuevo_recurso_link.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
 
 
 @course.route("/course/<course_code>/<seccion>/pdf/new", methods=["GET", "POST"])
@@ -1230,13 +1229,9 @@ def nuevo_recurso_pdf(course_code, seccion):
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_CURSOS, course_code=course_code))
     else:
-        if current_user.tipo == "admin":
-            return render_template(
-                "learning/resources_new/nuevo_recurso_pdf.html", id_curso=course_code, id_seccion=seccion, form=form
-            )
-        else:
-            flash(NO_AUTORIZADO_MSG, "warning")
-            return abort(403)
+        return render_template(
+            "learning/resources_new/nuevo_recurso_pdf.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
 
 
 @course.route("/course/<course_code>/<seccion>/meet/new", methods=["GET", "POST"])
@@ -1272,13 +1267,9 @@ def nuevo_recurso_meet(course_code, seccion):
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_CURSOS, course_code=course_code))
     else:
-        if current_user.tipo == "admin":
-            return render_template(
-                "learning/resources_new/nuevo_recurso_meet.html", id_curso=course_code, id_seccion=seccion, form=form
-            )
-        else:
-            flash(NO_AUTORIZADO_MSG, "warning")
-            return abort(403)
+        return render_template(
+            "learning/resources_new/nuevo_recurso_meet.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
 
 
 @course.route("/course/<course_code>/<seccion>/img/new", methods=["GET", "POST"])
@@ -1314,13 +1305,9 @@ def nuevo_recurso_img(course_code, seccion):
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_CURSOS, course_code=course_code))
     else:
-        if current_user.tipo == "admin":
-            return render_template(
-                "learning/resources_new/nuevo_recurso_img.html", id_curso=course_code, id_seccion=seccion, form=form
-            )
-        else:
-            flash(NO_AUTORIZADO_MSG, "warning")
-            return abort(403)
+        return render_template(
+            "learning/resources_new/nuevo_recurso_img.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
 
 
 @course.route("/course/<course_code>/<seccion>/audio/new", methods=["GET", "POST"])
@@ -1356,13 +1343,9 @@ def nuevo_recurso_audio(course_code, seccion):
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_CURSOS, course_code=course_code))
     else:
-        if current_user.tipo == "admin":
-            return render_template(
-                "learning/resources_new/nuevo_recurso_mp3.html", id_curso=course_code, id_seccion=seccion, form=form
-            )
-        else:
-            flash(NO_AUTORIZADO_MSG, "warning")
-            return abort(403)
+        return render_template(
+            "learning/resources_new/nuevo_recurso_mp3.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
 
 
 @course.route("/course/<course_code>/<seccion>/html/new", methods=["GET", "POST"])
@@ -1394,13 +1377,9 @@ def nuevo_recurso_html(course_code, seccion):
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_CURSOS, course_code=course_code))
     else:
-        if current_user.tipo == "admin":
-            return render_template(
-                "learning/resources_new/nuevo_recurso_html.html", id_curso=course_code, id_seccion=seccion, form=form
-            )
-        else:
-            flash(NO_AUTORIZADO_MSG, "warning")
-            return abort(403)
+        return render_template(
+            "learning/resources_new/nuevo_recurso_html.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
 
 
 @course.route("/course/<course_code>/delete_logo")
@@ -1410,12 +1389,8 @@ def elimina_logo(course_code):
     """Elimina logotipo del curso."""
     from now_lms.db.tools import elimina_logo_perzonalizado_curso
 
-    if current_user.tipo == "admin":
-        elimina_logo_perzonalizado_curso(course_code=course_code)
-        return redirect(url_for("course.editar_curso", course_code=course_code))
-    else:
-        flash(NO_AUTORIZADO_MSG, "warning")
-        return abort(403)
+    elimina_logo_perzonalizado_curso(course_code=course_code)
+    return redirect(url_for("course.editar_curso", course_code=course_code))
 
 
 # ---------------------------------------------------------------------------------------
@@ -1426,15 +1401,6 @@ def elimina_logo(course_code):
 @perfil_requerido("instructor")
 def nuevo_recurso_slideshow(course_code, seccion):
     """Crear una nueva presentación de diapositivas."""
-    if not (
-        current_user.tipo == "admin"
-        or database.session.execute(select(DocenteCurso))
-        .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == course_code)
-        .scalars()
-        .first()
-    ):
-        flash("No tienes permisos para crear recursos en este curso.", "warning")
-        return abort(403)
 
     form = SlideShowForm()
     if form.validate_on_submit():
@@ -1490,16 +1456,6 @@ def editar_slideshow(course_code, slideshow_id):
     if not slideshow or slideshow.course_id != course_code:
         flash("Presentación no encontrada.", "error")
         return abort(404)
-
-    if not (
-        current_user.tipo == "admin"
-        or database.session.execute(select(DocenteCurso))
-        .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == course_code)
-        .scalars()
-        .first()
-    ):
-        flash("No tienes permisos para editar este recurso.", "warning")
-        return abort(403)
 
     # Obtener slides existentes
     slides = (
@@ -1577,21 +1533,6 @@ def preview_slideshow(course_code, slideshow_id):
     slideshow = database.session.get(SlideShowResource, slideshow_id)
     if not slideshow or slideshow.course_id != course_code:
         abort(404)
-
-    # Verificar permisos (estudiantes, instructores o admin)
-    if not (
-        current_user.tipo == "admin"
-        or database.session.execute(select(DocenteCurso))
-        .filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == course_code)
-        .scalars()
-        .first()
-        or database.session.execute(select(EstudianteCurso))
-        .filter(EstudianteCurso.usuario == current_user.usuario, EstudianteCurso.curso == course_code)
-        .scalars()
-        .first()
-    ):
-        flash("No tienes acceso a este curso.", "warning")
-        return abort(403)
 
     slides = (
         database.session.execute(select(Slide).filter_by(slide_show_id=slideshow_id).order_by(Slide.order)).scalars().all()
