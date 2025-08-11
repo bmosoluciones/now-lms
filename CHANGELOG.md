@@ -8,6 +8,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > This project also follows [Conventional Commits](https://www.conventionalcommits.org/), using prefixes such as:  
 > `fix:`, `feat:`, `refactor:`, `release:`, `docs:`, `build:`, `ci:` to clearly describe changes.
 
+## [v0.0.1b5.dev20250810] - 2025-08-10
+
+### Added
+- **User Calendar** feature: Users can now view key course dates such as live sessions (`meet`) and evaluation deadlines in a personal monthly calendar view (`/user/calendar`).
+- Event detail page displaying information based on type (`meet` or `evaluation`) with a direct link to the associated resource.
+- Automatic event updates when a resource or evaluation date changes, executed in the background using lightweight threads to improve performance and avoid external dependencies.
+
+### Changed
+- Added Calendar feature
+
+### Code Quality
+- Python code formatted with **Black**.
+- HTML templates formatted with **Prettier**.
+- Current test coverage: **70%** (`174 passed`, `4 skipped`, `12 warnings`).
+
+### Notes
+- Ongoing validation
+
 ## [v0.0.1b3.dev20250809] - 2025-08-09
 
 ### Added

@@ -15,8 +15,6 @@
 
 """Tests for groups functionality."""
 
-import pytest
-from flask import url_for
 from unittest.mock import patch
 
 

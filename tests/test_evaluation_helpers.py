@@ -15,7 +15,6 @@
 
 """Tests for evaluation helper functions."""
 
-import pytest
 from now_lms.vistas.evaluation_helpers import (
     check_user_evaluations_completed,
     get_user_evaluation_status,

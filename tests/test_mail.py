@@ -1,7 +1,5 @@
-import pytest
-from flask import Flask
 from flask_mail import Mail, Message
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 
 def test_send_threaded_email_success(basic_config_setup):

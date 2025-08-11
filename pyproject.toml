@@ -1,6 +1,6 @@
 [project]
 name = "now_lms"
-description = "Simple to {install, use, configure, mantain} learning management system."
+description = "Create, deliver, and certify courses with ease."
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [
@@ -35,7 +35,7 @@ mysql = [
 ]
 
 [build-system]
-requires = ["setuptools", "wheel"]  # PEP 508 specifications.
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.black]
@@ -45,4 +45,4 @@ line-length = 127
 line-length = 127
 
 [tool.setuptools.packages]
-find = {namespaces = false}  # Disable implicit namespaces
+find = {namespaces = false}
