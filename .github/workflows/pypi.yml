@@ -2,8 +2,6 @@ name: Publish to PyPi
 on:
   push:
     branches: [main]
-    paths:
-      - now_lms/version/**
 jobs:
   pypi-publish:
     name: Upload release to PyPI
