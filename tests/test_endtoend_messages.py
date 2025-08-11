@@ -13,9 +13,7 @@
 # limitations under the License.
 #
 
-import pytest
 from now_lms.db import database
-from now_lms.logs import log
 
 """
 Comprehensive end-to-end tests for forum and messaging systems.
@@ -198,7 +196,7 @@ def test_comprehensive_forum_workflow(full_db_setup, client):
 def test_comprehensive_messaging_workflow(full_db_setup, client):
     """Test complete messaging system workflow focusing on core business logic."""
     app = full_db_setup
-    from now_lms.db import Usuario, Curso, MessageThread, Message, EstudianteCurso, DocenteCurso
+    from now_lms.db import Usuario, MessageThread, Message, EstudianteCurso, DocenteCurso
     from now_lms.auth import proteger_passwd
 
     # Create users and course
@@ -431,7 +429,7 @@ def test_comprehensive_messaging_workflow(full_db_setup, client):
 def test_forum_access_control_and_permissions(full_db_setup, client):
     """Test forum access control and permission scenarios."""
     app = full_db_setup
-    from now_lms.db import Usuario, Curso, EstudianteCurso, DocenteCurso
+    from now_lms.db import Usuario, EstudianteCurso, DocenteCurso
     from now_lms.auth import proteger_passwd
 
     # Create users with different roles
@@ -558,7 +556,7 @@ def test_forum_access_control_and_permissions(full_db_setup, client):
 def test_messaging_admin_functionality(full_db_setup, client):
     """Test admin-specific messaging functionality."""
     app = full_db_setup
-    from now_lms.db import Usuario, Curso, MessageThread, Message, EstudianteCurso
+    from now_lms.db import Usuario, MessageThread, Message, EstudianteCurso
     from now_lms.auth import proteger_passwd
 
     # Create admin and student users
@@ -707,7 +705,7 @@ def test_messaging_admin_functionality(full_db_setup, client):
 def test_forum_edge_cases_and_error_handling(full_db_setup, client):
     """Test forum edge cases and error handling scenarios."""
     app = full_db_setup
-    from now_lms.db import Usuario, Curso, ForoMensaje, EstudianteCurso, DocenteCurso
+    from now_lms.db import Usuario, Curso, EstudianteCurso, DocenteCurso
     from now_lms.auth import proteger_passwd
 
     # Create test users and course

@@ -13,7 +13,6 @@
 # limitations under the License.
 #
 
-import pytest
 from now_lms.db import database
 
 """
@@ -313,13 +312,11 @@ def test_evaluation_failure_and_retry(full_db_setup, client):
     app = full_db_setup
     from now_lms.db import (
         Usuario,
-        Curso,
         CursoSeccion,
         Evaluation,
         Question,
         QuestionOption,
         EvaluationAttempt,
-        EstudianteCurso,
     )
     from now_lms.auth import proteger_passwd
 
@@ -514,7 +511,6 @@ def test_evaluation_reopen_request(full_db_setup, client):
     app = full_db_setup
     from now_lms.db import (
         Usuario,
-        Curso,
         CursoSeccion,
         Evaluation,
         Question,

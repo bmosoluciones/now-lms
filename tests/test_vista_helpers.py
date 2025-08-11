@@ -15,8 +15,6 @@
 
 """Tests for vista helper functions."""
 
-import pytest
-from pathlib import Path
 from unittest.mock import patch, MagicMock
 
 from now_lms.vistas._helpers import get_current_course_logo, get_site_logo

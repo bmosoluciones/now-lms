@@ -15,9 +15,7 @@
 
 """Tests for themes functionality."""
 
-import pytest
 from unittest.mock import patch, MagicMock
-from pathlib import Path
 
 from now_lms.themes import (
     get_theme_path,
