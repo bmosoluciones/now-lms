@@ -14,6 +14,7 @@ from sqlalchemy.exc import OperationalError
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.cache import cache
+from now_lms.calendar_utils import get_upcoming_events_for_user
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
 from now_lms.db import Usuario, Curso, EstudianteCurso, DocenteCurso, Certificacion, database
 from now_lms.db.tools import elimina_imagen_usuario
@@ -34,7 +35,10 @@ user_profile = Blueprint("user_profile", __name__, template_folder=DIRECTORIO_PL
 @login_required
 def pagina_estudiante():
     """Perfil de usuario."""
-    return render_template("perfiles/estudiante.html")
+    # Get upcoming calendar events for the dashboard
+    upcoming_events = get_upcoming_events_for_user(current_user.usuario, limit=5)
+
+    return render_template("perfiles/estudiante.html", upcoming_events=upcoming_events)
 
 
 @user_profile.route("/perfil")

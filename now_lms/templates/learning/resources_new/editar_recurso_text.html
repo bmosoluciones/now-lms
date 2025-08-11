@@ -1,0 +1,49 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }} {{ mde.css }}
+        <title>Editar Recurso - Documento</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Editar documento: {{ recurso.nombre }}</h4>
+                <form method="post">
+                    {{ form.csrf_token }}
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="nombre" class="form-label">Titulo del Documento</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder="Titulo del Documento") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="requerido" class="form-label">Tipo de Recurso</label>
+                            {{ form.requerido(class="form-control", id="requerido") }}
+                        </div>
+
+                        {{ form.editor }} {{ mde.preview }} {{ mde.js }}
+
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-lg btn-primary" type="submit">Actualizar Recurso</button>
+                            <a
+                                href="{{ url_for('course.administrar_curso', course_code=id_curso) }}"
+                                class="btn btn-lg btn-secondary"
+                                >Cancelar</a
+                            >
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>

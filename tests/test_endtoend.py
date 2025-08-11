@@ -833,6 +833,225 @@ def test_course_administration_flow(basic_config_setup, client):
     assert delete_logo.status_code == 302
 
 
+def test_course_resource_edit_functionality(basic_config_setup, client):
+    """Test editing functionality for all course resource types."""
+    app = basic_config_setup
+    from now_lms.db import Usuario, Curso, CursoSeccion, CursoRecurso
+    from now_lms.auth import proteger_passwd
+
+    # Create instructor user
+    with app.app_context():
+        instructor = Usuario(
+            usuario="instructor1",
+            acceso=proteger_passwd("testpass"),
+            nombre="Test",
+            apellido="Instructor",
+            tipo="instructor",
+            activo=True,
+            correo_electronico="instructor1@test.com",
+        )
+        database.session.add(instructor)
+        database.session.commit()
+
+        # Create a test course
+        test_course = Curso(
+            nombre="Test Course for Edit",
+            codigo="testEdit",
+            descripcion="Test course for edit functionality",
+            descripcion_corta="Short description",
+            nivel=1,
+            duracion=10,
+            estado="draft",
+            publico=False,
+            modalidad="self_paced",
+            foro_habilitado=False,
+            limitado=False,
+            pagado=False,
+            certificado=False,
+            creado_por="instructor1",
+        )
+        database.session.add(test_course)
+        database.session.commit()
+
+        # Create test section
+        test_section = CursoSeccion(
+            curso="testEdit",
+            nombre="Test Section",
+            descripcion="Test section for resources",
+            estado=False,
+            indice=1,
+            creado_por="instructor1",
+        )
+        database.session.add(test_section)
+        database.session.commit()
+
+        # Create test resources
+        youtube_resource = CursoRecurso(
+            curso="testEdit",
+            seccion=test_section.id,
+            tipo="youtube",
+            nombre="Test YouTube Video",
+            descripcion="Test YouTube description",
+            url="https://www.youtube.com/watch?v=test",
+            requerido="required",
+            indice=1,
+            creado_por="instructor1",
+        )
+
+        text_resource = CursoRecurso(
+            curso="testEdit",
+            seccion=test_section.id,
+            tipo="text",
+            nombre="Test Text Document",
+            descripcion="Test text description",
+            text="# Test Content\nThis is test content.",
+            requerido="required",
+            indice=2,
+            creado_por="instructor1",
+        )
+
+        link_resource = CursoRecurso(
+            curso="testEdit",
+            seccion=test_section.id,
+            tipo="link",
+            nombre="Test External Link",
+            descripcion="Test link description",
+            url="https://www.example.com",
+            requerido="optional",
+            indice=3,
+            creado_por="instructor1",
+        )
+
+        meet_resource = CursoRecurso(
+            curso="testEdit",
+            seccion=test_section.id,
+            tipo="meet",
+            nombre="Test Meeting",
+            descripcion="Test meeting description",
+            url="https://meet.example.com/test",
+            requerido="required",
+            indice=4,
+            creado_por="instructor1",
+        )
+
+        html_resource = CursoRecurso(
+            curso="testEdit",
+            seccion=test_section.id,
+            tipo="html",
+            nombre="Test HTML Content",
+            descripcion="Test HTML description",
+            external_code="<h1>Test HTML</h1>",
+            requerido="optional",
+            indice=5,
+            creado_por="instructor1",
+        )
+
+        database.session.add_all([youtube_resource, text_resource, link_resource, meet_resource, html_resource])
+        database.session.commit()
+
+        # Store IDs while in app context
+        section_id = test_section.id
+        youtube_id = youtube_resource.id
+        text_id = text_resource.id
+        link_id = link_resource.id
+        meet_id = meet_resource.id
+        html_id = html_resource.id
+
+    # Login as instructor
+    login_response = client.post(
+        "/user/login",
+        data={"usuario": "instructor1", "acceso": "testpass"},
+        follow_redirects=True,
+    )
+    assert login_response.status_code == 200
+
+    # Test edit forms access for all resource types
+    edit_urls = [
+        f"/course/testEdit/{section_id}/youtube/{youtube_id}/edit",
+        f"/course/testEdit/{section_id}/text/{text_id}/edit",
+        f"/course/testEdit/{section_id}/link/{link_id}/edit",
+        f"/course/testEdit/{section_id}/meet/{meet_id}/edit",
+        f"/course/testEdit/{section_id}/html/{html_id}/edit",
+    ]
+
+    for url in edit_urls:
+        edit_get = client.get(url)
+        assert edit_get.status_code == 200, f"GET failed for {url}"
+
+    # Test editing YouTube resource
+    youtube_edit_post = client.post(
+        f"/course/testEdit/{section_id}/youtube/{youtube_id}/edit",
+        data={
+            "nombre": "Updated YouTube Video",
+            "descripcion": "Updated YouTube description",
+            "youtube_url": "https://www.youtube.com/watch?v=updated",
+            "requerido": "optional",
+        },
+        follow_redirects=False,
+    )
+    assert youtube_edit_post.status_code in [200, 302], "YouTube edit failed"
+
+    # Test editing text resource
+    text_edit_post = client.post(
+        f"/course/testEdit/{section_id}/text/{text_id}/edit",
+        data={
+            "nombre": "Updated Text Document",
+            "descripcion": "Updated text description",
+            "editor": "# Updated Content\nThis is updated content.",
+            "requerido": "optional",
+        },
+        follow_redirects=False,
+    )
+    assert text_edit_post.status_code in [200, 302], "Text edit failed"
+
+    # Test editing link resource
+    link_edit_post = client.post(
+        f"/course/testEdit/{section_id}/link/{link_id}/edit",
+        data={
+            "nombre": "Updated External Link",
+            "descripcion": "Updated link description",
+            "url": "https://www.updated-example.com",
+            "requerido": "required",
+        },
+        follow_redirects=False,
+    )
+    assert link_edit_post.status_code in [200, 302], "Link edit failed"
+
+    # Test editing meet resource
+    meet_edit_post = client.post(
+        f"/course/testEdit/{section_id}/meet/{meet_id}/edit",
+        data={
+            "nombre": "Updated Meeting",
+            "descripcion": "Updated meeting description",
+            "url": "https://meet.example.com/updated",
+            "requerido": "optional",
+        },
+        follow_redirects=False,
+    )
+    assert meet_edit_post.status_code in [200, 302], "Meet edit failed"
+
+    # Test editing HTML resource
+    html_edit_post = client.post(
+        f"/course/testEdit/{section_id}/html/{html_id}/edit",
+        data={
+            "nombre": "Updated HTML Content",
+            "descripcion": "Updated HTML description",
+            "html_externo": "<h1>Updated HTML</h1>",
+            "requerido": "required",
+        },
+        follow_redirects=False,
+    )
+    assert html_edit_post.status_code in [200, 302], "HTML edit failed"
+
+    # Test access to non-existent resource
+    non_existent_edit = client.get(f"/course/testEdit/{section_id}/youtube/999999/edit")
+    assert non_existent_edit.status_code == 302, "Should redirect for non-existent resource"
+
+    # Test access with wrong resource type
+    wrong_type_edit = client.get(f"/course/testEdit/{section_id}/pdf/{youtube_id}/edit")
+    assert wrong_type_edit.status_code == 302, "Should redirect for wrong resource type"
+
+
 def test_program_administration_flow(basic_config_setup, client):
     """Test GET and POST for creating a new course."""
     app = basic_config_setup

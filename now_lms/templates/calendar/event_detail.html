@@ -1,0 +1,206 @@
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ event.title }} - Calendario</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container">
+                <div class="d-flex justify-content-between border-bottom mb-4">
+                    <h2>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
+                                        >Inicio</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('user_profile.pagina_estudiante') }}"
+                                        >Mi Perfil</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('calendar.calendar_view') }}"
+                                        >Calendario</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ event.title }}</li>
+                            </ol>
+                        </nav>
+                    </h2>
+
+                    <div class="btn-group" role="group">
+                        <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Volver al Calendario
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex align-items-center">
+                                    {% if event.resource_type == 'meet' %}
+                                    <i class="fas fa-video text-success me-2"></i>
+                                    <span class="badge bg-success me-2">Sesión en Vivo</span>
+                                    {% else %}
+                                    <i class="fas fa-clipboard-check text-danger me-2"></i>
+                                    <span class="badge bg-danger me-2">Evaluación</span>
+                                    {% endif %}
+                                    <h3 class="mb-0">{{ event.title }}</h3>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                {% if event.description %}
+                                <div class="mb-4">
+                                    <h5>Descripción</h5>
+                                    <p class="text-muted">{{ event.description }}</p>
+                                </div>
+                                {% endif %}
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Fecha y Hora</h5>
+                                        <p>
+                                            <i class="fas fa-calendar me-2"></i>
+                                            {{ event.start_time.strftime('%A, %d de %B de %Y') }}
+                                        </p>
+                                        <p>
+                                            <i class="fas fa-clock me-2"></i>
+                                            {{ event.start_time.strftime('%H:%M') }} {% if event.end_time %} - {{
+                                            event.end_time.strftime('%H:%M') }} {% endif %}
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Estado</h5>
+                                        <p>
+                                            {% if event.status == 'pending' %}
+                                            <span class="badge bg-warning">Pendiente</span>
+                                            {% elif event.status == 'ongoing' %}
+                                            <span class="badge bg-info">En Curso</span>
+                                            {% elif event.status == 'completed' %}
+                                            <span class="badge bg-success">Completado</span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">{{ event.status|title }}</span>
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {% if event.course %}
+                                <div class="mt-4">
+                                    <h5>Curso</h5>
+                                    <p>
+                                        <a
+                                            href="{{ url_for('course.tomar_curso', course_code=event.course.codigo) }}"
+                                            class="text-decoration-none"
+                                        >
+                                            <i class="fas fa-book me-2"></i>
+                                            {{ event.course.nombre }}
+                                        </a>
+                                    </p>
+                                </div>
+                                {% endif %} {% if event.resource and event.resource_type == 'meet' %}
+                                <div class="mt-4">
+                                    <h5>Enlace de la Sesión</h5>
+                                    {% if event.resource.url %}
+                                    <a href="{{ event.resource.url }}" target="_blank" class="btn btn-success">
+                                        <i class="fas fa-video me-2"></i>
+                                        Unirse a la Sesión
+                                    </a>
+                                    {% else %}
+                                    <p class="text-muted">El enlace de la sesión estará disponible próximamente.</p>
+                                    {% endif %}
+                                </div>
+                                {% endif %} {% if event.evaluation and event.resource_type == 'evaluation' %}
+                                <div class="mt-4">
+                                    <h5>Evaluación</h5>
+                                    <a
+                                        href="{{ url_for('evaluation.evaluation_start', evaluation_id=event.evaluation.id) }}"
+                                        class="btn btn-primary"
+                                    >
+                                        <i class="fas fa-clipboard-check me-2"></i>
+                                        Realizar Evaluación
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Información Adicional</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <strong>Tipo de Evento:</strong><br />
+                                    {% if event.resource_type == 'meet' %} Sesión en vivo con tutor {% else %} Fecha límite de
+                                    evaluación {% endif %}
+                                </div>
+
+                                {% if event.timezone %}
+                                <div class="mb-3">
+                                    <strong>Zona Horaria:</strong><br />
+                                    {{ event.timezone }}
+                                </div>
+                                {% endif %}
+
+                                <div class="mb-3">
+                                    <strong>Creado:</strong><br />
+                                    {{ event.timestamp.strftime('%d/%m/%Y %H:%M') }}
+                                </div>
+
+                                {% if event.modificado %}
+                                <div class="mb-3">
+                                    <strong>Actualizado:</strong><br />
+                                    {{ event.modificado.strftime('%d/%m/%Y %H:%M') }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h5 class="mb-0">Acciones Rápidas</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <a href="{{ url_for('calendar.export_ics') }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-download"></i> Exportar Calendario
+                                    </a>
+                                    {% if event.course %}
+                                    <a
+                                        href="{{ url_for('course.tomar_curso', course_code=event.course.codigo) }}"
+                                        class="btn btn-outline-secondary btn-sm"
+                                    >
+                                        <i class="fas fa-book"></i> Ver Curso
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

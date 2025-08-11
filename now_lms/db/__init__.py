@@ -30,7 +30,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
-__all__ = ["select", "database", "UserMixin", "eliminar_base_de_datos_segura"]
+__all__ = ["select", "database", "UserMixin", "eliminar_base_de_datos_segura", "UserEvent"]
 
 
 # ---------------------------------------------------------------------------------------
@@ -1156,3 +1156,31 @@ class BlogComment(database.Model, BaseTabla):
 
     # Relationships
     user = database.relationship("Usuario", backref="blog_comments")
+
+
+class UserEvent(database.Model, BaseTabla):
+    """User events for calendar functionality - tracks key dates for students."""
+
+    __tablename__ = "user_events"
+
+    user_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    course_id = database.Column(database.String(10), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
+    section_id = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_SECCION), nullable=True, index=True)
+    resource_id = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=True, index=True)
+    evaluation_id = database.Column(
+        database.String(26), database.ForeignKey(FOREIGN_KEY_EVALUATION_ID), nullable=True, index=True
+    )
+    resource_type = database.Column(database.String(20), nullable=False, index=True)  # meet, evaluation
+    title = database.Column(database.String(255), nullable=False)
+    description = database.Column(database.Text, nullable=True)
+    start_time = database.Column(database.DateTime, nullable=False, index=True)
+    end_time = database.Column(database.DateTime, nullable=True)
+    timezone = database.Column(database.String(50), nullable=True)
+    status = database.Column(database.String(20), default="pending", nullable=False, index=True)  # pending, ongoing, completed
+
+    # Relationships
+    user = database.relationship("Usuario", backref="calendar_events")
+    course = database.relationship("Curso", backref="user_events")
+    section = database.relationship("CursoSeccion", backref="user_events")
+    resource = database.relationship("CursoRecurso", backref="user_events")
+    evaluation = database.relationship("Evaluation", backref="user_events")

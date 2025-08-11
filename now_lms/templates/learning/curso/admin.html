@@ -284,6 +284,65 @@ permitir_docente %}
                                         </div>
                                         {% endif %} {% if permitir_editar %}
                                         <div>
+                                            <span class="badge bg-warning">
+                                                {% if recurso.tipo == "youtube" %}
+                                                <a
+                                                    href="{{ url_for('course.editar_recurso_youtube_video', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                    class="link-light"
+                                                    ><i class="bi bi-pencil-square" aria-hidden="true"></i> Editar</a
+                                                >
+                                                {% elif recurso.tipo == "text" %}
+                                                <a
+                                                    href="{{ url_for('course.editar_recurso_text', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                    class="link-light"
+                                                    ><i class="bi bi-pencil-square" aria-hidden="true"></i> Editar</a
+                                                >
+                                                {% elif recurso.tipo == "link" %}
+                                                <a
+                                                    href="{{ url_for('course.editar_recurso_link', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                    class="link-light"
+                                                    ><i class="bi bi-pencil-square" aria-hidden="true"></i> Editar</a
+                                                >
+                                                {% elif recurso.tipo == "pdf" %}
+                                                <a
+                                                    href="{{ url_for('course.editar_recurso_pdf', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                    class="link-light"
+                                                    ><i class="bi bi-pencil-square" aria-hidden="true"></i> Editar</a
+                                                >
+                                                {% elif recurso.tipo == "meet" %}
+                                                <a
+                                                    href="{{ url_for('course.editar_recurso_meet', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                    class="link-light"
+                                                    ><i class="bi bi-pencil-square" aria-hidden="true"></i> Editar</a
+                                                >
+                                                {% elif recurso.tipo == "img" %}
+                                                <a
+                                                    href="{{ url_for('course.editar_recurso_img', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                    class="link-light"
+                                                    ><i class="bi bi-pencil-square" aria-hidden="true"></i> Editar</a
+                                                >
+                                                {% elif recurso.tipo == "mp3" %}
+                                                <a
+                                                    href="{{ url_for('course.editar_recurso_audio', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                    class="link-light"
+                                                    ><i class="bi bi-pencil-square" aria-hidden="true"></i> Editar</a
+                                                >
+                                                {% elif recurso.tipo == "html" %}
+                                                <a
+                                                    href="{{ url_for('course.editar_recurso_html', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                    class="link-light"
+                                                    ><i class="bi bi-pencil-square" aria-hidden="true"></i> Editar</a
+                                                >
+                                                {% elif recurso.tipo == "slides" %}
+                                                <a
+                                                    href="{{ url_for('course.editar_slideshow', course_code=recurso.curso, slideshow_id=recurso.external_code) }}"
+                                                    class="link-light"
+                                                    ><i class="bi bi-pencil-square" aria-hidden="true"></i> Editar</a
+                                                >
+                                                {% else %}
+                                                <span class="text-muted">N/A</span>
+                                                {% endif %}
+                                            </span>
                                             <span class="badge bg-primary">
                                                 <a
                                                     href="{{ url_for('course.modificar_orden_recurso', cource_code=recurso.curso, seccion_id=recurso.seccion , resource_index=recurso.indice , task='increment') }}"

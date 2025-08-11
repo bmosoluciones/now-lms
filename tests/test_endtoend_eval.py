@@ -24,7 +24,17 @@ Comprehensive end-to-end tests for evaluation system.
 def test_comprehensive_evaluation_workflow(full_db_setup, client):
     """Test complete evaluation workflow from course creation to student completion."""
     app = full_db_setup
-    from now_lms.db import Usuario, Curso, CursoSeccion, Evaluation, Question, QuestionOption, EvaluationAttempt, EstudianteCurso, Pago
+    from now_lms.db import (
+        Usuario,
+        Curso,
+        CursoSeccion,
+        Evaluation,
+        Question,
+        QuestionOption,
+        EvaluationAttempt,
+        EstudianteCurso,
+        Pago,
+    )
     from now_lms.auth import proteger_passwd
 
     # Step 1: Create instructor user
@@ -98,9 +108,11 @@ def test_comprehensive_evaluation_workflow(full_db_setup, client):
 
     # Get the section ID
     with app.app_context():
-        section = database.session.execute(
-            database.select(CursoSeccion).filter_by(curso="eval_course", nombre="Evaluation Section")
-        ).scalars().first()
+        section = (
+            database.session.execute(database.select(CursoSeccion).filter_by(curso="eval_course", nombre="Evaluation Section"))
+            .scalars()
+            .first()
+        )
         assert section is not None
         section_id = section.id
 
@@ -120,9 +132,11 @@ def test_comprehensive_evaluation_workflow(full_db_setup, client):
 
     # Get the evaluation ID
     with app.app_context():
-        evaluation = database.session.execute(
-            database.select(Evaluation).filter_by(section_id=section_id, title="Test Evaluation")
-        ).scalars().first()
+        evaluation = (
+            database.session.execute(database.select(Evaluation).filter_by(section_id=section_id, title="Test Evaluation"))
+            .scalars()
+            .first()
+        )
         assert evaluation is not None
         evaluation_id = evaluation.id
 
@@ -165,7 +179,7 @@ def test_comprehensive_evaluation_workflow(full_db_setup, client):
             creado_por="eval_instructor",
             modificado_por="eval_instructor",
         )
-        
+
         # Create a boolean question
         question2 = Question(
             evaluation_id=evaluation_id,
@@ -196,7 +210,7 @@ def test_comprehensive_evaluation_workflow(full_db_setup, client):
 
         database.session.add_all([option1_1, option1_2, option1_3, option2_1, option2_2])
         database.session.commit()
-        
+
         # Store IDs for later use outside the session
         question1_id = question1.id
         question2_id = question2.id
@@ -245,15 +259,19 @@ def test_comprehensive_evaluation_workflow(full_db_setup, client):
 
     # Verify enrollment
     with app.app_context():
-        enrollment = database.session.execute(
-            database.select(EstudianteCurso).filter_by(usuario="eval_student", curso="eval_course")
-        ).scalars().first()
+        enrollment = (
+            database.session.execute(database.select(EstudianteCurso).filter_by(usuario="eval_student", curso="eval_course"))
+            .scalars()
+            .first()
+        )
         assert enrollment is not None
 
         # Verify payment record for free course
-        payment = database.session.execute(
-            database.select(Pago).filter_by(usuario="eval_student", curso="eval_course")
-        ).scalars().first()
+        payment = (
+            database.session.execute(database.select(Pago).filter_by(usuario="eval_student", curso="eval_course"))
+            .scalars()
+            .first()
+        )
         assert payment is not None
         assert payment.estado == "completed"
 
@@ -270,9 +288,13 @@ def test_comprehensive_evaluation_workflow(full_db_setup, client):
 
     # Step 10: Verify evaluation results
     with app.app_context():
-        attempt = database.session.execute(
-            database.select(EvaluationAttempt).filter_by(evaluation_id=evaluation_id, user_id="eval_student")
-        ).scalars().first()
+        attempt = (
+            database.session.execute(
+                database.select(EvaluationAttempt).filter_by(evaluation_id=evaluation_id, user_id="eval_student")
+            )
+            .scalars()
+            .first()
+        )
         assert attempt is not None
         assert attempt.score == 100.0  # Both answers correct
         assert attempt.passed is True  # Passed with 100% score
@@ -289,7 +311,16 @@ def test_comprehensive_evaluation_workflow(full_db_setup, client):
 def test_evaluation_failure_and_retry(full_db_setup, client):
     """Test evaluation failure and retry functionality."""
     app = full_db_setup
-    from now_lms.db import Usuario, Curso, CursoSeccion, Evaluation, Question, QuestionOption, EvaluationAttempt, EstudianteCurso
+    from now_lms.db import (
+        Usuario,
+        Curso,
+        CursoSeccion,
+        Evaluation,
+        Question,
+        QuestionOption,
+        EvaluationAttempt,
+        EstudianteCurso,
+    )
     from now_lms.auth import proteger_passwd
 
     # Create instructor and course setup (similar to previous test)
@@ -309,52 +340,57 @@ def test_evaluation_failure_and_retry(full_db_setup, client):
 
     # Login and create course
     client.post("/user/login", data={"usuario": "retry_instructor", "acceso": "instructor_pass"})
-    
-    client.post("/course/new_curse", data={
-        "nombre": "Retry Test Course",
-        "codigo": "retry_course",
-        "descripcion": "Course for testing retries.",
-        "descripcion_corta": "Retry test course.",
-        "nivel": "beginner",
-        "duracion": "2 semanas",
-        "publico": True,
-        "modalidad": "online",
-        "foro_habilitado": True,
-        "limitado": False,
-        "capacidad": 0,
-        "fecha_inicio": "2025-08-10",
-        "fecha_fin": "2025-09-10",
-        "pagado": False,
-        "auditable": True,
-        "certificado": True,
-        "plantilla_certificado": "default",
-        "precio": 0,
-    })
 
-    client.post("/course/retry_course/new_seccion", data={
-        "nombre": "Retry Section",
-        "descripcion": "Section for retry testing.",
-    })
+    client.post(
+        "/course/new_curse",
+        data={
+            "nombre": "Retry Test Course",
+            "codigo": "retry_course",
+            "descripcion": "Course for testing retries.",
+            "descripcion_corta": "Retry test course.",
+            "nivel": "beginner",
+            "duracion": "2 semanas",
+            "publico": True,
+            "modalidad": "online",
+            "foro_habilitado": True,
+            "limitado": False,
+            "capacidad": 0,
+            "fecha_inicio": "2025-08-10",
+            "fecha_fin": "2025-09-10",
+            "pagado": False,
+            "auditable": True,
+            "certificado": True,
+            "plantilla_certificado": "default",
+            "precio": 0,
+        },
+    )
+
+    client.post(
+        "/course/retry_course/new_seccion",
+        data={
+            "nombre": "Retry Section",
+            "descripcion": "Section for retry testing.",
+        },
+    )
 
     with app.app_context():
-        section = database.session.execute(
-            database.select(CursoSeccion).filter_by(curso="retry_course")
-        ).scalars().first()
+        section = database.session.execute(database.select(CursoSeccion).filter_by(curso="retry_course")).scalars().first()
         section_id = section.id
 
     # Create evaluation with limited attempts
-    client.post(f"/instructor/courses/retry_course/sections/{section_id}/evaluations/new", data={
-        "title": "Retry Test Evaluation",
-        "description": "Evaluation for testing retry functionality",
-        "is_exam": False,
-        "passing_score": 80.0,  # Higher passing score
-        "max_attempts": 2,  # Limited attempts
-    })
+    client.post(
+        f"/instructor/courses/retry_course/sections/{section_id}/evaluations/new",
+        data={
+            "title": "Retry Test Evaluation",
+            "description": "Evaluation for testing retry functionality",
+            "is_exam": False,
+            "passing_score": 80.0,  # Higher passing score
+            "max_attempts": 2,  # Limited attempts
+        },
+    )
 
     with app.app_context():
-        evaluation = database.session.execute(
-            database.select(Evaluation).filter_by(section_id=section_id)
-        ).scalars().first()
+        evaluation = database.session.execute(database.select(Evaluation).filter_by(section_id=section_id)).scalars().first()
         evaluation_id = evaluation.id
 
         # Add a question
@@ -386,7 +422,7 @@ def test_evaluation_failure_and_retry(full_db_setup, client):
         )
         database.session.add_all([correct_option, wrong_option])
         database.session.commit()
-        
+
         # Store IDs for later use
         question_id = question.id
         correct_option_id = correct_option.id
@@ -409,45 +445,62 @@ def test_evaluation_failure_and_retry(full_db_setup, client):
 
     client.get("/user/logout")
     client.post("/user/login", data={"usuario": "retry_student", "acceso": "student_pass"})
-    
-    client.post("/course/retry_course/enroll", data={
-        "nombre": "Retry",
-        "apellido": "Student",
-        "correo_electronico": "retry_student@nowlms.com",
-        "direccion1": "Test Street 123",
-        "direccion2": "",
-        "pais": "Test Country",
-        "provincia": "Test State",
-        "codigo_postal": "12345",
-    })
+
+    client.post(
+        "/course/retry_course/enroll",
+        data={
+            "nombre": "Retry",
+            "apellido": "Student",
+            "correo_electronico": "retry_student@nowlms.com",
+            "direccion1": "Test Street 123",
+            "direccion2": "",
+            "pais": "Test Country",
+            "provincia": "Test State",
+            "codigo_postal": "12345",
+        },
+    )
 
     # First attempt - fail with wrong answer
-    attempt1_response = client.post(f"/evaluation/{evaluation_id}/take", data={
-        f"question_{question_id}": wrong_option_id,
-    })
+    attempt1_response = client.post(
+        f"/evaluation/{evaluation_id}/take",
+        data={
+            f"question_{question_id}": wrong_option_id,
+        },
+    )
     assert attempt1_response.status_code == 302
 
     # Verify first attempt failed
     with app.app_context():
-        attempt1 = database.session.execute(
-            database.select(EvaluationAttempt).filter_by(evaluation_id=evaluation_id, user_id="retry_student")
-        ).scalars().first()
+        attempt1 = (
+            database.session.execute(
+                database.select(EvaluationAttempt).filter_by(evaluation_id=evaluation_id, user_id="retry_student")
+            )
+            .scalars()
+            .first()
+        )
         assert attempt1.score == 0.0
         assert attempt1.passed is False
 
     # Second attempt - pass with correct answer
-    attempt2_response = client.post(f"/evaluation/{evaluation_id}/take", data={
-        f"question_{question_id}": correct_option_id,
-    })
+    attempt2_response = client.post(
+        f"/evaluation/{evaluation_id}/take",
+        data={
+            f"question_{question_id}": correct_option_id,
+        },
+    )
     assert attempt2_response.status_code == 302
 
     # Verify second attempt passed
     with app.app_context():
-        attempts = database.session.execute(
-            database.select(EvaluationAttempt).filter_by(evaluation_id=evaluation_id, user_id="retry_student")
-        ).scalars().all()
+        attempts = (
+            database.session.execute(
+                database.select(EvaluationAttempt).filter_by(evaluation_id=evaluation_id, user_id="retry_student")
+            )
+            .scalars()
+            .all()
+        )
         assert len(attempts) == 2
-        
+
         # Find the passing attempt
         passing_attempt = next((a for a in attempts if a.passed), None)
         assert passing_attempt is not None
@@ -459,7 +512,16 @@ def test_evaluation_failure_and_retry(full_db_setup, client):
 def test_evaluation_reopen_request(full_db_setup, client):
     """Test evaluation reopen request functionality."""
     app = full_db_setup
-    from now_lms.db import Usuario, Curso, CursoSeccion, Evaluation, Question, QuestionOption, EvaluationAttempt, EvaluationReopenRequest
+    from now_lms.db import (
+        Usuario,
+        Curso,
+        CursoSeccion,
+        Evaluation,
+        Question,
+        QuestionOption,
+        EvaluationAttempt,
+        EvaluationReopenRequest,
+    )
     from now_lms.auth import proteger_passwd
 
     # Setup similar to previous tests but with exhausted attempts
@@ -489,51 +551,56 @@ def test_evaluation_reopen_request(full_db_setup, client):
 
     # Quick setup for course, section, and evaluation
     client.post("/user/login", data={"usuario": "reopen_instructor", "acceso": "instructor_pass"})
-    
-    client.post("/course/new_curse", data={
-        "nombre": "Reopen Test Course",
-        "codigo": "reopen_course",
-        "descripcion": "Course for testing reopen requests.",
-        "descripcion_corta": "Reopen test course.",
-        "nivel": "beginner",
-        "duracion": "2 semanas",
-        "publico": True,
-        "modalidad": "online",
-        "foro_habilitado": True,
-        "limitado": False,
-        "capacidad": 0,
-        "fecha_inicio": "2025-08-10",
-        "fecha_fin": "2025-09-10",
-        "pagado": False,
-        "auditable": True,
-        "certificado": True,
-        "plantilla_certificado": "default",
-        "precio": 0,
-    })
 
-    client.post("/course/reopen_course/new_seccion", data={
-        "nombre": "Reopen Section",
-        "descripcion": "Section for reopen testing.",
-    })
+    client.post(
+        "/course/new_curse",
+        data={
+            "nombre": "Reopen Test Course",
+            "codigo": "reopen_course",
+            "descripcion": "Course for testing reopen requests.",
+            "descripcion_corta": "Reopen test course.",
+            "nivel": "beginner",
+            "duracion": "2 semanas",
+            "publico": True,
+            "modalidad": "online",
+            "foro_habilitado": True,
+            "limitado": False,
+            "capacidad": 0,
+            "fecha_inicio": "2025-08-10",
+            "fecha_fin": "2025-09-10",
+            "pagado": False,
+            "auditable": True,
+            "certificado": True,
+            "plantilla_certificado": "default",
+            "precio": 0,
+        },
+    )
+
+    client.post(
+        "/course/reopen_course/new_seccion",
+        data={
+            "nombre": "Reopen Section",
+            "descripcion": "Section for reopen testing.",
+        },
+    )
 
     with app.app_context():
-        section = database.session.execute(
-            database.select(CursoSeccion).filter_by(curso="reopen_course")
-        ).scalars().first()
+        section = database.session.execute(database.select(CursoSeccion).filter_by(curso="reopen_course")).scalars().first()
         section_id = section.id
 
-    client.post(f"/instructor/courses/reopen_course/sections/{section_id}/evaluations/new", data={
-        "title": "Reopen Test Evaluation",
-        "description": "Evaluation for testing reopen requests",
-        "is_exam": False,
-        "passing_score": 100.0,  # Impossible to pass with wrong answers
-        "max_attempts": 1,  # Only one attempt
-    })
+    client.post(
+        f"/instructor/courses/reopen_course/sections/{section_id}/evaluations/new",
+        data={
+            "title": "Reopen Test Evaluation",
+            "description": "Evaluation for testing reopen requests",
+            "is_exam": False,
+            "passing_score": 100.0,  # Impossible to pass with wrong answers
+            "max_attempts": 1,  # Only one attempt
+        },
+    )
 
     with app.app_context():
-        evaluation = database.session.execute(
-            database.select(Evaluation).filter_by(section_id=section_id)
-        ).scalars().first()
+        evaluation = database.session.execute(database.select(Evaluation).filter_by(section_id=section_id)).scalars().first()
         evaluation_id = evaluation.id
 
         # Add question and options
@@ -557,7 +624,7 @@ def test_evaluation_reopen_request(full_db_setup, client):
         )
         database.session.add(wrong_option)
         database.session.commit()
-        
+
         # Store IDs for later use
         question_id = question.id
         wrong_option_id = wrong_option.id
@@ -565,44 +632,56 @@ def test_evaluation_reopen_request(full_db_setup, client):
     # Enroll student and exhaust attempts
     client.get("/user/logout")
     client.post("/user/login", data={"usuario": "reopen_student", "acceso": "student_pass"})
-    
-    client.post("/course/reopen_course/enroll", data={
-        "nombre": "Reopen",
-        "apellido": "Student",
-        "correo_electronico": "reopen_student@nowlms.com",
-        "direccion1": "Test Street 123",
-        "direccion2": "",
-        "pais": "Test Country",
-        "provincia": "Test State",
-        "codigo_postal": "12345",
-    })
+
+    client.post(
+        "/course/reopen_course/enroll",
+        data={
+            "nombre": "Reopen",
+            "apellido": "Student",
+            "correo_electronico": "reopen_student@nowlms.com",
+            "direccion1": "Test Street 123",
+            "direccion2": "",
+            "pais": "Test Country",
+            "provincia": "Test State",
+            "codigo_postal": "12345",
+        },
+    )
 
     # Take evaluation and fail (exhaust attempts)
-    client.post(f"/evaluation/{evaluation_id}/take", data={
-        f"question_{question_id}": wrong_option_id,
-    })
+    client.post(
+        f"/evaluation/{evaluation_id}/take",
+        data={
+            f"question_{question_id}": wrong_option_id,
+        },
+    )
 
     # Verify attempt was made and failed
     with app.app_context():
-        attempt = database.session.execute(
-            database.select(EvaluationAttempt).filter_by(evaluation_id=evaluation_id, user_id="reopen_student")
-        ).scalars().first()
+        attempt = (
+            database.session.execute(
+                database.select(EvaluationAttempt).filter_by(evaluation_id=evaluation_id, user_id="reopen_student")
+            )
+            .scalars()
+            .first()
+        )
         assert attempt.passed is False
 
     # Request to reopen evaluation
-    reopen_response = client.post(f"/evaluation/{evaluation_id}/request-reopen", data={
-        "justification_text": "I need another chance to demonstrate my knowledge."
-    })
+    reopen_response = client.post(
+        f"/evaluation/{evaluation_id}/request-reopen",
+        data={"justification_text": "I need another chance to demonstrate my knowledge."},
+    )
     assert reopen_response.status_code == 302
 
     # Verify reopen request was created
     with app.app_context():
-        reopen_request = database.session.execute(
-            database.select(EvaluationReopenRequest).filter_by(
-                user_id="reopen_student", 
-                evaluation_id=evaluation_id
+        reopen_request = (
+            database.session.execute(
+                database.select(EvaluationReopenRequest).filter_by(user_id="reopen_student", evaluation_id=evaluation_id)
             )
-        ).scalars().first()
+            .scalars()
+            .first()
+        )
         assert reopen_request is not None
         assert reopen_request.status == "pending"
         assert "another chance" in reopen_request.justification_text

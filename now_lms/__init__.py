@@ -114,6 +114,7 @@ from now_lms.vistas.announcements.admin import admin_announcements
 from now_lms.vistas.announcements.instructor import instructor_announcements
 from now_lms.vistas.announcements.public import public_announcements
 from now_lms.vistas.blog import blog
+from now_lms.vistas.calendar import calendar
 from now_lms.vistas.categories import category
 from now_lms.vistas.certificates import certificate
 from now_lms.vistas.courses import course
@@ -184,6 +185,7 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
 
     with flask_app.app_context():
         flask_app.register_blueprint(blog)
+        flask_app.register_blueprint(calendar)
         flask_app.register_blueprint(category)
         flask_app.register_blueprint(certificate)
         flask_app.register_blueprint(course)

@@ -16,6 +16,7 @@ from sqlalchemy import delete
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
 from now_lms.cache import cache
+from now_lms.calendar_utils import update_evaluation_events
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import (
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
@@ -376,6 +377,8 @@ def toggle_evaluation_status(evaluation_id):
             flash("Evaluación habilitada.", "success")
 
         database.session.commit()
+        # Update calendar events for this evaluation
+        update_evaluation_events(evaluation_id)
     except OperationalError:
         flash("Error al cambiar el estado de la evaluación.", "danger")
 

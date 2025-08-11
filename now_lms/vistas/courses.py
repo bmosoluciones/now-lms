@@ -53,6 +53,7 @@ from now_lms.bi import (
     reorganiza_indice_seccion,
 )
 from now_lms.cache import cache, no_guardar_en_cache_global
+from now_lms.calendar_utils import create_events_for_student_enrollment, update_meet_resource_events
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, audio, files, images
 from now_lms.db import (
     Categoria,
@@ -287,6 +288,9 @@ def course_enroll(course_code):
                 database.session.commit()
                 _crear_indice_avance_curso(course_code)
 
+                # Create calendar events for the enrolled student
+                create_events_for_student_enrollment(pago.usuario, pago.curso)
+
                 if applied_coupon and final_price == 0:
                     flash(
                         f"¡Cupón aplicado exitosamente! Inscripción gratuita con código {applied_coupon.code}",
@@ -319,6 +323,10 @@ def course_enroll(course_code):
                 database.session.add(registro)
                 database.session.commit()
                 _crear_indice_avance_curso(course_code)
+
+                # Create calendar events for the enrolled student
+                create_events_for_student_enrollment(pago.usuario, pago.curso)
+
                 return redirect(url_for("course.tomar_curso", course_code=course_code))
             except OperationalError:  # pragma: no cover
                 flash("Hubo en error al crear el registro de pago.", "warning")
@@ -1129,6 +1137,50 @@ def nuevo_recurso_youtube_video(course_code, seccion):
         )
 
 
+@course.route("/course/<course_code>/<seccion>/youtube/<resource_id>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def editar_recurso_youtube_video(course_code, seccion, resource_id):
+    """Formulario para editar un recurso tipo vídeo en Youtube."""
+    recurso = database.session.execute(
+        select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
+    ).scalar_one_or_none()
+    if not recurso or recurso.tipo != "youtube":
+        flash("Recurso no encontrado.", "warning")
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+
+    form = CursoRecursoVideoYoutube()
+
+    if form.validate_on_submit() or request.method == "POST":
+        recurso.nombre = form.nombre.data
+        recurso.descripcion = form.descripcion.data
+        recurso.url = form.youtube_url.data
+        recurso.requerido = form.requerido.data
+        recurso.modificado_por = current_user.usuario
+
+        try:
+            database.session.commit()
+            flash("Recurso actualizado correctamente.", "success")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+        except OperationalError:  # pragma: no cover
+            flash("Hubo un error al actualizar el recurso.", "warning")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+    else:
+        # Pre-populate form with existing data
+        form.nombre.data = recurso.nombre
+        form.descripcion.data = recurso.descripcion
+        form.youtube_url.data = recurso.url
+        form.requerido.data = recurso.requerido
+
+        return render_template(
+            "learning/resources_new/editar_recurso_youtube.html",
+            id_curso=course_code,
+            id_seccion=seccion,
+            recurso=recurso,
+            form=form,
+        )
+
+
 @course.route("/course/<course_code>/<seccion>/text/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -1160,6 +1212,50 @@ def nuevo_recurso_text(course_code, seccion):
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_text.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
+
+
+@course.route("/course/<course_code>/<seccion>/text/<resource_id>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def editar_recurso_text(course_code, seccion, resource_id):
+    """Formulario para editar un documento de texto."""
+    recurso = database.session.execute(
+        select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
+    ).scalar_one_or_none()
+    if not recurso or recurso.tipo != "text":
+        flash("Recurso no encontrado.", "warning")
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+
+    form = CursoRecursoArchivoText()
+
+    if form.validate_on_submit() or request.method == "POST":
+        recurso.nombre = form.nombre.data
+        recurso.descripcion = form.descripcion.data
+        recurso.requerido = form.requerido.data
+        recurso.text = form.editor.data
+        recurso.modificado_por = current_user.usuario
+
+        try:
+            database.session.commit()
+            flash("Recurso actualizado correctamente.", "success")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+        except OperationalError:  # pragma: no cover
+            flash("Hubo un error al actualizar el recurso.", "warning")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+    else:
+        # Pre-populate form with existing data
+        form.nombre.data = recurso.nombre
+        form.descripcion.data = recurso.descripcion
+        form.requerido.data = recurso.requerido
+        form.editor.data = recurso.text
+
+        return render_template(
+            "learning/resources_new/editar_recurso_text.html",
+            id_curso=course_code,
+            id_seccion=seccion,
+            recurso=recurso,
+            form=form,
         )
 
 
@@ -1197,6 +1293,50 @@ def nuevo_recurso_link(course_code, seccion):
         )
 
 
+@course.route("/course/<course_code>/<seccion>/link/<resource_id>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def editar_recurso_link(course_code, seccion, resource_id):
+    """Formulario para editar un enlace externo."""
+    recurso = database.session.execute(
+        select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
+    ).scalar_one_or_none()
+    if not recurso or recurso.tipo != "link":
+        flash("Recurso no encontrado.", "warning")
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+
+    form = CursoRecursoExternalLink()
+
+    if form.validate_on_submit() or request.method == "POST":
+        recurso.nombre = form.nombre.data
+        recurso.descripcion = form.descripcion.data
+        recurso.requerido = form.requerido.data
+        recurso.url = form.url.data
+        recurso.modificado_por = current_user.usuario
+
+        try:
+            database.session.commit()
+            flash("Recurso actualizado correctamente.", "success")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+        except OperationalError:  # pragma: no cover
+            flash("Hubo un error al actualizar el recurso.", "warning")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+    else:
+        # Pre-populate form with existing data
+        form.nombre.data = recurso.nombre
+        form.descripcion.data = recurso.descripcion
+        form.requerido.data = recurso.requerido
+        form.url.data = recurso.url
+
+        return render_template(
+            "learning/resources_new/editar_recurso_link.html",
+            id_curso=course_code,
+            id_seccion=seccion,
+            recurso=recurso,
+            form=form,
+        )
+
+
 @course.route("/course/<course_code>/<seccion>/pdf/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -1231,6 +1371,55 @@ def nuevo_recurso_pdf(course_code, seccion):
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_pdf.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
+
+
+@course.route("/course/<course_code>/<seccion>/pdf/<resource_id>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def editar_recurso_pdf(course_code, seccion, resource_id):
+    """Formulario para editar un recurso tipo archivo en PDF."""
+    recurso = database.session.execute(
+        select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
+    ).scalar_one_or_none()
+    if not recurso or recurso.tipo != "pdf":
+        flash("Recurso no encontrado.", "warning")
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+
+    form = CursoRecursoArchivoPDF()
+
+    if form.validate_on_submit() or request.method == "POST":
+        recurso.nombre = form.nombre.data
+        recurso.descripcion = form.descripcion.data
+        recurso.requerido = form.requerido.data
+        recurso.modificado_por = current_user.usuario
+
+        # Handle file replacement if a new PDF is uploaded
+        if "pdf" in request.files and request.files["pdf"].filename:
+            file_name = str(ULID()) + ".pdf"
+            pdf_file = files.save(request.files["pdf"], folder=course_code, name=file_name)
+            recurso.base_doc_url = files.name
+            recurso.doc = pdf_file
+
+        try:
+            database.session.commit()
+            flash("Recurso actualizado correctamente.", "success")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+        except OperationalError:  # pragma: no cover
+            flash("Hubo un error al actualizar el recurso.", "warning")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+    else:
+        # Pre-populate form with existing data
+        form.nombre.data = recurso.nombre
+        form.descripcion.data = recurso.descripcion
+        form.requerido.data = recurso.requerido
+
+        return render_template(
+            "learning/resources_new/editar_recurso_pdf.html",
+            id_curso=course_code,
+            id_seccion=seccion,
+            recurso=recurso,
+            form=form,
         )
 
 
@@ -1272,6 +1461,60 @@ def nuevo_recurso_meet(course_code, seccion):
         )
 
 
+@course.route("/course/<course_code>/<seccion>/meet/<resource_id>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def editar_recurso_meet(course_code, seccion, resource_id):
+    """Formulario para editar un recurso tipo meet."""
+    recurso = database.session.execute(
+        select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
+    ).scalar_one_or_none()
+    if not recurso or recurso.tipo != "meet":
+        flash("Recurso no encontrado.", "warning")
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+
+    form = CursoRecursoMeet()
+
+    if form.validate_on_submit() or request.method == "POST":
+        recurso.nombre = form.nombre.data
+        recurso.descripcion = form.descripcion.data
+        recurso.requerido = form.requerido.data
+        recurso.url = form.url.data
+        recurso.fecha = form.fecha.data
+        recurso.hora_inicio = form.hora_inicio.data
+        recurso.hora_fin = form.hora_fin.data
+        recurso.notes = form.notes.data
+        recurso.modificado_por = current_user.usuario
+
+        try:
+            database.session.commit()
+            # Update calendar events for this meet resource
+            update_meet_resource_events(resource_id)
+            flash("Recurso actualizado correctamente.", "success")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+        except OperationalError:  # pragma: no cover
+            flash("Hubo un error al actualizar el recurso.", "warning")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+    else:
+        # Pre-populate form with existing data
+        form.nombre.data = recurso.nombre
+        form.descripcion.data = recurso.descripcion
+        form.requerido.data = recurso.requerido
+        form.url.data = recurso.url
+        form.fecha.data = recurso.fecha
+        form.hora_inicio.data = recurso.hora_inicio
+        form.hora_fin.data = recurso.hora_fin
+        form.notes.data = recurso.notes
+
+        return render_template(
+            "learning/resources_new/editar_recurso_meet.html",
+            id_curso=course_code,
+            id_seccion=seccion,
+            recurso=recurso,
+            form=form,
+        )
+
+
 @course.route("/course/<course_code>/<seccion>/img/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -1307,6 +1550,55 @@ def nuevo_recurso_img(course_code, seccion):
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_img.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
+
+
+@course.route("/course/<course_code>/<seccion>/img/<resource_id>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def editar_recurso_img(course_code, seccion, resource_id):
+    """Formulario para editar un recurso tipo imagen."""
+    recurso = database.session.execute(
+        select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
+    ).scalar_one_or_none()
+    if not recurso or recurso.tipo != "img":
+        flash("Recurso no encontrado.", "warning")
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+
+    form = CursoRecursoArchivoImagen()
+
+    if form.validate_on_submit() or request.method == "POST":
+        recurso.nombre = form.nombre.data
+        recurso.descripcion = form.descripcion.data
+        recurso.requerido = form.requerido.data
+        recurso.modificado_por = current_user.usuario
+
+        # Handle file replacement if a new image is uploaded
+        if "img" in request.files and request.files["img"].filename:
+            file_name = str(ULID()) + ".jpg"
+            picture_file = images.save(request.files["img"], folder=course_code, name=file_name)
+            recurso.base_doc_url = images.name
+            recurso.doc = picture_file
+
+        try:
+            database.session.commit()
+            flash("Recurso actualizado correctamente.", "success")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+        except OperationalError:  # pragma: no cover
+            flash("Hubo un error al actualizar el recurso.", "warning")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+    else:
+        # Pre-populate form with existing data
+        form.nombre.data = recurso.nombre
+        form.descripcion.data = recurso.descripcion
+        form.requerido.data = recurso.requerido
+
+        return render_template(
+            "learning/resources_new/editar_recurso_img.html",
+            id_curso=course_code,
+            id_seccion=seccion,
+            recurso=recurso,
+            form=form,
         )
 
 
@@ -1348,6 +1640,55 @@ def nuevo_recurso_audio(course_code, seccion):
         )
 
 
+@course.route("/course/<course_code>/<seccion>/audio/<resource_id>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def editar_recurso_audio(course_code, seccion, resource_id):
+    """Formulario para editar un recurso de audio."""
+    recurso = database.session.execute(
+        select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
+    ).scalar_one_or_none()
+    if not recurso or recurso.tipo != "mp3":
+        flash("Recurso no encontrado.", "warning")
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+
+    form = CursoRecursoArchivoAudio()
+
+    if form.validate_on_submit() or request.method == "POST":
+        recurso.nombre = form.nombre.data
+        recurso.descripcion = form.descripcion.data
+        recurso.requerido = form.requerido.data
+        recurso.modificado_por = current_user.usuario
+
+        # Handle file replacement if a new audio file is uploaded
+        if "audio" in request.files and request.files["audio"].filename:
+            audio_name = str(ULID()) + ".ogg"
+            audio_file = audio.save(request.files["audio"], folder=course_code, name=audio_name)
+            recurso.base_doc_url = audio.name
+            recurso.doc = audio_file
+
+        try:
+            database.session.commit()
+            flash("Recurso actualizado correctamente.", "success")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+        except OperationalError:  # pragma: no cover
+            flash("Hubo un error al actualizar el recurso.", "warning")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+    else:
+        # Pre-populate form with existing data
+        form.nombre.data = recurso.nombre
+        form.descripcion.data = recurso.descripcion
+        form.requerido.data = recurso.requerido
+
+        return render_template(
+            "learning/resources_new/editar_recurso_mp3.html",
+            id_curso=course_code,
+            id_seccion=seccion,
+            recurso=recurso,
+            form=form,
+        )
+
+
 @course.route("/course/<course_code>/<seccion>/html/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -1379,6 +1720,50 @@ def nuevo_recurso_html(course_code, seccion):
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_html.html", id_curso=course_code, id_seccion=seccion, form=form
+        )
+
+
+@course.route("/course/<course_code>/<seccion>/html/<resource_id>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def editar_recurso_html(course_code, seccion, resource_id):
+    """Formulario para editar un recurso tipo HTML externo."""
+    recurso = database.session.execute(
+        select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
+    ).scalar_one_or_none()
+    if not recurso or recurso.tipo != "html":
+        flash("Recurso no encontrado.", "warning")
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+
+    form = CursoRecursoExternalCode()
+
+    if form.validate_on_submit() or request.method == "POST":
+        recurso.nombre = form.nombre.data
+        recurso.descripcion = form.descripcion.data
+        recurso.requerido = form.requerido.data
+        recurso.external_code = form.html_externo.data
+        recurso.modificado_por = current_user.usuario
+
+        try:
+            database.session.commit()
+            flash("Recurso actualizado correctamente.", "success")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+        except OperationalError:  # pragma: no cover
+            flash("Hubo un error al actualizar el recurso.", "warning")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+    else:
+        # Pre-populate form with existing data
+        form.nombre.data = recurso.nombre
+        form.descripcion.data = recurso.descripcion
+        form.requerido.data = recurso.requerido
+        form.html_externo.data = recurso.external_code
+
+        return render_template(
+            "learning/resources_new/editar_recurso_html.html",
+            id_curso=course_code,
+            id_seccion=seccion,
+            recurso=recurso,
+            form=form,
         )
 
 
@@ -1563,6 +1948,29 @@ def recurso_file(course_code, recurso_code):
     if current_user.is_authenticated:
         if doc.publico or current_user.tipo == "admin":
             return send_from_directory(config.destination, doc.doc)
+        else:
+            return abort(403)
+    else:
+        return redirect(INICIO_SESION)
+
+
+@course.route("/course/<course_code>/pdf_viewer/<recurso_code>")
+def pdf_viewer(course_code, recurso_code):
+    """Renderiza el visor PDF.js para un recurso PDF."""
+    recurso = (
+        database.session.execute(
+            select(CursoRecurso).filter(CursoRecurso.id == recurso_code, CursoRecurso.curso == course_code)
+        )
+        .scalars()
+        .first()
+    )
+
+    if not recurso:
+        return abort(404)
+
+    if current_user.is_authenticated:
+        if recurso.publico or current_user.tipo == "admin":
+            return render_template("learning/resources/pdf_viewer.html", recurso=recurso)
         else:
             return abort(403)
     else:
