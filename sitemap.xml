@@ -71,6 +71,13 @@
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/mail/"/>
     </url>
     <url>
+        <loc>Nonemaster-class-organizer-guide/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonemaster-class-organizer-guide/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/master-class-organizer-guide/"/>
+    </url>
+    <url>
         <loc>Noneoci/</loc>
         <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
@@ -225,6 +232,13 @@
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/development/PAYPAL_MANUAL_TESTING/"/>
     </url>
     <url>
+        <loc>Nonedevelopment/query_guide/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedevelopment/query_guide/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/development/query_guide/"/>
+    </url>
+    <url>
         <loc>Nonees/</loc>
         <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
@@ -293,6 +307,13 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/mail/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonemail/"/>
+    </url>
+    <url>
+        <loc>Nonees/master-class-organizer-guide/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/master-class-organizer-guide/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonemaster-class-organizer-guide/"/>
     </url>
     <url>
         <loc>Nonees/oci/</loc>
@@ -447,5 +468,12 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/development/PAYPAL_MANUAL_TESTING/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonedevelopment/PAYPAL_MANUAL_TESTING/"/>
+    </url>
+    <url>
+        <loc>Nonees/development/query_guide/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/development/query_guide/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedevelopment/query_guide/"/>
     </url>
 </urlset>
