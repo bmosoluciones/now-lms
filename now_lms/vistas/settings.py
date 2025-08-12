@@ -78,7 +78,7 @@ def personalizacion():
                 if picture_file:
                     config.custom_logo = True
                     cache.delete("cached_logo")
-                    
+
             except UploadNotAllowed:  # pragma: no cover
                 log.warning("An error occurred while updating the website logo.")
 

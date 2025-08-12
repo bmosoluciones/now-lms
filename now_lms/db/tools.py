@@ -314,6 +314,7 @@ def logo_perzonalizado():
     else:
         return False
 
+
 @cache.cached(timeout=60, key_prefix="cached_favicon")
 def favicon_perzonalizado():
     """Devuelve configuracion predeterminada."""
@@ -324,6 +325,7 @@ def favicon_perzonalizado():
         return consulta.custom_logo
     else:
         return False
+
 
 def elimina_logo_perzonalizado():
     """Elimina logo tipo perzonalizado."""

@@ -480,7 +480,7 @@ class Style(database.Model, BaseTabla):
     theme = database.Column(database.String(15))
     custom_logo = database.Column(database.Boolean())
     custom_logo_ext = database.Column(database.String(5))
-    custom_favicon = database.Column(database.Boolean()) # png
+    custom_favicon = database.Column(database.Boolean())  # png
 
 
 class MailConfig(database.Model, BaseTabla):

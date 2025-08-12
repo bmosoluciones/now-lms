@@ -1,0 +1,62 @@
+{% macro paginate(consulta=None, vista=None, id=None, parametros=None) %}
+<div class="d-flex justify-content-between align-items-center">
+    <p class="mb-0 text-muted">{{ consulta.total }} elementos encontrados</p>
+
+    <nav aria-label="Navegación de páginas">
+        <ul class="pagination pagination-golden mb-0">
+            {% if consulta.has_prev %}
+            <li class="page-item">
+                {% if id %}
+                <a href="{{ url_for(vista, id=id, page=consulta.prev_num) }}" class="page-link">
+                    <i class="bi bi-arrow-left-short" aria-hidden="true"></i> Anterior
+                </a>
+                {% else %}
+                <a href="{{ url_for(vista, page=consulta.prev_num) }}" class="page-link">
+                    <i class="bi bi-arrow-left-short" aria-hidden="true"></i> Anterior
+                </a>
+                {% endif %}
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link"> <i class="bi bi-arrow-left-short" aria-hidden="true"></i> Anterior </span>
+            </li>
+            {% endif %}
+
+            <!-- Mostrar páginas numeradas -->
+            {% for page_num in consulta.iter_pages() %} {% if page_num %} {% if page_num != consulta.page %}
+            <li class="page-item">
+                {% if id %}
+                <a href="{{ url_for(vista, id=id, page=page_num) }}" class="page-link">{{ page_num }}</a>
+                {% else %}
+                <a href="{{ url_for(vista, page=page_num) }}" class="page-link">{{ page_num }}</a>
+                {% endif %}
+            </li>
+            {% else %}
+            <li class="page-item active">
+                <span class="page-link">{{ page_num }}</span>
+            </li>
+            {% endif %} {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">…</span>
+            </li>
+            {% endif %} {% endfor %} {% if consulta.has_next %}
+            <li class="page-item">
+                {% if id %}
+                <a href="{{ url_for(vista, id=id, page=consulta.next_num) }}" class="page-link">
+                    Siguiente <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+                </a>
+                {% else %}
+                <a href="{{ url_for(vista, page=consulta.next_num) }}" class="page-link">
+                    Siguiente <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+                </a>
+                {% endif %}
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link"> Siguiente <i class="bi bi-arrow-right-short" aria-hidden="true"></i> </span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endmacro %}

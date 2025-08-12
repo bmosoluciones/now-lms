@@ -54,6 +54,7 @@ def get_site_logo():
     except IndexError:
         return None
 
+
 def get_site_favicon():
     """Return the name of the logo file of the site."""
 
