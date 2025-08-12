@@ -70,7 +70,6 @@ def personalizacion():
         old_theme = config.theme
         new_theme = form.style.data
         theme_changed = old_theme != new_theme
-
         config.theme = new_theme
 
         if "logo" in request.files:
@@ -79,12 +78,23 @@ def personalizacion():
                 if picture_file:
                     config.custom_logo = True
                     cache.delete("cached_logo")
-                    cache.delete("cached_style")
+                    
             except UploadNotAllowed:  # pragma: no cover
                 log.warning("An error occurred while updating the website logo.")
 
+        if "favicon" in request.files:
+            try:
+                picture_file = images.save(request.files["favicon"], name="favicon.png")
+                if picture_file:
+                    config.custom_favicon = True
+                    cache.delete("cached_favicon")
+
+            except UploadNotAllowed:  # pragma: no cover
+                log.warning("An error occurred while updating the website favicon.")
+
         try:
             database.session.commit()
+            cache.delete("cached_style")
 
             # Invalidate all cache if theme changed
             if theme_changed:
