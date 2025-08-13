@@ -40,7 +40,6 @@ def lms_application():
     yield app
 
 
-@pytest.mark.slow
 def test_paid_course_enrollment_redirects_to_paypal_page(lms_application):
     """Test that enrolling in a paid course redirects to PayPal payment page."""
     from now_lms import database, initial_setup
@@ -105,7 +104,6 @@ def test_paid_course_enrollment_redirects_to_paypal_page(lms_application):
             assert "/paypal_checkout/payment/PAID001" in response.location
 
 
-@pytest.mark.slow
 def test_free_course_enrollment_completes_immediately(lms_application):
     """Test that enrolling in a free course completes immediately."""
     from now_lms import database, initial_setup
@@ -183,7 +181,6 @@ def test_free_course_enrollment_completes_immediately(lms_application):
             assert "/course/FREE001/take" in response.location
 
 
-@pytest.mark.slow
 def test_audit_mode_enrollment(lms_application):
     """Test that audit mode enrollment works correctly."""
     from now_lms import database, initial_setup
@@ -259,7 +256,6 @@ def test_audit_mode_enrollment(lms_application):
             assert enrollment.vigente is True
 
 
-@pytest.mark.slow
 def test_paypal_payment_confirmation_success(lms_application):
     """Test successful PayPal payment confirmation."""
     from now_lms import database, initial_setup
@@ -363,7 +359,6 @@ def test_paypal_payment_confirmation_success(lms_application):
                 assert enrollment.vigente is True
 
 
-@pytest.mark.slow
 def test_paypal_client_id_endpoint(lms_application):
     """Test PayPal client ID endpoint."""
     from now_lms import database, initial_setup

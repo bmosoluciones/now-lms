@@ -19,7 +19,9 @@
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
+from math import e
 from os import path, remove
+import re
 from typing import NamedTuple, Union
 
 # ---------------------------------------------------------------------------------------
@@ -68,9 +70,13 @@ from now_lms.logs import log
 def verifica_docente_asignado_a_curso(id_curso: Union[None, str] = None):
     """Si el usuario no esta asignado como docente al curso devuelve None."""
     if current_user.is_authenticated:
-        return database.session.execute(
+        query = database.session.execute(
             database.select(DocenteCurso).filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == id_curso)
-        )
+        ).scalar_one_or_none()
+        if query:
+            return query
+        else:
+            return False
     else:
         return False
 
@@ -78,11 +84,15 @@ def verifica_docente_asignado_a_curso(id_curso: Union[None, str] = None):
 def verifica_moderador_asignado_a_curso(id_curso: Union[None, str] = None):
     """Si el usuario no esta asignado como moderador al curso devuelve None."""
     if current_user.is_authenticated:
-        return database.session.execute(
+        query = database.session.execute(
             database.select(ModeradorCurso).filter(
                 ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.curso == id_curso
             )
-        )
+        ).scalar_one_or_none()
+        if query:
+            return True
+        else:
+            return False
     else:
         return False
 

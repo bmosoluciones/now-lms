@@ -15,7 +15,6 @@
 
 """Shared test configuration and fixtures."""
 
-import os
 import pytest
 from sqlalchemy.exc import OperationalError, ProgrammingError, IntegrityError
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
@@ -23,13 +22,7 @@ from pg8000.exceptions import DatabaseError
 
 from now_lms import log
 
-# Database URL configuration following the requirements:
-# 1. If DATABASE_URL environment variable is defined with valid URL, use it
-# 2. If not defined, use SQLite in-memory database by default
-DB_URL = os.environ.get("DATABASE_URL")
-if not DB_URL:
-    # Default to SQLite in-memory database for tests
-    DB_URL = "sqlite:///:memory:"
+DB_URL = "sqlite:///:memory:"
 
 log.info(f"Using test database URL: {DB_URL}")
 
