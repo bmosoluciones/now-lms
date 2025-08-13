@@ -68,17 +68,6 @@ def invalidate_configuracion_cache():
     log.trace("Cache de configuración invalidada")
 
 
-# Funciones legacy para compatibilidad
-def _get_locales():
-    """Get the list of available locales. DEPRECATED: Use get_locale() instead."""
-    return get_locale()
-
-
-def _get_timezone():
-    """Get the timezone. DEPRECATED: Use get_timezone() instead."""
-    return get_timezone()
-
-
 """Guia de uso:
 # Extraer textos a traducir
 pybabel extract -F babel.cfg -o now_lms/translations/messages.pot .
