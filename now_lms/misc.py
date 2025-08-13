@@ -20,7 +20,6 @@
 # Standard library
 # ---------------------------------------------------------------------------------------
 from collections import OrderedDict
-from os import getcwd
 from typing import NamedTuple, Union
 
 # ---------------------------------------------------------------------------------------
