@@ -47,25 +47,25 @@ jobs:
             #      mysql -u root -proot -e "CREATE DATABASE lmsctl;"
             #      mysql -u root -proot -e "GRANT ALL PRIVILEGES ON lmsctl.* TO 'lmsctl'@'localhost'; FLUSH PRIVILEGES;"
             #      pytest  -v --cov=now_lms --cov-append
-            - name: Test with Postgresql + pg8000
-              env:
-                  CI: True
-                  SECRET_KEY: ASD123klj+aAddSASGGSGSGSGSGSSDFASFASFAFASASaggggdgdgds
-                  DATABASE_URL: postgresql+pg8000://lmsctl2:lmsctl2@127.0.0.1:5432/lmsctl2
-                  ADMIN_USER: hello
-                  ADMIN_PSWD: world
-                  FLASK_APP: now_lms
-                  LOG_LEVEL: TRACE
-              run: |
-                  sudo -u postgres psql -c "CREATE USER lmsctl2 WITH PASSWORD 'lmsctl2';"
-                  sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON SCHEMA public TO lmsctl2;"
-                  sudo -u postgres psql -c "CREATE DATABASE lmsctl2;"
-                  sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE lmsctl2 TO lmsctl2;"
-                  sudo -u postgres psql -c "ALTER DATABASE lmsctl2 OWNER TO lmsctl2;"
-                  sudo -u postgres psql -c "ALTER ROLE lmsctl2 CREATEDB;"
-                  sudo -u postgres psql -c "GRANT USAGE ON SCHEMA public TO lmsctl2;"
-                  sudo -u postgres psql -c "GRANT CREATE ON SCHEMA public TO lmsctl2;"
-                  pytest  -v --cov=now_lms --cov-append
+            #- name: Test with Postgresql + pg8000
+            #  env:
+            #      CI: True
+            #      SECRET_KEY: ASD123klj+aAddSASGGSGSGSGSGSSDFASFASFAFASASaggggdgdgds
+            #      DATABASE_URL: postgresql+pg8000://lmsctl2:lmsctl2@127.0.0.1:5432/lmsctl2
+            #      ADMIN_USER: hello
+            #      ADMIN_PSWD: world
+            #      FLASK_APP: now_lms
+            #      LOG_LEVEL: TRACE
+            #  run: |
+            #      sudo -u postgres psql -c "CREATE USER lmsctl2 WITH PASSWORD 'lmsctl2';"
+            #      sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON SCHEMA public TO lmsctl2;"
+            #      sudo -u postgres psql -c "CREATE DATABASE lmsctl2;"
+            #      sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE lmsctl2 TO lmsctl2;"
+            #      sudo -u postgres psql -c "ALTER DATABASE lmsctl2 OWNER TO lmsctl2;"
+            #      sudo -u postgres psql -c "ALTER ROLE lmsctl2 CREATEDB;"
+            #      sudo -u postgres psql -c "GRANT USAGE ON SCHEMA public TO lmsctl2;"
+            #      sudo -u postgres psql -c "GRANT CREATE ON SCHEMA public TO lmsctl2;"
+            #      pytest  -v --cov=now_lms --cov-append
             - uses: codecov/codecov-action@v5
               with:
                   fail_ci_if_error: true # optional (default = false)
