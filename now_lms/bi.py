@@ -224,7 +224,7 @@ def cambia_estado_curso_por_id(
     database.session.commit()
 
     # Si el curso se finaliza, cerrar todos los mensajes del foro
-    if nuevo_estado == "finalizado" and estado_anterior != "finalizado":
+    if nuevo_estado == "finalized" and estado_anterior != "finalized":
         from now_lms.db import ForoMensaje
 
         ForoMensaje.close_all_for_course(id_curso)
