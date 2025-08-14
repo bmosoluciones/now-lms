@@ -145,7 +145,6 @@ class TestCourseLogoUpload(TestFileUploadFunctionality):
                 "modalidad": "self_paced",
                 "pagado": False,
                 "certificado": False,
-                "plantilla_certificado": "",
             }
 
             image_file = self.create_image_file("course_logo.jpg")
@@ -187,7 +186,6 @@ class TestCourseLogoUpload(TestFileUploadFunctionality):
                 "modalidad": "self_paced",
                 "pagado": False,
                 "certificado": False,
-                "plantilla_certificado": "",
             }
 
             # Invalid file type
