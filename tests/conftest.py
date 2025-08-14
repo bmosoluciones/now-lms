@@ -29,10 +29,10 @@ log.info(f"Using test database URL: {DB_URL}")
 
 def create_app(testing=True, database_uri=None, minimal=False):
     """Create Flask application with test configuration (factory pattern)."""
-    from now_lms import lms_application
+    from now_lms import lms_app
     from now_lms.config import CONFIGURACION, DIRECTORIO_ARCHIVOS, DIRECTORIO_PLANTILLAS
 
-    app = lms_application
+    app = lms_app
 
     # Base configuration
     app.config.from_mapping(CONFIGURACION)
