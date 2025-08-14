@@ -56,24 +56,6 @@ def create_app(testing=True, database_uri=None, minimal=False):
     if database_uri:
         app.config["SQLALCHEMY_DATABASE_URI"] = database_uri
 
-    # Initialize extensions (similar to what the main app does)
-    if not minimal:
-        from now_lms import (
-            inicializa_extenciones_terceros,
-            registrar_modulos_en_la_aplicacion_principal,
-            define_variables_globales_jinja2,
-        )
-
-        inicializa_extenciones_terceros(app)
-        registrar_modulos_en_la_aplicacion_principal(app)
-        define_variables_globales_jinja2(app)
-    else:
-        # Minimal initialization for basic tests
-        from now_lms import database, administrador_sesion
-
-        database.init_app(app)
-        administrador_sesion.init_app(app)
-
     return app
 
 
