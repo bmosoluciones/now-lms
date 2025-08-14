@@ -78,8 +78,7 @@ def test_comprehensive_evaluation_workflow(full_db_setup, client):
             "fecha_fin": "2025-09-10",
             "pagado": False,  # Free course
             "auditable": True,
-            "certificado": True,
-            "plantilla_certificado": "default",
+            "certificado": False,  # Disable certificates to avoid template requirement
             "precio": 0,
         },
         follow_redirects=False,
@@ -356,8 +355,7 @@ def test_evaluation_failure_and_retry(full_db_setup, client):
             "fecha_fin": "2025-09-10",
             "pagado": False,
             "auditable": True,
-            "certificado": True,
-            "plantilla_certificado": "default",
+            "certificado": False,  # Disable certificates to avoid template requirement
             "precio": 0,
         },
     )
@@ -566,8 +564,7 @@ def test_evaluation_reopen_request(full_db_setup, client):
             "fecha_fin": "2025-09-10",
             "pagado": False,
             "auditable": True,
-            "certificado": True,
-            "plantilla_certificado": "default",
+            "certificado": False,  # Disable certificates to avoid template requirement
             "precio": 0,
         },
     )

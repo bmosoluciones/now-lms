@@ -123,21 +123,23 @@ class BaseTabla:
         """Validate that audit fields reference existing users or set them to None."""
         from now_lms.db import Usuario
 
-        # Validate creado_por
-        if self.creado_por:
-            user_exists = database.session.execute(
-                database.select(Usuario).filter_by(usuario=self.creado_por)
-            ).scalar_one_or_none()
-            if not user_exists:
-                self.creado_por = None
+        # Use no_autoflush to prevent recursive flush during validation
+        with database.session.no_autoflush:
+            # Validate creado_por
+            if self.creado_por:
+                user_exists = database.session.execute(
+                    database.select(Usuario).filter_by(usuario=self.creado_por)
+                ).scalar_one_or_none()
+                if not user_exists:
+                    self.creado_por = None
 
-        # Validate modificado_por
-        if self.modificado_por:
-            user_exists = database.session.execute(
-                database.select(Usuario).filter_by(usuario=self.modificado_por)
-            ).scalar_one_or_none()
-            if not user_exists:
-                self.modificado_por = None
+            # Validate modificado_por
+            if self.modificado_por:
+                user_exists = database.session.execute(
+                    database.select(Usuario).filter_by(usuario=self.modificado_por)
+                ).scalar_one_or_none()
+                if not user_exists:
+                    self.modificado_por = None
 
 
 class SystemInfo(database.Model):
