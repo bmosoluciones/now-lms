@@ -27,7 +27,7 @@ from cuid2 import Cuid
 from flask import current_app
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import select
+from sqlalchemy import select, event
 from sqlalchemy.exc import SQLAlchemyError
 
 __all__ = ["select", "database", "UserMixin", "eliminar_base_de_datos_segura", "UserEvent"]
@@ -118,6 +118,26 @@ class BaseTabla:
     creado_por = database.Column(database.String(150), nullable=True)
     modificado = database.Column(database.DateTime, onupdate=database.func.now(), nullable=True)
     modificado_por = database.Column(database.String(150), nullable=True)
+
+    def validate_user_references(self):
+        """Validate that audit fields reference existing users or set them to None."""
+        from now_lms.db import Usuario
+
+        # Validate creado_por
+        if self.creado_por:
+            user_exists = database.session.execute(
+                database.select(Usuario).filter_by(usuario=self.creado_por)
+            ).scalar_one_or_none()
+            if not user_exists:
+                self.creado_por = None
+
+        # Validate modificado_por
+        if self.modificado_por:
+            user_exists = database.session.execute(
+                database.select(Usuario).filter_by(usuario=self.modificado_por)
+            ).scalar_one_or_none()
+            if not user_exists:
+                self.modificado_por = None
 
 
 class SystemInfo(database.Model):
@@ -1186,3 +1206,16 @@ class UserEvent(database.Model, BaseTabla):
     section = database.relationship("CursoSeccion", backref="user_events")
     resource = database.relationship("CursoRecurso", backref="user_events")
     evaluation = database.relationship("Evaluation", backref="user_events")
+
+
+# Event listeners for audit field validation
+@event.listens_for(database.session, "before_commit")
+def validate_audit_fields_before_commit(session):
+    """Validate that audit fields reference existing users before committing."""
+    for instance in session.new:
+        if isinstance(instance, BaseTabla):
+            instance.validate_user_references()
+
+    for instance in session.dirty:
+        if isinstance(instance, BaseTabla):
+            instance.validate_user_references()
