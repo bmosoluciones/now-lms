@@ -91,7 +91,7 @@ def test_postgress_psycopg2(database_url):
 
 def test_mysql_mysqldb(database_url, request):
     """Test MySQL database using MySQLdb driver with improved error handling."""
-    if database_url.startswith("mysql+mysqldb"):
+    if database_url.startswith("mysql+mysqldb") or database_url.startswith("mysql"):
         from now_lms import app, database, initial_setup
         from now_lms.db import eliminar_base_de_datos_segura
         from sqlalchemy.exc import OperationalError, IntegrityError
