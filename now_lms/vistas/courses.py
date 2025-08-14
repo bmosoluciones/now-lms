@@ -528,7 +528,9 @@ def nuevo_curso():
             pagado=form.pagado.data,
             auditable=form.auditable.data,
             certificado=form.certificado.data,
-            plantilla_certificado=form.plantilla_certificado.data if form.certificado.data and form.plantilla_certificado.data else None,
+            plantilla_certificado=(
+                form.plantilla_certificado.data if form.certificado.data and form.plantilla_certificado.data else None
+            ),
             precio=form.precio.data,
             # Información adicional
             creado_por=current_user.usuario,
