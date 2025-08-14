@@ -136,7 +136,7 @@ class TestCourseLogoUpload(TestFileUploadFunctionality):
 
         with full_db_setup.app_context():
             course_data = {
-                "codigo": "LOGOCOURSE001",
+                "codigo": "LOGO001",
                 "nombre": "Course with Logo",
                 "descripcion_corta": "Short description",
                 "descripcion": "Long description",
@@ -162,7 +162,7 @@ class TestCourseLogoUpload(TestFileUploadFunctionality):
             mock_images.save.assert_called_once()
 
             # Verify the course was created with logo flag
-            curso = database.session.execute(database.select(Curso).filter_by(codigo="LOGOCOURSE001")).scalar_one_or_none()
+            curso = database.session.execute(database.select(Curso).filter_by(codigo="LOGO001")).scalar_one_or_none()
 
             assert curso is not None
             assert curso.nombre == "Course with Logo"
@@ -282,7 +282,7 @@ class TestPDFResourceUpload(TestFileUploadFunctionality):
         with full_db_setup.app_context():
             # Create course and section in the same context
             course = Curso(
-                codigo="PDFNOFILE001",
+                codigo="PDFNF001",
                 nombre="PDF No File Test Course",
                 descripcion_corta="Course for testing PDF uploads without file",
                 descripcion="A course for testing PDF upload functionality",
@@ -495,7 +495,7 @@ class TestAudioResourceUpload(TestFileUploadFunctionality):
         with full_db_setup.app_context():
             # Create course and section in the same context
             course = Curso(
-                codigo="AUDIOTEST001",
+                codigo="AUDIO001",
                 nombre="Audio Test Course",
                 descripcion_corta="Course for testing audio uploads",
                 descripcion="A course for testing audio upload functionality",

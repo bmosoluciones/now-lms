@@ -683,7 +683,7 @@ class TestCalendarUtilsComprehensive:
         database.session.add(user)
 
         course = Curso(
-            codigo="EVALUPDATE001",
+            codigo="EVALUP001",
             nombre="Eval Update Course",
             descripcion_corta="Testing evaluation updates",
             descripcion="Course for testing evaluation event updates",
@@ -692,7 +692,7 @@ class TestCalendarUtilsComprehensive:
         database.session.add(course)
 
         section = CursoSeccion(
-            curso="EVALUPDATE001", nombre="Eval Update Section", descripcion="Eval update section", indice=1, estado=True
+            curso="EVALUP001", nombre="Eval Update Section", descripcion="Eval update section", indice=1, estado=True
         )
         database.session.add(section)
         database.session.commit()
@@ -710,7 +710,7 @@ class TestCalendarUtilsComprehensive:
         database.session.commit()
 
         # Create initial events
-        create_events_for_student_enrollment(user.usuario, "EVALUPDATE001")
+        create_events_for_student_enrollment(user.usuario, "EVALUP001")
 
         # Get the initial event
         original_event = database.session.execute(
