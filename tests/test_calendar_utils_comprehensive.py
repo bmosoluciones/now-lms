@@ -482,7 +482,7 @@ class TestCalendarUtilsComprehensive:
 
         # Create the course that the events will reference
         test_course = Curso(
-            codigo="TEST",
+            codigo="UPCOMING_EVENTS",
             nombre="Test Course",
             descripcion_corta="Course for testing upcoming events",
             descripcion="Course for testing upcoming events functionality",
@@ -496,7 +496,7 @@ class TestCalendarUtilsComprehensive:
         for i in range(3):
             event = UserEvent(
                 user_id=user.usuario,
-                course_id="TEST",
+                course_id="UPCOMING_EVENTS",
                 resource_type="meet",
                 title=f"Future Event {i+1}",
                 start_time=datetime(2025, 12, i + 1, 10, 0),
@@ -508,7 +508,7 @@ class TestCalendarUtilsComprehensive:
         # Add a past event
         past_event = UserEvent(
             user_id=user.usuario,
-            course_id="TEST",
+            course_id="UPCOMING_EVENTS",
             resource_type="meet",
             title="Past Event",
             start_time=datetime(2020, 1, 1, 10, 0),
