@@ -59,6 +59,7 @@ from now_lms.db import (
     Usuario,
     database,
 )
+from now_lms.i18n import _
 from now_lms.logs import log
 
 # < --------------------------------------------------------------------------------------------- >
@@ -131,7 +132,7 @@ def crear_configuracion_predeterminada():
 
     config = Configuracion(
         titulo="NOW LMS",
-        descripcion="Sistema de aprendizaje en linea.",
+        descripcion=_("Sistema de aprendizaje en linea."),
         moneda="C$",
         r=urandom(16),
         enable_programs=False,

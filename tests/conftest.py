@@ -29,14 +29,10 @@ log.info(f"Using test database URL: {DB_URL}")
 
 def create_app(testing=True, database_uri=None, minimal=False):
     """Create Flask application with test configuration (factory pattern)."""
-    from flask import Flask
+    from now_lms import lms_application
     from now_lms.config import CONFIGURACION, DIRECTORIO_ARCHIVOS, DIRECTORIO_PLANTILLAS
 
-    app = Flask(
-        "now_lms",
-        template_folder=DIRECTORIO_PLANTILLAS,
-        static_folder=DIRECTORIO_ARCHIVOS,
-    )
+    app = lms_application
 
     # Base configuration
     app.config.from_mapping(CONFIGURACION)
@@ -149,6 +145,7 @@ def client(app):
 @pytest.fixture(scope="function")
 def db_session(app):
     """Database session with proper cleanup for each test."""
+    app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
     with app.app_context():
         from now_lms import database
 
@@ -166,6 +163,7 @@ def db_session(app):
 def lms_application(database_url):
     """Legacy fixture for backwards compatibility."""
     test_app = create_app(testing=True, database_uri=database_url)
+    test_app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 
     # Initialize database within the test app context to ensure proper setup
     with test_app.app_context():
@@ -203,6 +201,7 @@ def full_db_setup(app, db_session):
     Full database setup with complete data population.
     Use this for tests that need the complete populated database (like test_vistas).
     """
+    app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
     with app.app_context():
         try:
             # Directly create the setup data in the correct app context
@@ -241,6 +240,7 @@ def full_db_setup_with_examples(app, db_session):
     """
     from now_lms import initial_setup
 
+    app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
     with app.app_context():
         try:
             # Full database setup with test data and examples
@@ -260,6 +260,7 @@ def basic_config_setup(app, db_session):
     """
     from now_lms.db.tools import crear_configuracion_predeterminada
 
+    app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
     with app.app_context():
         try:
             # Only create basic configuration

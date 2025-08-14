@@ -36,6 +36,7 @@ from now_lms.config import DIRECTORIO_PLANTILLAS, images
 from now_lms.db import AdSense, Configuracion, MailConfig, PaypalConfig, Style, database
 from now_lms.db.tools import elimina_logo_perzonalizado
 from now_lms.forms import AdSenseForm, CheckMailForm, ConfigForm, MailForm, PayaplForm, ThemeForm
+from now_lms.i18n import _
 from now_lms.logs import log
 
 # Constants
@@ -101,7 +102,7 @@ def personalizacion():
                 invalidate_all_cache()
                 log.trace(f"Theme changed from {old_theme} to {new_theme}, cache invalidated")
 
-            flash("Tema del sitio web actualizado exitosamente.", "success")
+            flash(_("Tema del sitio web actualizado exitosamente."), "success")
             return redirect(url_for(SETTING_PERSONALIZACION_ROUTE))
         except OperationalError:  # pragma: no cover
             database.session.rollback()
@@ -141,7 +142,7 @@ def configuracion():
         if form.verify_user_by_email.data is True:
             config_mail = database.session.execute(database.select(MailConfig)).first()[0]
             if not config_mail.email_verificado:
-                flash("Debe configurar el correo electronico antes de habilitar verificación por e-mail.", "warning")
+                flash(_("Debe configurar el correo electronico antes de habilitar verificación por e-mail."), "warning")
                 config.verify_user_by_email = False
             else:
                 config.verify_user_by_email = True
@@ -157,7 +158,7 @@ def configuracion():
             from now_lms.vistas.paypal import get_site_currency
 
             cache.delete_memoized(get_site_currency)
-            flash("Sitio web actualizado exitosamente.", "success")
+            flash(_("Sitio web actualizado exitosamente."), "success")
             return redirect(url_for("setting.configuracion"))
         except OperationalError:  # pragma: no cover
             flash("No se pudo actualizar la configuración del sitio web.", "warning")
