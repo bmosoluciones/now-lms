@@ -46,7 +46,7 @@ jobs:
                   mysql -u root -proot -e "CREATE USER 'lmsctl'@'localhost' IDENTIFIED BY 'lmsctl';"
                   mysql -u root -proot -e "CREATE DATABASE lmsctl;"
                   mysql -u root -proot -e "GRANT ALL PRIVILEGES ON lmsctl.* TO 'lmsctl'@'localhost'; FLUSH PRIVILEGES;"
-                  pytest -v --cov=now_lms --cov-append tests/test_endtoend.py
+                  pytest -v --cov=now_lms --cov-append tests/test_multipledb.py
             - name: Test with Postgresql + pg8000
               env:
                   CI: True
@@ -66,7 +66,7 @@ jobs:
                   sudo -u postgres psql -c "ALTER ROLE lmsctl2 CREATEDB;"
                   sudo -u postgres psql -c "GRANT USAGE ON SCHEMA public TO lmsctl2;"
                   sudo -u postgres psql -c "GRANT CREATE ON SCHEMA public TO lmsctl2;"
-                  pytest  -v --cov=now_lms --cov-append tests/test_endtoend.py
+                  pytest  -v --cov=now_lms --cov-append tests/test_multipledb.py
             - uses: codecov/codecov-action@v5
               with:
                   fail_ci_if_error: true # optional (default = false)
