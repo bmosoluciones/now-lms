@@ -15,155 +15,132 @@
 
 """Tests to verify database rollback behavior in exception handling."""
 
-from unittest import TestCase
 from sqlalchemy.exc import OperationalError
-from now_lms import app
-from now_lms.db import eliminar_base_de_datos_segura
 from now_lms.db import database, Etiqueta
 
 
-class TestDatabaseRollback(TestCase):
-    """Test database session rollback on exceptions."""
+def test_database_session_consistency_after_rollback(app, db_session):
+    """Test that database session is consistent after rollback."""
+    # Create an object but simulate commit failure
+    etiqueta = Etiqueta(nombre="Test Tag", color="#FF0000")
+    database.session.add(etiqueta)
 
-    def setUp(self):
-        """Set up test fixtures."""
-        self.app = app
-        self.app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-        self.app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
-        self.app.config["WTF_CSRF_ENABLED"] = False
+    # Verify object is in session
+    assert etiqueta in database.session.new
 
-        with self.app.app_context():
-            database.create_all()
+    # Simulate an exception scenario by manually calling rollback
+    database.session.rollback()
 
-    def tearDown(self):
-        """Clean up after each test."""
-        with self.app.app_context():
-            database.session.remove()
-            eliminar_base_de_datos_segura()
+    # After rollback, session should be clean
+    assert len(database.session.new) == 0
+    assert len(database.session.dirty) == 0
 
-    def test_database_session_consistency_after_rollback(self):
-        """Test that database session is consistent after rollback."""
-        with self.app.app_context():
-            # Create an object but simulate commit failure
-            etiqueta = Etiqueta(nombre="Test Tag", color="#FF0000")
-            database.session.add(etiqueta)
+    # Database should not contain the object
+    query_result = database.session.query(Etiqueta).filter_by(nombre="Test Tag").first()
+    assert query_result is None
 
-            # Verify object is in session
-            self.assertIn(etiqueta, database.session.new)
 
-            # Simulate an exception scenario by manually calling rollback
-            database.session.rollback()
+def test_rollback_preserves_database_integrity(app, db_session):
+    """Test that rollback preserves database integrity by not committing partial changes."""
+    # Add a tag successfully first
+    original_tag = Etiqueta(nombre="Original Tag", color="#00FF00")
+    database.session.add(original_tag)
+    database.session.commit()
 
-            # After rollback, session should be clean
-            self.assertEqual(len(database.session.new), 0)
-            self.assertEqual(len(database.session.dirty), 0)
+    # Now try to add another tag but simulate failure
+    failing_tag = Etiqueta(nombre="Failing Tag", color="#FF0000")
+    database.session.add(failing_tag)
 
-            # Database should not contain the object
-            query_result = database.session.query(Etiqueta).filter_by(nombre="Test Tag").first()
-            self.assertIsNone(query_result)
+    # Simulate commit failure and rollback
+    try:
+        # Force an exception after adding to session but before commit
+        raise OperationalError("Simulated error", None, None)
+    except OperationalError:
+        database.session.rollback()
 
-    def test_rollback_preserves_database_integrity(self):
-        """Test that rollback preserves database integrity by not committing partial changes."""
-        with self.app.app_context():
-            # Add a tag successfully first
-            original_tag = Etiqueta(nombre="Original Tag", color="#00FF00")
-            database.session.add(original_tag)
-            database.session.commit()
+    # Original tag should still exist
+    existing_tags = database.session.query(Etiqueta).all()
+    assert len(existing_tags) == 1
+    assert existing_tags[0].nombre == "Original Tag"
 
-            # Now try to add another tag but simulate failure
-            failing_tag = Etiqueta(nombre="Failing Tag", color="#FF0000")
-            database.session.add(failing_tag)
+    # Failing tag should not exist
+    failing_query = database.session.query(Etiqueta).filter_by(nombre="Failing Tag").first()
+    assert failing_query is None
 
-            # Simulate commit failure and rollback
-            try:
-                # Force an exception after adding to session but before commit
-                raise OperationalError("Simulated error", None, None)
-            except OperationalError:
-                database.session.rollback()
 
-            # Original tag should still exist
-            existing_tags = database.session.query(Etiqueta).all()
-            self.assertEqual(len(existing_tags), 1)
-            self.assertEqual(existing_tags[0].nombre, "Original Tag")
+def test_rollback_functionality_simulation(app, db_session):
+    """Test rollback functionality by simulating the exception handling pattern."""
+    # Simulate the pattern used in our fixed code
+    etiqueta = Etiqueta(nombre="Test Tag", color="#FF0000")
+    database.session.add(etiqueta)
 
-            # Failing tag should not exist
-            failing_query = database.session.query(Etiqueta).filter_by(nombre="Failing Tag").first()
-            self.assertIsNone(failing_query)
+    # This simulates the try/except pattern with rollback
+    try:
+        # Simulate commit failure
+        raise OperationalError("Simulated database error", None, None)
+    except OperationalError:
+        # This is the rollback call we added in our fixes
+        database.session.rollback()
 
-    def test_rollback_functionality_simulation(self):
-        """Test rollback functionality by simulating the exception handling pattern."""
-        with self.app.app_context():
-            # Simulate the pattern used in our fixed code
-            etiqueta = Etiqueta(nombre="Test Tag", color="#FF0000")
-            database.session.add(etiqueta)
+    # Verify the session is clean after rollback
+    assert len(database.session.new) == 0
+    assert len(database.session.dirty) == 0
 
-            # This simulates the try/except pattern with rollback
-            try:
-                # Simulate commit failure
-                raise OperationalError("Simulated database error", None, None)
-            except OperationalError:
-                # This is the rollback call we added in our fixes
-                database.session.rollback()
+    # Verify the object was not persisted
+    query_result = database.session.query(Etiqueta).filter_by(nombre="Test Tag").first()
+    assert query_result is None
 
-            # Verify the session is clean after rollback
-            self.assertEqual(len(database.session.new), 0)
-            self.assertEqual(len(database.session.dirty), 0)
 
-            # Verify the object was not persisted
-            query_result = database.session.query(Etiqueta).filter_by(nombre="Test Tag").first()
-            self.assertIsNone(query_result)
+def test_successful_commit_after_failed_rollback_scenario(app, db_session):
+    """Test that successful operations work after a failed operation with rollback."""
+    # First, simulate a failed operation
+    failing_tag = Etiqueta(nombre="Failing Tag", color="#FF0000")
+    database.session.add(failing_tag)
 
-    def test_successful_commit_after_failed_rollback_scenario(self):
-        """Test that successful operations work after a failed operation with rollback."""
-        with self.app.app_context():
-            # First, simulate a failed operation
-            failing_tag = Etiqueta(nombre="Failing Tag", color="#FF0000")
-            database.session.add(failing_tag)
+    try:
+        raise OperationalError("Simulated error", None, None)
+    except OperationalError:
+        database.session.rollback()
 
-            try:
-                raise OperationalError("Simulated error", None, None)
-            except OperationalError:
-                database.session.rollback()
+    # Now perform a successful operation
+    successful_tag = Etiqueta(nombre="Successful Tag", color="#00FF00")
+    database.session.add(successful_tag)
+    database.session.commit()
 
-            # Now perform a successful operation
-            successful_tag = Etiqueta(nombre="Successful Tag", color="#00FF00")
-            database.session.add(successful_tag)
-            database.session.commit()
+    # Verify only the successful tag exists
+    all_tags = database.session.query(Etiqueta).all()
+    assert len(all_tags) == 1
+    assert all_tags[0].nombre == "Successful Tag"
 
-            # Verify only the successful tag exists
-            all_tags = database.session.query(Etiqueta).all()
-            self.assertEqual(len(all_tags), 1)
-            self.assertEqual(all_tags[0].nombre, "Successful Tag")
 
-    def test_rollback_with_modified_existing_object(self):
-        """Test rollback behavior when modifying an existing database object."""
-        with self.app.app_context():
-            # Create and commit an initial object
-            tag = Etiqueta(nombre="Original Name", color="#FF0000")
-            database.session.add(tag)
-            database.session.commit()
+def test_rollback_with_modified_existing_object(app, db_session):
+    """Test rollback behavior when modifying an existing database object."""
+    # Create and commit an initial object
+    tag = Etiqueta(nombre="Original Name", color="#FF0000")
+    database.session.add(tag)
+    database.session.commit()
 
-            # Store original state
-            original_name = tag.nombre
-            tag_id = tag.id
+    # Store original state
+    original_name = tag.nombre
+    tag_id = tag.id
 
-            # Modify the object
-            tag.nombre = "Modified Name"
-            tag.color = "#00FF00"
+    # Modify the object
+    tag.nombre = "Modified Name"
+    tag.color = "#00FF00"
 
-            # Verify object is marked as dirty
-            self.assertIn(tag, database.session.dirty)
+    # Verify object is marked as dirty
+    assert tag in database.session.dirty
 
-            # Simulate commit failure and rollback
-            try:
-                raise OperationalError("Simulated error", None, None)
-            except OperationalError:
-                database.session.rollback()
+    # Simulate commit failure and rollback
+    try:
+        raise OperationalError("Simulated error", None, None)
+    except OperationalError:
+        database.session.rollback()
 
-            # After rollback, session should be clean
-            self.assertEqual(len(database.session.dirty), 0)
+    # After rollback, session should be clean
+    assert len(database.session.dirty) == 0
 
-            # Refresh the object from database to verify rollback
-            database.session.refresh(tag)
-            self.assertEqual(tag.nombre, original_name)
-            self.assertEqual(tag.color, "#FF0000")
+    # Refresh the object from database to verify rollback
+    database.session.refresh(tag)
+    assert tag.nombre == original_name
+    assert tag.color == "#FF0000"
