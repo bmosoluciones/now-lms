@@ -30,6 +30,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------------------------
 import click
 from flask.cli import FlaskGroup
+from sqlalchemy import select
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -37,8 +38,8 @@ from flask.cli import FlaskGroup
 from now_lms import alembic, initial_setup, lms_app
 from now_lms.cache import cache
 from now_lms.config import DESARROLLO
-from now_lms.db import database as db, eliminar_base_de_datos_segura
-from sqlalchemy import select
+from now_lms.db import database as db
+from now_lms.db import eliminar_base_de_datos_segura
 from now_lms.db.info import config_info, course_info
 from now_lms.logs import log
 from now_lms.version import CODE_NAME, VERSION

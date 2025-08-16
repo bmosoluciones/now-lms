@@ -129,6 +129,7 @@ def configuracion():
         enable_programs=config.enable_programs,
         enable_masterclass=config.enable_masterclass,
         enable_resources=config.enable_resources,
+        enable_blog=config.enable_blog,
     )
     if form.validate_on_submit() or request.method == "POST":
         config.titulo = form.titulo.data
@@ -138,6 +139,7 @@ def configuracion():
         config.enable_programs = form.enable_programs.data
         config.enable_masterclass = form.enable_masterclass.data
         config.enable_resources = form.enable_resources.data
+        config.enable_blog = form.enable_blog.data
 
         if form.verify_user_by_email.data is True:
             config_mail = database.session.execute(database.select(MailConfig)).first()[0]
@@ -154,6 +156,7 @@ def configuracion():
             cache.delete("nav_programs_enabled")
             cache.delete("nav_masterclass_enabled")
             cache.delete("nav_resources_enabled")
+            cache.delete("nav_blog_enabled")
             # Invalidate site currency cache when configuration changes
             from now_lms.vistas.paypal import get_site_currency
 

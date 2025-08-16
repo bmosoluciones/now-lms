@@ -7,6 +7,7 @@
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
+from sqlalchemy import delete, func
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -16,7 +17,6 @@ from now_lms.bi import cambia_tipo_de_usuario_por_id
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Usuario, database
-from sqlalchemy import delete, func
 
 # Constants
 ADMIN_USERS_ROUTE = "admin_profile.usuarios"

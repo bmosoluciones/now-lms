@@ -27,7 +27,7 @@ from cuid2 import Cuid
 from flask import current_app
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import select, event
+from sqlalchemy import event, select
 from sqlalchemy.exc import SQLAlchemyError
 
 __all__ = ["select", "database", "UserMixin", "eliminar_base_de_datos_segura", "UserEvent"]
@@ -217,7 +217,7 @@ class Curso(database.Model, BaseTabla):
     descripcion = database.Column(database.String(1000), nullable=False)
     portada = database.Column(database.Boolean())
     portada_ext = database.Column(database.String(5))
-    nivel = database.Column(database.Integer())  # 0: Introductorio, 1: Principiante, 2: Intermedio, 3: Avanzado
+    nivel = database.Column(database.Integer(), default=False)  # 0: Introductorio, 1: Principiante, 2: Intermedio, 3: Avanzado
     duracion = database.Column(database.Integer())
     # Estado de publicación
     estado = database.Column(database.String(9), nullable=False, index=True)  # draft, open, closed, finalized
@@ -241,7 +241,7 @@ class Curso(database.Model, BaseTabla):
     precio = database.Column(database.Numeric(precision=10, scale=2))
     certificado = database.Column(database.Boolean())
     plantilla_certificado = database.Column(
-        database.String(25), database.ForeignKey("certificado.code"), nullable=True, index=True
+        database.String(25), database.ForeignKey("certificado.code"), nullable=True, index=True, default="default"
     )
 
     def validar_foro_habilitado(self):
@@ -496,6 +496,7 @@ class Configuracion(database.Model, BaseTabla):
     enable_programs = database.Column(database.Boolean(), default=False, nullable=False)
     enable_masterclass = database.Column(database.Boolean(), default=False, nullable=False)
     enable_resources = database.Column(database.Boolean(), default=False, nullable=False)
+    enable_blog = database.Column(database.Boolean(), default=False, nullable=False)
 
 
 class Style(database.Model, BaseTabla):

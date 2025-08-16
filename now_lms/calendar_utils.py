@@ -15,11 +15,12 @@
 
 """Utilities for managing user calendar events."""
 
+import threading
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
 from datetime import datetime, time
-import threading
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -29,7 +30,7 @@ from flask import current_app
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
-from now_lms.db import UserEvent, CursoRecurso, CursoSeccion, Evaluation, database
+from now_lms.db import CursoRecurso, CursoSeccion, Evaluation, UserEvent, database
 from now_lms.logs import log
 
 

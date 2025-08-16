@@ -40,8 +40,8 @@ from now_lms.db import (
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
     Certificacion,
     Certificado,
-    Usuario,
     MasterClassEnrollment,
+    Usuario,
     database,
 )
 from now_lms.forms import CertificateForm, EmitCertificateForm
@@ -379,9 +379,9 @@ def certificacion_generar():
     """Generar un nuevo certificado."""
     from now_lms.db.tools import (
         generate_cource_choices,
+        generate_masterclass_choices,
         generate_template_choices,
         generate_user_choices,
-        generate_masterclass_choices,
     )
 
     form = EmitCertificateForm()

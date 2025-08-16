@@ -16,7 +16,7 @@ from sqlalchemy.exc import OperationalError
 from now_lms.cache import cache
 from now_lms.calendar_utils import get_upcoming_events_for_user
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
-from now_lms.db import Usuario, Curso, EstudianteCurso, DocenteCurso, Certificacion, database
+from now_lms.db import Certificacion, Curso, DocenteCurso, EstudianteCurso, Usuario, database
 from now_lms.db.tools import elimina_imagen_usuario
 from now_lms.forms import ChangePasswordForm, UserForm
 from now_lms.logs import log

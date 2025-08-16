@@ -85,6 +85,7 @@ You can use the following options to configure NOW-LMS:
     drivers setup.
 -   **REDIS_URL** (<span style="color:green">optional</span>): User friendly alias to `CACHE_REDIS_URL`. Connection
     string to use [Redis](https://redis.io/) as cache backend, for example `redis://localhost:6379/0`.
+-   **CACHE_MEMCACHED_SERVERS** (<span style="color:green">optional</span>): Connection string to use [Memcached](https://memcached.org/) as cache backend.
 -   **CUSTOM_DATA_DIR** (<span style="color:purple">recomended</span>): Directory to save system, must be writable by the
     main app proccess. Note that this variable can NOT be set AD-HOC because the order we parse the configuration
     options, so you must set this options before the app starts. You MUST have backups this directory in the same way

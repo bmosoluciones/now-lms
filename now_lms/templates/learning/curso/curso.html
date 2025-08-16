@@ -71,13 +71,7 @@
                                 ><i class="bi bi-pencil-square" aria-hidden="true"></i> Editar</a
                             >
                         </div>
-                        {% endif %}
-                        <iframe
-                            title="{{ curso.codigo }}"
-                            style="border: none"
-                            src="{{ url_for('course.curso_descripcion_a_html', course_code=curso.codigo) }}"
-                        >
-                        </iframe>
+                        {% endif %} {{ markdown2html(curso.descripcion) | safe }}
                         <br />
                         {% if curso.fecha_inicio and curso.fecha_fin %}
                         <i class="bi bi-calendar-week" aria-hidden="true"></i>

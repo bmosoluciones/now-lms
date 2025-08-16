@@ -31,7 +31,10 @@ version = {attr = "now_lms.version.VERSION"}
 
 [project.optional-dependencies]
 mysql = [
-  "mysqlclient",
+  "mysql-connector-python",
+]
+mariadb = [
+  "mariadb",
 ]
 
 [build-system]

@@ -30,6 +30,7 @@ from datetime import datetime
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
+from sqlalchemy import func
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -46,7 +47,6 @@ from now_lms.db import (
     QuestionOption,
     database,
 )
-from sqlalchemy import func
 from now_lms.forms import EvaluationReopenRequestForm
 
 # ---------------------------------------------------------------------------------------
