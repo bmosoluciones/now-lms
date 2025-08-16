@@ -473,6 +473,7 @@ def moderar_curso(course_code):
 @cache.cached(unless=no_guardar_en_cache_global)
 def administrar_curso(course_code):
     """Pagina principal del curso."""
+    from now_lms.db.tools import get_slideshowid
 
     return render_template(
         "learning/curso/admin.html",
@@ -490,6 +491,7 @@ def administrar_curso(course_code):
         .all(),  # El join devuelve una tuple.
         nivel=CURSO_NIVEL,
         tipo=TIPOS_RECURSOS,
+        get_slideshowid=get_slideshowid,
     )
 
 
@@ -1233,7 +1235,7 @@ def editar_recurso_text(course_code, seccion, resource_id):
 
     if form.validate_on_submit() or request.method == "POST":
         recurso.nombre = form.nombre.data
-        recurso.descripcion = form.descripcion.data
+        recurso.descripcion = "Text resource"
         recurso.requerido = form.requerido.data
         recurso.text = form.editor.data
         recurso.modificado_por = current_user.usuario

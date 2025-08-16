@@ -390,7 +390,7 @@ class CursoRecursoConsulta(database.Model, BaseTabla):
 
 
 class SlideShowResource(database.Model, BaseTabla):
-    """Una presentación basada en reveal.js que hereda de BaseResource"""
+    """Una presentación basada en reveal.js"""
 
     __tablename__ = "slide_show_resource"
 

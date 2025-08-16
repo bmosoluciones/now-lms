@@ -335,7 +335,7 @@ permitir_docente %}
                                                 >
                                                 {% elif recurso.tipo == "slides" %}
                                                 <a
-                                                    href="{{ url_for('course.editar_slideshow', course_code=recurso.curso, slideshow_id=recurso.external_code) }}"
+                                                    href="{{ url_for('course.editar_slideshow', course_code=recurso.curso, slideshow_id=get_slideshowid(recurso.id)) }}"
                                                     class="link-light"
                                                     ><i class="bi bi-pencil-square" aria-hidden="true"></i> Editar</a
                                                 >
