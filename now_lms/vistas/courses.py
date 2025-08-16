@@ -1040,7 +1040,6 @@ def marcar_recurso_completado(curso_id, resource_type, codigo):
                         curso=curso_id,
                         recurso=codigo,
                         completado=True,
-                        tipo=resource_type,
                     )
                     database.session.add(avance)
                     database.session.commit()

@@ -17,8 +17,7 @@
 
 import io
 import pytest
-from unittest.mock import patch, MagicMock
-from flask import url_for
+from unittest.mock import patch
 from werkzeug.datastructures import FileStorage
 
 from now_lms.db import (
@@ -98,10 +97,10 @@ endobj
 endobj
 xref
 0 4
-0000000000 65535 f 
-0000000010 00000 n 
-0000000079 00000 n 
-0000000173 00000 n 
+0000000000 65535 f
+0000000010 00000 n
+0000000079 00000 n
+0000000173 00000 n
 trailer
 <<
 /Size 4
@@ -553,6 +552,366 @@ class TestAudioResourceUpload(TestFileUploadFunctionality):
             assert resource.doc == "test_audio.ogg"
 
 
+class TestCourseEditLogoUpload(TestFileUploadFunctionality):
+    """Test course logo upload functionality during course editing."""
+
+    @patch("now_lms.vistas.courses.images")
+    def test_course_edit_with_logo_upload_success(self, mock_images, authenticated_client, full_db_setup):
+        """Test successful logo upload during course edit."""
+        mock_images.save.return_value = "logo.jpg"
+        mock_images.name = "images"
+
+        with full_db_setup.app_context():
+            # Create a course first
+            course = Curso(
+                codigo="EDITLOGO001",
+                nombre="Course Edit Logo Test",
+                descripcion_corta="Course for testing logo edit",
+                descripcion="A course for testing logo upload during edit",
+                estado="draft",
+                modalidad="self_paced",
+                pagado=False,
+                certificado=False,
+                creado_por="test_instructor",
+                portada=False,  # Initially no logo
+            )
+            database.session.add(course)
+
+            # Assign instructor to course
+            assignment = DocenteCurso(
+                curso=course.codigo,
+                usuario="test_instructor",
+                vigente=True,
+            )
+            database.session.add(assignment)
+            database.session.commit()
+
+            # Prepare edit data with logo upload
+            edit_data = {
+                "nombre": "Updated Course Name",
+                "codigo": course.codigo,
+                "descripcion_corta": "Updated short description",
+                "descripcion": "Updated long description",
+                "nivel": "1",
+                "duracion": "15",
+                "modalidad": "self_paced",
+                "publico": False,
+                "limitado": False,
+                "pagado": False,
+                "auditable": False,
+                "certificado": False,
+                "precio": "0",
+                "promocionado": False,
+            }
+
+            # Add logo file
+            logo_file = self.create_image_file("new_logo.jpg")
+            edit_data["logo"] = logo_file
+
+            response = authenticated_client.post(
+                f"/course/{course.codigo}/edit",
+                data=edit_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Verify successful response
+            assert response.status_code == 200
+
+            # Verify the upload was attempted
+            mock_images.save.assert_called_once()
+
+            # Verify the course logo was updated at minimum
+            updated_course = database.session.execute(select(Curso).filter_by(codigo=course.codigo)).scalar_one_or_none()
+            assert updated_course is not None
+            # Focus on testing the logo upload functionality specifically
+            assert updated_course.portada is True  # Logo upload should set this to True
+            assert updated_course.portada_ext == ".jpg"  # Extension should be set
+
+    @patch("now_lms.vistas.courses.images")
+    def test_course_edit_logo_upload_failure_handling(self, mock_images, authenticated_client, full_db_setup):
+        """Test course edit logo upload failure handling."""
+        from flask_uploads import UploadNotAllowed
+
+        mock_images.save.side_effect = UploadNotAllowed("Invalid file type")
+        mock_images.name = "images"
+
+        with full_db_setup.app_context():
+            # Create a course first
+            course = Curso(
+                codigo="EDITLOGOFAIL001",
+                nombre="Course Edit Logo Fail Test",
+                descripcion_corta="Course for testing logo edit failure",
+                descripcion="A course for testing logo upload failure during edit",
+                estado="draft",
+                modalidad="self_paced",
+                pagado=False,
+                certificado=False,
+                creado_por="test_instructor",
+                portada=True,  # Initially has logo
+                portada_ext=".png",
+            )
+            database.session.add(course)
+
+            # Assign instructor to course
+            assignment = DocenteCurso(
+                curso=course.codigo,
+                usuario="test_instructor",
+                vigente=True,
+            )
+            database.session.add(assignment)
+            database.session.commit()
+
+            # Prepare edit data with invalid logo upload
+            edit_data = {
+                "nombre": course.nombre,  # Keep original name
+                "codigo": course.codigo,
+                "descripcion_corta": course.descripcion_corta,
+                "descripcion": course.descripcion,
+                "nivel": "1",
+                "duracion": "15",
+                "modalidad": "self_paced",
+                "publico": False,
+                "limitado": False,
+                "pagado": False,
+                "auditable": False,
+                "certificado": False,
+                "precio": "0",
+                "promocionado": False,
+            }
+
+            # Add invalid logo file
+            invalid_file = self.create_test_file("invalid.txt", content_type="text/plain")
+            edit_data["logo"] = invalid_file
+
+            response = authenticated_client.post(
+                f"/course/{course.codigo}/edit",
+                data=edit_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Should handle the error gracefully
+            assert response.status_code == 200
+
+            # Verify the upload was attempted but failed
+            mock_images.save.assert_called_once()
+
+            # Verify logo state should remain unchanged due to rollback
+            updated_course = database.session.execute(select(Curso).filter_by(codigo=course.codigo)).scalar_one_or_none()
+            assert updated_course is not None
+            # Logo state should remain unchanged due to rollback
+            assert updated_course.portada is True
+            assert updated_course.portada_ext == ".png"
+
+    @patch("now_lms.vistas.courses.images")
+    def test_course_edit_logo_upload_returns_false(self, mock_images, authenticated_client, full_db_setup):
+        """Test course edit when logo upload returns False/None."""
+        mock_images.save.return_value = None  # Upload fails silently
+        mock_images.name = "images"
+
+        with full_db_setup.app_context():
+            # Create a course first
+            course = Curso(
+                codigo="EDITLOGOFALSE001",
+                nombre="Course Edit Logo False Test",
+                descripcion_corta="Course for testing logo upload returning False",
+                descripcion="A course for testing logo upload returning False",
+                estado="draft",
+                modalidad="self_paced",
+                pagado=False,
+                certificado=False,
+                creado_por="test_instructor",
+                portada=False,  # Initially no logo
+            )
+            database.session.add(course)
+
+            # Assign instructor to course
+            assignment = DocenteCurso(
+                curso=course.codigo,
+                usuario="test_instructor",
+                vigente=True,
+            )
+            database.session.add(assignment)
+            database.session.commit()
+
+            # Prepare edit data with logo upload
+            edit_data = {
+                "nombre": course.nombre,
+                "codigo": course.codigo,
+                "descripcion_corta": course.descripcion_corta,
+                "descripcion": course.descripcion,
+                "nivel": "1",
+                "duracion": "15",
+                "modalidad": "self_paced",
+                "publico": False,
+                "limitado": False,
+                "pagado": False,
+                "auditable": False,
+                "certificado": False,
+                "precio": "0",
+                "promocionado": False,
+            }
+
+            # Add logo file
+            logo_file = self.create_image_file("failed_logo.jpg")
+            edit_data["logo"] = logo_file
+
+            response = authenticated_client.post(
+                f"/course/{course.codigo}/edit",
+                data=edit_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Verify successful response
+            assert response.status_code == 200
+
+            # Verify the upload was attempted
+            mock_images.save.assert_called_once()
+
+            # Verify the course logo state remains False since upload failed
+            updated_course = database.session.execute(select(Curso).filter_by(codigo=course.codigo)).scalar_one_or_none()
+            assert updated_course is not None
+            # Logo upload failed, so portada should be False
+            assert updated_course.portada is False
+
+    @patch("now_lms.vistas.courses.images")
+    def test_course_edit_logo_upload_attribute_error(self, mock_images, authenticated_client, full_db_setup):
+        """Test course edit logo upload with AttributeError."""
+        mock_images.save.side_effect = AttributeError("Attribute error during upload")
+        mock_images.name = "images"
+
+        with full_db_setup.app_context():
+            # Create a course first
+            course = Curso(
+                codigo="EDITLOGOATTR001",
+                nombre="Course Edit Logo Attr Test",
+                descripcion_corta="Course for testing logo upload AttributeError",
+                descripcion="A course for testing logo upload with AttributeError",
+                estado="draft",
+                modalidad="self_paced",
+                pagado=False,
+                certificado=False,
+                creado_por="test_instructor",
+                portada=True,  # Initially has logo
+                portada_ext=".jpg",
+            )
+            database.session.add(course)
+
+            # Assign instructor to course
+            assignment = DocenteCurso(
+                curso=course.codigo,
+                usuario="test_instructor",
+                vigente=True,
+            )
+            database.session.add(assignment)
+            database.session.commit()
+
+            # Prepare edit data with logo upload that will cause AttributeError
+            edit_data = {
+                "nombre": course.nombre,
+                "codigo": course.codigo,
+                "descripcion_corta": course.descripcion_corta,
+                "descripcion": course.descripcion,
+                "nivel": "1",
+                "duracion": "15",
+                "modalidad": "self_paced",
+                "publico": False,
+                "limitado": False,
+                "pagado": False,
+                "auditable": False,
+                "certificado": False,
+                "precio": "0",
+                "promocionado": False,
+            }
+
+            # Add logo file
+            logo_file = self.create_image_file("error_logo.jpg")
+            edit_data["logo"] = logo_file
+
+            response = authenticated_client.post(
+                f"/course/{course.codigo}/edit",
+                data=edit_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Should handle the error gracefully
+            assert response.status_code == 200
+
+            # Verify the upload was attempted but failed
+            mock_images.save.assert_called_once()
+
+            # Verify logo state should remain unchanged due to rollback
+            updated_course = database.session.execute(select(Curso).filter_by(codigo=course.codigo)).scalar_one_or_none()
+            assert updated_course is not None
+            # Logo state should be preserved due to rollback
+            assert updated_course.portada is True
+            assert updated_course.portada_ext == ".jpg"
+
+    def test_course_edit_without_logo_upload(self, authenticated_client, full_db_setup):
+        """Test course edit without logo upload."""
+        with full_db_setup.app_context():
+            # Create a course first
+            course = Curso(
+                codigo="EDITNOLOGO001",
+                nombre="Course Edit No Logo Test",
+                descripcion_corta="Course for testing edit without logo",
+                descripcion="A course for testing edit without logo upload",
+                estado="draft",
+                modalidad="self_paced",
+                pagado=False,
+                certificado=False,
+                creado_por="test_instructor",
+                portada=False,
+            )
+            database.session.add(course)
+
+            # Assign instructor to course
+            assignment = DocenteCurso(
+                curso=course.codigo,
+                usuario="test_instructor",
+                vigente=True,
+            )
+            database.session.add(assignment)
+            database.session.commit()
+
+            # Prepare edit data without logo upload
+            edit_data = {
+                "nombre": course.nombre,  # Keep original name
+                "codigo": course.codigo,
+                "descripcion_corta": course.descripcion_corta,
+                "descripcion": course.descripcion,
+                "nivel": "2",
+                "duracion": "20",
+                "modalidad": "self_paced",
+                "publico": True,
+                "limitado": False,
+                "pagado": False,
+                "auditable": False,
+                "certificado": False,
+                "precio": "0",
+                "promocionado": False,
+            }
+
+            response = authenticated_client.post(
+                f"/course/{course.codigo}/edit",
+                data=edit_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Verify successful response
+            assert response.status_code == 200
+
+            # Verify logo state remains unchanged (no upload attempted)
+            updated_course = database.session.execute(select(Curso).filter_by(codigo=course.codigo)).scalar_one_or_none()
+            assert updated_course is not None
+            # Logo state should remain unchanged
+            assert updated_course.portada is False
+
+
 class TestFileUploadErrorCases(TestFileUploadFunctionality):
     """Test error cases and edge conditions for file uploads."""
 
@@ -576,8 +935,6 @@ class TestFileUploadErrorCases(TestFileUploadFunctionality):
     @patch("now_lms.vistas.courses.files")
     def test_upload_with_database_error(self, mock_files, authenticated_client, full_db_setup):
         """Test file upload with database error."""
-        from sqlalchemy.exc import OperationalError
-
         mock_files.save.return_value = "test_document.pdf"
         mock_files.name = "files"
 

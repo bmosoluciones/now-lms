@@ -15,17 +15,11 @@
 
 """Comprehensive tests for now_lms/calendar_utils.py functionality."""
 
-import json
-import time
 from datetime import datetime, date, time as time_obj
-from decimal import Decimal
 
-import pytest
 
 from now_lms.calendar_utils import (
     create_events_for_student_enrollment,
-    update_meet_resource_events,
-    update_evaluation_events,
     get_upcoming_events_for_user,
     cleanup_events_for_course_unenrollment,
     _combine_date_time,
@@ -443,7 +437,6 @@ class TestCalendarUtilsComprehensive:
 
         # Update events - this runs in background thread, so we test the logic directly
         # In a real scenario, this would be called when the resource is updated
-        from now_lms.calendar_utils import update_meet_resource_events
 
         # Let's test the update logic by calling it directly
         # Note: The actual function runs in background thread, but for testing
@@ -754,7 +747,6 @@ class TestCalendarUtilsComprehensive:
 
         # Test the evaluation update function - this normally runs in background
         # but we'll test the core logic
-        from now_lms.calendar_utils import update_evaluation_events
 
         # The function should be called when evaluation is updated
         # For testing, we'll verify the expected behavior

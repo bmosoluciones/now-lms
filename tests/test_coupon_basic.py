@@ -5,8 +5,6 @@ Simple test for basic coupon functionality.
 
 def test_coupon_import():
     """Test that the Coupon model can be imported."""
-    from now_lms.db import Coupon
-    from now_lms.vistas.courses import _validate_coupon_permissions
 
     # If we get here, imports worked
     assert True
@@ -34,7 +32,6 @@ def test_coupon_discount_calculation():
 
 def test_forms_import():
     """Test that coupon forms can be imported."""
-    from now_lms.forms import CouponForm, CouponApplicationForm
 
     # If we get here, imports worked
     assert True

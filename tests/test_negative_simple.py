@@ -244,12 +244,12 @@ class TestSimpleNegativeCases:
         assert result == "?"
 
     def test_misc_markdown_to_clean_html_malicious_content(self):
-        """Test markdown_to_clean_hmtl with potentially malicious content."""
-        from now_lms.misc import markdown_to_clean_hmtl
+        """Test markdown_to_clean_html with potentially malicious content."""
+        from now_lms.misc import markdown_to_clean_html
 
         # Test with script tags (should be cleaned)
         malicious_text = "Normal text <script>alert('xss')</script> more text"
-        result = markdown_to_clean_hmtl(malicious_text)
+        result = markdown_to_clean_html(malicious_text)
         assert "<script>" not in result
         assert "Normal text" in result
         assert "more text" in result

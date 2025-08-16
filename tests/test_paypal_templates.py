@@ -16,8 +16,6 @@
 Test cases for PayPal JavaScript and template integration.
 """
 
-import os
-
 
 class TestPayPalModuleStructure:
     """Test PayPal module structure and organization."""
