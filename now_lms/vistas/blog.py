@@ -233,7 +233,6 @@ def admin_create_post():
         form.status.choices = [("draft", "Borrador"), ("pending", "Pendiente")]
 
     if form.validate_on_submit() or request.method == "POST":
-        log.warning(f"Form data: {form.data}")
         slug = ensure_unique_slug(form.title.data)
 
         post = BlogPost(
@@ -268,6 +267,7 @@ def admin_create_post():
                     post.tags.append(tag)
 
         database.session.commit()
+        log.info(f"Blog post created: {post.title} by {current_user.usuario}")
         flash("Entrada de blog creada exitosamente.", "success")
 
         if current_user.tipo == "admin":
