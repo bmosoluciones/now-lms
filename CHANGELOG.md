@@ -74,11 +74,18 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Improved markdown to hmtl.
-- Update default MySQL driver
-- `/health` check status route
-- Conditional check `is_blog_enabled` 
+- Update default MySQL driver.
+- `/health` check status route.
+- Conditional check `is_blog_enabled`.
+- Add `default` certificate template.
 
 ## [v0.0.1b6.dev20250815] - 2025-08-15
+
+### Added
+- **Golden Theme**: A yellow/orange based theme.
+- **Custom Favicon**: Can set a custom favicon in themes.
+
+## [unrelased]
 
 ### Added
 - **Golden Theme**: A yellow/orange based theme.

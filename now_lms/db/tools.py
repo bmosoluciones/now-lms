@@ -775,7 +775,7 @@ def is_resources_enabled():
         return False
     except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, AttributeError):
         return False
-        
+
 
 @cache.cached(timeout=300, key_prefix="nav_blog_enabled")
 def is_blog_enabled():

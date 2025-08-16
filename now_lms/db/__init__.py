@@ -217,7 +217,7 @@ class Curso(database.Model, BaseTabla):
     descripcion = database.Column(database.String(1000), nullable=False)
     portada = database.Column(database.Boolean())
     portada_ext = database.Column(database.String(5))
-    nivel = database.Column(database.Integer())  # 0: Introductorio, 1: Principiante, 2: Intermedio, 3: Avanzado
+    nivel = database.Column(database.Integer(), default=False)  # 0: Introductorio, 1: Principiante, 2: Intermedio, 3: Avanzado
     duracion = database.Column(database.Integer())
     # Estado de publicación
     estado = database.Column(database.String(9), nullable=False, index=True)  # draft, open, closed, finalized
@@ -241,7 +241,7 @@ class Curso(database.Model, BaseTabla):
     precio = database.Column(database.Numeric(precision=10, scale=2))
     certificado = database.Column(database.Boolean())
     plantilla_certificado = database.Column(
-        database.String(25), database.ForeignKey("certificado.code"), nullable=True, index=True
+        database.String(25), database.ForeignKey("certificado.code"), nullable=True, index=True, default="default"
     )
 
     def validar_foro_habilitado(self):
