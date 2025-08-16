@@ -117,6 +117,7 @@ class ConfigForm(FlaskForm):
     enable_programs = BooleanField("Habilitar Programas", default=False, validators=[])
     enable_masterclass = BooleanField("Habilitar Master Class", default=False, validators=[])
     enable_resources = BooleanField("Habilitar Recursos descargables", default=False, validators=[])
+    enable_blog = BooleanField("Habilitar Blog", default=False, validators=[])
 
 
 class ThemeForm(FlaskForm):

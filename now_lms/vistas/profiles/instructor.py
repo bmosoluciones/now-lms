@@ -249,7 +249,7 @@ def new_evaluation(course_code, section_id):
     return render_template("instructor/new_evaluation.html", form=form, seccion=seccion)
 
 
-@instructor_profile.route("/instructor/evaluaciones")
+@instructor_profile.route("/instructor/evaluations")
 @login_required
 @perfil_requerido("instructor")
 def evaluaciones_lista():
@@ -272,7 +272,7 @@ def evaluaciones_lista():
     return render_template("instructor/evaluaciones_lista.html", evaluaciones=evaluaciones_con_curso)
 
 
-@instructor_profile.route("/instructor/nueva-evaluacion")
+@instructor_profile.route("/instructor/new-evaluation")
 @login_required
 @perfil_requerido("instructor")
 def nueva_evaluacion_global():

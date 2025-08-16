@@ -496,6 +496,7 @@ class Configuracion(database.Model, BaseTabla):
     enable_programs = database.Column(database.Boolean(), default=False, nullable=False)
     enable_masterclass = database.Column(database.Boolean(), default=False, nullable=False)
     enable_resources = database.Column(database.Boolean(), default=False, nullable=False)
+    enable_blog = database.Column(database.Boolean(), default=False, nullable=False)
 
 
 class Style(database.Model, BaseTabla):
