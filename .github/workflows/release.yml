@@ -57,6 +57,7 @@ jobs:
                   FLASK_APP: now_lms
                   LOG_LEVEL: TRACE
               run: |
+                  sudo systemctl start postgresql.service
                   sudo -u postgres psql -c "CREATE USER lmsctl2 WITH PASSWORD 'lmsctl2';"
                   sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON SCHEMA public TO lmsctl2;"
                   sudo -u postgres psql -c "CREATE DATABASE lmsctl2;"
