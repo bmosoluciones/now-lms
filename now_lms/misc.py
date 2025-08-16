@@ -152,7 +152,7 @@ HTML_TAGS = [
 ]
 
 
-def markdown_to_clean_hmtl(text: str):
+def markdown_to_clean_html(text: str):
     """Return clean HTML from a MarkDown text.
 
     Args:

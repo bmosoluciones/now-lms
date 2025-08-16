@@ -242,8 +242,10 @@ def test_close_forum_when_course_finalized(minimal_db_setup):
     database.session.commit()
 
     # Crear varios mensajes
+
     mensaje1 = ForoMensaje(curso_id=curso.codigo, usuario_id=usuario.usuario, contenido="Primer mensaje", estado="abierto")
     mensaje2 = ForoMensaje(curso_id=curso.codigo, usuario_id=usuario.usuario, contenido="Segundo mensaje", estado="abierto")
+
     database.session.add_all([mensaje1, mensaje2])
     database.session.commit()
 
@@ -253,4 +255,5 @@ def test_close_forum_when_course_finalized(minimal_db_setup):
     # Verificar que todos los mensajes están cerrados
     mensajes = database.session.query(ForoMensaje).filter_by(curso_id=curso.codigo).all()
     for mensaje in mensajes:
+
         assert mensaje.estado == "cerrado"

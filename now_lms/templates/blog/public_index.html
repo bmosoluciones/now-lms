@@ -46,7 +46,7 @@
                             {% endif %}
 
                             <div class="mb-2">
-                                {{ mkdonw2thml(post.content[:300]) }} {% if post.content|length > 300 %}...{% endif %}
+                                {{ mkdown2html(post.content[:300]) }} {% if post.content|length > 300 %}...{% endif %}
                             </div>
 
                             <a href="{{ url_for('blog.blog_post', slug=post.slug) }}" class="btn btn-outline-primary btn-sm">

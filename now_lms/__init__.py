@@ -102,7 +102,7 @@ from now_lms.db.tools import (
     verificar_avance_recurso,
 )
 from now_lms.logs import log
-from now_lms.misc import ESTILO_ALERTAS, ICONOS_RECURSOS, INICIO_SESION, concatenar_parametros_a_url, markdown_to_clean_hmtl
+from now_lms.misc import ESTILO_ALERTAS, ICONOS_RECURSOS, INICIO_SESION, concatenar_parametros_a_url, markdown_to_clean_html
 from now_lms.themes import current_theme
 from now_lms.version import CODE_NAME, VERSION
 from now_lms.vistas._helpers import get_current_course_logo, get_site_favicon, get_site_logo
@@ -289,7 +289,7 @@ def define_variables_globales_jinja2(lms_app: Flask):
     lms_app.jinja_env.globals["is_blog_enabled"] = is_blog_enabled
     lms_app.jinja_env.globals["lms_info"] = lms_info
     lms_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
-    lms_app.jinja_env.globals["mkdonw2thml"] = markdown_to_clean_hmtl
+    lms_app.jinja_env.globals["mkdown2html"] = markdown_to_clean_html
     lms_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
     lms_app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
     lms_app.jinja_env.globals["paypal_enabled"] = check_paypal_enabled

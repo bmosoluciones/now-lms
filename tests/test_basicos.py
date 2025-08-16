@@ -262,6 +262,6 @@ _This is italic text_
 
 
 def test_clean_markdown():
-    from now_lms.misc import markdown_to_clean_hmtl
+    from now_lms.misc import markdown_to_clean_html
 
-    markdown_to_clean_hmtl(MARKDOWN_EXAMPLE)
+    markdown_to_clean_html(MARKDOWN_EXAMPLE)

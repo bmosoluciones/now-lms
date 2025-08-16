@@ -100,12 +100,12 @@
                         </div>
 
                         <h3>Descripción</h3>
-                        <div class="mb-4">{{ mkdonw2thml(master_class.description_public) }}</div>
+                        <div class="mb-4">{{ mkdown2html(master_class.description_public) }}</div>
 
                         {% if enrollment and enrollment.is_access_granted() and master_class.description_private %}
                         <div class="alert alert-info">
                             <h4><i class="fas fa-lock-open"></i> Información para Participantes</h4>
-                            {{ mkdonw2thml(master_class.description_private) }}
+                            {{ mkdown2html(master_class.description_private) }}
                         </div>
                         {% endif %} {% if enrollment and enrollment.is_confirmed %}
                         <div class="alert alert-success">

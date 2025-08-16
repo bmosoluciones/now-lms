@@ -20,7 +20,7 @@ from collections import OrderedDict
 
 from now_lms.misc import (
     concatenar_parametros_a_url,
-    markdown_to_clean_hmtl,
+    markdown_to_clean_html,
     sanitize_slide_content,
     TIPOS_DE_USUARIO,
     ICONOS_RECURSOS,
@@ -57,7 +57,7 @@ class TestMiscUtilities:
     def test_markdown_to_clean_html_basic(self):
         """Test basic markdown to HTML conversion."""
         markdown_text = "**Bold text** and *italic text*"
-        result = markdown_to_clean_hmtl(markdown_text)
+        result = markdown_to_clean_html(markdown_text)
 
         assert "<strong>" in result
         assert "<em>" in result
@@ -67,7 +67,7 @@ class TestMiscUtilities:
     def test_markdown_to_clean_html_with_links(self):
         """Test markdown to HTML conversion with links."""
         markdown_text = "[Example](https://example.com)"
-        result = markdown_to_clean_hmtl(markdown_text)
+        result = markdown_to_clean_html(markdown_text)
 
         assert '<a href="https://example.com"' in result
         assert "Example" in result
