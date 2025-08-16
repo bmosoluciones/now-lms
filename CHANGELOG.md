@@ -8,7 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > This project also follows [Conventional Commits](https://www.conventionalcommits.org/), using prefixes such as:  
 > `fix:`, `feat:`, `refactor:`, `release:`, `docs:`, `build:`, `ci:` to clearly describe changes.
 
-## [unrelased]
+## [unreleased]
+
+- Update default MySQL driver
+
+## [v0.0.1b6.dev20250815] - 2025-08-15
 
 ### Added
 - **Golden Theme**: A yellow/orange based theme.
