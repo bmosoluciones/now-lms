@@ -148,7 +148,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% set now = moment() %} {% for week in month_days %}
+                            {% for week in month_days %}
                             <tr>
                                 {% for day in week %}
                                 <td class="calendar-day {% if day == 0 %}calendar-other-month{% endif %}">

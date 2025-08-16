@@ -16,6 +16,9 @@
 """Test coverage for marcar_recurso_completado function lines 1023-1033."""
 
 
+import pytest
+
+
 from now_lms.db import (
     CursoRecursoAvance,
     database,
@@ -49,6 +52,7 @@ class TestMarcarRecursoCompletadoCoverage:
             user = database.session.execute(
                 database.select(Usuario).filter_by(correo_electronico="coverage@test.com")
             ).first()[0]
+
             user.activo = True
             database.session.commit()
 
@@ -93,6 +97,7 @@ class TestMarcarRecursoCompletadoCoverage:
 
         with app.app_context():
             # Verify the existing progress was updated (not a new one created)
+
             progress_records = (
                 database.session.execute(
                     database.select(CursoRecursoAvance).filter_by(
@@ -135,6 +140,7 @@ class TestMarcarRecursoCompletadoCoverage:
             user = database.session.execute(
                 database.select(Usuario).filter_by(correo_electronico="coverage2@test.com")
             ).first()[0]
+
             user.activo = True
             database.session.commit()
 
