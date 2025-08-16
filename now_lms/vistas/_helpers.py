@@ -53,3 +53,15 @@ def get_site_logo():
         return logo_file.name
     except IndexError:
         return None
+
+
+def get_site_favicon():
+    """Return the name of the logo file of the site."""
+
+    course_dir = Path(str(str(DIRECTORIO_ARCHIVOS_PUBLICOS) + "/images/"))
+    logo_file = [f for f in course_dir.iterdir() if f.is_file() and f.stem == "favicon"]
+    try:
+        logo_file = logo_file[0]
+        return logo_file.name
+    except IndexError:
+        return None

@@ -138,7 +138,7 @@ def reset(with_examples=False, with_tests=False) -> None:  # pragma: no cover
 @lms_app.cli.command()
 def version():  # pragma: no cover
     """Return the current version of the software."""
-    click.echo(f"NOW - LMS code name {CODE_NAME} release: {VERSION} ")
+    click.echo(f"NOW - Learning Management Sytem Code Name: {CODE_NAME} Release: {VERSION}")
 
 
 @lms_app.cli.group()

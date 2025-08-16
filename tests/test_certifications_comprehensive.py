@@ -82,7 +82,7 @@ class TestCertificationForCourses:
 
         # Create course
         course = Curso(
-            codigo="CERT_COURSE001",
+            codigo="CERT001",
             nombre="Certification Course",
             descripcion_corta="Course that awards certificates",
             descripcion="Course that awards certificates",
@@ -94,7 +94,7 @@ class TestCertificationForCourses:
         database.session.commit()
 
         # Verify course is configured for certification
-        retrieved_course = database.session.execute(database.select(Curso).filter_by(codigo="CERT_COURSE001")).scalar_one()
+        retrieved_course = database.session.execute(database.select(Curso).filter_by(codigo="CERT001")).scalar_one()
 
         assert retrieved_course.certificado is True
         assert retrieved_course.plantilla_certificado == "COURSE_CERT"
@@ -123,7 +123,7 @@ class TestCertificationForCourses:
 
         # Create course with certification
         course = Curso(
-            codigo="CERT_COURSE002",
+            codigo="CERT002",
             nombre="Certificate Course",
             descripcion_corta="Course with certificate",
             descripcion="Course with certificate",

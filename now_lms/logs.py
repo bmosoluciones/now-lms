@@ -66,11 +66,6 @@ console_handler = logging.StreamHandler(stdout)
 console_handler.setLevel(numeric_level)
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s: %(message)s")
 console_handler.setFormatter(formatter)
-
-# Evitar duplicación de handlers
-if root_logger.hasHandlers():
-    root_logger.handlers.clear()
-
 root_logger.addHandler(console_handler)
 
 # Configurar logger de Flask y Werkzeug al mismo nivel

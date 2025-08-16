@@ -220,19 +220,23 @@ def get_upcoming_events_for_user(user_id, limit=5):
     """Get upcoming events for a user (for dashboard display)."""
     from datetime import datetime
 
+    # Handle invalid inputs
+    if not user_id or limit <= 0:
+        return []
+
     now = datetime.now()
-    events = (
-        database.session.execute(
-            database.select(UserEvent)
-            .filter(UserEvent.user_id == user_id)
-            .filter(UserEvent.start_time >= now)
-            .order_by(UserEvent.start_time)
-            .limit(limit)
-        )
-        .scalars()
-        .all()
+    query = (
+        database.select(UserEvent)
+        .filter(UserEvent.user_id == user_id)
+        .filter(UserEvent.start_time >= now)
+        .order_by(UserEvent.start_time)
     )
 
+    # Only apply limit if it's positive to avoid MySQL syntax errors
+    if limit > 0:
+        query = query.limit(limit)
+
+    events = database.session.execute(query).scalars().all()
     return events
 
 

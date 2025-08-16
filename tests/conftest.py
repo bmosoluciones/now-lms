@@ -15,35 +15,36 @@
 
 """Shared test configuration and fixtures."""
 
-import os
 import pytest
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
 from sqlalchemy.exc import OperationalError, ProgrammingError, IntegrityError
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
 
 from now_lms import log
 
-# Database URL configuration following the requirements:
-# 1. If DATABASE_URL environment variable is defined with valid URL, use it
-# 2. If not defined, use SQLite in-memory database by default
-DB_URL = os.environ.get("DATABASE_URL")
-if not DB_URL:
-    # Default to SQLite in-memory database for tests
-    DB_URL = "sqlite:///:memory:"
+
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    """Enable foreign key constraints in SQLite for test consistency with MySQL."""
+    if "sqlite" in str(dbapi_connection):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
+
+
+DB_URL = "sqlite:///:memory:"
 
 log.info(f"Using test database URL: {DB_URL}")
 
 
 def create_app(testing=True, database_uri=None, minimal=False):
     """Create Flask application with test configuration (factory pattern)."""
-    from flask import Flask
+    from now_lms import lms_app
     from now_lms.config import CONFIGURACION, DIRECTORIO_ARCHIVOS, DIRECTORIO_PLANTILLAS
 
-    app = Flask(
-        "now_lms",
-        template_folder=DIRECTORIO_PLANTILLAS,
-        static_folder=DIRECTORIO_ARCHIVOS,
-    )
+    app = lms_app
 
     # Base configuration
     app.config.from_mapping(CONFIGURACION)
@@ -66,24 +67,6 @@ def create_app(testing=True, database_uri=None, minimal=False):
 
     if database_uri:
         app.config["SQLALCHEMY_DATABASE_URI"] = database_uri
-
-    # Initialize extensions (similar to what the main app does)
-    if not minimal:
-        from now_lms import (
-            inicializa_extenciones_terceros,
-            registrar_modulos_en_la_aplicacion_principal,
-            define_variables_globales_jinja2,
-        )
-
-        inicializa_extenciones_terceros(app)
-        registrar_modulos_en_la_aplicacion_principal(app)
-        define_variables_globales_jinja2(app)
-    else:
-        # Minimal initialization for basic tests
-        from now_lms import database, administrador_sesion
-
-        database.init_app(app)
-        administrador_sesion.init_app(app)
 
     return app
 
@@ -156,6 +139,7 @@ def client(app):
 @pytest.fixture(scope="function")
 def db_session(app):
     """Database session with proper cleanup for each test."""
+    app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
     with app.app_context():
         from now_lms import database
 
@@ -173,6 +157,7 @@ def db_session(app):
 def lms_application(database_url):
     """Legacy fixture for backwards compatibility."""
     test_app = create_app(testing=True, database_uri=database_url)
+    test_app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 
     # Initialize database within the test app context to ensure proper setup
     with test_app.app_context():
@@ -210,6 +195,7 @@ def full_db_setup(app, db_session):
     Full database setup with complete data population.
     Use this for tests that need the complete populated database (like test_vistas).
     """
+    app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
     with app.app_context():
         try:
             # Directly create the setup data in the correct app context
@@ -248,6 +234,7 @@ def full_db_setup_with_examples(app, db_session):
     """
     from now_lms import initial_setup
 
+    app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
     with app.app_context():
         try:
             # Full database setup with test data and examples
@@ -267,6 +254,7 @@ def basic_config_setup(app, db_session):
     """
     from now_lms.db.tools import crear_configuracion_predeterminada
 
+    app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
     with app.app_context():
         try:
             # Only create basic configuration

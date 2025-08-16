@@ -129,7 +129,7 @@ class TestEvaluationBasicFunctionality:
 
         # Create course and section
         course = Curso(
-            codigo="ATTEMPT_COURSE",
+            codigo="ATT_COURSE",
             nombre="Attempt Course",
             descripcion_corta="Course for attempt testing",
             descripcion="Course for attempt testing",
@@ -179,7 +179,7 @@ class TestEvaluationBasicFunctionality:
         """Test multiple choice question with options."""
         # Create course and section
         course = Curso(
-            codigo="OPTION_COURSE",
+            codigo="OPT_COURSE",
             nombre="Option Course",
             descripcion_corta="Course for option testing",
             descripcion="Course for option testing",

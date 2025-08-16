@@ -20,7 +20,6 @@
 # Standard library
 # ---------------------------------------------------------------------------------------
 from collections import OrderedDict
-from os import getcwd
 from typing import NamedTuple, Union
 
 # ---------------------------------------------------------------------------------------
@@ -242,19 +241,3 @@ ESTILOS_ALERTAS: dict = {
 }
 
 ESTILO_ALERTAS = EstiloAlterta(icono=ICONOS_ALERTAS, clase=ESTILOS_ALERTAS)
-
-
-def check_generate_pdf():
-    """Verify PDF generation."""
-
-    from jinja2 import BaseLoader, Environment
-    from weasyprint import CSS, HTML
-
-    from now_lms.db import Certificado, database
-
-    cert = database.session.execute(database.select(Certificado).filter_by(titulo="Demo Certificado")).first()
-    cert = cert[0]
-
-    rtemplate = Environment(loader=BaseLoader, autoescape=True).from_string(cert.html)
-
-    HTML(string=rtemplate.render()).write_pdf(getcwd() + "/test.pdf", stylesheets=[CSS(string=cert.css)])

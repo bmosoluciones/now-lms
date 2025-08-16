@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="Aplicación para gestión del aprendizaje." />
+        <meta name="author" content="BMO Moreno Berroteran Ortiz Soluciones Sociedad Anonima" />
+
+        <!-- Golden Theme Meta -->
+        <meta name="theme-color" content="#F0B744" />
+        <meta name="msapplication-TileColor" content="#F0B744" />
+
+        <!-- Google Fonts for Golden Theme -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Lato:wght@300;400;700;900&display=swap"
+            rel="stylesheet"
+        />
+
+        <!-- Código local -->
+        <link href="{{ url_for('static', filename='css/cacaoaccounting.css') }}" rel="stylesheet" />
+
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.css') }}" />
+        <script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.bundle.js') }}"></script>
+
+        <!-- Bootstrap Font -->
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='node_modules/bootstrap-icons/font/bootstrap-icons.css') }}"
+        />
+
+        <!-- Golden Theme CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='themes/golden/theme.min.css') }}" />
+
+        <title>{{ title }}</title>
+    </head>
+
+    <body>
+        <!-- Inicio del bloque contenido -->
+
+        {% block contenido %}{% endblock %}
+
+        <!-- Fin del bloque contenido -->
+
+        <!-- Golden Theme JavaScript -->
+        <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js') }}"></script>
+        <script>
+            // Golden theme specific JavaScript
+            $(document).ready(function () {
+                // Add smooth scrolling for anchor links
+                $('a[href^="#"]').on("click", function (event) {
+                    var target = $(this.getAttribute("href"))
+                    if (target.length) {
+                        event.preventDefault()
+                        $("html, body")
+                            .stop()
+                            .animate(
+                                {
+                                    scrollTop: target.offset().top - 80,
+                                },
+                                1000
+                            )
+                    }
+                })
+            })
+        </script>
+    </body>
+</html>

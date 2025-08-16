@@ -73,20 +73,20 @@ resource_type == "link" %}<i class="bi bi-link-45deg text-warning" aria-hidden="
 ></i>
 {% endif %} {%- endmacro %} {% macro get_requirement_badge(requerido) -%} {% if requerido == "required" %}<span
     class="badge bg-danger rounded-pill ms-1"
-    title="Requerido"
+    title="{{ _('Requerido') }}"
     >R</span
 >
-{% elif requerido == "optional" %}<span class="badge bg-warning rounded-pill ms-1" title="Opcional">O</span> {% elif requerido
-== "substitute" %}<span class="badge bg-info rounded-pill ms-1" title="Alternativo">A</span> {% endif %} {%- endmacro %} {%
-macro get_completion_icon(completed) -%} {% if completed %}<i
+{% elif requerido == "optional" %}<span class="badge bg-warning rounded-pill ms-1" title="{{ _('Opcional') }}">O</span> {% elif
+requerido == "substitute" %}<span class="badge bg-info rounded-pill ms-1" title="{{ _('Alternativo') }}">A</span> {% endif %}
+{%- endmacro %} {% macro get_completion_icon(completed) -%} {% if completed %}<i
     class="bi bi-check-circle-fill text-success ms-2"
-    title="Completado"
+    title="{{ _('Completado') }}"
     aria-hidden="true"
 ></i>
-{% else %}<i class="bi bi-circle text-muted ms-2" title="Pendiente" aria-hidden="true"></i>
+{% else %}<i class="bi bi-circle text-muted ms-2" title="{{ _('Pendiente') }}" aria-hidden="true"></i>
 {% endif %} {%- endmacro %} {% macro resource_nav(secciones=None, recursos=None, user_progress=None, evaluaciones=None,
 evaluation_attempts=None) %}
-<h2 class="h6 pt-4 pb-3 mb-4 border-bottom">Contenido del Curso</h2>
+<h2 class="h6 pt-4 pb-3 mb-4 border-bottom">{{ _('Contenido del Curso') }}</h2>
 <nav class="small" id="toc">
     <ul class="list-unstyled">
         {% for s in secciones %} {% set section_resources = recursos | selectattr("seccion", "equalto", s.id) | list %} {% set

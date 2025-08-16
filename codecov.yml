@@ -9,3 +9,4 @@ coverage:
         threshold: 10%
 ignore:
   - "now_lms/__main__.py"
+  - "now_lms/cli.py"

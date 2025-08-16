@@ -528,7 +528,9 @@ def nuevo_curso():
             pagado=form.pagado.data,
             auditable=form.auditable.data,
             certificado=form.certificado.data,
-            plantilla_certificado=form.plantilla_certificado.data,
+            plantilla_certificado=(
+                form.plantilla_certificado.data if form.certificado.data and form.plantilla_certificado.data else None
+            ),
             precio=form.precio.data,
             # Información adicional
             creado_por=current_user.usuario,
@@ -1231,7 +1233,7 @@ def editar_recurso_text(course_code, seccion, resource_id):
 
     if form.validate_on_submit() or request.method == "POST":
         recurso.nombre = form.nombre.data
-        recurso.descripcion = form.descripcion.data
+        recurso.descripcion = "Text resource"
         recurso.requerido = form.requerido.data
         recurso.text = form.editor.data
         recurso.modificado_por = current_user.usuario

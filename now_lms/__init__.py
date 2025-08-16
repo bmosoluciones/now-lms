@@ -78,6 +78,7 @@ from now_lms.db.initial_data import (
 from now_lms.db.tools import (
     crear_configuracion_predeterminada,
     cuenta_cursos_por_programa,
+    favicon_perzonalizado,
     get_ad_billboard,
     get_ad_large_rectangle,
     get_ad_large_skyscraper,
@@ -109,7 +110,7 @@ from now_lms.misc import (
 )
 from now_lms.themes import current_theme
 from now_lms.version import CODE_NAME, VERSION
-from now_lms.vistas._helpers import get_current_course_logo, get_site_logo
+from now_lms.vistas._helpers import get_current_course_logo, get_site_logo, get_site_favicon
 from now_lms.vistas.announcements.admin import admin_announcements
 from now_lms.vistas.announcements.instructor import instructor_announcements
 from now_lms.vistas.announcements.public import public_announcements
@@ -172,7 +173,7 @@ def inicializa_extenciones_terceros(flask_app: Flask):
         mde.init_app(flask_app)
         _mail_instance.init_app(flask_app)
         flask_app.config["BABEL_DEFAULT_LOCALE"] = "es"
-        flask_app.config["BABEL_TRANSLATION_DIRECTORIES"] = "translations"
+        flask_app.config["BABEL_TRANSLATION_DIRECTORIES"] = "now_lms/translations"
         flask_app.config["BABEL_SUPPORTED_LOCALES"] = ["es", "en"]
         babel.init_app(flask_app, locale_selector=get_locale, timezone_selector=get_timezone)
     log.trace("Third-party extensions started successfully.")
@@ -282,6 +283,7 @@ def define_variables_globales_jinja2(lms_app: Flask):
     lms_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
     lms_app.jinja_env.globals["estilo_alerta"] = ESTILO_ALERTAS
     lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
+    lms_app.jinja_env.globals["favicon_perzonalizado"] = favicon_perzonalizado
     lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
     lms_app.jinja_env.globals["info"] = app_info(lms_app)
     lms_app.jinja_env.globals["is_masterclass_enabled"] = is_masterclass_enabled
@@ -296,6 +298,7 @@ def define_variables_globales_jinja2(lms_app: Flask):
     lms_app.jinja_env.globals["paypal_id"] = get_paypal_id
     lms_app.jinja_env.globals["pyversion"] = python_version()
     lms_app.jinja_env.globals["site_logo"] = get_site_logo
+    lms_app.jinja_env.globals["site_favicon"] = get_site_favicon
     lms_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
     lms_app.jinja_env.globals["version"] = VERSION
 

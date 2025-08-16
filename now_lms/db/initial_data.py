@@ -349,18 +349,6 @@ def crear_curso_demo():
     database.session.add(nuevo_recurso7)
     database.session.commit()
 
-    nuevo_recurso8 = CursoRecurso(
-        curso="resources",
-        seccion=seccion_id,
-        tipo="slides",
-        nombre="A demo Slide Show.",
-        descripcion="A demo Slide Show.",
-        indice=8,
-        publico=False,
-    )
-    database.session.add(nuevo_recurso8)
-    database.session.commit()
-
     nuevo_recurso9 = CursoRecurso(
         curso="resources",
         seccion=seccion_id,

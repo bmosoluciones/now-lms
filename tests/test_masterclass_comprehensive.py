@@ -161,7 +161,7 @@ class TestMasterClassBasicFunctionality:
 
         # Create certificate template
         template = Certificado(
-            code="MC_CERT_TEMPLATE",
+            code="MC_CERT",
             titulo="MasterClass Certificate",
             habilitado=True,
         )
@@ -178,7 +178,7 @@ class TestMasterClassBasicFunctionality:
             platform_name="Google Meet",
             platform_url="https://meet.google.com/cert-mc",
             is_certificate=True,
-            diploma_template_id="MC_CERT_TEMPLATE",
+            diploma_template_id="MC_CERT",
             instructor_id=instructor.usuario,
         )
         database.session.add(masterclass)
@@ -188,4 +188,4 @@ class TestMasterClassBasicFunctionality:
         retrieved = database.session.execute(database.select(MasterClass).filter_by(slug="cert-masterclass")).scalar_one()
 
         assert retrieved.is_certificate is True
-        assert retrieved.diploma_template_id == "MC_CERT_TEMPLATE"
+        assert retrieved.diploma_template_id == "MC_CERT"

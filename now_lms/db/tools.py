@@ -59,6 +59,7 @@ from now_lms.db import (
     Usuario,
     database,
 )
+from now_lms.i18n import _
 from now_lms.logs import log
 
 # < --------------------------------------------------------------------------------------------- >
@@ -68,9 +69,13 @@ from now_lms.logs import log
 def verifica_docente_asignado_a_curso(id_curso: Union[None, str] = None):
     """Si el usuario no esta asignado como docente al curso devuelve None."""
     if current_user.is_authenticated:
-        return database.session.execute(
+        query = database.session.execute(
             database.select(DocenteCurso).filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == id_curso)
-        )
+        ).scalar_one_or_none()
+        if query:
+            return query
+        else:
+            return False
     else:
         return False
 
@@ -78,11 +83,15 @@ def verifica_docente_asignado_a_curso(id_curso: Union[None, str] = None):
 def verifica_moderador_asignado_a_curso(id_curso: Union[None, str] = None):
     """Si el usuario no esta asignado como moderador al curso devuelve None."""
     if current_user.is_authenticated:
-        return database.session.execute(
+        query = database.session.execute(
             database.select(ModeradorCurso).filter(
                 ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.curso == id_curso
             )
-        )
+        ).scalar_one_or_none()
+        if query:
+            return True
+        else:
+            return False
     else:
         return False
 
@@ -123,7 +132,7 @@ def crear_configuracion_predeterminada():
 
     config = Configuracion(
         titulo="NOW LMS",
-        descripcion="Sistema de aprendizaje en linea.",
+        descripcion=_("Sistema de aprendizaje en linea."),
         moneda="C$",
         r=urandom(16),
         enable_programs=False,
@@ -312,7 +321,19 @@ def logo_perzonalizado():
         consulta = consulta[0]
         return consulta.custom_logo
     else:
-        return
+        return False
+
+
+@cache.cached(timeout=60, key_prefix="cached_favicon")
+def favicon_perzonalizado():
+    """Devuelve configuracion predeterminada."""
+
+    consulta = database.session.execute(database.select(Style)).first()
+    if consulta:
+        consulta = consulta[0]
+        return consulta.custom_logo
+    else:
+        return False
 
 
 def elimina_logo_perzonalizado():
