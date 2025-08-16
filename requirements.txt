@@ -19,6 +19,7 @@ flask-sqlalchemy
 flask_weasyprint
 flask-wtf
 markdown
+memcache
 pg8000
 pyjwt
 python-slugify
