@@ -86,12 +86,7 @@ permitir_docente %}
                                 </div>
                             </div>
                         </div>
-                        {% endif %}
-
-                        <iframe
-                            title="{{ curso.codigo }}"
-                            src="{{ url_for('course.curso_descripcion_a_html', course_code=curso.codigo) }}"
-                        ></iframe>
+                        {% endif %} {{ markdown2html(curso.descripcion) | safe }}
                         <br />
                         {% if descargas %}
                         <strong>Recursos disponibles con este curso:</strong>

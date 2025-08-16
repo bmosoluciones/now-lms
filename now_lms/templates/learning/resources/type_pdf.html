@@ -63,12 +63,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                             </a>
                         </div>
 
-                        <div>
-                            <iframe
-                                title="{{ recurso.codigo }}"
-                                src="{{ url_for('course.recurso_descripcion_a_html', course_code=recurso.curso, resource=recurso.id) }}"
-                            ></iframe>
-                        </div>
+                        <div>{{ markdown2html(recurso.descripcion) | safe }}</div>
 
                         <!-- AdSense Ad after resource description for free courses -->
                         {% if adsense_enabled() and not curso.pagado %} {% set ad_code = ad_large_rectangle() %} {% if ad_code
