@@ -8,8 +8,8 @@ from datetime import datetime
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
-from sqlalchemy.exc import ArgumentError, OperationalError
 from sqlalchemy import delete
+from sqlalchemy.exc import ArgumentError, OperationalError
 
 # ---------------------------------------------------------------------------------------
 # Local resources

@@ -24,7 +24,7 @@
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask import g, request
-from flask_babel import gettext, ngettext, lazy_gettext
+from flask_babel import gettext, lazy_gettext, ngettext
 
 # ---------------------------------------------------------------------------------------
 # Local resources

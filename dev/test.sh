@@ -20,4 +20,4 @@ echo -------------------------------------------------
 echo Run tests
 echo -------------------------------------------------
 echo
-CI=True pytest  -v --exitfirst --cov=now_lms
+CI=True pytest --tb=line -q --exitfirst --cov=now_lms

@@ -102,16 +102,10 @@ from now_lms.db.tools import (
     verificar_avance_recurso,
 )
 from now_lms.logs import log
-from now_lms.misc import (
-    ESTILO_ALERTAS,
-    ICONOS_RECURSOS,
-    INICIO_SESION,
-    concatenar_parametros_a_url,
-    markdown_to_clean_hmtl,
-)
+from now_lms.misc import ESTILO_ALERTAS, ICONOS_RECURSOS, INICIO_SESION, concatenar_parametros_a_url, markdown_to_clean_hmtl
 from now_lms.themes import current_theme
 from now_lms.version import CODE_NAME, VERSION
-from now_lms.vistas._helpers import get_current_course_logo, get_site_logo, get_site_favicon
+from now_lms.vistas._helpers import get_current_course_logo, get_site_favicon, get_site_logo
 from now_lms.vistas.announcements.admin import admin_announcements
 from now_lms.vistas.announcements.instructor import instructor_announcements
 from now_lms.vistas.announcements.public import public_announcements
@@ -125,6 +119,7 @@ from now_lms.vistas.forum import forum
 from now_lms.vistas.groups import group
 from now_lms.vistas.health import health_bp
 from now_lms.vistas.home import home
+from now_lms.vistas.masterclass import masterclass
 from now_lms.vistas.messages import msg
 from now_lms.vistas.paypal import check_paypal_enabled, paypal
 from now_lms.vistas.profiles.admin import admin_profile
@@ -136,7 +131,6 @@ from now_lms.vistas.resources import resource_d
 from now_lms.vistas.settings import setting
 from now_lms.vistas.tags import tag
 from now_lms.vistas.users import user
-from now_lms.vistas.masterclass import masterclass
 from now_lms.vistas.web_error_codes import web_error
 
 # ---------------------------------------------------------------------------------------

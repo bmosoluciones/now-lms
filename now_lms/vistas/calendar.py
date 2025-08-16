@@ -15,17 +15,18 @@
 
 """Calendar views for student users."""
 
+import calendar as cal
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
 from datetime import datetime, timedelta
-import calendar as cal
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, render_template, request, abort, Response
-from flask_login import login_required, current_user
+from flask import Blueprint, Response, abort, render_template, request
+from flask_login import current_user, login_required
 
 # ---------------------------------------------------------------------------------------
 # Local resources

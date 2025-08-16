@@ -32,8 +32,8 @@ from os import path
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, abort, current_app, flash, redirect, render_template, request, send_from_directory, url_for
 from flask_login import current_user, login_required
-from sqlalchemy.exc import OperationalError
 from sqlalchemy import delete
+from sqlalchemy.exc import OperationalError
 
 # ---------------------------------------------------------------------------------------
 # Local resources

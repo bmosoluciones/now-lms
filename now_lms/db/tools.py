@@ -29,8 +29,8 @@ from flask import flash
 from flask_login import current_user
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
-from sqlalchemy.exc import OperationalError, ProgrammingError
 from sqlalchemy import func
+from sqlalchemy.exc import OperationalError, ProgrammingError
 
 # ---------------------------------------------------------------------------------------
 # Local resources

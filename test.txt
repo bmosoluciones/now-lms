@@ -9,6 +9,7 @@ wheel
 black
 flake8
 pytest
+pytest-sugar
 ruff
 
 # Control de calidad html

@@ -34,8 +34,8 @@ from flask import Blueprint, abort, current_app, flash, redirect, render_templat
 from flask_login import current_user, login_required
 from flask_uploads import UploadNotAllowed
 from markdown import markdown
+from sqlalchemy import delete, func
 from sqlalchemy.exc import OperationalError
-from sqlalchemy import func, delete
 from ulid import ULID
 
 # ---------------------------------------------------------------------------------------
@@ -97,14 +97,7 @@ from now_lms.forms import (
     SlideShowForm,
 )
 from now_lms.logs import log
-from now_lms.misc import (
-    CURSO_NIVEL,
-    HTML_TAGS,
-    INICIO_SESION,
-    TEMPLATES_BY_TYPE,
-    TIPOS_RECURSOS,
-    sanitize_slide_content,
-)
+from now_lms.misc import CURSO_NIVEL, HTML_TAGS, INICIO_SESION, TEMPLATES_BY_TYPE, TIPOS_RECURSOS, sanitize_slide_content
 from now_lms.themes import get_course_list_template, get_course_view_template
 
 # ---------------------------------------------------------------------------------------
