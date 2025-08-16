@@ -4,7 +4,7 @@
 
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>{{ title }} - Administración</title>
+        <title>Crear nueva entrada del blog.</title>
     </head>
 
     <body>
@@ -71,9 +71,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <button type="submit" class="btn btn-primary">
-                                    {% if post %}Actualizar{% else %}Crear{% endif %} entrada
-                                </button>
+                                <button type="submit" class="btn btn-primary">Grabar entrada</button>
 
                                 {% if current_user.tipo == 'admin' %}
                                 <a href="{{ url_for('blog.admin_blog_index') }}" class="btn btn-secondary">Cancelar</a>

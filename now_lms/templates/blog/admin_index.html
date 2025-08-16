@@ -104,37 +104,30 @@
                                             {{ post.fecha_alta.strftime('%d/%m/%Y') }} {% endif %}
                                         </td>
                                         <td>
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                <a
-                                                    href="{{ url_for('blog.admin_edit_post', post_id=post.id) }}"
-                                                    class="btn btn-outline-primary"
-                                                    title="Editar"
-                                                >
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
+                                            <!-- Actions -->
 
-                                                {% if post.status == 'pending' %}
-                                                <form
-                                                    method="POST"
-                                                    action="{{ url_for('blog.approve_post', post_id=post.id) }}"
-                                                    class="d-inline"
-                                                >
-                                                    <button type="submit" class="btn btn-outline-success" title="Aprobar">
-                                                        <i class="fas fa-check"></i>
-                                                    </button>
-                                                </form>
-                                                {% endif %} {% if post.status != 'banned' %}
-                                                <form
-                                                    method="POST"
-                                                    action="{{ url_for('blog.ban_post', post_id=post.id) }}"
-                                                    class="d-inline"
-                                                >
-                                                    <button type="submit" class="btn btn-outline-danger" title="Banear">
-                                                        <i class="fas fa-ban"></i>
-                                                    </button>
-                                                </form>
-                                                {% endif %}
-                                            </div>
+                                            <a
+                                                href="{{ url_for('blog.admin_edit_post', post_id=post.id) }}"
+                                                class="badge text-bg-primary"
+                                            >
+                                                Editar
+                                            </a>
+
+                                            {% if post.status == 'pending' %}
+                                            <a
+                                                class="badge text-bg-success"
+                                                href="{{ url_for('blog.approve_post', post_id=post.id) }}"
+                                            >
+                                                Aprobar
+                                            </a>
+                                            {% endif %} {% if post.status != 'banned' %}
+                                            <a
+                                                class="badge text-bg-danger"
+                                                href="{{ url_for('blog.ban_post', post_id=post.id) }}"
+                                            >
+                                                Banear
+                                            </a>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                     {% endfor %}

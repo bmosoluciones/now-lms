@@ -36,20 +36,12 @@
                                         <td><code>{{ tag.slug }}</code></td>
                                         <td>{{ tag.posts | length }}</td>
                                         <td>
-                                            <form
-                                                method="DELETE"
-                                                action="{{ url_for('blog.delete_tag', tag_id=tag.id) }}"
-                                                class="d-inline"
+                                            <a
+                                                class="badge text-bg-danger"
+                                                href="{{ url_for('blog.delete_tag', tag_id=tag.id) }}"
                                             >
-                                                <button
-                                                    type="submit"
-                                                    class="btn btn-outline-danger btn-sm"
-                                                    onclick="return confirm('¿Estás seguro de eliminar esta etiqueta?')"
-                                                    title="Eliminar"
-                                                >
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
+                                                Eliminar
+                                            </a>
                                         </td>
                                     </tr>
                                     {% endfor %}

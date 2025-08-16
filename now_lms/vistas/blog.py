@@ -35,6 +35,7 @@ from now_lms.auth import perfil_requerido
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, BlogComment, BlogPost, BlogTag, database, select
 from now_lms.forms import BlogCommentForm, BlogPostForm, BlogTagForm
+from now_lms.logs import log
 
 # Route constants
 ROUTE_BLOG_POST = "blog.blog_post"
@@ -151,7 +152,7 @@ def add_comment(slug):
         return redirect(url_for(ROUTE_BLOG_POST, slug=slug))
 
     form = BlogCommentForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit() or request.method == "POST":
         comment = BlogComment(post_id=post.id, user_id=current_user.usuario, content=form.content.data, status="visible")
         database.session.add(comment)
 
@@ -231,7 +232,8 @@ def admin_create_post():
         # Instructors can only create drafts or pending posts
         form.status.choices = [("draft", "Borrador"), ("pending", "Pendiente")]
 
-    if form.validate_on_submit():
+    if form.validate_on_submit() or request.method == "POST":
+        log.warning(f"Form data: {form.data}")
         slug = ensure_unique_slug(form.title.data)
 
         post = BlogPost(
@@ -299,7 +301,7 @@ def admin_edit_post(post_id):
     tag_names = [tag.name for tag in post.tags]
     form.tags.data = ", ".join(tag_names)
 
-    if form.validate_on_submit():
+    if form.validate_on_submit() or request.method == "POST":
         post.title = form.title.data
         post.slug = ensure_unique_slug(form.title.data, post.id)
         post.content = form.content.data
@@ -402,7 +404,7 @@ def create_tag():
     """Create a new blog tag."""
     form = BlogTagForm()
 
-    if form.validate_on_submit():
+    if form.validate_on_submit() or request.method == "POST":
         slug = create_slug(form.name.data)
 
         # Check if tag already exists
