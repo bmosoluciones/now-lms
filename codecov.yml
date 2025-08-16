@@ -6,7 +6,7 @@ coverage:
       default:
         # basic
         target: auto
-        threshold: 10%
+        threshold: 5%
 ignore:
   - "now_lms/__main__.py"
   - "now_lms/cli.py"
