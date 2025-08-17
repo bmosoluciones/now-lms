@@ -2306,3 +2306,115 @@ def test_course_coupons_endtoend(full_db_setup, client):
                     # Test delete coupon route (POST)
                     coupon_delete_post = client.post(f"/course/paid_course/coupons/{coupon_id}/delete")
                     assert coupon_delete_post.status_code in [200, 302]
+
+
+def test_category_management_comprehensive_endtoend(basic_config_setup, client):
+    """Test comprehensive category management flow with GET and POST requests."""
+    app = basic_config_setup
+    from now_lms.db import Usuario, Categoria
+    from now_lms.auth import proteger_passwd
+
+    # Create instructor user
+    with app.app_context():
+        instructor = Usuario(
+            usuario="instructor_category",
+            acceso=proteger_passwd("testpass"),
+            nombre="Category",
+            apellido="Instructor",
+            tipo="instructor",
+            activo=True,
+            correo_electronico="instructor_category@test.com",
+            correo_electronico_verificado=True,
+        )
+        database.session.add(instructor)
+        database.session.commit()
+
+    # Login as instructor
+    login_response = client.post(
+        "/user/login",
+        data={"usuario": "instructor_category", "acceso": "testpass"},
+        follow_redirects=True,
+    )
+    assert login_response.status_code == 200
+
+    # Test GET: Access category list (should be empty initially)
+    list_response = client.get("/category/list")
+    assert list_response.status_code == 200
+
+    # Test GET: Access new category form
+    new_category_get = client.get("/category/new")
+    assert new_category_get.status_code == 200
+    assert "Crear Categoria".encode("utf-8") in new_category_get.data
+
+    # Test POST: Create a new category
+    new_category_post = client.post(
+        "/category/new",
+        data={
+            "nombre": "Test Category",
+            "descripcion": "This is a test category for comprehensive testing",
+        },
+        follow_redirects=False,
+    )
+    assert new_category_post.status_code in [200, 302]  # Successful creation should redirect
+
+    # Verify category was created
+    with app.app_context():
+        category = database.session.execute(database.select(Categoria).filter_by(nombre="Test Category")).scalar_one_or_none()
+        assert category is not None
+        assert category.descripcion == "This is a test category for comprehensive testing"
+        category_id = category.id
+
+    # Test GET: Access category list (should now contain our category)
+    list_response_after = client.get("/category/list")
+    assert list_response_after.status_code == 200
+    assert "Test Category".encode("utf-8") in list_response_after.data
+
+    # Test GET: Access edit category form
+    edit_category_get = client.get(f"/category/{category_id}/edit")
+    assert edit_category_get.status_code == 200
+    assert "Test Category".encode("utf-8") in edit_category_get.data
+
+    # Test POST: Edit the category
+    edit_category_post = client.post(
+        f"/category/{category_id}/edit",
+        data={
+            "nombre": "Edited Test Category",
+            "descripcion": "This is an edited test category description",
+        },
+        follow_redirects=False,
+    )
+    assert edit_category_post.status_code in [200, 302]  # Successful edit should redirect
+
+    # Verify category was edited
+    with app.app_context():
+        edited_category = database.session.execute(database.select(Categoria).filter_by(id=category_id)).scalar_one_or_none()
+        assert edited_category is not None
+        assert edited_category.nombre == "Edited Test Category"
+        assert edited_category.descripcion == "This is an edited test category description"
+
+    # Test GET: Access category list with edited category
+    list_response_edited = client.get("/category/list")
+    assert list_response_edited.status_code == 200
+    assert "Edited Test Category".encode("utf-8") in list_response_edited.data
+
+    # Test GET: Delete category (note: this is a GET request, not POST)
+    delete_category_response = client.get(f"/category/{category_id}/delete")
+    assert delete_category_response.status_code in [200, 302]  # Should redirect after deletion
+
+    # Verify category was deleted
+    with app.app_context():
+        deleted_category = database.session.execute(database.select(Categoria).filter_by(id=category_id)).scalar_one_or_none()
+        assert deleted_category is None
+
+    # Test authorization: Try to access category routes without login
+    client.get("/user/logout")
+
+    # These should redirect to login or return unauthorized
+    unauth_list = client.get("/category/list")
+    assert unauth_list.status_code in [302, 401, 403]
+
+    unauth_new = client.get("/category/new")
+    assert unauth_new.status_code in [302, 401, 403]
+
+    unauth_post = client.post("/category/new", data={"nombre": "Unauthorized", "descripcion": "Should fail"})
+    assert unauth_post.status_code in [302, 401, 403]
