@@ -73,9 +73,8 @@ def system_info(app: "Flask"):
         version_sistema_mayor = SystemInfo(param="version_mayor", val=str(MAYOR))
         version_sistema_menor = SystemInfo(param="version_menor", val=str(MENOR))
 
-        database.session.add(version_sistema)
-        database.session.add(version_sistema_menor)
-        database.session.add(version_sistema_mayor)
+        for i in version_sistema, version_sistema_mayor, version_sistema_menor:
+            database.session.add(i)
         database.session.commit()
 
 
@@ -86,10 +85,8 @@ def crear_etiquetas():
     etiqueta2 = Etiqueta(nombre="Postgresql", color="#0064a5")
     etiqueta3 = Etiqueta(nombre="HTML", color="#cc3b03")
     etiqueta4 = Etiqueta(nombre="Learning", color="#f2b3c4")
-    database.session.add(etiqueta1)
-    database.session.add(etiqueta2)
-    database.session.add(etiqueta3)
-    database.session.add(etiqueta4)
+    for i in etiqueta1, etiqueta2, etiqueta3, etiqueta4:
+        database.session.add(i)
     database.session.commit()
 
 
@@ -98,8 +95,11 @@ def crear_categorias():
     log.trace("Creating demonstration categories.")
     cat1 = Categoria(nombre="Learning", descripcion="Cursos sobre aprendizaje")
     cat2 = Categoria(nombre="Programing", descripcion="Cursos sobre programación")
-    database.session.add(cat1)
-    database.session.add(cat2)
+    cat3 = Categoria(nombre="Python", descripcion="Cursos sobre programación")
+    cat4 = Categoria(nombre="Databases", descripcion="Cursos sobre programación")
+
+    for i in cat1, cat2, cat3, cat4:
+        database.session.add(i)
     database.session.commit()
 
 
@@ -228,7 +228,9 @@ def crear_curso_demo():
         fecha_promocionado=datetime.today(),
         plantilla_certificado="horizontal",
     )
-
+    demo.pagado = False
+    demo.certificado = True
+    demo.plantilla_certificado = "default"
     database.session.add(demo)
     database.session.commit()
     curse_logo("resources", "11372802.jpg")
@@ -246,7 +248,7 @@ def crear_curso_demo():
     )
 
     database.session.add(nueva_seccion)
-    database.session.commit()
+    database.session.flush()
 
     copy_sample_audio()
     nuevo_recurso6 = CursoRecurso(
@@ -261,7 +263,7 @@ def crear_curso_demo():
         publico=True,
     )
     database.session.add(nuevo_recurso6)
-    database.session.commit()
+    database.session.flush()
 
     copy_sample_pdf()
     nuevo_recurso5 = CursoRecurso(
@@ -276,7 +278,7 @@ def crear_curso_demo():
         publico=True,
     )
     database.session.add(nuevo_recurso5)
-    database.session.commit()
+    database.session.flush()
 
     nuevo_recurso3 = CursoRecurso(
         curso="resources",
@@ -294,7 +296,7 @@ def crear_curso_demo():
         requerido=2,
     )
     database.session.add(nuevo_recurso3)
-    database.session.commit()
+    database.session.flush()
 
     copy_sample_img()
     nuevo_recurso4 = CursoRecurso(
@@ -310,7 +312,7 @@ def crear_curso_demo():
         doc="resources/logo_large.png",
     )
     database.session.add(nuevo_recurso4)
-    database.session.commit()
+    database.session.flush()
 
     nuevo_recurso5 = CursoRecurso(
         curso="resources",
@@ -324,7 +326,7 @@ def crear_curso_demo():
         text="# NOW - Learning Management System.",
     )
     database.session.add(nuevo_recurso5)
-    database.session.commit()
+    database.session.flush()
 
     nuevo_recurso6 = CursoRecurso(
         curso="resources",
@@ -337,7 +339,7 @@ def crear_curso_demo():
         external_code=demo_external_code,
     )
     database.session.add(nuevo_recurso6)
-    database.session.commit()
+    database.session.flush()
 
     nuevo_recurso7 = CursoRecurso(
         curso="resources",
@@ -350,7 +352,7 @@ def crear_curso_demo():
         url="https://es.wikipedia.org/wiki/Wikipedia:Portada",
     )
     database.session.add(nuevo_recurso7)
-    database.session.commit()
+    database.session.flush()
 
     nuevo_recurso9 = CursoRecurso(
         curso="resources",
@@ -364,8 +366,9 @@ def crear_curso_demo():
         requerido=2,
     )
     database.session.add(nuevo_recurso9)
-    database.session.commit()
+    database.session.flush()
 
+    database.session.commit()
     log.debug("Resource demo course created successfully.")
 
 
@@ -479,7 +482,7 @@ def crear_certificados():
         publico=False,
     )
     database.session.add(demo)
-    database.session.commit()
+    database.session.flush()
 
     from now_lms.db.certificates_templates import CERTIFICADOS
 
@@ -494,18 +497,9 @@ def crear_certificados():
             publico=True,
         )
         database.session.add(cert)
-        database.session.commit()
-
-
-def crear_certificacion():
-    certificacion = Certificacion(
-        id="01JS2NK7NJ74DBSHD83MGRH5HE",
-        usuario=ADMIN_USER_WITH_FALLBACK,
-        curso="now",
-        certificado="default",
-    )
-    database.session.add(certificacion)
+        database.session.flush()
     database.session.commit()
+    log.info("Demo certificate created successfully.")
 
 
 def crear_curso_predeterminado():
@@ -589,9 +583,8 @@ def crear_curso_predeterminado():
         certificado=True,
         plantilla_certificado="horizontal",
     )
-    database.session.add(demo)
-    database.session.add(form)
-    database.session.add(free)
+    for curso in demo, form, free:
+        database.session.add(curso)
     database.session.commit()
     curse_logo("now", "5218255.jpg")
     curse_logo("details", "online-course.jpg")
@@ -632,7 +625,7 @@ def crear_curso_predeterminado():
     )
 
     database.session.add(nueva_seccion2)
-    database.session.commit()
+    database.session.flush()
 
     nuevo_recurso1 = CursoRecurso(
         id="01HPB3AP3QNVK9ES6JGG5YK7CH",
@@ -658,7 +651,7 @@ def crear_curso_predeterminado():
     )
     database.session.add(nuevo_recurso1)
     database.session.add(nuevo_recurso1a)
-    database.session.commit()
+    database.session.flush()
 
     nuevo_recurso2 = CursoRecurso(
         id="01HPB3BC71R8WFZXFS8BSH5QEG",
@@ -672,7 +665,7 @@ def crear_curso_predeterminado():
         publico=False,
     )
     database.session.add(nuevo_recurso2)
-    database.session.commit()
+    database.session.flush()
 
     nuevo_recurso2 = CursoRecurso(
         id="01HPB3C1EDYAX5JWV49GXWNFJF",
@@ -686,7 +679,7 @@ def crear_curso_predeterminado():
         publico=False,
     )
     database.session.add(nuevo_recurso2)
-    database.session.commit()
+    database.session.flush()
 
     nuevo_recurso3 = CursoRecurso(
         id="01HPB3CGYV6PQXF4DXEEM3QT78",
@@ -700,9 +693,21 @@ def crear_curso_predeterminado():
         publico=False,
     )
     database.session.add(nuevo_recurso3)
-    database.session.commit()
+    database.session.flush()
 
+    database.session.commit()
     log.debug("Demonstration course created successfully.")
+
+
+def crear_certificacion():
+    certificacion = Certificacion(
+        id="01JS2NK7NJ74DBSHD83MGRH5HE",
+        usuario=ADMIN_USER_WITH_FALLBACK,
+        curso="now",
+        certificado="default",
+    )
+    database.session.add(certificacion)
+    database.session.commit()
 
 
 def crear_evaluacion_predeterminada():
@@ -774,6 +779,7 @@ def crear_evaluacion_predeterminada():
     ]
     for option in options1:
         database.session.add(option)
+        database.session.flush()
 
     # Question 2: True/False about online course engagement
     question2 = Question(
@@ -804,6 +810,7 @@ def crear_evaluacion_predeterminada():
     ]
     for option in options2:
         database.session.add(option)
+        database.session.flush()
 
     # Question 3: Multiple choice about course structure
     question3 = Question(
@@ -846,6 +853,7 @@ def crear_evaluacion_predeterminada():
     ]
     for option in options3:
         database.session.add(option)
+        database.session.flush()
 
     database.session.commit()
     log.debug("Demonstration evaluation created successfully.")
@@ -857,12 +865,12 @@ def crear_usuarios_predeterminados():
     administrador = Usuario(
         usuario=ADMIN_USER_WITH_FALLBACK,
         acceso=proteger_passwd(environ.get("ADMIN_PSWD") or environ.get("LMS_PSWD") or "lms-admin"),
-        nombre="System",
-        apellido="Administrator",
         tipo="admin",
         activo=True,
         correo_electronico_verificado=True,
     )
+    administrador.nombre = "System"
+    administrador.apellido = "Administrator"
     database.session.add(administrador)
     database.session.commit()
     log.debug("Administrator user created successfully.")
@@ -889,6 +897,9 @@ def crear_curso_demo1():
         promocionado=True,
         fecha_promocionado=datetime.today(),
     )
+    demo.pagado = False
+    demo.certificado = True
+    demo.plantilla_certificado = "default"
 
     database.session.add(demo)
     database.session.commit()
@@ -899,7 +910,7 @@ def crear_curso_demo2():
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
     log.trace("Creating Python demonstration course.")
-    demo = Curso(
+    demo2 = Curso(
         nombre="Python",
         codigo="python",
         descripcion_corta="A course about Python.",
@@ -916,8 +927,11 @@ def crear_curso_demo2():
         promocionado=True,
         fecha_promocionado=datetime.today(),
     )
+    demo2.pagado = False
+    demo2.certificado = True
+    demo2.plantilla_certificado = "default"
 
-    database.session.add(demo)
+    database.session.add(demo2)
     database.session.commit()
     curse_logo("python", "experiencia-programacion-persona-que-trabaja-codigos-computadora.jpg")
 
@@ -941,6 +955,9 @@ def crear_curso_demo3():
         fecha_inicio=datetime.today() + timedelta(days=7),
         fecha_fin=datetime.today() + timedelta(days=14),
     )
+    demo.pagado = False
+    demo.certificado = True
+    demo.plantilla_certificado = "default"
 
     database.session.add(demo)
     database.session.commit()
@@ -967,11 +984,8 @@ def asignar_cursos_a_etiquetas():
     registro4 = EtiquetaCurso(curso="now", etiqueta=etiqueta_learning.id)
     registro5 = EtiquetaCurso(curso="resources", etiqueta=etiqueta_learning.id)
 
-    database.session.add(registro1)
-    database.session.add(registro2)
-    database.session.add(registro3)
-    database.session.add(registro4)
-    database.session.add(registro5)
+    for r in [registro1, registro2, registro3, registro4, registro5]:
+        database.session.add(r)
     database.session.commit()
 
 
@@ -990,11 +1004,8 @@ def asignar_cursos_a_categoria():
     registro4 = CategoriaCurso(curso="now", categoria=categoria_learning.id)
     registro5 = CategoriaCurso(curso="resources", categoria=categoria_learning.id)
 
-    database.session.add(registro1)
-    database.session.add(registro2)
-    database.session.add(registro3)
-    database.session.add(registro4)
-    database.session.add(registro5)
+    for r in registro1, registro2, registro3, registro4, registro5:
+        database.session.add(r)
     database.session.commit()
 
 
@@ -1112,7 +1123,8 @@ def crear_recurso_descargable():
     )
     for i in recurso1, recurso2, recurso3, recurso4:
         database.session.add(i)
-        database.session.commit()
+        database.session.flush()
+    database.session.commit()
 
     directorio_destino_archivo = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "files", "resources_files")
     directorio_destino_imagen = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "images", "resources_files")
