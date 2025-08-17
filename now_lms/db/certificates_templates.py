@@ -1345,7 +1345,7 @@ CERTIFICADO_DEFAULT_HTML = """
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{{ _('Certificate of Completion') }}</title>
+        <title>Certificate of Completion</title>
     </head>
     <body>
         <div class="certificate-container">
@@ -1355,8 +1355,8 @@ CERTIFICADO_DEFAULT_HTML = """
                     <div class="logo-placeholder">🎓</div>
                 </div>
                 <div class="institution-info">
-                    <h1 class="institution-name">{{ _('Learning Management System') }}</h1>
-                    <p class="institution-subtitle">{{ _('Center of Excellence in Education') }}</p>
+                    <h1 class="institution-name">NOW - Learning Management System</h1>
+                    <p class="institution-subtitle">Center of Excellence in Education</p>
                 </div>
                 <div class="certificate-seal">
                     <div class="seal-inner">LMS</div>
@@ -1365,47 +1365,50 @@ CERTIFICADO_DEFAULT_HTML = """
 
             <!-- Certificate Title -->
             <div class="certificate-title-section">
-                <h2 class="certificate-title">{{ _('CERTIFICATE') }}</h2>
-                <p class="certificate-subtitle">{{ _('OF COMPLETION') }}</p>
+                <h2 class="certificate-title">CERTIFICATE</h2>
+                <p class="certificate-subtitle">OF COMPLETION</p>
             </div>
 
             <!-- Main Content -->
             <main class="certificate-content">
                 <!-- Achievement Statement -->
                 <div class="achievement-statement">
-                    <p class="certify-text">{{ _('This is to certify that') }}</p>
+                    <p class="certify-text">This is to certify that</p>
 
                     <!-- Learner Identification -->
                     <div class="recipient-section">
                         <h3 class="recipient-name">{{ usuario.nombre }} {{ usuario.apellido }}</h3>
                         <div class="recipient-details">
-                            <p class="student-id">{{ _('Student ID') }}: {{ usuario.usuario }}</p>
+                            <p class="student-id">Student ID: {{ usuario.id }}</p>
                         </div>
                     </div>
 
                     <!-- Course Information -->
                     <div class="course-section">
-                        <p class="completion-text">{{ _('has successfully completed the course') }}</p>
+                        <p class="completion-text">has successfully completed the course</p>
                         <h4 class="course-title">{{ curso.nombre }}</h4>
                         <div class="course-details">
-                            <p class="course-type">{{ _('Course Type') }}:
+                            <p class="course-type">Course Type:
                                 {% if content_type == 'masterclass' %}
-                                    {{ _('Master Class') }}
+                                    Master Class
                                 {% else %}
-                                    {{ _('Course') }}
+                                    Course
                                 {% endif %}
                             </p>
                             {% if curso.instructor %}
-                            <p class="instructor-name">{{ _('Instructor') }}: {{ curso.instructor }}</p>
+                            <p class="instructor-name">Instructor: {{ curso.instructor }}</p>
                             {% endif %}
                         </div>
                     </div>
 
                     <!-- Completion Details -->
                     <div class="completion-section">
-                        <p class="completion-date">{{ _('Completion Date') }}: {{ certificacion.fecha.strftime('%B %d, %Y') }}</p>
+                        <p class="completion-date">Completion Date: {{ certificacion.fecha.strftime('%B %d, %Y') }}</p>
                         {% if certificacion.nota %}
-                        <p class="grade-info">{{ _('Grade') }}: {{ certificacion.nota }}{% if certificacion.nota >= 90 %} {{ _('with distinction') }}{% endif %}</p>
+                            <p class="grade-info">
+                                Grade: {{ certificacion.nota }}
+                                {% if certificacion.nota >= 90 %} with distinction{% endif %}
+                            </p>
                         {% endif %}
                     </div>
                 </div>
@@ -1416,16 +1419,16 @@ CERTIFICADO_DEFAULT_HTML = """
                 <div class="signatures-section">
                     <div class="signature-block">
                         <div class="signature-line"></div>
-                        <p class="signature-title">{{ _('Academic Director') }}</p>
+                        <p class="signature-title">Academic Director</p>
                         <p class="signature-date">{{ certificacion.fecha.strftime('%B %d, %Y') }}</p>
                     </div>
 
                     <div class="validation-section">
                         <div class="qr-code-container">
                             <img src="{{ url_for('certificate.certificacion_qr', id=certificacion.id) }}"
-                                 alt="{{ _('QR Code for certificate verification') }}"
+                                 alt=QR Code for certificate verification"
                                  class="qr-code">
-                            <p class="qr-label">{{ _('Scan to verify') }}</p>
+                            <p class="qr-label">Scan to verify</p>
                         </div>
                     </div>
                 </div>
@@ -1433,15 +1436,15 @@ CERTIFICADO_DEFAULT_HTML = """
                 <!-- Certificate Metadata -->
                 <div class="certificate-metadata">
                     <div class="metadata-item">
-                        <span class="metadata-label">{{ _('Certificate ID') }}:</span>
+                        <span class="metadata-label">Certificate ID:</span>
                         <span class="metadata-value">{{ certificacion.id }}</span>
                     </div>
                     <div class="metadata-item">
-                        <span class="metadata-label">{{ _('Issue Date') }}:</span>
+                        <span class="metadata-label">Issue Date:</span>
                         <span class="metadata-value">{{ certificacion.fecha.strftime('%Y-%m-%d') }}</span>
                     </div>
                     <div class="metadata-item">
-                        <span class="metadata-label">{{ _('Verification URL') }}:</span>
+                        <span class="metadata-label">Verification URL:</span>
                         <span class="metadata-value verification-url">{{ url_for('certificate.certificado', ulid=certificacion.id, _external=True) }}</span>
                     </div>
                 </div>

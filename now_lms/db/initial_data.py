@@ -499,7 +499,7 @@ def crear_certificacion():
         id="01JS2NK7NJ74DBSHD83MGRH5HE",
         usuario=ADMIN_USER_WITH_FALLBACK,
         curso="now",
-        certificado="demo",
+        certificado="default",
     )
     database.session.add(certificacion)
     database.session.commit()
