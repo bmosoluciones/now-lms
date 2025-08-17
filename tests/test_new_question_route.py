@@ -47,6 +47,7 @@ def test_new_question_route_access_with_evaluation(client, full_db_setup):
         "codigo": "test_course",
         "nombre": "Test Course",
         "descripcion": "Test course for new question route",
+        "descripcion_corta": "Test course description",
         "nivel": 0,
         "publico": True,
         "modalidad": "self_paced",
@@ -56,7 +57,7 @@ def test_new_question_route_access_with_evaluation(client, full_db_setup):
         "precio": 0,
     }
     
-    client.post("/admin/course/new", data=course_data)
+    client.post("/course/new_curse", data=course_data)
     
     # Create a section
     section_data = {
