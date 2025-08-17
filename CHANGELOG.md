@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 - This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/), using prefixes such as: 
 
-## [unreleased]
+## [v0.0.1b8.dev20250816] - 2025-08-17
 
 ### ✅ NOW-LMS Smoke Test Checklist (Release Candidate)
 
