@@ -503,18 +503,25 @@ class TestCertificateViewingRoutes:
     @patch("flask_weasyprint.render_pdf")
     def test_certificate_serve_pdf(self, mock_render_pdf, full_db_setup, client):
         """Test PDF certificate download."""
-        app = full_db_setup
-        cert_id = self.setup_test_certification_with_course(app)
+        import os
+        import pytest
 
-        # Mock PDF rendering
-        mock_render_pdf.return_value = b"mock_pdf_data"
+        if os.name == "nt":
+            pytest.skip("WeasyPrint PDF rendering not supported on Windows CI")
 
-        # Access PDF download
-        response = client.get(f"/certificate/download/{cert_id}/")
-        assert response.status_code == 200
+        else:
+            app = full_db_setup
+            cert_id = self.setup_test_certification_with_course(app)
 
-        # Verify render_pdf was called
-        mock_render_pdf.assert_called_once()
+            # Mock PDF rendering
+            mock_render_pdf.return_value = b"mock_pdf_data"
+
+            # Access PDF download
+            response = client.get(f"/certificate/download/{cert_id}/")
+            assert response.status_code == 200
+
+            # Verify render_pdf was called
+            mock_render_pdf.assert_called_once()
 
 
 class TestCertificateIssuanceRoutes:
