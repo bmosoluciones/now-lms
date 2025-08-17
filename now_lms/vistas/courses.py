@@ -283,6 +283,8 @@ def course_enroll(course_code):
             # Free course or 100% discount coupon - complete enrollment immediately
             pago.estado = "completed"
             try:
+                pago.creado = database.func.now()
+                pago.creado_por = current_user.usuario
                 database.session.add(pago)
                 database.session.flush()
 
@@ -296,6 +298,8 @@ def course_enroll(course_code):
                     vigente=True,
                     pago=pago.id,
                 )
+                registro.creado = database.func.now()
+                registro.creado_por = current_user.usuario
                 database.session.add(registro)
                 database.session.commit()
                 _crear_indice_avance_curso(course_code)
@@ -551,6 +555,8 @@ def nuevo_curso():
             creado_por=current_user.usuario,
         )
         try:
+            nuevo_curso.creado = database.func.now()
+            nuevo_curso.creado_por = current_user.usuario
             database.session.add(nuevo_curso_)
             database.session.commit()
             asignar_curso_a_instructor(curso_codigo=form.codigo.data, usuario_id=current_user.usuario)
@@ -654,6 +660,8 @@ def editar_curso(course_code):
         curso_a_editar.modificado_por = current_user.usuario
 
         try:
+            curso_a_editar.modificado = database.func.now()
+            curso_a_editar.modificado_por = current_user.usuario
             database.session.commit()
 
             if "logo" in request.files:
@@ -708,6 +716,8 @@ def nuevo_seccion(course_code):
             creado_por=current_user.usuario,
         )
         try:
+            nueva_seccion.creado = database.func.now()
+            nueva_seccion.creado_por = current_user.usuario
             database.session.add(nueva_seccion)
             database.session.commit()
             flash("Sección agregada correctamente al curso.", "success")
@@ -735,6 +745,8 @@ def editar_seccion(course_code, seccion):
         seccion_a_editar.modificado_por = current_user.usuario
         seccion_a_editar.curso = course_code
         try:
+            seccion_a_editar.modificado = database.func.now()
+            seccion_a_editar.modificado_por = current_user.usuario
             database.session.commit()
             flash("Sección modificada correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
@@ -965,6 +977,8 @@ def _emitir_certificado(curso_id, usuario, plantilla):
         usuario=usuario,
         certificado=plantilla,
     )
+    certificado.creado = database.func.now()
+    certificado.creado_por = current_user.usuario
     database.session.add(certificado)
     database.session.commit()
     flash("Certificado de finalización emitido.", "success")
@@ -1181,6 +1195,7 @@ def editar_recurso_youtube_video(course_code, seccion, resource_id):
         recurso.descripcion = form.descripcion.data
         recurso.url = form.youtube_url.data
         recurso.requerido = form.requerido.data
+        recurso.modificado = database.func.now()
         recurso.modificado_por = current_user.usuario
 
         try:
@@ -1227,6 +1242,8 @@ def nuevo_recurso_text(course_code, seccion):
             creado_por=current_user.usuario,
         )
         try:
+            nuevo_recurso_.creado = database.func.now()
+            nuevo_recurso_.creado_por = current_user.usuario
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
@@ -1259,6 +1276,7 @@ def editar_recurso_text(course_code, seccion, resource_id):
         recurso.descripcion = "Text resource"
         recurso.requerido = form.requerido.data
         recurso.text = form.editor.data
+        recurso.modificado = database.func.now()
         recurso.modificado_por = current_user.usuario
 
         try:

@@ -334,6 +334,7 @@ def admin_edit_post(post_id):
                     post.tags.append(tag)
 
         database.session.commit()
+        log.info(f"Blog post updated: {post.title} by {current_user.usuario}")
         flash("Entrada de blog actualizada exitosamente.", "success")
 
         if current_user.tipo == "admin":
