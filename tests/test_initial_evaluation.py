@@ -29,8 +29,9 @@ class TestInitialEvaluation:
         """Test that the default evaluation is created correctly."""
         # First create the 'now' course and its sections
         from now_lms.db.initial_data import crear_curso_predeterminado
+
         crear_curso_predeterminado()
-        
+
         # Now create the evaluation
         crear_evaluacion_predeterminada()
 
@@ -57,22 +58,27 @@ class TestInitialEvaluation:
         """Test that the evaluation has the correct questions and options."""
         # Create the course first
         from now_lms.db.initial_data import crear_curso_predeterminado
+
         crear_curso_predeterminado()
-        
+
         crear_evaluacion_predeterminada()
 
         # Get the evaluation
-        evaluation = database.session.execute(
-            select(Evaluation).filter(Evaluation.title == "Online Teaching Knowledge Check")
-        ).scalars().first()
-        
+        evaluation = (
+            database.session.execute(select(Evaluation).filter(Evaluation.title == "Online Teaching Knowledge Check"))
+            .scalars()
+            .first()
+        )
+
         assert evaluation is not None
-        
+
         # Check questions
-        questions = database.session.execute(
-            select(Question).filter_by(evaluation_id=evaluation.id).order_by(Question.order)
-        ).scalars().all()
-        
+        questions = (
+            database.session.execute(select(Question).filter_by(evaluation_id=evaluation.id).order_by(Question.order))
+            .scalars()
+            .all()
+        )
+
         assert len(questions) == 3
 
         # Test Question 1 (Multiple choice)
@@ -80,10 +86,8 @@ class TestInitialEvaluation:
         assert q1.type == "multiple"
         assert "ventajas de la enseñanza en línea" in q1.text
         assert q1.order == 1
-        
-        q1_options = database.session.execute(
-            select(QuestionOption).filter_by(question_id=q1.id)
-        ).scalars().all()
+
+        q1_options = database.session.execute(select(QuestionOption).filter_by(question_id=q1.id)).scalars().all()
         assert len(q1_options) == 4
         correct_options = [opt for opt in q1_options if opt.is_correct]
         assert len(correct_options) == 1
@@ -94,10 +98,8 @@ class TestInitialEvaluation:
         assert q2.type == "boolean"
         assert "autodisciplina" in q2.text
         assert q2.order == 2
-        
-        q2_options = database.session.execute(
-            select(QuestionOption).filter_by(question_id=q2.id)
-        ).scalars().all()
+
+        q2_options = database.session.execute(select(QuestionOption).filter_by(question_id=q2.id)).scalars().all()
         assert len(q2_options) == 2
         correct_options = [opt for opt in q2_options if opt.is_correct]
         assert len(correct_options) == 1
@@ -108,10 +110,8 @@ class TestInitialEvaluation:
         assert q3.type == "multiple"
         assert "estructurar un curso en línea" in q3.text
         assert q3.order == 3
-        
-        q3_options = database.session.execute(
-            select(QuestionOption).filter_by(question_id=q3.id)
-        ).scalars().all()
+
+        q3_options = database.session.execute(select(QuestionOption).filter_by(question_id=q3.id)).scalars().all()
         assert len(q3_options) == 4
         correct_options = [opt for opt in q3_options if opt.is_correct]
         assert len(correct_options) == 1
@@ -121,22 +121,27 @@ class TestInitialEvaluation:
         """Test that the evaluation is associated with the first section of the 'now' course."""
         # Create the course first
         from now_lms.db.initial_data import crear_curso_predeterminado
+
         crear_curso_predeterminado()
-        
+
         crear_evaluacion_predeterminada()
 
         # Get the first section of the 'now' course
-        first_section = database.session.execute(
-            select(CursoSeccion).filter_by(curso="now").order_by(CursoSeccion.indice.asc())
-        ).scalars().first()
-        
+        first_section = (
+            database.session.execute(select(CursoSeccion).filter_by(curso="now").order_by(CursoSeccion.indice.asc()))
+            .scalars()
+            .first()
+        )
+
         assert first_section is not None
 
         # Get the evaluation
-        evaluation = database.session.execute(
-            select(Evaluation).filter(Evaluation.title == "Online Teaching Knowledge Check")
-        ).scalars().first()
-        
+        evaluation = (
+            database.session.execute(select(Evaluation).filter(Evaluation.title == "Online Teaching Knowledge Check"))
+            .scalars()
+            .first()
+        )
+
         assert evaluation is not None
         assert evaluation.section_id == first_section.id
 
@@ -144,33 +149,30 @@ class TestInitialEvaluation:
         """Test that calling the function multiple times doesn't create duplicates."""
         # Create the course first
         from now_lms.db.initial_data import crear_curso_predeterminado
+
         crear_curso_predeterminado()
-        
+
         # Call the function twice
         crear_evaluacion_predeterminada()
-        
+
         # Should handle gracefully if course structure is missing
         # But since we have minimal_db_setup, it should work
         evaluations_count = database.session.execute(
-            select(database.func.count(Evaluation.id)).filter(
-                Evaluation.title == "Online Teaching Knowledge Check"
-            )
+            select(database.func.count(Evaluation.id)).filter(Evaluation.title == "Online Teaching Knowledge Check")
         ).scalar()
-        
+
         assert evaluations_count >= 1
-        
+
         # Call again - this should not create duplicates
         # (Though the current implementation doesn't prevent duplicates,
         # this test documents the expected behavior)
         crear_evaluacion_predeterminada()
-        
+
         # Count evaluations again
         new_count = database.session.execute(
-            select(database.func.count(Evaluation.id)).filter(
-                Evaluation.title == "Online Teaching Knowledge Check"
-            )
+            select(database.func.count(Evaluation.id)).filter(Evaluation.title == "Online Teaching Knowledge Check")
         ).scalar()
-        
+
         # For now, we allow duplicates as the function doesn't check
         # In a production system, we might want to prevent this
         assert new_count >= evaluations_count

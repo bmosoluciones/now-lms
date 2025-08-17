@@ -87,7 +87,7 @@ def test_instructor_complete_evaluation_workflow(full_db_setup, client):
     with app.app_context():
         course = database.session.execute(database.select(Curso).filter_by(codigo="workflow_course")).scalars().first()
         assert course is not None
-        
+
         # Add instructor assignment
         instructor_assignment = DocenteCurso(
             curso="workflow_course",
@@ -111,7 +111,9 @@ def test_instructor_complete_evaluation_workflow(full_db_setup, client):
     # Get the section ID
     with app.app_context():
         section = (
-            database.session.execute(database.select(CursoSeccion).filter_by(curso="workflow_course", nombre="Workflow Section"))
+            database.session.execute(
+                database.select(CursoSeccion).filter_by(curso="workflow_course", nombre="Workflow Section")
+            )
             .scalars()
             .first()
         )
@@ -135,7 +137,9 @@ def test_instructor_complete_evaluation_workflow(full_db_setup, client):
     # Get the evaluation ID
     with app.app_context():
         evaluation = (
-            database.session.execute(database.select(Evaluation).filter_by(section_id=section_id, title="Complete Workflow Evaluation"))
+            database.session.execute(
+                database.select(Evaluation).filter_by(section_id=section_id, title="Complete Workflow Evaluation")
+            )
             .scalars()
             .first()
         )
@@ -170,7 +174,7 @@ def test_instructor_complete_evaluation_workflow(full_db_setup, client):
         )
         assert question is not None
         question_id = question.id
-        
+
         # Verify default options were created
         options = database.session.execute(database.select(QuestionOption).filter_by(question_id=question_id)).scalars().all()
         assert len(options) == 4  # Default 4 options for multiple choice
@@ -221,12 +225,10 @@ def test_instructor_complete_evaluation_workflow(full_db_setup, client):
         )
         assert bool_question is not None
         bool_question_id = bool_question.id
-        
+
         # Get the "Verdadero" option and edit it to be correct
         verdadero_option = (
-            database.session.execute(
-                database.select(QuestionOption).filter_by(question_id=bool_question_id, text="Verdadero")
-            )
+            database.session.execute(database.select(QuestionOption).filter_by(question_id=bool_question_id, text="Verdadero"))
             .scalars()
             .first()
         )
@@ -289,15 +291,15 @@ def test_instructor_complete_evaluation_workflow(full_db_setup, client):
         assert updated_option.is_correct is True
 
         # Check all options for the multiple choice question
-        all_options = database.session.execute(
-            database.select(QuestionOption).filter_by(question_id=question_id)
-        ).scalars().all()
+        all_options = (
+            database.session.execute(database.select(QuestionOption).filter_by(question_id=question_id)).scalars().all()
+        )
         assert len(all_options) == 5  # 4 default + 1 added
 
         # Check boolean question has correct answer set
-        bool_options = database.session.execute(
-            database.select(QuestionOption).filter_by(question_id=bool_question_id)
-        ).scalars().all()
+        bool_options = (
+            database.session.execute(database.select(QuestionOption).filter_by(question_id=bool_question_id)).scalars().all()
+        )
         correct_options = [opt for opt in bool_options if opt.is_correct]
         assert len(correct_options) == 1
         assert correct_options[0].text == "Verdadero"
@@ -483,7 +485,9 @@ def test_student_complete_evaluation_workflow(full_db_setup, client):
     # Step 4: Verify enrollment
     with app.app_context():
         enrollment = (
-            database.session.execute(database.select(EstudianteCurso).filter_by(usuario="workflow_student", curso="student_course"))
+            database.session.execute(
+                database.select(EstudianteCurso).filter_by(usuario="workflow_student", curso="student_course")
+            )
             .scalars()
             .first()
         )
@@ -634,11 +638,9 @@ def test_instructor_question_option_management(full_db_setup, client):
     )
 
     with app.app_context():
-        question = database.session.execute(
-            database.select(Question).filter_by(evaluation_id=evaluation_id)
-        ).scalars().first()
+        question = database.session.execute(database.select(Question).filter_by(evaluation_id=evaluation_id)).scalars().first()
         question_id = question.id
-        
+
         # Verify 4 default options were created
         options = database.session.execute(database.select(QuestionOption).filter_by(question_id=question_id)).scalars().all()
         assert len(options) == 4
@@ -670,27 +672,27 @@ def test_instructor_question_option_management(full_db_setup, client):
 
     # Test 4: Verify all options are correct
     with app.app_context():
-        all_options = database.session.execute(
-            database.select(QuestionOption).filter_by(question_id=question_id)
-        ).scalars().all()
+        all_options = (
+            database.session.execute(database.select(QuestionOption).filter_by(question_id=question_id)).scalars().all()
+        )
         assert len(all_options) == 5
-        
+
         option_texts = [opt.text for opt in all_options]
         assert "Python" in option_texts
         assert "Java" in option_texts
         assert "C++" in option_texts
-        
+
         # Debug: Print all options and their correct status
         print(f"Debug: All options for question {question_id}:")
         for opt in all_options:
             print(f"  {opt.text}: is_correct={opt.is_correct}")
-        
+
         correct_options = [opt for opt in all_options if opt.is_correct]
         print(f"Debug: Found {len(correct_options)} correct options")
         expected_correct = ["Python", "Java", "C++"]
         actual_correct = [opt.text for opt in correct_options]
         print(f"Debug: Expected correct: {expected_correct}, Actual correct: {actual_correct}")
-        
+
         assert len(correct_options) == 3  # Python, Java, C++
 
     # Test 5: Try to delete an option (should work)
@@ -698,9 +700,9 @@ def test_instructor_question_option_management(full_db_setup, client):
     assert delete_response.status_code == 302
 
     with app.app_context():
-        remaining_options = database.session.execute(
-            database.select(QuestionOption).filter_by(question_id=question_id)
-        ).scalars().all()
+        remaining_options = (
+            database.session.execute(database.select(QuestionOption).filter_by(question_id=question_id)).scalars().all()
+        )
         assert len(remaining_options) == 4  # One deleted
 
     # Test 6: Test boolean question option limits
@@ -714,15 +716,17 @@ def test_instructor_question_option_management(full_db_setup, client):
     )
 
     with app.app_context():
-        bool_question = database.session.execute(
-            database.select(Question).filter_by(evaluation_id=evaluation_id, type="boolean")
-        ).scalars().first()
+        bool_question = (
+            database.session.execute(database.select(Question).filter_by(evaluation_id=evaluation_id, type="boolean"))
+            .scalars()
+            .first()
+        )
         bool_question_id = bool_question.id
-        
+
         # Should have exactly 2 options for boolean
-        bool_options = database.session.execute(
-            database.select(QuestionOption).filter_by(question_id=bool_question_id)
-        ).scalars().all()
+        bool_options = (
+            database.session.execute(database.select(QuestionOption).filter_by(question_id=bool_question_id)).scalars().all()
+        )
         assert len(bool_options) == 2
 
     # Test 7: Try to add third option to boolean question (should be rejected)
@@ -733,9 +737,9 @@ def test_instructor_question_option_management(full_db_setup, client):
     assert reject_response.status_code == 302  # Redirects with warning
 
     with app.app_context():
-        bool_options_after = database.session.execute(
-            database.select(QuestionOption).filter_by(question_id=bool_question_id)
-        ).scalars().all()
+        bool_options_after = (
+            database.session.execute(database.select(QuestionOption).filter_by(question_id=bool_question_id)).scalars().all()
+        )
         assert len(bool_options_after) == 2  # Still only 2 options
 
     # Test 8: Delete question (should delete all options)
@@ -745,11 +749,11 @@ def test_instructor_question_option_management(full_db_setup, client):
     with app.app_context():
         deleted_question = database.session.get(Question, question_id)
         assert deleted_question is None
-        
+
         # All options should be deleted too
-        orphaned_options = database.session.execute(
-            database.select(QuestionOption).filter_by(question_id=question_id)
-        ).scalars().all()
+        orphaned_options = (
+            database.session.execute(database.select(QuestionOption).filter_by(question_id=question_id)).scalars().all()
+        )
         assert len(orphaned_options) == 0
 
     print("✓ Question and option management test completed successfully!")

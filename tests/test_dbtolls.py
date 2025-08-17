@@ -63,15 +63,15 @@ def test_get_course_sections_empty(lms_application):
     """Test get_course_sections returns empty list for non-existent course."""
     with lms_application.app_context():
         from now_lms.db.tools import get_course_sections
-        
+
         # Test with non-existent course
         sections = get_course_sections("nonexistent")
         assert sections == []
-        
+
         # Test with empty course code
         sections = get_course_sections("")
         assert sections == []
-        
+
         # Test with None course code
         sections = get_course_sections(None)
         assert sections == []
@@ -82,7 +82,7 @@ def test_get_course_sections_with_data(minimal_db_setup):
     with minimal_db_setup.app_context():
         from now_lms.db import Curso, CursoSeccion, database
         from now_lms.db.tools import get_course_sections
-        
+
         # Create a test course
         course = Curso(
             codigo="TEST_COURSE",
@@ -94,7 +94,7 @@ def test_get_course_sections_with_data(minimal_db_setup):
         )
         database.session.add(course)
         database.session.commit()
-        
+
         # Create test sections in different order to test ordering
         section1 = CursoSeccion(
             curso="TEST_COURSE",
@@ -104,36 +104,36 @@ def test_get_course_sections_with_data(minimal_db_setup):
         )
         section3 = CursoSeccion(
             curso="TEST_COURSE",
-            nombre="Section 3", 
+            nombre="Section 3",
             descripcion="Third section",
             indice=3,
         )
         section2 = CursoSeccion(
             curso="TEST_COURSE",
             nombre="Section 2",
-            descripcion="Second section", 
+            descripcion="Second section",
             indice=2,
         )
-        
+
         database.session.add(section1)
         database.session.add(section3)
         database.session.add(section2)
         database.session.commit()
-        
+
         # Test getting sections
         sections = get_course_sections("TEST_COURSE")
-        
+
         # Should have 3 sections
         assert len(sections) == 3
-        
+
         # Should be ordered by indice
         assert sections[0].nombre == "Section 1"
         assert sections[0].indice == 1
-        assert sections[1].nombre == "Section 2" 
+        assert sections[1].nombre == "Section 2"
         assert sections[1].indice == 2
         assert sections[2].nombre == "Section 3"
         assert sections[2].indice == 3
-        
+
         # Test with different course that has no sections
         course2 = Curso(
             codigo="EMPTY_COURSE",
@@ -145,7 +145,7 @@ def test_get_course_sections_with_data(minimal_db_setup):
         )
         database.session.add(course2)
         database.session.commit()
-        
+
         empty_sections = get_course_sections("EMPTY_COURSE")
         assert empty_sections == []
 
@@ -155,7 +155,7 @@ def test_get_course_sections_jinja_global(minimal_db_setup):
     with minimal_db_setup.app_context():
         from flask import render_template_string
         from now_lms.db import Curso, CursoSeccion, database
-        
+
         # Create a test course with sections
         course = Curso(
             codigo="JINJA_TEST",
@@ -167,7 +167,7 @@ def test_get_course_sections_jinja_global(minimal_db_setup):
         )
         database.session.add(course)
         database.session.commit()
-        
+
         section = CursoSeccion(
             curso="JINJA_TEST",
             nombre="Test Section",
@@ -176,17 +176,17 @@ def test_get_course_sections_jinja_global(minimal_db_setup):
         )
         database.session.add(section)
         database.session.commit()
-        
+
         # Test that get_course_sections is available in Jinja context
         template = "{{ get_course_sections('JINJA_TEST')|length }}"
         result = render_template_string(template)
         assert result == "1"
-        
+
         # Test accessing section properties
         template = "{{ get_course_sections('JINJA_TEST')[0].nombre }}"
         result = render_template_string(template)
         assert result == "Test Section"
-        
+
         # Test with non-existent course
         template = "{{ get_course_sections('NONEXISTENT')|length }}"
         result = render_template_string(template)
