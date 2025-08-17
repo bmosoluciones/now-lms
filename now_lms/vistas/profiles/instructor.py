@@ -127,7 +127,7 @@ def elimina_usuario__grupo(group: str, user: str):
         delete(UsuarioGrupoMiembro).where((UsuarioGrupoMiembro.usuario == user) & (UsuarioGrupoMiembro.grupo == group))
     )
     database.session.commit()
-    return redirect(url_for("grupo", id=group))
+    return redirect(url_for("instructor_profile.grupo", ulid=group))
 
 
 @instructor_profile.route(
@@ -146,7 +146,7 @@ def agrega_usuario_a_grupo():
         grupo=id_, usuario=request.form["usuario"], creado_por=current_user.usuario, creado=datetime.now()
     )
     database.session.add(registro)
-    url_grupo = url_for("grupo", id=id_)
+    url_grupo = url_for("instructor_profile.grupo", ulid=id_)
     try:
         database.session.commit()
         flash("Usuario Agregado Correctamente.", "success")

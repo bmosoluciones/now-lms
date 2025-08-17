@@ -94,7 +94,7 @@ def eliminar_usuario(user_id):
     """Elimina un usuario por su id y redirecciona a la vista dada."""
     database.session.execute(delete(Usuario).where(Usuario.id == user_id))
     database.session.commit()
-    cache.delete("view/" + url_for("usuarios"))
+    cache.delete("view/" + url_for("admin_profile.usuarios"))
     flash("Usuario eliminado correctamente.", "info")
     return redirect(url_for(request.args.get("ruta", default="home", type=str)))
 
@@ -128,4 +128,4 @@ def cambiar_tipo_usario():
         nuevo_tipo=request.args.get("type"),
         usuario=current_user.usuario,
     )
-    return redirect(url_for("usuario", id_usuario=request.args.get("user")))
+    return redirect(url_for("user_profile.usuario", id_usuario=request.args.get("user")))
