@@ -787,3 +787,29 @@ def is_blog_enabled():
         return False
     except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, AttributeError):
         return False
+
+
+def get_course_sections(course_code: str):
+    """Get all sections for a given course code.
+
+    Args:
+        course_code (str): The course code to get sections for
+
+    Returns:
+        list: List of CursoSeccion objects ordered by indice, or empty list if none found
+    """
+    if not course_code:
+        return []
+
+    try:
+        sections = (
+            database.session.execute(
+                database.select(CursoSeccion).filter(CursoSeccion.curso == course_code).order_by(CursoSeccion.indice)
+            )
+            .scalars()
+            .all()
+        )
+
+        return sections
+    except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, AttributeError):
+        return []

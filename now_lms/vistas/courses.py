@@ -883,12 +883,20 @@ def pagina_recurso(curso_id, resource_type, codigo):
 
     CURSO = database.session.execute(select(Curso).filter(Curso.codigo == curso_id)).scalars().first()
     RECURSO = database.session.execute(select(CursoRecurso).filter(CursoRecurso.id == codigo)).scalars().first()
-    RECURSOS = database.session.execute(
-        select(CursoRecurso).filter(CursoRecurso.curso == curso_id).order_by(CursoRecurso.indice)
+
+    if not RECURSO:
+        abort(404)
+
+    RECURSOS = (
+        database.session.execute(select(CursoRecurso).filter(CursoRecurso.curso == curso_id).order_by(CursoRecurso.indice))
+        .scalars()
+        .all()
     )
     SECCION = database.session.execute(select(CursoSeccion).filter(CursoSeccion.id == RECURSO.seccion)).scalars().first()
-    SECCIONES = database.session.execute(
-        select(CursoSeccion).filter(CursoSeccion.curso == curso_id).order_by(CursoSeccion.indice)
+    SECCIONES = (
+        database.session.execute(select(CursoSeccion).filter(CursoSeccion.curso == curso_id).order_by(CursoSeccion.indice))
+        .scalars()
+        .all()
     )
     TEMPLATE = "learning/resources/" + TEMPLATES_BY_TYPE[resource_type]
     INDICE = crear_indice_recurso(codigo)

@@ -70,7 +70,8 @@
                                             <div class="card-body">
                                                 {% if curso.descripcion_corta %}
                                                 <p class="card-text">{{ curso.descripcion_corta }}</p>
-                                                {% endif %} {% set secciones = curso.secciones %} {% if secciones %}
+                                                {% endif %} {% set secciones = get_course_sections(curso.codigo) %} {% if
+                                                secciones %}
                                                 <h6>Secciones disponibles:</h6>
                                                 <div class="list-group list-group-flush">
                                                     {% for seccion in secciones %}

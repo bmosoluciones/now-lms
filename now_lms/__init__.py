@@ -90,6 +90,7 @@ from now_lms.db.tools import (
     get_addsense_code,
     get_addsense_meta,
     get_adsense_enabled,
+    get_course_sections,
     get_paypal_id,
     is_blog_enabled,
     is_masterclass_enabled,
@@ -281,6 +282,7 @@ def define_variables_globales_jinja2(lms_app: Flask):
     lms_app.jinja_env.globals["estilo_alerta"] = ESTILO_ALERTAS
     lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
     lms_app.jinja_env.globals["favicon_perzonalizado"] = favicon_perzonalizado
+    lms_app.jinja_env.globals["get_course_sections"] = get_course_sections
     lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
     lms_app.jinja_env.globals["info"] = app_info(lms_app)
     lms_app.jinja_env.globals["is_masterclass_enabled"] = is_masterclass_enabled
