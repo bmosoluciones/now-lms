@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 - This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/), using prefixes such as: 
 
-## [unreleased]
+## [v0.0.1b7.dev20250815 ] - 2025-08-16
 
 ### ✅ NOW-LMS Smoke Test Checklist (Release Candidate)
 
@@ -26,21 +26,6 @@ All notable changes to this project will be documented in this file.
 * [x] Enrolled courses appear correctly in the student dashboard.
 * [x] Course resources (PDF, video, external links, images) load correctly.
 
-#### 📅 Calendar & Events
-
-* [ ] Enrolling in a course generates calendar events (meets, evaluation deadlines).
-* [ ] Events appear in `/user/calendar` with correct timezone.
-* [ ] Upcoming events appear in the user dashboard.
-* [ ] If a meet or evaluation resource date changes, the user calendar reflects the update.
-* [ ] Exporting events as `.ics` works and keeps events private.
-* [ ] Event detail page correctly shows event type (Meet/Evaluation) and link to resource.
-
-#### 📝 Evaluations
-
-* [ ] Student can access an active evaluation.
-* [ ] Student cannot access an evaluation outside its valid date.
-* [ ] Evaluation submission is graded correctly and results are displayed.
-
 #### 🎓 Certificates
 
 * [x] Certificate is generated upon course completion.
@@ -48,15 +33,7 @@ All notable changes to this project will be documented in this file.
 
 #### 💬 Communication
 
-* [ ] Internal messaging works between student ↔ instructor.
-* [ ] Course discussion forums allow creating and replying to threads.
-* [ ] Course announcements are visible to all enrolled users.
-
-#### 💳 Payments & Monetization
-
-* [ ] PayPal payment for paid course works in sandbox mode.
-* [ ] “Audit mode” for paid courses limits access to evaluations/certificates.
-* [ ] Google AdSense loads in free courses (if configured).
+* [x] Internal messaging works between student ↔ instructor.
 
 #### 🎨 UI & Theming
 
