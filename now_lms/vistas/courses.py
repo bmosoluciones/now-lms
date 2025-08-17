@@ -283,7 +283,7 @@ def course_enroll(course_code):
             # Free course or 100% discount coupon - complete enrollment immediately
             pago.estado = "completed"
             try:
-                pago.creado = database.func.now()
+                pago.creado = datetime.utcnow().date()
                 pago.creado_por = current_user.usuario
                 database.session.add(pago)
                 database.session.flush()
@@ -298,7 +298,7 @@ def course_enroll(course_code):
                     vigente=True,
                     pago=pago.id,
                 )
-                registro.creado = database.func.now()
+                registro.creado = datetime.utcnow().date()
                 registro.creado_por = current_user.usuario
                 database.session.add(registro)
                 database.session.commit()
@@ -555,7 +555,7 @@ def nuevo_curso():
             creado_por=current_user.usuario,
         )
         try:
-            nuevo_curso.creado = database.func.now()
+            nuevo_curso.creado = datetime.utcnow().date()
             nuevo_curso.creado_por = current_user.usuario
             database.session.add(nuevo_curso_)
             database.session.commit()
@@ -660,7 +660,7 @@ def editar_curso(course_code):
         curso_a_editar.modificado_por = current_user.usuario
 
         try:
-            curso_a_editar.modificado = database.func.now()
+            curso_a_editar.modificado = datetime.utcnow()
             curso_a_editar.modificado_por = current_user.usuario
             database.session.commit()
 
@@ -716,7 +716,7 @@ def nuevo_seccion(course_code):
             creado_por=current_user.usuario,
         )
         try:
-            nueva_seccion.creado = database.func.now()
+            nueva_seccion.creado = datetime.utcnow().date()
             nueva_seccion.creado_por = current_user.usuario
             database.session.add(nueva_seccion)
             database.session.commit()
@@ -745,7 +745,7 @@ def editar_seccion(course_code, seccion):
         seccion_a_editar.modificado_por = current_user.usuario
         seccion_a_editar.curso = course_code
         try:
-            seccion_a_editar.modificado = database.func.now()
+            seccion_a_editar.modificado = datetime.utcnow()
             seccion_a_editar.modificado_por = current_user.usuario
             database.session.commit()
             flash("Sección modificada correctamente.", "success")
@@ -977,7 +977,7 @@ def _emitir_certificado(curso_id, usuario, plantilla):
         usuario=usuario,
         certificado=plantilla,
     )
-    certificado.creado = database.func.now()
+    certificado.creado = datetime.utcnow().date()
     certificado.creado_por = current_user.usuario
     database.session.add(certificado)
     database.session.commit()
@@ -1195,7 +1195,7 @@ def editar_recurso_youtube_video(course_code, seccion, resource_id):
         recurso.descripcion = form.descripcion.data
         recurso.url = form.youtube_url.data
         recurso.requerido = form.requerido.data
-        recurso.modificado = database.func.now()
+        recurso.modificado = datetime.utcnow()
         recurso.modificado_por = current_user.usuario
 
         try:
@@ -1242,7 +1242,7 @@ def nuevo_recurso_text(course_code, seccion):
             creado_por=current_user.usuario,
         )
         try:
-            nuevo_recurso_.creado = database.func.now()
+            nuevo_recurso_.creado = datetime.utcnow().date()
             nuevo_recurso_.creado_por = current_user.usuario
             database.session.add(nuevo_recurso_)
             database.session.commit()
@@ -1276,7 +1276,7 @@ def editar_recurso_text(course_code, seccion, resource_id):
         recurso.descripcion = "Text resource"
         recurso.requerido = form.requerido.data
         recurso.text = form.editor.data
-        recurso.modificado = database.func.now()
+        recurso.modificado = datetime.utcnow()
         recurso.modificado_por = current_user.usuario
 
         try:

@@ -18,6 +18,7 @@
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
+from datetime import date, datetime
 
 
 # ---------------------------------------------------------------------------------------
@@ -113,10 +114,10 @@ class BaseTabla:
     id = database.Column(
         database.String(26), primary_key=True, nullable=False, index=True, default=generador_de_codigos_unicos
     )
-    timestamp = database.Column(database.DateTime, default=database.func.now(), nullable=False)
-    creado = database.Column(database.Date, default=database.func.date(database.func.now()), nullable=False)
+    timestamp = database.Column(database.DateTime, default=datetime.utcnow, nullable=False)
+    creado = database.Column(database.Date, default=date.today, nullable=False)
     creado_por = database.Column(database.String(150), nullable=True)
-    modificado = database.Column(database.DateTime, onupdate=database.func.now(), nullable=True)
+    modificado = database.Column(database.DateTime, onupdate=datetime.utcnow, nullable=True)
     modificado_por = database.Column(database.String(150), nullable=True)
 
     def validate_user_references(self):
@@ -171,7 +172,7 @@ class Usuario(UserMixin, database.Model, BaseTabla):
     nacimiento = database.Column(database.Date())
     bio = database.Column(database.String(500))
     # Registro de actividad
-    fecha_alta = database.Column(database.DateTime, default=database.func.now())
+    fecha_alta = database.Column(database.DateTime, default=datetime.utcnow)
     ultimo_acceso = database.Column(database.DateTime)
     # Social
     url = database.Column(database.String(100))
@@ -333,7 +334,7 @@ class CursoUsuarioAvance(database.Model, BaseTabla):
     recursos_completados = database.Column(database.Integer, default=0)  # Cantidad de recursos completados
     avance = database.Column(database.Float(asdecimal=True), default=0.0)  # Porcentaje de avance del curso
     completado = database.Column(database.Boolean(), default=False)  # Indica si el curso ha sido completado
-    fecha_inicio = database.Column(database.DateTime, default=database.func.now())  # Fecha de inicio del curso
+    fecha_inicio = database.Column(database.DateTime, default=datetime.utcnow)  # Fecha de inicio del curso
 
 
 class CursoRecursoPregunta(database.Model, BaseTabla):
@@ -626,7 +627,7 @@ class Certificacion(database.Model, BaseTabla):
     curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=True, index=True)
     master_class_id = database.Column(database.String(26), database.ForeignKey("master_classes.id"), nullable=True, index=True)
     certificado = database.Column(database.String(26), database.ForeignKey("certificado.code"), nullable=False, index=True)
-    fecha = database.Column(database.Date, default=database.func.date(database.func.now()), nullable=False)
+    fecha = database.Column(database.Date, default=date.today, nullable=False)
     nota = database.Column(database.Numeric(precision=5, scale=2))
 
     # Relationships
@@ -697,8 +698,8 @@ class ForoMensaje(database.Model, BaseTabla):
     usuario_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     parent_id = database.Column(database.String(26), database.ForeignKey("foro_mensaje.id"), nullable=True, index=True)
     contenido = database.Column(database.Text, nullable=False)
-    fecha_creacion = database.Column(database.DateTime, default=database.func.now(), nullable=False)
-    fecha_modificacion = database.Column(database.DateTime, onupdate=database.func.now(), nullable=True)
+    fecha_creacion = database.Column(database.DateTime, default=datetime.utcnow, nullable=False)
+    fecha_modificacion = database.Column(database.DateTime, onupdate=datetime.utcnow, nullable=True)
     estado = database.Column(database.String(10), default="abierto", nullable=False)  # abierto, cerrado
 
     # Relationships
@@ -785,7 +786,7 @@ class Pago(database.Model):
     curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
     moneda = database.Column(database.String(5))  # Ejemplo: USD, EUR, CRC
     monto = database.Column(database.Numeric(asdecimal=True))
-    fecha = database.Column(database.DateTime, default=database.func.now())
+    fecha = database.Column(database.DateTime, default=datetime.utcnow)
     estado = database.Column(database.String(20), default="pending")  # pending, completed, failed
     metodo = database.Column(database.String(20))  # paypal, stripe, bank_transfer
     referencia = database.Column(database.String(100), nullable=True)  # Referencia de pago
@@ -872,7 +873,7 @@ class EvaluationAttempt(database.Model, BaseTabla):
     user_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     score = database.Column(database.Float(), nullable=True)  # null until submitted
     passed = database.Column(database.Boolean(), nullable=True)  # null until graded
-    started_at = database.Column(database.DateTime(), default=database.func.now())
+    started_at = database.Column(database.DateTime(), default=datetime.utcnow)
     submitted_at = database.Column(database.DateTime(), nullable=True)
     was_late = database.Column(database.Boolean(), default=False)
 
@@ -1111,7 +1112,7 @@ class MasterClassEnrollment(database.Model, BaseTabla):
     user_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     is_confirmed = database.Column(database.Boolean, default=False, nullable=False)
     payment_id = database.Column(database.String(26), database.ForeignKey("pago.id"), nullable=True, index=True)
-    enrolled_at = database.Column(database.DateTime, default=database.func.now(), nullable=False)
+    enrolled_at = database.Column(database.DateTime, default=datetime.utcnow, nullable=False)
 
     # Constraints
     __table_args__ = (database.UniqueConstraint("master_class_id", "user_id", name="unique_enrollment_per_user"),)
