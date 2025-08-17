@@ -2322,3 +2322,12 @@ def delete_coupon(course_code, coupon_id):
         log.error(f"Error deleting coupon: {e}")
 
     return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
+
+
+@course.route("/course/<course_code>/section/<section_id>/new_evaluation")
+@login_required
+@perfil_requerido("instructor")
+def new_evaluation_from_section(course_code, section_id):
+    """Create a new evaluation for a course section from section actions."""
+    # Redirect to the existing instructor profile route for evaluation creation
+    return redirect(url_for("instructor_profile.new_evaluation", course_code=course_code, section_id=section_id))

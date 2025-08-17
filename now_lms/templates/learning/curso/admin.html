@@ -221,6 +221,14 @@ permitir_docente %}
                                             <ul class="dropdown-menu">
                                                 <li>
                                                     <a
+                                                        href="{{ url_for('course.new_evaluation_from_section', course_code=curso.codigo, section_id=seccion.id) }}"
+                                                        class="text-reset text-decoration-none"
+                                                        ><i class="bi bi-plus-circle" aria-hidden="true"></i> Crear
+                                                        Evaluación</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a
                                                         href="{{ url_for('course.cambiar_seccion_publico', course_code=curso.codigo, codigo=seccion.id) }}"
                                                         class="text-reset text-decoration-none"
                                                         >Publicar Sección</a
