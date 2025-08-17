@@ -68,6 +68,7 @@ from now_lms.db.initial_data import (
     crear_curso_demo3,
     crear_curso_predeterminado,
     crear_etiquetas,
+    crear_evaluacion_predeterminada,
     crear_programa,
     crear_recurso_descargable,
     crear_usuarios_predeterminados,
@@ -428,6 +429,7 @@ def initial_setup(with_examples=False, with_tests=False):
         crear_configuracion_predeterminada()
         crear_certificados()
         crear_curso_predeterminado()
+        crear_evaluacion_predeterminada()
         crear_usuarios_predeterminados()
         crear_certificacion()
         populate_custmon_data_dir()

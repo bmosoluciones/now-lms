@@ -141,14 +141,80 @@
                                                             %} Opción Múltiple {% endif %} | {{ pregunta.options|length }}
                                                             opciones
                                                         </small>
+
+                                                        <!-- Show options -->
+                                                        {% if pregunta.options %}
+                                                        <div class="mt-2">
+                                                            <small class="text-muted">Opciones:</small>
+                                                            <ul class="list-unstyled ms-3 mb-1">
+                                                                {% for option in pregunta.options %}
+                                                                <li class="d-flex justify-content-between align-items-center">
+                                                                    <span>
+                                                                        <i
+                                                                            class="bi {% if option.is_correct %}bi-check-circle-fill text-success{% else %}bi-circle text-muted{% endif %}"
+                                                                        ></i>
+                                                                        {{ option.text[:50] }}{% if option.text|length > 50
+                                                                        %}...{% endif %}
+                                                                    </span>
+                                                                    <div class="btn-group btn-group-sm" role="group">
+                                                                        <a
+                                                                            href="{{ url_for('instructor_profile.edit_question_option', option_id=option.id) }}"
+                                                                            class="btn btn-outline-secondary btn-sm"
+                                                                        >
+                                                                            <i class="bi bi-pencil"></i>
+                                                                        </a>
+                                                                        {% if pregunta.options|length > 2 %}
+                                                                        <form
+                                                                            method="POST"
+                                                                            action="{{ url_for('instructor_profile.delete_question_option', option_id=option.id) }}"
+                                                                            style="display: inline"
+                                                                            onsubmit="return confirm('¿Está seguro de eliminar esta opción?')"
+                                                                        >
+                                                                            <button
+                                                                                type="submit"
+                                                                                class="btn btn-outline-danger btn-sm"
+                                                                            >
+                                                                                <i class="bi bi-trash"></i>
+                                                                            </button>
+                                                                        </form>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                            {% if pregunta.type != "boolean" or pregunta.options|length < 2 %}
+                                                            <a
+                                                                href="{{ url_for('instructor_profile.new_question_option', question_id=pregunta.id) }}"
+                                                                class="btn btn-outline-success btn-sm"
+                                                            >
+                                                                <i class="bi bi-plus"></i> Agregar opción
+                                                            </a>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% endif %}
                                                     </div>
                                                     <div class="btn-group" role="group">
                                                         <a
                                                             href="{{ url_for('instructor_profile.edit_question', question_id=pregunta.id) }}"
                                                             class="btn btn-outline-primary btn-sm"
+                                                            title="Editar pregunta"
                                                         >
                                                             <i class="bi bi-pencil"></i>
                                                         </a>
+                                                        <form
+                                                            method="POST"
+                                                            action="{{ url_for('instructor_profile.delete_question', question_id=pregunta.id) }}"
+                                                            style="display: inline"
+                                                            onsubmit="return confirm('¿Está seguro de eliminar esta pregunta y todas sus opciones?')"
+                                                        >
+                                                            <button
+                                                                type="submit"
+                                                                class="btn btn-outline-danger btn-sm"
+                                                                title="Eliminar pregunta"
+                                                            >
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>

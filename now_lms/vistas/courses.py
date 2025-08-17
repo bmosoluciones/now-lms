@@ -57,6 +57,7 @@ from now_lms.calendar_utils import create_events_for_student_enrollment, update_
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, audio, files, images
 from now_lms.db import (
     Categoria,
+    CategoriaCurso,
     Certificacion,
     Coupon,
     Curso,
@@ -69,6 +70,7 @@ from now_lms.db import (
     DocenteCurso,
     EstudianteCurso,
     Etiqueta,
+    EtiquetaCurso,
     Evaluation,
     EvaluationAttempt,
     EvaluationReopenRequest,
@@ -2073,23 +2075,62 @@ def lista_cursos():
 
     etiquetas = database.session.execute(select(Etiqueta)).scalars().all()
     categorias = database.session.execute(select(Categoria)).scalars().all()
+
+    # Build base query for courses
+    query = database.select(Curso).filter(Curso.publico == True, Curso.estado == "open")  # noqa: E712
+
+    # Extract filter parameters
+    nivel_param = request.args.get("nivel")
+    tag_param = request.args.get("tag")
+    category_param = request.args.get("category")
+
+    # Apply level filter
+    if nivel_param is not None:
+        try:
+            nivel = int(nivel_param)
+            query = query.filter(Curso.nivel == nivel)
+        except ValueError:
+            pass  # Ignore invalid level values
+
+    # Apply tag filter
+    if tag_param:
+        # Find tag by name
+        tag = database.session.execute(select(Etiqueta).filter(Etiqueta.nombre == tag_param)).scalars().first()
+        if tag:
+            # Join with EtiquetaCurso to filter courses by tag
+            query = query.join(EtiquetaCurso, Curso.codigo == EtiquetaCurso.curso).filter(EtiquetaCurso.etiqueta == tag.id)
+
+    # Apply category filter
+    if category_param:
+        # Find category by name
+        categoria = database.session.execute(select(Categoria).filter(Categoria.nombre == category_param)).scalars().first()
+        if categoria:
+            # Join with CategoriaCurso to filter courses by category
+            query = query.join(CategoriaCurso, Curso.codigo == CategoriaCurso.curso).filter(
+                CategoriaCurso.categoria == categoria.id
+            )
+
+    # Paginate the filtered query
     consulta_cursos = database.paginate(
-        database.select(Curso).filter(Curso.publico == True, Curso.estado == "open"),  # noqa: E712
+        query,
         page=request.args.get("page", default=1, type=int),
         max_per_page=MAX_COUNT,
         count=True,
     )
-    # /explore?page=2&nivel=2&tag=python&category=programing
-    if request.args.get("nivel") or request.args.get("tag") or request.args.get("category"):
+
+    # Build parameters dict for URL building
+    # /explore?page=2&nivel=2&tag=python&category=programming
+    if nivel_param or tag_param or category_param:
         PARAMETROS = OrderedDict()
         for arg in request.url[request.url.find("?") + 1 :].split("&"):  # noqa: E203
-            PARAMETROS[arg[: arg.find("=")]] = arg[arg.find("=") + 1 :]  # noqa: E203
+            if "=" in arg:
+                PARAMETROS[arg[: arg.find("=")]] = arg[arg.find("=") + 1 :]  # noqa: E203
 
-            # El numero de pagina debe ser generado por el macro de paginación.
-            try:
-                del PARAMETROS["page"]
-            except KeyError:
-                pass
+        # El numero de pagina debe ser generado por el macro de paginación.
+        try:
+            del PARAMETROS["page"]
+        except KeyError:
+            pass
     else:
         PARAMETROS = None
 

@@ -150,7 +150,13 @@
                                 <div class="collapse show" id="home-collapse">
                                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                         {% for categoria in categorias %}
-                                        <li><a href="#" class="link-dark rounded">{{ categoria.nombre }}</a></li>
+                                        <li>
+                                            <a
+                                                href="{{ url_for('course.lista_cursos') + parametros_url(parametros=parametros, arg='category', val=categoria.nombre, char='?') }}"
+                                                class="link-dark rounded"
+                                                >{{ categoria.nombre }}</a
+                                            >
+                                        </li>
                                         {% endfor %}
                                     </ul>
                                 </div>
@@ -167,7 +173,13 @@
                                 <div class="collapse" id="dashboard-collapse">
                                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                         {% for etiqueta in etiquetas %}
-                                        <li><a href="#" class="link-dark rounded">{{ etiqueta.nombre }}</a></li>
+                                        <li>
+                                            <a
+                                                href="{{ url_for('course.lista_cursos') + parametros_url(parametros=parametros, arg='tag', val=etiqueta.nombre, char='?') }}"
+                                                class="link-dark rounded"
+                                                >{{ etiqueta.nombre }}</a
+                                            >
+                                        </li>
                                         {% endfor %}
                                     </ul>
                                 </div>

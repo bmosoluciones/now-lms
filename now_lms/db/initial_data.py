@@ -44,6 +44,9 @@ from now_lms.db import (
     CursoSeccion,
     Etiqueta,
     EtiquetaCurso,
+    Evaluation,
+    Question,
+    QuestionOption,
     Programa,
     ProgramaCurso,
     Recurso,
@@ -700,6 +703,152 @@ def crear_curso_predeterminado():
     database.session.commit()
 
     log.debug("Demonstration course created successfully.")
+
+
+def crear_evaluacion_predeterminada():
+    """Crea una evaluación básica de ejemplo para el curso 'now'."""
+    log.trace("Creating demonstration evaluation for 'now' course.")
+
+    # Get the first section of the "now" course
+    seccion = (
+        database.session.execute(database.select(CursoSeccion).filter_by(curso="now").order_by(CursoSeccion.indice.asc()))
+        .scalars()
+        .first()
+    )
+
+    if not seccion:
+        log.warning("No section found for 'now' course. Cannot create evaluation.")
+        return
+
+    # Create the evaluation
+    evaluacion = Evaluation(
+        section_id=seccion.id,
+        title="Online Teaching Knowledge Check",
+        description="A basic evaluation to test your understanding of online teaching fundamentals",
+        is_exam=False,
+        passing_score=70.0,
+        max_attempts=3,
+        creado_por=ADMIN_USER_WITH_FALLBACK,
+    )
+    database.session.add(evaluacion)
+    database.session.flush()  # Get the evaluation ID
+
+    # Question 1: Multiple choice about online teaching benefits
+    question1 = Question(
+        evaluation_id=evaluacion.id,
+        type="multiple",
+        text="¿Cuál es una de las principales ventajas de la enseñanza en línea?",
+        explanation="La flexibilidad es una de las características más importantes de la educación en línea, permitiendo a estudiantes e instructores adaptar horarios.",
+        order=1,
+        creado_por=ADMIN_USER_WITH_FALLBACK,
+    )
+    database.session.add(question1)
+    database.session.flush()
+
+    # Options for question 1
+    options1 = [
+        QuestionOption(
+            question_id=question1.id,
+            text="Mayor costo de implementación",
+            is_correct=False,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+        QuestionOption(
+            question_id=question1.id,
+            text="Flexibilidad de horarios",
+            is_correct=True,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+        QuestionOption(
+            question_id=question1.id,
+            text="Menos interacción con estudiantes",
+            is_correct=False,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+        QuestionOption(
+            question_id=question1.id,
+            text="Mayor dificultad técnica",
+            is_correct=False,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+    ]
+    for option in options1:
+        database.session.add(option)
+
+    # Question 2: True/False about online course engagement
+    question2 = Question(
+        evaluation_id=evaluacion.id,
+        type="boolean",
+        text="Los cursos en línea requieren mayor autodisciplina por parte de los estudiantes.",
+        explanation="Verdadero. Los estudiantes en línea deben gestionar su tiempo y motivación de manera más independiente.",
+        order=2,
+        creado_por=ADMIN_USER_WITH_FALLBACK,
+    )
+    database.session.add(question2)
+    database.session.flush()
+
+    # Options for question 2 (True/False)
+    options2 = [
+        QuestionOption(
+            question_id=question2.id,
+            text="Verdadero",
+            is_correct=True,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+        QuestionOption(
+            question_id=question2.id,
+            text="Falso",
+            is_correct=False,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+    ]
+    for option in options2:
+        database.session.add(option)
+
+    # Question 3: Multiple choice about course structure
+    question3 = Question(
+        evaluation_id=evaluacion.id,
+        type="multiple",
+        text="¿Qué elemento es esencial para estructurar un curso en línea efectivo?",
+        explanation="Los objetivos claros de aprendizaje son fundamentales para guiar tanto al instructor como a los estudiantes.",
+        order=3,
+        creado_por=ADMIN_USER_WITH_FALLBACK,
+    )
+    database.session.add(question3)
+    database.session.flush()
+
+    # Options for question 3
+    options3 = [
+        QuestionOption(
+            question_id=question3.id,
+            text="Videos de larga duración",
+            is_correct=False,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+        QuestionOption(
+            question_id=question3.id,
+            text="Objetivos de aprendizaje claros",
+            is_correct=True,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+        QuestionOption(
+            question_id=question3.id,
+            text="Múltiples exámenes",
+            is_correct=False,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+        QuestionOption(
+            question_id=question3.id,
+            text="Contenido exclusivamente textual",
+            is_correct=False,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+    ]
+    for option in options3:
+        database.session.add(option)
+
+    database.session.commit()
+    log.debug("Demonstration evaluation created successfully.")
 
 
 def crear_usuarios_predeterminados():

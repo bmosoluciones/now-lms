@@ -8,13 +8,6 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
-### Fixed
-- Fix new announcement workflow
-- Fix missing new evaluation route
-- Fix evaluation workflow 
-
-## [v0.0.1b7.dev20250815 ] - 2025-08-16
-
 ### ✅ NOW-LMS Smoke Test Checklist (Release Candidate)
 
 #### 🔐 Authentication & Access Control
@@ -29,9 +22,24 @@ All notable changes to this project will be documented in this file.
 
 * [x] Instructor can create a new course with sections and resources.
 * [x] Student can enroll in a free course.
-* [ ] Student cannot access a paid course without payment.
+* [x] Student cannot access a paid course without payment.
 * [x] Enrolled courses appear correctly in the student dashboard.
 * [x] Course resources (PDF, video, external links, images) load correctly.
+
+#### 📅 Calendar & Events
+
+* [x] Enrolling in a course generates calendar events (meets, evaluation deadlines).
+* [x] Events appear in `/user/calendar` with correct timezone.
+* [x] Upcoming events appear in the user dashboard.
+* [x] If a meet or evaluation resource date changes, the user calendar reflects the update.
+* [x] Exporting events as `.ics` works and keeps events private.
+* [x] Event detail page correctly shows event type (Meet/Evaluation) and link to resource.
+
+#### 📝 Evaluations
+
+* [x] Student can access an active evaluation.
+* [x] Student cannot access an evaluation outside its valid date.
+* [x] Evaluation submission is graded correctly and results are displayed.
 
 #### 🎓 Certificates
 
@@ -41,6 +49,14 @@ All notable changes to this project will be documented in this file.
 #### 💬 Communication
 
 * [x] Internal messaging works between student ↔ instructor.
+* [x] Course discussion forums allow creating and replying to threads.
+* [x] Course announcements are visible to all enrolled users.
+
+#### 💳 Payments & Monetization
+
+* [x] PayPal payment for paid course works in sandbox mode.
+* [ ] “Audit mode” for paid courses limits access to evaluations/certificates.
+* [x] Google AdSense loads in free courses (if configured).
 
 #### 🎨 UI & Theming
 
