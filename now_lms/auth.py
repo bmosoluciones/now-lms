@@ -185,13 +185,20 @@ def validate_confirmation_token(token):
     except jwt.InvalidSignatureError:
         log.warning("Invalid verification attempt.")
         return False
+    except jwt.DecodeError:
+        log.warning("Confirmation token has invalid format.")
+        return False
+    except Exception as e:
+        log.warning(f"Error validating confirmation token: {e}")
+        return False
 
     if data.get("confirm_id", None):
         log.trace(f"Validating confirmation token for {data.get('confirm_id', None)}")
-        user = database.session.execute(
+        user_result = database.session.execute(
             database.select(Usuario).filter_by(correo_electronico=data.get("confirm_id", None))
-        ).first()[0]
-        if user:
+        ).first()
+        if user_result:
+            user = user_result[0]
             log.info(f"User {user.usuario} has been verified, the account is now active.")
             user.correo_electronico_verificado = True
             user.activo = True

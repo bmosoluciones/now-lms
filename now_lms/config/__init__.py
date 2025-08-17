@@ -167,11 +167,11 @@ if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # pragma: no cover
     # Agrega driver de mysql:
     # - https://docs.sqlalchemy.org/en/14/dialects/mysql.html#module-sqlalchemy.dialects.mysql.pymysql
     elif "mysql:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-        DBURI = "mysql+mysqldb" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[5:]  # type: ignore[index]
+        DBURI = "mysql+mysqlconnector" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[5:]  # type: ignore[index]
         CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
 
     elif "mariadb:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-        DBURI = "mariadb+pymysql" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[7:]  # type: ignore[index]
+        DBURI = "mariadb+mariadbconnector" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[7:]  # type: ignore[index]
         CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
 
 

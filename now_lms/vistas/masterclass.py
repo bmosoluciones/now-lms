@@ -16,19 +16,14 @@
 """Master Class views."""
 
 from datetime import datetime
-from flask import Blueprint, flash, redirect, render_template, request, url_for, abort
+
+from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from slugify import slugify
 from sqlalchemy import and_
 
-from now_lms.db import (
-    MasterClass,
-    MasterClassEnrollment,
-    Usuario,
-    database,
-    select,
-)
-from now_lms.forms.masterclass import MasterClassForm, MasterClassEnrollmentForm
+from now_lms.db import MasterClass, MasterClassEnrollment, Usuario, database, select
+from now_lms.forms.masterclass import MasterClassEnrollmentForm, MasterClassForm
 
 masterclass = Blueprint("masterclass", __name__, url_prefix="/masterclass")
 

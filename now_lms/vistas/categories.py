@@ -94,7 +94,7 @@ def delete_category(ulid: str):
 
     database.session.execute(delete(Categoria).where(Categoria.id == ulid))
     database.session.commit()
-    return redirect("/categories")
+    return redirect(url_for("category.categories"))
 
 
 @category.route("/category/<ulid>/edit", methods=["GET", "POST"])

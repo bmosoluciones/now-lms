@@ -14,86 +14,72 @@
 #
 
 import inspect
-from unittest import TestCase
 
 
-class TestBasicos(TestCase):
-    def setUp(self):
-        from now_lms import app
-
-        self.app = app
-        self.app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-        self.app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
-        self.app.app_context().push()
-
-    def test_importable(self):
-        """El proyecto debe poder importarse sin errores."""
-
-        assert self.app
-
-    def test_cli(self):
-        runner = self.app.test_cli_runner()
-        runner.invoke(args=["info", "path"])
-        runner.invoke(args=["info", "system"])
-        runner.invoke(args=["info", "course", "now"])
-        runner.invoke(args=["database"])
+def test_importable(app):
+    """El proyecto debe poder importarse sin errores."""
+    assert app
 
 
-class TestInstanciasDeClases(TestCase):
-    def setUp(self):
-        from now_lms import app
+def test_cli(app):
+    runner = app.test_cli_runner()
+    runner.invoke(args=["info", "path"])
+    runner.invoke(args=["info", "system"])
+    runner.invoke(args=["info", "course", "now"])
+    runner.invoke(args=["database"])
 
-        self.app = app
-        self.app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-        self.app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
-        self.app.app_context().push()
 
-    def test_Flask(self):
-        from flask import Flask
+def test_flask_instance(app):
+    from flask import Flask
 
-        self.assertIsInstance(self.app, Flask)
+    assert isinstance(app, Flask)
 
-    def test_SQLAlchemy(self):
-        from now_lms import database
-        from flask_sqlalchemy import SQLAlchemy
 
-        self.assertIsInstance(database, SQLAlchemy)
+def test_sqlalchemy_instance(app):
+    from now_lms import database
+    from flask_sqlalchemy import SQLAlchemy
 
-    def test_Alembic(self):
-        from now_lms import alembic
-        from flask_alembic import Alembic
+    assert isinstance(database, SQLAlchemy)
 
-        self.assertIsInstance(alembic, Alembic)
 
-    def test_Login(self):
-        from now_lms import administrador_sesion
-        from flask_login import LoginManager
+def test_alembic_instance(app):
+    from now_lms import alembic
+    from flask_alembic import Alembic
 
-        self.assertIsInstance(administrador_sesion, LoginManager)
+    assert isinstance(alembic, Alembic)
 
-    def test_FlaskForm(self):
-        from flask_wtf import FlaskForm
-        import now_lms.forms as forms
 
-        form_classes = [
-            cls
-            for name, cls in inspect.getmembers(forms, inspect.isclass)
-            if cls.__module__ == forms.__name__ and issubclass(cls, FlaskForm)
-        ]
+def test_login_manager_instance(app):
+    from now_lms import administrador_sesion
+    from flask_login import LoginManager
 
-        assert form_classes, "No se encontraron formularios que hereden de FlaskForm."
+    assert isinstance(administrador_sesion, LoginManager)
 
-        for cls in form_classes:
-            assert issubclass(cls, FlaskForm), f"{cls.__name__} no hereda de FlaskForm"
 
-    def test_BaseTable(self):
-        from now_lms.db import BaseTabla, database
-        from flask_login import UserMixin
-        from now_lms import Usuario
+def test_flask_form_classes(app):
+    from flask_wtf import FlaskForm
+    import now_lms.forms as forms
 
-        assert issubclass(Usuario, UserMixin)
-        assert issubclass(Usuario, BaseTabla)
-        assert issubclass(Usuario, database.Model)
+    form_classes = [
+        cls
+        for name, cls in inspect.getmembers(forms, inspect.isclass)
+        if cls.__module__ == forms.__name__ and issubclass(cls, FlaskForm)
+    ]
+
+    assert form_classes, "No se encontraron formularios que hereden de FlaskForm."
+
+    for cls in form_classes:
+        assert issubclass(cls, FlaskForm), f"{cls.__name__} no hereda de FlaskForm"
+
+
+def test_base_table_inheritance(app):
+    from now_lms.db import BaseTabla, database
+    from flask_login import UserMixin
+    from now_lms import Usuario
+
+    assert issubclass(Usuario, UserMixin)
+    assert issubclass(Usuario, BaseTabla)
+    assert issubclass(Usuario, database.Model)
 
 
 # Source: https://gist.github.com/allysonsilva/85fff14a22bbdf55485be947566cc09e
@@ -276,6 +262,6 @@ _This is italic text_
 
 
 def test_clean_markdown():
-    from now_lms.misc import markdown_to_clean_hmtl
+    from now_lms.misc import markdown_to_clean_html
 
-    markdown_to_clean_hmtl(MARKDOWN_EXAMPLE)
+    markdown_to_clean_html(MARKDOWN_EXAMPLE)

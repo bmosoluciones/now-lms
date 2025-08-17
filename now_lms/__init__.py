@@ -91,6 +91,7 @@ from now_lms.db.tools import (
     get_addsense_meta,
     get_adsense_enabled,
     get_paypal_id,
+    is_blog_enabled,
     is_masterclass_enabled,
     is_programs_enabled,
     is_resources_enabled,
@@ -101,16 +102,10 @@ from now_lms.db.tools import (
     verificar_avance_recurso,
 )
 from now_lms.logs import log
-from now_lms.misc import (
-    ESTILO_ALERTAS,
-    ICONOS_RECURSOS,
-    INICIO_SESION,
-    concatenar_parametros_a_url,
-    markdown_to_clean_hmtl,
-)
+from now_lms.misc import ESTILO_ALERTAS, ICONOS_RECURSOS, INICIO_SESION, concatenar_parametros_a_url, markdown_to_clean_html
 from now_lms.themes import current_theme
 from now_lms.version import CODE_NAME, VERSION
-from now_lms.vistas._helpers import get_current_course_logo, get_site_logo, get_site_favicon
+from now_lms.vistas._helpers import get_current_course_logo, get_site_favicon, get_site_logo
 from now_lms.vistas.announcements.admin import admin_announcements
 from now_lms.vistas.announcements.instructor import instructor_announcements
 from now_lms.vistas.announcements.public import public_announcements
@@ -122,7 +117,9 @@ from now_lms.vistas.courses import course
 from now_lms.vistas.evaluations import evaluation
 from now_lms.vistas.forum import forum
 from now_lms.vistas.groups import group
+from now_lms.vistas.health import health_bp
 from now_lms.vistas.home import home
+from now_lms.vistas.masterclass import masterclass
 from now_lms.vistas.messages import msg
 from now_lms.vistas.paypal import check_paypal_enabled, paypal
 from now_lms.vistas.profiles.admin import admin_profile
@@ -134,7 +131,6 @@ from now_lms.vistas.resources import resource_d
 from now_lms.vistas.settings import setting
 from now_lms.vistas.tags import tag
 from now_lms.vistas.users import user
-from now_lms.vistas.masterclass import masterclass
 from now_lms.vistas.web_error_codes import web_error
 
 # ---------------------------------------------------------------------------------------
@@ -193,6 +189,7 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
         flask_app.register_blueprint(evaluation)
         flask_app.register_blueprint(forum)
         flask_app.register_blueprint(group)
+        flask_app.register_blueprint(health_bp)
         flask_app.register_blueprint(home)
         flask_app.register_blueprint(msg)
         flask_app.register_blueprint(program)
@@ -289,9 +286,10 @@ def define_variables_globales_jinja2(lms_app: Flask):
     lms_app.jinja_env.globals["is_masterclass_enabled"] = is_masterclass_enabled
     lms_app.jinja_env.globals["is_programs_enabled"] = is_programs_enabled
     lms_app.jinja_env.globals["is_resources_enabled"] = is_resources_enabled
+    lms_app.jinja_env.globals["is_blog_enabled"] = is_blog_enabled
     lms_app.jinja_env.globals["lms_info"] = lms_info
     lms_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
-    lms_app.jinja_env.globals["mkdonw2thml"] = markdown_to_clean_hmtl
+    lms_app.jinja_env.globals["mkdown2html"] = markdown_to_clean_html
     lms_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
     lms_app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
     lms_app.jinja_env.globals["paypal_enabled"] = check_paypal_enabled

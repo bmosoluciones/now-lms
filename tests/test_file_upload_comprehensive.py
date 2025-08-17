@@ -17,8 +17,7 @@
 
 import io
 import pytest
-from unittest.mock import patch, MagicMock
-from flask import url_for
+from unittest.mock import patch
 from werkzeug.datastructures import FileStorage
 
 from now_lms.db import (
@@ -27,6 +26,7 @@ from now_lms.db import (
     CursoRecurso,
     Usuario,
     DocenteCurso,
+    Style,
     database,
     select,
 )
@@ -98,10 +98,10 @@ endobj
 endobj
 xref
 0 4
-0000000000 65535 f 
-0000000010 00000 n 
-0000000079 00000 n 
-0000000173 00000 n 
+0000000000 65535 f
+0000000010 00000 n
+0000000079 00000 n
+0000000173 00000 n
 trailer
 <<
 /Size 4
@@ -553,6 +553,366 @@ class TestAudioResourceUpload(TestFileUploadFunctionality):
             assert resource.doc == "test_audio.ogg"
 
 
+class TestCourseEditLogoUpload(TestFileUploadFunctionality):
+    """Test course logo upload functionality during course editing."""
+
+    @patch("now_lms.vistas.courses.images")
+    def test_course_edit_with_logo_upload_success(self, mock_images, authenticated_client, full_db_setup):
+        """Test successful logo upload during course edit."""
+        mock_images.save.return_value = "logo.jpg"
+        mock_images.name = "images"
+
+        with full_db_setup.app_context():
+            # Create a course first
+            course = Curso(
+                codigo="EDITLOGO001",
+                nombre="Course Edit Logo Test",
+                descripcion_corta="Course for testing logo edit",
+                descripcion="A course for testing logo upload during edit",
+                estado="draft",
+                modalidad="self_paced",
+                pagado=False,
+                certificado=False,
+                creado_por="test_instructor",
+                portada=False,  # Initially no logo
+            )
+            database.session.add(course)
+
+            # Assign instructor to course
+            assignment = DocenteCurso(
+                curso=course.codigo,
+                usuario="test_instructor",
+                vigente=True,
+            )
+            database.session.add(assignment)
+            database.session.commit()
+
+            # Prepare edit data with logo upload
+            edit_data = {
+                "nombre": "Updated Course Name",
+                "codigo": course.codigo,
+                "descripcion_corta": "Updated short description",
+                "descripcion": "Updated long description",
+                "nivel": "1",
+                "duracion": "15",
+                "modalidad": "self_paced",
+                "publico": False,
+                "limitado": False,
+                "pagado": False,
+                "auditable": False,
+                "certificado": False,
+                "precio": "0",
+                "promocionado": False,
+            }
+
+            # Add logo file
+            logo_file = self.create_image_file("new_logo.jpg")
+            edit_data["logo"] = logo_file
+
+            response = authenticated_client.post(
+                f"/course/{course.codigo}/edit",
+                data=edit_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Verify successful response
+            assert response.status_code == 200
+
+            # Verify the upload was attempted
+            mock_images.save.assert_called_once()
+
+            # Verify the course logo was updated at minimum
+            updated_course = database.session.execute(select(Curso).filter_by(codigo=course.codigo)).scalar_one_or_none()
+            assert updated_course is not None
+            # Focus on testing the logo upload functionality specifically
+            assert updated_course.portada is True  # Logo upload should set this to True
+            assert updated_course.portada_ext == ".jpg"  # Extension should be set
+
+    @patch("now_lms.vistas.courses.images")
+    def test_course_edit_logo_upload_failure_handling(self, mock_images, authenticated_client, full_db_setup):
+        """Test course edit logo upload failure handling."""
+        from flask_uploads import UploadNotAllowed
+
+        mock_images.save.side_effect = UploadNotAllowed("Invalid file type")
+        mock_images.name = "images"
+
+        with full_db_setup.app_context():
+            # Create a course first
+            course = Curso(
+                codigo="EDITLOGOFAIL001",
+                nombre="Course Edit Logo Fail Test",
+                descripcion_corta="Course for testing logo edit failure",
+                descripcion="A course for testing logo upload failure during edit",
+                estado="draft",
+                modalidad="self_paced",
+                pagado=False,
+                certificado=False,
+                creado_por="test_instructor",
+                portada=True,  # Initially has logo
+                portada_ext=".png",
+            )
+            database.session.add(course)
+
+            # Assign instructor to course
+            assignment = DocenteCurso(
+                curso=course.codigo,
+                usuario="test_instructor",
+                vigente=True,
+            )
+            database.session.add(assignment)
+            database.session.commit()
+
+            # Prepare edit data with invalid logo upload
+            edit_data = {
+                "nombre": course.nombre,  # Keep original name
+                "codigo": course.codigo,
+                "descripcion_corta": course.descripcion_corta,
+                "descripcion": course.descripcion,
+                "nivel": "1",
+                "duracion": "15",
+                "modalidad": "self_paced",
+                "publico": False,
+                "limitado": False,
+                "pagado": False,
+                "auditable": False,
+                "certificado": False,
+                "precio": "0",
+                "promocionado": False,
+            }
+
+            # Add invalid logo file
+            invalid_file = self.create_test_file("invalid.txt", content_type="text/plain")
+            edit_data["logo"] = invalid_file
+
+            response = authenticated_client.post(
+                f"/course/{course.codigo}/edit",
+                data=edit_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Should handle the error gracefully
+            assert response.status_code == 200
+
+            # Verify the upload was attempted but failed
+            mock_images.save.assert_called_once()
+
+            # Verify logo state should remain unchanged due to rollback
+            updated_course = database.session.execute(select(Curso).filter_by(codigo=course.codigo)).scalar_one_or_none()
+            assert updated_course is not None
+            # Logo state should remain unchanged due to rollback
+            assert updated_course.portada is True
+            assert updated_course.portada_ext == ".png"
+
+    @patch("now_lms.vistas.courses.images")
+    def test_course_edit_logo_upload_returns_false(self, mock_images, authenticated_client, full_db_setup):
+        """Test course edit when logo upload returns False/None."""
+        mock_images.save.return_value = None  # Upload fails silently
+        mock_images.name = "images"
+
+        with full_db_setup.app_context():
+            # Create a course first
+            course = Curso(
+                codigo="EDITLOGOFALSE001",
+                nombre="Course Edit Logo False Test",
+                descripcion_corta="Course for testing logo upload returning False",
+                descripcion="A course for testing logo upload returning False",
+                estado="draft",
+                modalidad="self_paced",
+                pagado=False,
+                certificado=False,
+                creado_por="test_instructor",
+                portada=False,  # Initially no logo
+            )
+            database.session.add(course)
+
+            # Assign instructor to course
+            assignment = DocenteCurso(
+                curso=course.codigo,
+                usuario="test_instructor",
+                vigente=True,
+            )
+            database.session.add(assignment)
+            database.session.commit()
+
+            # Prepare edit data with logo upload
+            edit_data = {
+                "nombre": course.nombre,
+                "codigo": course.codigo,
+                "descripcion_corta": course.descripcion_corta,
+                "descripcion": course.descripcion,
+                "nivel": "1",
+                "duracion": "15",
+                "modalidad": "self_paced",
+                "publico": False,
+                "limitado": False,
+                "pagado": False,
+                "auditable": False,
+                "certificado": False,
+                "precio": "0",
+                "promocionado": False,
+            }
+
+            # Add logo file
+            logo_file = self.create_image_file("failed_logo.jpg")
+            edit_data["logo"] = logo_file
+
+            response = authenticated_client.post(
+                f"/course/{course.codigo}/edit",
+                data=edit_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Verify successful response
+            assert response.status_code == 200
+
+            # Verify the upload was attempted
+            mock_images.save.assert_called_once()
+
+            # Verify the course logo state remains False since upload failed
+            updated_course = database.session.execute(select(Curso).filter_by(codigo=course.codigo)).scalar_one_or_none()
+            assert updated_course is not None
+            # Logo upload failed, so portada should be False
+            assert updated_course.portada is False
+
+    @patch("now_lms.vistas.courses.images")
+    def test_course_edit_logo_upload_attribute_error(self, mock_images, authenticated_client, full_db_setup):
+        """Test course edit logo upload with AttributeError."""
+        mock_images.save.side_effect = AttributeError("Attribute error during upload")
+        mock_images.name = "images"
+
+        with full_db_setup.app_context():
+            # Create a course first
+            course = Curso(
+                codigo="EDITLOGOATTR001",
+                nombre="Course Edit Logo Attr Test",
+                descripcion_corta="Course for testing logo upload AttributeError",
+                descripcion="A course for testing logo upload with AttributeError",
+                estado="draft",
+                modalidad="self_paced",
+                pagado=False,
+                certificado=False,
+                creado_por="test_instructor",
+                portada=True,  # Initially has logo
+                portada_ext=".jpg",
+            )
+            database.session.add(course)
+
+            # Assign instructor to course
+            assignment = DocenteCurso(
+                curso=course.codigo,
+                usuario="test_instructor",
+                vigente=True,
+            )
+            database.session.add(assignment)
+            database.session.commit()
+
+            # Prepare edit data with logo upload that will cause AttributeError
+            edit_data = {
+                "nombre": course.nombre,
+                "codigo": course.codigo,
+                "descripcion_corta": course.descripcion_corta,
+                "descripcion": course.descripcion,
+                "nivel": "1",
+                "duracion": "15",
+                "modalidad": "self_paced",
+                "publico": False,
+                "limitado": False,
+                "pagado": False,
+                "auditable": False,
+                "certificado": False,
+                "precio": "0",
+                "promocionado": False,
+            }
+
+            # Add logo file
+            logo_file = self.create_image_file("error_logo.jpg")
+            edit_data["logo"] = logo_file
+
+            response = authenticated_client.post(
+                f"/course/{course.codigo}/edit",
+                data=edit_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Should handle the error gracefully
+            assert response.status_code == 200
+
+            # Verify the upload was attempted but failed
+            mock_images.save.assert_called_once()
+
+            # Verify logo state should remain unchanged due to rollback
+            updated_course = database.session.execute(select(Curso).filter_by(codigo=course.codigo)).scalar_one_or_none()
+            assert updated_course is not None
+            # Logo state should be preserved due to rollback
+            assert updated_course.portada is True
+            assert updated_course.portada_ext == ".jpg"
+
+    def test_course_edit_without_logo_upload(self, authenticated_client, full_db_setup):
+        """Test course edit without logo upload."""
+        with full_db_setup.app_context():
+            # Create a course first
+            course = Curso(
+                codigo="EDITNOLOGO001",
+                nombre="Course Edit No Logo Test",
+                descripcion_corta="Course for testing edit without logo",
+                descripcion="A course for testing edit without logo upload",
+                estado="draft",
+                modalidad="self_paced",
+                pagado=False,
+                certificado=False,
+                creado_por="test_instructor",
+                portada=False,
+            )
+            database.session.add(course)
+
+            # Assign instructor to course
+            assignment = DocenteCurso(
+                curso=course.codigo,
+                usuario="test_instructor",
+                vigente=True,
+            )
+            database.session.add(assignment)
+            database.session.commit()
+
+            # Prepare edit data without logo upload
+            edit_data = {
+                "nombre": course.nombre,  # Keep original name
+                "codigo": course.codigo,
+                "descripcion_corta": course.descripcion_corta,
+                "descripcion": course.descripcion,
+                "nivel": "2",
+                "duracion": "20",
+                "modalidad": "self_paced",
+                "publico": True,
+                "limitado": False,
+                "pagado": False,
+                "auditable": False,
+                "certificado": False,
+                "precio": "0",
+                "promocionado": False,
+            }
+
+            response = authenticated_client.post(
+                f"/course/{course.codigo}/edit",
+                data=edit_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Verify successful response
+            assert response.status_code == 200
+
+            # Verify logo state remains unchanged (no upload attempted)
+            updated_course = database.session.execute(select(Curso).filter_by(codigo=course.codigo)).scalar_one_or_none()
+            assert updated_course is not None
+            # Logo state should remain unchanged
+            assert updated_course.portada is False
+
+
 class TestFileUploadErrorCases(TestFileUploadFunctionality):
     """Test error cases and edge conditions for file uploads."""
 
@@ -576,8 +936,6 @@ class TestFileUploadErrorCases(TestFileUploadFunctionality):
     @patch("now_lms.vistas.courses.files")
     def test_upload_with_database_error(self, mock_files, authenticated_client, full_db_setup):
         """Test file upload with database error."""
-        from sqlalchemy.exc import OperationalError
-
         mock_files.save.return_value = "test_document.pdf"
         mock_files.name = "files"
 
@@ -633,3 +991,380 @@ class TestFileUploadErrorCases(TestFileUploadFunctionality):
 
             # Should handle the request (even if it eventually fails)
             assert response.status_code in [200, 302, 403]  # Accept various responses
+
+
+class TestSettingsLogoFaviconUpload(TestFileUploadFunctionality):
+    """Test logo and favicon upload functionality in settings route."""
+
+    def get_or_create_style_config(self):
+        """Get or create a default Style configuration."""
+        style_result = database.session.execute(database.select(Style)).first()
+        if style_result:
+            return style_result[0]
+        else:
+            # Create default style config if it doesn't exist
+            config = Style(theme="default", custom_logo=False, custom_favicon=False)
+            database.session.add(config)
+            database.session.commit()
+            return config
+
+    @pytest.fixture
+    def admin_user(self, full_db_setup):
+        """Create and return an admin user."""
+        from now_lms.auth import proteger_passwd
+
+        with full_db_setup.app_context():
+            admin = Usuario(
+                usuario="test_admin",
+                nombre="Test",
+                apellido="Admin",
+                correo_electronico="admin@test.com",
+                tipo="admin",
+                activo=True,
+                correo_electronico_verificado=True,
+                acceso=proteger_passwd("password123"),
+            )
+            database.session.add(admin)
+            database.session.commit()
+            return admin
+
+    @pytest.fixture
+    def authenticated_admin_client(self, full_db_setup, admin_user):
+        """Get authenticated client for admin."""
+        client = full_db_setup.test_client()
+
+        # Login the admin using the correct endpoint
+        with full_db_setup.app_context():
+            login_data = {"usuario": "test_admin", "acceso": "password123"}
+            response = client.post("/user/login", data=login_data, follow_redirects=True)
+            assert response.status_code == 200
+
+        return client
+
+    @patch("now_lms.vistas.settings.images")
+    def test_settings_logo_upload_success(self, mock_images, authenticated_admin_client, full_db_setup):
+        """Test successful logo upload in settings."""
+        mock_images.save.return_value = "logotipo.jpg"
+        mock_images.name = "images"
+
+        with full_db_setup.app_context():
+            # Get or create initial style config
+            config = self.get_or_create_style_config()
+            initial_custom_logo = config.custom_logo
+
+            # Force custom_logo to False to ensure clean state
+            config.custom_logo = False
+            database.session.commit()
+
+            # Prepare upload data
+            upload_data = {
+                "style": config.theme,  # Keep current theme
+            }
+
+            # Add logo file
+            logo_file = self.create_image_file("test_logo.jpg")
+            upload_data["logo"] = logo_file
+
+            response = authenticated_admin_client.post(
+                "/setting/theming",
+                data=upload_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Verify successful response
+            assert response.status_code == 200
+
+            # Verify the upload was attempted
+            mock_images.save.assert_called_once()
+            args, kwargs = mock_images.save.call_args
+            assert kwargs["name"] == "logotipo.jpg"
+
+            # Verify the database was updated
+            updated_config = database.session.execute(database.select(Style)).first()[0]
+            assert updated_config.custom_logo is True
+
+    @patch("now_lms.vistas.settings.images")
+    def test_settings_favicon_upload_success(self, mock_images, authenticated_admin_client, full_db_setup):
+        """Test successful favicon upload in settings."""
+        mock_images.save.return_value = "favicon.png"
+        mock_images.name = "images"
+
+        with full_db_setup.app_context():
+            # Get or create initial style config
+            config = self.get_or_create_style_config()
+            initial_custom_favicon = config.custom_favicon
+
+            # Prepare upload data
+            upload_data = {
+                "style": config.theme,  # Keep current theme
+            }
+
+            # Add favicon file (should be PNG)
+            favicon_file = self.create_image_file("test_favicon.png")
+            upload_data["favicon"] = favicon_file
+
+            response = authenticated_admin_client.post(
+                "/setting/theming",
+                data=upload_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Verify successful response
+            assert response.status_code == 200
+
+            # Verify the upload was attempted
+            mock_images.save.assert_called_once()
+            args, kwargs = mock_images.save.call_args
+            assert kwargs["name"] == "favicon.png"
+
+            # Verify the database was updated
+            updated_config = database.session.execute(database.select(Style)).first()[0]
+            assert updated_config.custom_favicon is True
+
+    @patch("now_lms.vistas.settings.images")
+    def test_settings_logo_upload_failure_handling(self, mock_images, authenticated_admin_client, full_db_setup):
+        """Test logo upload failure handling in settings."""
+        from flask_uploads import UploadNotAllowed
+
+        mock_images.save.side_effect = UploadNotAllowed("Invalid file type")
+        mock_images.name = "images"
+
+        with full_db_setup.app_context():
+            # Get or create initial style config
+            config = self.get_or_create_style_config()
+            initial_custom_logo = config.custom_logo
+
+            # Prepare upload data with invalid file
+            upload_data = {
+                "style": config.theme,  # Keep current theme
+            }
+
+            # Add invalid logo file
+            invalid_file = self.create_test_file("invalid.txt", content_type="text/plain")
+            upload_data["logo"] = invalid_file
+
+            response = authenticated_admin_client.post(
+                "/setting/theming",
+                data=upload_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Should handle the error gracefully
+            assert response.status_code == 200
+
+            # Verify the upload was attempted but failed
+            mock_images.save.assert_called_once()
+
+            # Verify the database state remains unchanged due to exception handling
+            updated_config = database.session.execute(database.select(Style)).first()[0]
+            assert updated_config.custom_logo == initial_custom_logo
+
+    @patch("now_lms.vistas.settings.images")
+    def test_settings_favicon_upload_failure_handling(self, mock_images, authenticated_admin_client, full_db_setup):
+        """Test favicon upload failure handling in settings."""
+        from flask_uploads import UploadNotAllowed
+
+        mock_images.save.side_effect = UploadNotAllowed("Invalid file type")
+        mock_images.name = "images"
+
+        with full_db_setup.app_context():
+            # Get initial style config
+            config = database.session.execute(database.select(Style)).first()[0]
+            initial_custom_favicon = config.custom_favicon
+
+            # Prepare upload data with invalid file
+            upload_data = {
+                "style": config.theme,  # Keep current theme
+            }
+
+            # Add invalid favicon file
+            invalid_file = self.create_test_file("invalid.txt", content_type="text/plain")
+            upload_data["favicon"] = invalid_file
+
+            response = authenticated_admin_client.post(
+                "/setting/theming",
+                data=upload_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Should handle the error gracefully
+            assert response.status_code == 200
+
+            # Verify the upload was attempted but failed
+            mock_images.save.assert_called_once()
+
+            # Verify the database state remains unchanged due to exception handling
+            updated_config = database.session.execute(database.select(Style)).first()[0]
+            assert updated_config.custom_favicon == initial_custom_favicon
+
+    @patch("now_lms.vistas.settings.images")
+    def test_settings_logo_upload_returns_false(self, mock_images, authenticated_admin_client, full_db_setup):
+        """Test logo upload when images.save returns False/None."""
+        mock_images.save.return_value = None  # Upload fails silently
+        mock_images.name = "images"
+
+        with full_db_setup.app_context():
+            # Get initial style config
+            config = database.session.execute(database.select(Style)).first()[0]
+            initial_custom_logo = config.custom_logo
+
+            # Prepare upload data
+            upload_data = {
+                "style": config.theme,  # Keep current theme
+            }
+
+            # Add logo file
+            logo_file = self.create_image_file("failed_logo.jpg")
+            upload_data["logo"] = logo_file
+
+            response = authenticated_admin_client.post(
+                "/setting/theming",
+                data=upload_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Verify successful response (form submission succeeds even if upload fails)
+            assert response.status_code == 200
+
+            # Verify the upload was attempted
+            mock_images.save.assert_called_once()
+
+            # Verify the database state remains unchanged since upload returned None
+            updated_config = database.session.execute(database.select(Style)).first()[0]
+            assert updated_config.custom_logo == initial_custom_logo
+
+    @patch("now_lms.vistas.settings.images")
+    def test_settings_favicon_upload_returns_false(self, mock_images, authenticated_admin_client, full_db_setup):
+        """Test favicon upload when images.save returns False/None."""
+        mock_images.save.return_value = None  # Upload fails silently
+        mock_images.name = "images"
+
+        with full_db_setup.app_context():
+            # Get initial style config
+            config = database.session.execute(database.select(Style)).first()[0]
+            initial_custom_favicon = config.custom_favicon
+
+            # Prepare upload data
+            upload_data = {
+                "style": config.theme,  # Keep current theme
+            }
+
+            # Add favicon file
+            favicon_file = self.create_image_file("failed_favicon.png")
+            upload_data["favicon"] = favicon_file
+
+            response = authenticated_admin_client.post(
+                "/setting/theming",
+                data=upload_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Verify successful response (form submission succeeds even if upload fails)
+            assert response.status_code == 200
+
+            # Verify the upload was attempted
+            mock_images.save.assert_called_once()
+
+            # Verify the database state remains unchanged since upload returned None
+            updated_config = database.session.execute(database.select(Style)).first()[0]
+            assert updated_config.custom_favicon == initial_custom_favicon
+
+    @patch("now_lms.vistas.settings.images")
+    @patch("now_lms.vistas.settings.cache")
+    def test_settings_logo_upload_cache_clearing(self, mock_cache, mock_images, authenticated_admin_client, full_db_setup):
+        """Test that cache is cleared after successful logo upload."""
+        mock_images.save.return_value = "logotipo.jpg"
+        mock_images.name = "images"
+
+        with full_db_setup.app_context():
+            # Get initial style config
+            config = database.session.execute(database.select(Style)).first()[0]
+
+            # Prepare upload data
+            upload_data = {
+                "style": config.theme,  # Keep current theme
+            }
+
+            # Add logo file
+            logo_file = self.create_image_file("test_logo.jpg")
+            upload_data["logo"] = logo_file
+
+            response = authenticated_admin_client.post(
+                "/setting/theming",
+                data=upload_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Verify successful response
+            assert response.status_code == 200
+
+            # Verify cache.delete was called for logo cache
+            mock_cache.delete.assert_any_call("cached_logo")
+
+    @patch("now_lms.vistas.settings.images")
+    @patch("now_lms.vistas.settings.cache")
+    def test_settings_favicon_upload_cache_clearing(self, mock_cache, mock_images, authenticated_admin_client, full_db_setup):
+        """Test that cache is cleared after successful favicon upload."""
+        mock_images.save.return_value = "favicon.png"
+        mock_images.name = "images"
+
+        with full_db_setup.app_context():
+            # Get initial style config
+            config = database.session.execute(database.select(Style)).first()[0]
+
+            # Prepare upload data
+            upload_data = {
+                "style": config.theme,  # Keep current theme
+            }
+
+            # Add favicon file
+            favicon_file = self.create_image_file("test_favicon.png")
+            upload_data["favicon"] = favicon_file
+
+            response = authenticated_admin_client.post(
+                "/setting/theming",
+                data=upload_data,
+                content_type="multipart/form-data",
+                follow_redirects=True,
+            )
+
+            # Verify successful response
+            assert response.status_code == 200
+
+            # Verify cache.delete was called for favicon cache
+            mock_cache.delete.assert_any_call("cached_favicon")
+
+    def test_settings_upload_without_authentication(self, full_db_setup):
+        """Test that settings upload requires authentication."""
+        client = full_db_setup.test_client()
+
+        with full_db_setup.app_context():
+            upload_data = {
+                "style": "default",
+                "logo": self.create_image_file("unauthorized.jpg"),
+            }
+
+            response = client.post("/setting/theming", data=upload_data, content_type="multipart/form-data")
+
+            # Should redirect to login or return 401/403
+            assert response.status_code in [302, 401, 403]
+
+    def test_settings_upload_with_instructor_user(self, authenticated_client, full_db_setup):
+        """Test that settings upload requires admin role (instructor should be denied)."""
+        with full_db_setup.app_context():
+            upload_data = {
+                "style": "default",
+                "logo": self.create_image_file("instructor_attempt.jpg"),
+            }
+
+            response = authenticated_client.post("/setting/theming", data=upload_data, content_type="multipart/form-data")
+
+            # Should be denied since instructor is not admin
+            assert response.status_code in [302, 401, 403]

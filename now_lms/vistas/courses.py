@@ -34,8 +34,8 @@ from flask import Blueprint, abort, current_app, flash, redirect, render_templat
 from flask_login import current_user, login_required
 from flask_uploads import UploadNotAllowed
 from markdown import markdown
+from sqlalchemy import delete, func
 from sqlalchemy.exc import OperationalError
-from sqlalchemy import func, delete
 from ulid import ULID
 
 # ---------------------------------------------------------------------------------------
@@ -97,33 +97,42 @@ from now_lms.forms import (
     SlideShowForm,
 )
 from now_lms.logs import log
-from now_lms.misc import (
-    CURSO_NIVEL,
-    HTML_TAGS,
-    INICIO_SESION,
-    TEMPLATES_BY_TYPE,
-    TIPOS_RECURSOS,
-    sanitize_slide_content,
-)
+from now_lms.misc import CURSO_NIVEL, HTML_TAGS, INICIO_SESION, TEMPLATES_BY_TYPE, TIPOS_RECURSOS, sanitize_slide_content
 from now_lms.themes import get_course_list_template, get_course_view_template
 
 # ---------------------------------------------------------------------------------------
 # Gestión de cursos.
 # ---------------------------------------------------------------------------------------
-
 RECURSO_AGREGADO = "Recurso agregado correctamente al curso."
 ERROR_AL_AGREGAR_CURSO = "Hubo en error al crear el recurso."
 VISTA_CURSOS = "course.curso"
 VISTA_ADMINISTRAR_CURSO = "course.administrar_curso"
 NO_AUTORIZADO_MSG = "No se encuentra autorizado a acceder al recurso solicitado."
 
+# ---------------------------------------------------------------------------------------
 # Template constants
+# ---------------------------------------------------------------------------------------
 TEMPLATE_SLIDE_SHOW = "learning/resources/slide_show.html"
 TEMPLATE_COUPON_CREATE = "learning/curso/coupons/create.html"
 TEMPLATE_COUPON_EDIT = "learning/curso/coupons/edit.html"
 
 # Route constants
 ROUTE_LIST_COUPONS = "course.list_coupons"
+
+
+# ---------------------------------------------------------------------------------------
+# Helper functions
+# ---------------------------------------------------------------------------------------
+def markdown2html(text):
+    """Convierte texto en markdown a HTML."""
+    allowed_tags = HTML_TAGS
+    allowed_attrs = {"*": ["class"], "a": ["href", "rel"], "img": ["src", "alt"]}
+
+    html = markdown(text)
+    html_limpio = clean(linkify(html), tags=allowed_tags, attributes=allowed_attrs)
+
+    return html_limpio
+
 
 course = Blueprint("course", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
@@ -174,6 +183,7 @@ def curso(course_code):
             nivel=CURSO_NIVEL,
             tipo=TIPOS_RECURSOS,
             editable=editable,
+            markdown2html=markdown2html,
         )
 
     else:
@@ -433,6 +443,7 @@ def tomar_curso(course_code):
             reopen_requests=reopen_requests,
             user_has_paid=user_has_paid,
             user_certificate=user_certificate,
+            markdown2html=markdown2html,
         )
     else:
         return redirect(url_for(VISTA_CURSOS, course_code=course_code))
@@ -462,6 +473,7 @@ def moderar_curso(course_code):
             .all(),  # El join devuelve una tuple.
             nivel=CURSO_NIVEL,
             tipo=TIPOS_RECURSOS,
+            markdown2html=markdown2html,
         )
     else:
         return redirect(url_for(VISTA_CURSOS, course_code=course_code))
@@ -490,6 +502,7 @@ def administrar_curso(course_code):
         .all(),  # El join devuelve una tuple.
         nivel=CURSO_NIVEL,
         tipo=TIPOS_RECURSOS,
+        markdown2html=markdown2html,
     )
 
 
@@ -925,6 +938,7 @@ def pagina_recurso(curso_id, resource_type, codigo):
             user_progress=user_progress,
             evaluaciones=evaluaciones,
             evaluation_attempts=evaluation_attempts,
+            markdown2html=markdown2html,
         )
     else:
         flash(NO_AUTORIZADO_MSG, "warning")
@@ -1026,7 +1040,6 @@ def marcar_recurso_completado(curso_id, resource_type, codigo):
                         curso=curso_id,
                         recurso=codigo,
                         completado=True,
-                        tipo=resource_type,
                     )
                     database.session.add(avance)
                     database.session.commit()
@@ -2038,55 +2051,6 @@ def slide_show(recurso_code):
     # No se encontró presentación
     flash("Presentación no encontrada.", "error")
     abort(404)
-
-
-@course.route("/course/<course_code>/md_to_html/<recurso_code>")
-def markdown_a_html(course_code, recurso_code):
-    """Devuelve un texto en markdown como HTML."""
-    recurso = (
-        database.session.execute(
-            select(CursoRecurso).filter(CursoRecurso.id == recurso_code, CursoRecurso.curso == course_code)
-        )
-        .scalars()
-        .first()
-    )
-    allowed_tags = HTML_TAGS
-    allowed_attrs = {"*": ["class"], "a": ["href", "rel"], "img": ["src", "alt"]}
-
-    html = markdown(recurso.text)
-    html_limpio = clean(linkify(html), tags=allowed_tags, attributes=allowed_attrs)
-
-    return html_limpio
-
-
-@course.route("/course/<course_code>/description")
-def curso_descripcion_a_html(course_code):
-    """Devuelve la descripción de un curso como HTML."""
-    course = database.session.execute(select(Curso).filter(Curso.codigo == course_code)).scalars().first()
-    allowed_tags = HTML_TAGS
-    allowed_attrs = {"*": ["class"], "a": ["href", "rel"], "img": ["src", "alt"]}
-
-    html = markdown(course.descripcion)
-    html_limpio = clean(linkify(html), tags=allowed_tags, attributes=allowed_attrs)
-
-    return html_limpio
-
-
-@course.route("/course/<course_code>/description/<resource>")
-def recurso_descripcion_a_html(course_code, resource):
-    """Devuelve la descripción de un curso como HTML."""
-    recurso = (
-        database.session.execute(select(CursoRecurso).filter(CursoRecurso.id == resource, CursoRecurso.curso == course_code))
-        .scalars()
-        .first()
-    )
-    allowed_tags = HTML_TAGS
-    allowed_attrs = {"*": ["class"], "a": ["href", "rel"], "img": ["src", "alt"]}
-
-    html = markdown(recurso.descripcion)
-    html_limpio = clean(linkify(html), tags=allowed_tags, attributes=allowed_attrs)
-
-    return html_limpio
 
 
 @course.route("/course/explore")

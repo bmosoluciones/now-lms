@@ -15,17 +15,18 @@
 
 """Calendar views for student users."""
 
+import calendar as cal
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
 from datetime import datetime, timedelta
-import calendar as cal
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, render_template, request, abort, Response
-from flask_login import login_required, current_user
+from flask import Blueprint, Response, abort, render_template, request
+from flask_login import current_user, login_required
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -44,6 +45,12 @@ def calendar_view():
     now = datetime.now()
     year = request.args.get("year", now.year, type=int)
     month = request.args.get("month", now.month, type=int)
+
+    # Validate year and month parameters
+    if year < 1 or year > 9999:
+        year = now.year
+    if month < 1 or month > 12:
+        month = now.month
 
     # Create calendar
     cal_obj = cal.Calendar(firstweekday=0)  # Monday first
@@ -171,6 +178,7 @@ def _generate_ics_content(events):
         # Format datetime for ICS (UTC)
         start_dt = start_time.strftime("%Y%m%dT%H%M%SZ")
         end_dt = end_time.strftime("%Y%m%dT%H%M%SZ")
+        # Use event creation timestamp for DTSTAMP field
         created_dt = event.timestamp.strftime("%Y%m%dT%H%M%SZ")
 
         # Escape special characters in text fields

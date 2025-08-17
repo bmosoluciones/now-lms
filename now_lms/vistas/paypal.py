@@ -495,9 +495,7 @@ def payment_status(course_code):
         # Check payment records
         payments = (
             database.session.execute(
-                database.select(Pago)
-                .filter_by(usuario=current_user.usuario, curso=course_code)
-                .order_by(Pago.fecha_creacion.desc())
+                database.select(Pago).filter_by(usuario=current_user.usuario, curso=course_code).order_by(Pago.fecha.desc())
             )
             .scalars()
             .all()
@@ -514,7 +512,7 @@ def payment_status(course_code):
                     "status": payment.estado,
                     "reference": payment.referencia,
                     "audit": payment.audit,
-                    "created": payment.fecha_creacion.isoformat() if payment.fecha_creacion else None,
+                    "created": payment.fecha.isoformat() if payment.fecha else None,
                 }
             )
 

@@ -1331,7 +1331,585 @@ footer {
 }
 """
 
+# ---------------------------------------------------------------------------------------
+# Default Certificate Template (English)
+# ---------------------------------------------------------------------------------------
+
+CERTIFICADO_DEFAULT_TITULO = "Default"
+
+CERTIFICADO_DEFAULT_DESCRIPCION = "Professional default certificate template in English with comprehensive features including QR verification, security elements, and multi-language support."
+
+CERTIFICADO_DEFAULT_HTML = """
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Certificate of Completion</title>
+    </head>
+    <body>
+        <div class="certificate-container">
+            <!-- Header with Institution Branding -->
+            <header class="certificate-header">
+                <div class="institution-logo">
+                    <div class="logo-placeholder">🎓</div>
+                </div>
+                <div class="institution-info">
+                    <h1 class="institution-name">NOW - Learning Management System</h1>
+                    <p class="institution-subtitle">Center of Excellence in Education</p>
+                </div>
+                <div class="certificate-seal">
+                    <div class="seal-inner">LMS</div>
+                </div>
+            </header>
+
+            <!-- Certificate Title -->
+            <div class="certificate-title-section">
+                <h2 class="certificate-title">CERTIFICATE</h2>
+                <p class="certificate-subtitle">OF COMPLETION</p>
+            </div>
+
+            <!-- Main Content -->
+            <main class="certificate-content">
+                <!-- Achievement Statement -->
+                <div class="achievement-statement">
+                    <p class="certify-text">This is to certify that</p>
+
+                    <!-- Learner Identification -->
+                    <div class="recipient-section">
+                        <h3 class="recipient-name">{{ usuario.nombre }} {{ usuario.apellido }}</h3>
+                        <div class="recipient-details">
+                            <p class="student-id">Student ID: {{ usuario.id }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Course Information -->
+                    <div class="course-section">
+                        <p class="completion-text">has successfully completed the course</p>
+                        <h4 class="course-title">{{ curso.nombre }}</h4>
+                        <div class="course-details">
+                            <p class="course-type">Course Type:
+                                {% if content_type == 'masterclass' %}
+                                    Master Class
+                                {% else %}
+                                    Course
+                                {% endif %}
+                            </p>
+                            {% if curso.instructor %}
+                            <p class="instructor-name">Instructor: {{ curso.instructor }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Completion Details -->
+                    <div class="completion-section">
+                        <p class="completion-date">Completion Date: {{ certificacion.fecha.strftime('%B %d, %Y') }}</p>
+                        {% if certificacion.nota %}
+                            <p class="grade-info">
+                                Grade: {{ certificacion.nota }}
+                                {% if certificacion.nota >= 90 %} with distinction{% endif %}
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer with Signatures & Validation -->
+            <footer class="certificate-footer">
+                <div class="signatures-section">
+                    <div class="signature-block">
+                        <div class="signature-line"></div>
+                        <p class="signature-title">Academic Director</p>
+                        <p class="signature-date">{{ certificacion.fecha.strftime('%B %d, %Y') }}</p>
+                    </div>
+
+                    <div class="validation-section">
+                        <div class="qr-code-container">
+                            <img src="{{ url_for('certificate.certificacion_qr', id=certificacion.id) }}"
+                                 alt=QR Code for certificate verification"
+                                 class="qr-code">
+                            <p class="qr-label">Scan to verify</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate Metadata -->
+                <div class="certificate-metadata">
+                    <div class="metadata-item">
+                        <span class="metadata-label">Certificate ID:</span>
+                        <span class="metadata-value">{{ certificacion.id }}</span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="metadata-label">Issue Date:</span>
+                        <span class="metadata-value">{{ certificacion.fecha.strftime('%Y-%m-%d') }}</span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="metadata-label">Verification URL:</span>
+                        <span class="metadata-value verification-url">{{ url_for('certificate.certificado', ulid=certificacion.id, _external=True) }}</span>
+                    </div>
+                </div>
+            </footer>
+
+            <!-- Security Watermark -->
+            <div class="security-watermark" aria-hidden="true">AUTHENTIC</div>
+        </div>
+    </body>
+</html>
+"""
+
+CERTIFICADO_DEFAULT_CSS = """
+/* Letter size page setup for PDF generation */
+@page {
+    size: letter; /* 8.5in x 11in portrait */
+    margin: 0.5in;
+}
+
+/* CSS Variables for theme consistency */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #f39c12;
+    --text-color: #2c3e50;
+    --light-text: #7f8c8d;
+    --border-color: #bdc3c7;
+    --background: #ffffff;
+    --light-background: #f8f9fa;
+    --success-color: #27ae60;
+    --seal-color: #e74c3c;
+}
+
+/* Base styles */
+body {
+    width: 7.5in;
+    height: 10in;
+    margin: 0;
+    padding: 0;
+    font-family: "Georgia", "Times New Roman", serif;
+    background: var(--background);
+    color: var(--text-color);
+    box-sizing: border-box;
+    line-height: 1.4;
+}
+
+/* Certificate container */
+.certificate-container {
+    width: 100%;
+    height: 100%;
+    padding: 0.5in;
+    border: 3px solid var(--primary-color);
+    border-radius: 8px;
+    background: var(--background);
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    box-shadow: inset 0 0 0 1px var(--border-color);
+}
+
+/* Header with Institution Branding */
+.certificate-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.8in;
+    padding-bottom: 0.3in;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.institution-logo {
+    flex: 0 0 auto;
+}
+
+.logo-placeholder {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8em;
+    color: white;
+    font-weight: bold;
+}
+
+.institution-info {
+    flex: 1;
+    text-align: center;
+    margin: 0 1em;
+}
+
+.institution-name {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin: 0 0 0.2em 0;
+    letter-spacing: 0.05em;
+}
+
+.institution-subtitle {
+    font-size: 0.8em;
+    color: var(--light-text);
+    font-style: italic;
+    margin: 0;
+}
+
+.certificate-seal {
+    flex: 0 0 auto;
+    width: 60px;
+    height: 60px;
+    border: 3px solid var(--accent-color);
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--light-background) 0%, var(--background) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.seal-inner {
+    font-size: 0.8em;
+    font-weight: bold;
+    color: var(--accent-color);
+    letter-spacing: 0.1em;
+}
+
+/* Certificate Title */
+.certificate-title-section {
+    text-align: center;
+    margin-bottom: 0.8in;
+}
+
+.certificate-title {
+    font-size: 2.2em;
+    font-weight: bold;
+    color: var(--primary-color);
+    letter-spacing: 0.2em;
+    margin: 0 0 0.2em 0;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.certificate-subtitle {
+    font-size: 1.1em;
+    color: var(--secondary-color);
+    letter-spacing: 0.1em;
+    font-weight: normal;
+    margin: 0;
+}
+
+/* Main Content */
+.certificate-content {
+    flex: 1;
+    text-align: center;
+}
+
+/* Achievement Statement */
+.achievement-statement {
+    margin-bottom: 0.8in;
+}
+
+.certify-text {
+    font-size: 1em;
+    color: var(--text-color);
+    font-style: italic;
+    margin: 0 0 0.8em 0;
+}
+
+/* Learner Identification */
+.recipient-section {
+    margin: 0.8em 0;
+}
+
+.recipient-name {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin: 0 0 0.3em 0;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 0.2em;
+    display: inline-block;
+    line-height: 1.2;
+}
+
+.recipient-details {
+    margin: 0.5em 0;
+}
+
+.student-id {
+    font-size: 0.8em;
+    color: var(--light-text);
+    margin: 0;
+}
+
+/* Course Information */
+.course-section {
+    margin: 1em 0;
+}
+
+.completion-text {
+    font-size: 1em;
+    color: var(--text-color);
+    margin: 0 0 0.6em 0;
+}
+
+.course-title {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: var(--secondary-color);
+    margin: 0.5em 0;
+    line-height: 1.3;
+    font-style: italic;
+}
+
+.course-details {
+    margin: 0.6em 0;
+}
+
+.course-type,
+.instructor-name {
+    font-size: 0.9em;
+    color: var(--text-color);
+    margin: 0.3em 0;
+}
+
+/* Completion Details */
+.completion-section {
+    margin: 1em 0;
+}
+
+.completion-date,
+.grade-info {
+    font-size: 0.9em;
+    color: var(--text-color);
+    margin: 0.3em 0;
+}
+
+.grade-info {
+    font-weight: 600;
+    color: var(--success-color);
+}
+
+/* Footer */
+.certificate-footer {
+    margin-top: auto;
+    padding-top: 0.5in;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Signatures & Validation */
+.signatures-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 0.8em;
+}
+
+.signature-block {
+    flex: 1;
+    text-align: left;
+}
+
+.signature-line {
+    width: 180px;
+    height: 1px;
+    background: var(--border-color);
+    margin-bottom: 0.3em;
+}
+
+.signature-title {
+    font-size: 0.8em;
+    font-weight: bold;
+    color: var(--text-color);
+    margin: 0.2em 0;
+}
+
+.signature-date {
+    font-size: 0.7em;
+    color: var(--light-text);
+    margin: 0;
+}
+
+/* QR Code Validation */
+.validation-section {
+    flex: 0 0 auto;
+    text-align: center;
+}
+
+.qr-code-container {
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    border-radius: 4px;
+    background: var(--background);
+}
+
+.qr-code {
+    width: 50px;
+    height: 50px;
+    display: block;
+}
+
+.qr-label {
+    font-size: 0.6em;
+    color: var(--light-text);
+    margin: 0.3em 0 0 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Certificate Metadata */
+.certificate-metadata {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.7em;
+    color: var(--light-text);
+    padding: 0.3em 0;
+    border-top: 1px solid var(--border-color);
+    flex-wrap: wrap;
+    gap: 0.5em;
+}
+
+.metadata-item {
+    flex: 1;
+    min-width: 150px;
+}
+
+.metadata-label {
+    font-weight: 600;
+}
+
+.metadata-value {
+    margin-left: 0.3em;
+}
+
+.verification-url {
+    font-family: "Monaco", "Courier New", monospace;
+    font-size: 0.9em;
+    word-break: break-all;
+}
+
+/* Security Watermark */
+.security-watermark {
+    position: absolute;
+    top: 45%;
+    left: 35%;
+    font-size: 3em;
+    color: rgba(52, 73, 94, 0.03);
+    font-weight: bold;
+    letter-spacing: 0.2em;
+    transform: rotate(-25deg);
+    pointer-events: none;
+    z-index: 0;
+    font-family: "Arial Black", sans-serif;
+}
+
+/* Ensure content is above watermark */
+.certificate-header,
+.certificate-title-section,
+.certificate-content,
+.certificate-footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* Print optimization */
+@media print {
+    body {
+        width: 100%;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    .certificate-container {
+        border-radius: 0;
+        box-shadow: none;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Remove any interactive elements for print */
+    .verification-url {
+        color: var(--text-color) !important;
+    }
+}
+
+/* Responsive design for preview */
+@media screen and (max-width: 1024px) {
+    .certificate-container {
+        width: 100%;
+        max-width: 800px;
+        height: auto;
+        min-height: 800px;
+        padding: 30px;
+    }
+
+    .certificate-title {
+        font-size: 1.8em;
+    }
+
+    .recipient-name {
+        font-size: 1.5em;
+    }
+
+    .course-title {
+        font-size: 1.2em;
+    }
+
+    .certificate-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 1em;
+        text-align: center;
+    }
+
+    .signatures-section {
+        flex-direction: column;
+        align-items: center;
+        gap: 1em;
+    }
+
+    .certificate-metadata {
+        flex-direction: column;
+        gap: 0.3em;
+    }
+
+    .metadata-item {
+        text-align: center;
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --primary-color: #000000;
+        --secondary-color: #0066cc;
+        --text-color: #000000;
+        --border-color: #666666;
+    }
+
+    .certificate-container {
+        border-width: 2px;
+    }
+}
+"""
+
 CERTIFICADOS = (
+    (
+        CERTIFICADO_DEFAULT_TITULO,
+        CERTIFICADO_DEFAULT_DESCRIPCION,
+        CERTIFICADO_DEFAULT_HTML,
+        CERTIFICADO_DEFAULT_CSS,
+        "default",
+    ),
     (
         CERTIFICADO_HORIZONTAL_TITULO,
         CERTIFICADO_HORIZONTAL_DESCRIPCION,

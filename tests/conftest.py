@@ -42,7 +42,7 @@ log.info(f"Using test database URL: {DB_URL}")
 def create_app(testing=True, database_uri=None, minimal=False):
     """Create Flask application with test configuration (factory pattern)."""
     from now_lms import lms_app
-    from now_lms.config import CONFIGURACION, DIRECTORIO_ARCHIVOS, DIRECTORIO_PLANTILLAS
+    from now_lms.config import CONFIGURACION
 
     app = lms_app
 
@@ -183,8 +183,18 @@ def lms_application(database_url):
 def minimal_db_setup(app, db_session):
     """
     Minimal database setup that only creates schema without full data population.
+    Includes essential certificate templates needed for course creation.
     Use this for tests that don't need the complete database setup.
     """
+    # Add essential certificate templates needed for course creation
+    with app.app_context():
+        try:
+            from now_lms.db.initial_data import crear_certificados
+
+            crear_certificados()
+        except Exception as e:
+            log.warning(f"Minimal setup certificate creation error: {e}")
+
     # db_session already provides isolated session, just return the app
     yield app
 
@@ -250,15 +260,19 @@ def full_db_setup_with_examples(app, db_session):
 def basic_config_setup(app, db_session):
     """
     Basic configuration setup that only creates essential configuration.
+    Includes essential certificate templates needed for course creation.
     For tests that need basic config but not full database.
     """
     from now_lms.db.tools import crear_configuracion_predeterminada
+    from now_lms.db.initial_data import crear_certificados
 
     app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
     with app.app_context():
         try:
             # Only create basic configuration
             crear_configuracion_predeterminada()
+            # Add essential certificate templates needed for course creation
+            crear_certificados()
             log.debug("Basic configuration setup completed.")
         except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, IntegrityError) as e:
             log.warning(f"Basic config setup error (continuing): {e}")

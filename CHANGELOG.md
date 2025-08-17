@@ -2,11 +2,65 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),  
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+- The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),  
+- This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+- This project also follows [Conventional Commits](https://www.conventionalcommits.org/), using prefixes such as: 
 
-> This project also follows [Conventional Commits](https://www.conventionalcommits.org/), using prefixes such as:  
-> `fix:`, `feat:`, `refactor:`, `release:`, `docs:`, `build:`, `ci:` to clearly describe changes.
+## [v0.0.1b7.dev20250815 ] - 2025-08-16
+
+### ✅ NOW-LMS Smoke Test Checklist (Release Candidate)
+
+#### 🔐 Authentication & Access Control
+
+* [x] Login with valid credentials works correctly.
+* [x] Login with invalid credentials shows an appropriate error.
+* [x] Logout works and ends the session.
+* [x] New user registration with email confirmation works.
+* [x] Roles (Admin, Instructor, Student, Moderator) have correct access to views.
+
+#### 📚 Courses & Enrollment
+
+* [x] Instructor can create a new course with sections and resources.
+* [x] Student can enroll in a free course.
+* [ ] Student cannot access a paid course without payment.
+* [x] Enrolled courses appear correctly in the student dashboard.
+* [x] Course resources (PDF, video, external links, images) load correctly.
+
+#### 🎓 Certificates
+
+* [x] Certificate is generated upon course completion.
+* [x] QR code on the certificate validates successfully.
+
+#### 💬 Communication
+
+* [x] Internal messaging works between student ↔ instructor.
+
+#### 🎨 UI & Theming
+
+* [x] Homepage loads with the active theme.
+* [x] Changing the theme in settings applies correctly.
+
+#### ⚙️ System & Stability
+
+* [x] `/health` page responds with 200 (if available).
+* [x] Cache works (repeated loads are faster).
+* [x] Logs are generated without unexpected errors.
+* [x] Basic navigation (Home → Login → Dashboard → Course → Resource) works without 500 errors.
+
+### Added
+
+### Changed
+- Improved markdown to hmtl.
+- Update default MySQL driver.
+- `/health` check status route.
+- Conditional check `is_blog_enabled`.
+- Add `default` certificate template.
+
+## [v0.0.1b6.dev20250815] - 2025-08-15
+
+### Added
+- **Golden Theme**: A yellow/orange based theme.
+- **Custom Favicon**: Can set a custom favicon in themes.
 
 ## [unrelased]
 

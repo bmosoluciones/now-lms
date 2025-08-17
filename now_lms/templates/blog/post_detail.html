@@ -47,7 +47,7 @@
                             </div>
                             {% endif %}
 
-                            <div class="blog-content">{{ mkdonw2thml(post.content) | safe }}</div>
+                            <div class="blog-content">{{ mkdown2html(post.content) | safe }}</div>
 
                             {% if current_user.is_authenticated and (current_user.tipo == 'admin' or post.author_id ==
                             current_user.usuario) %}

@@ -29,8 +29,8 @@ from flask import flash
 from flask_login import current_user
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
-from sqlalchemy.exc import OperationalError, ProgrammingError
 from sqlalchemy import func
+from sqlalchemy.exc import OperationalError, ProgrammingError
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -748,9 +748,9 @@ def is_programs_enabled():
         config = database.session.execute(database.select(Configuracion)).first()
         if config:
             return config[0].enable_programs
-        return True  # Default to enabled if no config found
+        return False
     except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, AttributeError):
-        return True
+        return False
 
 
 @cache.cached(timeout=300, key_prefix="nav_masterclass_enabled")
@@ -760,9 +760,9 @@ def is_masterclass_enabled():
         config = database.session.execute(database.select(Configuracion)).first()
         if config:
             return config[0].enable_masterclass
-        return True  # Default to enabled if no config found
+        return False
     except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, AttributeError):
-        return True
+        return False
 
 
 @cache.cached(timeout=300, key_prefix="nav_resources_enabled")
@@ -772,6 +772,18 @@ def is_resources_enabled():
         config = database.session.execute(database.select(Configuracion)).first()
         if config:
             return config[0].enable_resources
-        return True  # Default to enabled if no config found
+        return False
     except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, AttributeError):
-        return True
+        return False
+
+
+@cache.cached(timeout=300, key_prefix="nav_blog_enabled")
+def is_blog_enabled():
+    """Check if blog are enabled in navigation."""
+    try:
+        config = database.session.execute(database.select(Configuracion)).first()
+        if config:
+            return config[0].enable_blog
+        return False
+    except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, AttributeError):
+        return False

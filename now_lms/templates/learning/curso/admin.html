@@ -133,11 +133,7 @@ permitir_docente %}
                         </div>
 
                         <h2>{{ curso.nombre }}</h2>
-                        <iframe
-                            title="{{ curso.codigo }}"
-                            src="{{ url_for('course.curso_descripcion_a_html', course_code=curso.codigo) }}"
-                        ></iframe>
-                        {% if curso.estado == "draft" %}
+                        {{ markdown2html(curso.descripcion) | safe }} {% if curso.estado == "draft" %}
                         <p>Estatus del curso: <i class="bi bi-pencil-square" aria-hidden="true"></i> Borrador</p>
                         {% elif curso.estado == "open" %}
                         <p>Estatus del curso: <i class="bi bi-person-plus" aria-hidden="true"></i> Abierto</p>

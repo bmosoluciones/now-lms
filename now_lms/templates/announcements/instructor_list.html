@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <div class="mb-2">{{ mkdonw2thml(announcement.message) | safe }}</div>
+                                <div class="mb-2">{{ mkdown2html(announcement.message) | safe }}</div>
                                 <div class="text-muted small">
                                     <i class="bi bi-person"></i> {{ announcement.created_by.nombre }} {{
                                     announcement.created_by.apellido }} <i class="bi bi-calendar ms-2"></i> {{

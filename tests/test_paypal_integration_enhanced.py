@@ -6,7 +6,6 @@ This script helps validate the PayPal integration setup and provides
 debugging information for manual testing.
 """
 
-from re import I
 import sys
 import os
 from datetime import datetime
