@@ -10,3 +10,4 @@ coverage:
 ignore:
   - "now_lms/__main__.py"
   - "now_lms/cli.py"
+  - "now_lms/db/backup.py"

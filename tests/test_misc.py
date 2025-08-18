@@ -24,7 +24,6 @@ from now_lms.misc import (
     sanitize_slide_content,
     TIPOS_DE_USUARIO,
     ICONOS_RECURSOS,
-    TEMPLATES_BY_TYPE,
     HTML_TAGS,
 )
 
@@ -100,10 +99,6 @@ class TestMiscUtilities:
         assert isinstance(ICONOS_RECURSOS, dict)
         assert "pdf" in ICONOS_RECURSOS
         assert "html" in ICONOS_RECURSOS
-
-        assert isinstance(TEMPLATES_BY_TYPE, dict)
-        assert "pdf" in TEMPLATES_BY_TYPE
-        assert "html" in TEMPLATES_BY_TYPE
 
         assert isinstance(HTML_TAGS, list)
         assert "p" in HTML_TAGS
