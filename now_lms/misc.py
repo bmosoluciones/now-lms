@@ -20,7 +20,7 @@
 # Standard library
 # ---------------------------------------------------------------------------------------
 from collections import OrderedDict
-from typing import NamedTuple, Union
+from typing import NamedTuple
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -38,9 +38,7 @@ INICIO_SESION = redirect("/user/login")
 PANEL_DE_USUARIO = redirect("/home/panel")
 
 
-def concatenar_parametros_a_url(
-    parametros: Union[OrderedDict, None], arg: Union[str, None], val: Union[str, None], char: str = ""
-) -> str:
+def concatenar_parametros_a_url(parametros: OrderedDict | None, arg: str | None, val: str | None, char: str = "") -> str:
     """Return list of parameters as a URL string.
 
     Args:
@@ -100,18 +98,6 @@ class EstiloLocal(NamedTuple):
     logo: dict
     buttom: dict
 
-
-TEMPLATES_BY_TYPE: dict = {
-    "html": "type_html.html",
-    "img": "type_img.html",
-    "link": "type_link.html",
-    "meet": "type_meet.html",
-    "mp3": "type_audio.html",
-    "pdf": "type_pdf.html",
-    "slides": "type_slides.html",
-    "text": "type_text.html",
-    "youtube": "type_youtube.html",
-}
 
 HTML_TAGS = [
     "a",

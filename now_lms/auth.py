@@ -47,7 +47,7 @@ ph = PasswordHasher()
 # ---------------------------------------------------------------------------------------
 # Proteger contraseñas de usuarios.
 # ---------------------------------------------------------------------------------------
-def proteger_passwd(clave):
+def proteger_passwd(clave, /):
     """Devuelve una contraseña salteada con argon2."""
 
     _hash = ph.hash(clave.encode()).encode("utf-8")
@@ -55,7 +55,7 @@ def proteger_passwd(clave):
     return _hash
 
 
-def validar_acceso(usuario_id, acceso):
+def validar_acceso(usuario_id, acceso, /):
     """Verifica el inicio de sesión del usuario."""
 
     log.trace(f"Verifying access for {usuario_id}")

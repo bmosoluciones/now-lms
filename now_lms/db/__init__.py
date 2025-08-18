@@ -19,7 +19,7 @@
 # Standard library
 # ---------------------------------------------------------------------------------------
 from datetime import date, datetime
-
+from typing import Self
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -731,7 +731,7 @@ class ForoMensaje(database.Model, BaseTabla):
         """Retorna True si se puede responder a este mensaje."""
         return self.is_thread_open() and self.is_course_forum_active()
 
-    def get_thread_root(self):
+    def get_thread_root(self) -> Self:
         """Retorna el mensaje raíz del hilo."""
         if self.parent_id:
             return self.parent.get_thread_root()

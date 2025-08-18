@@ -20,7 +20,7 @@
 # Standard library
 # ---------------------------------------------------------------------------------------
 from os import path, remove
-from typing import NamedTuple, Union
+from typing import Any, NamedTuple, Union
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -816,7 +816,7 @@ def get_course_sections(course_code: str):
         return []
 
 
-def get_one_record(table_name: str, value, column_name: str = None):
+def get_one_record(table_name: str, value, column_name: Union[str, None] = None):
     """
     Devuelve exactamente un registro de la tabla indicada por nombre.
     Retorna None si la tabla/columna no existe o si no hay coincidencia única.
@@ -852,7 +852,7 @@ def get_one_record(table_name: str, value, column_name: str = None):
         return None
 
 
-def get_all_records(table_name: str, filters: dict = None):
+def get_all_records(table_name: str, filters: Union[dict[Any, Any], None] = None):
     """
     Devuelve todos los registros de una tabla.
     :param table_name: nombre del modelo

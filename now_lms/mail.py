@@ -20,7 +20,7 @@
 import threading
 from os import environ
 from types import SimpleNamespace
-from typing import Mapping, Union
+from typing import Mapping
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -40,13 +40,13 @@ from now_lms.logs import log as logger
 # ---------------------------------------------------------------------------------------
 # Configuración de tipos.
 # ---------------------------------------------------------------------------------------
-MAIL_SERVER: Union[str, bool, Mapping, None] = None
-MAIL_PORT: Union[str, bool, Mapping, None] = None
-MAIL_USERNAME: Union[str, bool, Mapping, None] = None
-MAIL_PASSWORD: Union[str, bool, Mapping, None] = None
-MAIL_USE_TLS: Union[str, bool, Mapping, None] = None
-MAIL_USE_SSL: Union[str, bool, Mapping, None] = None
-MAIL_DEFAULT_SENDER: Union[str, bool, Mapping, None] = None
+MAIL_SERVER: str | bool | Mapping | None = None
+MAIL_PORT: str | bool | Mapping | None = None
+MAIL_USERNAME: str | bool | Mapping | None = None
+MAIL_PASSWORD: str | bool | Mapping | None = None
+MAIL_USE_TLS: str | bool | Mapping | None = None
+MAIL_USE_SSL: str | bool | Mapping | None = None
+MAIL_DEFAULT_SENDER: str | bool | Mapping | None = None
 mail_configured: bool = False
 
 
@@ -74,15 +74,18 @@ def _load_mail_config_from_env() -> SimpleNamespace:
     # Default sender
     MAIL_DEFAULT_SENDER = environ.get("MAIL_DEFAULT_SENDER")
 
-    # Strin to boolean
-    if MAIL_USE_SSL == "FALSE":
-        MAIL_USE_SSL = False  # type: ignore[assignment]
-    elif MAIL_USE_SSL == "TRUE":
-        MAIL_USE_SSL = True  # type: ignore[assignment]
-    if MAIL_USE_TLS == "FALSE":
-        MAIL_USE_TLS = False  # type: ignore[assignment]
-    elif MAIL_USE_TLS == "TRUE":
-        MAIL_USE_TLS = True  # type: ignore[assignment]
+    # String to boolean conversion using pattern matching
+    match MAIL_USE_SSL:
+        case "FALSE":
+            MAIL_USE_SSL = False  # type: ignore[assignment]
+        case "TRUE":
+            MAIL_USE_SSL = True  # type: ignore[assignment]
+
+    match MAIL_USE_TLS:
+        case "FALSE":
+            MAIL_USE_TLS = False  # type: ignore[assignment]
+        case "TRUE":
+            MAIL_USE_TLS = True  # type: ignore[assignment]
 
     return SimpleNamespace(
         mail_configured=mail_configured,

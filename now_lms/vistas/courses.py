@@ -99,7 +99,7 @@ from now_lms.forms import (
     SlideShowForm,
 )
 from now_lms.logs import log
-from now_lms.misc import CURSO_NIVEL, HTML_TAGS, INICIO_SESION, TEMPLATES_BY_TYPE, TIPOS_RECURSOS, sanitize_slide_content
+from now_lms.misc import CURSO_NIVEL, HTML_TAGS, INICIO_SESION, TIPOS_RECURSOS, sanitize_slide_content
 from now_lms.themes import get_course_list_template, get_course_view_template
 
 # ---------------------------------------------------------------------------------------
@@ -919,7 +919,28 @@ def pagina_recurso(curso_id, resource_type, codigo):
         .scalars()
         .all()
     )
-    TEMPLATE = "learning/resources/" + TEMPLATES_BY_TYPE[resource_type]
+    match resource_type:
+        case "html":
+            TEMPLATE = "learning/resources/type_html.html"
+        case "img":
+            TEMPLATE = "learning/resources/type_img.html"
+        case "link":
+            TEMPLATE = "learning/resources/type_link.html"
+        case "meet":
+            TEMPLATE = "learning/resources/type_meet.html"
+        case "mp3":
+            TEMPLATE = "learning/resources/type_audio.html"
+        case "pdf":
+            TEMPLATE = "learning/resources/type_pdf.html"
+        case "slides":
+            TEMPLATE = "learning/resources/type_slides.html"
+        case "text":
+            TEMPLATE = "learning/resources/type_text.html"
+        case "youtube":
+            TEMPLATE = "learning/resources/type_youtube.html"
+        case _:
+            # Unknown resource type
+            abort(404)
     INDICE = crear_indice_recurso(codigo)
 
     if current_user.is_authenticated:
