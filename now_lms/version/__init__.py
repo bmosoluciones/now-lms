@@ -54,13 +54,13 @@ PRERELEASE = "b9"
 
 # <--------------------------------------------------------------------------> #
 # Date of release
-REVISION = "20250816"
+REVISION = "20250818"
 
 # <--------------------------------------------------------------------------> #
 # Release string
 # Refences:
 #  - https://peps.python.org/pep-0440/
-# 0.0.1b8.dev20250816
+# 0.0.1b9.dev20250818
 if PRERELEASE:
     VERSION = MAYOR + "." + MENOR + "." + PATCH + PRERELEASE + ".dev" + REVISION
 else:
