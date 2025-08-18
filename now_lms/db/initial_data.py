@@ -34,6 +34,8 @@ from ulid import ULID
 from now_lms.auth import proteger_passwd
 from now_lms.config import DIRECTORIO_ARCHIVOS, DIRECTORIO_BASE_ARCHIVOS_USUARIO
 from now_lms.db import (
+    BlogPost,
+    BlogTag,
     Categoria,
     CategoriaCurso,
     Certificacion,
@@ -1208,3 +1210,345 @@ def populate_custom_theme_dir():
                 pass
             except FileNotFoundError:
                 pass
+
+
+def crear_curso_autoaprendizaje():
+    """Crea un curso completo de autoaprendizaje para administrar y usar NOW LMS.
+
+    Este curso está diseñado para enseñar a administradores e instructores
+    cómo utilizar todas las funcionalidades del sistema LMS.
+    """
+    log.trace("Creating comprehensive LMS training course.")
+
+    # Crear el curso principal
+    curso_training = Curso(
+        nombre="Guía Completa de NOW LMS",
+        codigo="lms-training",
+        descripcion_corta="Curso completo para aprender a usar NOW LMS como administrador e instructor.",
+        descripcion="""# Guía Completa de NOW LMS
+
+Este curso te enseñará paso a paso cómo utilizar todas las funcionalidades de NOW LMS tanto para administradores como para instructores.
+
+## ¿Qué aprenderás?
+
+- **Administración del sistema**: Gestión de usuarios, cursos, categorías y configuraciones
+- **Creación de cursos**: Desde la configuración básica hasta contenido avanzado
+- **Gestión de evaluaciones**: Crear exámenes, cuestionarios y certificaciones
+- **Gestión de usuarios**: Roles, permisos y administración de estudiantes
+- **Análisis y reportes**: Cómo interpretar las métricas del sistema
+- **Mejores prácticas**: Consejos para maximizar el valor de tu LMS
+
+¡Empecemos este viaje de aprendizaje juntos!""",
+        portada=False,  # No logo needed for training course
+        nivel=1,  # Principiante
+        duracion=120,  # 2 horas estimadas
+        # Estado de publicación
+        estado="open",
+        publico=False,  # No visible en el sitio web público según requerimientos
+        # Modalidad self-paced según requerimientos
+        modalidad="self_paced",
+        foro_habilitado=False,  # Los cursos self-paced no pueden tener foro
+        # Disponibilidad de cupos
+        limitado=False,
+        capacidad=0,  # Ilimitado
+        # Sin fechas específicas para self-paced
+        fecha_inicio=None,
+        fecha_fin=None,
+        # Información de marketing
+        promocionado=False,
+        fecha_promocionado=None,
+        # Información de pago - GRATUITO según requerimientos
+        pagado=False,
+        auditable=False,
+        precio=0,
+        certificado=True,
+        plantilla_certificado="horizontal",
+        creado_por=ADMIN_USER_WITH_FALLBACK,
+    )
+
+    database.session.add(curso_training)
+    database.session.flush()
+
+    # Crear secciones básicas del curso
+    secciones_data = [
+        {"nombre": "Introducción a NOW LMS", "descripcion": "Conoce las características principales del sistema"},
+        {"nombre": "Administración de Usuarios", "descripcion": "Aprende a gestionar usuarios, roles y permisos"},
+        {"nombre": "Gestión de Cursos", "descripcion": "Cómo crear, configurar y administrar cursos"},
+        {"nombre": "Sistema de Evaluaciones", "descripcion": "Configurar exámenes, cuestionarios y certificaciones"},
+        {"nombre": "Análisis y Reportes", "descripcion": "Interpretar métricas y generar reportes útiles"},
+        {"nombre": "Mejores Prácticas", "descripcion": "Consejos avanzados para maximizar el valor educativo"},
+    ]
+
+    secciones_creadas = []
+    for idx, seccion_data in enumerate(secciones_data, 1):
+        seccion = CursoSeccion(
+            curso="lms-training",
+            nombre=seccion_data["nombre"],
+            descripcion=seccion_data["descripcion"],
+            estado=True,  # Publicada
+            indice=idx,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        )
+        database.session.add(seccion)
+        database.session.flush()
+        secciones_creadas.append(seccion)
+
+    # Crear algunos recursos básicos de ejemplo
+    recursos_ejemplo = [
+        {
+            "seccion": secciones_creadas[0],  # Introducción
+            "nombre": "¿Qué es NOW LMS?",
+            "descripcion": "Introducción al sistema LMS",
+            "tipo": "text",
+            "contenido": "# ¿Qué es NOW LMS?\n\nNOW LMS es un sistema de gestión de aprendizaje diseñado para ser simple, potente y fácil de usar.\n\n## Características principales:\n- Fácil instalación\n- Interfaz intuitiva\n- Gestión completa de usuarios y cursos\n- Sistema de evaluaciones\n- Reportes detallados\n- Configuración flexible para administradores",
+        },
+        {
+            "seccion": secciones_creadas[1],  # Usuarios
+            "nombre": "Tipos de Usuario",
+            "descripcion": "Roles y permisos en el sistema",
+            "tipo": "text",
+            "contenido": "# Tipos de Usuario\n\n## Roles disponibles:\n1. **admin**: Control total del sistema\n2. **instructor**: Crear y gestionar cursos\n3. **moderator**: Moderar contenido\n4. **student**: Acceso básico de estudiante\n\nCada rol tiene permisos específicos para garantizar la seguridad y organización del sistema. Los administradores tienen acceso completo.",
+        },
+        {
+            "seccion": secciones_creadas[2],  # Cursos
+            "nombre": "Modalidades de Curso",
+            "descripcion": "Diferentes modalidades disponibles",
+            "tipo": "text",
+            "contenido": "# Modalidades de Curso\n\n## 1. Self-paced\n- Estudiantes aprenden a su ritmo\n- Sin fechas fijas\n\n## 2. Time-based\n- Fechas de inicio y fin\n- Aprendizaje en cohort\n\n## 3. Live\n- Sesiones en tiempo real\n- Interacción directa\n\nCada modalidad tiene sus ventajas según el tipo de contenido y audiencia. Los instructores pueden elegir la modalidad apropiada.",
+        },
+    ]
+
+    for idx, recurso_data in enumerate(recursos_ejemplo, 1):
+        recurso = CursoRecurso(
+            curso="lms-training",
+            seccion=recurso_data["seccion"].id,
+            nombre=recurso_data["nombre"],
+            descripcion=recurso_data["descripcion"],
+            tipo=recurso_data["tipo"],
+            text=recurso_data["contenido"][:750],  # Límite de 750 caracteres
+            indice=idx,
+            publico=True,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        )
+        database.session.add(recurso)
+
+    # Crear evaluaciones con límite de 3 intentos según requerimientos
+    crear_evaluaciones_training(secciones_creadas)
+
+    database.session.commit()
+    log.info("LMS training course created successfully.")
+
+
+def crear_evaluaciones_training(secciones):
+    """Crea evaluaciones para el curso de entrenamiento con límite de 3 intentos."""
+
+    # Evaluación básica para la sección de usuarios
+    evaluacion_usuarios = Evaluation(
+        section_id=secciones[1].id,  # Sección de usuarios
+        title="Evaluación: Gestión de Usuarios",
+        description="Evalúa tu comprensión sobre la gestión de usuarios en NOW LMS",
+        is_exam=False,
+        passing_score=70.0,
+        max_attempts=3,  # REQUERIMIENTO: máximo 3 intentos
+        creado_por=ADMIN_USER_WITH_FALLBACK,
+    )
+    database.session.add(evaluacion_usuarios)
+    database.session.flush()
+
+    # Pregunta 1: Tipos de usuario
+    pregunta1 = Question(
+        evaluation_id=evaluacion_usuarios.id,
+        type="multiple",
+        text="¿Cuáles son los cuatro tipos de usuario disponibles en NOW LMS?",
+        explanation="NOW LMS maneja cuatro roles principales para organizar permisos y funcionalidades.",
+        order=1,
+        creado_por=ADMIN_USER_WITH_FALLBACK,
+    )
+    database.session.add(pregunta1)
+    database.session.flush()
+
+    # Opciones para pregunta 1
+    opciones1 = [
+        QuestionOption(
+            question_id=pregunta1.id,
+            text="admin, instructor, student, guest",
+            is_correct=False,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+        QuestionOption(
+            question_id=pregunta1.id,
+            text="admin, instructor, moderator, student",
+            is_correct=True,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+        QuestionOption(
+            question_id=pregunta1.id,
+            text="admin, teacher, moderator, student",
+            is_correct=False,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+    ]
+    for opcion in opciones1:
+        database.session.add(opcion)
+
+    # Pregunta 2: Permisos de instructor
+    pregunta2 = Question(
+        evaluation_id=evaluacion_usuarios.id,
+        type="boolean",
+        text="Los instructores pueden crear y gestionar cualquier curso en el sistema.",
+        explanation="Falso. Los instructores solo pueden gestionar los cursos que han creado o a los que han sido asignados.",
+        order=2,
+        creado_por=ADMIN_USER_WITH_FALLBACK,
+    )
+    database.session.add(pregunta2)
+    database.session.flush()
+
+    # Opciones para pregunta 2
+    opciones2 = [
+        QuestionOption(
+            question_id=pregunta2.id,
+            text="Verdadero",
+            is_correct=False,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+        QuestionOption(
+            question_id=pregunta2.id,
+            text="Falso",
+            is_correct=True,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+    ]
+    for opcion in opciones2:
+        database.session.add(opcion)
+
+    # Evaluación para modalidades de curso
+    evaluacion_cursos = Evaluation(
+        section_id=secciones[2].id,  # Sección de cursos
+        title="Evaluación: Modalidades de Curso",
+        description="Verifica tu conocimiento sobre las diferentes modalidades de curso",
+        is_exam=False,
+        passing_score=70.0,
+        max_attempts=3,  # REQUERIMIENTO: máximo 3 intentos
+        creado_por=ADMIN_USER_WITH_FALLBACK,
+    )
+    database.session.add(evaluacion_cursos)
+    database.session.flush()
+
+    # Pregunta sobre modalidades
+    pregunta3 = Question(
+        evaluation_id=evaluacion_cursos.id,
+        type="multiple",
+        text="¿Cuál es la principal característica de un curso con modalidad 'self_paced'?",
+        explanation="Los cursos self-paced permiten flexibilidad total en el ritmo de aprendizaje.",
+        order=1,
+        creado_por=ADMIN_USER_WITH_FALLBACK,
+    )
+    database.session.add(pregunta3)
+    database.session.flush()
+
+    # Opciones para pregunta 3
+    opciones3 = [
+        QuestionOption(
+            question_id=pregunta3.id,
+            text="Tiene fechas fijas de inicio y fin",
+            is_correct=False,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+        QuestionOption(
+            question_id=pregunta3.id,
+            text="Los estudiantes aprenden a su propio ritmo",
+            is_correct=True,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+        QuestionOption(
+            question_id=pregunta3.id,
+            text="Requiere sesiones en vivo",
+            is_correct=False,
+            creado_por=ADMIN_USER_WITH_FALLBACK,
+        ),
+    ]
+    for opcion in opciones3:
+        database.session.add(opcion)
+
+    database.session.flush()
+
+
+def crear_blog_post_predeterminado():
+    """Crea el blog post predeterminado para ayudar a los usuarios a descubrir la funcionalidad del blog."""
+    log.info("Creating default blog post.")
+
+    # Contenido del blog post proporcionado en el issue
+    title = "The Importance of Online Learning in Today's World"
+    content = """The COVID-19 pandemic transformed the way we live, work, and learn. Almost overnight, classrooms and training rooms around the globe were forced to close their doors, pushing both educators and learners into a fully digital environment. While the transition was challenging, it revealed a powerful truth: online learning is not just an alternative, it is a necessity in the modern world.
+
+**Why Online Learning Matters**
+
+Online learning has proven to be more than a temporary solution. It offers flexibility, accessibility, and scalability—qualities that traditional face-to-face models cannot always guarantee. Students and professionals can learn at their own pace, access resources from anywhere, and connect with peers and instructors without geographical limitations.
+
+For organizations and institutions, online learning provides a sustainable way to deliver knowledge, track progress, and adapt quickly to new challenges.
+
+**Pedagogy and Andragogy in the Digital Age**
+
+**Pedagogy:** For children and young students, an LMS (Learning Management System) ensures structured learning, engaging materials, and clear progress tracking. Interactive resources like videos, quizzes, and discussion forums help maintain motivation and foster collaboration.
+
+**Andragogy:** Adult learners benefit from autonomy and relevance. An LMS supports lifelong learning by offering self-guided modules, flexible schedules, and immediate application of knowledge to real-life situations. This empowers professionals to continuously upskill and remain competitive in a rapidly changing job market.
+
+**The Role of an LMS**
+
+A modern LMS acts as the central hub for teaching and learning. It integrates resources, communication tools, and evaluation systems in one place. More importantly, it ensures that learning is not disrupted by external events—whether a global crisis or personal circumstances. By bridging pedagogy and andragogy, an LMS helps institutions, companies, and individuals thrive in uncertain times.
+
+**Moving Forward**
+
+The pandemic accelerated a trend that was already underway. Online learning is now an integral part of education and professional development. Investing in digital platforms is no longer optional—it is essential for anyone committed to growth, resilience, and lifelong learning."""
+
+    # Crear un slug simple para el título
+    import re
+
+    slug = re.sub(r"[^\w\s-]", "", title.lower())
+    slug = re.sub(r"[-\s]+", "-", slug).strip("-")
+
+    # Verificar si ya existe el post (para evitar duplicados)
+    existing_post = database.session.execute(database.select(BlogPost).filter(BlogPost.slug == slug)).scalar_one_or_none()
+
+    if existing_post:
+        log.debug("Default blog post already exists.")
+        return
+
+    # Crear el blog post
+    blog_post = BlogPost(
+        title=title,
+        slug=slug,
+        content=content,
+        author_id=ADMIN_USER_WITH_FALLBACK,
+        status="published",
+        allow_comments=True,
+        published_at=datetime.utcnow(),
+        comment_count=0,
+    )
+
+    database.session.add(blog_post)
+    database.session.flush()
+
+    # Crear tags relacionados
+    tags_data = [
+        ("Online Learning", "online-learning"),
+        ("Education", "education"),
+        ("LMS", "lms"),
+        ("Pedagogy", "pedagogy"),
+        ("Andragogy", "andragogy"),
+    ]
+
+    for tag_name, tag_slug in tags_data:
+        # Verificar si el tag ya existe
+        existing_tag = database.session.execute(database.select(BlogTag).filter(BlogTag.slug == tag_slug)).scalar_one_or_none()
+
+        if not existing_tag:
+            tag = BlogTag(name=tag_name, slug=tag_slug)
+            database.session.add(tag)
+            database.session.flush()
+            blog_post.tags.append(tag)
+        else:
+            blog_post.tags.append(existing_tag)
+
+    database.session.commit()
+    log.debug("Default blog post created successfully.")

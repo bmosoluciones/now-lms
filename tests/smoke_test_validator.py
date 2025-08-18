@@ -8,7 +8,6 @@ import json
 import sys
 from pathlib import Path
 import subprocess
-import importlib.util
 
 
 class SmokeTestValidator:
@@ -311,7 +310,7 @@ class SmokeTestValidator:
         # Save detailed results
         with open("smoke_test_results.json", "w") as f:
             json.dump(results, f, indent=2)
-        print(f"\n📄 Detailed results saved to: smoke_test_results.json")
+        print("\n📄 Detailed results saved to: smoke_test_results.json")
 
         return results
 

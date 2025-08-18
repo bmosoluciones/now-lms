@@ -2,9 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
-- The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),  
+- The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-- This project also follows [Conventional Commits](https://www.conventionalcommits.org/), using prefixes such as: 
+- This project also follows [Conventional Commits](https://www.conventionalcommits.org/), using prefixes such as:
+
+## [unreleased]
+
+### Added
+
+- Self learning course.
+- Default blog post.
+
+
+### Changed
+
+- Force tests to always run on memory.
+- Better audit trial
+
+### Notes
+
+- 497 tests passed / 4  / 78% code coverage
+
+----------------
 
 ## [v0.0.1b8.dev20250816] - 2025-08-17
 
@@ -79,6 +98,8 @@ All notable changes to this project will be documented in this file.
 - Conditional check `is_blog_enabled`.
 - Add `default` certificate template.
 
+------------------------------
+
 ## [v0.0.1b6.dev20250815] - 2025-08-15
 
 ### Added
@@ -109,6 +130,8 @@ All notable changes to this project will be documented in this file.
 ### Notes
 - Ongoing validation
 
+----------------------------------------------
+
 ## [v0.0.1b3.dev20250809] - 2025-08-09
 
 ### Added
@@ -125,6 +148,8 @@ All notable changes to this project will be documented in this file.
 - Project remains in **Beta** — no new features will be added except for Master Class (special exception).
 - Focus remains on testing and system stability before the stable release.
 
+
+-------------------
 
 ## [v0.0.1b2.dev20250808] - 2025-08-08
 
@@ -152,4 +177,3 @@ All notable changes to this project will be documented in this file.
 
 ### Status
 - The system enters **testing phase** (beta). Focus is on quality assurance, manual and automated testing to ensure system stability.
-

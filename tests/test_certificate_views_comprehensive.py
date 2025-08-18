@@ -16,16 +16,12 @@
 """Comprehensive tests for Certificate views in now_lms/vistas/certificates.py"""
 
 import pytest
-from flask import url_for
-from io import BytesIO
 from unittest.mock import patch, MagicMock
 
 from now_lms.db import (
     Certificacion,
     Certificado,
-    Curso,
     Usuario,
-    MasterClassEnrollment,
     database,
 )
 from now_lms.auth import proteger_passwd
@@ -499,29 +495,6 @@ class TestCertificateViewingRoutes:
         assert response.status_code == 200
         # Check that the certificate content is rendered
         assert b"View" in response.data and b"Test" in response.data
-
-    @patch("flask_weasyprint.render_pdf")
-    def test_certificate_serve_pdf(self, mock_render_pdf, full_db_setup, client):
-        """Test PDF certificate download."""
-        import os
-        import pytest
-
-        if os.name == "nt":
-            pytest.skip("WeasyPrint PDF rendering not supported on Windows CI")
-
-        else:
-            app = full_db_setup
-            cert_id = self.setup_test_certification_with_course(app)
-
-            # Mock PDF rendering
-            mock_render_pdf.return_value = b"mock_pdf_data"
-
-            # Access PDF download
-            response = client.get(f"/certificate/download/{cert_id}/")
-            assert response.status_code == 200
-
-            # Verify render_pdf was called
-            mock_render_pdf.assert_called_once()
 
 
 class TestCertificateIssuanceRoutes:

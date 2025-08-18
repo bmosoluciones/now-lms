@@ -278,3 +278,15 @@ def basic_config_setup(app, db_session):
             log.warning(f"Basic config setup error (continuing): {e}")
 
     yield app  # Return the application with basic configuration
+
+
+def pytest_configure(config):
+    import sys
+
+    sys._called_from_test = True  # This flag is accessible globally
+
+
+def pytest_unconfigure(config):
+    import sys  # This was missing from the manual
+
+    del sys._called_from_test

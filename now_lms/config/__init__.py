@@ -17,6 +17,7 @@
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
+import sys
 from os import R_OK, W_OK, access, environ, makedirs, name, path
 from pathlib import Path
 from typing import TYPE_CHECKING, Dict
@@ -109,7 +110,14 @@ DIRECTORIO_BASE_UPLOADS = Path(str(path.join(str(DIRECTORIO_ARCHIVOS), "files"))
 
 # < --------------------------------------------------------------------------------------------- >
 # Ubicación predeterminada de base de datos SQLITE
-if environ.get("CI"):
+if (
+    "PYTEST_CURRENT_TEST" in environ
+    or "PYTEST_VERSION" in environ
+    or hasattr(sys, "_called_from_test")
+    or environ.get("CI")
+    or "pytest" in sys.modules
+    or path.basename(sys.argv[0]) in ["pytest", "py.test"]
+):
     SQLITE: str = "sqlite://"
 else:
     if name == "nt":  # pragma: no cover

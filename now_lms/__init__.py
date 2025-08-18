@@ -59,6 +59,7 @@ from now_lms.db.info import app_info, course_info, lms_info
 from now_lms.db.initial_data import (
     asignar_cursos_a_categoria,
     asignar_cursos_a_etiquetas,
+    crear_blog_post_predeterminado,
     crear_categorias,
     crear_certificacion,
     crear_certificados,
@@ -67,6 +68,7 @@ from now_lms.db.initial_data import (
     crear_curso_demo2,
     crear_curso_demo3,
     crear_curso_predeterminado,
+    crear_curso_autoaprendizaje,
     crear_etiquetas,
     crear_evaluacion_predeterminada,
     crear_programa,
@@ -429,9 +431,11 @@ def initial_setup(with_examples=False, with_tests=False):
         crear_configuracion_predeterminada()
         crear_certificados()
         crear_curso_predeterminado()
+        crear_curso_autoaprendizaje()
         crear_evaluacion_predeterminada()
         crear_usuarios_predeterminados()
         crear_certificacion()
+        crear_blog_post_predeterminado()
         populate_custmon_data_dir()
         populate_custom_theme_dir()
         log.debug("Sample data loaded successfully.")

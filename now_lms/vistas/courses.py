@@ -146,7 +146,14 @@ def curso(course_code):
 
     _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
 
-    if current_user.is_authenticated and request.args.get("inspect"):
+    # Special access logic for LMS training course - accessible to admins and instructors
+    if course_code == "lms-training" and current_user.is_authenticated:
+        if current_user.tipo in ["admin", "instructor"]:
+            acceso = True
+            editable = current_user.tipo == "admin"
+        else:
+            acceso = False
+    elif current_user.is_authenticated and request.args.get("inspect"):
         if current_user.tipo == "admin":
             acceso = True
             editable = True

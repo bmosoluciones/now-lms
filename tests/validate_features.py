@@ -306,7 +306,7 @@ def main():
     # Save results to file
     with open("feature_validation_results.json", "w") as f:
         json.dump(results, f, indent=2)
-    print(f"\n📄 Detailed results saved to: feature_validation_results.json")
+    print("\n📄 Detailed results saved to: feature_validation_results.json")
 
 
 if __name__ == "__main__":

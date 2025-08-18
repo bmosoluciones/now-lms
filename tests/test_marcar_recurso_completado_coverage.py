@@ -16,7 +16,6 @@
 """Test coverage for marcar_recurso_completado function lines 1023-1033."""
 
 
-import pytest
 
 
 from now_lms.db import (

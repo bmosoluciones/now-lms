@@ -16,7 +16,6 @@
 Comprehensive evaluation workflow tests covering instructor and student flows.
 """
 
-import pytest
 from now_lms.db import database
 
 
@@ -320,7 +319,6 @@ def test_student_complete_evaluation_workflow(full_db_setup, client):
     app = full_db_setup
     from now_lms.db import (
         Usuario,
-        Curso,
         CursoSeccion,
         Evaluation,
         Question,
@@ -542,7 +540,6 @@ def test_instructor_question_option_management(full_db_setup, client):
     app = full_db_setup
     from now_lms.db import (
         Usuario,
-        Curso,
         CursoSeccion,
         Evaluation,
         Question,

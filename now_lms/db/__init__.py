@@ -25,8 +25,8 @@ from datetime import date, datetime
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 from cuid2 import Cuid
-from flask import current_app
-from flask_login import UserMixin
+from flask import current_app, has_request_context
+from flask_login import UserMixin, current_user
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event, select
 from sqlalchemy.exc import SQLAlchemyError
@@ -126,21 +126,28 @@ class BaseTabla:
 
         # Use no_autoflush to prevent recursive flush during validation
         with database.session.no_autoflush:
+            # Check if users are being created in this transaction to skip validation
+            new_user_ids = {instance.usuario for instance in database.session.new if isinstance(instance, Usuario)}
+
             # Validate creado_por
             if self.creado_por:
-                user_exists = database.session.execute(
-                    database.select(Usuario).filter_by(usuario=self.creado_por)
-                ).scalar_one_or_none()
-                if not user_exists:
-                    self.creado_por = None
+                # Skip validation if user is being created in same transaction
+                if self.creado_por not in new_user_ids:
+                    user_exists = database.session.execute(
+                        database.select(Usuario).filter_by(usuario=self.creado_por)
+                    ).scalar_one_or_none()
+                    if not user_exists:
+                        self.creado_por = None
 
             # Validate modificado_por
             if self.modificado_por:
-                user_exists = database.session.execute(
-                    database.select(Usuario).filter_by(usuario=self.modificado_por)
-                ).scalar_one_or_none()
-                if not user_exists:
-                    self.modificado_por = None
+                # Skip validation if user is being created in same transaction
+                if self.modificado_por not in new_user_ids:
+                    user_exists = database.session.execute(
+                        database.select(Usuario).filter_by(usuario=self.modificado_por)
+                    ).scalar_one_or_none()
+                    if not user_exists:
+                        self.modificado_por = None
 
 
 class SystemInfo(database.Model):
@@ -1212,7 +1219,38 @@ class UserEvent(database.Model, BaseTabla):
     evaluation = database.relationship("Evaluation", backref="user_events")
 
 
-# Event listeners for audit field validation
+# Event listeners for audit field population and validation
+@event.listens_for(database.session, "before_flush")
+def populate_audit_fields_before_flush(session, flush_context, instances):
+    """Automatically populate audit fields for BaseTabla instances before flushing."""
+    # Get current user context if available
+    current_user_id = None
+    if has_request_context() and current_user.is_authenticated:
+        current_user_id = current_user.usuario
+
+    current_time = datetime.utcnow()
+    current_date = current_time.date()
+
+    # Handle new instances
+    for instance in session.new:
+        if isinstance(instance, BaseTabla):
+            # Set creation audit fields if not already set
+            if instance.creado_por is None and current_user_id:
+                instance.creado_por = current_user_id
+            # creado field has a default, but ensure it's set to today if somehow null
+            if instance.creado is None:
+                instance.creado = current_date
+
+    # Handle modified instances
+    for instance in session.dirty:
+        if isinstance(instance, BaseTabla):
+            # Set modification audit fields
+            if current_user_id:
+                instance.modificado_por = current_user_id
+            # The modificado field has onupdate=datetime.utcnow, but ensure it's set
+            instance.modificado = current_time
+
+
 @event.listens_for(database.session, "before_commit")
 def validate_audit_fields_before_commit(session):
     """Validate that audit fields reference existing users before committing."""
@@ -1223,3 +1261,28 @@ def validate_audit_fields_before_commit(session):
     for instance in session.dirty:
         if isinstance(instance, BaseTabla):
             instance.validate_user_references()
+
+
+@event.listens_for(database.session, "before_commit")
+def populate_audit_fields_before_commit(session):
+    """Automatically populate audit fields for BaseTabla instances before committing."""
+    # Get current user context if available
+    current_user_id = None
+    if has_request_context() and current_user.is_authenticated:
+        current_user_id = current_user.usuario
+
+    current_time = datetime.utcnow()
+    current_date = current_time.date()
+
+    # Track which instances had manually set audit fields before validation
+    manually_set_creado_por = {}
+    manually_set_modificado_por = {}
+
+    # Store manually set audit fields before validation potentially clears them
+    for instance in session.new:
+        if isinstance(instance, BaseTabla) and instance.creado_por is not None:
+            manually_set_creado_por[id(instance)] = instance.creado_por
+
+    for instance in session.dirty:
+        if isinstance(instance, BaseTabla) and instance.modificado_por is not None:
+            manually_set_modificado_por[id(instance)] = instance.modificado_por

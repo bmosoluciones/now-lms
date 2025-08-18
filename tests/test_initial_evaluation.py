@@ -15,7 +15,6 @@
 
 """Test for the initial evaluation creation in the 'now' course."""
 
-import pytest
 from sqlalchemy import select
 
 from now_lms.db import Evaluation, Question, QuestionOption, CursoSeccion, database

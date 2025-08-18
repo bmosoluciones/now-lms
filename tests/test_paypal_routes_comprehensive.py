@@ -18,7 +18,7 @@ Comprehensive tests for PayPal routes in now_lms/vistas/paypal.py
 
 import pytest
 import json
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 
 
 @pytest.fixture
