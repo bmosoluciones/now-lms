@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 - This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/), using prefixes such as:
 
-## [unreleased]
+## [v0.0.1b9.dev20250818] -2025-08-18
 
 ### Added
 
@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 
 - Force tests to always run on memory.
 - Better audit trial
+- Updated code base to use Python 3.11 features
 
 ### Notes
 
