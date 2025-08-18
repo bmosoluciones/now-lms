@@ -1,3 +1,6 @@
+import certifi
+
+
 def test_database_info_tools(full_db_setup):
     with full_db_setup.app_context():
         from now_lms.db.tools import database_is_populated
@@ -15,6 +18,30 @@ def test_database_info_tools(full_db_setup):
         from now_lms.db.info import _obtener_info_sistema
 
         assert _obtener_info_sistema()
+        from now_lms.db.tools import get_one_record
+
+        curso = get_one_record("Curso", "now", "codigo")
+        assert curso is not None
+
+        curso = get_one_record("Curso", False, "publico")
+        assert curso is None
+
+        curso = get_one_record("Curso", "FFFFFFFFFF")
+        assert curso is not None
+
+        curso = get_one_record("Curso", "holaFFFFFFFFFF")
+        assert curso is None
+
+        from now_lms.db.tools import get_all_records
+
+        cursos = get_all_records("Curso")
+        assert cursos is not None
+
+        usuarios = get_all_records("Usuario", {"tipo": "admin"})
+        assert usuarios is not None
+
+        vacio = get_all_records("Hola")
+        assert vacio is None
 
 
 def test_db_tools_negative():

@@ -29,7 +29,7 @@ from flask import current_app
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
-from now_lms.db import database
+from now_lms.db import BlogPost, database
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -66,7 +66,7 @@ def course_info(course_code: str) -> SimpleNamespace:
 
     from sqlalchemy import func
 
-    from now_lms.db import Curso, CursoRecurso, CursoSeccion, EstudianteCurso
+    from now_lms.db import Curso, CursoRecurso, CursoSeccion, EstudianteCurso, Evaluation
 
     curso = database.session.execute(database.select(Curso).where(Curso.codigo == course_code)).first()[0]
     resources_count = database.session.execute(
@@ -78,12 +78,16 @@ def course_info(course_code: str) -> SimpleNamespace:
     student_count = database.session.execute(
         database.select(func.count()).select_from(EstudianteCurso).where(EstudianteCurso.curso == course_code)
     ).scalar_one()
+    evaluations_count = database.session.execute(
+        database.select(func.count()).select_from(Evaluation).join(CursoSeccion).where(CursoSeccion.curso == course_code)
+    ).scalar_one()
 
     return SimpleNamespace(
         course=curso,
         resources_count=resources_count,
         sections_count=sections_count,
         student_count=student_count,
+        evaluations_count=evaluations_count,
     )
 
 
@@ -93,7 +97,7 @@ def lms_info() -> SimpleNamespace:
     """
     from sqlalchemy import func
 
-    from now_lms.db import Certificado, Curso, EstudianteCurso, Programa, Usuario
+    from now_lms.db import Certificacion, Curso, EstudianteCurso, Programa, Usuario, MasterClass, Evaluation
 
     courses_count = database.session.execute(database.select(func.count()).select_from(Curso)).scalar_one()
     students_count = database.session.execute(
@@ -109,9 +113,15 @@ def lms_info() -> SimpleNamespace:
     # Additional metrics for enhanced user experience
     enrollments_count = database.session.execute(database.select(func.count()).select_from(EstudianteCurso)).scalar_one()
 
-    certificates_count = database.session.execute(database.select(func.count()).select_from(Certificado)).scalar_one()
+    certificates_count = database.session.execute(database.select(func.count()).select_from(Certificacion)).scalar_one()
 
     programs_count = database.session.execute(database.select(func.count()).select_from(Programa)).scalar_one()
+
+    evaluations_count = database.session.execute(database.select(func.count()).select_from(Evaluation)).scalar_one()
+
+    blog_posts_count = database.session.execute(database.select(func.count()).select_from(BlogPost)).scalar_one()
+
+    master_classes_count = database.session.execute(database.select(func.count()).select_from(MasterClass)).scalar_one()
 
     return SimpleNamespace(
         courses_count=courses_count,
@@ -121,6 +131,9 @@ def lms_info() -> SimpleNamespace:
         enrollments_count=enrollments_count,
         certificates_count=certificates_count,
         programs_count=programs_count,
+        evaluations_count=evaluations_count,
+        blog_posts_count=blog_posts_count,
+        master_classes_count=master_classes_count,
     )
 
 
@@ -149,6 +162,10 @@ def config_info() -> SimpleNamespace:
         )
         from now_lms.themes import DIRECTORIO_TEMAS as TEMPLATES_DIR
 
+        from now_lms.db import Configuracion
+
+        configuracion = database.session.execute(database.select(Configuracion)).scalar_one_or_none()
+
     return SimpleNamespace(
         sys=_obtener_info_sistema(),
         _dbengine=app_info(current_app)["DBENGINE"],
@@ -158,4 +175,6 @@ def config_info() -> SimpleNamespace:
         _private_files_dir=DIRECTORIO_ARCHIVOS_PRIVADOS,
         _public_files_dir=DIRECTORIO_ARCHIVOS_PUBLICOS,
         _templates_dir=TEMPLATES_DIR,
+        _time_zone=configuracion.time_zone,
+        _language=configuracion.lang,
     )

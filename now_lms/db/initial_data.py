@@ -509,6 +509,7 @@ def crear_curso_predeterminado():
     """Crea un recurso publico."""
     log.trace("Creating demonstration course.")
     demo = Curso(
+        id="FFFFFFFFFF",
         nombre="OnLine Teaching 101",
         codigo="now",
         descripcion_corta="This is your first course.",
@@ -988,6 +989,8 @@ def asignar_cursos_a_etiquetas():
 
     for r in [registro1, registro2, registro3, registro4, registro5]:
         database.session.add(r)
+        database.session.flush()
+
     database.session.commit()
 
 
@@ -1008,6 +1011,8 @@ def asignar_cursos_a_categoria():
 
     for r in registro1, registro2, registro3, registro4, registro5:
         database.session.add(r)
+        database.session.flush()
+
     database.session.commit()
 
 
@@ -1062,7 +1067,9 @@ def crear_programa():
             programa=programa.codigo,
         )
         database.session.add(registro)
-        database.session.commit()
+        database.session.flush()
+
+    database.session.commit()
 
 
 def crear_recurso_descargable():
@@ -1331,6 +1338,7 @@ Este curso te enseñará paso a paso cómo utilizar todas las funcionalidades de
             creado_por=ADMIN_USER_WITH_FALLBACK,
         )
         database.session.add(recurso)
+        database.session.flush()
 
     # Crear evaluaciones con límite de 3 intentos según requerimientos
     crear_evaluaciones_training(secciones_creadas)
@@ -1390,6 +1398,7 @@ def crear_evaluaciones_training(secciones):
     ]
     for opcion in opciones1:
         database.session.add(opcion)
+        database.session.flush()
 
     # Pregunta 2: Permisos de instructor
     pregunta2 = Question(
@@ -1420,6 +1429,7 @@ def crear_evaluaciones_training(secciones):
     ]
     for opcion in opciones2:
         database.session.add(opcion)
+        database.session.flush()
 
     # Evaluación para modalidades de curso
     evaluacion_cursos = Evaluation(
@@ -1469,6 +1479,7 @@ def crear_evaluaciones_training(secciones):
     ]
     for opcion in opciones3:
         database.session.add(opcion)
+        database.session.flush()
 
     database.session.flush()
 

@@ -12,6 +12,8 @@ All notable changes to this project will be documented in this file.
 
 - Self learning course.
 - Default blog post.
+- `get_one_from_db` Jinja global
+- `get_all_from_db` Jinja global
 
 
 ### Changed

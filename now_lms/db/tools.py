@@ -30,7 +30,8 @@ from flask_login import current_user
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
 from sqlalchemy import func
-from sqlalchemy.exc import OperationalError, ProgrammingError
+from sqlalchemy.exc import OperationalError, ProgrammingError, NoResultFound, MultipleResultsFound
+from sqlalchemy.inspection import inspect
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -813,3 +814,62 @@ def get_course_sections(course_code: str):
         return sections
     except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, AttributeError):
         return []
+
+
+def get_one_record(table_name: str, value, column_name: str = None):
+    """
+    Devuelve exactamente un registro de la tabla indicada por nombre.
+    Retorna None si la tabla/columna no existe o si no hay coincidencia única.
+
+    :param table_name: nombre del modelo (clase) de SQLAlchemy
+    :param value: valor a buscar
+    :param column_name: nombre de la columna opcional (string)
+    :return: instancia del modelo encontrada o None
+    """
+
+    db = database
+    # Buscar el modelo en el registro de clases de SQLAlchemy
+    model_class = db.Model.registry._class_registry.get(table_name)
+    if model_class is None or not isinstance(model_class, type):
+        return None  # Tabla no encontrada
+
+    # Determinar la columna a usar
+    if column_name is None:
+        # Usar la primary key
+        pk_column = inspect(model_class).primary_key[0]
+        column = pk_column
+    else:
+        # Buscar la columna por nombre
+        if not hasattr(model_class, column_name):
+            return None  # Columna no encontrada
+        column = getattr(model_class, column_name)
+
+    # Ejecutar la query y capturar errores
+    try:
+        query = db.session.query(model_class).filter(column == value)
+        return query.one()
+    except (NoResultFound, MultipleResultsFound):
+        return None
+
+
+def get_all_records(table_name: str, filters: dict = None):
+    """
+    Devuelve todos los registros de una tabla.
+    :param table_name: nombre del modelo
+    :param filters: diccionario con {columna: valor} para filtrar
+    :return: lista de instancias o []
+    """
+
+    db = database
+    model_class = db.Model.registry._class_registry.get(table_name)
+    if model_class is None or not isinstance(model_class, type):
+        return None
+
+    query = db.session.query(model_class)
+
+    if filters:
+        for col, val in filters.items():
+            if hasattr(model_class, col):
+                query = query.filter(getattr(model_class, col) == val)
+
+    return query.all()
