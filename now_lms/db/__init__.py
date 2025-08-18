@@ -1269,10 +1269,10 @@ def populate_audit_fields_before_commit(session):
     # Get current user context if available
     current_user_id = None
     if has_request_context() and current_user.is_authenticated:
-        current_user_id = current_user.usuario
+        current_user_id = current_user.usuario  # noqa: F841
 
     current_time = datetime.utcnow()
-    current_date = current_time.date()
+    current_date = current_time.date()  # noqa: F841
 
     # Track which instances had manually set audit fields before validation
     manually_set_creado_por = {}
