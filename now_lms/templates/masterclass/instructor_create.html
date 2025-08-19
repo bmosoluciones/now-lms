@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="es" class="h-100">
+    {% set current_theme = current_theme() %} {% set config = config() %}
+
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>{{ title }} - {{ config.titulo }}</title>
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="{{ url_for('masterclass.instructor_list') }}" class="text-decoration-none"
+                                        >Mis Clases Magistrales</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+                            </ol>
+                        </nav>
+
+                        <h1>{{ title }}</h1>
+
+                        {% if not is_masterclass_enabled() %}
+                        <div class="alert alert-warning" role="alert">
+                            <strong>⚠️ Aviso:</strong> Las clases magistrales están deshabilitadas en la configuración
+                            principal del sitio. Los usuarios no verán esta clase magistral en el menú de navegación hasta que
+                            se habilite la opción "Habilitar Master Class" en la configuración general.
+                        </div>
+                        {% endif %}
+
+                        <form method="POST" novalidate>
+                            {{ form.hidden_tag() }}
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Información Básica</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        {{ form.title.label(class="form-label") }} {{ form.title(class="form-control") }} {% if
+                                        form.title.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.title.errors %}
+                                            <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="mb-3">
+                                        {{ form.description_public.label(class="form-label") }} {{
+                                        form.description_public(class="form-control") }} {% if form.description_public.errors
+                                        %}
+                                        <div class="text-danger">
+                                            {% for error in form.description_public.errors %}
+                                            <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                        <small class="form-text text-muted"
+                                            >Esta descripción será visible para todos los usuarios.</small
+                                        >
+                                    </div>
+
+                                    <div class="mb-3">
+                                        {{ form.description_private.label(class="form-label") }} {{
+                                        form.description_private(class="form-control") }} {% if form.description_private.errors
+                                        %}
+                                        <div class="text-danger">
+                                            {% for error in form.description_private.errors %}
+                                            <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                        <small class="form-text text-muted"
+                                            >Esta descripción solo será visible para usuarios inscritos.</small
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h5>Programación</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                {{ form.date.label(class="form-label") }} {{ form.date(class="form-control") }}
+                                                {% if form.date.errors %}
+                                                <div class="text-danger">
+                                                    {% for error in form.date.errors %}
+                                                    <small>{{ error }}</small>
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                {{ form.start_time.label(class="form-label") }} {{
+                                                form.start_time(class="form-control") }} {% if form.start_time.errors %}
+                                                <div class="text-danger">
+                                                    {% for error in form.start_time.errors %}
+                                                    <small>{{ error }}</small>
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                {{ form.end_time.label(class="form-label") }} {{
+                                                form.end_time(class="form-control") }} {% if form.end_time.errors %}
+                                                <div class="text-danger">
+                                                    {% for error in form.end_time.errors %}
+                                                    <small>{{ error }}</small>
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h5>Plataforma</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form.platform_name.label(class="form-label") }} {{
+                                                form.platform_name(class="form-control") }} {% if form.platform_name.errors %}
+                                                <div class="text-danger">
+                                                    {% for error in form.platform_name.errors %}
+                                                    <small>{{ error }}</small>
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form.platform_url.label(class="form-label") }} {{
+                                                form.platform_url(class="form-control") }} {% if form.platform_url.errors %}
+                                                <div class="text-danger">
+                                                    {% for error in form.platform_url.errors %}
+                                                    <small>{{ error }}</small>
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h5>Certificación</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3 form-check">
+                                        {{ form.is_certificate(class="form-check-input") }} {{
+                                        form.is_certificate.label(class="form-check-label") }}
+                                    </div>
+
+                                    <div id="certificate-fields" style="display: none">
+                                        <div class="mb-3">
+                                            {{ form.diploma_template_id.label(class="form-label") }} {{
+                                            form.diploma_template_id(class="form-control") }} {% if
+                                            form.diploma_template_id.errors %}
+                                            <div class="text-danger">
+                                                {% for error in form.diploma_template_id.errors %}
+                                                <small>{{ error }}</small>
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h5>Grabación (Opcional)</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        {{ form.video_recording_url.label(class="form-label") }} {{
+                                        form.video_recording_url(class="form-control") }} {% if form.video_recording_url.errors
+                                        %}
+                                        <div class="text-danger">
+                                            {% for error in form.video_recording_url.errors %}
+                                            <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                        <small class="form-text text-muted"
+                                            >URL de la grabación para acceso posterior al evento.</small
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                <a href="{{ url_for('masterclass.instructor_list') }}" class="btn btn-secondary me-md-2"
+                                    >Cancelar</a
+                                >
+                                <button type="submit" class="btn btn-primary">Crear Clase Magistral</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            // Toggle certificate fields
+            document.getElementById("is_certificate").addEventListener("change", function () {
+                const certificateFields = document.getElementById("certificate-fields")
+                certificateFields.style.display = this.checked ? "block" : "none"
+            })
+
+            // Initialize visibility on page load
+            document.addEventListener("DOMContentLoaded", function () {
+                const isCertificateCheckbox = document.getElementById("is_certificate")
+
+                if (isCertificateCheckbox.checked) {
+                    document.getElementById("certificate-fields").style.display = "block"
+                }
+            })
+        </script>
+    </body>
+</html>

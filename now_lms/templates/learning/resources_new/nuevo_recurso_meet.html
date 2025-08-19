@@ -1,0 +1,70 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }} {{ mde.css }}
+        <title>Nuevo Recurso - Meet</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Agregar un nuevo Meet.</h4>
+                <form method="post">
+                    {{ form.csrf_token }}
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="nombre" class="form-label">Titulo del Meet</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder="Titulo del Meet") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="url" class="form-label">URL del Meet</label>
+                            {{ form.url(class="form-control", id="url", placeholder="URL del Meet") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="fecha" class="form-label">Fecha del Meet</label>
+                            {{ form.fecha(class="form-control", id="fecha", placeholder="Fecha del Meet") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="hora_inicio" class="form-label">Hora de Inicio del Meet</label>
+                            {{ form.hora_inicio(class="form-control", id="hora_inicio", placeholder="Hora del Meet") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="hora_fin" class="form-label">Hora de Finalización del Meet</label>
+                            {{ form.hora_fin(class="form-control", id="hora_fin", placeholder="Hora del Meet") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="plataforma" class="form-label">Plataforma</label>
+                            {{ form.notes(class="form-control", id="plataforma", placeholder="Plataforma") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="requerido" class="form-label">Tipo de Recurso</label>
+                            {{ form.requerido(class="form-control", id="requerido") }}
+                        </div>
+
+                        <div>
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
+                        </div>
+
+                        <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Agregar Recurso</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>

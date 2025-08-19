@@ -1,0 +1,115 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Gestionar Cursos - {{ programa.nombre }}</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container-fluid px-0 py-3">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <h1 class="h2 border-bottom pb-2 mb-4">Gestionar Cursos - {{ programa.nombre }}</h1>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="card-title mb-0">Cursos en el Programa</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if cursos_programa %}
+                                            <div class="list-group">
+                                                {% for curso_programa in cursos_programa %} {% set curso =
+                                                curso_programa.curso_obj %}
+                                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <h6 class="mb-1">
+                                                            {{ curso.nombre if curso else curso_programa.curso }}
+                                                        </h6>
+                                                        <small class="text-muted"
+                                                            >{{ curso.codigo if curso else curso_programa.curso }}</small
+                                                        >
+                                                    </div>
+                                                    <form method="post" class="d-inline">
+                                                        <input type="hidden" name="action" value="remove_course" />
+                                                        <input
+                                                            type="hidden"
+                                                            name="curso_codigo"
+                                                            value="{{ curso_programa.curso }}"
+                                                        />
+                                                        <button
+                                                            type="submit"
+                                                            class="btn btn-sm btn-outline-danger"
+                                                            onclick="return confirm('¿Está seguro de remover este curso del programa?')"
+                                                        >
+                                                            Remover
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                            {% else %}
+                                            <p class="text-muted">No hay cursos en este programa.</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="card-title mb-0">Agregar Curso</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <form method="post">
+                                                <input type="hidden" name="action" value="add_course" />
+                                                <div class="mb-3">
+                                                    <label for="curso_codigo" class="form-label">Seleccionar Curso</label>
+                                                    <select class="form-select" id="curso_codigo" name="curso_codigo" required>
+                                                        <option value="">Seleccione un curso...</option>
+                                                        {% for curso in todos_cursos %}
+                                                        <option value="{{ curso.codigo }}">
+                                                            {{ curso.nombre }} ({{ curso.codigo }})
+                                                        </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Agregar Curso</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-start">
+                                        <a
+                                            href="{{ url_for('program.pagina_programa', codigo=programa.codigo) }}"
+                                            class="btn btn-secondary me-2"
+                                        >
+                                            Volver al Programa
+                                        </a>
+                                        <a href="{{ url_for('program.programas') }}" class="btn btn-outline-secondary">
+                                            Lista de Programas
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

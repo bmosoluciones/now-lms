@@ -1,0 +1,208 @@
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Mi Calendario - {{ config.sitio_nombre }}</title>
+        {{ current_theme.local_style() }}
+
+        <style>
+            .calendar-table {
+                table-layout: fixed;
+            }
+            .calendar-day {
+                height: 120px;
+                vertical-align: top;
+                position: relative;
+                border: 1px solid #dee2e6;
+            }
+            .calendar-day-number {
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+            .calendar-event {
+                font-size: 0.75rem;
+                padding: 2px 4px;
+                margin-bottom: 2px;
+                border-radius: 3px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .event-meet {
+                background-color: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
+            .event-evaluation {
+                background-color: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+            }
+            .calendar-today {
+                background-color: #e3f2fd;
+            }
+            .calendar-other-month {
+                color: #6c757d;
+                background-color: #f8f9fa;
+            }
+            .calendar-nav {
+                background-color: #f8f9fa;
+                border-radius: 0.375rem;
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+        </style>
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container">
+                <div class="d-flex justify-content-between border-bottom mb-4">
+                    <h2>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
+                                        >Inicio</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('user_profile.pagina_estudiante') }}"
+                                        >Mi Perfil</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Calendario</li>
+                            </ol>
+                        </nav>
+                    </h2>
+
+                    <div class="btn-group" role="group">
+                        <a href="{{ url_for('calendar.export_ics') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-download"></i> Exportar .ics
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Calendar Navigation -->
+                <div class="calendar-nav">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <a
+                                href="{{ url_for('calendar.calendar_view', year=prev_year, month=prev_month) }}"
+                                class="btn btn-outline-secondary"
+                            >
+                                <i class="fas fa-chevron-left"></i> Anterior
+                            </a>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h3 class="mb-0">{{ month_name }} {{ year }}</h3>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a
+                                href="{{ url_for('calendar.calendar_view', year=next_year, month=next_month) }}"
+                                class="btn btn-outline-secondary"
+                            >
+                                Siguiente <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legend -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="d-flex gap-3">
+                            <div class="d-flex align-items-center">
+                                <div class="calendar-event event-meet me-2" style="width: 20px; height: 15px"></div>
+                                <small>Sesiones en vivo</small>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="calendar-event event-evaluation me-2" style="width: 20px; height: 15px"></div>
+                                <small>Fechas límite de evaluaciones</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar -->
+                <div class="table-responsive">
+                    <table class="table table-bordered calendar-table">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-center">Lunes</th>
+                                <th class="text-center">Martes</th>
+                                <th class="text-center">Miércoles</th>
+                                <th class="text-center">Jueves</th>
+                                <th class="text-center">Viernes</th>
+                                <th class="text-center">Sábado</th>
+                                <th class="text-center">Domingo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for week in month_days %}
+                            <tr>
+                                {% for day in week %}
+                                <td class="calendar-day {% if day == 0 %}calendar-other-month{% endif %}">
+                                    {% if day > 0 %}
+                                    <div class="calendar-day-number">{{ day }}</div>
+                                    {% if day in events_by_day %} {% for event in events_by_day[day] %}
+                                    <div class="calendar-event event-{{ event.resource_type }}">
+                                        <a
+                                            href="{{ url_for('calendar.event_detail', event_id=event.id) }}"
+                                            class="text-decoration-none text-reset"
+                                            title="{{ event.title }} - {{ event.start_time.strftime('%H:%M') }}"
+                                        >
+                                            {% if event.resource_type == 'meet' %}
+                                            <i class="fas fa-video"></i>
+                                            {% else %}
+                                            <i class="fas fa-clipboard-check"></i>
+                                            {% endif %} {{ event.title[:15] }}{% if event.title|length > 15 %}...{% endif %}
+                                        </a>
+                                    </div>
+                                    {% endfor %} {% endif %} {% endif %}
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Quick Navigation -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-primary">
+                            <i class="fas fa-calendar-day"></i> Ir a Hoy
+                        </a>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <a href="{{ url_for('calendar.upcoming_events') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-list"></i> Próximos Eventos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            // Add current date highlighting
+            document.addEventListener("DOMContentLoaded", function () {
+                const today = new Date()
+                const currentDay = today.getDate()
+                const currentMonth = today.getMonth() + 1
+                const currentYear = today.getFullYear()
+
+                // This would be improved with proper date handling in the template
+            })
+        </script>
+    </body>
+</html>

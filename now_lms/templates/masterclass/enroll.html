@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es" class="h-100">
+    {% set current_theme = current_theme() %} {% set config = config() %}
+
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>{{ title }} - {{ config.titulo }}</title>
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="{{ url_for('masterclass.list_public') }}" class="text-decoration-none"
+                                        >Clases Magistrales</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        href="{{ url_for('masterclass.detail_public', slug=master_class.slug) }}"
+                                        class="text-decoration-none"
+                                        >{{ master_class.title }}</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Inscripción</li>
+                            </ol>
+                        </nav>
+
+                        <h1>{{ title }}</h1>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>{{ master_class.title }}</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Información del Evento</h6>
+                                        <ul class="list-unstyled">
+                                            <li>
+                                                <i class="fas fa-calendar text-primary"></i> <strong>Fecha:</strong> {{
+                                                master_class.date.strftime('%d/%m/%Y') }}
+                                            </li>
+                                            <li>
+                                                <i class="fas fa-clock text-primary"></i> <strong>Horario:</strong> {{
+                                                master_class.start_time.strftime('%H:%M') }} - {{
+                                                master_class.end_time.strftime('%H:%M') }}
+                                            </li>
+                                            <li>
+                                                <i class="fas fa-desktop text-primary"></i> <strong>Plataforma:</strong> {{
+                                                master_class.platform_name }}
+                                            </li>
+                                            <li>
+                                                <i class="fas fa-user text-primary"></i> <strong>Instructor:</strong> {{
+                                                master_class.instructor.nombre }} {{ master_class.instructor.apellido or '' }}
+                                            </li>
+                                            {% if master_class.is_certificate %}
+                                            <li>
+                                                <i class="fas fa-certificate text-primary"></i>
+                                                <strong>Certificación:</strong> Disponible
+                                            </li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Costo</h6>
+                                        {% if master_class.is_paid %} {% set effective_price =
+                                        master_class.get_effective_price() %} {% if effective_price < master_class.price %}
+                                        <div class="alert alert-success">
+                                            <h5><span class="badge bg-danger">¡Oferta por Tiempo Limitado!</span></h5>
+                                            <p class="mb-1">
+                                                <span class="text-decoration-line-through text-muted fs-6"
+                                                    >${{ "%.2f"|format(master_class.price) }}</span
+                                                >
+                                                <strong class="text-success fs-4"
+                                                    >${{ "%.2f"|format(effective_price) }}</strong
+                                                >
+                                            </p>
+                                            <small class="text-muted"
+                                                >Oferta válida hasta {{ master_class.discount_deadline.strftime('%d/%m/%Y
+                                                %H:%M') }}</small
+                                            >
+                                        </div>
+                                        {% else %}
+                                        <h4 class="text-primary">${{ "%.2f"|format(master_class.price) }}</h4>
+                                        {% endif %} {% else %}
+                                        <h4 class="text-success">Gratis</h4>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <h6>Descripción</h6>
+                                    <p>{{ master_class.description_public }}</p>
+                                </div>
+
+                                {% if master_class.is_paid %}
+                                <div class="alert alert-info">
+                                    <h6><i class="fas fa-info-circle"></i> Información de Pago</h6>
+                                    <p>
+                                        Esta clase magistral requiere pago. Serás redirigido al proceso de pago después de
+                                        confirmar tu inscripción.
+                                    </p>
+                                </div>
+                                {% endif %}
+
+                                <div class="alert alert-warning">
+                                    <h6><i class="fas fa-exclamation-triangle"></i> Términos de Inscripción</h6>
+                                    <ul class="mb-0">
+                                        <li>Al inscribirte confirmas que puedes asistir en la fecha y hora programada</li>
+                                        <li>Recibirás el enlace de acceso una vez confirmada tu inscripción</li>
+                                        <li>Se recomienda unirse 5 minutos antes del inicio</li>
+                                        {% if master_class.is_paid %}
+                                        <li>Los pagos son procesados de forma segura</li>
+                                        <li>Una vez confirmado el pago, no se permiten reembolsos</li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+
+                                <form method="POST" novalidate>
+                                    {{ form.hidden_tag() }}
+
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <a
+                                            href="{{ url_for('masterclass.detail_public', slug=master_class.slug) }}"
+                                            class="btn btn-secondary me-md-2"
+                                            >Cancelar</a
+                                        >
+                                        {% if master_class.is_paid %}
+                                        <button type="submit" class="btn btn-success btn-lg">
+                                            <i class="fas fa-credit-card"></i> Proceder al Pago
+                                        </button>
+                                        {% else %}
+                                        <button type="submit" class="btn btn-primary btn-lg">
+                                            <i class="fas fa-check"></i> Confirmar Inscripción
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

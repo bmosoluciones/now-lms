@@ -1,0 +1,118 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Plantillas Disponibles.</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-0 py-3" id="curse_list">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>Lista de Certificados Disponibles.</h4>
+
+                    <p>
+                        <span class="badge bg-success">
+                            <a href="{{ url_for('certificate.certificate_new') }}" class="link-light">Nueva Plantilla</a>
+                        </span>
+                        <span class="badge bg-success">
+                            <a href="{{ url_for('certificate.certificacion_generar') }}" class="link-light"
+                                >Nuevo Certificado</a
+                            >
+                        </span>
+                    </p>
+                </div>
+
+                {% if consulta %}
+                <div class="container" id="curse_table">
+                    <table class="table table-sm table-borderless">
+                        <caption>
+                            Lista de certificados disponibles en el sistema.
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Certificado</th>
+                                <th scope="col">Habilitado</th>
+                                <th scope="col">Publico</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        {% for item in consulta.items -%}
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a href="" class="link-dark"> {{ item.titulo }} </a>
+                                </td>
+                                <td>{{ item.habilitado }}</td>
+                                <td>{{ item.publico }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
+                                        {% if item.habilitado %}
+                                        <a
+                                            href="{{ url_for('certificate.certificate_remove', ulid=item.id) }}"
+                                            type="button"
+                                            class="btn btn-danger"
+                                            ><ion-icon name="alert-circle-sharp"></ion-icon> Deshabilitar</a
+                                        >
+                                        {% else %}
+                                        <a
+                                            href="{{ url_for('certificate.certificate_add', ulid=item.id) }}"
+                                            type="button"
+                                            class="btn btn-info"
+                                            ><ion-icon name="add-circle-sharp"></ion-icon> Habilitar</a
+                                        >
+                                        {% endif %} {% if item.publico %}
+                                        <a
+                                            href="{{ url_for('certificate.certificate_unpublish', ulid=item.id) }}"
+                                            type="button"
+                                            class="btn btn-warning"
+                                            ><ion-icon name="trash-bin-sharp"></ion-icon> Remover</a
+                                        >
+                                        {% else %}
+                                        <a
+                                            href="{{ url_for('certificate.certificate_publish', ulid=item.id) }}"
+                                            type="button"
+                                            class="btn btn-info"
+                                            ><ion-icon name="checkbox-outline"></ion-icon> Publicar</a
+                                        >
+                                        {% endif %}
+                                        <a
+                                            href="{{ url_for('certificate.certificate_edit', ulid=item.id) }}"
+                                            type="button"
+                                            class="btn btn-success"
+                                            ><ion-icon name="create-sharp"></ion-icon> Editar</a
+                                        >
+                                        <a
+                                            href="{{ url_for('certificate.certificate_inspect', ulid=item.id) }}"
+                                            target="_blank"
+                                            type="button"
+                                            class="btn btn-primary"
+                                            ><ion-icon name="eye-sharp"></ion-icon> Visualizar</a
+                                        >
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% else %}
+                <p>Usted no ha creado ninguna etiqueta todavia.</p>
+                {% endif %}
+
+                <div class="container" id="user_pagination">
+                    {{ current_theme.rendizar_paginacion(consulta=consulta, vista="program.programas") }}
+                </div>
+            </div>
+        </main>
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    </body>
+</html>

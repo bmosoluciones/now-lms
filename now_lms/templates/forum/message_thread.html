@@ -1,0 +1,201 @@
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Mensaje del Foro - {{ curso.nombre | title }}</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
+                                        >Inicio</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('course.tomar_curso', course_code=curso.codigo) }}"
+                                        >{{ curso.nombre }}</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('forum.ver_foro', course_code=curso.codigo) }}"
+                                        >Foro</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Mensaje</li>
+                            </ol>
+                        </nav>
+                    </h4>
+
+                    <div class="btn-group" role="group">
+                        {% if puede_responder %}
+                        <a
+                            href="{{ url_for('forum.responder_mensaje', course_code=curso.codigo, message_id=mensaje.id) }}"
+                            class="btn btn-primary"
+                        >
+                            <i class="fas fa-reply"></i> Responder
+                        </a>
+                        {% endif %} {% if puede_cerrar %} {% if mensaje.estado == "abierto" %}
+                        <form
+                            method="POST"
+                            action="{{ url_for('forum.cerrar_mensaje', course_code=curso.codigo, message_id=mensaje.id) }}"
+                            class="d-inline"
+                        >
+                            <button
+                                type="submit"
+                                class="btn btn-outline-warning"
+                                onclick="return confirm('¿Cerrar este hilo?')"
+                            >
+                                <i class="fas fa-lock"></i> Cerrar Hilo
+                            </button>
+                        </form>
+                        {% else %} {% if curso.estado != "finalizado" %}
+                        <form
+                            method="POST"
+                            action="{{ url_for('forum.abrir_mensaje', course_code=curso.codigo, message_id=mensaje.id) }}"
+                            class="d-inline"
+                        >
+                            <button type="submit" class="btn btn-outline-success">
+                                <i class="fas fa-unlock"></i> Abrir Hilo
+                            </button>
+                        </form>
+                        {% endif %} {% endif %} {% endif %}
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <!-- Mensaje principal -->
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-0">{{ mensaje.usuario.nombre }} {{ mensaje.usuario.apellido }}</h5>
+                                    <small class="text-muted"
+                                        >{{ mensaje.fecha_creacion.strftime('%d/%m/%Y a las %H:%M') }}</small
+                                    >
+                                </div>
+                                <div>
+                                    {% if mensaje.estado == "abierto" %}
+                                    <span class="badge bg-success">Abierto</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Cerrado</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="message-content">{{ mensaje.contenido_html | safe }}</div>
+                                {% if mensaje.fecha_modificacion %}
+                                <small class="text-muted"
+                                    ><em>Modificado: {{ mensaje.fecha_modificacion.strftime('%d/%m/%Y %H:%M') }}</em></small
+                                >
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Respuestas -->
+                        {% if respuestas %}
+                        <h5 class="mb-3">Respuestas ({{ respuestas|length }})</h5>
+
+                        {% for respuesta in respuestas %}
+                        <div class="card mb-3 ms-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">{{ respuesta.usuario.nombre }} {{ respuesta.usuario.apellido }}</h6>
+                                    <small class="text-muted"
+                                        >{{ respuesta.fecha_creacion.strftime('%d/%m/%Y a las %H:%M') }}</small
+                                    >
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="message-content">{{ respuesta.contenido_html | safe }}</div>
+                                {% if respuesta.fecha_modificacion %}
+                                <small class="text-muted"
+                                    ><em>Modificado: {{ respuesta.fecha_modificacion.strftime('%d/%m/%Y %H:%M') }}</em></small
+                                >
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %} {% else %}
+                        <div class="alert alert-light">
+                            <p class="mb-0">Este mensaje aún no tiene respuestas.</p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Botón para responder -->
+                        {% if puede_responder %}
+                        <div class="text-center mt-4">
+                            <a
+                                href="{{ url_for('forum.responder_mensaje', course_code=curso.codigo, message_id=mensaje.id) }}"
+                                class="btn btn-primary"
+                            >
+                                <i class="fas fa-reply"></i> Responder a este mensaje
+                            </a>
+                        </div>
+                        {% elif not curso.foro_habilitado %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> El foro está deshabilitado para este curso.
+                        </div>
+                        {% elif curso.estado == "finalizado" %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> Este curso ha finalizado y no se permiten nuevas respuestas.
+                        </div>
+                        {% elif mensaje.estado == "cerrado" %}
+                        <div class="alert alert-secondary">
+                            <i class="fas fa-lock"></i> Este hilo está cerrado y no se permiten nuevas respuestas.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <style>
+            .message-content {
+                line-height: 1.6;
+            }
+            .message-content h1,
+            .message-content h2,
+            .message-content h3,
+            .message-content h4,
+            .message-content h5,
+            .message-content h6 {
+                margin-top: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            .message-content code {
+                background-color: #f8f9fa;
+                padding: 0.2rem 0.4rem;
+                border-radius: 0.25rem;
+            }
+            .message-content pre {
+                background-color: #f8f9fa;
+                padding: 1rem;
+                border-radius: 0.25rem;
+                overflow-x: auto;
+            }
+            .message-content blockquote {
+                border-left: 4px solid #dee2e6;
+                padding-left: 1rem;
+                margin-left: 0;
+                color: #6c757d;
+            }
+        </style>
+    </body>
+</html>

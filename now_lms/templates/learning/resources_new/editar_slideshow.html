@@ -1,0 +1,279 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Editar Presentación - {{ slideshow.title }}</title>
+        {{ current_theme.local_style() }}
+        
+        <!-- Editor styles -->
+        <style>
+            .slide-editor {
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                padding: 15px;
+                background-color: #f8f9fa;
+            }
+            .slide-editor.active {
+                border-color: #007bff;
+                background-color: #e7f3ff;
+            }
+            .slide-content-editor {
+                min-height: 150px;
+                font-family: 'Courier New', monospace;
+            }
+            .slide-preview {
+                border: 1px solid #ccc;
+                padding: 15px;
+                background-color: white;
+                border-radius: 4px;
+                margin-top: 10px;
+            }
+            .btn-remove-slide {
+                background-color: #dc3545;
+                border-color: #dc3545;
+            }
+            .btn-remove-slide:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+            }
+        </style>
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container-fluid px-4 py-5">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h4 class="pb-2 border-bottom">
+                            <i class="bi bi-file-slides me-2"></i>Editar Presentación: {{ slideshow.title }}
+                        </h4>
+                        
+                        <form method="post" id="slideshow-form">
+                            <!-- Información básica de la presentación -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Configuración de la Presentación</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="title" class="form-label">Título</label>
+                                            <input type="text" class="form-control" id="title" name="title" value="{{ slideshow.title }}" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="theme" class="form-label">Tema</label>
+                                            <select class="form-control" id="theme" name="theme">
+                                                <option value="black" {% if slideshow.theme == 'black' %}selected{% endif %}>Black</option>
+                                                <option value="white" {% if slideshow.theme == 'white' %}selected{% endif %}>White</option>
+                                                <option value="league" {% if slideshow.theme == 'league' %}selected{% endif %}>League</option>
+                                                <option value="beige" {% if slideshow.theme == 'beige' %}selected{% endif %}>Beige</option>
+                                                <option value="sky" {% if slideshow.theme == 'sky' %}selected{% endif %}>Sky</option>
+                                                <option value="night" {% if slideshow.theme == 'night' %}selected{% endif %}>Night</option>
+                                                <option value="serif" {% if slideshow.theme == 'serif' %}selected{% endif %}>Serif</option>
+                                                <option value="simple" {% if slideshow.theme == 'simple' %}selected{% endif %}>Simple</option>
+                                                <option value="solarized" {% if slideshow.theme == 'solarized' %}selected{% endif %}>Solarized</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Editor de diapositivas -->
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Diapositivas</h5>
+                                    <button type="button" class="btn btn-success btn-sm" onclick="addSlide()">
+                                        <i class="bi bi-plus-circle me-1"></i>Agregar Diapositiva
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div id="slides-container">
+                                        {% for slide in slides %}
+                                        <div class="slide-editor" data-slide-index="{{ loop.index0 }}">
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <h6 class="mb-0">Diapositiva {{ loop.index }}</h6>
+                                                <div>
+                                                    <button type="button" class="btn btn-sm btn-outline-primary me-1" onclick="previewSlide({{ loop.index0 }})">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-remove-slide" onclick="removeSlide({{ loop.index0 }})">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            <input type="hidden" name="slide_{{ loop.index0 }}_id" value="{{ slide.id }}">
+                                            <input type="hidden" name="slide_{{ loop.index0 }}_order" value="{{ slide.order }}">
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label">Título de la Diapositiva</label>
+                                                <input type="text" class="form-control" name="slide_{{ loop.index0 }}_title" value="{{ slide.title }}" required>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label">Contenido HTML</label>
+                                                <textarea class="form-control slide-content-editor" name="slide_{{ loop.index0 }}_content" rows="8" required>{{ slide.content }}</textarea>
+                                                <div class="form-text">
+                                                    Etiquetas permitidas: &lt;p&gt;, &lt;b&gt;, &lt;i&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;a&gt;, &lt;br&gt;, &lt;img&gt;, &lt;h1&gt;-&lt;h4&gt;
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="slide-preview" id="preview_{{ loop.index0 }}" style="display: none;">
+                                                <h6>Vista Previa:</h6>
+                                                <div class="preview-content"></div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    
+                                    <input type="hidden" name="slide_count" id="slide_count" value="{{ slides|length }}">
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-save me-2"></i>Guardar Presentación
+                                </button>
+                                <a href="{{ url_for('course.preview_slideshow', course_code=course_code, slideshow_id=slideshow.id) }}" class="btn btn-info btn-lg ms-2" target="_blank">
+                                    <i class="bi bi-eye me-2"></i>Vista Previa
+                                </a>
+                                <a href="{{ url_for('course.administrar_curso', course_code=course_code) }}" class="btn btn-secondary btn-lg ms-2">
+                                    <i class="bi bi-arrow-left me-2"></i>Volver al Curso
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="card-title mb-0">Ayuda</h6>
+                            </div>
+                            <div class="card-body">
+                                <h6>Etiquetas HTML Permitidas:</h6>
+                                <ul class="small">
+                                    <li><code>&lt;p&gt;</code> - Párrafos</li>
+                                    <li><code>&lt;h1&gt;</code> a <code>&lt;h4&gt;</code> - Encabezados</li>
+                                    <li><code>&lt;b&gt;</code>, <code>&lt;strong&gt;</code> - Texto en negrita</li>
+                                    <li><code>&lt;i&gt;</code>, <code>&lt;em&gt;</code> - Texto en cursiva</li>
+                                    <li><code>&lt;ul&gt;</code>, <code>&lt;li&gt;</code> - Listas</li>
+                                    <li><code>&lt;a href=""&gt;</code> - Enlaces</li>
+                                    <li><code>&lt;img src=""&gt;</code> - Imágenes</li>
+                                    <li><code>&lt;br&gt;</code> - Saltos de línea</li>
+                                </ul>
+                                
+                                <h6 class="mt-3">Navegación:</h6>
+                                <ul class="small">
+                                    <li>Flecha derecha/izquierda: Cambiar diapositivas</li>
+                                    <li>Espacio: Siguiente diapositiva</li>
+                                    <li>Esc: Vista general</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script>
+            let slideCount = {{ slides|length }};
+
+            function addSlide() {
+                const container = document.getElementById('slides-container');
+                const slideIndex = slideCount;
+                
+                const slideHtml = `
+                    <div class="slide-editor" data-slide-index="${slideIndex}">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="mb-0">Diapositiva ${slideIndex + 1}</h6>
+                            <div>
+                                <button type="button" class="btn btn-sm btn-outline-primary me-1" onclick="previewSlide(${slideIndex})">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-remove-slide" onclick="removeSlide(${slideIndex})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <input type="hidden" name="slide_${slideIndex}_id" value="">
+                        <input type="hidden" name="slide_${slideIndex}_order" value="${slideIndex + 1}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Título de la Diapositiva</label>
+                            <input type="text" class="form-control" name="slide_${slideIndex}_title" placeholder="Título de la diapositiva" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Contenido HTML</label>
+                            <textarea class="form-control slide-content-editor" name="slide_${slideIndex}_content" rows="8" placeholder="<h2>Título</h2><p>Tu contenido aquí...</p>" required></textarea>
+                            <div class="form-text">
+                                Etiquetas permitidas: &lt;p&gt;, &lt;b&gt;, &lt;i&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;a&gt;, &lt;br&gt;, &lt;img&gt;, &lt;h1&gt;-&lt;h4&gt;
+                            </div>
+                        </div>
+                        
+                        <div class="slide-preview" id="preview_${slideIndex}" style="display: none;">
+                            <h6>Vista Previa:</h6>
+                            <div class="preview-content"></div>
+                        </div>
+                    </div>
+                `;
+                
+                container.insertAdjacentHTML('beforeend', slideHtml);
+                slideCount++;
+                document.getElementById('slide_count').value = slideCount;
+                
+                // Scroll to the new slide
+                const newSlide = container.lastElementChild;
+                newSlide.scrollIntoView({ behavior: 'smooth' });
+                newSlide.classList.add('active');
+                setTimeout(() => newSlide.classList.remove('active'), 2000);
+            }
+
+            function removeSlide(index) {
+                if (confirm('¿Estás seguro de que quieres eliminar esta diapositiva?')) {
+                    const slide = document.querySelector(`[data-slide-index="${index}"]`);
+                    if (slide) {
+                        slide.remove();
+                        updateSlideNumbers();
+                    }
+                }
+            }
+
+            function previewSlide(index) {
+                const preview = document.getElementById(`preview_${index}`);
+                const content = document.querySelector(`[name="slide_${index}_content"]`).value;
+                
+                if (preview.style.display === 'none') {
+                    preview.querySelector('.preview-content').innerHTML = content;
+                    preview.style.display = 'block';
+                } else {
+                    preview.style.display = 'none';
+                }
+            }
+
+            function updateSlideNumbers() {
+                const slides = document.querySelectorAll('.slide-editor');
+                slideCount = slides.length;
+                document.getElementById('slide_count').value = slideCount;
+                
+                slides.forEach((slide, index) => {
+                    slide.setAttribute('data-slide-index', index);
+                    slide.querySelector('h6').textContent = `Diapositiva ${index + 1}`;
+                    slide.querySelector('[name$="_order"]').value = index + 1;
+                });
+            }
+
+            // Auto-save functionality (optional)
+            document.getElementById('slideshow-form').addEventListener('input', function() {
+                // Could implement auto-save here
+            });
+        </script>
+    </body>
+</html>

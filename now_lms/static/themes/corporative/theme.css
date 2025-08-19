@@ -1,0 +1,610 @@
+/* Corporative Theme Custom Variables - Professional ERP Design */
+:root {
+    --corporate-primary: #0f7ba3;
+    /* Professional Blue */
+    --corporate-secondary: #5bbadc;
+    /* Professional Light Blue */
+    --corporate-accent: #1c4e80;
+    /* Professional Dark Blue */
+    --corporate-light: #f8f9fa;
+    /* Professional White */
+    --corporate-dark: #2c3e50;
+    /* Corporate Dark Gray */
+    --corporate-blue: #0f7ba3;
+    --corporate-gray: #6c757d;
+    /* Professional Gray */
+    --corporate-success: #28a745;
+    /* Professional Green */
+    --corporate-warning: #ffc107;
+    /* Professional Orange */
+    --corporate-danger: #dc3545;
+    /* Professional Red */
+    --corporate-white: #ffffff;
+    --corporate-border: #dee2e6;
+    /* Subtle Border Gray */
+    --corporate-text: #495057;
+    /* Professional Text */
+    --corporate-shadow: rgba(15, 123, 163, 0.15);
+    /* Professional Blue Shadow */
+}
+
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+@media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+    }
+}
+
+/* Corporate Theme Base Styles - Professional ERP Design */
+body {
+    background: var(--corporate-white);
+    font-family: "Arial", "Helvetica", "Segoe UI", sans-serif;
+    /* Professional font stack */
+    color: var(--corporate-text);
+    line-height: 1.5;
+    font-size: 14px;
+    /* Standard professional font size */
+}
+
+/* Professional Corporate Navbar */
+.navbar-corporate {
+    background: linear-gradient(180deg, var(--corporate-primary) 0%, var(--corporate-accent) 100%) !important;
+    box-shadow:
+        0 2px 8px var(--corporate-shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border-bottom: 3px solid var(--corporate-secondary);
+    min-height: 56px;
+    /* Standard professional header height */
+    padding: 0;
+}
+
+/* Professional clean separation */
+.navbar-corporate::after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--corporate-secondary) 50%, transparent 100%);
+}
+
+.navbar-corporate .navbar-brand,
+.navbar-corporate .nav-link {
+    color: white !important;
+    font-weight: 500;
+    /* Professional standard weight */
+    transition: all 0.2s ease;
+    letter-spacing: 0.3px;
+    font-size: 14px;
+    padding: 0.8rem 1rem;
+    border-radius: 0;
+    /* Clean professional edges */
+    position: relative;
+}
+
+/* Professional active indicator */
+.navbar-corporate .nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 3px;
+    background: var(--corporate-secondary);
+    transition: width 0.3s ease;
+}
+
+.navbar-corporate .nav-link:hover::after {
+    width: 80%;
+}
+
+.navbar-corporate .nav-link:hover {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.08);
+    transform: none;
+    /* Professional clean design */
+}
+
+.navbar-corporate .navbar-toggler {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    /* Professional minimal radius */
+}
+
+.navbar-corporate .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Professional Corporate Buttons */
+.btn-corporate-primary {
+    background: var(--corporate-primary);
+    border: 1px solid var(--corporate-primary);
+    color: white;
+    font-weight: 500;
+    border-radius: 2px;
+    /* Professional minimal border radius */
+    padding: 0.6rem 1.2rem;
+    transition: all 0.2s ease;
+    letter-spacing: 0.3px;
+    font-size: 14px;
+    text-transform: none;
+    /* Professional clean text */
+}
+
+.btn-corporate-primary:hover {
+    background-color: var(--corporate-primary);
+    border-color: var(--corporate-primary);
+    color: var(--corporate-white);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 102, 204, 0.2);
+}
+
+.btn-corporate-secondary {
+    background-color: var(--corporate-gray);
+    border: 1px solid var(--corporate-gray);
+    color: var(--corporate-white);
+    font-weight: 500;
+    border-radius: 4px;
+    padding: 8px 16px;
+    transition: all 0.2s ease;
+    letter-spacing: 0.3px;
+}
+
+.btn-corporate-secondary:hover {
+    background-color: var(--corporate-accent);
+    border-color: var(--corporate-accent);
+    color: var(--corporate-white);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(108, 117, 125, 0.2);
+}
+
+/* Professional Card Styling */
+.card {
+    border: 1px solid var(--corporate-light);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(45, 55, 72, 0.08);
+    transition: box-shadow 0.2s ease;
+    background: var(--corporate-white);
+}
+
+.card:hover {
+    box-shadow: 0 4px 16px rgba(45, 55, 72, 0.12);
+}
+
+.card-header {
+    background-color: var(--corporate-secondary);
+    border-bottom: 1px solid var(--corporate-light);
+    border-radius: 8px 8px 0 0 !important;
+    font-weight: 600;
+    color: var(--corporate-dark);
+    padding: 1rem 1.25rem;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* Professional Icon Styling */
+.bi {
+    transition: all 0.2s ease;
+}
+
+.navbar-corporate .bi {
+    margin-right: 0.5rem;
+}
+
+/* Clean Dropdown Styling */
+.dropdown-menu {
+    border: 1px solid var(--corporate-light);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(45, 55, 72, 0.15);
+    background: var(--corporate-white);
+    padding: 0.5rem 0;
+}
+
+.dropdown-item {
+    border-radius: 4px;
+    margin: 2px 8px;
+    padding: 8px 12px;
+    transition: all 0.2s ease;
+    color: var(--corporate-dark);
+}
+
+.dropdown-item:hover {
+    background-color: var(--corporate-secondary);
+    color: var(--corporate-dark);
+}
+
+/* Professional Alert Styling */
+.alert {
+    border: 1px solid;
+    border-radius: 6px;
+    border-left: 4px solid;
+    background: var(--corporate-white);
+}
+
+.alert-primary {
+    border-left-color: var(--corporate-primary);
+    background-color: rgba(0, 51, 102, 0.05);
+    color: var(--corporate-primary);
+}
+
+.alert-success {
+    border-left-color: var(--corporate-success);
+    background-color: rgba(40, 167, 69, 0.05);
+    color: var(--corporate-success);
+}
+
+.alert-warning {
+    border-left-color: var(--corporate-warning);
+    background-color: rgba(255, 193, 7, 0.05);
+    color: #856404;
+}
+
+.alert-danger {
+    border-left-color: var(--corporate-danger);
+    background-color: rgba(220, 53, 69, 0.05);
+    color: var(--corporate-danger);
+}
+
+/* Professional Form Elements */
+.form-control {
+    border: 1px solid var(--corporate-light);
+    border-radius: 4px;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+    padding: 0.75rem;
+}
+
+.form-control:focus {
+    border-color: var(--corporate-blue);
+    box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.1);
+    outline: none;
+}
+
+.form-label {
+    color: var(--corporate-dark);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Professional Modal Styling */
+.modal-content {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(45, 55, 72, 0.2);
+    background: var(--corporate-white);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--corporate-light);
+    background-color: var(--corporate-secondary);
+    border-radius: 8px 8px 0 0;
+    padding: 1.25rem;
+}
+
+.modal-title {
+    color: var(--corporate-dark);
+    font-weight: 600;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--corporate-light);
+    background-color: var(--corporate-secondary);
+    border-radius: 0 0 8px 8px;
+    padding: 1rem 1.25rem;
+}
+
+/* Table Styling */
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background-color: var(--corporate-secondary);
+    border-bottom: 2px solid var(--corporate-light);
+    color: var(--corporate-dark);
+    font-weight: 600;
+    padding: 1rem 0.75rem;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(248, 249, 250, 0.7);
+}
+
+/* Navigation Breadcrumb */
+.breadcrumb {
+    background-color: var(--corporate-secondary);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+}
+
+.breadcrumb-item+.breadcrumb-item::before {
+    color: var(--corporate-gray);
+}
+
+/* Badge Styling */
+.badge {
+    border-radius: 4px;
+    font-weight: 500;
+    padding: 0.5em 0.75em;
+}
+
+/* Professional Pagination */
+.pagination {
+    margin-bottom: 0;
+}
+
+.page-link {
+    color: var(--corporate-primary);
+    border: 1px solid var(--corporate-light);
+    border-radius: 4px;
+    margin: 0 2px;
+}
+
+.page-link:hover {
+    color: var(--corporate-white);
+    background-color: var(--corporate-primary);
+    border-color: var(--corporate-primary);
+}
+
+.page-item.active .page-link {
+    background-color: var(--corporate-primary);
+    border-color: var(--corporate-primary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar-corporate {
+        padding: 0.5rem 0;
+    }
+
+    .btn-corporate-primary,
+    .btn-corporate-secondary {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+/* Professional Lists */
+.list-group-item {
+    border: 1px solid var(--corporate-light);
+    border-radius: 4px;
+    margin-bottom: 2px;
+    transition: background-color 0.2s ease;
+}
+
+.list-group-item:hover {
+    background-color: var(--corporate-secondary);
+}
+
+/* Clean Focus States */
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.15);
+}
+
+/* Professional Text Colors */
+.text-corporate-primary {
+    color: var(--corporate-primary) !important;
+}
+
+.text-corporate-secondary {
+    color: var(--corporate-gray) !important;
+}
+
+.bg-corporate-primary {
+    background-color: var(--corporate-primary) !important;
+}
+
+.bg-corporate-secondary {
+    background-color: var(--corporate-secondary) !important;
+}
+
+/* Hero Section with Animated Bars */
+.hero {
+    position: relative;
+    min-height: 40vh;
+    background: linear-gradient(135deg, var(--corporate-primary) 0%, var(--corporate-accent) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: -1px;
+}
+
+.hero p {
+    font-size: 1.5rem;
+    color: white;
+    margin: 0.7rem 0 0 0;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+}
+
+.bars {
+    position: absolute;
+    bottom: 0.7rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 10;
+}
+
+.bar {
+    width: 4px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+    animation: bars 1.5s ease-in-out infinite;
+}
+
+.bar1 {
+    height: 20px;
+    animation-delay: 0s;
+}
+
+.bar2 {
+    height: 30px;
+    animation-delay: 0.1s;
+}
+
+.bar3 {
+    height: 40px;
+    animation-delay: 0.2s;
+}
+
+.bar4 {
+    height: 30px;
+    animation-delay: 0.3s;
+}
+
+.bar5 {
+    height: 20px;
+    animation-delay: 0.4s;
+}
+
+@keyframes bars {
+
+    0%,
+    100% {
+        transform: scaleY(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scaleY(1.5);
+        opacity: 1;
+    }
+}
+
+/* Hero Content Styling */
+.hero-content {
+    text-align: center;
+    z-index: 5;
+    position: relative;
+    padding-bottom: 3rem;
+}
+
+/* Hero Background Pattern */
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    z-index: 1;
+}
+
+/* CTA Buttons in Hero */
+.hero .btn {
+    margin: 1.8rem 0.5rem 0 0.5rem;
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    border-radius: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.hero .btn-light {
+    background: white;
+    color: var(--corporate-primary);
+    border-color: white;
+}
+
+.hero .btn-light:hover {
+    background: transparent;
+    color: white;
+    border-color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+}
+
+.hero .btn-outline-light {
+    background: transparent;
+    color: white;
+    border-color: white;
+}
+
+.hero .btn-outline-light:hover {
+    background: white;
+    color: var(--corporate-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive Design for Hero */
+@media (max-width: 768px) {
+    .hero {
+        min-height: 40vh;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+        line-height: 1.2;
+    }
+
+    .hero p {
+        font-size: 1.2rem;
+        margin: 0.8rem 0 0 0;
+    }
+
+    .bars {
+        bottom: 1rem;
+        gap: 0.3rem;
+    }
+
+    .bar {
+        width: 3px;
+    }
+
+    .bar1,
+    .bar5 {
+        height: 15px;
+    }
+
+    .bar2,
+    .bar4 {
+        height: 22px;
+    }
+
+    .bar3 {
+        height: 30px;
+    }
+
+    .hero .btn {
+        padding: 0.6rem 1.5rem;
+        margin: 1rem 0.3rem 0 0.3rem;
+        font-size: 0.9rem;
+    }
+}

@@ -1,0 +1,250 @@
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Resultados de Evaluación</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('instructor_profile.pagina_instructor') }}"
+                                        >Panel Instructor</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('instructor_profile.evaluaciones_lista') }}"
+                                        >Evaluaciones</a
+                                    >
+                                </li>
+                                {% if curso %}
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('instructor_profile.course_evaluations', course_code=curso.codigo) }}"
+                                        >{{ curso.nombre }}</a
+                                    >
+                                </li>
+                                {% endif %}
+                                <li class="breadcrumb-item active" aria-current="page">Resultados - {{ evaluacion.title }}</li>
+                            </ol>
+                        </nav>
+                    </h4>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Resultados: {{ evaluacion.title }}</h3>
+                                {% if curso %}
+                                <p class="mb-0 text-muted">
+                                    {{ curso.nombre }} - {{ seccion.nombre if seccion else 'Sección eliminada' }}
+                                </p>
+                                {% endif %}
+                            </div>
+
+                            <div class="card-body">
+                                <!-- Statistics Overview -->
+                                <div class="row mb-4">
+                                    <div class="col-md-3">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <h4 class="text-primary">{{ statistics.total_attempts }}</h4>
+                                                <p class="mb-0">Total Intentos</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <h4 class="text-info">{{ statistics.completed_attempts }}</h4>
+                                                <p class="mb-0">Intentos Completados</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <h4 class="text-success">{{ statistics.passed_attempts }}</h4>
+                                                <p class="mb-0">Intentos Aprobados</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card bg-light">
+                                            <div class="card-body text-center">
+                                                <h4
+                                                    class="{% if statistics.pass_rate >= evaluacion.passing_score %}text-success{% else %}text-warning{% endif %}"
+                                                >
+                                                    {{ "%.1f"|format(statistics.pass_rate) }}%
+                                                </h4>
+                                                <p class="mb-0">Tasa de Aprobación</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Additional Statistics -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5>Información de la Evaluación</h5>
+                                                <p>
+                                                    <strong>Tipo:</strong>
+                                                    {% if evaluacion.is_exam %}
+                                                    <span class="badge bg-danger">Examen</span>
+                                                    {% else %}
+                                                    <span class="badge bg-primary">Quiz</span>
+                                                    {% endif %}
+                                                </p>
+                                                <p><strong>Puntaje Mínimo:</strong> {{ evaluacion.passing_score }}%</p>
+                                                <p>
+                                                    <strong>Máximo Intentos:</strong>
+                                                    {% if evaluacion.max_attempts %} {{ evaluacion.max_attempts }} {% else %}
+                                                    <span class="text-muted">Ilimitado</span>
+                                                    {% endif %}
+                                                </p>
+                                                <p><strong>Total Preguntas:</strong> {{ evaluacion.questions|length }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5>Estadísticas de Rendimiento</h5>
+                                                <p>
+                                                    <strong>Puntaje Promedio:</strong> {{
+                                                    "%.1f"|format(statistics.average_score) }}%
+                                                </p>
+                                                <p>
+                                                    <strong>Estado:</strong>
+                                                    {% if evaluacion.available_until %}
+                                                    <span class="badge bg-warning">Deshabilitada</span>
+                                                    {% else %}
+                                                    <span class="badge bg-success">Habilitada</span>
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Attempts List -->
+                                {% if attempts %}
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Intentos Recientes</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Usuario</th>
+                                                        <th>Puntaje</th>
+                                                        <th>Estado</th>
+                                                        <th>Fecha Envío</th>
+                                                        <th>Retrasado</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for attempt in attempts[:10] %}
+                                                    <tr>
+                                                        <td>{{ attempt.user_id }}</td>
+                                                        <td>
+                                                            {% if attempt.score is not none %} {{ "%.1f"|format(attempt.score)
+                                                            }}% {% else %}
+                                                            <span class="text-muted">Sin calificar</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if attempt.passed %}
+                                                            <span class="badge bg-success">Aprobado</span>
+                                                            {% elif attempt.passed == false %}
+                                                            <span class="badge bg-danger">No Aprobado</span>
+                                                            {% else %}
+                                                            <span class="badge bg-secondary">Sin Calificar</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if attempt.submitted_at %} {{
+                                                            attempt.submitted_at.strftime('%d/%m/%Y %H:%M') }} {% else %}
+                                                            <span class="text-muted">No enviado</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            {% if attempt.was_late %}
+                                                            <span class="badge bg-warning">Sí</span>
+                                                            {% else %}
+                                                            <span class="badge bg-success">No</span>
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {% if attempts|length > 10 %}
+                                        <p class="text-muted">
+                                            Mostrando los 10 intentos más recientes de {{ attempts|length }} total.
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle"></i>
+                                    No hay intentos completados para esta evaluación aún.
+                                </div>
+                                {% endif %}
+
+                                <!-- Action Buttons -->
+                                <div class="mt-4">
+                                    <a
+                                        href="{{ url_for('instructor_profile.edit_evaluation', evaluation_id=evaluacion.id) }}"
+                                        class="btn btn-primary"
+                                    >
+                                        <i class="bi bi-pencil"></i> Editar Evaluación
+                                    </a>
+                                    {% if curso %}
+                                    <a
+                                        href="{{ url_for('instructor_profile.course_evaluations', course_code=curso.codigo) }}"
+                                        class="btn btn-secondary"
+                                    >
+                                        <i class="bi bi-arrow-left"></i> Volver a Evaluaciones del Curso
+                                    </a>
+                                    {% endif %}
+                                    <a
+                                        href="{{ url_for('instructor_profile.evaluaciones_lista') }}"
+                                        class="btn btn-outline-secondary"
+                                    >
+                                        <i class="bi bi-list"></i> Todas las Evaluaciones
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

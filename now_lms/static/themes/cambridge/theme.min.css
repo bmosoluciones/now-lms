@@ -1,0 +1,375 @@
+    /* Cambridge Academic Theme Custom Variables */
+    :root {
+        --cambridge-primary: #4a7b6d;
+        /* Verde Pátina */
+        --cambridge-secondary: #2e2b28;
+        /* Gris Carbón Cambridge */
+        --cambridge-accent: #b08b5c;
+        /* Cobre Antiguo */
+        --cambridge-light: #f3f1e7;
+        /* Marfil Piedra */
+        --cambridge-background: #f3f1e7;
+        /* Marfil Piedra */
+        --cambridge-surface: #ffffff;
+        /* White for cards */
+        --cambridge-border: #a8a39b;
+        /* Gris Cálido */
+        --cambridge-text: #2e2b28;
+        /* Gris Carbón Cambridge */
+        --cambridge-text-secondary: #a8a39b;
+        /* Gris Cálido */
+        --cambridge-sage: #b6c7bf;
+        /* Verde Salvia Claro */
+        --cambridge-blue: #5e7585;
+        /* Azul Encapsulado */
+        --cambridge-success: #4a7b6d;
+        --cambridge-warning: #b08b5c;
+        --cambridge-danger: #a8a39b;
+        --cambridge-info: #5e7585;
+    }
+
+    /* Import Cambria and scientific publication fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&display=swap');
+
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+        }
+    }
+
+    /* Cambridge Scientific Laboratory Theme Styles */
+    body {
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><rect width="40" height="40" fill="%23f3f1e7"/><path d="M0,20 L40,20 M20,0 L20,40" stroke="%23a8a39b" stroke-width="0.5" opacity="0.2"/></svg>');
+        font-family: "Cambria", "Cormorant Garamond", "Georgia", serif;
+        color: var(--cambridge-text);
+        line-height: 1.6;
+    }
+
+    /* Typography - Academic publication style */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: "Cambria", "Cormorant Garamond", "EB Garamond", Georgia, serif;
+        color: var(--cambridge-text);
+        font-weight: 600;
+        line-height: 1.3;
+        margin-bottom: 1rem;
+    }
+
+    /* Scientific laboratory elements */
+    .cambridge-hero {
+        position: relative;
+        overflow: hidden;
+        min-height: 40vh;
+    }
+
+    .cambridge-formulas {
+        animation: float 20s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .cambridge-lab-sample {
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .cambridge-lab-sample:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(74, 123, 109, 0.15);
+    }
+
+    .cambridge-tube-label {
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        font-weight: bold;
+    }
+
+    /* Grid paper effect enhancement */
+    .cambridge-lab-sample::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="none"/><path d="M0,10 L20,10 M10,0 L10,20" stroke="%23a8a39b" stroke-width="0.3" opacity="0.1"/></svg>');
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .cambridge-lab-sample>* {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Responsive improvements for scientific theme */
+    @media (max-width: 768px) {
+        .cambridge-formulas {
+            display: none;
+        }
+
+        .cambridge-tube-label {
+            position: static;
+            margin-bottom: 1rem;
+            clip-path: none;
+            border-radius: 4px;
+        }
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    h3 {
+        font-size: 1.75rem;
+    }
+
+    /* Custom Navbar Styling - No Icons */
+    .navbar-cambridge {
+        background: linear-gradient(90deg, var(--cambridge-primary) 0%, #3e6b5e 100%) !important;
+        box-shadow: 0 4px 8px rgba(74, 123, 109, 0.3);
+        border-bottom: 3px solid var(--cambridge-accent);
+        padding: 0.75rem 0;
+    }
+
+    .navbar-cambridge .navbar-brand,
+    .navbar-cambridge .nav-link {
+        color: white !important;
+        font-weight: 600;
+        font-family: "Cormorant Garamond", serif;
+        transition: all 0.3s ease;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        text-decoration: none;
+    }
+
+    .navbar-cambridge .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .navbar-cambridge .nav-link:hover {
+        color: var(--cambridge-sage) !important;
+        background-color: rgba(255, 255, 255, 0.15);
+        border-radius: 6px;
+        transform: translateY(-1px);
+    }
+
+    .navbar-cambridge .navbar-toggler {
+        border-color: rgba(255, 255, 255, 0.3);
+        padding: 0.5rem;
+    }
+
+    .navbar-cambridge .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    /* Remove all icons from navbar */
+    .navbar-cambridge .navbar-nav .nav-link i,
+    .navbar-cambridge .navbar-nav .nav-link .bi,
+    .navbar-cambridge .navbar-brand i,
+    .navbar-cambridge .navbar-brand .bi {
+        display: none;
+    }
+
+    /* Custom Button Styles */
+    .btn-cambridge-primary {
+        background: linear-gradient(45deg, var(--cambridge-primary), var(--cambridge-accent));
+        border: 2px solid var(--cambridge-primary);
+        color: white;
+        border-radius: 8px;
+        padding: 0.7rem 1.5rem;
+        font-weight: 600;
+        font-family: "Cormorant Garamond", serif;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(74, 123, 109, 0.3);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-cambridge-primary:hover {
+        background: linear-gradient(45deg, var(--cambridge-accent), var(--cambridge-primary));
+        border-color: var(--cambridge-accent);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(74, 123, 109, 0.4);
+    }
+
+    .btn-cambridge-secondary {
+        background: linear-gradient(45deg, var(--cambridge-text), var(--cambridge-border));
+        border: 2px solid var(--cambridge-text);
+        color: white;
+        border-radius: 8px;
+        padding: 0.7rem 1.5rem;
+        font-weight: 600;
+        font-family: "Open Sans", sans-serif;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(46, 43, 40, 0.3);
+    }
+
+    .btn-cambridge-secondary:hover {
+        background: linear-gradient(45deg, var(--cambridge-border), var(--cambridge-text));
+        border-color: var(--cambridge-border);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(46, 43, 40, 0.4);
+    }
+
+    /* Card Enhancements */
+    .card {
+        border: 2px solid var(--cambridge-border);
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(74, 123, 109, 0.1);
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, var(--cambridge-surface) 0%, rgba(243, 241, 231, 0.7) 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--cambridge-primary), var(--cambridge-accent));
+    }
+
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(74, 123, 109, 0.2);
+        border-color: var(--cambridge-primary);
+    }
+
+    .card-header {
+        background: linear-gradient(45deg, var(--cambridge-sage), rgba(182, 199, 191, 0.8));
+        border-bottom: 2px solid var(--cambridge-primary);
+        border-radius: 10px 10px 0 0 !important;
+        font-weight: 700;
+        color: var(--cambridge-text);
+        font-family: "Cormorant Garamond", serif;
+    }
+
+    /* Link Colors */
+    a {
+        color: var(--cambridge-blue);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    a:hover {
+        color: var(--cambridge-primary);
+        text-decoration: underline;
+    }
+
+    /* Form Enhancements */
+    .form-control {
+        border: 2px solid var(--cambridge-border);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        background: var(--cambridge-surface);
+        font-family: "Open Sans", sans-serif;
+    }
+
+    .form-control:focus {
+        border-color: var(--cambridge-primary);
+        box-shadow: 0 0 0 0.3rem rgba(74, 123, 109, 0.25);
+        background: var(--cambridge-light);
+    }
+
+    /* Table Enhancements */
+    .table th {
+        background: linear-gradient(45deg, var(--cambridge-primary), var(--cambridge-accent));
+        color: white;
+        border: none;
+        font-weight: 700;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        font-family: "Cormorant Garamond", serif;
+    }
+
+    .table {
+        border: 2px solid var(--cambridge-border);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    /* Alert Enhancements */
+    .alert {
+        border-radius: 10px;
+        border: 2px solid;
+        font-weight: 600;
+        font-family: "Open Sans", sans-serif;
+    }
+
+    .alert-primary {
+        background: linear-gradient(135deg, rgba(74, 123, 109, 0.1), rgba(176, 139, 92, 0.1));
+        color: var(--cambridge-primary);
+        border-color: var(--cambridge-primary);
+    }
+
+    /* Cambridge Heritage Elements */
+    .cambridge-heritage {
+        background: linear-gradient(45deg, rgba(74, 123, 109, 0.1), rgba(182, 199, 191, 0.2));
+        border: 2px solid var(--cambridge-primary);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        font-family: "Cormorant Garamond", serif;
+    }
+
+    /* Manuscript Elements */
+    .manuscript-style {
+        border-left: 4px solid var(--cambridge-accent);
+        background: var(--cambridge-sage);
+        padding: 1rem 1.5rem;
+        margin: 1rem 0;
+        font-style: italic;
+        font-family: "Cormorant Garamond", serif;
+        color: var(--cambridge-text);
+    }
+
+    /* Responsive Typography */
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2rem;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+        }
+
+        .btn-cambridge-primary,
+        .btn-cambridge-secondary {
+            padding: 0.6rem 1.2rem;
+        }
+    }

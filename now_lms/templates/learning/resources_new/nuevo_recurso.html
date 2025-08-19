@@ -1,0 +1,199 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Crear un nuevo recurso</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h3 class="pb-2 border-bottom">Seleccione un elemento a añadir al curso.</h3>
+
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+                    <div class="col d-flex align-items-start">
+                        <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                            <use xlink:href="#cpu-fill" />
+                        </svg>
+                        <div>
+                            <h5 class="fw-bold mb-0"><i class="bi bi-youtube" aria-hidden="true"></i> Vídeo en YouTube</h5>
+                            <p>Una lección en video alojada en YouTube.</p>
+                            <p>
+                                <span class="badge bg-success">
+                                    <a
+                                        href="{{ url_for('course.nuevo_recurso_youtube_video', course_code=id_curso, seccion=id_seccion) }}"
+                                        class="link-light"
+                                        >Agregar al curso.</a
+                                    >
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-start">
+                        <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                            <use xlink:href="#cpu-fill" />
+                        </svg>
+                        <div>
+                            <h5 class="fw-bold mb-0"><i class="bi bi-file-pdf-fill" aria-hidden="true"></i> Archivo PDF</h5>
+                            <p>Comparta un archivo en PDF con sus estudiantes.</p>
+                            <p>
+                                <span class="badge bg-success">
+                                    <a
+                                        href="{{ url_for('course.nuevo_recurso_pdf', course_code=id_curso, seccion=id_seccion) }}"
+                                        class="link-light"
+                                        >Agregar al curso.</a
+                                    >
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-start">
+                        <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                            <use xlink:href="#cpu-fill" />
+                        </svg>
+                        <div>
+                            <h5 class="fw-bold mb-0"><i class="bi bi bi-mic-fill" aria-hidden="true"></i> Audio</h5>
+                            <p>Comparta un archivo de audio con sus estudiantes.</p>
+                            <p>
+                                <span class="badge bg-success">
+                                    <a
+                                        href="{{ url_for('course.nuevo_recurso_audio', course_code=id_curso, seccion=id_seccion) }}"
+                                        class="link-light"
+                                        >Agregar al curso.</a
+                                    >
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-start">
+                        <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                            <use xlink:href="#cpu-fill" />
+                        </svg>
+                        <div>
+                            <h5 class="fw-bold mb-0"><i class="bi bi-image" aria-hidden="true"></i> Imagen</h5>
+                            <p>Comparta una imagen con sus estudiantes.</p>
+                            <p>
+                                <span class="badge bg-success">
+                                    <a
+                                        href="{{ url_for('course.nuevo_recurso_img', course_code=id_curso, seccion=id_seccion) }}"
+                                        class="link-light"
+                                        >Agregar al curso.</a
+                                    >
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+                    <div class="col d-flex align-items-start">
+                        <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                            <use xlink:href="#cpu-fill" />
+                        </svg>
+                        <div>
+                            <h5 class="fw-bold mb-0">
+                                <i class="bi bi-blockquote-left" aria-hidden="true"></i> Documento de Texto
+                            </h5>
+                            <p>Redacte un documento para compatirlo con sus alumnos.</p>
+                            <p>
+                                <span class="badge bg-success">
+                                    <a
+                                        href="{{ url_for('course.nuevo_recurso_text', course_code=id_curso, seccion=id_seccion) }}"
+                                        class="link-light"
+                                        >Agregar al curso.</a
+                                    >
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col d-flex align-items-start">
+                        <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                            <use xlink:href="#cpu-fill" />
+                        </svg>
+                        <div>
+                            <h5 class="fw-bold mb-0"><i class="bi bi-file-slides" aria-hidden="true"></i> Diapositivas</h5>
+                            <p>Cree una presentación de diapositivas interactiva para sus estudiantes.</p>
+                            <p>
+                                <span class="badge bg-success">
+                                    <a
+                                        href="{{ url_for('course.nuevo_recurso_slideshow', course_code=id_curso, seccion=id_seccion) }}"
+                                        class="link-light"
+                                        >Agregar al curso.</a
+                                    >
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col d-flex align-items-start">
+                        <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                            <use xlink:href="#cpu-fill" />
+                        </svg>
+                        <div>
+                            <h5 class="fw-bold mb-0"><i class="bi bi-link" aria-hidden="true"></i> Recurso Externo</h5>
+                            <p>Un link a un recurso externo.</p>
+                            <p>
+                                <span class="badge bg-success">
+                                    <a
+                                        href="{{ url_for('course.nuevo_recurso_link', course_code=id_curso, seccion=id_seccion) }}"
+                                        class="link-light"
+                                        >Agregar al curso.</a
+                                    >
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col d-flex align-items-start">
+                        <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                            <use xlink:href="#cpu-fill" />
+                        </svg>
+                        <div>
+                            <h5 class="fw-bold mb-0"><i class="bi bi-code-slash" aria-hidden="true"></i> Codigo HTLM</h5>
+                            <p>Agregue un elemento personalizado a su curso.</p>
+                            <p>
+                                <span class="badge bg-success">
+                                    <a
+                                        href="{{ url_for('course.nuevo_recurso_html', course_code=id_curso, seccion=id_seccion) }}"
+                                        class="link-light"
+                                        >Agregar al curso.</a
+                                    >
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+                    <div class="col d-flex align-items-start">
+                        <svg class="bi text-muted flex-shrink-0 me-3" width="1.75em" height="1.75em">
+                            <use xlink:href="#cpu-fill" />
+                        </svg>
+                        <div>
+                            <h5 class="fw-bold mb-0"><i class="bi bi-people-fill" aria-hidden="true"></i> Reunión Virtual</h5>
+                            <p>Programe una reunión virtual con sus estudiantes.</p>
+                            <p>
+                                <span class="badge bg-success">
+                                    <a
+                                        href="{{ url_for('course.nuevo_recurso_meet', course_code=id_curso, seccion=id_seccion) }}"
+                                        class="link-light"
+                                        >Agregar al curso.</a
+                                    >
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

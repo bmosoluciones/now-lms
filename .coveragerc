@@ -1,0 +1,20 @@
+[run]
+source = now_lms
+relative_files = True
+
+[report]
+exclude_lines =
+    def __repr__
+    if self.debug:
+    if settings.DEBUG
+    raise AssertionError
+    if 0:
+    if __name__ == .__main__.:
+    if __name__ == "__main__":
+omit =
+    "now_lms/__main__.py",
+    "now_lms/version.py",
+    "now_lms/config/parse_config_file.py",
+    "now_lms/cache.py",
+    "now_lms/auth.py",
+    "now_lms/config/__init__.py"

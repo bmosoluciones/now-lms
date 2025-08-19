@@ -1,0 +1,137 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ programa.nombre }} - Progreso del Programa</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container-fluid px-0 py-3">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <h1 class="h2 border-bottom pb-2 mb-4">{{ programa.nombre }}</h1>
+
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <h5 class="card-title mb-0">Descripción del Programa</h5>
+                                        </div>
+                                        <div class="card-body">{{ markdown2html(programa.descripcion) | safe }}</div>
+                                    </div>
+
+                                    {% if cursos_programa %}
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="card-title mb-0">Cursos del Programa</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="list-group">
+                                                {% for curso in cursos_programa %}
+                                                <div class="list-group-item">
+                                                    <div class="d-flex w-100 justify-content-between">
+                                                        <h6 class="mb-1">
+                                                            <a
+                                                                href="{{ url_for('course.pagina_curso', codigo=curso.codigo) }}"
+                                                                class="text-decoration-none"
+                                                            >
+                                                                {{ curso.nombre }}
+                                                            </a>
+                                                        </h6>
+                                                        <small>{{ curso.duracion }} horas</small>
+                                                    </div>
+                                                    <p class="mb-1">{{ curso.descripcion_corta }}</p>
+                                                    <small>Nivel: {{ curso.nivel }}</small>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="card-title mb-0">Progreso</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if progreso and progreso.porcentaje is defined %}
+                                            <div class="progress mb-3" style="height: 20px">
+                                                <div
+                                                    class="progress-bar"
+                                                    role="progressbar"
+                                                    style="width: {{ progreso.porcentaje }}%"
+                                                    aria-valuenow="{{ progreso.porcentaje }}"
+                                                    aria-valuemin="0"
+                                                    aria-valuemax="100"
+                                                >
+                                                    {{ progreso.porcentaje }}%
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <div class="progress mb-3" style="height: 20px">
+                                                <div
+                                                    class="progress-bar"
+                                                    role="progressbar"
+                                                    style="width: 0%"
+                                                    aria-valuenow="0"
+                                                    aria-valuemin="0"
+                                                    aria-valuemax="100"
+                                                >
+                                                    0%
+                                                </div>
+                                            </div>
+                                            {% endif %}
+
+                                            <div class="text-center">
+                                                {% if progreso and progreso.porcentaje >= 100 %}
+                                                <span class="badge bg-success fs-6">Programa Completado</span>
+                                                {% else %}
+                                                <span class="badge bg-primary fs-6">En Progreso</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {% if programa.certificado %}
+                                    <div class="card mt-3">
+                                        <div class="card-header">
+                                            <h5 class="card-title mb-0">Certificación</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            {% if progreso and progreso.porcentaje >= 100 %}
+                                            <p class="text-success">
+                                                <i class="fas fa-check-circle"></i>
+                                                ¡Certificado disponible!
+                                            </p>
+                                            <a
+                                                href="{{ url_for('program.programa_certificado', codigo=programa.codigo) }}"
+                                                class="btn btn-success btn-sm"
+                                            >
+                                                Ver Certificado
+                                            </a>
+                                            {% else %}
+                                            <p class="text-muted">Completa todos los cursos para obtener tu certificado.</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

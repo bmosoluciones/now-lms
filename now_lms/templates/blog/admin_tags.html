@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="es" class="h-100">
+    {% set current_theme = current_theme() %}
+
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>Gestión de Etiquetas - Blog</title>
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h1>Gestión de Etiquetas</h1>
+
+                        {% if tags %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Slug</th>
+                                        <th>Publicaciones</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for tag in tags %}
+                                    <tr>
+                                        <td>{{ tag.name }}</td>
+                                        <td><code>{{ tag.slug }}</code></td>
+                                        <td>{{ tag.posts | length }}</td>
+                                        <td>
+                                            <a
+                                                class="badge text-bg-danger"
+                                                href="{{ url_for('blog.delete_tag', tag_id=tag.id) }}"
+                                            >
+                                                Eliminar
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        {% if pagination.pages > 1 %}
+                        <nav>
+                            <ul class="pagination">
+                                {% if pagination.has_prev %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('blog.admin_tags', page=pagination.prev_num) }}">
+                                        Anterior
+                                    </a>
+                                </li>
+                                {% endif %} {% for page_num in pagination.iter_pages() %} {% if page_num %} {% if page_num !=
+                                pagination.page %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('blog.admin_tags', page=page_num) }}">
+                                        {{ page_num }}
+                                    </a>
+                                </li>
+                                {% else %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_num }}</span>
+                                </li>
+                                {% endif %} {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                                {% endif %} {% endfor %} {% if pagination.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('blog.admin_tags', page=pagination.next_num) }}">
+                                        Siguiente
+                                    </a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %} {% else %}
+                        <div class="alert alert-info">No hay etiquetas creadas en este momento.</div>
+                        {% endif %}
+
+                        <div class="mt-4">
+                            <a href="{{ url_for('blog.admin_blog_index') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Volver al blog
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar for creating new tags -->
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Crear nueva etiqueta</h5>
+                            </div>
+                            <div class="card-body">
+                                <form method="POST" action="{{ url_for('blog.create_tag') }}">
+                                    {{ form.hidden_tag() }}
+
+                                    <div class="mb-3">
+                                        {{ form.name.label(class="form-label") }} {{ form.name(class="form-control") }} {% for
+                                        error in form.name.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> Crear etiqueta
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

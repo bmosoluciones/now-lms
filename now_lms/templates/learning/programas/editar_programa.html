@@ -1,0 +1,111 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Editar Programa</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                {% if not is_programs_enabled() %}
+                <div class="alert alert-warning" role="alert">
+                    <strong>⚠️ Aviso:</strong> Los programas están deshabilitados en la configuración principal del sitio. Los
+                    usuarios no verán este programa en el menú de navegación hasta que se habilite la opción "Habilitar
+                    Programas" en la configuración general.
+                </div>
+                {% endif %}
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4 class="pb-2 border-bottom">Editar Programa.</h4>
+
+                    <p>
+                        <span class="badge bg-success">
+                            <a href="{{ url_for('program.programa_cursos', codigo=programa.codigo) }}" class="link-light"
+                                >Lista de Cursos</a
+                            >
+                        </span>
+                    </p>
+                </div>
+
+                <form method="post" enctype="multipart/form-data">
+                    {{ form.csrf_token }}
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="nombre" class="form-label">Programa</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder="Categoria") }}
+                        </div>
+
+                        <div class="col-sm-3">
+                            <label for="codigo" class="form-label">Publico</label>
+                            {{ form.publico(checked=programa.publico) }}
+                            <label for="codigo" class="form-label">Promocionado</label>
+                            {{ form.promocionado(checked=programa.promocionado) }}
+                        </div>
+
+                        <div class="col-sm-3">
+                            <label for="estado" class="form-label">Estado</label>
+                            {{ form.estado() }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="descripcion" class="form-label">Descripcion</label>
+                            {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripción") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="precio" class="form-label">Precio</label>
+                            {{ form.precio(class="form-control", id="codigo") }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="categoria" class="form-label">Categoría</label>
+                            {{ form.categoria(class="form-control", id="categoria") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="etiquetas" class="form-label">Etiquetas</label>
+                            {{ form.etiquetas(class="form-control", id="etiquetas", multiple=True) }}
+                            <div class="form-text">
+                                Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples etiquetas.
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div>
+                        {% if programa.logo %}
+                        <img
+                            src="{{ url_for('static', filename='/files/public/images/'+ 'program' + programa.codigo + '/logo.jpg') }}"
+                            alt="Portada del programa"
+                        />
+                        <br />
+                        <a href="#">Eliminar Portada</a>
+                        {% else %}
+                        <label for="logo" class="form-label">Portada</label>
+                        <input type="file" name="logo" accept="image/jpeg" />
+                        {% endif %}
+                    </div>
+
+                    <br />
+
+                    <a href="url_for('program.programas')" class="w-10 btn btn-lg btn-danger btn-block" type="submit"
+                        >Cancelar</a
+                    >
+                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Actualizar Programa</button>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>

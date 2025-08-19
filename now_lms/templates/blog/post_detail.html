@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="es" class="h-100">
+    {% set current_theme = current_theme() %}
+
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>{{ post.title }} - {{ config().sitio_web }}</title>
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="{{ url_for('blog.blog_index') }}">Blog</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ post.title }}</li>
+                            </ol>
+                        </nav>
+
+                        <article>
+                            <h1>{{ post.title }}</h1>
+
+                            <div class="text-muted mb-3">
+                                Por {{ post.author.nombre }} {{ post.author.apellido or '' }} {% if post.published_at %} el {{
+                                post.published_at.strftime('%d/%m/%Y a las %H:%M') }} {% else %} el {{
+                                post.timestamp.strftime('%d/%m/%Y a las %H:%M') }} {% endif %}
+                            </div>
+
+                            {% if post.tags %}
+                            <div class="mb-3">
+                                {% for tag in post.tags %}
+                                <a
+                                    href="{{ url_for('blog.blog_index', tag=tag.slug) }}"
+                                    class="badge bg-secondary text-decoration-none me-1"
+                                >
+                                    {{ tag.name }}
+                                </a>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                            <div class="blog-content">{{ mkdown2html(post.content) | safe }}</div>
+
+                            {% if current_user.is_authenticated and (current_user.tipo == 'admin' or post.author_id ==
+                            current_user.usuario) %}
+                            <div class="mt-4 pt-3 border-top">
+                                <a
+                                    href="{{ url_for('blog.admin_edit_post', post_id=post.id) }}"
+                                    class="btn btn-outline-primary btn-sm"
+                                >
+                                    Editar entrada
+                                </a>
+                            </div>
+                            {% endif %}
+                        </article>
+
+                        <!-- Comments Section -->
+                        {% if post.allow_comments %}
+                        <section class="mt-5">
+                            <h3>Comentarios ({{ comments|length }})</h3>
+
+                            {% if current_user.is_authenticated and comment_form %}
+                            <div class="mb-4">
+                                <h4>Agregar comentario</h4>
+                                <form method="POST" action="{{ url_for('blog.add_comment', slug=post.slug) }}">
+                                    {{ comment_form.hidden_tag() }}
+                                    <div class="mb-3">
+                                        {{ comment_form.content.label(class="form-label") }} {{
+                                        comment_form.content(class="form-control", rows="4") }}
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Publicar comentario</button>
+                                </form>
+                            </div>
+                            {% elif not current_user.is_authenticated %}
+                            <div class="alert alert-info">
+                                <a href="{{ url_for('user.inicio_sesion') }}">Inicia sesión</a> para comentar.
+                            </div>
+                            {% endif %} {% if comments %}
+                            <div class="comments-list">
+                                {% for comment in comments %}
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <strong>{{ comment.user.nombre }} {{ comment.user.apellido or '' }}</strong>
+                                                <small class="text-muted">
+                                                    {{ comment.timestamp.strftime('%d/%m/%Y a las %H:%M') }}
+                                                </small>
+                                            </div>
+
+                                            {% if current_user.is_authenticated %}
+                                            <div class="dropdown">
+                                                <button class="btn btn-link btn-sm" type="button" data-bs-toggle="dropdown">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    {% if current_user.usuario != comment.user_id %}
+                                                    <li>
+                                                        <form
+                                                            method="POST"
+                                                            action="{{ url_for('blog.flag_comment', comment_id=comment.id) }}"
+                                                            class="d-inline"
+                                                        >
+                                                            <button type="submit" class="dropdown-item">
+                                                                <i class="fas fa-flag"></i> Marcar como inapropiado
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    {% endif %} {% if current_user.tipo == 'admin' or post.author_id ==
+                                                    current_user.usuario %}
+                                                    <li>
+                                                        <form
+                                                            method="POST"
+                                                            action="{{ url_for('blog.ban_comment', comment_id=comment.id) }}"
+                                                            class="d-inline"
+                                                        >
+                                                            <button type="submit" class="dropdown-item text-warning">
+                                                                <i class="fas fa-ban"></i> Banear
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form
+                                                            method="DELETE"
+                                                            action="{{ url_for('blog.delete_comment', comment_id=comment.id) }}"
+                                                            class="d-inline"
+                                                        >
+                                                            <button type="submit" class="dropdown-item text-danger">
+                                                                <i class="fas fa-trash"></i> Eliminar
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    {% endif %}
+                                                </ul>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="mt-2">{{ comment.content }}</div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </section>
+                        {% endif %}
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Información del autor</h5>
+                            </div>
+                            <div class="card-body">
+                                <h6>{{ post.author.nombre }} {{ post.author.apellido or '' }}</h6>
+                                {% if post.author.bio %}
+                                <p class="small">{{ post.author.bio }}</p>
+                                {% endif %}
+                                <a
+                                    href="{{ url_for('blog.blog_index', author=post.author_id) }}"
+                                    class="btn btn-outline-primary btn-sm"
+                                >
+                                    Ver todas las entradas de este autor
+                                </a>
+                            </div>
+                        </div>
+
+                        {% if post.tags %}
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h5>Etiquetas relacionadas</h5>
+                            </div>
+                            <div class="card-body">
+                                {% for tag in post.tags %}
+                                <a
+                                    href="{{ url_for('blog.blog_index', tag=tag.slug) }}"
+                                    class="badge bg-secondary text-decoration-none me-1 mb-1"
+                                >
+                                    {{ tag.name }}
+                                </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

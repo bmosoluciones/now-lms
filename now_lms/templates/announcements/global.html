@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es" class="h-100">
+    {% set current_theme = current_theme() %}
+
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>Anuncios - {{ config().nombre_del_sitio }}</title>
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-0 py-3">
+                <h4 class="pb-2 border-bottom"><i class="bi bi-megaphone"></i> Anuncios del Sistema</h4>
+
+                {% if consulta and consulta.items %}
+                <div class="row mt-3">
+                    {% for announcement in consulta.items %}
+                    <div class="col-12 mb-3">
+                        <div class="card {% if announcement.is_sticky %}border-primary{% endif %}">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    {% if announcement.is_sticky %}
+                                    <i class="bi bi-pin-angle-fill text-primary"></i>
+                                    {% endif %} {{ announcement.title }}
+                                </h5>
+                                <small class="text-muted">
+                                    <i class="bi bi-person"></i> {{ announcement.created_by.nombre }} {{
+                                    announcement.created_by.apellido }} <i class="bi bi-calendar ms-2"></i> {{
+                                    announcement.timestamp.strftime('%d/%m/%Y %H:%M') }} {% if announcement.expires_at %}
+                                    <i class="bi bi-clock ms-2"></i> Válido hasta: {{
+                                    announcement.expires_at.strftime('%d/%m/%Y') }} {% endif %}
+                                </small>
+                            </div>
+                            <div class="card-body">{{ mkdown2html(announcement.message) | safe }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Paginación -->
+                {% if consulta.pages > 1 %}
+                <nav aria-label="Navegación de anuncios">
+                    <ul class="pagination justify-content-center">
+                        {% if consulta.has_prev %}
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="{{ url_for('public_announcements.global_announcements', page=consulta.prev_num) }}"
+                                >Anterior</a
+                            >
+                        </li>
+                        {% endif %} {% for page_num in consulta.iter_pages() %} {% if page_num %} {% if page_num !=
+                        consulta.page %}
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="{{ url_for('public_announcements.global_announcements', page=page_num) }}"
+                                >{{ page_num }}</a
+                            >
+                        </li>
+                        {% else %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_num }}</span>
+                        </li>
+                        {% endif %} {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">…</span>
+                        </li>
+                        {% endif %} {% endfor %} {% if consulta.has_next %}
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="{{ url_for('public_announcements.global_announcements', page=consulta.next_num) }}"
+                                >Siguiente</a
+                            >
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %} {% else %}
+                <div class="text-center mt-5">
+                    <i class="bi bi-megaphone display-1 text-muted"></i>
+                    <h3 class="mt-3">No hay anuncios disponibles</h3>
+                    <p class="text-muted">No hay anuncios del sistema en este momento.</p>
+                </div>
+                {% endif %}
+            </div>
+        </main>
+    </body>
+</html>

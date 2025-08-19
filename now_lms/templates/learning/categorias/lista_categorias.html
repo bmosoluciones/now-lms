@@ -1,0 +1,78 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Lista de Categorias.</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-0 py-3" id="curse_list">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>Lista de Categorias Disponibles.</h4>
+
+                    <p>
+                        <span class="badge bg-success">
+                            <a href="{{ url_for('category.new_category') }}" class="link-light">Nueva Categoria</a>
+                        </span>
+                    </p>
+                </div>
+
+                {% if consulta %}
+                <div class="container" id="curse_table">
+                    <table class="table table-sm table-borderless">
+                        <caption>
+                            Lista de categorias disponibles en el sistema.
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Nombre</th>
+                                <th>Cursos</th>
+                                <th>Programas</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        {% for item in consulta.items -%}
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a href="" class="link-dark"> {{ item.nombre }} </a>
+                                </td>
+
+                                <td>{{ cursos_por_categoria(item.id) }}</td>
+                                <td>{{ programas_por_categoria(item.id) }}</td>
+                                <td>
+                                    <span class="badge bg-danger">
+                                        <a href="{{ url_for('category.delete_category', ulid=item.id) }}" class="link-light"
+                                            >Eliminar Categoria</a
+                                        >
+                                    </span>
+                                    <span class="badge bg-info">
+                                        <a href="{{ url_for('category.edit_category', ulid=item.id) }}" class="link-light"
+                                            >Editar Categoria</a
+                                        >
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% else %}
+                <p>Usted no ha creado ninguna etiqueta todavia.</p>
+                {% endif %}
+
+                <div class="container" id="user_paginatios">
+                    {{ current_theme.rendizar_paginacion(consulta=consulta, vista="cursos") }}
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="es" class="h-100">
+    {% set current_theme = current_theme() %} {% set config = config() %}
+
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>{{ title }} - {{ config.titulo }}</title>
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="{{ url_for('masterclass.list_public') }}" class="text-decoration-none"
+                                        >Clases Magistrales</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ master_class.title }}</li>
+                            </ol>
+                        </nav>
+
+                        {% if master_class.image_path %}
+                        <img
+                            src="{{ master_class.image_path }}"
+                            class="img-fluid rounded mb-4"
+                            alt="{{ master_class.title }}"
+                        />
+                        {% endif %}
+
+                        <h1>{{ master_class.title }}</h1>
+
+                        {% if master_class.is_ongoing() %}
+                        <div class="alert alert-warning">
+                            <h4><i class="fas fa-play-circle"></i> ¡Sesión en Progreso - Haz clic para unirte!</h4>
+                            {% if enrollment and enrollment.is_access_granted() %}
+                            <a href="{{ master_class.platform_url }}" class="btn btn-warning btn-lg" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> Unirse a {{ master_class.platform_name }}
+                            </a>
+                            {% else %}
+                            <p>Debes estar inscrito para acceder a la sesión en vivo.</p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h5>Información del Evento</h5>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <i class="fas fa-calendar text-primary"></i> <strong>Fecha:</strong> {{
+                                        master_class.date.strftime('%d/%m/%Y') }}
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-clock text-primary"></i> <strong>Horario:</strong> {{
+                                        master_class.start_time.strftime('%H:%M') }} - {{
+                                        master_class.end_time.strftime('%H:%M') }}
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-desktop text-primary"></i> <strong>Plataforma:</strong> {{
+                                        master_class.platform_name }}
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-user text-primary"></i> <strong>Instructor:</strong> {{
+                                        master_class.instructor.nombre }} {{ master_class.instructor.apellido or '' }}
+                                    </li>
+                                    {% if master_class.is_certificate %}
+                                    <li>
+                                        <i class="fas fa-certificate text-primary"></i>
+                                        <strong>Certificación:</strong> Disponible
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Estado</h5>
+                                {% if master_class.is_upcoming() %}
+                                <span class="badge bg-info fs-6">Próximamente</span>
+                                {% elif master_class.is_ongoing() %}
+                                <span class="badge bg-warning fs-6">En Progreso</span>
+                                {% elif master_class.is_finished() %}
+                                <span class="badge bg-secondary fs-6">Finalizado</span>
+                                {% endif %}
+
+                                <div class="mt-3">
+                                    <h6 class="text-success">Acceso Gratuito</h6>
+                                    <p class="text-muted">
+                                        Esta clase magistral es completamente gratuita. Solo necesitas registrarte para
+                                        participar.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>Descripción</h3>
+                        <div class="mb-4">{{ mkdown2html(master_class.description_public) }}</div>
+
+                        {% if enrollment and enrollment.is_access_granted() and master_class.description_private %}
+                        <div class="alert alert-info">
+                            <h4><i class="fas fa-lock-open"></i> Información para Participantes</h4>
+                            {{ mkdown2html(master_class.description_private) }}
+                        </div>
+                        {% endif %} {% if enrollment and enrollment.is_confirmed %}
+                        <div class="alert alert-success">
+                            <h4><i class="fas fa-check-circle"></i> Ya estás inscrito en esta clase magistral</h4>
+
+                            {% if not master_class.is_finished() %}
+                            <h5>Recomendaciones para la Participación:</h5>
+                            <ul>
+                                <li>Únete 5 minutos antes del inicio</li>
+                                <li>Asegúrate de tener una conexión estable a internet</li>
+                                <li>Prueba tu audio y video beforehand</li>
+                                <li>Busca un ambiente tranquilo</li>
+                            </ul>
+                            {% endif %} {% if master_class.is_upcoming() %}
+                            <a href="{{ master_class.platform_url }}" class="btn btn-primary btn-lg" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> Acceder a {{ master_class.platform_name }}
+                            </a>
+                            {% elif master_class.is_finished() and master_class.video_recording_url %}
+                            <a href="{{ master_class.video_recording_url }}" class="btn btn-secondary btn-lg" target="_blank">
+                                <i class="fas fa-play"></i> Ver Grabación
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% elif current_user.is_authenticated %}
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Inscríbete en esta Clase Magistral</h5>
+                                <p class="card-text">Obtén acceso completo a la sesión en vivo y material exclusivo.</p>
+                                <a
+                                    href="{{ url_for('masterclass.enroll', slug=master_class.slug) }}"
+                                    class="btn btn-primary btn-lg"
+                                >
+                                    Inscribirse Ahora
+                                </a>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning">
+                            <h5><i class="fas fa-sign-in-alt"></i> Inicia Sesión para Inscribirte</h5>
+                            <p>Necesitas una cuenta para inscribirte en esta clase magistral.</p>
+                            <a href="{{ url_for('home.acceso') }}" class="btn btn-warning">Iniciar Sesión</a>
+                        </div>
+                        {% endif %} {% if master_class.is_finished() and not enrollment and master_class.video_recording_url %}
+                        <div class="alert alert-info">
+                            <h5><i class="fas fa-video"></i> Grabación Disponible</h5>
+                            <p>Aunque el evento en vivo ya terminó, puedes ver la grabación.</p>
+                            <a href="{{ master_class.video_recording_url }}" class="btn btn-info" target="_blank">
+                                <i class="fas fa-play"></i> Ver Grabación
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Información del Instructor</h5>
+                            </div>
+                            <div class="card-body">
+                                <h6>{{ master_class.instructor.nombre }} {{ master_class.instructor.apellido or '' }}</h6>
+                                {% if master_class.instructor.bio %}
+                                <p class="text-muted">
+                                    {{ master_class.instructor.bio[:200] }}{% if master_class.instructor.bio|length > 200
+                                    %}...{% endif %}
+                                </p>
+                                {% endif %} {% if master_class.instructor.url %}
+                                <a
+                                    href="{{ master_class.instructor.url }}"
+                                    class="btn btn-outline-primary btn-sm"
+                                    target="_blank"
+                                >
+                                    <i class="fas fa-external-link-alt"></i> Sitio Web
+                                </a>
+                                {% endif %} {% if master_class.instructor.linkedin %}
+                                <a
+                                    href="https://linkedin.com/in/{{ master_class.instructor.linkedin }}"
+                                    class="btn btn-outline-primary btn-sm"
+                                    target="_blank"
+                                >
+                                    <i class="fab fa-linkedin"></i> LinkedIn
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {% if master_class.is_upcoming() %}
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h5>Tiempo Restante</h5>
+                            </div>
+                            <div class="card-body text-center">
+                                <div id="countdown" class="fs-4 text-primary"></div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        {% if master_class.is_upcoming() %}
+        <script>
+            // Countdown timer
+            const eventDate = new Date(
+                '{{ master_class.date.strftime("%Y-%m-%d") }}T{{ master_class.start_time.strftime("%H:%M:%S") }}'
+            ).getTime()
+
+            const countdown = setInterval(function () {
+                const now = new Date().getTime()
+                const distance = eventDate - now
+
+                if (distance < 0) {
+                    clearInterval(countdown)
+                    document.getElementById("countdown").innerHTML = "¡El evento ha comenzado!"
+                    location.reload() // Reload to show live banner
+                    return
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24))
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000)
+
+                document.getElementById("countdown").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s"
+            }, 1000)
+        </script>
+        {% endif %}
+    </body>
+</html>

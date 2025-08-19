@@ -1,0 +1,51 @@
+[project]
+name = "now_lms"
+description = "Create, deliver, and certify courses with ease."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+  {name = "BMO Soluciones", email = "soluciones.bmo@gmail.com"},
+]
+license = "Apache-2.0"
+classifiers = [
+  'Development Status :: 4 - Beta',
+  'Environment :: Web Environment',
+  'Intended Audience :: Education',
+  'Framework :: Flask',
+  'Natural Language :: Spanish',
+  'Operating System :: OS Independent',
+  'Programming Language :: Python :: 3 :: Only',
+  'Programming Language :: Python :: 3.11',
+  'Programming Language :: Python :: 3.12',
+  'Programming Language :: Python :: 3.13',
+  'Topic :: Education',
+]
+dynamic = ["version", "dependencies"]
+
+[project.scripts]
+lmsctl = "now_lms.cli:command"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+version = {attr = "now_lms.version.VERSION"}
+
+[project.optional-dependencies]
+mysql = [
+  "mysql-connector-python",
+]
+mariadb = [
+  "mariadb",
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.black]
+line-length = 127
+
+[tool.ruff]
+line-length = 127
+
+[tool.setuptools.packages]
+find = {namespaces = false}

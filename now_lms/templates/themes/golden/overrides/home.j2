@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="es">
+    {% set current_theme = current_theme() %}{% set site_config = config() %}
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>Golden Learning - {{ site_config.nombre }}</title>
+
+        <style>
+            /* Custom styles for golden theme */
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0px);
+                }
+                50% {
+                    transform: translateY(-10px);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+
+        <!-- Hero Section -->
+        <section
+            class="hero-section py-5"
+            style="
+                background: linear-gradient(135deg, #f0b744 0%, #f49640 100%);
+                min-height: 60vh;
+                display: flex;
+                align-items: center;
+            "
+        >
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8 text-white">
+                        <div class="hero-content">
+                            <div
+                                style="
+                                    font-family: &quot;Lato&quot;, sans-serif;
+                                    font-weight: 900;
+                                    font-size: 1.2rem;
+                                    color: #141411;
+                                    margin-bottom: 1rem;
+                                    letter-spacing: 2px;
+                                "
+                            >
+                                NOW-LMS
+                            </div>
+                            <h1 class="display-4 fw-bold mb-4" style="color: #141411">
+                                Aprende inglés
+                                <span style="color: #f49640; font-family: &quot;Caveat&quot;, cursive">con confianza</span>
+                            </h1>
+                            <p class="lead mb-4" style="font-size: 1.3rem; line-height: 1.6; color: #141411">
+                                Cursos dinámicos, prácticos y divertidos — Clases online en vivo, profesores nativos y material
+                                interactivo.
+                            </p>
+                            <div class="d-flex gap-3 flex-wrap">
+                                {% if not current_user.is_authenticated %}
+                                <a
+                                    href="{{ url_for('user.crear_cuenta') }}"
+                                    class="btn btn-dark btn-lg px-4 py-2"
+                                    style="background: #141411; border-color: #141411"
+                                >
+                                    <strong>Reserva tu clase gratis</strong>
+                                </a>
+                                <a
+                                    href="{{ url_for('course.lista_cursos', page=1) }}"
+                                    class="btn btn-outline-dark btn-lg px-4 py-2"
+                                    style="color: #141411; border-color: #141411"
+                                >
+                                    Ver cursos
+                                </a>
+                                {% else %}
+                                <a
+                                    href="{{ url_for('home.panel') }}"
+                                    class="btn btn-dark btn-lg px-4 py-2"
+                                    style="background: #141411; border-color: #141411"
+                                >
+                                    <strong>Mi Panel</strong>
+                                </a>
+                                <a
+                                    href="{{ url_for('course.lista_cursos', page=1) }}"
+                                    class="btn btn-outline-dark btn-lg px-4 py-2"
+                                    style="color: #141411; border-color: #141411"
+                                >
+                                    Ver cursos
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                        <div class="hero-visual">
+                            <div
+                                class="learning-icon"
+                                style="
+                                    background: rgba(20, 20, 17, 0.1);
+                                    border-radius: 50%;
+                                    width: 250px;
+                                    height: 250px;
+                                    margin: 0 auto;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    border: 4px solid rgba(20, 20, 17, 0.3);
+                                    animation: float 3s ease-in-out infinite;
+                                "
+                            >
+                                <div class="text-center" style="color: #141411">
+                                    <div style="font-size: 3rem; margin-bottom: 0.5rem">😊</div>
+                                    <div style="font-size: 1.2rem; font-weight: 600">Aprendizaje</div>
+                                    <div style="font-size: 0.9rem; opacity: 0.8">Inglés</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <main style="max-width: 1100px; margin: 0 auto; padding: 0 1rem">
+            <!-- Contenido de cursos y características -->
+            <section
+                style="
+                    background: #fff;
+                    padding: 32px;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+                    margin-bottom: 2rem;
+                    margin-top: 2rem;
+                "
+            >
+                <div class="row">
+                    <div class="col-12 text-center mb-5">
+                        <h2 class="display-6 fw-bold mb-4" style="color: #141411">Descubre Nuestros Cursos</h2>
+                        <p class="lead" style="color: #5a5a54">
+                            Explora una nueva forma de aprender con nuestra plataforma educativa moderna y eficiente.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Features Section -->
+                <div class="row g-4 mb-5">
+                    <div class="col-md-4">
+                        <div class="feature-card h-100">
+                            <div class="feature-icon mb-3">
+                                <span style="color: #141411; font-size: 1.5rem">🎯</span>
+                            </div>
+                            <h4 class="mb-3" style="color: #141411">Cursos Especializados</h4>
+                            <p style="line-height: 1.6; color: #5a5a54">
+                                Accede a una amplia variedad de cursos diseñados por expertos en cada área de conocimiento.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card h-100">
+                            <div class="feature-icon mb-3">
+                                <span style="color: #141411; font-size: 1.5rem">👥</span>
+                            </div>
+                            <h4 class="mb-3" style="color: #141411">Comunidad Activa</h4>
+                            <p style="line-height: 1.6; color: #5a5a54">
+                                Únete a una comunidad de estudiantes y profesionales que comparten tus intereses y objetivos.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card h-100">
+                            <div class="feature-icon mb-3">
+                                <span style="color: #141411; font-size: 1.5rem">🏆</span>
+                            </div>
+                            <h4 class="mb-3" style="color: #141411">Certificaciones</h4>
+                            <p style="line-height: 1.6; color: #5a5a54">
+                                Obtén certificaciones reconocidas que validen tu conocimiento y impulsen tu carrera
+                                profesional.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Featured Courses Section -->
+                {% if cursos and cursos.total > 0 %}
+                <div class="row">
+                    <div class="col-12 text-center mb-4">
+                        <h3 class="fw-bold mb-4" style="color: #141411">Cursos Destacados</h3>
+                    </div>
+                </div>
+                <div class="row row-cols-1 row-cols-sm-2 g-4 mb-4">
+                    {% for curso in cursos.items[:4] %}
+                    <div class="col">
+                        <div class="card-golden h-100">
+                            {% if curso.portada and course_logo(curso.codigo) %}
+                            <img
+                                src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/' + course_logo(curso.codigo)) }}"
+                                alt="{{ curso.nombre }}"
+                                class="card-img-top"
+                                style="height: 200px; object-fit: cover; border-radius: 12px 12px 0 0"
+                            />
+                            {% else %}
+                            <div
+                                class="card-img-top d-flex align-items-center justify-content-center"
+                                style="
+                                    height: 200px;
+                                    background: linear-gradient(135deg, #f0b744 0%, #f49640 100%);
+                                    border-radius: 12px 12px 0 0;
+                                    color: #141411;
+                                "
+                            >
+                                <div class="text-center">
+                                    <div style="font-size: 2rem; margin-bottom: 0.5rem">📚</div>
+                                    <div style="font-size: 1rem; font-weight: 600">{{ curso.nombre }}</div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="card-body d-flex flex-column" style="padding: 1.5rem">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title mb-0" style="color: #141411">{{ curso.nombre }}</h5>
+                                    <div class="d-flex align-items-center gap-2">
+                                        {% if not curso.precio %}
+                                        <span class="badge badge-golden">Gratis</span>
+                                        {% endif %} {% if curso.nivel == 0 %}
+                                        <span class="badge bg-secondary" title="Nivel Introductorio">Intro</span>
+                                        {% elif curso.nivel == 1 %}
+                                        <span class="badge bg-primary" title="Nivel Principiante">Principiante</span>
+                                        {% elif curso.nivel == 2 %}
+                                        <span class="badge bg-warning" title="Nivel Intermedio">Intermedio</span>
+                                        {% elif curso.nivel == 3 %}
+                                        <span class="badge bg-danger" title="Nivel Avanzado">Avanzado</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <p class="card-text flex-grow-1" style="color: #5a5a54">
+                                    {{ curso.descripcion_corta | truncate(100) }}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a
+                                        href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+                                        class="btn btn-golden-secondary btn-sm"
+                                        >Ver Curso</a
+                                    >
+                                    <div class="text-end">
+                                        {% if curso.duracion %}
+                                        <small class="text-muted d-block">{{ curso.duracion }} mins</small>
+                                        {% endif %} {% if curso.precio %}
+                                        <small class="fw-bold" style="color: #141411"
+                                            >{{ curso.precio | float }} {{ site_config.moneda }}</small
+                                        >
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-center">
+                    <a href="{{ url_for('course.lista_cursos', page=1) }}" class="btn btn-golden-primary btn-lg px-4 py-2">
+                        Ver Todos los Cursos
+                    </a>
+                </div>
+                {% endif %}
+            </section>
+
+            <!-- Call to Action Section -->
+            <section
+                style="
+                    background: #fff;
+                    padding: 2rem;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+                    margin-bottom: 2rem;
+                "
+            >
+                <div class="text-center">
+                    {% if not current_user.is_authenticated %}
+                    <h3 class="mb-4" style="color: #141411">¿Listo para Comenzar?</h3>
+                    <p class="lead mb-4" style="color: #5a5a54">
+                        Únete a nuestra plataforma educativa y comienza tu viaje de aprendizaje hoy mismo.
+                    </p>
+                    <a href="{{ url_for('user.crear_cuenta') }}" class="cta-primary"> Registrarse Gratis </a>
+                    {% else %}
+                    <h3 class="mb-4" style="color: #141411">Bienvenido de vuelta, {{ current_user.nombre }}</h3>
+                    <p class="lead mb-4" style="color: #5a5a54">
+                        Continúa tu viaje de aprendizaje y explora nuevas oportunidades educativas.
+                    </p>
+                    <a href="{{ url_for('home.panel') }}" class="cta-primary me-3"> Ir a Mi Panel </a>
+                    <a href="{{ url_for('course.lista_cursos', page=1) }}" class="cta-secondary"> Explorar Cursos </a>
+                    {% endif %}
+                </div>
+            </section>
+
+            <footer style="text-align: center; padding: 2rem 0; color: #5a5a54">© NOW-LMS — Tema Golden</footer>
+        </main>
+
+        {{ current_theme.jslibs() }}
+    </body>
+</html>

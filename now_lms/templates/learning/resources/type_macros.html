@@ -1,0 +1,198 @@
+{% set current_theme = current_theme() %} {% macro nav_footer(indice=None, curso=None, type=None, codigo=None, avance=None,
+recurso_completado=False) -%}
+<div class="d-flex justify-content-around">
+    {% if indice.has_prev and indice.prev_is_alternative %}
+    <a
+        href="{{ url_for('course.pagina_recurso_alternativo', curso_id=indice.prev_resource.curso_id, codigo=indice.prev_resource.codigo, order='desc') }}"
+        type="button"
+        class="btn btn-outline-info"
+        ><i class="bi bi-arrow-left-short" aria-hidden="true"></i> Recurso Anterior</a
+    >
+    {% elif indice.has_prev %}
+    <a
+        href="{{ url_for('course.pagina_recurso', curso_id=indice.prev_resource.curso_id , resource_type=indice.prev_resource.resource_type, codigo=indice.prev_resource.codigo) }}"
+        type="button"
+        class="btn btn-outline-info"
+        ><i class="bi bi-arrow-left-short" aria-hidden="true"></i> Recurso Anterior</a
+    >
+    {% else %}
+    <button type="button" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left-short" aria-hidden="true"></i> Recurso Anterior
+    </button>
+    {% endif %} {% if not recurso_completado %}
+    <a
+        href="{{ url_for('course.marcar_recurso_completado', curso_id=curso, resource_type=type, codigo=codigo) }}"
+        type="button"
+        button
+        type="button"
+        class="btn btn-outline-success"
+        >Marcar Completado</a
+    >
+    {% else %}
+    <button type="button" class="btn btn-outline-info">
+        <i class="bi bi-bookmark-check-fill" aria-hidden="True"></i> Recurso Completado
+    </button>
+    {% endif %} {% if indice.has_next and indice.next_is_alternative %}
+    <a
+        href="{{ url_for('course.pagina_recurso_alternativo', curso_id=indice.next_resource.curso_id, codigo=indice.next_resource.codigo, order='asc') }}"
+        type="button"
+        class="btn btn-outline-info"
+        >Recurso Siguiente <i class="bi bi-arrow-right-short" aria-hidden="true"></i
+    ></a>
+    {% elif indice.has_next %}
+    <a
+        href="{{ url_for('course.pagina_recurso', curso_id=indice.next_resource.curso_id , resource_type=indice.next_resource.resource_type, codigo=indice.next_resource.codigo) }}"
+        type="button"
+        class="btn btn-outline-info"
+        >Recurso Siguiente <i class="bi bi-arrow-right-short" aria-hidden="true"></i
+    ></a>
+    {% else %}
+    <button type="button" class="btn btn-outline-secondary">
+        Recurso Siguiente <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+    </button>
+    {% endif %}
+</div>
+{%- endmacro %} {% macro get_resource_icon(resource_type) -%} {% if resource_type == "youtube" %}<i
+    class="bi bi-play-circle-fill text-danger"
+    aria-hidden="true"
+></i>
+{% elif resource_type == "pdf" %}<i class="bi bi-file-earmark-pdf-fill text-danger" aria-hidden="true"></i> {% elif
+resource_type == "img" %}<i class="bi bi-image-fill text-primary" aria-hidden="true"></i> {% elif resource_type == "text" %}<i
+    class="bi bi-file-earmark-text-fill text-info"
+    aria-hidden="true"
+></i>
+{% elif resource_type == "mp3" %}<i class="bi bi-file-earmark-music-fill text-success" aria-hidden="true"></i> {% elif
+resource_type == "link" %}<i class="bi bi-link-45deg text-warning" aria-hidden="true"></i> {% elif resource_type == "html" %}<i
+    class="bi bi-code-slash text-secondary"
+    aria-hidden="true"
+></i>
+{% elif resource_type == "meet" %}<i class="bi bi-camera-video-fill text-primary" aria-hidden="true"></i> {% elif resource_type
+== "slides" %}<i class="bi bi-easel-fill text-info" aria-hidden="true"></i> {% else %}<i
+    class="bi bi-file-earmark-fill text-muted"
+    aria-hidden="true"
+></i>
+{% endif %} {%- endmacro %} {% macro get_requirement_badge(requerido) -%} {% if requerido == "required" %}<span
+    class="badge bg-danger rounded-pill ms-1"
+    title="{{ _('Requerido') }}"
+    >R</span
+>
+{% elif requerido == "optional" %}<span class="badge bg-warning rounded-pill ms-1" title="{{ _('Opcional') }}">O</span> {% elif
+requerido == "substitute" %}<span class="badge bg-info rounded-pill ms-1" title="{{ _('Alternativo') }}">A</span> {% endif %}
+{%- endmacro %} {% macro get_completion_icon(completed) -%} {% if completed %}<i
+    class="bi bi-check-circle-fill text-success ms-2"
+    title="{{ _('Completado') }}"
+    aria-hidden="true"
+></i>
+{% else %}<i class="bi bi-circle text-muted ms-2" title="{{ _('Pendiente') }}" aria-hidden="true"></i>
+{% endif %} {%- endmacro %} {% macro resource_nav(secciones=None, recursos=None, user_progress=None, evaluaciones=None,
+evaluation_attempts=None) %}
+<h2 class="h6 pt-4 pb-3 mb-4 border-bottom">{{ _('Contenido del Curso') }}</h2>
+<nav class="small" id="toc">
+    <ul class="list-unstyled">
+        {% for s in secciones %} {% set section_resources = recursos | selectattr("seccion", "equalto", s.id) | list %} {% set
+        required_resources = section_resources | selectattr("requerido", "equalto", "required") | list %} {% set
+        completed_required = [] %} {% for r in required_resources %} {% if user_progress and user_progress.get(r.id,
+        {}).get('completado', False) %} {% set _ = completed_required.append(r) %} {% endif %} {% endfor %}
+
+        <li>
+            <button
+                class="btn d-inline-flex align-items-center collapsed border-0 w-100 text-start"
+                data-bs-toggle="collapse"
+                aria-expanded="false"
+                data-bs-target="#contents-collapse-{{ s.id }}"
+                aria-controls="contents-collapse"
+            >
+                <div class="w-100">
+                    <div><strong>Sección {{ s.indice }}:</strong> {{ s.nombre }}</div>
+                    <div class="text-muted small">
+                        {{ completed_required | length }} de {{ required_resources | length }} recursos completados
+                    </div>
+                </div>
+            </button>
+            <ul class="list-unstyled ps-3 collapse" id="contents-collapse-{{ s.id }}">
+                {% for r in section_resources | sort(attribute="indice") %}
+                <li class="d-flex align-items-center py-1">
+                    <div class="me-2">{{ get_resource_icon(r.tipo) }}</div>
+                    <div class="flex-grow-1">
+                        <a
+                            class="link-dark text-decoration-none"
+                            href="{{ url_for('course.pagina_recurso', curso_id=r.curso, codigo=r.id, resource_type=r.tipo) }}"
+                        >
+                            {{ r.nombre | capitalize }}
+                        </a>
+                        {{ get_requirement_badge(r.requerido) }}
+                    </div>
+                    {% if user_progress and user_progress.get(r.id) %} {{ get_completion_icon(user_progress.get(r.id,
+                    {}).get('completado', False)) }} {% else %} {{ get_completion_icon(False) }} {% endif %}
+                </li>
+                {% endfor %}
+
+                <!-- Evaluaciones asociadas a la sección -->
+                {% if evaluaciones %} {% set section_evaluations = evaluaciones | selectattr("section_id", "equalto", s.id) |
+                list %} {% if section_evaluations %}
+                <li class="border-top pt-2 mt-2">
+                    <div class="small text-muted mb-1">
+                        <i class="bi bi-clipboard-check" aria-hidden="true"></i> Evaluaciones
+                    </div>
+                    {% for eval in section_evaluations %} {% set eval_attempts = evaluation_attempts.get(eval.id, []) if
+                    evaluation_attempts else [] %} {% set last_attempt = eval_attempts[-1] if eval_attempts else None %} {% set
+                    is_completed = last_attempt and last_attempt.submitted_at %}
+
+                    <div class="d-flex align-items-center py-1 ms-3">
+                        <div class="me-2">
+                            {% if eval.is_exam %}
+                            <i class="bi bi-mortarboard-fill text-warning" aria-hidden="true"></i>
+                            {% else %}
+                            <i class="bi bi-clipboard-check text-info" aria-hidden="true"></i>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1">
+                            <a
+                                class="link-dark text-decoration-none"
+                                href="{{ url_for('evaluation.take_evaluation', evaluation_id=eval.id) }}"
+                            >
+                                {{ eval.title }}
+                            </a>
+                            {% if eval.is_exam %}
+                            <span class="badge bg-warning rounded-pill ms-1" title="Examen">E</span>
+                            {% else %}
+                            <span class="badge bg-info rounded-pill ms-1" title="Prueba">P</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="ms-2">
+                            {% if is_completed %}
+                            <i class="bi bi-check-circle-fill text-success" title="Completado" aria-hidden="true"></i>
+                            {% if last_attempt.score is not none %}
+                            <span class="small text-success ms-1">{{ "%.1f"|format(last_attempt.score) }}%</span>
+                            {% endif %} {% else %}
+                            <i class="bi bi-circle text-muted" title="Pendiente" aria-hidden="true"></i>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Mostrar información de intentos -->
+                    {% if eval.max_attempts %}
+                    <div class="small text-muted ms-5">Intentos: {{ eval_attempts | length }} de {{ eval.max_attempts }}</div>
+                    {% elif eval_attempts %}
+                    <div class="small text-muted ms-5">Intentos: {{ eval_attempts | length }}</div>
+                    {% endif %}
+
+                    <!-- Mostrar estado si está completado -->
+                    {% if is_completed and last_attempt.passed is not none %}
+                    <div class="small ms-5">
+                        {% if last_attempt.passed %}
+                        <span class="text-success"> <i class="bi bi-check-circle" aria-hidden="true"></i> Aprobado </span>
+                        {% else %}
+                        <span class="text-danger"> <i class="bi bi-x-circle" aria-hidden="true"></i> No aprobado </span>
+                        {% endif %}
+                    </div>
+                    {% endif %} {% endfor %}
+                </li>
+                {% endif %} {% endif %}
+            </ul>
+        </li>
+        {% endfor %}
+    </ul>
+</nav>
+{%- endmacro %}

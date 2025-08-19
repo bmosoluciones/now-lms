@@ -1,0 +1,155 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Lista de usuarios</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            <div class="container px-0 py-3" id="lista-usarios">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>Usuarios registrados en el sistema.</h4>
+
+                    <p>
+                        <span class="badge bg-success">
+                            <a href="{{ url_for('user.crear_usuario') }}" class="link-light">Nuevo Usuario</a>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="container" id="user_table">
+                    <table class="table table-sm table-borderless">
+                        <caption>
+                            Lista de usuarios registrados en el sistema.
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Usuario</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Apellido</th>
+                                <th scope="col">Tipo</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Acciones</th>
+                                <th scope="col">Fecha registro</th>
+                                <th scope="col">Ultimo Inicio</th>
+                            </tr>
+                        </thead>
+                        {% for item in consulta.items -%}
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}" class="link-dark">
+                                        {{ item.usuario or item.correo_electronico }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}" class="link-dark">
+                                        {{ item.nombre }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}" class="link-dark">
+                                        {{ item.apellido }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {% if item.tipo == "student" %}
+                                    <span class="badge p-1 bg-success border border-light rounded-circle">
+                                        <span class="visually-hidden">Usuario</span>
+                                    </span>
+                                    {% elif item.tipo == "moderator" %}
+                                    <span class="badge p-1 bg-info border border-light rounded-circle">
+                                        <span class="visually-hidden">Moderador</span>
+                                    </span>
+                                    {% elif item.tipo == "instructor" %}
+                                    <span class="badge p-1 bg-primary border border-light rounded-circle">
+                                        <span class="visually-hidden">Moderador</span>
+                                    </span>
+                                    {% else %}
+                                    <span class="badge p-1 bg-warning border border-light rounded-circle">
+                                        <span class="visually-hidden">Instructor</span>
+                                    </span>
+                                    {% endif %}
+
+                                    <a href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}" class="link-dark">
+                                        {{ item.tipo | capitalize }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {% if item.activo %}
+                                    <span class="badge p-1 bg-primary border border-light rounded-circle">
+                                        <span class="visually-hidden">Usuario Activo</span>
+                                    </span>
+                                    {% else %}
+                                    <span class="badge p-1 bg-danger border border-light rounded-circle">
+                                        <span class="visually-hidden">Usuario Inactivo</span>
+                                    </span>
+                                    {% endif %}
+
+                                    <a href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}" class="link-dark">
+                                        {{ item.activo | replace("True", "Activo") | replace("False", "Inactivo") }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-secondary btn-sm" type="button">Acciones</button>
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                        >
+                                            <span class="visually-hidden">Toggle Dropdown</span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a
+                                                    class="dropdown-item"
+                                                    href="{{ url_for('admin_profile.activar_usuario', user_id=item.id) }}"
+                                                    ><i class="bi bi-person-fill-check" aria-hidden="true"></i> Activar
+                                                    Usuario</a
+                                                >
+                                            </li>
+                                            <li>
+                                                <a
+                                                    class="dropdown-item"
+                                                    href="{{ url_for('admin_profile.inactivar_usuario', user_id=item.id) }}"
+                                                    ><i class="bi bi-person-fill-slash" aria-hidden="true"></i> Inactivar
+                                                    Usuario</a
+                                                >
+                                            </li>
+                                            <li>
+                                                <hr class="dropdown-divider" />
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}" class="link-dark">
+                                        {{ item.creado }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}" class="link-dark">
+                                        {{ item.ultimo_acceso }}
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+
+                <div class="container" id="user_paginatios">
+                    {{ current_theme.rendizar_paginacion(consulta=consulta, vista="usuarios") }}
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,168 @@
+{% set current_theme = current_theme() %} {% set config = config() %} {% set permitir_docente =
+docente_asignado(id_curso=curso.codigo) %} {% set permitir_moderador = moderador_asignado(id_curso=curso.codigo) %} {% set
+permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %} {% set permitir_editar = current_user.tipo == "admin" or
+permitir_docente %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Foro - {{ curso.nombre | title }}</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
+                                        >Inicio</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('course.tomar_curso', course_code=curso.codigo) }}"
+                                        >{{ curso.nombre }}</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Foro</li>
+                            </ol>
+                        </nav>
+                    </h4>
+
+                    <div class="btn-group" role="group">
+                        <a href="{{ url_for('forum.nuevo_mensaje', course_code=curso.codigo) }}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Nuevo Mensaje
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <h2>Foro del Curso: {{ curso.nombre }}</h2>
+
+                        {% if mensajes.items %}
+                        <div class="list-group">
+                            {% for mensaje in mensajes.items %}
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">
+                                        <a
+                                            href="{{ url_for('forum.ver_mensaje', course_code=curso.codigo, message_id=mensaje.id) }}"
+                                            class="text-decoration-none"
+                                        >
+                                            {{ mensaje.contenido[:100] }}{% if mensaje.contenido|length > 100 %}...{% endif %}
+                                        </a>
+                                    </h5>
+                                    <small class="text-muted">{{ mensaje.fecha_creacion.strftime('%d/%m/%Y %H:%M') }}</small>
+                                </div>
+
+                                <p class="mb-1 text-muted">Por: {{ mensaje.usuario.nombre }} {{ mensaje.usuario.apellido }}</p>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        {% if mensaje.replies %} {{ mensaje.replies|length }} respuesta(s) {% else %} Sin
+                                        respuestas {% endif %}
+                                    </small>
+
+                                    <div>
+                                        {% if mensaje.estado == "abierto" %}
+                                        <span class="badge bg-success">Abierto</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">Cerrado</span>
+                                        {% endif %} {% if puede_cerrar %} {% if mensaje.estado == "abierto" %}
+                                        <form
+                                            method="POST"
+                                            action="{{ url_for('forum.cerrar_mensaje', course_code=curso.codigo, message_id=mensaje.id) }}"
+                                            class="d-inline"
+                                        >
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-outline-warning"
+                                                onclick="return confirm('¿Cerrar este mensaje?')"
+                                            >
+                                                <i class="fas fa-lock"></i> Cerrar
+                                            </button>
+                                        </form>
+                                        {% else %} {% if curso.estado != "finalizado" %}
+                                        <form
+                                            method="POST"
+                                            action="{{ url_for('forum.abrir_mensaje', course_code=curso.codigo, message_id=mensaje.id) }}"
+                                            class="d-inline"
+                                        >
+                                            <button type="submit" class="btn btn-sm btn-outline-success">
+                                                <i class="fas fa-unlock"></i> Abrir
+                                            </button>
+                                        </form>
+                                        {% endif %} {% endif %} {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Paginación -->
+                        {% if mensajes.pages > 1 %}
+                        <nav aria-label="Navegación del foro" class="mt-4">
+                            <ul class="pagination justify-content-center">
+                                {% if mensajes.has_prev %}
+                                <li class="page-item">
+                                    <a
+                                        class="page-link"
+                                        href="{{ url_for('forum.ver_foro', course_code=curso.codigo, page=mensajes.prev_num) }}"
+                                        >Anterior</a
+                                    >
+                                </li>
+                                {% endif %} {% for page_num in mensajes.iter_pages() %} {% if page_num %} {% if page_num !=
+                                mensajes.page %}
+                                <li class="page-item">
+                                    <a
+                                        class="page-link"
+                                        href="{{ url_for('forum.ver_foro', course_code=curso.codigo, page=page_num) }}"
+                                        >{{ page_num }}</a
+                                    >
+                                </li>
+                                {% else %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_num }}</span>
+                                </li>
+                                {% endif %} {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                                {% endif %} {% endfor %} {% if mensajes.has_next %}
+                                <li class="page-item">
+                                    <a
+                                        class="page-link"
+                                        href="{{ url_for('forum.ver_foro', course_code=curso.codigo, page=mensajes.next_num) }}"
+                                        >Siguiente</a
+                                    >
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %} {% else %}
+                        <div class="alert alert-info">
+                            <h5>No hay mensajes en el foro</h5>
+                            <p>Sé el primero en crear un mensaje en este foro.</p>
+                            <a href="{{ url_for('forum.nuevo_mensaje', course_code=curso.codigo) }}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Crear primer mensaje
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

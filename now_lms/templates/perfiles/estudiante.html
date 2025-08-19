@@ -1,0 +1,159 @@
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>Panel de Estudiante - {{ config.sitio_nombre }}</title>
+
+        <style>
+            .bd-placeholder-img {
+                font-size: 1.125rem;
+                text-anchor: middle;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+            }
+
+            @media (min-width: 768px) {
+                .bd-placeholder-img-lg {
+                    font-size: 3.5rem;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container">
+                <div class="d-flex justify-content-between border-bottom mb-4">
+                    <h2>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
+                                        >Inicio</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Panel de Estudiante</li>
+                            </ol>
+                        </nav>
+                    </h2>
+
+                    <div class="btn-group" role="group">
+                        <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-calendar"></i> Mi Calendario
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="mb-0">
+                                    <i class="fas fa-user-graduate me-2"></i>
+                                    Bienvenido, {{ current_user.nombre or current_user.usuario }}
+                                </h4>
+                            </div>
+                            <div class="card-body">
+                                <p class="lead">Panel principal del estudiante para gestionar tu aprendizaje.</p>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card border-primary">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-book fa-2x text-primary mb-2"></i>
+                                                <h5>Mis Cursos</h5>
+                                                <p class="text-muted">Accede a tus cursos inscritos</p>
+                                                <a href="{{ url_for('home.panel') }}" class="btn btn-primary">Ver Cursos</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card border-success">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-calendar-alt fa-2x text-success mb-2"></i>
+                                                <h5>Mi Calendario</h5>
+                                                <p class="text-muted">Gestiona tus fechas importantes</p>
+                                                <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-success"
+                                                    >Ver Calendario</a
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card border-info">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-user fa-2x text-info mb-2"></i>
+                                                <h5>Mi Perfil</h5>
+                                                <p class="text-muted">Actualiza tu información personal</p>
+                                                <a href="{{ url_for('user_profile.perfil') }}" class="btn btn-info"
+                                                    >Ver Perfil</a
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card border-warning">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-certificate fa-2x text-warning mb-2"></i>
+                                                <h5>Certificaciones</h5>
+                                                <p class="text-muted">Revisa tus logros obtenidos</p>
+                                                <a href="{{ url_for('user_profile.perfil') }}" class="btn btn-warning"
+                                                    >Ver Certificados</a
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <!-- Calendar Widget -->
+                        {% if upcoming_events is defined %} {% include 'calendar/dashboard_widget.html' with context %} {%
+                        endif %}
+
+                        <!-- Quick Actions -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-bolt me-2"></i>
+                                    Acciones Rápidas
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <a href="{{ url_for('home.panel') }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-search"></i> Explorar Cursos
+                                    </a>
+                                    <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-outline-success btn-sm">
+                                        <i class="fas fa-calendar"></i> Mi Calendario
+                                    </a>
+                                    <a href="{{ url_for('calendar.export_ics') }}" class="btn btn-outline-info btn-sm">
+                                        <i class="fas fa-download"></i> Exportar Calendario
+                                    </a>
+                                    <a href="{{ url_for('user_profile.perfil') }}" class="btn btn-outline-secondary btn-sm">
+                                        <i class="fas fa-cog"></i> Configuración
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

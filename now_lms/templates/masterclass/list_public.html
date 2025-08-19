@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="es" class="h-100">
+    {% set current_theme = current_theme() %} {% set config = config() %}
+
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>{{ title }} - {{ config.titulo }}</title>
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h1>{{ title }}</h1>
+                        </div>
+
+                        {% if master_classes.items %}
+                        <div class="row">
+                            {% for master_class in master_classes.items %}
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100">
+                                    {% if master_class.image_path %}
+                                    <img
+                                        src="{{ master_class.image_path }}"
+                                        class="card-img-top"
+                                        alt="{{ master_class.title }}"
+                                        style="height: 200px; object-fit: cover"
+                                    />
+                                    {% else %}
+                                    <div
+                                        class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                                        style="height: 200px"
+                                    >
+                                        <i class="fas fa-chalkboard-teacher fa-3x text-muted"></i>
+                                    </div>
+                                    {% endif %}
+
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ master_class.title }}</h5>
+                                        <p class="card-text">
+                                            {{ master_class.description_public[:150] }}{% if
+                                            master_class.description_public|length > 150 %}...{% endif %}
+                                        </p>
+
+                                        <div class="mb-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-user"></i> {{ master_class.instructor.nombre }} {{
+                                                master_class.instructor.apellido or '' }}
+                                            </small>
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-calendar"></i> {{ master_class.date.strftime('%d/%m/%Y') }}
+                                            </small>
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-clock"></i> {{ master_class.start_time.strftime('%H:%M') }} -
+                                                {{ master_class.end_time.strftime('%H:%M') }}
+                                            </small>
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-desktop"></i> {{ master_class.platform_name }}
+                                            </small>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            {% if master_class.is_paid %} {% set effective_price =
+                                            master_class.get_effective_price() %} {% if effective_price < master_class.price %}
+                                            <span class="badge bg-danger">Oferta</span>
+                                            <span class="text-decoration-line-through text-muted"
+                                                >${{ "%.2f"|format(master_class.price) }}</span
+                                            >
+                                            <strong class="text-success">${{ "%.2f"|format(effective_price) }}</strong>
+                                            {% else %}
+                                            <strong class="text-primary">${{ "%.2f"|format(master_class.price) }}</strong>
+                                            {% endif %} {% else %}
+                                            <span class="badge bg-success">Gratis</span>
+                                            {% endif %}
+                                        </div>
+
+                                        {% if master_class.is_ongoing() %}
+                                        <div class="alert alert-warning mb-2">
+                                            <i class="fas fa-play-circle"></i> ¡En vivo ahora!
+                                        </div>
+                                        {% elif master_class.is_finished() %}
+                                        <div class="alert alert-secondary mb-2">
+                                            <i class="fas fa-check-circle"></i> Finalizada
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="card-footer">
+                                        <a
+                                            href="{{ url_for('masterclass.detail_public', slug=master_class.slug) }}"
+                                            class="btn btn-primary w-100"
+                                        >
+                                            Ver Detalles
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Pagination -->
+                        {% if master_classes.pages > 1 %}
+                        <nav aria-label="Navegación de páginas">
+                            <ul class="pagination justify-content-center">
+                                {% if master_classes.has_prev %}
+                                <li class="page-item">
+                                    <a
+                                        class="page-link"
+                                        href="{{ url_for('masterclass.list_public', page=master_classes.prev_num) }}"
+                                        >Anterior</a
+                                    >
+                                </li>
+                                {% endif %} {% for page_num in master_classes.iter_pages() %} {% if page_num %} {% if page_num
+                                != master_classes.page %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('masterclass.list_public', page=page_num) }}"
+                                        >{{ page_num }}</a
+                                    >
+                                </li>
+                                {% else %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_num }}</span>
+                                </li>
+                                {% endif %} {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">…</span>
+                                </li>
+                                {% endif %} {% endfor %} {% if master_classes.has_next %}
+                                <li class="page-item">
+                                    <a
+                                        class="page-link"
+                                        href="{{ url_for('masterclass.list_public', page=master_classes.next_num) }}"
+                                        >Siguiente</a
+                                    >
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %} {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-chalkboard-teacher fa-4x text-muted mb-3"></i>
+                            <h3 class="text-muted">No hay clases magistrales disponibles</h3>
+                            <p class="text-muted">Vuelve pronto para ver nuevas clases magistrales.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

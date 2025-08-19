@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="es">
+    {% set current_theme = current_theme() %}{% set site_config = config() %}
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>Cambridge Academic - {{ site_config.titulo }}</title>
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+
+        <!-- Cambridge Scientific Laboratory Hero Section -->
+        <section class="cambridge-hero" style="background: #4a7b6d; padding: 0rem 0; position: relative; overflow: hidden">
+            <!-- Fórmulas como fondo -->
+            <div
+                class="cambridge-formulas"
+                style="
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 90%;
+                    opacity: 0.1;
+                    color: white;
+                    font-family: &quot;Cambria&quot;, serif;
+                "
+            >
+                <div style="position: absolute; top: 20%; left: 5%; transform: rotate(-5deg); font-size: 2rem">E=mc²</div>
+                <div style="position: absolute; top: 30%; right: 10%; transform: rotate(3deg); font-size: 1.8rem">F=ma</div>
+                <div style="position: absolute; bottom: 20%; left: 15%; transform: rotate(-2deg); font-size: 1.6rem">H₂O</div>
+                <div style="position: absolute; top: 50%; right: 25%; transform: rotate(8deg); font-size: 1.4rem">∫dx</div>
+                <div style="position: absolute; bottom: 40%; right: 5%; transform: rotate(-3deg); font-size: 1.5rem">
+                    π = 3.14159
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 mx-auto text-center">
+                        <h1
+                            style="
+                                font-family: &quot;Cambria&quot;, serif;
+                                color: white;
+                                font-size: 3.5rem;
+                                margin-bottom: 1rem;
+                            "
+                        >
+                            <span style="display: inline-block; border-bottom: 3px solid #b08b5c; padding-bottom: 0.5rem"
+                                >{{ site_config.titulo }}</span
+                            >
+                        </h1>
+                        <p class="lead" style="color: #f3f1e7; max-width: 80%; margin: 0 auto 2rem auto">
+                            <span
+                                style="
+                                    background: rgba(0, 0, 0, 0.3);
+                                    padding: 0.3rem 0.8rem;
+                                    border-radius: 3px;
+                                    font-family: &quot;Cambria&quot;, serif;
+                                "
+                                >Hypotheses non fingo</span
+                            >
+                        </p>
+                        <div style="display: inline-flex; flex-direction: column; align-items: center; gap: 1rem">
+                            {% if not current_user.is_authenticated %}
+                            <a
+                                href="{{ url_for('user.crear_cuenta') }}"
+                                class="btn btn-lg"
+                                style="background: #b08b5c; color: white; font-family: &quot;Cambria&quot;, serif"
+                                >Iniciar Experimentación</a
+                            >
+                            <a
+                                href="{{ url_for('course.lista_cursos', page=1) }}"
+                                class="btn btn-outline-light btn-lg"
+                                style="font-family: &quot;Cambria&quot;, serif"
+                                >Explorar Laboratorio</a
+                            >
+                            {% else %}
+                            <a
+                                href="{{ url_for('home.panel') }}"
+                                class="btn btn-lg"
+                                style="background: #b08b5c; color: white; font-family: &quot;Cambria&quot;, serif"
+                                >Mi Laboratorio</a
+                            >
+                            <a
+                                href="{{ url_for('course.lista_cursos', page=1) }}"
+                                class="btn btn-outline-light btn-lg"
+                                style="font-family: &quot;Cambria&quot;, serif"
+                                >Ver Protocolos</a
+                            >
+                            {% endif %}
+                            <div style="display: flex; align-items: center; gap: 1rem">
+                                <div style="width: 30px; height: 2px; background: #f3f1e7"></div>
+                                <small style="color: #f3f1e7; font-family: &quot;Cambria&quot;, serif">Laboratorium</small>
+                                <div style="width: 30px; height: 2px; background: #f3f1e7"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center mb-5">
+                        <h2 class="display-5 fw-bold mb-4">Aprende con Nosotros</h2>
+                        <p class="lead">
+                            Descubre una nueva forma de aprender con nuestra plataforma educativa moderna y eficiente.
+                        </p>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div
+                            class="feature-card h-100"
+                            style="
+                                background: white;
+                                border-radius: 15px;
+                                padding: 2rem;
+                                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                                border-top: 4px solid #4a7b6d;
+                            "
+                        >
+                            <div
+                                class="feature-icon mb-3"
+                                style="
+                                    background: #4a7b6d;
+                                    width: 60px;
+                                    height: 60px;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                "
+                            >
+                                <span style="color: white; font-size: 1.5rem">🎯</span>
+                            </div>
+                            <h4 class="mb-3">Cursos Especializados</h4>
+                            <p style="line-height: 1.6">
+                                Accede a una amplia variedad de cursos diseñados por expertos en cada área de conocimiento.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div
+                            class="feature-card h-100"
+                            style="
+                                background: white;
+                                border-radius: 15px;
+                                padding: 2rem;
+                                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                                border-top: 4px solid #b08b5c;
+                            "
+                        >
+                            <div
+                                class="feature-icon mb-3"
+                                style="
+                                    background: #b08b5c;
+                                    width: 60px;
+                                    height: 60px;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                "
+                            >
+                                <span style="color: white; font-size: 1.5rem">👥</span>
+                            </div>
+                            <h4 class="mb-3">Comunidad Activa</h4>
+                            <p style="line-height: 1.6">
+                                Únete a una comunidad de estudiantes y profesionales que comparten tus intereses y objetivos.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div
+                            class="feature-card h-100"
+                            style="
+                                background: white;
+                                border-radius: 15px;
+                                padding: 2rem;
+                                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                                border-top: 4px solid #28a745;
+                            "
+                        >
+                            <div
+                                class="feature-icon mb-3"
+                                style="
+                                    background: #28a745;
+                                    width: 60px;
+                                    height: 60px;
+                                    border-radius: 50%;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                "
+                            >
+                                <span style="color: white; font-size: 1.5rem">🏆</span>
+                            </div>
+                            <h4 class="mb-3">Certificaciones</h4>
+                            <p style="line-height: 1.6">
+                                Obtén certificaciones reconocidas que validen tu conocimiento y impulsen tu carrera
+                                profesional.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Courses Section - Cambridge Scientific Laboratory Themed -->
+        {% if cursos and cursos.total > 0 %}
+        <section class="py-5 cambridge-lab-bg" style="border-top: 3px solid #4a7b6d">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center mb-5">
+                        <h2 class="display-6 fw-bold mb-4" style="color: #4a7b6d; font-family: &quot;Cambria&quot;, serif">
+                            🔬 Laboratorio de Investigación
+                        </h2>
+                        <p class="lead" style="color: #2e2b28; font-family: &quot;Cambria&quot;, serif">
+                            Protocolos experimentales para el aprendizaje avanzado
+                        </p>
+                        <div style="width: 120px; height: 3px; background: #b08b5c; margin: 1rem auto"></div>
+                    </div>
+                </div>
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    {% for curso in cursos.items[:4] %}
+                    <div class="col">
+                        <!-- Tarjeta "Muestra de Laboratorio" Cambridge style -->
+                        <div
+                            class="cambridge-lab-sample"
+                            style="
+                                background: white;
+                                border: 1px solid #a8a39b;
+                                padding: 1.5rem;
+                                position: relative;
+                                margin-bottom: 2rem;
+                                border-radius: 8px;
+                                box-shadow: 0 4px 12px rgba(74, 123, 109, 0.1);
+                            "
+                        >
+                            <!-- Etiqueta como tubo de ensayo -->
+                            <div
+                                class="cambridge-tube-label"
+                                style="
+                                    position: absolute;
+                                    top: -10px;
+                                    left: 20px;
+                                    background: #4a7b6d;
+                                    color: white;
+                                    padding: 0.2rem 1rem;
+                                    clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);
+                                    font-family: &quot;Cambria&quot;, serif;
+                                "
+                            >
+                                <small>MUESTRA #{{ curso.codigo or (loop.index | string).zfill(3) }}</small>
+                            </div>
+
+                            <h3
+                                style="
+                                    font-family: &quot;Cambria&quot;, serif;
+                                    color: #2e2b28;
+                                    margin-bottom: 1rem;
+                                    margin-top: 0.5rem;
+                                "
+                            >
+                                {{ curso.nombre }}
+                            </h3>
+                            <p
+                                style="
+                                    margin-bottom: 1.5rem;
+                                    font-size: 0.95rem;
+                                    line-height: 1.6;
+                                    color: #2e2b28;
+                                    font-family: &quot;Cambria&quot;, serif;
+                                "
+                            >
+                                {{ curso.descripcion_corta | truncate(100) }}
+                            </p>
+
+                            <!-- Etiquetas científicas -->
+                            <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap">
+                                {% if curso.duracion %}
+                                <span
+                                    style="
+                                        font-size: 0.8rem;
+                                        background: #b6c7bf;
+                                        padding: 0.2rem 0.8rem;
+                                        border-radius: 3px;
+                                        font-family: &quot;Cambria&quot;, serif;
+                                    "
+                                    >{{ curso.duracion }}h de experimento</span
+                                >
+                                {% endif %}
+                                <span
+                                    style="
+                                        font-size: 0.8rem;
+                                        background: #b6c7bf;
+                                        padding: 0.2rem 0.8rem;
+                                        border-radius: 3px;
+                                        font-family: &quot;Cambria&quot;, serif;
+                                    "
+                                >
+                                    {% if curso.nivel == 0 %}Básico{% elif curso.nivel == 1 %}Intermedio{% elif curso.nivel ==
+                                    2 %}Avanzado{% else %}Experto{% endif %}
+                                </span>
+                                {% if not curso.precio %}
+                                <span
+                                    style="
+                                        font-size: 0.8rem;
+                                        background: #b08b5c;
+                                        color: white;
+                                        padding: 0.2rem 0.8rem;
+                                        border-radius: 3px;
+                                        font-family: &quot;Cambria&quot;, serif;
+                                    "
+                                    >OPEN ACCESS</span
+                                >
+                                {% endif %}
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center">
+                                <a
+                                    href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+                                    style="
+                                        color: #2e2b28;
+                                        text-decoration: none;
+                                        font-size: 0.9rem;
+                                        font-family: &quot;Cambria&quot;, serif;
+                                        background: #4a7b6d;
+                                        color: white;
+                                        padding: 0.5rem 1rem;
+                                        border-radius: 4px;
+                                    "
+                                >
+                                    🔬 Ver Protocolo <span style="color: #b08b5c">→</span>
+                                </a>
+                                <div>
+                                    {% if curso.precio %}
+                                    <span style="font-weight: bold; color: #4a7b6d; font-family: &quot;Cambria&quot;, serif"
+                                        >{{ curso.precio | float }} {{ config.moneda if config.moneda else 'units' }}</span
+                                    >
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-center mt-4">
+                    <a
+                        href="{{ url_for('course.lista_cursos', page=1) }}"
+                        class="btn btn-lg px-4 py-2"
+                        style="background: #4a7b6d; color: white; border: none; font-family: &quot;Cambria&quot;, serif"
+                    >
+                        🧪 Explorar Todo el Laboratorio
+                    </a>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Call to Action Section -->
+        <section class="py-5" style="background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%)">
+            <div class="container">
+                <div class="row justify-content-center text-center">
+                    <div class="col-lg-8">
+                        {% if not current_user.is_authenticated %}
+                        <h3 class="mb-4">¿Listo para Comenzar?</h3>
+                        <p class="lead mb-4">
+                            Únete a nuestra plataforma educativa y comienza tu viaje de aprendizaje hoy mismo.
+                        </p>
+                        <a
+                            href="{{ url_for('user.crear_cuenta') }}"
+                            class="btn btn-lg px-5 py-3"
+                            style="
+                                background: #4a7b6d;
+                                color: white;
+                                border: none;
+                                border-radius: 10px;
+                                font-weight: 600;
+                                text-decoration: none;
+                            "
+                        >
+                            Registrarse Gratis
+                        </a>
+                        {% else %}
+                        <h3 class="mb-4">Bienvenido de vuelta, {{ current_user.nombre }}</h3>
+                        <p class="lead mb-4">Continúa tu viaje de aprendizaje y explora nuevas oportunidades educativas.</p>
+                        <a
+                            href="{{ url_for('home.panel') }}"
+                            class="btn btn-lg px-5 py-3 me-3"
+                            style="
+                                background: #4a7b6d;
+                                color: white;
+                                border: none;
+                                border-radius: 10px;
+                                font-weight: 600;
+                                text-decoration: none;
+                            "
+                        >
+                            Ir a Mi Panel
+                        </a>
+                        <a
+                            href="{{ url_for('course.lista_cursos', page=1) }}"
+                            class="btn btn-lg btn-outline-dark px-5 py-3"
+                            style="border-radius: 10px; font-weight: 600"
+                        >
+                            Explorar Cursos
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {{ current_theme.jslibs() }}
+    </body>
+</html>

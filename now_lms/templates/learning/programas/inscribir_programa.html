@@ -1,0 +1,81 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Inscripción al Programa - {{ programa.nombre }}</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            <form method="post">
+                <div class="container">
+                    <div class="py-5 text-center">
+                        <h1 class="h2">
+                            Inscripción al Programa {{ programa.codigo | upper}} - {{ programa.nombre | upper }}
+                        </h1>
+                        <p class="lead">Complete la inscripción para acceder al programa.</p>
+                    </div>
+                    <div class="row g-5 justify-content-center">
+                        <div class="col-md-8 col-lg-6">
+                            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-primary">Resumen del Programa</span>
+                            </h4>
+                            <ul class="list-group mb-3">
+                                <li class="list-group-item d-flex justify-content-between lh-sm">
+                                    <div>
+                                        <h6 class="my-0">Programa</h6>
+                                        <small class="text-body-secondary">{{ programa.nombre }}</small>
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between lh-sm">
+                                    <div>
+                                        <h6 class="my-0">Descripción</h6>
+                                        <small class="text-body-secondary">{{ programa.descripcion }}</small>
+                                    </div>
+                                </li>
+                                {% if programa.precio and programa.precio > 0 %}
+                                <li class="list-group-item d-flex justify-content-between lh-sm">
+                                    <div>
+                                        <h6 class="my-0">Precio</h6>
+                                        <small class="text-body-secondary">{{ programa.precio | round(2) }} USD</small>
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Total (USD)</span>
+                                    <strong>{{ programa.precio | round(2) }}</strong>
+                                </li>
+                                {% else %}
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Total</span>
+                                    <strong>GRATIS</strong>
+                                </li>
+                                {% endif %}
+                            </ul>
+
+                            <div class="d-grid gap-2">
+                                {% if programa.precio and programa.precio > 0 %}
+                                <button class="btn btn-primary btn-lg" type="submit">
+                                    Proceder al pago ({{ programa.precio | round(2) }} USD)
+                                </button>
+                                {% else %}
+                                <button class="btn btn-success btn-lg" type="submit">Inscribirse al programa</button>
+                                {% endif %}
+                            </div>
+
+                            <div class="mt-3 text-center">
+                                <small class="text-muted">
+                                    Al inscribirse, acepta los términos y condiciones del programa.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </main>
+    </body>
+</html>

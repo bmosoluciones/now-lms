@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="es" class="h-100">
+    {% set current_theme = current_theme() %} {% set config = config() %}
+
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>{{ title }} - {{ config.titulo }}</title>
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h1>{{ title }}</h1>
+
+                        {% if enrollments.items %}
+                        <div class="row">
+                            {% for enrollment in enrollments.items %} {% set master_class = enrollment.master_class %}
+                            <div class="col-md-6 mb-4">
+                                <div class="card h-100">
+                                    {% if master_class.image_path %}
+                                    <img
+                                        src="{{ master_class.image_path }}"
+                                        class="card-img-top"
+                                        alt="{{ master_class.title }}"
+                                        style="height: 150px; object-fit: cover"
+                                    />
+                                    {% endif %}
+
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ master_class.title }}</h5>
+
+                                        <div class="mb-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-user"></i> {{ master_class.instructor.nombre }} {{
+                                                master_class.instructor.apellido or '' }}
+                                            </small>
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-calendar"></i> {{ master_class.date.strftime('%d/%m/%Y') }}
+                                            </small>
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-clock"></i> {{ master_class.start_time.strftime('%H:%M') }} -
+                                                {{ master_class.end_time.strftime('%H:%M') }}
+                                            </small>
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-desktop"></i> {{ master_class.platform_name }}
+                                            </small>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            {% if master_class.is_ongoing() %}
+                                            <span class="badge bg-warning">En Vivo Ahora</span>
+                                            {% elif master_class.is_finished() %}
+                                            <span class="badge bg-secondary">Finalizada</span>
+                                            {% else %}
+                                            <span class="badge bg-success">Próxima</span>
+                                            {% endif %} {% if enrollment.is_access_granted() %}
+                                            <span class="badge bg-success">Confirmada</span>
+                                            {% else %}
+                                            <span class="badge bg-warning">Pendiente</span>
+                                            {% endif %}
+                                        </div>
+
+                                        {% if master_class.is_ongoing() and enrollment.is_access_granted() %}
+                                        <div class="alert alert-warning mb-3">
+                                            <strong><i class="fas fa-play-circle"></i> ¡En vivo ahora!</strong>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="card-footer">
+                                        {% if enrollment.is_access_granted() %} {% if master_class.is_ongoing() %}
+                                        <a
+                                            href="{{ master_class.platform_url }}"
+                                            class="btn btn-warning w-100"
+                                            target="_blank"
+                                        >
+                                            <i class="fas fa-external-link-alt"></i> Unirse Ahora
+                                        </a>
+                                        {% elif master_class.is_upcoming() %}
+                                        <a
+                                            href="{{ master_class.platform_url }}"
+                                            class="btn btn-primary w-100"
+                                            target="_blank"
+                                        >
+                                            <i class="fas fa-external-link-alt"></i> Acceder a {{ master_class.platform_name }}
+                                        </a>
+                                        {% elif master_class.is_finished() and master_class.video_recording_url %}
+                                        <a
+                                            href="{{ master_class.video_recording_url }}"
+                                            class="btn btn-secondary w-100"
+                                            target="_blank"
+                                        >
+                                            <i class="fas fa-play"></i> Ver Grabación
+                                        </a>
+                                        {% else %}
+                                        <a
+                                            href="{{ url_for('masterclass.detail_public', slug=master_class.slug) }}"
+                                            class="btn btn-outline-primary w-100"
+                                        >
+                                            Ver Detalles
+                                        </a>
+                                        {% endif %} {% else %}
+                                        <a
+                                            href="{{ url_for('masterclass.detail_public', slug=master_class.slug) }}"
+                                            class="btn btn-outline-primary w-100"
+                                        >
+                                            Ver Detalles
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Pagination -->
+                        {% if enrollments.pages > 1 %}
+                        <nav aria-label="Navegación de páginas">
+                            <ul class="pagination justify-content-center">
+                                {% if enrollments.has_prev %}
+                                <li class="page-item">
+                                    <a
+                                        class="page-link"
+                                        href="{{ url_for('masterclass.my_enrollments', page=enrollments.prev_num) }}"
+                                        >Anterior</a
+                                    >
+                                </li>
+                                {% endif %} {% for page_num in enrollments.iter_pages() %} {% if page_num %} {% if page_num !=
+                                enrollments.page %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('masterclass.my_enrollments', page=page_num) }}"
+                                        >{{ page_num }}</a
+                                    >
+                                </li>
+                                {% else %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_num }}</span>
+                                </li>
+                                {% endif %} {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">…</span>
+                                </li>
+                                {% endif %} {% endfor %} {% if enrollments.has_next %}
+                                <li class="page-item">
+                                    <a
+                                        class="page-link"
+                                        href="{{ url_for('masterclass.my_enrollments', page=enrollments.next_num) }}"
+                                        >Siguiente</a
+                                    >
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %} {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-graduation-cap fa-4x text-muted mb-3"></i>
+                            <h3 class="text-muted">No tienes inscripciones</h3>
+                            <p class="text-muted">Explora nuestras clases magistrales disponibles.</p>
+                            <a href="{{ url_for('masterclass.list_public') }}" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Explorar Clases Magistrales
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

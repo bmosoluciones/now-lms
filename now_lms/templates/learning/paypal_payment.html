@@ -1,0 +1,217 @@
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Pago con PayPal - {{ curso.nombre | title }}</title>
+        <meta name="csrf-token" content="{{ csrf_token() }}" />
+
+        <!-- PayPal SDK -->
+        <script>
+            // Enhanced PayPal configuration loading with retry
+            let sdkLoadAttempts = 0
+            const maxSDKAttempts = 3
+
+            function loadPayPalConfiguration() {
+                return fetch("/paypal_checkout/get_client_id")
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+                        }
+                        return response.json()
+                    })
+                    .then((data) => {
+                        if (data.client_id) {
+                            console.log("PayPal configuration loaded:", {
+                                clientId: data.client_id.substring(0, 8) + "...",
+                                sandbox: data.sandbox,
+                                currency: data.currency,
+                            })
+                            return loadPayPalSDKWithRetry(data.client_id, data.currency)
+                        } else {
+                            throw new Error(data.error || "PayPal configuration missing")
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error loading PayPal configuration:", error)
+
+                        if (sdkLoadAttempts < maxSDKAttempts) {
+                            sdkLoadAttempts++
+                            console.log(`Retrying PayPal configuration load (${sdkLoadAttempts}/${maxSDKAttempts})`)
+
+                            return new Promise((resolve) => {
+                                setTimeout(() => {
+                                    resolve(loadPayPalConfiguration())
+                                }, 2000 * sdkLoadAttempts)
+                            })
+                        } else {
+                            const loadingDiv = document.getElementById("paypal-loading")
+                            if (loadingDiv) {
+                                loadingDiv.innerHTML = `
+                                <div class="alert alert-danger">
+                                    <h6>Error al cargar PayPal</h6>
+                                    <p>No se pudo cargar la configuración de PayPal. Por favor:</p>
+                                    <ul>
+                                        <li>Verifique su conexión a internet</li>
+                                        <li>Recargue la página</li>
+                                        <li>Contacte soporte si el problema persiste</li>
+                                    </ul>
+                                    <button onclick="location.reload()" class="btn btn-sm btn-outline-primary">
+                                        Recargar página
+                                    </button>
+                                </div>
+                            `
+                            }
+                            throw error
+                        }
+                    })
+            }
+
+            // Start loading PayPal configuration
+            document.addEventListener("DOMContentLoaded", function () {
+                loadPayPalConfiguration()
+            })
+        </script>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="mb-0">Pago del Curso</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        {% if curso.portada %}
+                                        <img
+                                            src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}"
+                                            class="img-fluid rounded"
+                                            alt="Portada del Curso"
+                                        />
+                                        {% else %}
+                                        <div
+                                            class="bg-light rounded d-flex align-items-center justify-content-center"
+                                            style="height: 200px"
+                                        >
+                                            <i class="fas fa-graduation-cap fa-3x text-muted"></i>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-8">
+                                        <h5>{{ curso.nombre }}</h5>
+                                        <p class="text-muted">{{ curso.codigo }}</p>
+                                        <p>{{ curso.descripcion_corta }}</p>
+
+                                        <div class="mt-4">
+                                            <h6>Detalles del Pago</h6>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Precio del curso:</span>
+                                                <strong>{{ "%.2f"|format(curso.precio) }} {{ site_currency }}</strong>
+                                            </div>
+                                            <hr />
+                                            <div class="d-flex justify-content-between">
+                                                <span><strong>Total:</strong></span>
+                                                <strong>{{ "%.2f"|format(curso.precio) }} {{ site_currency }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <h6>Procesar Pago</h6>
+                                    <p class="text-muted small">
+                                        Serás redirigido a PayPal para completar el pago de forma segura. Una vez completado el
+                                        pago, tendrás acceso inmediato al curso.
+                                    </p>
+
+                                    <!-- Payment Messages Container -->
+                                    <div id="payment-messages"></div>
+
+                                    <!-- PayPal Button Container -->
+                                    <div
+                                        id="paypal-button-container"
+                                        data-course-code="{{ curso.codigo }}"
+                                        data-amount="{{ curso.precio }}"
+                                        data-currency="{{ site_currency }}"
+                                        style="min-height: 50px"
+                                    ></div>
+
+                                    <!-- Loading message -->
+                                    <div id="paypal-loading" class="text-center">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Cargando PayPal...</span>
+                                        </div>
+                                        <p class="mt-2 text-muted">Cargando opciones de pago...</p>
+                                        <div class="progress mt-3" style="height: 6px">
+                                            <div
+                                                class="progress-bar progress-bar-striped progress-bar-animated"
+                                                role="progressbar"
+                                                style="width: 100%"
+                                            ></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Payment Security Info -->
+                                    <div class="mt-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-shield-alt text-success"></i>
+                                            Pago seguro procesado por PayPal. Sus datos financieros están protegidos.
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <a
+                                        href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+                                        class="btn btn-outline-secondary"
+                                    >
+                                        <i class="fas fa-arrow-left"></i> Volver al curso
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Include PayPal JavaScript -->
+        <script src="{{ url_for('static', filename='js/paypal.js') }}"></script>
+
+        <script>
+            // Hide loading message when PayPal buttons are rendered
+            document.addEventListener("DOMContentLoaded", function () {
+                // Listen for PayPal loaded event
+                document.addEventListener("paypal-loaded", function () {
+                    document.getElementById("paypal-loading").style.display = "none"
+                })
+
+                const observer = new MutationObserver(function (mutations) {
+                    mutations.forEach(function (mutation) {
+                        if (mutation.type === "childList" && mutation.target.id === "paypal-button-container") {
+                            if (mutation.target.children.length > 0) {
+                                document.getElementById("paypal-loading").style.display = "none"
+                            }
+                        }
+                    })
+                })
+
+                observer.observe(document.getElementById("paypal-button-container"), {
+                    childList: true,
+                })
+            })
+        </script>
+    </body>
+</html>

@@ -1,0 +1,260 @@
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Editar Evaluación</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('instructor_profile.pagina_instructor') }}"
+                                        >Panel Instructor</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('instructor_profile.cursos') }}"
+                                        >Cursos</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('instructor_profile.course_evaluations', course_code=course_code) }}"
+                                        >Evaluaciones</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ evaluacion.title }}</li>
+                            </ol>
+                        </nav>
+                    </h4>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h3>{{ evaluacion.title }}</h3>
+                                        <p class="mb-0 text-muted">{{ evaluacion.section.nombre }}</p>
+                                    </div>
+                                    <div>
+                                        {% if evaluacion.is_exam %}
+                                        <span class="badge bg-danger">Examen</span>
+                                        {% else %}
+                                        <span class="badge bg-primary">Quiz</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Configuración de la Evaluación</h5>
+
+                                        <form method="POST">
+                                            {{ form.hidden_tag() }}
+
+                                            <div class="mb-3">
+                                                {{ form.title.label(class="form-label") }} {{ form.title(class="form-control")
+                                                }}
+                                            </div>
+
+                                            <div class="mb-3">
+                                                {{ form.description.label(class="form-label") }} {{
+                                                form.description(class="form-control", rows="3") }}
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <div class="form-check">
+                                                            {{ form.is_exam(class="form-check-input") }} {{
+                                                            form.is_exam.label(class="form-check-label") }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        {{ form.passing_score.label(class="form-label") }}
+                                                        <div class="input-group">
+                                                            {{ form.passing_score(class="form-control") }}
+                                                            <span class="input-group-text">%</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                {{ form.max_attempts.label(class="form-label") }} {{
+                                                form.max_attempts(class="form-control") }}
+                                                <div class="form-text">Deje vacío para intentos ilimitados.</div>
+                                            </div>
+
+                                            <button type="submit" class="btn btn-primary">Actualizar Evaluación</button>
+                                        </form>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h5>Preguntas ({{ preguntas|length }})</h5>
+                                            <a
+                                                href="{{ url_for('instructor_profile.new_question', evaluation_id=evaluacion.id) }}"
+                                                class="btn btn-success btn-sm"
+                                            >
+                                                <i class="bi bi-plus"></i> Nueva Pregunta
+                                            </a>
+                                        </div>
+
+                                        {% if preguntas %}
+                                        <div class="list-group">
+                                            {% for pregunta in preguntas %}
+                                            <div class="list-group-item">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-1">Pregunta {{ pregunta.order }}</h6>
+                                                        <p class="mb-1">
+                                                            {{ pregunta.text[:100] }}{% if pregunta.text|length > 100 %}...{%
+                                                            endif %}
+                                                        </p>
+                                                        <small class="text-muted">
+                                                            Tipo: {% if pregunta.type == "boolean" %} Verdadero/Falso {% else
+                                                            %} Opción Múltiple {% endif %} | {{ pregunta.options|length }}
+                                                            opciones
+                                                        </small>
+
+                                                        <!-- Show options -->
+                                                        {% if pregunta.options %}
+                                                        <div class="mt-2">
+                                                            <small class="text-muted">Opciones:</small>
+                                                            <ul class="list-unstyled ms-3 mb-1">
+                                                                {% for option in pregunta.options %}
+                                                                <li class="d-flex justify-content-between align-items-center">
+                                                                    <span>
+                                                                        <i
+                                                                            class="bi {% if option.is_correct %}bi-check-circle-fill text-success{% else %}bi-circle text-muted{% endif %}"
+                                                                        ></i>
+                                                                        {{ option.text[:50] }}{% if option.text|length > 50
+                                                                        %}...{% endif %}
+                                                                    </span>
+                                                                    <div class="btn-group btn-group-sm" role="group">
+                                                                        <a
+                                                                            href="{{ url_for('instructor_profile.edit_question_option', option_id=option.id) }}"
+                                                                            class="btn btn-outline-secondary btn-sm"
+                                                                        >
+                                                                            <i class="bi bi-pencil"></i>
+                                                                        </a>
+                                                                        {% if pregunta.options|length > 2 %}
+                                                                        <form
+                                                                            method="POST"
+                                                                            action="{{ url_for('instructor_profile.delete_question_option', option_id=option.id) }}"
+                                                                            style="display: inline"
+                                                                            onsubmit="return confirm('¿Está seguro de eliminar esta opción?')"
+                                                                        >
+                                                                            <button
+                                                                                type="submit"
+                                                                                class="btn btn-outline-danger btn-sm"
+                                                                            >
+                                                                                <i class="bi bi-trash"></i>
+                                                                            </button>
+                                                                        </form>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                            {% if pregunta.type != "boolean" or pregunta.options|length < 2 %}
+                                                            <a
+                                                                href="{{ url_for('instructor_profile.new_question_option', question_id=pregunta.id) }}"
+                                                                class="btn btn-outline-success btn-sm"
+                                                            >
+                                                                <i class="bi bi-plus"></i> Agregar opción
+                                                            </a>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="btn-group" role="group">
+                                                        <a
+                                                            href="{{ url_for('instructor_profile.edit_question', question_id=pregunta.id) }}"
+                                                            class="btn btn-outline-primary btn-sm"
+                                                            title="Editar pregunta"
+                                                        >
+                                                            <i class="bi bi-pencil"></i>
+                                                        </a>
+                                                        <form
+                                                            method="POST"
+                                                            action="{{ url_for('instructor_profile.delete_question', question_id=pregunta.id) }}"
+                                                            style="display: inline"
+                                                            onsubmit="return confirm('¿Está seguro de eliminar esta pregunta y todas sus opciones?')"
+                                                        >
+                                                            <button
+                                                                type="submit"
+                                                                class="btn btn-outline-danger btn-sm"
+                                                                title="Eliminar pregunta"
+                                                            >
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %}
+                                        <div class="alert alert-info">
+                                            <i class="bi bi-info-circle"></i>
+                                            No hay preguntas creadas para esta evaluación.
+                                            <br />
+                                            <a
+                                                href="{{ url_for('instructor_profile.new_question', evaluation_id=evaluacion.id) }}"
+                                                class="btn btn-primary btn-sm mt-2"
+                                            >
+                                                Crear primera pregunta
+                                            </a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                {% if preguntas %}
+                                <hr />
+                                <div class="alert alert-success">
+                                    <h6>Evaluación lista para estudiantes:</h6>
+                                    <ul class="mb-0">
+                                        <li>{{ preguntas|length }} pregunta(s) configurada(s)</li>
+                                        <li>Puntuación mínima: {{ evaluacion.passing_score }}%</li>
+                                        <li>
+                                            Máximo intentos: {% if evaluacion.max_attempts %}{{ evaluacion.max_attempts }}{%
+                                            else %}Ilimitado{% endif %}
+                                        </li>
+                                    </ul>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

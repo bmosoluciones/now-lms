@@ -1,0 +1,73 @@
+{% set current_theme = current_theme() %} {% import "learning/resources/type_macros.html" as r_macros %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }} {{ mde.css }}
+        <title>Mensaje</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-0 py-3" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Mensaje</h4>
+
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="row">
+                            <h6>{{ mensaje.nombre }}</h6>
+                            <div class="row">
+                                <div class="col-1">
+                                    <strong>De:</strong>
+                                </div>
+                                <div class="col-11">{{ usuario.nombre | capitalize }} {{ usuario.apellido | capitalize }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-1">
+                                    <strong>Asunto:</strong>
+                                </div>
+                                <div class="col-11">{{ mensaje.titulo }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-1">
+                                    <strong>Fecha:</strong>
+                                </div>
+                                <div class="col-11">{{ mensaje.creado }}</div>
+                            </div>
+                            <div class="row border-bottom"></div>
+                            <div class="row">
+                                <br />
+                                {{ mkdown2html(mensaje.texto) | safe }}
+                                <br />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h5>Respuestas:</h5>
+                            {% if respuestas %} {% for respuesta in respuestas %} {{ respuesta.creado }}
+                            <strong>{{ respuesta[1].nombre }} {{ respuesta[1].apellido }}</strong> respondio: {{
+                            mkdown2html(respuesta[0].texto) | safe }} {% endfor %} {% else %} No hay respuestas publicadas a
+                            este mensaje. {% endif %}
+                        </div>
+                        <div class="row">
+                            <br />
+                            <h5>Publicar una respuesta:</h5>
+                            <form action="{{ url_for('msg.nuevo_mensaje') }}" method="post">
+                                {{ form.csrf_token }} {{ form.parent }} {{ form.editor }} {{ mde.preview }} {{ mde.js }}
+
+                                <button class="w-10 btn btn-sml btn-primary btn-block" type="submit">
+                                    <i class="bi bi-envelope-plus" aria-hidden="true"></i> Publicar Respuesta
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

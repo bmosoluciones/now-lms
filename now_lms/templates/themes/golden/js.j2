@@ -1,0 +1,52 @@
+{% macro jslibs() -%}
+<!-- jQuery -->
+<script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js') }}"></script>
+
+<!-- Select2 -->
+<script src="{{ url_for('static', filename='node_modules/select2/dist/js/select2.min.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='node_modules/select2/dist/css/select2.min.css') }}" />
+
+<!-- Custom Golden Theme JS -->
+<script>
+    // Golden theme specific JavaScript
+    $(document).ready(function () {
+        // Initialize Select2 with golden theme colors
+        $(".select2").select2({
+            theme: "bootstrap",
+            selectionCssClass: "select2-selection--golden",
+            dropdownCssClass: "select2-dropdown--golden",
+        })
+
+        // Add smooth scrolling for anchor links
+        $('a[href^="#"]').on("click", function (event) {
+            var target = $(this.getAttribute("href"))
+            if (target.length) {
+                event.preventDefault()
+                $("html, body")
+                    .stop()
+                    .animate(
+                        {
+                            scrollTop: target.offset().top - 80,
+                        },
+                        1000
+                    )
+            }
+        })
+
+        // Add animation classes to elements as they come into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("animate-fade-in-up")
+                }
+            })
+        })
+
+        // Observe all feature cards and other animated elements
+        document.querySelectorAll(".feature-card, .card-golden").forEach((el) => {
+            observer.observe(el)
+        })
+    })
+</script>
+
+{%- endmacro %}

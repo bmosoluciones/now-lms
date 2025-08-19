@@ -1,0 +1,111 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Inscribir Usuario - {{ programa.nombre }}</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container-fluid px-0 py-3">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title mb-0">Inscribir Usuario al Programa</h3>
+                                    <p class="text-muted mb-0">{{ programa.nombre }}</p>
+                                </div>
+                                <div class="card-body">
+                                    <form method="post">
+                                        <div class="mb-4">
+                                            <label for="usuario_email" class="form-label"
+                                                >Correo Electrónico del Usuario</label
+                                            >
+                                            <input
+                                                type="email"
+                                                class="form-control"
+                                                id="usuario_email"
+                                                name="usuario_email"
+                                                placeholder="usuario@ejemplo.com"
+                                                required
+                                            />
+                                            <div class="form-text">
+                                                Ingrese el correo electrónico del usuario que desea inscribir en este programa.
+                                            </div>
+                                        </div>
+
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" class="btn btn-primary">Inscribir Usuario</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="card mt-4">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Información del Programa</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <strong>Código:</strong>
+                                        </div>
+                                        <div class="col-sm-8">{{ programa.codigo }}</div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-sm-4">
+                                            <strong>Estado:</strong>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            {% if programa.estado == "open" %}
+                                            <span class="badge bg-success">Abierto</span>
+                                            {% elif programa.estado == "closed" %}
+                                            <span class="badge bg-danger">Cerrado</span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">Borrador</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% if programa.precio and programa.precio > 0 %}
+                                    <div class="row mt-2">
+                                        <div class="col-sm-4">
+                                            <strong>Precio:</strong>
+                                        </div>
+                                        <div class="col-sm-8">${{ programa.precio | round(2) }}</div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="mt-4 text-center">
+                                <a
+                                    href="{{ url_for('program.gestionar_cursos_programa', codigo=programa.codigo) }}"
+                                    class="btn btn-outline-secondary me-2"
+                                >
+                                    Gestionar Cursos
+                                </a>
+                                <a
+                                    href="{{ url_for('program.pagina_programa', codigo=programa.codigo) }}"
+                                    class="btn btn-outline-secondary me-2"
+                                >
+                                    Ver Programa
+                                </a>
+                                <a href="{{ url_for('program.programas') }}" class="btn btn-outline-secondary">
+                                    Lista de Programas
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

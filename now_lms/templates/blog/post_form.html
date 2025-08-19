@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es" class="h-100">
+    {% set current_theme = current_theme() %}
+
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>Crear nueva entrada del blog.</title>
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 offset-md-2">
+                        <h1>{{ title }}</h1>
+
+                        <form method="POST">
+                            {{ form.hidden_tag() }}
+
+                            <div class="mb-3">
+                                {{ form.title.label(class="form-label") }} {{ form.title(class="form-control") }} {% for error
+                                in form.title.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.content.label(class="form-label") }} {{ form.content(class="form-control") }} {% for
+                                error in form.content.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.tags.label(class="form-label") }} {{ form.tags(class="form-control",
+                                placeholder="Separar etiquetas con comas") }}
+                                <div class="form-text">
+                                    Separa las etiquetas con comas. {% if current_user.tipo != 'admin' %}Solo se asignarán
+                                    etiquetas existentes.{% endif %}
+                                </div>
+                                {% for error in form.tags.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        {{ form.status.label(class="form-label") }} {{ form.status(class="form-select") }} {%
+                                        for error in form.status.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            {{ form.allow_comments(class="form-check-input") }} {{
+                                            form.allow_comments.label(class="form-check-label") }}
+                                        </div>
+                                        {% for error in form.allow_comments.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary">Grabar entrada</button>
+
+                                {% if current_user.tipo == 'admin' %}
+                                <a href="{{ url_for('blog.admin_blog_index') }}" class="btn btn-secondary">Cancelar</a>
+                                {% else %}
+                                <a href="{{ url_for('blog.instructor_blog_index') }}" class="btn btn-secondary">Cancelar</a>
+                                {% endif %}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

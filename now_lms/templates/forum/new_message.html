@@ -1,0 +1,133 @@
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Nuevo Mensaje - {{ curso.nombre | title }}</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
+                                        >Inicio</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('course.tomar_curso', course_code=curso.codigo) }}"
+                                        >{{ curso.nombre }}</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('forum.ver_foro', course_code=curso.codigo) }}"
+                                        >Foro</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Nuevo Mensaje</li>
+                            </ol>
+                        </nav>
+                    </h4>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12 col-md-8 mx-auto">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Crear Nuevo Mensaje</h3>
+                                <p class="text-muted mb-0">Curso: {{ curso.nombre }}</p>
+                            </div>
+                            <div class="card-body">
+                                <form method="POST" action="{{ url_for('forum.nuevo_mensaje', course_code=curso.codigo) }}">
+                                    {{ form.hidden_tag() }}
+
+                                    <div class="mb-3">
+                                        {{ form.contenido.label(class="form-label") }} {{ form.contenido(class="form-control",
+                                        rows="8") }} {% if form.contenido.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.contenido.errors %}
+                                            <small>{{ error }}</small><br />
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                        <small class="form-text text-muted">
+                                            Puedes usar
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#markdownHelp">Markdown</a> para
+                                            dar formato a tu mensaje.
+                                        </small>
+                                    </div>
+
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <a
+                                            href="{{ url_for('forum.ver_foro', course_code=curso.codigo) }}"
+                                            class="btn btn-secondary me-md-2"
+                                        >
+                                            <i class="fas fa-times"></i> Cancelar
+                                        </a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-paper-plane"></i> Publicar Mensaje
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal de ayuda de Markdown -->
+            <div class="modal fade" id="markdownHelp" tabindex="-1" aria-labelledby="markdownHelpLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="markdownHelpLabel">Ayuda de Markdown</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h6>Formato básico:</h6>
+                            <ul>
+                                <li><code>**texto en negrita**</code> → <strong>texto en negrita</strong></li>
+                                <li><code>*texto en cursiva*</code> → <em>texto en cursiva</em></li>
+                                <li>
+                                    <code># Título grande</code> →
+                                    <h5>Título grande</h5>
+                                </li>
+                                <li>
+                                    <code>## Título mediano</code> →
+                                    <h6>Título mediano</h6>
+                                </li>
+                                <li><code>[enlace](URL)</code> → enlace clickeable</li>
+                                <li><code>`código`</code> → <code>código</code></li>
+                            </ul>
+                            <h6>Listas:</h6>
+                            <ul>
+                                <li><code>- elemento 1</code></li>
+                                <li><code>- elemento 2</code></li>
+                            </ul>
+                            <h6>Citas:</h6>
+                            <p><code>&gt; Esto es una cita</code></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

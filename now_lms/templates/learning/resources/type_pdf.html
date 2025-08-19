@@ -1,0 +1,89 @@
+{% set current_theme = current_theme() %} {% import "learning/resources/type_macros.html" as r_macros %} {% set
+permitir_docente = docente_asignado(id_curso=curso.codigo) %} {% set permitir_moderador =
+moderador_asignado(id_curso=curso.codigo) %} {% set permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %} {% set
+permitir_editar = current_user.tipo == "admin" or permitir_docente %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-0 py-3" id="icon-grid">
+                <h4 class="pb-2 border-bottom">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
+                                    >Inicio</a
+                                >
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a
+                                    class="text-reset text-decoration-none link-dark"
+                                    href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+                                    >{{ curso.nombre }}</a
+                                >
+                            </li>
+                            <li class="breadcrumb-item">{{ recurso.nombre }}</li>
+                        </ol>
+                    </nav>
+                </h4>
+
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div id="pdf_container" class="d-flex justify-content-around">
+                            <iframe
+                                title="{{ recurso.nombre + recurso.id }}"
+                                src="{{ url_for('course.pdf_viewer', recurso_code=recurso.id, course_code=recurso.curso) }}"
+                                width="100%"
+                                height="600px"
+                                style="border: 1px solid #ddd; border-radius: 4px"
+                            ></iframe>
+                        </div>
+
+                        <div id="download" class="d-flex justify-content-around">
+                            <a
+                                type="button"
+                                class="btn btn-success"
+                                id="download"
+                                href="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
+                            >
+                                <i class="bi bi-file-earmark-pdf-fill" aria-hidden="true"></i>
+                                Descargar PDF
+                            </a>
+                        </div>
+
+                        <div>{{ markdown2html(recurso.descripcion) | safe }}</div>
+
+                        <!-- AdSense Ad after resource description for free courses -->
+                        {% if adsense_enabled() and not curso.pagado %} {% set ad_code = ad_large_rectangle() %} {% if ad_code
+                        %}
+                        <div class="mt-4 mb-4" style="text-align: center">
+                            <small class="text-muted">Publicidad</small>
+                            {{ ad_code | safe }}
+                        </div>
+                        {% endif %} {% endif %}
+                    </div>
+
+                    <div class="col-sm-4">
+                        {{ r_macros.resource_nav(recursos=recursos, secciones=secciones, user_progress=user_progress,
+                        evaluaciones=evaluaciones, evaluation_attempts=evaluation_attempts) }}
+                    </div>
+                </div>
+            </div>
+
+            {{ r_macros.nav_footer(indice=indice, curso=recurso.curso, type=recurso.tipo, codigo=recurso.id,
+            recurso_completado=recurso_completado) }}
+        </main>
+    </body>
+</html>

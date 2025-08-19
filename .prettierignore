@@ -1,0 +1,18 @@
+# Prettier ignore file for now-lms project
+# Exclude templates with Jinja2 template syntax in JavaScript blocks
+# These cause false positive syntax errors in Prettier
+
+# Templates with Jinja2 variables in JavaScript
+now_lms/templates/learning/curso/coupons/create.html
+now_lms/templates/learning/curso/coupons/edit.html
+now_lms/templates/learning/resources_new/editar_slideshow.html
+
+# Templates with HTML structure issues
+now_lms/templates/perfiles/instructor.html
+
+# General patterns for build and dependency files
+node_modules/
+*.min.js
+*.min.css
+dist/
+build/

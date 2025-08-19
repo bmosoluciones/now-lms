@@ -1,0 +1,182 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }} {{ mde.css }} {% if edit %}
+        <title>Editar curso {{ curso.nombre }}</title>
+        {% else %}
+        <title>Crear un nuevo curso</title>
+        {% endif %} {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <div class="container px-4 py-5" id="icon-grid">
+                {% if edit %}
+                <h4 class="pb-2 border-bottom">Editar curso {{ curso.nombre }}.</h4>
+                {% else %}
+                <h4 class="pb-2 border-bottom">Crear nuevo curso.</h4>
+                {% endif %}
+                <form method="post" enctype="multipart/form-data">
+                    {{ form.csrf_token }}
+                    <div class="row g-3">
+                        <h6>Información General del Curso</h6>
+                        <div class="col-sm-6">
+                            <label for="nombre" class="form-label">Nombre del Curso</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder="Nombre del Curso") }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="codigo" class="form-label">Codigo del Curso</label>
+                            {{ form.codigo(class="form-control", id="codigo", placeholder="Codigo del Curso") }}
+                        </div>
+                        <label for="descripcion_corta" class="form-label">Descripción Corta</label>
+                        {{ form.descripcion_corta(class="form-control", id="descripcion_corta", placeholder="Descripción
+                        Corta") }}
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <br />
+                            <label for="duracion" class="form-label">Duracion (HR)</label>
+                            {{ form.duracion }}
+                        </div>
+                        <div class="col-md-6">
+                            <br />
+                            <label for="nivel" class="form-label">Nivel</label>
+                            {{ form.nivel }}
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <h6>Visibilidad del curso.</h6>
+                            <label for="publico" class="form-label">Curso Publico</label>
+                            {{ form.publico }}
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Modalidad del curso.</h6>
+                            <label for="modalidad" class="form-label">Modalidad del curso</label>
+                            {{ form.modalidad }}
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <h6>Cupo limitado</h6>
+                        <div class="col-md-6">
+                            <label for="limitado" class="form-label">Cupo Limitado:</label>
+                            {{ form.limitado }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="capacidad" class="form-label">Cupos:</label>
+                            {{ form.capacidad }}
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <h6>Información de pago.</h6>
+                        <div class="col-md-4">
+                            <label for="pagado" class="form-label">Curso Pagado:</label>
+                            {{ form.pagado }}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="precio" class="form-label">Precio:</label>
+                            {{ form.precio }}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="auditable" class="form-label">Curso Auditable</label>
+                            {{ form.auditable }}
+                        </div>
+                        <p>
+                            Un estudiante puede auditar el curso pero no recibir un certificado al final si no cancela el valor
+                            del curso.
+                        </p>
+                    </div>
+                    <div class="row g-3">
+                        <h6>Inicio y Fin del curso</h6>
+                        <div class="col-md-6">
+                            <label for="fecha_inicio" class="form-label">Fecha Inicio</label>
+                            {{ form.fecha_inicio }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="fecha_fin" class="form-label">Fecha Fin</label>
+                            {{ form.fecha_fin }}
+                        </div>
+                        <p>Si el curso es en tiempo real o con tiempo definido defina las fechas de inicio y fin.</p>
+                    </div>
+                    <div class="row g-3">
+                        <h6>Certificación</h6>
+                        <div class="col-md-4">
+                            <label for="certificado" class="form-label">Extender Certificado:</label>
+                            {{ form.certificado }}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="plantilla_certificado" class="form-label">Plantilla de Certificado:</label>
+                            {{ form.plantilla_certificado() }}
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <h6>Portada del curso</h6>
+                        {% if curso.portada %}
+                        <div>
+                            <img
+                                src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}"
+                                alt="Portada del Curso"
+                                height="200"
+                                width="400"
+                            />
+                        </div>
+                        <a href="{{url_for('course.elimina_logo', course_code=curso.codigo)}}">Eliminar Portada</a>
+                        {% else %}
+                        <div class="col-md-4">
+                            <label for="logo" class="form-label">Portada</label>
+                            <input
+                                type="file"
+                                name="logo"
+                                accept="image/jpeg, image/png, image/gif, image/webp, image/bmp, image/svg+xml"
+                            />
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row g-3">
+                        <h6>Categorización</h6>
+                        <div class="col-sm-6">
+                            <label for="categoria" class="form-label">Categoría</label>
+                            {{ form.categoria(class="form-control", id="categoria") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="etiquetas" class="form-label">Etiquetas</label>
+                            {{ form.etiquetas(class="form-control", id="etiquetas", multiple=True) }}
+                            <div class="form-text">
+                                Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples etiquetas.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div>
+                            <h6>Descripción del curso</h6>
+                            <label for="descripcion" class="form-label">Descripción del Curso:</label>
+                            {{form.descripcion}}
+                            <br />
+                            <h6>Vista previa de la descripción:</h6>
+                            {{mde.preview}} {{mde.js}}
+                            <br />
+                            <br />
+                        </div>
+                    </div>
+                    {% if curso %}
+                    <a class="btn btn-warning" href="{{ url_for('course.curso', course_code=curso.codigo) }}" role="button"
+                        >Cancelar</a
+                    >
+                    <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Curso</button>
+                    {% else %}
+                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Curso</button>
+                    {% endif %}
+                </form>
+            </div>
+        </main>
+    </body>
+</html>

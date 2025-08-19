@@ -1,0 +1,83 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Lista de Etiquetas.</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-0 py-3" id="curse_list">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>Lista de Etiquetas Disponibles.</h4>
+
+                    <p>
+                        <span class="badge bg-success">
+                            <a href="{{ url_for('tag.new_tag') }}" class="link-light">Nueva Etiqueta</a>
+                        </span>
+                    </p>
+                </div>
+
+                {% if consulta %}
+                <div class="container" id="curse_table">
+                    <table class="table table-sm table-borderless">
+                        <caption>
+                            Lista de etiquetas disponibles en el sistema.
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Etiqueta</th>
+                                <th scope="col">Color</th>
+                                <th>Cursos</th>
+                                <th>Programas</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        {% for item in consulta.items -%}
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a href="" class="link-dark"> {{ item.nombre }} </a>
+                                </td>
+                                <td>
+                                    <span style="color:{{ item.color }};">
+                                        <i class="bi bi-square-fill" aria-hidden="true"></i>
+                                    </span>
+                                </td>
+                                <td>{{ cursos_por_etiqueta(item.id) }}</td>
+                                <td>{{ programas_por_etiqueta(item.id) }}</td>
+                                <td>
+                                    <span class="badge bg-danger">
+                                        <a href="{{ url_for('tag.delete_tag', ulid=item.id) }}" class="link-light"
+                                            >Eliminar Etiqueta</a
+                                        >
+                                    </span>
+                                    <span class="badge bg-info">
+                                        <a href="{{ url_for('tag.edit_tag', ulid=item.id) }}" class="link-light"
+                                            >Editar Etiqueta</a
+                                        >
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% else %}
+                <p>Usted no ha creado ninguna etiqueta todavia.</p>
+                {% endif %}
+
+                <div class="container" id="user_pagination">
+                    {{ current_theme.rendizar_paginacion(consulta=consulta, vista="lista_cursos") }}
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,171 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Mensajes Reportados - Administración</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5">
+                <div class="d-flex justify-content-between align-items-center pb-2 border-bottom">
+                    <h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}">
+                                        Inicio
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('admin_profile.usuarios') }}"
+                                    >
+                                        Administración
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active">Mensajes Reportados</li>
+                            </ol>
+                        </nav>
+                    </h4>
+                </div>
+
+                {% if flagged_messages %}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Se encontraron {{ flagged_messages|length }} mensaje(s) reportado(s) que requieren revisión.
+                        </div>
+
+                        {% for message in flagged_messages %}
+                        <div class="card mb-4 border-warning">
+                            <div class="card-header bg-warning bg-opacity-10">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h6 class="mb-0">
+                                        <i class="bi bi-flag-fill text-danger"></i>
+                                        Mensaje Reportado #{{ message.id[:8] }}
+                                    </h6>
+                                    <span class="badge bg-danger">Reportado</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h6>Información del Mensaje</h6>
+                                        <p>
+                                            <strong>De:</strong> {{ message.sender.nombre }} {{ message.sender.apellido }} ({{
+                                            message.sender.tipo }})
+                                        </p>
+                                        <p><strong>Fecha:</strong> {{ message.timestamp.strftime('%d/%m/%Y %H:%M') }}</p>
+                                        <p>
+                                            <strong>Curso:</strong>
+                                            {% set thread = message.thread %}
+                                            <a
+                                                href="{{ url_for('course.curso', course_code=thread.course_id) }}"
+                                                class="text-decoration-none"
+                                            >
+                                                {{ thread.course.nombre }}
+                                            </a>
+                                        </p>
+                                        <p>
+                                            <strong>Estudiante:</strong> {{ thread.student.nombre }} {{ thread.student.apellido
+                                            }}
+                                        </p>
+
+                                        <h6 class="mt-3">Contenido del Mensaje</h6>
+                                        <div class="border p-3 bg-light">{{ mkdown2html(message.content) | safe }}</div>
+
+                                        <h6 class="mt-3">Motivo del Reporte</h6>
+                                        <div class="border p-3 bg-danger bg-opacity-10">{{ message.reported_reason }}</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h6>Acciones</h6>
+                                        <div class="d-grid gap-2">
+                                            <a
+                                                href="{{ url_for('msg.view_thread', thread_id=thread.id) }}"
+                                                class="btn btn-primary btn-sm"
+                                            >
+                                                <i class="bi bi-eye"></i> Ver Conversación Completa
+                                            </a>
+                                            <a
+                                                href="{{ url_for('course.curso', course_code=thread.course_id) }}"
+                                                class="btn btn-outline-primary btn-sm"
+                                            >
+                                                <i class="bi bi-book"></i> Ver Curso
+                                            </a>
+                                            <button
+                                                type="button"
+                                                class="btn btn-outline-success btn-sm"
+                                                onclick="resolveReport('{{ message.id }}')"
+                                            >
+                                                <i class="bi bi-check-circle"></i> Marcar como Revisado
+                                            </button>
+                                        </div>
+
+                                        <div class="mt-3">
+                                            <h6>Estadísticas del Hilo</h6>
+                                            <p class="small text-muted">
+                                                Estado: {% if thread.status == "open" %}
+                                                <span class="badge bg-success">Abierto</span>
+                                                {% elif thread.status == "fixed" %}
+                                                <span class="badge bg-warning">Resuelto</span>
+                                                {% else %}
+                                                <span class="badge bg-secondary">Cerrado</span>
+                                                {% endif %}
+                                                <br />
+                                                Mensajes: {{ thread.messages.count() }}
+                                                <br />
+                                                Creado: {{ thread.timestamp.strftime('%d/%m/%Y') }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-shield-check" style="font-size: 3rem; color: #28a745"></i>
+                    <h5 class="mt-3 text-success">¡Excelente!</h5>
+                    <p class="text-muted">No hay mensajes reportados en este momento.</p>
+                </div>
+                {% endif %}
+            </div>
+        </main>
+
+        <script>
+            function resolveReport(messageId) {
+                if (confirm("¿Está seguro de que desea marcar este reporte como revisado?")) {
+                    fetch("/admin/resolve-report/" + messageId, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.success) {
+                                location.reload()
+                            } else {
+                                alert("Error al procesar la solicitud: " + data.message)
+                            }
+                        })
+                        .catch((error) => {
+                            alert("Error al procesar la solicitud")
+                            console.error("Error:", error)
+                        })
+                }
+            }
+        </script>
+    </body>
+</html>

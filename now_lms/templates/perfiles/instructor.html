@@ -1,0 +1,167 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>Docente</title>
+
+        <style>
+            .bd-placeholder-img {
+                font-size: 1.125rem;
+                text-anchor: middle;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+            }
+
+            @media (min-width: 768px) {
+                .bd-placeholder-img-lg {
+                    font-size: 3.5rem;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-0 py-3" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Panel del docente.</h4>
+
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+                    <div class="col d-flex align-items-start">
+                        <h3><i class="bi bi-card-checklist" aria-hidden="true"></i></h3>
+                        <div>
+                            <h4 class="fw-bold mb-0">Cursos</h4>
+                            <p>
+                                <a href=" {{ url_for('instructor_profile.cursos') }} " class="link-dark">Cursos</a>
+                                -
+                                <a href="{{ url_for('course.nuevo_curso') }}" class="link-dark">Nuevo Curso</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-start">
+                        <h3><i class="bi bi-diagram-3-fill" aria-hidden="true"></i></h3>
+                        <div>
+                            <h4 class="fw-bold mb-0">Programas</h4>
+                            <p>
+                                <a href="{{ url_for('program.programas') }}" class="link-dark">Programas</a>
+                                -
+                                <a href="{{ url_for('program.nuevo_programa') }}" class="link-dark">Nuevo Progama</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-start">
+                        <h3><i class="bi bi-camera-video" aria-hidden="true"></i></h3>
+                        <div>
+                            <h4 class="fw-bold mb-0">Clases Magistrales</h4>
+                            <p>
+                                <a href="{{ url_for('masterclass.instructor_list') }}" class="link-dark">Mis Clases</a>
+                                -
+                                <a href="{{ url_for('masterclass.instructor_create') }}" class="link-dark">Nueva Clase</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+                    <div class="col d-flex align-items-start">
+                        <h3><i class="bi bi-tags-fill" aria-hidden="true"></i></h3>
+                        <div>
+                            <h4 class="fw-bold mb-0">Etiquetas</h4>
+                            <p>
+                                <a href="{{ url_for('tag.tags') }}" class="link-dark">Etiquetas</a>
+                                -
+                                <a href="{{ url_for('tag.new_tag') }}" class="link-dark">Nueva Etiqueta</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-start">
+                        <h3><i class="bi bi-bookmarks-fill" aria-hidden="true"></i></h3>
+                        <div>
+                            <h4 class="fw-bold mb-0">Categorias</h4>
+                            <p>
+                                <a href="{{ url_for('category.categories') }}" class="link-dark">Categorias</a>
+                                -
+                                <a href="{{ url_for('category.new_category') }}" class="link-dark">Nueva Categoria</a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-start">
+                        <h3><i class="bi bi-cloud-arrow-down-fill" aria-hidden="true"></i></h3>
+                        <div>
+                            <h4 class="fw-bold mb-0">Recuros Descargables</h4>
+                            <p>
+                                <a href="{{ url_for('resource.lista_de_recursos') }}" class="link-dark">Recursos</a>
+                                -
+                                <a href="{{ url_for('resource.new_resource') }}" class="link-dark">Nuevo Recurso</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+                    <div class="col d-flex align-items-start">
+                        <h3><i class="bi bi-clipboard-check-fill" aria-hidden="true"></i></h3>
+                        <div>
+                            <h4 class="fw-bold mb-0">Evaluaciones</h4>
+                            <p>
+                                <a href="{{ url_for('instructor_profile.evaluaciones_lista') }}" class="link-dark"
+                                    >Mis Evaluaciones</a
+                                >
+                                -
+                                <a href="{{ url_for('instructor_profile.nueva_evaluacion_global') }}" class="link-dark"
+                                    >Nueva Evaluación</a
+                                >
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col d-flex align-items-start">
+                        <h3><i class="bi bi-megaphone-fill" aria-hidden="true"></i></h3>
+                        <div>
+                            <h4 class="fw-bold mb-0">Anuncios</h4>
+                            <p>
+                                <a href="{{ url_for('instructor_announcements.list_announcements') }}" class="link-dark">Mis Anuncios</a>
+                                -
+                                <a href="{{ url_for('instructor_announcements.new_announcement') }}" class="link-dark">Nuevo Anuncio</a>
+                            </p>
+                        </div>
+                    </div>    
+                    <div class="col d-flex align-items-start">
+                        <h3><i class="bi bi-journal-text" aria-hidden="true"></i></h3>
+                        <div>
+                            <h4 class="fw-bold mb-0">Blog</h4>
+                            <p>
+                                <a href="{{ url_for('blog.instructor_blog_index') }}" class="link-dark">Mis Publicaciones</a>
+                                -
+                                <a href="{{ url_for('blog.admin_create_post') }}" class="link-dark">Nueva Entrada</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+                    <div class="col d-flex align-items-start">
+                        <h3><i class="bi bi-award-fill" aria-hidden="true"></i></h3>
+                        <div>
+                            <h4 class="fw-bold mb-0">Certificados</h4>
+                            <p>
+                                <a href="{{ url_for('certificate.certificados') }}" class="link-dark">Plantillas</a>
+                                -
+                                <a href="{{ url_for('certificate.certificate_new') }}" class="link-dark">Nueva Plantilla</a>
+                                -
+                                <a href="{{ url_for('certificate.certificaciones') }}" class="link-dark"
+                                    >Certicados Emitidos</a
+                                >
+                                -
+                                <a href="{{ url_for('certificate.certificacion_generar') }}" class="link-dark"
+                                    >Emitir Certificado</a
+                                >
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

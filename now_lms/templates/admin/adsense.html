@@ -1,0 +1,137 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+
+        <title>Configuración de Anuncios de AdSense</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Editar configuración de anunciós de AdSense.</h4>
+                <form method="post">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h4>Configuración de usuario de AdSense.</h4>
+                            <label for="email" class="form-label">Mostrar etiqueta en Header:</label>
+                            {{ form.meta_tag_include() }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="meta_tag" class="form-label">Header scritp:</label>
+                            {{ form.meta_tag(class="form-control", id="meta_tag",) }}
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="pug_id" class="form-label">ID de Usuario:</label>
+                            {{ form.pub_id(class="form-control", id="pub_id",) }}
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h4>Configuración de anuncios en el sitio.</h4>
+                            <label for="show_ads" class="form-label">Mostrar anuncios:</label>
+                            {{ form.show_ads() }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="add_code" class="form-label">Código Glogal de AdSense:</label>
+                            {{ form.add_code(class="form-control", id="add_code",) }}
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <h4>Anuncios específicos por tamaño</h4>
+                    <p class="text-muted">
+                        Configure códigos de anuncios específicos para diferentes tamaños. Solo se mostrarán en cursos
+                        gratuitos.
+                    </p>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="add_leaderboard" class="form-label">Leaderboard (728×90):</label>
+                            {{ form.add_leaderboard(class="form-control", id="add_leaderboard",) }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="add_medium_rectangle" class="form-label">Medium Rectangle (300×250):</label>
+                            {{ form.add_medium_rectangle(class="form-control", id="add_medium_rectangle",) }}
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="add_large_rectangle" class="form-label">Large Rectangle (336×280):</label>
+                            {{ form.add_large_rectangle(class="form-control", id="add_large_rectangle",) }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="add_mobile_banner" class="form-label">Mobile Banner (300×50):</label>
+                            {{ form.add_mobile_banner(class="form-control", id="add_mobile_banner",) }}
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="add_wide_skyscraper" class="form-label">Wide Skyscraper (160×600):</label>
+                            {{ form.add_wide_skyscraper(class="form-control", id="add_wide_skyscraper",) }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="add_skyscraper" class="form-label">Skyscraper (120×600):</label>
+                            {{ form.add_skyscraper(class="form-control", id="add_skyscraper",) }}
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="add_large_skyscraper" class="form-label">Large Skyscraper (300×600):</label>
+                            {{ form.add_large_skyscraper(class="form-control", id="add_large_skyscraper",) }}
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="add_billboard" class="form-label">Billboard (970×250):</label>
+                            {{ form.add_billboard(class="form-control", id="add_billboard",) }}
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <a class="btn btn-success" target="_blank" href="{{ url_for('setting.ads_txt') }}" role="button"
+                        >Verificar archivo ads.txt</a
+                    >
+
+                    <br />
+                    <br />
+
+                    <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button">Cancelar</a>
+                    <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>

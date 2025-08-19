@@ -1,0 +1,235 @@
+<!doctype html>
+{% set config = config() %} {% set current_theme = current_theme() %}
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Cursos Disponibles</title>
+
+        {{ current_theme.local_style() }}
+
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/sidebars.css') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            <div class="container px-0 py-3" id="icon-grid">
+                <h4 class="pb-2 border-bottom">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a class="text-reset text-decoration-none link-dark" href="/index">Inicio</a>
+                            </li>
+                            <li class="breadcrumb-item">Cursos disponibles.</li>
+                        </ol>
+                    </nav>
+                </h4>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="container" id="user_paginatios">
+                            {{ current_theme.rendizar_paginacion(consulta=cursos, vista="course.lista_cursos") }}
+                        </div>
+
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                            {% for curso in cursos.items %}
+                            <div class="col">
+                                <div class="card shadow-sm">
+                                    {% if curso.portada %}
+                                    <img
+                                        src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}"
+                                        alt="{{ curso.nombre }}"
+                                        width="100%"
+                                        height="200"
+                                    />
+                                    {% else %}
+                                    <svg
+                                        class="bd-placeholder-img card-img-top"
+                                        width="100%"
+                                        height="225"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        role="img"
+                                        aria-label="Placeholder: Thumbnail"
+                                        preserveAspectRatio="xMidYMid slice"
+                                        focusable="false"
+                                    >
+                                        <title>{{ curso.nombre }}</title>
+                                        <rect width="100%" height="100%" fill="#55595c" />
+                                        <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{ curso.nombre }}</text>
+                                    </svg>
+                                    {% endif %}
+
+                                    <div class="card-body">
+                                        <div class="d-flex d-flex justify-content-between">
+                                            <strong>{{ curso.nombre }}</strong>
+
+                                            {% if curso.nivel == 0 %}
+                                            <img
+                                                src="{{ url_for('static', filename='/icons/curso-level0.svg') }}"
+                                                alt="{{ curso.nombre }}"
+                                                width="20"
+                                                height="20"
+                                                alt="Nivel Introductorio"
+                                            />
+                                            {% elif curso.nivel == 1 %}
+                                            <img
+                                                src="{{ url_for('static', filename='/icons/curso-level1.svg') }}"
+                                                alt="{{ curso.nombre }}"
+                                                width="20"
+                                                height="20"
+                                                alt="Nivel Principiante"
+                                            />
+                                            {% elif curso.nivel == 2 %}
+                                            <img
+                                                src="{{ url_for('static', filename='/icons/curso-level2.svg') }}"
+                                                alt="{{ curso.nombre }}"
+                                                width="20"
+                                                height="20"
+                                                alt="Nivel Intermedio"
+                                            />
+                                            {% elif curso.nivel == 3 %}
+                                            <img
+                                                src="{{ url_for('static', filename='/icons/curso-level3.svg') }}"
+                                                alt="{{ curso.nombre }}"
+                                                width="20"
+                                                height="20"
+                                                alt="Nivel Avanzado"
+                                            />
+                                            {% endif %}
+                                        </div>
+                                        {{ curso.descripcion | truncate(120) }}
+
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <a
+                                                    href="{{ url_for('course.curso', course_code=curso.codigo ) }}"
+                                                    class="btn btn-sm btn-outline-secondary"
+                                                    role="button"
+                                                    aria-disabled="true"
+                                                >
+                                                    Ver Curso
+                                                </a>
+                                            </div>
+                                            {% if curso.duracion %}
+                                            <small class="text-muted">{{ curso.duracion }} mins</small>
+                                            {% endif %} {% if curso.precio %}
+                                            <small>{{ curso.precio | float }} {{ config.moneda }}</small>
+                                            {% else %}
+                                            <small>Gratis</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="container" id="user_paginatios">
+                            {{ current_theme.rendizar_paginacion(consulta=cursos, vista="course.lista_cursos") }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 themed-grid-col">
+                    <div class="flex-shrink-0 p-3 bg-white">
+                        <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
+                            <svg class="bi me-2" width="30" height="24"></svg>
+                            <h5>Navegar Cursos</h5>
+                        </a>
+                        <ul class="list-unstyled ps-0">
+                            <li class="mb-1">
+                                <button
+                                    class="btn btn-toggle align-items-center rounded collapsed"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#home-collapse"
+                                    aria-expanded="true"
+                                >
+                                    Categorias
+                                </button>
+                                <div class="collapse show" id="home-collapse">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                        {% for categoria in categorias %}
+                                        <li>
+                                            <a
+                                                href="{{ url_for('course.lista_cursos') + parametros_url(parametros=parametros, arg='category', val=categoria.nombre, char='?') }}"
+                                                class="link-dark rounded"
+                                                >{{ categoria.nombre }}</a
+                                            >
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="mb-1">
+                                <button
+                                    class="btn btn-toggle align-items-center rounded collapsed"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#dashboard-collapse"
+                                    aria-expanded="false"
+                                >
+                                    Etiquetas
+                                </button>
+                                <div class="collapse" id="dashboard-collapse">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                        {% for etiqueta in etiquetas %}
+                                        <li>
+                                            <a
+                                                href="{{ url_for('course.lista_cursos') + parametros_url(parametros=parametros, arg='tag', val=etiqueta.nombre, char='?') }}"
+                                                class="link-dark rounded"
+                                                >{{ etiqueta.nombre }}</a
+                                            >
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="mb-1">
+                                <button
+                                    class="btn btn-toggle align-items-center rounded collapsed"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#dashboard-collapse"
+                                    aria-expanded="false"
+                                >
+                                    Nivel
+                                </button>
+                                <div class="collapse" id="dashboard-collapse">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                        <li>
+                                            <a
+                                                href="{{ url_for('course.lista_cursos') + parametros_url(parametros=parametros, arg='nivel', val='0', char='?') }}"
+                                                class="link-dark rounded"
+                                                >Introductorio</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="{{ url_for('course.lista_cursos') + parametros_url(parametros=parametros, arg='nivel', val='1', char='?') }}"
+                                                class="link-dark rounded"
+                                                >Principiante</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="{{ url_for('course.lista_cursos') + parametros_url(parametros=parametros, arg='nivel', val='2', char='?') }}"
+                                                class="link-dark rounded"
+                                                >Intermedio</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                href="{{ url_for('course.lista_cursos') + parametros_url(parametros=parametros, arg='nivel', val='3', char='?') }}"
+                                                class="link-dark rounded"
+                                                >Avanzado</a
+                                            >
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

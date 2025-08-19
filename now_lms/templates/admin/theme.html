@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es" class="h-100">
+    {% set current_theme = current_theme() %}
+
+    <head>
+        {{ current_theme.headertags() }} {{ mde.css }}
+        <title>Editar configuracion</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Editar apariencia del sitio web.</h4>
+                <form method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <h4>Logo y Favicon del sitio web.</h4>
+                        <div class="col-sm-6">
+                            {% if logo_perzonalizado() and site_logo() %}
+                            <div>
+                                <img
+                                    src="{{ url_for('static', filename='/files/public/images/' + site_logo() ) }}"
+                                    alt="NOW LMS"
+                                />
+                            </div>
+                            <a href="{{ url_for('setting.elimina_logo') }}">Eliminar Logo actual</a>
+                            {% else %}
+                            <label for="logo" class="form-label">Logotipo</label>
+                            <input
+                                type="file"
+                                name="logo"
+                                accept="image/jpeg, image/png, image/gif, image/webp, image/bmp, image/svg+xml"
+                            />
+                            {% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                            {% if favicon_perzonalizado() and site_favicon() %}
+                            <div>
+                                <img
+                                    src="{{ url_for('static', filename='/files/public/images/' + site_favicon() ) }}"
+                                    alt="NOW LMS Favicon"
+                                />
+                            </div>
+                            {% else %}
+                            <label for="favicon" class="form-label">Favicon</label>
+                            <input type="file" name="favicon" accept="image/png" />
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="style" class="form-label">Estilo de la barra principal.</label>
+                            {{ form.style(class="form-control", id="style") }}
+                        </div>
+                    </div>
+
+                    <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button">Cancelar</a>
+                    <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Tema</button>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>

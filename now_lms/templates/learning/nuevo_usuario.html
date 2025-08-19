@@ -1,0 +1,56 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Crear un nuevo usuario</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Crear nuevo Usuario.</h4>
+                <form method="post">
+                    {{ form.csrf_token }}
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder="Nombre del Usuario") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="apellido" class="form-label">Apellido</label>
+                            {{ form.apellido(class="form-control", id="apellido", placeholder="Apellido del Usuario") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="correo_electronico" class="form-label">Correo Electronico</label>
+                            {{ form.correo_electronico(class="form-control", id="correo_electronico", placeholder="Correo
+                            Electronico") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="usuario" class="form-label">Usuario</label>
+                            {{ form.usuario(class="form-control", id="usuario", placeholder="Usuario") }}
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="acceso" class="form-label">Contraseña</label>
+                            {{ form.acceso(class="form-control", id="acceso", placeholder="Contraseña") }}
+                        </div>
+                    </div>
+                    <br />
+                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Usuario</button>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>

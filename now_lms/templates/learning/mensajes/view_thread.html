@@ -1,0 +1,286 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }} {{ mde.css }}
+        <title>Conversación - {{ thread.course.nombre }}</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5">
+                <div class="d-flex justify-content-between align-items-center pb-2 border-bottom">
+                    <h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}">
+                                        Inicio
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('course.curso', course_code=thread.course_id) }}"
+                                    >
+                                        {{ thread.course.nombre }}
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('msg.course_messages', course_code=thread.course_id) }}"
+                                    >
+                                        Mensajes
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active">Conversación</li>
+                            </ol>
+                        </nav>
+                    </h4>
+                    <div class="d-flex gap-2">
+                        {% if thread.status == "open" %}
+                        <span class="badge bg-success fs-6">Abierto</span>
+                        {% if current_user.tipo == "student" %}
+                        <a
+                            href="{{ url_for('msg.change_thread_status', thread_id=thread.id, new_status='fixed') }}"
+                            class="btn btn-sm btn-warning"
+                        >
+                            <i class="bi bi-check-circle"></i> Marcar como Resuelto
+                        </a>
+                        {% endif %} {% if current_user.tipo in ["instructor", "moderator", "admin"] %}
+                        <a
+                            href="{{ url_for('msg.change_thread_status', thread_id=thread.id, new_status='closed') }}"
+                            class="btn btn-sm btn-secondary"
+                        >
+                            <i class="bi bi-x-circle"></i> Cerrar Hilo
+                        </a>
+                        {% endif %} {% elif thread.status == "fixed" %}
+                        <span class="badge bg-warning fs-6">Resuelto</span>
+                        {% if current_user.tipo in ["instructor", "moderator", "admin"] %}
+                        <a
+                            href="{{ url_for('msg.change_thread_status', thread_id=thread.id, new_status='closed') }}"
+                            class="btn btn-sm btn-secondary"
+                        >
+                            <i class="bi bi-x-circle"></i> Cerrar Hilo
+                        </a>
+                        {% endif %} {% elif thread.status == "closed" %}
+                        <span class="badge bg-secondary fs-6">Cerrado</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <!-- Thread Info -->
+                        <div class="mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="card-title mb-0">
+                                            Estudiante: {{ thread.student.nombre }} {{ thread.student.apellido }}
+                                        </h6>
+                                        <small class="text-muted">{{ thread.timestamp.strftime('%d/%m/%Y %H:%M') }}</small>
+                                    </div>
+                                    {% if thread.closed_at %}
+                                    <small class="text-muted"
+                                        >Cerrado: {{ thread.closed_at.strftime('%d/%m/%Y %H:%M') }}</small
+                                    >
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Messages -->
+                        <div class="mb-4">
+                            {% for message in messages %}
+                            <div class="card mb-3 {% if message.sender_id == current_user.usuario %}border-primary{% endif %}">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <strong>{{ message.sender.nombre }} {{ message.sender.apellido }}</strong>
+                                            <span
+                                                class="badge bg-{{ 'primary' if message.sender.tipo == 'student' else 'info' }}"
+                                            >
+                                                {{ message.sender.tipo | title }}
+                                            </span>
+                                        </div>
+                                        <div class="text-end">
+                                            <small class="text-muted"
+                                                >{{ message.timestamp.strftime('%d/%m/%Y %H:%M') }}</small
+                                            >
+                                            {% if message.read_at %}
+                                            <br /><small class="text-success"
+                                                >Leído: {{ message.read_at.strftime('%d/%m/%Y %H:%M') }}</small
+                                            >
+                                            {% endif %} {% if message.is_reported %}
+                                            <br /><span class="badge bg-danger">Reportado</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="message-content">{{ mkdown2html(message.content) | safe }}</div>
+
+                                    <!-- Report button -->
+                                    {% if not message.is_reported and message.sender_id != current_user.usuario %}
+                                    <div class="mt-2">
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#reportModal{{ message.id }}"
+                                        >
+                                            <i class="bi bi-flag"></i> Reportar
+                                        </button>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Report Modal -->
+                            {% if not message.is_reported and message.sender_id != current_user.usuario %}
+                            <div class="modal fade" id="reportModal{{ message.id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form
+                                            action="{{ url_for('msg.report_message', message_id=message.id) }}"
+                                            method="post"
+                                        >
+                                            {{ report_form.csrf_token }}
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Reportar Mensaje</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="reason{{ message.id }}" class="form-label"
+                                                        >Motivo del reporte</label
+                                                    >
+                                                    <textarea
+                                                        class="form-control"
+                                                        id="reason{{ message.id }}"
+                                                        name="reason"
+                                                        rows="3"
+                                                        required
+                                                    ></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    Cancelar
+                                                </button>
+                                                <button type="submit" class="btn btn-danger">Reportar</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %} {% endfor %}
+                        </div>
+
+                        <!-- Reply Form -->
+                        {% if thread.status != "closed" and (current_user.tipo in ["instructor", "moderator", "admin"] or
+                        current_user.usuario == thread.student_id) %}
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Responder</h6>
+                            </div>
+                            <div class="card-body">
+                                <form action="{{ url_for('msg.reply_to_thread', thread_id=thread.id) }}" method="post">
+                                    {{ reply_form.csrf_token }} {{ reply_form.thread_id }}
+
+                                    <div class="mb-3">
+                                        {{ reply_form.content }} {% if reply_form.content.errors %}
+                                        <div class="text-danger small">
+                                            {% for error in reply_form.content.errors %}
+                                            <div>{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+
+                                    {{ mde.preview }} {{ mde.js }}
+
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="bi bi-reply"></i> Responder
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% elif thread.status == "closed" %}
+                        <div class="alert alert-secondary">
+                            <i class="bi bi-info-circle"></i> Este hilo ha sido cerrado y no se pueden agregar más respuestas.
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Información del Hilo</h6>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Curso:</strong><br />{{ thread.course.nombre }}</p>
+                                <p>
+                                    <strong>Estado:</strong><br />
+                                    {% if thread.status == "open" %}
+                                    <span class="text-success">Abierto</span>
+                                    {% elif thread.status == "fixed" %}
+                                    <span class="text-warning">Resuelto</span>
+                                    {% elif thread.status == "closed" %}
+                                    <span class="text-secondary">Cerrado</span>
+                                    {% endif %}
+                                </p>
+                                <p><strong>Creado:</strong><br />{{ thread.timestamp.strftime('%d/%m/%Y %H:%M') }}</p>
+                                {% if thread.closed_at %}
+                                <p><strong>Cerrado:</strong><br />{{ thread.closed_at.strftime('%d/%m/%Y %H:%M') }}</p>
+                                {% endif %}
+                                <p><strong>Mensajes:</strong><br />{{ messages|length }}</p>
+
+                                <!-- Thread Report Button -->
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-danger btn-sm w-100"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#reportThreadModal"
+                                >
+                                    <i class="bi bi-flag"></i> Reportar Hilo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thread Report Modal -->
+            <div class="modal fade" id="reportThreadModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="{{ url_for('msg.report_message', message_id='') }}" method="post">
+                            {{ report_form.csrf_token }} {{ report_form.thread_id }}
+                            <div class="modal-header">
+                                <h5 class="modal-title">Reportar Hilo</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    {{ report_form.reason(class="form-control", rows="3", placeholder="Describe el motivo del
+                                    reporte...") }}
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-danger">Reportar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,224 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    {% set config = config() %}
+
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ curso.nombre | title }}</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
+                                        >Inicio</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">{{ curso.nombre }}</li>
+                            </ol>
+                        </nav>
+                    </h4>
+                </div>
+
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
+                    <div class="col-md-4 border-right">
+                        {% if curso.portada and course_logo(curso.codigo) %}
+                        <img
+                            src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/' + course_logo(curso.codigo) ) }}"
+                            width="100%"
+                            height="225"
+                            alt="Portada del Curso"
+                        />
+                        {% else %}
+                        <svg
+                            class="bd-placeholder-img card-img-top"
+                            width="100%"
+                            height="225"
+                            xmlns="http://www.w3.org/2000/svg"
+                            role="img"
+                            aria-label="Placeholder: Thumbnail"
+                            preserveAspectRatio="xMidYMid slice"
+                            focusable="false"
+                        >
+                            <title>{{ curso.nombre }}</title>
+                            <rect width="100%" height="100%" fill="#55595c" />
+                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{ curso.nombre }}</text>
+                        </svg>
+                        {% endif %}
+
+                        <h2>{{ curso.nombre }}</h2>
+                        {% if editable %}
+                        <div class="d-flex justify-content-center">
+                            <a
+                                href="{{ url_for('course.administrar_curso', course_code=curso.codigo) }}"
+                                class="btn btn-primary btn-sm"
+                                tabindex="-1"
+                                role="button"
+                                aria-disabled="false"
+                                ><i class="bi bi-pencil-square" aria-hidden="true"></i> Editar</a
+                            >
+                        </div>
+                        {% endif %} {{ markdown2html(curso.descripcion) | safe }}
+                        <br />
+                        {% if curso.fecha_inicio and curso.fecha_fin %}
+                        <i class="bi bi-calendar-week" aria-hidden="true"></i>
+                        {{ curso.fecha_inicio }} - {{ curso.fecha_fin }} {% else %}
+                        <i class="bi bi-calendar" aria-hidden="true"></i>
+                        A su propio ritmo {% endif %} {% if curso.precio %}
+                        <br />
+                        <i class="bi bi-cash-coin" aria-hidden="true"></i>
+                        {{ curso.precio | float }} {{ config.moneda }} {% endif %} {% if curso.certificado %}
+                        <br />
+                        <i class="bi bi-award" aria-hidden="true"></i>
+                        Curso Certificado {% endif %} {% if curso.capacidad %}
+                        <br />
+                        <i class="bi bi-people" aria-hidden="true"></i>
+                        Cupo Limitado {% endif %}
+                        <br />
+                        {{ nivel[curso.nivel] | safe }}
+
+                        <br />
+                        <br />
+
+                        {% if descargas %}
+                        <strong>Recursos disponibles con este curso:</strong>
+                        <br />
+                        {% for item in descargas %}
+                        <a href="{{ url_for('resource.vista_recurso', resource_code=item.codigo) }}" class="link-dark"
+                            >{{ tipo[item.tipo] | safe }} {{ item.nombre }}</a
+                        ><br />
+                        {% endfor %} {% endif %}
+
+                        <br />
+
+                        {% if current_user.is_authenticated %} {% if current_user.tipo == "student" %} {% if
+                        estudiante_asignado(curso.codigo) %}
+                        <p>Usted ya se encuentra registrado en este curso.</p>
+                        <div class="d-flex d-flex justify-content-around">
+                            <a
+                                href="{{ url_for('course.tomar_curso', course_code=curso.codigo) }}"
+                                class="btn btn-info"
+                                role="button"
+                                aria-disabled="true"
+                            >
+                                <i class="bi bi-clipboard-check-fill" aria-hidden="true"></i> Accedar al Curso
+                            </a>
+                        </div>
+                        {% else %}
+                        <div class="d-flex d-flex justify-content-around">
+                            <a
+                                href="{{ url_for('course.course_enroll', course_code=curso.codigo) }}"
+                                class="btn btn-success"
+                                role="button"
+                                aria-disabled="true"
+                            >
+                                <i class="bi bi-backpack-fill" aria-hidden="true"></i> Inscribirse al Curso
+                            </a>
+                        </div>
+                        {% endif %} {% endif %} {% else %}
+                        <div class="d-flex d-flex justify-content-around">
+                            <a
+                                href="{{ url_for('user.inicio_sesion')}}"
+                                class="btn btn-primary"
+                                role="button"
+                                aria-disabled="true"
+                            >
+                                Iniciar Sesión
+                            </a>
+                            <a
+                                href="{{ url_for('user.crear_cuenta')}}"
+                                class="btn btn-warning"
+                                role="button"
+                                aria-disabled="true"
+                            >
+                                Crear Cuenta
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <h3>Contenido del curso.</h3>
+
+                        {% if secciones %}
+                        <div class="accordion accordion-flush" id="accordionSeccionesCurso">
+                            {% for seccion in secciones %}
+                            <div class="accordion-item accordion-flush">
+                                <h2 class="accordion-header accordion-flush" id="heading{{ seccion.id }}">
+                                    <button
+                                        class="accordion-button collapsed"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#collapse{{ seccion.id }}"
+                                        aria-expanded="false"
+                                        aria-controls="collapse{{ seccion.id }}"
+                                    >
+                                        {{ seccion.nombre }}
+                                    </button>
+                                </h2>
+
+                                <div
+                                    id="collapse{{ seccion.id }}"
+                                    class="accordion-collapse collapse"
+                                    aria-labelledby="heading{{ seccion.id }}"
+                                    data-bs-parent="#accordionSeccionesCurso"
+                                >
+                                    <div class="accordion-body accordion-flush">
+                                        {{ seccion.descripcion }}
+                                        <ul class="list-group list-group-flush">
+                                            {% for recurso in recursos %} {% if recurso.seccion == seccion.id %}
+                                            <li class="list-group-item">
+                                                <div class="d-flex justify-content-between">
+                                                    {% if recurso.publico == True %}
+                                                    <a
+                                                        class="link-dark text-decoration-none"
+                                                        href="{{ url_for('course.pagina_recurso', curso_id=recurso.curso, codigo=recurso.id, resource_type=recurso.tipo) }} "
+                                                    >
+                                                        <div class="fw-bold">
+                                                            <i
+                                                                class="{{ iconos_recursos[recurso.tipo] }}"
+                                                                aria-hidden="true"
+                                                            ></i>
+                                                            {{ recurso.nombre }}
+                                                        </div>
+                                                    </a>
+                                                    <span class="badge bg-success">Preview</span>
+                                                    {% else %}
+                                                    <div class="fw-bold">
+                                                        <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i>
+                                                        {{ recurso.nombre }}
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </li>
+                                            {% endif %} {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %} {% else %}
+
+                            <div class="d-flex justify-content-center">
+                                <p>Este curso actualmente no cuenta con secciones disponibles.</p>
+                            </div>
+
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

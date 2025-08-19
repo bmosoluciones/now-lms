@@ -1,0 +1,122 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Editar perfil.</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Editar perfil del usuario: {{ usuario.usuario }}</h4>
+                <form
+                    method="post"
+                    action="{{ url_for('user_profile.edit_perfil', ulid=usuario.id) }}"
+                    enctype="multipart/form-data"
+                >
+                    {{ form.csrf_token }} {% if usuario.portada %}
+                    <img
+                        src="{{ url_for('static', filename='/files/public/images/usuarios/' + usuario.id + '.jpg') }}"
+                        alt="{{ usuario.usuario }}"
+                        width="200"
+                        height="225"
+                    />
+                    <br />
+                    <a href="{{ url_for('elimina_logo_usuario', ulid=usuario.id) }}">Eliminar Imagen de Perfil</a>
+                    {% else %}
+                    <div class="col-md-4">
+                        <label for="logo" class="form-label">Imagen de Perfil</label>
+                        <input type="file" name="logo" accept="image/jpeg" />
+                    </div>
+                    {% endif %}
+
+                    <div class="row g-3">
+                        <h6>Información Básica:</h6>
+                        <div class="col-sm-6">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            {{ form.nombre(class="form-control", id="nombre") }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="apellido" class="form-label">Apellido</label>
+                            {{ form.apellido(class="form-control", id="apellido") }}
+                            <br />
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-sm-4">
+                            <label for="genero" class="form-label">Genero</label>
+                            {{ form.genero(class="form-control", id="email") }}
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="titulo" class="form-label">Titulo</label>
+                            {{ form.titulo(class="form-control", id="titulo") }}
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="nacimiento" class="form-label">Nacimiento</label>
+                            {{ form.nacimiento(class="form-control", id="nacimiento") }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="mw-100">
+                            <label for="bio" class="form-label">Biografia</label>
+                            {{ form.bio(class="form-control", id="bio") }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <h6>Correo Electronico</h6>
+                        <div class="col-sm-6">
+                            <label for="email" class="form-label">Correo Electronico</label>
+                            {{ form.correo_electronico(class="form-control", id="email") }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <h6>Información de Contacto:</h6>
+                        <div class="col-sm-4">
+                            <label for="url" class="form-label">Sitio Web</label>
+                            {{ form.url(class="form-control", id="url") }}
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="linkedin" class="form-label">Linkedin</label>
+                            {{ form.linkedin(class="form-control", id="linkedin") }}
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="twitter" class="form-label">Twitter</label>
+                            {{ form.twitter(class="form-control", id="twitter") }}
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-sm-4">
+                            <label for="facebook" class="form-label">Facebook</label>
+                            {{ form.facebook(class="form-control", id="Facebook") }}
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="github" class="form-label">Github</label>
+                            {{ form.github(class="form-control", id="github") }}
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="youtube" class="form-label">YouTube</label>
+                            {{ form.youtube(class="form-control", id="youtube") }}
+                        </div>
+                    </div>
+
+                    <a class="btn btn-warning" href="{{ url_for('user_profile.perfil') }}" role="button">Cancelar</a>
+                    <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Perfil</button>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>

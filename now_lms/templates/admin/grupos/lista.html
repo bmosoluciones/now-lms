@@ -1,0 +1,62 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Lista de Grupo</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            <div class="container px-0 py-3" id="lista-usarios">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>Grupos registrados en el sistema.</h4>
+
+                    <p>
+                        <span class="badge bg-success">
+                            <a href="{{ url_for('group.nuevo_grupo') }}" class="link-light">Nuevo Grupo</a>
+                        </span>
+                    </p>
+                </div>
+
+                <div class="container" id="user_table">
+                    <table class="table table-sm table-borderless">
+                        <caption>
+                            Lista de grupos registrados en el sistema.
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Grupo</th>
+                                <th scope="col">Activo</th>
+                                <th scope="col">Tutor</th>
+                            </tr>
+                        </thead>
+                        {% for item in grupos.items -%}
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a href="#" class="link-dark">{{ item.nombre }}</a>
+                                </td>
+                                <td>
+                                    <a href="#" class="link-dark">{{ item.activo }}</a>
+                                </td>
+                                <td>
+                                    <a href="#" class="link-dark">{{ item.tutor }}</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+                </div>
+
+                <div class="container" id="user_pagination">
+                    {{ current_theme.rendizar_paginacion(consulta=grupos, vista="groups") }}
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

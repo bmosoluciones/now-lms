@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es" class="h-100">
+    {% set current_theme = current_theme() %}
+
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>Crear nueva cuenta.</title>
+
+        <style>
+            .bd-placeholder-img {
+                font-size: 1.125rem;
+                text-anchor: middle;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+            }
+
+            @media (min-width: 768px) {
+                .bd-placeholder-img-lg {
+                    font-size: 3.5rem;
+                }
+            }
+        </style>
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/signin.css') }}" rel="stylesheet" />
+    </head>
+
+    <body class="text-center">
+        <main class="form-signin">
+            <form method="post">
+                {{ form.csrf_token }}
+                <a href="/home">
+                    <img
+                        class="mb-4"
+                        src="{{ url_for('static', filename='icons/logo/logo.svg') }}"
+                        alt="NOW - LMS"
+                        width="200"
+                    />
+                </a>
+                <h1 class="h3 mb-3 fw-normal">Crear nuevo usuario.</h1>
+                {% with messages = get_flashed_messages() %}{% if messages %}{% for message in messages %}
+                <div class="alert alert-success">{{ message }}</div>
+                {% endfor %}{% endif %}{% endwith %}
+                <label for="nombre" class="visually-hidden">Apellido</label>
+                {{ form.nombre(class="form-control", id="nombre", placeholder="Su Nombre") }}
+                <label for="apellido" class="visually-hidden">Apellido</label>
+                {{ form.apellido(class="form-control", id="apellido", placeholder="Su Apellido") }}
+                <label for="correo_electronico" class="visually-hidden">Correo Electronico</label>
+                {{ form.correo_electronico(class="form-control", id="correo_electronico", placeholder="Su Correo Electronico")
+                }}
+                <label for="contraseña" class="visually-hidden">Contraseña</label>
+                {{ form.acceso(class="form-control", id="acceso", placeholder="Contraseña") }}
+                <button class="w-100 btn btn-lg btn-primary btn-block" type="submit">Crear Cuenta</button>
+                <a href="/home"><i class="bi bi-arrow-left" aria-hidden="true"></i> Regresar</a>
+                <p class="mt-5 mb-3 text-muted text-center">BMO Soluciones &copy; 2025</p>
+                <img src="{{ url_for('static', filename='/img/bmo-logo.png') }}" alt="BMO Soluciones" />
+            </form>
+        </main>
+    </body>
+</html>

@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es" class="h-100">
+    {% set current_theme = current_theme() %}
+
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>Administración</title>
+
+        <style>
+            .bd-placeholder-img {
+                font-size: 1.125rem;
+                text-anchor: middle;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+            }
+
+            @media (min-width: 768px) {
+                .bd-placeholder-img-lg {
+                    font-size: 3.5rem;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-0 py-3" id="icon-grid">
+                <h4 class="pb-2 border-bottom">Panel de Administración.</h4>
+
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+                    <div class="col d-flex align-items-start">
+                        <div>
+                            <h4 class="fw-bold mb-0">
+                                <i class="bi bi-person-fill" aria-hidden="true"></i>
+                                Usuarios
+                            </h4>
+                            <p>
+                                <a href="{{ url_for('admin_profile.usuarios') }}" class="link-dark">Usuarios</a>
+                                -
+                                <a href="{{ url_for('admin_profile.usuarios_inactivos') }}" class="link-dark"
+                                    >Usuarios Inactivos {% if inactivos > 0 %}({{ inactivos | int }}){% endif %}
+                                </a>
+                                -
+                                <a href="{{ url_for('user.crear_usuario') }}" class="link-dark">Nuevo Usuario</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col d-flex align-items-start">
+                        <div>
+                            <h4 class="fw-bold mb-0">
+                                <i class="bi bi-people-fill" aria-hidden="true"></i>
+                                Grupos
+                            </h4>
+                            <p>
+                                <a href="{{ url_for('instructor_profile.lista_grupos') }}" class="link-dark">Grupos</a> -
+                                <a href="{{ url_for('group.nuevo_grupo') }}" class="link-dark">Nuevo Grupo</a>
+                            </p>
+                            <p></p>
+                        </div>
+                    </div>
+
+                    <div class="col d-flex align-items-start">
+                        <div>
+                            <h4 class="fw-bold mb-0">
+                                <i class="bi bi-sliders" aria-hidden="true"></i>
+                                Configuración
+                            </h4>
+                            <p>
+                                <a href="{{ url_for('setting.configuracion') }}" class="link-dark">Configuración del Sitio</a>
+                                -
+                                <a href="{{ url_for('setting.personalizacion') }}" class="link-dark">Tema del Sitio</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+                    <div class="col d-flex align-items-start">
+                        <div>
+                            <h4 class="fw-bold mb-0">
+                                <i class="bi bi-envelope-at-fill" aria-hidden="true"></i>
+                                Correo electronico
+                            </h4>
+                            <p>
+                                <a href="{{ url_for('setting.mail') }}" class="link-dark">Configuración SMTP</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col d-flex align-items-start">
+                        <div>
+                            <h4 class="fw-bold mb-0">
+                                <i class="bi bi-cash-coin" aria-hidden="true"></i>
+                                Pagos
+                            </h4>
+                            <p>
+                                <a href="{{ url_for('setting.paypal') }}" class="link-dark">Paypal</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col d-flex align-items-start">
+                        <div>
+                            <h4 class="fw-bold mb-0">
+                                <i class="bi bi-cash-coin" aria-hidden="true"></i>
+                                AdSense
+                            </h4>
+                            <p>
+                                <a href="{{ url_for('setting.adsense') }}" class="link-dark"> Anuncios de AdSense </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+                    <div class="col d-flex align-items-start">
+                        <div>
+                            <h4 class="fw-bold mb-0">
+                                <i class="bi bi-journal-text" aria-hidden="true"></i>
+                                Blog
+                            </h4>
+                            <p>
+                                <a href="{{ url_for('blog.admin_blog_index') }}" class="link-dark">Gestionar Entradas</a>
+                                -
+                                <a href="{{ url_for('blog.admin_tags') }}" class="link-dark">Etiquetas</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col d-flex align-items-start">
+                        <div>
+                            <h4 class="fw-bold mb-0">
+                                <i class="bi bi-chat-left-text-fill" aria-hidden="true"></i>
+                                Mensajes
+                            </h4>
+                            <p>
+                                <a href="{{ url_for('msg.admin_flagged_messages') }}" class="link-dark">Mensajes Reportados</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col d-flex align-items-start">
+                        <div>
+                            <h4 class="fw-bold mb-0">
+                                <i class="bi bi-megaphone-fill" aria-hidden="true"></i>
+                                Anuncios
+                            </h4>
+                            <p>
+                                <a href="{{ url_for('admin_announcements.list_announcements') }}" class="link-dark"
+                                    >Anuncios Globales</a
+                                >
+                                -
+                                <a href="{{ url_for('admin_announcements.new_announcement') }}" class="link-dark"
+                                    >Nuevo Anuncio</a
+                                >
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
