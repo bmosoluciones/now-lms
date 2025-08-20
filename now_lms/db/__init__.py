@@ -301,7 +301,7 @@ class CursoRecurso(database.Model, BaseTabla):
     curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
     rel_curso = database.relationship("Curso")
     nombre = database.Column(database.String(150), nullable=False)
-    descripcion = database.Column(database.String(1000), nullable=False)
+    descripcion = database.Column(database.Text(), nullable=False)
     # Uno de: mp3, pdf, meet, img, text, html, link, slides, youtube
     tipo = database.Column(database.String(150), nullable=False)
     # required: Requerido, optional: Optional, substitute: Alternativo
@@ -314,8 +314,8 @@ class CursoRecurso(database.Model, BaseTabla):
     base_doc_url = database.Column(database.String(50), unique=False)
     doc = database.Column(database.String(50), unique=False)
     ext = database.Column(database.String(5), unique=True)
-    text = database.Column(database.String(750))
-    external_code = database.Column(database.String(500))
+    text = database.Column(database.Text())
+    external_code = database.Column(database.Text())
     notes = database.Column(database.String(20))
 
 
