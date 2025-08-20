@@ -24,7 +24,7 @@ from collections import OrderedDict
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
-from datetime import datetime
+from datetime import datetime, timezone
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -550,7 +550,7 @@ def _emitir_certificado_programa(codigo_programa, usuario, plantilla):
         usuario=usuario,
         certificado=plantilla,
     )
-    certificado.creado = datetime.utcnow().date()
+    certificado.creado = datetime.now(timezone.utc).date()
     certificado.creado_por = current_user.usuario
     database.session.add(certificado)
     database.session.commit()

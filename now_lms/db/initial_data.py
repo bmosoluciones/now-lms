@@ -18,7 +18,7 @@
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
-from datetime import datetime, time, timedelta
+from datetime import datetime, time, timedelta, timezone
 from os import environ, listdir, makedirs, path
 from shutil import copyfile, copytree
 from typing import TYPE_CHECKING
@@ -2021,7 +2021,7 @@ The pandemic accelerated a trend that was already underway. Online learning is n
         author_id=ADMIN_USER_WITH_FALLBACK,
         status="published",
         allow_comments=True,
-        published_at=datetime.utcnow(),
+        published_at=datetime.now(timezone.utc),
         comment_count=0,
     )
 

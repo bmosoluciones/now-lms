@@ -3352,7 +3352,7 @@ def test_blog_functionality_endtoend(basic_config_setup, client):
     app = basic_config_setup
     from now_lms.db import Usuario, BlogPost, BlogComment, BlogTag
     from now_lms.auth import proteger_passwd
-    from datetime import datetime
+    from datetime import datetime, timezone
 
     # Create users
     with app.app_context():
@@ -3390,7 +3390,7 @@ def test_blog_functionality_endtoend(basic_config_setup, client):
             author_id="admin_blog",
             status="published",
             allow_comments=True,
-            published_at=datetime.utcnow(),
+            published_at=datetime.now(timezone.utc),
         )
 
         # Create test blog tag

@@ -19,7 +19,7 @@ import re
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
-from datetime import datetime
+from datetime import datetime, timezone
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -245,7 +245,7 @@ def admin_create_post():
         )
 
         if form.status.data == "published":
-            post.published_at = datetime.utcnow()
+            post.published_at = datetime.now(timezone.utc)
 
         database.session.add(post)
         database.session.flush()
@@ -314,7 +314,7 @@ def admin_edit_post(post_id):
 
             # Set published_at if publishing for first time
             if form.status.data == "published" and old_status != "published":
-                post.published_at = datetime.utcnow()
+                post.published_at = datetime.now(timezone.utc)
 
         # Clear existing tags
         post.tags.clear()
@@ -355,7 +355,7 @@ def approve_post(post_id):
         abort(404)
 
     post.status = "published"
-    post.published_at = datetime.utcnow()
+    post.published_at = datetime.now(timezone.utc)
     database.session.commit()
 
     flash(f"Entrada '{post.title}' aprobada y publicada.", "success")
