@@ -24,6 +24,7 @@ from now_lms.misc import GENEROS
 
 # Constants
 PROFILE_ROUTE = "/perfil"
+TEMPLATE_CAMBIAR_CONTRASENA = "inicio/cambiar_contraseña.html"
 
 user_profile = Blueprint("user_profile", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
@@ -190,12 +191,12 @@ def cambiar_contraseña(ulid: str):
         # Verificar contraseña actual
         if not validar_acceso(usuario_.usuario, form.current_password.data):
             flash("La contraseña actual es incorrecta.", "error")
-            return render_template("inicio/cambiar_contraseña.html", form=form, usuario=usuario_)
+            return render_template(TEMPLATE_CAMBIAR_CONTRASENA, form=form, usuario=usuario_)
 
         # Verificar que las nuevas contraseñas coincidan
         if form.new_password.data != form.confirm_password.data:
             flash("Las nuevas contraseñas no coinciden.", "error")
-            return render_template("inicio/cambiar_contraseña.html", form=form, usuario=usuario_)
+            return render_template(TEMPLATE_CAMBIAR_CONTRASENA, form=form, usuario=usuario_)
 
         # Actualizar contraseña
         try:
@@ -206,4 +207,4 @@ def cambiar_contraseña(ulid: str):
         except OperationalError:  # pragma: no cover
             flash("Error al actualizar la contraseña.", "error")
 
-    return render_template("inicio/cambiar_contraseña.html", form=form, usuario=usuario_)
+    return render_template(TEMPLATE_CAMBIAR_CONTRASENA, form=form, usuario=usuario_)

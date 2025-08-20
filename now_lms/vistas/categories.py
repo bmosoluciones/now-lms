@@ -40,6 +40,9 @@ from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Categoria, databa
 from now_lms.db.tools import cursos_por_categoria, programas_por_categoria
 from now_lms.forms import CategoriaForm
 
+# Route constants
+ROUTE_CATEGORY_CATEGORIES = "category.categories"
+
 # ---------------------------------------------------------------------------------------
 # Interfaz de mensajes
 # ---------------------------------------------------------------------------------------
@@ -64,7 +67,7 @@ def new_category():
             flash("Nueva categoria creada.", "success")
         except OperationalError:  # pragma: no cover
             flash("Hubo un error al crear la categoria.", "warning")
-        return redirect(url_for("category.categories"))
+        return redirect(url_for(ROUTE_CATEGORY_CATEGORIES))
 
     return render_template("learning/categorias/nueva_categoria.html", form=form)
 
@@ -97,7 +100,7 @@ def delete_category(ulid: str):
 
     database.session.execute(delete(Categoria).where(Categoria.id == ulid))
     database.session.commit()
-    return redirect(url_for("category.categories"))
+    return redirect(url_for(ROUTE_CATEGORY_CATEGORIES))
 
 
 @category.route("/category/<ulid>/edit", methods=["GET", "POST"])
@@ -116,6 +119,6 @@ def edit_category(ulid: str):
             flash("Categoria editada correctamente.", "success")
         except OperationalError:  # pragma: no cover
             flash("No se puedo editar la categoria.", "warning")
-        return redirect(url_for("category.categories"))
+        return redirect(url_for(ROUTE_CATEGORY_CATEGORIES))
 
     return render_template("learning/categorias/editar_categoria.html", form=form)

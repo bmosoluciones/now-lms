@@ -48,6 +48,9 @@ from now_lms.db import (
 )
 from now_lms.forms import CertificateForm, EmitCertificateForm
 
+# Template constants
+TEMPLATE_EMITIR_CERTIFICADO = "learning/certificados/emitir_certificado.html"
+
 # ---------------------------------------------------------------------------------------
 # Gestión de certificados
 # ---------------------------------------------------------------------------------------
@@ -399,10 +402,10 @@ def certificacion_generar():
         # Validate that either curso or master_class is selected based on content_type
         if content_type == "course" and not form.curso.data:
             flash("Por favor selecciona un curso.", "warning")
-            return render_template("learning/certificados/emitir_certificado.html", form=form)
+            return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
         elif content_type == "masterclass" and not form.master_class.data:
             flash("Por favor selecciona una clase magistral.", "warning")
-            return render_template("learning/certificados/emitir_certificado.html", form=form)
+            return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
 
         # Check if user meets requirements for courses
         if content_type == "course":
@@ -411,7 +414,7 @@ def certificacion_generar():
             can_receive, reason = can_user_receive_certificate(form.curso.data, form.usuario.data)
             if not can_receive:
                 flash(f"No se puede emitir el certificado: {reason}", "warning")
-                return render_template("learning/certificados/emitir_certificado.html", form=form)
+                return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
 
             cert = Certificacion(
                 usuario=form.usuario.data,
@@ -430,7 +433,7 @@ def certificacion_generar():
 
             if not enrollment or not enrollment[0].is_confirmed:
                 flash("El usuario debe estar inscrito y confirmado en la clase magistral.", "warning")
-                return render_template("learning/certificados/emitir_certificado.html", form=form)
+                return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
 
             cert = Certificacion(
                 usuario=form.usuario.data,
@@ -450,7 +453,7 @@ def certificacion_generar():
             flash("Hubo en error al crear la plantilla.", "warning")
             return redirect("/instructor")
     else:  # pragma: no cover
-        return render_template("learning/certificados/emitir_certificado.html", form=form)
+        return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
 
 
 # ---------------------------------------------------------------------------------------

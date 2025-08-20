@@ -65,6 +65,9 @@ from now_lms.version import MAYOR, MENOR, VERSION
 ADMIN_USER = environ.get("ADMIN_USER", None) or "lms-admin"
 ADMIN_USER_WITH_FALLBACK = environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin"
 
+# Course description constants
+DESCRIPCION_CURSOS_PROGRAMACION = "Cursos sobre programación"
+
 if TYPE_CHECKING:
     from flask import Flask
 
@@ -100,9 +103,9 @@ def crear_categorias():
     """Crea categorias de demostración."""
     log.trace("Creating demonstration categories.")
     cat1 = Categoria(nombre="Learning", descripcion="Cursos sobre aprendizaje")
-    cat2 = Categoria(nombre="Programing", descripcion="Cursos sobre programación")
-    cat3 = Categoria(nombre="Python", descripcion="Cursos sobre programación")
-    cat4 = Categoria(nombre="Databases", descripcion="Cursos sobre programación")
+    cat2 = Categoria(nombre="Programing", descripcion=DESCRIPCION_CURSOS_PROGRAMACION)
+    cat3 = Categoria(nombre="Python", descripcion=DESCRIPCION_CURSOS_PROGRAMACION)
+    cat4 = Categoria(nombre="Databases", descripcion=DESCRIPCION_CURSOS_PROGRAMACION)
 
     for i in cat1, cat2, cat3, cat4:
         database.session.add(i)

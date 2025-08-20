@@ -82,6 +82,8 @@ LLAVE_FORANEA_SECCION: str = "curso_seccion.id"
 LLAVE_FORANEA_RECURSO: str = "curso_recurso.id"
 LLAVE_FORANEA_PREGUNTA: str = "curso_recurso_pregunta.id"
 LLAVE_FORANEA_FORO_MENSAJE: str = "foro_mensaje.id"
+LLAVE_FORANEA_PROGRAMA: str = "programa.id"
+LLAVE_FORANEA_CERTIFICADO: str = "certificado.code"
 
 # Cascade constants
 CASCADE_ALL_DELETE_ORPHAN: str = "all, delete-orphan"
@@ -257,7 +259,7 @@ class Curso(database.Model, BaseTabla):
     precio = database.Column(database.Numeric(precision=10, scale=2))
     certificado = database.Column(database.Boolean())
     plantilla_certificado = database.Column(
-        database.String(25), database.ForeignKey("certificado.code"), nullable=True, index=True, default="default"
+        database.String(25), database.ForeignKey(LLAVE_FORANEA_CERTIFICADO), nullable=True, index=True, default="default"
     )
 
     def validar_foro_habilitado(self):
@@ -586,7 +588,7 @@ class Programa(database.Model, BaseTabla):
     fecha_promocionado = database.Column(database.DateTime, nullable=True)
     certificado = database.Column(database.Boolean(), default=False)
     plantilla_certificado = database.Column(
-        database.String(25), database.ForeignKey("certificado.code"), nullable=True, index=True, default="default"
+        database.String(25), database.ForeignKey(LLAVE_FORANEA_CERTIFICADO), nullable=True, index=True, default="default"
     )
 
 
@@ -603,7 +605,7 @@ class ProgramaEstudiante(database.Model, BaseTabla):
     """Cursos en un programa."""
 
     usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
-    programa = database.Column(database.String(26), database.ForeignKey("programa.id"), nullable=False, index=True)
+    programa = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_PROGRAMA), nullable=False, index=True)
     relacion_usuario = database.relationship("Usuario", foreign_keys=usuario)
     relacion_programa = database.relationship("Programa", foreign_keys=programa)
 
@@ -611,7 +613,7 @@ class ProgramaEstudiante(database.Model, BaseTabla):
 class CategoriaPrograma(database.Model, BaseTabla):
     """Permite clasificar los programas por categoria."""
 
-    programa = database.Column(database.String(26), database.ForeignKey("programa.id"), nullable=False, index=True)
+    programa = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_PROGRAMA), nullable=False, index=True)
     categoria = database.Column(database.String(26), database.ForeignKey("categoria.id"), nullable=False, index=True)
     relacion_programa = database.relationship("Programa", foreign_keys=programa)
     relacion_categoria = database.relationship("Categoria", foreign_keys=categoria)
@@ -620,7 +622,7 @@ class CategoriaPrograma(database.Model, BaseTabla):
 class EtiquetaPrograma(database.Model, BaseTabla):
     """Permite clasificar los programas por etiquetas."""
 
-    programa = database.Column(database.String(26), database.ForeignKey("programa.id"), nullable=False, index=True)
+    programa = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_PROGRAMA), nullable=False, index=True)
     etiqueta = database.Column(database.String(26), database.ForeignKey("etiqueta.id"), nullable=False, index=True)
     relacion_programa = database.relationship("Programa", foreign_keys=programa)
     relacion_etiqueta = database.relationship("Etiqueta", foreign_keys=etiqueta)
@@ -663,7 +665,9 @@ class Certificacion(database.Model, BaseTabla):
     usuario = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=True, index=True)
     master_class_id = database.Column(database.String(26), database.ForeignKey("master_classes.id"), nullable=True, index=True)
-    certificado = database.Column(database.String(26), database.ForeignKey("certificado.code"), nullable=False, index=True)
+    certificado = database.Column(
+        database.String(26), database.ForeignKey(LLAVE_FORANEA_CERTIFICADO), nullable=False, index=True
+    )
     fecha = database.Column(database.Date, default=date.today, nullable=False)
     nota = database.Column(database.Numeric(precision=5, scale=2))
 
@@ -691,8 +695,10 @@ class CertificacionPrograma(database.Model, BaseTabla):
     """Una certificación generada a un estudiante por completar un programa."""
 
     usuario = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
-    programa = database.Column(database.String(26), database.ForeignKey("programa.id"), nullable=False, index=True)
-    certificado = database.Column(database.String(26), database.ForeignKey("certificado.code"), nullable=False, index=True)
+    programa = database.Column(database.String(26), database.ForeignKey(LLAVE_FORANEA_PROGRAMA), nullable=False, index=True)
+    certificado = database.Column(
+        database.String(26), database.ForeignKey(LLAVE_FORANEA_CERTIFICADO), nullable=False, index=True
+    )
     fecha = database.Column(database.Date, default=date.today, nullable=False)
 
     # Relationships
@@ -1106,7 +1112,7 @@ class MasterClass(database.Model, BaseTabla):
     # Certification
     is_certificate = database.Column(database.Boolean, default=False, nullable=False)
     diploma_template_id = database.Column(
-        database.String(26), database.ForeignKey("certificado.code"), nullable=True, index=True
+        database.String(26), database.ForeignKey(LLAVE_FORANEA_CERTIFICADO), nullable=True, index=True
     )
 
     # Media
