@@ -19,9 +19,7 @@ A simple-to-{install, use, configure, monetize, and maintain} learning managemen
 
 ## Documentation
 
-[![Documentation Status](https://readthedocs.org/projects/now-lms-manual/badge/?version=latest)](https://now-lms-manual.readthedocs.io/en/latest/?badge=latest)
-
--   Users please refer to the [user manual](https://now-lms-manual.readthedocs.io/en/latest/).
+-   Course Creators, refer to the [ourse creation doc](https://bmosoluciones.github.io/now-lms/course-creator/).
 -   System Administrators, refer to the [documentation](https://bmosoluciones.github.io/now-lms/index.html).
 
 Live demo: https://now-lms-demo.onrender.com/
@@ -36,7 +34,13 @@ Data in the live demo is reset on every deployment. Please wait for the free Ren
 
 ## Getting Started
 
-Thanks for your interest in the NOW - LMS project.
+Thanks for your interest in the NOW - LMS project (the project).
+
+### Stack
+
+- Backend: Python with Flask microframework
+- Frontend: Boostrap with Alpine.js
+- ORM: Sqlalchemy
 
 ### Dependencies
 
@@ -49,6 +53,7 @@ To start a local server, simply execute:
 
 ```
 python3 -m venv venv
+source venv/bin/activate
 python -m pip install now_lms
 python -m now_lms
 ```
@@ -60,8 +65,8 @@ Note: the default server binds only to localhost. You can test the software loca
 
 NOW - LMS is designed to be simple yet powerful. Here are its key features:
 
-- **Clean codebase** using [Flask](https://flask.palletsprojects.com/), [Bootstrap](https://getbootstrap.com/), Python, and HTML5.
-- **Compatible with multiple databases**: SQLite (default), PostgreSQL, and MySQL.
+- **Clean codebase**: Python and HTML5.
+- **Compatible with multiple databases**: SQLite, PostgreSQL, and MySQL.
 - **Complete course creation functionality**, allowing full curriculum setup.
 - **Courses are organized into sections**, which group resources in a logical manner.
 - **Flexible resource types** within a course section:
@@ -97,6 +102,9 @@ NOW - LMS is designed to be simple yet powerful. Here are its key features:
   - Fully override the home page if needed
 - **Email notification system** for important events and updates.
 
+## Licence
+
+**Apache License 2.0**: a permissive open-source license that allows anyone to freely use, modify, and distribute software, including for commercial purposes, as long as copyright and license notices are preserved. It also provides an explicit patent grant to protect users from patent claims but terminates rights if you sue over patents. While you can combine Apache-licensed code with proprietary software, you cannot use Apache trademarks or logos without permission, and you must give proper attribution to the original authors.
 
 ## Contributing
 
@@ -105,3 +113,6 @@ Thanks for your interest in contributing to the NOW-LMS project. Please note tha
 ## Logo
 
 The NOW - LMS logo was developed by  [Muhammad Nabeel A.](https://www.freelancer.es/projects/logo-design/Logo-desing-for-Open-Source/).
+
+-----------------------------------
+Made with ❤️ and [gallo pinto](https://es.wikipedia.org/wiki/Gallo_pinto) in Nicaragua 🇳🇮
