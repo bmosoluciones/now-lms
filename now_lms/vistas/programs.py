@@ -136,8 +136,7 @@ def nuevo_programa():
 @perfil_requerido("instructor")
 @cache.cached(timeout=60)
 def programas():
-    """Lista de programas"""
-
+    """Lista de programas."""
     if current_user.tipo == "admin":
         consulta = database.paginate(
             database.select(Programa),  # noqa: E712
@@ -267,7 +266,6 @@ def edit_program(ulid: str):
 @perfil_requerido("instructor")
 def programa_cursos(codigo):
     """Pagina principal del curso."""
-
     if current_user.tipo == "admin":
         return render_template("learning/programas/lista_cursos.html")
 
@@ -279,7 +277,6 @@ def programa_cursos(codigo):
 @cache.cached(timeout=60, unless=no_guardar_en_cache_global)
 def pagina_programa(codigo):
     """Pagina principal del curso."""
-
     program = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalars().first()
 
     return render_template(get_program_view_template(), programa=program, cuenta_cursos=cuenta_cursos_por_programa)
@@ -289,7 +286,6 @@ def pagina_programa(codigo):
 @cache.cached(unless=no_guardar_en_cache_global)
 def lista_programas():
     """Lista de programas."""
-
     if DESARROLLO:
         MAX_COUNT = 3
     else:
@@ -394,7 +390,6 @@ def inscribir_programa(codigo):
 @perfil_requerido("student")
 def tomar_programa(codigo):
     """Página para tomar un programa."""
-
     programa = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalars().first()
 
     if not programa:
@@ -535,7 +530,7 @@ def inscribir_usuario_programa(codigo):
 
 
 def _emitir_certificado_programa(codigo_programa, usuario, plantilla):
-    """Emite un certificado de programa para un usuario."""
+    """Emit a program certificate for a user."""
     # Get program by codigo to get its ID
     programa = database.session.execute(
         database.select(Programa).filter(Programa.codigo == codigo_programa)

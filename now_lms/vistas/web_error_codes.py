@@ -44,7 +44,6 @@ web_error = Blueprint("error", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 @web_error.route("/http/error/<code>")
 def error_page(code):
     """HTTP error code pages."""
-
     url = "error_pages/" + code + ".html"
 
     return render_template(url)

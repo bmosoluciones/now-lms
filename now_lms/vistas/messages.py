@@ -115,7 +115,6 @@ def check_thread_access(thread, user):
 @login_required
 def course_messages(course_code):
     """List all message threads for a specific course."""
-
     if not check_course_access(course_code, current_user):
         return abort(403)
 
@@ -153,7 +152,6 @@ def course_messages(course_code):
 @login_required
 def user_messages():
     """List all message threads for the current user across all courses."""
-
     if current_user.tipo == "student":
         # Students see their own threads
         threads = (
@@ -202,7 +200,6 @@ def user_messages():
 @perfil_requerido("student")
 def new_thread(course_code):
     """Create a new message thread."""
-
     if not check_course_access(course_code, current_user):
         return abort(403)
 
@@ -246,7 +243,6 @@ def new_thread(course_code):
 @login_required
 def view_thread(thread_id):
     """View a message thread and its messages."""
-
     thread = database.session.execute(select(MessageThread).filter_by(id=thread_id)).scalars().first()
     if not thread:
         return abort(404)
@@ -289,7 +285,6 @@ def view_thread(thread_id):
 @login_required
 def reply_to_thread(thread_id):
     """Reply to a message thread."""
-
     thread = database.session.execute(select(MessageThread).filter_by(id=thread_id)).scalars().first()
     if not thread:
         return abort(404)
@@ -323,7 +318,6 @@ def reply_to_thread(thread_id):
 @login_required
 def change_thread_status(thread_id, new_status):
     """Change thread status."""
-
     thread = database.session.execute(select(MessageThread).filter_by(id=thread_id)).scalars().first()
     if not thread:
         return abort(404)
@@ -359,7 +353,6 @@ def change_thread_status(thread_id, new_status):
 @login_required
 def report_message(message_id):
     """Report a message."""
-
     message = database.session.execute(select(Message).filter_by(id=message_id)).scalars().first()
     if not message:
         return abort(404)
@@ -394,7 +387,6 @@ def report_message(message_id):
 @perfil_requerido("admin")
 def admin_flagged_messages():
     """Admin view for flagged messages."""
-
     # Get all reported messages
     flagged_messages = (
         database.session.execute(select(Message).filter_by(is_reported=True).order_by(Message.timestamp.desc()))
@@ -542,7 +534,6 @@ def standalone_report_message():
 @login_required
 def mensaje(ulid: str):
     """Mensaje - DEPRECATED."""
-
     mensaje_result = database.session.execute(database.select(Mensaje).filter(Mensaje.id == ulid)).first()
     if not mensaje_result:
         return abort(404)
@@ -570,7 +561,6 @@ def mensaje(ulid: str):
 @login_required
 def nuevo_mensaje():
     """Nuevo Mensaje - DEPRECATED."""
-
     form = MsgForm()
     mensaje = Mensaje()
     if form.validate_on_submit():

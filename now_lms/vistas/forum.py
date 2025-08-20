@@ -15,13 +15,23 @@
 
 """Vistas para la funcionalidad del foro."""
 
+# ---------------------------------------------------------------------------------------
+# Third-party libraries
+# ---------------------------------------------------------------------------------------
 from bleach import clean
 from flask import Blueprint, abort, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from markdown import markdown
 
+# ---------------------------------------------------------------------------------------
+# Local resources
+# ---------------------------------------------------------------------------------------
 from now_lms.db import Curso, DocenteCurso, EstudianteCurso, ForoMensaje, ModeradorCurso, database, select
 from now_lms.forms import ForoMensajeForm, ForoMensajeRespuestaForm
+
+# ---------------------------------------------------------------------------------------
+# Configuration constants
+# ---------------------------------------------------------------------------------------
 
 # Configuración de HTML permitido para sanitización
 ALLOWED_HTML_TAGS = [
@@ -53,7 +63,15 @@ ALLOWED_HTML_ATTRS = {
 # Route constants
 ROUTE_FORUM_VER_FORO = "forum.ver_foro"
 
+# ---------------------------------------------------------------------------------------
+# Blueprint definition
+# ---------------------------------------------------------------------------------------
 forum = Blueprint("forum", __name__)
+
+
+# ---------------------------------------------------------------------------------------
+# Helper functions
+# ---------------------------------------------------------------------------------------
 
 
 def verificar_acceso_curso(course_code, usuario_id):
@@ -99,6 +117,11 @@ def markdown_to_html(contenido_markdown):
     return clean(html, tags=ALLOWED_HTML_TAGS, attributes=ALLOWED_HTML_ATTRS)
 
 
+# ---------------------------------------------------------------------------------------
+# Forum routes - Course forum functionality
+# ---------------------------------------------------------------------------------------
+
+
 @forum.route("/course/<course_code>/forum")
 @login_required
 def ver_foro(course_code):
@@ -126,7 +149,7 @@ def ver_foro(course_code):
         error_out=False,
     )
 
-    # Procesar contenido markdown
+    # Procesar contenido markdown para renderizado
     for mensaje in mensajes.items:
         mensaje.contenido_html = markdown_to_html(mensaje.contenido)
 
@@ -156,6 +179,7 @@ def nuevo_mensaje(course_code):
     form = ForoMensajeForm()
 
     if form.validate_on_submit():
+        # Crear nuevo mensaje en el foro
         mensaje = ForoMensaje(
             curso_id=course_code, usuario_id=current_user.usuario, contenido=form.contenido.data, estado="abierto"
         )
@@ -187,7 +211,7 @@ def ver_mensaje(course_code, message_id):
     # Obtener el mensaje raíz del hilo
     mensaje_raiz = mensaje.get_thread_root()
 
-    # Obtener todas las respuestas del hilo
+    # Obtener todas las respuestas del hilo ordenadas cronológicamente
     respuestas = (
         database.session.execute(
             select(ForoMensaje)
@@ -198,7 +222,7 @@ def ver_mensaje(course_code, message_id):
         .all()
     )
 
-    # Procesar contenido markdown
+    # Procesar contenido markdown para renderizado
     mensaje_raiz.contenido_html = markdown_to_html(mensaje_raiz.contenido)
     for respuesta in respuestas:
         respuesta.contenido_html = markdown_to_html(respuesta.contenido)
@@ -240,9 +264,10 @@ def responder_mensaje(course_code, message_id):
     form = ForoMensajeRespuestaForm()
 
     if form.validate_on_submit():
-        # Obtener el mensaje raíz del hilo
+        # Obtener el mensaje raíz del hilo para mantener estructura
         mensaje_raiz = mensaje.get_thread_root()
 
+        # Crear respuesta vinculada al mensaje raíz
         respuesta = ForoMensaje(
             curso_id=course_code,
             usuario_id=current_user.usuario,
@@ -257,10 +282,15 @@ def responder_mensaje(course_code, message_id):
         flash("Respuesta enviada exitosamente.", "success")
         return redirect(url_for("forum.ver_mensaje", course_code=course_code, message_id=mensaje_raiz.id))
 
-    # Procesar contenido del mensaje original
+    # Procesar contenido del mensaje original para display
     mensaje.contenido_html = markdown_to_html(mensaje.contenido)
 
     return render_template("forum/reply_message.html", curso=curso, mensaje=mensaje, form=form)
+
+
+# ---------------------------------------------------------------------------------------
+# Message management routes - Administrative actions for forum messages
+# ---------------------------------------------------------------------------------------
 
 
 @forum.route("/course/<course_code>/forum/message/<message_id>/close", methods=["POST"])
@@ -278,13 +308,13 @@ def cerrar_mensaje(course_code, message_id):
     if not tiene_acceso or not puede_cerrar_mensajes(role, current_user.tipo):
         abort(403)
 
-    # Cerrar el mensaje
+    # Cerrar el mensaje (cambia estado para prevenir nuevas respuestas)
     mensaje.estado = "cerrado"
     database.session.commit()
 
     flash("Mensaje cerrado exitosamente.", "success")
 
-    # Redireccionar según el tipo de solicitud
+    # Redireccionar según el tipo de solicitud (AJAX vs form)
     if request.headers.get("Content-Type") == "application/json":
         return jsonify({"status": "success", "message": "Mensaje cerrado exitosamente"})
 
@@ -311,13 +341,13 @@ def abrir_mensaje(course_code, message_id):
         flash("No se pueden abrir mensajes en cursos finalizados.", "error")
         return redirect(url_for(ROUTE_FORUM_VER_FORO, course_code=course_code))
 
-    # Abrir el mensaje
+    # Abrir el mensaje (permite nuevas respuestas)
     mensaje.estado = "abierto"
     database.session.commit()
 
     flash("Mensaje abierto exitosamente.", "success")
 
-    # Redireccionar según el tipo de solicitud
+    # Redireccionar según el tipo de solicitud (AJAX vs form)
     if request.headers.get("Content-Type") == "application/json":
         return jsonify({"status": "success", "message": "Mensaje abierto exitosamente"})
 

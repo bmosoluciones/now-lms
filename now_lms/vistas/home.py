@@ -1,3 +1,5 @@
+"""Home page views for NOW LMS."""
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -42,7 +44,6 @@ home = Blueprint("home", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 @cache.cached(timeout=90, unless=no_guardar_en_cache_global)
 def pagina_de_inicio():
     """Página principal de la aplicación."""
-
     if DESARROLLO:  # pragma: no cover
         MAX = 3
     else:  # pragma: no cover

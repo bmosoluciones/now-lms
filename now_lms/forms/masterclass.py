@@ -15,18 +15,33 @@
 
 """Master Class forms."""
 
+# ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
 from datetime import date
 
+# ---------------------------------------------------------------------------------------
+# Third-party libraries
+# ---------------------------------------------------------------------------------------
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, DateField, SelectField, StringField, TextAreaField, TimeField
 from wtforms.validators import URL, DataRequired, Length, Optional, ValidationError
 
+# ---------------------------------------------------------------------------------------
+# Local resources
+# ---------------------------------------------------------------------------------------
 from now_lms.db import Certificado, database
+
+
+# ---------------------------------------------------------------------------------------
+# Master Class forms
+# ---------------------------------------------------------------------------------------
 
 
 class MasterClassForm(FlaskForm):
     """Form for creating and editing master classes."""
 
+    # Basic information fields
     title = StringField(
         "Título",
         validators=[
@@ -51,6 +66,7 @@ class MasterClassForm(FlaskForm):
         render_kw={"rows": 3, "placeholder": "Descripción visible solo para usuarios inscritos"},
     )
 
+    # Date and time fields
     date = DateField(
         "Fecha del Evento", validators=[DataRequired(message="La fecha del evento es requerida")], format="%Y-%m-%d"
     )
@@ -61,6 +77,7 @@ class MasterClassForm(FlaskForm):
 
     end_time = TimeField("Hora de Fin", validators=[DataRequired(message="La hora de fin es requerida")], format="%H:%M")
 
+    # Platform configuration
     platform_name = SelectField(
         "Plataforma",
         choices=[
@@ -84,10 +101,12 @@ class MasterClassForm(FlaskForm):
         render_kw={"placeholder": "https://zoom.us/j/123456789"},
     )
 
+    # Certification fields
     is_certificate = BooleanField("Otorga Certificación")
 
     diploma_template_id = SelectField("Plantilla de Certificado", coerce=str, validators=[Optional()])
 
+    # Optional recording URL
     video_recording_url = StringField(
         "URL de Grabación",
         validators=[
@@ -99,14 +118,16 @@ class MasterClassForm(FlaskForm):
     )
 
     def __init__(self, *args, **kwargs):
+        """Initialize form with dynamic choices for diploma templates."""
         super().__init__(*args, **kwargs)
 
-        # Populate diploma template choices
+        # Populate diploma template choices from database
         templates = database.session.execute(database.select(Certificado).filter_by(habilitado=True)).scalars().all()
         self.diploma_template_id.choices = [("", "Seleccionar plantilla")] + [
             (template.code, template.titulo) for template in templates
         ]
 
+    # Custom validators
     def validate_end_time(self, field):
         """Validate that end time is after start time."""
         if self.start_time.data and field.data:
@@ -128,4 +149,5 @@ class MasterClassEnrollmentForm(FlaskForm):
     """Simple form for master class enrollment confirmation."""
 
     def __init__(self, *args, **kwargs):
+        """Initialize enrollment form."""
         super().__init__(*args, **kwargs)

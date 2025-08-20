@@ -98,8 +98,7 @@ def new_resource():
 @login_required
 @perfil_requerido("instructor")
 def lista_de_recursos():
-    """Lista de programas"""
-
+    """Lista de programas."""
     if current_user.tipo == "admin":
         consulta = database.paginate(
             database.select(Recurso),  # noqa: E712
@@ -154,7 +153,6 @@ def delete_resource(ulid: str):
 @perfil_requerido("instructor")
 def edit_resource(ulid: str):
     """Actualiza recurso."""
-
     recurso = database.session.execute(database.select(Recurso).filter(Recurso.id == ulid)).scalars().first()
     form = RecursoForm(nombre=recurso.nombre, descripcion=recurso.descripcion, tipo=recurso.tipo)
 
@@ -184,7 +182,6 @@ def edit_resource(ulid: str):
 @cache.cached(unless=no_guardar_en_cache_global)
 def vista_recurso(resource_code):
     """Pagina de un recurso."""
-
     return render_template(
         "learning/recursos/recurso.html",
         curso=database.session.execute(database.select(Recurso).filter_by(codigo=resource_code)).scalars().first(),
@@ -196,7 +193,6 @@ def vista_recurso(resource_code):
 @cache.cached(unless=no_guardar_en_cache_global)
 def lista_recursos():
     """Lista de programas."""
-
     if DESARROLLO:
         MAX_COUNT = 3
     else:

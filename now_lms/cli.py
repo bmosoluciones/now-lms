@@ -14,10 +14,7 @@
 #
 
 
-"""
-Command line interface for NOW LMS.
-
-"""
+"""Command line interface for NOW LMS."""
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -82,8 +79,7 @@ def init(with_examples=False, with_testdata=False):  # pragma: no cover
 
 @database.command()
 def seed():
-    """Setup a new develoment database."""
-
+    """Set up a new develoment database."""
     from now_lms.db.data_test import crear_data_para_pruebas
 
     with lms_app.app_context():
@@ -152,7 +148,6 @@ def info():
 @click.argument("course", type=str, required=False)
 def course(course):  # pragma: no cover
     """Return information about the given course."""
-
     if course:
         with lms_app.app_context():
             info = course_info(course)
@@ -167,7 +162,6 @@ def course(course):  # pragma: no cover
 @info.command()
 def system():  # pragma: no cover
     """Return information about the system."""
-
     with lms_app.app_context():
         info = config_info()
         click.echo("NOW LMS System Information:")
@@ -186,7 +180,6 @@ def system():  # pragma: no cover
 @info.command()
 def path():  # pragma: no cover
     """Directorios used by the current setup."""
-
     with lms_app.app_context():
         info = config_info()
         click.echo("Application directories:")
@@ -233,7 +226,7 @@ def serve():  # pragma: no cover
 
 @lms_app.cli.group()
 def settings():
-    """Settings administration tools."""
+    """Set administration tools."""
     pass
 
 

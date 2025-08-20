@@ -262,13 +262,13 @@ class CursoRecursoArchivoText(CursoRecursoForm):
 
 
 class CursoRecursoExternalCode(CursoRecursoForm):
-    """Formulario para insertar un recurso HTML"""
+    """Formulario para insertar un recurso HTML."""
 
     html_externo = StringField(validators=[DataRequired()])
 
 
 class CursoRecursoExternalLink(CursoRecursoForm):
-    """Formulario para insertar un recurso HTML"""
+    """Formulario para insertar un recurso HTML."""
 
     url = StringField(validators=[DataRequired()])
 
@@ -332,7 +332,7 @@ class SlideShowEditForm(SlideShowForm):
 
 
 class CursoRecursoMeet(CursoRecursoForm):
-    """Formulario para insertar un Meet"""
+    """Formulario para insertar un Meet."""
 
     fecha = DateField(validators=[])
     hora_inicio = TimeField(validators=[])
@@ -358,11 +358,11 @@ class CursoRecursoMeet(CursoRecursoForm):
 
 
 class CategoriaForm(BaseForm):
-    """Formulario para crear una categoria"""
+    """Formulario para crear una categoria."""
 
 
 class EtiquetaForm(BaseForm):
-    """Formulario para crear una etiqueta"""
+    """Formulario para crear una etiqueta."""
 
     color = StringField(widget=ColorInput())
 
@@ -486,13 +486,12 @@ class MessageReportForm(FlaskForm):
 
 
 class TextAreaNoEscape(TextArea):
-    """
-    Renders a multi-line text area.
-    """
+    """Renders a multi-line text area."""
 
     validation_attrs = ["required", "disabled", "readonly", "maxlength", "minlength"]
 
     def __call__(self, field, **kwargs):
+        """Render the field."""
         kwargs.setdefault("id", field.id)
         flags = getattr(field, "flags", {})
         for k in dir(flags):
@@ -515,7 +514,7 @@ class CertificateForm(FlaskForm):
 
 
 class AdSenseForm(FlaskForm):
-    """AdSense form with specific ad sizes"""
+    """AdSense form with specific ad sizes."""
 
     meta_tag = TextAreaField(validators=[])
     meta_tag_include = BooleanField(validators=[])
@@ -535,7 +534,7 @@ class AdSenseForm(FlaskForm):
 
 
 class PayaplForm(FlaskForm):
-    """Paypal"""
+    """Paypal."""
 
     habilitado = BooleanField(validators=[])
     sandbox = BooleanField(validators=[])
@@ -546,6 +545,7 @@ class PayaplForm(FlaskForm):
 
 
 class EmitCertificateForm(FlaskForm):
+    """Form for emitting certificates."""
 
     usuario = SelectField(
         "Usuario",

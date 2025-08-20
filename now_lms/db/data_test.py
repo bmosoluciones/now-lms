@@ -61,7 +61,6 @@ USUARIO_ADMINISTRADOR = environ.get("ADMIN_USER") or environ.get("LMS_USER") or 
 
 def crear_etiqueta_prueba():
     """Crea etiquetas de demostración."""
-
     etiqueta = Etiqueta(id="01HNP0TTQNTR03J7ZQHR09YMJJ", nombre="Python", color="#FFD43B")
     database.session.add(etiqueta)
     database.session.commit()
@@ -69,15 +68,13 @@ def crear_etiqueta_prueba():
 
 def crear_categoria_prueba():
     """Crea categorias de demostración."""
-
     categoria = Categoria(id="01HNP0TTQNTR03J7ZQHR09YMJK", nombre="Learning", descripcion="Cursos sobre aprendizaje")
     database.session.add(categoria)
     database.session.commit()
 
 
 def crear_certificado_prueba():
-    """Crea certificado de prueba"""
-
+    """Crea certificado de prueba."""
     certificado = Certificado(
         id="01HNP0TTQNTR03J7ZQHR09YMKK",
         code="lala",
@@ -318,6 +315,7 @@ def crear_curso_para_pruebas():
 
 
 def crear_usuarios_de_prueba():
+    """Create test users for development and testing purposes."""
     student = Usuario(
         id="01HNZXJ6Q8CWGC6DXTHK8NC9AT",
         usuario="student",
@@ -469,7 +467,6 @@ TEXTO_PROGRAMA = """Programa de Prueba"""
 
 def crear_programa_prueba():
     """Crea programa de pruebas."""
-
     programa = Programa(
         id="01HNZXEMSWTSBM4PNSY4R9VMN6",
         nombre="Programing 101",
@@ -490,7 +487,6 @@ def crear_programa_prueba():
 
 def crear_recurso_prueba():
     """Recurso descargable de ejemplo."""
-
     recurso = Recurso(
         id="01HNZXA1BX9B297CYAAA4MK93V",
         nombre="Think Python",
@@ -592,6 +588,7 @@ def crear_blog_prueba():
 
 
 def crear_data_para_pruebas():
+    """Create comprehensive test data for development and testing."""
     crear_etiqueta_prueba()
     crear_categoria_prueba()
     crear_certificado_prueba()

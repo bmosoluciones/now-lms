@@ -1,3 +1,5 @@
+"""User groups management for NOW LMS."""
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -57,7 +59,6 @@ def nuevo_grupo():
 @perfil_requerido("admin")
 def agrega_tutor_a_grupo():
     """Asigna como tutor de grupo a un usuario."""
-
     id_ = request.args.get("id", type=str)
     registro = UsuarioGrupoTutor(
         grupo=id_, usuario=request.form["usuario"], creado_por=current_user.usuario, creado=datetime.now()

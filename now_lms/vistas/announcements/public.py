@@ -41,7 +41,6 @@ public_announcements = Blueprint("public_announcements", __name__, template_fold
 @cache.cached(timeout=60)
 def global_announcements():
     """Ver anuncios globales para todos los usuarios autenticados."""
-
     # Filtrar anuncios globales activos (no expirados)
     now = datetime.now()
 
@@ -68,7 +67,6 @@ def global_announcements():
 @cache.cached(timeout=60)
 def course_announcements(course_id):
     """Ver anuncios específicos de un curso."""
-
     # Verificar que el curso existe
     course = database.session.get(Curso, course_id)
     if not course:

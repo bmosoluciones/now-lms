@@ -66,7 +66,6 @@ def get_instructor_courses(instructor_user):
 @cache.cached(timeout=60)
 def list_announcements():
     """Lista de anuncios de curso para instructores."""
-
     # Obtener cursos del instructor
     instructor_courses = get_instructor_courses(current_user)
     course_ids = [course.codigo for course in instructor_courses]
@@ -92,7 +91,6 @@ def list_announcements():
 @perfil_requerido("instructor")
 def new_announcement():
     """Formulario para crear un nuevo anuncio de curso."""
-
     form = CourseAnnouncementForm()
 
     # Poblar choices del campo curso
@@ -135,7 +133,6 @@ def new_announcement():
 @perfil_requerido("instructor")
 def edit_announcement(announcement_id):
     """Formulario para editar un anuncio de curso."""
-
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is None:
         flash("Anuncio no encontrado o no es un anuncio de curso.", "error")
@@ -179,7 +176,6 @@ def edit_announcement(announcement_id):
 @perfil_requerido("instructor")
 def delete_announcement(announcement_id):
     """Eliminar un anuncio de curso."""
-
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is None:
         flash("Anuncio no encontrado o no es un anuncio de curso.", "error")

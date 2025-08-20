@@ -45,7 +45,6 @@ def modificar_indice_curso(
     indice: int = 0,
 ):
     """Modica el número de indice de una sección dentro de un curso."""
-
     indice_current = indice
     indice_next = indice + 1
     indice_back = indice - 1
@@ -82,7 +81,6 @@ def modificar_indice_curso(
 
 def reorganiza_indice_curso(codigo_curso: Union[None, str] = None):
     """Al eliminar una sección de un curso se debe generar el indice nuevamente."""
-
     secciones = (
         database.session.execute(database.select(CursoSeccion).filter_by(curso=codigo_curso).order_by(CursoSeccion.indice))
         .scalars()
@@ -99,7 +97,6 @@ def reorganiza_indice_curso(codigo_curso: Union[None, str] = None):
 
 def reorganiza_indice_seccion(seccion: Union[None, str] = None):
     """Al eliminar una sección de un curso se debe generar el indice nuevamente."""
-
     recursos = (
         database.session.execute(database.select(CursoRecurso).filter_by(seccion=seccion).order_by(CursoRecurso.indice))
         .scalars()
@@ -122,7 +119,6 @@ def modificar_indice_seccion(
     indice: int = 0,
 ):
     """Modica el número de indice de un recurso dentro de una sección."""
-
     NO_INDICE_ACTUAL = int(indice)
     NO_INDICE_ANTERIOR = NO_INDICE_ACTUAL - 1
     NO_INDICE_POSTERIOR = NO_INDICE_ACTUAL + 1
@@ -207,7 +203,6 @@ def cambia_estado_curso_por_id(
 
     Los valores reconocidos por el sistema son: draft, public, open, closed, finalizado.
     """
-
     CURSO = database.session.execute(database.select(Curso).filter(Curso.codigo == id_curso)).first()[0]
     estado_anterior = CURSO.estado
     CURSO.estado = nuevo_estado
@@ -239,7 +234,6 @@ def cambia_estado_curso_por_id(
 
 def cambia_curso_publico(id_curso: Union[None, str, int] = None):
     """Cambia el estatus publico de un curso."""
-
     CURSO = database.session.execute(database.select(Curso).filter(Curso.codigo == id_curso)).first()[0]
     if CURSO.estado == "open":
         if CURSO.publico:
@@ -254,7 +248,6 @@ def cambia_curso_publico(id_curso: Union[None, str, int] = None):
 
 def cambia_seccion_publico(codigo: Union[None, str, int] = None):
     """Cambia el estatus publico de una sección."""
-
     SECCION = database.session.execute(database.select(CursoSeccion).filter_by(id=codigo)).scalar_one_or_none()
     if SECCION.estado:
         SECCION.estado = False

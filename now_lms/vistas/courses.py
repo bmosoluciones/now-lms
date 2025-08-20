@@ -150,7 +150,6 @@ course = Blueprint("course", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 @cache.cached(unless=no_guardar_en_cache_global)
 def curso(course_code):
     """Pagina principal del curso."""
-
     _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
 
     # Special access logic for LMS training course - accessible to admins and instructors
@@ -208,7 +207,6 @@ def curso(course_code):
 
 def _crear_indice_avance_curso(course_code):
     """Crea el índice de avance del curso."""
-
     from now_lms.db import CursoRecurso, CursoRecursoAvance
 
     recursos = (
@@ -407,7 +405,6 @@ def course_enroll(course_code):
 @cache.cached(unless=no_guardar_en_cache_global)
 def tomar_curso(course_code):
     """Pagina principal del curso."""
-
     if current_user.tipo == "student":
         # Get evaluations for this course
         evaluaciones = (
@@ -475,7 +472,6 @@ def tomar_curso(course_code):
 @cache.cached(unless=no_guardar_en_cache_global)
 def moderar_curso(course_code):
     """Pagina principal del curso."""
-
     if current_user.tipo == "moderator" or current_user.tipo == "admin":
         return render_template(
             "learning/curso.html",
@@ -505,7 +501,6 @@ def moderar_curso(course_code):
 @cache.cached(unless=no_guardar_en_cache_global)
 def administrar_curso(course_code):
     """Pagina principal del curso."""
-
     return render_template(
         "learning/curso/admin.html",
         curso=database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first(),
@@ -531,7 +526,6 @@ def administrar_curso(course_code):
 @perfil_requerido("instructor")
 def nuevo_curso():
     """Formulario para crear un nuevo usuario."""
-
     form = CurseForm()
     form.plantilla_certificado.choices = generate_template_choices()
     form.categoria.choices = generate_category_choices()
@@ -625,7 +619,6 @@ def nuevo_curso():
 @perfil_requerido("instructor")
 def editar_curso(course_code):
     """Editar pagina del curso."""
-
     form = CurseForm()
     form.plantilla_certificado.choices = generate_template_choices()
     form.categoria.choices = generate_category_choices()
@@ -787,7 +780,6 @@ def nuevo_seccion(course_code):
 @perfil_requerido("instructor")
 def editar_seccion(course_code, seccion):
     """Formulario para editar una sección en el curso."""
-
     seccion_a_editar = database.session.get(CursoSeccion, seccion)
     if seccion_a_editar is None:
         abort(404)
@@ -1042,8 +1034,7 @@ def pagina_recurso(curso_id, resource_type, codigo):
 
 
 def _emitir_certificado(curso_id, usuario, plantilla):
-    """Emite un certificado para un usuario en un curso."""
-
+    """Emit a certificate for a user in a course."""
     from now_lms.db import Certificacion
 
     certificado = Certificacion(
@@ -1162,7 +1153,6 @@ def marcar_recurso_completado(curso_id, resource_type, codigo):
 @perfil_requerido("student")
 def pagina_recurso_alternativo(curso_id, codigo, order):
     """Pagina para seleccionar un curso alternativo."""
-
     CURSO = database.session.execute(select(Curso).filter(Curso.codigo == curso_id)).scalars().first()
     RECURSO = database.session.execute(select(CursoRecurso).filter(CursoRecurso.id == codigo)).scalars().first()
     SECCION = database.session.execute(select(CursoSeccion).filter(CursoSeccion.id == RECURSO.seccion)).scalars().first()
@@ -1212,7 +1202,6 @@ def pagina_recurso_alternativo(curso_id, codigo, order):
 @perfil_requerido("instructor")
 def nuevo_recurso(course_code, seccion):
     """Página para seleccionar tipo de recurso."""
-
     return render_template("learning/resources_new/nuevo_recurso.html", id_curso=course_code, id_seccion=seccion)
 
 
@@ -1723,7 +1712,7 @@ def editar_recurso_img(course_code, seccion, resource_id):
 @login_required
 @perfil_requerido("instructor")
 def nuevo_recurso_audio(course_code, seccion):
-    """Formulario para crear un nuevo recurso de audio"""
+    """Formulario para crear un nuevo recurso de audio."""
     form = CursoRecursoArchivoAudio()
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int(recursos + 1)
@@ -1903,7 +1892,6 @@ def elimina_logo(course_code):
 @perfil_requerido("instructor")
 def nuevo_recurso_slideshow(course_code, seccion):
     """Crear una nueva presentación de diapositivas."""
-
     form = SlideShowForm()
     if form.validate_on_submit():
         try:
@@ -2097,7 +2085,6 @@ def pdf_viewer(course_code, recurso_code):
 @course.route("/course/<course_code>/external_code/<recurso_code>")
 def external_code(course_code, recurso_code):
     """Devuelve un archivo desde el sistema de archivos."""
-
     recurso = (
         database.session.execute(
             select(CursoRecurso).filter(CursoRecurso.id == recurso_code, CursoRecurso.curso == course_code)
@@ -2119,7 +2106,6 @@ def external_code(course_code, recurso_code):
 @course.route("/course/slide_show/<recurso_code>")
 def slide_show(recurso_code):
     """Renderiza una presentación de diapositivas."""
-
     # Primero buscar el recurso para obtener la referencia al slideshow
     recurso = database.session.execute(select(CursoRecurso).filter(CursoRecurso.id == recurso_code)).scalars().first()
 
@@ -2159,7 +2145,6 @@ def slide_show(recurso_code):
 @cache.cached(unless=no_guardar_en_cache_global)
 def lista_cursos():
     """Lista de cursos."""
-
     if DESARROLLO:
         MAX_COUNT = 3
     else:

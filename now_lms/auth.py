@@ -49,7 +49,6 @@ ph = PasswordHasher()
 # ---------------------------------------------------------------------------------------
 def proteger_passwd(clave, /):
     """Devuelve una contraseña salteada con argon2."""
-
     _hash = ph.hash(clave.encode()).encode("utf-8")
 
     return _hash
@@ -57,7 +56,6 @@ def proteger_passwd(clave, /):
 
 def validar_acceso(usuario_id, acceso, /):
     """Verifica el inicio de sesión del usuario."""
-
     log.trace(f"Verifying access for {usuario_id}")
     registro = database.session.execute(database.select(Usuario).filter_by(usuario=usuario_id)).scalar_one_or_none()
 
@@ -125,7 +123,6 @@ def perfil_requerido(perfil_id):
 # ---------------------------------------------------------------------------------------
 def proteger_secreto(password):
     """Devuelve el hash de una contraseña."""
-
     with current_app.app_context():
         from now_lms.db import Configuracion, database
 
@@ -144,7 +141,6 @@ def proteger_secreto(password):
 
 def descifrar_secreto(hash):
     """Devuelve el valor de una contraseña protegida."""
-
     with current_app.app_context():
         from now_lms.db import Configuracion, database
 
@@ -169,6 +165,7 @@ def descifrar_secreto(hash):
 # Validación de tokens de confirmación de correo electrónico.
 # ---------------------------------------------------------------------------------------
 def generate_confirmation_token(mail):
+    """Generate a confirmation token for email verification."""
     expiration_time = datetime.now(timezone.utc) + timedelta(seconds=36000)
     data = {"exp": expiration_time, "confirm_id": mail}
     token = jwt.encode(data, current_app.secret_key, algorithm="HS512")
@@ -176,6 +173,7 @@ def generate_confirmation_token(mail):
 
 
 def validate_confirmation_token(token):
+    """Validate a confirmation token and return the result."""
     try:
         data = jwt.decode(token, current_app.secret_key, algorithms=["HS512"])
         log.trace(f"Confirmation token decoded: {data}")
@@ -212,7 +210,7 @@ def validate_confirmation_token(token):
 
 
 def send_confirmation_email(user):
-
+    """Send confirmation email to user."""
     from flask_mail import Message
 
     from now_lms.mail import send_mail

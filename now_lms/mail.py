@@ -13,6 +13,7 @@
 # limitations under the License.
 #
 
+"""Email functionality for NOW LMS."""
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -55,7 +56,6 @@ mail_configured: bool = False
 # ---------------------------------------------------------------------------------------
 def _load_mail_config_from_env() -> SimpleNamespace:
     """Carga la configuración de correo electrónico desde las variables de entorno."""
-
     logger.trace("Obteniendo configuración de correo electronico desde variables de entorno.")
     # Server name and user credentials
     MAIL_SERVER = environ.get("MAIL_SERVER", None)
@@ -145,7 +145,6 @@ def send_threaded_email(app: Flask, mail: Mail, msg: Message, _log: str = "", _f
     :param mail: Instancia de Flask-Mail.
     :param msg: Instancia de flask_mail.Message.
     """
-
     logger.trace(f"Enviando correo a {msg.recipients} en segundo plano.")
     try:
         with app.app_context():
@@ -168,7 +167,6 @@ def send_mail(msg: Message, background: bool = True, no_config: bool = False, _l
     :param msg: Instancia de flask_mail.Message.
     :param background: Si es True, envía el correo en segundo plano.
     """
-
     _app = current_app
     config = _config()
 

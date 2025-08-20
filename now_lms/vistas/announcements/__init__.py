@@ -14,3 +14,9 @@
 #
 
 """Announcements module."""
+
+# ---------------------------------------------------------------------------------------
+# Module initialization
+# ---------------------------------------------------------------------------------------
+# This module provides announcement functionality for the NOW LMS system.
+# It includes views for admin, instructor, and public announcement management.

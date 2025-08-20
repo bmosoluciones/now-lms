@@ -75,7 +75,6 @@ evaluation = Blueprint("evaluation", __name__)
 
 def can_user_access_evaluation(evaluation_obj, user):
     """Check if user can access evaluation based on course payment status."""
-
     # Get the course from the section
     section = database.session.get(CursoSeccion, evaluation_obj.section_id)
     if not section:

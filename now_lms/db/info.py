@@ -13,6 +13,8 @@
 # limitations under the License.
 #
 
+"""System information utilities for NOW LMS."""
+
 import platform
 
 # ---------------------------------------------------------------------------------------
@@ -36,6 +38,7 @@ if TYPE_CHECKING:
 
 
 def app_info(flask_app: "Flask") -> dict:
+    """Return application information."""
     from now_lms.cache import CTYPE
 
     DBURL: str
@@ -60,10 +63,7 @@ def app_info(flask_app: "Flask") -> dict:
 
 
 def course_info(course_code: str) -> SimpleNamespace:
-    """
-    Returns a SimpleNamespace with course information.
-    """
-
+    """Return a SimpleNamespace with course information."""
     from sqlalchemy import func
 
     from now_lms.db import Curso, CursoRecurso, CursoSeccion, EstudianteCurso, Evaluation
@@ -92,9 +92,7 @@ def course_info(course_code: str) -> SimpleNamespace:
 
 
 def lms_info() -> SimpleNamespace:
-    """
-    Returns a SimpleNamespace with LMS information.
-    """
+    """Return a SimpleNamespace with LMS information."""
     from sqlalchemy import func
 
     from now_lms.db import Certificacion, Curso, EstudianteCurso, Programa, Usuario, MasterClass, Evaluation
@@ -149,10 +147,7 @@ def _obtener_info_sistema():
 
 
 def config_info() -> SimpleNamespace:
-    """
-    Returns a SimpleNamespace with system information.
-    """
-
+    """Return a SimpleNamespace with system information."""
     with current_app.app_context():
         from now_lms.config import (
             DIRECTORIO_APP,
