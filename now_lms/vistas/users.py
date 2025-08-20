@@ -98,7 +98,6 @@ def cerrar_sesion():  # pragma: no cover
 @user.route("/user/logon", methods=["GET", "POST"])
 def crear_cuenta():
     """Crear cuenta de usuario desde el sistio web."""
-
     if current_user.is_authenticated:
         flash("Usted ya posee una cuenta en el sistema.", "warning")
         return PANEL_DE_USUARIO

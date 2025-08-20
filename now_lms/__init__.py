@@ -165,7 +165,6 @@ _mail_instance = mail
 # ---------------------------------------------------------------------------------------
 def inicializa_extenciones_terceros(flask_app: Flask):
     """Inicia extensiones de terceros."""
-
     log.trace("Starting third-party extensions")
     with flask_app.app_context():
         from now_lms.i18n import get_locale, get_timezone
@@ -185,7 +184,6 @@ def inicializa_extenciones_terceros(flask_app: Flask):
 
 def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
     """Registro modulos en la aplicación principal."""
-
     log.trace("Registering modules in the main application.")
 
     with flask_app.app_context():
@@ -243,7 +241,6 @@ def no_autorizado():
 @cache.cached(timeout=60, key_prefix="site_config")
 def config():  # pragma: no cover
     """Obtiene configuración del sitio web desde la base de datos."""
-
     with lms_app.app_context():
         try:
             CONFIG = database.session.execute(database.select(Configuracion)).scalars().first()
@@ -265,7 +262,6 @@ def config():  # pragma: no cover
 # ---------------------------------------------------------------------------------------
 def define_variables_globales_jinja2(lms_app: Flask):
     """Define variables globales de Jinja2 para su disponibilidad en plantillas HTML."""
-
     log.trace("Defining Jinja2 global variables.")
     lms_app.jinja_env.globals["adsense_code"] = get_addsense_code
     lms_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
@@ -353,7 +349,7 @@ define_variables_globales_jinja2(lms_app)
 
 # Reference: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/402
 class PaymentRequired(HTTPException):
-    """402 Payment Required"""
+    """402 Payment Required."""
 
     code = 402
     description = """
@@ -367,7 +363,6 @@ makes a payment.
 # Errores personalizados
 def handle_402(error):
     """Pagina personalizada para recursos que requieren pago."""
-
     if not current_user.is_authenticated:
         flash("Favor iniciar sesión para acceder a este recurso.", "warning")
         log.warning(f"Resource not available for anonymous user, payment required: {error}")
@@ -385,7 +380,6 @@ lms_app.register_error_handler(PaymentRequired, handle_402)
 @cache.cached()
 def error_403(error):
     """Pagina personalizada para recursos no autorizados."""
-
     if not current_user.is_authenticated:
         flash("Favor iniciar sesión para acceder a este recurso.", "warning")
         log.warning(f"Resource not authorized for anonymous user: {error}")
@@ -399,7 +393,6 @@ def error_403(error):
 @cache.cached()
 def error_404(error):
     """Pagina personalizada para recursos no encontrados."""
-
     if not current_user.is_authenticated:
         log.warning(f"Resource not found for anonymous user: {error}")
     else:
@@ -412,7 +405,6 @@ def error_404(error):
 @cache.cached()
 def error_405(error):
     """Pagina personalizada para metodos no permitidos."""
-
     log.warning(f"Method not allowed: {error}")
     return render_template("error_pages/405.html", error=error), 405
 
@@ -428,7 +420,7 @@ def error_500(error):
 # Funciones auxiliares para la administracion y configuración inicial de la aplicacion
 # ---------------------------------------------------------------------------------------
 def initial_setup(with_examples=False, with_tests=False):
-    """Inicializa una nueva bases de datos"""
+    """Inicializa una nueva bases de datos."""
     with lms_app.app_context():
         log.info("Creating database schema.")
         database.create_all()
@@ -472,7 +464,6 @@ def initial_setup(with_examples=False, with_tests=False):
 
 def init_app(with_examples=False):
     """Funcion auxiliar para iniciar la aplicacion."""
-
     from now_lms.db.tools import check_db_access, database_is_populated
 
     DB_ACCESS = check_db_access(lms_app)
@@ -510,6 +501,7 @@ def load_configuracion_global():
 
 @lms_app.before_request
 def before_request_user_active():
+    """Check if authenticated user is active before processing requests."""
     if (
         current_user.is_authenticated
         and not current_user.activo

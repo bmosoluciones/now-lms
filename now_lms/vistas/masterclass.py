@@ -15,17 +15,34 @@
 
 """Master Class views."""
 
+# ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
 from datetime import datetime
 
+# ---------------------------------------------------------------------------------------
+# Third-party libraries
+# ---------------------------------------------------------------------------------------
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from slugify import slugify
 from sqlalchemy import and_
 
+# ---------------------------------------------------------------------------------------
+# Local resources
+# ---------------------------------------------------------------------------------------
 from now_lms.db import MasterClass, MasterClassEnrollment, Usuario, database, select
 from now_lms.forms.masterclass import MasterClassEnrollmentForm, MasterClassForm
 
+# ---------------------------------------------------------------------------------------
+# Blueprint definition
+# ---------------------------------------------------------------------------------------
 masterclass = Blueprint("masterclass", __name__, url_prefix="/masterclass")
+
+
+# ---------------------------------------------------------------------------------------
+# Public routes - Available to all users
+# ---------------------------------------------------------------------------------------
 
 
 @masterclass.route("/")
@@ -94,6 +111,7 @@ def enroll(slug):
     form = MasterClassEnrollmentForm()
 
     if form.validate_on_submit():
+        # Create enrollment record (always free, no payment processing needed)
         enrollment = MasterClassEnrollment(
             master_class_id=master_class.id,
             user_id=current_user.usuario,
@@ -110,6 +128,11 @@ def enroll(slug):
     return render_template(
         "masterclass/enroll.html", master_class=master_class, form=form, title=f"Inscribirse en {master_class.title}"
     )
+
+
+# ---------------------------------------------------------------------------------------
+# Instructor routes - For instructors to manage their master classes
+# ---------------------------------------------------------------------------------------
 
 
 @masterclass.route("/instructor")
@@ -146,10 +169,13 @@ def instructor_create():
         slug = slugify(form.title.data)
         counter = 1
         original_slug = slug
+
+        # Ensure slug is unique by adding counter if needed
         while database.session.execute(select(MasterClass).filter_by(slug=slug)).scalars().first():
             slug = f"{original_slug}-{counter}"
             counter += 1
 
+        # Create master class with validated data
         master_class = MasterClass(
             title=form.title.data,
             slug=slug,
@@ -201,6 +227,8 @@ def instructor_edit(id):
             slug = slugify(form.title.data)
             counter = 1
             original_slug = slug
+
+            # Check for slug conflicts excluding current record
             existing = (
                 database.session.execute(select(MasterClass).filter(and_(MasterClass.slug == slug, MasterClass.id != id)))
                 .scalars()
@@ -216,9 +244,10 @@ def instructor_edit(id):
                 )
             master_class.slug = slug
 
+        # Update master class with form data
         form.populate_obj(master_class)
 
-        # Ensure payment fields are always disabled
+        # Ensure payment fields are always disabled (business rule)
         master_class.is_paid = False
         master_class.price = None
         master_class.early_discount = None
@@ -256,6 +285,7 @@ def instructor_students(id):
     page = request.args.get("page", 1, type=int)
     per_page = 20
 
+    # Get enrollments with user information
     enrollments = database.paginate(
         select(MasterClassEnrollment)
         .filter_by(master_class_id=id)
@@ -274,6 +304,11 @@ def instructor_students(id):
     )
 
 
+# ---------------------------------------------------------------------------------------
+# Student routes - For students to manage their enrollments
+# ---------------------------------------------------------------------------------------
+
+
 @masterclass.route("/my-enrollments")
 @login_required
 def my_enrollments():
@@ -281,6 +316,7 @@ def my_enrollments():
     page = request.args.get("page", 1, type=int)
     per_page = 10
 
+    # Get user's enrollments with master class details
     enrollments = database.paginate(
         select(MasterClassEnrollment)
         .filter_by(user_id=current_user.usuario)
@@ -294,6 +330,11 @@ def my_enrollments():
     return render_template("masterclass/my_enrollments.html", enrollments=enrollments, title="Mis Clases Magistrales")
 
 
+# ---------------------------------------------------------------------------------------
+# Admin routes - Administrative management of all master classes
+# ---------------------------------------------------------------------------------------
+
+
 @masterclass.route("/admin")
 @login_required
 def admin_list():
@@ -304,6 +345,7 @@ def admin_list():
     page = request.args.get("page", 1, type=int)
     per_page = 15
 
+    # Get all master classes with instructor details
     master_classes = database.paginate(
         select(MasterClass).join(Usuario, MasterClass.instructor_id == Usuario.usuario).order_by(MasterClass.date.desc()),
         page=page,

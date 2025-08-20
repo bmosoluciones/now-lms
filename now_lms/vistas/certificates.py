@@ -184,7 +184,7 @@ def certificate_edit(ulid: str):
 
 
 def insert_style_in_html(template):
-
+    """Insert CSS styles into HTML template."""
     html = template.html
     css = template.css
 
@@ -198,7 +198,7 @@ def insert_style_in_html(template):
 
 @certificate.route("/certificate/inspect/<ulid>/")
 def certificate_inspect(ulid: str):
-
+    """Inspect a certificate by its ULID."""
     consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
     consulta = consulta[0]
 
@@ -207,6 +207,7 @@ def certificate_inspect(ulid: str):
 
 @certificate.route("/certificate/get_as_qr/<id>/")
 def certificacion_qr(id: str):
+    """Generate QR code for certificate verification."""
     import qrcode
 
     base_url = request.url_root
@@ -225,6 +226,7 @@ def certificacion_qr(id: str):
 
 @certificate.route("/certificate/certificate/<ulid>/")
 def certificacion(ulid: str):
+    """Render a certificate based on certification ULID."""
     from jinja2 import BaseLoader, Environment
 
     certificacion = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
@@ -322,7 +324,6 @@ def certificaciones():
 @certificate.route("/certificate/view/<ulid>")
 def certificado(ulid):
     """Lista de certificaciones emitidas."""
-
     certificacion = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
     certificacion = certificacion[0]
 
@@ -359,7 +360,6 @@ def certificado(ulid):
 @perfil_requerido("instructor")
 def certificacion_crear(course, user, template):
     """Generar un nuevo certificado."""
-
     # Check if user meets all requirements including evaluations
     from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
 

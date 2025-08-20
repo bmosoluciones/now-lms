@@ -13,9 +13,7 @@
 # limitations under the License.
 #
 
-"""
-Health check endpoint.
-"""
+"""Health check endpoint."""
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -38,6 +36,7 @@ health_bp = Blueprint("health", __name__)
 
 @health_bp.route("/health", methods=["GET"])
 def health():
+    """Health check endpoint for application status monitoring."""
     # Default response
     status = {"status": "ok", "database": "ok", "version": VERSION, "code_name": CODE_NAME}
 

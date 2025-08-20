@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Paypal Payments"""
+"""PayPal Payments."""
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -45,6 +45,7 @@ paypal = Blueprint("paypal", __name__, template_folder=DIRECTORIO_PLANTILLAS, ur
 
 @cache.cached(timeout=50)
 def check_paypal_enabled():
+    """Check if PayPal payments are enabled."""
     with current_app.app_context():
         try:
             q = database.session.execute(database.select(PaypalConfig)).first()[0]
@@ -428,7 +429,6 @@ def resume_payment(payment_id):
 @perfil_requerido("student")
 def payment_page(course_code):
     """Display PayPal payment page for a course."""
-
     curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalars().first()
     if not curso:
         flash("Curso no encontrado.", "error")

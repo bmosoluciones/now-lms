@@ -146,8 +146,8 @@ def get_user_evaluation_status(course_code, user_id):
 
 
 def can_user_receive_certificate(course_code, user_id):
-    """
-    Check if a user can receive a certificate for a course.
+    """Check if a user can receive a certificate for a course.
+
     This includes checking both resource completion and evaluation completion.
 
     Args:

@@ -34,6 +34,7 @@ logging.addLevelName(TRACE_LEVEL_NUM, "TRACE")
 
 # Método adicional para usar logger.trace(...)
 def trace(self, message, *args, **kwargs):
+    """Log a message with TRACE level."""
     if self.isEnabledFor(TRACE_LEVEL_NUM):
         self._log(TRACE_LEVEL_NUM, message, args, **kwargs)
 

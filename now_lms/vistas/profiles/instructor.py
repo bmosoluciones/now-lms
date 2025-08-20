@@ -1,3 +1,5 @@
+"""Instructor profile views for NOW LMS."""
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -87,7 +89,6 @@ def cursos():
 @cache.cached(timeout=60)
 def lista_grupos():
     """Formulario para crear un nuevo grupo."""
-
     grupos = database.paginate(
         database.select(UsuarioGrupo),
         page=request.args.get("page", default=1, type=int),
@@ -104,7 +105,7 @@ def lista_grupos():
 @login_required
 @perfil_requerido("instructor")
 def grupo(ulid: str):
-    """Grupo de usuarios"""
+    """Grupo de usuarios."""
     id_ = request.args.get("id", type=str)
     grupo_ = database.session.get(UsuarioGrupo, ulid)
     CONSULTA = database.paginate(
@@ -127,7 +128,6 @@ def grupo(ulid: str):
 @perfil_requerido("instructor")
 def elimina_usuario__grupo(group: str, user: str):
     """Elimina usuario de grupo."""
-
     database.session.execute(
         delete(UsuarioGrupoMiembro).where((UsuarioGrupoMiembro.usuario == user) & (UsuarioGrupoMiembro.grupo == group))
     )
@@ -145,7 +145,6 @@ def elimina_usuario__grupo(group: str, user: str):
 @perfil_requerido("instructor")
 def agrega_usuario_a_grupo():
     """Agrega un usuario a un grupo y redirecciona a la pagina del grupo."""
-
     id_ = request.args.get("id", type=str)
     registro = UsuarioGrupoMiembro(
         grupo=id_, usuario=request.form["usuario"], creado_por=current_user.usuario, creado=datetime.now()
@@ -171,7 +170,6 @@ def agrega_usuario_a_grupo():
 @perfil_requerido("instructor")
 def course_evaluations(course_code):
     """List evaluations for a course."""
-
     # Check if instructor has access to this course
     if current_user.tipo != "admin":
         instructor_assignment = (
@@ -210,7 +208,6 @@ def course_evaluations(course_code):
 @perfil_requerido("instructor")
 def new_evaluation(course_code, section_id):
     """Create a new evaluation for a course section."""
-
     # Check permissions
     if current_user.tipo != "admin":
         instructor_assignment = (
@@ -259,7 +256,6 @@ def new_evaluation(course_code, section_id):
 @perfil_requerido("instructor")
 def evaluaciones_lista():
     """Lista todas las evaluaciones creadas por el instructor."""
-
     if current_user.tipo == "admin":
         # Admin can see all evaluations
         evaluaciones = database.session.execute(select(Evaluation)).scalars().all()
@@ -282,7 +278,6 @@ def evaluaciones_lista():
 @perfil_requerido("instructor")
 def nueva_evaluacion_global():
     """Página para seleccionar curso y sección antes de crear una evaluación."""
-
     if current_user.tipo == "admin":
         cursos = database.session.execute(select(Curso)).scalars().all()
     else:
@@ -303,7 +298,6 @@ def nueva_evaluacion_global():
 @perfil_requerido("instructor")
 def edit_evaluation(evaluation_id):
     """Editar una evaluación existente."""
-
     evaluacion = database.session.get(Evaluation, evaluation_id)
     if not evaluacion:
         flash(MESSAGE_EVALUACION_NO_ENCONTRADA, "danger")
@@ -356,7 +350,6 @@ def edit_evaluation(evaluation_id):
 @perfil_requerido("instructor")
 def toggle_evaluation_status(evaluation_id):
     """Habilitar o deshabilitar una evaluación."""
-
     evaluacion = database.session.get(Evaluation, evaluation_id)
     if not evaluacion:
         flash(MESSAGE_EVALUACION_NO_ENCONTRADA, "danger")
@@ -396,7 +389,6 @@ def toggle_evaluation_status(evaluation_id):
 @perfil_requerido("instructor")
 def new_question(evaluation_id):
     """Crear una nueva pregunta para una evaluación."""
-
     evaluacion = database.session.get(Evaluation, evaluation_id)
     if not evaluacion:
         flash(MESSAGE_EVALUACION_NO_ENCONTRADA, "danger")
@@ -471,7 +463,6 @@ def new_question(evaluation_id):
 @perfil_requerido("instructor")
 def edit_question(question_id):
     """Edit an existing question."""
-
     question = database.session.get(Question, question_id)
     if not question:
         flash(MESSAGE_PREGUNTA_NO_ENCONTRADA, "danger")
@@ -510,7 +501,6 @@ def edit_question(question_id):
 @perfil_requerido("instructor")
 def evaluation_results(evaluation_id):
     """View results and statistics for an evaluation."""
-
     evaluacion = database.session.get(Evaluation, evaluation_id)
     if not evaluacion:
         flash(MESSAGE_EVALUACION_NO_ENCONTRADA, "danger")
@@ -560,7 +550,6 @@ def evaluation_results(evaluation_id):
 @perfil_requerido("instructor")
 def new_question_option(question_id):
     """Add a new option to a question."""
-
     question = database.session.get(Question, question_id)
     if not question:
         flash(MESSAGE_PREGUNTA_NO_ENCONTRADA, "danger")
@@ -612,7 +601,6 @@ def new_question_option(question_id):
 @perfil_requerido("instructor")
 def edit_question_option(option_id):
     """Edit an existing question option."""
-
     option = database.session.get(QuestionOption, option_id)
     if not option:
         flash("Opción no encontrada.", "danger")
@@ -660,7 +648,6 @@ def edit_question_option(option_id):
 @perfil_requerido("instructor")
 def delete_question_option(option_id):
     """Delete a question option."""
-
     option = database.session.get(QuestionOption, option_id)
     if not option:
         flash("Opción no encontrada.", "danger")
@@ -706,7 +693,6 @@ def delete_question_option(option_id):
 @perfil_requerido("instructor")
 def delete_question(question_id):
     """Delete a question and all its options."""
-
     question = database.session.get(Question, question_id)
     if not question:
         flash(MESSAGE_PREGUNTA_NO_ENCONTRADA, "danger")

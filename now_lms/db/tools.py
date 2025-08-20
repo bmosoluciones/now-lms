@@ -134,7 +134,6 @@ def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
 
 def crear_configuracion_predeterminada():
     """Crea configuración predeterminada de la aplicación."""
-
     from os import urandom
 
     config = Configuracion(
@@ -178,7 +177,6 @@ def crear_configuracion_predeterminada():
 
 def verificar_avance_recurso(recurso: str, usuario: str) -> int:
     """Devuelve el porcentaje de avance de un estudiante para un recurso dado."""
-
     if recurso and usuario:
         if (
             (
@@ -219,7 +217,6 @@ class RecursoIndex(NamedTuple):
 
 def crear_indice_recurso(recurso: str) -> NamedTuple:
     """Devuelve el indice de un recurso para determinar elemento previo y posterior."""
-
     has_next: bool = False
     has_prev: bool = False
     prev_is_alternative: bool = False
@@ -322,7 +319,6 @@ def crear_indice_recurso(recurso: str) -> NamedTuple:
 @cache.cached(timeout=60, key_prefix="cached_logo")
 def logo_perzonalizado():
     """Devuelve configuracion predeterminada."""
-
     consulta = database.session.execute(database.select(Style)).first()
     if consulta:
         consulta = consulta[0]
@@ -334,7 +330,6 @@ def logo_perzonalizado():
 @cache.cached(timeout=60, key_prefix="cached_favicon")
 def favicon_perzonalizado():
     """Devuelve configuracion predeterminada."""
-
     consulta = database.session.execute(database.select(Style)).first()
     if consulta:
         consulta = consulta[0]
@@ -373,7 +368,6 @@ def elimina_logo_perzonalizado_curso(course_code: str):
 
 def elimina_logo_perzonalizado_programa(course_code: str):
     """Elimina logo tipo perzonalizado de un programa."""
-
     programa = database.session.execute(database.select(Programa).filter_by(id=course_code)).scalars().first()
     programa.logo = False
 
@@ -386,7 +380,6 @@ def elimina_logo_perzonalizado_programa(course_code: str):
 
 def elimina_imagen_usuario(ulid: str):
     """Elimina imagen de usuario."""
-
     usuario = database.session.execute(database.select(Usuario).filter_by(id=ulid)).scalars().first()
     usuario.portada = False
 
@@ -402,28 +395,28 @@ def elimina_imagen_usuario(ulid: str):
 
 
 def cursos_por_etiqueta(tag: str) -> int:
-    """Devuelve el numero de cursos en una etiqueta"""
+    """Devuelve el numero de cursos en una etiqueta."""
     return database.session.execute(
         database.select(func.count(EtiquetaCurso.id)).filter(EtiquetaCurso.etiqueta == tag)
     ).scalar()
 
 
 def cursos_por_categoria(tag: str) -> int:
-    """Devuelve el numero de cursos en una Categoria"""
+    """Devuelve el numero de cursos en una Categoria."""
     return database.session.execute(
         database.select(func.count(CategoriaCurso.id)).filter(CategoriaCurso.categoria == tag)
     ).scalar()
 
 
 def programas_por_etiqueta(tag: str) -> int:
-    """Devuelve el numero de programas en una etiqueta"""
+    """Devuelve el numero de programas en una etiqueta."""
     return database.session.execute(
         database.select(func.count(EtiquetaPrograma.id)).filter(EtiquetaPrograma.etiqueta == tag)
     ).scalar()
 
 
 def programas_por_categoria(tag: str) -> int:
-    """Devuelve el numero de programas en una Categoria"""
+    """Devuelve el numero de programas en una Categoria."""
     return database.session.execute(
         database.select(func.count(CategoriaPrograma.id)).filter(CategoriaPrograma.categoria == tag)
     ).scalar()
@@ -515,7 +508,7 @@ def obtener_cursos_completados_en_programa_por_id(usuario: str, programa_id: str
 
 
 def get_addsense_meta():
-    """AdSense metatags."""
+    """Adsense metatags."""
     try:
         query = database.session.execute(database.select(AdSense)).first()
     except AttributeError:
@@ -534,7 +527,7 @@ def get_addsense_meta():
 
 
 def get_addsense_code():
-    """AdSense metatags."""
+    """Adsense metatags."""
     try:
         query = database.session.execute(database.select(AdSense)).first()
     except AttributeError:
@@ -693,8 +686,7 @@ def database_select_version(app):
 
 
 def get_paypal_id() -> str:
-    """Return pay ID"""
-
+    """Return pay ID."""
     query = database.session.execute(database.select(PaypalConfig)).first()
     query = query[0]
 
@@ -744,8 +736,7 @@ def database_is_populated(app):
 
 
 def database_select_version_query(app):
-    """Returns the query to get version of the database."""
-
+    """Return the query to get version of the database."""
     if "postgresql" in app.config["SQLALCHEMY_DATABASE_URI"]:
         return "SELECT version() AS version;"
     elif "mysql" in app.config["SQLALCHEMY_DATABASE_URI"]:
@@ -760,7 +751,6 @@ def database_select_version_query(app):
 
 def check_db_access(app):
     """Verifica acceso a la base de datos."""
-
     with app.app_context():
         from sqlalchemy.sql import text
 
@@ -802,7 +792,7 @@ def get_current_theme() -> str:
 
 
 def generate_user_choices():
-
+    """Generate list of user choices for forms."""
     usuarios = database.session.execute(database.select(Usuario)).all()
     choices = []
     for usuario in usuarios:
@@ -811,7 +801,7 @@ def generate_user_choices():
 
 
 def generate_cource_choices():
-
+    """Generate list of course choices for forms."""
     cursos = database.session.execute(database.select(Curso)).all()
     choices = []
     for curso in cursos:
@@ -831,7 +821,7 @@ def generate_masterclass_choices():
 
 
 def generate_template_choices():
-
+    """Generate list of template choices for forms."""
     templates = database.session.execute(database.select(Certificado)).all()
     choices = []
     for template in templates:
@@ -967,8 +957,8 @@ def get_course_sections(course_code: str):
 
 
 def get_one_record(table_name: str, value, column_name: Union[str, None] = None):
-    """
-    Devuelve exactamente un registro de la tabla indicada por nombre.
+    """Devuelve exactamente un registro de la tabla indicada por nombre.
+
     Retorna None si la tabla/columna no existe o si no hay coincidencia única.
 
     :param table_name: nombre del modelo (clase) de SQLAlchemy
@@ -976,7 +966,6 @@ def get_one_record(table_name: str, value, column_name: Union[str, None] = None)
     :param column_name: nombre de la columna opcional (string)
     :return: instancia del modelo encontrada o None
     """
-
     db = database
     # Buscar el modelo en el registro de clases de SQLAlchemy
     model_class = db.Model.registry._class_registry.get(table_name)
@@ -1003,13 +992,12 @@ def get_one_record(table_name: str, value, column_name: Union[str, None] = None)
 
 
 def get_all_records(table_name: str, filters: Union[dict[Any, Any], None] = None):
-    """
-    Devuelve todos los registros de una tabla.
+    """Devuelve todos los registros de una tabla.
+
     :param table_name: nombre del modelo
     :param filters: diccionario con {columna: valor} para filtrar
     :return: lista de instancias o []
     """
-
     db = database
     model_class = db.Model.registry._class_registry.get(table_name)
     if model_class is None or not isinstance(model_class, type):

@@ -13,6 +13,8 @@
 # limitations under the License.
 #
 
+"""Database backup functionality for NOW LMS."""
+
 import os
 
 # ---------------------------------------------------------------------------------------
@@ -128,7 +130,6 @@ def _restaurar_sqlite(backup_sql_file):
 
 def db_backup_restore(backup_sql_file):
     """Restaura la base de datos desde un respaldo."""
-
     with current_app.app_context():
         if "postgresql" in DBURI:
             _restaurar_postgresql(backup_sql_file)

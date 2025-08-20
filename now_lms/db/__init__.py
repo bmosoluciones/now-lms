@@ -46,8 +46,8 @@ database: SQLAlchemy = SQLAlchemy()
 
 
 def eliminar_base_de_datos_segura():
-    """
-    Elimina todas las tablas de la base de datos de forma segura.
+    """Elimina todas las tablas de la base de datos de forma segura.
+
     Se asegura de cerrar cualquier sesión activa y evitar estados inconsistentes.
     Debe ejecutarse dentro del contexto de aplicación Flask.
     """
@@ -101,8 +101,7 @@ def generador_de_codigos_unicos() -> str:
 
 
 def generador_codigos_unicos_cuid() -> str:
-    """Generado codigos unicos con CUID2"""
-
+    """Generado codigos unicos con CUID2."""
     CUID_GENERATOR: Cuid = Cuid(length=10)
     return CUID_GENERATOR.generate()
 
@@ -205,7 +204,7 @@ class Usuario(UserMixin, database.Model, BaseTabla):
 
 
 class UsuarioGrupo(database.Model, BaseTabla):
-    """Grupo de Usuarios"""
+    """Grupo de Usuarios."""
 
     activo = database.Column(database.Boolean(), index=True)
     nombre = database.Column(database.String(50), nullable=False)
@@ -214,14 +213,14 @@ class UsuarioGrupo(database.Model, BaseTabla):
 
 
 class UsuarioGrupoMiembro(database.Model, BaseTabla):
-    """Grupo de Usuarios"""
+    """Grupo de Usuarios."""
 
     grupo = database.Column(database.String(26), database.ForeignKey("usuario_grupo.id"))
     usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO))
 
 
 class UsuarioGrupoTutor(UsuarioGrupoMiembro):
-    """Asigna un usuario como tutor de un curso"""
+    """Asigna un usuario como tutor de un curso."""
 
 
 class Curso(database.Model, BaseTabla):
@@ -330,9 +329,9 @@ class CursoRecurso(database.Model, BaseTabla):
 
 
 class CursoRecursoAvance(database.Model, BaseTabla):
-    """
-    Un control del avance de cada usuario de tipo estudiante de los recursos de un curso,
-    para que un curso de considere finalizado un alumno debe completar todos los recursos requeridos.
+    """Un control del avance de cada usuario de tipo estudiante de los recursos de un curso.
+
+    Para que un curso de considere finalizado un alumno debe completar todos los recursos requeridos.
     """
 
     curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
@@ -408,7 +407,7 @@ class CursoRecursoConsulta(database.Model, BaseTabla):
 
 
 class SlideShowResource(database.Model, BaseTabla):
-    """Una presentación basada en reveal.js"""
+    """Una presentación basada en reveal.js."""
 
     __tablename__ = "slide_show_resource"
 
@@ -424,7 +423,7 @@ class SlideShowResource(database.Model, BaseTabla):
 
 
 class Slide(database.Model, BaseTabla):
-    """Una diapositiva individual dentro de una presentación"""
+    """Una diapositiva individual dentro de una presentación."""
 
     __tablename__ = "slide"
 
@@ -441,7 +440,7 @@ class Slide(database.Model, BaseTabla):
 
 # Keep legacy models for backward compatibility but mark as deprecated
 class CursoRecursoSlideShow(database.Model, BaseTabla):
-    """DEPRECATED: Una presentación basada en reveal.js - use SlideShowResource instead"""
+    """DEPRECATED: Una presentación basada en reveal.js - use SlideShowResource instead."""
 
     __table_args__ = (database.UniqueConstraint("codigo", name="codigo_slideshow_unico"),)
     titulo = database.Column(database.String(100), nullable=False)
@@ -453,7 +452,7 @@ class CursoRecursoSlideShow(database.Model, BaseTabla):
 
 
 class CursoRecursoSlides(database.Model, BaseTabla):
-    """DEPRECATED: Una diapositiva individual - use Slide instead"""
+    """DEPRECATED: Una diapositiva individual - use Slide instead."""
 
     titulo = database.Column(database.String(100), nullable=False)
     texto = database.Column(database.String(500), nullable=False)

@@ -30,7 +30,6 @@ from now_lms.config import DIRECTORIO_ARCHIVOS_PUBLICOS
 
 def get_current_course_logo(course_code):
     """Return the name of the logo file for the current course."""
-
     course_dir = Path(str(str(DIRECTORIO_ARCHIVOS_PUBLICOS) + "/images/" + course_code))
     logo_file = [f for f in course_dir.iterdir() if f.is_file() and f.stem == "logo"]
 
@@ -45,7 +44,6 @@ def get_current_course_logo(course_code):
 
 def get_site_logo():
     """Return the name of the logo file of the site."""
-
     course_dir = Path(str(str(DIRECTORIO_ARCHIVOS_PUBLICOS) + "/images/"))
     logo_file = [f for f in course_dir.iterdir() if f.is_file() and f.stem == "logotipo"]
     try:
@@ -57,7 +55,6 @@ def get_site_logo():
 
 def get_site_favicon():
     """Return the name of the logo file of the site."""
-
     course_dir = Path(str(str(DIRECTORIO_ARCHIVOS_PUBLICOS) + "/images/"))
     logo_file = [f for f in course_dir.iterdir() if f.is_file() and f.stem == "favicon"]
     try:

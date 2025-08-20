@@ -46,7 +46,6 @@ admin_announcements = Blueprint("admin_announcements", __name__, template_folder
 @cache.cached(timeout=60)
 def list_announcements():
     """Lista de anuncios globales para administradores."""
-
     consulta = database.paginate(
         database.select(Announcement)
         .filter(Announcement.course_id.is_(None))
@@ -64,7 +63,6 @@ def list_announcements():
 @perfil_requerido("admin")
 def new_announcement():
     """Formulario para crear un nuevo anuncio global."""
-
     form = GlobalAnnouncementForm()
 
     if form.validate_on_submit():
@@ -91,7 +89,6 @@ def new_announcement():
 @perfil_requerido("admin")
 def edit_announcement(announcement_id):
     """Formulario para editar un anuncio global."""
-
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is not None:
         flash("Anuncio no encontrado o no es un anuncio global.", "error")
@@ -121,7 +118,6 @@ def edit_announcement(announcement_id):
 @perfil_requerido("admin")
 def delete_announcement(announcement_id):
     """Eliminar un anuncio global."""
-
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is not None:
         flash("Anuncio no encontrado o no es un anuncio global.", "error")

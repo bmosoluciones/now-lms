@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 
-"""Codigo para crear cursos iniciales.s"""
+"""Codigo para crear cursos iniciales."""
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -74,7 +74,6 @@ if TYPE_CHECKING:
 
 def system_info(app: "Flask"):
     """Información básica de la instalación."""
-
     with app.app_context():
         version_sistema = SystemInfo(param="version", val=VERSION)
         version_sistema_mayor = SystemInfo(param="version_mayor", val=str(MAYOR))
@@ -115,7 +114,6 @@ def crear_categorias():
 
 def copy_sample_pdf():
     """Crea un archivo PDF de ejemplo."""
-
     log.trace("Creating test PDF file.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "NOW_Learning_Management_System.pdf")
     directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "files", "resources")
@@ -136,7 +134,6 @@ def copy_sample_pdf():
 
 def copy_sample_audio():
     """Crea un archivo audio de ejemplo."""
-
     log.trace("Creating test audio file.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "En-us-hello.ogg")
     directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "audio", "resources")
@@ -157,7 +154,6 @@ def copy_sample_audio():
 
 def copy_sample_img():
     """Crea un archivo de imagen de ejemplo."""
-
     log.trace("Creating test image file.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "icons", "logo", "logo_large.png")
     directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "images", "resources")
@@ -178,7 +174,6 @@ def copy_sample_img():
 
 def curse_logo(curso: str, image: str, program=False):
     """Crea un archivo de imagen de ejemplo."""
-
     log.trace("Setting demonstration course logo.")
     origen = path.join(str(DIRECTORIO_ARCHIVOS), "img", image)
     if program:
@@ -713,6 +708,7 @@ def crear_curso_predeterminado():
 
 
 def crear_certificacion():
+    """Create default certification for demonstration."""
     certificacion = Certificacion(
         id="01JS2NK7NJ74DBSHD83MGRH5HE",
         usuario=ADMIN_USER_WITH_FALLBACK,
@@ -1532,7 +1528,6 @@ nulla pariatur?
 
 def crear_programa():
     """Crea programa de pruebas."""
-
     programa = Programa(
         nombre="Programing 101",
         codigo="P001",
@@ -1565,7 +1560,6 @@ def crear_programa():
 
 def crear_recurso_descargable():
     """Recurso descargable de ejemplo."""
-
     recurso1 = Recurso(
         nombre="Romeo and Juliet",
         codigo="R001",
@@ -1679,7 +1673,6 @@ def crear_recurso_descargable():
 
 def populate_custmon_data_dir():
     """Crea un directorio de archivos personalizado."""
-
     from now_lms.config import DIRECTORIO_ARCHIVOS, DIRECTORIO_ARCHIVOS_BASE
 
     if DIRECTORIO_ARCHIVOS != DIRECTORIO_ARCHIVOS_BASE:
@@ -1696,7 +1689,6 @@ def populate_custmon_data_dir():
 
 def populate_custom_theme_dir():
     """Crea un directorio de tema personalizado."""
-
     from now_lms.config import DIRECTORIO_PLANTILLAS, DIRECTORIO_PLANTILLAS_BASE
 
     if DIRECTORIO_PLANTILLAS != DIRECTORIO_PLANTILLAS_BASE:
@@ -1840,7 +1832,6 @@ Este curso te enseñará paso a paso cómo utilizar todas las funcionalidades de
 
 def crear_evaluaciones_training(secciones):
     """Crea evaluaciones para el curso de entrenamiento con límite de 3 intentos."""
-
     # Evaluación básica para la sección de usuarios
     evaluacion_usuarios = Evaluation(
         section_id=secciones[1].id,  # Sección de usuarios

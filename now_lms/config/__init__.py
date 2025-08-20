@@ -201,7 +201,7 @@ def is_running_in_container() -> bool:
 
 
 def log_system_info():
-    """Emite información útil del entorno del sistema."""
+    """Emit información útil del entorno del sistema."""
     import os
     import platform
     import socket
@@ -231,8 +231,7 @@ def log_system_info():
 
 
 def log_messages(_app: "Flask"):
-    """Emite mensajes de log útiles para debugging luego de haber cargado la configuración."""
-
+    """Emit mensajes de log útiles para debugging luego de haber cargado la configuración."""
     import logging
 
     db_uri = _app.config.get("SQLALCHEMY_DATABASE_URI", "").lower()

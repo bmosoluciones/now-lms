@@ -118,7 +118,6 @@ def personalizacion():
 @perfil_requerido("admin")
 def configuracion():
     """System settings."""
-
     config = config = database.session.execute(database.select(Configuracion)).first()[0]
     config_mail = database.session.execute(database.select(MailConfig)).first()[0]
     form = ConfigForm(
@@ -235,7 +234,6 @@ mail_check_message = """
 @perfil_requerido("admin")
 def mail_check():
     """Configuración de Correo Electronico."""
-
     config = database.session.execute(database.select(MailConfig)).first()[0]
 
     form = CheckMailForm()
@@ -365,7 +363,6 @@ def ads_txt():
 @perfil_requerido("admin")
 def test_mail():
     """Envia un correo de prueba."""
-
     return redirect(url_for(SETTING_MAIL_ROUTE))
 
 
@@ -373,7 +370,7 @@ def test_mail():
 @login_required
 @perfil_requerido("admin")
 def elimina_logo():
-    """Elimina logo"""
+    """Elimina logo."""
     elimina_logo_perzonalizado()
     return redirect(url_for(SETTING_PERSONALIZACION_ROUTE))
 
@@ -383,7 +380,6 @@ def elimina_logo():
 @perfil_requerido("admin")
 def stripe():
     """Configuración de Stripe."""
-
     return render_template("admin/stripe.html")
 
 
@@ -392,7 +388,6 @@ def stripe():
 @perfil_requerido("admin")
 def paypal():
     """Configuración de Paypal."""
-
     config = database.session.execute(database.select(PaypalConfig)).first()[0]
     form = PayaplForm(
         habilitado=config.enable,

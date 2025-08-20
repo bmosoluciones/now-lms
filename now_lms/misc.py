@@ -50,7 +50,6 @@ def concatenar_parametros_a_url(parametros: OrderedDict | None, arg: str | None,
     Returns:
         String representation of URL parameters
     """
-
     argumentos: str = char
 
     if parametros:
