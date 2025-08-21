@@ -316,7 +316,7 @@ def session_basic_db_setup():
     test_app = create_app(
         app_name="now_lms_session_basic",
         testing=True,
-        config_overrides={"SQLALCHEMY_DATABASE_URI": database_uri}
+        config={"SQLALCHEMY_DATABASE_URI": database_uri}
     )
     
     with test_app.app_context():
@@ -363,7 +363,7 @@ def session_full_db_setup():
     test_app = create_app(
         app_name="now_lms_session_full",
         testing=True,
-        config_overrides={"SQLALCHEMY_DATABASE_URI": database_uri}
+        config={"SQLALCHEMY_DATABASE_URI": database_uri}
     )
     
     with test_app.app_context():
@@ -436,7 +436,7 @@ def session_full_db_setup_with_examples():
     test_app = create_app(
         app_name="now_lms_session_examples",
         testing=True,
-        config_overrides={"SQLALCHEMY_DATABASE_URI": database_uri}
+        config={"SQLALCHEMY_DATABASE_URI": database_uri}
     )
     
     with test_app.app_context():
