@@ -60,8 +60,8 @@ def eliminar_base_de_datos_segura():
         # Ejecutar drop_all en el engine de la app
         database.drop_all()
 
-        # Asegurarse de que no hay transacciones pendientes
-        database.session.commit()
+        # Dispose of the engine to ensure all connections are closed
+        database.engine.dispose()
     except SQLAlchemyError as e:
         # Si hay un error, hacer rollback para evitar inconsistencia
         database.session.rollback()

@@ -1,10 +1,10 @@
 from os import environ
 
 
-def test_command_line_interface(full_db_setup):
+def test_command_line_interface(session_full_db_setup):
     environ["FLASK_APP"] = "now_lms"
-    with full_db_setup.app_context():
-        runner = full_db_setup.test_cli_runner()
+    with session_full_db_setup.app_context():
+        runner = session_full_db_setup.test_cli_runner()
         commands = ("database", "db", "info", "routes", "run", "serve", "settings", "shell", "version")
         for command in commands:
             result = runner.invoke(args=[command])
