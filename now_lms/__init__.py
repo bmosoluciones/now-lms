@@ -354,7 +354,7 @@ def handle_402(error):
 # ---------------------------------------------------------------------------------------
 # Factory function for creating Flask applications
 # ---------------------------------------------------------------------------------------
-def create_app(app_name="now_lms", testing=False, config_overrides=None):
+def create_app(app_name="now_lms", testing=False, config=None):
     """
     Create and configure a Flask application instance (factory pattern).
 
@@ -381,8 +381,8 @@ def create_app(app_name="now_lms", testing=False, config_overrides=None):
     app.config.from_mapping(CONFIGURACION)
 
     # Apply configuration overrides if provided
-    if config_overrides:
-        app.config.update(config_overrides)
+    if config:
+        app.config.update(config)
 
     # Configure for testing if needed
     if testing:
@@ -449,45 +449,6 @@ def _register_before_request_handlers(app):
 
 
 def _register_error_handlers(app):
-    """Register error handlers for the Flask application."""
-    app.register_error_handler(PaymentRequired, handle_402)
-
-    @app.errorhandler(403)
-    @cache.cached()
-    def error_403(error):
-        """Pagina personalizada para recursos no autorizados."""
-        if not current_user.is_authenticated:
-            flash("Favor iniciar sesión para acceder a este recurso.", "warning")
-            log.warning(f"Resource not authorized for anonymous user: {error}")
-        else:
-            log.warning(f"Resource not authorized for {current_user.usuario}: {error}")
-
-        return render_template("error_pages/403.html", error=error), 403
-
-    @app.errorhandler(404)
-    @cache.cached()
-    def error_404(error):
-        """Pagina personalizada para recursos no encontrados."""
-        if not current_user.is_authenticated:
-            log.warning(f"Resource not found for anonymous user: {error}")
-        else:
-            log.warning(f"Resource not found for {current_user.usuario}: {error}")
-
-        return render_template("error_pages/404.html", error=error), 404
-
-    @app.errorhandler(405)
-    @cache.cached()
-    def error_405(error):
-        """Pagina personalizada para metodos no permitidos."""
-        log.warning(f"Method not allowed: {error}")
-        return render_template("error_pages/405.html", error=error), 405
-
-    @app.errorhandler(500)
-    @cache.cached()
-    def error_500(error):
-        """Pagina personalizada para recursos no autorizados."""
-        return render_template("error_pages/500.html", error=error), 500
-
     """Register error handlers for the Flask application."""
     app.register_error_handler(PaymentRequired, handle_402)
 
