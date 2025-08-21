@@ -181,9 +181,9 @@ def get_user_credentials() -> Dict[str, Tuple[str, str]]:
 class TestComprehensiveRoutes:
     """Comprehensive route testing"""
 
-    def test_discover_all_routes(self, full_db_setup_with_examples):
+    def test_discover_all_routes(self, session_full_db_setup_with_examples):
         """Test that we can discover all routes in the app"""
-        app = full_db_setup_with_examples
+        app = session_full_db_setup_with_examples
         routes = discover_app_routes(app)
 
         # We should have a significant number of routes
@@ -196,9 +196,9 @@ class TestComprehensiveRoutes:
 
         log.info(f"Discovered {len(routes)} total routes: {len(static_routes)} static, {len(dynamic_routes)} dynamic")
 
-    def test_static_routes_anonymous_user(self, full_db_setup_with_examples):
+    def test_static_routes_anonymous_user(self, session_full_db_setup_with_examples):
         """Test all static routes with anonymous user"""
-        app = full_db_setup_with_examples
+        app = session_full_db_setup_with_examples
         routes = discover_app_routes(app)
         static_routes, _ = categorize_routes(routes)
 
@@ -227,9 +227,9 @@ class TestComprehensiveRoutes:
             if failed_routes:
                 pytest.fail("Routes with server errors:\n" + "\n".join(failed_routes))
 
-    def test_static_routes_admin_user(self, full_db_setup_with_examples):
+    def test_static_routes_admin_user(self, session_full_db_setup_with_examples):
         """Test all static routes with admin user"""
-        app = full_db_setup_with_examples
+        app = session_full_db_setup_with_examples
         routes = discover_app_routes(app)
         static_routes, _ = categorize_routes(routes)
         credentials = get_user_credentials()
@@ -263,9 +263,9 @@ class TestComprehensiveRoutes:
             if failed_routes:
                 pytest.fail("Routes with server errors:\n" + "\n".join(failed_routes))
 
-    def test_static_routes_regular_user(self, full_db_setup_with_examples):
+    def test_static_routes_regular_user(self, session_full_db_setup_with_examples):
         """Test all static routes with regular user"""
-        app = full_db_setup_with_examples
+        app = session_full_db_setup_with_examples
         routes = discover_app_routes(app)
         static_routes, _ = categorize_routes(routes)
         credentials = get_user_credentials()
@@ -299,9 +299,9 @@ class TestComprehensiveRoutes:
             if failed_routes:
                 pytest.fail("Routes with server errors:\n" + "\n".join(failed_routes))
 
-    def test_dynamic_routes_with_sample_data(self, full_db_setup_with_examples):
+    def test_dynamic_routes_with_sample_data(self, session_full_db_setup_with_examples):
         """Test dynamic routes with sample parameters - focus on avoiding 500 errors"""
-        app = full_db_setup_with_examples
+        app = session_full_db_setup_with_examples
         routes = discover_app_routes(app)
         _, dynamic_routes = categorize_routes(routes)
         credentials = get_user_credentials()
@@ -360,9 +360,9 @@ class TestComprehensiveRoutes:
             if server_errors:
                 pytest.fail("Dynamic routes with server errors:\n" + "\n".join(server_errors))
 
-    def test_error_handling_routes(self, full_db_setup_with_examples):
+    def test_error_handling_routes(self, session_full_db_setup_with_examples):
         """Test that error handling routes work properly"""
-        app = full_db_setup_with_examples
+        app = session_full_db_setup_with_examples
 
         error_codes = [403, 404, 405, 500]
 
@@ -388,9 +388,9 @@ class TestComprehensiveRoutes:
             if failed_routes:
                 pytest.fail("Error handling routes failed:\n" + "\n".join(failed_routes))
 
-    def test_common_public_routes(self, full_db_setup_with_examples):
+    def test_common_public_routes(self, session_full_db_setup_with_examples):
         """Test common public routes that should always work"""
-        app = full_db_setup_with_examples
+        app = session_full_db_setup_with_examples
 
         # Important public routes that should always work
         public_routes = [

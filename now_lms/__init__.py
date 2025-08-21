@@ -241,7 +241,15 @@ def no_autorizado():
 @cache.cached(timeout=60, key_prefix="site_config")
 def config():  # pragma: no cover
     """Obtiene configuración del sitio web desde la base de datos."""
-    with lms_app.app_context():
+    from flask import current_app, has_app_context
+
+    # Try to use current app context if available, otherwise fall back to global lms_app
+    if has_app_context():
+        app_to_use = current_app
+    else:
+        app_to_use = lms_app
+
+    with app_to_use.app_context():
         try:
             CONFIG = database.session.execute(database.select(Configuracion)).scalars().first()
         # Si no existe una entrada en la tabla de configuración uno de los siguientes errores puede ocurrir
@@ -260,90 +268,62 @@ def config():  # pragma: no cover
 # ---------------------------------------------------------------------------------------
 # Definición de variables globales de Jinja2 para su disponibilidad en plantillas HTML
 # ---------------------------------------------------------------------------------------
-def define_variables_globales_jinja2(lms_app: Flask):
+def define_variables_globales_jinja2(app: Flask):
     """Define variables globales de Jinja2 para su disponibilidad en plantillas HTML."""
     log.trace("Defining Jinja2 global variables.")
-    lms_app.jinja_env.globals["adsense_code"] = get_addsense_code
-    lms_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
-    lms_app.jinja_env.globals["adsense_enabled"] = get_adsense_enabled
-    lms_app.jinja_env.globals["ad_billboard"] = get_ad_billboard
-    lms_app.jinja_env.globals["ad_large_rectangle"] = get_ad_large_rectangle
-    lms_app.jinja_env.globals["ad_large_skyscraper"] = get_ad_large_skyscraper
-    lms_app.jinja_env.globals["ad_leaderboard"] = get_ad_leaderboard
-    lms_app.jinja_env.globals["ad_medium_rectangle"] = get_ad_medium_rectangle
-    lms_app.jinja_env.globals["ad_mobile_banner"] = get_ad_mobile_banner
-    lms_app.jinja_env.globals["ad_skyscraper"] = get_ad_skyscraper
-    lms_app.jinja_env.globals["ad_wide_skyscraper"] = get_ad_wide_skyscraper
-    lms_app.jinja_env.globals["code_name"] = CODE_NAME
-    lms_app.jinja_env.globals["config"] = config
-    lms_app.jinja_env.globals["course_info"] = course_info
-    lms_app.jinja_env.globals["course_logo"] = get_current_course_logo
-    lms_app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
-    lms_app.jinja_env.globals["current_theme"] = current_theme
-    lms_app.jinja_env.globals["current_user"] = current_user
-    lms_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
-    lms_app.jinja_env.globals["estilo_alerta"] = ESTILO_ALERTAS
-    lms_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
-    lms_app.jinja_env.globals["favicon_perzonalizado"] = favicon_perzonalizado
-    lms_app.jinja_env.globals["get_all_from_db"] = get_all_records
-    lms_app.jinja_env.globals["get_course_sections"] = get_course_sections
-    lms_app.jinja_env.globals["get_one_from_db"] = get_one_record
-    lms_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
-    lms_app.jinja_env.globals["info"] = app_info(lms_app)
-    lms_app.jinja_env.globals["is_masterclass_enabled"] = is_masterclass_enabled
-    lms_app.jinja_env.globals["is_programs_enabled"] = is_programs_enabled
-    lms_app.jinja_env.globals["is_resources_enabled"] = is_resources_enabled
-    lms_app.jinja_env.globals["is_blog_enabled"] = is_blog_enabled
-    lms_app.jinja_env.globals["lms_info"] = lms_info
-    lms_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
-    lms_app.jinja_env.globals["mkdown2html"] = markdown_to_clean_html
-    lms_app.jinja_env.globals["markdown2html"] = markdown_to_clean_html
-    lms_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
-    lms_app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
-    lms_app.jinja_env.globals["paypal_enabled"] = check_paypal_enabled
-    lms_app.jinja_env.globals["paypal_id"] = get_paypal_id
-    lms_app.jinja_env.globals["pyversion"] = python_version()
-    lms_app.jinja_env.globals["site_logo"] = get_site_logo
-    lms_app.jinja_env.globals["site_favicon"] = get_site_favicon
-    lms_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
-    lms_app.jinja_env.globals["version"] = VERSION
+    app.jinja_env.globals["adsense_code"] = get_addsense_code
+    app.jinja_env.globals["adsense_meta"] = get_addsense_meta
+    app.jinja_env.globals["adsense_enabled"] = get_adsense_enabled
+    app.jinja_env.globals["ad_billboard"] = get_ad_billboard
+    app.jinja_env.globals["ad_large_rectangle"] = get_ad_large_rectangle
+    app.jinja_env.globals["ad_large_skyscraper"] = get_ad_large_skyscraper
+    app.jinja_env.globals["ad_leaderboard"] = get_ad_leaderboard
+    app.jinja_env.globals["ad_medium_rectangle"] = get_ad_medium_rectangle
+    app.jinja_env.globals["ad_mobile_banner"] = get_ad_mobile_banner
+    app.jinja_env.globals["ad_skyscraper"] = get_ad_skyscraper
+    app.jinja_env.globals["ad_wide_skyscraper"] = get_ad_wide_skyscraper
+    app.jinja_env.globals["code_name"] = CODE_NAME
+    app.jinja_env.globals["config"] = config
+    app.jinja_env.globals["course_info"] = course_info
+    app.jinja_env.globals["course_logo"] = get_current_course_logo
+    app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
+    app.jinja_env.globals["current_theme"] = current_theme
+    app.jinja_env.globals["current_user"] = current_user
+    app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
+    app.jinja_env.globals["estilo_alerta"] = ESTILO_ALERTAS
+    app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
+    app.jinja_env.globals["favicon_perzonalizado"] = favicon_perzonalizado
+    app.jinja_env.globals["get_all_from_db"] = get_all_records
+    app.jinja_env.globals["get_course_sections"] = get_course_sections
+    app.jinja_env.globals["get_one_from_db"] = get_one_record
+    app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
+    app.jinja_env.globals["info"] = app_info(app)
+    app.jinja_env.globals["is_masterclass_enabled"] = is_masterclass_enabled
+    app.jinja_env.globals["is_programs_enabled"] = is_programs_enabled
+    app.jinja_env.globals["is_resources_enabled"] = is_resources_enabled
+    app.jinja_env.globals["is_blog_enabled"] = is_blog_enabled
+    app.jinja_env.globals["lms_info"] = lms_info
+    app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
+    app.jinja_env.globals["mkdown2html"] = markdown_to_clean_html
+    app.jinja_env.globals["markdown2html"] = markdown_to_clean_html
+    app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
+    app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
+    app.jinja_env.globals["paypal_enabled"] = check_paypal_enabled
+    app.jinja_env.globals["paypal_id"] = get_paypal_id
+    app.jinja_env.globals["pyversion"] = python_version()
+    app.jinja_env.globals["site_logo"] = get_site_logo
+    app.jinja_env.globals["site_favicon"] = get_site_favicon
+    app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
+    app.jinja_env.globals["version"] = VERSION
 
     # Add custom Jinja2 filters
     import json
 
-    lms_app.jinja_env.filters["fromjson"] = json.loads
+    app.jinja_env.filters["fromjson"] = json.loads
 
 
 # ---------------------------------------------------------------------------------------
-# Definición de la aplicación principal.
-# ---------------------------------------------------------------------------------------
-lms_app = Flask(
-    "now_lms",
-    template_folder=DIRECTORIO_PLANTILLAS,
-    static_folder=DIRECTORIO_ARCHIVOS,
-)
-
-# Normalmente los servidores WSGI utilizan "app" or "application" por defecto.
-app = lms_app
-application = lms_app
-
-# ---------------------------------------------------------------------------------------
-# Iniciliazación y configuración de la aplicación principal.
-# ---------------------------------------------------------------------------------------
-log.trace(f"Static files directory: {DIRECTORIO_ARCHIVOS}")
-log.trace(f"Templates directory: {DIRECTORIO_PLANTILLAS}")
-lms_app.config.from_mapping(CONFIGURACION)
-inicializa_extenciones_terceros(lms_app)
-registrar_modulos_en_la_aplicacion_principal(lms_app)
-log_messages(lms_app)
-configure_uploads(lms_app, images)
-configure_uploads(lms_app, files)
-configure_uploads(lms_app, audio)
-define_variables_globales_jinja2(lms_app)
-
-
-# ---------------------------------------------------------------------------------------
-# Páginas de error personalizadas.
+# Custom error classes and handlers
 # ---------------------------------------------------------------------------------------
 
 
@@ -360,7 +340,6 @@ makes a payment.
 """
 
 
-# Errores personalizados
 def handle_402(error):
     """Pagina personalizada para recursos que requieren pago."""
     if not current_user.is_authenticated:
@@ -372,59 +351,212 @@ def handle_402(error):
     return render_template("error_pages/403.html", error=error)
 
 
-lms_app.register_error_handler(PaymentRequired, handle_402)
+# ---------------------------------------------------------------------------------------
+# Factory function for creating Flask applications
+# ---------------------------------------------------------------------------------------
+def create_app(app_name="now_lms", testing=False, config_overrides=None):
+    """
+    Create and configure a Flask application instance (factory pattern).
+
+    Args:
+        app_name: Name for the Flask application instance
+        testing: Whether to configure for testing
+        config_overrides: Dictionary of configuration overrides
+
+    Returns:
+        Configured Flask application instance
+    """
+    log.trace(f"Creating Flask application: {app_name}")
+    log.trace(f"Static files directory: {DIRECTORIO_ARCHIVOS}")
+    log.trace(f"Templates directory: {DIRECTORIO_PLANTILLAS}")
+
+    # Create Flask application instance
+    app = Flask(
+        app_name,
+        template_folder=DIRECTORIO_PLANTILLAS,
+        static_folder=DIRECTORIO_ARCHIVOS,
+    )
+
+    # Apply base configuration
+    app.config.from_mapping(CONFIGURACION)
+
+    # Apply configuration overrides if provided
+    if config_overrides:
+        app.config.update(config_overrides)
+
+    # Configure for testing if needed
+    if testing:
+        app.config.update(
+            {
+                "TESTING": True,
+                "SECRET_KEY": "test-secret-key-for-testing",
+                "SQLALCHEMY_TRACK_MODIFICATIONS": False,
+                "WTF_CSRF_ENABLED": False,
+                "DEBUG": True,
+                "PRESERVE_CONTEXT_ON_EXCEPTION": True,
+                "MAIL_SUPPRESS_SEND": True,
+                "SERVER_NAME": "localhost.localdomain",
+                "APPLICATION_ROOT": "/",
+                "PREFERRED_URL_SCHEME": "http",
+            }
+        )
+
+    # Initialize extensions and modules within app context
+    with app.app_context():
+        inicializa_extenciones_terceros(app)
+        registrar_modulos_en_la_aplicacion_principal(app)
+        log_messages(app)
+        configure_uploads(app, images)
+        configure_uploads(app, files)
+        configure_uploads(app, audio)
+        define_variables_globales_jinja2(app)
+
+        # Register request handlers and error handlers
+        _register_before_request_handlers(app)
+        _register_error_handlers(app)
+
+    log.trace(f"Flask application created successfully: {app_name}")
+    return app
 
 
-# Errores standares
-@lms_app.errorhandler(403)
-@cache.cached()
-def error_403(error):
-    """Pagina personalizada para recursos no autorizados."""
-    if not current_user.is_authenticated:
-        flash("Favor iniciar sesión para acceder a este recurso.", "warning")
-        log.warning(f"Resource not authorized for anonymous user: {error}")
-    else:
-        log.warning(f"Resource not authorized for {current_user.usuario}: {error}")
+def _register_before_request_handlers(app):
+    """Register before_request handlers for the Flask application."""
 
-    return render_template("error_pages/403.html", error=error), 403
+    @app.before_request
+    def load_configuracion_global():
+        """Carga la configuración global en g para su uso en la aplicación."""
+        if not hasattr(g, "configuracion"):
+            from now_lms.i18n import get_configuracion
 
+            try:
+                g.configuracion = get_configuracion()
+            except Exception as e:
+                log.error(f"Error loading global configuration: {e}")
+                g.configuracion = None
 
-@lms_app.errorhandler(404)
-@cache.cached()
-def error_404(error):
-    """Pagina personalizada para recursos no encontrados."""
-    if not current_user.is_authenticated:
-        log.warning(f"Resource not found for anonymous user: {error}")
-    else:
-        log.warning(f"Resource not found for {current_user.usuario}: {error}")
-
-    return render_template("error_pages/404.html", error=error), 404
-
-
-@lms_app.errorhandler(405)
-@cache.cached()
-def error_405(error):
-    """Pagina personalizada para metodos no permitidos."""
-    log.warning(f"Method not allowed: {error}")
-    return render_template("error_pages/405.html", error=error), 405
+    @app.before_request
+    def before_request_user_active():
+        """Check if authenticated user is active before processing requests."""
+        if (
+            current_user.is_authenticated
+            and not current_user.activo
+            and current_user.tipo != "admin"
+            and request != "static"
+            and request.blueprint != "user"
+            and request.endpoint != "static"
+        ):
+            return render_template("error_pages/401.html")
 
 
-@lms_app.errorhandler(500)
-@cache.cached()
-def error_500(error):
-    """Pagina personalizada para recursos no autorizados."""
-    return render_template("error_pages/500.html", error=error), 500
+def _register_error_handlers(app):
+    """Register error handlers for the Flask application."""
+    app.register_error_handler(PaymentRequired, handle_402)
+
+    @app.errorhandler(403)
+    @cache.cached()
+    def error_403(error):
+        """Pagina personalizada para recursos no autorizados."""
+        if not current_user.is_authenticated:
+            flash("Favor iniciar sesión para acceder a este recurso.", "warning")
+            log.warning(f"Resource not authorized for anonymous user: {error}")
+        else:
+            log.warning(f"Resource not authorized for {current_user.usuario}: {error}")
+
+        return render_template("error_pages/403.html", error=error), 403
+
+    @app.errorhandler(404)
+    @cache.cached()
+    def error_404(error):
+        """Pagina personalizada para recursos no encontrados."""
+        if not current_user.is_authenticated:
+            log.warning(f"Resource not found for anonymous user: {error}")
+        else:
+            log.warning(f"Resource not found for {current_user.usuario}: {error}")
+
+        return render_template("error_pages/404.html", error=error), 404
+
+    @app.errorhandler(405)
+    @cache.cached()
+    def error_405(error):
+        """Pagina personalizada para metodos no permitidos."""
+        log.warning(f"Method not allowed: {error}")
+        return render_template("error_pages/405.html", error=error), 405
+
+    @app.errorhandler(500)
+    @cache.cached()
+    def error_500(error):
+        """Pagina personalizada para recursos no autorizados."""
+        return render_template("error_pages/500.html", error=error), 500
+
+    """Register error handlers for the Flask application."""
+    app.register_error_handler(PaymentRequired, handle_402)
+
+    @app.errorhandler(403)
+    @cache.cached()
+    def error_403(error):
+        """Pagina personalizada para recursos no autorizados."""
+        if not current_user.is_authenticated:
+            flash("Favor iniciar sesión para acceder a este recurso.", "warning")
+            log.warning(f"Resource not authorized for anonymous user: {error}")
+        else:
+            log.warning(f"Resource not authorized for {current_user.usuario}: {error}")
+
+        return render_template("error_pages/403.html", error=error), 403
+
+    @app.errorhandler(404)
+    @cache.cached()
+    def error_404(error):
+        """Pagina personalizada para recursos no encontrados."""
+        if not current_user.is_authenticated:
+            log.warning(f"Resource not found for anonymous user: {error}")
+        else:
+            log.warning(f"Resource not found for {current_user.usuario}: {error}")
+
+        return render_template("error_pages/404.html", error=error), 404
+
+    @app.errorhandler(405)
+    @cache.cached()
+    def error_405(error):
+        """Pagina personalizada para metodos no permitidos."""
+        log.warning(f"Method not allowed: {error}")
+        return render_template("error_pages/405.html", error=error), 405
+
+    @app.errorhandler(500)
+    @cache.cached()
+    def error_500(error):
+        """Pagina personalizada para recursos no autorizados."""
+        return render_template("error_pages/500.html", error=error), 500
+
+
+# ---------------------------------------------------------------------------------------
+# Definición de la aplicación principal.
+# ---------------------------------------------------------------------------------------
+lms_app = create_app()
+
+# Normalmente los servidores WSGI utilizan "app" or "application" por defecto.
+app = lms_app
+application = lms_app
 
 
 # ---------------------------------------------------------------------------------------
 # Funciones auxiliares para la administracion y configuración inicial de la aplicacion
 # ---------------------------------------------------------------------------------------
-def initial_setup(with_examples=False, with_tests=False):
+def initial_setup(with_examples=False, with_tests=False, app=None):
     """Inicializa una nueva bases de datos."""
-    with lms_app.app_context():
+    from flask import current_app, has_app_context
+
+    # Use provided app, current app context, or fallback to global lms_app
+    if app is not None:
+        app_to_use = app
+    elif has_app_context():
+        app_to_use = current_app
+    else:
+        app_to_use = lms_app
+
+    with app_to_use.app_context():
         log.info("Creating database schema.")
         database.create_all()
-        system_info(lms_app)
+        system_info(app_to_use)
         log.debug("Database schema created successfully.")
         log.debug("Loading sample data.")
         crear_configuracion_predeterminada()
@@ -462,12 +594,15 @@ def initial_setup(with_examples=False, with_tests=False):
     log.info("NOW - LMS started successfully.")
 
 
-def init_app(with_examples=False):
+def init_app(with_examples=False, app=None):
     """Funcion auxiliar para iniciar la aplicacion."""
     from now_lms.db.tools import check_db_access, database_is_populated
 
-    DB_ACCESS = check_db_access(lms_app)
-    DB_INICIALIZADA = database_is_populated(lms_app)
+    # Use provided app or fallback to global lms_app
+    app_to_use = app if app is not None else lms_app
+
+    DB_ACCESS = check_db_access(app_to_use)
+    DB_INICIALIZADA = database_is_populated(app_to_use)
 
     if DB_ACCESS:
         log.trace("Database access verified.")
@@ -476,43 +611,8 @@ def init_app(with_examples=False):
             return True
         else:
             log.info("Starting new database.")
-            initial_setup(with_examples=with_examples)
+            initial_setup(with_examples=with_examples, app=app_to_use)
             return True
     else:
         log.warning("Could not access the database.")
         return False
-
-
-# ---------------------------------------------------------------------------------------
-# Verifica si el usuario esta activo antes de procesar la solicitud.
-# ---------------------------------------------------------------------------------------
-@lms_app.before_request
-def load_configuracion_global():
-    """Carga la configuración global en g para su uso en la aplicación."""
-    if not hasattr(g, "configuracion"):
-        from now_lms.i18n import get_configuracion
-
-        try:
-            g.configuracion = get_configuracion()
-        except Exception as e:
-            log.error(f"Error loading global configuration: {e}")
-            g.configuracion = None
-
-
-@lms_app.before_request
-def before_request_user_active():
-    """Check if authenticated user is active before processing requests."""
-    if (
-        current_user.is_authenticated
-        and not current_user.activo
-        and current_user.tipo != "admin"
-        and request != "static"
-        and request.blueprint != "user"
-        and request.endpoint != "static"
-    ):
-        return render_template("error_pages/401.html")
-
-
-# ---------------------------------------------------------------------------------------
-# Las vistas de la aplicación se definen su modulos respectivos.
-# ---------------------------------------------------------------------------------------
