@@ -205,13 +205,13 @@ def certificate_inspect(ulid: str):
     return insert_style_in_html(consulta)
 
 
-@certificate.route("/certificate/get_as_qr/<id>/")
-def certificacion_qr(id: str):
+@certificate.route("/certificate/get_as_qr/<cert_id>/")
+def certificacion_qr(cert_id: str):
     """Generate QR code for certificate verification."""
     import qrcode
 
     base_url = request.url_root
-    url = base_url + "/certificate/view/" + id
+    url = base_url + "/certificate/view/" + cert_id
     qr = qrcode.make(url, box_size=4)
 
     buffer = BytesIO()

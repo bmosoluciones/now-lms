@@ -49,3 +49,37 @@ line-length = 127
 
 [tool.setuptools.packages]
 find = {namespaces = false}
+
+[tool.pylint.main]
+py-version = "3.11"
+
+[tool.pylint.format]
+max-line-length = 127
+max-module-lines = 2500
+
+[tool.pylint."messages control"]
+# Enable important error and warning checks that prevent common issues
+disable = "all"
+enable = [
+    # Error-level issues that can break functionality
+    "undefined-variable",              # E0601: Variable used before assignment
+    "logging-format-truncated",        # E1205: Logging format string errors
+    "unreachable",                     # W0101: Unreachable code
+    
+    # Code quality issues that should be caught
+    "redefined-outer-name",            # W0621: Redefining name from outer scope
+    "no-else-return",                  # R1705: Unnecessary else after return
+    "inconsistent-return-statements",  # R1710: Inconsistent return patterns
+    "reimported",                      # W0404: Redundant imports
+    "pointless-string-statement",      # W0105: Pointless string statements  
+    "redefined-builtin",               # W0622: Redefined built-ins
+    "singleton-comparison",            # C0121: Singleton comparisons (== True/False)
+    "unspecified-encoding",            # W1514: File operations without encoding
+    "bare-except",                     # W0702: Bare except clauses
+    "missing-class-docstring",         # C0115: Missing class docstrings
+    "unnecessary-pass",
+    "consider-using-in",
+    "used-before-assignment",
+    "unused-variable",
+    
+]

@@ -71,6 +71,7 @@ def create_app(testing=True, database_uri=None, minimal=False):
     return app
 
 
+
 @pytest.fixture(scope="session")
 def database_url():
     """Provide the database URL for tests."""
@@ -298,7 +299,7 @@ def pytest_unconfigure(config):
 # ==================================================================================
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="session") 
 def session_basic_db_setup():
     """
     Session-scoped basic database setup with minimal data population.
@@ -307,18 +308,22 @@ def session_basic_db_setup():
     Always uses SQLite in-memory for complete isolation between session fixtures.
     """
     from now_lms import create_app
-
+    
     # Always use in-memory SQLite for session fixtures to avoid interference
     database_uri = "sqlite:///:memory:"
-
+    
     # Create a completely independent app instance using the factory pattern
-    test_app = create_app(app_name="now_lms_session_basic", testing=True, config={"SQLALCHEMY_DATABASE_URI": database_uri})
-
+    test_app = create_app(
+        app_name="now_lms_session_basic",
+        testing=True,
+        config_overrides={"SQLALCHEMY_DATABASE_URI": database_uri}
+    )
+    
     with test_app.app_context():
         from now_lms import database
         from now_lms.db.tools import crear_configuracion_predeterminada
         from now_lms.db.initial_data import crear_certificados
-
+        
         # Initialize database and setup basic data
         database.create_all()
         try:
@@ -327,13 +332,12 @@ def session_basic_db_setup():
             log.debug("Session basic database setup completed.")
         except Exception as e:
             log.warning(f"Session basic database setup error (continuing): {e}")
-
+    
     yield test_app
-
+    
     # Session cleanup
     with test_app.app_context():
         from now_lms import database
-
         try:
             database.session.remove()
             database.drop_all()
@@ -342,7 +346,7 @@ def session_basic_db_setup():
             log.warning(f"Session basic database cleanup error: {e}")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="session") 
 def session_full_db_setup():
     """
     Session-scoped full database setup with complete data population.
@@ -351,13 +355,17 @@ def session_full_db_setup():
     Always uses SQLite in-memory for complete isolation between session fixtures.
     """
     from now_lms import create_app
-
+    
     # Always use in-memory SQLite for session fixtures to avoid interference
     database_uri = "sqlite:///:memory:"
-
+    
     # Create a completely independent app instance using the factory pattern
-    test_app = create_app(app_name="now_lms_session_full", testing=True, config={"SQLALCHEMY_DATABASE_URI": database_uri})
-
+    test_app = create_app(
+        app_name="now_lms_session_full",
+        testing=True,
+        config_overrides={"SQLALCHEMY_DATABASE_URI": database_uri}
+    )
+    
     with test_app.app_context():
         from now_lms import database
         from now_lms.db.tools import crear_configuracion_predeterminada
@@ -368,20 +376,20 @@ def session_full_db_setup():
             crear_certificacion,
         )
         from now_lms.db.data_test import crear_data_para_pruebas
-
+        
         # Initialize database and setup full data
         database.create_all()
         try:
             # Setup basic configuration and data step by step
             crear_configuracion_predeterminada()
-
+            
             # Create certificates - handle duplicates gracefully with session rollback
             try:
                 crear_certificados()
             except Exception as e:
                 log.warning(f"Certificate creation error, rolling back: {e}")
                 database.session.rollback()  # Rollback to recover the session
-
+            
             # Create users and courses
             try:
                 crear_usuarios_predeterminados()
@@ -392,18 +400,17 @@ def session_full_db_setup():
             except Exception as e:
                 log.warning(f"User/course creation error: {e}")
                 database.session.rollback()
-
+            
             log.debug("Session full database setup completed.")
         except Exception as e:
             log.warning(f"Session full database setup error (continuing): {e}")
             database.session.rollback()
-
+    
     yield test_app
-
+    
     # Session cleanup
     with test_app.app_context():
         from now_lms import database
-
         try:
             database.session.remove()
             database.drop_all()
@@ -421,33 +428,36 @@ def session_full_db_setup_with_examples():
     Always uses SQLite in-memory for complete isolation between session fixtures.
     """
     from now_lms import create_app, initial_setup
-
+    
     # Always use in-memory SQLite for session fixtures to avoid interference
     database_uri = "sqlite:///:memory:"
-
+    
     # Create a completely independent app instance using the factory pattern
-    test_app = create_app(app_name="now_lms_session_examples", testing=True, config={"SQLALCHEMY_DATABASE_URI": database_uri})
-
+    test_app = create_app(
+        app_name="now_lms_session_examples",
+        testing=True,
+        config_overrides={"SQLALCHEMY_DATABASE_URI": database_uri}
+    )
+    
     with test_app.app_context():
         from now_lms import database
-
+        
         # Initialize database and setup full data with examples
         database.create_all()
         try:
-            # Use the updated initial_setup function with app parameter
-            initial_setup(with_examples=True, with_tests=True, app=test_app)
+            # Use the updated initial_setup function with flask_app parameter
+            initial_setup(with_examples=True, with_tests=True, flask_app=test_app)
             database.session.commit()  # Ensure changes are committed
             log.debug("Session full database setup with examples completed.")
         except Exception as e:
             log.warning(f"Session full database setup with examples error (continuing): {e}")
             database.session.rollback()  # Rollback on error to recover session
-
+    
     yield test_app
-
+    
     # Session cleanup
     with test_app.app_context():
         from now_lms import database
-
         try:
             database.session.remove()
             database.drop_all()
@@ -465,11 +475,11 @@ def isolated_db_session(session_full_db_setup):
     """
     with session_full_db_setup.app_context():
         from now_lms import database
-
+        
         # Start a savepoint instead of a full transaction
         # This allows us to share the schema while isolating changes
         savepoint = database.session.begin_nested()
-
+        
         try:
             yield database.session
         finally:

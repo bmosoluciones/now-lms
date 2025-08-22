@@ -95,23 +95,22 @@ def perfil_requerido(perfil_id):
                 flash("Favor iniciar sesión.", "warning")
                 return redirect(url_for("user.login"))
 
-            else:
-                log.trace(f"Verifying access for user {current_user.usuario} with profile {perfil_id}")
-                # Always allow admin access
-                if current_user.tipo == "admin":
-                    return func(*args, **kwargs)
+            log.trace(f"Verifying access for user {current_user.usuario} with profile {perfil_id}")
+            # Always allow admin access
+            if current_user.tipo == "admin":
+                return func(*args, **kwargs)
 
-                # Handle tuple format for multiple allowed profiles
-                elif isinstance(perfil_id, tuple):
-                    if current_user.tipo in perfil_id:
-                        return func(*args, **kwargs)
-                # Handle string format for single profile
-                elif isinstance(perfil_id, str) and current_user.tipo == perfil_id:
+            # Handle tuple format for multiple allowed profiles
+            if isinstance(perfil_id, tuple):
+                if current_user.tipo in perfil_id:
                     return func(*args, **kwargs)
-                else:
-                    log.warning(f"Access denied for user {current_user.usuario} with profile {current_user.tipo}")
-                    flash("No se encuentra autorizado a acceder al recurso solicitado.", "error")
-                    return abort(403)
+            # Handle string format for single profile
+            elif isinstance(perfil_id, str) and current_user.tipo == perfil_id:
+                return func(*args, **kwargs)
+
+            log.warning(f"Access denied for user {current_user.usuario} with profile {current_user.tipo}")
+            flash("No se encuentra autorizado a acceder al recurso solicitado.", "error")
+            return abort(403)
 
         return wrapper
 
@@ -124,7 +123,7 @@ def perfil_requerido(perfil_id):
 def proteger_secreto(password):
     """Devuelve el hash de una contraseña."""
     with current_app.app_context():
-        from now_lms.db import Configuracion, database
+        from now_lms.db import Configuracion
 
         config = database.session.execute(database.select(Configuracion)).first()[0]
 
@@ -139,10 +138,10 @@ def proteger_secreto(password):
         return f.encrypt(password.encode())
 
 
-def descifrar_secreto(hash):
+def descifrar_secreto(hash_value):
     """Devuelve el valor de una contraseña protegida."""
     with current_app.app_context():
-        from now_lms.db import Configuracion, database
+        from now_lms.db import Configuracion
 
         config = database.session.execute(database.select(Configuracion)).first()[0]
 
@@ -155,9 +154,9 @@ def descifrar_secreto(hash):
         key = base64.urlsafe_b64encode(kdf.derive(current_app.config.get("SECRET_KEY").encode()))
         f = Fernet(key)
         try:
-            s = f.decrypt(hash)
+            s = f.decrypt(hash_value)
             return s.decode()
-        except:  # noqa: E722
+        except Exception:  # Catch decryption errors
             return None
 
 
@@ -202,11 +201,9 @@ def validate_confirmation_token(token):
             user.activo = True
             database.session.commit()
             return True
-        else:
-            log.warning(f"User with email {data.get('confirm_id', None)} not found.")
-            return False
-    else:
+        log.warning(f"User with email {data.get('confirm_id', None)} not found.")
         return False
+    return False
 
 
 def send_confirmation_email(user):

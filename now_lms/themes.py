@@ -74,9 +74,8 @@ def get_home_template() -> str:
     if HOME.exists():
         # Use theme-specific home template
         return THEMES_DIRECTORY + str(THEME) + "/overrides/home.j2"
-    else:
-        # Fall back to default home template
-        return "inicio/home.html"
+    # Fall back to default home template
+    return "inicio/home.html"
 
 
 def get_course_list_template() -> str:
@@ -89,9 +88,8 @@ def get_course_list_template() -> str:
     if COURSE_LIST.exists():
         # Use theme-specific course list template
         return THEMES_DIRECTORY + str(THEME) + "/overrides/course_list.j2"
-    else:
-        # Fall back to default course list template
-        return "inicio/cursos.html"
+    # Fall back to default course list template
+    return "inicio/cursos.html"
 
 
 def get_program_list_template() -> str:
@@ -103,9 +101,8 @@ def get_program_list_template() -> str:
     if PROGRAM_LIST.exists():
         # Use theme-specific program list template
         return THEMES_DIRECTORY + str(THEME) + "/overrides/program_list.j2"
-    else:
-        # Fall back to default program list template
-        return "inicio/programas.html"
+    # Fall back to default program list template
+    return "inicio/programas.html"
 
 
 def get_course_view_template() -> str:
@@ -118,9 +115,8 @@ def get_course_view_template() -> str:
     if COURSE_VIEW.exists():
         # Use theme-specific course view template
         return THEMES_DIRECTORY + str(THEME) + "/overrides/course_view.j2"
-    else:
-        # Fall back to default course view template
-        return "learning/curso/curso.html"
+    # Fall back to default course view template
+    return "learning/curso/curso.html"
 
 
 def get_program_view_template() -> str:
@@ -133,9 +129,8 @@ def get_program_view_template() -> str:
     if PROGRAM_VIEW.exists():
         # Use theme-specific program view template
         return THEMES_DIRECTORY + str(THEME) + "/overrides/program_view.j2"
-    else:
-        # Fall back to default program view template
-        return "learning/programa.html"
+    # Fall back to default program view template
+    return "learning/programa.html"
 
 
 # ---------------------------------------------------------------------------------------

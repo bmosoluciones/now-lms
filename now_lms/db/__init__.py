@@ -517,6 +517,8 @@ class Configuracion(database.Model, BaseTabla):
 
 
 class Style(database.Model, BaseTabla):
+    """Configuration for site appearance and theming."""
+
     theme = database.Column(database.String(15))
     custom_logo = database.Column(database.Boolean())
     custom_logo_ext = database.Column(database.String(5))
@@ -810,6 +812,8 @@ class PagosConfig(database.Model):
 
 
 class AdSense(database.Model):
+    """Configuration for Google AdSense integration."""
+
     id = database.Column(database.Integer, primary_key=True)
     meta_tag = database.Column(database.String(100))
     meta_tag_include = database.Column(database.Boolean(), default=False)
@@ -829,6 +833,8 @@ class AdSense(database.Model):
 
 
 class PaypalConfig(database.Model):
+    """Configuration for PayPal payment integration."""
+
     id = database.Column(database.Integer, primary_key=True)
     enable = database.Column(database.Boolean(), default=False)
     sandbox = database.Column(database.Boolean(), default=False)
@@ -1322,12 +1328,8 @@ def validate_audit_fields_before_commit(session):
 def populate_audit_fields_before_commit(session):
     """Automatically populate audit fields for BaseTabla instances before committing."""
     # Get current user context if available
-    current_user_id = None
     if has_request_context() and current_user.is_authenticated:
-        current_user_id = current_user.usuario  # noqa: F841
-
-    current_time = utc_now()
-    current_date = current_time.date()  # noqa: F841
+        pass  # User context available for future use
 
     # Track which instances had manually set audit fields before validation
     manually_set_creado_por = {}

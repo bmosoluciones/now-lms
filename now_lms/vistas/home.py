@@ -50,7 +50,7 @@ def pagina_de_inicio():
         MAX = MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA
 
     CURSOS = database.paginate(
-        database.select(Curso).filter(Curso.publico == True, Curso.estado == "open"),  # noqa: E712
+        database.select(Curso).filter(Curso.publico.is_(True), Curso.estado == "open"),
         page=request.args.get("page", default=1, type=int),
         max_per_page=MAX,
         count=True,
@@ -210,16 +210,13 @@ def custom_page(page):
         return redirect("/")
 
     if THEME and THEME != "now_lms":
-        from now_lms.config import DIRECTORIO_PLANTILLAS
-
         THEMES_DIRECTORY = "themes/"
         custom_page_path = Path(path.join(str(DIRECTORIO_PLANTILLAS), THEMES_DIRECTORY, THEME, "custom_pages", f"{page}.j2"))
 
         if custom_page_path.exists():
             template_path = f"{THEMES_DIRECTORY}{THEME}/custom_pages/{page}.j2"
             return render_template(template_path)
-        else:
-            return redirect("/")
+        return redirect("/")
 
     # Si no existe la página personalizada, redirigir al inicio
     return redirect("/")

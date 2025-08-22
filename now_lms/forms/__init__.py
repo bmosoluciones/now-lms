@@ -646,9 +646,11 @@ class EvaluationReopenRequestForm(FlaskForm):
 
 
 class TakeEvaluationForm(FlaskForm):
-    """Formulario dinámico para tomar una evaluación."""
+    """Formulario dinámico para tomar una evaluación.
 
-    pass  # This will be dynamically populated with questions
+    This will be dynamically populated with questions.
+    """
+    pass  # pylint: disable=unnecessary-pass
 
 
 class ForoMensajeForm(FlaskForm):
