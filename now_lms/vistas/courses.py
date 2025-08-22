@@ -159,6 +159,7 @@ def curso(course_code):
             editable = current_user.tipo == "admin"
         else:
             acceso = False
+            editable = False
     elif current_user.is_authenticated and request.args.get("inspect"):
         if current_user.tipo == "admin":
             acceso = True
@@ -170,11 +171,14 @@ def curso(course_code):
             acceso = database.session.execute(_consulta).scalars().first()
             if acceso:
                 editable = True
-    elif _curso.publico:
+            else:
+                editable = False
+    elif _curso and _curso.publico:
         acceso = _curso.estado == "open" and _curso.publico is True
         editable = False
     else:
         acceso = False
+        editable = False
 
     if acceso:
         return render_template(
@@ -201,8 +205,7 @@ def curso(course_code):
             markdown2html=markdown2html,
         )
 
-    else:
-        abort(403)
+    abort(403)
 
 
 def _crear_indice_avance_curso(course_code):
@@ -253,7 +256,7 @@ def course_enroll(course_code):
 
     # Validate and apply coupon if provided
     if coupon_code and _curso.pagado:
-        coupon, coupon_error, validation_error = _validate_coupon_for_enrollment(course_code, coupon_code, _usuario)
+        coupon, _, validation_error = _validate_coupon_for_enrollment(course_code, coupon_code, _usuario)
         if coupon:
             applied_coupon = coupon
             discount_amount = coupon.calculate_discount(original_price)
@@ -395,8 +398,6 @@ def course_enroll(course_code):
         final_price=final_price,
         discount_amount=discount_amount,
     )
-
-    return render_template("learning/curso/enroll.html", curso=_curso, usuario=_usuario, form=form)
 
 
 @course.route("/course/<course_code>/take")
@@ -920,17 +921,17 @@ def _get_course_evaluations_and_attempts(curso_id, usuario=None):
     evaluation_attempts = {}
     if usuario:
         # Obtener intentos del usuario para cada evaluación
-        for eval in evaluaciones:
+        for evaluation in evaluaciones:
             attempts = (
                 database.session.execute(
                     select(EvaluationAttempt)
-                    .filter_by(evaluation_id=eval.id, user_id=usuario)
+                    .filter_by(evaluation_id=evaluation.id, user_id=usuario)
                     .order_by(EvaluationAttempt.started_at)
                 )
                 .scalars()
                 .all()
             )
-            evaluation_attempts[eval.id] = attempts
+            evaluation_attempts[evaluation.id] = attempts
 
     return evaluaciones, evaluation_attempts
 
@@ -1079,7 +1080,7 @@ def _actualizar_avance_curso(curso_id, usuario):
         select(func.count(CursoRecursoAvance.id)).filter(
             CursoRecursoAvance.curso == curso_id,
             CursoRecursoAvance.usuario == usuario,
-            CursoRecursoAvance.completado == True,  # noqa: E712
+            CursoRecursoAvance.completado.is_(True),
             CursoRecursoAvance.requerido == "required",
         )
     ).scalar()
@@ -2154,7 +2155,7 @@ def lista_cursos():
     categorias = database.session.execute(select(Categoria)).scalars().all()
 
     # Build base query for courses
-    query = database.select(Curso).filter(Curso.publico == True, Curso.estado == "open")  # noqa: E712
+    query = database.select(Curso).filter(Curso.publico.is_(True), Curso.estado == "open")
 
     # Extract filter parameters
     nivel_param = request.args.get("nivel")

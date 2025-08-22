@@ -295,7 +295,7 @@ def lista_programas():
     categorias = database.session.execute(database.select(Categoria)).scalars().all()
 
     # Start with base query
-    query = database.select(Programa).filter(Programa.publico == True, Programa.estado == "open")  # noqa: E712
+    query = database.select(Programa).filter(Programa.publico.is_(True), Programa.estado == "open")
 
     # Get filtering parameters
     tag_param = request.args.get("tag")

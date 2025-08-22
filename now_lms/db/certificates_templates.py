@@ -56,7 +56,7 @@ CERTIFICADO_HORIZONTAL_HTML = """
                 </div>
             </div>
             <div>
-            <img src="{{ url_for("certificate.certificacion_qr", id=certificacion.id) }}" alt="QR Code" width="50" height="50">
+            <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="QR Code" width="50" height="50">
             </div>
         </div>
     </body>
@@ -168,7 +168,7 @@ CERTIFICADO_VERTICAL_HTML = """
                 </div>
             </div>
             <div>
-            <img src="{{ url_for("certificate.certificacion_qr", id=certificacion.id) }}" alt="QR Code" width="50" height="50">
+            <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="QR Code" width="50" height="50">
             </div>
         </div>
     </body>
@@ -282,7 +282,7 @@ CERTIFICADO_ELEGANTE_HTML = """
                 <div class="fecha-firma">
                     <div class="fecha">Fecha: {{ certificacion.fecha }}</div>
                     <div class="qr-container">
-                        <img src="{{ url_for("certificate.certificacion_qr", id=certificacion.id) }}" alt="QR Code" width="60" height="60">
+                        <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="QR Code" width="60" height="60">
                     </div>
                 </div>
             </div>
@@ -453,7 +453,7 @@ CERTIFICADO_MODERNO_HTML = """
                     </div>
                     <div class="qr-section">
                         <div class="qr-label">Verificación</div>
-                        <img src="{{ url_for("certificate.certificacion_qr", id=certificacion.id) }}" alt="QR Code" width="50" height="50">
+                        <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="QR Code" width="50" height="50">
                     </div>
                 </div>
             </div>
@@ -656,7 +656,7 @@ CERTIFICADO_CLASICO_HTML = """
                     </div>
                     <div class="verification">
                         <div class="verification-label">Código de verificación</div>
-                        <img src="{{ url_for("certificate.certificacion_qr", id=certificacion.id) }}" alt="QR Code" width="55" height="55">
+                        <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="QR Code" width="55" height="55">
                     </div>
                 </div>
             </div>
@@ -888,7 +888,7 @@ CERTIFICADO_CORPORATIVO_HTML = """
                     </div>
                     <div class="validation">
                         <strong>Validación digital:</strong><br>
-                        <img src="{{ url_for("certificate.certificacion_qr", id=certificacion.id) }}" alt="QR Code" width="50" height="50">
+                        <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="QR Code" width="50" height="50">
                     </div>
                 </div>
                 <div class="signature-line"></div>
@@ -1112,7 +1112,7 @@ CERTIFICADO_FINANCE_HTML = """
                     <p>Sello Oficial</p>
                     <div class="sello-circulo">100</div>
                     <div class="qr-verification">
-                        <img src="{{ url_for("certificate.certificacion_qr", id=certificacion.id) }}" alt="QR Code" width="50" height="50">
+                        <img src="{{ url_for("certificate.certificacion_qr", cert_id=certificacion.id) }}" alt="QR Code" width="50" height="50">
                     </div>
                 </div>
             </footer>
@@ -1425,7 +1425,7 @@ CERTIFICADO_DEFAULT_HTML = """
 
                     <div class="validation-section">
                         <div class="qr-code-container">
-                            <img src="{{ url_for('certificate.certificacion_qr', id=certificacion.id) }}"
+                            <img src="{{ url_for('certificate.certificacion_qr', cert_id=certificacion.id) }}"
                                  alt=QR Code for certificate verification"
                                  class="qr-code">
                             <p class="qr-label">Scan to verify</p>

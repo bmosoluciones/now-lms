@@ -58,44 +58,44 @@ def _load_mail_config_from_env() -> SimpleNamespace:
     """Carga la configuración de correo electrónico desde las variables de entorno."""
     logger.trace("Obteniendo configuración de correo electronico desde variables de entorno.")
     # Server name and user credentials
-    MAIL_SERVER = environ.get("MAIL_SERVER", None)
-    MAIL_PORT = environ.get("MAIL_PORT", None)
-    MAIL_USERNAME = environ.get("MAIL_USERNAME", None)
-    MAIL_PASSWORD = environ.get("MAIL_PASSWORD", None)
-    if MAIL_SERVER and MAIL_PORT and MAIL_USERNAME and MAIL_PASSWORD:
+    mail_server = environ.get("MAIL_SERVER", None)
+    mail_port = environ.get("MAIL_PORT", None)
+    mail_username = environ.get("MAIL_USERNAME", None)
+    mail_password = environ.get("MAIL_PASSWORD", None)
+    if mail_server and mail_port and mail_username and mail_password:
         logger.debug("Configuración de correo electrónico cargada desde variables de entorno.")
-        mail_configured = True
+        is_mail_configured = True
     else:
         logger.trace("No se encontró configuración de correo electrónico en variables de entorno.")
-        mail_configured = False
+        is_mail_configured = False
     # TLS/SSL settings
-    MAIL_USE_TLS = environ.get("MAIL_USE_TLS", "False").capitalize()
-    MAIL_USE_SSL = environ.get("MAIL_USE_SSL", "False").capitalize()
+    mail_use_tls = environ.get("MAIL_USE_TLS", "False").capitalize()
+    mail_use_ssl = environ.get("MAIL_USE_SSL", "False").capitalize()
     # Default sender
-    MAIL_DEFAULT_SENDER = environ.get("MAIL_DEFAULT_SENDER")
+    mail_default_sender = environ.get("MAIL_DEFAULT_SENDER")
 
     # String to boolean conversion using pattern matching
-    match MAIL_USE_SSL:
+    match mail_use_ssl:
         case "FALSE":
-            MAIL_USE_SSL = False  # type: ignore[assignment]
+            mail_use_ssl = False  # type: ignore[assignment]
         case "TRUE":
-            MAIL_USE_SSL = True  # type: ignore[assignment]
+            mail_use_ssl = True  # type: ignore[assignment]
 
-    match MAIL_USE_TLS:
+    match mail_use_tls:
         case "FALSE":
-            MAIL_USE_TLS = False  # type: ignore[assignment]
+            mail_use_tls = False  # type: ignore[assignment]
         case "TRUE":
-            MAIL_USE_TLS = True  # type: ignore[assignment]
+            mail_use_tls = True  # type: ignore[assignment]
 
     return SimpleNamespace(
-        mail_configured=mail_configured,
-        MAIL_SERVER=MAIL_SERVER,
-        MAIL_PORT=MAIL_PORT,
-        MAIL_USERNAME=MAIL_USERNAME,
-        MAIL_PASSWORD=MAIL_PASSWORD,
-        MAIL_USE_TLS=MAIL_USE_TLS,
-        MAIL_USE_SSL=MAIL_USE_SSL,
-        MAIL_DEFAULT_SENDER=MAIL_DEFAULT_SENDER,
+        mail_configured=is_mail_configured,
+        MAIL_SERVER=mail_server,
+        MAIL_PORT=mail_port,
+        MAIL_USERNAME=mail_username,
+        MAIL_PASSWORD=mail_password,
+        MAIL_USE_TLS=mail_use_tls,
+        MAIL_USE_SSL=mail_use_ssl,
+        MAIL_DEFAULT_SENDER=mail_default_sender,
     )
 
 
@@ -106,24 +106,24 @@ def _load_mail_config_from_db() -> SimpleNamespace:
         mail_config = database.session.execute(database.select(MailConfig)).first()[0]
 
         # If available, use the configuration from the database
-        MAIL_SERVER = mail_config.MAIL_SERVER
-        MAIL_PORT = mail_config.MAIL_PORT
-        MAIL_USE_TLS = mail_config.MAIL_USE_TLS
-        MAIL_USE_SSL = mail_config.MAIL_USE_SSL
-        MAIL_USERNAME = mail_config.MAIL_USERNAME
-        MAIL_PASSWORD = descifrar_secreto(mail_config.MAIL_PASSWORD)
-        MAIL_DEFAULT_SENDER = mail_config.MAIL_DEFAULT_SENDER
-        mail_configured = mail_config.email_verificado
+        mail_server = mail_config.MAIL_SERVER
+        mail_port = mail_config.MAIL_PORT
+        mail_use_tls = mail_config.MAIL_USE_TLS
+        mail_use_ssl = mail_config.MAIL_USE_SSL
+        mail_username = mail_config.MAIL_USERNAME
+        mail_password = descifrar_secreto(mail_config.MAIL_PASSWORD)
+        mail_default_sender = mail_config.MAIL_DEFAULT_SENDER
+        is_mail_configured = mail_config.email_verificado
 
         return SimpleNamespace(
-            mail_configured=mail_configured,
-            MAIL_SERVER=MAIL_SERVER,
-            MAIL_PORT=MAIL_PORT,
-            MAIL_USERNAME=MAIL_USERNAME,
-            MAIL_PASSWORD=MAIL_PASSWORD,
-            MAIL_USE_TLS=MAIL_USE_TLS,
-            MAIL_USE_SSL=MAIL_USE_SSL,
-            MAIL_DEFAULT_SENDER=MAIL_DEFAULT_SENDER,
+            mail_configured=is_mail_configured,
+            MAIL_SERVER=mail_server,
+            MAIL_PORT=mail_port,
+            MAIL_USERNAME=mail_username,
+            MAIL_PASSWORD=mail_password,
+            MAIL_USE_TLS=mail_use_tls,
+            MAIL_USE_SSL=mail_use_ssl,
+            MAIL_DEFAULT_SENDER=mail_default_sender,
         )
 
 
@@ -133,8 +133,7 @@ def _config() -> SimpleNamespace:
 
     if config_from_env.mail_configured:
         return config_from_env
-    else:
-        return _load_mail_config_from_db()
+    return _load_mail_config_from_db()
 
 
 def send_threaded_email(app: Flask, mail: Mail, msg: Message, _log: str = "", _flush: str = ""):

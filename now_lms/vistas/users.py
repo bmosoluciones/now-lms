@@ -72,12 +72,10 @@ def inicio_sesion():
             if identidad.activo:
                 login_user(identidad)
                 return PANEL_DE_USUARIO
-            else:  # pragma: no cover
-                flash("Su cuenta esta inactiva.", "info")
-                return INICIO_SESION
-        else:  # pragma: no cover
-            flash("Inicio de Sesion Incorrecto.", "warning")
-            return INICIO_SESION
+            flash("Su cuenta esta inactiva.", "info")  # pragma: no cover
+            return INICIO_SESION  # pragma: no cover
+        flash("Inicio de Sesion Incorrecto.", "warning")  # pragma: no cover
+        return INICIO_SESION  # pragma: no cover
     return render_template(
         "auth/login.html", form=form, titulo="Inicio de Sesion - NOW LMS", show_forgot_password=show_forgot_password
     )
@@ -102,47 +100,46 @@ def crear_cuenta():
         flash("Usted ya posee una cuenta en el sistema.", "warning")
         return PANEL_DE_USUARIO
 
-    else:
-        form = LogonForm()
-        config = database.session.execute(database.select(Configuracion)).first()[0]
-        if form.validate_on_submit() or request.method == "POST":
-            usuario_ = Usuario(
-                usuario=form.correo_electronico.data,
-                acceso=proteger_passwd(form.acceso.data),
-                nombre=form.nombre.data,
-                apellido=form.apellido.data,
-                correo_electronico=form.correo_electronico.data,
-                tipo="student",
-                activo=False,
-                creado_por=form.correo_electronico.data,
-            )
-            from sqlalchemy.exc import PendingRollbackError
+    form = LogonForm()
+    config_result = database.session.execute(database.select(Configuracion)).first()
+    config = config_result[0] if config_result else None
+    if form.validate_on_submit() or request.method == "POST":
+        usuario_ = Usuario(
+            usuario=form.correo_electronico.data,
+            acceso=proteger_passwd(form.acceso.data),
+            nombre=form.nombre.data,
+            apellido=form.apellido.data,
+            correo_electronico=form.correo_electronico.data,
+            tipo="student",
+            activo=False,
+            creado_por=form.correo_electronico.data,
+        )
+        from sqlalchemy.exc import PendingRollbackError
 
-            try:
+        try:
 
-                database.session.add(usuario_)
-                database.session.commit()
-                log.info(f"User account created: {usuario_.usuario}")
-                if config.verify_user_by_email:
-                    mail_config = database.session.execute(database.select(MailConfig)).first()[0]
-                    from now_lms.auth import send_confirmation_email
+            database.session.add(usuario_)
+            database.session.commit()
+            log.info(f"User account created: {usuario_.usuario}")
+            if config and config.verify_user_by_email:
+                mail_config_result = database.session.execute(database.select(MailConfig)).first()
+                mail_config = mail_config_result[0] if mail_config_result else None
+                from now_lms.auth import send_confirmation_email
 
-                    send_confirmation_email(usuario_)
-                    return render_template(
-                        "error_pages/verify_mail.html",
-                        mail_config=mail_config,
-                    )
+                send_confirmation_email(usuario_)
+                return render_template(
+                    "error_pages/verify_mail.html",
+                    mail_config=mail_config,
+                )
 
-                else:
-                    return INICIO_SESION
-            except OperationalError:  # pragma: no cover
-                flash(ACCOUNT_CREATION_ERROR_MSG, "warning")
-                return redirect("/")
-            except PendingRollbackError:  # pragma: no cover
-                flash(ACCOUNT_CREATION_ERROR_MSG, "warning")
-                return redirect("/")
-        else:
-            return render_template("auth/logon.html", form=form, titulo="Crear cuenta - NOW LMS")
+            return INICIO_SESION
+        except OperationalError:  # pragma: no cover
+            flash(ACCOUNT_CREATION_ERROR_MSG, "warning")
+            return redirect("/")
+        except PendingRollbackError:  # pragma: no cover
+            flash(ACCOUNT_CREATION_ERROR_MSG, "warning")
+            return redirect("/")
+    return render_template("auth/logon.html", form=form, titulo="Crear cuenta - NOW LMS")
 
 
 @user.route("/user/new_user", methods=["GET", "POST"])
@@ -187,9 +184,8 @@ def check_mail(token):
     if _token:
         flash("Correo verificado exitosamente. Ya puede iniciar sesión en el sistema", "success")
         return redirect(url_for(USER_LOGIN_ROUTE))
-    else:
-        flash("Token de verificación invalido.", "warning")
-        return redirect(url_for("user.cerrar_sesion"))
+    flash("Token de verificación invalido.", "warning")
+    return redirect(url_for("user.cerrar_sesion"))
 
 
 @user.route("/user/forgot_password", methods=["GET", "POST"])
@@ -202,16 +198,16 @@ def forgot_password():
     form = ForgotPasswordForm()
     if form.validate_on_submit():
         # Check if user exists and has verified email
-        user = database.session.execute(
+        usuario = database.session.execute(
             database.select(Usuario).filter_by(correo_electronico=form.email.data)
         ).scalar_one_or_none()
-        if user and user.correo_electronico_verificado:
+        if usuario and usuario.correo_electronico_verificado:
             # Check if email system is configured
             mail_config = database.session.execute(database.select(MailConfig)).first()
             if mail_config and mail_config[0].email_verificado:
                 from now_lms.auth import send_password_reset_email
 
-                if send_password_reset_email(user):
+                if send_password_reset_email(usuario):
                     flash("Se ha enviado un correo con instrucciones para recuperar su contraseña.", "success")
                 else:
                     flash("Error al enviar el correo de recuperación. Intente más tarde.", "error")
@@ -240,8 +236,8 @@ def reset_password(token):
         flash("El enlace de recuperación es inválido o ha expirado.", "error")
         return redirect(url_for(USER_LOGIN_ROUTE))
 
-    user = database.session.execute(database.select(Usuario).filter_by(correo_electronico=email)).scalar_one_or_none()
-    if not user:
+    usuario = database.session.execute(database.select(Usuario).filter_by(correo_electronico=email)).scalar_one_or_none()
+    if not usuario:
         flash("Usuario no encontrado.", "error")
         return redirect(url_for(USER_LOGIN_ROUTE))
 
@@ -252,11 +248,11 @@ def reset_password(token):
             return render_template("auth/reset_password.html", form=form, titulo="Restablecer Contraseña - NOW LMS")
 
         # Update password
-        user.acceso = proteger_passwd(form.new_password.data)
+        usuario.acceso = proteger_passwd(form.new_password.data)
         database.session.commit()
 
         flash("Contraseña actualizada exitosamente. Ya puede iniciar sesión.", "success")
-        log.info(f"Password reset for user {user.usuario}")
+        log.info(f"Password reset for user {usuario.usuario}")
         return redirect(url_for(USER_LOGIN_ROUTE))
 
     return render_template("auth/reset_password.html", form=form, titulo="Restablecer Contraseña - NOW LMS")

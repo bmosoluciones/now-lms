@@ -193,7 +193,7 @@ def is_running_in_container() -> bool:
     """Detecta si se está ejecutando en un contenedor como Docker."""
     # Revisión común en Docker/Linux
     try:
-        with open("/proc/1/cgroup", "rt") as f:
+        with open("/proc/1/cgroup", "rt", encoding="utf-8") as f:
             content = f.read()
             return "docker" in content or "kubepods" in content
     except FileNotFoundError:
@@ -205,7 +205,6 @@ def log_system_info():
     import os
     import platform
     import socket
-    import sys
 
     log.info("=== System Information ===")
 

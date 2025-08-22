@@ -8,6 +8,7 @@ wheel
 # Control de calidad python
 black
 flake8
+pylint
 pytest
 ruff
 

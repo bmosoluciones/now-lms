@@ -11,6 +11,12 @@ echo
 python -m ruff check --fix now_lms
 echo
 echo -------------------------------------------------
+echo Check python code with pylint
+echo -------------------------------------------------
+echo
+python -m pylint now_lms --score=yes --fail-under=9.0
+echo
+echo -------------------------------------------------
 echo Check python types
 echo -------------------------------------------------
 echo

@@ -204,14 +204,14 @@ def instructor_create():
     return render_template("masterclass/instructor_create.html", form=form, title="Crear Clase Magistral")
 
 
-@masterclass.route("/instructor/<id>/edit", methods=["GET", "POST"])
+@masterclass.route("/instructor/<master_class_id>/edit", methods=["GET", "POST"])
 @login_required
-def instructor_edit(id):
+def instructor_edit(master_class_id):
     """Edit a master class."""
     if current_user.tipo not in ["instructor", "admin"]:
         abort(403)
 
-    master_class = database.session.execute(select(MasterClass).filter_by(id=id)).scalars().first()
+    master_class = database.session.execute(select(MasterClass).filter_by(id=master_class_id)).scalars().first()
     if not master_class:
         abort(404)
 
@@ -230,7 +230,7 @@ def instructor_edit(id):
 
             # Check for slug conflicts excluding current record
             existing = (
-                database.session.execute(select(MasterClass).filter(and_(MasterClass.slug == slug, MasterClass.id != id)))
+                database.session.execute(select(MasterClass).filter(and_(MasterClass.slug == slug, MasterClass.id != master_class_id)))
                 .scalars()
                 .first()
             )
@@ -238,7 +238,7 @@ def instructor_edit(id):
                 slug = f"{original_slug}-{counter}"
                 counter += 1
                 existing = (
-                    database.session.execute(select(MasterClass).filter(and_(MasterClass.slug == slug, MasterClass.id != id)))
+                    database.session.execute(select(MasterClass).filter(and_(MasterClass.slug == slug, MasterClass.id != master_class_id)))
                     .scalars()
                     .first()
                 )
@@ -267,14 +267,14 @@ def instructor_edit(id):
     )
 
 
-@masterclass.route("/instructor/<id>/students")
+@masterclass.route("/instructor/<master_class_id>/students")
 @login_required
-def instructor_students(id):
+def instructor_students(master_class_id):
     """View enrolled students in a master class."""
     if current_user.tipo not in ["instructor", "admin"]:
         abort(403)
 
-    master_class = database.session.execute(select(MasterClass).filter_by(id=id)).scalars().first()
+    master_class = database.session.execute(select(MasterClass).filter_by(id=master_class_id)).scalars().first()
     if not master_class:
         abort(404)
 
@@ -288,7 +288,7 @@ def instructor_students(id):
     # Get enrollments with user information
     enrollments = database.paginate(
         select(MasterClassEnrollment)
-        .filter_by(master_class_id=id)
+        .filter_by(master_class_id=master_class_id)
         .join(Usuario, MasterClassEnrollment.user_id == Usuario.usuario)
         .order_by(MasterClassEnrollment.enrolled_at.desc()),
         page=page,

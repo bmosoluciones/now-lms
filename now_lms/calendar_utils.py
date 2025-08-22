@@ -219,8 +219,6 @@ def update_evaluation_events(evaluation_id):
 
 def get_upcoming_events_for_user(user_id, limit=5):
     """Get upcoming events for a user (for dashboard display)."""
-    from datetime import datetime
-
     # Handle invalid inputs
     if not user_id or limit <= 0:
         return []

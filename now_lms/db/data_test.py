@@ -19,7 +19,7 @@
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
-from datetime import datetime, time, timedelta
+from datetime import date, datetime, time, timedelta
 from os import environ, makedirs, path
 from shutil import copyfile
 
@@ -89,8 +89,6 @@ def crear_certificado_prueba():
 
 def crear_masterclass_prueba():
     """Crea una clase magistral de prueba con inscripción para el admin."""
-    from datetime import date, time, timedelta
-
     # Create a future master class
     future_date = date.today() + timedelta(days=30)
 
@@ -545,8 +543,6 @@ def crear_recurso_prueba():
 
 def crear_announcement_prueba():
     """Crea anuncio de prueba para admin."""
-    from datetime import datetime, timedelta
-
     announcement = Announcement(
         id=1,  # Static ID for testing
         title="Anuncio de prueba",
@@ -563,8 +559,6 @@ def crear_announcement_prueba():
 
 def crear_blog_prueba():
     """Crea blog post y tag de prueba."""
-    from datetime import datetime
-
     # Create blog tag first
     tag = BlogTag(id=1, name="Educación", slug="educacion")  # Static ID for testing
     database.session.add(tag)

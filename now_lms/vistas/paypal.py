@@ -84,8 +84,7 @@ def validate_paypal_configuration(client_id, client_secret, sandbox=False):
 
         if response.status_code == 200:
             return {"valid": True, "message": "Configuración de PayPal válida"}
-        else:
-            return {"valid": False, "message": f"Error de configuración de PayPal: {response.text}"}
+        return {"valid": False, "message": f"Error de configuración de PayPal: {response.text}"}
 
     except Exception as e:
         return {"valid": False, "message": f"Error al validar configuración: {str(e)}"}
@@ -143,12 +142,10 @@ def get_paypal_access_token():
                     f"Successfully obtained PayPal access token ({'sandbox' if config_data.sandbox else 'production'})"
                 )
                 return access_token
-            else:
-                logging.error("PayPal access token missing in response")
-                return None
-        else:
-            logging.error(f"Failed to get PayPal access token: HTTP {response.status_code} - {response.text}")
+            logging.error("PayPal access token missing in response")
             return None
+        logging.error(f"Failed to get PayPal access token: HTTP {response.status_code} - {response.text}")
+        return None
 
     except Exception as e:
         logging.error(f"Exception while getting PayPal access token: {e}")
@@ -179,9 +176,8 @@ def verify_paypal_payment(order_id, access_token):
                 "payer_id": order_data.get("payer", {}).get("payer_id"),
                 "order_data": order_data,
             }
-        else:
-            logging.error(f"PayPal order verification failed: {response.text}")
-            return {"verified": False, "error": "Payment verification failed"}
+        logging.error(f"PayPal order verification failed: {response.text}")
+        return {"verified": False, "error": "Payment verification failed"}
 
     except Exception as e:
         logging.error(f"PayPal payment verification error: {e}")
@@ -247,8 +243,6 @@ def confirm_payment():
             return jsonify({"success": False, "error": f"Payment verification failed: {error_msg}"}), 400
 
         # Check if payment amount matches expected amount (considering coupons)
-        from now_lms.db import Curso
-
         curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalars().first()
         if not curso:
             logging.warning(f"Course {course_code} not found for payment confirmation by user {current_user.usuario}")
@@ -299,10 +293,9 @@ def confirm_payment():
                         "redirect_url": url_for("course.tomar_curso", course_code=course_code),
                     }
                 )
-            else:
-                # Update existing payment
-                existing_payment.estado = "completed"
-                pago = existing_payment
+            # Update existing payment
+            existing_payment.estado = "completed"
+            pago = existing_payment
         else:
             # Create new payment record
             pago = Pago()

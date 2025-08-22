@@ -59,8 +59,6 @@ def get_configuracion():
     config = database.session.execute(database.select(Configuracion)).scalars().first()
     if not config:
         # Fallback en caso de que no haya configuración cargada
-        from now_lms.db import Configuracion
-
         config = Configuracion(lang="en", time_zone="UTC", titulo="Título por defecto", descripcion="Descripción")
     return config
 
@@ -91,39 +89,38 @@ def invalidate_configuracion_cache():
     log.trace("Cache de configuración invalidada")
 
 
-"""Guia de uso:
-
+# Guia de uso:
+#
 # Extraer textos a traducir
-pybabel extract -F babel.cfg -o now_lms/translations/messages.pot .
-
+# pybabel extract -F babel.cfg -o now_lms/translations/messages.pot .
+#
 # Crear archivo de traducción para inglés (si no existe)
-pybabel init -i now_lms/translations/messages.pot -d now_lms/translations -l en
-
+# pybabel init -i now_lms/translations/messages.pot -d now_lms/translations -l en
+#
 # Compilar traducciones
-pybabel compile -d now_lms/translations
-
+# pybabel compile -d now_lms/translations
+#
 # Actualizar archivo de traducción
 # Extraer nuevos textos
-pybabel extract -F babel.cfg -o now_lms/translations/messages.pot .
-
+# pybabel extract -F babel.cfg -o now_lms/translations/messages.pot .
+#
 # Actualizar archivos de idioma
-pybabel update -i now_lms/translations/messages.pot -d now_lms/translations
-
+# pybabel update -i now_lms/translations/messages.pot -d now_lms/translations
+#
 # Luego edita los .po y recompila
-pybabel compile -d now_lms/translations
-
+# pybabel compile -d now_lms/translations
+#
 # Uso en código Python:
-from now_lms.i18n import _
-flash(_("Mensaje a traducir"), "success")
-
+# from now_lms.i18n import _
+# flash(_("Mensaje a traducir"), "success")
+#
 # Uso en plantillas Jinja2:
-{{ _('Texto a traducir') }}
+# {{ _('Texto a traducir') }}
 
 # Para plurales:
-from now_lms.i18n import _n
-_n('%(num)d archivo', '%(num)d archivos', num, num=num)
-
+# from now_lms.i18n import _n
+# _n('%(num)d archivo', '%(num)d archivos', num, num=num)
+#
 # Para traducciones perezosas (formularios):
-from now_lms.i18n import _l
-field = StringField(_l('Etiqueta del campo'))
-"""
+# from now_lms.i18n import _l
+# field = StringField(_l('Etiqueta del campo'))

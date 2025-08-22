@@ -92,14 +92,14 @@
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 <a
-                                                    href="{{ url_for('masterclass.instructor_edit', id=master_class.id) }}"
+                                                    href="{{ url_for('masterclass.instructor_edit', master_class_id=master_class.id) }}"
                                                     class="btn btn-outline-secondary btn-sm"
                                                     title="Editar"
                                                 >
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 <a
-                                                    href="{{ url_for('masterclass.instructor_students', id=master_class.id) }}"
+                                                    href="{{ url_for('masterclass.instructor_students', master_class_id=master_class.id) }}"
                                                     class="btn btn-outline-info btn-sm"
                                                     title="Estudiantes"
                                                 >

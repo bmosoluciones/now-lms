@@ -55,7 +55,6 @@ def command() -> None:  # pragma: no cover
 @lms_app.cli.group()
 def database():
     """Database administration tools."""
-    pass
 
 
 @database.command()
@@ -141,20 +140,19 @@ def version():  # pragma: no cover
 @lms_app.cli.group()
 def info():
     """General informacion about the system setup."""
-    pass
 
 
 @info.command()
-@click.argument("course", type=str, required=False)
-def course(course):  # pragma: no cover
+@click.argument("course_name", type=str, required=False)
+def course(course_name):  # pragma: no cover
     """Return information about the given course."""
-    if course:
+    if course_name:
         with lms_app.app_context():
-            info = course_info(course)
-            click.echo(f"Course: {info.course.nombre}")
-            click.echo(f"Resources count: {info.resources_count}")
-            click.echo(f"Sections count: {info.sections_count}")
-            click.echo(f"Students count: {info.student_count}")
+            course_info_data = course_info(course_name)
+            click.echo(f"Course: {course_info_data.course.nombre}")
+            click.echo(f"Resources count: {course_info_data.resources_count}")
+            click.echo(f"Sections count: {course_info_data.sections_count}")
+            click.echo(f"Students count: {course_info_data.student_count}")
     else:
         click.echo("No course code provided.")
 
@@ -163,31 +161,31 @@ def course(course):  # pragma: no cover
 def system():  # pragma: no cover
     """Return information about the system."""
     with lms_app.app_context():
-        info = config_info()
+        config_info_data = config_info()
         click.echo("NOW LMS System Information:")
         click.echo(f"  NOW LMS version: {VERSION}")
-        click.echo(f"  Python version: {info.sys._python_version}")
-        click.echo(f"  Python implementation: {info.sys._python_implementation}")
-        click.echo(f"  Database engine: {info._dbengine}")
-        click.echo(f"  Cache type: {info._cache_type}")
+        click.echo(f"  Python version: {config_info_data.sys._python_version}")
+        click.echo(f"  Python implementation: {config_info_data.sys._python_implementation}")
+        click.echo(f"  Database engine: {config_info_data._dbengine}")
+        click.echo(f"  Cache type: {config_info_data._cache_type}")
 
         click.echo("Host Information:")
-        click.echo(f"  Operating System: {info.sys._system}")
-        click.echo(f"  OS Version: {info.sys._system_version}")
-        click.echo(f"  Architecture: {info.sys._arch[0]}")
+        click.echo(f"  Operating System: {config_info_data.sys._system}")
+        click.echo(f"  OS Version: {config_info_data.sys._system_version}")
+        click.echo(f"  Architecture: {config_info_data.sys._arch[0]}")
 
 
 @info.command()
 def path():  # pragma: no cover
     """Directorios used by the current setup."""
     with lms_app.app_context():
-        info = config_info()
+        config_info_data = config_info()
         click.echo("Application directories:")
-        click.echo(f"  Application Directory: {info._app_dir}")
-        click.echo(f"  Base Files Directory: {info._base_files_dir}")
-        click.echo(f"  Private Files Directory: {info._private_files_dir}")
-        click.echo(f"  Public Files Directory: {info._public_files_dir}")
-        click.echo(f"  Templates Directory: {info._templates_dir}")
+        click.echo(f"  Application Directory: {config_info_data._app_dir}")
+        click.echo(f"  Base Files Directory: {config_info_data._base_files_dir}")
+        click.echo(f"  Private Files Directory: {config_info_data._private_files_dir}")
+        click.echo(f"  Public Files Directory: {config_info_data._public_files_dir}")
+        click.echo(f"  Templates Directory: {config_info_data._templates_dir}")
 
 
 @info.command()
@@ -227,7 +225,6 @@ def serve():  # pragma: no cover
 @lms_app.cli.group()
 def settings():
     """Set administration tools."""
-    pass
 
 
 @settings.command()

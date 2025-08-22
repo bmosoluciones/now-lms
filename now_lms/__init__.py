@@ -268,58 +268,58 @@ def config():  # pragma: no cover
 # ---------------------------------------------------------------------------------------
 # Definición de variables globales de Jinja2 para su disponibilidad en plantillas HTML
 # ---------------------------------------------------------------------------------------
-def define_variables_globales_jinja2(app: Flask):
+def define_variables_globales_jinja2(flask_app: Flask):
     """Define variables globales de Jinja2 para su disponibilidad en plantillas HTML."""
     log.trace("Defining Jinja2 global variables.")
-    app.jinja_env.globals["adsense_code"] = get_addsense_code
-    app.jinja_env.globals["adsense_meta"] = get_addsense_meta
-    app.jinja_env.globals["adsense_enabled"] = get_adsense_enabled
-    app.jinja_env.globals["ad_billboard"] = get_ad_billboard
-    app.jinja_env.globals["ad_large_rectangle"] = get_ad_large_rectangle
-    app.jinja_env.globals["ad_large_skyscraper"] = get_ad_large_skyscraper
-    app.jinja_env.globals["ad_leaderboard"] = get_ad_leaderboard
-    app.jinja_env.globals["ad_medium_rectangle"] = get_ad_medium_rectangle
-    app.jinja_env.globals["ad_mobile_banner"] = get_ad_mobile_banner
-    app.jinja_env.globals["ad_skyscraper"] = get_ad_skyscraper
-    app.jinja_env.globals["ad_wide_skyscraper"] = get_ad_wide_skyscraper
-    app.jinja_env.globals["code_name"] = CODE_NAME
-    app.jinja_env.globals["config"] = config
-    app.jinja_env.globals["course_info"] = course_info
-    app.jinja_env.globals["course_logo"] = get_current_course_logo
-    app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
-    app.jinja_env.globals["current_theme"] = current_theme
-    app.jinja_env.globals["current_user"] = current_user
-    app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
-    app.jinja_env.globals["estilo_alerta"] = ESTILO_ALERTAS
-    app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
-    app.jinja_env.globals["favicon_perzonalizado"] = favicon_perzonalizado
-    app.jinja_env.globals["get_all_from_db"] = get_all_records
-    app.jinja_env.globals["get_course_sections"] = get_course_sections
-    app.jinja_env.globals["get_one_from_db"] = get_one_record
-    app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
-    app.jinja_env.globals["info"] = app_info(app)
-    app.jinja_env.globals["is_masterclass_enabled"] = is_masterclass_enabled
-    app.jinja_env.globals["is_programs_enabled"] = is_programs_enabled
-    app.jinja_env.globals["is_resources_enabled"] = is_resources_enabled
-    app.jinja_env.globals["is_blog_enabled"] = is_blog_enabled
-    app.jinja_env.globals["lms_info"] = lms_info
-    app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
-    app.jinja_env.globals["mkdown2html"] = markdown_to_clean_html
-    app.jinja_env.globals["markdown2html"] = markdown_to_clean_html
-    app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
-    app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
-    app.jinja_env.globals["paypal_enabled"] = check_paypal_enabled
-    app.jinja_env.globals["paypal_id"] = get_paypal_id
-    app.jinja_env.globals["pyversion"] = python_version()
-    app.jinja_env.globals["site_logo"] = get_site_logo
-    app.jinja_env.globals["site_favicon"] = get_site_favicon
-    app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
-    app.jinja_env.globals["version"] = VERSION
+    flask_app.jinja_env.globals["adsense_code"] = get_addsense_code
+    flask_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
+    flask_app.jinja_env.globals["adsense_enabled"] = get_adsense_enabled
+    flask_app.jinja_env.globals["ad_billboard"] = get_ad_billboard
+    flask_app.jinja_env.globals["ad_large_rectangle"] = get_ad_large_rectangle
+    flask_app.jinja_env.globals["ad_large_skyscraper"] = get_ad_large_skyscraper
+    flask_app.jinja_env.globals["ad_leaderboard"] = get_ad_leaderboard
+    flask_app.jinja_env.globals["ad_medium_rectangle"] = get_ad_medium_rectangle
+    flask_app.jinja_env.globals["ad_mobile_banner"] = get_ad_mobile_banner
+    flask_app.jinja_env.globals["ad_skyscraper"] = get_ad_skyscraper
+    flask_app.jinja_env.globals["ad_wide_skyscraper"] = get_ad_wide_skyscraper
+    flask_app.jinja_env.globals["code_name"] = CODE_NAME
+    flask_app.jinja_env.globals["config"] = config
+    flask_app.jinja_env.globals["course_info"] = course_info
+    flask_app.jinja_env.globals["course_logo"] = get_current_course_logo
+    flask_app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
+    flask_app.jinja_env.globals["current_theme"] = current_theme
+    flask_app.jinja_env.globals["current_user"] = current_user
+    flask_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
+    flask_app.jinja_env.globals["estilo_alerta"] = ESTILO_ALERTAS
+    flask_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
+    flask_app.jinja_env.globals["favicon_perzonalizado"] = favicon_perzonalizado
+    flask_app.jinja_env.globals["get_all_from_db"] = get_all_records
+    flask_app.jinja_env.globals["get_course_sections"] = get_course_sections
+    flask_app.jinja_env.globals["get_one_from_db"] = get_one_record
+    flask_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
+    flask_app.jinja_env.globals["info"] = app_info(flask_app)
+    flask_app.jinja_env.globals["is_masterclass_enabled"] = is_masterclass_enabled
+    flask_app.jinja_env.globals["is_programs_enabled"] = is_programs_enabled
+    flask_app.jinja_env.globals["is_resources_enabled"] = is_resources_enabled
+    flask_app.jinja_env.globals["is_blog_enabled"] = is_blog_enabled
+    flask_app.jinja_env.globals["lms_info"] = lms_info
+    flask_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
+    flask_app.jinja_env.globals["mkdown2html"] = markdown_to_clean_html
+    flask_app.jinja_env.globals["markdown2html"] = markdown_to_clean_html
+    flask_app.jinja_env.globals["moderador_asignado"] = verifica_moderador_asignado_a_curso
+    flask_app.jinja_env.globals["parametros_url"] = concatenar_parametros_a_url
+    flask_app.jinja_env.globals["paypal_enabled"] = check_paypal_enabled
+    flask_app.jinja_env.globals["paypal_id"] = get_paypal_id
+    flask_app.jinja_env.globals["pyversion"] = python_version()
+    flask_app.jinja_env.globals["site_logo"] = get_site_logo
+    flask_app.jinja_env.globals["site_favicon"] = get_site_favicon
+    flask_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
+    flask_app.jinja_env.globals["version"] = VERSION
 
     # Add custom Jinja2 filters
     import json
 
-    app.jinja_env.filters["fromjson"] = json.loads
+    flask_app.jinja_env.filters["fromjson"] = json.loads
 
 
 # ---------------------------------------------------------------------------------------
@@ -354,7 +354,7 @@ def handle_402(error):
 # ---------------------------------------------------------------------------------------
 # Factory function for creating Flask applications
 # ---------------------------------------------------------------------------------------
-def create_app(app_name="now_lms", testing=False, config=None):
+def create_app(app_name="now_lms", testing=False, config_overrides=None):
     """
     Create and configure a Flask application instance (factory pattern).
 
@@ -371,22 +371,22 @@ def create_app(app_name="now_lms", testing=False, config=None):
     log.trace(f"Templates directory: {DIRECTORIO_PLANTILLAS}")
 
     # Create Flask application instance
-    app = Flask(
+    flask_app = Flask(
         app_name,
         template_folder=DIRECTORIO_PLANTILLAS,
         static_folder=DIRECTORIO_ARCHIVOS,
     )
 
     # Apply base configuration
-    app.config.from_mapping(CONFIGURACION)
+    flask_app.config.from_mapping(CONFIGURACION)
 
     # Apply configuration overrides if provided
-    if config:
-        app.config.update(config)
+    if config_overrides:
+        flask_app.config.update(config_overrides)
 
     # Configure for testing if needed
     if testing:
-        app.config.update(
+        flask_app.config.update(
             {
                 "TESTING": True,
                 "SECRET_KEY": "test-secret-key-for-testing",
@@ -402,27 +402,27 @@ def create_app(app_name="now_lms", testing=False, config=None):
         )
 
     # Initialize extensions and modules within app context
-    with app.app_context():
-        inicializa_extenciones_terceros(app)
-        registrar_modulos_en_la_aplicacion_principal(app)
-        log_messages(app)
-        configure_uploads(app, images)
-        configure_uploads(app, files)
-        configure_uploads(app, audio)
-        define_variables_globales_jinja2(app)
+    with flask_app.app_context():
+        inicializa_extenciones_terceros(flask_app)
+        registrar_modulos_en_la_aplicacion_principal(flask_app)
+        log_messages(flask_app)
+        configure_uploads(flask_app, images)
+        configure_uploads(flask_app, files)
+        configure_uploads(flask_app, audio)
+        define_variables_globales_jinja2(flask_app)
 
         # Register request handlers and error handlers
-        _register_before_request_handlers(app)
-        _register_error_handlers(app)
+        _register_before_request_handlers(flask_app)
+        _register_error_handlers(flask_app)
 
     log.trace(f"Flask application created successfully: {app_name}")
-    return app
+    return flask_app
 
 
-def _register_before_request_handlers(app):
+def _register_before_request_handlers(flask_app):
     """Register before_request handlers for the Flask application."""
 
-    @app.before_request
+    @flask_app.before_request
     def load_configuracion_global():
         """Carga la configuración global en g para su uso en la aplicación."""
         if not hasattr(g, "configuracion"):
@@ -434,7 +434,7 @@ def _register_before_request_handlers(app):
                 log.error(f"Error loading global configuration: {e}")
                 g.configuracion = None
 
-    @app.before_request
+    @flask_app.before_request
     def before_request_user_active():
         """Check if authenticated user is active before processing requests."""
         if (
@@ -446,13 +446,14 @@ def _register_before_request_handlers(app):
             and request.endpoint != "static"
         ):
             return render_template("error_pages/401.html")
+        return None
 
 
-def _register_error_handlers(app):
+def _register_error_handlers(flask_app):
     """Register error handlers for the Flask application."""
-    app.register_error_handler(PaymentRequired, handle_402)
+    flask_app.register_error_handler(PaymentRequired, handle_402)
 
-    @app.errorhandler(403)
+    @flask_app.errorhandler(403)
     @cache.cached()
     def error_403(error):
         """Pagina personalizada para recursos no autorizados."""
@@ -464,7 +465,7 @@ def _register_error_handlers(app):
 
         return render_template("error_pages/403.html", error=error), 403
 
-    @app.errorhandler(404)
+    @flask_app.errorhandler(404)
     @cache.cached()
     def error_404(error):
         """Pagina personalizada para recursos no encontrados."""
@@ -475,14 +476,14 @@ def _register_error_handlers(app):
 
         return render_template("error_pages/404.html", error=error), 404
 
-    @app.errorhandler(405)
+    @flask_app.errorhandler(405)
     @cache.cached()
     def error_405(error):
         """Pagina personalizada para metodos no permitidos."""
         log.warning(f"Method not allowed: {error}")
         return render_template("error_pages/405.html", error=error), 405
 
-    @app.errorhandler(500)
+    @flask_app.errorhandler(500)
     @cache.cached()
     def error_500(error):
         """Pagina personalizada para recursos no autorizados."""
@@ -502,13 +503,13 @@ application = lms_app
 # ---------------------------------------------------------------------------------------
 # Funciones auxiliares para la administracion y configuración inicial de la aplicacion
 # ---------------------------------------------------------------------------------------
-def initial_setup(with_examples=False, with_tests=False, app=None):
+def initial_setup(with_examples=False, with_tests=False, flask_app=None):
     """Inicializa una nueva bases de datos."""
     from flask import current_app, has_app_context
 
     # Use provided app, current app context, or fallback to global lms_app
-    if app is not None:
-        app_to_use = app
+    if flask_app is not None:
+        app_to_use = flask_app
     elif has_app_context():
         app_to_use = current_app
     else:
@@ -555,12 +556,12 @@ def initial_setup(with_examples=False, with_tests=False, app=None):
     log.info("NOW - LMS started successfully.")
 
 
-def init_app(with_examples=False, app=None):
+def init_app(with_examples=False, flask_app=None):
     """Funcion auxiliar para iniciar la aplicacion."""
     from now_lms.db.tools import check_db_access, database_is_populated
 
     # Use provided app or fallback to global lms_app
-    app_to_use = app if app is not None else lms_app
+    app_to_use = flask_app if flask_app is not None else lms_app
 
     DB_ACCESS = check_db_access(app_to_use)
     DB_INICIALIZADA = database_is_populated(app_to_use)
@@ -570,10 +571,8 @@ def init_app(with_examples=False, app=None):
         if DB_INICIALIZADA:
             log.trace("Database initialized.")
             return True
-        else:
-            log.info("Starting new database.")
-            initial_setup(with_examples=with_examples, app=app_to_use)
-            return True
-    else:
-        log.warning("Could not access the database.")
-        return False
+        log.info("Starting new database.")
+        initial_setup(with_examples=with_examples, flask_app=app_to_use)
+        return True
+    log.warning("Could not access the database.")
+    return False
