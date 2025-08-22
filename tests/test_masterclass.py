@@ -20,22 +20,24 @@ from datetime import datetime, date, time, timedelta
 from now_lms.db import MasterClass, MasterClassEnrollment, Usuario, database
 
 
-def test_master_class_model_exists(minimal_db_setup):
+def test_master_class_model_exists(session_basic_db_setup):
     """Test that MasterClass model can be imported."""
     assert MasterClass is not None
 
 
-def test_master_class_enrollment_model_exists(minimal_db_setup):
+def test_master_class_enrollment_model_exists(session_basic_db_setup):
     """Test that MasterClassEnrollment model can be imported."""
     assert MasterClassEnrollment is not None
 
 
-def test_master_class_creation(minimal_db_setup):
+def test_master_class_creation(isolated_db_session):
     """Test creating a master class."""
+    from now_lms.auth import proteger_passwd
+
     # Create instructor user first
     instructor = Usuario(
         usuario="instructor_test",
-        acceso=b"test_password",
+        acceso=proteger_passwd("test_password"),
         nombre="Juan",
         apellido="Instructor",
         correo_electronico="instructor@test.com",
@@ -43,8 +45,8 @@ def test_master_class_creation(minimal_db_setup):
         activo=True,
         correo_electronico_verificado=True,
     )
-    database.session.add(instructor)
-    database.session.commit()
+    isolated_db_session.add(instructor)
+    isolated_db_session.flush()  # Flush to get the ID
 
     # Create master class
     future_date = date.today() + timedelta(days=1)
@@ -60,8 +62,8 @@ def test_master_class_creation(minimal_db_setup):
         platform_url="https://zoom.us/j/test",
         instructor_id=instructor.usuario,
     )
-    database.session.add(master_class)
-    database.session.commit()
+    isolated_db_session.add(master_class)
+    isolated_db_session.flush()  # Flush to get the ID
 
     assert master_class.id is not None
     assert master_class.title == "Test Master Class"

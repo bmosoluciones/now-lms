@@ -20,7 +20,7 @@ from datetime import datetime, timedelta
 from now_lms.db import Announcement, Curso, Usuario, DocenteCurso, database
 
 
-def test_announcement_creation(minimal_db_setup):
+def test_announcement_creation(isolated_db_session):
     """Test creating an announcement."""
     # Create test user
     test_user = Usuario(
@@ -50,11 +50,11 @@ def test_announcement_creation(minimal_db_setup):
     assert not announcement.is_sticky
 
 
-def test_global_announcement(minimal_db_setup):
+def test_global_announcement(isolated_db_session):
     """Test that announcement without course_id is global."""
     # Create test user
     test_user = Usuario(
-        usuario="test_usera",
+        usuario="test_userb",
         acceso=b"test_password",
         nombre="Test",
         apellido="User",
@@ -76,11 +76,11 @@ def test_global_announcement(minimal_db_setup):
     assert not announcement.is_course_announcement()
 
 
-def test_course_announcement(minimal_db_setup):
+def test_course_announcement(isolated_db_session):
     """Test course announcement."""
     # Create test user
     test_user = Usuario(
-        usuario="test_usera",
+        usuario="test_userc",
         acceso=b"test_password",
         nombre="Test",
         apellido="User",
@@ -114,54 +114,64 @@ def test_course_announcement(minimal_db_setup):
     assert announcement.course_id == course.codigo
 
 
-def test_announcement_expiration(minimal_db_setup):
+def test_announcement_expiration(session_basic_db_setup):
     """Test announcement expiration logic."""
-    # Create test user
-    test_user = Usuario(
-        usuario="test_usera",
-        acceso=b"test_password",
-        nombre="Test",
-        apellido="User",
-        tipo="admin",
-        activo=True,
-    )
-    database.session.add(test_user)
-    database.session.commit()
+    # Create test user (use existing session user to avoid conflicts)
+    with session_basic_db_setup.app_context():
+        from now_lms.db import select
 
-    # Active announcement (no expiration)
-    active_announcement = Announcement(
-        title="Active Announcement",
-        message="This announcement never expires",
-        created_by_id=test_user.usuario,
-    )
-    assert active_announcement.is_active()
+        # Get an existing user from session fixture
+        existing_user = database.session.execute(select(Usuario).limit(1)).scalar_one_or_none()
+        if not existing_user:
+            # Fallback if no users exist
+            test_user = Usuario(
+                usuario="test_userd",
+                acceso=b"test_password",
+                nombre="Test",
+                apellido="User",
+                tipo="admin",
+                activo=True,
+            )
+            database.session.add(test_user)
+            database.session.commit()
+            user_id = test_user.usuario
+        else:
+            user_id = existing_user.usuario
 
-    # Active announcement (future expiration)
-    future_expiration = datetime.now() + timedelta(days=1)
-    future_announcement = Announcement(
-        title="Future Announcement",
-        message="This announcement expires tomorrow",
-        expires_at=future_expiration,
-        created_by_id=test_user.usuario,
-    )
-    assert future_announcement.is_active()
+        # Active announcement (no expiration)
+        active_announcement = Announcement(
+            title="Active Announcement",
+            message="This announcement never expires",
+            created_by_id=user_id,
+        )
+        assert active_announcement.is_active()
 
-    # Expired announcement
-    past_expiration = datetime.now() - timedelta(days=1)
-    expired_announcement = Announcement(
-        title="Expired Announcement",
-        message="This announcement has expired",
-        expires_at=past_expiration,
-        created_by_id=test_user.usuario,
-    )
-    assert not expired_announcement.is_active()
+        # Active announcement (future expiration)
+        future_expiration = datetime.now() + timedelta(days=1)
+        future_announcement = Announcement(
+            title="Future Announcement",
+            message="This announcement expires tomorrow",
+            expires_at=future_expiration,
+            created_by_id=user_id,
+        )
+        assert future_announcement.is_active()
+
+        # Expired announcement
+        past_expiration = datetime.now() - timedelta(days=1)
+        expired_announcement = Announcement(
+            title="Expired Announcement",
+            message="This announcement has expired",
+            expires_at=past_expiration,
+            created_by_id=user_id,
+        )
+        assert not expired_announcement.is_active()
 
 
-def test_sticky_announcement(minimal_db_setup):
+def test_sticky_announcement(isolated_db_session):
     """Test sticky announcement."""
     # Create test user
     test_user = Usuario(
-        usuario="test_usera",
+        usuario="test_usere",
         acceso=b"test_password",
         nombre="Test",
         apellido="User",
@@ -204,11 +214,15 @@ def test_instructor_announcements_unauthorized(app):
     assert response.status_code == 302  # Redirect to login
 
 
-def test_full_announcement_workflow(minimal_db_setup):
+def test_full_announcement_workflow(isolated_db_session):
     """Test complete announcement creation and viewing workflow."""
+    # First clear any existing announcements in this session
+    database.session.query(Announcement).delete()
+    database.session.commit()
+
     # Create test users and course
     admin_user = Usuario(
-        usuario="admin",
+        usuario="admin_workflow",
         acceso=b"admin_password",
         nombre="Admin",
         apellido="User",
@@ -218,7 +232,7 @@ def test_full_announcement_workflow(minimal_db_setup):
     database.session.add(admin_user)
 
     instructor_user = Usuario(
-        usuario="instructor",
+        usuario="instructor_workflow",
         acceso=b"instructor_password",
         nombre="Instructor",
         apellido="User",
@@ -229,7 +243,7 @@ def test_full_announcement_workflow(minimal_db_setup):
 
     test_course = Curso(
         nombre="Test Course",
-        codigo="TEST01",
+        codigo="TEST_WORKFLOW",
         descripcion="Test course description",
         descripcion_corta="Test course",
         estado="open",
@@ -285,11 +299,15 @@ def test_full_announcement_workflow(minimal_db_setup):
     assert course_ann.course_id == test_course.codigo
 
 
-def test_announcement_ordering(minimal_db_setup):
+def test_announcement_ordering(isolated_db_session):
     """Test that announcements are ordered correctly."""
+    # First clear any existing announcements in this session
+    database.session.query(Announcement).delete()
+    database.session.commit()
+
     # Create test user
     admin_user = Usuario(
-        usuario="admin",
+        usuario="admin_ordering",
         acceso=b"admin_password",
         nombre="Admin",
         apellido="User",

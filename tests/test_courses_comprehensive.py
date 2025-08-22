@@ -29,23 +29,24 @@ from now_lms.db import (
 class TestCourseBasicFunctionality:
     """Test basic course model and creation."""
 
-    def test_course_model_exists(self, minimal_db_setup):
+    def test_course_model_exists(self, session_basic_db_setup):
         """Test that Course model can be imported and instantiated."""
-        course = Curso(
-            codigo="TEST001",
-            nombre="Test Course",
-            descripcion_corta="Short test course description",
-            descripcion="Test course long description",
-            estado="draft",
-            modalidad="self_paced",
-            pagado=False,
-            certificado=False,
-        )
-        assert course is not None
-        assert course.codigo == "TEST001"
-        assert course.nombre == "Test Course"
+        with session_basic_db_setup.app_context():
+            course = Curso(
+                codigo="TEST001",
+                nombre="Test Course",
+                descripcion_corta="Short test course description",
+                descripcion="Test course long description",
+                estado="draft",
+                modalidad="self_paced",
+                pagado=False,
+                certificado=False,
+            )
+            assert course is not None
+            assert course.codigo == "TEST001"
+            assert course.nombre == "Test Course"
 
-    def test_course_creation_with_database(self, minimal_db_setup):
+    def test_course_creation_with_database(self, isolated_db_session):
         """Test course creation and persistence in database."""
         course = Curso(
             codigo="TEST002",
@@ -70,7 +71,7 @@ class TestCourseBasicFunctionality:
         assert retrieved.pagado is True
         assert retrieved.certificado is True
 
-    def test_course_sections_creation(self, minimal_db_setup):
+    def test_course_sections_creation(self, isolated_db_session):
         """Test creation of course sections."""
         # Create course
         course = Curso(
@@ -99,7 +100,7 @@ class TestCourseBasicFunctionality:
         assert retrieved.nombre == "Introduction Section"
         assert retrieved.indice == 1
 
-    def test_student_enrollment(self, minimal_db_setup):
+    def test_student_enrollment(self, isolated_db_session):
         """Test student enrollment in courses."""
         # Create user
         user = Usuario(

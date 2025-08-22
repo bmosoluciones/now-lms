@@ -10,10 +10,7 @@ class TestEvaluationHelpers:
     def test_check_user_evaluations_completed(self, minimal_db_setup):
         """Test check_user_evaluations_completed function."""
         from now_lms.vistas.evaluation_helpers import check_user_evaluations_completed
-        from now_lms.db import (
-            Curso, CursoSeccion, Evaluation, Usuario, EvaluationAttempt, 
-            database
-        )
+        from now_lms.db import Curso, CursoSeccion, Evaluation, Usuario, EvaluationAttempt, database
 
         with minimal_db_setup.app_context():
             # Create test user
@@ -118,10 +115,7 @@ class TestEvaluationHelpers:
     def test_get_user_evaluation_status(self, minimal_db_setup):
         """Test get_user_evaluation_status function."""
         from now_lms.vistas.evaluation_helpers import get_user_evaluation_status
-        from now_lms.db import (
-            Curso, CursoSeccion, Evaluation, Usuario, EvaluationAttempt,
-            database
-        )
+        from now_lms.db import Curso, CursoSeccion, Evaluation, Usuario, EvaluationAttempt, database
 
         with minimal_db_setup.app_context():
             # Create test user
@@ -225,24 +219,24 @@ class TestEvaluationHelpers:
             assert status["passed_evaluations"] == 1
             assert status["failed_evaluations"] == 1
             assert status["pending_evaluations"] == 1
-            
+
             # Check evaluation details
             details = status["evaluation_details"]
             assert len(details) == 3
-            
+
             # Find each evaluation in details
             eval1_detail = next(d for d in details if d["title"] == "Status Evaluation 1")
             eval2_detail = next(d for d in details if d["title"] == "Status Evaluation 2")
             eval3_detail = next(d for d in details if d["title"] == "Status Evaluation 3")
-            
+
             assert eval1_detail["status"] == "passed"
             assert eval1_detail["best_score"] == 85.0
             assert eval1_detail["attempts_count"] == 1
-            
+
             assert eval2_detail["status"] == "failed"
             assert eval2_detail["best_score"] == 60.0
             assert eval2_detail["attempts_count"] == 1
-            
+
             assert eval3_detail["status"] == "pending"
             assert eval3_detail["best_score"] is None
             assert eval3_detail["attempts_count"] == 0
@@ -250,10 +244,7 @@ class TestEvaluationHelpers:
     def test_can_user_receive_certificate(self, minimal_db_setup):
         """Test can_user_receive_certificate function."""
         from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
-        from now_lms.db import (
-            Curso, CursoSeccion, Evaluation, Usuario, EvaluationAttempt,
-            CursoUsuarioAvance, database
-        )
+        from now_lms.db import Curso, CursoSeccion, Evaluation, Usuario, EvaluationAttempt, CursoUsuarioAvance, database
 
         with minimal_db_setup.app_context():
             # Create test user
@@ -388,10 +379,7 @@ class TestEvaluationHelpers:
     def test_multiple_attempts_best_score(self, minimal_db_setup):
         """Test that best score is correctly identified from multiple attempts."""
         from now_lms.vistas.evaluation_helpers import get_user_evaluation_status
-        from now_lms.db import (
-            Curso, CursoSeccion, Evaluation, Usuario, EvaluationAttempt,
-            database
-        )
+        from now_lms.db import Curso, CursoSeccion, Evaluation, Usuario, EvaluationAttempt, database
 
         with minimal_db_setup.app_context():
             # Create test user
@@ -462,9 +450,7 @@ class TestEvaluationHelpers:
     def test_exam_vs_quiz_handling(self, minimal_db_setup):
         """Test handling of exams vs regular quizzes."""
         from now_lms.vistas.evaluation_helpers import get_user_evaluation_status
-        from now_lms.db import (
-            Curso, CursoSeccion, Evaluation, Usuario, database
-        )
+        from now_lms.db import Curso, CursoSeccion, Evaluation, Usuario, database
 
         with minimal_db_setup.app_context():
             # Create test user
@@ -527,12 +513,12 @@ class TestEvaluationHelpers:
             # Test status with different evaluation types
             status = get_user_evaluation_status("EXAM_TEST", user.usuario)
             details = status["evaluation_details"]
-            
+
             quiz_detail = next(d for d in details if d["title"] == "Regular Quiz")
             exam_detail = next(d for d in details if d["title"] == "Final Exam")
-            
+
             assert quiz_detail["is_exam"] is False
             assert quiz_detail["passing_score"] == 70.0
-            
+
             assert exam_detail["is_exam"] is True
             assert exam_detail["passing_score"] == 75.0

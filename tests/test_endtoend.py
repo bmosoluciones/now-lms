@@ -838,9 +838,7 @@ def test_course_administration_flow(basic_config_setup, client):
 
     # Verify section was deleted
     with app.app_context():
-        deleted_seccion = (
-            database.session.execute(database.select(CursoSeccion).filter_by(id=seccion2.id)).scalars().first()
-        )
+        deleted_seccion = database.session.execute(database.select(CursoSeccion).filter_by(id=seccion2.id)).scalars().first()
         assert deleted_seccion is None  # Should be deleted
 
 
@@ -923,16 +921,16 @@ def test_course_categories_and_tags_management(basic_config_setup, client):
         assert curso.nombre == "Curso con Categorias y Tags"
 
         # Verify category assignment (lines 581-582 in courses.py)
-        categoria_curso = database.session.execute(
-            database.select(CategoriaCurso).filter_by(curso="test_cat_tags")
-        ).scalars().first()
+        categoria_curso = (
+            database.session.execute(database.select(CategoriaCurso).filter_by(curso="test_cat_tags")).scalars().first()
+        )
         assert categoria_curso is not None
         assert categoria_curso.categoria == cat1_id
 
         # Verify tag assignments (lines 585-588 in courses.py)
-        etiquetas_curso = database.session.execute(
-            database.select(EtiquetaCurso).filter_by(curso="test_cat_tags")
-        ).scalars().all()
+        etiquetas_curso = (
+            database.session.execute(database.select(EtiquetaCurso).filter_by(curso="test_cat_tags")).scalars().all()
+        )
         assert len(etiquetas_curso) == 2
         tag_ids = [ec.etiqueta for ec in etiquetas_curso]
         assert tag1_id in tag_ids
@@ -972,9 +970,9 @@ def test_course_categories_and_tags_management(basic_config_setup, client):
 
     # Verify only that category was updated - this is the core functionality being tested
     with app.app_context():
-        categoria_curso = database.session.execute(
-            database.select(CategoriaCurso).filter_by(curso="test_cat_tags")
-        ).scalars().first()
+        categoria_curso = (
+            database.session.execute(database.select(CategoriaCurso).filter_by(curso="test_cat_tags")).scalars().first()
+        )
         assert categoria_curso is not None
 
 
@@ -1085,7 +1083,7 @@ def test_slideshow_editing_functionality(basic_config_setup, client):
             "slide_0_content": "<h1>Updated First Slide</h1><p>Updated content</p>",
             "slide_0_order": "1",
             "slide_1_id": slide2_id,
-            "slide_1_title": "Updated Second Slide", 
+            "slide_1_title": "Updated Second Slide",
             "slide_1_content": "<h1>Updated Second Slide</h1><p>Updated content</p>",
             "slide_1_order": "2",
             # Add new slide
@@ -1104,16 +1102,18 @@ def test_slideshow_editing_functionality(basic_config_setup, client):
         assert updated_slideshow.theme == "dark"
 
         # Verify slides were updated
-        updated_slides = database.session.execute(
-            database.select(Slide).filter_by(slide_show_id=slideshow_id).order_by(Slide.order)
-        ).scalars().all()
+        updated_slides = (
+            database.session.execute(database.select(Slide).filter_by(slide_show_id=slideshow_id).order_by(Slide.order))
+            .scalars()
+            .all()
+        )
         assert len(updated_slides) == 3
 
         # Check first slide
         assert updated_slides[0].title == "Updated First Slide"
         assert "<h1>Updated First Slide</h1>" in updated_slides[0].content
 
-        # Check second slide  
+        # Check second slide
         assert updated_slides[1].title == "Updated Second Slide"
         assert "<h1>Updated Second Slide</h1>" in updated_slides[1].content
 
@@ -2749,7 +2749,7 @@ def test_course_filtering_functionality(basic_config_setup, client):
             nivel=1,  # beginner
             duracion=8,
             estado="open",  # Must be open to appear in lista_cursos
-            publico=True,   # Must be public to appear in lista_cursos
+            publico=True,  # Must be public to appear in lista_cursos
             modalidad="online",
             foro_habilitado=True,
             limitado=False,
@@ -2760,7 +2760,7 @@ def test_course_filtering_functionality(basic_config_setup, client):
 
         course2 = Curso(
             nombre="JavaScript Fundamentals",
-            codigo="js_fundamentals", 
+            codigo="js_fundamentals",
             descripcion="Learn JavaScript fundamentals",
             descripcion_corta="JS basics course",
             nivel=1,  # beginner
@@ -2807,7 +2807,7 @@ def test_course_filtering_functionality(basic_config_setup, client):
         database.session.add(EtiquetaCurso(curso="python_web", etiqueta=tag_python_id))
         database.session.add(EtiquetaCurso(curso="python_web", etiqueta=tag_beginner_id))
 
-        # Course 2: Web Development category, JavaScript + Beginner tags  
+        # Course 2: Web Development category, JavaScript + Beginner tags
         database.session.add(CategoriaCurso(curso="js_fundamentals", categoria=cat_web_id))
         database.session.add(EtiquetaCurso(curso="js_fundamentals", etiqueta=tag_js_id))
         database.session.add(EtiquetaCurso(curso="js_fundamentals", etiqueta=tag_beginner_id))
@@ -2822,7 +2822,7 @@ def test_course_filtering_functionality(basic_config_setup, client):
     response = client.get("/course/explore")
     assert response.status_code == 200
     assert "Python Web Development".encode("utf-8") in response.data
-    assert "JavaScript Fundamentals".encode("utf-8") in response.data  
+    assert "JavaScript Fundamentals".encode("utf-8") in response.data
     assert "Advanced Python Data Science".encode("utf-8") in response.data
 
     # Test 2: Filter by level (beginner = 1)
@@ -2833,7 +2833,7 @@ def test_course_filtering_functionality(basic_config_setup, client):
     # Advanced course should not appear
     assert "Advanced Python Data Science".encode("utf-8") not in response.data
 
-    # Test 3: Filter by level (advanced = 3)  
+    # Test 3: Filter by level (advanced = 3)
     response = client.get("/course/explore?nivel=3")
     assert response.status_code == 200
     assert "Advanced Python Data Science".encode("utf-8") in response.data
@@ -2977,9 +2977,11 @@ def test_coupon_management_endtoend(basic_config_setup, client):
 
     # Verify coupon was created
     with app.app_context():
-        created_coupon = database.session.execute(
-            database.select(Coupon).filter_by(code="TEST50", course_id="coupon_course")
-        ).scalars().first()
+        created_coupon = (
+            database.session.execute(database.select(Coupon).filter_by(code="TEST50", course_id="coupon_course"))
+            .scalars()
+            .first()
+        )
         assert created_coupon is not None
         assert created_coupon.discount_type == "percentage"
         assert float(created_coupon.discount_value) == 50.0
@@ -3091,16 +3093,16 @@ def test_program_categories_and_tags_management(basic_config_setup, client):
         assert program.nombre == "Program with Categories"
 
         # Verify category assignment (lines 112-114 in programs.py)
-        categoria_programa = database.session.execute(
-            database.select(CategoriaPrograma).filter_by(programa=program.id)
-        ).scalars().first()
+        categoria_programa = (
+            database.session.execute(database.select(CategoriaPrograma).filter_by(programa=program.id)).scalars().first()
+        )
         assert categoria_programa is not None
         assert categoria_programa.categoria == cat1_id
 
         # Verify tag assignments (lines 117-120 in programs.py)
-        etiquetas_programa = database.session.execute(
-            database.select(EtiquetaPrograma).filter_by(programa=program.id)
-        ).scalars().all()
+        etiquetas_programa = (
+            database.session.execute(database.select(EtiquetaPrograma).filter_by(programa=program.id)).scalars().all()
+        )
         assert len(etiquetas_programa) == 2
         tag_ids = [ep.etiqueta for ep in etiquetas_programa]
         assert tag1_id in tag_ids
@@ -3139,7 +3141,7 @@ def test_program_edit_functionality(basic_config_setup, client):
             certificado=False,
             creado_por=admin.id,
         )
-        
+
         # Create a test course to add to the program (required for publico=True)
         test_course = Curso(
             nombre="Test Course for Program",
@@ -3157,10 +3159,10 @@ def test_program_edit_functionality(basic_config_setup, client):
             certificado=False,
             creado_por="admin_programs",
         )
-        
+
         database.session.add_all([test_program, test_course])
         database.session.commit()
-        
+
         # Add course to program
         programa_curso = ProgramaCurso(
             programa=test_program.codigo,
@@ -3168,7 +3170,7 @@ def test_program_edit_functionality(basic_config_setup, client):
         )
         database.session.add(programa_curso)
         database.session.commit()
-        
+
         program_id = test_program.id
 
     # Login as admin
@@ -3300,9 +3302,11 @@ def test_program_enrollment_and_management(basic_config_setup, client):
 
     # Verify enrollment was created
     with app.app_context():
-        enrollment = database.session.execute(
-            database.select(ProgramaEstudiante).filter_by(usuario="student_enrollment")
-        ).scalars().first()
+        enrollment = (
+            database.session.execute(database.select(ProgramaEstudiante).filter_by(usuario="student_enrollment"))
+            .scalars()
+            .first()
+        )
         assert enrollment is not None
 
     # TEST: tomar_programa (take program page)
@@ -3427,9 +3431,7 @@ def test_blog_functionality_endtoend(basic_config_setup, client):
 
     # Verify comment was created
     with app.app_context():
-        comment = database.session.execute(
-            database.select(BlogComment).filter_by(user_id="student_blog")
-        ).scalars().first()
+        comment = database.session.execute(database.select(BlogComment).filter_by(user_id="student_blog")).scalars().first()
         assert comment is not None
         assert comment.content == "This is a test comment for the blog post"
         assert comment.status == "visible"

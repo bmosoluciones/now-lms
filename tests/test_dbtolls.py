@@ -1,11 +1,11 @@
 import certifi
 
 
-def test_database_info_tools(full_db_setup):
-    with full_db_setup.app_context():
+def test_database_info_tools(session_full_db_setup):
+    with session_full_db_setup.app_context():
         from now_lms.db.tools import database_is_populated
 
-        assert database_is_populated(full_db_setup)
+        assert database_is_populated(session_full_db_setup)
         from now_lms.db.info import course_info
 
         assert course_info("now")

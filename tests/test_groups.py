@@ -30,7 +30,7 @@ class TestGroupsViews:
             assert response.status_code == 302
             assert "/usuarios/iniciar-sesion" in response.location or "login" in response.location
 
-    def test_nuevo_grupo_get_authorized(self, app, client, full_db_setup):
+    def test_nuevo_grupo_get_authorized(self, app, client, session_full_db_setup):
         """Test GET nuevo_grupo with admin login."""
         with app.app_context():
             # Login as admin user
@@ -50,7 +50,7 @@ class TestGroupsViews:
             # Should redirect to login page
             assert response.status_code == 302
 
-    def test_nuevo_grupo_post_authorized_success(self, app, client, full_db_setup):
+    def test_nuevo_grupo_post_authorized_success(self, app, client, session_full_db_setup):
         """Test POST nuevo_grupo with admin login and valid data."""
         with app.app_context():
             # Login as admin user
@@ -71,7 +71,7 @@ class TestGroupsViews:
             # Should redirect to login page
             assert response.status_code == 302
 
-    def test_agrega_tutor_a_grupo_post_authorized(self, app, client, full_db_setup):
+    def test_agrega_tutor_a_grupo_post_authorized(self, app, client, session_full_db_setup):
         """Test agrega_tutor_a_grupo with admin login."""
         with app.app_context():
             # Login as admin user
@@ -86,7 +86,7 @@ class TestGroupsViews:
             # Should return some response (might be redirect)
             assert response.status_code in [200, 302, 404, 500]  # Various valid responses
 
-    def test_grupo_form_validation(self, app, client, full_db_setup):
+    def test_grupo_form_validation(self, app, client, session_full_db_setup):
         """Test group form validation with invalid data."""
         with app.app_context():
             # Login as admin user
@@ -102,7 +102,7 @@ class TestGroupsViews:
             assert response.status_code in [200, 302]
 
     @patch("now_lms.vistas.groups.database.session.commit")
-    def test_nuevo_grupo_database_error(self, mock_commit, app, client, full_db_setup):
+    def test_nuevo_grupo_database_error(self, mock_commit, app, client, session_full_db_setup):
         """Test nuevo_grupo with database error."""
         with app.app_context():
             from sqlalchemy.exc import OperationalError
@@ -119,7 +119,7 @@ class TestGroupsViews:
             assert response.status_code in [200, 302]
 
     @patch("now_lms.vistas.groups.database.session.commit")
-    def test_agrega_tutor_database_error(self, mock_commit, app, client, full_db_setup):
+    def test_agrega_tutor_database_error(self, mock_commit, app, client, session_full_db_setup):
         """Test agrega_tutor_a_grupo with database error."""
         with app.app_context():
             from sqlalchemy.exc import OperationalError

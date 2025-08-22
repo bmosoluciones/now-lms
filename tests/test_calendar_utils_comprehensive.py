@@ -44,25 +44,26 @@ from now_lms.db import (
 class TestCalendarUtilsComprehensive:
     """Comprehensive tests for calendar_utils.py functionality."""
 
-    def test_utility_functions(self, minimal_db_setup):
+    def test_utility_functions(self, session_basic_db_setup):
         """Test utility functions _combine_date_time and _get_app_timezone."""
-        # Test _combine_date_time
-        test_date = date(2025, 6, 15)
-        test_time = time_obj(10, 30)
-        combined = _combine_date_time(test_date, test_time)
+        with session_basic_db_setup.app_context():
+            # Test _combine_date_time
+            test_date = date(2025, 6, 15)
+            test_time = time_obj(10, 30)
+            combined = _combine_date_time(test_date, test_time)
 
-        assert combined == datetime(2025, 6, 15, 10, 30)
+            assert combined == datetime(2025, 6, 15, 10, 30)
 
-        # Test with None date
-        assert _combine_date_time(None, test_time) is None
+            # Test with None date
+            assert _combine_date_time(None, test_time) is None
 
-        # Test with None time (should default to 9:00 AM)
-        combined_default = _combine_date_time(test_date, None)
-        assert combined_default == datetime(2025, 6, 15, 9, 0)
+            # Test with None time (should default to 9:00 AM)
+            combined_default = _combine_date_time(test_date, None)
+            assert combined_default == datetime(2025, 6, 15, 9, 0)
 
-        # Test _get_app_timezone
-        timezone = _get_app_timezone()
-        assert timezone is not None
+            # Test _get_app_timezone
+            timezone = _get_app_timezone()
+            assert timezone is not None
 
     def test_create_course_with_meets_via_api(self, full_db_setup, client):
         """Test creating a course with meet resources using GET/POST requests."""

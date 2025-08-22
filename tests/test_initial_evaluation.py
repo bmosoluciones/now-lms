@@ -17,19 +17,21 @@
 
 from sqlalchemy import select
 
-from now_lms.db import Evaluation, Question, QuestionOption, CursoSeccion, database
+from now_lms.db import Evaluation, Question, QuestionOption, CursoSeccion, Curso, database
 from now_lms.db.initial_data import crear_evaluacion_predeterminada
 
 
 class TestInitialEvaluation:
     """Test the default evaluation creation for the 'now' course."""
 
-    def test_initial_evaluation_creation(self, minimal_db_setup):
+    def test_initial_evaluation_creation(self, isolated_db_session):
         """Test that the default evaluation is created correctly."""
-        # First create the 'now' course and its sections
+        # Check if the 'now' course exists, create if needed
         from now_lms.db.initial_data import crear_curso_predeterminado
 
-        crear_curso_predeterminado()
+        existing_course = database.session.execute(select(Curso).filter_by(codigo="now")).scalars().first()
+        if not existing_course:
+            crear_curso_predeterminado()
 
         # Now create the evaluation
         crear_evaluacion_predeterminada()
@@ -53,12 +55,14 @@ class TestInitialEvaluation:
         assert now_evaluation.passing_score == 70.0
         assert now_evaluation.max_attempts == 3
 
-    def test_initial_evaluation_questions(self, minimal_db_setup):
+    def test_initial_evaluation_questions(self, isolated_db_session):
         """Test that the evaluation has the correct questions and options."""
-        # Create the course first
+        # Check if the 'now' course exists, create if needed
         from now_lms.db.initial_data import crear_curso_predeterminado
 
-        crear_curso_predeterminado()
+        existing_course = database.session.execute(select(Curso).filter_by(codigo="now")).scalars().first()
+        if not existing_course:
+            crear_curso_predeterminado()
 
         crear_evaluacion_predeterminada()
 
@@ -116,12 +120,14 @@ class TestInitialEvaluation:
         assert len(correct_options) == 1
         assert correct_options[0].text == "Objetivos de aprendizaje claros"
 
-    def test_evaluation_associated_with_correct_section(self, minimal_db_setup):
+    def test_evaluation_associated_with_correct_section(self, isolated_db_session):
         """Test that the evaluation is associated with the first section of the 'now' course."""
-        # Create the course first
+        # Check if the 'now' course exists, create if needed
         from now_lms.db.initial_data import crear_curso_predeterminado
 
-        crear_curso_predeterminado()
+        existing_course = database.session.execute(select(Curso).filter_by(codigo="now")).scalars().first()
+        if not existing_course:
+            crear_curso_predeterminado()
 
         crear_evaluacion_predeterminada()
 
@@ -144,18 +150,20 @@ class TestInitialEvaluation:
         assert evaluation is not None
         assert evaluation.section_id == first_section.id
 
-    def test_no_duplicate_evaluations(self, minimal_db_setup):
+    def test_no_duplicate_evaluations(self, isolated_db_session):
         """Test that calling the function multiple times doesn't create duplicates."""
-        # Create the course first
+        # Check if the 'now' course exists, create if needed
         from now_lms.db.initial_data import crear_curso_predeterminado
 
-        crear_curso_predeterminado()
+        existing_course = database.session.execute(select(Curso).filter_by(codigo="now")).scalars().first()
+        if not existing_course:
+            crear_curso_predeterminado()
 
         # Call the function twice
         crear_evaluacion_predeterminada()
 
         # Should handle gracefully if course structure is missing
-        # But since we have minimal_db_setup, it should work
+        # But since we have the course, it should work
         evaluations_count = database.session.execute(
             select(database.func.count(Evaluation.id)).filter(Evaluation.title == "Online Teaching Knowledge Check")
         ).scalar()

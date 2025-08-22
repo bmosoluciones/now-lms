@@ -34,77 +34,81 @@ def create_test_user():
     return usuario
 
 
-def test_curso_foro_habilitado_field_exists(minimal_db_setup):
+def test_curso_foro_habilitado_field_exists(isolated_db_session):
     """Verifica que el campo foro_habilitado existe en el modelo Curso."""
     curso = Curso(
         nombre="Curso de Prueba",
-        codigo="TEST001",
+        codigo="TEST999",
         descripcion_corta="Descripción corta",
         descripcion="Descripción completa",
         estado="draft",
         modalidad="time_based",
         foro_habilitado=True,
     )
-    database.session.add(curso)
-    database.session.commit()
+    isolated_db_session.add(curso)
+    isolated_db_session.flush()
 
     # Verificar que el curso se guardó correctamente
-    curso_db = database.session.query(Curso).filter_by(codigo="TEST001").first()
+    from now_lms.db import select
+
+    curso_db = isolated_db_session.execute(select(Curso).where(Curso.codigo == "TEST999")).scalar_one()
     assert curso_db is not None
     assert curso_db.foro_habilitado
 
 
-def test_curso_self_paced_no_puede_tener_foro(minimal_db_setup):
+def test_curso_self_paced_no_puede_tener_foro(session_basic_db_setup):
     """Verifica que cursos self-paced no pueden tener foro habilitado."""
-    curso = Curso(
-        nombre="Curso Self-Paced",
-        codigo="SELF001",
-        descripcion_corta="Descripción corta",
-        descripcion="Descripción completa",
-        estado="draft",
-        modalidad="self_paced",
-        foro_habilitado=False,
-    )
+    with session_basic_db_setup.app_context():
+        curso = Curso(
+            nombre="Curso Self-Paced",
+            codigo="SELF001",
+            descripcion_corta="Descripción corta",
+            descripcion="Descripción completa",
+            estado="draft",
+            modalidad="self_paced",
+            foro_habilitado=False,
+        )
 
-    # Verificar que puede_habilitar_foro retorna False
-    assert not curso.puede_habilitar_foro()
+        # Verificar que puede_habilitar_foro retorna False
+        assert not curso.puede_habilitar_foro()
 
-    # Verificar que is_self_paced retorna True
-    assert curso.is_self_paced()
+        # Verificar que is_self_paced retorna True
+        assert curso.is_self_paced()
 
-    # Verificar validación
-    valid, message = curso.validar_foro_habilitado()
-    assert valid  # Debería ser válido cuando foro_habilitado=False
+        # Verificar validación
+        valid, message = curso.validar_foro_habilitado()
+        assert valid  # Debería ser válido cuando foro_habilitado=False
 
-    # Intentar habilitar foro en curso self-paced debería lanzar error
-    try:
-        curso.foro_habilitado = True
-        assert False, "Should have raised ValueError"
-    except ValueError as e:
-        assert "self-paced" in str(e)
+        # Intentar habilitar foro en curso self-paced debería lanzar error
+        try:
+            curso.foro_habilitado = True
+            assert False, "Should have raised ValueError"
+        except ValueError as e:
+            assert "self-paced" in str(e)
 
 
-def test_curso_time_based_puede_tener_foro(minimal_db_setup):
+def test_curso_time_based_puede_tener_foro(session_basic_db_setup):
     """Verifica que cursos time-based pueden tener foro habilitado."""
-    curso = Curso(
-        nombre="Curso Time-Based",
-        codigo="TIME001",
-        descripcion_corta="Descripción corta",
-        descripcion="Descripción completa",
-        estado="draft",
-        modalidad="time_based",
-        foro_habilitado=True,
-    )
+    with session_basic_db_setup.app_context():
+        curso = Curso(
+            nombre="Curso Time-Based",
+            codigo="TIME001",
+            descripcion_corta="Descripción corta",
+            descripcion="Descripción completa",
+            estado="draft",
+            modalidad="time_based",
+            foro_habilitado=True,
+        )
 
-    # Verificar que puede_habilitar_foro retorna True
-    assert curso.puede_habilitar_foro()
+        # Verificar que puede_habilitar_foro retorna True
+        assert curso.puede_habilitar_foro()
 
-    # Verificar que is_self_paced retorna False
-    assert not curso.is_self_paced()
+        # Verificar que is_self_paced retorna False
+        assert not curso.is_self_paced()
 
-    # Verificar validación
-    valid, message = curso.validar_foro_habilitado()
-    assert valid
+        # Verificar validación
+        valid, message = curso.validar_foro_habilitado()
+        assert valid
 
 
 def test_foro_mensaje_model_exists(minimal_db_setup):

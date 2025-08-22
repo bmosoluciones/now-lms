@@ -28,7 +28,7 @@ from now_lms.db import (
 class TestCertificateTemplateManagement:
     """Test certificate template creation and management."""
 
-    def test_certificate_template_creation(self, minimal_db_setup):
+    def test_certificate_template_creation(self, isolated_db_session):
         """Test basic certificate template creation."""
         template = Certificado(
             code="TEMPLATE001",
@@ -36,17 +36,19 @@ class TestCertificateTemplateManagement:
             habilitado=True,
             publico=True,
         )
-        database.session.add(template)
-        database.session.commit()
+        isolated_db_session.add(template)
+        isolated_db_session.flush()
 
         # Verify template creation
-        retrieved = database.session.execute(database.select(Certificado).filter_by(code="TEMPLATE001")).scalar_one()
+        from now_lms.db import select
+
+        retrieved = isolated_db_session.execute(select(Certificado).filter_by(code="TEMPLATE001")).scalar_one()
 
         assert retrieved.titulo == "Basic Certificate Template"
         assert retrieved.habilitado is True
         assert retrieved.publico is True
 
-    def test_certificate_template_with_content(self, minimal_db_setup):
+    def test_certificate_template_with_content(self, isolated_db_session):
         """Test certificate template with HTML and CSS content."""
         template = Certificado(
             code="CONTENT_TEMPLATE",
@@ -56,11 +58,13 @@ class TestCertificateTemplateManagement:
             habilitado=True,
             publico=True,
         )
-        database.session.add(template)
-        database.session.commit()
+        isolated_db_session.add(template)
+        isolated_db_session.flush()
 
         # Verify content
-        retrieved = database.session.execute(database.select(Certificado).filter_by(code="CONTENT_TEMPLATE")).scalar_one()
+        from now_lms.db import select
+
+        retrieved = isolated_db_session.execute(select(Certificado).filter_by(code="CONTENT_TEMPLATE")).scalar_one()
 
         assert "Certificate of Completion" in retrieved.html
         assert "{{student_name}}" in retrieved.html
@@ -70,7 +74,7 @@ class TestCertificateTemplateManagement:
 class TestCertificationForCourses:
     """Test certification generation and management for courses."""
 
-    def test_course_certification_basic(self, minimal_db_setup):
+    def test_course_certification_basic(self, isolated_db_session):
         """Test basic certification for course completion."""
         # Create certificate template
         template = Certificado(
@@ -78,7 +82,7 @@ class TestCertificationForCourses:
             titulo="Course Completion Certificate",
             habilitado=True,
         )
-        database.session.add(template)
+        isolated_db_session.add(template)
 
         # Create course
         course = Curso(
@@ -90,27 +94,31 @@ class TestCertificationForCourses:
             certificado=True,
             plantilla_certificado="COURSE_CERT",
         )
-        database.session.add(course)
-        database.session.commit()
+        isolated_db_session.add(course)
+        isolated_db_session.flush()
 
         # Verify course is configured for certification
-        retrieved_course = database.session.execute(database.select(Curso).filter_by(codigo="CERT001")).scalar_one()
+        from now_lms.db import select
+
+        retrieved_course = isolated_db_session.execute(select(Curso).filter_by(codigo="CERT001")).scalar_one()
 
         assert retrieved_course.certificado is True
         assert retrieved_course.plantilla_certificado == "COURSE_CERT"
 
-    def test_certificate_generation_process(self, minimal_db_setup):
+    def test_certificate_generation_process(self, isolated_db_session):
         """Test certificate generation for completed course."""
+        from now_lms.auth import proteger_passwd
+
         # Create user
         user = Usuario(
             usuario="cert_student",
-            acceso=b"password123",
+            acceso=proteger_passwd("password123"),
             nombre="Certificate",
             apellido="Student",
             correo_electronico="cert@test.com",
             tipo="student",
         )
-        database.session.add(user)
+        isolated_db_session.add(user)
 
         # Create certificate template
         template = Certificado(
@@ -119,7 +127,7 @@ class TestCertificationForCourses:
             html="<h1>Certificate of Completion</h1><p>{{student_name}} has completed the course</p>",
             habilitado=True,
         )
-        database.session.add(template)
+        isolated_db_session.add(template)
 
         # Create course with certification
         course = Curso(
@@ -131,8 +139,8 @@ class TestCertificationForCourses:
             certificado=True,
             plantilla_certificado="COMPLETION_CERT",
         )
-        database.session.add(course)
-        database.session.commit()
+        isolated_db_session.add(course)
+        isolated_db_session.flush()
 
         # Create certification record
         certification = Certificacion(
@@ -140,11 +148,13 @@ class TestCertificationForCourses:
             curso=course.codigo,
             certificado="COMPLETION_CERT",
         )
-        database.session.add(certification)
-        database.session.commit()
+        isolated_db_session.add(certification)
+        isolated_db_session.flush()
 
         # Verify certification
-        retrieved = database.session.execute(database.select(Certificacion).filter_by(usuario=user.usuario)).scalar_one()
+        from now_lms.db import select
+
+        retrieved = isolated_db_session.execute(select(Certificacion).filter_by(usuario=user.usuario)).scalar_one()
 
         assert retrieved.certificado == "COMPLETION_CERT"
         assert retrieved.curso == course.codigo
