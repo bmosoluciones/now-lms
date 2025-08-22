@@ -16,10 +16,10 @@
 """Test Flask-Babel configuration caching to prevent DoS vulnerability."""
 
 
-def test_i18n_configuration_caching(full_db_setup):
+def test_i18n_configuration_caching(session_full_db_setup):
     """Test that Flask-Babel configuration is cached and doesn't cause excessive database queries."""
 
-    with full_db_setup.app_context():
+    with session_full_db_setup.app_context():
         from now_lms.i18n import get_configuracion, invalidate_configuracion_cache
         from now_lms.cache import cache
 
@@ -51,16 +51,16 @@ def test_i18n_configuration_caching(full_db_setup):
         assert config3 is not None
 
 
-def test_multiple_view_requests_use_cached_configuration(full_db_setup):
+def test_multiple_view_requests_use_cached_configuration(session_full_db_setup):
     """Test that multiple requests to different views use cached configuration in g."""
 
-    with full_db_setup.app_context():
+    with session_full_db_setup.app_context():
         from now_lms.cache import cache
 
         # Clear any existing cache
         cache.clear()
 
-        with full_db_setup.test_client() as client:
+        with session_full_db_setup.test_client() as client:
             # Make multiple requests to different views
             response1 = client.get("/")
             response2 = client.get("/user/login")
@@ -76,10 +76,10 @@ def test_multiple_view_requests_use_cached_configuration(full_db_setup):
             # requests complete without 500 errors indicates the caching is working
 
 
-def test_babel_selectors_use_g_configuration(full_db_setup):
+def test_babel_selectors_use_g_configuration(session_full_db_setup):
     """Test that Flask-Babel locale and timezone selectors use configuration from g."""
 
-    with full_db_setup.app_context():
+    with session_full_db_setup.app_context():
         from now_lms.i18n import get_locale, get_timezone
         from flask import g
         from now_lms.cache import cache
@@ -88,7 +88,7 @@ def test_babel_selectors_use_g_configuration(full_db_setup):
         cache.clear()
 
         # Test with a request context (required for Flask-Babel selectors)
-        with full_db_setup.test_request_context("/"):
+        with session_full_db_setup.test_request_context("/"):
             # Test with configuration in g
             from now_lms.i18n import get_configuracion
 
@@ -111,16 +111,16 @@ def test_babel_selectors_use_g_configuration(full_db_setup):
             assert timezone_fallback == "UTC"  # Should fallback to 'UTC'
 
 
-def test_request_level_configuration_loading(full_db_setup):
+def test_request_level_configuration_loading(session_full_db_setup):
     """Test that configuration is loaded into g once per request."""
 
-    with full_db_setup.app_context():
+    with session_full_db_setup.app_context():
         from now_lms.cache import cache
 
         # Clear any existing cache
         cache.clear()
 
-        with full_db_setup.test_client() as client:
+        with session_full_db_setup.test_client() as client:
             # Make a request - this should trigger the before_request handler
             response = client.get("/")
 
@@ -134,10 +134,10 @@ def test_request_level_configuration_loading(full_db_setup):
             assert response2.status_code in [200, 302, 404]
 
 
-def test_configuration_fallback_when_no_config_exists(minimal_db_setup):
+def test_configuration_fallback_when_no_config_exists(session_basic_db_setup):
     """Test that the system handles missing configuration gracefully."""
 
-    with minimal_db_setup.app_context():
+    with session_basic_db_setup.app_context():
         from now_lms.i18n import get_configuracion, get_locale, get_timezone
         from now_lms.cache import cache
 
@@ -151,7 +151,7 @@ def test_configuration_fallback_when_no_config_exists(minimal_db_setup):
         assert config.lang == "en"  # Should use fallback values
 
         # Test that selectors work with fallback in request context
-        with minimal_db_setup.test_request_context("/"):
+        with session_basic_db_setup.test_request_context("/"):
             locale = get_locale()
             assert locale == "en"
 
