@@ -275,9 +275,9 @@ def programa_cursos(codigo):
 @cache.cached(timeout=60, unless=no_guardar_en_cache_global)
 def pagina_programa(codigo):
     """Pagina principal del curso."""
-    program = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalars().first()
+    programa_obj = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalars().first()
 
-    return render_template(get_program_view_template(), programa=program, cuenta_cursos=cuenta_cursos_por_programa)
+    return render_template(get_program_view_template(), programa=programa_obj, cuenta_cursos=cuenta_cursos_por_programa)
 
 
 @program.route("/program/explore")

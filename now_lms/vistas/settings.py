@@ -263,7 +263,6 @@ def mail_check():
             return redirect(url_for(SETTING_MAIL_ROUTE))
         except Exception as e:  # noqa: E722
             flash("Hubo un error al enviar un correo de prueba. Revise su configuración.", "warning")
-            from now_lms.db import Configuracion
 
             config_g = database.session.execute(database.select(Configuracion)).first()[0]
             config.email_verificado = False

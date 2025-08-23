@@ -200,7 +200,7 @@ def lista_recursos():
     etiquetas = database.session.execute(database.select(Etiqueta)).scalars().all()
     categorias = database.session.execute(database.select(Categoria)).scalars().all()
     consulta_cursos = database.paginate(
-        database.select(Recurso).filter(Recurso.publico.is_(True)),
+        database.select(Recurso).filter(Recurso.publico.is_(True)),  # noqa: E712
         page=request.args.get("page", default=1, type=int),
         max_per_page=MAX_COUNT,
         count=True,

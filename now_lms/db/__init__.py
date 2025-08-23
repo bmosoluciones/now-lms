@@ -131,7 +131,6 @@ class BaseTabla:
 
     def validate_user_references(self):
         """Validate that audit fields reference existing users or set them to None."""
-        from now_lms.db import Usuario
 
         # Use no_autoflush to prevent recursive flush during validation
         with database.session.no_autoflush:
@@ -992,7 +991,6 @@ class Coupon(database.Model, BaseTabla):
 
     def is_valid(self):
         """Check if coupon is valid (not expired and under usage limit)."""
-        from datetime import datetime
 
         # Check expiration
         if self.expires_at and datetime.now() > self.expires_at:
@@ -1078,7 +1076,6 @@ class Announcement(database.Model, BaseTabla):
         """Retorna True si el anuncio está activo (no ha expirado)."""
         if self.expires_at is None:
             return True
-        from datetime import datetime
 
         return datetime.now() <= self.expires_at
 
@@ -1140,14 +1137,12 @@ class MasterClass(database.Model, BaseTabla):
 
     def is_upcoming(self):
         """Check if the master class is in the future."""
-        from datetime import datetime
 
         event_datetime = datetime.combine(self.date, self.start_time)
         return event_datetime > datetime.now()
 
     def is_ongoing(self):
         """Check if the master class is currently happening."""
-        from datetime import datetime
 
         now = datetime.now()
         event_date = self.date
@@ -1157,7 +1152,6 @@ class MasterClass(database.Model, BaseTabla):
 
     def is_finished(self):
         """Check if the master class has ended."""
-        from datetime import datetime
 
         end_datetime = datetime.combine(self.date, self.end_time)
         return end_datetime < datetime.now()
