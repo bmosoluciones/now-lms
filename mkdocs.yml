@@ -1,38 +1,38 @@
 site_name: NOW - LMS
 theme:
-  name: material
-  favicon: images/favicon.png
-  logo: images/logo.svg
-  font:
-    text: Roboto
-    code: Source Code Pro
-  language: en
-  palette:
-    # Palette toggle for light mode
-    - scheme: default
-      primary: white
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
+    name: material
+    favicon: images/favicon.png
+    logo: images/logo.svg
+    font:
+        text: Roboto
+        code: Source Code Pro
+    language: en
+    palette:
+        # Palette toggle for light mode
+        - scheme: default
+          primary: white
+          toggle:
+              icon: material/brightness-7
+              name: Switch to dark mode
 
-    # Palette toggle for dark mode
-    - scheme: slate
-      primary: indigo
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
+        # Palette toggle for dark mode
+        - scheme: slate
+          primary: indigo
+          toggle:
+              icon: material/brightness-4
+              name: Switch to light mode
 
-  icon:
-    repo: fontawesome/brands/git-alt
-  features:
-    - header.autohide
-    - announce.dismiss
-    - navigation.instant
-    - navigation.tabs
-    - navigation.tabs.sticky
-    - navigation.sections
-    - navigation.expand
-    - navigation.footer
+    icon:
+        repo: fontawesome/brands/git-alt
+    features:
+        - header.autohide
+        - announce.dismiss
+        - navigation.instant
+        - navigation.tabs
+        - navigation.tabs.sticky
+        - navigation.sections
+        - navigation.expand
+        - navigation.footer
 
 repo_url: https://github.com/bmosoluciones/now-lms
 repo_name: bmosoluciones/now-lms
@@ -40,79 +40,85 @@ repo_name: bmosoluciones/now-lms
 copyright: Copyright &copy; 2021 - 2024 BMO Soluciones
 
 plugins:
-  - blog
-  - open-in-new-tab
-  - search
-  - i18n:
-      docs_structure: suffix
-      languages:
-        - locale: en
-          name: English
-          default: true
-          build: true
-        - locale: es
-          name: Español
-          build: true
-  - mkdocstrings
-  - glightbox
+    - blog
+    - open-in-new-tab
+    - search
+    - i18n:
+          docs_structure: suffix
+          languages:
+              - locale: en
+                name: English
+                default: true
+                build: true
+              - locale: es
+                name: Español
+                build: true
+    - mkdocstrings
+    - glightbox
 
 nav:
-  - Home:
-      - Home: index.md
-      - References: references.md
-  - Setup:
-      - Setup: setup.md
-      - Configuration: setup-conf.md
-      - Database Setup: db.md
-      - Python Package: pypi.md
-      - Docker: oci.md
-      - Server Setup:
-          - CentOS / Alma / Rocky: rocky.md
-      - Other Deployment options:
-          - Server less: dev_ops.md
-  - Configure:
-      - Configure: configure.md
-      - Mail: mail.md
-      - Payments: payments.md
-      - AdSense: adsense.md
-      - Theming: theming.md
-  - Course Creator:
-      - Overview: course-creator/index.md
-      - Course Creation Flow: course-creator/course-creation.md
-      - Course Configuration: course-creator/course-configuration.md
-      - Sections and Resources: course-creator/sections-resources.md
-      - Markdown Formatting: course-creator/markdown-guide.md
-      - Slide Shows: course-creator/slideshow-setup.md
-      - Certificates: course-creator/certificate-customization.md
-      - Forums and Messaging: course-creator/forum-messaging.md
-      - Moderator Management: course-creator/moderator-management.md
-  - About:
-      - About: faq.md
-      - Releases: release.md
-      - Changelog: changes.md
-      - Readme: https://github.com/bmosoluciones/now-lms/blob/main/README.md
-      - License: https://github.com/bmosoluciones/now-lms/blob/main/LICENSE
-  - Contributing:
-      - Contributing: CONTRIBUTING.md
-      - Developer Certificate of Origin: sing-off.md
-  - Blog: blog/index.md
-
+    - Home:
+          - Home: index.md
+          - References: references.md
+    - System Administrator Guide:
+          - Setup: setup.md
+          - Configuration: setup-conf.md
+          - Database Setup: db.md
+          - Python Package: pypi.md
+          - Docker: oci.md
+          - Server Setup:
+                - CentOS / Alma / Rocky: rocky.md
+          - Other Deployment options:
+                - Server less: dev_ops.md
+          - Wiki Guides: https://github.com/bmosoluciones/now-lms/wiki/Instaling-NOW-LMS
+          - Configure:
+                - Configure: configure.md
+                - Mail: mail.md
+                - Payments: payments.md
+                - AdSense: adsense.md
+                - Theming: theming.md
+    - Course Creator Guide:
+          - Overview: course-creator/index.md
+          - Course Creation Flow: course-creator/course-creation.md
+          - Course Configuration: course-creator/course-configuration.md
+          - Sections and Resources: course-creator/sections-resources.md
+          - Markdown Formatting: course-creator/markdown-guide.md
+          - Slide Shows: course-creator/slideshow-setup.md
+          - Certificates: course-creator/certificate-customization.md
+          - Forums and Messaging: course-creator/forum-messaging.md
+          - Moderator Management: course-creator/moderator-management.md
+          - Master Classes: master-class-organizer-guide.md
+          - Blog: blog.md
+    - Development Docs:
+          - Contributing: CONTRIBUTING.md
+          - Developer Certificate of Origin: sing-off.md
+          - Database Queries Help: development/query_guide.md
+          - Session Scoped Tests Fixtures: development/session_fixtures_guide.md
+          - Python Features: development/python-features.md
+    - About:
+          - About: faq.md
+          - Releases: release.md
+          - Changelog: https://github.com/bmosoluciones/now-lms/blob/main/CHANGELOG.md
+          - Readme: https://github.com/bmosoluciones/now-lms/blob/main/README.md
+          - License: https://github.com/bmosoluciones/now-lms/blob/main/LICENSE
+    - Blog:
+          - blog/index.md
 extra:
-  social:
-    - icon: fontawesome/brands/github
-      link: https://github.com/bmosoluciones/now-lms
-    - icon: fontawesome/brands/docker
-      link: https://quay.io/repository/bmosoluciones/now_lms
-  consent:
-    title: Cookie consent
+    social:
+        - icon: fontawesome/brands/github
+          link: https://github.com/bmosoluciones/now-lms
+        - icon: fontawesome/brands/docker
+          link: https://quay.io/repository/bmosoluciones/now_lms
+    consent:
+        title: Cookie consent
 
 markdown_extensions:
-  - attr_list
-  - pymdownx.superfences
-  - pymdownx.tabbed:
-      alternate_style: true
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
-  - admonition
-  - pymdownx.details
+    - attr_list
+    - pymdownx.superfences
+    - pymdownx.tabbed:
+          alternate_style: true
+    - pymdownx.emoji:
+          emoji_index: !!python/name:material.extensions.emoji.twemoji
+          emoji_generator: !!python/name:material.extensions.emoji.to_svg
+    - admonition
+    - pymdownx.details

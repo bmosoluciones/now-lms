@@ -27,7 +27,7 @@ from io import BytesIO
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, flash, make_response, redirect, render_template, request, url_for, abort
+from flask import Blueprint, abort, flash, make_response, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy.exc import OperationalError
 
@@ -188,9 +188,8 @@ def insert_style_in_html(template):
     html = template.html
     css = template.css
 
-    css = "<style>" + css + "</style>"
-
     if css:
+        css = "<style>" + css + "</style>"
         return css + html
     else:
         return html

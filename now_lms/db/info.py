@@ -95,7 +95,7 @@ def lms_info() -> SimpleNamespace:
     """Return a SimpleNamespace with LMS information."""
     from sqlalchemy import func
 
-    from now_lms.db import Certificacion, Curso, EstudianteCurso, Programa, Usuario, MasterClass, Evaluation
+    from now_lms.db import Certificacion, Curso, EstudianteCurso, Evaluation, MasterClass, Programa, Usuario
 
     courses_count = database.session.execute(database.select(func.count()).select_from(Curso)).scalar_one()
     students_count = database.session.execute(
@@ -155,9 +155,8 @@ def config_info() -> SimpleNamespace:
             DIRECTORIO_ARCHIVOS_PRIVADOS,
             DIRECTORIO_ARCHIVOS_PUBLICOS,
         )
-        from now_lms.themes import DIRECTORIO_TEMAS as TEMPLATES_DIR
-
         from now_lms.db import Configuracion
+        from now_lms.themes import DIRECTORIO_TEMAS as TEMPLATES_DIR
 
         configuracion = database.session.execute(database.select(Configuracion)).scalar_one_or_none()
 

@@ -650,6 +650,7 @@ class TakeEvaluationForm(FlaskForm):
 
     This will be dynamically populated with questions.
     """
+
     pass  # pylint: disable=unnecessary-pass
 
 

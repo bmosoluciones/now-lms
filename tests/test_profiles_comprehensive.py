@@ -1249,6 +1249,7 @@ def test_user_cannot_delete_other_user_logo(full_db_setup, client):
 def test_anonymous_user_redirected_to_login(full_db_setup, client):
     """Test that anonymous users are redirected to login for protected routes."""
     app = full_db_setup
+    assert app is not None
 
     # Try to access admin panel without login
     response = client.get("/admin/panel")

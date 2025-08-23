@@ -77,8 +77,6 @@ NOW LMS includes built-in PayPal integration that automatically processes paymen
   - **Audit Mode**: Free access to content without certificates
   - **Full Access**: Paid access with certificates and evaluations
 
-For detailed technical information, see [PayPal Integration Documentation](paypal_integration.md).
-
 ## Manual PayPal Processing
 
 ## Accepting payments with Paypal and manually enrolling the user.
@@ -89,7 +87,7 @@ With Paypal you can accetp payments and manually enrolling users in course with 
 
 Get paid with a custom link with [Paypal.me](https://www.paypal.com/paypalme/my/landing),
 
-![Paypal.me](/images/paypalme.jpg)
+![Paypal.me](images/paypalme.jpg)
 
 Just note that after the payment is done you must procces the enroll manually.
 
@@ -105,7 +103,7 @@ You can may a request to your user to issue a payment to your account with the [
 option, this way a user will contact you, the user must provide its Paypal user and you can generate a invoice to the user, once
 the payment is done you can enroll the user in the course.
 
-![Payment Request](/images/paymentrequest.jpg)
+![Payment Request](images/paymentrequest.jpg)
 
 !!! warning
 
