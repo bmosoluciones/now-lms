@@ -240,7 +240,7 @@ def no_autorizado():
 # Carga configuración del sitio web desde la base de datos.
 # ---------------------------------------------------------------------------------------
 @cache.cached(timeout=60, key_prefix="site_config")
-def config():  # pragma: no cover
+def config():
     """Obtiene configuración del sitio web desde la base de datos."""
     from flask import current_app, has_app_context
 

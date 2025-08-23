@@ -338,7 +338,7 @@ def elimina_logo_perzonalizado():
     try:
         remove(LOGO)
         database.session.commit()
-    except FileNotFoundError:  # pragma: no cover
+    except FileNotFoundError:
         pass
 
 
@@ -375,10 +375,10 @@ def elimina_imagen_usuario(ulid: str):
 
     LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, "usuarios", usuario.id + ".jpg")
 
-    try:  # pragma: no cover
+    try:
         remove(LOGO)
         flash("Imagen de usuario eliminada correctamente.", "success")
-    except FileNotFoundError:  # pragma: no cover
+    except FileNotFoundError:
         flash("Imagen de usuario no existe.", "error")
 
 

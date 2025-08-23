@@ -143,7 +143,7 @@ def certificate_new():
         try:
             database.session.commit()
             flash("Nuevo certificado creado correctamente.", "success")
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             database.session.rollback()
             flash("Hubo un error al crear el certificado.", "warning")
         return redirect(url_for(VISTA_CERTIFICADOS))
@@ -179,7 +179,7 @@ def certificate_edit(ulid: str):
             database.session.add(certificado_obj)
             database.session.commit()
             flash("Certificado editado correctamente.", "success")
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("No se puedo editar el certificado.", "warning")
         return redirect(url_for(VISTA_CERTIFICADOS))
 
@@ -456,10 +456,10 @@ def certificacion_generar():
             flash("Certificado generado correctamente.", "success")
             return redirect(url_for("certificate.certificaciones"))
 
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo en error al crear la plantilla.", "warning")
             return redirect("/instructor")
-    else:  # pragma: no cover
+    else:
         return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
 
 

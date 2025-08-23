@@ -136,7 +136,7 @@ def edit_perfil(ulid: str):
             usuario_.correo_electronico_verificado = False
             flash("Favor verifique su nuevo correo electronico.", "warning")
 
-        try:  # pragma: no cover
+        try:
             database.session.commit()
             cache.delete("view/" + url_for("user_profile.perfil"))
             flash("Pefil actualizado.", "success")
@@ -150,15 +150,15 @@ def edit_perfil(ulid: str):
                         usuario_.portada = True
                         database.session.commit()
                         flash("Imagen de perfil actualizada.", "success")
-                except UploadNotAllowed:  # pragma: no cover
+                except UploadNotAllowed:
                     log.warning("Could not update profile image.")
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             database.session.rollback()
             flash("Error al editar el perfil.", "error")
 
         return redirect(PROFILE_ROUTE)
 
-    return render_template("inicio/perfil_editar.html", form=form, usuario=usuario_)  # pragma: no cover
+    return render_template("inicio/perfil_editar.html", form=form, usuario=usuario_)
 
 
 @user_profile.route("/perfil/<ulid>/delete_logo")
@@ -204,7 +204,7 @@ def cambiar_contraseña(ulid: str):
             database.session.commit()
             flash("Contraseña actualizada exitosamente.", "success")
             return redirect(PROFILE_ROUTE)
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Error al actualizar la contraseña.", "error")
 
     return render_template(TEMPLATE_CAMBIAR_CONTRASENA, form=form, usuario=usuario_)

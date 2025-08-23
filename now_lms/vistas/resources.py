@@ -89,7 +89,7 @@ def new_resource():
         try:
             database.session.commit()
             flash("Nuevo Recurso creado correctamente.", "success")
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al crear el recurso.", "warning")
         return redirect(url_for("resource.lista_de_recursos"))
 
@@ -167,10 +167,10 @@ def edit_resource(ulid: str):
         else:
             return abort(403)
 
-        try:  # pragma: no cover
+        try:
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Error al editar el recurso.", "warning")
         return redirect(url_for("resource.vista_recurso", resource_code=recurso.codigo))
 
@@ -214,7 +214,7 @@ def lista_recursos():
             # El numero de pagina debe ser generado por el macro de paginación.
             try:
                 del PARAMETROS["page"]
-            except KeyError:  # pragma: no cover
+            except KeyError:
                 pass
     else:
         PARAMETROS = None

@@ -70,7 +70,7 @@ def cursos():
             count=True,
         )
     else:
-        try:  # pragma: no cover
+        try:
             consulta_cursos = database.paginate(
                 database.select(Curso).join(DocenteCurso).filter(DocenteCurso.usuario == current_user.usuario),
                 page=request.args.get("page", default=1, type=int),
@@ -78,7 +78,7 @@ def cursos():
                 count=True,
             )
 
-        except ArgumentError:  # pragma: no cover
+        except ArgumentError:
             consulta_cursos = None
     return render_template("learning/curso_lista.html", consulta=consulta_cursos)
 
@@ -155,7 +155,7 @@ def agrega_usuario_a_grupo():
         database.session.commit()
         flash("Usuario Agregado Correctamente.", "success")
         return redirect(url_grupo)
-    except OperationalError:  # pragma: no cover
+    except OperationalError:
         flash("No se pudo agregar al usuario.", "warning")
         return redirect(url_grupo)
 

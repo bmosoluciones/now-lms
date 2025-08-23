@@ -502,12 +502,12 @@ def crear_recurso_prueba():
 
     directorio_destino_archivo = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "files", "resources_files")
     directorio_destino_imagen = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "images", "resources_files")
-    try:  # pragma: no cover
+    try:
         makedirs(directorio_destino_archivo)
         makedirs(directorio_destino_imagen)
-    except FileExistsError:  # pragma: no cover
+    except FileExistsError:
         log.trace("Directorios de recursos ya existen.")
-    except FileNotFoundError:  # pragma: no cover
+    except FileNotFoundError:
         log.trace("Directorios de recursos no encontrados.")
 
     # Copiar pdf de ejemplo.
@@ -517,11 +517,11 @@ def crear_recurso_prueba():
     for archivo in archivos:
         origen = path.join(DIRECTORIO_ARCHIVOS, "examples", archivo[0])
         destino = path.join(directorio_destino_archivo, archivo[1])
-        try:  # pragma: no cover
+        try:
             copyfile(origen, destino)
-        except FileExistsError:  # pragma: no cover
+        except FileExistsError:
             log.trace("Archivo de recurso ya existe.")
-        except FileNotFoundError:  # pragma: no cover
+        except FileNotFoundError:
             log.trace("Archivo de recurso no encontrado.")
 
     # Copiar img de ejemplo.
@@ -531,11 +531,11 @@ def crear_recurso_prueba():
     for image in imagenes:
         origen = path.join(DIRECTORIO_ARCHIVOS, "examples", image[0])
         destino = path.join(directorio_destino_imagen, image[1])
-        try:  # pragma: no cover
+        try:
             copyfile(origen, destino)
-        except FileExistsError:  # pragma: no cover
+        except FileExistsError:
             log.trace("Imagen de recurso ya existe.")
-        except FileNotFoundError:  # pragma: no cover
+        except FileNotFoundError:
             log.trace("Imagen de recurso no encontrada.")
 
     database.session.commit()

@@ -48,7 +48,7 @@ from now_lms.version import CODE_NAME, VERSION
 @click.group(
     cls=FlaskGroup, create_app=lambda: lms_app, help="Interfaz de linea de comandos para la administración de NOW LMS."
 )
-def command() -> None:  # pragma: no cover
+def command() -> None:
     """Linea de comandos para administración de la aplicacion."""
 
 
@@ -60,7 +60,7 @@ def database():
 @database.command()
 @click.option("--with-examples", is_flag=True, default=False, help="Load example data at setup.")
 @click.option("--with-testdata", is_flag=True, default=False, help="Load data for testing.")
-def init(with_examples=False, with_testdata=False):  # pragma: no cover
+def init(with_examples=False, with_testdata=False):
     """Init a new database."""
     with lms_app.app_context():
         from now_lms.db.tools import database_is_populated
@@ -87,7 +87,7 @@ def seed():
 
 
 @database.command()
-def backup():  # pragma: no cover
+def backup():
     """Make a backup of system data."""
     from now_lms.db.backup import db_backup
 
@@ -99,7 +99,7 @@ def backup():  # pragma: no cover
     "backup_sql_file",
     type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True, path_type=Path),
 )
-def restore(backup_sql_file: Path):  # pragma: no cover
+def restore(backup_sql_file: Path):
     """Restore the system from a backup."""
     from now_lms.db.backup import db_backup_restore
 
@@ -108,13 +108,13 @@ def restore(backup_sql_file: Path):  # pragma: no cover
 
 
 @database.command()
-def migrate():  # pragma: no cover
+def migrate():
     """Update dabatase schema."""
     alembic.upgrade()
 
 
 @database.command()
-def drop():  # pragma: no cover
+def drop():
     """Delete database schema and all the data in it."""
     with lms_app.app_context():
         if click.confirm("This will delete the database and all the data on it. Do you want to continue?", abort=True):
@@ -122,7 +122,7 @@ def drop():  # pragma: no cover
 
 
 @database.command()
-def reset(with_examples=False, with_tests=False) -> None:  # pragma: no cover
+def reset(with_examples=False, with_tests=False) -> None:
     """Drop the system database and populate with init a new one."""
     with lms_app.app_context():
         if click.confirm("This will delete the current database and all the data on it. Do you want to continue?", abort=True):
@@ -132,7 +132,7 @@ def reset(with_examples=False, with_tests=False) -> None:  # pragma: no cover
 
 
 @lms_app.cli.command()
-def version():  # pragma: no cover
+def version():
     """Return the current version of the software."""
     click.echo(f"NOW - Learning Management Sytem Code Name: {CODE_NAME} Release: {VERSION}")
 
@@ -144,7 +144,7 @@ def info():
 
 @info.command()
 @click.argument("course_name", type=str, required=False)
-def course(course_name):  # pragma: no cover
+def course(course_name):
     """Return information about the given course."""
     if course_name:
         with lms_app.app_context():
@@ -158,7 +158,7 @@ def course(course_name):  # pragma: no cover
 
 
 @info.command()
-def system():  # pragma: no cover
+def system():
     """Return information about the system."""
     with lms_app.app_context():
         config_info_data = config_info()
@@ -176,7 +176,7 @@ def system():  # pragma: no cover
 
 
 @info.command()
-def path():  # pragma: no cover
+def path():
     """Directorios used by the current setup."""
     with lms_app.app_context():
         config_info_data = config_info()
@@ -197,7 +197,7 @@ def routes():
 
 
 @lms_app.cli.command()
-def serve():  # pragma: no cover
+def serve():
     """Serve NOW LMS with the default WSGi server."""
     from waitress import serve as server
 

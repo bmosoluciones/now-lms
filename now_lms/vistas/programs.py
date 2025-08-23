@@ -123,7 +123,7 @@ def nuevo_programa():
             cache.delete("view/" + url_for(PROGRAMS_ROUTE))
             flash("Nuevo Programa creado.", "success")
             return redirect(url_for("program.pagina_programa", codigo=programa.codigo))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             database.session.rollback()
             flash("Hubo un error al crear el programa.", "warning")
             return redirect(url_for(PROGRAMS_ROUTE))
@@ -249,11 +249,11 @@ def edit_program(ulid: str):
                         programa.logo = True
                         flash("Portada del curso actualizada correctamente", "success")
                         database.session.commit()
-                except UploadNotAllowed:  # pragma: no cover
+                except UploadNotAllowed:
                     flash("No se pudo actualizar la portada del curso.", "warning")
 
             flash("Programa editado correctamente.", "success")
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             database.session.rollback()
             flash("No se puedo editar el programa.")
         return redirect(url_for(PROGRAMS_ROUTE))
@@ -339,7 +339,7 @@ def lista_programas():
             # El numero de pagina debe ser generado por el macro de paginación.
             try:
                 del PARAMETROS["page"]
-            except KeyError:  # pragma: no cover
+            except KeyError:
                 pass
     else:
         PARAMETROS = None
@@ -377,7 +377,7 @@ def inscribir_programa(codigo):
             database.session.commit()
             flash("Te has inscrito exitosamente al programa.", "success")
             return redirect(url_for("program.tomar_programa", codigo=codigo))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             database.session.rollback()
             flash("Hubo un error al inscribirte al programa.", "error")
 
@@ -519,7 +519,7 @@ def inscribir_usuario_programa(codigo):
                 database.session.add(inscripcion)
                 database.session.commit()
                 flash(f"Usuario {usuario.nombre} {usuario.apellido} inscrito exitosamente.", "success")
-            except OperationalError:  # pragma: no cover
+            except OperationalError:
                 database.session.rollback()
                 flash("Error al inscribir usuario.", "error")
 

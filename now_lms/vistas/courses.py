@@ -340,7 +340,7 @@ def course_enroll(course_code):
                     flash(f"¡Cupón aplicado! Descuento de {discount_amount} aplicado", "success")
 
                 return redirect(url_for("course.tomar_curso", course_code=course_code))
-            except OperationalError:  # pragma: no cover
+            except OperationalError:
                 database.session.rollback()
                 flash("Hubo en error al crear el registro de pago.", "warning")
                 return redirect(url_for(VISTA_CURSOS, course_code=course_code))
@@ -368,7 +368,7 @@ def course_enroll(course_code):
                 create_events_for_student_enrollment(pago.usuario, pago.curso)
 
                 return redirect(url_for("course.tomar_curso", course_code=course_code))
-            except OperationalError:  # pragma: no cover
+            except OperationalError:
                 flash("Hubo en error al crear el registro de pago.", "warning")
                 return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
@@ -391,7 +391,7 @@ def course_enroll(course_code):
 
                 # Redirect to PayPal payment page with payment ID
                 return redirect(url_for("paypal.payment_page", course_code=course_code, payment_id=pago.id))
-            except OperationalError:  # pragma: no cover
+            except OperationalError:
                 database.session.rollback()
                 flash("Error al procesar el pago", "warning")
                 return redirect(url_for(VISTA_CURSOS, course_code=course_code))
@@ -606,19 +606,19 @@ def nuevo_curso():
                         log.info("Course Logo saved")
                     else:
                         log.warning("Course Logo not saved")
-                except UploadNotAllowed:  # pragma: no cover
+                except UploadNotAllowed:
                     log.warning("Could not update profile photo.")
                     database.session.rollback()
-                except AttributeError:  # pragma: no cover
+                except AttributeError:
                     log.warning("Could not update profile photo.")
                     database.session.rollback()
             database.session.commit()
             flash("Curso creado exitosamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=form.codigo.data))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo en error al crear su curso.", "warning")
             return redirect("/instructor")
-    else:  # pragma: no cover
+    else:
         return render_template("learning/nuevo_curso.html", form=form, curso=None, edit=False)
 
 
@@ -735,16 +735,16 @@ def editar_curso(course_code):
                         curso_a_editar.portada = False
                         database.session.commit()
                         log.warning("Course Logo not saved")
-                except UploadNotAllowed:  # pragma: no cover
+                except UploadNotAllowed:
                     log.warning("Could not update profile photo.")
                     database.session.rollback()
-                except AttributeError:  # pragma: no cover
+                except AttributeError:
                     log.warning("Could not update profile photo.")
                     database.session.rollback()
             flash("Curso actualizado exitosamente.", "success")
             return redirect(curso_url)
 
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo en error al actualizar el curso.", "warning")
             return redirect(curso_url)
 
@@ -776,10 +776,10 @@ def nuevo_seccion(course_code):
             database.session.commit()
             flash("Sección agregada correctamente al curso.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo en error al crear la seccion.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:  # pragma: no cover
+    else:
         return render_template("learning/nuevo_seccion.html", form=form)
 
 
@@ -803,10 +803,10 @@ def editar_seccion(course_code, seccion):
             database.session.commit()
             flash("Sección modificada correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo en error al actualizar la seccion.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:  # pragma: no cover
+    else:
         return render_template("learning/editar_seccion.html", form=form, seccion=seccion_a_editar)
 
 
@@ -1231,7 +1231,7 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1266,7 +1266,7 @@ def editar_recurso_youtube_video(course_code, seccion, resource_id):
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al actualizar el recurso.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1312,7 +1312,7 @@ def nuevo_recurso_text(course_code, seccion):
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1347,7 +1347,7 @@ def editar_recurso_text(course_code, seccion, resource_id):
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al actualizar el recurso.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1391,7 +1391,7 @@ def nuevo_recurso_link(course_code, seccion):
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1425,7 +1425,7 @@ def editar_recurso_link(course_code, seccion, resource_id):
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al actualizar el recurso.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1472,7 +1472,7 @@ def nuevo_recurso_pdf(course_code, seccion):
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1512,7 +1512,7 @@ def editar_recurso_pdf(course_code, seccion, resource_id):
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al actualizar el recurso.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1559,7 +1559,7 @@ def nuevo_recurso_meet(course_code, seccion):
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1599,7 +1599,7 @@ def editar_recurso_meet(course_code, seccion, resource_id):
             update_meet_resource_events(resource_id)
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al actualizar el recurso.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1651,7 +1651,7 @@ def nuevo_recurso_img(course_code, seccion):
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1691,7 +1691,7 @@ def editar_recurso_img(course_code, seccion, resource_id):
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al actualizar el recurso.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1738,7 +1738,7 @@ def nuevo_recurso_audio(course_code, seccion):
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1778,7 +1778,7 @@ def editar_recurso_audio(course_code, seccion, resource_id):
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al actualizar el recurso.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1821,7 +1821,7 @@ def nuevo_recurso_html(course_code, seccion):
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1855,7 +1855,7 @@ def editar_recurso_html(course_code, seccion, resource_id):
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al actualizar el recurso.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
