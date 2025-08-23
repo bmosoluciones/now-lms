@@ -19,6 +19,7 @@
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
+from calendar import c
 from os import cpu_count, environ
 from pathlib import Path
 
@@ -26,6 +27,7 @@ from pathlib import Path
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 import click
+from flask import cli
 from flask.cli import FlaskGroup
 from sqlalchemy import select
 
@@ -131,10 +133,20 @@ def reset(with_examples=False, with_tests=False) -> None:
             initial_setup(with_examples, with_tests)
 
 
+@database.command()
+def engine():
+    """Return the database engine."""
+    with lms_app.app_context():
+        engine = lms_app.config["SQLALCHEMY_DATABASE_URI"]
+        click.echo(f"Database Engine: {engine}")
+
+
 @lms_app.cli.command()
 def version():
     """Return the current version of the software."""
-    click.echo(f"NOW - Learning Management Sytem Code Name: {CODE_NAME} Release: {VERSION}")
+    click.echo("NOW - Learning Management Sytem")
+    click.echo(f" Code Name: {CODE_NAME}")
+    click.echo(f" Version: {VERSION}")
 
 
 @lms_app.cli.group()
@@ -256,3 +268,47 @@ def theme_list():
 
     for theme in list_themes():
         click.echo(theme)
+
+
+@settings.command()
+def lang_get():
+    """Get the current language setting."""
+    from now_lms.db import Configuracion
+
+    with lms_app.app_context():
+        conf = db.session.execute(select(Configuracion)).scalars().first()
+        click.echo(f"Current language: {conf.lang}")
+
+
+@settings.command()
+def lang_set():
+    """Set the current theme."""
+    from now_lms.db import Configuracion
+
+    with lms_app.app_context():
+        lang_ = click.prompt("Enter the language code", type=str)
+        confg = db.session.execute(select(Configuracion)).scalars().first()
+        confg.lang = lang_
+        db.session.commit()
+
+
+@settings.command()
+def timezone_get():
+    """Get the current timezone setting."""
+    from now_lms.db import Configuracion
+
+    with lms_app.app_context():
+        conf_ = db.session.execute(select(Configuracion)).scalars().first()
+        click.echo(f"Current language: {conf_.time_zone}")
+
+
+@settings.command()
+def timezone_set():
+    """Set the current timezone."""
+    from now_lms.db import Configuracion
+
+    with lms_app.app_context():
+        timezone_ = click.prompt("Enter the timezone", type=str)
+        confg_ = db.session.execute(select(Configuracion)).scalars().first()
+        confg_.time_zone = timezone_
+        db.session.commit()
