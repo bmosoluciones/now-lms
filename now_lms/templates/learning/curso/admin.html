@@ -159,12 +159,14 @@ permitir_docente %}
                             ><i class="bi bi-tags" aria-hidden="true"></i> Gestionar Cupones</a
                         >
                         {% endif %} {% if secciones %}
-                        <div class="accordion accordion-flush" id="accordionSeccionesCurso">
+                        <div>
                             {% for seccion in secciones %}
                             <div class="d-flex justify-content-between border-bottom">
                                 <div>
                                     <h5>{{ seccion.nombre }}</h5>
                                 </div>
+                            </div>
+                            <div class="accordion accordion-flush" id="accordionSeccionesCurso">
                                 <div>
                                     <!-- Desktop layout - show all buttons -->
                                     <div class="d-none d-md-flex justify-content-end">
@@ -173,6 +175,13 @@ permitir_docente %}
                                             class="btn btn-success btn-sm me-2"
                                             ><i class="bi bi-plus-circle" aria-hidden="true"></i> Nuevo Recurso</a
                                         >
+
+                                        <a
+                                            href="{{ url_for('course.new_evaluation_from_section', course_code=curso.codigo, section_id=seccion.id) }}"
+                                            class="btn btn-success btn-sm me-2"
+                                            ><i class="bi bi-plus-circle" aria-hidden="true"></i> Crear Evaluación</a
+                                        >
+
                                         <div class="btn-group me-2">
                                             <button class="btn btn-info btn-sm" type="button">
                                                 <i class="bi bi-arrows-move" aria-hidden="true"></i> Ordenar
@@ -222,14 +231,6 @@ permitir_docente %}
                                             <ul class="dropdown-menu">
                                                 <li>
                                                     <a
-                                                        href="{{ url_for('course.new_evaluation_from_section', course_code=curso.codigo, section_id=seccion.id) }}"
-                                                        class="dropdown-item"
-                                                        ><i class="bi bi-plus-circle" aria-hidden="true"></i> Crear
-                                                        Evaluación</a
-                                                    >
-                                                </li>
-                                                <li>
-                                                    <a
                                                         href="{{ url_for('course.cambiar_seccion_publico', course_code=curso.codigo, codigo=seccion.id) }}"
                                                         class="dropdown-item"
                                                         >Publicar Sección</a
@@ -272,7 +273,9 @@ permitir_docente %}
                                                         ><i class="bi bi-plus-circle" aria-hidden="true"></i> Nuevo Recurso</a
                                                     >
                                                 </li>
-                                                <li><hr class="dropdown-divider" /></li>
+                                                <li>
+                                                    <hr class="dropdown-divider" />
+                                                </li>
                                                 <li>
                                                     <span class="dropdown-item-text"><strong>Ordenar Sección:</strong></span>
                                                 </li>
@@ -292,7 +295,9 @@ permitir_docente %}
                                                         Sección</a
                                                     >
                                                 </li>
-                                                <li><hr class="dropdown-divider" /></li>
+                                                <li>
+                                                    <hr class="dropdown-divider" />
+                                                </li>
                                                 <li>
                                                     <a
                                                         href="{{ url_for('course.editar_seccion', course_code=seccion.curso, seccion=seccion.id) }}"
@@ -301,7 +306,9 @@ permitir_docente %}
                                                         Sección</a
                                                     >
                                                 </li>
-                                                <li><hr class="dropdown-divider" /></li>
+                                                <li>
+                                                    <hr class="dropdown-divider" />
+                                                </li>
                                                 <li>
                                                     <span class="dropdown-item-text"><strong>Más Acciones:</strong></span>
                                                 </li>
@@ -538,7 +545,9 @@ permitir_docente %}
                                                             <span class="dropdown-item-text text-muted">N/A</span>
                                                             {% endif %}
                                                         </li>
-                                                        <li><hr class="dropdown-divider" /></li>
+                                                        <li>
+                                                            <hr class="dropdown-divider" />
+                                                        </li>
                                                         <li>
                                                             <span class="dropdown-item-text"><strong>Ordenar:</strong></span>
                                                         </li>
@@ -558,7 +567,9 @@ permitir_docente %}
                                                                 Subir</a
                                                             >
                                                         </li>
-                                                        <li><hr class="dropdown-divider" /></li>
+                                                        <li>
+                                                            <hr class="dropdown-divider" />
+                                                        </li>
                                                         <li>
                                                             <a
                                                                 href="{{ url_for('course.eliminar_recurso', curso_code=recurso.curso, seccion=recurso.seccion, id_=recurso.id) }}"
