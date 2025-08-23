@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
  - Fixed course admin navigation in small screens
  - Fixed missing get slideshow iid in jinja globls
  - Fixed navigation issues in resource administration
+ - Fixed navegation in text resource type
 
 ### Notes
 - Updated docs
