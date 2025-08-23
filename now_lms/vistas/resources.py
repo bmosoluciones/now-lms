@@ -60,7 +60,7 @@ def new_resource():
     form = RecursoForm()
     if form.validate_on_submit() or request.method == "POST":
         file_name = None  # Initialize file_name to avoid UnboundLocalError
-        
+
         if "img" in request.files:
             file_name = form.codigo.data + ".jpg"
             picture_file = images.save(request.files["img"], folder="resources_files", name=file_name)

@@ -27,7 +27,7 @@ from io import BytesIO
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, flash, make_response, redirect, render_template, request, url_for, abort
+from flask import Blueprint, abort, flash, make_response, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy.exc import OperationalError
 

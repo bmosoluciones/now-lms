@@ -230,7 +230,9 @@ def instructor_edit(master_class_id):
 
             # Check for slug conflicts excluding current record
             existing = (
-                database.session.execute(select(MasterClass).filter(and_(MasterClass.slug == slug, MasterClass.id != master_class_id)))
+                database.session.execute(
+                    select(MasterClass).filter(and_(MasterClass.slug == slug, MasterClass.id != master_class_id))
+                )
                 .scalars()
                 .first()
             )
@@ -238,7 +240,9 @@ def instructor_edit(master_class_id):
                 slug = f"{original_slug}-{counter}"
                 counter += 1
                 existing = (
-                    database.session.execute(select(MasterClass).filter(and_(MasterClass.slug == slug, MasterClass.id != master_class_id)))
+                    database.session.execute(
+                        select(MasterClass).filter(and_(MasterClass.slug == slug, MasterClass.id != master_class_id))
+                    )
                     .scalars()
                     .first()
                 )

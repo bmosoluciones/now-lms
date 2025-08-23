@@ -3,13 +3,12 @@
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
-from datetime import datetime
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, flash, redirect, render_template, request, url_for
-from flask_login import current_user, login_required
+from flask import Blueprint, flash, redirect, render_template, request
+from flask_login import login_required
 from sqlalchemy.exc import OperationalError
 
 # ---------------------------------------------------------------------------------------
@@ -17,7 +16,7 @@ from sqlalchemy.exc import OperationalError
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import UsuarioGrupo, UsuarioGrupoTutor, database
+from now_lms.db import UsuarioGrupo, database
 from now_lms.forms import GrupoForm
 
 group = Blueprint("group", __name__, template_folder=DIRECTORIO_PLANTILLAS)

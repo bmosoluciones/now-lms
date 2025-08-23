@@ -35,20 +35,8 @@ from flask_login import current_user, login_required
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import (
-    Curso,
-    DocenteCurso,
-    EstudianteCurso,
-    Mensaje,
-    Message,
-    MessageThread,
-    ModeradorCurso,
-    Usuario,
-    database,
-    select,
-)
-from now_lms.forms import MessageReplyForm, MessageReportForm, MessageThreadForm, MsgForm
-from now_lms.misc import INICIO_SESION
+from now_lms.db import Curso, DocenteCurso, EstudianteCurso, Message, MessageThread, ModeradorCurso, database, select
+from now_lms.forms import MessageReplyForm, MessageReportForm, MessageThreadForm
 
 # ---------------------------------------------------------------------------------------
 # Interfaz de mensajes

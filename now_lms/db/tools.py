@@ -30,7 +30,7 @@ from flask_login import current_user
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
 from sqlalchemy import func
-from sqlalchemy.exc import OperationalError, ProgrammingError, NoResultFound, MultipleResultsFound
+from sqlalchemy.exc import MultipleResultsFound, NoResultFound, OperationalError, ProgrammingError
 from sqlalchemy.inspection import inspect
 
 # ---------------------------------------------------------------------------------------
@@ -51,8 +51,8 @@ from now_lms.db import (
     CursoRecursoAvance,
     CursoSeccion,
     DocenteCurso,
-    Etiqueta,
     EstudianteCurso,
+    Etiqueta,
     EtiquetaCurso,
     EtiquetaPrograma,
     MailConfig,
