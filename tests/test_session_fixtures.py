@@ -14,7 +14,6 @@
 
 """Test session-scoped pytest fixtures to ensure they work correctly."""
 
-import pytest
 
 
 class TestSessionBasicFixture:

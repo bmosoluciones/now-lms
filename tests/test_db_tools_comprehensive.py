@@ -1,7 +1,6 @@
 """Comprehensive tests for now_lms.db.tools module to improve coverage."""
 
-import pytest
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 
 
 class TestDatabaseUtilities:

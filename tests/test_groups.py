@@ -63,29 +63,6 @@ class TestGroupsViews:
             # Should redirect to admin panel
             assert response.status_code == 200
 
-    def test_agrega_tutor_a_grupo_unauthorized(self, app, client):
-        """Test agrega_tutor_a_grupo without login."""
-        with app.app_context():
-            response = client.post("/group/set_tutor?id=test-group", data={"usuario": "test-user"})
-
-            # Should redirect to login page
-            assert response.status_code == 302
-
-    def test_agrega_tutor_a_grupo_post_authorized(self, app, client, session_full_db_setup):
-        """Test agrega_tutor_a_grupo with admin login."""
-        with app.app_context():
-            # Login as admin user
-            client.post("/usuarios/iniciar-sesion", data={"usuario": "lms-admin", "clave": "lms-admin"})
-
-            # First create a group
-            client.post("/group/new", data={"nombre": "Test Group", "descripcion": "Test Description"})
-
-            # Then try to assign tutor (this might fail due to missing dependencies)
-            response = client.post("/group/set_tutor?id=test-group", data={"usuario": "lms-admin"})
-
-            # Should return some response (might be redirect)
-            assert response.status_code in [200, 302, 404, 500]  # Various valid responses
-
     def test_grupo_form_validation(self, app, client, session_full_db_setup):
         """Test group form validation with invalid data."""
         with app.app_context():
@@ -117,20 +94,3 @@ class TestGroupsViews:
 
             # Should handle the error gracefully
             assert response.status_code in [200, 302]
-
-    @patch("now_lms.vistas.groups.database.session.commit")
-    def test_agrega_tutor_database_error(self, mock_commit, app, client, session_full_db_setup):
-        """Test agrega_tutor_a_grupo with database error."""
-        with app.app_context():
-            from sqlalchemy.exc import OperationalError
-
-            # Mock database error
-            mock_commit.side_effect = OperationalError("Database error", None, None)
-
-            # Login as admin user
-            client.post("/usuarios/iniciar-sesion", data={"usuario": "lms-admin", "clave": "lms-admin"})
-
-            response = client.post("/group/set_tutor?id=test-group", data={"usuario": "lms-admin"})
-
-            # Should handle the error gracefully
-            assert response.status_code in [200, 302, 404, 500]

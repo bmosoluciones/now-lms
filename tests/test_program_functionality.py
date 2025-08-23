@@ -15,11 +15,9 @@
 
 """Tests for program functionality."""
 
-import pytest
 from now_lms.db import (
     Certificacion,
     CertificacionPrograma,
-    Certificado,
     Curso,
     Programa,
     ProgramaCurso,

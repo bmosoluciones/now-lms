@@ -47,29 +47,3 @@ def nuevo_grupo():
             return redirect("/new_group")
     else:
         return render_template("admin/grupos/nuevo.html", form=form)
-
-
-@group.route(
-    "/group/set_tutor",
-    methods=[
-        "POST",
-    ],
-)
-@login_required
-@perfil_requerido("admin")
-def agrega_tutor_a_grupo():
-    """Asigna como tutor de grupo a un usuario."""
-    id_ = request.args.get("id", type=str)
-    registro = UsuarioGrupoTutor(
-        grupo=id_, usuario=request.form["usuario"], creado_por=current_user.usuario, creado=datetime.now()
-    )
-    database.session.add(registro)
-    url_grupo = url_for("grupo", id=id_)
-    try:
-        database.session.commit()
-        flash("Usuario Agregado Correctamente.", "success")
-        return redirect(url_grupo)
-    except OperationalError:  # pragma: no cover
-        database.session.rollback()
-        flash("No se pudo agregar al usuario.", "warning")
-        return redirect(url_grupo)

@@ -188,9 +188,8 @@ def insert_style_in_html(template):
     html = template.html
     css = template.css
 
-    css = "<style>" + css + "</style>"
-
     if css:
+        css = "<style>" + css + "</style>"
         return css + html
     else:
         return html
