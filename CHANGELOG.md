@@ -8,9 +8,18 @@ All notable changes to this project will be documented in this file.
 
 ## [release: v0.0.1b12.dev20250823] - 2025-08-23
 
-### Notes:
- - Updated docs
- - Updated tests
+## Changed
+- Refactor meet and link resource pages
+
+### Fixed:
+ - Fixed course admin navigation in small screens
+ - Fixed missing get slideshow iid in jinja globls
+ - Fixed navigation issues in resource administration
+
+### Notes
+- Updated docs
+- Updated tests
+- Many pylint issues fixed
 
 ## [release: v0.0.1b11.dev20250822] - 2025-08-22
 
@@ -19,7 +28,6 @@ All notable changes to this project will be documented in this file.
  - Fixed a bug resources creation
 
 ### Notes
-
  - Included pylint as defensive tool
  - 698 tests passed / 83% code coverage
 
