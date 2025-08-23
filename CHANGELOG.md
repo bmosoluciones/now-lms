@@ -6,7 +6,12 @@ All notable changes to this project will be documented in this file.
 - This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/), using prefixes such as:
 
-## [v0.0.1b12]
+## [release: v0.0.1b12]
+
+### Notes:
+ - Updated docs
+
+## [release: v0.0.1b11.dev20250822] - 2025-08-22
 
 ### Fixed:
  - Fixed a bug in the certificate implementation
