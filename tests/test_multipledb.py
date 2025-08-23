@@ -60,7 +60,7 @@ def test_postgress_pg8000():
         pytest.skip("Not postgresql+pg8000 driver configured in environ.")
 
 
-def test_mysql_mysqldb(database_url, request):
+def test_mysql_mysqldb():
     """Test MySQL database using MySQLdb driver with improved error handling."""
     if database_url.startswith("mysql"):
         from now_lms import app, database, initial_setup
