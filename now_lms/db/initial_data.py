@@ -296,7 +296,7 @@ def crear_curso_demo():
         hora_inicio=time(hour=14, minute=30),
         hora_fin=time(hour=15, minute=00),
         notes="Google Meet",
-        publico=False,
+        publico=True,  # Make it public for easier testing
         requerido=2,
     )
     nuevo_recurso3.tipo = "meet"

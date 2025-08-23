@@ -23,14 +23,25 @@ Gestión de certificados.
 # Standard library
 # ---------------------------------------------------------------------------------------
 from collections import OrderedDict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from os.path import splitext
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 from bleach import clean, linkify
-from flask import Blueprint, abort, current_app, flash, redirect, render_template, request, send_from_directory, url_for
+from flask import (
+    Blueprint,
+    Response,
+    abort,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    send_from_directory,
+    url_for,
+)
 from flask_login import current_user, login_required
 from flask_uploads import UploadNotAllowed
 from markdown import markdown
@@ -989,18 +1000,18 @@ def pagina_recurso(curso_id, resource_type, codigo):
         show_resource = False
 
     if show_resource or RECURSO.publico:
-        # Obtener progreso del recurso actual
-        resource_progress = (
-            database.session.execute(
-                database.select(CursoRecursoAvance).filter_by(usuario=current_user.usuario, curso=curso_id, recurso=codigo)
+        # Obtener progreso del recurso actual (solo para usuarios autenticados)
+        recurso_completado = False
+        if current_user.is_authenticated:
+            resource_progress = (
+                database.session.execute(
+                    database.select(CursoRecursoAvance).filter_by(usuario=current_user.usuario, curso=curso_id, recurso=codigo)
+                )
+                .scalars()
+                .first()
             )
-            .scalars()
-            .first()
-        )
-        if resource_progress:
-            recurso_completado = resource_progress.completado
-        else:
-            recurso_completado = False
+            if resource_progress:
+                recurso_completado = resource_progress.completado
 
         # Obtener datos adicionales para el sidebar mejorado
         user_progress = {}
@@ -2427,6 +2438,272 @@ def delete_coupon(course_code, coupon_id):
         log.error(f"Error deleting coupon: {e}")
 
     return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
+
+
+@course.route("/course/<course_code>/resource/meet/<codigo>/calendar.ics")
+@login_required
+def download_meet_calendar(course_code, codigo):
+    """Download ICS calendar file for a meet resource."""
+    from now_lms.db.tools import verifica_estudiante_asignado_a_curso
+
+    # Get the meet resource
+    recurso = (
+        database.session.execute(
+            database.select(CursoRecurso).filter(
+                CursoRecurso.id == codigo, CursoRecurso.curso == course_code, CursoRecurso.tipo == "meet"
+            )
+        )
+        .scalars()
+        .first()
+    )
+
+    if not recurso:
+        abort(404)
+
+    # Check permissions
+    curso = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
+    if not curso:
+        abort(404)
+
+    # Verify user has access to this course/resource
+    if current_user.is_authenticated:
+        if current_user.tipo == "admin" or current_user.tipo == "instructor":
+            show_resource = True
+        elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(course_code):
+            show_resource = True
+        else:
+            show_resource = False
+    else:
+        show_resource = False
+
+    if not (show_resource or recurso.publico):
+        abort(403)
+
+    # Generate ICS content
+    ics_content = _generate_meet_ics_content(recurso, curso)
+
+    # Safe filename
+    filename = f"meet-{recurso.nombre[:20].replace(' ', '-')}-{recurso.id}.ics"
+
+    return Response(
+        ics_content,
+        mimetype="text/calendar",
+        headers={"Content-Disposition": f"attachment; filename={filename}"},
+    )
+
+
+@course.route("/course/<course_code>/resource/meet/<codigo>/google-calendar")
+@login_required
+def google_calendar_link(course_code, codigo):
+    """Redirect to Google Calendar to add meet event."""
+    from now_lms.db.tools import verifica_estudiante_asignado_a_curso
+    from urllib.parse import quote
+
+    # Get the meet resource (reuse permission logic)
+    recurso = (
+        database.session.execute(
+            database.select(CursoRecurso).filter(
+                CursoRecurso.id == codigo, CursoRecurso.curso == course_code, CursoRecurso.tipo == "meet"
+            )
+        )
+        .scalars()
+        .first()
+    )
+
+    if not recurso:
+        abort(404)
+
+    curso = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
+    if not curso:
+        abort(404)
+
+    # Verify user has access to this course/resource
+    if current_user.is_authenticated:
+        if current_user.tipo == "admin" or current_user.tipo == "instructor":
+            show_resource = True
+        elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(course_code):
+            show_resource = True
+        else:
+            show_resource = False
+    else:
+        show_resource = False
+
+    if not (show_resource or recurso.publico):
+        abort(403)
+
+    # Generate Google Calendar URL
+    if recurso.fecha and recurso.hora_inicio:
+        start_datetime = datetime.combine(recurso.fecha, recurso.hora_inicio)
+        if recurso.hora_fin:
+            end_datetime = datetime.combine(recurso.fecha, recurso.hora_fin)
+        else:
+            end_datetime = start_datetime + timedelta(hours=1)
+
+        start_str = start_datetime.strftime("%Y%m%dT%H%M%S")
+        end_str = end_datetime.strftime("%Y%m%dT%H%M%S")
+
+        # Build description
+        description_parts = [f"Curso: {curso.nombre}"]
+        if recurso.descripcion:
+            description_parts.append("")
+            description_parts.append(recurso.descripcion)
+        if recurso.url:
+            description_parts.append("")
+            description_parts.append(f"Enlace: {recurso.url}")
+
+        description = "\n".join(description_parts)
+
+        google_url = (
+            f"https://calendar.google.com/calendar/render?action=TEMPLATE"
+            f"&text={quote(recurso.nombre)}"
+            f"&dates={start_str}/{end_str}"
+            f"&details={quote(description)}"
+            f"&location={quote(recurso.notes or 'En línea')}"
+        )
+
+        return redirect(google_url)
+    else:
+        flash("No se puede crear el evento: faltan datos de fecha/hora", "error")
+        return redirect(url_for("course.ver_recurso", course_code=course_code, codigo=codigo))
+
+
+@course.route("/course/<course_code>/resource/meet/<codigo>/outlook-calendar")
+@login_required
+def outlook_calendar_link(course_code, codigo):
+    """Redirect to Outlook Calendar to add meet event."""
+    from now_lms.db.tools import verifica_estudiante_asignado_a_curso
+    from urllib.parse import quote
+
+    # Get the meet resource (reuse permission logic)
+    recurso = (
+        database.session.execute(
+            database.select(CursoRecurso).filter(
+                CursoRecurso.id == codigo, CursoRecurso.curso == course_code, CursoRecurso.tipo == "meet"
+            )
+        )
+        .scalars()
+        .first()
+    )
+
+    if not recurso:
+        abort(404)
+
+    curso = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
+    if not curso:
+        abort(404)
+
+    # Verify user has access to this course/resource
+    if current_user.is_authenticated:
+        if current_user.tipo == "admin" or current_user.tipo == "instructor":
+            show_resource = True
+        elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(course_code):
+            show_resource = True
+        else:
+            show_resource = False
+    else:
+        show_resource = False
+
+    if not (show_resource or recurso.publico):
+        abort(403)
+
+    # Generate Outlook Calendar URL
+    if recurso.fecha and recurso.hora_inicio:
+        start_datetime = datetime.combine(recurso.fecha, recurso.hora_inicio)
+        if recurso.hora_fin:
+            end_datetime = datetime.combine(recurso.fecha, recurso.hora_fin)
+        else:
+            end_datetime = start_datetime + timedelta(hours=1)
+
+        start_str = start_datetime.strftime("%Y%m%dT%H%M%S")
+        end_str = end_datetime.strftime("%Y%m%dT%H%M%S")
+
+        # Build description
+        description_parts = [f"Curso: {curso.nombre}"]
+        if recurso.descripcion:
+            description_parts.append("")
+            description_parts.append(recurso.descripcion)
+        if recurso.url:
+            description_parts.append("")
+            description_parts.append(f"Enlace: {recurso.url}")
+
+        description = "\n".join(description_parts)
+
+        outlook_url = (
+            f"https://outlook.live.com/calendar/0/deeplink/compose?"
+            f"subject={quote(recurso.nombre)}"
+            f"&startdt={start_str}"
+            f"&enddt={end_str}"
+            f"&body={quote(description)}"
+            f"&location={quote(recurso.notes or 'En línea')}"
+        )
+
+        return redirect(outlook_url)
+    else:
+        flash("No se puede crear el evento: faltan datos de fecha/hora", "error")
+        return redirect(url_for("course.ver_recurso", course_code=course_code, codigo=codigo))
+
+
+def _generate_meet_ics_content(recurso, curso):
+    """Generate ICS calendar content for a meet resource."""
+    lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//NOW LMS//Meet Calendar//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"]
+
+    # Combine date and time for start and end
+    if recurso.fecha and recurso.hora_inicio:
+        start_datetime = datetime.combine(recurso.fecha, recurso.hora_inicio)
+        if recurso.hora_fin:
+            end_datetime = datetime.combine(recurso.fecha, recurso.hora_fin)
+        else:
+            # Default to 1 hour duration if no end time
+            end_datetime = start_datetime + timedelta(hours=1)
+    else:
+        # Fallback if no date/time specified
+        return "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nEND:VCALENDAR\r\n"
+
+    # Convert to UTC for proper timezone handling (assuming local timezone is desired)
+    # For better compatibility, we'll use local time with proper floating time format
+    start_dt = start_datetime.strftime("%Y%m%dT%H%M%S")
+    end_dt = end_datetime.strftime("%Y%m%dT%H%M%S")
+    created_dt = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+    # Build description with proper newlines
+    description_parts = [f"Curso: {curso.nombre}"]
+    if recurso.descripcion:
+        description_parts.append("")  # Empty line
+        description_parts.append(recurso.descripcion)
+    if recurso.url:
+        description_parts.append("")  # Empty line
+        description_parts.append(f"Enlace: {recurso.url}")
+
+    # Join with newlines and then escape for ICS format
+    description = _escape_ics_text("\n".join(description_parts))
+
+    title = _escape_ics_text(recurso.nombre)
+    location = _escape_ics_text(recurso.notes or "En línea")
+
+    lines.extend(
+        [
+            "BEGIN:VEVENT",
+            f"UID:{recurso.id}@nowlms.local",
+            f"DTSTART:{start_dt}",
+            f"DTEND:{end_dt}",
+            f"DTSTAMP:{created_dt}",
+            f"SUMMARY:{title}",
+            f"DESCRIPTION:{description}",
+            f"LOCATION:{location}",
+            "STATUS:CONFIRMED",
+            "END:VEVENT",
+        ]
+    )
+
+    lines.append("END:VCALENDAR")
+    return "\r\n".join(lines)
+
+
+def _escape_ics_text(text):
+    """Escape text for ICS format."""
+    if not text:
+        return ""
+    return text.replace("\\", "\\\\").replace(",", "\\,").replace(";", "\\;").replace("\n", "\\n")
 
 
 @course.route("/course/<course_code>/section/<section_id>/new_evaluation")
