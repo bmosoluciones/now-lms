@@ -14,7 +14,7 @@ echo -------------------------------------------------
 echo Check python code with pylint
 echo -------------------------------------------------
 echo
-python -m pylint now_lms --score=yes --fail-under=9.0
+python -m pylint now_lms --score=yes --fail-under=9.5
 echo
 echo -------------------------------------------------
 echo Check python types
