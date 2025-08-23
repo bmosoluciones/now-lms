@@ -62,7 +62,7 @@ def perfil():
             database.select(Curso)
             .join(EstudianteCurso, Curso.codigo == EstudianteCurso.curso)
             .filter(EstudianteCurso.usuario == current_user.usuario)
-            .filter(EstudianteCurso.vigente == True)  # noqa: E712
+            .filter(EstudianteCurso.vigente.is_(True))  # noqa: E712
         ).fetchall()
         cursos_inscritos = [curso[0] for curso in cursos_inscritos_query]
 
@@ -80,7 +80,7 @@ def perfil():
             database.select(Curso)
             .join(DocenteCurso, Curso.codigo == DocenteCurso.curso)
             .filter(DocenteCurso.usuario == current_user.usuario)
-            .filter(DocenteCurso.vigente == True)  # noqa: E712
+            .filte(DocenteCurso.vigente.is_(True))
         ).fetchall()
         cursos_creados = [curso[0] for curso in cursos_creados_query]
 
