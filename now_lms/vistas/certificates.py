@@ -137,6 +137,7 @@ def certificate_new():
             usuario=current_user.id,
             html=form.html.data,
             css=form.css.data,
+            tipo=form.tipo.data,
         )
         database.session.add(certificado_obj)
         try:
@@ -164,6 +165,7 @@ def certificate_edit(ulid: str):
         publico=certificado_obj.publico,
         html=certificado_obj.html,
         css=certificado_obj.css,
+        tipo=certificado_obj.tipo,
     )
     if form.validate_on_submit() or request.method == "POST":
         certificado_obj.titulo = form.titulo.data
@@ -172,6 +174,7 @@ def certificate_edit(ulid: str):
         certificado_obj.habilitado = form.habilitado.data
         certificado_obj.html = form.html.data
         certificado_obj.css = form.css.data
+        certificado_obj.tipo = form.tipo.data
         try:
             database.session.add(certificado_obj)
             database.session.commit()

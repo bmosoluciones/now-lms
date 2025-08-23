@@ -29,7 +29,12 @@
                             {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripcion") }}
                         </div>
                     </div>
-
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="tipo" class="form-label">Tipo de Certificado</label>
+                            {{ form.tipo(class="form-control", id="tipo") }}
+                        </div>
+                    </div>
                     <div class="row g-3">
                         <label for="html" class="form-label">HTML</label>
                         {{ form.html(class="form-control", id="html", rows="15") | safe }}

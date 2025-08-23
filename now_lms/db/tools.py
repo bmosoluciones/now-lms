@@ -800,7 +800,16 @@ def generate_masterclass_choices():
 
 def generate_template_choices():
     """Generate list of template choices for forms."""
-    templates = database.session.execute(database.select(Certificado)).all()
+    templates = database.session.execute(database.select(Certificado).filter(Certificado.tipo == "course")).all()
+    choices = []
+    for template in templates:
+        choices.append((template[0].code, template[0].titulo))
+    return choices
+
+
+def generate_template_choices_program():
+    """Generate list of template choices for forms."""
+    templates = database.session.execute(database.select(Certificado).filter(Certificado.tipo == "program")).all()
     choices = []
     for template in templates:
         choices.append((template[0].code, template[0].titulo))

@@ -486,6 +486,7 @@ def crear_certificados():
         habilitado=False,
         publico=False,
     )
+    demo.tipo = "course"
     database.session.add(demo)
     database.session.flush()
 
@@ -498,6 +499,7 @@ def crear_certificados():
             html=certificado[2],
             css=certificado[3],
             code=certificado[4],
+            tipo=certificado[5],
             habilitado=True,
             publico=True,
         )

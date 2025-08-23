@@ -58,7 +58,7 @@ from now_lms.db.tools import (
     cuenta_cursos_por_programa,
     generate_category_choices,
     generate_tag_choices,
-    generate_template_choices,
+    generate_template_choices_program,
     get_program_category,
     get_program_tags,
     obtener_progreso_programa,
@@ -84,7 +84,7 @@ program = Blueprint("program", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 def nuevo_programa():
     """Nueva programa."""
     form = ProgramaForm()
-    form.plantilla_certificado.choices = generate_template_choices()
+    form.plantilla_certificado.choices = generate_template_choices_program()
     form.categoria.choices = generate_category_choices()
     form.etiquetas.choices = generate_tag_choices()
 
@@ -183,8 +183,9 @@ def edit_program(ulid: str):
         precio=programa.precio,
         estado=programa.estado,
         promocionado=programa.promocionado,
+        plantilla_certificado=programa.plantilla_certificado,
     )
-    form.plantilla_certificado.choices = generate_template_choices()
+    form.plantilla_certificado.choices = generate_template_choices_program()
     form.plantilla_certificado.data = programa.plantilla_certificado
     form.certificado.data = programa.certificado
 

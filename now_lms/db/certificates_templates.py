@@ -2399,6 +2399,7 @@ CERTIFICADOS = (
         CERTIFICADO_DEFAULT_HTML,
         CERTIFICADO_DEFAULT_CSS,
         "default",
+        "course",
     ),
     (
         CERTIFICADO_HORIZONTAL_TITULO,
@@ -2406,6 +2407,7 @@ CERTIFICADOS = (
         CERTIFICADO_HORIZONTAL_HTML,
         CERTIFICADO_HORIZONTAL_CSS,
         "horizontal",
+        "course",
     ),
     (
         CERTIFICADO_VERTICAL_TITULO,
@@ -2413,6 +2415,7 @@ CERTIFICADOS = (
         CERTIFICADO_VERTICAL_HTML,
         CERTIFICADO_VERTICAL_CSS,
         "vertical",
+        "course",
     ),
     (
         CERTIFICADO_ELEGANTE_TITULO,
@@ -2420,6 +2423,7 @@ CERTIFICADOS = (
         CERTIFICADO_ELEGANTE_HTML,
         CERTIFICADO_ELEGANTE_CSS,
         "elegante",
+        "course",
     ),
     (
         CERTIFICADO_MODERNO_TITULO,
@@ -2427,6 +2431,7 @@ CERTIFICADOS = (
         CERTIFICADO_MODERNO_HTML,
         CERTIFICADO_MODERNO_CSS,
         "moderno",
+        "course",
     ),
     (
         CERTIFICADO_CLASICO_TITULO,
@@ -2434,6 +2439,7 @@ CERTIFICADOS = (
         CERTIFICADO_CLASICO_HTML,
         CERTIFICADO_CLASICO_CSS,
         "clasico",
+        "course",
     ),
     (
         CERTIFICADO_CORPORATIVO_TITULO,
@@ -2441,6 +2447,7 @@ CERTIFICADOS = (
         CERTIFICADO_CORPORATIVO_HTML,
         CERTIFICADO_CORPORATIVO_CSS,
         "corporativo",
+        "course",
     ),
     (
         CERTIFICADO_FINANCE_TITULO,
@@ -2448,6 +2455,7 @@ CERTIFICADOS = (
         CERTIFICADO_FINANCE_HTML,
         CERTIFICADO_FINANCE_CSS,
         "finance",
+        "course",
     ),
     (
         CERTIFICADO_PROGRAMA_TITULO,
@@ -2455,5 +2463,6 @@ CERTIFICADOS = (
         CERTIFICADO_PROGRAMA_HTML,
         CERTIFICADO_PROGRAMA_CSS,
         "programa",
+        "program",
     ),
 )

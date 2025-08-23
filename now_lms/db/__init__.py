@@ -654,6 +654,7 @@ class Certificado(database.Model, BaseTabla):
     descripcion = database.Column(database.String(500))
     html = database.Column(database.Text())
     css = database.Column(database.Text())
+    tipo = database.Column(database.String(7))  # program or course
     habilitado = database.Column(database.Boolean())
     publico = database.Column(database.Boolean())
     usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))

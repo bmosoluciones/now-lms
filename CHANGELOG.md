@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ## Changed
 - Refactor meet and link resource pages
+- Manage certificate templates by tipe (program or course)
 
 ### Fixed:
  - Fixed course admin navigation in small screens
