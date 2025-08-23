@@ -111,9 +111,20 @@ def test_curso_time_based_puede_tener_foro(session_basic_db_setup):
         assert valid
 
 
-def test_foro_mensaje_model_exists(minimal_db_setup):
+def test_foro_mensaje_model_exists(isolated_db_session):
     """Verifica que el modelo ForoMensaje funciona correctamente."""
-    usuario = create_test_user()
+    # Create unique test user for this test
+    usuario = Usuario(
+        usuario="test_user_msg_model",
+        acceso=b"test_password",
+        nombre="Test",
+        apellido="User",
+        correo_electronico="test_msg_model@example.com",
+        tipo="student",
+        activo=True,
+    )
+    isolated_db_session.add(usuario)
+    isolated_db_session.commit()
 
     # Crear curso
     curso = Curso(
@@ -125,8 +136,8 @@ def test_foro_mensaje_model_exists(minimal_db_setup):
         modalidad="time_based",
         foro_habilitado=True,
     )
-    database.session.add(curso)
-    database.session.commit()
+    isolated_db_session.add(curso)
+    isolated_db_session.commit()
 
     # Crear mensaje del foro
     mensaje = ForoMensaje(
@@ -135,20 +146,31 @@ def test_foro_mensaje_model_exists(minimal_db_setup):
         contenido="Este es un mensaje de prueba en markdown",
         estado="abierto",
     )
-    database.session.add(mensaje)
-    database.session.commit()
+    isolated_db_session.add(mensaje)
+    isolated_db_session.commit()
 
     # Verificar que el mensaje se guardó correctamente
-    mensaje_db = database.session.query(ForoMensaje).filter_by(curso_id=curso.codigo).first()
+    mensaje_db = isolated_db_session.query(ForoMensaje).filter_by(curso_id=curso.codigo).first()
     assert mensaje_db is not None
     assert mensaje_db.contenido == "Este es un mensaje de prueba en markdown"
     assert mensaje_db.estado == "abierto"
     assert mensaje_db.usuario_id == usuario.usuario
 
 
-def test_foro_mensaje_reply_functionality(minimal_db_setup):
+def test_foro_mensaje_reply_functionality(isolated_db_session):
     """Verifica la funcionalidad de respuestas en el foro."""
-    usuario = create_test_user()
+    # Create unique test user for this test
+    usuario = Usuario(
+        usuario="test_user_reply_func",
+        acceso=b"test_password",
+        nombre="Test",
+        apellido="User",
+        correo_electronico="test_reply@example.com",
+        tipo="student",
+        activo=True,
+    )
+    isolated_db_session.add(usuario)
+    isolated_db_session.commit()
 
     # Crear curso
     curso = Curso(
@@ -160,8 +182,8 @@ def test_foro_mensaje_reply_functionality(minimal_db_setup):
         modalidad="time_based",
         foro_habilitado=True,
     )
-    database.session.add(curso)
-    database.session.commit()
+    isolated_db_session.add(curso)
+    isolated_db_session.commit()
 
     # Crear mensaje principal
     mensaje_principal = ForoMensaje(
@@ -170,8 +192,8 @@ def test_foro_mensaje_reply_functionality(minimal_db_setup):
         contenido="Mensaje principal del hilo",
         estado="abierto",
     )
-    database.session.add(mensaje_principal)
-    database.session.commit()
+    isolated_db_session.add(mensaje_principal)
+    isolated_db_session.commit()
 
     # Crear respuesta
     respuesta = ForoMensaje(
@@ -181,8 +203,8 @@ def test_foro_mensaje_reply_functionality(minimal_db_setup):
         contenido="Esta es una respuesta al mensaje principal",
         estado="abierto",
     )
-    database.session.add(respuesta)
-    database.session.commit()
+    isolated_db_session.add(respuesta)
+    isolated_db_session.commit()
 
     # Verificar relaciones
     assert respuesta.parent_id == mensaje_principal.id

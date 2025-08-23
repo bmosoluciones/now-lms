@@ -33,37 +33,42 @@ from now_lms.db import (
 class TestMasterClassBasicFunctionality:
     """Test basic MasterClass model and creation."""
 
-    def test_masterclass_model_exists(self, minimal_db_setup):
+    def test_masterclass_model_exists(self, app):
         """Test that MasterClass model can be imported and instantiated."""
-        masterclass = MasterClass(
-            title="Test MasterClass",
-            slug="test-masterclass",
-            description_public="A test masterclass",
-            date=date(2025, 12, 31),
-            start_time=time(10, 0),
-            end_time=time(12, 0),
-            platform_name="Zoom",
-            platform_url="https://zoom.us/test",
-            is_paid=False,
-            is_certificate=False,
-        )
-        assert masterclass is not None
-        assert masterclass.title == "Test MasterClass"
-        assert masterclass.slug == "test-masterclass"
+        with app.app_context():
+            masterclass = MasterClass(
+                title="Test MasterClass",
+                slug="test-masterclass",
+                description_public="A test masterclass",
+                date=date(2025, 12, 31),
+                start_time=time(10, 0),
+                end_time=time(12, 0),
+                platform_name="Zoom",
+                platform_url="https://zoom.us/test",
+                is_paid=False,
+                is_certificate=False,
+            )
+            assert masterclass is not None
+            assert masterclass.title == "Test MasterClass"
+            assert masterclass.slug == "test-masterclass"
 
-    def test_masterclass_creation_with_database(self, minimal_db_setup):
+    def test_masterclass_creation_with_database(self, isolated_db_session):
         """Test MasterClass creation and persistence in database."""
+        import uuid
+
+        unique_id = str(uuid.uuid4())[:8]  # Unique identifier
+
         # Create instructor
         instructor = Usuario(
-            usuario="instructor_user",
+            usuario=f"instructor_user_{unique_id}",
             acceso=b"password123",
             nombre="Test",
             apellido="Instructor",
-            correo_electronico="instructor@test.com",
+            correo_electronico=f"instructor_{unique_id}@test.com",
             tipo="teacher",
         )
-        database.session.add(instructor)
-        database.session.commit()
+        isolated_db_session.add(instructor)
+        isolated_db_session.flush()  # Get the ID
 
         masterclass = MasterClass(
             title="Database Test MasterClass",
@@ -80,11 +85,11 @@ class TestMasterClassBasicFunctionality:
             instructor_id=instructor.usuario,
         )
 
-        database.session.add(masterclass)
-        database.session.commit()
+        isolated_db_session.add(masterclass)
+        isolated_db_session.flush()  # Get the ID
 
         # Retrieve and verify
-        retrieved = database.session.execute(
+        retrieved = isolated_db_session.execute(
             database.select(MasterClass).filter_by(slug="database-test-masterclass")
         ).scalar_one()
 
@@ -93,29 +98,33 @@ class TestMasterClassBasicFunctionality:
         assert retrieved.is_paid is True
         assert retrieved.is_certificate is True
 
-    def test_masterclass_enrollment(self, minimal_db_setup):
+    def test_masterclass_enrollment(self, isolated_db_session):
         """Test user enrollment in MasterClass."""
+        import uuid
+
+        unique_id = str(uuid.uuid4())[:8]  # Unique identifier
+
         # Create instructor
         instructor = Usuario(
-            usuario="mc_instructor",
+            usuario=f"mc_instructor_{unique_id}",
             acceso=b"password123",
             nombre="MasterClass",
             apellido="Instructor",
-            correo_electronico="mcteacher@test.com",
+            correo_electronico=f"mcteacher_{unique_id}@test.com",
             tipo="teacher",
         )
-        database.session.add(instructor)
+        isolated_db_session.add(instructor)
 
         # Create user
         user = Usuario(
-            usuario="mc_student",
+            usuario=f"mc_student_{unique_id}",
             acceso=b"password123",
             nombre="MasterClass",
             apellido="Student",
-            correo_electronico="mcstudent@test.com",
+            correo_electronico=f"mcstudent_{unique_id}@test.com",
             tipo="student",
         )
-        database.session.add(user)
+        isolated_db_session.add(user)
 
         # Create MasterClass
         masterclass = MasterClass(
@@ -130,8 +139,8 @@ class TestMasterClassBasicFunctionality:
             is_paid=False,
             instructor_id=instructor.usuario,
         )
-        database.session.add(masterclass)
-        database.session.commit()
+        isolated_db_session.add(masterclass)
+        isolated_db_session.flush()  # Get the ID
 
         # Enroll user
         enrollment = MasterClassEnrollment(
@@ -139,28 +148,32 @@ class TestMasterClassBasicFunctionality:
             user_id=user.usuario,
             is_confirmed=True,
         )
-        database.session.add(enrollment)
-        database.session.commit()
+        isolated_db_session.add(enrollment)
+        isolated_db_session.flush()  # Get the ID
 
         # Verify enrollment
-        retrieved = database.session.execute(
+        retrieved = isolated_db_session.execute(
             database.select(MasterClassEnrollment).filter_by(master_class_id=masterclass.id, user_id=user.usuario)
         ).scalar_one()
 
         assert retrieved.is_confirmed is True
 
-    def test_masterclass_with_certification(self, minimal_db_setup):
+    def test_masterclass_with_certification(self, isolated_db_session):
         """Test MasterClass with certification configuration."""
+        import uuid
+
+        unique_id = str(uuid.uuid4())[:8]  # Unique identifier
+
         # Create instructor
         instructor = Usuario(
-            usuario="cert_instructor",
+            usuario=f"cert_instructor_{unique_id}",
             acceso=b"password123",
             nombre="Cert",
             apellido="Instructor",
-            correo_electronico="certteacher@test.com",
+            correo_electronico=f"certteacher_{unique_id}@test.com",
             tipo="teacher",
         )
-        database.session.add(instructor)
+        isolated_db_session.add(instructor)
 
         # Create certificate template
         template = Certificado(
@@ -168,7 +181,7 @@ class TestMasterClassBasicFunctionality:
             titulo="MasterClass Certificate",
             habilitado=True,
         )
-        database.session.add(template)
+        isolated_db_session.add(template)
 
         # Create MasterClass with certification
         masterclass = MasterClass(
@@ -184,11 +197,11 @@ class TestMasterClassBasicFunctionality:
             diploma_template_id="MC_CERT",
             instructor_id=instructor.usuario,
         )
-        database.session.add(masterclass)
-        database.session.commit()
+        isolated_db_session.add(masterclass)
+        isolated_db_session.flush()  # Get the ID
 
         # Verify certification configuration
-        retrieved = database.session.execute(database.select(MasterClass).filter_by(slug="cert-masterclass")).scalar_one()
+        retrieved = isolated_db_session.execute(database.select(MasterClass).filter_by(slug="cert-masterclass")).scalar_one()
 
         assert retrieved.is_certificate is True
         assert retrieved.diploma_template_id == "MC_CERT"

@@ -128,21 +128,22 @@ class TestCertificatePDFGeneration:
     @patch("weasyprint.CSS")
     @patch("flask_weasyprint.HTML")
     @patch("flask_weasyprint.render_pdf")
-    def test_certificate_serve_pdf_course(self, mock_render_pdf, mock_html, mock_css, full_db_setup, client):
+    def test_certificate_serve_pdf_course(self, mock_render_pdf, mock_html, mock_css, isolated_db_session):
         """Test PDF generation for course certificate."""
-        app = full_db_setup
+        from flask import current_app
+
+        client = current_app.test_client()
 
         # Create test certification with existing user and course
-        with app.app_context():
-            # Create certification using existing course "now" and certificate "default"
-            certification = Certificacion(
-                usuario="student1",  # Use existing student
-                curso="now",  # Use existing course
-                certificado="default",  # Use existing certificate template
-            )
-            database.session.add(certification)
-            database.session.commit()
-            cert_id = certification.id
+        # Create certification using existing course "now" and certificate "default"
+        certification = Certificacion(
+            usuario="student1",  # Use existing student
+            curso="now",  # Use existing course
+            certificado="default",  # Use existing certificate template
+        )
+        isolated_db_session.add(certification)
+        isolated_db_session.flush()  # Get the ID
+        cert_id = certification.id
 
         # Mock PDF generation
         mock_render_pdf.return_value = b"mock_pdf_content"
@@ -161,10 +162,13 @@ class TestCertificatePDFGeneration:
     @patch("weasyprint.CSS")
     @patch("flask_weasyprint.HTML")
     @patch("flask_weasyprint.render_pdf")
-    def test_certificate_serve_pdf_masterclass(self, mock_render_pdf, mock_html, mock_css, full_db_setup, client):
+    def test_certificate_serve_pdf_masterclass(self, mock_render_pdf, mock_html, mock_css, isolated_db_session):
         """Test PDF generation for masterclass certificate."""
-        app = full_db_setup
-        cert_id, masterclass_id = self.setup_test_certification_with_masterclass(app)
+        from flask import current_app
+
+        client = current_app.test_client()
+
+        cert_id, masterclass_id = self.setup_test_certification_with_masterclass_isolated(isolated_db_session)
 
         # Mock PDF generation
         mock_render_pdf.return_value = b"mock_masterclass_pdf"
@@ -178,6 +182,51 @@ class TestCertificatePDFGeneration:
 
         # Verify PDF generation was called
         mock_render_pdf.assert_called_once()
+
+    def setup_test_certification_with_masterclass_isolated(self, db_session):
+        """Helper to create certification with masterclass for PDF tests using isolated session."""
+        from datetime import date, time
+
+        # Create user
+        user = Usuario(
+            usuario="pdf_test_user",
+            acceso=proteger_passwd("testpass"),
+            nombre="PDF",
+            apellido="Test",
+            correo_electronico="pdf@test.com",
+            tipo="student",
+            activo=True,
+            correo_electronico_verificado=True,
+        )
+        db_session.add(user)
+
+        # Create masterclass
+        masterclass = MasterClass(
+            slug="MC_PDF_001",
+            title="PDF Test MasterClass",
+            description_public="Test MasterClass for PDF generation",
+            date=date(2025, 12, 31),
+            start_time=time(10, 0),
+            end_time=time(12, 0),
+            platform_name="Test Platform",
+            platform_url="https://test.com",
+            is_certificate=True,
+            instructor_id="instructor",  # Use existing instructor
+        )
+        db_session.add(masterclass)
+        db_session.flush()  # Get the ID
+
+        # Create certification for masterclass
+        certification = Certificacion(
+            usuario=user.usuario,
+            curso="now",  # Use existing course
+            master_class_id=masterclass.id,
+            certificado="default",  # Use existing certificate template
+        )
+        db_session.add(certification)
+        db_session.flush()  # Get the ID
+
+        return certification.id, masterclass.id
 
 
 class TestCertificateIssuanceWorkflow:

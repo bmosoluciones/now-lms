@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ### Notes:
  - Updated docs
+ - Updated tests
 
 ## [release: v0.0.1b11.dev20250822] - 2025-08-22
 

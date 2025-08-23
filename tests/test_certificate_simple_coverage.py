@@ -62,20 +62,23 @@ class TestCertificatePDFGenerationSimple:
     @patch("weasyprint.CSS")
     @patch("flask_weasyprint.HTML")
     @patch("flask_weasyprint.render_pdf")
-    def test_certificate_serve_pdf_existing_data(self, mock_render_pdf, mock_html, mock_css, full_db_setup, client):
+    def test_certificate_serve_pdf_existing_data(self, mock_render_pdf, mock_html, mock_css, isolated_db_session):
         """Test PDF generation using existing data."""
-        app = full_db_setup
+        # isolated_db_session works within session_full_db_setup context
+        # Get the Flask app from the current app context
+        from flask import current_app
 
-        with app.app_context():
-            # Use existing student and create minimal certification
-            certification = Certificacion(
-                usuario="student1",  # Use existing student
-                curso="now",  # Use existing course
-                certificado="default",  # Use existing certificate template
-            )
-            database.session.add(certification)
-            database.session.commit()
-            cert_id = certification.id
+        client = current_app.test_client()
+
+        # Use existing student and create minimal certification
+        certification = Certificacion(
+            usuario="student1",  # Use existing student
+            curso="now",  # Use existing course
+            certificado="default",  # Use existing certificate template
+        )
+        isolated_db_session.add(certification)
+        isolated_db_session.flush()  # Get ID without committing
+        cert_id = certification.id
 
         # Mock PDF generation
         mock_render_pdf.return_value = b"mock_pdf_content"
@@ -95,9 +98,11 @@ class TestCertificateIssuanceSimple:
     """Test certificate issuance with mocked evaluations."""
 
     @patch("now_lms.vistas.evaluation_helpers.can_user_receive_certificate")
-    def test_certificacion_crear_with_mocked_evaluation(self, mock_can_receive, full_db_setup, client):
+    def test_certificacion_crear_with_mocked_evaluation(self, mock_can_receive, isolated_db_session):
         """Test certificate issuance with mocked evaluation check."""
-        app = full_db_setup
+        from flask import current_app
+
+        client = current_app.test_client()
 
         # Mock successful evaluation check
         mock_can_receive.return_value = (True, "")
@@ -118,14 +123,13 @@ class TestCertificateIssuanceSimple:
         assert response.status_code == 200
 
         # Verify certification was created
-        with app.app_context():
-            cert = database.session.execute(database.select(Certificacion).filter_by(usuario="student1", curso="now")).first()
-            assert cert is not None
+        cert = isolated_db_session.execute(database.select(Certificacion).filter_by(usuario="student1", curso="now")).first()
+        assert cert is not None
 
     @patch("now_lms.vistas.evaluation_helpers.can_user_receive_certificate")
-    def test_certificacion_crear_failed_evaluation(self, mock_can_receive, full_db_setup, client):
+    def test_certificacion_crear_failed_evaluation(self, mock_can_receive, session_full_db_setup):
         """Test certificate issuance failure due to evaluation."""
-        app = full_db_setup
+        client = session_full_db_setup.test_client()
 
         # Mock failed evaluation check
         mock_can_receive.return_value = (False, "No aprobó las evaluaciones")
@@ -146,9 +150,9 @@ class TestCertificateIssuanceSimple:
         assert response.status_code == 200
         # Should redirect with error message
 
-    def test_certificacion_generar_get_form(self, full_db_setup, client):
+    def test_certificacion_generar_get_form(self, session_full_db_setup):
         """Test certificate release form GET."""
-        app = full_db_setup
+        client = session_full_db_setup.test_client()
 
         # Login as instructor
         login_response = client.post(
@@ -164,9 +168,11 @@ class TestCertificateIssuanceSimple:
         assert b"certificado" in response.data.lower() or b"certificate" in response.data.lower()
 
     @patch("now_lms.vistas.evaluation_helpers.can_user_receive_certificate")
-    def test_certificacion_generar_post_course(self, mock_can_receive, full_db_setup, client):
+    def test_certificacion_generar_post_course(self, mock_can_receive, isolated_db_session):
         """Test certificate release form POST for course."""
-        app = full_db_setup
+        from flask import current_app
+
+        client = current_app.test_client()
 
         # Mock successful evaluation check
         mock_can_receive.return_value = (True, "")
@@ -193,9 +199,9 @@ class TestCertificateIssuanceSimple:
         )
         assert response.status_code == 200
 
-    def test_certificacion_generar_validation_errors(self, full_db_setup, client):
+    def test_certificacion_generar_validation_errors(self, session_full_db_setup):
         """Test certificate release form validation errors."""
-        app = full_db_setup
+        client = session_full_db_setup.test_client()
 
         # Login as instructor
         login_response = client.post(
@@ -264,10 +270,13 @@ class TestProgramCertificatesSimple:
             return program_cert.id, program.id
 
     @patch("qrcode.make")
-    def test_certificacion_programa_qr(self, mock_qr_make, full_db_setup, client):
+    def test_certificacion_programa_qr(self, mock_qr_make, isolated_db_session):
         """Test QR code generation for program certificates."""
-        app = full_db_setup
-        cert_id, program_id = self.setup_minimal_program_certification(app)
+        from flask import current_app
+
+        client = current_app.test_client()
+
+        cert_id, program_id = self.setup_minimal_program_certification_isolated(isolated_db_session)
 
         # Mock QR code generation
         mock_qr = MagicMock()
@@ -285,10 +294,33 @@ class TestProgramCertificatesSimple:
         assert b"mock_program_qr_data" in response.data
         assert "QR_programa.png" in response.headers["Content-Disposition"]
 
+    def setup_minimal_program_certification_isolated(self, db_session):
+        """Helper to create minimal program certification with isolated session."""
+        # Create minimal program
+        program = Programa(
+            nombre="Test Program",
+            codigo="PROG001",
+            descripcion="Test program for certificates",
+            publico=True,
+        )
+        db_session.add(program)
+        db_session.flush()  # Get the ID
+
+        # Create program certification using the actual program ID
+        program_cert = CertificacionPrograma(
+            usuario="student1",  # Use existing student
+            programa=program.id,  # Use the actual program ID
+            certificado="default",  # Use existing certificate template
+        )
+        db_session.add(program_cert)
+        db_session.flush()  # Get the ID without committing
+
+        return program_cert.id, program.id
+
     @pytest.mark.skipif(sys.platform == "win32", reason="This test does not run on Windows.")
-    def test_program_certificate_404_handling(self, full_db_setup, client):
+    def test_program_certificate_404_handling(self, session_full_db_setup):
         """Test 404 handling for non-existent program certificates."""
-        app = full_db_setup
+        client = session_full_db_setup.test_client()
 
         # Test non-existent program certificate view
         response = client.get("/certificate/program/view/nonexistent_id/")
@@ -302,9 +334,9 @@ class TestProgramCertificatesSimple:
 class TestCertificateErrorHandlingAdvanced:
     """Test advanced error handling scenarios."""
 
-    def test_certificate_creation_error_handling(self, full_db_setup, client):
+    def test_certificate_creation_error_handling(self, session_full_db_setup):
         """Test certificate creation handles database errors."""
-        app = full_db_setup
+        client = session_full_db_setup.test_client()
 
         # Login as admin
         login_response = client.post(
@@ -332,24 +364,25 @@ class TestCertificateErrorHandlingAdvanced:
             )
             assert response.status_code == 200
 
-    def test_certificate_edit_error_handling(self, full_db_setup, client):
+    def test_certificate_edit_error_handling(self, isolated_db_session):
         """Test certificate editing error handling."""
-        app = full_db_setup
+        from flask import current_app
+
+        client = current_app.test_client()
 
         # Create test certificate
-        with app.app_context():
-            cert = Certificado(
-                code="ERROR_TEST_CERT",
-                titulo="Error Test Certificate",
-                descripcion="For testing error handling",
-                html="<h1>Test</h1>",
-                css="h1 { color: red; }",
-                habilitado=True,
-                publico=True,
-            )
-            database.session.add(cert)
-            database.session.commit()
-            cert_id = cert.id
+        cert = Certificado(
+            code="ERROR_TEST_CERT",
+            titulo="Error Test Certificate",
+            descripcion="For testing error handling",
+            html="<h1>Test</h1>",
+            css="h1 { color: red; }",
+            habilitado=True,
+            publico=True,
+        )
+        isolated_db_session.add(cert)
+        isolated_db_session.flush()  # Get the ID
+        cert_id = cert.id
 
         # Login as admin
         login_response = client.post(
@@ -379,9 +412,9 @@ class TestCertificateErrorHandlingAdvanced:
             )
             assert response.status_code == 302  # Should redirect
 
-    def test_certificacion_generar_database_error(self, full_db_setup, client):
+    def test_certificacion_generar_database_error(self, session_full_db_setup):
         """Test certificate release form database error handling."""
-        app = full_db_setup
+        client = session_full_db_setup.test_client()
 
         # Login as instructor
         login_response = client.post(
@@ -414,20 +447,21 @@ class TestCertificateErrorHandlingAdvanced:
 class TestCertificateTemplateRendering:
     """Test certificate template rendering contexts."""
 
-    def test_certificacion_rendering_with_existing_data(self, full_db_setup, client):
+    def test_certificacion_rendering_with_existing_data(self, isolated_db_session):
         """Test certificate rendering with existing certification."""
-        app = full_db_setup
+        from flask import current_app
+
+        client = current_app.test_client()
 
         # Create test certification
-        with app.app_context():
-            certification = Certificacion(
-                usuario="student1",  # Use existing student
-                curso="now",  # Use existing course
-                certificado="default",
-            )
-            database.session.add(certification)
-            database.session.commit()
-            cert_id = certification.id
+        certification = Certificacion(
+            usuario="student1",  # Use existing student
+            curso="now",  # Use existing course
+            certificado="default",
+        )
+        isolated_db_session.add(certification)
+        isolated_db_session.flush()  # Get the ID
+        cert_id = certification.id
 
         # Test certificate rendering
         response = client.get(f"/certificate/certificate/{cert_id}/")
@@ -441,21 +475,22 @@ class TestCertificateTemplateRendering:
 class TestCertificateContextHandling:
     """Test certificate context handling for course vs masterclass."""
 
-    def test_certificacion_course_context(self, full_db_setup, client):
+    def test_certificacion_course_context(self, isolated_db_session):
         """Test certificate with course context."""
-        app = full_db_setup
+        from flask import current_app
 
-        with app.app_context():
-            # Create certification with course (no master_class_id)
-            certification = Certificacion(
-                usuario="student1",
-                curso="now",
-                master_class_id=None,  # Explicitly no masterclass
-                certificado="default",
-            )
-            database.session.add(certification)
-            database.session.commit()
-            cert_id = certification.id
+        client = current_app.test_client()
+
+        # Create certification with course (no master_class_id)
+        certification = Certificacion(
+            usuario="student1",
+            curso="now",
+            master_class_id=None,  # Explicitly no masterclass
+            certificado="default",
+        )
+        isolated_db_session.add(certification)
+        isolated_db_session.flush()  # Get the ID
+        cert_id = certification.id
 
         # Test rendering - should use course context
         response = client.get(f"/certificate/certificate/{cert_id}/")

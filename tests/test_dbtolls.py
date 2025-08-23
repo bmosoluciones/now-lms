@@ -1,5 +1,3 @@
-
-
 def test_database_info_tools(session_full_db_setup):
     with session_full_db_setup.app_context():
         from now_lms.db.tools import database_is_populated

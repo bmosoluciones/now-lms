@@ -15,7 +15,6 @@
 """Test session-scoped pytest fixtures to ensure they work correctly."""
 
 
-
 class TestSessionBasicFixture:
     """Test session_basic_db_setup fixture."""
 
