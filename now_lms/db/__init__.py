@@ -679,7 +679,7 @@ class Certificacion(database.Model, BaseTabla):
         """Get the course or master class information for this certificate."""
         if self.curso:
             return database.session.execute(database.select(Curso).filter_by(codigo=self.curso)).first()[0]
-        elif self.master_class_id:
+        if self.master_class_id:
             return database.session.execute(database.select(MasterClass).filter_by(id=self.master_class_id)).first()[0]
         return None
 
@@ -687,7 +687,7 @@ class Certificacion(database.Model, BaseTabla):
         """Return 'course' or 'masterclass' depending on the content type."""
         if self.curso:
             return "course"
-        elif self.master_class_id:
+        if self.master_class_id:
             return "masterclass"
         return None
 
@@ -776,9 +776,8 @@ class ForoMensaje(database.Model, BaseTabla):
         if self.parent_id:
             # Es una respuesta, verificar el mensaje padre
             return self.parent.estado == "abierto"
-        else:
-            # Es un hilo principal
-            return self.estado == "abierto"
+        # Es un hilo principal
+        return self.estado == "abierto"
 
     def is_course_forum_active(self):
         """Retorna True si el foro del curso está activo."""

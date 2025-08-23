@@ -166,8 +166,7 @@ def delete_program(ulid: str):
         database.session.commit()
         cache.delete("view/" + url_for(PROGRAMS_ROUTE))
         return redirect(url_for(PROGRAMS_ROUTE))
-    else:
-        return abort(403)
+    return abort(403)
 
 
 @program.route("/program/<ulid>/edit", methods=["GET", "POST"])
@@ -269,8 +268,7 @@ def programa_cursos(codigo):
     if current_user.tipo == "admin":
         return render_template("learning/programas/lista_cursos.html")
 
-    else:
-        return abort(403)
+    return abort(403)
 
 
 @program.route("/program/<codigo>")

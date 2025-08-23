@@ -131,10 +131,8 @@ def descargar_recurso(resource_code):
     if current_user.is_authenticated:
         if current_user.tipo == "admin":
             return send_from_directory(directorio, recurso.file_name)
-        else:
-            return abort(403)
-    else:
-        return redirect("/login")
+        return abort(403)
+    return redirect("/login")
 
 
 @resource_d.route("/resource/<ulid>/delete")
@@ -146,8 +144,7 @@ def delete_resource(ulid: str):
         database.session.execute(delete(Recurso).where(Recurso.id == ulid))
         database.session.commit()
         return redirect("/resources_list")
-    else:
-        return abort(403)
+    return abort(403)
 
 
 @resource_d.route("/resource/<ulid>/update", methods=["GET", "POST"])

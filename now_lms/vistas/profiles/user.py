@@ -103,8 +103,7 @@ def usuario(id_usuario):
     # activar desactivar el perfil o cambiar el perfil del usuario.
     if current_user.usuario == id_usuario or current_user.tipo != "student" or perfil_usuario.visible is True:
         return render_template("inicio/perfil.html", perfil=perfil_usuario, genero=GENEROS)
-    else:
-        return render_template("inicio/private.html")
+    return render_template("inicio/private.html")
 
 
 @user_profile.route("/perfil/edit/<ulid>", methods=["GET", "POST"])
@@ -159,8 +158,7 @@ def edit_perfil(ulid: str):
 
         return redirect(PROFILE_ROUTE)
 
-    else:  # pragma: no cover
-        return render_template("inicio/perfil_editar.html", form=form, usuario=usuario_)
+    return render_template("inicio/perfil_editar.html", form=form, usuario=usuario_)  # pragma: no cover
 
 
 @user_profile.route("/perfil/<ulid>/delete_logo")

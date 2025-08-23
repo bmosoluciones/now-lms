@@ -463,8 +463,7 @@ def tomar_curso(course_code):
             user_certificate=user_certificate,
             markdown2html=markdown2html,
         )
-    else:
-        return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+    return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
 
 @course.route("/course/<course_code>/moderate")
@@ -492,8 +491,7 @@ def moderar_curso(course_code):
             tipo=TIPOS_RECURSOS,
             markdown2html=markdown2html,
         )
-    else:
-        return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+    return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
 
 @course.route("/course/<course_code>/admin")
@@ -1029,9 +1027,8 @@ def pagina_recurso(curso_id, resource_type, codigo):
             evaluation_attempts=evaluation_attempts,
             markdown2html=markdown2html,
         )
-    else:
-        flash(NO_AUTORIZADO_MSG, "warning")
-        return abort(403)
+    flash(NO_AUTORIZADO_MSG, "warning")
+    return abort(403)
 
 
 def _emitir_certificado(curso_id, usuario, plantilla):
@@ -1138,15 +1135,12 @@ def marcar_recurso_completado(curso_id, resource_type, codigo):
                 return redirect(
                     url_for("course.pagina_recurso", curso_id=curso_id, resource_type=resource_type, codigo=codigo)
                 )
-            else:
-                flash(NO_AUTORIZADO_MSG, "warning")
-                return abort(403)
-        else:
             flash(NO_AUTORIZADO_MSG, "warning")
             return abort(403)
-    else:
         flash(NO_AUTORIZADO_MSG, "warning")
         return abort(403)
+    flash(NO_AUTORIZADO_MSG, "warning")
+    return abort(403)
 
 
 @course.route("/course/<curso_id>/alternative/<codigo>/<order>")
@@ -1193,9 +1187,8 @@ def pagina_recurso_alternativo(curso_id, codigo, order):
             seccion=SECCION,
             indice=INDICE,
         )
-    else:
-        flash(NO_AUTORIZADO_MSG, "warning")
-        return abort(403)
+    flash(NO_AUTORIZADO_MSG, "warning")
+    return abort(403)
 
 
 @course.route("/course/<course_code>/<seccion>/new_resource")
@@ -2054,10 +2047,8 @@ def recurso_file(course_code, recurso_code):
     if current_user.is_authenticated:
         if doc.publico or current_user.tipo == "admin":
             return send_from_directory(config.destination, doc.doc)
-        else:
-            return abort(403)
-    else:
-        return redirect(INICIO_SESION)
+        return abort(403)
+    return redirect(INICIO_SESION)
 
 
 @course.route("/course/<course_code>/pdf_viewer/<recurso_code>")
@@ -2077,10 +2068,8 @@ def pdf_viewer(course_code, recurso_code):
     if current_user.is_authenticated:
         if recurso.publico or current_user.tipo == "admin":
             return render_template("learning/resources/pdf_viewer.html", recurso=recurso)
-        else:
-            return abort(403)
-    else:
-        return redirect(INICIO_SESION)
+        return abort(403)
+    return redirect(INICIO_SESION)
 
 
 @course.route("/course/<course_code>/external_code/<recurso_code>")
@@ -2098,10 +2087,8 @@ def external_code(course_code, recurso_code):
         if recurso.publico or current_user.tipo == "admin":
             return recurso.external_code
 
-        else:
-            return abort(403)
-    else:
-        return redirect(INICIO_SESION)
+        return abort(403)
+    return redirect(INICIO_SESION)
 
 
 @course.route("/course/slide_show/<recurso_code>")

@@ -191,8 +191,7 @@ def insert_style_in_html(template):
     if css:
         css = "<style>" + css + "</style>"
         return css + html
-    else:
-        return html
+    return html
 
 
 @certificate.route("/certificate/inspect/<ulid>/")
@@ -402,7 +401,7 @@ def certificacion_generar():
         if content_type == "course" and not form.curso.data:
             flash("Por favor selecciona un curso.", "warning")
             return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
-        elif content_type == "masterclass" and not form.master_class.data:
+        if content_type == "masterclass" and not form.master_class.data:
             flash("Por favor selecciona una clase magistral.", "warning")
             return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
 
