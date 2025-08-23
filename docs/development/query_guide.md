@@ -424,7 +424,7 @@ Incorrect way
 Correct way
 
 ```
-.filte(DocenteCurso.vigente.is_(True))
+.filter(DocenteCurso.vigente.is_(True))
 ```
 
 

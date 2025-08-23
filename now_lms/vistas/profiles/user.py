@@ -80,7 +80,7 @@ def perfil():
             database.select(Curso)
             .join(DocenteCurso, Curso.codigo == DocenteCurso.curso)
             .filter(DocenteCurso.usuario == current_user.usuario)
-            .filte(DocenteCurso.vigente.is_(True))
+            .filter(DocenteCurso.vigente.is_(True))
         ).fetchall()
         cursos_creados = [curso[0] for curso in cursos_creados_query]
 
