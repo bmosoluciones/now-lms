@@ -21,7 +21,6 @@ from now_lms.db import (
     Certificado,
     Curso,
     Usuario,
-    database,
 )
 
 

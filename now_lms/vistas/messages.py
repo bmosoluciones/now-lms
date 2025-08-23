@@ -35,20 +35,8 @@ from flask_login import current_user, login_required
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import (
-    Curso,
-    DocenteCurso,
-    EstudianteCurso,
-    Mensaje,
-    Message,
-    MessageThread,
-    ModeradorCurso,
-    Usuario,
-    database,
-    select,
-)
-from now_lms.forms import MessageReplyForm, MessageReportForm, MessageThreadForm, MsgForm
-from now_lms.misc import INICIO_SESION
+from now_lms.db import Curso, DocenteCurso, EstudianteCurso, Message, MessageThread, ModeradorCurso, database, select
+from now_lms.forms import MessageReplyForm, MessageReportForm, MessageThreadForm
 
 # ---------------------------------------------------------------------------------------
 # Interfaz de mensajes
@@ -527,50 +515,3 @@ def standalone_report_message():
         return redirect(url_for("home.panel"))
 
     return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
-
-
-# Legacy routes for backward compatibility
-@msg.route("/message/<ulid>")
-@login_required
-def mensaje(ulid: str):
-    """Mensaje - DEPRECATED."""
-    mensaje_result = database.session.execute(database.select(Mensaje).filter(Mensaje.id == ulid)).first()
-    if not mensaje_result:
-        return abort(404)
-    mensaje = mensaje_result[0]
-
-    usuario_result = database.session.execute(database.select(Usuario).filter(Usuario.id == mensaje.usuario)).first()
-    if not usuario_result:
-        return abort(404)
-    usuario = usuario_result[0]
-    respuestas = database.session.execute(database.select(Mensaje, Usuario).filter(Mensaje.parent == ulid)).all()
-    form = MsgForm(es_respuesta=True, parent=mensaje.id)
-
-    if current_user.is_authenticated:
-        if mensaje.usuario == current_user.id:
-            return render_template(
-                "learning/mensajes/ver_msg.html", mensaje=mensaje, usuario=usuario, form=form, respuestas=respuestas
-            )
-        else:
-            return abort(403)
-    else:
-        return INICIO_SESION
-
-
-@msg.route("/message/new", methods=["GET", "POST"])
-@login_required
-def nuevo_mensaje():
-    """Nuevo Mensaje - DEPRECATED."""
-    form = MsgForm()
-    mensaje = Mensaje()
-    if form.validate_on_submit():
-        mensaje.usuario = current_user.id
-        mensaje.titulo = form.titulo.data
-        mensaje.texto = form.editor.data
-        mensaje.parent = form.parent.data
-        database.session.add(mensaje)
-        database.session.commit()
-        database.session.refresh(mensaje)
-        return redirect(url_for("msg.mensaje", ulid=mensaje.id))
-
-    return render_template("learning/mensajes/nuevo_msg.html", form=form)

@@ -15,11 +15,9 @@
 
 """End-to-end test for complete program certificate workflow."""
 
-import pytest
 from now_lms.db import (
     Certificacion,
     CertificacionPrograma,
-    Certificado,
     Curso,
     EstudianteCurso,
     Programa,

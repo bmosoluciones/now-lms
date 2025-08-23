@@ -1,4 +1,3 @@
-import certifi
 
 
 def test_database_info_tools(session_full_db_setup):

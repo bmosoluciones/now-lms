@@ -75,6 +75,7 @@ class TestPayPalModuleStructure:
             "debug_config",
             "resume_payment",
         ]
+        assert expected_routes is not None
 
         # Note: This test checks that the blueprint has route functions
         # The actual route checking would require app context

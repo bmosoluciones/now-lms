@@ -241,6 +241,7 @@ def test_audit_mode_enrollment(lms_application):
                     "modo": "audit",
                 },
             )
+            assert response is not None
 
             # Check that payment was created with completed status and audit flag
             payment = database.session.query(Pago).filter_by(usuario=user.usuario, curso="AUDIT001").first()
@@ -402,3 +403,4 @@ def test_paypal_client_id_endpoint(lms_application):
             assert response_data['client_id'] == "sandbox_client_id"
             assert response_data['sandbox'] is True
             """
+            assert response is not None

@@ -51,8 +51,8 @@ class TestCertificateHelperFunctions:
 
         result = insert_style_in_html(template)
 
-        # Empty CSS still adds style tags
-        assert result == "<style></style><h1>Test Certificate</h1>"
+        # Empty CSS should return just HTML (after our bug fix)
+        assert result == "<h1>Test Certificate</h1>"
 
     def test_insert_style_in_html_with_none_css(self):
         """Test insert_style_in_html with None CSS - should handle gracefully."""
@@ -60,9 +60,10 @@ class TestCertificateHelperFunctions:
         template.html = "<h1>Test Certificate</h1>"
         template.css = None
 
-        # This test should fail and show a bug - the function doesn't handle None CSS
-        with pytest.raises(TypeError):
-            result = insert_style_in_html(template)
+        result = insert_style_in_html(template)
+
+        # None CSS should return just HTML (after our bug fix)
+        assert result == "<h1>Test Certificate</h1>"
 
 
 class TestCertificateListRoutes:

@@ -19,15 +19,8 @@ now_lms/templates/themes/your_theme_name/
 ├── navbar.j2            # Navigation bar component
 ├── notify.j2            # Notification/alert components
 ├── pagination.j2        # Pagination controls
-├── overrides/           # Template overrides directory
-│   ├── home.j2          # Custom home page
-│   ├── course_list.j2   # Custom course listing page
-│   ├── course_view.j2   # Custom course view page
-│   ├── program_list.j2  # Custom program listing page
-│   └── program_view.j2  # Custom program view page
-├── custom_pages/        # Static custom pages directory
-│   ├── contacto.j2      # Example: contact page
-│   └── info.j2          # Example: info page
+├── overrides/           # Template overrides directory (optional)
+│   └── home.j2          # Custom home page (most common override)
 └── README.md            # Theme documentation
 ```
 
@@ -45,49 +38,55 @@ now_lms/static/themes/your_theme_name/
 └── videos/              # Theme-specific videos
 ```
 
-For more details on managing static assets, see the [Static Assets README](https://github.com/bmosoluciones/now-lms/blob/main/now_lms/static/themes/README.md).
+For more details on managing static assets, see the [Static Assets README](https://github.com/bmosoluciones/now-lms/tree/main/now_lms/static/themes).
 
 ## Available Themes
 
-NOW LMS comes with several built-in themes:
+NOW LMS comes with 13 built-in themes:
 
-- **now_lms**: Default theme made with vanilla Boostrap5.
+### Base Theme
 
-- **corporative**: Professional blue theme for corporate environments.
-- **finance**: Federal green theme inspired by financial institutions.
+- **now_lms**: Default theme made with vanilla Bootstrap 5
 
-### Colors variations of the base theme:
- - **classic**: Minimalist white/gray design with clean typography.
-- **amber**: A warm, autumn-inspired theme.
-- **lime**: A green based theme.
-- **nebula**: A purple based theme.
-- **ocean**: A blue based theme.
-- **sakira:**: 
+### Professional Themes
+
+- **corporative**: Professional blue theme for corporate environments
+- **finance**: Federal green theme inspired by financial institutions
+- **classic**: Minimalist white/gray design with clean typography
+
+### Color Variations
+
+- **amber**: A warm, autumn-inspired theme
+- **golden**: A gold-based color theme
+- **lime**: A green-based theme
+- **nebula**: A purple-based theme
+- **ocean**: A blue-based theme
+- **sakura**: A cherry blossom-inspired theme
 
 ### Academic Themes
 
 Three prestigious academic themes inspired by world-renowned universities:
 
 - **harvard**: Burgundy theme (#A41034) inspired by Harvard University
-  - Classic academic design with traditional typography
-  - Merriweather/Playfair Display fonts for titles
-  - Source Sans Pro for body text
-  - Clean navbar without icons
-  - Academic highlights and "Veritas" branding
+    - Classic academic design with traditional typography
+    - Merriweather/Playfair Display fonts for titles
+    - Source Sans Pro for body text
+    - Clean navbar without icons
+    - Academic highlights and "Veritas" branding
 
 - **cambridge**: Green patina theme (#4A7B6D) inspired by Cambridge University
-  - Historic architecture and scholarly heritage design
-  - Cormorant Garamond/EB Garamond fonts for titles
-  - Open Sans for body text
-  - Manuscript-inspired design elements
-  - Clean navbar without icons
+    - Historic architecture and scholarly heritage design
+    - Cormorant Garamond/EB Garamond fonts for titles
+    - Open Sans for body text
+    - Manuscript-inspired design elements
+    - Clean navbar without icons
 
 - **oxford**: Blue-gray theme (#5A5F68) inspired by Oxford University
-  - Aristocratic elegance and formal tradition
-  - Libre Baskerville fonts for titles
-  - Lato/Nunito for body text
-  - Sophisticated and refined components
-  - Clean navbar without icons
+    - Aristocratic elegance and formal tradition
+    - Libre Baskerville fonts for titles
+    - Lato/Nunito for body text
+    - Sophisticated and refined components
+    - Clean navbar without icons
 
 ## Creating a Custom Theme
 
@@ -115,19 +114,19 @@ Define HTML head tags, meta information, and external resources:
 
 ```jinja2
 {% macro headertags() -%}
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="{{ site_config.descripcion }}" />
-<meta name="author" content="NOW LMS" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="{{ site_config.descripcion }}" />
+    <meta name="author" content="NOW LMS" />
 
-<!-- Bootstrap CSS -->
-<link href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+    <link href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet" />
 
-<!-- Custom Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Custom Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-<!-- Icons -->
-<link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap-icons/font/bootstrap-icons.css') }}" />
+    <!-- Icons -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap-icons/font/bootstrap-icons.css') }}" />
 {%- endmacro %}
 ```
 
@@ -152,7 +151,7 @@ Create your theme CSS file in `static/themes/your_theme_name/theme.css`:
 
 /* Your custom CSS styles */
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     background-color: var(--background-color);
     color: var(--text-color);
 }
@@ -168,7 +167,7 @@ Then create a minified version and update your `local_style.j2`:
 
 ```jinja2
 {% macro local_style() -%}
-<link rel="stylesheet" href="{{ url_for('static', filename='themes/your_theme_name/theme.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='themes/your_theme_name/theme.min.css') }}" />
 {% endmacro %}
 ```
 
@@ -193,7 +192,7 @@ def get_home_template() -> str:
     """Returns the path to the home page template."""
     THEME = get_current_theme()
     HOME = Path(path.join(get_theme_path(), "overrides", "home.j2"))
-    
+
     if HOME.exists():
         return THEMES_DIRECTORY + str(THEME) + "/overrides/home.j2"
     else:
@@ -205,7 +204,7 @@ def get_home_template() -> str:
 The system includes several template override functions:
 
 - `get_home_template()` - Home page override
-- `get_course_list_template()` - Course listing override  
+- `get_course_list_template()` - Course listing override
 - `get_program_list_template()` - Program listing override
 - `get_course_view_template()` - Course view override
 - `get_program_view_template()` - Program view override
@@ -223,22 +222,22 @@ Create static custom pages for your theme in the `custom_pages/` directory. Thes
 {% set current_theme = current_theme() %}
 <!doctype html>
 <html lang="es">
-<head>
-    {{ current_theme.headertags() }}
-    {{ current_theme.local_style() }}
-    <title>Contacto - {{ site_config.nombre }}</title>
-</head>
-<body>
-    {{ current_theme.navbar() }}
-    
-    <div class="container py-5">
-        <h1>Contacto</h1>
-        <p>Esta es una página personalizada del tema.</p>
-        <!-- Add your custom content here -->
-    </div>
-    
-    {{ current_theme.jslibs() }}
-</body>
+    <head>
+        {{ current_theme.headertags() }}
+        {{ current_theme.local_style() }}
+        <title>Contacto - {{ site_config.nombre }}</title>
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+
+        <div class="container py-5">
+            <h1>Contacto</h1>
+            <p>Esta es una página personalizada del tema.</p>
+            <!-- Add your custom content here -->
+        </div>
+
+        {{ current_theme.jslibs() }}
+    </body>
 </html>
 ```
 
@@ -258,24 +257,30 @@ Reference theme-specific static assets using Flask's `url_for`:
 
 ```jinja2
 <!-- Images -->
-<img src="{{ url_for('static', filename='themes/mytheme/images/logo.png') }}" alt="Logo">
+<img src="{{ url_for('static', filename='themes/mytheme/images/logo.png') }}" alt="Logo" />
 
 <!-- CSS (additional stylesheets) -->
-<link rel="stylesheet" href="{{ url_for('static', filename='themes/mytheme/css/custom.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='themes/mytheme/css/custom.css') }}" />
 
 <!-- JavaScript -->
 <script src="{{ url_for('static', filename='themes/mytheme/js/theme.js') }}"></script>
 
 <!-- Fonts -->
-<link href="{{ url_for('static', filename='themes/mytheme/fonts/custom-font.woff2') }}" rel="preload" as="font" type="font/woff2" crossorigin>
+<link
+    href="{{ url_for('static', filename='themes/mytheme/fonts/custom-font.woff2') }}"
+    rel="preload"
+    as="font"
+    type="font/woff2"
+    crossorigin
+/>
 
 <!-- Videos -->
 <video src="{{ url_for('static', filename='themes/mytheme/videos/intro.mp4') }}" controls></video>
 ```
 
-For complete examples and best practices, see the [Static Assets README](../static/themes/README.md).
-        color: var(--text-color);
-    }
+For complete examples and best practices, see the [Static Assets README](https://github.com/bmosoluciones/now-lms/tree/main/now_lms/static/themes).
+color: var(--text-color);
+}
 
     /* Navigation styles */
     .navbar-custom {
@@ -288,6 +293,7 @@ For complete examples and best practices, see the [Static Assets README](../stat
         border-color: var(--primary-color);
         color: white;
     }
+
 </style>
 {%- endmacro %}
 ```
@@ -298,28 +304,32 @@ Customize the navigation structure and styling:
 
 ```jinja2
 {% macro navbar() -%}
-<nav class="navbar navbar-expand-md navbar-custom" aria-label="Custom navbar">
-    <div class="container-fluid">
-        <!-- Logo and brand -->
-        <a href="{{ url_for('home.pagina_de_inicio') }}" class="navbar-brand">
-            {% if logo_perzonalizado() %}
-            <img height="30" src="{{ url_for('static', filename='/files/public/images/logotipo.jpg') }}" alt="LMS" />
-            {% else %}
-            <img height="30" src="{{ url_for('static', filename='/icons/logo/logo_white_large.png') }}" alt="NOW LMS" />
-            {% endif %}
-        </a>
+    <nav class="navbar navbar-expand-md navbar-custom" aria-label="Custom navbar">
+        <div class="container-fluid">
+            <!-- Logo and brand -->
+            <a href="{{ url_for('home.pagina_de_inicio') }}" class="navbar-brand">
+                {% if logo_perzonalizado() %}
+                    <img height="30" src="{{ url_for('static', filename='/files/public/images/logotipo.jpg') }}" alt="LMS" />
+                {% else %}
+                    <img
+                        height="30"
+                        src="{{ url_for('static', filename='/icons/logo/logo_white_large.png') }}"
+                        alt="NOW LMS"
+                    />
+                {% endif %}
+            </a>
 
-        <!-- Navigation links -->
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a href="{{ url_for('home.pagina_de_inicio') }}" class="nav-link">Home</a>
-                </li>
-                <!-- Add more navigation items -->
-            </ul>
+            <!-- Navigation links -->
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a href="{{ url_for('home.pagina_de_inicio') }}" class="nav-link">Home</a>
+                    </li>
+                    <!-- Add more navigation items -->
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 {%- endmacro %}
 ```
 
@@ -329,15 +339,15 @@ Include JavaScript dependencies and custom scripts:
 
 ```jinja2
 {% macro jslibs() -%}
-<script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
 
-<!-- Custom JavaScript for your theme -->
-<script>
-    // Your custom JavaScript code
-    document.addEventListener('DOMContentLoaded', function() {
-        // Theme-specific initialization
-    });
-</script>
+    <!-- Custom JavaScript for your theme -->
+    <script>
+        // Your custom JavaScript code
+        document.addEventListener("DOMContentLoaded", function () {
+            // Theme-specific initialization
+        })
+    </script>
 {%- endmacro %}
 ```
 
@@ -356,17 +366,16 @@ All HTML templates should include the theme style call in the `<head>` section:
 ```html
 <!doctype html>
 <html lang="es">
-{% set current_theme = current_theme() %}
-<head>
-    {{ current_theme.headertags() }}
-    {{ current_theme.local_style() }}
-    <title>Page Title</title>
-</head>
-<body>
-    {{ current_theme.navbar() }}
-    <!-- Page content -->
-    {{ current_theme.jslibs() }}
-</body>
+    {% set current_theme = current_theme() %}
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>Page Title</title>
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+        <!-- Page content -->
+        {{ current_theme.jslibs() }}
+    </body>
 </html>
 ```
 
@@ -380,9 +389,9 @@ The theming system supports theme-specific home pages through the `get_home_temp
 def get_home_template() -> str:
     """Returns the path to the home page template."""
     THEME = get_current_theme()
-    
+
     HOME = Path(path.join(get_theme_path(), "overrides", "home.j2"))
-    
+
     if HOME.exists():
         return THEMES_DIRECTORY + str(THEME) + "/overrides/home.j2"
     else:
@@ -403,26 +412,25 @@ If your theme directory contains a `home.j2` file, it will be used instead of th
 ```html
 <!doctype html>
 <html lang="es">
-{% set current_theme = current_theme() %}
-<head>
-    {{ current_theme.headertags() }}
-    {{ current_theme.local_style() }}
-    <title>{{ site_config.nombre }} - Custom Home</title>
-</head>
-<body>
-    {{ current_theme.navbar() }}
-    
-    <!-- Your custom home page content -->
-    <section class="hero-section">
-        <!-- Custom hero content -->
-    </section>
-    
-    <section class="features-section">
-        <!-- Custom features content -->
-    </section>
-    
-    {{ current_theme.jslibs() }}
-</body>
+    {% set current_theme = current_theme() %}
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>{{ site_config.nombre }} - Custom Home</title>
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+
+        <!-- Your custom home page content -->
+        <section class="hero-section">
+            <!-- Custom hero content -->
+        </section>
+
+        <section class="features-section">
+            <!-- Custom features content -->
+        </section>
+
+        {{ current_theme.jslibs() }}
+    </body>
 </html>
 ```
 
@@ -433,6 +441,7 @@ If your theme directory contains a `home.j2` file, it will be used instead of th
 Theme-specific static assets should be placed in the `static/themes/` directory. This allows you to include custom images, CSS files, JavaScript, fonts, and other media specific to your theme.
 
 ##### Directory Structure:
+
 ```
 static/themes/
 ├── your_theme_name/
@@ -457,9 +466,10 @@ Flask's `url_for` function is used to generate URLs for static assets. This ensu
 ##### Examples:
 
 **Images:**
+
 ```html
 <!-- Theme logo -->
-<img src="{{ url_for('static', filename='themes/harvard/images/logo.png') }}" alt="Harvard Logo">
+<img src="{{ url_for('static', filename='themes/harvard/images/logo.png') }}" alt="Harvard Logo" />
 
 <!-- Background image -->
 <div style="background-image: url('{{ url_for('static', filename='themes/harvard/images/campus-bg.jpg') }}');">
@@ -467,20 +477,25 @@ Flask's `url_for` function is used to generate URLs for static assets. This ensu
 </div>
 
 <!-- Hero banner -->
-<img src="{{ url_for('static', filename='themes/cambridge/images/hero-banner.png') }}" 
-     class="img-fluid" alt="Cambridge Banner">
+<img
+    src="{{ url_for('static', filename='themes/cambridge/images/hero-banner.png') }}"
+    class="img-fluid"
+    alt="Cambridge Banner"
+/>
 ```
 
 **CSS Files:**
+
 ```html
 <!-- Additional theme-specific CSS -->
-<link rel="stylesheet" href="{{ url_for('static', filename='themes/oxford/css/animations.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='themes/oxford/css/animations.css') }}" />
 
 <!-- Font file -->
-<link rel="stylesheet" href="{{ url_for('static', filename='themes/oxford/css/fonts.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='themes/oxford/css/fonts.css') }}" />
 ```
 
 **JavaScript Files:**
+
 ```html
 <!-- Theme-specific JavaScript -->
 <script src="{{ url_for('static', filename='themes/harvard/js/interactive.js') }}"></script>
@@ -490,24 +505,26 @@ Flask's `url_for` function is used to generate URLs for static assets. This ensu
 ```
 
 **Fonts:**
+
 ```css
 /* In your theme's CSS */
 @font-face {
-    font-family: 'CustomFont';
-    src: url('{{ url_for('static', filename='themes/oxford/fonts/oxford-font.woff2') }}') format('woff2');
+    font-family: "CustomFont";
+    src: url("{{ url_for("static", filename="themes/oxford/fonts/oxford-font.woff2") }}") format("woff2");
 }
 ```
 
 **Videos and Audio:**
+
 ```html
 <!-- Video background -->
 <video autoplay muted loop class="bg-video">
-    <source src="{{ url_for('static', filename='themes/harvard/videos/campus-tour.mp4') }}" type="video/mp4">
+    <source src="{{ url_for('static', filename='themes/harvard/videos/campus-tour.mp4') }}" type="video/mp4" />
 </video>
 
 <!-- Audio element -->
 <audio controls>
-    <source src="{{ url_for('static', filename='themes/cambridge/audio/bell-chime.mp3') }}" type="audio/mpeg">
+    <source src="{{ url_for('static', filename='themes/cambridge/audio/bell-chime.mp3') }}" type="audio/mpeg" />
 </audio>
 ```
 
@@ -523,19 +540,23 @@ Flask's `url_for` function is used to generate URLs for static assets. This ensu
 #### Asset Loading Examples:
 
 **Conditional Asset Loading:**
+
 ```html
 {% if current_theme_name == 'harvard' %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='themes/harvard/css/harvard-extras.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='themes/harvard/css/harvard-extras.css') }}" />
 {% elif current_theme_name == 'cambridge' %}
-    <script src="{{ url_for('static', filename='themes/cambridge/js/manuscript-effects.js') }}"></script>
+<script src="{{ url_for('static', filename='themes/cambridge/js/manuscript-effects.js') }}"></script>
 {% endif %}
 ```
 
 **Dynamic Asset References:**
+
 ```html
 <!-- Dynamic theme assets -->
-<img src="{{ url_for('static', filename='themes/' + current_theme_name + '/images/logo.png') }}" 
-     alt="{{ current_theme_name|title }} Logo">
+<img
+    src="{{ url_for('static', filename='themes/' + current_theme_name + '/images/logo.png') }}"
+    alt="{{ current_theme_name|title }} Logo"
+/>
 ```
 
 ### Available Theme Functions
@@ -559,13 +580,13 @@ Use CSS custom properties (variables) for consistent theming:
     --primary: #your-primary-color;
     --secondary: #your-secondary-color;
     --accent: #your-accent-color;
-    
+
     /* Neutral colors */
     --background: #your-background-color;
     --surface: #your-surface-color;
     --text: #your-text-color;
     --text-secondary: #your-secondary-text-color;
-    
+
     /* State colors */
     --success: #your-success-color;
     --warning: #your-warning-color;
@@ -604,21 +625,25 @@ The theming system includes automatic cache invalidation. When you change the ac
 ## Best Practices
 
 ### 1. Consistent Design Language
+
 - Use a consistent color palette throughout your theme
 - Maintain proper contrast ratios for accessibility
 - Follow responsive design principles
 
 ### 2. Performance Optimization
+
 - Minimize CSS and JavaScript file sizes
 - Use efficient selectors
 - Optimize images and assets
 
 ### 3. Accessibility
+
 - Ensure sufficient color contrast (WCAG 2.1 AA standards)
 - Include proper ARIA labels
 - Test with screen readers
 
 ### 4. Testing
+
 - Test your theme across different browsers
 - Verify responsive behavior on various screen sizes
 - Check all interactive elements
@@ -626,17 +651,20 @@ The theming system includes automatic cache invalidation. When you change the ac
 ## Troubleshooting
 
 ### Theme Not Loading
+
 1. Verify theme directory structure
 2. Check file permissions
 3. Clear browser cache
 4. Restart the application if needed
 
 ### Styling Issues
+
 1. Use browser developer tools to debug CSS
 2. Check for CSS conflicts with Bootstrap
 3. Verify CSS variable definitions
 
 ### Cache Issues
+
 - Clear application cache: The system automatically handles this
 - Clear browser cache for development
 - Check cache configuration in `now_lms/cache.py`
@@ -644,12 +672,15 @@ The theming system includes automatic cache invalidation. When you change the ac
 ## Advanced Customization
 
 ### Custom Components
+
 You can extend themes by adding custom components and including them in your templates.
 
 ### Theme Inheritance
+
 Consider creating base themes and extending them for variations, though this requires more advanced template techniques.
 
 ### Integration with Frontend Frameworks
+
 For advanced theming, you can integrate with modern frontend build tools and frameworks while maintaining compatibility with the Jinja2 template system.
 
 ## Support
@@ -662,4 +693,4 @@ For additional help with theming:
 
 ---
 
-*This documentation covers the essential aspects of the NOW LMS theming system. For specific implementation details, refer to the existing theme files and application code.*
+_This documentation covers the essential aspects of the NOW LMS theming system. For specific implementation details, refer to the existing theme files and application code._

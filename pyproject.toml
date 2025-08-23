@@ -18,6 +18,7 @@ classifiers = [
   'Programming Language :: Python :: 3.11',
   'Programming Language :: Python :: 3.12',
   'Programming Language :: Python :: 3.13',
+  'Programming Language :: Python :: 3.14',
   'Topic :: Education',
 ]
 dynamic = ["version", "dependencies"]
@@ -65,13 +66,13 @@ enable = [
     "undefined-variable",              # E0601: Variable used before assignment
     "logging-format-truncated",        # E1205: Logging format string errors
     "unreachable",                     # W0101: Unreachable code
-    
+
     # Code quality issues that should be caught
     "redefined-outer-name",            # W0621: Redefining name from outer scope
     "no-else-return",                  # R1705: Unnecessary else after return
     "inconsistent-return-statements",  # R1710: Inconsistent return patterns
     "reimported",                      # W0404: Redundant imports
-    "pointless-string-statement",      # W0105: Pointless string statements  
+    "pointless-string-statement",      # W0105: Pointless string statements
     "redefined-builtin",               # W0622: Redefined built-ins
     "singleton-comparison",            # C0121: Singleton comparisons (== True/False)
     "unspecified-encoding",            # W1514: File operations without encoding
@@ -81,5 +82,5 @@ enable = [
     "consider-using-in",
     "used-before-assignment",
     "unused-variable",
-    
+
 ]

@@ -17,7 +17,7 @@
 
 from unittest.mock import patch, MagicMock
 
-from now_lms.vistas._helpers import get_current_course_logo, get_site_logo
+from now_lms.vistas._helpers import get_current_course_logo, get_site_logo, get_site_favicon
 
 
 class TestVistaHelpers:
@@ -183,3 +183,63 @@ class TestVistaHelpers:
         result = get_site_logo()
 
         assert result == "logotipo.svg"
+
+    @patch("now_lms.vistas._helpers.Path")
+    def test_get_site_favicon_found(self, mock_path):
+        """Test get_site_favicon when favicon file exists."""
+        # Mock a directory with a favicon file
+        mock_favicon_file = MagicMock()
+        mock_favicon_file.is_file.return_value = True
+        mock_favicon_file.stem = "favicon"
+        mock_favicon_file.name = "favicon.ico"
+
+        mock_site_dir = MagicMock()
+        mock_site_dir.iterdir.return_value = [mock_favicon_file]
+
+        mock_path.return_value = mock_site_dir
+
+        result = get_site_favicon()
+
+        assert result == "favicon.ico"
+        mock_path.assert_called_once()
+
+    @patch("now_lms.vistas._helpers.Path")
+    def test_get_site_favicon_not_found(self, mock_path):
+        """Test get_site_favicon when no favicon file exists."""
+        # Mock a directory with no favicon files
+        mock_other_file = MagicMock()
+        mock_other_file.is_file.return_value = True
+        mock_other_file.stem = "other"
+        mock_other_file.name = "other.png"
+
+        mock_site_dir = MagicMock()
+        mock_site_dir.iterdir.return_value = [mock_other_file]
+
+        mock_path.return_value = mock_site_dir
+
+        result = get_site_favicon()
+
+        assert result is None
+
+    @patch("now_lms.vistas._helpers.Path")
+    def test_get_site_favicon_multiple_files(self, mock_path):
+        """Test get_site_favicon when multiple favicon files exist."""
+        # Mock a directory with multiple favicon files (should return first one)
+        mock_favicon_file1 = MagicMock()
+        mock_favicon_file1.is_file.return_value = True
+        mock_favicon_file1.stem = "favicon"
+        mock_favicon_file1.name = "favicon.ico"
+
+        mock_favicon_file2 = MagicMock()
+        mock_favicon_file2.is_file.return_value = True
+        mock_favicon_file2.stem = "favicon"
+        mock_favicon_file2.name = "favicon.png"
+
+        mock_site_dir = MagicMock()
+        mock_site_dir.iterdir.return_value = [mock_favicon_file1, mock_favicon_file2]
+
+        mock_path.return_value = mock_site_dir
+
+        result = get_site_favicon()
+
+        assert result == "favicon.ico"

@@ -1,7 +1,6 @@
 """Comprehensive tests for now_lms.vistas.evaluation_helpers module to improve coverage."""
 
-import pytest
-from datetime import datetime, date, time
+from datetime import datetime
 
 
 class TestEvaluationHelpers:
