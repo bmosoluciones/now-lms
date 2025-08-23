@@ -989,3 +989,18 @@ def get_all_records(table_name: str, filters: Union[dict[Any, Any], None] = None
                 query = query.filter(getattr(model_class, col) == val)
 
     return query.all()
+
+
+def get_slideshowid(resource_id: str) -> Union[str, None]:
+    """Get the slideshow ID for a given resource ID.
+
+    :param resource_id: ID of the course resource
+    :return: slideshow ID (external_code) or None if not found
+    """
+    try:
+        recurso = database.session.get(CursoRecurso, resource_id)
+        if recurso and recurso.tipo == "slides" and recurso.external_code:
+            return recurso.external_code
+        return None
+    except (AttributeError, OperationalError):
+        return None

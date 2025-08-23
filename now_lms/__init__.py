@@ -99,6 +99,7 @@ from now_lms.db.tools import (
     get_course_sections,
     get_one_record,
     get_paypal_id,
+    get_slideshowid,
     is_blog_enabled,
     is_masterclass_enabled,
     is_programs_enabled,
@@ -296,6 +297,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["get_all_from_db"] = get_all_records
     flask_app.jinja_env.globals["get_course_sections"] = get_course_sections
     flask_app.jinja_env.globals["get_one_from_db"] = get_one_record
+    flask_app.jinja_env.globals["get_slideshowid"] = get_slideshowid
     flask_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
     flask_app.jinja_env.globals["info"] = app_info(flask_app)
     flask_app.jinja_env.globals["is_masterclass_enabled"] = is_masterclass_enabled
