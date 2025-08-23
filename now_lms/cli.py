@@ -19,7 +19,6 @@
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
-from calendar import c
 from os import cpu_count, environ
 from pathlib import Path
 
@@ -27,7 +26,6 @@ from pathlib import Path
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 import click
-from flask import cli
 from flask.cli import FlaskGroup
 from sqlalchemy import select
 
