@@ -1233,7 +1233,7 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form
@@ -1311,7 +1311,7 @@ def nuevo_recurso_text(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
@@ -1393,7 +1393,7 @@ def nuevo_recurso_link(course_code, seccion):
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_link.html", id_curso=course_code, id_seccion=seccion, form=form
@@ -1474,7 +1474,7 @@ def nuevo_recurso_pdf(course_code, seccion):
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_pdf.html", id_curso=course_code, id_seccion=seccion, form=form
@@ -1561,7 +1561,7 @@ def nuevo_recurso_meet(course_code, seccion):
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_meet.html", id_curso=course_code, id_seccion=seccion, form=form
@@ -1653,7 +1653,7 @@ def nuevo_recurso_img(course_code, seccion):
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_img.html", id_curso=course_code, id_seccion=seccion, form=form
@@ -1740,7 +1740,7 @@ def nuevo_recurso_audio(course_code, seccion):
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_mp3.html", id_curso=course_code, id_seccion=seccion, form=form
@@ -1823,7 +1823,7 @@ def nuevo_recurso_html(course_code, seccion):
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:  # pragma: no cover
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_html.html", id_curso=course_code, id_seccion=seccion, form=form
