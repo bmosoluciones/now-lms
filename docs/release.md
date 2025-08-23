@@ -9,6 +9,6 @@ pased.
 
 Release history can be found here: [https://pypi.org/project/now-lms/#history](https://pypi.org/project/now-lms/#history)
 
-Change log can be found in the [change log file](changes.md).
+Change log can be found in the [change log file](https://github.com/bmosoluciones/now-lms/blob/main/CHANGELOG.md).
 
 Source code is hosted at [github](https://github.com/bmosoluciones/now-lms).
