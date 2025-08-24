@@ -32,6 +32,7 @@ Visit http://127.0.0.1:8080/ in your browser, default user and password are lms-
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
+from os import environ
 from platform import python_version
 
 # ---------------------------------------------------------------------------------------
@@ -383,6 +384,27 @@ def create_app(app_name="now_lms", testing=False, config_overrides=None):
 
     # Apply base configuration
     flask_app.config.from_mapping(CONFIGURACION)
+
+    # Load configuration from file if available (before env vars are applied)
+    from now_lms.config import load_config_from_file
+
+    file_config = load_config_from_file()
+    if file_config:
+        flask_app.config.update(file_config)
+
+    # Apply environment variables last to ensure they have highest priority
+    # (Re-apply environment variable overrides after file config)
+    env_overrides = {}
+    if environ.get("SECRET_KEY"):
+        env_overrides["SECRET_KEY"] = environ.get("SECRET_KEY")
+    if environ.get("DATABASE_URL"):
+        env_overrides["SQLALCHEMY_DATABASE_URI"] = environ.get("DATABASE_URL")
+    if environ.get("REDIS_URL"):
+        env_overrides["CACHE_REDIS_URL"] = environ.get("REDIS_URL")
+
+    # Apply environment overrides
+    if env_overrides:
+        flask_app.config.update(env_overrides)
 
     # Apply configuration overrides if provided
     if config_overrides:

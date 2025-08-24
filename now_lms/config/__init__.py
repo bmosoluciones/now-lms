@@ -17,6 +17,7 @@
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
+import os
 import sys
 from os import R_OK, W_OK, access, environ, makedirs, name, path
 from pathlib import Path
@@ -35,6 +36,66 @@ from now_lms.logs import log
 
 if TYPE_CHECKING:
     from flask import Flask
+
+
+# ---------------------------------------------------------------------------------------
+# Configuration file loading functionality
+# ---------------------------------------------------------------------------------------
+def load_config_from_file() -> Dict:
+    """
+    Busca y carga configuración desde archivo con ConfigObj.
+
+    Busca en las siguientes ubicaciones en orden:
+    1. Ruta especificada por NOW_LMS_CONFIG
+    2. /etc/now-lms/now-lms.conf
+    3. /etc/now-lms.conf
+    4. ~/.config/now-lms/now-lms.conf
+    5. ./now-lms.conf
+
+    Returns:
+        Dict: Diccionario de configuración, vacío si no se encuentra archivo
+    """
+    try:
+        from configobj import ConfigObj
+    except ImportError:
+        log.warning("ConfigObj not available, skipping file-based configuration.")
+        return {}
+
+    search_paths = [
+        environ.get("NOW_LMS_CONFIG"),
+        "/etc/now-lms/now-lms.conf",
+        "/etc/now-lms.conf",
+        path.expanduser("~/.config/now-lms/now-lms.conf"),
+        path.join(os.getcwd(), "now-lms.conf"),
+    ]
+
+    for config_path in search_paths:
+        if config_path and path.isfile(config_path):
+            try:
+                log.info(f"Loading configuration from file: {config_path}")
+                config_obj = ConfigObj(config_path, encoding="utf-8")
+
+                # Convert ConfigObj to regular dict and handle aliases
+                config_dict = dict(config_obj)
+
+                # Handle aliases as specified in the requirements
+                if "DATABASE_URL" in config_dict:
+                    config_dict["SQLALCHEMY_DATABASE_URI"] = config_dict["DATABASE_URL"]
+                    # Keep the alias for backward compatibility
+
+                if "REDIS_URL" in config_dict:
+                    config_dict["CACHE_REDIS_URL"] = config_dict["REDIS_URL"]
+                    # Keep the alias for backward compatibility
+
+                return config_dict
+
+            except Exception as e:
+                log.warning(f"Error loading configuration from {config_path}: {e}")
+                continue
+
+    log.trace("No configuration file found in search paths.")
+    return {}
+
 
 # < --------------------------------------------------------------------------------------------- >
 # Configuración central de la aplicación.
