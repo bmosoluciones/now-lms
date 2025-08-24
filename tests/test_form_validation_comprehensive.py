@@ -15,16 +15,16 @@
 
 """Comprehensive form validation tests for POST request processing."""
 
-from now_lms.db import Usuario, database
 from now_lms.auth import proteger_passwd
+from now_lms.db import Usuario, database
 
 
 class TestFormValidationUnit:
     """Unit tests for form validation - testing forms directly."""
 
-    def test_login_form_validation(self, app):
+    def test_login_form_validation(self, session_basic_db_setup):
         """Test LoginForm validation logic."""
-        with app.app_context():
+        with session_basic_db_setup.app_context():
             from now_lms.forms import LoginForm
 
             # Valid form
@@ -42,9 +42,9 @@ class TestFormValidationUnit:
             form = LoginForm(data=form_data)
             assert not form.validate()
 
-    def test_registration_form_validation(self, app):
+    def test_registration_form_validation(self, session_basic_db_setup):
         """Test LogonForm validation logic."""
-        with app.app_context():
+        with session_basic_db_setup.app_context():
             from now_lms.forms import LogonForm
 
             # Valid form
@@ -63,9 +63,9 @@ class TestFormValidationUnit:
             form = LogonForm(data=form_data)
             assert not form.validate()
 
-    def test_category_form_validation(self, app):
+    def test_category_form_validation(self, session_basic_db_setup):
         """Test CategoriaForm validation logic."""
-        with app.app_context():
+        with session_basic_db_setup.app_context():
             from now_lms.forms import CategoriaForm
 
             # Valid form
@@ -78,9 +78,9 @@ class TestFormValidationUnit:
             form = CategoriaForm(data=form_data)
             assert not form.validate()
 
-    def test_course_form_custom_validation(self, app):
+    def test_course_form_custom_validation(self, session_basic_db_setup):
         """Test CurseForm custom validation rules."""
-        with app.app_context():
+        with session_basic_db_setup.app_context():
             from now_lms.forms import CurseForm
 
             # Test forum validation for self-paced courses
@@ -386,8 +386,9 @@ class TestAnnouncementFormValidation:
     def test_announcement_form_valid_data(self, app, client):
         """Test announcement form with valid data."""
         with app.app_context():
-            from now_lms.forms import AnnouncementForm
             from datetime import date, timedelta
+
+            from now_lms.forms import AnnouncementForm
 
             form_data = {
                 "nombre": "Test Announcement",
@@ -403,8 +404,9 @@ class TestAnnouncementFormValidation:
     def test_global_announcement_form_valid_data(self, app, client):
         """Test global announcement form with valid data."""
         with app.app_context():
-            from now_lms.forms import GlobalAnnouncementForm
             from datetime import date, timedelta
+
+            from now_lms.forms import GlobalAnnouncementForm
 
             form_data = {
                 "nome": "Global Announcement",
@@ -462,8 +464,9 @@ class TestPaymentFormValidation:
     def test_coupon_form_valid_data(self, app, client):
         """Test coupon form with valid data."""
         with app.app_context():
-            from now_lms.forms import CouponForm
             from datetime import date, timedelta
+
+            from now_lms.forms import CouponForm
 
             form_data = {
                 "nombre": "Discount Coupon",

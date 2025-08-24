@@ -15,10 +15,12 @@
 
 """Advanced comprehensive tests for Certificate views to improve coverage."""
 
-import pytest
 import sys
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
+import pytest
+
+from now_lms.auth import proteger_passwd
 from now_lms.db import (
     Certificacion,
     CertificacionPrograma,
@@ -33,7 +35,6 @@ from now_lms.db import (
     Usuario,
     database,
 )
-from now_lms.auth import proteger_passwd
 from now_lms.vistas.certificates import insert_style_in_html
 
 

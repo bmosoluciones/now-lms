@@ -16,11 +16,11 @@
 """Shared test configuration and fixtures."""
 
 import pytest
-from sqlalchemy import event
-from sqlalchemy.engine import Engine
-from sqlalchemy.exc import OperationalError, ProgrammingError, IntegrityError
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+from sqlalchemy.exc import IntegrityError, OperationalError, ProgrammingError
 
 from now_lms import log
 
@@ -209,13 +209,13 @@ def full_db_setup(app, db_session):
     with app.app_context():
         try:
             # Directly create the setup data in the correct app context
-            from now_lms.db.tools import crear_configuracion_predeterminada
             from now_lms.db.initial_data import (
+                crear_certificacion,
                 crear_certificados,
                 crear_curso_predeterminado,
                 crear_usuarios_predeterminados,
-                crear_certificacion,
             )
+            from now_lms.db.tools import crear_configuracion_predeterminada
 
             # Setup data that's needed for tests
             crear_configuracion_predeterminada()
@@ -263,8 +263,8 @@ def basic_config_setup(app, db_session):
     Includes essential certificate templates needed for course creation.
     For tests that need basic config but not full database.
     """
-    from now_lms.db.tools import crear_configuracion_predeterminada
     from now_lms.db.initial_data import crear_certificados
+    from now_lms.db.tools import crear_configuracion_predeterminada
 
     app.config["SQLALCHEMY_DATABASE_URI"] = DB_URL
     with app.app_context():
@@ -318,8 +318,8 @@ def session_basic_db_setup():
 
     with test_app.app_context():
         from now_lms import database
-        from now_lms.db.tools import crear_configuracion_predeterminada
         from now_lms.db.initial_data import crear_certificados
+        from now_lms.db.tools import crear_configuracion_predeterminada
 
         # Initialize database and setup basic data
         database.create_all()
@@ -364,14 +364,14 @@ def session_full_db_setup():
 
     with test_app.app_context():
         from now_lms import database
-        from now_lms.db.tools import crear_configuracion_predeterminada
+        from now_lms.db.data_test import crear_data_para_pruebas
         from now_lms.db.initial_data import (
+            crear_certificacion,
             crear_certificados,
             crear_curso_predeterminado,
             crear_usuarios_predeterminados,
-            crear_certificacion,
         )
-        from now_lms.db.data_test import crear_data_para_pruebas
+        from now_lms.db.tools import crear_configuracion_predeterminada
 
         # Initialize database and setup full data
         database.create_all()

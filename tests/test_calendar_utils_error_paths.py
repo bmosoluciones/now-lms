@@ -15,14 +15,15 @@
 
 """Additional tests for calendar_utils.py to improve coverage of error paths."""
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from now_lms.calendar_utils import (
-    create_events_for_student_enrollment,
-    update_meet_resource_events,
-    update_evaluation_events,
     cleanup_events_for_course_unenrollment,
+    create_events_for_student_enrollment,
+    update_evaluation_events,
+    update_meet_resource_events,
 )
-from now_lms.db import database, Curso, CursoSeccion, CursoRecurso
+from now_lms.db import Curso, CursoRecurso, CursoSeccion
 
 
 class TestCalendarUtilsErrorPaths:

@@ -19,12 +19,12 @@
 from collections import OrderedDict
 
 from now_lms.misc import (
+    HTML_TAGS,
+    ICONOS_RECURSOS,
+    TIPOS_DE_USUARIO,
     concatenar_parametros_a_url,
     markdown_to_clean_html,
     sanitize_slide_content,
-    TIPOS_DE_USUARIO,
-    ICONOS_RECURSOS,
-    HTML_TAGS,
 )
 
 

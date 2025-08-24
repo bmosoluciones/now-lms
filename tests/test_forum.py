@@ -15,7 +15,7 @@
 
 """Pruebas para la funcionalidad del foro."""
 
-from now_lms.db import database, Curso, ForoMensaje, Usuario
+from now_lms.db import Curso, ForoMensaje, Usuario, database
 
 
 def create_test_user():

@@ -18,7 +18,6 @@
 import os
 from unittest.mock import patch
 
-import pytest
 
 
 def test_page_info_without_ci_env_redirects_to_home(session_basic_db_setup):

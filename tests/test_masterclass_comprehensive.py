@@ -21,13 +21,7 @@ from decimal import Decimal
 import pytest
 from flask import url_for
 
-from now_lms.db import (
-    MasterClass,
-    MasterClassEnrollment,
-    Certificado,
-    Usuario,
-    database,
-)
+from now_lms.db import Certificado, MasterClass, MasterClassEnrollment, Usuario, database
 
 
 class TestMasterClassBasicFunctionality:

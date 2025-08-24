@@ -1,5 +1,6 @@
-from flask_mail import Mail, Message
 from unittest.mock import MagicMock
+
+from flask_mail import Mail, Message
 
 
 def test_send_threaded_email_success(session_basic_db_setup):

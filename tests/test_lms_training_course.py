@@ -15,8 +15,8 @@
 
 """Tests for the LMS training course (self-learning course)."""
 
-from now_lms.db import Curso, CursoSeccion, CursoRecurso, Evaluation, Question, QuestionOption, Usuario, database
 from now_lms.auth import proteger_passwd
+from now_lms.db import Curso, CursoRecurso, CursoSeccion, Evaluation, Question, QuestionOption, Usuario, database
 
 
 def test_lms_training_course_exists(full_db_setup_with_examples):

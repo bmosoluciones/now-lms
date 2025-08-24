@@ -17,7 +17,7 @@
 
 from sqlalchemy import select
 
-from now_lms.db import Evaluation, Question, QuestionOption, CursoSeccion, Curso, database
+from now_lms.db import Curso, CursoSeccion, Evaluation, Question, QuestionOption, database
 from now_lms.db.initial_data import crear_evaluacion_predeterminada
 
 

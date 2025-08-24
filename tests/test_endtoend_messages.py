@@ -23,8 +23,8 @@ Comprehensive end-to-end tests for forum and messaging systems.
 def test_comprehensive_forum_workflow(full_db_setup, client):
     """Test complete forum workflow focusing on core business logic."""
     app = full_db_setup
-    from now_lms.db import Usuario, Curso, ForoMensaje, EstudianteCurso, DocenteCurso
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Curso, DocenteCurso, EstudianteCurso, ForoMensaje, Usuario
 
     # Create users and course
     with app.app_context():
@@ -196,8 +196,8 @@ def test_comprehensive_forum_workflow(full_db_setup, client):
 def test_comprehensive_messaging_workflow(full_db_setup, client):
     """Test complete messaging system workflow focusing on core business logic."""
     app = full_db_setup
-    from now_lms.db import Usuario, MessageThread, Message, EstudianteCurso, DocenteCurso
     from now_lms.auth import proteger_passwd
+    from now_lms.db import DocenteCurso, EstudianteCurso, Message, MessageThread, Usuario
 
     # Create users and course
     with app.app_context():
@@ -429,8 +429,8 @@ def test_comprehensive_messaging_workflow(full_db_setup, client):
 def test_forum_access_control_and_permissions(full_db_setup, client):
     """Test forum access control and permission scenarios."""
     app = full_db_setup
-    from now_lms.db import Usuario, EstudianteCurso, DocenteCurso
     from now_lms.auth import proteger_passwd
+    from now_lms.db import DocenteCurso, EstudianteCurso, Usuario
 
     # Create users with different roles
     with app.app_context():
@@ -556,8 +556,8 @@ def test_forum_access_control_and_permissions(full_db_setup, client):
 def test_messaging_admin_functionality(full_db_setup, client):
     """Test admin-specific messaging functionality."""
     app = full_db_setup
-    from now_lms.db import Usuario, MessageThread, Message, EstudianteCurso
     from now_lms.auth import proteger_passwd
+    from now_lms.db import EstudianteCurso, Message, MessageThread, Usuario
 
     # Create admin and student users
     with app.app_context():
@@ -705,8 +705,8 @@ def test_messaging_admin_functionality(full_db_setup, client):
 def test_forum_edge_cases_and_error_handling(full_db_setup, client):
     """Test forum edge cases and error handling scenarios."""
     app = full_db_setup
-    from now_lms.db import Usuario, Curso, EstudianteCurso, DocenteCurso
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Curso, DocenteCurso, EstudianteCurso, Usuario
 
     # Create test users and course
     with app.app_context():
@@ -820,8 +820,8 @@ def test_forum_edge_cases_and_error_handling(full_db_setup, client):
 def test_messaging_standalone_report_functionality(full_db_setup, client):
     """Test standalone message reporting functionality."""
     app = full_db_setup
-    from now_lms.db import Usuario, Curso, MessageThread, Message, EstudianteCurso
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Curso, EstudianteCurso, Message, MessageThread, Usuario
 
     # Create users and set up course with messages
     with app.app_context():

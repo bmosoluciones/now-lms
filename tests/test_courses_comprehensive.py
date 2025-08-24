@@ -17,13 +17,7 @@
 
 from decimal import Decimal
 
-from now_lms.db import (
-    Curso,
-    CursoSeccion,
-    EstudianteCurso,
-    Usuario,
-    database,
-)
+from now_lms.db import Curso, CursoSeccion, EstudianteCurso, Usuario, database
 
 
 class TestCourseBasicFunctionality:

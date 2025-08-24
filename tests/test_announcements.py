@@ -17,7 +17,7 @@
 
 from datetime import datetime, timedelta
 
-from now_lms.db import Announcement, Curso, Usuario, DocenteCurso, database
+from now_lms.db import Announcement, Curso, DocenteCurso, Usuario, database
 
 
 def test_announcement_creation(isolated_db_session):
@@ -193,23 +193,23 @@ def test_sticky_announcement(isolated_db_session):
     assert announcement.is_sticky
 
 
-def test_admin_announcements_list_unauthorized(app):
+def test_admin_announcements_list_unauthorized(session_basic_db_setup):
     """Test that unauthorized users cannot access admin announcements."""
-    client = app.test_client()
+    client = session_basic_db_setup.test_client()
     response = client.get("/admin/announcements")
     assert response.status_code == 302  # Redirect to login
 
 
-def test_global_announcements_unauthorized(app):
+def test_global_announcements_unauthorized(session_basic_db_setup):
     """Test that unauthorized users cannot access global announcements."""
-    client = app.test_client()
+    client = session_basic_db_setup.test_client()
     response = client.get("/dashboard/announcements")
     assert response.status_code == 302  # Redirect to login
 
 
-def test_instructor_announcements_unauthorized(app):
+def test_instructor_announcements_unauthorized(session_basic_db_setup):
     """Test that unauthorized users cannot access instructor announcements."""
-    client = app.test_client()
+    client = session_basic_db_setup.test_client()
     response = client.get("/instructor/announcements")
     assert response.status_code == 302  # Redirect to login
 

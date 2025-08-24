@@ -23,18 +23,18 @@ Comprehensive end-to-end tests for evaluation system.
 def test_comprehensive_evaluation_workflow(full_db_setup, client):
     """Test complete evaluation workflow from course creation to student completion."""
     app = full_db_setup
+    from now_lms.auth import proteger_passwd
     from now_lms.db import (
-        Usuario,
         Curso,
         CursoSeccion,
+        EstudianteCurso,
         Evaluation,
+        EvaluationAttempt,
+        Pago,
         Question,
         QuestionOption,
-        EvaluationAttempt,
-        EstudianteCurso,
-        Pago,
+        Usuario,
     )
-    from now_lms.auth import proteger_passwd
 
     # Step 1: Create instructor user
     with app.app_context():
@@ -309,15 +309,8 @@ def test_comprehensive_evaluation_workflow(full_db_setup, client):
 def test_evaluation_failure_and_retry(full_db_setup, client):
     """Test evaluation failure and retry functionality."""
     app = full_db_setup
-    from now_lms.db import (
-        Usuario,
-        CursoSeccion,
-        Evaluation,
-        Question,
-        QuestionOption,
-        EvaluationAttempt,
-    )
     from now_lms.auth import proteger_passwd
+    from now_lms.db import CursoSeccion, Evaluation, EvaluationAttempt, Question, QuestionOption, Usuario
 
     # Create instructor and course setup (similar to previous test)
     with app.app_context():
@@ -507,16 +500,16 @@ def test_evaluation_failure_and_retry(full_db_setup, client):
 def test_evaluation_reopen_request(full_db_setup, client):
     """Test evaluation reopen request functionality."""
     app = full_db_setup
+    from now_lms.auth import proteger_passwd
     from now_lms.db import (
-        Usuario,
         CursoSeccion,
         Evaluation,
-        Question,
-        QuestionOption,
         EvaluationAttempt,
         EvaluationReopenRequest,
+        Question,
+        QuestionOption,
+        Usuario,
     )
-    from now_lms.auth import proteger_passwd
 
     # Setup similar to previous tests but with exhausted attempts
     with app.app_context():

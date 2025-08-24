@@ -15,27 +15,27 @@
 
 """Comprehensive tests for now_lms/calendar_utils.py functionality."""
 
-from datetime import datetime, date, time as time_obj
-
+from datetime import date, datetime
+from datetime import time as time_obj
 
 from now_lms.calendar_utils import (
-    create_events_for_student_enrollment,
-    get_upcoming_events_for_user,
-    cleanup_events_for_course_unenrollment,
     _combine_date_time,
     _get_app_timezone,
+    cleanup_events_for_course_unenrollment,
+    create_events_for_student_enrollment,
+    get_upcoming_events_for_user,
 )
 from now_lms.db import (
-    Usuario,
     Curso,
-    CursoSeccion,
     CursoRecurso,
+    CursoSeccion,
+    DocenteCurso,
+    EstudianteCurso,
     Evaluation,
     Question,
     QuestionOption,
-    EstudianteCurso,
-    DocenteCurso,
     UserEvent,
+    Usuario,
     database,
     select,
 )
@@ -826,7 +826,7 @@ class TestCalendarUtilsComprehensive:
         # These functions spawn threads, so we can't easily test their full execution
         # but we can verify they don't crash when called
         try:
-            from now_lms.calendar_utils import update_meet_resource_events, update_evaluation_events
+            from now_lms.calendar_utils import update_evaluation_events, update_meet_resource_events
 
             # These will spawn background threads
             update_meet_resource_events(meet_resource.id)

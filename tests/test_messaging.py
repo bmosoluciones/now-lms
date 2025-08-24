@@ -70,7 +70,7 @@ class TestMessagingSystem:
         """Test that message forms can be imported and instantiated."""
         with lms_app.app_context():
             with lms_app.test_request_context():
-                from now_lms.forms import MessageThreadForm, MessageReplyForm, MessageReportForm
+                from now_lms.forms import MessageReplyForm, MessageReportForm, MessageThreadForm
 
                 # Test form instantiation
                 thread_form = MessageThreadForm()
@@ -116,8 +116,9 @@ class TestMessagingSystem:
     def test_student_message_reporting_access_logic(self):
         """Test that student message reporting uses course-level access instead of thread-level access."""
         with lms_app.app_context():
-            from now_lms.vistas.messages import check_thread_access
             from unittest.mock import Mock
+
+            from now_lms.vistas.messages import check_thread_access
 
             # Create mock student user
             mock_student = Mock()

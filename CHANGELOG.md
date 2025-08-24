@@ -8,9 +8,13 @@ All notable changes to this project will be documented in this file.
 
 ## [release: v0.0.1b12.dev20250823] - 2025-08-23
 
+## Added
+ - Page info route
+
 ## Changed
 - Refactor meet and link resource pages
 - Manage certificate templates by tipe (program or course)
+- Improve CLI interface
 
 ### Fixed:
  - Fixed course admin navigation in small screens

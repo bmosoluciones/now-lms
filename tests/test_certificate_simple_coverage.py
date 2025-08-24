@@ -15,17 +15,12 @@
 
 """Simplified comprehensive tests for Certificate views to improve coverage."""
 
-import pytest
 import sys
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
-from now_lms.db import (
-    Certificacion,
-    CertificacionPrograma,
-    Certificado,
-    Programa,
-    database,
-)
+import pytest
+
+from now_lms.db import Certificacion, CertificacionPrograma, Certificado, Programa, database
 from now_lms.vistas.certificates import insert_style_in_html
 
 

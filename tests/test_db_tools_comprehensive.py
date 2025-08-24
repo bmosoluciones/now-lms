@@ -61,10 +61,11 @@ class TestDatabaseUtilities:
 
     def test_check_db_access_errors(self, lms_application):
         """Test check_db_access error handling."""
-        from now_lms.db.tools import check_db_access
-        from sqlalchemy.exc import OperationalError, ProgrammingError
         from pg8000.dbapi import ProgrammingError as PGProgrammingError
         from pg8000.exceptions import DatabaseError
+        from sqlalchemy.exc import OperationalError, ProgrammingError
+
+        from now_lms.db.tools import check_db_access
 
         with lms_application.app_context():
             # Test OperationalError
@@ -98,8 +99,8 @@ class TestContentCounters:
 
     def test_cursos_por_etiqueta(self, isolated_db_session):
         """Test cursos_por_etiqueta function."""
+        from now_lms.db import Curso, Etiqueta, EtiquetaCurso
         from now_lms.db.tools import cursos_por_etiqueta
-        from now_lms.db import Etiqueta, EtiquetaCurso, Curso, database
 
         # Create test tag
         tag = Etiqueta(nombre="TestTag", color="#FF0000")
@@ -133,8 +134,8 @@ class TestContentCounters:
 
     def test_cursos_por_categoria(self, isolated_db_session):
         """Test cursos_por_categoria function."""
+        from now_lms.db import Categoria, CategoriaCurso, Curso
         from now_lms.db.tools import cursos_por_categoria
-        from now_lms.db import Categoria, CategoriaCurso, Curso, database
 
         # Create test category
         category = Categoria(nombre="TestCategory", descripcion="Test category")
@@ -172,16 +173,16 @@ class TestChoiceGenerators:
 
     def test_generate_user_choices(self, isolated_db_session):
         """Test generate_user_choices function."""
+        from now_lms.db import Usuario
         from now_lms.db.tools import generate_user_choices
-        from now_lms.db import Usuario, database
 
-        # Create test user
+        # Create test user with unique username
         user = Usuario(
-            usuario="testuser",
+            usuario="testuser_choices",
             acceso=b"password123",
             nombre="Test",
             apellido="User",
-            correo_electronico="test@example.com",
+            correo_electronico="test_choices@example.com",
             tipo="student",
         )
         isolated_db_session.add(user)
@@ -190,12 +191,12 @@ class TestChoiceGenerators:
         # Test choices generation
         choices = generate_user_choices()
         assert len(choices) >= 1
-        assert any(choice[0] == "testuser" and choice[1] == "Test User" for choice in choices)
+        assert any(choice[0] == "testuser_choices" and choice[1] == "Test User" for choice in choices)
 
     def test_generate_cource_choices(self, isolated_db_session):
         """Test generate_cource_choices function."""
+        from now_lms.db import Curso
         from now_lms.db.tools import generate_cource_choices
-        from now_lms.db import Curso, database
 
         # Create test course
         course = Curso(
@@ -216,9 +217,10 @@ class TestChoiceGenerators:
 
     def test_generate_masterclass_choices(self, isolated_db_session):
         """Test generate_masterclass_choices function."""
-        from now_lms.db.tools import generate_masterclass_choices
-        from now_lms.db import MasterClass, Usuario, database
         from datetime import date, time
+
+        from now_lms.db import MasterClass, Usuario
+        from now_lms.db.tools import generate_masterclass_choices
 
         # Create instructor
         instructor = Usuario(
@@ -264,8 +266,8 @@ class TestChoiceGenerators:
 
     def test_generate_category_choices(self, isolated_db_session):
         """Test generate_category_choices function."""
+        from now_lms.db import Categoria
         from now_lms.db.tools import generate_category_choices
-        from now_lms.db import Categoria, database
 
         # Create test category
         category = Categoria(nombre="TestCategory", descripcion="Test category")
@@ -280,8 +282,8 @@ class TestChoiceGenerators:
 
     def test_generate_tag_choices(self, isolated_db_session):
         """Test generate_tag_choices function."""
+        from now_lms.db import Etiqueta
         from now_lms.db.tools import generate_tag_choices
-        from now_lms.db import Etiqueta, database
 
         # Create test tag
         tag = Etiqueta(nombre="TestTag", color="#FF0000")
@@ -299,8 +301,8 @@ class TestFeatureFlags:
 
     def test_is_programs_enabled(self, isolated_db_session):
         """Test is_programs_enabled function."""
-        from now_lms.db.tools import is_programs_enabled
         from now_lms.db import Configuracion, database
+        from now_lms.db.tools import is_programs_enabled
 
         # Test when programs are enabled
         config = isolated_db_session.execute(database.select(Configuracion)).scalars().first()
@@ -318,8 +320,8 @@ class TestFeatureFlags:
 
     def test_is_masterclass_enabled(self, isolated_db_session):
         """Test is_masterclass_enabled function."""
-        from now_lms.db.tools import is_masterclass_enabled
         from now_lms.db import Configuracion, database
+        from now_lms.db.tools import is_masterclass_enabled
 
         # Test when masterclass is enabled
         config = isolated_db_session.execute(database.select(Configuracion)).scalars().first()
@@ -337,8 +339,8 @@ class TestFeatureFlags:
 
     def test_is_resources_enabled(self, isolated_db_session):
         """Test is_resources_enabled function."""
-        from now_lms.db.tools import is_resources_enabled
         from now_lms.db import Configuracion, database
+        from now_lms.db.tools import is_resources_enabled
 
         # Test when resources are enabled
         config = isolated_db_session.execute(database.select(Configuracion)).scalars().first()
@@ -397,14 +399,14 @@ class TestAdSenseFunctions:
     def test_get_ad_functions(self, session_basic_db_setup):
         """Test various ad placement functions."""
         from now_lms.db.tools import (
+            get_ad_billboard,
+            get_ad_large_rectangle,
+            get_ad_large_skyscraper,
             get_ad_leaderboard,
             get_ad_medium_rectangle,
-            get_ad_large_rectangle,
             get_ad_mobile_banner,
-            get_ad_wide_skyscraper,
             get_ad_skyscraper,
-            get_ad_large_skyscraper,
-            get_ad_billboard,
+            get_ad_wide_skyscraper,
         )
 
         with session_basic_db_setup.app_context():
@@ -424,8 +426,8 @@ class TestCourseTagsAndCategories:
 
     def test_get_course_category(self, isolated_db_session):
         """Test get_course_category function."""
+        from now_lms.db import Categoria, CategoriaCurso, Curso
         from now_lms.db.tools import get_course_category
-        from now_lms.db import Categoria, CategoriaCurso, Curso, database
 
         # Create test category and course
         category = Categoria(nombre="TestCategory", descripcion="Test category")
@@ -458,8 +460,8 @@ class TestCourseTagsAndCategories:
 
     def test_get_course_tags(self, isolated_db_session):
         """Test get_course_tags function."""
+        from now_lms.db import Curso, Etiqueta, EtiquetaCurso
         from now_lms.db.tools import get_course_tags
-        from now_lms.db import Etiqueta, EtiquetaCurso, Curso, database
 
         # Create test tags and course
         tag1 = Etiqueta(nombre="Tag1", color="#FF0000")
@@ -510,8 +512,9 @@ class TestGetCurrentThemeErrors:
 
     def test_get_current_theme_operational_error(self, lms_application):
         """Test get_current_theme handles OperationalError."""
-        from now_lms.db.tools import get_current_theme
         from sqlalchemy.exc import OperationalError
+
+        from now_lms.db.tools import get_current_theme
 
         with lms_application.app_context():
             with patch("now_lms.db.tools.database.session.execute") as mock_execute:

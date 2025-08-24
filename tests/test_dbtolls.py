@@ -45,7 +45,7 @@ def test_db_tools_negative():
     from now_lms import lms_app
 
     with lms_app.app_context():
-        from now_lms.db.tools import database_is_populated, check_db_access, get_current_theme
+        from now_lms.db.tools import check_db_access, database_is_populated, get_current_theme
 
         assert not database_is_populated(lms_app)
         assert check_db_access(lms_app)  # True with SQLite
@@ -178,6 +178,7 @@ def test_get_course_sections_jinja_global(minimal_db_setup):
     """Test that get_course_sections is available as a Jinja global variable."""
     with minimal_db_setup.app_context():
         from flask import render_template_string
+
         from now_lms.db import Curso, CursoSeccion, database
 
         # Create a test course with sections
