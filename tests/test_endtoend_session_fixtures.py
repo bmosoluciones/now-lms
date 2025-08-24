@@ -58,14 +58,21 @@ class TestEndToEndSessionFixtures:
 
     def test_course_admin_workflow_session(self, session_full_db_setup, test_client):
         """Test course administration workflow as admin using session fixture."""
+        import time
+        
+        # Generate unique username to avoid conflicts
+        unique_suffix = int(time.time() * 1000) % 1000000
+        admin_username = f"admin_workflow_{unique_suffix}"
+        admin_email = f"admin_workflow_{unique_suffix}@nowlms.com"
+        
         with session_full_db_setup.app_context():
             # Create admin user
             admin_user = Usuario(
-                usuario="admin_workflow",
+                usuario=admin_username,
                 acceso=proteger_passwd("admin_pass"),
                 nombre="Admin",
                 apellido="Workflow",
-                correo_electronico="admin_workflow@nowlms.com",
+                correo_electronico=admin_email,
                 tipo="admin",
                 activo=True,
                 correo_electronico_verificado=True,
@@ -76,7 +83,7 @@ class TestEndToEndSessionFixtures:
         # Login as admin
         login_response = test_client.post(
             "/user/login",
-            data={"usuario": "admin_workflow", "acceso": "admin_pass"},
+            data={"usuario": admin_username, "acceso": "admin_pass"},
             follow_redirects=True,
         )
         assert login_response.status_code == 200
@@ -123,14 +130,21 @@ class TestEndToEndSessionFixtures:
 
     def test_instructor_course_workflow_session(self, session_full_db_setup, test_client):
         """Test instructor course creation and management workflow using session fixture."""
+        import time
+        
+        # Generate unique username to avoid conflicts  
+        unique_suffix = int(time.time() * 1000) % 1000000
+        instructor_username = f"instructor_workflow_{unique_suffix}"
+        instructor_email = f"instructor_workflow_{unique_suffix}@nowlms.com"
+        
         with session_full_db_setup.app_context():
             # Create instructor user
             instructor_user = Usuario(
-                usuario="instructor_workflow",
+                usuario=instructor_username,
                 acceso=proteger_passwd("instructor_pass"),
                 nombre="Instructor",
                 apellido="Workflow",
-                correo_electronico="instructor_workflow@nowlms.com",
+                correo_electronico=instructor_email,
                 tipo="instructor",
                 activo=True,
                 correo_electronico_verificado=True,
@@ -141,7 +155,7 @@ class TestEndToEndSessionFixtures:
         # Login as instructor
         login_response = test_client.post(
             "/user/login",
-            data={"usuario": "instructor_workflow", "acceso": "instructor_pass"},
+            data={"usuario": instructor_username, "acceso": "instructor_pass"},
             follow_redirects=True,
         )
         assert login_response.status_code == 200
@@ -187,7 +201,7 @@ class TestEndToEndSessionFixtures:
 
             # Verify instructor is assigned to the course
             instructor_assignment = database.session.execute(
-                database.select(DocenteCurso).filter_by(curso="instructor_test_course", usuario="instructor_workflow")
+                database.select(DocenteCurso).filter_by(curso="instructor_test_course", usuario=instructor_username)
             ).scalar_one_or_none()
             assert instructor_assignment is not None
 
