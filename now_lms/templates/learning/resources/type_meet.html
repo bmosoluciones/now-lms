@@ -11,10 +11,6 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
         {{ current_theme.local_style() }}
         <style>
-            body {
-                margin-top: 20px;
-            }
-
             .events_area {
                 padding: 130px 0 100px;
             }
@@ -57,7 +53,9 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                 right: 0px;
                 width: 275px;
                 padding: 30px 25px;
+                background: rgba(0, 0, 0, 0.7);
                 color: #ffffff;
+                border-radius: 8px;
             }
 
             .single_event .event_details .date {
@@ -82,6 +80,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
             .single_event .event_details .time-location p {
                 margin-bottom: 0px;
+                color: #ffffff;
             }
 
             .single_event .event_details .time-location p span {
@@ -141,20 +140,110 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                     <div class="event_details">
                                         <div class="d-flex mb-4">
                                             <div class="date">
+                                                {% if recurso.fecha %}
                                                 <span> {{ recurso.fecha.strftime('%d') }} </span> {{
-                                                recurso.fecha.strftime('%b') }}
+                                                recurso.fecha.strftime('%b') }} {% else %} <span>--</span> Sin fecha {% endif
+                                                %}
                                             </div>
                                             <div class="time-location">
                                                 <p>
-                                                    <span class="ti-time mr-2"></span> {{ recurso.hora_inicio }} - {{
-                                                    recurso.hora_inicio }}
+                                                    <span class="ti-time mr-2"></span>
+                                                    {% if recurso.hora_inicio and recurso.hora_fin %} {{ recurso.hora_inicio }}
+                                                    - {{ recurso.hora_fin }} {% else %} Sin horario programado {% endif %}
                                                 </p>
-                                                <p><span class="ti-location-pin mr-2"></span>{{ recurso.notes }}</p>
+                                                <p>
+                                                    <span class="ti-location-pin mr-2"></span>{{ recurso.notes or 'Sin
+                                                    ubicación' }}
+                                                </p>
                                             </div>
                                         </div>
                                         <p>{{ recurso.nombre }}</p>
-                                        <a href="{{ recurso.url }}" class="btn btn-primary rounded-0 mt-3">Link al Meet</a>
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            <a href="{{ recurso.url }}" class="btn btn-primary rounded-0 mt-3">Link al Meet</a>
+
+                                            <!-- Calendar dropdown -->
+                                            <div class="dropdown mt-3">
+                                                <button
+                                                    class="btn btn-outline-secondary rounded-0 dropdown-toggle"
+                                                    type="button"
+                                                    id="calendarDropdown"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false"
+                                                >
+                                                    <i class="bi bi-calendar-plus"></i> Agregar al Calendario
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="calendarDropdown">
+                                                    <li>
+                                                        <a
+                                                            href="{{ url_for('course.download_meet_calendar', course_code=curso.codigo, codigo=recurso.id) }}"
+                                                            class="dropdown-item"
+                                                            title="Descargar archivo ICS"
+                                                        >
+                                                            <i class="bi bi-download"></i> Descargar archivo (.ics)
+                                                        </a>
+                                                    </li>
+                                                    <li><hr class="dropdown-divider" /></li>
+                                                    <li>
+                                                        <a
+                                                            href="{{ url_for('course.google_calendar_link', course_code=curso.codigo, codigo=recurso.id) }}"
+                                                            target="_blank"
+                                                            class="dropdown-item"
+                                                        >
+                                                            <i class="bi bi-google"></i> Agregar a Google Calendar
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a
+                                                            href="{{ url_for('course.outlook_calendar_link', course_code=curso.codigo, codigo=recurso.id) }}"
+                                                            target="_blank"
+                                                            class="dropdown-item"
+                                                        >
+                                                            <i class="bi bi-microsoft"></i> Agregar a Outlook
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Meeting Recommendations -->
+                        <div class="mt-4 p-4 bg-light rounded">
+                            <h5 class="text-primary mb-3"><i class="bi bi-lightbulb"></i> Recomendaciones para la reunión</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <i class="bi bi-check-circle text-success me-2"></i>
+                                            Revisa tu conexión a internet antes de la reunión
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="bi bi-check-circle text-success me-2"></i>
+                                            Asegúrate de tener cámara y micrófono funcionando
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="bi bi-check-circle text-success me-2"></i>
+                                            Únete 5 minutos antes del horario programado
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <i class="bi bi-check-circle text-success me-2"></i>
+                                            Busca un lugar tranquilo y bien iluminado
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="bi bi-check-circle text-success me-2"></i>
+                                            Ten preparados tus materiales de estudio
+                                        </li>
+                                        <li class="mb-2">
+                                            <i class="bi bi-check-circle text-success me-2"></i>
+                                            Mantén silenciado tu micrófono cuando no hables
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>

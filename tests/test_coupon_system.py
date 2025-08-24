@@ -4,7 +4,7 @@ Test cases for the coupon system functionality.
 
 from datetime import datetime, timedelta
 
-from now_lms.db import database, Curso, Usuario
+from now_lms.db import Curso, Usuario, database
 
 
 def test_coupon_model_creation(minimal_db_setup):
@@ -271,8 +271,8 @@ def test_100_percent_discount(minimal_db_setup):
 
 def test_coupon_validation_functions(minimal_db_setup):
     """Test the coupon validation helper functions."""
-    from now_lms.vistas.courses import _validate_coupon_for_enrollment
     from now_lms.db import Coupon
+    from now_lms.vistas.courses import _validate_coupon_for_enrollment
 
     # Create test instructor
     instructor = Usuario(

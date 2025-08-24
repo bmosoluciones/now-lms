@@ -16,8 +16,8 @@
 """Basic tests for mail functionality to improve coverage."""
 
 import os
-from unittest.mock import patch
 from types import SimpleNamespace
+from unittest.mock import patch
 
 from now_lms.mail import _load_mail_config_from_env
 

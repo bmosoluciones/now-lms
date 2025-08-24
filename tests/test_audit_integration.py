@@ -2,10 +2,12 @@
 Test to verify that previously problematic view operations now have proper audit trails.
 """
 
-from flask_login import login_user
-from now_lms.db import database, Usuario, Categoria
-from now_lms.auth import proteger_passwd
 from datetime import date
+
+from flask_login import login_user
+
+from now_lms.auth import proteger_passwd
+from now_lms.db import Categoria, Usuario, database
 
 
 def test_category_creation_now_has_audit_trail(app, minimal_db_setup):

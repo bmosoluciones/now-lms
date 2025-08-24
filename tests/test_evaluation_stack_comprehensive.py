@@ -16,16 +16,7 @@
 """Comprehensive tests for Evaluation Stack - Basic version."""
 
 
-from now_lms.db import (
-    Evaluation,
-    Question,
-    QuestionOption,
-    EvaluationAttempt,
-    Curso,
-    CursoSeccion,
-    Usuario,
-    database,
-)
+from now_lms.db import Curso, CursoSeccion, Evaluation, EvaluationAttempt, Question, QuestionOption, Usuario, database
 
 
 class TestEvaluationBasicFunctionality:

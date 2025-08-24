@@ -13,10 +13,10 @@
 # limitations under the License.
 #
 
-import pytest
 from os import environ
 
-from now_lms.db import database
+import pytest
+
 
 """
 Casos de uso mas comunes.
@@ -28,11 +28,12 @@ database_url = environ.get("DATABASE_URL", "")
 def test_postgress_pg8000():
     """Test PostgreSQL database using pg8000 driver with improved error handling."""
     if database_url.startswith("postgresql"):
-        from now_lms import app, database, initial_setup
-        from now_lms.db import eliminar_base_de_datos_segura
-        from sqlalchemy.exc import OperationalError, ProgrammingError
         from pg8000.dbapi import ProgrammingError as PGProgrammingError
         from pg8000.exceptions import DatabaseError
+        from sqlalchemy.exc import OperationalError, ProgrammingError
+
+        from now_lms import app, database, initial_setup
+        from now_lms.db import eliminar_base_de_datos_segura
 
         app.config.update({"SQLALCHEMY_DATABASE_URI": database_url})
         assert app.config.get("SQLALCHEMY_DATABASE_URI") == database_url
@@ -63,9 +64,10 @@ def test_postgress_pg8000():
 def test_mysql_mysqldb():
     """Test MySQL database using MySQLdb driver with improved error handling."""
     if database_url.startswith("mysql"):
+        from sqlalchemy.exc import IntegrityError, OperationalError
+
         from now_lms import app, database, initial_setup
         from now_lms.db import eliminar_base_de_datos_segura
-        from sqlalchemy.exc import OperationalError, IntegrityError
 
         app.config.update({"SQLALCHEMY_DATABASE_URI": database_url})
         assert app.config.get("SQLALCHEMY_DATABASE_URI") == database_url

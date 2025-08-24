@@ -15,8 +15,9 @@
 
 import inspect
 import os
-import pytest
 from typing import Dict, List, Tuple
+
+import pytest
 
 from now_lms import log
 
@@ -41,28 +42,32 @@ def test_flask_instance(app):
 
 
 def test_sqlalchemy_instance(app):
-    from now_lms import database
     from flask_sqlalchemy import SQLAlchemy
+
+    from now_lms import database
 
     assert isinstance(database, SQLAlchemy)
 
 
 def test_alembic_instance(app):
-    from now_lms import alembic
     from flask_alembic import Alembic
+
+    from now_lms import alembic
 
     assert isinstance(alembic, Alembic)
 
 
 def test_login_manager_instance(app):
-    from now_lms import administrador_sesion
     from flask_login import LoginManager
+
+    from now_lms import administrador_sesion
 
     assert isinstance(administrador_sesion, LoginManager)
 
 
 def test_flask_form_classes(app):
     from flask_wtf import FlaskForm
+
     import now_lms.forms as forms
 
     form_classes = [
@@ -78,9 +83,10 @@ def test_flask_form_classes(app):
 
 
 def test_base_table_inheritance(app):
-    from now_lms.db import BaseTabla, database
     from flask_login import UserMixin
+
     from now_lms import Usuario
+    from now_lms.db import BaseTabla, database
 
     assert issubclass(Usuario, UserMixin)
     assert issubclass(Usuario, BaseTabla)

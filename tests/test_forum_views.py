@@ -18,7 +18,7 @@
 import pytest
 from flask import url_for
 
-from now_lms.db import database, Curso, ForoMensaje, Usuario, EstudianteCurso, DocenteCurso, ModeradorCurso
+from now_lms.db import Curso, DocenteCurso, EstudianteCurso, ForoMensaje, ModeradorCurso, Usuario, database
 
 
 def create_test_user_and_course():

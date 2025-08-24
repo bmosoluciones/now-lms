@@ -15,6 +15,7 @@
 
 """Tests for program functionality."""
 
+from now_lms.auth import proteger_passwd
 from now_lms.db import (
     Certificacion,
     CertificacionPrograma,
@@ -31,7 +32,6 @@ from now_lms.db.tools import (
     verificar_programa_completo,
     verificar_usuario_inscrito_programa,
 )
-from now_lms.auth import proteger_passwd
 
 
 class TestProgramFunctionality:

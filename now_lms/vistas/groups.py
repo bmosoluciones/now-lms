@@ -40,7 +40,7 @@ def nuevo_grupo():
             # cache.delete("view/" + url_for("lista_grupos"))
             flash("Grupo creado correctamente", "success")
             return redirect("/admin/panel")
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             database.session.rollback()
             flash("Error al crear el nuevo grupo.", "warning")
             return redirect("/new_group")

@@ -45,19 +45,18 @@ def get_instructor_courses(instructor_user):
     if instructor_user.tipo == "admin":
         # Los administradores pueden crear anuncios para cualquier curso
         return database.session.execute(database.select(Curso).filter(Curso.estado != "draft")).scalars().all()
-    else:
-        # Los instructores solo pueden crear anuncios para sus cursos asignados
-        return (
-            (
-                database.session.execute(
-                    database.select(Curso)
-                    .join(DocenteCurso)
-                    .filter(DocenteCurso.usuario == instructor_user.usuario, Curso.estado != "draft")
-                )
+    # Los instructores solo pueden crear anuncios para sus cursos asignados
+    return (
+        (
+            database.session.execute(
+                database.select(Curso)
+                .join(DocenteCurso)
+                .filter(DocenteCurso.usuario == instructor_user.usuario, Curso.estado != "draft")
             )
-            .scalars()
-            .all()
         )
+        .scalars()
+        .all()
+    )
 
 
 @instructor_announcements.route("/instructor/announcements")

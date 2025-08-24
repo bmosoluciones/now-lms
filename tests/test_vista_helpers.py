@@ -15,9 +15,9 @@
 
 """Tests for vista helper functions."""
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
-from now_lms.vistas._helpers import get_current_course_logo, get_site_logo, get_site_favicon
+from now_lms.vistas._helpers import get_current_course_logo, get_site_favicon, get_site_logo
 
 
 class TestVistaHelpers:

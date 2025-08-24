@@ -88,6 +88,7 @@ class TestPayPalSecurityFeatures:
     def test_paypal_module_imports_security_modules(self):
         """Test that PayPal module imports required security modules."""
         import inspect
+
         from now_lms.vistas import paypal
 
         source = inspect.getsource(paypal)
@@ -106,6 +107,7 @@ class TestPayPalSecurityFeatures:
     def test_paypal_module_has_logging(self):
         """Test that PayPal module includes logging functionality."""
         import inspect
+
         from now_lms.vistas import paypal
 
         source = inspect.getsource(paypal)
@@ -116,6 +118,7 @@ class TestPayPalSecurityFeatures:
     def test_paypal_module_handles_exceptions(self):
         """Test that PayPal module includes exception handling."""
         import inspect
+
         from now_lms.vistas import paypal
 
         source = inspect.getsource(paypal)
@@ -126,6 +129,7 @@ class TestPayPalSecurityFeatures:
     def test_paypal_module_validates_input(self):
         """Test that PayPal module includes input validation."""
         import inspect
+
         from now_lms.vistas import paypal
 
         source = inspect.getsource(paypal)
@@ -148,6 +152,7 @@ class TestPayPalIntegrationPoints:
     def test_paypal_integrates_with_database(self):
         """Test that PayPal module integrates with database models."""
         import inspect
+
         from now_lms.vistas import paypal
 
         source = inspect.getsource(paypal)
@@ -168,6 +173,7 @@ class TestPayPalIntegrationPoints:
     def test_paypal_integrates_with_auth_system(self):
         """Test that PayPal module integrates with authentication system."""
         import inspect
+
         from now_lms.vistas import paypal
 
         source = inspect.getsource(paypal)
@@ -186,6 +192,7 @@ class TestPayPalIntegrationPoints:
     def test_paypal_integrates_with_cache_system(self):
         """Test that PayPal module integrates with caching system."""
         import inspect
+
         from now_lms.vistas import paypal
 
         source = inspect.getsource(paypal)
@@ -196,6 +203,7 @@ class TestPayPalIntegrationPoints:
     def test_paypal_integrates_with_courses(self):
         """Test that PayPal module integrates with course system."""
         import inspect
+
         from now_lms.vistas import paypal
 
         source = inspect.getsource(paypal)
@@ -218,6 +226,7 @@ class TestPayPalErrorMessages:
     def test_paypal_module_has_spanish_messages(self):
         """Test that PayPal module includes Spanish error messages."""
         import inspect
+
         from now_lms.vistas import paypal
 
         source = inspect.getsource(paypal)
@@ -237,6 +246,7 @@ class TestPayPalErrorMessages:
     def test_paypal_module_provides_user_feedback(self):
         """Test that PayPal module provides user feedback."""
         import inspect
+
         from now_lms.vistas import paypal
 
         source = inspect.getsource(paypal)

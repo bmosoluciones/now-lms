@@ -5,8 +5,8 @@ This test ensures that audit fields (creado_por, modificado_por) properly handle
 user references and maintain data consistency even when users don't exist.
 """
 
-from now_lms.db import database, Usuario, Curso
 from now_lms.auth import proteger_passwd
+from now_lms.db import Curso, Usuario, database
 
 
 class TestAuditFieldValidation:

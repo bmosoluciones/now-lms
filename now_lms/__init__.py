@@ -99,6 +99,7 @@ from now_lms.db.tools import (
     get_course_sections,
     get_one_record,
     get_paypal_id,
+    get_slideshowid,
     is_blog_enabled,
     is_masterclass_enabled,
     is_programs_enabled,
@@ -129,6 +130,7 @@ from now_lms.vistas.health import health_bp
 from now_lms.vistas.home import home
 from now_lms.vistas.masterclass import masterclass
 from now_lms.vistas.messages import msg
+from now_lms.vistas.page_info import page_info
 from now_lms.vistas.paypal import check_paypal_enabled, paypal
 from now_lms.vistas.profiles.admin import admin_profile
 from now_lms.vistas.profiles.instructor import instructor_profile
@@ -198,6 +200,7 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
         flask_app.register_blueprint(health_bp)
         flask_app.register_blueprint(home)
         flask_app.register_blueprint(msg)
+        flask_app.register_blueprint(page_info)
         flask_app.register_blueprint(program)
         flask_app.register_blueprint(resource_d)
         flask_app.register_blueprint(setting)
@@ -239,7 +242,7 @@ def no_autorizado():
 # Carga configuración del sitio web desde la base de datos.
 # ---------------------------------------------------------------------------------------
 @cache.cached(timeout=60, key_prefix="site_config")
-def config():  # pragma: no cover
+def config():
     """Obtiene configuración del sitio web desde la base de datos."""
     from flask import current_app, has_app_context
 
@@ -296,6 +299,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["get_all_from_db"] = get_all_records
     flask_app.jinja_env.globals["get_course_sections"] = get_course_sections
     flask_app.jinja_env.globals["get_one_from_db"] = get_one_record
+    flask_app.jinja_env.globals["get_slideshowid"] = get_slideshowid
     flask_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
     flask_app.jinja_env.globals["info"] = app_info(flask_app)
     flask_app.jinja_env.globals["is_masterclass_enabled"] = is_masterclass_enabled
@@ -495,7 +499,7 @@ def _register_error_handlers(flask_app):
 # ---------------------------------------------------------------------------------------
 lms_app = create_app()
 
-# Normalmente los servidores WSGI utilizan "app" or "application" por defecto.
+# Normalmente los servidores WSGI utilizan "app" o "application" por defecto.
 app = lms_app
 application = lms_app
 
@@ -576,3 +580,10 @@ def init_app(with_examples=False, flask_app=None):
         return True
     log.warning("Could not access the database.")
     return False
+
+
+# Import CLI module to register CLI commands - must be at the end to avoid circular imports
+try:
+    import now_lms.cli  # noqa: F401, E402
+except ImportError:
+    log.warning("Could not import CLI module")

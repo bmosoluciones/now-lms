@@ -511,6 +511,13 @@ class CertificateForm(FlaskForm):
     publico = BooleanField(validators=[])
     html = TextAreaField(widget=TextAreaNoEscape())
     css = TextAreaField(widget=TextAreaNoEscape())
+    tipo = SelectField(
+        "Tipo",
+        choices=[
+            ("course", "Curso"),
+            ("program", "Programa"),
+        ],
+    )
 
 
 class AdSenseForm(FlaskForm):

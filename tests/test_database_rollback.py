@@ -16,7 +16,8 @@
 """Tests to verify database rollback behavior in exception handling."""
 
 from sqlalchemy.exc import OperationalError
-from now_lms.db import database, Etiqueta
+
+from now_lms.db import Etiqueta, database
 
 
 def test_database_session_consistency_after_rollback(app, db_session):

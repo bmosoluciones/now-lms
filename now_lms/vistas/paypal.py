@@ -469,7 +469,7 @@ def get_client_id():
 def payment_status(course_code):
     """Check payment status for a course (useful for manual testing)."""
     try:
-        from now_lms.db import Curso, EstudianteCurso
+        from now_lms.db import EstudianteCurso
 
         # Check if course exists
         curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalars().first()

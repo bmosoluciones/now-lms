@@ -272,8 +272,7 @@ def admin_create_post():
 
         if current_user.tipo == "admin":
             return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
-        else:
-            return redirect(url_for("blog.instructor_blog_index"))
+        return redirect(url_for("blog.instructor_blog_index"))
 
     return render_template("blog/post_form.html", form=form, title="Nueva Entrada")
 
@@ -339,8 +338,7 @@ def admin_edit_post(post_id):
 
         if current_user.tipo == "admin":
             return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
-        else:
-            return redirect(url_for("blog.instructor_blog_index"))
+        return redirect(url_for("blog.instructor_blog_index"))
 
     return render_template("blog/post_form.html", form=form, title="Editar Entrada", post=post)
 

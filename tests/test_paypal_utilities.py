@@ -16,7 +16,8 @@
 Unit tests for PayPal utility functions and helpers - passing tests only.
 """
 
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
+
 import requests
 
 

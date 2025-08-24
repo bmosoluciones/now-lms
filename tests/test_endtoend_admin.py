@@ -24,8 +24,8 @@ Comprehensive end-to-end tests for administrator views.
 def test_admin_users_list_view(full_db_setup, client):
     """Test GET and POST for admin users list view."""
     app = full_db_setup
-    from now_lms.db import Usuario
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Usuario
 
     # Create admin user
     with app.app_context():
@@ -59,8 +59,8 @@ def test_admin_users_list_view(full_db_setup, client):
 def test_admin_users_list_inactive_view(full_db_setup, client):
     """Test GET for admin inactive users list view."""
     app = full_db_setup
-    from now_lms.db import Usuario
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Usuario
 
     # Create admin user
     with app.app_context():
@@ -109,8 +109,8 @@ def test_admin_users_list_inactive_view(full_db_setup, client):
 def test_admin_new_user_creation(full_db_setup, client):
     """Test GET and POST for admin user creation."""
     app = full_db_setup
-    from now_lms.db import Usuario
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Usuario
 
     # Create admin user
     with app.app_context():
@@ -165,8 +165,8 @@ def test_admin_new_user_creation(full_db_setup, client):
 def test_instructor_group_list_view(full_db_setup, client):
     """Test GET for instructor group list view."""
     app = full_db_setup
-    from now_lms.db import Usuario
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Usuario
 
     # Create instructor user (required for accessing instructor group views)
     with app.app_context():
@@ -199,8 +199,8 @@ def test_instructor_group_list_view(full_db_setup, client):
 def test_admin_group_creation(full_db_setup, client):
     """Test GET and POST for admin group creation."""
     app = full_db_setup
-    from now_lms.db import Usuario, UsuarioGrupo
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Usuario, UsuarioGrupo
 
     # Create admin user
     with app.app_context():
@@ -251,8 +251,8 @@ def test_admin_group_creation(full_db_setup, client):
 def test_admin_general_settings(full_db_setup, client):
     """Test GET and POST for admin general settings."""
     app = full_db_setup
-    from now_lms.db import Usuario, Configuracion
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Configuracion, Usuario
 
     # Create admin user
     with app.app_context():
@@ -308,8 +308,8 @@ def test_admin_general_settings(full_db_setup, client):
 def test_admin_theming_settings(full_db_setup, client):
     """Test GET and POST for admin theming settings."""
     app = full_db_setup
-    from now_lms.db import Usuario, Style
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Style, Usuario
 
     # Create admin user
     with app.app_context():
@@ -358,8 +358,8 @@ def test_admin_theming_settings(full_db_setup, client):
 def test_admin_mail_settings(full_db_setup, client):
     """Test GET and POST for admin mail settings."""
     app = full_db_setup
-    from now_lms.db import Usuario, MailConfig
     from now_lms.auth import proteger_passwd
+    from now_lms.db import MailConfig, Usuario
 
     # Create admin user
     with app.app_context():
@@ -416,8 +416,8 @@ def test_admin_mail_settings(full_db_setup, client):
 def test_admin_paypal_settings(full_db_setup, client):
     """Test GET and POST for admin PayPal settings."""
     app = full_db_setup
-    from now_lms.db import Usuario, PaypalConfig
     from now_lms.auth import proteger_passwd
+    from now_lms.db import PaypalConfig, Usuario
 
     # Create admin user
     with app.app_context():
@@ -471,8 +471,8 @@ def test_admin_paypal_settings(full_db_setup, client):
 def test_admin_blog_management(full_db_setup, client):
     """Test GET and POST for admin blog management."""
     app = full_db_setup
-    from now_lms.db import Usuario, BlogPost
     from now_lms.auth import proteger_passwd
+    from now_lms.db import BlogPost, Usuario
 
     # Create admin user
     with app.app_context():
@@ -532,8 +532,8 @@ def test_admin_blog_management(full_db_setup, client):
 def test_admin_blog_tags_management(full_db_setup, client):
     """Test GET and POST for admin blog tags management."""
     app = full_db_setup
-    from now_lms.db import Usuario, BlogTag
     from now_lms.auth import proteger_passwd
+    from now_lms.db import BlogTag, Usuario
 
     # Create admin user
     with app.app_context():
@@ -584,9 +584,10 @@ def test_admin_blog_tags_management(full_db_setup, client):
 def test_admin_announcements_management(full_db_setup, client):
     """Test GET and POST for admin announcements management."""
     app = full_db_setup
-    from now_lms.db import Usuario, Announcement
-    from now_lms.auth import proteger_passwd
     from datetime import datetime
+
+    from now_lms.auth import proteger_passwd
+    from now_lms.db import Announcement, Usuario
 
     # Create admin user
     with app.app_context():
@@ -652,8 +653,8 @@ def test_admin_announcements_management(full_db_setup, client):
 def test_admin_comprehensive_flow(full_db_setup, client):
     """Test comprehensive admin workflow covering multiple admin views."""
     app = full_db_setup
-    from now_lms.db import Usuario
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Usuario
 
     # Create admin user
     with app.app_context():

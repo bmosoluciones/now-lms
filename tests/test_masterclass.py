@@ -15,7 +15,7 @@
 
 """Test Master Class functionality."""
 
-from datetime import datetime, date, time, timedelta
+from datetime import date, datetime, time, timedelta
 
 from now_lms.db import MasterClass, MasterClassEnrollment, Usuario, database
 

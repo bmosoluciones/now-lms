@@ -16,20 +16,12 @@
 """Comprehensive tests for file upload functionality."""
 
 import io
-import pytest
 from unittest.mock import patch
+
+import pytest
 from werkzeug.datastructures import FileStorage
 
-from now_lms.db import (
-    Curso,
-    CursoSeccion,
-    CursoRecurso,
-    Usuario,
-    DocenteCurso,
-    Style,
-    database,
-    select,
-)
+from now_lms.db import Curso, CursoRecurso, CursoSeccion, DocenteCurso, Style, Usuario, database, select
 
 
 class TestFileUploadFunctionality:

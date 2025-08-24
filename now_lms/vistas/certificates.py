@@ -65,13 +65,13 @@ VISTA_CERTIFICADOS = "certificate.certificados"
 @perfil_requerido("instructor")
 def certificados():
     """Lista de certificados."""
-    certificados = database.paginate(
+    certificados_list = database.paginate(
         database.select(Certificado),
         page=request.args.get("page", default=1, type=int),
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,
     )
-    return render_template("learning/certificados/lista_certificados.html", consulta=certificados)
+    return render_template("learning/certificados/lista_certificados.html", consulta=certificados_list)
 
 
 @certificate.route("/certificate/<ulid>/remove")
@@ -129,7 +129,7 @@ def certificate_new():
     """Nuevo certificado."""
     form = CertificateForm()
     if form.validate_on_submit() or request.method == "POST":
-        certificado = Certificado(
+        certificado_obj = Certificado(
             titulo=form.titulo.data,
             descripcion=form.descripcion.data,
             habilitado=False,
@@ -137,12 +137,13 @@ def certificate_new():
             usuario=current_user.id,
             html=form.html.data,
             css=form.css.data,
+            tipo=form.tipo.data,
         )
-        database.session.add(certificado)
+        database.session.add(certificado_obj)
         try:
             database.session.commit()
             flash("Nuevo certificado creado correctamente.", "success")
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             database.session.rollback()
             flash("Hubo un error al crear el certificado.", "warning")
         return redirect(url_for(VISTA_CERTIFICADOS))
@@ -155,28 +156,30 @@ def certificate_new():
 @perfil_requerido("admin")
 def certificate_edit(ulid: str):
     """Editar categoria."""
-    certificado = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
-    certificado = certificado[0]
+    certificado_result = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
+    certificado_obj = certificado_result[0]
     form = CertificateForm(
-        titulo=certificado.titulo,
-        descripcion=certificado.descripcion,
-        habilitado=certificado.habilitado,
-        publico=certificado.publico,
-        html=certificado.html,
-        css=certificado.css,
+        titulo=certificado_obj.titulo,
+        descripcion=certificado_obj.descripcion,
+        habilitado=certificado_obj.habilitado,
+        publico=certificado_obj.publico,
+        html=certificado_obj.html,
+        css=certificado_obj.css,
+        tipo=certificado_obj.tipo,
     )
     if form.validate_on_submit() or request.method == "POST":
-        certificado.titulo = form.titulo.data
-        certificado.descripcion = form.descripcion.data
-        certificado.publico = form.publico.data
-        certificado.habilitado = form.habilitado.data
-        certificado.html = form.html.data
-        certificado.css = form.css.data
+        certificado_obj.titulo = form.titulo.data
+        certificado_obj.descripcion = form.descripcion.data
+        certificado_obj.publico = form.publico.data
+        certificado_obj.habilitado = form.habilitado.data
+        certificado_obj.html = form.html.data
+        certificado_obj.css = form.css.data
+        certificado_obj.tipo = form.tipo.data
         try:
-            database.session.add(certificado)
+            database.session.add(certificado_obj)
             database.session.commit()
             flash("Certificado editado correctamente.", "success")
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("No se puedo editar el certificado.", "warning")
         return redirect(url_for(VISTA_CERTIFICADOS))
 
@@ -191,8 +194,7 @@ def insert_style_in_html(template):
     if css:
         css = "<style>" + css + "</style>"
         return css + html
-    else:
-        return html
+    return html
 
 
 @certificate.route("/certificate/inspect/<ulid>/")
@@ -228,26 +230,28 @@ def certificacion(ulid: str):
     """Render a certificate based on certification ULID."""
     from jinja2 import BaseLoader, Environment
 
-    certificacion = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
-    certificacion = certificacion[0]
+    certificacion_obj = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
+    certificacion_obj = certificacion_obj[0]
 
-    certificado = database.session.execute(database.select(Certificado).filter_by(code=certificacion.certificado)).first()
-    certificado = certificado[0]
+    certificado_obj = database.session.execute(
+        database.select(Certificado).filter_by(code=certificacion_obj.certificado)
+    ).first()
+    certificado_obj = certificado_obj[0]
 
     # Get course or master class information
-    content = certificacion.get_content_info()
-    content_type = certificacion.get_content_type()
+    content = certificacion_obj.get_content_info()
+    content_type = certificacion_obj.get_content_type()
 
-    usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion.usuario)).first()
+    usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion_obj.usuario)).first()
     usuario = usuario[0]
 
-    template = Environment(loader=BaseLoader, autoescape=True).from_string(insert_style_in_html(certificado))  # type: ignore[arg-type]
+    template = Environment(loader=BaseLoader, autoescape=True).from_string(insert_style_in_html(certificado_obj))  # type: ignore[arg-type]
 
     # Create context with both curso and master_class for template compatibility
     context = {
         "usuario": usuario,
-        "certificacion": certificacion,
-        "certificado": certificado,
+        "certificacion": certificacion_obj,
+        "certificado": certificado_obj,
         "url_for": url_for,
         "content_type": content_type,
     }
@@ -269,26 +273,28 @@ def certificate_serve_pdf(ulid: str):
     from jinja2 import BaseLoader, Environment
     from weasyprint import CSS
 
-    certificacion = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
-    certificacion = certificacion[0]
+    certificacion_obj = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
+    certificacion_obj = certificacion_obj[0]
 
-    certificado = database.session.execute(database.select(Certificado).filter_by(code=certificacion.certificado)).first()
-    certificado = certificado[0]
+    certificado_obj = database.session.execute(
+        database.select(Certificado).filter_by(code=certificacion_obj.certificado)
+    ).first()
+    certificado_obj = certificado_obj[0]
 
     # Get course or master class information
-    content = certificacion.get_content_info()
-    content_type = certificacion.get_content_type()
+    content = certificacion_obj.get_content_info()
+    content_type = certificacion_obj.get_content_type()
 
-    usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion.usuario)).first()
+    usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion_obj.usuario)).first()
     usuario = usuario[0]
 
-    rtemplate = Environment(loader=BaseLoader, autoescape=True).from_string(certificado.html)  # type: ignore[arg-type]
+    rtemplate = Environment(loader=BaseLoader, autoescape=True).from_string(certificado_obj.html)  # type: ignore[arg-type]
 
     # Create context with both curso and master_class for template compatibility
     context = {
         "usuario": usuario,
-        "certificacion": certificacion,
-        "certificado": certificado,
+        "certificacion": certificacion_obj,
+        "certificado": certificado_obj,
         "url_for": url_for,
         "content_type": content_type,
     }
@@ -302,7 +308,7 @@ def certificate_serve_pdf(ulid: str):
 
     return render_pdf(
         HTML(string=rtemplate.render(**context)),
-        stylesheets=[CSS(string=certificado.css)],
+        stylesheets=[CSS(string=certificado_obj.css)],
     )
 
 
@@ -311,36 +317,38 @@ def certificate_serve_pdf(ulid: str):
 @perfil_requerido("instructor")
 def certificaciones():
     """Lista de certificaciones emitidas."""
-    certificados = database.paginate(
+    certificados_list = database.paginate(
         database.select(Certificacion),  # noqa: E712
         page=request.args.get("page", default=1, type=int),
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,
     )
-    return render_template("learning/certificados/lista_certificaciones.html", consulta=certificados)
+    return render_template("learning/certificados/lista_certificaciones.html", consulta=certificados_list)
 
 
 @certificate.route("/certificate/view/<ulid>")
 def certificado(ulid):
     """Lista de certificaciones emitidas."""
-    certificacion = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
-    certificacion = certificacion[0]
+    certificacion_obj = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
+    certificacion_obj = certificacion_obj[0]
 
-    certificado = database.session.execute(database.select(Certificado).filter_by(code=certificacion.certificado)).first()
-    certificado = certificado[0]
+    certificado_obj = database.session.execute(
+        database.select(Certificado).filter_by(code=certificacion_obj.certificado)
+    ).first()
+    certificado_obj = certificado_obj[0]
 
     # Get course or master class information
-    content = certificacion.get_content_info()
-    content_type = certificacion.get_content_type()
+    content = certificacion_obj.get_content_info()
+    content_type = certificacion_obj.get_content_type()
 
-    usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion.usuario)).first()
+    usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion_obj.usuario)).first()
     usuario = usuario[0]
 
     # Create context with both curso and master_class for template compatibility
     context = {
         "usuario": usuario,
-        "certificacion": certificacion,
-        "certificado": certificado,
+        "certificacion": certificacion_obj,
+        "certificado": certificado_obj,
         "content_type": content_type,
     }
 
@@ -402,7 +410,7 @@ def certificacion_generar():
         if content_type == "course" and not form.curso.data:
             flash("Por favor selecciona un curso.", "warning")
             return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
-        elif content_type == "masterclass" and not form.master_class.data:
+        if content_type == "masterclass" and not form.master_class.data:
             flash("Por favor selecciona una clase magistral.", "warning")
             return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
 
@@ -448,10 +456,10 @@ def certificacion_generar():
             flash("Certificado generado correctamente.", "success")
             return redirect(url_for("certificate.certificaciones"))
 
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo en error al crear la plantilla.", "warning")
             return redirect("/instructor")
-    else:  # pragma: no cover
+    else:
         return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
 
 
@@ -484,41 +492,42 @@ def certificacion_programa(ulid: str):
     """View program certificate."""
     from jinja2 import BaseLoader, Environment
 
-    certificacion_programa = database.session.execute(
+    certificacion_programa_obj = database.session.execute(
         database.select(CertificacionPrograma).filter_by(id=ulid)
     ).scalar_one_or_none()
 
-    if not certificacion_programa:
+    if not certificacion_programa_obj:
         abort(404)
 
-    certificado = database.session.execute(
-        database.select(Certificado).filter_by(code=certificacion_programa.certificado)
+    certificado_obj = database.session.execute(
+        database.select(Certificado).filter_by(code=certificacion_programa_obj.certificado)
     ).scalar_one_or_none()
 
-    if not certificado:
+    if not certificado_obj:
         abort(404)
 
     programa = database.session.execute(
-        database.select(Programa).filter_by(id=certificacion_programa.programa)
+        database.select(Programa).filter_by(id=certificacion_programa_obj.programa)
     ).scalar_one_or_none()
 
     if not programa:
         abort(404)
 
     usuario = database.session.execute(
-        database.select(Usuario).filter_by(usuario=certificacion_programa.usuario)
+        database.select(Usuario).filter_by(usuario=certificacion_programa_obj.usuario)
     ).scalar_one_or_none()
 
     if not usuario:
         abort(404)
 
-    template = Environment(loader=BaseLoader, autoescape=True).from_string(insert_style_in_html(certificado))  # type: ignore
+    template = Environment(loader=BaseLoader, autoescape=True).from_string(insert_style_in_html(certificado_obj))  # type: ignore
 
     context = {
         "usuario": usuario,
-        "certificacion_programa": certificacion_programa,
-        "certificado": certificado,
+        "certificacion_programa": certificacion_programa_obj,
+        "certificado": certificado_obj,
         "programa": programa,
+        "id": ulid,  # Keep backward compatibility for templates using id
         "url_for": url_for,
         "database": database,  # For accessing Curso model in template
     }
@@ -533,40 +542,40 @@ def certificate_programa_serve_pdf(ulid: str):
     from jinja2 import BaseLoader, Environment
     from weasyprint import CSS
 
-    certificacion_programa = database.session.execute(
+    certificacion_programa_obj = database.session.execute(
         database.select(CertificacionPrograma).filter_by(id=ulid)
     ).scalar_one_or_none()
 
-    if not certificacion_programa:
+    if not certificacion_programa_obj:
         abort(404)
 
-    certificado = database.session.execute(
-        database.select(Certificado).filter_by(code=certificacion_programa.certificado)
+    certificado_obj = database.session.execute(
+        database.select(Certificado).filter_by(code=certificacion_programa_obj.certificado)
     ).scalar_one_or_none()
 
-    if not certificado:
+    if not certificado_obj:
         abort(404)
 
     programa = database.session.execute(
-        database.select(Programa).filter_by(id=certificacion_programa.programa)
+        database.select(Programa).filter_by(id=certificacion_programa_obj.programa)
     ).scalar_one_or_none()
 
     if not programa:
         abort(404)
 
     usuario = database.session.execute(
-        database.select(Usuario).filter_by(usuario=certificacion_programa.usuario)
+        database.select(Usuario).filter_by(usuario=certificacion_programa_obj.usuario)
     ).scalar_one_or_none()
 
     if not usuario:
         abort(404)
 
-    template = Environment(loader=BaseLoader, autoescape=True).from_string(certificado.html)  # type: ignore
+    template = Environment(loader=BaseLoader, autoescape=True).from_string(certificado_obj.html)  # type: ignore
 
     context = {
         "usuario": usuario,
-        "certificacion_programa": certificacion_programa,
-        "certificado": certificado,
+        "certificacion_programa": certificacion_programa_obj,
+        "certificado": certificado_obj,
         "programa": programa,
         "url_for": url_for,
         "database": database,  # For accessing Curso model in template
@@ -574,5 +583,5 @@ def certificate_programa_serve_pdf(ulid: str):
 
     return render_pdf(
         HTML(string=template.render(**context)),
-        stylesheets=[CSS(string=certificado.css)],
+        stylesheets=[CSS(string=certificado_obj.css)],
     )

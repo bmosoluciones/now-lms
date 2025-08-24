@@ -15,15 +15,15 @@
 
 """Tests for themes functionality."""
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 from now_lms.themes import (
-    get_theme_path,
-    get_home_template,
     get_course_list_template,
-    get_program_list_template,
     get_course_view_template,
+    get_home_template,
+    get_program_list_template,
     get_program_view_template,
+    get_theme_path,
     list_themes,
 )
 

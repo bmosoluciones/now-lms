@@ -5,10 +5,10 @@ This test ensures that audit fields (creado_por, modificado_por, creado, modific
 are automatically populated for all BaseTabla instances when records are created or modified.
 """
 
-from datetime import datetime, date
+from datetime import date, datetime
 
-from now_lms.db import database, Usuario, Curso, Categoria
 from now_lms.auth import proteger_passwd
+from now_lms.db import Categoria, Curso, Usuario, database
 
 
 class TestAutomaticAuditFields:

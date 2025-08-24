@@ -89,7 +89,7 @@ def new_resource():
         try:
             database.session.commit()
             flash("Nuevo Recurso creado correctamente.", "success")
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al crear el recurso.", "warning")
         return redirect(url_for("resource.lista_de_recursos"))
 
@@ -131,10 +131,8 @@ def descargar_recurso(resource_code):
     if current_user.is_authenticated:
         if current_user.tipo == "admin":
             return send_from_directory(directorio, recurso.file_name)
-        else:
-            return abort(403)
-    else:
-        return redirect("/login")
+        return abort(403)
+    return redirect("/login")
 
 
 @resource_d.route("/resource/<ulid>/delete")
@@ -146,8 +144,7 @@ def delete_resource(ulid: str):
         database.session.execute(delete(Recurso).where(Recurso.id == ulid))
         database.session.commit()
         return redirect("/resources_list")
-    else:
-        return abort(403)
+    return abort(403)
 
 
 @resource_d.route("/resource/<ulid>/update", methods=["GET", "POST"])
@@ -170,10 +167,10 @@ def edit_resource(ulid: str):
         else:
             return abort(403)
 
-        try:  # pragma: no cover
+        try:
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Error al editar el recurso.", "warning")
         return redirect(url_for("resource.vista_recurso", resource_code=recurso.codigo))
 
@@ -203,7 +200,7 @@ def lista_recursos():
     etiquetas = database.session.execute(database.select(Etiqueta)).scalars().all()
     categorias = database.session.execute(database.select(Categoria)).scalars().all()
     consulta_cursos = database.paginate(
-        database.select(Recurso).filter(Recurso.publico == True),  # noqa: E712
+        database.select(Recurso).filter(Recurso.publico.is_(True)),  # noqa: E712
         page=request.args.get("page", default=1, type=int),
         max_per_page=MAX_COUNT,
         count=True,
@@ -217,7 +214,7 @@ def lista_recursos():
             # El numero de pagina debe ser generado por el macro de paginación.
             try:
                 del PARAMETROS["page"]
-            except KeyError:  # pragma: no cover
+            except KeyError:
                 pass
     else:
         PARAMETROS = None

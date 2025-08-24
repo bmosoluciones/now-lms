@@ -370,7 +370,7 @@ database.session.query(Usuario).filter_by(usuario=id_usuario).first()
 # ✅ NEW (Modern)
 database.session.execute(select(Usuario).filter_by(usuario=id_usuario)).scalars().first()
 
-# ❌ OLD (Deprecated) 
+# ❌ OLD (Deprecated)
 database.session.query(Curso).all()
 
 # ✅ NEW (Modern)
@@ -414,6 +414,19 @@ user = database.session.execute(
     select(Usuario).filter_by(email=email)
 ).scalar_one_or_none()
 ```
+
+### Avoid singleton-comparison errors
+
+Incorrect way
+```
+.filter(DocenteCurso.vigente == True)
+```
+Correct way
+
+```
+.filter(DocenteCurso.vigente.is_(True))
+```
+
 
 ## Best Practices
 

@@ -18,9 +18,9 @@
 from now_lms.forms import CurseForm
 
 
-def test_course_form_forum_validation_self_paced(app):
+def test_course_form_forum_validation_self_paced(session_basic_db_setup):
     """Verifica que el formulario valide correctamente cursos self-paced."""
-    with app.app_context():
+    with session_basic_db_setup.app_context():
         form_data = {
             "nombre": "Curso de Prueba",
             "codigo": "TEST001",
@@ -53,9 +53,9 @@ def test_course_form_forum_validation_self_paced(app):
             assert "self-paced" in str(e)
 
 
-def test_course_form_forum_validation_time_based(app):
+def test_course_form_forum_validation_time_based(session_basic_db_setup):
     """Verifica que el formulario permita foro en cursos time-based."""
-    with app.app_context():
+    with session_basic_db_setup.app_context():
         form_data = {
             "nombre": "Curso de Prueba",
             "codigo": "TEST002",
@@ -88,9 +88,9 @@ def test_course_form_forum_validation_time_based(app):
             assert False, "No debería haber error de validación para time_based con foro habilitado"
 
 
-def test_course_form_forum_validation_self_paced_disabled(app):
+def test_course_form_forum_validation_self_paced_disabled(session_basic_db_setup):
     """Verifica que cursos self-paced con foro deshabilitado sean válidos."""
-    with app.app_context():
+    with session_basic_db_setup.app_context():
         form_data = {
             "nombre": "Curso de Prueba",
             "codigo": "TEST003",

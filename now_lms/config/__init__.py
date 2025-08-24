@@ -89,7 +89,7 @@ DIRECTORIO_UPLOAD_IMAGENES: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "image
 DIRECTORIO_UPLOAD_ARCHIVOS: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "files")
 DIRECTORIO_UPLOAD_AUDIO: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "audio")
 
-if not path.isdir(DIRECTORIO_BASE_ARCHIVOS_USUARIO):  # pragma: no cover
+if not path.isdir(DIRECTORIO_BASE_ARCHIVOS_USUARIO):
     try:
         makedirs(DIRECTORIO_BASE_ARCHIVOS_USUARIO)
         makedirs(DIRECTORIO_ARCHIVOS_PRIVADOS)
@@ -97,9 +97,9 @@ if not path.isdir(DIRECTORIO_BASE_ARCHIVOS_USUARIO):  # pragma: no cover
         makedirs(DIRECTORIO_UPLOAD_ARCHIVOS)
         makedirs(DIRECTORIO_UPLOAD_IMAGENES)
         makedirs(DIRECTORIO_UPLOAD_AUDIO)
-    except OSError:  # pragma: no cover
+    except OSError:
         log.warning(f"Cannot create directory for file uploads: {DIRECTORIO_BASE_ARCHIVOS_USUARIO}")
-if access(DIRECTORIO_BASE_ARCHIVOS_USUARIO, R_OK) and access(DIRECTORIO_BASE_ARCHIVOS_USUARIO, W_OK):  # pragma: no cover
+if access(DIRECTORIO_BASE_ARCHIVOS_USUARIO, R_OK) and access(DIRECTORIO_BASE_ARCHIVOS_USUARIO, W_OK):
     log.trace(f"Access verified to: {DIRECTORIO_BASE_ARCHIVOS_USUARIO}")
 else:
     log.warning(f"No access to upload files to directory: {DIRECTORIO_BASE_ARCHIVOS_USUARIO}")
@@ -120,7 +120,7 @@ if (
 ):
     SQLITE: str = "sqlite://"
 else:
-    if name == "nt":  # pragma: no cover
+    if name == "nt":
         SQLITE = "sqlite:///" + str(DIRECTORIO_PRINCICIPAL) + "\\now_lms.db"
     else:
         SQLITE = "sqlite:///" + str(DIRECTORIO_PRINCICIPAL) + "/now_lms.db"
@@ -149,7 +149,7 @@ if DESARROLLO:
 
 
 # Corrige URI de conexion a la base de datos si el usuario omite el driver apropiado.
-if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # pragma: no cover
+if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
     # En Heroku va a estar disponible psycopg2.
     # - https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
     # - https://devcenter.heroku.com/changelog-items/2035

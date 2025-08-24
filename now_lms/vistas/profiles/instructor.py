@@ -70,7 +70,7 @@ def cursos():
             count=True,
         )
     else:
-        try:  # pragma: no cover
+        try:
             consulta_cursos = database.paginate(
                 database.select(Curso).join(DocenteCurso).filter(DocenteCurso.usuario == current_user.usuario),
                 page=request.args.get("page", default=1, type=int),
@@ -78,7 +78,7 @@ def cursos():
                 count=True,
             )
 
-        except ArgumentError:  # pragma: no cover
+        except ArgumentError:
             consulta_cursos = None
     return render_template("learning/curso_lista.html", consulta=consulta_cursos)
 
@@ -155,7 +155,7 @@ def agrega_usuario_a_grupo():
         database.session.commit()
         flash("Usuario Agregado Correctamente.", "success")
         return redirect(url_grupo)
-    except OperationalError:  # pragma: no cover
+    except OperationalError:
         flash("No se pudo agregar al usuario.", "warning")
         return redirect(url_grupo)
 
@@ -265,10 +265,10 @@ def evaluaciones_lista():
 
     # Get course information for each evaluation
     evaluaciones_con_curso = []
-    for eval in evaluaciones:
-        seccion = database.session.get(CursoSeccion, eval.section_id)
+    for evaluacion in evaluaciones:
+        seccion = database.session.get(CursoSeccion, evaluacion.section_id)
         curso = database.session.execute(select(Curso).filter_by(codigo=seccion.curso)).scalars().first() if seccion else None
-        evaluaciones_con_curso.append({"evaluacion": eval, "seccion": seccion, "curso": curso})
+        evaluaciones_con_curso.append({"evaluacion": evaluacion, "seccion": seccion, "curso": curso})
 
     return render_template("instructor/evaluaciones_lista.html", evaluaciones=evaluaciones_con_curso)
 
@@ -279,10 +279,10 @@ def evaluaciones_lista():
 def nueva_evaluacion_global():
     """Página para seleccionar curso y sección antes de crear una evaluación."""
     if current_user.tipo == "admin":
-        cursos = database.session.execute(select(Curso)).scalars().all()
+        cursos_list = database.session.execute(select(Curso)).scalars().all()
     else:
         # Get courses assigned to this instructor
-        cursos = (
+        cursos_list = (
             database.session.execute(
                 select(Curso).join(DocenteCurso).filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.vigente)
             )  # noqa: E712
@@ -290,7 +290,7 @@ def nueva_evaluacion_global():
             .all()
         )
 
-    return render_template("instructor/nueva_evaluacion_global.html", cursos=cursos)
+    return render_template("instructor/nueva_evaluacion_global.html", cursos=cursos_list)
 
 
 @instructor_profile.route("/instructor/evaluations/<evaluation_id>/edit", methods=["GET", "POST"])
@@ -366,7 +366,7 @@ def toggle_evaluation_status(evaluation_id):
         # We'll use available_until field to enable/disable
         if evaluacion.available_until is None:
             # Disable by setting past date
-            from datetime import datetime, timedelta
+            from datetime import timedelta
 
             evaluacion.available_until = datetime.now() - timedelta(days=1)
             flash("Evaluación deshabilitada.", "info")

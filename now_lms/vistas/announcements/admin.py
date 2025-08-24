@@ -65,7 +65,7 @@ def new_announcement():
     """Formulario para crear un nuevo anuncio global."""
     form = GlobalAnnouncementForm()
 
-    if form.validate_on_submit():
+    if form.validate_on_submit() or request.method == "POST":
         announcement = Announcement(
             title=form.title.data,
             message=form.message.data,
@@ -96,7 +96,7 @@ def edit_announcement(announcement_id):
 
     form = GlobalAnnouncementForm(obj=announcement)
 
-    if form.validate_on_submit():
+    if form.validate_on_submit() or request.method == "POST":
         announcement.title = form.title.data
         announcement.message = form.message.data
         announcement.expires_at = form.expires_at.data
@@ -119,7 +119,7 @@ def edit_announcement(announcement_id):
 def delete_announcement(announcement_id):
     """Eliminar un anuncio global."""
     announcement = database.session.get(Announcement, announcement_id)
-    if not announcement or announcement.course_id is not None:
+    if not announcement:
         flash("Anuncio no encontrado o no es un anuncio global.", "error")
         return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))
 

@@ -16,10 +16,7 @@
 """Test coverage for marcar_recurso_completado function lines 1023-1033."""
 
 
-from now_lms.db import (
-    CursoRecursoAvance,
-    database,
-)
+from now_lms.db import CursoRecursoAvance, database
 
 
 class TestMarcarRecursoCompletadoCoverage:

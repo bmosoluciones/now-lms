@@ -16,9 +16,10 @@
 Comprehensive tests for PayPal routes in now_lms/vistas/paypal.py
 """
 
-import pytest
 import json
 from unittest.mock import patch
+
+import pytest
 
 
 @pytest.fixture
@@ -46,9 +47,8 @@ def lms_application():
 def app_with_data(lms_application):
     """Application with database and test data."""
     from now_lms import database, initial_setup
-    from now_lms.db import eliminar_base_de_datos_segura
-    from now_lms.db import Usuario, Curso, PaypalConfig, Configuracion, Pago
-    from now_lms.auth import proteger_secreto, proteger_passwd
+    from now_lms.auth import proteger_passwd, proteger_secreto
+    from now_lms.db import Configuracion, Curso, Pago, PaypalConfig, Usuario, eliminar_base_de_datos_segura
 
     with lms_application.app_context():
         eliminar_base_de_datos_segura()
@@ -190,19 +190,22 @@ class TestPayPalHelpers:
 class TestPayPalRoutesAuthentication(TestPayPalHelpers):
     """Test authentication and authorization for PayPal routes."""
 
-    def test_payment_page_requires_authentication(self, test_client):
+    def test_payment_page_requires_authentication(self, session_basic_db_setup):
         """Test that payment page requires authentication."""
+        test_client = session_basic_db_setup.test_client()
         response = test_client.get("/paypal_checkout/payment/PAID001")
         assert response.status_code == 302  # Redirect to login
         assert "/user/login" in response.headers.get("Location", "")
 
-    def test_confirm_payment_requires_authentication(self, test_client):
+    def test_confirm_payment_requires_authentication(self, session_basic_db_setup):
         """Test that confirm payment requires authentication."""
+        test_client = session_basic_db_setup.test_client()
         response = test_client.post("/paypal_checkout/confirm_payment")
         assert response.status_code == 302  # Redirect to login
 
-    def test_get_client_id_requires_authentication(self, test_client):
+    def test_get_client_id_requires_authentication(self, session_basic_db_setup):
         """Test that get client ID requires authentication."""
+        test_client = session_basic_db_setup.test_client()
         response = test_client.get("/paypal_checkout/get_client_id")
         assert response.status_code == 302  # Redirect to login
 
@@ -517,8 +520,8 @@ class TestPayPalResumePaymentRoute(TestPayPalHelpers):
         """Test resuming another user's payment."""
         with app_with_data.app_context():
             # Create another user for the test
-            from now_lms.db import Usuario, Pago, database
             from now_lms.auth import proteger_passwd
+            from now_lms.db import Pago, Usuario, database
 
             other_user = Usuario(
                 usuario="other_user",
