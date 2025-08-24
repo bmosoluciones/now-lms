@@ -105,7 +105,7 @@ class TestProgramsComprehensive:
 
         # Use unique code to avoid conflicts
         unique_code = self._unique_code("TEST")
-        
+
         # Test POST request
         response = test_client.post(
             "/program/new",

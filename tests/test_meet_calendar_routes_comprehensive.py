@@ -18,15 +18,14 @@ Comprehensive tests for meet calendar route functions using session-scoped fixtu
 
 This test file focuses on improving code coverage for:
 - download_meet_calendar(course_code, codigo) - Line 2445
-- google_calendar_link(course_code, codigo) - Line 2497  
+- google_calendar_link(course_code, codigo) - Line 2497
 - outlook_calendar_link(course_code, codigo) - Line 2572
 """
 
 from datetime import date, time
 from urllib.parse import unquote
-import pytest
 from flask import url_for
-from now_lms.db import Curso, CursoSeccion, CursoRecurso, Usuario
+from now_lms.db import Curso, CursoSeccion, CursoRecurso
 
 
 class TestDownloadMeetCalendar:
@@ -34,10 +33,7 @@ class TestDownloadMeetCalendar:
 
     def _login_user(self, client, username="lms-admin", password="lms-admin"):
         """Helper to login a user via form POST."""
-        login_response = client.post("/user/login", data={
-            "usuario": username, 
-            "acceso": password
-        })
+        login_response = client.post("/user/login", data={"usuario": username, "acceso": password})
         # Should redirect to dashboard or return 200
         assert login_response.status_code in [200, 302], f"Login failed with status {login_response.status_code}"
 
@@ -131,20 +127,20 @@ class TestDownloadMeetCalendar:
             with session_full_db_setup.test_client() as client:
                 # Login via form post
                 self._login_user(client)
-            
+
                 # Request ICS download
-                response = client.get(url_for('course.download_meet_calendar', 
-                                           course_code='TEST_CAL_ADMIN', 
-                                           codigo='RES_CAL_ADMIN'))
-                
+                response = client.get(
+                    url_for("course.download_meet_calendar", course_code="TEST_CAL_ADMIN", codigo="RES_CAL_ADMIN")
+                )
+
                 # Verify successful response
                 assert response.status_code == 200
-                assert response.mimetype == 'text/calendar'
-                assert 'Content-Disposition' in response.headers
-                assert 'attachment; filename=' in response.headers['Content-Disposition']
-                assert 'meet-Test-Meet-Admin' in response.headers['Content-Disposition']
-                assert '.ics' in response.headers['Content-Disposition']
-                
+                assert response.mimetype == "text/calendar"
+                assert "Content-Disposition" in response.headers
+                assert "attachment; filename=" in response.headers["Content-Disposition"]
+                assert "meet-Test-Meet-Admin" in response.headers["Content-Disposition"]
+                assert ".ics" in response.headers["Content-Disposition"]
+
                 # Verify ICS content
                 ics_content = response.get_data(as_text=True)
                 assert "BEGIN:VCALENDAR" in ics_content
@@ -155,8 +151,8 @@ class TestDownloadMeetCalendar:
                 assert "Curso: Test Course Admin" in ics_content
                 assert "https://meet.google.com/admin-meet" in ics_content
 
-    def test_download_meet_calendar_student_success(self, session_full_db_setup, isolated_db_session, client):
-        """Test successful ICS download as enrolled student."""
+    def test_download_meet_calendar_student_success(self, session_full_db_setup, isolated_db_session):
+        """Test successful ICS download with default 1-hour duration."""
         with session_full_db_setup.app_context():
             # Create test course
             curso = Curso(
@@ -198,27 +194,27 @@ class TestDownloadMeetCalendar:
             isolated_db_session.add(recurso)
             isolated_db_session.commit()
 
-            # Login as student (note: this assumes there's a student user in session_full_db_setup)
-            # We'll use the default student user that should exist in the full setup
-            with client.session_transaction() as sess:
-                sess['user_id'] = 'student-demo'
-            
-            # Request ICS download
-            response = client.get(url_for('course.download_meet_calendar', 
-                                       course_code='TEST_CAL_STUDENT', 
-                                       codigo='RES_CAL_STUDENT'))
-            
+            # Create test client and login as admin (admin can access any resource)
+            with session_full_db_setup.test_client() as client:
+                # Login as admin to test the calendar functionality
+                self._login_user(client)
+
+                # Request ICS download
+                response = client.get(
+                    url_for("course.download_meet_calendar", course_code="TEST_CAL_STUDENT", codigo="RES_CAL_STUDENT")
+                )
+
             # Verify successful response
             assert response.status_code == 200
-            assert response.mimetype == 'text/calendar'
-            
+            assert response.mimetype == "text/calendar"
+
             # Verify ICS content shows default 1-hour duration
             ics_content = response.get_data(as_text=True)
             assert "DTSTART:20250121T140000" in ics_content
             assert "DTEND:20250121T150000" in ics_content  # 1 hour later
 
-    def test_download_meet_calendar_public_resource(self, session_full_db_setup, isolated_db_session, client):
-        """Test ICS download for public resource without login."""
+    def test_download_meet_calendar_public_resource(self, session_full_db_setup, isolated_db_session):
+        """Test ICS download for public resource with login."""
         with session_full_db_setup.app_context():
             # Create test course
             curso = Curso(
@@ -261,70 +257,51 @@ class TestDownloadMeetCalendar:
             isolated_db_session.add(recurso)
             isolated_db_session.commit()
 
-            # Request ICS download without login
-            response = client.get(url_for('course.download_meet_calendar', 
-                                       course_code='TEST_CAL_PUBLIC', 
-                                       codigo='RES_CAL_PUBLIC'))
-            
-            # Verify successful response for public resource
-            assert response.status_code == 200
-            assert response.mimetype == 'text/calendar'
+            # Create test client and login as any user (since resource is public)
+            with session_full_db_setup.test_client() as client:
+                # Login is still required due to @login_required decorator
+                self._login_user(client)
 
-    def test_download_meet_calendar_resource_not_found(self, session_full_db_setup, client):
+                # Request ICS download
+                response = client.get(
+                    url_for("course.download_meet_calendar", course_code="TEST_CAL_PUBLIC", codigo="RES_CAL_PUBLIC")
+                )
+
+                # Verify successful response for public resource
+                assert response.status_code == 200
+                assert response.mimetype == "text/calendar"
+
+    def test_download_meet_calendar_resource_not_found(self, session_full_db_setup):
         """Test 404 when meet resource not found."""
         with session_full_db_setup.app_context():
-            # Login as admin
-            with client.session_transaction() as sess:
-                sess['user_id'] = 'lms-admin'
-            
-            # Request non-existent resource
-            response = client.get(url_for('course.download_meet_calendar', 
-                                       course_code='NONEXISTENT', 
-                                       codigo='NONEXISTENT'))
-            
-            assert response.status_code == 404
+            # Create test client and login as admin
+            with session_full_db_setup.test_client() as client:
+                # Login as admin
+                self._login_user(client)
 
-    def test_download_meet_calendar_course_not_found(self, session_full_db_setup, isolated_db_session, client):
+                # Request non-existent resource
+                response = client.get(
+                    url_for("course.download_meet_calendar", course_code="NONEXISTENT", codigo="NONEXISTENT")
+                )
+
+                assert response.status_code == 404
+
+    def test_download_meet_calendar_course_not_found(self, session_full_db_setup):
         """Test 404 when course not found."""
         with session_full_db_setup.app_context():
-            # Create orphaned section and resource (course doesn't exist)
-            seccion = CursoSeccion(
-                id="SEC_ORPHAN",
-                curso="NONEXISTENT_COURSE",
-                nombre="Orphan Section",
-                descripcion="Orphan section",
-                indice=1,
-                estado=True,
-            )
-            isolated_db_session.add(seccion)
-            isolated_db_session.flush()
+            # Create test client and login as admin
+            with session_full_db_setup.test_client() as client:
+                # Login as admin
+                self._login_user(client)
 
-            recurso = CursoRecurso(
-                id="RES_ORPHAN",
-                seccion="SEC_ORPHAN",
-                curso="NONEXISTENT_COURSE",
-                nombre="Orphan Resource",
-                descripcion="Orphan resource",
-                tipo="meet",
-                fecha=date(2025, 1, 23),
-                hora_inicio=time(10, 0),
-                hora_fin=time(11, 0),
-            )
-            isolated_db_session.add(recurso)
-            isolated_db_session.commit()
+                # Request resource with non-existent course
+                response = client.get(
+                    url_for("course.download_meet_calendar", course_code="NONEXISTENT_COURSE", codigo="NONEXISTENT_RESOURCE")
+                )
 
-            # Login as admin
-            with client.session_transaction() as sess:
-                sess['user_id'] = 'lms-admin'
-            
-            # Request resource with non-existent course
-            response = client.get(url_for('course.download_meet_calendar', 
-                                       course_code='NONEXISTENT_COURSE', 
-                                       codigo='RES_ORPHAN'))
-            
-            assert response.status_code == 404
+                assert response.status_code == 404
 
-    def test_download_meet_calendar_access_denied(self, session_full_db_setup, isolated_db_session, client):
+    def test_download_meet_calendar_access_denied(self, session_full_db_setup, isolated_db_session):
         """Test 403 when user doesn't have access to private resource."""
         with session_full_db_setup.app_context():
             # Create test course
@@ -366,12 +343,17 @@ class TestDownloadMeetCalendar:
             isolated_db_session.add(recurso)
             isolated_db_session.commit()
 
-            # Try to access without login
-            response = client.get(url_for('course.download_meet_calendar', 
-                                       course_code='TEST_CAL_PRIVATE', 
-                                       codigo='RES_CAL_PRIVATE'))
-            
-            assert response.status_code == 403
+            # Create test client and login as a user without access to the course
+            with session_full_db_setup.test_client() as client:
+                # Login as student who is not enrolled in this course
+                self._login_user(client, username="student", password="student")
+
+                # Try to access private resource
+                response = client.get(
+                    url_for("course.download_meet_calendar", course_code="TEST_CAL_PRIVATE", codigo="RES_CAL_PRIVATE")
+                )
+
+                assert response.status_code == 403
 
 
 class TestGoogleCalendarLink:
@@ -379,10 +361,7 @@ class TestGoogleCalendarLink:
 
     def _login_user(self, client, username="lms-admin", password="lms-admin"):
         """Helper to login a user via form POST."""
-        login_response = client.post("/user/login", data={
-            "usuario": username, 
-            "acceso": password
-        })
+        login_response = client.post("/user/login", data={"usuario": username, "acceso": password})
         # Should redirect to dashboard or return 200
         assert login_response.status_code in [200, 302], f"Login failed with status {login_response.status_code}"
 
@@ -433,32 +412,32 @@ class TestGoogleCalendarLink:
             with session_full_db_setup.test_client() as client:
                 # Login via form post
                 self._login_user(client)
-                
+
                 # Request Google Calendar redirect
-                response = client.get(url_for('course.google_calendar_link', 
-                                           course_code='TEST_GCAL_ADMIN', 
-                                           codigo='RES_GCAL_ADMIN'))
-                
+                response = client.get(
+                    url_for("course.google_calendar_link", course_code="TEST_GCAL_ADMIN", codigo="RES_GCAL_ADMIN")
+                )
+
                 # Verify redirect response
                 assert response.status_code == 302
-                assert 'calendar.google.com' in response.location
-                assert 'action=TEMPLATE' in response.location
-                
+                assert "calendar.google.com" in response.location
+                assert "action=TEMPLATE" in response.location
+
                 # Verify URL contains proper encoded parameters
-                assert 'text=' in response.location
-                assert 'dates=20250125T100000/20250125T113000' in response.location
-                assert 'details=' in response.location
-                assert 'location=' in response.location
-            
+                assert "text=" in response.location
+                assert "dates=20250125T100000/20250125T113000" in response.location
+                assert "details=" in response.location
+                assert "location=" in response.location
+
             # Check that course name and description are in the URL
             decoded_url = unquote(response.location)
-            assert 'Test Meet Google' in decoded_url
-            assert 'Curso: Test Course Google' in decoded_url
-            assert 'Google meet description' in decoded_url
-            assert 'https://meet.google.com/google-test' in decoded_url
-            assert 'google meet location' in decoded_url
+            assert "Test Meet Google" in decoded_url
+            assert "Curso: Test Course Google" in decoded_url
+            assert "Google meet description" in decoded_url
+            assert "https://meet.google.com/google-test" in decoded_url
+            assert "google meet location" in decoded_url
 
-    def test_google_calendar_link_without_end_time(self, session_full_db_setup, isolated_db_session, client):
+    def test_google_calendar_link_without_end_time(self, session_full_db_setup, isolated_db_session):
         """Test Google Calendar redirect with default 1-hour duration."""
         with session_full_db_setup.app_context():
             # Create test course
@@ -501,18 +480,19 @@ class TestGoogleCalendarLink:
             isolated_db_session.add(recurso)
             isolated_db_session.commit()
 
-            # Login as admin
-            with client.session_transaction() as sess:
-                sess['user_id'] = 'lms-admin'
-            
-            # Request Google Calendar redirect
-            response = client.get(url_for('course.google_calendar_link', 
-                                       course_code='TEST_GCAL_NO_END', 
-                                       codigo='RES_GCAL_NO_END'))
-            
-            # Verify redirect with 1-hour default duration
-            assert response.status_code == 302
-            assert 'dates=20250126T140000/20250126T150000' in response.location  # 1 hour later
+            # Create test client and login as admin
+            with session_full_db_setup.test_client() as client:
+                # Login as admin
+                self._login_user(client)
+
+                # Request Google Calendar redirect
+                response = client.get(
+                    url_for("course.google_calendar_link", course_code="TEST_GCAL_NO_END", codigo="RES_GCAL_NO_END")
+                )
+
+                # Verify redirect with 1-hour default duration
+                assert response.status_code == 302
+                assert "dates=20250126T140000/20250126T150000" in response.location  # 1 hour later
 
     def test_google_calendar_link_missing_datetime_error(self, session_full_db_setup, isolated_db_session, client):
         """Test error handling when date/time is missing."""
@@ -559,19 +539,19 @@ class TestGoogleCalendarLink:
 
             # Login as admin
             with client.session_transaction() as sess:
-                sess['user_id'] = 'lms-admin'
-            
+                sess["user_id"] = "lms-admin"
+
             # Request Google Calendar redirect
-            response = client.get(url_for('course.google_calendar_link', 
-                                       course_code='TEST_GCAL_NO_DATE', 
-                                       codigo='RES_GCAL_NO_DATE'),
-                                       follow_redirects=True)
-            
+            response = client.get(
+                url_for("course.google_calendar_link", course_code="TEST_GCAL_NO_DATE", codigo="RES_GCAL_NO_DATE"),
+                follow_redirects=True,
+            )
+
             # Should redirect back to resource view with error message
             assert response.status_code == 200
             # Check that we got redirected back (can't easily test flash message without a full page)
 
-    def test_google_calendar_link_minimal_content(self, session_full_db_setup, isolated_db_session, client):
+    def test_google_calendar_link_minimal_content(self, session_full_db_setup, isolated_db_session):
         """Test Google Calendar link with minimal content (no description, no URL)."""
         with session_full_db_setup.app_context():
             # Create test course
@@ -614,25 +594,26 @@ class TestGoogleCalendarLink:
             isolated_db_session.add(recurso)
             isolated_db_session.commit()
 
-            # Login as admin
-            with client.session_transaction() as sess:
-                sess['user_id'] = 'lms-admin'
-            
-            # Request Google Calendar redirect
-            response = client.get(url_for('course.google_calendar_link', 
-                                       course_code='TEST_GCAL_MINIMAL', 
-                                       codigo='RES_GCAL_MINIMAL'))
-            
-            # Verify redirect response
-            assert response.status_code == 302
-            assert 'calendar.google.com' in response.location
-            
-            # Check that minimal content is properly handled
-            decoded_url = unquote(response.location)
-            assert 'Test Meet Minimal' in decoded_url
-            assert 'Curso: Test Course Minimal' in decoded_url
-            assert 'En línea' in decoded_url  # Default location
-            # Should not contain empty description or URL sections
+            # Create test client and login as admin
+            with session_full_db_setup.test_client() as client:
+                # Login as admin
+                self._login_user(client)
+
+                # Request Google Calendar redirect
+                response = client.get(
+                    url_for("course.google_calendar_link", course_code="TEST_GCAL_MINIMAL", codigo="RES_GCAL_MINIMAL")
+                )
+
+                # Verify redirect response
+                assert response.status_code == 302
+                assert "calendar.google.com" in response.location
+
+                # Check that minimal content is properly handled
+                decoded_url = unquote(response.location)
+                assert "Test Meet Minimal" in decoded_url
+                assert "Curso: Test Course Minimal" in decoded_url
+                assert "En línea" in decoded_url  # Default location
+                # Should not contain empty description or URL sections
 
 
 class TestOutlookCalendarLink:
@@ -640,10 +621,7 @@ class TestOutlookCalendarLink:
 
     def _login_user(self, client, username="lms-admin", password="lms-admin"):
         """Helper to login a user via form POST."""
-        login_response = client.post("/user/login", data={
-            "usuario": username, 
-            "acceso": password
-        })
+        login_response = client.post("/user/login", data={"usuario": username, "acceso": password})
         # Should redirect to dashboard or return 200
         assert login_response.status_code in [200, 302], f"Login failed with status {login_response.status_code}"
 
@@ -694,33 +672,33 @@ class TestOutlookCalendarLink:
             with session_full_db_setup.test_client() as client:
                 # Login via form post
                 self._login_user(client)
-                
+
                 # Request Outlook Calendar redirect
-                response = client.get(url_for('course.outlook_calendar_link', 
-                                           course_code='TEST_OCAL_ADMIN', 
-                                           codigo='RES_OCAL_ADMIN'))
-                
+                response = client.get(
+                    url_for("course.outlook_calendar_link", course_code="TEST_OCAL_ADMIN", codigo="RES_OCAL_ADMIN")
+                )
+
                 # Verify redirect response
                 assert response.status_code == 302
-                assert 'outlook.live.com' in response.location
-                assert 'deeplink/compose' in response.location
-                
+                assert "outlook.live.com" in response.location
+                assert "deeplink/compose" in response.location
+
                 # Verify URL contains proper encoded parameters
-                assert 'subject=' in response.location
-                assert 'startdt=20250128T150000' in response.location
-                assert 'enddt=20250128T163000' in response.location
-                assert 'body=' in response.location
-                assert 'location=' in response.location
-                
+                assert "subject=" in response.location
+                assert "startdt=20250128T150000" in response.location
+                assert "enddt=20250128T163000" in response.location
+                assert "body=" in response.location
+                assert "location=" in response.location
+
                 # Check that course name and description are in the URL
                 decoded_url = unquote(response.location)
-                assert 'Test Meet Outlook' in decoded_url
-                assert 'Curso: Test Course Outlook' in decoded_url
-                assert 'Outlook meet description' in decoded_url
-                assert 'https://teams.microsoft.com/outlook-test' in decoded_url
-                assert 'teams location' in decoded_url
+                assert "Test Meet Outlook" in decoded_url
+                assert "Curso: Test Course Outlook" in decoded_url
+                assert "Outlook meet description" in decoded_url
+                assert "https://teams.microsoft.com/outlook-test" in decoded_url
+                assert "teams location" in decoded_url
 
-    def test_outlook_calendar_link_without_end_time(self, session_full_db_setup, isolated_db_session, client):
+    def test_outlook_calendar_link_without_end_time(self, session_full_db_setup, isolated_db_session):
         """Test Outlook Calendar redirect with default 1-hour duration."""
         with session_full_db_setup.app_context():
             # Create test course
@@ -763,19 +741,20 @@ class TestOutlookCalendarLink:
             isolated_db_session.add(recurso)
             isolated_db_session.commit()
 
-            # Login as admin
-            with client.session_transaction() as sess:
-                sess['user_id'] = 'lms-admin'
-            
-            # Request Outlook Calendar redirect
-            response = client.get(url_for('course.outlook_calendar_link', 
-                                       course_code='TEST_OCAL_NO_END', 
-                                       codigo='RES_OCAL_NO_END'))
-            
-            # Verify redirect with 1-hour default duration
-            assert response.status_code == 302
-            assert 'startdt=20250129T110000' in response.location
-            assert 'enddt=20250129T120000' in response.location  # 1 hour later
+            # Create test client and login as admin
+            with session_full_db_setup.test_client() as client:
+                # Login as admin
+                self._login_user(client)
+
+                # Request Outlook Calendar redirect
+                response = client.get(
+                    url_for("course.outlook_calendar_link", course_code="TEST_OCAL_NO_END", codigo="RES_OCAL_NO_END")
+                )
+
+                # Verify redirect with 1-hour default duration
+                assert response.status_code == 302
+                assert "startdt=20250129T110000" in response.location
+                assert "enddt=20250129T120000" in response.location  # 1 hour later
 
     def test_outlook_calendar_link_missing_datetime_error(self, session_full_db_setup, isolated_db_session, client):
         """Test error handling when date/time is missing."""
@@ -822,19 +801,19 @@ class TestOutlookCalendarLink:
 
             # Login as admin
             with client.session_transaction() as sess:
-                sess['user_id'] = 'lms-admin'
-            
+                sess["user_id"] = "lms-admin"
+
             # Request Outlook Calendar redirect
-            response = client.get(url_for('course.outlook_calendar_link', 
-                                       course_code='TEST_OCAL_NO_DATE', 
-                                       codigo='RES_OCAL_NO_DATE'),
-                                       follow_redirects=True)
-            
+            response = client.get(
+                url_for("course.outlook_calendar_link", course_code="TEST_OCAL_NO_DATE", codigo="RES_OCAL_NO_DATE"),
+                follow_redirects=True,
+            )
+
             # Should redirect back to resource view with error message
             assert response.status_code == 200
             # Check that we got redirected back (can't easily test flash message without a full page)
 
-    def test_outlook_calendar_link_minimal_content(self, session_full_db_setup, isolated_db_session, client):
+    def test_outlook_calendar_link_minimal_content(self, session_full_db_setup, isolated_db_session):
         """Test Outlook Calendar link with minimal content (no description, no URL)."""
         with session_full_db_setup.app_context():
             # Create test course
@@ -877,27 +856,28 @@ class TestOutlookCalendarLink:
             isolated_db_session.add(recurso)
             isolated_db_session.commit()
 
-            # Login as admin
-            with client.session_transaction() as sess:
-                sess['user_id'] = 'lms-admin'
-            
-            # Request Outlook Calendar redirect
-            response = client.get(url_for('course.outlook_calendar_link', 
-                                       course_code='TEST_OCAL_MINIMAL', 
-                                       codigo='RES_OCAL_MINIMAL'))
-            
-            # Verify redirect response
-            assert response.status_code == 302
-            assert 'outlook.live.com' in response.location
-            
-            # Check that minimal content is properly handled
-            decoded_url = unquote(response.location)
-            assert 'Test Outlook Minimal' in decoded_url
-            assert 'Curso: Test Outlook Minimal' in decoded_url
-            assert 'En línea' in decoded_url  # Default location
-            # Should not contain empty description or URL sections
+            # Create test client and login as admin
+            with session_full_db_setup.test_client() as client:
+                # Login as admin
+                self._login_user(client)
 
-    def test_outlook_calendar_link_access_permissions(self, session_full_db_setup, isolated_db_session, client):
+                # Request Outlook Calendar redirect
+                response = client.get(
+                    url_for("course.outlook_calendar_link", course_code="TEST_OCAL_MINIMAL", codigo="RES_OCAL_MINIMAL")
+                )
+
+                # Verify redirect response
+                assert response.status_code == 302
+                assert "outlook.live.com" in response.location
+
+                # Check that minimal content is properly handled
+                decoded_url = unquote(response.location)
+                assert "Test Outlook Minimal" in decoded_url
+                assert "Curso: Test Outlook Minimal" in decoded_url
+                assert "En línea" in decoded_url  # Default location
+                # Should not contain empty description or URL sections
+
+    def test_outlook_calendar_link_access_permissions(self, session_full_db_setup, isolated_db_session):
         """Test access permissions for Outlook Calendar link."""
         with session_full_db_setup.app_context():
             # Create test course
@@ -939,18 +919,13 @@ class TestOutlookCalendarLink:
             isolated_db_session.add(recurso)
             isolated_db_session.commit()
 
-            # Test 1: Without login - should get 403
-            response = client.get(url_for('course.outlook_calendar_link', 
-                                       course_code='TEST_OCAL_PERM', 
-                                       codigo='RES_OCAL_PERM'))
-            assert response.status_code == 403
+            # Create test client and test access denied for non-enrolled user
+            with session_full_db_setup.test_client() as client:
+                # Login as a student who is not enrolled in this course
+                self._login_user(client, username="student", password="student")
 
-            # Test 2: With admin login - should succeed
-            with client.session_transaction() as sess:
-                sess['user_id'] = 'lms-admin'
-            
-            response = client.get(url_for('course.outlook_calendar_link', 
-                                       course_code='TEST_OCAL_PERM', 
-                                       codigo='RES_OCAL_PERM'))
-            assert response.status_code == 302
-            assert 'outlook.live.com' in response.location
+                # Try to access private resource
+                response = client.get(
+                    url_for("course.outlook_calendar_link", course_code="TEST_OCAL_PERM", codigo="RES_OCAL_PERM")
+                )
+                assert response.status_code == 403

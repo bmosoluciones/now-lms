@@ -70,7 +70,7 @@
                                 </div>
 
                                 <form method="POST">
-                                    {{ csrf_token() }} {% for question in evaluation.questions %}
+                                    {% for question in evaluation.questions %}
                                     <div class="card mb-3">
                                         <div class="card-body">
                                             <h6 class="card-title">Pregunta {{ loop.index }}</h6>

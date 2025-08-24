@@ -59,12 +59,12 @@ class TestEndToEndSessionFixtures:
     def test_course_admin_workflow_session(self, session_full_db_setup, test_client):
         """Test course administration workflow as admin using session fixture."""
         import time
-        
+
         # Generate unique username to avoid conflicts
         unique_suffix = int(time.time() * 1000) % 1000000
         admin_username = f"admin_workflow_{unique_suffix}"
         admin_email = f"admin_workflow_{unique_suffix}@nowlms.com"
-        
+
         with session_full_db_setup.app_context():
             # Create admin user
             admin_user = Usuario(
@@ -131,12 +131,12 @@ class TestEndToEndSessionFixtures:
     def test_instructor_course_workflow_session(self, session_full_db_setup, test_client):
         """Test instructor course creation and management workflow using session fixture."""
         import time
-        
-        # Generate unique username to avoid conflicts  
+
+        # Generate unique username to avoid conflicts
         unique_suffix = int(time.time() * 1000) % 1000000
         instructor_username = f"instructor_workflow_{unique_suffix}"
         instructor_email = f"instructor_workflow_{unique_suffix}@nowlms.com"
-        
+
         with session_full_db_setup.app_context():
             # Create instructor user
             instructor_user = Usuario(
