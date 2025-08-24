@@ -178,6 +178,7 @@ def inicializa_extenciones_terceros(flask_app: Flask):
 
         # Initialize cache using new cache_utils module
         from now_lms.cache_utils import init_cache
+
         init_cache(flask_app)
 
         mde.init_app(flask_app)
