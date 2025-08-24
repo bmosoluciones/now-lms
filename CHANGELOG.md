@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 ## [unreleased]
 
 ### Fixed:
- - Fixed system was issuing certificates without evaluations completions.
+ - Fixed a issue system was issuing certificates without evaluations completions, see: 0f1947ca98340aa00c7e9303319afd1ce2cabd76
 
 ### Added:
  - Aditional certificate template
