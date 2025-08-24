@@ -33,7 +33,7 @@ from sqlalchemy import select
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms import alembic, initial_setup, lms_app
-from now_lms.cache import cache
+from now_lms.cache import cache as cache_instance
 from now_lms.config import DESARROLLO
 from now_lms.db import database as db
 from now_lms.db import eliminar_base_de_datos_segura
@@ -126,7 +126,7 @@ def reset(with_examples=False, with_tests=False) -> None:
     """Drop the system database and populate with init a new one."""
     with lms_app.app_context():
         if click.confirm("This will delete the current database and all the data on it. Do you want to continue?", abort=True):
-            cache.clear()
+            cache_instance.clear()
             eliminar_base_de_datos_segura()
             initial_setup(with_examples, with_tests)
 
@@ -310,3 +310,345 @@ def timezone_set():
         confg_ = db.session.execute(select(Configuracion)).scalars().first()
         confg_.time_zone = timezone_
         db.session.commit()
+
+
+@lms_app.cli.group()
+def admin():
+    """Administration tools for managing users and system."""
+
+
+@admin.command()
+def reset_password():
+    """Reset a user's password."""
+    from now_lms.auth import proteger_passwd
+    from now_lms.db import Usuario
+
+    with lms_app.app_context():
+        username = click.prompt("Enter username", type=str)
+
+        # Find user by username or email
+        usuario = db.session.execute(select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
+        if not usuario:
+            usuario = db.session.execute(select(Usuario).filter_by(correo_electronico=username)).scalar_one_or_none()
+
+        if not usuario:
+            click.echo(f"User '{username}' not found.")
+            return
+
+        # Prompt for new password with confirmation
+        password = click.prompt("Enter new password", type=str, hide_input=True)
+        confirm_password = click.prompt("Confirm new password", type=str, hide_input=True)
+
+        if password != confirm_password:
+            click.echo("Passwords do not match.")
+            return
+
+        # Update password
+        usuario.acceso = proteger_passwd(password)
+        db.session.commit()
+
+        click.echo(f"Password updated successfully for user '{usuario.usuario}'.")
+
+
+@admin.command()
+def set():
+    """Disable all admin users and create a new one (emergency security measure)."""
+    from now_lms.auth import proteger_passwd
+    from now_lms.db import Usuario
+
+    with lms_app.app_context():
+        # Security confirmation
+        click.echo("WARNING: This command will disable ALL existing admin users and create a new one.")
+        click.echo("This is an emergency security measure.")
+        if not click.confirm("Do you want to continue?", abort=True):
+            return
+
+        # Find all admin users
+        admin_users = db.session.execute(select(Usuario).filter_by(tipo="admin")).scalars().all()
+
+        if admin_users:
+            click.echo(f"Found {len(admin_users)} admin user(s) to disable:")
+            for admin_user in admin_users:
+                click.echo(f"  - {admin_user.usuario} ({admin_user.correo_electronico})")
+
+        if not click.confirm("Proceed to disable these admin users and create a new one?", abort=True):
+            return
+
+        # Disable all existing admin users
+        disabled_count = 0
+        for admin_user in admin_users:
+            admin_user.activo = False
+            disabled_count += 1
+            click.echo(f"Disabled admin user: {admin_user.usuario}")
+
+        # Commit the disabled users changes
+        db.session.commit()
+
+        # Prompt for new admin user details
+        click.echo("\nCreating new admin user:")
+        username = click.prompt("Enter new admin username", type=str)
+
+        # Check if username already exists
+        existing_user = db.session.execute(select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
+        if existing_user:
+            click.echo(f"Username '{username}' already exists.")
+            return
+
+        # Prompt for other required fields
+        nombre = click.prompt("Enter first name", type=str)
+        apellido = click.prompt("Enter last name", type=str)
+        correo_electronico = click.prompt("Enter email", type=str)
+
+        # Check if email already exists
+        existing_email = db.session.execute(
+            select(Usuario).filter_by(correo_electronico=correo_electronico)
+        ).scalar_one_or_none()
+        if existing_email:
+            click.echo(f"Email '{correo_electronico}' already exists.")
+            return
+
+        # Prompt for password
+        password = click.prompt("Enter password", type=str, hide_input=True)
+        confirm_password = click.prompt("Confirm password", type=str, hide_input=True)
+
+        if password != confirm_password:
+            click.echo("Passwords do not match.")
+            return
+
+        # Create new admin user
+        nuevo_admin = Usuario(
+            usuario=username,
+            acceso=proteger_passwd(password),
+            nombre=nombre,
+            apellido=apellido,
+            correo_electronico=correo_electronico,
+            tipo="admin",
+            activo=True,
+            correo_electronico_verificado=False,
+            visible=True,
+        )
+
+        db.session.add(nuevo_admin)
+        db.session.commit()
+
+        click.echo("\nSecurity reset completed:")
+        click.echo(f"  - Disabled {disabled_count} existing admin user(s)")
+        click.echo(f"  - Created new admin user: '{username}'")
+        click.echo("Emergency admin reset successful.")
+
+
+@lms_app.cli.group()
+def user():
+    """User management tools."""
+
+
+@user.command()
+def new():
+    """Create a new user."""
+    from now_lms.auth import proteger_passwd
+    from now_lms.db import Usuario
+
+    with lms_app.app_context():
+        # Prompt for required fields
+        username = click.prompt("Enter username", type=str)
+
+        # Check if username already exists
+        existing_user = db.session.execute(select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
+        if existing_user:
+            click.echo(f"Username '{username}' already exists.")
+            return
+
+        # Prompt for user type with validation
+        valid_types = ["student", "moderator", "instructor", "admin"]
+        tipo = click.prompt(f"Enter user type ({'/'.join(valid_types)})", type=click.Choice(valid_types))
+
+        # Prompt for other required/optional fields
+        nombre = click.prompt("Enter first name", type=str)
+        apellido = click.prompt("Enter last name", type=str)
+        correo_electronico = click.prompt("Enter email", type=str)
+
+        # Check if email already exists
+        existing_email = db.session.execute(
+            select(Usuario).filter_by(correo_electronico=correo_electronico)
+        ).scalar_one_or_none()
+        if existing_email:
+            click.echo(f"Email '{correo_electronico}' already exists.")
+            return
+
+        # Prompt for password
+        password = click.prompt("Enter password", type=str, hide_input=True)
+        confirm_password = click.prompt("Confirm password", type=str, hide_input=True)
+
+        if password != confirm_password:
+            click.echo("Passwords do not match.")
+            return
+
+        # Create new user
+        nuevo_usuario = Usuario(
+            usuario=username,
+            acceso=proteger_passwd(password),
+            nombre=nombre,
+            apellido=apellido,
+            correo_electronico=correo_electronico,
+            tipo=tipo,
+            activo=True,
+            correo_electronico_verificado=False,
+            visible=True,
+        )
+
+        db.session.add(nuevo_usuario)
+        db.session.commit()
+
+        click.echo(f"User '{username}' created successfully with type '{tipo}'.")
+
+
+@user.command()
+def set_password():
+    """Set a user's password."""
+    from now_lms.auth import proteger_passwd
+    from now_lms.db import Usuario
+
+    with lms_app.app_context():
+        username = click.prompt("Enter username", type=str)
+
+        # Find user by username or email
+        usuario = db.session.execute(select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
+        if not usuario:
+            usuario = db.session.execute(select(Usuario).filter_by(correo_electronico=username)).scalar_one_or_none()
+
+        if not usuario:
+            click.echo(f"User '{username}' not found.")
+            return
+
+        # Prompt for new password with confirmation
+        password = click.prompt("Enter new password", type=str, hide_input=True)
+        confirm_password = click.prompt("Confirm new password", type=str, hide_input=True)
+
+        if password != confirm_password:
+            click.echo("Passwords do not match.")
+            return
+
+        # Update password
+        usuario.acceso = proteger_passwd(password)
+        db.session.commit()
+
+        click.echo(f"Password updated successfully for user '{usuario.usuario}'.")
+
+
+@lms_app.cli.group()
+def cache():
+    """Cache management tools."""
+
+
+@cache.command()
+def info():
+    """Show cache configuration and status."""
+    from now_lms.cache import CACHE_CONFIG, CTYPE
+
+    with lms_app.app_context():
+        click.echo("Cache Configuration:")
+        click.echo(f"  Type: {CTYPE}")
+        click.echo(f"  Key Prefix: {CACHE_CONFIG.get('CACHE_KEY_PREFIX', 'None')}")
+        click.echo(f"  Default Timeout: {CACHE_CONFIG.get('CACHE_DEFAULT_TIMEOUT', 'None')} seconds")
+
+        if CTYPE == "RedisCache":
+            redis_url = CACHE_CONFIG.get("CACHE_REDIS_URL", "Not configured")
+            # Mask password in URL for security
+            if redis_url and redis_url != "Not configured":
+                from urllib.parse import urlparse
+
+                parsed_url = urlparse(redis_url)
+                if parsed_url.password:
+                    masked_url = redis_url.replace(parsed_url.password, "***")
+                    click.echo(f"  Redis URL: {masked_url}")
+                else:
+                    click.echo(f"  Redis URL: {redis_url}")
+            else:
+                click.echo(f"  Redis URL: {redis_url}")
+        elif CTYPE == "MemcachedCache":
+            servers = CACHE_CONFIG.get("CACHE_MEMCACHED_SERVERS", "Not configured")
+            click.echo(f"  Memcached Servers: {servers}")
+        elif CTYPE == "NullCache":
+            click.echo("  Note: NullCache is active - no actual caching is performed")
+
+
+@cache.command()
+def clear():
+    """Clear all cached data."""
+    from now_lms.cache import CTYPE
+
+    with lms_app.app_context():
+        if CTYPE == "NullCache":
+            click.echo("NullCache is active - no cached data to clear.")
+            return
+
+        try:
+            cache_instance.clear()
+            click.echo("Cache cleared successfully.")
+        except Exception as e:
+            click.echo(f"Error clearing cache: {e}")
+
+
+@cache.command()
+def stats():
+    """Show cache statistics (when supported by backend)."""
+    from now_lms.cache import CTYPE
+
+    with lms_app.app_context():
+        if CTYPE == "NullCache":
+            click.echo("NullCache is active - no statistics available.")
+            return
+
+        try:
+            # Try to get cache statistics if the backend supports it
+            cache_backend = cache_instance.cache
+
+            if hasattr(cache_backend, "_read_clients") and hasattr(cache_backend, "_write_clients"):
+                # Redis backend
+                click.echo("Cache Statistics (Redis):")
+                try:
+                    if cache_backend._read_clients:
+                        client = cache_backend._read_clients[0]
+                        info = client.info()
+                        click.echo(f"  Connected clients: {info.get('connected_clients', 'N/A')}")
+                        click.echo(f"  Used memory: {info.get('used_memory_human', 'N/A')}")
+                        click.echo(f"  Total commands processed: {info.get('total_commands_processed', 'N/A')}")
+                        click.echo(f"  Keyspace hits: {info.get('keyspace_hits', 'N/A')}")
+                        click.echo(f"  Keyspace misses: {info.get('keyspace_misses', 'N/A')}")
+
+                        # Calculate hit ratio
+                        hits = info.get("keyspace_hits", 0)
+                        misses = info.get("keyspace_misses", 0)
+                        if hits + misses > 0:
+                            hit_ratio = (hits / (hits + misses)) * 100
+                            click.echo(f"  Hit ratio: {hit_ratio:.2f}%")
+                    else:
+                        click.echo("  No Redis connection available for statistics.")
+                except Exception as redis_error:
+                    click.echo(f"  Error getting Redis statistics: {redis_error}")
+
+            elif hasattr(cache_backend, "_client"):
+                # Memcached backend
+                click.echo("Cache Statistics (Memcached):")
+                try:
+                    if hasattr(cache_backend._client, "get_stats"):
+                        stats = cache_backend._client.get_stats()
+                        if stats:
+                            for server, server_stats in stats:
+                                click.echo(f"  Server {server}:")
+                                for key, value in server_stats.items():
+                                    if key in ["get_hits", "get_misses", "cmd_get", "cmd_set", "bytes", "curr_items"]:
+                                        click.echo(f"    {key}: {value}")
+                        else:
+                            click.echo("  No statistics available from Memcached.")
+                    else:
+                        click.echo("  Statistics not supported by this Memcached client.")
+                except Exception as memcached_error:
+                    click.echo(f"  Error getting Memcached statistics: {memcached_error}")
+
+            else:
+                click.echo("Statistics not available for this cache backend.")
+                click.echo(f"Backend type: {type(cache_backend)}")
+
+        except Exception as e:
+            click.echo(f"Error retrieving cache statistics: {e}")

@@ -497,7 +497,7 @@ def _register_error_handlers(flask_app):
 # ---------------------------------------------------------------------------------------
 lms_app = create_app()
 
-# Normalmente los servidores WSGI utilizan "app" or "application" por defecto.
+# Normalmente los servidores WSGI utilizan "app" o "application" por defecto.
 app = lms_app
 application = lms_app
 
@@ -578,3 +578,10 @@ def init_app(with_examples=False, flask_app=None):
         return True
     log.warning("Could not access the database.")
     return False
+
+
+# Import CLI module to register CLI commands - must be at the end to avoid circular imports
+try:
+    import now_lms.cli  # noqa: F401, E402
+except ImportError:
+    log.warning("Could not import CLI module")
