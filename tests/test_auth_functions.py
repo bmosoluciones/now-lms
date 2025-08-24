@@ -16,8 +16,9 @@
 """Tests for authentication functions that improve coverage."""
 
 from unittest.mock import patch
-from now_lms.auth import proteger_passwd, validar_acceso, perfil_requerido
-from now_lms.db import Usuario, database
+
+from now_lms.auth import perfil_requerido, proteger_passwd, validar_acceso
+from now_lms.db import Usuario
 
 
 class TestAuthFunctions:
@@ -55,87 +56,76 @@ class TestAuthFunctions:
         # Due to salt, same password should produce different hashes
         assert hash1 != hash2
 
-    def test_validar_acceso_valid_user(self, session_basic_db_setup):
+    def test_validar_acceso_valid_user(self, isolated_db_session):
         """Test validar_acceso with valid user credentials."""
-        app = session_basic_db_setup
+        # Create a test user
+        hashed_password = proteger_passwd("test123")
+        user = Usuario(
+            usuario="testuser",
+            acceso=hashed_password,
+            nombre="Test",
+            apellido="User",
+            correo_electronico="test@example.com",
+            tipo="user",
+        )
+        isolated_db_session.add(user)
+        isolated_db_session.flush()  # Flush to make user available for validation
 
-        with app.app_context():
-            # Create a test user
-            hashed_password = proteger_passwd("test123")
-            user = Usuario(
-                usuario="testuser",
-                acceso=hashed_password,
-                nombre="Test",
-                apellido="User",
-                correo_electronico="test@example.com",
-                tipo="user",
-            )
-            database.session.add(user)
-            database.session.commit()
+        # Test valid access
+        result = validar_acceso("testuser", "test123")
+        assert result is True
 
-            # Test valid access
-            result = validar_acceso("testuser", "test123")
-            assert result is True
-
-    def test_validar_acceso_invalid_password(self, session_basic_db_setup):
+    def test_validar_acceso_invalid_password(self, isolated_db_session):
         """Test validar_acceso with invalid password."""
-        app = session_basic_db_setup
+        # Create a test user
+        hashed_password = proteger_passwd("correct_password")
+        user = Usuario(
+            usuario="testuser2",
+            acceso=hashed_password,
+            nombre="Test",
+            apellido="User",
+            correo_electronico="test2@example.com",
+            tipo="user",
+        )
+        isolated_db_session.add(user)
+        isolated_db_session.flush()  # Flush to make user available for validation
 
-        with app.app_context():
-            # Create a test user
-            hashed_password = proteger_passwd("correct_password")
-            user = Usuario(
-                usuario="testuser2",
-                acceso=hashed_password,
-                nombre="Test",
-                apellido="User",
-                correo_electronico="test2@example.com",
-                tipo="user",
-            )
-            database.session.add(user)
-            database.session.commit()
-
-            # Test invalid password
-            result = validar_acceso("testuser2", "wrong_password")
-            assert result is False
+        # Test invalid password
+        result = validar_acceso("testuser2", "wrong_password")
+        assert result is False
 
     def test_validar_acceso_nonexistent_user(self, session_basic_db_setup):
         """Test validar_acceso with non-existent user."""
-        app = session_basic_db_setup
-
-        with app.app_context():
+        with session_basic_db_setup.app_context():
             # Test non-existent user
             result = validar_acceso("nonexistent", "any_password")
             assert result is False
 
-    def test_validar_acceso_updates_last_access(self, session_basic_db_setup):
+    def test_validar_acceso_updates_last_access(self, isolated_db_session):
         """Test that validar_acceso updates last access time."""
-        app = session_basic_db_setup
+        # Create a test user
+        hashed_password = proteger_passwd("test123")
+        user = Usuario(
+            usuario="testuser3",
+            acceso=hashed_password,
+            nombre="Test",
+            apellido="User",
+            correo_electronico="test3@example.com",
+            tipo="user",
+        )
+        isolated_db_session.add(user)
+        isolated_db_session.flush()  # Flush to make user available for validation
 
-        with app.app_context():
-            # Create a test user
-            hashed_password = proteger_passwd("test123")
-            user = Usuario(
-                usuario="testuser3",
-                acceso=hashed_password,
-                nombre="Test",
-                apellido="User",
-                correo_electronico="test3@example.com",
-                tipo="user",
-            )
-            database.session.add(user)
-            database.session.commit()
+        original_last_access = user.ultimo_acceso
 
-            original_last_access = user.ultimo_acceso
+        # Validate access
+        validar_acceso("testuser3", "test123")
 
-            # Validate access
-            validar_acceso("testuser3", "test123")
+        # Refresh user from database
+        isolated_db_session.refresh(user)
 
-            # Refresh user from database
-            database.session.refresh(user)
-
-            # Last access should be updated
-            assert user.ultimo_acceso != original_last_access
+        # Last access should be updated
+        assert user.ultimo_acceso != original_last_access
 
     @patch("now_lms.auth.current_user")
     def test_perfil_requerido_admin_access(self, mock_current_user):

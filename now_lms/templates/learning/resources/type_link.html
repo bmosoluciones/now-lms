@@ -41,13 +41,49 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
                 <div class="row">
                     <div class="col-sm-8">
-                        <div class="px-4 py-5 my-5 text-center">
-                            <h1><i class="bi bi-globe" aria-hidden="true"></i></h1>
-                            <h4 class="link-dark text-decoration-none">
-                                <a href="{{ recurso.url }}"> {{ recurso.nombre }} </a>
-                            </h4>
+                        <!-- External Link Warning Card -->
+                        <div class="card border-warning mb-4">
+                            <div class="card-header bg-warning bg-opacity-10 border-warning">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>
+                                    Enlace externo
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <h6 class="mb-2">{{ recurso.nombre }}</h6>
+                                        <p class="text-muted mb-3">
+                                            Estás a punto de salir de la plataforma. El enlace se abrirá en una nueva pestaña.
+                                        </p>
+                                        <div class="d-flex gap-2">
+                                            <a
+                                                href="{{ recurso.url }}"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                class="btn btn-primary"
+                                            >
+                                                <i class="bi bi-box-arrow-up-right me-2"></i>
+                                                Abrir enlace
+                                            </a>
+                                            <button
+                                                type="button"
+                                                class="btn btn-outline-secondary"
+                                                onclick="copyToClipboard('{{ recurso.url }}')"
+                                            >
+                                                <i class="bi bi-clipboard me-2"></i>
+                                                Copiar URL
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 text-center">
+                                        <i class="bi bi-globe display-1 text-primary opacity-25"></i>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
+                        <!-- Resource Description -->
                         {{ markdown2html(recurso.descripcion) | safe }}
 
                         <!-- AdSense Ad after resource description for free courses -->
@@ -70,5 +106,30 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
             {{ r_macros.nav_footer(indice=indice, curso=recurso.curso, type=recurso.tipo, codigo=recurso.id,
             recurso_completado=recurso_completado) }}
         </main>
+
+        <script>
+            function copyToClipboard(text) {
+                navigator.clipboard
+                    .writeText(text)
+                    .then(function () {
+                        // Show temporary success feedback
+                        const button = event.target.closest("button")
+                        const originalText = button.innerHTML
+                        button.innerHTML = '<i class="bi bi-check me-2"></i>Copiado'
+                        button.classList.remove("btn-outline-secondary")
+                        button.classList.add("btn-success")
+
+                        setTimeout(function () {
+                            button.innerHTML = originalText
+                            button.classList.remove("btn-success")
+                            button.classList.add("btn-outline-secondary")
+                        }, 2000)
+                    })
+                    .catch(function (err) {
+                        console.error("Error al copiar: ", err)
+                        alert("No se pudo copiar el enlace")
+                    })
+            }
+        </script>
     </body>
 </html>

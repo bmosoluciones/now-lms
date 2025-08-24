@@ -15,21 +15,12 @@
 
 """End-to-end tests for calendar functionality."""
 
-from datetime import datetime, date, time as time_obj
+from datetime import date, datetime
+from datetime import time as time_obj
 
 from now_lms.auth import proteger_passwd
 from now_lms.calendar_utils import create_events_for_student_enrollment
-from now_lms.db import (
-    Usuario,
-    Curso,
-    CursoSeccion,
-    CursoRecurso,
-    Evaluation,
-    EstudianteCurso,
-    UserEvent,
-    database,
-    select,
-)
+from now_lms.db import Curso, CursoRecurso, CursoSeccion, EstudianteCurso, Evaluation, UserEvent, Usuario, database, select
 
 
 class TestCalendarEndToEnd:

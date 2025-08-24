@@ -20,8 +20,8 @@ def test_i18n_configuration_caching(session_full_db_setup):
     """Test that Flask-Babel configuration is cached and doesn't cause excessive database queries."""
 
     with session_full_db_setup.app_context():
-        from now_lms.i18n import get_configuracion, invalidate_configuracion_cache
         from now_lms.cache import cache
+        from now_lms.i18n import get_configuracion, invalidate_configuracion_cache
 
         # Clear any existing cache
         cache.clear()
@@ -80,9 +80,10 @@ def test_babel_selectors_use_g_configuration(session_full_db_setup):
     """Test that Flask-Babel locale and timezone selectors use configuration from g."""
 
     with session_full_db_setup.app_context():
-        from now_lms.i18n import get_locale, get_timezone
         from flask import g
+
         from now_lms.cache import cache
+        from now_lms.i18n import get_locale, get_timezone
 
         # Clear any existing cache
         cache.clear()
@@ -138,8 +139,8 @@ def test_configuration_fallback_when_no_config_exists(session_basic_db_setup):
     """Test that the system handles missing configuration gracefully."""
 
     with session_basic_db_setup.app_context():
-        from now_lms.i18n import get_configuracion, get_locale, get_timezone
         from now_lms.cache import cache
+        from now_lms.i18n import get_configuracion, get_locale, get_timezone
 
         # Clear any existing cache
         cache.clear()

@@ -81,10 +81,8 @@ def verifica_docente_asignado_a_curso(id_curso: Union[None, str] = None):
         ).scalar_one_or_none()
         if query:
             return query
-        else:
-            return False
-    else:
         return False
+    return False
 
 
 def verifica_moderador_asignado_a_curso(id_curso: Union[None, str] = None):
@@ -97,10 +95,8 @@ def verifica_moderador_asignado_a_curso(id_curso: Union[None, str] = None):
         ).scalar_one_or_none()
         if query:
             return True
-        else:
-            return False
-    else:
         return False
+    return False
 
 
 def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
@@ -122,14 +118,10 @@ def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
             if pago:
                 if pago.estado == "completed" or pago.audit:
                     return True
-                else:
-                    return False
-            else:
                 return False
-        else:
             return False
-    else:
         return False
+    return False
 
 
 def crear_configuracion_predeterminada():
@@ -190,10 +182,8 @@ def verificar_avance_recurso(recurso: str, usuario: str) -> int:
             .first()
         ):
             return consulta.avance
-        else:
-            return 0
-    else:
         return 0
+    return 0
 
 
 class RecursoInfo(NamedTuple):
@@ -323,8 +313,7 @@ def logo_perzonalizado():
     if consulta:
         consulta = consulta[0]
         return consulta.custom_logo
-    else:
-        return False
+    return False
 
 
 @cache.cached(timeout=60, key_prefix="cached_favicon")
@@ -334,8 +323,7 @@ def favicon_perzonalizado():
     if consulta:
         consulta = consulta[0]
         return consulta.custom_logo
-    else:
-        return False
+    return False
 
 
 def elimina_logo_perzonalizado():
@@ -350,7 +338,7 @@ def elimina_logo_perzonalizado():
     try:
         remove(LOGO)
         database.session.commit()
-    except FileNotFoundError:  # pragma: no cover
+    except FileNotFoundError:
         pass
 
 
@@ -387,10 +375,10 @@ def elimina_imagen_usuario(ulid: str):
 
     LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, "usuarios", usuario.id + ".jpg")
 
-    try:  # pragma: no cover
+    try:
         remove(LOGO)
         flash("Imagen de usuario eliminada correctamente.", "success")
-    except FileNotFoundError:  # pragma: no cover
+    except FileNotFoundError:
         flash("Imagen de usuario no existe.", "error")
 
 
@@ -520,10 +508,8 @@ def get_addsense_meta():
         data = query[0]
         if data.meta_tag_include:
             return data.meta_tag
-        else:
-            return ""
-    else:
         return ""
+    return ""
 
 
 def get_addsense_code():
@@ -539,10 +525,8 @@ def get_addsense_code():
         data = query[0]
         if data.meta_tag_include:
             return data.add_code
-        else:
-            return ""
-    else:
         return ""
+    return ""
 
 
 def get_adsense_enabled():
@@ -675,14 +659,13 @@ def database_select_version(app):
     if "postgresql" in app.config["SQLALCHEMY_DATABASE_URI"]:
         return "SELECT FROM pg_tables WHERE tablename  = 'curso';"
 
-    elif "mysql" in app.config["SQLALCHEMY_DATABASE_URI"]:
+    if "mysql" in app.config["SQLALCHEMY_DATABASE_URI"]:
         return "SHOW TABLES LIKE 'curso';"
 
-    elif "sqlite" in app.config["SQLALCHEMY_DATABASE_URI"]:
+    if "sqlite" in app.config["SQLALCHEMY_DATABASE_URI"]:
         return "SELECT name FROM sqlite_master WHERE type='table' AND name='curso';"
 
-    else:
-        return None
+    return None
 
 
 def get_paypal_id() -> str:
@@ -692,8 +675,7 @@ def get_paypal_id() -> str:
 
     if query.sandbox:
         return query.sandbox
-    else:
-        return query.paypal_id
+    return query.paypal_id
 
 
 def database_is_populated(app):
@@ -715,12 +697,11 @@ def database_is_populated(app):
                     check = False
                 if check:
                     log.trace("Database populated.")
-                else:
-                    log.trace("Database not populated.")
-                    log.info("Database not populated, creating default configuration.")
+                    return check
+                log.trace("Database not populated.")
+                log.info("Database not populated, creating default configuration.")
                 return check
-            else:
-                return False
+            return False
         except AttributeError:
             return False
         except OperationalError:
@@ -739,14 +720,13 @@ def database_select_version_query(app):
     """Return the query to get version of the database."""
     if "postgresql" in app.config["SQLALCHEMY_DATABASE_URI"]:
         return "SELECT version() AS version;"
-    elif "mysql" in app.config["SQLALCHEMY_DATABASE_URI"]:
+    if "mysql" in app.config["SQLALCHEMY_DATABASE_URI"]:
         return "SELECT VERSION() AS version;"
-    elif "mariadb" in app.config["SQLALCHEMY_DATABASE_URI"]:
+    if "mariadb" in app.config["SQLALCHEMY_DATABASE_URI"]:
         return "SELECT VERSION() AS version;"
-    elif "sqlite" in app.config["SQLALCHEMY_DATABASE_URI"]:
+    if "sqlite" in app.config["SQLALCHEMY_DATABASE_URI"]:
         return "SELECT sqlite_version() AS version;"
-    else:
-        return None
+    return None
 
 
 def check_db_access(app):
@@ -762,8 +742,7 @@ def check_db_access(app):
                 if consulta:
                     log.trace("Database access verified.")
                     return True
-                else:
-                    return False
+                return False
         except OperationalError:
             return False
         except ProgrammingError:
@@ -783,8 +762,7 @@ def get_current_theme() -> str:
         if consulta:
             data = consulta[0]
             return data.theme
-        else:
-            return "now_lms"
+        return "now_lms"
     except AttributeError:
         return "now_lms"
     except OperationalError:
@@ -822,7 +800,16 @@ def generate_masterclass_choices():
 
 def generate_template_choices():
     """Generate list of template choices for forms."""
-    templates = database.session.execute(database.select(Certificado)).all()
+    templates = database.session.execute(database.select(Certificado).filter(Certificado.tipo == "course")).all()
+    choices = []
+    for template in templates:
+        choices.append((template[0].code, template[0].titulo))
+    return choices
+
+
+def generate_template_choices_program():
+    """Generate list of template choices for forms."""
+    templates = database.session.execute(database.select(Certificado).filter(Certificado.tipo == "program")).all()
     choices = []
     for template in templates:
         choices.append((template[0].code, template[0].titulo))
@@ -1011,3 +998,18 @@ def get_all_records(table_name: str, filters: Union[dict[Any, Any], None] = None
                 query = query.filter(getattr(model_class, col) == val)
 
     return query.all()
+
+
+def get_slideshowid(resource_id: str) -> Union[str, None]:
+    """Get the slideshow ID for a given resource ID.
+
+    :param resource_id: ID of the course resource
+    :return: slideshow ID (external_code) or None if not found
+    """
+    try:
+        recurso = database.session.get(CursoRecurso, resource_id)
+        if recurso and recurso.tipo == "slides" and recurso.external_code:
+            return recurso.external_code
+        return None
+    except (AttributeError, OperationalError):
+        return None

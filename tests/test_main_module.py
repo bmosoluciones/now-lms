@@ -16,7 +16,6 @@
 """Tests for the __main__.py module entry point."""
 
 
-
 class TestMainModule:
     """Test the main module entry point functionality."""
 

@@ -8,8 +8,8 @@ class TestEvaluationHelpers:
 
     def test_check_user_evaluations_completed(self, minimal_db_setup):
         """Test check_user_evaluations_completed function."""
+        from now_lms.db import Curso, CursoSeccion, Evaluation, EvaluationAttempt, Usuario, database
         from now_lms.vistas.evaluation_helpers import check_user_evaluations_completed
-        from now_lms.db import Curso, CursoSeccion, Evaluation, Usuario, EvaluationAttempt, database
 
         with minimal_db_setup.app_context():
             # Create test user
@@ -113,8 +113,8 @@ class TestEvaluationHelpers:
 
     def test_get_user_evaluation_status(self, minimal_db_setup):
         """Test get_user_evaluation_status function."""
+        from now_lms.db import Curso, CursoSeccion, Evaluation, EvaluationAttempt, Usuario, database
         from now_lms.vistas.evaluation_helpers import get_user_evaluation_status
-        from now_lms.db import Curso, CursoSeccion, Evaluation, Usuario, EvaluationAttempt, database
 
         with minimal_db_setup.app_context():
             # Create test user
@@ -242,8 +242,8 @@ class TestEvaluationHelpers:
 
     def test_can_user_receive_certificate(self, minimal_db_setup):
         """Test can_user_receive_certificate function."""
+        from now_lms.db import Curso, CursoSeccion, CursoUsuarioAvance, Evaluation, EvaluationAttempt, Usuario, database
         from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
-        from now_lms.db import Curso, CursoSeccion, Evaluation, Usuario, EvaluationAttempt, CursoUsuarioAvance, database
 
         with minimal_db_setup.app_context():
             # Create test user
@@ -351,9 +351,9 @@ class TestEvaluationHelpers:
     def test_edge_cases_and_error_handling(self, minimal_db_setup):
         """Test edge cases and error handling."""
         from now_lms.vistas.evaluation_helpers import (
+            can_user_receive_certificate,
             check_user_evaluations_completed,
             get_user_evaluation_status,
-            can_user_receive_certificate,
         )
 
         with minimal_db_setup.app_context():
@@ -377,8 +377,8 @@ class TestEvaluationHelpers:
 
     def test_multiple_attempts_best_score(self, minimal_db_setup):
         """Test that best score is correctly identified from multiple attempts."""
+        from now_lms.db import Curso, CursoSeccion, Evaluation, EvaluationAttempt, Usuario, database
         from now_lms.vistas.evaluation_helpers import get_user_evaluation_status
-        from now_lms.db import Curso, CursoSeccion, Evaluation, Usuario, EvaluationAttempt, database
 
         with minimal_db_setup.app_context():
             # Create test user
@@ -448,8 +448,8 @@ class TestEvaluationHelpers:
 
     def test_exam_vs_quiz_handling(self, minimal_db_setup):
         """Test handling of exams vs regular quizzes."""
-        from now_lms.vistas.evaluation_helpers import get_user_evaluation_status
         from now_lms.db import Curso, CursoSeccion, Evaluation, Usuario, database
+        from now_lms.vistas.evaluation_helpers import get_user_evaluation_status
 
         with minimal_db_setup.app_context():
             # Create test user

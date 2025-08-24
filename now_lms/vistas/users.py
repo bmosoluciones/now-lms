@@ -72,17 +72,17 @@ def inicio_sesion():
             if identidad.activo:
                 login_user(identidad)
                 return PANEL_DE_USUARIO
-            flash("Su cuenta esta inactiva.", "info")  # pragma: no cover
-            return INICIO_SESION  # pragma: no cover
-        flash("Inicio de Sesion Incorrecto.", "warning")  # pragma: no cover
-        return INICIO_SESION  # pragma: no cover
+            flash("Su cuenta esta inactiva.", "info")
+            return INICIO_SESION
+        flash("Inicio de Sesion Incorrecto.", "warning")
+        return INICIO_SESION
     return render_template(
         "auth/login.html", form=form, titulo="Inicio de Sesion - NOW LMS", show_forgot_password=show_forgot_password
     )
 
 
 @user.route("/user/logout")
-def cerrar_sesion():  # pragma: no cover
+def cerrar_sesion():
     """Finaliza la sesion actual."""
     logout_user()
     return redirect("/home")
@@ -133,10 +133,10 @@ def crear_cuenta():
                 )
 
             return INICIO_SESION
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ACCOUNT_CREATION_ERROR_MSG, "warning")
             return redirect("/")
-        except PendingRollbackError:  # pragma: no cover
+        except PendingRollbackError:
             flash(ACCOUNT_CREATION_ERROR_MSG, "warning")
             return redirect("/")
     return render_template("auth/logon.html", form=form, titulo="Crear cuenta - NOW LMS")
@@ -145,7 +145,7 @@ def crear_cuenta():
 @user.route("/user/new_user", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def crear_usuario():  # pragma: no cover
+def crear_usuario():
     """Crear manualmente una cuenta de usuario."""
     form = LogonForm()
     if form.validate_on_submit() or request.method == "POST":
@@ -165,7 +165,7 @@ def crear_usuario():  # pragma: no cover
             database.session.commit()
             flash("Usuario creado exitosamente.", "success")
             return redirect(url_for("user_profile.usuario", id_usuario=form.usuario.data))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ACCOUNT_CREATION_ERROR_MSG, "warning")
             return redirect("/new_user")
     else:

@@ -20,8 +20,9 @@ covering various token scenarios including valid tokens, invalid tokens,
 expired tokens, and edge cases.
 """
 
-import jwt
 from datetime import datetime, timedelta, timezone
+
+import jwt
 
 
 class TestEmailVerificationRoute:

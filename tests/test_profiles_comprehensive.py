@@ -19,8 +19,9 @@ Tests for admin.py, instructor.py, moderator.py, and user.py profiles.
 """
 
 from datetime import datetime
-from now_lms.db import database, Usuario, Curso, DocenteCurso, UsuarioGrupo, UsuarioGrupoMiembro
+
 from now_lms.auth import proteger_passwd
+from now_lms.db import Curso, DocenteCurso, Usuario, UsuarioGrupo, UsuarioGrupoMiembro, database
 
 
 def test_admin_panel_view(full_db_setup, client):

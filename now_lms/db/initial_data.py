@@ -117,18 +117,18 @@ def copy_sample_pdf():
     log.trace("Creating test PDF file.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "NOW_Learning_Management_System.pdf")
     directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "files", "resources")
-    try:  # pragma: no cover
+    try:
         makedirs(directorio_destino)
-    except FileExistsError:  # pragma: no cover
+    except FileExistsError:
         pass
-    except FileNotFoundError:  # pragma: no cover
+    except FileNotFoundError:
         pass
     destino = path.join(directorio_destino, "NOW_Learning_Management_System.pdf")
-    try:  # pragma: no cover
+    try:
         copyfile(origen, destino)
-    except FileExistsError:  # pragma: no cover
+    except FileExistsError:
         pass
-    except FileNotFoundError:  # pragma: no cover
+    except FileNotFoundError:
         pass
 
 
@@ -139,16 +139,16 @@ def copy_sample_audio():
     directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "audio", "resources")
     try:
         makedirs(directorio_destino)
-    except FileExistsError:  # pragma: no cover
+    except FileExistsError:
         pass
-    except FileNotFoundError:  # pragma: no cover
+    except FileNotFoundError:
         pass
     destino = path.join(directorio_destino, "En-us-hello.ogg")
     try:
         copyfile(origen, destino)
-    except FileExistsError:  # pragma: no cover
+    except FileExistsError:
         pass
-    except FileNotFoundError:  # pragma: no cover
+    except FileNotFoundError:
         pass
 
 
@@ -159,16 +159,16 @@ def copy_sample_img():
     directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "images", "resources")
     try:
         makedirs(directorio_destino)
-    except FileExistsError:  # pragma: no cover
+    except FileExistsError:
         pass
-    except FileNotFoundError:  # pragma: no cover
+    except FileNotFoundError:
         pass
     destino = path.join(directorio_destino, "logo_large.png")
     try:
         copyfile(origen, destino)
-    except FileExistsError:  # pragma: no cover
+    except FileExistsError:
         pass
-    except FileNotFoundError:  # pragma: no cover
+    except FileNotFoundError:
         pass
 
 
@@ -183,16 +183,16 @@ def curse_logo(curso: str, image: str, program=False):
 
     try:
         makedirs(directorio_destino)
-    except FileExistsError:  # pragma: no cover
+    except FileExistsError:
         pass
-    except FileNotFoundError:  # pragma: no cover
+    except FileNotFoundError:
         pass
     destino = path.join(directorio_destino, "logo.jpg")
     try:
         copyfile(origen, destino)
-    except FileExistsError:  # pragma: no cover
+    except FileExistsError:
         pass
-    except FileNotFoundError:  # pragma: no cover
+    except FileNotFoundError:
         pass
 
 
@@ -296,7 +296,7 @@ def crear_curso_demo():
         hora_inicio=time(hour=14, minute=30),
         hora_fin=time(hour=15, minute=00),
         notes="Google Meet",
-        publico=False,
+        publico=True,  # Make it public for easier testing
         requerido=2,
     )
     nuevo_recurso3.tipo = "meet"
@@ -486,6 +486,7 @@ def crear_certificados():
         habilitado=False,
         publico=False,
     )
+    demo.tipo = "course"
     database.session.add(demo)
     database.session.flush()
 
@@ -498,6 +499,7 @@ def crear_certificados():
             html=certificado[2],
             css=certificado[3],
             code=certificado[4],
+            tipo=certificado[5],
             habilitado=True,
             publico=True,
         )
@@ -1622,12 +1624,12 @@ def crear_recurso_descargable():
 
     directorio_destino_archivo = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "files", "resources_files")
     directorio_destino_imagen = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "images", "resources_files")
-    try:  # pragma: no cover
+    try:
         makedirs(directorio_destino_archivo)
         makedirs(directorio_destino_imagen)
-    except FileExistsError:  # pragma: no cover
+    except FileExistsError:
         pass
-    except FileNotFoundError:  # pragma: no cover
+    except FileNotFoundError:
         pass
 
     # Copiar pdf de ejemplo.
@@ -1641,11 +1643,11 @@ def crear_recurso_descargable():
     for archivo in archivos:
         origen = path.join(DIRECTORIO_ARCHIVOS, "examples", archivo[0])
         destino = path.join(directorio_destino_archivo, archivo[1])
-        try:  # pragma: no cover
+        try:
             copyfile(origen, destino)
-        except FileExistsError:  # pragma: no cover
+        except FileExistsError:
             pass
-        except FileNotFoundError:  # pragma: no cover
+        except FileNotFoundError:
             pass
 
     # Copiar img de ejemplo.
@@ -1659,11 +1661,11 @@ def crear_recurso_descargable():
     for image in imagenes:
         origen = path.join(DIRECTORIO_ARCHIVOS, "examples", image[0])
         destino = path.join(directorio_destino_imagen, image[1])
-        try:  # pragma: no cover
+        try:
             copyfile(origen, destino)
-        except FileExistsError:  # pragma: no cover
+        except FileExistsError:
             pass
-        except FileNotFoundError:  # pragma: no cover
+        except FileNotFoundError:
             pass
 
     recurso = CursoRecursoDescargable(curso="now", recurso="R005")
@@ -1673,7 +1675,7 @@ def crear_recurso_descargable():
 
 def populate_custmon_data_dir():
     """Crea un directorio de archivos personalizado."""
-    from now_lms.config import DIRECTORIO_ARCHIVOS, DIRECTORIO_ARCHIVOS_BASE
+    from now_lms.config import DIRECTORIO_ARCHIVOS_BASE
 
     if DIRECTORIO_ARCHIVOS != DIRECTORIO_ARCHIVOS_BASE:
 

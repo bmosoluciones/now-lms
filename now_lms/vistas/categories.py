@@ -65,7 +65,7 @@ def new_category():
         try:
             database.session.commit()
             flash("Nueva categoria creada.", "success")
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al crear la categoria.", "warning")
         return redirect(url_for(ROUTE_CATEGORY_CATEGORIES))
 
@@ -117,7 +117,7 @@ def edit_category(ulid: str):
             database.session.add(categoria)
             database.session.commit()
             flash("Categoria editada correctamente.", "success")
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("No se puedo editar la categoria.", "warning")
         return redirect(url_for(ROUTE_CATEGORY_CATEGORIES))
 

@@ -58,7 +58,7 @@ from now_lms.db.tools import (
     cuenta_cursos_por_programa,
     generate_category_choices,
     generate_tag_choices,
-    generate_template_choices,
+    generate_template_choices_program,
     get_program_category,
     get_program_tags,
     obtener_progreso_programa,
@@ -84,7 +84,7 @@ program = Blueprint("program", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 def nuevo_programa():
     """Nueva programa."""
     form = ProgramaForm()
-    form.plantilla_certificado.choices = generate_template_choices()
+    form.plantilla_certificado.choices = generate_template_choices_program()
     form.categoria.choices = generate_category_choices()
     form.etiquetas.choices = generate_tag_choices()
 
@@ -123,7 +123,7 @@ def nuevo_programa():
             cache.delete("view/" + url_for(PROGRAMS_ROUTE))
             flash("Nuevo Programa creado.", "success")
             return redirect(url_for("program.pagina_programa", codigo=programa.codigo))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             database.session.rollback()
             flash("Hubo un error al crear el programa.", "warning")
             return redirect(url_for(PROGRAMS_ROUTE))
@@ -166,8 +166,7 @@ def delete_program(ulid: str):
         database.session.commit()
         cache.delete("view/" + url_for(PROGRAMS_ROUTE))
         return redirect(url_for(PROGRAMS_ROUTE))
-    else:
-        return abort(403)
+    return abort(403)
 
 
 @program.route("/program/<ulid>/edit", methods=["GET", "POST"])
@@ -184,8 +183,9 @@ def edit_program(ulid: str):
         precio=programa.precio,
         estado=programa.estado,
         promocionado=programa.promocionado,
+        plantilla_certificado=programa.plantilla_certificado,
     )
-    form.plantilla_certificado.choices = generate_template_choices()
+    form.plantilla_certificado.choices = generate_template_choices_program()
     form.plantilla_certificado.data = programa.plantilla_certificado
     form.certificado.data = programa.certificado
 
@@ -249,11 +249,11 @@ def edit_program(ulid: str):
                         programa.logo = True
                         flash("Portada del curso actualizada correctamente", "success")
                         database.session.commit()
-                except UploadNotAllowed:  # pragma: no cover
+                except UploadNotAllowed:
                     flash("No se pudo actualizar la portada del curso.", "warning")
 
             flash("Programa editado correctamente.", "success")
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             database.session.rollback()
             flash("No se puedo editar el programa.")
         return redirect(url_for(PROGRAMS_ROUTE))
@@ -269,17 +269,16 @@ def programa_cursos(codigo):
     if current_user.tipo == "admin":
         return render_template("learning/programas/lista_cursos.html")
 
-    else:
-        return abort(403)
+    return abort(403)
 
 
 @program.route("/program/<codigo>")
 @cache.cached(timeout=60, unless=no_guardar_en_cache_global)
 def pagina_programa(codigo):
     """Pagina principal del curso."""
-    program = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalars().first()
+    programa_obj = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalars().first()
 
-    return render_template(get_program_view_template(), programa=program, cuenta_cursos=cuenta_cursos_por_programa)
+    return render_template(get_program_view_template(), programa=programa_obj, cuenta_cursos=cuenta_cursos_por_programa)
 
 
 @program.route("/program/explore")
@@ -340,7 +339,7 @@ def lista_programas():
             # El numero de pagina debe ser generado por el macro de paginación.
             try:
                 del PARAMETROS["page"]
-            except KeyError:  # pragma: no cover
+            except KeyError:
                 pass
     else:
         PARAMETROS = None
@@ -378,7 +377,7 @@ def inscribir_programa(codigo):
             database.session.commit()
             flash("Te has inscrito exitosamente al programa.", "success")
             return redirect(url_for("program.tomar_programa", codigo=codigo))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             database.session.rollback()
             flash("Hubo un error al inscribirte al programa.", "error")
 
@@ -520,7 +519,7 @@ def inscribir_usuario_programa(codigo):
                 database.session.add(inscripcion)
                 database.session.commit()
                 flash(f"Usuario {usuario.nombre} {usuario.apellido} inscrito exitosamente.", "success")
-            except OperationalError:  # pragma: no cover
+            except OperationalError:
                 database.session.rollback()
                 flash("Error al inscribir usuario.", "error")
 

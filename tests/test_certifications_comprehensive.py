@@ -16,12 +16,7 @@
 """Comprehensive tests for Certification functionality - Basic version."""
 
 
-from now_lms.db import (
-    Certificacion,
-    Certificado,
-    Curso,
-    Usuario,
-)
+from now_lms.db import Certificacion, Certificado, Curso, Usuario
 
 
 class TestCertificateTemplateManagement:

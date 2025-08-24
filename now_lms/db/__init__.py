@@ -131,7 +131,6 @@ class BaseTabla:
 
     def validate_user_references(self):
         """Validate that audit fields reference existing users or set them to None."""
-        from now_lms.db import Usuario
 
         # Use no_autoflush to prevent recursive flush during validation
         with database.session.no_autoflush:
@@ -655,6 +654,7 @@ class Certificado(database.Model, BaseTabla):
     descripcion = database.Column(database.String(500))
     html = database.Column(database.Text())
     css = database.Column(database.Text())
+    tipo = database.Column(database.String(7))  # program or course
     habilitado = database.Column(database.Boolean())
     publico = database.Column(database.Boolean())
     usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
@@ -679,7 +679,7 @@ class Certificacion(database.Model, BaseTabla):
         """Get the course or master class information for this certificate."""
         if self.curso:
             return database.session.execute(database.select(Curso).filter_by(codigo=self.curso)).first()[0]
-        elif self.master_class_id:
+        if self.master_class_id:
             return database.session.execute(database.select(MasterClass).filter_by(id=self.master_class_id)).first()[0]
         return None
 
@@ -687,7 +687,7 @@ class Certificacion(database.Model, BaseTabla):
         """Return 'course' or 'masterclass' depending on the content type."""
         if self.curso:
             return "course"
-        elif self.master_class_id:
+        if self.master_class_id:
             return "masterclass"
         return None
 
@@ -776,9 +776,8 @@ class ForoMensaje(database.Model, BaseTabla):
         if self.parent_id:
             # Es una respuesta, verificar el mensaje padre
             return self.parent.estado == "abierto"
-        else:
-            # Es un hilo principal
-            return self.estado == "abierto"
+        # Es un hilo principal
+        return self.estado == "abierto"
 
     def is_course_forum_active(self):
         """Retorna True si el foro del curso está activo."""
@@ -993,7 +992,6 @@ class Coupon(database.Model, BaseTabla):
 
     def is_valid(self):
         """Check if coupon is valid (not expired and under usage limit)."""
-        from datetime import datetime
 
         # Check expiration
         if self.expires_at and datetime.now() > self.expires_at:
@@ -1079,7 +1077,6 @@ class Announcement(database.Model, BaseTabla):
         """Retorna True si el anuncio está activo (no ha expirado)."""
         if self.expires_at is None:
             return True
-        from datetime import datetime
 
         return datetime.now() <= self.expires_at
 
@@ -1141,14 +1138,12 @@ class MasterClass(database.Model, BaseTabla):
 
     def is_upcoming(self):
         """Check if the master class is in the future."""
-        from datetime import datetime
 
         event_datetime = datetime.combine(self.date, self.start_time)
         return event_datetime > datetime.now()
 
     def is_ongoing(self):
         """Check if the master class is currently happening."""
-        from datetime import datetime
 
         now = datetime.now()
         event_date = self.date
@@ -1158,7 +1153,6 @@ class MasterClass(database.Model, BaseTabla):
 
     def is_finished(self):
         """Check if the master class has ended."""
-        from datetime import datetime
 
         end_datetime = datetime.combine(self.date, self.end_time)
         return end_datetime < datetime.now()

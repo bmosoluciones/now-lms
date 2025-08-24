@@ -22,16 +22,8 @@ from now_lms.db import database
 def test_instructor_complete_evaluation_workflow(full_db_setup, client):
     """Test complete instructor evaluation workflow: create evaluation, add questions, add options, edit everything."""
     app = full_db_setup
-    from now_lms.db import (
-        Usuario,
-        Curso,
-        CursoSeccion,
-        Evaluation,
-        Question,
-        QuestionOption,
-        DocenteCurso,
-    )
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Curso, CursoSeccion, DocenteCurso, Evaluation, Question, QuestionOption, Usuario
 
     # Step 1: Create instructor user
     with app.app_context():
@@ -317,18 +309,18 @@ def test_instructor_complete_evaluation_workflow(full_db_setup, client):
 def test_student_complete_evaluation_workflow(full_db_setup, client):
     """Test complete student evaluation workflow: enroll, take evaluation, get certificate."""
     app = full_db_setup
+    from now_lms.auth import proteger_passwd
     from now_lms.db import (
-        Usuario,
         CursoSeccion,
+        DocenteCurso,
+        EstudianteCurso,
         Evaluation,
+        EvaluationAttempt,
+        Pago,
         Question,
         QuestionOption,
-        EvaluationAttempt,
-        EstudianteCurso,
-        Pago,
-        DocenteCurso,
+        Usuario,
     )
-    from now_lms.auth import proteger_passwd
 
     # Setup: Create instructor and course with evaluation
     with app.app_context():
@@ -538,15 +530,8 @@ def test_student_complete_evaluation_workflow(full_db_setup, client):
 def test_instructor_question_option_management(full_db_setup, client):
     """Test detailed question and option management functionality."""
     app = full_db_setup
-    from now_lms.db import (
-        Usuario,
-        CursoSeccion,
-        Evaluation,
-        Question,
-        QuestionOption,
-        DocenteCurso,
-    )
     from now_lms.auth import proteger_passwd
+    from now_lms.db import CursoSeccion, DocenteCurso, Evaluation, Question, QuestionOption, Usuario
 
     # Setup instructor and course
     with app.app_context():

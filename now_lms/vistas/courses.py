@@ -23,14 +23,25 @@ Gestión de certificados.
 # Standard library
 # ---------------------------------------------------------------------------------------
 from collections import OrderedDict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from os.path import splitext
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 from bleach import clean, linkify
-from flask import Blueprint, abort, current_app, flash, redirect, render_template, request, send_from_directory, url_for
+from flask import (
+    Blueprint,
+    Response,
+    abort,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    send_from_directory,
+    url_for,
+)
 from flask_login import current_user, login_required
 from flask_uploads import UploadNotAllowed
 from markdown import markdown
@@ -210,7 +221,6 @@ def curso(course_code):
 
 def _crear_indice_avance_curso(course_code):
     """Crea el índice de avance del curso."""
-    from now_lms.db import CursoRecurso, CursoRecursoAvance
 
     recursos = (
         database.session.execute(
@@ -239,7 +249,6 @@ def _crear_indice_avance_curso(course_code):
 @perfil_requerido("student")
 def course_enroll(course_code):
     """Pagina para inscribirse a un curso."""
-    from now_lms.db import EstudianteCurso
     from now_lms.forms import PagoForm
 
     _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
@@ -331,7 +340,7 @@ def course_enroll(course_code):
                     flash(f"¡Cupón aplicado! Descuento de {discount_amount} aplicado", "success")
 
                 return redirect(url_for("course.tomar_curso", course_code=course_code))
-            except OperationalError:  # pragma: no cover
+            except OperationalError:
                 database.session.rollback()
                 flash("Hubo en error al crear el registro de pago.", "warning")
                 return redirect(url_for(VISTA_CURSOS, course_code=course_code))
@@ -359,7 +368,7 @@ def course_enroll(course_code):
                 create_events_for_student_enrollment(pago.usuario, pago.curso)
 
                 return redirect(url_for("course.tomar_curso", course_code=course_code))
-            except OperationalError:  # pragma: no cover
+            except OperationalError:
                 flash("Hubo en error al crear el registro de pago.", "warning")
                 return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
@@ -382,7 +391,7 @@ def course_enroll(course_code):
 
                 # Redirect to PayPal payment page with payment ID
                 return redirect(url_for("paypal.payment_page", course_code=course_code, payment_id=pago.id))
-            except OperationalError:  # pragma: no cover
+            except OperationalError:
                 database.session.rollback()
                 flash("Error al procesar el pago", "warning")
                 return redirect(url_for(VISTA_CURSOS, course_code=course_code))
@@ -463,8 +472,7 @@ def tomar_curso(course_code):
             user_certificate=user_certificate,
             markdown2html=markdown2html,
         )
-    else:
-        return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+    return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
 
 @course.route("/course/<course_code>/moderate")
@@ -492,8 +500,7 @@ def moderar_curso(course_code):
             tipo=TIPOS_RECURSOS,
             markdown2html=markdown2html,
         )
-    else:
-        return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+    return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
 
 @course.route("/course/<course_code>/admin")
@@ -599,19 +606,19 @@ def nuevo_curso():
                         log.info("Course Logo saved")
                     else:
                         log.warning("Course Logo not saved")
-                except UploadNotAllowed:  # pragma: no cover
+                except UploadNotAllowed:
                     log.warning("Could not update profile photo.")
                     database.session.rollback()
-                except AttributeError:  # pragma: no cover
+                except AttributeError:
                     log.warning("Could not update profile photo.")
                     database.session.rollback()
             database.session.commit()
             flash("Curso creado exitosamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=form.codigo.data))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo en error al crear su curso.", "warning")
             return redirect("/instructor")
-    else:  # pragma: no cover
+    else:
         return render_template("learning/nuevo_curso.html", form=form, curso=None, edit=False)
 
 
@@ -728,16 +735,16 @@ def editar_curso(course_code):
                         curso_a_editar.portada = False
                         database.session.commit()
                         log.warning("Course Logo not saved")
-                except UploadNotAllowed:  # pragma: no cover
+                except UploadNotAllowed:
                     log.warning("Could not update profile photo.")
                     database.session.rollback()
-                except AttributeError:  # pragma: no cover
+                except AttributeError:
                     log.warning("Could not update profile photo.")
                     database.session.rollback()
             flash("Curso actualizado exitosamente.", "success")
             return redirect(curso_url)
 
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo en error al actualizar el curso.", "warning")
             return redirect(curso_url)
 
@@ -769,10 +776,10 @@ def nuevo_seccion(course_code):
             database.session.commit()
             flash("Sección agregada correctamente al curso.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo en error al crear la seccion.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:  # pragma: no cover
+    else:
         return render_template("learning/nuevo_seccion.html", form=form)
 
 
@@ -796,10 +803,10 @@ def editar_seccion(course_code, seccion):
             database.session.commit()
             flash("Sección modificada correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo en error al actualizar la seccion.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:  # pragma: no cover
+    else:
         return render_template("learning/editar_seccion.html", form=form, seccion=seccion_a_editar)
 
 
@@ -993,18 +1000,18 @@ def pagina_recurso(curso_id, resource_type, codigo):
         show_resource = False
 
     if show_resource or RECURSO.publico:
-        # Obtener progreso del recurso actual
-        resource_progress = (
-            database.session.execute(
-                database.select(CursoRecursoAvance).filter_by(usuario=current_user.usuario, curso=curso_id, recurso=codigo)
+        # Obtener progreso del recurso actual (solo para usuarios autenticados)
+        recurso_completado = False
+        if current_user.is_authenticated:
+            resource_progress = (
+                database.session.execute(
+                    database.select(CursoRecursoAvance).filter_by(usuario=current_user.usuario, curso=curso_id, recurso=codigo)
+                )
+                .scalars()
+                .first()
             )
-            .scalars()
-            .first()
-        )
-        if resource_progress:
-            recurso_completado = resource_progress.completado
-        else:
-            recurso_completado = False
+            if resource_progress:
+                recurso_completado = resource_progress.completado
 
         # Obtener datos adicionales para el sidebar mejorado
         user_progress = {}
@@ -1029,15 +1036,12 @@ def pagina_recurso(curso_id, resource_type, codigo):
             evaluation_attempts=evaluation_attempts,
             markdown2html=markdown2html,
         )
-    else:
-        flash(NO_AUTORIZADO_MSG, "warning")
-        return abort(403)
+    flash(NO_AUTORIZADO_MSG, "warning")
+    return abort(403)
 
 
 def _emitir_certificado(curso_id, usuario, plantilla):
     """Emit a certificate for a user in a course."""
-    from now_lms.db import Certificacion
-
     certificado = Certificacion(
         curso=curso_id,
         usuario=usuario,
@@ -1052,7 +1056,7 @@ def _emitir_certificado(curso_id, usuario, plantilla):
 
 def _actualizar_avance_curso(curso_id, usuario):
     """Actualiza el avance de un usuario en un curso."""
-    from now_lms.db import CursoRecursoAvance, CursoUsuarioAvance
+    from now_lms.db import CursoUsuarioAvance
 
     _avance = (
         database.session.execute(
@@ -1092,10 +1096,10 @@ def _actualizar_avance_curso(curso_id, usuario):
     if _avance.avance >= 100:
         _avance.completado = True
         flash("Curso completado", "success")
-        curso = database.session.execute(select(Curso).filter(Curso.codigo == curso_id)).scalars().first()
-        log.warning(curso)
-        if curso.certificado:
-            _emitir_certificado(curso_id, usuario, curso.plantilla_certificado)
+        _curso = database.session.execute(select(Curso).filter(Curso.codigo == curso_id)).scalars().first()
+        log.warning(_curso)
+        if _curso.certificado:
+            _emitir_certificado(curso_id, usuario, _curso.plantilla_certificado)
     database.session.commit()
 
 
@@ -1138,15 +1142,12 @@ def marcar_recurso_completado(curso_id, resource_type, codigo):
                 return redirect(
                     url_for("course.pagina_recurso", curso_id=curso_id, resource_type=resource_type, codigo=codigo)
                 )
-            else:
-                flash(NO_AUTORIZADO_MSG, "warning")
-                return abort(403)
-        else:
             flash(NO_AUTORIZADO_MSG, "warning")
             return abort(403)
-    else:
         flash(NO_AUTORIZADO_MSG, "warning")
         return abort(403)
+    flash(NO_AUTORIZADO_MSG, "warning")
+    return abort(403)
 
 
 @course.route("/course/<curso_id>/alternative/<codigo>/<order>")
@@ -1193,9 +1194,8 @@ def pagina_recurso_alternativo(curso_id, codigo, order):
             seccion=SECCION,
             indice=INDICE,
         )
-    else:
-        flash(NO_AUTORIZADO_MSG, "warning")
-        return abort(403)
+    flash(NO_AUTORIZADO_MSG, "warning")
+    return abort(403)
 
 
 @course.route("/course/<course_code>/<seccion>/new_resource")
@@ -1231,9 +1231,9 @@ def nuevo_recurso_youtube_video(course_code, seccion):
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_youtube.html", id_curso=course_code, id_seccion=seccion, form=form
@@ -1266,7 +1266,7 @@ def editar_recurso_youtube_video(course_code, seccion, resource_id):
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al actualizar el recurso.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1311,8 +1311,8 @@ def nuevo_recurso_text(course_code, seccion):
             database.session.add(nuevo_recurso_)
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+        except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1347,7 +1347,7 @@ def editar_recurso_text(course_code, seccion, resource_id):
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al actualizar el recurso.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1391,9 +1391,9 @@ def nuevo_recurso_link(course_code, seccion):
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_link.html", id_curso=course_code, id_seccion=seccion, form=form
@@ -1425,7 +1425,7 @@ def editar_recurso_link(course_code, seccion, resource_id):
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al actualizar el recurso.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1472,9 +1472,9 @@ def nuevo_recurso_pdf(course_code, seccion):
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_pdf.html", id_curso=course_code, id_seccion=seccion, form=form
@@ -1512,7 +1512,7 @@ def editar_recurso_pdf(course_code, seccion, resource_id):
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al actualizar el recurso.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1559,9 +1559,9 @@ def nuevo_recurso_meet(course_code, seccion):
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_meet.html", id_curso=course_code, id_seccion=seccion, form=form
@@ -1599,7 +1599,7 @@ def editar_recurso_meet(course_code, seccion, resource_id):
             update_meet_resource_events(resource_id)
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al actualizar el recurso.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1651,9 +1651,9 @@ def nuevo_recurso_img(course_code, seccion):
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_img.html", id_curso=course_code, id_seccion=seccion, form=form
@@ -1691,7 +1691,7 @@ def editar_recurso_img(course_code, seccion, resource_id):
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al actualizar el recurso.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1738,9 +1738,9 @@ def nuevo_recurso_audio(course_code, seccion):
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_mp3.html", id_curso=course_code, id_seccion=seccion, form=form
@@ -1778,7 +1778,7 @@ def editar_recurso_audio(course_code, seccion, resource_id):
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al actualizar el recurso.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1821,9 +1821,9 @@ def nuevo_recurso_html(course_code, seccion):
             database.session.commit()
             flash("RECURSO_AGREGADO", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for(VISTA_CURSOS, course_code=course_code))
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         return render_template(
             "learning/resources_new/nuevo_recurso_html.html", id_curso=course_code, id_seccion=seccion, form=form
@@ -1855,7 +1855,7 @@ def editar_recurso_html(course_code, seccion, resource_id):
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("Hubo un error al actualizar el recurso.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
@@ -1902,7 +1902,7 @@ def nuevo_recurso_slideshow(course_code, seccion):
             ).scalar()
             nuevo_indice = int(consulta_recursos + 1)
 
-            nuevo_recurso = CursoRecurso(
+            nuevo_recurso_obj = CursoRecurso(
                 curso=course_code,
                 seccion=seccion,
                 tipo="slides",
@@ -1912,7 +1912,7 @@ def nuevo_recurso_slideshow(course_code, seccion):
                 publico=False,
                 requerido="required",
             )
-            database.session.add(nuevo_recurso)
+            database.session.add(nuevo_recurso_obj)
             database.session.flush()  # Para obtener el ID
 
             # Crear la presentación SlideShowResource
@@ -1923,7 +1923,7 @@ def nuevo_recurso_slideshow(course_code, seccion):
             database.session.flush()
 
             # Agregar el ID del slideshow al recurso como referencia
-            nuevo_recurso.external_code = slideshow.id
+            nuevo_recurso_obj.external_code = slideshow.id
 
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
@@ -2054,10 +2054,8 @@ def recurso_file(course_code, recurso_code):
     if current_user.is_authenticated:
         if doc.publico or current_user.tipo == "admin":
             return send_from_directory(config.destination, doc.doc)
-        else:
-            return abort(403)
-    else:
-        return redirect(INICIO_SESION)
+        return abort(403)
+    return redirect(INICIO_SESION)
 
 
 @course.route("/course/<course_code>/pdf_viewer/<recurso_code>")
@@ -2077,10 +2075,8 @@ def pdf_viewer(course_code, recurso_code):
     if current_user.is_authenticated:
         if recurso.publico or current_user.tipo == "admin":
             return render_template("learning/resources/pdf_viewer.html", recurso=recurso)
-        else:
-            return abort(403)
-    else:
-        return redirect(INICIO_SESION)
+        return abort(403)
+    return redirect(INICIO_SESION)
 
 
 @course.route("/course/<course_code>/external_code/<recurso_code>")
@@ -2098,10 +2094,8 @@ def external_code(course_code, recurso_code):
         if recurso.publico or current_user.tipo == "admin":
             return recurso.external_code
 
-        else:
-            return abort(403)
-    else:
-        return redirect(INICIO_SESION)
+        return abort(403)
+    return redirect(INICIO_SESION)
 
 
 @course.route("/course/slide_show/<recurso_code>")
@@ -2228,11 +2222,11 @@ def lista_cursos():
 
 def _validate_coupon_permissions(course_code, user):
     """Validate that user can manage coupons for this course."""
-    curso = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
-    if not curso:
+    course_obj = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
+    if not course_obj:
         return None, "Curso no encontrado"
 
-    if not curso.pagado:
+    if not course_obj.pagado:
         return None, "Los cupones solo están disponibles para cursos pagados"
 
     # Check if user is instructor for this course
@@ -2245,7 +2239,7 @@ def _validate_coupon_permissions(course_code, user):
     if not instructor_assignment and user.tipo != "admin":
         return None, "Solo el instructor del curso puede gestionar cupones"
 
-    return curso, None
+    return course_obj, None
 
 
 def _validate_coupon_for_enrollment(course_code, coupon_code, user):
@@ -2284,7 +2278,7 @@ def _validate_coupon_for_enrollment(course_code, coupon_code, user):
 @perfil_requerido("instructor")
 def list_coupons(course_code):
     """Lista cupones existentes para un curso."""
-    curso, error = _validate_coupon_permissions(course_code, current_user)
+    course_obj, error = _validate_coupon_permissions(course_code, current_user)
     if error:
         flash(error, "warning")
         return redirect(url_for("course.administrar_curso", course_code=course_code))
@@ -2295,7 +2289,7 @@ def list_coupons(course_code):
         .all()
     )
 
-    return render_template("learning/curso/coupons/list.html", curso=curso, coupons=coupons)
+    return render_template("learning/curso/coupons/list.html", curso=course_obj, coupons=coupons)
 
 
 @course.route("/course/<course_code>/coupons/new", methods=["GET", "POST"])
@@ -2303,7 +2297,7 @@ def list_coupons(course_code):
 @perfil_requerido("instructor")
 def create_coupon(course_code):
     """Crear nuevo cupón para un curso."""
-    curso, error = _validate_coupon_permissions(course_code, current_user)
+    course_obj, error = _validate_coupon_permissions(course_code, current_user)
     if error:
         flash(error, "warning")
         return redirect(url_for("course.administrar_curso", course_code=course_code))
@@ -2353,7 +2347,7 @@ def create_coupon(course_code):
             flash("Error al crear el cupón", "danger")
             log.error(f"Error creating coupon: {e}")
 
-    return render_template(TEMPLATE_COUPON_CREATE, curso=curso, form=form)
+    return render_template(TEMPLATE_COUPON_CREATE, curso=course_obj, form=form)
 
 
 @course.route("/course/<course_code>/coupons/<coupon_id>/edit", methods=["GET", "POST"])
@@ -2361,7 +2355,7 @@ def create_coupon(course_code):
 @perfil_requerido("instructor")
 def edit_coupon(course_code, coupon_id):
     """Editar cupón existente."""
-    curso, error = _validate_coupon_permissions(course_code, current_user)
+    course_obj, error = _validate_coupon_permissions(course_code, current_user)
     if error:
         flash(error, "warning")
         return redirect(url_for("course.administrar_curso", course_code=course_code))
@@ -2392,11 +2386,11 @@ def edit_coupon(course_code, coupon_id):
         # Validate discount value
         if form.discount_type.data == "percentage" and form.discount_value.data > 100:
             flash("El descuento porcentual no puede ser mayor al 100%", "warning")
-            return render_template(TEMPLATE_COUPON_EDIT, curso=curso, coupon=coupon, form=form)
+            return render_template(TEMPLATE_COUPON_EDIT, curso=course_obj, coupon=coupon, form=form)
 
-        if form.discount_type.data == "fixed" and form.discount_value.data > curso.precio:
+        if form.discount_type.data == "fixed" and form.discount_value.data > course_obj.precio:
             flash("El descuento fijo no puede ser mayor al precio del curso", "warning")
-            return render_template(TEMPLATE_COUPON_EDIT, curso=curso, coupon=coupon, form=form)
+            return render_template(TEMPLATE_COUPON_EDIT, curso=course_obj, coupon=coupon, form=form)
 
         try:
             coupon.code = form.code.data.upper()
@@ -2416,7 +2410,7 @@ def edit_coupon(course_code, coupon_id):
             flash("Error al actualizar el cupón", "danger")
             log.error(f"Error updating coupon: {e}")
 
-    return render_template(TEMPLATE_COUPON_EDIT, curso=curso, coupon=coupon, form=form)
+    return render_template(TEMPLATE_COUPON_EDIT, curso=course_obj, coupon=coupon, form=form)
 
 
 @course.route("/course/<course_code>/coupons/<coupon_id>/delete", methods=["POST"])
@@ -2424,7 +2418,7 @@ def edit_coupon(course_code, coupon_id):
 @perfil_requerido("instructor")
 def delete_coupon(course_code, coupon_id):
     """Eliminar cupón."""
-    curso, error = _validate_coupon_permissions(course_code, current_user)
+    _, error = _validate_coupon_permissions(course_code, current_user)
     if error:
         flash(error, "warning")
         return redirect(url_for("course.administrar_curso", course_code=course_code))
@@ -2444,6 +2438,272 @@ def delete_coupon(course_code, coupon_id):
         log.error(f"Error deleting coupon: {e}")
 
     return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
+
+
+@course.route("/course/<course_code>/resource/meet/<codigo>/calendar.ics")
+@login_required
+def download_meet_calendar(course_code, codigo):
+    """Download ICS calendar file for a meet resource."""
+    from now_lms.db.tools import verifica_estudiante_asignado_a_curso
+
+    # Get the meet resource
+    recurso = (
+        database.session.execute(
+            database.select(CursoRecurso).filter(
+                CursoRecurso.id == codigo, CursoRecurso.curso == course_code, CursoRecurso.tipo == "meet"
+            )
+        )
+        .scalars()
+        .first()
+    )
+
+    if not recurso:
+        abort(404)
+
+    # Check permissions
+    curso = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
+    if not curso:
+        abort(404)
+
+    # Verify user has access to this course/resource
+    if current_user.is_authenticated:
+        if current_user.tipo == "admin" or current_user.tipo == "instructor":
+            show_resource = True
+        elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(course_code):
+            show_resource = True
+        else:
+            show_resource = False
+    else:
+        show_resource = False
+
+    if not (show_resource or recurso.publico):
+        abort(403)
+
+    # Generate ICS content
+    ics_content = _generate_meet_ics_content(recurso, curso)
+
+    # Safe filename
+    filename = f"meet-{recurso.nombre[:20].replace(' ', '-')}-{recurso.id}.ics"
+
+    return Response(
+        ics_content,
+        mimetype="text/calendar",
+        headers={"Content-Disposition": f"attachment; filename={filename}"},
+    )
+
+
+@course.route("/course/<course_code>/resource/meet/<codigo>/google-calendar")
+@login_required
+def google_calendar_link(course_code, codigo):
+    """Redirect to Google Calendar to add meet event."""
+    from now_lms.db.tools import verifica_estudiante_asignado_a_curso
+    from urllib.parse import quote
+
+    # Get the meet resource (reuse permission logic)
+    recurso = (
+        database.session.execute(
+            database.select(CursoRecurso).filter(
+                CursoRecurso.id == codigo, CursoRecurso.curso == course_code, CursoRecurso.tipo == "meet"
+            )
+        )
+        .scalars()
+        .first()
+    )
+
+    if not recurso:
+        abort(404)
+
+    curso = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
+    if not curso:
+        abort(404)
+
+    # Verify user has access to this course/resource
+    if current_user.is_authenticated:
+        if current_user.tipo == "admin" or current_user.tipo == "instructor":
+            show_resource = True
+        elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(course_code):
+            show_resource = True
+        else:
+            show_resource = False
+    else:
+        show_resource = False
+
+    if not (show_resource or recurso.publico):
+        abort(403)
+
+    # Generate Google Calendar URL
+    if recurso.fecha and recurso.hora_inicio:
+        start_datetime = datetime.combine(recurso.fecha, recurso.hora_inicio)
+        if recurso.hora_fin:
+            end_datetime = datetime.combine(recurso.fecha, recurso.hora_fin)
+        else:
+            end_datetime = start_datetime + timedelta(hours=1)
+
+        start_str = start_datetime.strftime("%Y%m%dT%H%M%S")
+        end_str = end_datetime.strftime("%Y%m%dT%H%M%S")
+
+        # Build description
+        description_parts = [f"Curso: {curso.nombre}"]
+        if recurso.descripcion:
+            description_parts.append("")
+            description_parts.append(recurso.descripcion)
+        if recurso.url:
+            description_parts.append("")
+            description_parts.append(f"Enlace: {recurso.url}")
+
+        description = "\n".join(description_parts)
+
+        google_url = (
+            f"https://calendar.google.com/calendar/render?action=TEMPLATE"
+            f"&text={quote(recurso.nombre)}"
+            f"&dates={start_str}/{end_str}"
+            f"&details={quote(description)}"
+            f"&location={quote(recurso.notes or 'En línea')}"
+        )
+
+        return redirect(google_url)
+    else:
+        flash("No se puede crear el evento: faltan datos de fecha/hora", "error")
+        return redirect(url_for("course.ver_recurso", course_code=course_code, codigo=codigo))
+
+
+@course.route("/course/<course_code>/resource/meet/<codigo>/outlook-calendar")
+@login_required
+def outlook_calendar_link(course_code, codigo):
+    """Redirect to Outlook Calendar to add meet event."""
+    from now_lms.db.tools import verifica_estudiante_asignado_a_curso
+    from urllib.parse import quote
+
+    # Get the meet resource (reuse permission logic)
+    recurso = (
+        database.session.execute(
+            database.select(CursoRecurso).filter(
+                CursoRecurso.id == codigo, CursoRecurso.curso == course_code, CursoRecurso.tipo == "meet"
+            )
+        )
+        .scalars()
+        .first()
+    )
+
+    if not recurso:
+        abort(404)
+
+    curso = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
+    if not curso:
+        abort(404)
+
+    # Verify user has access to this course/resource
+    if current_user.is_authenticated:
+        if current_user.tipo == "admin" or current_user.tipo == "instructor":
+            show_resource = True
+        elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(course_code):
+            show_resource = True
+        else:
+            show_resource = False
+    else:
+        show_resource = False
+
+    if not (show_resource or recurso.publico):
+        abort(403)
+
+    # Generate Outlook Calendar URL
+    if recurso.fecha and recurso.hora_inicio:
+        start_datetime = datetime.combine(recurso.fecha, recurso.hora_inicio)
+        if recurso.hora_fin:
+            end_datetime = datetime.combine(recurso.fecha, recurso.hora_fin)
+        else:
+            end_datetime = start_datetime + timedelta(hours=1)
+
+        start_str = start_datetime.strftime("%Y%m%dT%H%M%S")
+        end_str = end_datetime.strftime("%Y%m%dT%H%M%S")
+
+        # Build description
+        description_parts = [f"Curso: {curso.nombre}"]
+        if recurso.descripcion:
+            description_parts.append("")
+            description_parts.append(recurso.descripcion)
+        if recurso.url:
+            description_parts.append("")
+            description_parts.append(f"Enlace: {recurso.url}")
+
+        description = "\n".join(description_parts)
+
+        outlook_url = (
+            f"https://outlook.live.com/calendar/0/deeplink/compose?"
+            f"subject={quote(recurso.nombre)}"
+            f"&startdt={start_str}"
+            f"&enddt={end_str}"
+            f"&body={quote(description)}"
+            f"&location={quote(recurso.notes or 'En línea')}"
+        )
+
+        return redirect(outlook_url)
+    else:
+        flash("No se puede crear el evento: faltan datos de fecha/hora", "error")
+        return redirect(url_for("course.ver_recurso", course_code=course_code, codigo=codigo))
+
+
+def _generate_meet_ics_content(recurso, curso):
+    """Generate ICS calendar content for a meet resource."""
+    lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//NOW LMS//Meet Calendar//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"]
+
+    # Combine date and time for start and end
+    if recurso.fecha and recurso.hora_inicio:
+        start_datetime = datetime.combine(recurso.fecha, recurso.hora_inicio)
+        if recurso.hora_fin:
+            end_datetime = datetime.combine(recurso.fecha, recurso.hora_fin)
+        else:
+            # Default to 1 hour duration if no end time
+            end_datetime = start_datetime + timedelta(hours=1)
+    else:
+        # Fallback if no date/time specified
+        return "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nEND:VCALENDAR\r\n"
+
+    # Convert to UTC for proper timezone handling (assuming local timezone is desired)
+    # For better compatibility, we'll use local time with proper floating time format
+    start_dt = start_datetime.strftime("%Y%m%dT%H%M%S")
+    end_dt = end_datetime.strftime("%Y%m%dT%H%M%S")
+    created_dt = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+    # Build description with proper newlines
+    description_parts = [f"Curso: {curso.nombre}"]
+    if recurso.descripcion:
+        description_parts.append("")  # Empty line
+        description_parts.append(recurso.descripcion)
+    if recurso.url:
+        description_parts.append("")  # Empty line
+        description_parts.append(f"Enlace: {recurso.url}")
+
+    # Join with newlines and then escape for ICS format
+    description = _escape_ics_text("\n".join(description_parts))
+
+    title = _escape_ics_text(recurso.nombre)
+    location = _escape_ics_text(recurso.notes or "En línea")
+
+    lines.extend(
+        [
+            "BEGIN:VEVENT",
+            f"UID:{recurso.id}@nowlms.local",
+            f"DTSTART:{start_dt}",
+            f"DTEND:{end_dt}",
+            f"DTSTAMP:{created_dt}",
+            f"SUMMARY:{title}",
+            f"DESCRIPTION:{description}",
+            f"LOCATION:{location}",
+            "STATUS:CONFIRMED",
+            "END:VEVENT",
+        ]
+    )
+
+    lines.append("END:VCALENDAR")
+    return "\r\n".join(lines)
+
+
+def _escape_ics_text(text):
+    """Escape text for ICS format."""
+    if not text:
+        return ""
+    return text.replace("\\", "\\\\").replace(",", "\\,").replace(";", "\\;").replace("\n", "\\n")
 
 
 @course.route("/course/<course_code>/section/<section_id>/new_evaluation")

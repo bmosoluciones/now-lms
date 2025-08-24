@@ -21,18 +21,20 @@ from unittest.mock import patch
 class TestGroupsViews:
     """Test class for groups view functions."""
 
-    def test_nuevo_grupo_get_unauthorized(self, app, client):
+    def test_nuevo_grupo_get_unauthorized(self, session_full_db_setup):
         """Test GET nuevo_grupo without login."""
-        with app.app_context():
+        with session_full_db_setup.app_context():
+            client = session_full_db_setup.test_client()
             response = client.get("/group/new")
 
             # Should redirect to login page
             assert response.status_code == 302
             assert "/usuarios/iniciar-sesion" in response.location or "login" in response.location
 
-    def test_nuevo_grupo_get_authorized(self, app, client, session_full_db_setup):
+    def test_nuevo_grupo_get_authorized(self, session_full_db_setup):
         """Test GET nuevo_grupo with admin login."""
-        with app.app_context():
+        with session_full_db_setup.app_context():
+            client = session_full_db_setup.test_client()
             # Login as admin user
             response = client.post("/usuarios/iniciar-sesion", data={"usuario": "lms-admin", "clave": "lms-admin"})
 
@@ -42,17 +44,19 @@ class TestGroupsViews:
             # Allow for both success (200) or redirect (302) as valid responses
             assert response.status_code in [200, 302, 404]
 
-    def test_nuevo_grupo_post_unauthorized(self, app, client):
+    def test_nuevo_grupo_post_unauthorized(self, session_full_db_setup):
         """Test POST nuevo_grupo without proper authorization."""
-        with app.app_context():
+        with session_full_db_setup.app_context():
+            client = session_full_db_setup.test_client()
             response = client.post("/group/new", data={"nombre": "Test Group", "descripcion": "Test Description"})
 
             # Should redirect to login page
             assert response.status_code == 302
 
-    def test_nuevo_grupo_post_authorized_success(self, app, client, session_full_db_setup):
+    def test_nuevo_grupo_post_authorized_success(self, session_full_db_setup):
         """Test POST nuevo_grupo with admin login and valid data."""
-        with app.app_context():
+        with session_full_db_setup.app_context():
+            client = session_full_db_setup.test_client()
             # Login as admin user
             client.post("/usuarios/iniciar-sesion", data={"usuario": "lms-admin", "clave": "lms-admin"})
 
@@ -63,9 +67,10 @@ class TestGroupsViews:
             # Should redirect to admin panel
             assert response.status_code == 200
 
-    def test_grupo_form_validation(self, app, client, session_full_db_setup):
+    def test_grupo_form_validation(self, session_full_db_setup):
         """Test group form validation with invalid data."""
-        with app.app_context():
+        with session_full_db_setup.app_context():
+            client = session_full_db_setup.test_client()
             # Login as admin user
             client.post("/usuarios/iniciar-sesion", data={"usuario": "lms-admin", "clave": "lms-admin"})
 
@@ -79,9 +84,10 @@ class TestGroupsViews:
             assert response.status_code in [200, 302]
 
     @patch("now_lms.vistas.groups.database.session.commit")
-    def test_nuevo_grupo_database_error(self, mock_commit, app, client, session_full_db_setup):
+    def test_nuevo_grupo_database_error(self, mock_commit, session_full_db_setup):
         """Test nuevo_grupo with database error."""
-        with app.app_context():
+        with session_full_db_setup.app_context():
+            client = session_full_db_setup.test_client()
             from sqlalchemy.exc import OperationalError
 
             # Mock database error

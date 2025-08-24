@@ -15,7 +15,6 @@
 """Test session-scoped pytest fixtures to ensure they work correctly."""
 
 
-
 class TestSessionBasicFixture:
     """Test session_basic_db_setup fixture."""
 
@@ -28,8 +27,7 @@ class TestSessionBasicFixture:
             assert database is not None
 
             # Test that basic configuration exists
-            from now_lms.db import Configuracion
-            from now_lms.db import select
+            from now_lms.db import Configuracion, select
 
             config_count = database.session.execute(select(Configuracion)).scalars().all()
 
@@ -40,8 +38,7 @@ class TestSessionBasicFixture:
         """Test that basic certificates are created."""
         with session_basic_db_setup.app_context():
             from now_lms import database
-            from now_lms.db import Certificado
-            from now_lms.db import select
+            from now_lms.db import Certificado, select
 
             certificates = database.session.execute(select(Certificado)).scalars().all()
 
@@ -61,8 +58,7 @@ class TestSessionFullFixture:
             assert database is not None
 
             # Test that users exist (should have test data)
-            from now_lms.db import Usuario
-            from now_lms.db import select
+            from now_lms.db import Usuario, select
 
             users = database.session.execute(select(Usuario)).scalars().all()
 
@@ -74,8 +70,7 @@ class TestSessionFullFixture:
         """Test that courses exist in full setup."""
         with session_full_db_setup.app_context():
             from now_lms import database
-            from now_lms.db import Curso
-            from now_lms.db import select
+            from now_lms.db import Curso, select
 
             courses = database.session.execute(select(Curso)).scalars().all()
 
@@ -96,8 +91,7 @@ class TestSessionFullWithExamplesFixture:
             assert database is not None
 
             # Test that users exist (should have test data and examples)
-            from now_lms.db import Usuario
-            from now_lms.db import select
+            from now_lms.db import Usuario, select
 
             users = database.session.execute(select(Usuario)).scalars().all()
 
@@ -111,9 +105,8 @@ class TestIsolatedSessionFixture:
 
     def test_isolated_session_rollback(self, isolated_db_session):
         """Test that isolated session properly rolls back changes."""
-        from now_lms.db import Usuario
-        from now_lms.db import select
         from now_lms.auth import proteger_passwd
+        from now_lms.db import Usuario, select
 
         # Get initial user count
         initial_users = isolated_db_session.execute(select(Usuario)).scalars().all()
@@ -137,8 +130,7 @@ class TestIsolatedSessionFixture:
 
     def test_isolated_session_rollback_verification(self, isolated_db_session):
         """Test that changes from previous test were rolled back."""
-        from now_lms.db import Usuario
-        from now_lms.db import select
+        from now_lms.db import Usuario, select
 
         # Check that the user from previous test is not present
         users = isolated_db_session.execute(select(Usuario).where(Usuario.usuario == "test_session_user")).scalars().all()

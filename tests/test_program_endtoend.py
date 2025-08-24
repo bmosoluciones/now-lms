@@ -15,6 +15,7 @@
 
 """End-to-end test for complete program certificate workflow."""
 
+from now_lms.auth import proteger_passwd
 from now_lms.db import (
     Certificacion,
     CertificacionPrograma,
@@ -26,7 +27,6 @@ from now_lms.db import (
     Usuario,
     database,
 )
-from now_lms.auth import proteger_passwd
 
 
 def test_complete_program_certificate_workflow(full_db_setup, client):

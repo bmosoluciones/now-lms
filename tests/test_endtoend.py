@@ -24,7 +24,7 @@ Casos de uso mas comunes.
 def test_user_registration_to_free_course_enroll(full_db_setup, client):
     """Test user registration to free course enrollment."""
     app = full_db_setup
-    from now_lms.db import database, Usuario
+    from now_lms.db import Usuario, database
 
     # Test user registration
     post = client.post(
@@ -48,7 +48,7 @@ def test_user_registration_to_free_course_enroll(full_db_setup, client):
         assert user.activo is False
 
         # User must be able to verify his account by email
-        from now_lms.auth import generate_confirmation_token, validate_confirmation_token, send_confirmation_email
+        from now_lms.auth import generate_confirmation_token, send_confirmation_email, validate_confirmation_token
 
         token = generate_confirmation_token("bmercado@nowlms.com")
         # Create a request context for email sending
@@ -171,8 +171,8 @@ def test_user_registration_to_free_course_enroll(full_db_setup, client):
 def test_user_password_change(basic_config_setup, client):
     """Test password change functionality for users."""
     app = basic_config_setup
-    from now_lms.db import database, Usuario
     from now_lms.auth import proteger_passwd, validar_acceso
+    from now_lms.db import Usuario, database
 
     with app.app_context():
         # Create a test user
@@ -250,8 +250,8 @@ def test_user_password_change(basic_config_setup, client):
 def test_password_recovery_functionality(basic_config_setup):
     """Test the complete password recovery flow."""
 
-    from now_lms.db import Usuario, MailConfig
     from now_lms.auth import proteger_passwd, validar_acceso
+    from now_lms.db import MailConfig, Usuario
 
     with basic_config_setup.app_context():
 
@@ -366,7 +366,7 @@ def test_password_recovery_functionality(basic_config_setup):
 
         # Test that token validation works
         with basic_config_setup.app_context():
-            from now_lms.auth import validate_password_reset_token, generate_password_reset_token
+            from now_lms.auth import generate_password_reset_token, validate_password_reset_token
 
             valid_token = generate_password_reset_token("testuser2@nowlms.com")
             email = validate_password_reset_token(valid_token)
@@ -378,10 +378,10 @@ def test_theme_functionality_comprehensive(basic_config_setup):
 
     from now_lms import database
     from now_lms.themes import (
-        get_home_template,
         get_course_list_template,
-        get_program_list_template,
         get_course_view_template,
+        get_home_template,
+        get_program_list_template,
         get_program_view_template,
     )
 
@@ -489,8 +489,8 @@ def test_course_administration_flow(basic_config_setup, client):
     """Test GET and POST for creating a new course."""
     app = basic_config_setup
 
-    from now_lms.db import Usuario, Curso
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Curso, Usuario
 
     # Crear usuario instructor
     with app.app_context():
@@ -845,8 +845,8 @@ def test_course_administration_flow(basic_config_setup, client):
 def test_course_categories_and_tags_management(basic_config_setup, client):
     """Test creating and editing courses with categories and tags management."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Curso, Categoria, Etiqueta, CategoriaCurso, EtiquetaCurso
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Categoria, CategoriaCurso, Curso, Etiqueta, EtiquetaCurso, Usuario
 
     # Create instructor user
     with app.app_context():
@@ -979,8 +979,8 @@ def test_course_categories_and_tags_management(basic_config_setup, client):
 def test_slideshow_editing_functionality(basic_config_setup, client):
     """Test editar_slideshow functionality from line 1963 in courses.py."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Curso, CursoSeccion, SlideShowResource, Slide
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Curso, CursoSeccion, Slide, SlideShowResource, Usuario
 
     # Create instructor user
     with app.app_context():
@@ -1125,8 +1125,8 @@ def test_slideshow_editing_functionality(basic_config_setup, client):
 def test_course_resource_edit_functionality(basic_config_setup, client):
     """Test editing functionality for all course resource types."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Curso, CursoSeccion, CursoRecurso
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Curso, CursoRecurso, CursoSeccion, Usuario
 
     # Create instructor user
     with app.app_context():
@@ -1344,9 +1344,10 @@ def test_course_resource_edit_functionality(basic_config_setup, client):
 def test_course_missing_post_routes_comprehensive(basic_config_setup, client):
     """Test missing course POST routes for comprehensive end-to-end coverage."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Curso, CursoSeccion, CursoRecurso, EstudianteCurso, Coupon, DocenteCurso
-    from now_lms.auth import proteger_passwd
     from io import BytesIO
+
+    from now_lms.auth import proteger_passwd
+    from now_lms.db import Coupon, Curso, CursoRecurso, CursoSeccion, DocenteCurso, EstudianteCurso, Usuario
 
     # Create instructor user
     with app.app_context():
@@ -1640,8 +1641,8 @@ def test_course_missing_post_routes_comprehensive(basic_config_setup, client):
 def test_program_administration_flow(basic_config_setup, client):
     """Test GET and POST for creating a new course."""
     app = basic_config_setup
-    from now_lms.db import Usuario
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Usuario
 
     # Crear usuario instructor
     with app.app_context():
@@ -1683,9 +1684,10 @@ def test_program_administration_flow(basic_config_setup, client):
 def test_masterclass_administration_flow(basic_config_setup, client):
     """Test comprehensive Master Class administration flow for instructor."""
     app = basic_config_setup
-    from now_lms.db import Usuario, MasterClass, MasterClassEnrollment, Configuracion
-    from now_lms.auth import proteger_passwd
     from datetime import datetime
+
+    from now_lms.auth import proteger_passwd
+    from now_lms.db import Configuracion, MasterClass, MasterClassEnrollment, Usuario
 
     # Create instructor user and enable masterclass
     with app.app_context():
@@ -1816,8 +1818,8 @@ def test_masterclass_administration_flow(basic_config_setup, client):
 def test_certificate_management_flow(basic_config_setup, client):
     """Test certificate management flow for instructor."""
     app = basic_config_setup
-    from now_lms.db import Usuario
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Usuario
 
     # Create instructor user
     with app.app_context():
@@ -1858,8 +1860,8 @@ def test_certificate_management_flow(basic_config_setup, client):
 def test_blog_management_flow(basic_config_setup, client):
     """Test blog management flow for instructor."""
     app = basic_config_setup
-    from now_lms.db import Usuario, BlogPost
     from now_lms.auth import proteger_passwd
+    from now_lms.db import BlogPost, Usuario
 
     # Create instructor user
     with app.app_context():
@@ -1951,9 +1953,10 @@ def test_blog_management_flow(basic_config_setup, client):
 def test_announcements_management_flow(basic_config_setup, client):
     """Test announcements management flow for instructor."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Announcement, Curso, DocenteCurso
-    from now_lms.auth import proteger_passwd
     from datetime import datetime
+
+    from now_lms.auth import proteger_passwd
+    from now_lms.db import Announcement, Curso, DocenteCurso, Usuario
 
     # Create instructor user and course
     with app.app_context():
@@ -2085,8 +2088,8 @@ def test_announcements_management_flow(basic_config_setup, client):
 def test_evaluations_management_basic_flow(basic_config_setup, client):
     """Test basic evaluations access for instructor."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Curso, CursoSeccion, DocenteCurso
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Curso, CursoSeccion, DocenteCurso, Usuario
 
     # Create instructor user and course with section
     with app.app_context():
@@ -2149,8 +2152,8 @@ def test_evaluations_management_basic_flow(basic_config_setup, client):
 def test_masterclass_basic_access_flow(basic_config_setup, client):
     """Test basic Master Class access for instructor (avoiding template issues)."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Configuracion
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Configuracion, Usuario
 
     # Create instructor user and enable masterclass
     with app.app_context():
@@ -2190,8 +2193,8 @@ def test_masterclass_basic_access_flow(basic_config_setup, client):
 def test_announcements_basic_access_flow(basic_config_setup, client):
     """Test basic announcements access for instructor."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Curso, DocenteCurso
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Curso, DocenteCurso, Usuario
 
     # Create instructor user and course
     with app.app_context():
@@ -2250,8 +2253,8 @@ def test_announcements_basic_access_flow(basic_config_setup, client):
 def test_missing_course_routes_endtoend(full_db_setup, client):
     """Test GET and POST requests for course routes missing from other end-to-end tests."""
     app = full_db_setup
-    from now_lms.db import Usuario, Curso, CursoSeccion, CursoRecurso, EstudianteCurso, Pago
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Curso, CursoRecurso, CursoSeccion, EstudianteCurso, Pago, Usuario
 
     # Use existing course from test data instead of creating new one
     course_code = "now"  # This should exist in the test data
@@ -2481,9 +2484,10 @@ def test_missing_course_routes_endtoend(full_db_setup, client):
 def test_course_coupons_endtoend(full_db_setup, client):
     """Test GET and POST requests for course coupon management routes."""
     app = full_db_setup
-    from now_lms.db import Usuario, Curso, DocenteCurso, Coupon
-    from now_lms.auth import proteger_passwd
     from datetime import datetime, timedelta
+
+    from now_lms.auth import proteger_passwd
+    from now_lms.db import Coupon, Curso, DocenteCurso, Usuario
 
     # Create instructor user and course
     with app.app_context():
@@ -2602,8 +2606,8 @@ def test_course_coupons_endtoend(full_db_setup, client):
 def test_category_management_comprehensive_endtoend(basic_config_setup, client):
     """Test comprehensive category management flow with GET and POST requests."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Categoria
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Categoria, Usuario
 
     # Create instructor user
     with app.app_context():
@@ -2714,8 +2718,8 @@ def test_category_management_comprehensive_endtoend(basic_config_setup, client):
 def test_course_filtering_functionality(basic_config_setup, client):
     """Test lista_cursos with different filter combinations."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Curso, Categoria, Etiqueta, CategoriaCurso, EtiquetaCurso
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Categoria, CategoriaCurso, Curso, Etiqueta, EtiquetaCurso, Usuario
 
     # Create test data
     with app.app_context():
@@ -2901,9 +2905,10 @@ def test_course_filtering_functionality(basic_config_setup, client):
 def test_coupon_management_endtoend(basic_config_setup, client):
     """Test create_coupon, edit_coupon, and delete_coupon functions from courses.py."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Curso, DocenteCurso, Coupon
-    from now_lms.auth import proteger_passwd
     from datetime import datetime, timedelta
+
+    from now_lms.auth import proteger_passwd
+    from now_lms.db import Coupon, Curso, DocenteCurso, Usuario
 
     # Create instructor user
     with app.app_context():
@@ -3031,8 +3036,8 @@ def test_coupon_management_endtoend(basic_config_setup, client):
 def test_program_categories_and_tags_management(basic_config_setup, client):
     """Test nuevo_programa with categories and tags management."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Programa, Categoria, Etiqueta, CategoriaPrograma, EtiquetaPrograma
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Categoria, CategoriaPrograma, Etiqueta, EtiquetaPrograma, Programa, Usuario
 
     # Create instructor user
     with app.app_context():
@@ -3112,8 +3117,8 @@ def test_program_categories_and_tags_management(basic_config_setup, client):
 def test_program_edit_functionality(basic_config_setup, client):
     """Test edit_programas functionality."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Programa, Curso, ProgramaCurso
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Curso, Programa, ProgramaCurso, Usuario
 
     # Create admin user (required for program editing)
     with app.app_context():
@@ -3214,8 +3219,8 @@ def test_program_edit_functionality(basic_config_setup, client):
 def test_program_enrollment_and_management(basic_config_setup, client):
     """Test inscribir_programa, tomar_programa, gestionar_cursos_programa, inscribir_usuario_programa."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Programa, ProgramaEstudiante, Curso
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Curso, Programa, ProgramaEstudiante, Usuario
 
     # Create users
     with app.app_context():
@@ -3354,8 +3359,8 @@ def test_program_enrollment_and_management(basic_config_setup, client):
 def test_tag_management_endtoend(basic_config_setup, client):
     """Test comprehensive tag management functionality including new_tag, edit_tag, delete_tag, and tags routes."""
     app = basic_config_setup
-    from now_lms.db import Usuario, Etiqueta
     from now_lms.auth import proteger_passwd
+    from now_lms.db import Etiqueta, Usuario
 
     # Create instructor user
     with app.app_context():
@@ -3536,9 +3541,10 @@ def test_tag_management_endtoend(basic_config_setup, client):
 def test_blog_functionality_endtoend(basic_config_setup, client):
     """Test blog functions: add_comment, flag_comment, approve_post, ban_post, delete_tag, ban_comment, delete_comment."""
     app = basic_config_setup
-    from now_lms.db import Usuario, BlogPost, BlogComment, BlogTag
-    from now_lms.auth import proteger_passwd
     from datetime import datetime, timezone
+
+    from now_lms.auth import proteger_passwd
+    from now_lms.db import BlogComment, BlogPost, BlogTag, Usuario
 
     # Create users
     with app.app_context():

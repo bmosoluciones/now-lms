@@ -66,7 +66,7 @@ def personalizacion():
     form = ThemeForm(style=config.theme)
     form.style.choices = TEMPLATE_CHOICES
 
-    if form.validate_on_submit() or request.method == "POST":  # pragma: no cover
+    if form.validate_on_submit() or request.method == "POST":
         # Check if theme is changing
         old_theme = config.theme
         new_theme = form.style.data
@@ -80,7 +80,7 @@ def personalizacion():
                     config.custom_logo = True
                     cache.delete("cached_logo")
 
-            except UploadNotAllowed:  # pragma: no cover
+            except UploadNotAllowed:
                 log.warning("An error occurred while updating the website logo.")
 
         if "favicon" in request.files:
@@ -90,7 +90,7 @@ def personalizacion():
                     config.custom_favicon = True
                     cache.delete("cached_favicon")
 
-            except UploadNotAllowed:  # pragma: no cover
+            except UploadNotAllowed:
                 log.warning("An error occurred while updating the website favicon.")
 
         try:
@@ -104,12 +104,12 @@ def personalizacion():
 
             flash(_("Tema del sitio web actualizado exitosamente."), "success")
             return redirect(url_for(SETTING_PERSONALIZACION_ROUTE))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             database.session.rollback()
             flash("No se pudo actualizar el tema del sitio web.", "warning")
             return redirect(url_for(SETTING_PERSONALIZACION_ROUTE))
 
-    else:  # pragma: no cover
+    else:
         return render_template("admin/theme.html", form=form, config=config)
 
 
@@ -162,7 +162,7 @@ def configuracion():
             cache.delete_memoized(get_site_currency)
             flash(_("Sitio web actualizado exitosamente."), "success")
             return redirect(url_for("setting.configuracion"))
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("No se pudo actualizar la configuración del sitio web.", "warning")
             return redirect(url_for("setting.configuracion"))
 
@@ -200,16 +200,16 @@ def mail():
         config.MAIL_DEFAULT_SENDER_NAME = form.MAIL_DEFAULT_SENDER_NAME.data
         config.email_verificado = False
 
-        try:  # pragma: no cover
+        try:
             database.session.commit()
             flash("Configuración de correo electronico actualizada exitosamente.", "success")
             return redirect(url_for(SETTING_MAIL_ROUTE))
 
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             flash("No se pudo actualizar la configuración de correo electronico.", "warning")
             return redirect(url_for(SETTING_MAIL_ROUTE))
 
-    else:  # pragma: no cover
+    else:
         return render_template("admin/mail.html", form=form, config=config)
 
 
@@ -263,7 +263,6 @@ def mail_check():
             return redirect(url_for(SETTING_MAIL_ROUTE))
         except Exception as e:  # noqa: E722
             flash("Hubo un error al enviar un correo de prueba. Revise su configuración.", "warning")
-            from now_lms.db import Configuracion
 
             config_g = database.session.execute(database.select(Configuracion)).first()[0]
             config.email_verificado = False
@@ -326,17 +325,17 @@ def adsense():
         config.add_large_skyscraper = form.add_large_skyscraper.data
         config.add_billboard = form.add_billboard.data
 
-        try:  # pragma: no cover
+        try:
             database.session.commit()
             flash("Configuración de Google AdSense actualizada exitosamente.", "success")
             return redirect(url_for("setting.adsense"))
 
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             database.session.rollback()
             flash("No se pudo actualizar la configuración de Google AdSense.", "warning")
             return redirect(url_for("setting.adsense"))
 
-    else:  # pragma: no cover
+    else:
         return render_template("admin/adsense.html", form=form, config=config)
 
 
@@ -436,15 +435,15 @@ def paypal():
         if form.paypal_sandbox_secret.data:
             config.paypal_sandbox_secret = proteger_secreto(form.paypal_sandbox_secret.data)
 
-        try:  # pragma: no cover
+        try:
             database.session.commit()
             flash("Configuración de Paypal actualizada exitosamente.", "success")
             return redirect(url_for("setting.paypal"))
 
-        except OperationalError:  # pragma: no cover
+        except OperationalError:
             database.session.rollback()
             flash("No se pudo actualizar la configuración de Paypal.", "warning")
             return redirect(url_for("setting.paypal"))
 
-    else:  # pragma: no cover
+    else:
         return render_template("admin/paypal.html", form=form, config=config, with_paypal=True)

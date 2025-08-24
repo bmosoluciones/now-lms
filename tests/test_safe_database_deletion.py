@@ -15,9 +15,9 @@
 """Test the safe database deletion function."""
 
 import pytest
-from sqlalchemy.exc import OperationalError, ProgrammingError
 from pg8000.dbapi import ProgrammingError as PGProgrammingError
 from pg8000.exceptions import DatabaseError
+from sqlalchemy.exc import OperationalError, ProgrammingError
 
 
 def test_eliminar_base_de_datos_segura_basic(lms_application):
@@ -75,10 +75,12 @@ def test_eliminar_base_de_datos_segura_with_postgresql_sessions(lms_application)
 
 def test_eliminar_base_de_datos_segura_error_handling(lms_application):
     """Test that the safe deletion function handles errors correctly."""
+    from unittest.mock import patch
+
+    from sqlalchemy.exc import SQLAlchemyError
+
     from now_lms import database
     from now_lms.db import eliminar_base_de_datos_segura
-    from unittest.mock import patch
-    from sqlalchemy.exc import SQLAlchemyError
 
     with lms_application.app_context():
         try:

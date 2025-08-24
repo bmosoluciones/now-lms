@@ -15,14 +15,15 @@
 
 """Additional tests for calendar_utils.py to improve coverage of error paths."""
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 from now_lms.calendar_utils import (
-    create_events_for_student_enrollment,
-    update_meet_resource_events,
-    update_evaluation_events,
     cleanup_events_for_course_unenrollment,
+    create_events_for_student_enrollment,
+    update_evaluation_events,
+    update_meet_resource_events,
 )
-from now_lms.db import database, Curso, CursoSeccion, CursoRecurso
+from now_lms.db import Curso, CursoRecurso, CursoSeccion
 
 
 class TestCalendarUtilsErrorPaths:
@@ -45,47 +46,44 @@ class TestCalendarUtilsErrorPaths:
                     mock_log.error.assert_called()
                     mock_session.rollback.assert_called()
 
-    def test_update_meet_resource_events_non_meet_resource(self, full_db_setup):
+    def test_update_meet_resource_events_non_meet_resource(self, isolated_db_session):
         """Test update_meet_resource_events with non-meet resource."""
-        app = full_db_setup
+        # Create a non-meet resource
+        curso = Curso(
+            codigo="UPDATE_TEST", nombre="Update Test", descripcion_corta="Short", descripcion="Test", estado="Borrador"
+        )
+        isolated_db_session.add(curso)
+        isolated_db_session.flush()  # Ensure curso is available for foreign key
 
-        with app.app_context():
-            # Create a non-meet resource
-            curso = Curso(
-                codigo="UPDATE_TEST", nombre="Update Test", descripcion_corta="Short", descripcion="Test", estado="Borrador"
-            )
-            database.session.add(curso)
-            database.session.flush()  # Ensure curso is available for foreign key
+        seccion = CursoSeccion(
+            id="SEC_UPDATE", curso="UPDATE_TEST", nombre="Section", descripcion="A test section", indice=1, estado=True
+        )
+        isolated_db_session.add(seccion)
+        isolated_db_session.flush()  # Ensure seccion is available for foreign key
 
-            seccion = CursoSeccion(
-                id="SEC_UPDATE", curso="UPDATE_TEST", nombre="Section", descripcion="A test section", indice=1, estado=True
-            )
-            database.session.add(seccion)
-            database.session.flush()  # Ensure seccion is available for foreign key
+        resource = CursoRecurso(
+            id="RES_UPDATE",
+            seccion="SEC_UPDATE",
+            curso="UPDATE_TEST",
+            nombre="Video Resource",
+            descripcion="A video resource",
+            tipo="video",  # Not a "meet" type
+            indice=1,
+        )
+        isolated_db_session.add(resource)
+        isolated_db_session.flush()  # Get the ID
 
-            resource = CursoRecurso(
-                id="RES_UPDATE",
-                seccion="SEC_UPDATE",
-                curso="UPDATE_TEST",
-                nombre="Video Resource",
-                descripcion="A video resource",
-                tipo="video",  # Not a "meet" type
-                indice=1,
-            )
-            database.session.add(resource)
-            database.session.commit()
+        # Test update with non-meet resource (should early return)
+        with patch("now_lms.calendar_utils.log") as mock_log:
+            update_meet_resource_events("RES_UPDATE")
 
-            # Test update with non-meet resource (should early return)
-            with patch("now_lms.calendar_utils.log") as mock_log:
-                update_meet_resource_events("RES_UPDATE")
+            # Give the background thread time to execute
+            import time
 
-                # Give the background thread time to execute
-                import time
+            time.sleep(0.1)
 
-                time.sleep(0.1)
-
-                # Should not log any updates since it's not a meet resource
-                # The function should return early
+            # Should not log any updates since it's not a meet resource
+            # The function should return early
 
     def test_update_meet_resource_events_nonexistent_resource(self, session_basic_db_setup):
         """Test update_meet_resource_events with nonexistent resource."""
