@@ -19,8 +19,10 @@ A simple-to-{install, use, configure, monetize, and maintain} learning managemen
 
 ## Documentation
 
--   Course Creators, refer to the [ourse creation doc](https://bmosoluciones.github.io/now-lms/course-creator/).
--   System Administrators, refer to the [documentation](https://bmosoluciones.github.io/now-lms/index.html).
+-   Course Creators, refer to the [course creation doc](https://bmosoluciones.github.io/now-lms/course-creator/).
+-   System Administrators, refer to the [system administration documentation](https://bmosoluciones.github.io/now-lms/setup/).
+-   Contributors, refer to the [development guide](
+https://bmosoluciones.github.io/now-lms/CONTRIBUTING/).
 
 Live demo: https://now-lms-demo.onrender.com/
 
@@ -39,7 +41,7 @@ Thanks for your interest in the NOW - LMS project (the project).
 ### Stack
 
 - Backend: Python with Flask microframework
-- Frontend: Boostrap with Alpine.js
+- Frontend: Boostrap5 with Alpine.js
 - ORM: Sqlalchemy
 
 ### Dependencies
