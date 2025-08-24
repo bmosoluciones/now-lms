@@ -12,9 +12,6 @@ pylint
 pytest
 ruff
 
-# Control de calidad html
-curlylint
-
 # Cobertura de código
 coverage
 pytest-cov
