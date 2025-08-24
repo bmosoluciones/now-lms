@@ -1903,6 +1903,898 @@ body {
 """
 
 # ---------------------------------------------------------------------------------------
+# Professional Course Certificate Template (Inspired by Safety Training Design)
+# ---------------------------------------------------------------------------------------
+
+CERTIFICADO_PROFESIONAL_TITULO = "Profesional"
+
+CERTIFICADO_PROFESIONAL_DESCRIPCION = "Certificado profesional moderno inspirado en diseños corporativos de alta calidad con elementos de seguridad y verificación."
+
+CERTIFICADO_PROFESIONAL_HTML = """
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Certificado Profesional</title>
+    </head>
+    <body>
+        <div class="certificate-container">
+            <!-- Header Section -->
+            <header class="certificate-header">
+                <div class="brand-section">
+                    <div class="brand-logo">🎓</div>
+                    <div class="provider-info">
+                        <div class="provider-text">Your CE Provider Logo</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Title Section -->
+            <div class="title-section">
+                <h1 class="certificate-title">Certificate of Safety Training</h1>
+            </div>
+
+            <!-- Content Section -->
+            <main class="content-section">
+                <div class="proudly-text">Proudly presented to</div>
+
+                <div class="recipient-name">{{ usuario.nombre }} {{ usuario.apellido }}</div>
+
+                <div class="completion-statement">
+                    <span class="completion-text">Successfully completed a</span>
+                    <span class="course-name">{{ curso.nombre }}</span>
+                </div>
+
+                <!-- Metrics Section -->
+                <div class="metrics-section">
+                    <div class="metric-item">
+                        <div class="metric-label">Credits earned:</div>
+                        <div class="metric-value">{{ curso.creditos or '4.6' }}</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Certificate ID:</div>
+                        <div class="metric-value">{{ certificacion.id }}</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Certified on:</div>
+                        <div class="metric-value">{{ certificacion.fecha.strftime('%d.%m.%Y') }}</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Expiry Date:</div>
+                        <div class="metric-value">{{ (certificacion.fecha.replace(year=certificacion.fecha.year + 2)).strftime('%d.%m.%Y') }}</div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer Section -->
+            <footer class="certificate-footer">
+                <div class="signatures-section">
+                    <div class="signature-block">
+                        <div class="signature-line"></div>
+                        <div class="signature-name">{{ curso.instructor or 'Bonnie Wilson' }}</div>
+                        <div class="signature-title">Course Instructor</div>
+                    </div>
+                    <div class="signature-block">
+                        <div class="signature-line"></div>
+                        <div class="signature-name">Mark Allford</div>
+                        <div class="signature-title">Program Director</div>
+                    </div>
+                </div>
+
+                <!-- Accreditation and QR -->
+                <div class="accreditation-section">
+                    <div class="accreditation-badge">
+                        <div class="badge-icon">🛡️</div>
+                        <div class="badge-text">
+                            <div class="association-name">Safety Association</div>
+                            <div class="accreditation-text">ACCREDITED<br>TRAINING<br>PROVIDER</div>
+                        </div>
+                    </div>
+                    <div class="qr-section">
+                        <img src="{{ url_for('certificate.certificacion_qr', cert_id=certificacion.id) }}"
+                             alt="QR Code"
+                             class="qr-code">
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>
+"""
+
+CERTIFICADO_PROFESIONAL_CSS = """
+/* Letter size landscape page setup for PDF generation */
+@page {
+    size: letter landscape; /* 11in x 8.5in landscape */
+    margin: 0.3in;
+}
+
+/* Color scheme inspired by the safety training certificate */
+:root {
+    --primary-purple: #4a2c7a;
+    --accent-purple: #6441a4;
+    --light-purple: #8b6bb1;
+    --background-light: #f7f5ff;
+    --text-dark: #2c1810;
+    --text-light: #5a4a6a;
+    --white: #ffffff;
+    --border-light: #e0d0f0;
+    --metric-bg: #e8e0f5;
+}
+
+/* Base styles */
+body {
+    width: 10.5in;
+    height: 8in;
+    margin: 0;
+    padding: 0;
+    font-family: "Arial", "Helvetica", sans-serif;
+    background: var(--background-light);
+    color: var(--text-dark);
+    box-sizing: border-box;
+}
+
+/* Certificate container */
+.certificate-container {
+    width: 100%;
+    height: 100%;
+    background: var(--white);
+    border-radius: 20px;
+    padding: 0.6in;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    border: 8px solid var(--primary-purple);
+    box-shadow: 0 4px 20px rgba(74, 44, 122, 0.15);
+}
+
+/* Header Section */
+.certificate-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    margin-bottom: 0.4in;
+}
+
+.brand-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.brand-logo {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-purple);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    color: var(--white);
+}
+
+.provider-info {
+    background: var(--primary-purple);
+    color: var(--white);
+    padding: 0.3em 0.8em;
+    border-radius: 8px;
+    font-size: 0.8em;
+    font-weight: 500;
+}
+
+/* Title Section */
+.title-section {
+    text-align: left;
+    margin-bottom: 0.8in;
+}
+
+.certificate-title {
+    font-size: 2.4em;
+    font-weight: 600;
+    color: var(--primary-purple);
+    margin: 0;
+    line-height: 1.1;
+}
+
+/* Content Section */
+.content-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.proudly-text {
+    font-size: 1.1em;
+    color: var(--text-light);
+    margin-bottom: 0.6em;
+    font-weight: 400;
+}
+
+.recipient-name {
+    font-size: 3.2em;
+    font-weight: 700;
+    color: var(--primary-purple);
+    margin: 0.3em 0 0.8em 0;
+    line-height: 1;
+}
+
+.completion-statement {
+    margin-bottom: 1.2em;
+    font-size: 1.2em;
+    line-height: 1.4;
+}
+
+.completion-text {
+    color: var(--text-dark);
+    font-weight: 400;
+}
+
+.course-name {
+    font-weight: 700;
+    color: var(--primary-purple);
+}
+
+/* Metrics Section */
+.metrics-section {
+    display: flex;
+    gap: 1.5em;
+    margin: 1em 0;
+    flex-wrap: wrap;
+}
+
+.metric-item {
+    background: var(--metric-bg);
+    padding: 0.4em 0.8em;
+    border-radius: 12px;
+    text-align: center;
+    min-width: 120px;
+}
+
+.metric-label {
+    font-size: 0.8em;
+    color: var(--text-light);
+    font-weight: 500;
+    margin-bottom: 0.2em;
+}
+
+.metric-value {
+    font-size: 1em;
+    font-weight: 700;
+    color: var(--primary-purple);
+}
+
+/* Footer Section */
+.certificate-footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-top: 0.6in;
+}
+
+/* Signatures */
+.signatures-section {
+    display: flex;
+    gap: 2em;
+    flex: 1;
+}
+
+.signature-block {
+    text-align: center;
+}
+
+.signature-line {
+    width: 140px;
+    height: 2px;
+    background: var(--text-light);
+    margin-bottom: 0.4em;
+}
+
+.signature-name {
+    font-size: 0.9em;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.2em;
+}
+
+.signature-title {
+    font-size: 0.8em;
+    color: var(--text-light);
+    font-weight: 400;
+}
+
+/* Accreditation Section */
+.accreditation-section {
+    display: flex;
+    align-items: flex-end;
+    gap: 1em;
+}
+
+.accreditation-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    background: var(--white);
+    border: 2px solid var(--border-light);
+    border-radius: 8px;
+    padding: 0.5em;
+}
+
+.badge-icon {
+    font-size: 1.5em;
+}
+
+.badge-text {
+    text-align: left;
+}
+
+.association-name {
+    font-size: 0.8em;
+    font-weight: 600;
+    color: var(--primary-purple);
+    margin-bottom: 0.1em;
+}
+
+.accreditation-text {
+    font-size: 0.6em;
+    color: var(--text-light);
+    font-weight: 500;
+    line-height: 1.1;
+    text-align: center;
+}
+
+.qr-section {
+    border: 2px solid var(--border-light);
+    border-radius: 8px;
+    padding: 0.3em;
+    background: var(--white);
+}
+
+.qr-code {
+    width: 60px;
+    height: 60px;
+    display: block;
+}
+
+/* Print optimization */
+@media print {
+    body {
+        width: 100%;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    .certificate-container {
+        border-radius: 0;
+        box-shadow: none;
+        width: 100%;
+        height: 100%;
+        border-width: 6px;
+    }
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 1200px) {
+    .certificate-container {
+        padding: 0.4in;
+    }
+
+    .certificate-title {
+        font-size: 2em;
+    }
+
+    .recipient-name {
+        font-size: 2.5em;
+    }
+
+    .metrics-section {
+        gap: 1em;
+    }
+
+    .signatures-section {
+        flex-direction: column;
+        gap: 1em;
+        align-items: center;
+    }
+
+    .accreditation-section {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5em;
+    }
+}
+"""
+
+# ---------------------------------------------------------------------------------------
+# Professional Program Certificate Template
+# ---------------------------------------------------------------------------------------
+
+CERTIFICADO_PROGRAMA_PROFESIONAL_TITULO = "Programa Profesional"
+
+CERTIFICADO_PROGRAMA_PROFESIONAL_DESCRIPCION = (
+    "Certificado de programa profesional con diseño corporativo moderno y elementos de verificación avanzados."
+)
+
+CERTIFICADO_PROGRAMA_PROFESIONAL_HTML = """
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Certificado de Programa Profesional</title>
+    </head>
+    <body>
+        <div class="certificate-container">
+            <!-- Header Section -->
+            <header class="certificate-header">
+                <div class="brand-section">
+                    <div class="brand-logo">🏆</div>
+                    <div class="provider-info">
+                        <div class="provider-text">Your CE Provider Logo</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Title Section -->
+            <div class="title-section">
+                <h1 class="certificate-title">Certificate of Professional Program</h1>
+            </div>
+
+            <!-- Content Section -->
+            <main class="content-section">
+                <div class="proudly-text">Proudly presented to</div>
+
+                <div class="recipient-name">{{ usuario.nombre }} {{ usuario.apellido }}</div>
+
+                <div class="completion-statement">
+                    <span class="completion-text">Successfully completed the comprehensive program</span>
+                    <span class="program-name">{{ programa.nombre }}</span>
+                </div>
+
+                <!-- Program Description -->
+                <div class="program-description">
+                    {{ programa.descripcion or 'A comprehensive professional development program designed to enhance skills and knowledge in the specified field of study.' }}
+                </div>
+
+                <!-- Courses Summary -->
+                <div class="courses-summary">
+                    <div class="courses-header">Including completion of the following courses:</div>
+                    <div class="courses-grid">
+                        {% set cursos_completados = certificacion_programa.get_cursos_completados() %}
+                        {% for curso_codigo in cursos_completados[:6] %}
+                            {% set curso = database.session.execute(database.select(Curso).filter_by(codigo=curso_codigo)).scalar_one_or_none() %}
+                            {% if curso %}
+                            <div class="course-item">{{ curso.nombre }}</div>
+                            {% endif %}
+                        {% endfor %}
+                        {% if cursos_completados|length > 6 %}
+                        <div class="course-item more-courses">+{{ cursos_completados|length - 6 }} more courses</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Metrics Section -->
+                <div class="metrics-section">
+                    <div class="metric-item">
+                        <div class="metric-label">Total Credits:</div>
+                        <div class="metric-value">{{ cursos_completados|length * 4.6 }}</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Certificate ID:</div>
+                        <div class="metric-value">{{ certificacion_programa.id }}</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Certified on:</div>
+                        <div class="metric-value">{{ certificacion_programa.fecha.strftime('%d.%m.%Y') }}</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Expiry Date:</div>
+                        <div class="metric-value">{{ (certificacion_programa.fecha.replace(year=certificacion_programa.fecha.year + 3)).strftime('%d.%m.%Y') }}</div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer Section -->
+            <footer class="certificate-footer">
+                <div class="signatures-section">
+                    <div class="signature-block">
+                        <div class="signature-line"></div>
+                        <div class="signature-name">Dr. Sarah Johnson</div>
+                        <div class="signature-title">Academic Director</div>
+                    </div>
+                    <div class="signature-block">
+                        <div class="signature-line"></div>
+                        <div class="signature-name">Mark Allford</div>
+                        <div class="signature-title">Program Director</div>
+                    </div>
+                </div>
+
+                <!-- Accreditation and QR -->
+                <div class="accreditation-section">
+                    <div class="accreditation-badge">
+                        <div class="badge-icon">🎖️</div>
+                        <div class="badge-text">
+                            <div class="association-name">Professional Association</div>
+                            <div class="accreditation-text">ACCREDITED<br>PROGRAM<br>PROVIDER</div>
+                        </div>
+                    </div>
+                    <div class="qr-section">
+                        <img src="{{ url_for('certificate.certificacion_programa_qr', id=certificacion_programa.id) }}"
+                             alt="QR Code"
+                             class="qr-code">
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>
+"""
+
+CERTIFICADO_PROGRAMA_PROFESIONAL_CSS = """
+/* Letter size landscape page setup for PDF generation */
+@page {
+    size: letter landscape; /* 11in x 8.5in landscape */
+    margin: 0.3in;
+}
+
+/* Color scheme for program certificates - darker, more prestigious */
+:root {
+    --primary-navy: #1e2a78;
+    --accent-navy: #2d3a9f;
+    --light-navy: #4a5bc4;
+    --gold-accent: #d4af37;
+    --background-light: #f8f9fd;
+    --text-dark: #1a1a2e;
+    --text-light: #4a4a6a;
+    --white: #ffffff;
+    --border-light: #d0d8f0;
+    --metric-bg: #e6eaff;
+    --course-bg: #f0f3ff;
+}
+
+/* Base styles */
+body {
+    width: 10.5in;
+    height: 8in;
+    margin: 0;
+    padding: 0;
+    font-family: "Arial", "Helvetica", sans-serif;
+    background: var(--background-light);
+    color: var(--text-dark);
+    box-sizing: border-box;
+}
+
+/* Certificate container */
+.certificate-container {
+    width: 100%;
+    height: 100%;
+    background: var(--white);
+    border-radius: 20px;
+    padding: 0.5in;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    border: 8px solid var(--primary-navy);
+    box-shadow: 0 4px 20px rgba(30, 42, 120, 0.15);
+}
+
+/* Header Section */
+.certificate-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    margin-bottom: 0.3in;
+}
+
+.brand-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
+.brand-logo {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-navy);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    color: var(--white);
+}
+
+.provider-info {
+    background: var(--primary-navy);
+    color: var(--white);
+    padding: 0.3em 0.8em;
+    border-radius: 8px;
+    font-size: 0.8em;
+    font-weight: 500;
+}
+
+/* Title Section */
+.title-section {
+    text-align: left;
+    margin-bottom: 0.6in;
+}
+
+.certificate-title {
+    font-size: 2.2em;
+    font-weight: 600;
+    color: var(--primary-navy);
+    margin: 0;
+    line-height: 1.1;
+}
+
+/* Content Section */
+.content-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.proudly-text {
+    font-size: 1em;
+    color: var(--text-light);
+    margin-bottom: 0.5em;
+    font-weight: 400;
+}
+
+.recipient-name {
+    font-size: 2.8em;
+    font-weight: 700;
+    color: var(--primary-navy);
+    margin: 0.2em 0 0.6em 0;
+    line-height: 1;
+}
+
+.completion-statement {
+    margin-bottom: 0.8em;
+    font-size: 1.1em;
+    line-height: 1.4;
+}
+
+.completion-text {
+    color: var(--text-dark);
+    font-weight: 400;
+}
+
+.program-name {
+    font-weight: 700;
+    color: var(--primary-navy);
+}
+
+/* Program Description */
+.program-description {
+    font-size: 0.9em;
+    color: var(--text-light);
+    margin-bottom: 0.8em;
+    line-height: 1.4;
+    font-style: italic;
+}
+
+/* Courses Summary */
+.courses-summary {
+    margin-bottom: 1em;
+}
+
+.courses-header {
+    font-size: 0.9em;
+    color: var(--text-dark);
+    font-weight: 600;
+    margin-bottom: 0.5em;
+}
+
+.courses-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.3em;
+    margin-bottom: 0.8em;
+}
+
+.course-item {
+    background: var(--course-bg);
+    padding: 0.3em 0.6em;
+    border-radius: 6px;
+    font-size: 0.7em;
+    color: var(--text-dark);
+    text-align: center;
+    font-weight: 500;
+    border: 1px solid var(--border-light);
+}
+
+.course-item.more-courses {
+    background: var(--gold-accent);
+    color: var(--white);
+    font-weight: 600;
+}
+
+/* Metrics Section */
+.metrics-section {
+    display: flex;
+    gap: 1.2em;
+    margin: 0.8em 0;
+    flex-wrap: wrap;
+}
+
+.metric-item {
+    background: var(--metric-bg);
+    padding: 0.4em 0.8em;
+    border-radius: 12px;
+    text-align: center;
+    min-width: 110px;
+    border: 1px solid var(--border-light);
+}
+
+.metric-label {
+    font-size: 0.75em;
+    color: var(--text-light);
+    font-weight: 500;
+    margin-bottom: 0.2em;
+}
+
+.metric-value {
+    font-size: 0.95em;
+    font-weight: 700;
+    color: var(--primary-navy);
+}
+
+/* Footer Section */
+.certificate-footer {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-top: 0.5in;
+}
+
+/* Signatures */
+.signatures-section {
+    display: flex;
+    gap: 2em;
+    flex: 1;
+}
+
+.signature-block {
+    text-align: center;
+}
+
+.signature-line {
+    width: 140px;
+    height: 2px;
+    background: var(--text-light);
+    margin-bottom: 0.4em;
+}
+
+.signature-name {
+    font-size: 0.9em;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.2em;
+}
+
+.signature-title {
+    font-size: 0.8em;
+    color: var(--text-light);
+    font-weight: 400;
+}
+
+/* Accreditation Section */
+.accreditation-section {
+    display: flex;
+    align-items: flex-end;
+    gap: 1em;
+}
+
+.accreditation-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    background: var(--white);
+    border: 2px solid var(--gold-accent);
+    border-radius: 8px;
+    padding: 0.5em;
+}
+
+.badge-icon {
+    font-size: 1.5em;
+}
+
+.badge-text {
+    text-align: left;
+}
+
+.association-name {
+    font-size: 0.8em;
+    font-weight: 600;
+    color: var(--primary-navy);
+    margin-bottom: 0.1em;
+}
+
+.accreditation-text {
+    font-size: 0.6em;
+    color: var(--text-light);
+    font-weight: 500;
+    line-height: 1.1;
+    text-align: center;
+}
+
+.qr-section {
+    border: 2px solid var(--border-light);
+    border-radius: 8px;
+    padding: 0.3em;
+    background: var(--white);
+}
+
+.qr-code {
+    width: 60px;
+    height: 60px;
+    display: block;
+}
+
+/* Print optimization */
+@media print {
+    body {
+        width: 100%;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    .certificate-container {
+        border-radius: 0;
+        box-shadow: none;
+        width: 100%;
+        height: 100%;
+        border-width: 6px;
+    }
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 1200px) {
+    .certificate-container {
+        padding: 0.4in;
+    }
+
+    .certificate-title {
+        font-size: 1.8em;
+    }
+
+    .recipient-name {
+        font-size: 2.2em;
+    }
+
+    .courses-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .metrics-section {
+        gap: 0.8em;
+    }
+
+    .signatures-section {
+        flex-direction: column;
+        gap: 1em;
+        align-items: center;
+    }
+
+    .accreditation-section {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5em;
+    }
+}
+"""
+
+# ---------------------------------------------------------------------------------------
 # Program Certificate Template
 # ---------------------------------------------------------------------------------------
 
@@ -2458,11 +3350,27 @@ CERTIFICADOS = (
         "course",
     ),
     (
+        CERTIFICADO_PROFESIONAL_TITULO,
+        CERTIFICADO_PROFESIONAL_DESCRIPCION,
+        CERTIFICADO_PROFESIONAL_HTML,
+        CERTIFICADO_PROFESIONAL_CSS,
+        "profesional",
+        "course",
+    ),
+    (
         CERTIFICADO_PROGRAMA_TITULO,
         CERTIFICADO_PROGRAMA_DESCRIPCION,
         CERTIFICADO_PROGRAMA_HTML,
         CERTIFICADO_PROGRAMA_CSS,
         "programa",
+        "program",
+    ),
+    (
+        CERTIFICADO_PROGRAMA_PROFESIONAL_TITULO,
+        CERTIFICADO_PROGRAMA_PROFESIONAL_DESCRIPCION,
+        CERTIFICADO_PROGRAMA_PROFESIONAL_HTML,
+        CERTIFICADO_PROGRAMA_PROFESIONAL_CSS,
+        "programa_profesional",
         "program",
     ),
 )
