@@ -130,6 +130,7 @@ from now_lms.vistas.health import health_bp
 from now_lms.vistas.home import home
 from now_lms.vistas.masterclass import masterclass
 from now_lms.vistas.messages import msg
+from now_lms.vistas.page_info import page_info
 from now_lms.vistas.paypal import check_paypal_enabled, paypal
 from now_lms.vistas.profiles.admin import admin_profile
 from now_lms.vistas.profiles.instructor import instructor_profile
@@ -199,6 +200,7 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
         flask_app.register_blueprint(health_bp)
         flask_app.register_blueprint(home)
         flask_app.register_blueprint(msg)
+        flask_app.register_blueprint(page_info)
         flask_app.register_blueprint(program)
         flask_app.register_blueprint(resource_d)
         flask_app.register_blueprint(setting)

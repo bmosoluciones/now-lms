@@ -540,8 +540,8 @@ def cache():
     """Cache management tools."""
 
 
-@cache.command()
-def info():
+@cache.command()  # type: ignore[no-redef]
+def info():  # type: ignore[no-redef]
     """Show cache configuration and status."""
     from now_lms.cache import CACHE_CONFIG, CTYPE
 
