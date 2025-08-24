@@ -34,29 +34,52 @@ from now_lms.logs import log
 
 # < --------------------------------------------------------------------------------------------- >
 # Configuracion de Cache
-CACHE_CONFIG: dict = {"CACHE_KEY_PREFIX": "now_lms:"}
-CACHE_CONFIG["CACHE_DEFAULT_TIMEOUT"] = 300
-
-if (environ.get("CACHE_REDIS_URL")) or (environ.get("REDIS_URL")):
-    # EXAMPLE= REDIS_URL=redis://localhost:6379/0
-    CTYPE = "RedisCache"
-    CACHE_CONFIG["CACHE_REDIS_URL"] = environ.get("CACHE_REDIS_URL") or environ.get("REDIS_URL")
-
-elif environ.get("CACHE_MEMCACHED_SERVERS"):
-    CTYPE = "MemcachedCache"
-    CACHE_CONFIG["CACHE_MEMCACHED_SERVERS"] = environ.get("CACHE_MEMCACHED_SERVERS")
-
-else:
-    CTYPE = "NullCache"
-    log.debug("No cache service configured.")
 
 
-CACHE_CONFIG["CACHE_TYPE"] = CTYPE
+# For backward compatibility, we need to maintain CTYPE and CACHE_CONFIG
+# The actual cache initialization will be handled by cache_utils.py
+def _get_cache_type_for_compatibility():
+    """Determine cache type for backward compatibility with existing code."""
+    if (environ.get("CACHE_REDIS_URL")) or (environ.get("REDIS_URL")):
+        return "RedisCache"
+    elif environ.get("CACHE_MEMCACHED_SERVERS"):
+        return "MemcachedCache"
+    elif environ.get("NOW_LMS_MEMORY_CACHE", "0") == "1":
+        return "FileSystemCache"
+    else:
+        return "NullCache"
+
+
+def _get_cache_config_for_compatibility():
+    """Get basic cache config for backward compatibility."""
+    config = {"CACHE_KEY_PREFIX": "now_lms:", "CACHE_DEFAULT_TIMEOUT": 300}
+
+    if (environ.get("CACHE_REDIS_URL")) or (environ.get("REDIS_URL")):
+        config["CACHE_TYPE"] = "RedisCache"
+        config["CACHE_REDIS_URL"] = environ.get("CACHE_REDIS_URL") or environ.get("REDIS_URL")
+    elif environ.get("CACHE_MEMCACHED_SERVERS"):
+        config["CACHE_TYPE"] = "MemcachedCache"
+        config["CACHE_MEMCACHED_SERVERS"] = environ.get("CACHE_MEMCACHED_SERVERS")
+    elif environ.get("NOW_LMS_MEMORY_CACHE", "0") == "1":
+        config["CACHE_TYPE"] = "FileSystemCache"
+        # Note: CACHE_DIR will be determined dynamically by cache_utils
+    else:
+        config["CACHE_TYPE"] = "NullCache"
+
+    return config
+
+
+# Maintain backward compatibility
+CTYPE = _get_cache_type_for_compatibility()
+CACHE_CONFIG = _get_cache_config_for_compatibility()
 
 if CTYPE != "NullCache":
     log.trace(f"Using {CTYPE} service for storage")
+elif CTYPE == "NullCache" and environ.get("NOW_LMS_MEMORY_CACHE", "0") != "1":
+    log.debug("No cache service configured.")
 
-cache: Cache = Cache(config=CACHE_CONFIG)
+# Create cache instance (will be properly initialized via cache_utils.init_cache)
+cache: Cache = Cache()
 
 
 # ---------------------------------------------------------------------------------------

@@ -175,7 +175,11 @@ def inicializa_extenciones_terceros(flask_app: Flask):
         database.init_app(flask_app)
         alembic.init_app(flask_app)
         administrador_sesion.init_app(flask_app)
-        cache.init_app(flask_app)
+        
+        # Initialize cache using new cache_utils module
+        from now_lms.cache_utils import init_cache
+        init_cache(flask_app)
+        
         mde.init_app(flask_app)
         _mail_instance.init_app(flask_app)
         flask_app.config["BABEL_DEFAULT_LOCALE"] = "es"
