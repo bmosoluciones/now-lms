@@ -22,6 +22,13 @@
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/adsense/"/>
     </url>
     <url>
+        <loc>Noneblog/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneblog/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/blog/"/>
+    </url>
+    <url>
         <loc>Noneconfigure/</loc>
         <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
@@ -90,13 +97,6 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Nonepayments/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/payments/"/>
-    </url>
-    <url>
-        <loc>Nonepaypal_integration/</loc>
-        <lastmod>1980-01-01</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="en" href="Nonepaypal_integration/"/>
-        <xhtml:link rel="alternate" hreflang="es" href="Nonees/paypal_integration/"/>
     </url>
     <url>
         <loc>Nonepypi/</loc>
@@ -232,11 +232,32 @@
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/development/PAYPAL_MANUAL_TESTING/"/>
     </url>
     <url>
+        <loc>Nonedevelopment/paypal_integration/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedevelopment/paypal_integration/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/development/paypal_integration/"/>
+    </url>
+    <url>
+        <loc>Nonedevelopment/python-features/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedevelopment/python-features/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/development/python-features/"/>
+    </url>
+    <url>
         <loc>Nonedevelopment/query_guide/</loc>
         <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="en" href="Nonedevelopment/query_guide/"/>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/development/query_guide/"/>
+    </url>
+    <url>
+        <loc>Nonedevelopment/session_fixtures_guide/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedevelopment/session_fixtures_guide/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/development/session_fixtures_guide/"/>
     </url>
     <url>
         <loc>Nonees/</loc>
@@ -258,6 +279,13 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/adsense/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneadsense/"/>
+    </url>
+    <url>
+        <loc>Nonees/blog/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/blog/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Noneblog/"/>
     </url>
     <url>
         <loc>Nonees/configure/</loc>
@@ -328,13 +356,6 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/payments/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonepayments/"/>
-    </url>
-    <url>
-        <loc>Nonees/paypal_integration/</loc>
-        <lastmod>1980-01-01</lastmod>
-        <changefreq>daily</changefreq>
-        <xhtml:link rel="alternate" hreflang="es" href="Nonees/paypal_integration/"/>
-        <xhtml:link rel="alternate" hreflang="en" href="Nonepaypal_integration/"/>
     </url>
     <url>
         <loc>Nonees/pypi/</loc>
@@ -470,10 +491,31 @@
         <xhtml:link rel="alternate" hreflang="en" href="Nonedevelopment/PAYPAL_MANUAL_TESTING/"/>
     </url>
     <url>
+        <loc>Nonees/development/paypal_integration/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/development/paypal_integration/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedevelopment/paypal_integration/"/>
+    </url>
+    <url>
+        <loc>Nonees/development/python-features/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/development/python-features/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedevelopment/python-features/"/>
+    </url>
+    <url>
         <loc>Nonees/development/query_guide/</loc>
         <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/development/query_guide/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Nonedevelopment/query_guide/"/>
+    </url>
+    <url>
+        <loc>Nonees/development/session_fixtures_guide/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/development/session_fixtures_guide/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedevelopment/session_fixtures_guide/"/>
     </url>
 </urlset>
