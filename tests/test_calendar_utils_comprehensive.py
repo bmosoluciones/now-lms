@@ -1058,13 +1058,13 @@ class TestCalendarUtilsComprehensive:
     def test_update_meet_resource_events_background_function(self, session_full_db_setup):
         """Test update_meet_resource_events background function execution using session fixture."""
         import time as time_module
-        
+
         with session_full_db_setup.app_context():
             # Create user
             user = Usuario(
                 usuario="meet_update_user",
                 nombre="Meet",
-                apellido="User", 
+                apellido="User",
                 correo_electronico="meetupdate@example.com",
                 tipo="user",
                 activo=True,
@@ -1113,9 +1113,11 @@ class TestCalendarUtilsComprehensive:
             create_events_for_student_enrollment(user.usuario, "MEETUPD001")
 
             # Verify initial event exists
-            initial_events = database.session.execute(
-                select(UserEvent).filter_by(user_id=user.usuario, resource_id=meet_resource.id)
-            ).scalars().all()
+            initial_events = (
+                database.session.execute(select(UserEvent).filter_by(user_id=user.usuario, resource_id=meet_resource.id))
+                .scalars()
+                .all()
+            )
             assert len(initial_events) == 1
             initial_event = initial_events[0]
             assert initial_event.title == "Original Meeting"
@@ -1161,9 +1163,11 @@ class TestCalendarUtilsComprehensive:
             database.session.commit()  # Line 161
 
             # Verify the event was updated
-            updated_events = database.session.execute(
-                select(UserEvent).filter_by(user_id=user.usuario, resource_id=meet_resource.id)
-            ).scalars().all()
+            updated_events = (
+                database.session.execute(select(UserEvent).filter_by(user_id=user.usuario, resource_id=meet_resource.id))
+                .scalars()
+                .all()
+            )
             assert len(updated_events) == 1
             updated_event = updated_events[0]
             assert updated_event.title == "Updated Meeting Title"
@@ -1175,11 +1179,11 @@ class TestCalendarUtilsComprehensive:
     def test_update_evaluation_events_background_function(self, session_full_db_setup):
         """Test update_evaluation_events background function execution using session fixture."""
         import time as time_module
-        
+
         with session_full_db_setup.app_context():
             # Create user
             user = Usuario(
-                usuario="eval_update_user", 
+                usuario="eval_update_user",
                 nombre="Eval",
                 apellido="User",
                 correo_electronico="evalupdate@example.com",
@@ -1202,7 +1206,7 @@ class TestCalendarUtilsComprehensive:
             # Create section
             section = CursoSeccion(
                 curso="EVALUPD001",
-                nombre="Eval Update Section", 
+                nombre="Eval Update Section",
                 descripcion="Section for eval updates",
                 indice=1,
                 estado=True,
@@ -1226,9 +1230,11 @@ class TestCalendarUtilsComprehensive:
             create_events_for_student_enrollment(user.usuario, "EVALUPD001")
 
             # Verify initial event exists
-            initial_events = database.session.execute(
-                select(UserEvent).filter_by(user_id=user.usuario, evaluation_id=evaluation.id)
-            ).scalars().all()
+            initial_events = (
+                database.session.execute(select(UserEvent).filter_by(user_id=user.usuario, evaluation_id=evaluation.id))
+                .scalars()
+                .all()
+            )
             assert len(initial_events) == 1
             initial_event = initial_events[0]
             assert "Original Evaluation" in initial_event.title
@@ -1267,9 +1273,11 @@ class TestCalendarUtilsComprehensive:
             database.session.commit()  # Line 206
 
             # Verify the event was updated
-            updated_events = database.session.execute(
-                select(UserEvent).filter_by(user_id=user.usuario, evaluation_id=evaluation.id)
-            ).scalars().all()
+            updated_events = (
+                database.session.execute(select(UserEvent).filter_by(user_id=user.usuario, evaluation_id=evaluation.id))
+                .scalars()
+                .all()
+            )
             assert len(updated_events) == 1
             updated_event = updated_events[0]
             assert updated_event.title == "Fecha límite: Updated Evaluation Title"
@@ -1279,7 +1287,7 @@ class TestCalendarUtilsComprehensive:
 
     def test_update_meet_resource_events_multiple_users(self, session_full_db_setup):
         """Test that meet resource updates affect all enrolled users using session fixture."""
-        
+
         with session_full_db_setup.app_context():
             # Create multiple users
             users = []
@@ -1338,9 +1346,9 @@ class TestCalendarUtilsComprehensive:
                 create_events_for_student_enrollment(user.usuario, "MULTIUP001")
 
             # Verify all users have events
-            total_events_before = database.session.execute(
-                select(UserEvent).filter_by(resource_id=meet_resource.id)
-            ).scalars().all()
+            total_events_before = (
+                database.session.execute(select(UserEvent).filter_by(resource_id=meet_resource.id)).scalars().all()
+            )
             assert len(total_events_before) == 3
 
             # Update the meet resource
@@ -1381,12 +1389,12 @@ class TestCalendarUtilsComprehensive:
             database.session.commit()
 
             # Verify all events were updated
-            updated_events = database.session.execute(
-                select(UserEvent).filter_by(resource_id=meet_resource.id)
-            ).scalars().all()
+            updated_events = (
+                database.session.execute(select(UserEvent).filter_by(resource_id=meet_resource.id)).scalars().all()
+            )
             assert len(updated_events) == 3
             assert updates_made == 3
-            
+
             for event in updated_events:
                 assert event.title == "Updated Multi User Meeting"
                 assert event.start_time == datetime(2025, 12, 21, 11, 0)
@@ -1394,14 +1402,14 @@ class TestCalendarUtilsComprehensive:
 
     def test_update_functions_edge_cases(self, session_full_db_setup):
         """Test edge cases in update functions using session fixture."""
-        
+
         with session_full_db_setup.app_context():
             # Test with non-existent meet resource ID (should return early)
             resource = database.session.execute(
                 database.select(CursoRecurso).filter(CursoRecurso.id == "NONEXISTENT_MEET")
             ).scalar_one_or_none()
             assert resource is None  # Should return early at line 138
-            
+
             # Test with non-existent evaluation ID (should return early)
             evaluation = database.session.execute(
                 database.select(Evaluation).filter(Evaluation.id == "NONEXISTENT_EVAL")
@@ -1452,7 +1460,7 @@ class TestCalendarUtilsComprehensive:
         """Test direct execution of background thread functions to cover missing lines."""
         from unittest.mock import patch, MagicMock
         import threading
-        
+
         with session_full_db_setup.app_context():
             # Create a test resource
             curso = Curso(
@@ -1529,24 +1537,25 @@ class TestCalendarUtilsComprehensive:
 
                 # Call the actual functions - this should exercise lines 132-162 and 181-207
                 # The background threads will execute with proper app context
-                
+
                 # Test meet resource update
                 update_meet_resource_events(meet_resource.id)
-                
+
                 # Test evaluation update
                 update_evaluation_events(evaluation.id)
-                
+
                 # Give threads time to execute
                 import time as time_module
+
                 time_module.sleep(1.0)  # Longer wait to ensure threads complete
-                
+
                 # If we reach here without exceptions, the background functions executed
                 assert True
 
     def test_background_functions_synchronous_execution(self, session_full_db_setup):
         """Test background functions by running them synchronously to get full coverage."""
         from unittest.mock import patch
-        
+
         with session_full_db_setup.app_context():
             # Create test course and section
             curso = Curso(
@@ -1617,8 +1626,8 @@ class TestCalendarUtilsComprehensive:
             meet_resource.fecha = date(2025, 12, 29)
             meet_resource.hora_inicio = time_obj(14, 0)
             meet_resource.hora_fin = time_obj(15, 0)
-            
-            evaluation.title = "Updated Sync Evaluation" 
+
+            evaluation.title = "Updated Sync Evaluation"
             evaluation.description = "Updated evaluation description"
             evaluation.available_until = datetime(2025, 12, 29, 23, 59, 59)
             database.session.commit()
@@ -1628,32 +1637,36 @@ class TestCalendarUtilsComprehensive:
                 def __init__(self, target=None, **kwargs):
                     self.target = target
                     self.daemon = None
-                    
+
                 def start(self):
                     if self.target:
                         self.target()
 
-            with patch('now_lms.calendar_utils.threading.Thread', MockThread):
+            with patch("now_lms.calendar_utils.threading.Thread", MockThread):
                 # These calls should now execute the background functions synchronously
                 # This should cover lines 132-162
                 update_meet_resource_events(meet_resource.id)
-                
+
                 # This should cover lines 181-207
                 update_evaluation_events(evaluation.id)
 
             # Verify the updates were applied
-            updated_meet_events = database.session.execute(
-                select(UserEvent).filter_by(user_id=user.usuario, resource_id=meet_resource.id)
-            ).scalars().all()
+            updated_meet_events = (
+                database.session.execute(select(UserEvent).filter_by(user_id=user.usuario, resource_id=meet_resource.id))
+                .scalars()
+                .all()
+            )
             assert len(updated_meet_events) == 1
             meet_event = updated_meet_events[0]
             assert meet_event.title == "Updated Sync Meeting"
             assert meet_event.start_time == datetime(2025, 12, 29, 14, 0)
             assert meet_event.end_time == datetime(2025, 12, 29, 15, 0)
 
-            updated_eval_events = database.session.execute(
-                select(UserEvent).filter_by(user_id=user.usuario, evaluation_id=evaluation.id)
-            ).scalars().all()
+            updated_eval_events = (
+                database.session.execute(select(UserEvent).filter_by(user_id=user.usuario, evaluation_id=evaluation.id))
+                .scalars()
+                .all()
+            )
             assert len(updated_eval_events) == 1
             eval_event = updated_eval_events[0]
             assert eval_event.title == "Fecha límite: Updated Sync Evaluation"
@@ -1662,7 +1675,7 @@ class TestCalendarUtilsComprehensive:
     def test_background_functions_early_returns(self, session_full_db_setup):
         """Test background functions early return paths to achieve 100% coverage."""
         from unittest.mock import patch
-        
+
         with session_full_db_setup.app_context():
             # Create a non-meet resource to test early return at line 139
             curso = Curso(
@@ -1702,18 +1715,18 @@ class TestCalendarUtilsComprehensive:
                 def __init__(self, target=None, **kwargs):
                     self.target = target
                     self.daemon = None
-                    
+
                 def start(self):
                     if self.target:
                         self.target()
 
-            with patch('now_lms.calendar_utils.threading.Thread', MockThread):
+            with patch("now_lms.calendar_utils.threading.Thread", MockThread):
                 # Test early return for non-meet resource (should hit line 139)
                 update_meet_resource_events(non_meet_resource.id)
-                
+
                 # Test early return for non-existent resource (should hit line 139)
                 update_meet_resource_events("NONEXISTENT_RESOURCE_ID")
-                
+
                 # Test early return for non-existent evaluation (should hit line 188)
                 update_evaluation_events("NONEXISTENT_EVALUATION_ID")
 

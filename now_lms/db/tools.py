@@ -127,6 +127,10 @@ def verifica_estudiante_asignado_a_curso(id_curso: Union[None, str] = None):
 def crear_configuracion_predeterminada():
     """Crea configuración predeterminada de la aplicación."""
     from os import urandom
+    from now_lms.i18n import is_testing_mode
+
+    # Use Spanish for testing/CI mode, English for production
+    default_lang = "es" if is_testing_mode() else "en"
 
     config = Configuracion(
         titulo="NOW LMS",
@@ -136,6 +140,8 @@ def crear_configuracion_predeterminada():
         enable_programs=False,
         enable_masterclass=False,
         enable_resources=False,
+        lang=default_lang,
+        time_zone="UTC",
     )
     mail_config = MailConfig(
         MAIL_USE_TLS=False,

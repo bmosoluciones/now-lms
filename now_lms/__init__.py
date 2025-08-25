@@ -287,6 +287,7 @@ def config():
 def define_variables_globales_jinja2(flask_app: Flask):
     """Define variables globales de Jinja2 para su disponibilidad en plantillas HTML."""
     log.trace("Defining Jinja2 global variables.")
+    from now_lms.i18n import get_locale
     flask_app.jinja_env.globals["adsense_code"] = get_addsense_code
     flask_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
     flask_app.jinja_env.globals["adsense_enabled"] = get_adsense_enabled
@@ -303,6 +304,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["course_info"] = course_info
     flask_app.jinja_env.globals["course_logo"] = get_current_course_logo
     flask_app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
+    flask_app.jinja_env.globals["current_locale"] = get_locale
     flask_app.jinja_env.globals["current_theme"] = current_theme
     flask_app.jinja_env.globals["current_user"] = current_user
     flask_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
@@ -311,6 +313,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["favicon_perzonalizado"] = favicon_perzonalizado
     flask_app.jinja_env.globals["get_all_from_db"] = get_all_records
     flask_app.jinja_env.globals["get_course_sections"] = get_course_sections
+    flask_app.jinja_env.globals["get_locale"] = get_locale
     flask_app.jinja_env.globals["get_one_from_db"] = get_one_record
     flask_app.jinja_env.globals["get_slideshowid"] = get_slideshowid
     flask_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS

@@ -11,18 +11,26 @@ from datetime import datetime
 
 class TestCertificateBug:
     """Test class for certificate issuance bug."""
-    
+
     def test_certificate_bug_reproduction(self, session_full_db_setup):
         """
         Test that reproduces the bug where certificates are issued
         when resources are completed but evaluations haven't been passed.
         """
         from now_lms.db import (
-            Curso, CursoSeccion, CursoRecurso, CursoUsuarioAvance, CursoRecursoAvance,
-            Evaluation, EvaluationAttempt, Usuario, Certificacion, database
+            Curso,
+            CursoSeccion,
+            CursoRecurso,
+            CursoUsuarioAvance,
+            CursoRecursoAvance,
+            Evaluation,
+            EvaluationAttempt,
+            Usuario,
+            Certificacion,
+            database,
         )
         from now_lms.vistas.courses import _actualizar_avance_curso
-        
+
         with session_full_db_setup.app_context():
             # Create test user
             user = Usuario(
@@ -34,7 +42,7 @@ class TestCertificateBug:
                 tipo="student",
             )
             database.session.add(user)
-            
+
             # Create test course with certificate enabled
             course = Curso(
                 codigo="BUG_COURSE",
@@ -46,7 +54,7 @@ class TestCertificateBug:
                 plantilla_certificado="default",
             )
             database.session.add(course)
-            
+
             # Create course section
             section = CursoSeccion(
                 curso="BUG_COURSE",
@@ -56,7 +64,7 @@ class TestCertificateBug:
             )
             database.session.add(section)
             database.session.flush()  # Get section ID
-            
+
             # Create required resource
             resource = CursoRecurso(
                 curso="BUG_COURSE",
@@ -69,7 +77,7 @@ class TestCertificateBug:
             )
             database.session.add(resource)
             database.session.flush()  # Get resource ID
-            
+
             # Create evaluation for the course (this makes it so certificate should NOT be issued automatically)
             evaluation = Evaluation(
                 section_id=section.id,
@@ -81,7 +89,7 @@ class TestCertificateBug:
             )
             database.session.add(evaluation)
             database.session.commit()
-            
+
             # Mark resource as completed
             resource_progress = CursoRecursoAvance(
                 usuario="bug_test_student",
@@ -92,33 +100,45 @@ class TestCertificateBug:
             )
             database.session.add(resource_progress)
             database.session.commit()
-            
+
             # Check that no certificate exists yet
-            cert_count_before = database.session.execute(
-                database.select(Certificacion).filter_by(usuario="bug_test_student", curso="BUG_COURSE")
-            ).scalars().all()
-            
+            cert_count_before = (
+                database.session.execute(
+                    database.select(Certificacion).filter_by(usuario="bug_test_student", curso="BUG_COURSE")
+                )
+                .scalars()
+                .all()
+            )
+
             print(f"Certificates before update: {len(cert_count_before)}")
             assert len(cert_count_before) == 0, "No certificate should exist before course update"
-            
+
             # Call the function that updates course progress within a test client context
             # This should trigger the bug - issuing a certificate without checking evaluations
             with session_full_db_setup.test_request_context():
                 _actualizar_avance_curso("BUG_COURSE", "bug_test_student")
-            
+
             # Check if a certificate was incorrectly issued
-            cert_count_after = database.session.execute(
-                database.select(Certificacion).filter_by(usuario="bug_test_student", curso="BUG_COURSE")
-            ).scalars().all()
-            
+            cert_count_after = (
+                database.session.execute(
+                    database.select(Certificacion).filter_by(usuario="bug_test_student", curso="BUG_COURSE")
+                )
+                .scalars()
+                .all()
+            )
+
             # Check if course is marked as completed
-            course_progress = database.session.execute(
-                database.select(CursoUsuarioAvance).filter_by(usuario="bug_test_student", curso="BUG_COURSE")
-            ).scalars().first()
-            
+            course_progress = (
+                database.session.execute(
+                    database.select(CursoUsuarioAvance).filter_by(usuario="bug_test_student", curso="BUG_COURSE")
+                )
+                .scalars()
+                .first()
+            )
+
             print(f"Certificates after update: {len(cert_count_after)}")
             print(f"Course marked as completed: {course_progress.completado if course_progress else 'No progress record'}")
-            
+
             # The bug: certificate is issued even though evaluation wasn't passed
             if len(cert_count_after) > 0:
                 print("BUG REPRODUCED: Certificate was issued without passing evaluations!")
@@ -135,11 +155,19 @@ class TestCertificateBug:
         Test that certificates ARE issued when both resources and evaluations are completed.
         """
         from now_lms.db import (
-            Curso, CursoSeccion, CursoRecurso, CursoUsuarioAvance, CursoRecursoAvance,
-            Evaluation, EvaluationAttempt, Usuario, Certificacion, database
+            Curso,
+            CursoSeccion,
+            CursoRecurso,
+            CursoUsuarioAvance,
+            CursoRecursoAvance,
+            Evaluation,
+            EvaluationAttempt,
+            Usuario,
+            Certificacion,
+            database,
         )
         from now_lms.vistas.courses import _actualizar_avance_curso
-        
+
         with session_full_db_setup.app_context():
             # Create test user
             user = Usuario(
@@ -151,7 +179,7 @@ class TestCertificateBug:
                 tipo="student",
             )
             database.session.add(user)
-            
+
             # Create test course with certificate enabled
             course = Curso(
                 codigo="GOOD_COURSE",
@@ -163,7 +191,7 @@ class TestCertificateBug:
                 plantilla_certificado="default",
             )
             database.session.add(course)
-            
+
             # Create course section
             section = CursoSeccion(
                 curso="GOOD_COURSE",
@@ -173,7 +201,7 @@ class TestCertificateBug:
             )
             database.session.add(section)
             database.session.flush()  # Get section ID
-            
+
             # Create required resource
             resource = CursoRecurso(
                 curso="GOOD_COURSE",
@@ -186,7 +214,7 @@ class TestCertificateBug:
             )
             database.session.add(resource)
             database.session.flush()  # Get resource ID
-            
+
             # Create evaluation for the course
             evaluation = Evaluation(
                 section_id=section.id,
@@ -198,7 +226,7 @@ class TestCertificateBug:
             )
             database.session.add(evaluation)
             database.session.flush()  # Get evaluation ID
-            
+
             # Create a PASSING attempt for the evaluation
             passing_attempt = EvaluationAttempt(
                 evaluation_id=evaluation.id,
@@ -208,7 +236,7 @@ class TestCertificateBug:
                 submitted_at=datetime.now(),
             )
             database.session.add(passing_attempt)
-            
+
             # Mark resource as completed
             resource_progress = CursoRecursoAvance(
                 usuario="good_test_student",
@@ -219,33 +247,45 @@ class TestCertificateBug:
             )
             database.session.add(resource_progress)
             database.session.commit()
-            
+
             # Check that no certificate exists yet
-            cert_count_before = database.session.execute(
-                database.select(Certificacion).filter_by(usuario="good_test_student", curso="GOOD_COURSE")
-            ).scalars().all()
-            
+            cert_count_before = (
+                database.session.execute(
+                    database.select(Certificacion).filter_by(usuario="good_test_student", curso="GOOD_COURSE")
+                )
+                .scalars()
+                .all()
+            )
+
             print(f"Certificates before update: {len(cert_count_before)}")
             assert len(cert_count_before) == 0, "No certificate should exist before course update"
-            
+
             # Call the function that updates course progress
             # This should now correctly issue a certificate because all requirements are met
             with session_full_db_setup.test_request_context():
                 _actualizar_avance_curso("GOOD_COURSE", "good_test_student")
-            
+
             # Check if a certificate was correctly issued
-            cert_count_after = database.session.execute(
-                database.select(Certificacion).filter_by(usuario="good_test_student", curso="GOOD_COURSE")
-            ).scalars().all()
-            
+            cert_count_after = (
+                database.session.execute(
+                    database.select(Certificacion).filter_by(usuario="good_test_student", curso="GOOD_COURSE")
+                )
+                .scalars()
+                .all()
+            )
+
             # Check if course is marked as completed
-            course_progress = database.session.execute(
-                database.select(CursoUsuarioAvance).filter_by(usuario="good_test_student", curso="GOOD_COURSE")
-            ).scalars().first()
-            
+            course_progress = (
+                database.session.execute(
+                    database.select(CursoUsuarioAvance).filter_by(usuario="good_test_student", curso="GOOD_COURSE")
+                )
+                .scalars()
+                .first()
+            )
+
             print(f"Certificates after update: {len(cert_count_after)}")
             print(f"Course marked as completed: {course_progress.completado if course_progress else 'No progress record'}")
-            
+
             # Should issue certificate because all requirements are met
             assert len(cert_count_after) == 1, "Certificate should be issued when all requirements are met"
             assert course_progress.completado is True, "Course should be marked as completed"
@@ -256,11 +296,17 @@ class TestCertificateBug:
         Test that certificates ARE still issued for courses without evaluations when resources are completed.
         """
         from now_lms.db import (
-            Curso, CursoSeccion, CursoRecurso, CursoUsuarioAvance, CursoRecursoAvance,
-            Usuario, Certificacion, database
+            Curso,
+            CursoSeccion,
+            CursoRecurso,
+            CursoUsuarioAvance,
+            CursoRecursoAvance,
+            Usuario,
+            Certificacion,
+            database,
         )
         from now_lms.vistas.courses import _actualizar_avance_curso
-        
+
         with session_full_db_setup.app_context():
             # Create test user
             user = Usuario(
@@ -272,7 +318,7 @@ class TestCertificateBug:
                 tipo="student",
             )
             database.session.add(user)
-            
+
             # Create test course with certificate enabled but NO evaluations
             course = Curso(
                 codigo="NO_EVAL_COURSE",
@@ -284,7 +330,7 @@ class TestCertificateBug:
                 plantilla_certificado="default",
             )
             database.session.add(course)
-            
+
             # Create course section
             section = CursoSeccion(
                 curso="NO_EVAL_COURSE",
@@ -294,7 +340,7 @@ class TestCertificateBug:
             )
             database.session.add(section)
             database.session.flush()  # Get section ID
-            
+
             # Create required resource
             resource = CursoRecurso(
                 curso="NO_EVAL_COURSE",
@@ -307,9 +353,9 @@ class TestCertificateBug:
             )
             database.session.add(resource)
             database.session.flush()  # Get resource ID
-            
+
             # Note: NO evaluations are created for this course
-            
+
             # Mark resource as completed
             resource_progress = CursoRecursoAvance(
                 usuario="no_eval_student",
@@ -320,33 +366,45 @@ class TestCertificateBug:
             )
             database.session.add(resource_progress)
             database.session.commit()
-            
+
             # Check that no certificate exists yet
-            cert_count_before = database.session.execute(
-                database.select(Certificacion).filter_by(usuario="no_eval_student", curso="NO_EVAL_COURSE")
-            ).scalars().all()
-            
+            cert_count_before = (
+                database.session.execute(
+                    database.select(Certificacion).filter_by(usuario="no_eval_student", curso="NO_EVAL_COURSE")
+                )
+                .scalars()
+                .all()
+            )
+
             print(f"Certificates before update: {len(cert_count_before)}")
             assert len(cert_count_before) == 0, "No certificate should exist before course update"
-            
+
             # Call the function that updates course progress
             # This should issue a certificate because there are no evaluations to check
             with session_full_db_setup.test_request_context():
                 _actualizar_avance_curso("NO_EVAL_COURSE", "no_eval_student")
-            
+
             # Check if a certificate was correctly issued
-            cert_count_after = database.session.execute(
-                database.select(Certificacion).filter_by(usuario="no_eval_student", curso="NO_EVAL_COURSE")
-            ).scalars().all()
-            
+            cert_count_after = (
+                database.session.execute(
+                    database.select(Certificacion).filter_by(usuario="no_eval_student", curso="NO_EVAL_COURSE")
+                )
+                .scalars()
+                .all()
+            )
+
             # Check if course is marked as completed
-            course_progress = database.session.execute(
-                database.select(CursoUsuarioAvance).filter_by(usuario="no_eval_student", curso="NO_EVAL_COURSE")
-            ).scalars().first()
-            
+            course_progress = (
+                database.session.execute(
+                    database.select(CursoUsuarioAvance).filter_by(usuario="no_eval_student", curso="NO_EVAL_COURSE")
+                )
+                .scalars()
+                .first()
+            )
+
             print(f"Certificates after update: {len(cert_count_after)}")
             print(f"Course marked as completed: {course_progress.completado if course_progress else 'No progress record'}")
-            
+
             # Should issue certificate because no evaluations exist
             assert len(cert_count_after) == 1, "Certificate should be issued for courses without evaluations"
             assert course_progress.completado is True, "Course should be marked as completed"
