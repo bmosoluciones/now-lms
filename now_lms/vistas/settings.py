@@ -124,21 +124,25 @@ def configuracion():
         titulo=config.titulo,
         descripcion=config.descripcion,
         moneda=config.moneda,
-        verify_user_by_email=config.verify_user_by_email,
+        lang=config.lang,
+        timezone=config.time_zone,
         enable_programs=config.enable_programs,
         enable_masterclass=config.enable_masterclass,
         enable_resources=config.enable_resources,
         enable_blog=config.enable_blog,
+        verify_user_by_email=config.verify_user_by_email,
     )
     if form.validate_on_submit() or request.method == "POST":
         config.titulo = form.titulo.data
         config.descripcion = form.descripcion.data
         config.moneda = form.moneda.data
-        config.verify_user_by_email = form.verify_user_by_email.data
+        config.lang = form.lang.data
+        config.time_zone = form.timezone.data
         config.enable_programs = form.enable_programs.data
         config.enable_masterclass = form.enable_masterclass.data
         config.enable_resources = form.enable_resources.data
         config.enable_blog = form.enable_blog.data
+        config.verify_user_by_email = form.verify_user_by_email.data
 
         if form.verify_user_by_email.data is True:
             config_mail = database.session.execute(database.select(MailConfig)).first()[0]
@@ -149,7 +153,6 @@ def configuracion():
                 config.verify_user_by_email = True
 
         try:
-            database.session.commit()
             cache.delete("site_config")
             # Clear navigation cache when configuration changes
             cache.delete("nav_programs_enabled")
@@ -160,6 +163,7 @@ def configuracion():
             from now_lms.vistas.paypal import get_site_currency
 
             cache.delete_memoized(get_site_currency)
+            database.session.commit()
             flash(_("Sitio web actualizado exitosamente."), "success")
             return redirect(url_for("setting.configuracion"))
         except OperationalError:

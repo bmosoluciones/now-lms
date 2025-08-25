@@ -104,13 +104,65 @@ MONEDAS = [
     ("ISK", "Corona Islandesa"),
 ]
 
+ZONAS_HORARIAS = [
+    # UTC
+    ("UTC", "UTC"),
+    # América del Norte
+    ("America/New_York", "America/New_York"),  # EE.UU. Este
+    ("America/Chicago", "America/Chicago"),  # EE.UU. Central
+    ("America/Denver", "America/Denver"),  # EE.UU. Montaña
+    ("America/Los_Angeles", "America/Los_Angeles"),  # EE.UU. Pacífico
+    ("America/Mexico_City", "America/Mexico_City"),  # México
+    # Centroamérica
+    ("America/Guatemala", "America/Guatemala"),  # Guatemala
+    ("America/El_Salvador", "America/El_Salvador"),  # El Salvador
+    ("America/Tegucigalpa", "America/Tegucigalpa"),  # Honduras
+    ("America/Managua", "America/Managua"),  # Nicaragua
+    ("America/Costa_Rica", "America/Costa_Rica"),  # Costa Rica
+    ("America/Panama", "America/Panama"),  # Panamá
+    # Caribe
+    ("America/Havana", "America/Havana"),  # Cuba
+    ("America/Santo_Domingo", "America/Santo_Domingo"),  # R. Dominicana
+    ("America/Puerto_Rico", "America/Puerto_Rico"),  # Puerto Rico
+    ("America/Jamaica", "America/Jamaica"),  # Jamaica
+    # Sudamérica
+    ("America/Bogota", "America/Bogota"),  # Colombia
+    ("America/Lima", "America/Lima"),  # Perú
+    ("America/Caracas", "America/Caracas"),  # Venezuela
+    ("America/La_Paz", "America/La_Paz"),  # Bolivia
+    ("America/Santiago", "America/Santiago"),  # Chile
+    ("America/Asuncion", "America/Asuncion"),  # Paraguay
+    ("America/Montevideo", "America/Montevideo"),  # Uruguay
+    ("America/Argentina/Buenos_Aires", "America/Argentina/Buenos_Aires"),  # Argentina
+    ("America/Sao_Paulo", "America/Sao_Paulo"),  # Brasil
+    # Europa
+    ("Europe/London", "Europe/London"),  # Reino Unido
+    ("Europe/Madrid", "Europe/Madrid"),  # España
+    ("Europe/Paris", "Europe/Paris"),  # Francia
+    ("Europe/Berlin", "Europe/Berlin"),  # Alemania
+    ("Europe/Rome", "Europe/Rome"),  # Italia
+    ("Europe/Moscow", "Europe/Moscow"),  # Rusia
+    # Asia
+    ("Asia/Dubai", "Asia/Dubai"),  # Emiratos Árabes
+    ("Asia/Kolkata", "Asia/Kolkata"),  # India
+    ("Asia/Bangkok", "Asia/Bangkok"),  # Tailandia
+    ("Asia/Shanghai", "Asia/Shanghai"),  # China
+    ("Asia/Tokyo", "Asia/Tokyo"),  # Japón
+    ("Asia/Seoul", "Asia/Seoul"),  # Corea del Sur
+    ("Asia/Singapore", "Asia/Singapore"),  # Singapur
+]
+
 
 class ConfigForm(FlaskForm):
     """Formulario para editar la configuración del sistema."""
 
     titulo = StringField(validators=[DataRequired()])
     descripcion = StringField(validators=[DataRequired()])
+
+    # Localización
     moneda = SelectField("Moneda", choices=MONEDAS, validators=[])
+    lang = SelectField("Idioma", choices=[("es", "Español"), ("en", "Inglés")], validators=[])
+    timezone = SelectField("Zona Horaria", choices=ZONAS_HORARIAS, validators=[])
 
     verify_user_by_email = BooleanField(validators=[])
 
