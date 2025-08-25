@@ -20,7 +20,8 @@ All notable changes to this project will be documented in this file.
 ### Changed:
  - Configuration ca be loaded from a file.
  - `NOW_LMS_MEMORY_CACHE` can force the system to use a in memory shared cache.
- -  - In `/blog` strip HTML tags.
+ - In `/blog` strip HTML tags.
+ - Updated admin page. 
 
 ### Notes:
 
