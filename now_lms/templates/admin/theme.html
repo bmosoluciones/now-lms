@@ -54,13 +54,16 @@
                             {% endif %}
                         </div>
                     </div>
-
+                    <br />
                     <div class="row">
+                        <h4>Tema del sitio web.</h4>
                         <div class="col-sm-6">
                             <label for="style" class="form-label">Estilo de la barra principal.</label>
                             {{ form.style(class="form-control", id="style") }}
+                            <div class="form-text">Los temas cambian varios aspectos visuales del sitio web.</div>
                         </div>
                     </div>
+                    <br />
 
                     <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button">Cancelar</a>
                     <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Tema</button>

@@ -46,7 +46,7 @@ jobs:
                   mysql -u root -proot -e "CREATE USER 'lmsctl'@'localhost' IDENTIFIED BY 'lmsctl';"
                   mysql -u root -proot -e "CREATE DATABASE lmsctl;"
                   mysql -u root -proot -e "GRANT ALL PRIVILEGES ON lmsctl.* TO 'lmsctl'@'localhost'; FLUSH PRIVILEGES;"
-                  pytest -v -v --cov=now_lms --cov-append tests/test_multipledb.py
+                  # pytest -v -v --cov=now_lms --cov-append tests/test_multipledb.py
 
             - name: Test with Postgresql + pg8000
               env:

@@ -230,6 +230,25 @@ def take_evaluation(evaluation_id):
 
         database.session.commit()
 
+        # Check if user can receive certificate after passing evaluation
+        if attempt.passed:
+            section = database.session.get(CursoSeccion, eval_obj.section_id)
+            if section:
+                from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
+                from now_lms.vistas.courses import _emitir_certificado
+
+                can_receive, _ = can_user_receive_certificate(section.curso, current_user.usuario)
+                if can_receive:
+                    # Get course to check if certificates are enabled
+                    curso = (
+                        database.session.execute(database.select(Curso).filter(Curso.codigo == section.curso))
+                        .scalars()
+                        .first()
+                    )
+
+                    if curso and curso.certificado and curso.plantilla_certificado:
+                        _emitir_certificado(section.curso, current_user.usuario, curso.plantilla_certificado)
+
         flash(EVALUATION_SUBMITTED, "success")
         return redirect(url_for("evaluation.evaluation_result", attempt_id=attempt.id))
 

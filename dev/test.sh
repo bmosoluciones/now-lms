@@ -26,4 +26,4 @@ echo -------------------------------------------------
 echo Run tests
 echo -------------------------------------------------
 echo
-CI=True pytest --tb=line -q --exitfirst --cov=now_lms
+CI=True pytest --tb=short -q --cov=now_lms

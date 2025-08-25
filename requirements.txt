@@ -4,6 +4,7 @@ appdirs
 argon2-cffi
 babel
 bleach
+configobj
 cryptography
 cuid2
 flask

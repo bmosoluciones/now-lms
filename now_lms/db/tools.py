@@ -702,17 +702,7 @@ def database_is_populated(app):
                 log.info("Database not populated, creating default configuration.")
                 return check
             return False
-        except AttributeError:
-            return False
-        except OperationalError:
-            return False
-        except ProgrammingError:
-            return False
-        except PGProgrammingError:
-            return False
-        except DatabaseError:
-            return False
-        except ResourceClosedError:
+        except (AttributeError, OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, ResourceClosedError):
             return False
 
 

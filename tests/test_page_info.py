@@ -19,7 +19,6 @@ import os
 from unittest.mock import patch
 
 
-
 def test_page_info_without_ci_env_redirects_to_home(session_basic_db_setup):
     """Test that page_info redirects to home when CI environment variable is not set."""
     app = session_basic_db_setup

@@ -32,6 +32,7 @@ Visit http://127.0.0.1:8080/ in your browser, default user and password are lms-
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
+from os import environ
 from platform import python_version
 
 # ---------------------------------------------------------------------------------------
@@ -111,7 +112,14 @@ from now_lms.db.tools import (
     verificar_avance_recurso,
 )
 from now_lms.logs import log
-from now_lms.misc import ESTILO_ALERTAS, ICONOS_RECURSOS, INICIO_SESION, concatenar_parametros_a_url, markdown_to_clean_html
+from now_lms.misc import (
+    ESTILO_ALERTAS,
+    ICONOS_RECURSOS,
+    INICIO_SESION,
+    limpiar_html,
+    concatenar_parametros_a_url,
+    markdown_to_clean_html,
+)
 from now_lms.themes import current_theme
 from now_lms.version import CODE_NAME, VERSION
 from now_lms.vistas._helpers import get_current_course_logo, get_site_favicon, get_site_logo
@@ -174,7 +182,12 @@ def inicializa_extenciones_terceros(flask_app: Flask):
         database.init_app(flask_app)
         alembic.init_app(flask_app)
         administrador_sesion.init_app(flask_app)
-        cache.init_app(flask_app)
+
+        # Initialize cache using new cache_utils module
+        from now_lms.cache_utils import init_cache
+
+        init_cache(flask_app)
+
         mde.init_app(flask_app)
         _mail_instance.init_app(flask_app)
         flask_app.config["BABEL_DEFAULT_LOCALE"] = "es"
@@ -306,6 +319,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["is_programs_enabled"] = is_programs_enabled
     flask_app.jinja_env.globals["is_resources_enabled"] = is_resources_enabled
     flask_app.jinja_env.globals["is_blog_enabled"] = is_blog_enabled
+    flask_app.jinja_env.globals["limpiar_html"] = limpiar_html
     flask_app.jinja_env.globals["lms_info"] = lms_info
     flask_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
     flask_app.jinja_env.globals["mkdown2html"] = markdown_to_clean_html
@@ -383,6 +397,27 @@ def create_app(app_name="now_lms", testing=False, config_overrides=None):
 
     # Apply base configuration
     flask_app.config.from_mapping(CONFIGURACION)
+
+    # Load configuration from file if available (before env vars are applied)
+    from now_lms.config import load_config_from_file
+
+    file_config = load_config_from_file()
+    if file_config:
+        flask_app.config.update(file_config)
+
+    # Apply environment variables last to ensure they have highest priority
+    # (Re-apply environment variable overrides after file config)
+    env_overrides = {}
+    if environ.get("SECRET_KEY"):
+        env_overrides["SECRET_KEY"] = environ.get("SECRET_KEY")
+    if environ.get("DATABASE_URL"):
+        env_overrides["SQLALCHEMY_DATABASE_URI"] = environ.get("DATABASE_URL")
+    if environ.get("REDIS_URL"):
+        env_overrides["CACHE_REDIS_URL"] = environ.get("REDIS_URL")
+
+    # Apply environment overrides
+    if env_overrides:
+        flask_app.config.update(env_overrides)
 
     # Apply configuration overrides if provided
     if config_overrides:
