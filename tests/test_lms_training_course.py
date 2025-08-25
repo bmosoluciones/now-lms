@@ -19,9 +19,9 @@ from now_lms.auth import proteger_passwd
 from now_lms.db import Curso, CursoRecurso, CursoSeccion, Evaluation, Question, QuestionOption, Usuario, database
 
 
-def test_lms_training_course_exists(full_db_setup_with_examples):
+def test_lms_training_course_exists(session_full_db_setup_with_examples):
     """Test that the LMS training course is created during initialization."""
-    app = full_db_setup_with_examples
+    app = session_full_db_setup_with_examples
 
     with app.app_context():
         # Check that the training course exists
@@ -38,9 +38,9 @@ def test_lms_training_course_exists(full_db_setup_with_examples):
         assert curso.foro_habilitado is False, "Self-paced courses cannot have forums"
 
 
-def test_lms_training_course_sections(full_db_setup_with_examples):
+def test_lms_training_course_sections(session_full_db_setup_with_examples):
     """Test that the training course has proper sections."""
-    app = full_db_setup_with_examples
+    app = session_full_db_setup_with_examples
 
     with app.app_context():
         # Get course sections
@@ -69,9 +69,9 @@ def test_lms_training_course_sections(full_db_setup_with_examples):
             assert expected in actual_sections, f"Section '{expected}' should exist in training course"
 
 
-def test_lms_training_course_resources(full_db_setup_with_examples):
+def test_lms_training_course_resources(session_full_db_setup_with_examples):
     """Test that the training course has learning resources."""
-    app = full_db_setup_with_examples
+    app = session_full_db_setup_with_examples
 
     with app.app_context():
         # Get course resources
@@ -95,9 +95,9 @@ def test_lms_training_course_resources(full_db_setup_with_examples):
             assert len(recurso.text) > 0, f"Resource '{recurso.nombre}' should have non-empty content"
 
 
-def test_lms_training_course_evaluations(full_db_setup_with_examples):
+def test_lms_training_course_evaluations(session_full_db_setup_with_examples):
     """Test that the training course has evaluations with 3-attempt limit."""
-    app = full_db_setup_with_examples
+    app = session_full_db_setup_with_examples
 
     with app.app_context():
         # Get evaluations for the course
@@ -119,9 +119,9 @@ def test_lms_training_course_evaluations(full_db_setup_with_examples):
             assert evaluacion.passing_score == 70.0, f"Evaluation '{evaluacion.title}' should have 70% passing score"
 
 
-def test_lms_training_course_questions(full_db_setup_with_examples):
+def test_lms_training_course_questions(session_full_db_setup_with_examples):
     """Test that evaluations have proper questions with options."""
-    app = full_db_setup_with_examples
+    app = session_full_db_setup_with_examples
 
     with app.app_context():
         # Get evaluations for the course
@@ -238,9 +238,9 @@ def test_lms_training_course_access_by_instructor(full_db_setup_with_examples, c
     assert "Guía Completa de NOW LMS" in course_content
 
 
-def test_lms_training_course_not_in_public_catalog(full_db_setup_with_examples, client):
+def test_lms_training_course_not_in_public_catalog(session_full_db_setup_with_examples, client):
     """Test that the training course is not shown in the public course catalog."""
-    app = full_db_setup_with_examples
+    app = session_full_db_setup_with_examples
 
     # Access the public homepage (course catalog)
     response = client.get("/")
@@ -252,9 +252,9 @@ def test_lms_training_course_not_in_public_catalog(full_db_setup_with_examples, 
     assert "Guía Completa de NOW LMS" not in content, "Training course should not appear in public catalog"
 
 
-def test_lms_training_course_comprehensive_content(full_db_setup_with_examples):
+def test_lms_training_course_comprehensive_content(session_full_db_setup_with_examples):
     """Test that the training course covers comprehensive LMS functionality."""
-    app = full_db_setup_with_examples
+    app = session_full_db_setup_with_examples
 
     with app.app_context():
         # Get all course content
@@ -277,9 +277,9 @@ def test_lms_training_course_comprehensive_content(full_db_setup_with_examples):
             assert topic in all_content, f"Training course should cover '{topic}' for instructors"
 
 
-def test_lms_training_course_serves_as_documentation(full_db_setup_with_examples):
+def test_lms_training_course_serves_as_documentation(session_full_db_setup_with_examples):
     """Test that the training course serves as comprehensive documentation."""
-    app = full_db_setup_with_examples
+    app = session_full_db_setup_with_examples
 
     with app.app_context():
         # Get course description and resources

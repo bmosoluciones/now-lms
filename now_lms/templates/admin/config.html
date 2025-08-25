@@ -35,13 +35,31 @@
                             {{ form.descripcion(class="form-control", id="descripcion", value=config.descripcion) }}
                         </div>
                     </div>
+                    <br />
                     <div class="row">
+                        <div class="col-sm-8">
+                            <h5>Configuración Regional.</h5>
+                        </div>
+
                         <div class="col-sm-6">
                             <label for="moneda" class="form-label">Moneda del Sitio</label>
                             {{ form.moneda(class="form-control form-select", id="moneda", value=config.moneda) }}
                             <div class="form-text">
                                 Seleccione la moneda predeterminada para procesar pagos y mostrar precios.
                             </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="timezone" class="form-label">Zona Horaria</label>
+                            {{ form.timezone(class="form-control form-select", id="timezone", value=config.timezone) }}
+                            <div class="form-text">Seleccione la zona horaria adecuada para su pais.</div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="lang" class="form-label">Idioma del sitio web.</label>
+                            {{ form.lang(class="form-control form-select", id="timezone", value=config.lang) }}
+                            <div class="form-text">Seleccione el idioma de su sitio web.</div>
                         </div>
                     </div>
 
@@ -56,7 +74,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <div class="form-check">
                                 {{ form.enable_programs(class="form-check-input", id="enable_programs",
                                 checked=config.enable_programs) }}
@@ -64,7 +82,7 @@
                             </div>
                             <div class="form-text">Los usuarios verán la opción "Programas" en el menú de navegación.</div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <div class="form-check">
                                 {{ form.enable_masterclass(class="form-check-input", id="enable_masterclass",
                                 checked=config.enable_masterclass) }}
@@ -74,7 +92,10 @@
                                 Los usuarios verán la opción "Clases Magistrales" en el menú de navegación.
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-6">
                             <div class="form-check">
                                 {{ form.enable_resources(class="form-check-input", id="enable_resources",
                                 checked=config.enable_resources) }}
@@ -83,6 +104,13 @@
                                 </label>
                             </div>
                             <div class="form-text">Los usuarios verán la opción "Recursos" en el menú de navegación.</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-check">
+                                {{ form.enable_blog(class="form-check-input", id="enable_blog", checked=config.enable_blog) }}
+                                <label class="form-check-label" for="enable_resources"> Habilitar Blog </label>
+                            </div>
+                            <div class="form-text">Los usuarios verán la opción "Blog" en el menú de navegación.</div>
                         </div>
                     </div>
 

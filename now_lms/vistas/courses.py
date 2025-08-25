@@ -1048,7 +1048,11 @@ def _emitir_certificado(curso_id, usuario, plantilla):
         certificado=plantilla,
     )
     certificado.creado = datetime.now(timezone.utc).date()
-    certificado.creado_por = current_user.usuario
+    # Handle automatic certificate generation where current_user might not be available
+    if current_user.is_authenticated:
+        certificado.creado_por = current_user.usuario
+    else:
+        certificado.creado_por = "system"  # Mark as system-generated
     database.session.add(certificado)
     database.session.commit()
     flash("Certificado de finalización emitido.", "success")
@@ -1099,7 +1103,14 @@ def _actualizar_avance_curso(curso_id, usuario):
         _curso = database.session.execute(select(Curso).filter(Curso.codigo == curso_id)).scalars().first()
         log.warning(_curso)
         if _curso.certificado:
-            _emitir_certificado(curso_id, usuario, _curso.plantilla_certificado)
+            # Check if user meets ALL requirements including evaluations before issuing certificate
+            from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
+
+            can_receive, reason = can_user_receive_certificate(curso_id, usuario)
+            if can_receive:
+                _emitir_certificado(curso_id, usuario, _curso.plantilla_certificado)
+            else:
+                log.info(f"Certificate not issued for user {usuario} in course {curso_id}: {reason}")
     database.session.commit()
 
 

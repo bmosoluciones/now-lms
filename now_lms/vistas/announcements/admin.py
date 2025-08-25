@@ -33,6 +33,7 @@ from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Announcement, database
 from now_lms.forms import GlobalAnnouncementForm
+from now_lms.logs import log
 
 # Route constants
 ROUTE_ADMIN_ANNOUNCEMENTS_LIST = "admin_announcements.list_announcements"
@@ -113,12 +114,13 @@ def edit_announcement(announcement_id):
     )
 
 
-@admin_announcements.route("/admin/announcements/<announcement_id>/delete")
+@admin_announcements.route("/admin/announcements/<announcement_id>/delete", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
 def delete_announcement(announcement_id):
     """Eliminar un anuncio global."""
     announcement = database.session.get(Announcement, announcement_id)
+    log.debug(f"Deleting announcement: {announcement_id}")
     if not announcement:
         flash("Anuncio no encontrado o no es un anuncio global.", "error")
         return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))

@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="es" class="h-100">
-    {% set current_theme = current_theme() %}
+    {% set current_theme = current_theme() %} {% set config = config() %}
 
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>Blog - {{ config().sitio_web }}</title>
+        <title>Blog - {{ config.titulo }}</title>
     </head>
 
     <body>
@@ -16,7 +16,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-8">
-                        <h1>Blog</h1>
+                        <h1>{{ config.titulo }} - Blog</h1>
 
                         {% if posts %} {% for post in posts %}
                         <article class="mb-4 border-bottom pb-3">
@@ -46,7 +46,8 @@
                             {% endif %}
 
                             <div class="mb-2">
-                                {{ mkdown2html(post.content[:300]) }} {% if post.content|length > 300 %}...{% endif %}
+                                {{ limpiar_html(mkdown2html(post.content[:300])) }} {% if post.content|length > 300 %}...{%
+                                endif %}
                             </div>
 
                             <a href="{{ url_for('blog.blog_post', slug=post.slug) }}" class="btn btn-outline-primary btn-sm">

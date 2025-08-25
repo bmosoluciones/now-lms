@@ -17,7 +17,6 @@ Minimal PayPal integration tests that pass.
 """
 
 
-
 class TestPayPalConfiguration:
     """Test PayPal configuration functionality."""
 

@@ -20,6 +20,7 @@
 # Standard library
 # ---------------------------------------------------------------------------------------
 from collections import OrderedDict
+from html.parser import HTMLParser
 from typing import NamedTuple
 
 # ---------------------------------------------------------------------------------------
@@ -226,3 +227,21 @@ ESTILOS_ALERTAS: dict = {
 }
 
 ESTILO_ALERTAS = EstiloAlterta(icono=ICONOS_ALERTAS, clase=ESTILOS_ALERTAS)
+
+
+class HTMLCleaner(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.textos = []
+
+    def handle_data(self, data):
+        self.textos.append(data)
+
+    def get_text(self):
+        return "".join(self.textos)
+
+
+def limpiar_html(html: str) -> str:
+    parser = HTMLCleaner()
+    parser.feed(html)
+    return parser.get_text()

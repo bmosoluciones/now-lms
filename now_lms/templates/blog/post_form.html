@@ -4,7 +4,8 @@
 
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>Crear nueva entrada del blog.</title>
+        <title>{{ title }}</title>
+        {{mde.css}}
     </head>
 
     <body>
@@ -70,6 +71,11 @@
                                 </div>
                             </div>
 
+                            <div class="row">
+                                <h3>Vista Previa de la publicación:</h3>
+                                {{mde.preview}}
+                            </div>
+
                             <div class="mb-3">
                                 <button type="submit" class="btn btn-primary">Grabar entrada</button>
 
@@ -84,5 +90,6 @@
                 </div>
             </div>
         </main>
+        {{mde.editor()}} {{mde.js}}
     </body>
 </html>

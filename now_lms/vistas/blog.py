@@ -274,7 +274,7 @@ def admin_create_post():
             return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
         return redirect(url_for("blog.instructor_blog_index"))
 
-    return render_template("blog/post_form.html", form=form, title="Nueva Entrada")
+    return render_template("blog/post_form.html", form=form, title="Nueva Entrada", edit=False)
 
 
 @blog.route("/admin/blog/posts/<post_id>/edit", methods=["GET", "POST"])
@@ -285,6 +285,8 @@ def admin_edit_post(post_id):
     post = database.session.get(BlogPost, post_id)
     if not post:
         abort(404)
+
+    title = "Editar entrada - " + post.slug[:10]
 
     # Check permissions
     if current_user.tipo != "admin" and post.author_id != current_user.usuario:
@@ -340,7 +342,7 @@ def admin_edit_post(post_id):
             return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
         return redirect(url_for("blog.instructor_blog_index"))
 
-    return render_template("blog/post_form.html", form=form, title="Editar Entrada", post=post)
+    return render_template("blog/post_form.html", form=form, title=title, post=post, edit=True)
 
 
 @blog.route("/admin/blog/posts/<post_id>/approve", methods=["POST"])

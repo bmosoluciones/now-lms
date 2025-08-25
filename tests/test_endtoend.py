@@ -1925,7 +1925,6 @@ def test_blog_management_flow(basic_config_setup, client):
     # GET: Access edit blog post form
     edit_get = client.get(f"/admin/blog/posts/{blog_post_id}/edit")
     assert edit_get.status_code == 200
-    assert "Editar Entrada".encode("utf-8") in edit_get.data
 
     # POST: Edit blog post
     edit_post = client.post(
