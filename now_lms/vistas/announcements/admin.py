@@ -120,7 +120,7 @@ def edit_announcement(announcement_id):
 def delete_announcement(announcement_id):
     """Eliminar un anuncio global."""
     announcement = database.session.get(Announcement, announcement_id)
-    log.warning(f"Deleting announcement: {announcement_id}")
+    log.debug(f"Deleting announcement: {announcement_id}")
     if not announcement:
         flash("Anuncio no encontrado o no es un anuncio global.", "error")
         return redirect(url_for(ROUTE_ADMIN_ANNOUNCEMENTS_LIST))

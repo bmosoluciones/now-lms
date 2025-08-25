@@ -58,7 +58,7 @@ def load_config_from_file() -> Dict:
     try:
         from configobj import ConfigObj
     except ImportError:
-        log.warning("ConfigObj not available, skipping file-based configuration.")
+        log.debug("ConfigObj not available, skipping file-based configuration.")
         return {}
 
     search_paths = [

@@ -11,6 +11,8 @@ All notable changes to this project will be documented in this file.
 ### Fixed:
  - Fixed a issue system was issuing certificates without evaluations completions, see: 0f1947ca98340aa00c7e9303319afd1ce2cabd76
  - Fixed a issuer with the evaluation logic not checking certificate issuing after completing a evaluation, see: 7d7b1bf547011ed76b682eaa41e1e3013f7f5e04
+ - Fixed blog editor with `mde` fields.
+ - Fixed announcements delete route.
 
 ### Added:
  - Aditional certificate template
@@ -18,6 +20,7 @@ All notable changes to this project will be documented in this file.
 ### Changed:
  - Configuration ca be loaded from a file.
  - `NOW_LMS_MEMORY_CACHE` can force the system to use a in memory shared cache.
+ -  - In `/blog` strip HTML tags.
 
 ### Notes:
 
