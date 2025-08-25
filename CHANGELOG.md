@@ -6,7 +6,12 @@ All notable changes to this project will be documented in this file.
 - This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/).
 
-## [unreleased]
+
+## [ unreleased ]
+
+-------------------
+
+## [release: v0.0.1b13.dev20250824] - 2025-08-24
 
 ### Fixed:
  - Fixed a issue system was issuing certificates without evaluations completions, see: 0f1947ca98340aa00c7e9303319afd1ce2cabd76
