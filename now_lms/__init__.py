@@ -112,7 +112,14 @@ from now_lms.db.tools import (
     verificar_avance_recurso,
 )
 from now_lms.logs import log
-from now_lms.misc import ESTILO_ALERTAS, ICONOS_RECURSOS, INICIO_SESION, concatenar_parametros_a_url, markdown_to_clean_html
+from now_lms.misc import (
+    ESTILO_ALERTAS,
+    ICONOS_RECURSOS,
+    INICIO_SESION,
+    limpiar_html,
+    concatenar_parametros_a_url,
+    markdown_to_clean_html,
+)
 from now_lms.themes import current_theme
 from now_lms.version import CODE_NAME, VERSION
 from now_lms.vistas._helpers import get_current_course_logo, get_site_favicon, get_site_logo
@@ -312,6 +319,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["is_programs_enabled"] = is_programs_enabled
     flask_app.jinja_env.globals["is_resources_enabled"] = is_resources_enabled
     flask_app.jinja_env.globals["is_blog_enabled"] = is_blog_enabled
+    flask_app.jinja_env.globals["limpiar_html"] = limpiar_html
     flask_app.jinja_env.globals["lms_info"] = lms_info
     flask_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado
     flask_app.jinja_env.globals["mkdown2html"] = markdown_to_clean_html
