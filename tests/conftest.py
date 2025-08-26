@@ -27,11 +27,37 @@ from now_lms import log
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
-    """Enable foreign key constraints in SQLite for test consistency with MySQL."""
+    """Configura SQLite para ser más robusto en pruebas automáticas."""
     if "sqlite" in str(dbapi_connection):
         cursor = dbapi_connection.cursor()
-        cursor.execute("PRAGMA foreign_keys=ON")
-        cursor.close()
+        try:
+            # Activar restricciones de claves foráneas
+            cursor.execute("PRAGMA foreign_keys=ON")
+
+            # Asegurar que se respeten los CHECK constraints
+            cursor.execute("PRAGMA ignore_check_constraints=OFF")
+
+            # Evitar lecturas sucias (simula aislamiento más fuerte)
+            cursor.execute("PRAGMA read_uncommitted=FALSE")
+
+            # Mejor manejo de concurrencia
+            cursor.execute("PRAGMA journal_mode=WAL")
+
+            # Asegurar escritura segura en disco
+            cursor.execute("PRAGMA synchronous=FULL")
+
+            # Tipado estricto (SQLite >= 3.37)
+            try:
+                cursor.execute("PRAGMA strict=ON")
+            except Exception:
+                # Silenciosamente ignorar si la versión de SQLite no lo soporta
+                pass
+
+            # Permitir triggers recursivos (útil en cascadas)
+            cursor.execute("PRAGMA recursive_triggers=ON")
+
+        finally:
+            cursor.close()
 
 
 DB_URL = "sqlite:///:memory:"
