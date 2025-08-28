@@ -54,7 +54,16 @@ from werkzeug.exceptions import HTTPException
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.cache import cache
-from now_lms.config import CONFIGURACION, DIRECTORIO_ARCHIVOS, DIRECTORIO_PLANTILLAS, audio, files, images, log_messages
+from now_lms.config import (
+    CONFIGURACION,
+    DESARROLLO,
+    DIRECTORIO_ARCHIVOS,
+    DIRECTORIO_PLANTILLAS,
+    audio,
+    files,
+    images,
+    log_messages,
+)
 from now_lms.db import Configuracion, Usuario, database
 from now_lms.db.info import app_info, course_info, lms_info
 from now_lms.db.initial_data import (
@@ -288,6 +297,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     """Define variables globales de Jinja2 para su disponibilidad en plantillas HTML."""
     log.trace("Defining Jinja2 global variables.")
     from now_lms.i18n import get_locale
+
     flask_app.jinja_env.globals["adsense_code"] = get_addsense_code
     flask_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
     flask_app.jinja_env.globals["adsense_enabled"] = get_adsense_enabled
@@ -456,6 +466,11 @@ def create_app(app_name="now_lms", testing=False, config_overrides=None):
         # Register request handlers and error handlers
         _register_before_request_handlers(flask_app)
         _register_error_handlers(flask_app)
+
+    if DESARROLLO:
+        from flask_debugtoolbar import DebugToolbarExtension
+
+        toolbar = DebugToolbarExtension(flask_app)
 
     log.trace(f"Flask application created successfully: {app_name}")
     return flask_app
