@@ -1,4 +1,4 @@
-# Python 3.11+ Features in NOW-LMS
+# Python 3.*l Features in NOW-LMS
 
 NOW-LMS requires Python 3.11+ and takes advantage of modern Python language features for better code quality, performance, and maintainability.
 
@@ -240,35 +240,6 @@ class EstiloAlterta:
 - Enhanced IDE support and introspection
 - More powerful than NamedTuple for configuration objects
 - Built-in __repr__, __eq__, and __hash__ methods
-
-#### 2. Postponed Evaluation of Annotations (PEP 563)
-
-**Location**: Multiple files
-
-Added `from __future__ import annotations` to several modules:
-
-```python
-# now_lms/misc.py
-from __future__ import annotations
-
-# now_lms/auth.py  
-from __future__ import annotations
-
-# now_lms/logs.py
-from __future__ import annotations
-
-# now_lms/config/__init__.py
-from __future__ import annotations
-
-# now_lms/db/initial_data.py
-from __future__ import annotations
-```
-
-**Benefits**:
-- Enables forward references in type hints
-- Reduces import overhead for typing
-- Cleaner type annotations without quote strings
-- Better performance for type hint evaluation
 
 ### Python 3.8 Features
 
