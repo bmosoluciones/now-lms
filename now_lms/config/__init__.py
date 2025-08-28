@@ -14,6 +14,10 @@
 #
 
 """Application configuration."""
+
+# Python 3.7+ - Postponed evaluation of annotations
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -21,7 +25,7 @@ import os
 import sys
 from os import R_OK, W_OK, access, environ, makedirs, name, path
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -41,7 +45,7 @@ if TYPE_CHECKING:
 # ---------------------------------------------------------------------------------------
 # Configuration file loading functionality
 # ---------------------------------------------------------------------------------------
-def load_config_from_file() -> Dict:
+def load_config_from_file() -> dict:
     """
     Busca y carga configuración desde archivo con ConfigObj.
 
@@ -53,7 +57,7 @@ def load_config_from_file() -> Dict:
     5. ./now-lms.conf
 
     Returns:
-        Dict: Diccionario de configuración, vacío si no se encuentra archivo
+        dict: Diccionario de configuración, vacío si no se encuentra archivo
     """
     try:
         from configobj import ConfigObj
@@ -99,21 +103,16 @@ def load_config_from_file() -> Dict:
 
 # < --------------------------------------------------------------------------------------------- >
 # Configuración central de la aplicación.
-VALORES_TRUE = {"1", "true", "yes", "on", "development", "dev"}
+# Python 3.5+ - Extended unpacking for cleaner set creation
+VALORES_TRUE = {*["1", "true", "yes", "on"], *["development", "dev"]}
+
+# Python 3.5+ - Extended unpacking for cleaner environment variable lists
+DEBUG_VARS = ["DEBUG", "CI", "DEV", "DEVELOPMENT"]
+FRAMEWORK_VARS = ["FLASK_ENV", "DJANGO_DEBUG", "NODE_ENV"]
+GENERIC_VARS = ["ENV", "APP_ENV"]
 
 DESARROLLO = any(
-    str(environ.get(var, "")).strip().lower() in VALORES_TRUE
-    for var in [
-        "DEBUG",  # Variable común para activar modo debug
-        "CI",  # Continuous Integration flag (como GitHub Actions, Travis, etc.)
-        "DEV",  # General "development" flag
-        "DEVELOPMENT",  # Más explícita, común en Docker y algunas plantillas
-        "FLASK_ENV",  # 'development' en Flask
-        "DJANGO_DEBUG",  # Común en proyectos Django
-        "NODE_ENV",  # A veces usada también fuera de Node.js
-        "ENV",  # Genérica: 'development' vs 'production'
-        "APP_ENV",  # Usada en entornos cloud
-    ]
+    str(environ.get(var, "")).strip().lower() in VALORES_TRUE for var in [*DEBUG_VARS, *FRAMEWORK_VARS, *GENERIC_VARS]
 )
 
 
@@ -191,7 +190,8 @@ else:
 # Configuración de la aplicación:
 # Se siguen las recomendaciones de "Twelve Factors App" y las opciones se leen del entorno.
 
-CONFIGURACION: Dict = {}
+# Python 3.6+ - Variable annotations for configuration dictionary
+CONFIGURACION: dict[str, str | bool | Path] = {}
 CONFIGURACION["SECRET_KEY"] = environ.get("SECRET_KEY") or "dev"  # nosec
 CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("DATABASE_URL") or SQLITE  # nosec
 # Opciones comunes de configuración.
@@ -263,7 +263,6 @@ def is_running_in_container() -> bool:
 
 def log_system_info():
     """Emit información útil del entorno del sistema."""
-    import os
     import platform
     import socket
 

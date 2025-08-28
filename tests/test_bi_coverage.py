@@ -14,7 +14,6 @@
 
 """Test coverage for bi.py functions to achieve 100% coverage."""
 
-import pytest
 from unittest.mock import patch
 
 
@@ -254,7 +253,7 @@ class TestBiCoverageMissingLines:
             # Mock current_user for the function
             with patch("now_lms.bi.current_user", admin_user):
                 # Call the function being tested (lines 162-167)
-                asignar_curso_a_moderador(curso_codigo=test_course.codigo, usuario_id=moderator_user.usuario)
+                asignar_curso_a_moderador(test_course.codigo, usuario_id=moderator_user.usuario)
 
                 # Verify the assignment was created
                 assignment = database.session.execute(
@@ -318,7 +317,7 @@ class TestBiCoverageMissingLines:
             # Mock current_user for the function
             with patch("now_lms.bi.current_user", admin_user):
                 # Call the function being tested (lines 170-180)
-                asignar_curso_a_estudiante(curso_codigo=test_course.codigo, usuario_id=student_user.usuario)
+                asignar_curso_a_estudiante(test_course.codigo, usuario_id=student_user.usuario)
 
                 # Verify the assignment was created
                 assignment = database.session.execute(

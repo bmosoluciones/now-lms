@@ -30,7 +30,6 @@ class TestEndToEndSessionFixtures:
 
     def test_user_registration_to_free_course_enroll_session(self, session_full_db_setup, test_client):
         """Test user registration to free course enrollment using session fixture."""
-        import time
         import uuid
 
         # Generate unique identifiers to avoid conflicts

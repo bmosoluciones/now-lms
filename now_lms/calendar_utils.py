@@ -16,11 +16,12 @@
 """Utilities for managing user calendar events."""
 
 import threading
+from typing import List, Optional
 
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
-from datetime import datetime, time
+from datetime import datetime, time, date
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -34,7 +35,7 @@ from now_lms.db import CursoRecurso, CursoSeccion, Evaluation, UserEvent, databa
 from now_lms.logs import log
 
 
-def create_events_for_student_enrollment(user_id, course_id):
+def create_events_for_student_enrollment(user_id: str, course_id: str) -> None:
     """Create calendar events when a student enrolls in a course."""
     try:
         # Get course resources of type 'meet' with dates
@@ -123,7 +124,7 @@ def create_events_for_student_enrollment(user_id, course_id):
         database.session.rollback()
 
 
-def update_meet_resource_events(resource_id):
+def update_meet_resource_events(resource_id: str) -> None:
     """Update all user events when a meet resource is modified."""
 
     def _update_in_background():
@@ -172,7 +173,7 @@ def update_meet_resource_events(resource_id):
     thread.start()
 
 
-def update_evaluation_events(evaluation_id):
+def update_evaluation_events(evaluation_id: str) -> None:
     """Update all user events when an evaluation deadline is modified."""
 
     def _update_in_background():
@@ -217,7 +218,7 @@ def update_evaluation_events(evaluation_id):
     thread.start()
 
 
-def get_upcoming_events_for_user(user_id, limit=5):
+def get_upcoming_events_for_user(user_id: str, limit: int = 5) -> List[UserEvent]:
     """Get upcoming events for a user (for dashboard display)."""
     # Handle invalid inputs
     if not user_id or limit <= 0:
@@ -239,7 +240,7 @@ def get_upcoming_events_for_user(user_id, limit=5):
     return events
 
 
-def _combine_date_time(date_obj, time_obj):
+def _combine_date_time(date_obj: Optional[date], time_obj: Optional[time]) -> Optional[datetime]:
     """Combine date and time objects into datetime."""
     if not date_obj:
         return None
@@ -250,14 +251,14 @@ def _combine_date_time(date_obj, time_obj):
     return datetime.combine(date_obj, time_obj)
 
 
-def _get_app_timezone():
+def _get_app_timezone() -> str:
     """Get the application's configured timezone."""
     from now_lms.i18n import get_timezone
 
     return get_timezone()
 
 
-def cleanup_events_for_course_unenrollment(user_id, course_id):
+def cleanup_events_for_course_unenrollment(user_id: str, course_id: str) -> None:
     """Remove calendar events when a student unenrolls from a course."""
     try:
         # Delete all events for this user and course

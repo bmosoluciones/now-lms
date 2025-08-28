@@ -2424,7 +2424,7 @@ CERTIFICADO_PROGRAMA_PROFESIONAL_HTML = """
                         </div>
                     </div>
                     <div class="qr-section">
-                        <img src="{{ url_for('certificate.certificacion_programa_qr', id=certificacion_programa.id) }}"
+                        <img src="{{ url_for('certificate.certificacion_programa_qr', certificate_id=certificacion_programa.id) }}"
                              alt="QR Code"
                              class="qr-code">
                     </div>
@@ -2884,7 +2884,7 @@ CERTIFICADO_PROGRAMA_HTML = """
 
                     <div class="validation-section">
                         <div class="qr-code-container">
-                            <img src="{{ url_for('certificate.certificacion_programa_qr', id=certificacion_programa.id) }}"
+                            <img src="{{ url_for('certificate.certificacion_programa_qr', certificate_id=certificacion_programa.id) }}"
                                  alt="Código QR para verificación"
                                  class="qr-code">
                             <p class="qr-label">Escanear para verificar</p>

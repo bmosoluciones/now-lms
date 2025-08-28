@@ -20,6 +20,7 @@
 # Standard library
 # ---------------------------------------------------------------------------------------
 from os import environ
+from typing import Dict, Any
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -38,19 +39,18 @@ from now_lms.logs import log
 
 # For backward compatibility, we need to maintain CTYPE and CACHE_CONFIG
 # The actual cache initialization will be handled by cache_utils.py
-def _get_cache_type_for_compatibility():
+def _get_cache_type_for_compatibility() -> str:
     """Determine cache type for backward compatibility with existing code."""
     if (environ.get("CACHE_REDIS_URL")) or (environ.get("REDIS_URL")):
         return "RedisCache"
-    elif environ.get("CACHE_MEMCACHED_SERVERS"):
+    if environ.get("CACHE_MEMCACHED_SERVERS"):
         return "MemcachedCache"
-    elif environ.get("NOW_LMS_MEMORY_CACHE", "0") == "1":
+    if environ.get("NOW_LMS_MEMORY_CACHE", "0") == "1":
         return "FileSystemCache"
-    else:
-        return "NullCache"
+    return "NullCache"
 
 
-def _get_cache_config_for_compatibility():
+def _get_cache_config_for_compatibility() -> Dict[str, Any]:
     """Get basic cache config for backward compatibility."""
     config = {"CACHE_KEY_PREFIX": "now_lms:", "CACHE_DEFAULT_TIMEOUT": 300}
 
@@ -85,12 +85,12 @@ cache: Cache = Cache()
 # ---------------------------------------------------------------------------------------
 # Opciones de cache.
 # ---------------------------------------------------------------------------------------
-def no_guardar_en_cache_global():
+def no_guardar_en_cache_global() -> bool:
     """Si el usuario es anomino preferimos usar el sistema de cache."""
     return current_user and current_user.is_authenticated
 
 
-def invalidate_all_cache():
+def invalidate_all_cache() -> bool:
     """Invalida toda la cache del sistema cuando cambia el tema."""
     try:
         if CTYPE != "NullCache":

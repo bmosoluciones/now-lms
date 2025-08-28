@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 """Test i18n behavior in testing vs production mode."""
 
-import os
-import pytest
-
 
 def test_testing_mode_detection():
     """Test that testing mode is correctly detected during test runs."""

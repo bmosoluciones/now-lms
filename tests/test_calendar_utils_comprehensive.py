@@ -15,7 +15,6 @@
 
 """Comprehensive tests for now_lms/calendar_utils.py functionality."""
 
-import time
 from datetime import date, datetime
 from datetime import time as time_obj
 
@@ -1086,7 +1085,6 @@ class TestCalendarUtilsComprehensive:
 
     def test_update_meet_resource_events_background_function(self, session_full_db_setup):
         """Test update_meet_resource_events background function execution using session fixture."""
-        import time as time_module
 
         with session_full_db_setup.app_context():
             # Create user
@@ -1207,7 +1205,6 @@ class TestCalendarUtilsComprehensive:
 
     def test_update_evaluation_events_background_function(self, session_full_db_setup):
         """Test update_evaluation_events background function execution using session fixture."""
-        import time as time_module
 
         with session_full_db_setup.app_context():
             # Create user
@@ -1488,7 +1485,6 @@ class TestCalendarUtilsComprehensive:
     def test_background_thread_execution_direct(self, session_full_db_setup):
         """Test direct execution of background thread functions to cover missing lines."""
         from unittest.mock import patch, MagicMock
-        import threading
 
         with session_full_db_setup.app_context():
             # Create a test resource

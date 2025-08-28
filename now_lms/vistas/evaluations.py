@@ -148,22 +148,23 @@ def calculate_score(attempt):
 
     for answer in attempt.answers:
         question = answer.question
-        if question.type == "boolean":
-            # For boolean questions, check if the selected option is correct
-            if answer.selected_option_ids:
-                selected_ids = json.loads(answer.selected_option_ids)
-                if len(selected_ids) == 1:
-                    option = database.session.get(QuestionOption, selected_ids[0])
-                    if option and option.is_correct:
-                        correct_answers += 1
-        elif question.type == "multiple":
-            # For multiple choice, check if all correct options are selected and no incorrect ones
-            if answer.selected_option_ids:
-                selected_ids = json.loads(answer.selected_option_ids)
-                correct_option_ids = [opt.id for opt in question.options if opt.is_correct]
+        match question.type:
+            case "boolean":
+                # For boolean questions, check if the selected option is correct
+                if answer.selected_option_ids:
+                    selected_ids = json.loads(answer.selected_option_ids)
+                    if len(selected_ids) == 1:
+                        option = database.session.get(QuestionOption, selected_ids[0])
+                        if option and option.is_correct:
+                            correct_answers += 1
+            case "multiple":
+                # For multiple choice, check if all correct options are selected and no incorrect ones
+                if answer.selected_option_ids:
+                    selected_ids = json.loads(answer.selected_option_ids)
+                    correct_option_ids = [opt.id for opt in question.options if opt.is_correct]
 
-                if set(selected_ids) == set(correct_option_ids):
-                    correct_answers += 1
+                    if set(selected_ids) == set(correct_option_ids):
+                        correct_answers += 1
 
     return (correct_answers / total_questions) * 100
 

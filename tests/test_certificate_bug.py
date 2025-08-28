@@ -5,7 +5,6 @@ This test shows that certificates are incorrectly issued when all resources
 are completed, even when evaluations exist and haven't been passed.
 """
 
-import pytest
 from datetime import datetime
 
 
@@ -24,7 +23,6 @@ class TestCertificateBug:
             CursoUsuarioAvance,
             CursoRecursoAvance,
             Evaluation,
-            EvaluationAttempt,
             Usuario,
             Certificacion,
             database,

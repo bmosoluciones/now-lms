@@ -739,6 +739,7 @@ def check_db_access(app):
                     log.trace("Database access verified.")
                     return True
                 return False
+            return False
         except OperationalError:
             return False
         except ProgrammingError:

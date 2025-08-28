@@ -468,13 +468,13 @@ def certificacion_generar():
 # ---------------------------------------------------------------------------------------
 
 
-@certificate.route("/certificate/program/get_as_qr/<id>/")
-def certificacion_programa_qr(id: str):
+@certificate.route("/certificate/program/get_as_qr/<certificate_id>/")
+def certificacion_programa_qr(certificate_id: str):
     """Generate QR code for program certificate verification."""
     import qrcode
 
     base_url = request.url_root
-    url = base_url + "/certificate/program/view/" + id
+    url = base_url + "/certificate/program/view/" + certificate_id
     qr = qrcode.make(url, box_size=4)
 
     buffer = BytesIO()

@@ -21,6 +21,7 @@
 # ---------------------------------------------------------------------------------------
 import sys
 from os import environ, path
+from typing import Any
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -38,7 +39,7 @@ from now_lms.logs import log
 # ---------------------------------------------------------------------------------------
 # Helper functions
 # ---------------------------------------------------------------------------------------
-def is_testing_mode():
+def is_testing_mode() -> bool:
     """Detect if the application is running in CI/testing mode."""
     return (
         "PYTEST_CURRENT_TEST" in environ
@@ -53,23 +54,23 @@ def is_testing_mode():
 # ---------------------------------------------------------------------------------------
 # Translation functions
 # ---------------------------------------------------------------------------------------
-def _(text):
+def _(text: str) -> str:
     """Mark text for translation."""
     return gettext(text)
 
 
-def _n(singular, plural, n):
+def _n(singular: str, plural: str, n: int) -> str:
     """Mark text for plural translation."""
     return ngettext(singular, plural, n)
 
 
-def _l(text):
+def _l(text: str) -> Any:
     """Mark text for lazy translation (useful in forms)."""
     return lazy_gettext(text)
 
 
 @cache.cached(key_prefix="configuracion_global")
-def get_configuracion():
+def get_configuracion() -> Any:
     """Obtiene configuración del sitio web desde la base de datos (usando Flask-Caching)."""
     from now_lms.db import Configuracion, database
 
@@ -82,7 +83,7 @@ def get_configuracion():
     return config
 
 
-def get_locale():
+def get_locale() -> str:
     """Obtiene el idioma desde la configuración en g."""
     # In CI/testing mode, always use Spanish
     if is_testing_mode():
@@ -97,7 +98,7 @@ def get_locale():
         return "es"  # Default to Spanish
 
 
-def get_timezone():
+def get_timezone() -> str:
     """Obtiene la zona horaria desde la configuración en g."""
     if hasattr(g, "configuracion") and g.configuracion:
         return getattr(g.configuracion, "time_zone", "UTC")
@@ -105,7 +106,7 @@ def get_timezone():
     return "UTC"
 
 
-def invalidate_configuracion_cache():
+def invalidate_configuracion_cache() -> None:
     """Invalida la caché de configuración cuando se actualice."""
     cache.delete("configuracion_global")
     log.trace("Cache de configuración invalidada")
