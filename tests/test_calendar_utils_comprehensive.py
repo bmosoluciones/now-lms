@@ -68,8 +68,13 @@ class TestCalendarUtilsComprehensive:
             timezone = _get_app_timezone()
             assert timezone is not None
 
-    def test_create_course_with_meets_via_api(self, full_db_setup, client):
+    def test_create_course_with_meets_via_api(self, session_full_db_setup, isolated_db_session):
         """Test creating a course with meet resources using GET/POST requests."""
+        client = session_full_db_setup.test_client()
+        import uuid
+
+        unique_suffix = str(uuid.uuid4())[:8]
+
         # Login as admin first
         with client.session_transaction() as sess:
             sess["user_id"] = "admin"
@@ -77,8 +82,8 @@ class TestCalendarUtilsComprehensive:
 
         # Step 1: Create a course via POST request
         course_data = {
-            "course_code": "CAL001",
-            "course_name": "Calendar Test Course",
+            "course_code": f"CAL{unique_suffix}",
+            "course_name": f"Calendar Test Course {unique_suffix}",
             "short_description": "Course for testing calendar functionality",
             "full_description": "Full description for calendar test course",
             "state": "open",
@@ -91,8 +96,8 @@ class TestCalendarUtilsComprehensive:
 
         # This might need to be done directly via database for testing
         course = Curso(
-            codigo="CAL001",
-            nombre="Calendar Test Course",
+            codigo=f"CAL{unique_suffix}",
+            nombre=f"Calendar Test Course {unique_suffix}",
             descripcion_corta="Course for testing calendar functionality",
             descripcion="Full description for calendar test course",
             estado="open",
@@ -101,23 +106,27 @@ class TestCalendarUtilsComprehensive:
             certificado=False,
             publico=True,
         )
-        database.session.add(course)
+        isolated_db_session.add(course)
 
         # Create a section
         section = CursoSeccion(
-            curso="CAL001", nombre="Test Section", descripcion="Section for testing calendar events", indice=1, estado=True
+            curso=f"CAL{unique_suffix}",
+            nombre="Test Section",
+            descripcion="Section for testing calendar events",
+            indice=1,
+            estado=True,
         )
-        database.session.add(section)
-        database.session.commit()
+        isolated_db_session.add(section)
+        isolated_db_session.flush()
 
         # Verify course was created
-        created_course = database.session.execute(select(Curso).filter_by(codigo="CAL001")).scalar_one()
-        assert created_course.nombre == "Calendar Test Course"
+        created_course = isolated_db_session.execute(select(Curso).filter_by(codigo=f"CAL{unique_suffix}")).scalar_one()
+        assert created_course.nombre == f"Calendar Test Course {unique_suffix}"
 
         # Step 2: Add meet resources to the course
         meet_resource = CursoRecurso(
             seccion=section.id,
-            curso="CAL001",
+            curso=f"CAL{unique_suffix}",
             nombre="Live Session 1",
             descripcion="First live session for the course",
             tipo="meet",
@@ -127,12 +136,12 @@ class TestCalendarUtilsComprehensive:
             publico=True,
             indice=1,
         )
-        database.session.add(meet_resource)
+        isolated_db_session.add(meet_resource)
 
         # Add another meet resource
         meet_resource2 = CursoRecurso(
             seccion=section.id,
-            curso="CAL001",
+            curso=f"CAL{unique_suffix}",
             nombre="Live Session 2",
             descripcion="Second live session for the course",
             tipo="meet",
@@ -142,21 +151,30 @@ class TestCalendarUtilsComprehensive:
             publico=True,
             indice=2,
         )
-        database.session.add(meet_resource2)
-        database.session.commit()
+        isolated_db_session.add(meet_resource2)
+        isolated_db_session.flush()
 
         # Verify meet resources were created
-        meet_resources = database.session.execute(select(CursoRecurso).filter_by(curso="CAL001", tipo="meet")).scalars().all()
+        meet_resources = (
+            isolated_db_session.execute(select(CursoRecurso).filter_by(curso=f"CAL{unique_suffix}", tipo="meet"))
+            .scalars()
+            .all()
+        )
         assert len(meet_resources) == 2
         assert meet_resources[0].nombre == "Live Session 1"
         assert meet_resources[1].nombre == "Live Session 2"
 
-    def test_create_course_with_evaluations_via_api(self, full_db_setup, client):
+    def test_create_course_with_evaluations_via_api(self, session_full_db_setup, isolated_db_session):
         """Test creating a course with evaluations using GET/POST requests."""
+        client = session_full_db_setup.test_client()
+        import uuid
+
+        unique_suffix = str(uuid.uuid4())[:8]
+
         # Create course and section first
         course = Curso(
-            codigo="CAL002",
-            nombre="Calendar Evaluation Course",
+            codigo=f"CAL{unique_suffix}",
+            nombre=f"Calendar Evaluation Course {unique_suffix}",
             descripcion_corta="Course with evaluations for calendar testing",
             descripcion="Full description for evaluation calendar test course",
             estado="open",
@@ -165,13 +183,17 @@ class TestCalendarUtilsComprehensive:
             certificado=False,
             publico=True,
         )
-        database.session.add(course)
+        isolated_db_session.add(course)
 
         section = CursoSeccion(
-            curso="CAL002", nombre="Evaluation Section", descripcion="Section with evaluations", indice=1, estado=True
+            curso=f"CAL{unique_suffix}",
+            nombre="Evaluation Section",
+            descripcion="Section with evaluations",
+            indice=1,
+            estado=True,
         )
-        database.session.add(section)
-        database.session.commit()
+        isolated_db_session.add(section)
+        isolated_db_session.flush()
 
         # Create evaluations with deadlines
         evaluation1 = Evaluation(
@@ -183,7 +205,7 @@ class TestCalendarUtilsComprehensive:
             max_attempts=3,
             available_until=datetime(2025, 7, 15, 23, 59, 59),
         )
-        database.session.add(evaluation1)
+        isolated_db_session.add(evaluation1)
 
         evaluation2 = Evaluation(
             section_id=section.id,
@@ -194,26 +216,28 @@ class TestCalendarUtilsComprehensive:
             max_attempts=2,
             available_until=datetime(2025, 7, 30, 23, 59, 59),
         )
-        database.session.add(evaluation2)
-        database.session.commit()
+        isolated_db_session.add(evaluation2)
+        isolated_db_session.flush()
 
         # Add questions to evaluations
         question1 = Question(evaluation_id=evaluation1.id, type="boolean", text="This is a sample question?", order=1)
-        database.session.add(question1)
+        isolated_db_session.add(question1)
 
         question2 = Question(evaluation_id=evaluation2.id, type="multiple", text="What is the correct answer?", order=1)
-        database.session.add(question2)
-        database.session.commit()
+        isolated_db_session.add(question2)
+        isolated_db_session.flush()
 
         # Add options to multiple choice question
         option1 = QuestionOption(question_id=question2.id, text="Option A", is_correct=True)
         option2 = QuestionOption(question_id=question2.id, text="Option B", is_correct=False)
-        database.session.add_all([option1, option2])
-        database.session.commit()
+        isolated_db_session.add_all([option1, option2])
+        isolated_db_session.flush()
 
         # Verify evaluations were created
         evaluations = (
-            database.session.execute(select(Evaluation).join(CursoSeccion).filter(CursoSeccion.curso == "CAL002"))
+            isolated_db_session.execute(
+                select(Evaluation).join(CursoSeccion).filter(CursoSeccion.curso == f"CAL{unique_suffix}")
+            )
             .scalars()
             .all()
         )
@@ -877,8 +901,13 @@ class TestCalendarUtilsComprehensive:
         events = get_upcoming_events_for_user("invalid_user", limit=-1)
         assert events == []
 
-    def test_comprehensive_integration(self, full_db_setup, client):
+    def test_comprehensive_integration(self, session_full_db_setup, isolated_db_session):
         """Integration test covering complete workflow."""
+        client = session_full_db_setup.test_client()
+        import uuid
+
+        unique_suffix = str(uuid.uuid4())[:8]
+
         # Create instructor user
         instructor = Usuario(
             usuario="instructor_cal",

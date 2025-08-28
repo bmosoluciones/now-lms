@@ -27,9 +27,9 @@ from now_lms.db import Certificado, MasterClass, MasterClassEnrollment, Usuario,
 class TestMasterClassBasicFunctionality:
     """Test basic MasterClass model and creation."""
 
-    def test_masterclass_model_exists(self, app):
+    def test_masterclass_model_exists(self, session_basic_db_setup):
         """Test that MasterClass model can be imported and instantiated."""
-        with app.app_context():
+        with session_basic_db_setup.app_context():
             masterclass = MasterClass(
                 title="Test MasterClass",
                 slug="test-masterclass",
@@ -205,53 +205,57 @@ class TestMasterClassRoutes:
     """Test MasterClass route functionality comprehensively."""
 
     @pytest.fixture(autouse=True)
-    def setup_test_data(self, minimal_db_setup):
+    def setup_test_data(self, session_full_db_setup, isolated_db_session):
         """Set up test data for each test."""
+        import uuid
+
+        unique_id = str(uuid.uuid4())[:8]  # Unique identifier for this test run
+
         # Create test users
         self.admin_user = Usuario(
-            usuario="admin_user",
+            usuario=f"admin_user_{unique_id}",
             acceso=b"password123",
             nombre="Admin",
             apellido="User",
-            correo_electronico="admin@test.com",
+            correo_electronico=f"admin_{unique_id}@test.com",
             tipo="admin",
             activo=True,
         )
 
         self.instructor_user = Usuario(
-            usuario="instructor_user",
+            usuario=f"instructor_user_{unique_id}",
             acceso=b"password123",
             nombre="Instructor",
             apellido="User",
-            correo_electronico="instructor@test.com",
+            correo_electronico=f"instructor_{unique_id}@test.com",
             tipo="instructor",
             activo=True,
         )
 
         self.student_user = Usuario(
-            usuario="student_user",
+            usuario=f"student_user_{unique_id}",
             acceso=b"password123",
             nombre="Student",
             apellido="User",
-            correo_electronico="student@test.com",
+            correo_electronico=f"student_{unique_id}@test.com",
             tipo="student",
             activo=True,
         )
 
-        database.session.add_all([self.admin_user, self.instructor_user, self.student_user])
+        isolated_db_session.add_all([self.admin_user, self.instructor_user, self.student_user])
 
         # Create certificate template
         self.certificate = Certificado(
-            code="MC_CERT_TEMPLATE",
+            code=f"MC_CERT_TEMPLATE_{unique_id}",
             titulo="MasterClass Certificate Template",
             habilitado=True,
         )
-        database.session.add(self.certificate)
+        isolated_db_session.add(self.certificate)
 
         # Create test masterclass
         self.masterclass = MasterClass(
             title="Test MasterClass",
-            slug="test-masterclass",
+            slug=f"test-masterclass-{unique_id}",
             description_public="Public description",
             description_private="Private description",
             date=date(2026, 12, 31),
@@ -264,11 +268,12 @@ class TestMasterClassRoutes:
             diploma_template_id=self.certificate.code,
             instructor_id=self.instructor_user.usuario,
         )
-        database.session.add(self.masterclass)
-        database.session.commit()
+        isolated_db_session.add(self.masterclass)
+        isolated_db_session.commit()
 
-        self.app = minimal_db_setup
+        self.app = session_full_db_setup
         self.client = self.app.test_client()
+        self.db_session = isolated_db_session
 
     def login_user(self, user):
         """Helper to login a user."""
@@ -284,11 +289,15 @@ class TestMasterClassRoutes:
 
     def test_list_public_pagination(self):
         """Test pagination in public listing."""
+        import uuid
+
+        unique_id = str(uuid.uuid4())[:8]
+
         # Create multiple masterclasses for pagination test
         for i in range(15):
             mc = MasterClass(
                 title=f"MasterClass {i}",
-                slug=f"masterclass-{i}",
+                slug=f"masterclass-{i}-{unique_id}",
                 description_public=f"Description {i}",
                 date=date(2026, 12, 31),
                 start_time=time(10, 0),
@@ -297,8 +306,8 @@ class TestMasterClassRoutes:
                 platform_url=f"https://zoom.us/test-{i}",
                 instructor_id=self.instructor_user.usuario,
             )
-            database.session.add(mc)
-        database.session.commit()
+            self.db_session.add(mc)
+        self.db_session.commit()
 
         # Test first page
         response = self.client.get(url_for("masterclass.list_public"))
@@ -358,7 +367,7 @@ class TestMasterClassRoutes:
         )
 
         # Check enrollment was created
-        enrollment = database.session.execute(
+        enrollment = self.db_session.execute(
             database.select(MasterClassEnrollment).filter_by(
                 master_class_id=self.masterclass.id, user_id=self.student_user.usuario
             )
@@ -375,8 +384,8 @@ class TestMasterClassRoutes:
             user_id=self.student_user.usuario,
             is_confirmed=True,
         )
-        database.session.add(enrollment)
-        database.session.commit()
+        self.db_session.add(enrollment)
+        self.db_session.commit()
 
         self.login_user(self.student_user)
         response = self.client.get(url_for("masterclass.enroll", slug=self.masterclass.slug))
@@ -477,8 +486,8 @@ class TestMasterClassRoutes:
             tipo="instructor",
             activo=True,
         )
-        database.session.add(other_instructor)
-        database.session.commit()
+        self.db_session.add(other_instructor)
+        self.db_session.commit()
 
         self.login_user(other_instructor)
         response = self.client.get(url_for("masterclass.instructor_edit", master_class_id=self.masterclass.id))
@@ -514,7 +523,7 @@ class TestMasterClassRoutes:
         assert response is not None
 
         # Check masterclass was updated
-        database.session.refresh(self.masterclass)
+        self.db_session.refresh(self.masterclass)
         assert self.masterclass.title == "Updated MasterClass"
 
     def test_instructor_students_requires_login(self):
@@ -542,8 +551,8 @@ class TestMasterClassRoutes:
             user_id=self.student_user.usuario,
             is_confirmed=True,
         )
-        database.session.add(enrollment)
-        database.session.commit()
+        self.db_session.add(enrollment)
+        self.db_session.commit()
 
         self.login_user(self.instructor_user)
         try:
@@ -567,8 +576,8 @@ class TestMasterClassRoutes:
             user_id=self.student_user.usuario,
             is_confirmed=True,
         )
-        database.session.add(enrollment)
-        database.session.commit()
+        self.db_session.add(enrollment)
+        self.db_session.commit()
 
         self.login_user(self.student_user)
         response = self.client.get(url_for("masterclass.my_enrollments"))
@@ -621,22 +630,27 @@ class TestMasterClassEdgeCases:
     """Test edge cases and error conditions for MasterClass functionality."""
 
     @pytest.fixture(autouse=True)
-    def setup_test_data(self, minimal_db_setup):
+    def setup_test_data(self, session_full_db_setup, isolated_db_session):
         """Set up test data for each test."""
+        import uuid
+
+        unique_id = str(uuid.uuid4())[:8]  # Unique identifier for this test run
+
         self.instructor_user = Usuario(
-            usuario="instructor_user",
+            usuario=f"instructor_user_{unique_id}",
             acceso=b"password123",
             nombre="Instructor",
             apellido="User",
-            correo_electronico="instructor@test.com",
+            correo_electronico=f"instructor_{unique_id}@test.com",
             tipo="instructor",
             activo=True,
         )
-        database.session.add(self.instructor_user)
-        database.session.commit()
+        isolated_db_session.add(self.instructor_user)
+        isolated_db_session.commit()
 
-        self.app = minimal_db_setup
+        self.app = session_full_db_setup
         self.client = self.app.test_client()
+        self.db_session = isolated_db_session
 
     def login_user(self, user):
         """Helper to login a user."""
@@ -670,10 +684,14 @@ class TestMasterClassEdgeCases:
 
     def test_edit_masterclass_title_change_slug_update(self):
         """Test that changing title updates slug properly."""
+        import uuid
+
+        unique_id = str(uuid.uuid4())[:8]
+
         # Create masterclass
         masterclass = MasterClass(
             title="Original Title",
-            slug="original-title",
+            slug=f"original-title-{unique_id}",
             description_public="Description",
             date=date(2026, 12, 31),
             start_time=time(10, 0),
@@ -682,8 +700,8 @@ class TestMasterClassEdgeCases:
             platform_url="https://zoom.us/test",
             instructor_id=self.instructor_user.usuario,
         )
-        database.session.add(masterclass)
-        database.session.commit()
+        self.db_session.add(masterclass)
+        self.db_session.commit()
 
         self.login_user(self.instructor_user)
         response = self.client.post(
@@ -706,9 +724,13 @@ class TestMasterClassEdgeCases:
 
     def test_masterclass_payment_fields_always_disabled(self):
         """Test that payment fields are always disabled per business rules."""
+        import uuid
+
+        unique_id = str(uuid.uuid4())[:8]
+
         masterclass = MasterClass(
             title="Payment Test",
-            slug="payment-test",
+            slug=f"payment-test-{unique_id}",
             description_public="Description",
             date=date(2026, 12, 31),
             start_time=time(10, 0),
@@ -719,8 +741,8 @@ class TestMasterClassEdgeCases:
             price=Decimal("99.99"),  # Try to set price
             instructor_id=self.instructor_user.usuario,
         )
-        database.session.add(masterclass)
-        database.session.commit()
+        self.db_session.add(masterclass)
+        self.db_session.commit()
 
         self.login_user(self.instructor_user)
         response = self.client.post(

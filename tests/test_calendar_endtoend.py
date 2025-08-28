@@ -26,29 +26,32 @@ from now_lms.db import Curso, CursoRecurso, CursoSeccion, EstudianteCurso, Evalu
 class TestCalendarEndToEnd:
     """End-to-end tests for calendar views and functionality."""
 
-    def test_calendar_view_navigation(self, full_db_setup, client):
+    def test_calendar_view_navigation(self, isolated_db_session):
         """Test calendar view navigation and month switching."""
-        app = full_db_setup
+        import uuid
+        from flask import current_app
+
+        client = current_app.test_client()
+        unique_suffix = str(uuid.uuid4())[:8]
 
         # Create test user and login
-        with app.app_context():
-            user = Usuario(
-                usuario="calendar_test",
-                acceso=proteger_passwd("test_pass"),
-                nombre="Calendar",
-                apellido="Test",
-                correo_electronico="calendar@test.com",
-                tipo="student",
-                activo=True,
-                correo_electronico_verificado=True,
-            )
-            database.session.add(user)
-            database.session.commit()
+        user = Usuario(
+            usuario=f"calendar_test_{unique_suffix}",
+            acceso=proteger_passwd("test_pass"),
+            nombre="Calendar",
+            apellido="Test",
+            correo_electronico=f"calendar_{unique_suffix}@test.com",
+            tipo="student",
+            activo=True,
+            correo_electronico_verificado=True,
+        )
+        isolated_db_session.add(user)
+        isolated_db_session.flush()  # Get the ID without committing
 
         # Login
         login_response = client.post(
             "/user/login",
-            data={"usuario": "calendar_test", "acceso": "test_pass"},
+            data={"usuario": f"calendar_test_{unique_suffix}", "acceso": "test_pass"},
             follow_redirects=True,
         )
         assert login_response.status_code == 200

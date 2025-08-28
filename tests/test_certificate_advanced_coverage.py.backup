@@ -67,11 +67,6 @@ class TestCertificateHelperFunctionAdvanced:
 class TestCertificatePDFGeneration:
     """Test PDF generation routes for certificates."""
 
-    @pytest.fixture(scope="function")
-    def test_client(self, session_full_db_setup):
-        """Provide test client using session fixture."""
-        return session_full_db_setup.test_client()
-
     def setup_test_certification_with_masterclass(self, app):
         """Helper to create certification with masterclass for PDF tests."""
         with app.app_context():
@@ -245,15 +240,11 @@ class TestCertificateIssuanceWorkflow:
 
     def setup_course_with_evaluation(self, app):
         """Helper to create course with evaluation for issuance tests."""
-        import uuid
-
-        unique_suffix = str(uuid.uuid4())[:8]
-
         with app.app_context():
             # Create course with evaluation requirement
             course = Curso(
-                codigo=f"ISSUE_TEST_COURSE_{unique_suffix}",
-                nombre=f"Issuance Test Course {unique_suffix}",
+                codigo="ISSUE_TEST_COURSE",
+                nombre="Issuance Test Course",
                 descripcion_corta="Course for testing issuance",
                 descripcion="Course for testing certificate issuance",
                 estado="open",
@@ -285,11 +276,11 @@ class TestCertificateIssuanceWorkflow:
 
             # Create student user
             student = Usuario(
-                usuario=f"issue_student_{unique_suffix}",
+                usuario="issue_student",
                 acceso=proteger_passwd("testpass"),
                 nombre="Issue",
                 apellido="Student",
-                correo_electronico=f"issue_{unique_suffix}@test.com",
+                correo_electronico="issue@test.com",
                 tipo="student",
                 activo=True,
                 correo_electronico_verificado=True,
@@ -351,15 +342,15 @@ class TestCertificateIssuanceWorkflow:
             assert cert is not None
             assert cert[0].certificado == "default"
 
-    def test_certificacion_crear_failed_requirements(self, session_full_db_setup, test_client, isolated_db_session):
+    def test_certificacion_crear_failed_requirements(self, full_db_setup, client):
         """Test certificate issuance failure due to unmet requirements."""
-        app = session_full_db_setup
+        app = full_db_setup
         course_code, eval_id, student_usuario = self.setup_course_with_evaluation(app)
 
         # Don't create evaluation submission (student hasn't passed)
 
         # Login as instructor
-        login_response = test_client.post(
+        login_response = client.post(
             "/user/login",
             data={"usuario": "instructor", "acceso": "instructor"},
             follow_redirects=True,
@@ -367,16 +358,16 @@ class TestCertificateIssuanceWorkflow:
         assert login_response.status_code == 200
 
         # Try to issue certificate - should fail
-        response = test_client.get(
+        response = client.get(
             f"/certificate/issue/{course_code}/{student_usuario}/default/",
             follow_redirects=True,
         )
         assert response.status_code == 200
         # Should redirect back to certifications list with error message
 
-    def test_certificacion_generar_post_course_success(self, session_full_db_setup, test_client, isolated_db_session):
+    def test_certificacion_generar_post_course_success(self, full_db_setup, client):
         """Test certificate release form POST for course - successful case."""
-        app = session_full_db_setup
+        app = full_db_setup
         course_code, eval_id, student_usuario = self.setup_course_with_evaluation(app)
 
         # Create passing evaluation submission and course completion
@@ -404,7 +395,7 @@ class TestCertificateIssuanceWorkflow:
             database.session.commit()
 
         # Login as instructor
-        login_response = test_client.post(
+        login_response = client.post(
             "/user/login",
             data={"usuario": "instructor", "acceso": "instructor"},
             follow_redirects=True,
@@ -412,7 +403,7 @@ class TestCertificateIssuanceWorkflow:
         assert login_response.status_code == 200
 
         # Submit certificate release form for course
-        response = test_client.post(
+        response = client.post(
             "/certificate/release/",
             data={
                 "content_type": "course",
@@ -433,9 +424,9 @@ class TestCertificateIssuanceWorkflow:
             assert cert is not None
             assert cert[0].nota == 85.0
 
-    def test_certificacion_generar_post_masterclass_success(self, session_full_db_setup, test_client, isolated_db_session):
+    def test_certificacion_generar_post_masterclass_success(self, full_db_setup, client):
         """Test certificate release form POST for masterclass - successful case."""
-        app = session_full_db_setup
+        app = full_db_setup
 
         with app.app_context():
             # Create masterclass
@@ -483,7 +474,7 @@ class TestCertificateIssuanceWorkflow:
             student_usuario = student.usuario
 
         # Login as instructor
-        login_response = test_client.post(
+        login_response = client.post(
             "/user/login",
             data={"usuario": "instructor", "acceso": "instructor"},
             follow_redirects=True,
@@ -491,7 +482,7 @@ class TestCertificateIssuanceWorkflow:
         assert login_response.status_code == 200
 
         # Submit certificate release form for masterclass
-        response = test_client.post(
+        response = client.post(
             "/certificate/release/",
             data={
                 "content_type": "masterclass",
@@ -512,12 +503,12 @@ class TestCertificateIssuanceWorkflow:
             assert cert is not None
             assert cert[0].nota == 90.0
 
-    def test_certificacion_generar_validation_errors(self, session_full_db_setup, test_client, isolated_db_session):
+    def test_certificacion_generar_validation_errors(self, full_db_setup, client):
         """Test certificate release form validation errors."""
-        app = session_full_db_setup
+        app = full_db_setup
 
         # Login as instructor
-        login_response = test_client.post(
+        login_response = client.post(
             "/user/login",
             data={"usuario": "instructor", "acceso": "instructor"},
             follow_redirects=True,
@@ -525,7 +516,7 @@ class TestCertificateIssuanceWorkflow:
         assert login_response.status_code == 200
 
         # Test missing course for course content type
-        response = test_client.post(
+        response = client.post(
             "/certificate/release/",
             data={
                 "content_type": "course",
@@ -540,7 +531,7 @@ class TestCertificateIssuanceWorkflow:
         assert b"Por favor selecciona un curso" in response.data
 
         # Test missing masterclass for masterclass content type
-        response = test_client.post(
+        response = client.post(
             "/certificate/release/",
             data={
                 "content_type": "masterclass",
@@ -554,11 +545,9 @@ class TestCertificateIssuanceWorkflow:
         assert response.status_code == 200
         assert b"Por favor selecciona una clase magistral" in response.data
 
-    def test_certificacion_generar_masterclass_enrollment_required(
-        self, session_full_db_setup, test_client, isolated_db_session
-    ):
+    def test_certificacion_generar_masterclass_enrollment_required(self, full_db_setup, client):
         """Test masterclass certificate requires enrollment."""
-        app = session_full_db_setup
+        app = full_db_setup
 
         with app.app_context():
             # Create masterclass
@@ -597,7 +586,7 @@ class TestCertificateIssuanceWorkflow:
             student_usuario = student.usuario
 
         # Login as instructor
-        login_response = test_client.post(
+        login_response = client.post(
             "/user/login",
             data={"usuario": "instructor", "acceso": "instructor"},
             follow_redirects=True,
@@ -605,7 +594,7 @@ class TestCertificateIssuanceWorkflow:
         assert login_response.status_code == 200
 
         # Try to issue certificate without enrollment
-        response = test_client.post(
+        response = client.post(
             "/certificate/release/",
             data={
                 "content_type": "masterclass",
@@ -623,25 +612,16 @@ class TestCertificateIssuanceWorkflow:
 class TestProgramCertificatesComprehensive:
     """Test program certificate functionality comprehensively."""
 
-    @pytest.fixture(scope="function")
-    def test_client(self, session_full_db_setup):
-        """Provide test client using session fixture."""
-        return session_full_db_setup.test_client()
-
     def setup_program_certification(self, app):
         """Helper to create program certification setup."""
-        import uuid
-
-        unique_suffix = str(uuid.uuid4())[:8]
-
         with app.app_context():
             # Create user
             user = Usuario(
-                usuario=f"program_cert_user_{unique_suffix}",
+                usuario="program_cert_user",
                 acceso=proteger_passwd("testpass"),
                 nombre="Program",
                 apellido="Certificate User",
-                correo_electronico=f"program_cert_{unique_suffix}@test.com",
+                correo_electronico="program_cert@test.com",
                 tipo="student",
                 activo=True,
                 correo_electronico_verificado=True,
@@ -650,8 +630,8 @@ class TestProgramCertificatesComprehensive:
 
             # Create program
             program = Programa(
-                codigo=f"PROG_CERT_{unique_suffix}",
-                nombre=f"Certificate Program {unique_suffix}",
+                codigo="PROG_CERT_001",
+                nombre="Certificate Program",
                 descripcion="Program that awards certificates",
                 estado="open",
             )
@@ -660,7 +640,7 @@ class TestProgramCertificatesComprehensive:
 
             # Create certificate template
             template = Certificado(
-                code=f"PROGRAM_CERT_TEMPLATE_{unique_suffix}",
+                code="PROGRAM_CERT_TEMPLATE",
                 titulo="Program Certificate Template",
                 html="<h1>{{usuario.nombre}} {{usuario.apellido}}</h1><p>Program: {{programa.nombre}}</p>",
                 css="h1 { color: purple; } p { font-size: 16px; }",
@@ -682,9 +662,9 @@ class TestProgramCertificatesComprehensive:
             return program_cert.id, program.id, user.usuario
 
     @patch("qrcode.make")
-    def test_certificacion_programa_qr(self, mock_qr_make, session_full_db_setup, test_client, isolated_db_session):
+    def test_certificacion_programa_qr(self, mock_qr_make, full_db_setup, client):
         """Test QR code generation for program certificates."""
-        app = session_full_db_setup
+        app = full_db_setup
         cert_id, program_id, user_id = self.setup_program_certification(app)
 
         # Mock QR code generation
@@ -697,7 +677,7 @@ class TestProgramCertificatesComprehensive:
         mock_qr.save = mock_save
 
         # Test QR generation
-        response = test_client.get(f"/certificate/program/get_as_qr/{cert_id}/")
+        response = client.get(f"/certificate/program/get_as_qr/{cert_id}/")
         assert response.status_code == 200
         assert response.mimetype == "image/png"
         assert b"mock_program_qr_data" in response.data
@@ -708,13 +688,13 @@ class TestProgramCertificatesComprehensive:
         call_args = mock_qr_make.call_args[0]
         assert f"/certificate/program/view/{cert_id}" in call_args[0]
 
-    def test_certificacion_programa_view(self, session_full_db_setup, test_client, isolated_db_session):
+    def test_certificacion_programa_view(self, full_db_setup, client):
         """Test program certificate viewing."""
-        app = session_full_db_setup
+        app = full_db_setup
         cert_id, program_id, user_id = self.setup_program_certification(app)
 
         # Test certificate view
-        response = test_client.get(f"/certificate/program/view/{cert_id}/")
+        response = client.get(f"/certificate/program/view/{cert_id}/")
         assert response.status_code == 200
         # Should contain user name and program name
         assert b"Program Certificate User" in response.data
@@ -724,11 +704,9 @@ class TestProgramCertificatesComprehensive:
     @patch("weasyprint.CSS")
     @patch("flask_weasyprint.HTML")
     @patch("flask_weasyprint.render_pdf")
-    def test_certificate_programa_serve_pdf(
-        self, mock_render_pdf, mock_html, mock_css, session_full_db_setup, test_client, isolated_db_session
-    ):
+    def test_certificate_programa_serve_pdf(self, mock_render_pdf, mock_html, mock_css, full_db_setup, client):
         """Test program certificate PDF generation."""
-        app = session_full_db_setup
+        app = full_db_setup
         cert_id, program_id, user_id = self.setup_program_certification(app)
 
         # Mock PDF generation
@@ -737,7 +715,7 @@ class TestProgramCertificatesComprehensive:
         mock_html.return_value = mock_html_instance
 
         # Test PDF download
-        response = test_client.get(f"/certificate/program/download/{cert_id}/")
+        response = client.get(f"/certificate/program/download/{cert_id}/")
         assert response.status_code == 200
         assert response.data == b"mock_program_pdf_content"
 
@@ -745,37 +723,32 @@ class TestProgramCertificatesComprehensive:
         mock_render_pdf.assert_called_once_with(mock_html_instance, stylesheets=[mock_css.return_value])
 
     @pytest.mark.skipif(sys.platform == "win32", reason="This test does not run on Windows.")
-    def test_program_certificate_404_handling(self, session_full_db_setup, test_client, isolated_db_session):
+    def test_program_certificate_404_handling(self, full_db_setup, client):
         """Test 404 handling for non-existent program certificates."""
-        app = session_full_db_setup
+        app = full_db_setup
 
         # Test non-existent program certificate view
-        response = test_client.get("/certificate/program/view/nonexistent_id/")
+        response = client.get("/certificate/program/view/nonexistent_id/")
         assert response.status_code == 404
 
         # Test non-existent program certificate PDF
-        response = test_client.get("/certificate/program/download/nonexistent_id/")
+        response = client.get("/certificate/program/download/nonexistent_id/")
         assert response.status_code == 404
 
         # Test QR for non-existent program certificate
-        response = test_client.get("/certificate/program/get_as_qr/nonexistent_id/")
+        response = client.get("/certificate/program/get_as_qr/nonexistent_id/")
         assert response.status_code == 200  # QR generation doesn't validate existence
 
 
 class TestCertificateErrorHandlingAdvanced:
     """Test advanced error handling scenarios."""
 
-    @pytest.fixture(scope="function")
-    def test_client(self, session_full_db_setup):
-        """Provide test client using session fixture."""
-        return session_full_db_setup.test_client()
-
-    def test_certificate_creation_integrity_error_handling(self, session_full_db_setup, test_client, isolated_db_session):
+    def test_certificate_creation_integrity_error_handling(self, full_db_setup, client):
         """Test certificate creation handles database errors properly."""
-        app = session_full_db_setup
+        app = full_db_setup
 
         # Login as admin
-        login_response = test_client.post(
+        login_response = client.post(
             "/user/login",
             data={"usuario": "lms-admin", "acceso": "lms-admin"},
             follow_redirects=True,
@@ -788,7 +761,7 @@ class TestCertificateErrorHandlingAdvanced:
 
             mock_commit.side_effect = OperationalError("Mock DB error", None, None)
 
-            response = test_client.post(
+            response = client.post(
                 "/certificate/new",
                 data={
                     "titulo": "Error Test Certificate",
@@ -801,9 +774,9 @@ class TestCertificateErrorHandlingAdvanced:
             assert response.status_code == 200
             # Should show error message and redirect
 
-    def test_certificate_edit_error_handling(self, session_full_db_setup, test_client, isolated_db_session):
+    def test_certificate_edit_error_handling(self, full_db_setup, client):
         """Test certificate editing error handling."""
-        app = session_full_db_setup
+        app = full_db_setup
 
         # Create test certificate
         with app.app_context():
@@ -821,7 +794,7 @@ class TestCertificateErrorHandlingAdvanced:
             cert_id = cert.id
 
         # Login as admin
-        login_response = test_client.post(
+        login_response = client.post(
             "/user/login",
             data={"usuario": "lms-admin", "acceso": "lms-admin"},
             follow_redirects=True,
@@ -834,7 +807,7 @@ class TestCertificateErrorHandlingAdvanced:
 
             mock_commit.side_effect = OperationalError("Mock edit error", None, None)
 
-            response = test_client.post(
+            response = client.post(
                 f"/certificate/{cert_id}/edit",
                 data={
                     "titulo": "Updated Error Test",
@@ -848,12 +821,12 @@ class TestCertificateErrorHandlingAdvanced:
             )
             assert response.status_code == 302  # Should redirect
 
-    def test_certificacion_generar_database_error(self, session_full_db_setup, test_client, isolated_db_session):
+    def test_certificacion_generar_database_error(self, full_db_setup, client):
         """Test certificate release form database error handling."""
-        app = session_full_db_setup
+        app = full_db_setup
 
         # Login as instructor
-        login_response = test_client.post(
+        login_response = client.post(
             "/user/login",
             data={"usuario": "instructor", "acceso": "instructor"},
             follow_redirects=True,
@@ -866,7 +839,7 @@ class TestCertificateErrorHandlingAdvanced:
 
             mock_commit.side_effect = OperationalError("Mock generation error", None, None)
 
-            response = test_client.post(
+            response = client.post(
                 "/certificate/release/",
                 data={
                     "content_type": "course",
@@ -884,14 +857,9 @@ class TestCertificateErrorHandlingAdvanced:
 class TestCertificateTemplateRendering:
     """Test certificate template rendering with different contexts."""
 
-    @pytest.fixture(scope="function")
-    def test_client(self, session_full_db_setup):
-        """Provide test client using session fixture."""
-        return session_full_db_setup.test_client()
-
-    def test_certificacion_course_vs_masterclass_context(self, session_full_db_setup, test_client, isolated_db_session):
+    def test_certificacion_course_vs_masterclass_context(self, full_db_setup, client):
         """Test certificate rendering properly handles course vs masterclass context."""
-        app = session_full_db_setup
+        app = full_db_setup
 
         # Create test certification with course
         with app.app_context():
@@ -931,12 +899,12 @@ class TestCertificateTemplateRendering:
             cert_id = certification.id
 
         # Test certificate rendering - should include course context
-        response = test_client.get(f"/certificate/certificate/{cert_id}/")
+        response = client.get(f"/certificate/certificate/{cert_id}/")
         assert response.status_code == 200
         # Should contain rendered content with course context
         assert b"Context Test" in response.data
 
         # Test certificate view - should include course context
-        response = test_client.get(f"/certificate/view/{cert_id}")
+        response = client.get(f"/certificate/view/{cert_id}")
         assert response.status_code == 200
         assert b"Context Test" in response.data
