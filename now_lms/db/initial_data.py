@@ -24,7 +24,7 @@ from __future__ import annotations
 from datetime import datetime, time, timedelta, timezone
 from os import environ, listdir, makedirs, path
 from shutil import copyfile, copytree
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -1789,7 +1789,7 @@ Este curso te enseñará paso a paso cómo utilizar todas las funcionalidades de
         secciones_creadas.append(seccion)
 
     # Crear algunos recursos básicos de ejemplo
-    recursos_ejemplo = [
+    recursos_ejemplo: list[Dict[str, Any]] = [
         {
             "seccion": secciones_creadas[0],  # Introducción
             "nombre": "¿Qué es NOW LMS?",

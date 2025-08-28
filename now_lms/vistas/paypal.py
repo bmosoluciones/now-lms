@@ -18,7 +18,7 @@
 # Standard library
 # ---------------------------------------------------------------------------------------
 import logging
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Union, Tuple
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -445,7 +445,7 @@ def payment_page(course_code):
 
 @paypal.route("/get_client_id")
 @login_required
-def get_client_id() -> Response:
+def get_client_id() -> Union[Response, Tuple[Response, int]]:
     """Get PayPal client ID for JavaScript SDK."""
     try:
         paypal_config = database.session.execute(database.select(PaypalConfig)).first()[0]

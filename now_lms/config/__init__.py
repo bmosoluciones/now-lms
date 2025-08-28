@@ -128,15 +128,17 @@ DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios personalizados para la aplicación.
-if environ.get("CUSTOM_DATA_DIR"):
+custom_data_dir = environ.get("CUSTOM_DATA_DIR")
+if custom_data_dir:
     log.trace("Data directory configuration found in environment variables.")
-    DIRECTORIO_ARCHIVOS = environ.get("CUSTOM_DATA_DIR")
+    DIRECTORIO_ARCHIVOS = custom_data_dir
 else:
     DIRECTORIO_ARCHIVOS = DIRECTORIO_ARCHIVOS_BASE
 
-if environ.get("CUSTOM_THEMES_DIR"):
+custom_themes_dir = environ.get("CUSTOM_THEMES_DIR")
+if custom_themes_dir:
     log.trace("Themes directory configuration found in environment variables.")
-    DIRECTORIO_PLANTILLAS = environ.get("CUSTOM_THEMES_DIR")
+    DIRECTORIO_PLANTILLAS = custom_themes_dir
 else:
     DIRECTORIO_PLANTILLAS = DIRECTORIO_PLANTILLAS_BASE
 

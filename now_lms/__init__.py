@@ -473,7 +473,8 @@ def create_app(app_name="now_lms", testing=False, config_overrides=None):
     if DESARROLLO:
         from flask_debugtoolbar import DebugToolbarExtension
 
-        toolbar = DebugToolbarExtension(flask_app)
+        toolbar = DebugToolbarExtension()
+        toolbar.init_app(flask_app)
 
     log.trace(f"Flask application created successfully: {app_name}")
     return flask_app
