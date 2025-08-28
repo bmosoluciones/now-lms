@@ -190,6 +190,9 @@ def inicializa_extenciones_terceros(flask_app: Flask):
 
         database.init_app(flask_app)
         alembic.init_app(flask_app)
+        # Remove alembic "db" command from flask cli if it exists
+        if "db" in flask_app.cli.commands:
+            flask_app.cli.commands.pop("db")
         administrador_sesion.init_app(flask_app)
 
         # Initialize cache using new cache_utils module

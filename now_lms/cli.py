@@ -26,6 +26,7 @@ from pathlib import Path
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 import click
+from flask_alembic.cli import cli as alembic_cli
 from flask.cli import FlaskGroup
 from sqlalchemy import select
 
@@ -55,6 +56,11 @@ def command() -> None:
 @lms_app.cli.group()
 def database():
     """Database administration tools."""
+
+
+# Reexportar comandos de alembic directo dentro de database
+for name, cmd in alembic_cli.commands.items():
+    database.add_command(cmd, name)
 
 
 @database.command()
