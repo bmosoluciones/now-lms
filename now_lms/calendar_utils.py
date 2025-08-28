@@ -15,8 +15,10 @@
 
 """Utilities for managing user calendar events."""
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 import threading
-from typing import List, Optional
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -218,7 +220,7 @@ def update_evaluation_events(evaluation_id: str) -> None:
     thread.start()
 
 
-def get_upcoming_events_for_user(user_id: str, limit: int = 5) -> List[UserEvent]:
+def get_upcoming_events_for_user(user_id: str, limit: int = 5) -> list[UserEvent]:
     """Get upcoming events for a user (for dashboard display)."""
     # Handle invalid inputs
     if not user_id or limit <= 0:
@@ -240,7 +242,7 @@ def get_upcoming_events_for_user(user_id: str, limit: int = 5) -> List[UserEvent
     return events
 
 
-def _combine_date_time(date_obj: Optional[date], time_obj: Optional[time]) -> Optional[datetime]:
+def _combine_date_time(date_obj: date | None, time_obj: time | None) -> datetime | None:
     """Combine date and time objects into datetime."""
     if not date_obj:
         return None

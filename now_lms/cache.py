@@ -15,12 +15,13 @@
 
 """Configuración de cache."""
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
 from os import environ
-from typing import Dict, Any
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -50,7 +51,7 @@ def _get_cache_type_for_compatibility() -> str:
     return "NullCache"
 
 
-def _get_cache_config_for_compatibility() -> Dict[str, Any]:
+def _get_cache_config_for_compatibility() -> dict[str, object]:
     """Get basic cache config for backward compatibility."""
     config = {"CACHE_KEY_PREFIX": "now_lms:", "CACHE_DEFAULT_TIMEOUT": 300}
 

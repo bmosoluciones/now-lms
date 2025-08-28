@@ -311,6 +311,9 @@ class RouteTestConfig:
         # POST-only routes that shouldn't be tested with GET
         "/group/add",
         "/group/set_tutor",
+        # Debug toolbar routes that require special parameters in testing
+        "/_debug_toolbar/views/sqlalchemy/sql_select",
+        "/_debug_toolbar/views/sqlalchemy/sql_explain",
         "/admin/blog/tags",  # POST route for creating tags
         "/paypal_checkout/confirm_payment",
         "/setting/mail_check",

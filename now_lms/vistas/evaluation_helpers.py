@@ -19,6 +19,9 @@ NOW Learning Management System.
 Evaluation helper functions.
 """
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------

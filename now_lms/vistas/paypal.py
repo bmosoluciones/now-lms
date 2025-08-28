@@ -14,11 +14,13 @@
 
 """PayPal Payments."""
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
 import logging
-from typing import Dict, Any, Optional, Union, Tuple
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -67,7 +69,7 @@ def get_site_currency() -> str:
             return "USD"
 
 
-def validate_paypal_configuration(client_id: str, client_secret: str, sandbox: bool = False) -> Dict[str, Any]:
+def validate_paypal_configuration(client_id: str, client_secret: str, sandbox: bool = False) -> dict[str, object]:
     """Validate PayPal configuration by attempting to get an access token."""
     try:
         # Get access token from PayPal
@@ -91,7 +93,7 @@ def validate_paypal_configuration(client_id: str, client_secret: str, sandbox: b
         return {"valid": False, "message": f"Error al validar configuración: {str(e)}"}
 
 
-def get_paypal_access_token() -> Optional[str]:
+def get_paypal_access_token() -> str | None:
     """Get PayPal access token for API calls."""
     try:
         from now_lms.auth import descifrar_secreto
@@ -153,7 +155,7 @@ def get_paypal_access_token() -> Optional[str]:
         return None
 
 
-def verify_paypal_payment(order_id: str, access_token: str) -> Dict[str, Any]:
+def verify_paypal_payment(order_id: str, access_token: str) -> dict[str, object]:
     """Verify a PayPal payment by order ID."""
     try:
         paypal_config = database.session.execute(database.select(PaypalConfig)).first()[0]
@@ -445,7 +447,7 @@ def payment_page(course_code):
 
 @paypal.route("/get_client_id")
 @login_required
-def get_client_id() -> Union[Response, Tuple[Response, int]]:
+def get_client_id() -> Response | tuple[Response, int]:
     """Get PayPal client ID for JavaScript SDK."""
     try:
         paypal_config = database.session.execute(database.select(PaypalConfig)).first()[0]

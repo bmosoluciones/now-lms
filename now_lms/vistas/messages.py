@@ -19,6 +19,9 @@ NOW Learning Management System.
 Gestión del sistema de mensajería.
 """
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------

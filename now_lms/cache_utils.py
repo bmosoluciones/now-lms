@@ -15,12 +15,14 @@
 
 """Utilidades de inicialización de cache en memoria."""
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
 import os
 import tempfile
-from typing import Dict, Any
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -33,7 +35,7 @@ from flask import Flask
 from now_lms.logs import log
 
 
-def get_memory_cache_config() -> Dict[str, Any]:
+def get_memory_cache_config() -> dict[str, object]:
     """
     Determine cache configuration for memory-based cache.
 
@@ -112,6 +114,7 @@ def init_cache(app: Flask) -> None:
     from os import environ
 
     # Check for external cache services first (Redis, Memcached)
+    cache_config: dict[str, object]
     if (environ.get("CACHE_REDIS_URL")) or (environ.get("REDIS_URL")):
         # Redis cache takes precedence
         cache_config = {

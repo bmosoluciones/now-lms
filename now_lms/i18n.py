@@ -16,12 +16,14 @@
 
 """Internationalization utilities."""
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
 import sys
 from os import environ, path
-from typing import Any
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -64,13 +66,13 @@ def _n(singular: str, plural: str, n: int) -> str:
     return ngettext(singular, plural, n)
 
 
-def _l(text: str) -> Any:
+def _l(text: str) -> str:
     """Mark text for lazy translation (useful in forms)."""
     return lazy_gettext(text)
 
 
 @cache.cached(key_prefix="configuracion_global")
-def get_configuracion() -> Any:
+def get_configuracion():
     """Obtiene configuración del sitio web desde la base de datos (usando Flask-Caching)."""
     from now_lms.db import Configuracion, database
 

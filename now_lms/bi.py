@@ -15,6 +15,9 @@
 
 """Business logic implementation."""
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # pylint: disable=E1101
 
 

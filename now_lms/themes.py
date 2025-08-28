@@ -16,6 +16,9 @@
 
 """Herramientas para interacturar con temas."""
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -138,7 +141,7 @@ def get_program_view_template() -> str:
 # ---------------------------------------------------------------------------------------
 
 
-def current_theme():
+def current_theme() -> SimpleNamespace:
     """Carga las variables de los temas en el contexto de la aplicacion."""
     theme = get_current_theme
     dir_ = THEMES_DIRECTORY
@@ -154,7 +157,7 @@ def current_theme():
     )
 
 
-def list_themes():
+def list_themes() -> list[str]:
     """Devuelve una lista de los temas disponibles."""
     from os import listdir
     from os.path import join

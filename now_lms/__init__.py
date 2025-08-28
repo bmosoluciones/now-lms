@@ -29,6 +29,9 @@ Visit http://127.0.0.1:8080/ in your browser, default user and password are lms-
 
 """
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -447,6 +450,7 @@ def create_app(app_name="now_lms", testing=False, config_overrides=None):
                 "SERVER_NAME": "localhost.localdomain",
                 "APPLICATION_ROOT": "/",
                 "PREFERRED_URL_SCHEME": "http",
+                "DEBUG_TB_INTERCEPT_REDIRECTS": False,  # Disable redirect interception in tests
             }
         )
 
