@@ -471,10 +471,15 @@ def create_app(app_name="now_lms", testing=False, config_overrides=None):
         _register_error_handlers(flask_app)
 
     if DESARROLLO:
-        from flask_debugtoolbar import DebugToolbarExtension
+        try:
+            from flask_debugtoolbar import DebugToolbarExtension
+        except (ImportError, ModuleNotFoundError):
+            log.trace("Flask Debug Toolbar not installed, skipping.")
+            toolbar = None
 
-        toolbar = DebugToolbarExtension()
-        toolbar.init_app(flask_app)
+        if toolbar:
+            toolbar = DebugToolbarExtension()
+            toolbar.init_app(flask_app)
 
     log.trace(f"Flask application created successfully: {app_name}")
     return flask_app
