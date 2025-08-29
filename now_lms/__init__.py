@@ -62,6 +62,7 @@ from now_lms.config import (
     DESARROLLO,
     DIRECTORIO_ARCHIVOS,
     DIRECTORIO_PLANTILLAS,
+    TESTING,
     audio,
     files,
     images,
@@ -344,6 +345,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["pyversion"] = python_version()
     flask_app.jinja_env.globals["site_logo"] = get_site_logo
     flask_app.jinja_env.globals["site_favicon"] = get_site_favicon
+    flask_app.jinja_env.globals["testing"] = TESTING
     flask_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
     flask_app.jinja_env.globals["version"] = VERSION
 
@@ -437,7 +439,7 @@ def create_app(app_name="now_lms", testing=False, config_overrides=None):
         flask_app.config.update(config_overrides)
 
     # Configure for testing if needed
-    if testing:
+    if testing or TESTING:
         flask_app.config.update(
             {
                 "TESTING": True,

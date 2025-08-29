@@ -172,7 +172,7 @@ DIRECTORIO_BASE_UPLOADS = Path(str(path.join(str(DIRECTORIO_ARCHIVOS), "files"))
 
 # < --------------------------------------------------------------------------------------------- >
 # Ubicación predeterminada de base de datos SQLITE
-if (
+if TESTING := (
     "PYTEST_CURRENT_TEST" in environ
     or "PYTEST_VERSION" in environ
     or hasattr(sys, "_called_from_test")
