@@ -41,7 +41,7 @@ from platform import python_version
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import Flask, flash, g, render_template, request
+from flask import Flask, flash, g, redirect, render_template, request
 from flask_alembic import Alembic
 from flask_babel import Babel
 from flask_login import LoginManager, current_user
@@ -62,6 +62,7 @@ from now_lms.config import (
     DESARROLLO,
     DIRECTORIO_ARCHIVOS,
     DIRECTORIO_PLANTILLAS,
+    FORCE_HTTPS,
     TESTING,
     audio,
     files,
@@ -473,13 +474,19 @@ def create_app(app_name="now_lms", testing=False, config_overrides=None):
     if DESARROLLO:
         try:
             from flask_debugtoolbar import DebugToolbarExtension
+
+            toolbar = DebugToolbarExtension()
         except (ImportError, ModuleNotFoundError):
             log.trace("Flask Debug Toolbar not installed, skipping.")
             toolbar = None
 
         if toolbar:
-            toolbar = DebugToolbarExtension()
             toolbar.init_app(flask_app)
+
+    if FORCE_HTTPS:
+        from werkzeug.middleware.proxy_fix import ProxyFix
+
+        flask_app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
 
     log.trace(f"Flask application created successfully: {app_name}")
     return flask_app
@@ -513,6 +520,14 @@ def _register_before_request_handlers(flask_app):
         ):
             return render_template("error_pages/401.html")
         return None
+
+    @flask_app.before_request
+    def enforce_https():
+        """Force HTTPS behind a proxy (e.g., Nginx)."""
+        if not TESTING and FORCE_HTTPS:
+            if request.headers.get("X-Forwarded-Proto", "http") != "https":
+                url = request.url.replace("http://", "https://", 1)
+                return redirect(url, code=301)
 
 
 def _register_error_handlers(flask_app):
@@ -618,7 +633,9 @@ def initial_setup(with_examples=False, with_tests=False, flask_app=None):
             from now_lms.db.data_test import crear_data_para_pruebas
 
             crear_data_para_pruebas()
-    log.info(f"Welcome to NOW LMS version: {VERSION}, release: {CODE_NAME} ")
+    log.info(f"Welcome to NOW Learning Management System")
+    log.info(f"Version: {VERSION}")
+    log.info(f"Code name: {CODE_NAME}")
     log.info("NOW - LMS started successfully.")
 
 

@@ -9,6 +9,13 @@ All notable changes to this project will be documented in this file.
 
 ## [ unreleased ]
 
+### Added:
+ - Define TESTING
+ - Define FORCE_HTTPS
+
+### Changed:
+ - Merge alembic command group (db) into database
+
 -------------------
 
 ## [release: v0.0.1b13.dev20250824] - 2025-08-24

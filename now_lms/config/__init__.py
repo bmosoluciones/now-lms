@@ -115,6 +115,7 @@ DESARROLLO = any(
     str(environ.get(var, "")).strip().lower() in VALORES_TRUE for var in [*DEBUG_VARS, *FRAMEWORK_VARS, *GENERIC_VARS]
 )
 
+FORCE_HTTPS = environ.get("FORCE_HTTPS", "0").strip().lower() in VALORES_TRUE
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios base de la aplicacion

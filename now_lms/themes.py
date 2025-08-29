@@ -51,15 +51,12 @@ DIRECTORIO_TEMAS = str(Path(path.join(str(DIRECTORIO_PLANTILLAS), THEMES_DIRECTO
 
 def get_theme_path() -> str:
     """Devuelve la ruta del directorio de temas."""
-    THEME = get_current_theme()
-    if THEME:
+    if THEME := get_current_theme():
         # Build path to current active theme
-        THEME_PATH = Path(path.join(DIRECTORIO_TEMAS, THEME))
-    else:
-        # Fall back to default theme if none set
-        THEME_PATH = Path(path.join(DIRECTORIO_TEMAS, "now_lms"))
+        return str(Path(path.join(DIRECTORIO_TEMAS, THEME)))
 
-    return str(THEME_PATH)
+    # Fall back to default theme if none set
+    return str(Path(path.join(DIRECTORIO_TEMAS, "now_lms")))
 
 
 # ---------------------------------------------------------------------------------------

@@ -772,14 +772,11 @@ def check_db_access(app):
 def get_current_theme() -> str:
     """Devuelve el tema actual de la base de datos."""
     try:
-        consulta = database.session.execute(database.select(Style)).first()
-        if consulta:
+        if consulta := database.session.execute(database.select(Style)).first():
             data = consulta[0]
             return data.theme
         return "now_lms"
-    except AttributeError:
-        return "now_lms"
-    except OperationalError:
+    except (AttributeError, OperationalError):
         return "now_lms"
 
 
@@ -883,52 +880,46 @@ def get_course_tags(curso_codigo: str):
 
 
 # Navigation configuration helpers
+@cache.cached(timeout=10, key_prefix="global_config")
+def _get_global_config():
+    try:
+        if query := database.session.execute(database.select(Configuracion)).first():
+            return query[0]
+        return None
+    except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, AttributeError):
+        return None
+
+
 @cache.cached(timeout=300, key_prefix="nav_programs_enabled")
 def is_programs_enabled():
     """Check if programs are enabled in navigation."""
-    try:
-        config = database.session.execute(database.select(Configuracion)).first()
-        if config:
-            return config[0].enable_programs
-        return False
-    except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, AttributeError):
-        return False
+    if config := _get_global_config():
+        return config.enable_programs
+    return False
 
 
 @cache.cached(timeout=300, key_prefix="nav_masterclass_enabled")
 def is_masterclass_enabled():
     """Check if master class is enabled in navigation."""
-    try:
-        config = database.session.execute(database.select(Configuracion)).first()
-        if config:
-            return config[0].enable_masterclass
-        return False
-    except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, AttributeError):
-        return False
+    if config := _get_global_config():
+        return config.enable_masterclass
+    return False
 
 
 @cache.cached(timeout=300, key_prefix="nav_resources_enabled")
 def is_resources_enabled():
     """Check if resources are enabled in navigation."""
-    try:
-        config = database.session.execute(database.select(Configuracion)).first()
-        if config:
-            return config[0].enable_resources
-        return False
-    except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, AttributeError):
-        return False
+    if config := _get_global_config():
+        return config.enable_resources
+    return False
 
 
 @cache.cached(timeout=300, key_prefix="nav_blog_enabled")
 def is_blog_enabled():
     """Check if blog are enabled in navigation."""
-    try:
-        config = database.session.execute(database.select(Configuracion)).first()
-        if config:
-            return config[0].enable_blog
-        return False
-    except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError, AttributeError):
-        return False
+    if config := _get_global_config():
+        return config.enable_blog
+    return False
 
 
 def get_course_sections(course_code: str):
@@ -1021,8 +1012,7 @@ def get_slideshowid(resource_id: str) -> str | None:
     :return: slideshow ID (external_code) or None if not found
     """
     try:
-        recurso = database.session.get(CursoRecurso, resource_id)
-        if recurso and recurso.tipo == "slides" and recurso.external_code:
+        if (recurso := database.session.get(CursoRecurso, resource_id)) and recurso.tipo == "slides" and recurso.external_code:
             return recurso.external_code
         return None
     except (AttributeError, OperationalError):
