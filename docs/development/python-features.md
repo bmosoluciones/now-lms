@@ -1,4 +1,4 @@
-# Python 3.*l Features in NOW-LMS
+# Python 3.* Features in NOW-LMS
 
 NOW-LMS requires Python 3.11+ and takes advantage of modern Python language features for better code quality, performance, and maintainability.
 
