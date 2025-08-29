@@ -16,6 +16,9 @@
 
 """Command line interface for NOW LMS."""
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -26,6 +29,7 @@ from pathlib import Path
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 import click
+from flask_alembic.cli import cli as alembic_cli
 from flask.cli import FlaskGroup
 from sqlalchemy import select
 
@@ -55,6 +59,11 @@ def command() -> None:
 @lms_app.cli.group()
 def database():
     """Database administration tools."""
+
+
+# Reexportar comandos de alembic directo dentro de database
+for name, cmd in alembic_cli.commands.items():
+    database.add_command(cmd, name)
 
 
 @database.command()
@@ -135,8 +144,8 @@ def reset(with_examples=False, with_tests=False) -> None:
 def engine():
     """Return the database engine."""
     with lms_app.app_context():
-        engine = lms_app.config["SQLALCHEMY_DATABASE_URI"]
-        click.echo(f"Database Engine: {engine}")
+        db_engine = lms_app.config["SQLALCHEMY_DATABASE_URI"]
+        click.echo(f"Database Engine: {db_engine}")
 
 
 @lms_app.cli.command()
@@ -351,7 +360,7 @@ def reset_password():
 
 
 @admin.command()
-def set():
+def set_emergency():
     """Disable all admin users and create a new one (emergency security measure)."""
     from now_lms.auth import proteger_passwd
     from now_lms.db import Usuario
@@ -609,16 +618,16 @@ def stats():
                 try:
                     if cache_backend._read_clients:
                         client = cache_backend._read_clients[0]
-                        info = client.info()
-                        click.echo(f"  Connected clients: {info.get('connected_clients', 'N/A')}")
-                        click.echo(f"  Used memory: {info.get('used_memory_human', 'N/A')}")
-                        click.echo(f"  Total commands processed: {info.get('total_commands_processed', 'N/A')}")
-                        click.echo(f"  Keyspace hits: {info.get('keyspace_hits', 'N/A')}")
-                        click.echo(f"  Keyspace misses: {info.get('keyspace_misses', 'N/A')}")
+                        redis_info = client.info()
+                        click.echo(f"  Connected clients: {redis_info.get('connected_clients', 'N/A')}")
+                        click.echo(f"  Used memory: {redis_info.get('used_memory_human', 'N/A')}")
+                        click.echo(f"  Total commands processed: {redis_info.get('total_commands_processed', 'N/A')}")
+                        click.echo(f"  Keyspace hits: {redis_info.get('keyspace_hits', 'N/A')}")
+                        click.echo(f"  Keyspace misses: {redis_info.get('keyspace_misses', 'N/A')}")
 
                         # Calculate hit ratio
-                        hits = info.get("keyspace_hits", 0)
-                        misses = info.get("keyspace_misses", 0)
+                        hits = redis_info.get("keyspace_hits", 0)
+                        misses = redis_info.get("keyspace_misses", 0)
                         if hits + misses > 0:
                             hit_ratio = (hits / (hits + misses)) * 100
                             click.echo(f"  Hit ratio: {hit_ratio:.2f}%")
@@ -632,9 +641,9 @@ def stats():
                 click.echo("Cache Statistics (Memcached):")
                 try:
                     if hasattr(cache_backend._client, "get_stats"):
-                        stats = cache_backend._client.get_stats()
-                        if stats:
-                            for server, server_stats in stats:
+                        memcached_stats = cache_backend._client.get_stats()
+                        if memcached_stats:
+                            for server, server_stats in memcached_stats:
                                 click.echo(f"  Server {server}:")
                                 for key, value in server_stats.items():
                                     if key in ["get_hits", "get_misses", "cmd_get", "cmd_set", "bytes", "curr_items"]:

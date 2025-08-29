@@ -65,9 +65,9 @@ class TestCertificateHelperFunctions:
 class TestCertificateListRoutes:
     """Test certificate listing routes."""
 
-    def test_certificados_list_as_instructor(self, session_full_db_setup):
+    def test_certificados_list_as_instructor(self, full_db_setup, client):
         """Test certificate list access as instructor."""
-        client = session_full_db_setup.test_client()
+        app = full_db_setup
 
         # Login as instructor
         login_response = client.post(
@@ -82,9 +82,9 @@ class TestCertificateListRoutes:
         assert response.status_code == 200
         assert b"Lista de Certificados" in response.data or b"certificados" in response.data.lower()
 
-    def test_certificados_list_as_student_forbidden(self, session_full_db_setup):
+    def test_certificados_list_as_student_forbidden(self, full_db_setup, client):
         """Test certificate list access as student is forbidden."""
-        client = session_full_db_setup.test_client()
+        app = full_db_setup
 
         # Login as student
         login_response = client.post(
@@ -98,10 +98,8 @@ class TestCertificateListRoutes:
         response = client.get("/certificate/list")
         assert response.status_code == 403
 
-    def test_certificados_list_anonymous_redirect(self, session_full_db_setup):
+    def test_certificados_list_anonymous_redirect(self, full_db_setup, client):
         """Test certificate list access as anonymous user redirects to login."""
-        client = session_full_db_setup.test_client()
-
         # Try to access certificate list without login
         response = client.get("/certificate/list")
         assert response.status_code == 302
@@ -111,9 +109,9 @@ class TestCertificateListRoutes:
 class TestCertificateCreationRoutes:
     """Test certificate creation and management routes."""
 
-    def test_certificate_new_get_as_admin(self, session_full_db_setup):
+    def test_certificate_new_get_as_admin(self, full_db_setup, client):
         """Test GET certificate creation form as admin."""
-        client = session_full_db_setup.test_client()
+        app = full_db_setup
 
         # Login as admin
         login_response = client.post(
@@ -128,7 +126,7 @@ class TestCertificateCreationRoutes:
         assert response.status_code == 200
         assert b"Certificado" in response.data or b"Certificate" in response.data
 
-    def test_certificate_new_post_as_admin(self, session_full_db_setup):
+    def test_certificate_new_post_as_admin(self, full_db_setup, client):
         """Test POST certificate creation as admin.
 
         Note: This test reveals two bugs in the certificate creation code:
@@ -139,7 +137,7 @@ class TestCertificateCreationRoutes:
         """
         from sqlalchemy.exc import IntegrityError
 
-        client = session_full_db_setup.test_client()
+        app = full_db_setup
 
         # Login as admin
         login_response = client.post(
@@ -163,9 +161,9 @@ class TestCertificateCreationRoutes:
                 follow_redirects=False,
             )
 
-    def test_certificate_new_as_instructor_forbidden(self, session_full_db_setup):
+    def test_certificate_new_as_instructor_forbidden(self, full_db_setup, client):
         """Test certificate creation as instructor is forbidden."""
-        client = session_full_db_setup.test_client()
+        app = full_db_setup
 
         # Login as instructor
         login_response = client.post(
@@ -185,14 +183,10 @@ class TestCertificateManagementRoutes:
 
     def setup_test_certificate(self, app):
         """Helper to create a test certificate."""
-        import uuid
-
-        unique_suffix = str(uuid.uuid4())[:8]
-
         with app.app_context():
             cert = Certificado(
-                code=f"TEST_CERT_{unique_suffix}",
-                titulo=f"Test Certificate for Management {unique_suffix}",
+                code="TEST_CERT_001",
+                titulo="Test Certificate for Management",
                 descripcion="Test certificate for management operations",
                 html="<h1>Test</h1>",
                 css="h1 { color: red; }",
@@ -203,10 +197,9 @@ class TestCertificateManagementRoutes:
             database.session.commit()
             return cert.id
 
-    def test_certificate_edit_get_as_admin(self, session_full_db_setup):
+    def test_certificate_edit_get_as_admin(self, full_db_setup, client):
         """Test GET certificate edit form as admin."""
-        app = session_full_db_setup
-        client = app.test_client()
+        app = full_db_setup
         cert_id = self.setup_test_certificate(app)
 
         # Login as admin
@@ -222,10 +215,9 @@ class TestCertificateManagementRoutes:
         assert response.status_code == 200
         assert b"Test Certificate for Management" in response.data
 
-    def test_certificate_edit_post_as_admin(self, session_full_db_setup):
+    def test_certificate_edit_post_as_admin(self, full_db_setup, client):
         """Test POST certificate edit as admin."""
-        app = session_full_db_setup
-        client = app.test_client()
+        app = full_db_setup
         cert_id = self.setup_test_certificate(app)
 
         # Login as admin
@@ -260,10 +252,9 @@ class TestCertificateManagementRoutes:
             assert cert.habilitado is True
             assert cert.publico is True
 
-    def test_certificate_remove_as_admin(self, session_full_db_setup):
+    def test_certificate_remove_as_admin(self, full_db_setup, client):
         """Test certificate disable as admin."""
-        app = session_full_db_setup
-        client = app.test_client()
+        app = full_db_setup
         cert_id = self.setup_test_certificate(app)
 
         # First enable the certificate
@@ -289,10 +280,9 @@ class TestCertificateManagementRoutes:
             cert = database.session.execute(database.select(Certificado).filter_by(id=cert_id)).scalar_one()
             assert cert.habilitado is False
 
-    def test_certificate_add_as_admin(self, session_full_db_setup):
+    def test_certificate_add_as_admin(self, full_db_setup, client):
         """Test certificate enable as admin."""
-        app = session_full_db_setup
-        client = app.test_client()
+        app = full_db_setup
         cert_id = self.setup_test_certificate(app)
 
         # Login as admin
@@ -312,10 +302,9 @@ class TestCertificateManagementRoutes:
             cert = database.session.execute(database.select(Certificado).filter_by(id=cert_id)).scalar_one()
             assert cert.habilitado is True
 
-    def test_certificate_publish_as_admin(self, session_full_db_setup):
+    def test_certificate_publish_as_admin(self, full_db_setup, client):
         """Test certificate publish as admin."""
-        app = session_full_db_setup
-        client = app.test_client()
+        app = full_db_setup
         cert_id = self.setup_test_certificate(app)
 
         # Login as admin
@@ -335,10 +324,9 @@ class TestCertificateManagementRoutes:
             cert = database.session.execute(database.select(Certificado).filter_by(id=cert_id)).scalar_one()
             assert cert.publico is True
 
-    def test_certificate_unpublish_as_admin(self, session_full_db_setup):
+    def test_certificate_unpublish_as_admin(self, full_db_setup, client):
         """Test certificate unpublish as admin."""
-        app = session_full_db_setup
-        client = app.test_client()
+        app = full_db_setup
         cert_id = self.setup_test_certificate(app)
 
         # First publish the certificate
@@ -368,10 +356,9 @@ class TestCertificateManagementRoutes:
 class TestCertificateInspectRoute:
     """Test certificate template inspection route."""
 
-    def test_certificate_inspect(self, session_full_db_setup):
+    def test_certificate_inspect(self, full_db_setup, client):
         """Test certificate template inspection."""
-        app = session_full_db_setup
-        client = app.test_client()
+        app = full_db_setup
 
         # Create test certificate
         with app.app_context():
@@ -399,18 +386,14 @@ class TestCertificateQRRoute:
 
     def setup_test_certification(self, app):
         """Helper to create a test certification."""
-        import uuid
-
-        unique_suffix = str(uuid.uuid4())[:8]
-
         with app.app_context():
             # Create user
             user = Usuario(
-                usuario=f"qr_test_user_{unique_suffix}",
+                usuario="qr_test_user",
                 acceso=proteger_passwd("testpass"),
                 nombre="QR",
                 apellido="Test",
-                correo_electronico=f"qr_{unique_suffix}@test.com",
+                correo_electronico="qr@test.com",
                 tipo="student",
                 activo=True,
                 correo_electronico_verificado=True,
@@ -430,10 +413,9 @@ class TestCertificateQRRoute:
             return certification.id
 
     @patch("qrcode.make")
-    def test_certificacion_qr(self, mock_qr_make, session_full_db_setup):
+    def test_certificacion_qr(self, mock_qr_make, full_db_setup, client):
         """Test QR code generation."""
-        app = session_full_db_setup
-        client = app.test_client()
+        app = full_db_setup
         cert_id = self.setup_test_certification(app)
 
         # Mock QR code generation
@@ -463,18 +445,14 @@ class TestCertificateViewingRoutes:
 
     def setup_test_certification_with_course(self, app):
         """Helper to create a test certification with course."""
-        import uuid
-
-        unique_suffix = str(uuid.uuid4())[:8]
-
         with app.app_context():
             # Create user
             user = Usuario(
-                usuario=f"view_test_user_{unique_suffix}",
+                usuario="view_test_user",
                 acceso=proteger_passwd("testpass"),
                 nombre="View",
                 apellido="Test",
-                correo_electronico=f"view_{unique_suffix}@test.com",
+                correo_electronico="view@test.com",
                 tipo="student",
                 activo=True,
                 correo_electronico_verificado=True,
@@ -493,10 +471,9 @@ class TestCertificateViewingRoutes:
 
             return certification.id
 
-    def test_certificado_view(self, session_full_db_setup):
+    def test_certificado_view(self, full_db_setup, client):
         """Test certificate view route."""
-        app = session_full_db_setup
-        client = app.test_client()
+        app = full_db_setup
         cert_id = self.setup_test_certification_with_course(app)
 
         # Access certificate view
@@ -505,10 +482,9 @@ class TestCertificateViewingRoutes:
         # Check for the user names since we're using the default template
         assert b"View Test" in response.data or b"View" in response.data
 
-    def test_certificacion_render(self, session_full_db_setup):
+    def test_certificacion_render(self, full_db_setup, client):
         """Test certificate rendering route."""
-        app = session_full_db_setup
-        client = app.test_client()
+        app = full_db_setup
         cert_id = self.setup_test_certification_with_course(app)
 
         # Access certificate rendering
@@ -521,9 +497,9 @@ class TestCertificateViewingRoutes:
 class TestCertificateIssuanceRoutes:
     """Test certificate issuance routes."""
 
-    def test_certificaciones_list_as_instructor(self, session_full_db_setup):
+    def test_certificaciones_list_as_instructor(self, full_db_setup, client):
         """Test issued certificates list as instructor."""
-        client = session_full_db_setup.test_client()
+        app = full_db_setup
 
         # Login as instructor
         login_response = client.post(
@@ -538,9 +514,9 @@ class TestCertificateIssuanceRoutes:
         assert response.status_code == 200
         assert b"certificaciones" in response.data.lower() or b"issued" in response.data.lower()
 
-    def test_certificacion_generar_get_as_instructor(self, session_full_db_setup):
+    def test_certificacion_generar_get_as_instructor(self, full_db_setup, client):
         """Test certificate release form GET as instructor."""
-        client = session_full_db_setup.test_client()
+        app = full_db_setup
 
         # Login as instructor
         login_response = client.post(
@@ -559,9 +535,9 @@ class TestCertificateIssuanceRoutes:
 class TestCertificateErrorHandling:
     """Test error handling scenarios for certificate routes."""
 
-    def test_certificate_edit_nonexistent(self, session_full_db_setup):
+    def test_certificate_edit_nonexistent(self, full_db_setup, client):
         """Test editing non-existent certificate reveals a bug."""
-        client = session_full_db_setup.test_client()
+        app = full_db_setup
 
         # Login as admin
         login_response = client.post(
@@ -576,18 +552,18 @@ class TestCertificateErrorHandling:
         with pytest.raises(TypeError):
             response = client.get("/certificate/nonexistent_id/edit")
 
-    def test_certificate_view_nonexistent(self, session_full_db_setup):
+    def test_certificate_view_nonexistent(self, full_db_setup, client):
         """Test viewing non-existent certificate reveals a bug."""
-        client = session_full_db_setup.test_client()
+        app = full_db_setup
 
         # Try to view non-existent certificate - this reveals a bug
         # The code doesn't handle None results and crashes with TypeError
         with pytest.raises(TypeError):
             response = client.get("/certificate/view/nonexistent_id")
 
-    def test_qr_generation_nonexistent(self, session_full_db_setup):
+    def test_qr_generation_nonexistent(self, full_db_setup, client):
         """Test QR generation for non-existent certificate."""
-        client = session_full_db_setup.test_client()
+        app = full_db_setup
 
         # Try to generate QR for non-existent certificate
         # Interestingly, this doesn't crash - it might generate a QR for wrong data

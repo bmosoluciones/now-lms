@@ -15,12 +15,14 @@
 
 """Utilidades de inicialización de cache en memoria."""
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
 import os
 import tempfile
-from typing import Dict, Any
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -33,7 +35,7 @@ from flask import Flask
 from now_lms.logs import log
 
 
-def get_memory_cache_config() -> Dict[str, Any]:
+def get_memory_cache_config() -> dict[str, object]:
     """
     Determine cache configuration for memory-based cache.
 
@@ -56,8 +58,7 @@ def get_memory_cache_config() -> Dict[str, Any]:
             os.makedirs(cache_dir, mode=0o700, exist_ok=True)
 
         # Test if we can write to this directory
-        test_file = os.path.join(cache_dir, ".test_write")
-        with open(test_file, "w") as f:
+        with open(test_file := os.path.join(cache_dir, ".test_write"), "w", encoding="utf-8") as f:
             f.write("test")
         os.remove(test_file)
 
@@ -70,15 +71,11 @@ def get_memory_cache_config() -> Dict[str, Any]:
     # Second try: system temp directory
     if cache_dir is None:
         try:
-            temp_base = tempfile.gettempdir()
-            cache_dir = os.path.join(temp_base, "now_lms_cache")
-
-            if not os.path.exists(cache_dir):
+            if not os.path.exists(cache_dir := os.path.join(tempfile.gettempdir(), "now_lms_cache")):
                 os.makedirs(cache_dir, mode=0o700, exist_ok=True)
 
             # Test write access
-            test_file = os.path.join(cache_dir, ".test_write")
-            with open(test_file, "w") as f:
+            with open(test_file := os.path.join(cache_dir, ".test_write"), "w", encoding="utf-8") as f:
                 f.write("test")
             os.remove(test_file)
 
@@ -117,6 +114,7 @@ def init_cache(app: Flask) -> None:
     from os import environ
 
     # Check for external cache services first (Redis, Memcached)
+    cache_config: dict[str, object]
     if (environ.get("CACHE_REDIS_URL")) or (environ.get("REDIS_URL")):
         # Redis cache takes precedence
         cache_config = {

@@ -15,6 +15,9 @@
 
 """Configuración de logs."""
 
+# Python 3.7+ - Postponed evaluation of annotations
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------

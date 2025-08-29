@@ -16,6 +16,9 @@
 
 """Access control for the application."""
 
+# Python 3.7+ - Postponed evaluation of annotations
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -131,7 +134,7 @@ def proteger_secreto(password):
             algorithm=hashes.SHA256(),
             length=32,
             salt=config.r,
-            iterations=480000,
+            iterations=480_000,  # Python 3.6+ - Numeric literal underscores for readability
         )
         key = base64.urlsafe_b64encode(kdf.derive(current_app.config.get("SECRET_KEY").encode()))
         f = Fernet(key)
@@ -149,7 +152,7 @@ def descifrar_secreto(hash_value):
             algorithm=hashes.SHA256(),
             length=32,
             salt=config.r,
-            iterations=480000,
+            iterations=480_000,  # Python 3.6+ - Numeric literal underscores for readability
         )
         key = base64.urlsafe_b64encode(kdf.derive(current_app.config.get("SECRET_KEY").encode()))
         f = Fernet(key)
@@ -165,7 +168,8 @@ def descifrar_secreto(hash_value):
 # ---------------------------------------------------------------------------------------
 def generate_confirmation_token(mail):
     """Generate a confirmation token for email verification."""
-    expiration_time = datetime.now(timezone.utc) + timedelta(seconds=36000)
+    # Python 3.6+ - Numeric literal underscores for readability (10 hours = 36,000 seconds)
+    expiration_time = datetime.now(timezone.utc) + timedelta(seconds=36_000)
     data = {"exp": expiration_time, "confirm_id": mail}
     token = jwt.encode(data, current_app.secret_key, algorithm="HS512")
     return token
@@ -255,7 +259,8 @@ def send_confirmation_email(user):
 # ---------------------------------------------------------------------------------------
 def generate_password_reset_token(email):
     """Generate a password reset token."""
-    expiration_time = datetime.now(timezone.utc) + timedelta(seconds=3600)  # 1 hour expiration
+    # Python 3.6+ - Numeric literal underscores for readability (1 hour = 3,600 seconds)
+    expiration_time = datetime.now(timezone.utc) + timedelta(seconds=3_600)  # 1 hour expiration
     data = {"exp": expiration_time, "reset_email": email, "action": "password_reset"}
     token = jwt.encode(data, current_app.secret_key, algorithm="HS512")
     return token

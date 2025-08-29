@@ -106,7 +106,7 @@ def test_babel_selectors_use_g_configuration(session_full_db_setup):
             # Test fallback when g.configuracion is None
             g.configuracion = None
             locale_fallback = get_locale()
-            assert locale_fallback == "en"  # Should fallback to 'en'
+            assert locale_fallback == "es"  # Should fallback to 'es' in testing mode
 
             timezone_fallback = get_timezone()
             assert timezone_fallback == "UTC"  # Should fallback to 'UTC'
@@ -149,12 +149,12 @@ def test_configuration_fallback_when_no_config_exists(session_basic_db_setup):
         config = get_configuracion()
         assert config is not None
         assert hasattr(config, "lang")
-        assert config.lang == "en"  # Should use fallback values
+        assert config.lang == "es"  # Should use fallback values (Spanish in testing mode)
 
         # Test that selectors work with fallback in request context
         with session_basic_db_setup.test_request_context("/"):
             locale = get_locale()
-            assert locale == "en"
+            assert locale == "es"  # Should use Spanish in testing mode
 
             timezone = get_timezone()
             assert timezone == "UTC"

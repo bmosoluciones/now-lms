@@ -15,13 +15,15 @@
 
 """Email functionality for NOW LMS."""
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
 import threading
 from os import environ
 from types import SimpleNamespace
-from typing import Mapping
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -41,13 +43,13 @@ from now_lms.logs import log as logger
 # ---------------------------------------------------------------------------------------
 # Configuración de tipos.
 # ---------------------------------------------------------------------------------------
-MAIL_SERVER: str | bool | Mapping | None = None
-MAIL_PORT: str | bool | Mapping | None = None
-MAIL_USERNAME: str | bool | Mapping | None = None
-MAIL_PASSWORD: str | bool | Mapping | None = None
-MAIL_USE_TLS: str | bool | Mapping | None = None
-MAIL_USE_SSL: str | bool | Mapping | None = None
-MAIL_DEFAULT_SENDER: str | bool | Mapping | None = None
+MAIL_SERVER: str | bool | dict | None = None
+MAIL_PORT: str | bool | dict | None = None
+MAIL_USERNAME: str | bool | dict | None = None
+MAIL_PASSWORD: str | bool | dict | None = None
+MAIL_USE_TLS: str | bool | dict | None = None
+MAIL_USE_SSL: str | bool | dict | None = None
+MAIL_DEFAULT_SENDER: str | bool | dict | None = None
 mail_configured: bool = False
 
 

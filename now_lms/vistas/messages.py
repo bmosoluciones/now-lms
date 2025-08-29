@@ -19,6 +19,9 @@ NOW Learning Management System.
 Gestión del sistema de mensajería.
 """
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -151,24 +154,27 @@ def user_messages():
         )
     else:
         # Instructors and moderators see threads from their courses
-        if current_user.tipo == "instructor":
-            course_codes = [
-                dc.curso
-                for dc in database.session.execute(select(DocenteCurso).filter_by(usuario=current_user.usuario, vigente=True))
-                .scalars()
-                .all()
-            ]
-        elif current_user.tipo == "moderator":
-            course_codes = [
-                mc.curso
-                for mc in database.session.execute(
-                    select(ModeradorCurso).filter_by(usuario=current_user.usuario, vigente=True)
-                )
-                .scalars()
-                .all()
-            ]
-        else:  # admin
-            course_codes = [c.codigo for c in database.session.execute(select(Curso)).scalars().all()]
+        match current_user.tipo:
+            case "instructor":
+                course_codes = [
+                    dc.curso
+                    for dc in database.session.execute(
+                        select(DocenteCurso).filter_by(usuario=current_user.usuario, vigente=True)
+                    )
+                    .scalars()
+                    .all()
+                ]
+            case "moderator":
+                course_codes = [
+                    mc.curso
+                    for mc in database.session.execute(
+                        select(ModeradorCurso).filter_by(usuario=current_user.usuario, vigente=True)
+                    )
+                    .scalars()
+                    .all()
+                ]
+            case _:  # admin
+                course_codes = [c.codigo for c in database.session.execute(select(Curso)).scalars().all()]
 
         threads = (
             database.session.execute(
@@ -442,24 +448,27 @@ def standalone_report_message():
                     )
     else:
         # For instructors, moderators, and admins
-        if current_user.tipo == "instructor":
-            course_codes = [
-                dc.curso
-                for dc in database.session.execute(select(DocenteCurso).filter_by(usuario=current_user.usuario, vigente=True))
-                .scalars()
-                .all()
-            ]
-        elif current_user.tipo == "moderator":
-            course_codes = [
-                mc.curso
-                for mc in database.session.execute(
-                    select(ModeradorCurso).filter_by(usuario=current_user.usuario, vigente=True)
-                )
-                .scalars()
-                .all()
-            ]
-        else:  # admin
-            course_codes = [c.codigo for c in database.session.execute(select(Curso)).scalars().all()]
+        match current_user.tipo:
+            case "instructor":
+                course_codes = [
+                    dc.curso
+                    for dc in database.session.execute(
+                        select(DocenteCurso).filter_by(usuario=current_user.usuario, vigente=True)
+                    )
+                    .scalars()
+                    .all()
+                ]
+            case "moderator":
+                course_codes = [
+                    mc.curso
+                    for mc in database.session.execute(
+                        select(ModeradorCurso).filter_by(usuario=current_user.usuario, vigente=True)
+                    )
+                    .scalars()
+                    .all()
+                ]
+            case _:  # admin
+                course_codes = [c.codigo for c in database.session.execute(select(Curso)).scalars().all()]
 
         if course_codes:
             threads = (

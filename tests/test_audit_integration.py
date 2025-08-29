@@ -4,60 +4,62 @@ Test to verify that previously problematic view operations now have proper audit
 
 from datetime import date
 
-from flask_login import login_user
 
 from now_lms.auth import proteger_passwd
-from now_lms.db import Categoria, Usuario, database
+from now_lms.db import Categoria, Usuario
 
 
-def test_category_creation_now_has_audit_trail(app, minimal_db_setup):
+def test_category_creation_now_has_audit_trail(session_basic_db_setup, isolated_db_session):
     """Test that category creation (which was missing audit trails) now works correctly."""
-    # Create a test user
-    test_user = Usuario(
-        usuario="category_test_user",
-        acceso=proteger_passwd("testpass"),
-        nombre="Test",
-        apellido="User",
-        tipo="instructor",
-        activo=True,
-        correo_electronico_verificado=True,
-    )
-    database.session.add(test_user)
-    database.session.commit()
+    with session_basic_db_setup.app_context():
+        # Create a test user
+        test_user = Usuario(
+            usuario="category_test_user",
+            acceso=proteger_passwd("testpass"),
+            nombre="Test",
+            apellido="User",
+            tipo="instructor",
+            activo=True,
+            correo_electronico_verificado=True,
+        )
+        isolated_db_session.add(test_user)
+        isolated_db_session.flush()
 
-    # Simulate the problematic category creation from categories.py
-    with app.test_client() as client:
-        with client.session_transaction() as sess:
-            sess["_user_id"] = test_user.usuario
-            sess["_fresh"] = True
+        # Simulate the problematic category creation from categories.py
+        with session_basic_db_setup.test_client() as client:
+            with client.session_transaction() as sess:
+                sess["_user_id"] = test_user.usuario
+                sess["_fresh"] = True
 
-        with app.test_request_context():
-            login_user(test_user)
+            with session_basic_db_setup.test_request_context():
+                from flask_login import login_user
 
-            # This mimics the problematic code from categories.py:57-61
-            categoria = Categoria(
-                nombre="Test Category",
-                descripcion="Test category description",
-            )
-            database.session.add(categoria)
-            database.session.commit()
+                login_user(test_user)
 
-            # Refresh the instance
-            database.session.refresh(categoria)
+                # This mimics the problematic code from categories.py:57-61
+                categoria = Categoria(
+                    nombre="Test Category",
+                    descripcion="Test category description",
+                )
+                isolated_db_session.add(categoria)
+                isolated_db_session.flush()
 
-            # Now it should have proper audit trails automatically
-            assert categoria.creado_por == "category_test_user"
-            # Check that creado date is recent (within 1 day) to handle timezone differences
-            today = date.today()
-            assert categoria.creado is not None
-            assert abs((categoria.creado - today).days) <= 1
-            assert categoria.modificado_por is None  # New records don't have modificado_por
-            assert categoria.modificado is None
+                # Refresh the instance
+                isolated_db_session.refresh(categoria)
+
+                # Now it should have proper audit trails automatically
+                assert categoria.creado_por == "category_test_user"
+                # Check that creado date is recent (within 1 day) to handle timezone differences
+                today = date.today()
+                assert categoria.creado is not None
+                assert abs((categoria.creado - today).days) <= 1
+                assert categoria.modificado_por is None  # New records don't have modificado_por
+                assert categoria.modificado is None
 
 
-def test_user_creation_patterns_work(app, minimal_db_setup):
+def test_user_creation_patterns_work(session_basic_db_setup, isolated_db_session):
     """Test that user creation (which sets creado_por manually) still works."""
-    with app.test_request_context():
+    with session_basic_db_setup.test_request_context():
         # This mimics the pattern from users.py:110-119
         usuario_ = Usuario(
             usuario="newuser@example.com",
@@ -70,11 +72,11 @@ def test_user_creation_patterns_work(app, minimal_db_setup):
             creado_por="newuser@example.com",  # Manual setting like in users.py
         )
 
-        database.session.add(usuario_)
-        database.session.commit()
+        isolated_db_session.add(usuario_)
+        isolated_db_session.flush()
 
         # Refresh the instance
-        database.session.refresh(usuario_)
+        isolated_db_session.refresh(usuario_)
 
         # Manual creado_por should be preserved
         assert usuario_.creado_por == "newuser@example.com"

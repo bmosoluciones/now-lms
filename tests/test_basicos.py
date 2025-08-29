@@ -22,26 +22,26 @@ import pytest
 from now_lms import log
 
 
-def test_importable(app):
+def test_importable(session_basic_db_setup):
     """El proyecto debe poder importarse sin errores."""
-    assert app
+    assert session_basic_db_setup
 
 
-def test_cli(app):
-    runner = app.test_cli_runner()
+def test_cli(session_basic_db_setup):
+    runner = session_basic_db_setup.test_cli_runner()
     runner.invoke(args=["info", "path"])
     runner.invoke(args=["info", "system"])
     runner.invoke(args=["info", "course", "now"])
     runner.invoke(args=["database"])
 
 
-def test_flask_instance(app):
+def test_flask_instance(session_basic_db_setup):
     from flask import Flask
 
-    assert isinstance(app, Flask)
+    assert isinstance(session_basic_db_setup, Flask)
 
 
-def test_sqlalchemy_instance(app):
+def test_sqlalchemy_instance(session_basic_db_setup):
     from flask_sqlalchemy import SQLAlchemy
 
     from now_lms import database
@@ -49,7 +49,7 @@ def test_sqlalchemy_instance(app):
     assert isinstance(database, SQLAlchemy)
 
 
-def test_alembic_instance(app):
+def test_alembic_instance(session_basic_db_setup):
     from flask_alembic import Alembic
 
     from now_lms import alembic
@@ -57,7 +57,7 @@ def test_alembic_instance(app):
     assert isinstance(alembic, Alembic)
 
 
-def test_login_manager_instance(app):
+def test_login_manager_instance(session_basic_db_setup):
     from flask_login import LoginManager
 
     from now_lms import administrador_sesion
@@ -65,7 +65,7 @@ def test_login_manager_instance(app):
     assert isinstance(administrador_sesion, LoginManager)
 
 
-def test_flask_form_classes(app):
+def test_flask_form_classes(session_basic_db_setup):
     from flask_wtf import FlaskForm
 
     import now_lms.forms as forms
@@ -82,7 +82,7 @@ def test_flask_form_classes(app):
         assert issubclass(cls, FlaskForm), f"{cls.__name__} no hereda de FlaskForm"
 
 
-def test_base_table_inheritance(app):
+def test_base_table_inheritance(session_basic_db_setup):
     from flask_login import UserMixin
 
     from now_lms import Usuario
@@ -311,6 +311,9 @@ class RouteTestConfig:
         # POST-only routes that shouldn't be tested with GET
         "/group/add",
         "/group/set_tutor",
+        # Debug toolbar routes that require special parameters in testing
+        "/_debug_toolbar/views/sqlalchemy/sql_select",
+        "/_debug_toolbar/views/sqlalchemy/sql_explain",
         "/admin/blog/tags",  # POST route for creating tags
         "/paypal_checkout/confirm_payment",
         "/setting/mail_check",

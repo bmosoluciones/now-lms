@@ -14,6 +14,9 @@
 
 """PayPal Payments."""
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -23,7 +26,7 @@ import logging
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 import requests
-from flask import Blueprint, current_app, flash, jsonify, redirect, render_template, request, url_for
+from flask import Blueprint, Response, current_app, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy.exc import OperationalError
 
@@ -44,7 +47,7 @@ paypal = Blueprint("paypal", __name__, template_folder=DIRECTORIO_PLANTILLAS, ur
 
 
 @cache.cached(timeout=50)
-def check_paypal_enabled():
+def check_paypal_enabled() -> bool:
     """Check if PayPal payments are enabled."""
     with current_app.app_context():
         try:
@@ -56,7 +59,7 @@ def check_paypal_enabled():
 
 
 @cache.cached(timeout=50)
-def get_site_currency():
+def get_site_currency() -> str:
     """Get the site's default currency from configuration."""
     with current_app.app_context():
         try:
@@ -66,7 +69,7 @@ def get_site_currency():
             return "USD"
 
 
-def validate_paypal_configuration(client_id, client_secret, sandbox=False):
+def validate_paypal_configuration(client_id: str, client_secret: str, sandbox: bool = False) -> dict[str, object]:
     """Validate PayPal configuration by attempting to get an access token."""
     try:
         # Get access token from PayPal
@@ -90,7 +93,7 @@ def validate_paypal_configuration(client_id, client_secret, sandbox=False):
         return {"valid": False, "message": f"Error al validar configuración: {str(e)}"}
 
 
-def get_paypal_access_token():
+def get_paypal_access_token() -> str | None:
     """Get PayPal access token for API calls."""
     try:
         from now_lms.auth import descifrar_secreto
@@ -152,7 +155,7 @@ def get_paypal_access_token():
         return None
 
 
-def verify_paypal_payment(order_id, access_token):
+def verify_paypal_payment(order_id: str, access_token: str) -> dict[str, object]:
     """Verify a PayPal payment by order ID."""
     try:
         paypal_config = database.session.execute(database.select(PaypalConfig)).first()[0]
@@ -444,7 +447,7 @@ def payment_page(course_code):
 
 @paypal.route("/get_client_id")
 @login_required
-def get_client_id():
+def get_client_id() -> Response | tuple[Response, int]:
     """Get PayPal client ID for JavaScript SDK."""
     try:
         paypal_config = database.session.execute(database.select(PaypalConfig)).first()[0]

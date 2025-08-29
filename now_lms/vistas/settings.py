@@ -15,6 +15,9 @@
 
 """NOW Learning Management System."""
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -153,16 +156,19 @@ def configuracion():
                 config.verify_user_by_email = True
 
         try:
-            cache.delete("site_config")
             # Clear navigation cache when configuration changes
+            cache.delete("site_config")
+            cache.delete("global_config")
             cache.delete("nav_programs_enabled")
             cache.delete("nav_masterclass_enabled")
             cache.delete("nav_resources_enabled")
             cache.delete("nav_blog_enabled")
+
             # Invalidate site currency cache when configuration changes
             from now_lms.vistas.paypal import get_site_currency
 
             cache.delete_memoized(get_site_currency)
+
             database.session.commit()
             flash(_("Sitio web actualizado exitosamente."), "success")
             return redirect(url_for("setting.configuracion"))
