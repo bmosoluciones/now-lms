@@ -5,7 +5,10 @@ This test ensures that audit fields (creado_por, modificado_por, creado, modific
 are automatically populated for all BaseTabla instances when records are created or modified.
 """
 
+import time
 from datetime import date, datetime
+
+import pytest
 
 from now_lms.auth import proteger_passwd
 from now_lms.db import Categoria, Curso, Usuario, database
@@ -14,199 +17,219 @@ from now_lms.db import Categoria, Curso, Usuario, database
 class TestAutomaticAuditFields:
     """Test automatic audit field population functionality."""
 
-    def test_automatic_audit_fields_on_create_with_authenticated_user(self, app, minimal_db_setup):
+    def test_automatic_audit_fields_on_create_with_authenticated_user(self, session_basic_db_setup):
         """Test that audit fields are automatically populated when creating new records with authenticated user."""
-        # Create a test user
-        test_user = Usuario(
-            usuario="test_audit_user",
-            acceso=proteger_passwd("testpass"),
-            nombre="Test",
-            apellido="User",
-            tipo="admin",
-            activo=True,
-            correo_electronico_verificado=True,
-        )
-        database.session.add(test_user)
-        database.session.commit()
+        # Generate unique identifiers to avoid conflicts
+        unique_suffix = int(time.time() * 1000) % 1000000
+        username = f"test_audit_user_{unique_suffix}"
 
-        # Simulate authenticated user context
-        with app.test_client() as client:
-            with client.session_transaction() as sess:
-                sess["_user_id"] = test_user.usuario
-                sess["_fresh"] = True
+        with session_basic_db_setup.app_context():
+            # Create a test user
+            test_user = Usuario(
+                usuario=username,
+                acceso=proteger_passwd("testpass"),
+                nombre="Test",
+                apellido="User",
+                tipo="admin",
+                activo=True,
+                correo_electronico_verificado=True,
+            )
+            database.session.add(test_user)
+            database.session.commit()
 
-            with app.test_request_context():
-                from flask_login import login_user
+            # Simulate authenticated user context
+            with session_basic_db_setup.test_client() as client:
+                with client.session_transaction() as sess:
+                    sess["_user_id"] = test_user.usuario
+                    sess["_fresh"] = True
 
-                login_user(test_user)
+                with session_basic_db_setup.test_request_context():
+                    from flask_login import login_user
 
-                # Create a new record without explicitly setting audit fields
-                categoria = Categoria(nombre="Test Category", descripcion="Test category description")
+                    login_user(test_user)
 
-                # Audit fields should be None before adding to session
-                assert categoria.creado_por is None
-                assert categoria.modificado_por is None
+                    # Create a new record without explicitly setting audit fields
+                    categoria = Categoria(nombre=f"Test Category {unique_suffix}", descripcion="Test category description")
 
-                database.session.add(categoria)
-                database.session.commit()
+                    # Audit fields should be None before adding to session
+                    assert categoria.creado_por is None
+                    assert categoria.modificado_por is None
 
-                # Refresh the instance to get updated values
-                database.session.refresh(categoria)
+                    database.session.add(categoria)
+                    database.session.commit()
 
-                # Verify audit fields were automatically populated
-                assert categoria.creado_por == "test_audit_user"
-                # Check that creado date is recent (within 1 day) to handle timezone differences
-                today = date.today()
-                assert categoria.creado is not None
-                assert abs((categoria.creado - today).days) <= 1
-                # modificado_por should still be None for new records
-                assert categoria.modificado_por is None
-                assert categoria.modificado is None
+                    # Refresh the instance to get updated values
+                    database.session.refresh(categoria)
 
-    def test_automatic_audit_fields_on_update_with_authenticated_user(self, app, minimal_db_setup):
+                    # Verify audit fields were automatically populated
+                    assert categoria.creado_por == username
+                    # Check that creado date is recent (within 1 day) to handle timezone differences
+                    today = date.today()
+                    assert categoria.creado is not None
+                    assert abs((categoria.creado - today).days) <= 1
+                    # modificado_por should still be None for new records
+                    assert categoria.modificado_por is None
+                    assert categoria.modificado is None
+
+    def test_automatic_audit_fields_on_update_with_authenticated_user(self, session_basic_db_setup):
         """Test that audit fields are automatically populated when updating records with authenticated user."""
-        # Create a test user
-        test_user = Usuario(
-            usuario="test_update_user",
-            acceso=proteger_passwd("testpass"),
-            nombre="Test",
-            apellido="User",
-            tipo="admin",
-            activo=True,
-            correo_electronico_verificado=True,
-        )
-        database.session.add(test_user)
-        database.session.commit()
+        # Generate unique identifiers to avoid conflicts
+        unique_suffix = int(time.time() * 1000) % 1000000
+        username = f"test_update_user_{unique_suffix}"
 
-        # Simulate authenticated user context
-        with app.test_client() as client:
-            with client.session_transaction() as sess:
-                sess["_user_id"] = test_user.usuario
-                sess["_fresh"] = True
+        with session_basic_db_setup.app_context():
+            # Create a test user
+            test_user = Usuario(
+                usuario=username,
+                acceso=proteger_passwd("testpass"),
+                nombre="Test",
+                apellido="User",
+                tipo="admin",
+                activo=True,
+                correo_electronico_verificado=True,
+            )
+            database.session.add(test_user)
+            database.session.commit()
 
-            with app.test_request_context():
-                from flask_login import login_user
+            # Simulate authenticated user context
+            with session_basic_db_setup.test_client() as client:
+                with client.session_transaction() as sess:
+                    sess["_user_id"] = test_user.usuario
+                    sess["_fresh"] = True
 
-                login_user(test_user)
+                with session_basic_db_setup.test_request_context():
+                    from flask_login import login_user
 
-                # Create a record first
-                curso = Curso(
-                    codigo="test_update",
-                    nombre="Test Course",
-                    descripcion_corta="Test course description",
-                    descripcion="Test course description",
-                    estado="draft",
-                    pagado=False,
-                )
-                database.session.add(curso)
-                database.session.commit()
+                    login_user(test_user)
 
-                # Verify initial creation audit fields
-                database.session.refresh(curso)
-                original_creado_por = curso.creado_por
-                original_creado = curso.creado
+                    # Create a record first
+                    curso = Curso(
+                        codigo=f"test_update_{unique_suffix}",
+                        nombre="Test Course",
+                        descripcion_corta="Test course description",
+                        descripcion="Test course description",
+                        estado="draft",
+                        pagado=False,
+                    )
+                    database.session.add(curso)
+                    database.session.commit()
 
-                assert original_creado_por == "test_update_user"
-                # Check that creado date is recent (within 1 day) to handle timezone differences
-                today = date.today()
-                assert original_creado is not None
-                assert abs((original_creado - today).days) <= 1
+                    # Verify initial creation audit fields
+                    database.session.refresh(curso)
+                    original_creado_por = curso.creado_por
+                    original_creado = curso.creado
 
-                # Now update the record
-                curso.nombre = "Updated Course Name"
-                database.session.commit()
+                    assert original_creado_por == username
+                    # Check that creado date is recent (within 1 day) to handle timezone differences
+                    today = date.today()
+                    assert original_creado is not None
+                    assert abs((original_creado - today).days) <= 1
 
-                # Refresh the instance
-                database.session.refresh(curso)
+                    # Now update the record
+                    curso.nombre = "Updated Course Name"
+                    database.session.commit()
 
-                # Verify modification audit fields were set
-                assert curso.modificado_por == "test_update_user"
-                assert curso.modificado is not None
-                assert isinstance(curso.modificado, datetime)
+                    # Refresh the instance
+                    database.session.refresh(curso)
 
-                # Original creation fields should remain unchanged
-                assert curso.creado_por == original_creado_por
-                assert curso.creado == original_creado
+                    # Verify modification audit fields were set
+                    assert curso.modificado_por == username
+                    assert curso.modificado is not None
+                    assert isinstance(curso.modificado, datetime)
 
-    def test_audit_fields_without_user_context(self, minimal_db_setup):
+                    # Original creation fields should remain unchanged
+                    assert curso.creado_por == original_creado_por
+                    assert curso.creado == original_creado
+
+    def test_audit_fields_without_user_context(self, session_basic_db_setup):
         """Test that audit fields handle cases where no user context is available."""
-        # Create a record without user context (e.g., from a background job)
-        categoria = Categoria(nombre="Background Category", descripcion="Category created without user context")
+        # Generate unique identifiers to avoid conflicts
+        unique_suffix = int(time.time() * 1000) % 1000000
 
-        database.session.add(categoria)
-        database.session.commit()
+        with session_basic_db_setup.app_context():
+            # Create a record without user context (e.g., from a background job)
+            categoria = Categoria(nombre=f"Background Category {unique_suffix}", descripcion="Category created without user context")
 
-        # Refresh the instance
-        database.session.refresh(categoria)
+            database.session.add(categoria)
+            database.session.commit()
 
-        # creado_por should be None since no user context
-        assert categoria.creado_por is None
-        # creado should still be set to a recent date (within 1 day) to handle timezone differences
-        today = date.today()
-        assert categoria.creado is not None
-        assert abs((categoria.creado - today).days) <= 1
-        # modificado fields should be None for new records
-        assert categoria.modificado_por is None
-        assert categoria.modificado is None
+            # Refresh the instance
+            database.session.refresh(categoria)
 
-    def test_manual_audit_fields_preserved(self, app, minimal_db_setup):
+            # creado_por should be None since no user context
+            assert categoria.creado_por is None
+            # creado should still be set to a recent date (within 1 day) to handle timezone differences
+            today = date.today()
+            assert categoria.creado is not None
+            assert abs((categoria.creado - today).days) <= 1
+            # modificado fields should be None for new records
+            assert categoria.modificado_por is None
+            assert categoria.modificado is None
+
+    def test_manual_audit_fields_preserved(self, session_basic_db_setup):
         """Test that manually set audit fields are preserved."""
-        # Create two test users - one to act as current user, another for manual assignment
-        test_user = Usuario(
-            usuario="test_manual_user",
-            acceso=proteger_passwd("testpass"),
-            nombre="Test",
-            apellido="User",
-            tipo="admin",
-            activo=True,
-            correo_electronico_verificado=True,
-        )
+        # Generate unique identifiers to avoid conflicts
+        unique_suffix = int(time.time() * 1000) % 1000000
+        test_username = f"test_manual_user_{unique_suffix}"
+        manual_username = f"manual_user_{unique_suffix}"
 
-        manual_user = Usuario(
-            usuario="manual_user",
-            acceso=proteger_passwd("testpass"),
-            nombre="Manual",
-            apellido="User",
-            tipo="instructor",
-            activo=True,
-            correo_electronico_verificado=True,
-        )
+        with session_basic_db_setup.app_context():
+            # Create two test users - one to act as current user, another for manual assignment
+            test_user = Usuario(
+                usuario=test_username,
+                acceso=proteger_passwd("testpass"),
+                nombre="Test",
+                apellido="User",
+                tipo="admin",
+                activo=True,
+                correo_electronico_verificado=True,
+            )
 
-        database.session.add(test_user)
-        database.session.add(manual_user)
-        database.session.commit()
+            manual_user = Usuario(
+                usuario=manual_username,
+                acceso=proteger_passwd("testpass"),
+                nombre="Manual",
+                apellido="User",
+                tipo="instructor",
+                activo=True,
+                correo_electronico_verificado=True,
+            )
 
-        # Simulate authenticated user context
-        with app.test_client() as client:
-            with client.session_transaction() as sess:
-                sess["_user_id"] = test_user.usuario
-                sess["_fresh"] = True
+            database.session.add(test_user)
+            database.session.add(manual_user)
+            database.session.commit()
 
-            with app.test_request_context():
-                from flask_login import login_user
+            # Simulate authenticated user context
+            with session_basic_db_setup.test_client() as client:
+                with client.session_transaction() as sess:
+                    sess["_user_id"] = test_user.usuario
+                    sess["_fresh"] = True
 
-                login_user(test_user)
+                with session_basic_db_setup.test_request_context():
+                    from flask_login import login_user
 
-                # Create a record with manually set audit fields
-                curso = Curso(
-                    codigo="test_manual",
-                    nombre="Manual Course",
-                    descripcion_corta="Manually created course",
-                    descripcion="Course with manual audit fields",
-                    estado="draft",
-                    pagado=False,
-                    creado_por="manual_user",  # Manually set to existing user
-                )
+                    login_user(test_user)
 
-                database.session.add(curso)
-                database.session.commit()
+                    # Create a record with manually set audit fields
+                    curso = Curso(
+                        codigo=f"test_manual_{unique_suffix}",
+                        nombre="Manual Course",
+                        descripcion_corta="Manually created course",
+                        descripcion="Course with manual audit fields",
+                        estado="draft",
+                        pagado=False,
+                        creado_por=manual_username,  # Manually set to existing user
+                    )
 
-                # Refresh the instance
-                database.session.refresh(curso)
+                    database.session.add(curso)
+                    database.session.commit()
 
-                # Manually set creado_por should be preserved
-                assert curso.creado_por == "manual_user"
-                # Other fields should still be set automatically - check that creado date is recent
-                today = date.today()
-                assert curso.creado is not None
-                assert abs((curso.creado - today).days) <= 1
+                    # Refresh the instance
+                    database.session.refresh(curso)
+
+                    # Manually set creado_por should be preserved
+                    assert curso.creado_por == manual_username
+                    # Other fields should still be set automatically - check that creado date is recent
+                    today = date.today()
+                    assert curso.creado is not None
+                    assert abs((curso.creado - today).days) <= 1
