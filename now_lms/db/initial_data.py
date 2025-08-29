@@ -129,9 +129,7 @@ def copy_sample_pdf() -> None:
     destino = path.join(directorio_destino, "NOW_Learning_Management_System.pdf")
     try:
         copyfile(origen, destino)
-    except FileExistsError:
-        pass
-    except FileNotFoundError:
+    except (FileExistsError, FileNotFoundError):
         pass
 
 
@@ -149,9 +147,7 @@ def copy_sample_audio() -> None:
     destino = path.join(directorio_destino, "En-us-hello.ogg")
     try:
         copyfile(origen, destino)
-    except FileExistsError:
-        pass
-    except FileNotFoundError:
+    except (FileExistsError, FileNotFoundError):
         pass
 
 
@@ -169,9 +165,7 @@ def copy_sample_img() -> None:
     destino = path.join(directorio_destino, "logo_large.png")
     try:
         copyfile(origen, destino)
-    except FileExistsError:
-        pass
-    except FileNotFoundError:
+    except (FileExistsError, FileNotFoundError):
         pass
 
 
@@ -193,9 +187,7 @@ def curse_logo(curso: str, image: str, program: bool = False) -> None:
     destino = path.join(directorio_destino, "logo.jpg")
     try:
         copyfile(origen, destino)
-    except FileExistsError:
-        pass
-    except FileNotFoundError:
+    except (FileExistsError, FileNotFoundError):
         pass
 
 
