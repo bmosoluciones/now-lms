@@ -19,6 +19,9 @@ NOW Learning Management System.
 Gestión de certificados.
 """
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -481,7 +484,7 @@ def tomar_curso(course_code):
 @cache.cached(unless=no_guardar_en_cache_global)
 def moderar_curso(course_code):
     """Pagina principal del curso."""
-    if current_user.tipo == "moderator" or current_user.tipo == "admin":
+    if current_user.tipo in ("moderator", "admin"):
         return render_template(
             "learning/curso.html",
             curso=database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first(),
@@ -590,7 +593,7 @@ def nuevo_curso():
                     database.session.add(etiqueta_curso)
 
             database.session.commit()
-            asignar_curso_a_instructor(curso_codigo=form.codigo.data, usuario_id=current_user.usuario)
+            asignar_curso_a_instructor(form.codigo.data, usuario_id=current_user.usuario)
             if "logo" in request.files:
                 logo = request.files["logo"]
                 logo_name = logo.filename
@@ -877,7 +880,7 @@ def eliminar_seccion(curso_id, id_):
 def cambiar_estatus_curso():
     """Actualiza el estatus de un curso."""
     cambia_estado_curso_por_id(
-        id_curso=request.args.get("curse"), nuevo_estado=request.args.get("status"), usuario=current_user.usuario
+        request.args.get("curse"), nuevo_estado=request.args.get("status"), usuario=current_user.usuario
     )
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=request.args.get("curse")))
 
@@ -990,7 +993,7 @@ def pagina_recurso(curso_id, resource_type, codigo):
     INDICE = crear_indice_recurso(codigo)
 
     if current_user.is_authenticated:
-        if current_user.tipo == "admin" or current_user.tipo == "instructor":
+        if current_user.tipo in ("admin", "instructor"):
             show_resource = True
         elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(curso_id):
             show_resource = True
@@ -2472,13 +2475,13 @@ def download_meet_calendar(course_code, codigo):
         abort(404)
 
     # Check permissions
-    curso = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
-    if not curso:
+    course_obj = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
+    if not course_obj:
         abort(404)
 
     # Verify user has access to this course/resource
     if current_user.is_authenticated:
-        if current_user.tipo == "admin" or current_user.tipo == "instructor":
+        if current_user.tipo in ("admin", "instructor"):
             show_resource = True
         elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(course_code):
             show_resource = True
@@ -2491,7 +2494,7 @@ def download_meet_calendar(course_code, codigo):
         abort(403)
 
     # Generate ICS content
-    ics_content = _generate_meet_ics_content(recurso, curso)
+    ics_content = _generate_meet_ics_content(recurso, course_obj)
 
     # Safe filename
     filename = f"meet-{recurso.nombre[:20].replace(' ', '-')}-{recurso.id}.ics"
@@ -2524,13 +2527,13 @@ def google_calendar_link(course_code, codigo):
     if not recurso:
         abort(404)
 
-    curso = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
-    if not curso:
+    course_obj = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
+    if not course_obj:
         abort(404)
 
     # Verify user has access to this course/resource
     if current_user.is_authenticated:
-        if current_user.tipo == "admin" or current_user.tipo == "instructor":
+        if current_user.tipo in ("admin", "instructor"):
             show_resource = True
         elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(course_code):
             show_resource = True
@@ -2554,7 +2557,7 @@ def google_calendar_link(course_code, codigo):
         end_str = end_datetime.strftime("%Y%m%dT%H%M%S")
 
         # Build description
-        description_parts = [f"Curso: {curso.nombre}"]
+        description_parts = [f"Curso: {course_obj.nombre}"]
         if recurso.descripcion:
             description_parts.append("")
             description_parts.append(recurso.descripcion)
@@ -2573,9 +2576,8 @@ def google_calendar_link(course_code, codigo):
         )
 
         return redirect(google_url)
-    else:
-        flash("No se puede crear el evento: faltan datos de fecha/hora", "error")
-        return redirect(url_for("course.ver_recurso", course_code=course_code, codigo=codigo))
+    flash("No se puede crear el evento: faltan datos de fecha/hora", "error")
+    return redirect(url_for("course.ver_recurso", course_code=course_code, codigo=codigo))
 
 
 @course.route("/course/<course_code>/resource/meet/<codigo>/outlook-calendar")
@@ -2599,13 +2601,13 @@ def outlook_calendar_link(course_code, codigo):
     if not recurso:
         abort(404)
 
-    curso = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
-    if not curso:
+    course_obj = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
+    if not course_obj:
         abort(404)
 
     # Verify user has access to this course/resource
     if current_user.is_authenticated:
-        if current_user.tipo == "admin" or current_user.tipo == "instructor":
+        if current_user.tipo in ("admin", "instructor"):
             show_resource = True
         elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(course_code):
             show_resource = True
@@ -2629,7 +2631,7 @@ def outlook_calendar_link(course_code, codigo):
         end_str = end_datetime.strftime("%Y%m%dT%H%M%S")
 
         # Build description
-        description_parts = [f"Curso: {curso.nombre}"]
+        description_parts = [f"Curso: {course_obj.nombre}"]
         if recurso.descripcion:
             description_parts.append("")
             description_parts.append(recurso.descripcion)
@@ -2649,12 +2651,11 @@ def outlook_calendar_link(course_code, codigo):
         )
 
         return redirect(outlook_url)
-    else:
-        flash("No se puede crear el evento: faltan datos de fecha/hora", "error")
-        return redirect(url_for("course.ver_recurso", course_code=course_code, codigo=codigo))
+    flash("No se puede crear el evento: faltan datos de fecha/hora", "error")
+    return redirect(url_for("course.ver_recurso", course_code=course_code, codigo=codigo))
 
 
-def _generate_meet_ics_content(recurso, curso):
+def _generate_meet_ics_content(recurso, course_obj):
     """Generate ICS calendar content for a meet resource."""
     lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//NOW LMS//Meet Calendar//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"]
 
@@ -2677,7 +2678,7 @@ def _generate_meet_ics_content(recurso, curso):
     created_dt = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
     # Build description with proper newlines
-    description_parts = [f"Curso: {curso.nombre}"]
+    description_parts = [f"Curso: {course_obj.nombre}"]
     if recurso.descripcion:
         description_parts.append("")  # Empty line
         description_parts.append(recurso.descripcion)

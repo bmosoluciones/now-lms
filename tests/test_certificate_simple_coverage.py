@@ -361,14 +361,16 @@ class TestCertificateErrorHandlingAdvanced:
 
     def test_certificate_edit_error_handling(self, isolated_db_session):
         """Test certificate editing error handling."""
+        import uuid
         from flask import current_app
 
         client = current_app.test_client()
 
-        # Create test certificate
+        # Create test certificate with unique identifier
+        unique_suffix = str(uuid.uuid4())[:8]
         cert = Certificado(
-            code="ERROR_TEST_CERT",
-            titulo="Error Test Certificate",
+            code=f"ERROR_TEST_CERT_{unique_suffix}",
+            titulo=f"Error Test Certificate {unique_suffix}",
             descripcion="For testing error handling",
             html="<h1>Test</h1>",
             css="h1 { color: red; }",

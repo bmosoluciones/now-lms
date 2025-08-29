@@ -30,6 +30,13 @@ class TestEndToEndSessionFixtures:
 
     def test_user_registration_to_free_course_enroll_session(self, session_full_db_setup, test_client):
         """Test user registration to free course enrollment using session fixture."""
+        import uuid
+
+        # Generate unique identifiers to avoid conflicts
+        unique_suffix = str(uuid.uuid4())[:8]
+        unique_email = f"user_reg_{unique_suffix}@nowlms.com"
+        unique_username = f"user_reg_{unique_suffix}"
+
         with session_full_db_setup.app_context():
             # Test user registration
             post = test_client.post(
@@ -37,8 +44,8 @@ class TestEndToEndSessionFixtures:
                 data={
                     "nombre": "Brenda",
                     "apellido": "Mercado",
-                    "correo_electronico": "bmercado@nowlms.com",
-                    "acceso": "bmercado",
+                    "correo_electronico": unique_email,
+                    "acceso": unique_username,
                 },
                 follow_redirects=True,
             )
@@ -46,13 +53,13 @@ class TestEndToEndSessionFixtures:
 
             # User must be created
             user = database.session.execute(
-                database.select(Usuario).filter_by(correo_electronico="bmercado@nowlms.com")
+                database.select(Usuario).filter_by(correo_electronico=unique_email)
             ).scalar_one_or_none()
             assert user is not None
             assert user.activo is False
 
             # Basic verification that user creation workflow completed
-            assert user.usuario == "bmercado@nowlms.com"  # Email becomes username
+            assert user.usuario == unique_email  # Email becomes username
             assert user.nombre == "Brenda"
             assert user.apellido == "Mercado"
 

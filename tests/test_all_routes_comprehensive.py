@@ -148,8 +148,10 @@ class TestAllRoutesComprehensive:
         course_routes = [r for r in routes if r["endpoint"].startswith("course.")]
         assert len(course_routes) > 10, f"Expected many course routes, found {len(course_routes)}"
 
-    def test_static_routes_anonymous_user(self, session_basic_db_setup, client):
+    def test_static_routes_anonymous_user(self, session_basic_db_setup):
         """Test static routes with anonymous user."""
+        client = session_basic_db_setup.test_client()
+
         with session_basic_db_setup.app_context():
             routes = self.discover_all_routes(session_basic_db_setup)
             static_routes = [r for r in routes if not r["has_variables"]]
@@ -179,8 +181,10 @@ class TestAllRoutesComprehensive:
             success_rate = success_count / tested_count if tested_count > 0 else 0
             assert success_rate >= 0.7, f"Too many server errors: {success_count}/{tested_count} success rate"
 
-    def test_static_routes_admin_user(self, session_full_db_setup, client):
+    def test_static_routes_admin_user(self, session_full_db_setup):
         """Test static routes with admin user privileges."""
+        client = session_full_db_setup.test_client()
+
         with session_full_db_setup.app_context():
             # Get admin user from session fixtures
             admin_user = Usuario.query.filter_by(usuario="lms-admin").first()
@@ -219,8 +223,10 @@ class TestAllRoutesComprehensive:
             success_rate = success_count / tested_count if tested_count > 0 else 0
             assert success_rate >= 0.8, f"Too many server errors for admin: {success_count}/{tested_count}"
 
-    def test_static_routes_regular_user(self, session_full_db_setup, client):
+    def test_static_routes_regular_user(self, session_full_db_setup):
         """Test static routes with regular user."""
+        client = session_full_db_setup.test_client()
+
         with session_full_db_setup.app_context():
             # Get a regular user from session fixtures
             regular_user = Usuario.query.filter_by(tipo="student").first()
@@ -261,8 +267,10 @@ class TestAllRoutesComprehensive:
             success_rate = success_count / tested_count if tested_count > 0 else 0
             assert success_rate >= 0.6, f"Too many server errors for regular user: {success_count}/{tested_count}"
 
-    def test_dynamic_routes_with_sample_data(self, session_full_db_setup, client):
+    def test_dynamic_routes_with_sample_data(self, session_full_db_setup):
         """Test dynamic routes using sample parameters."""
+        client = session_full_db_setup.test_client()
+
         with session_full_db_setup.app_context():
             # Test with admin user for broader access
             admin_user = Usuario.query.filter_by(usuario="lms-admin").first()
@@ -302,8 +310,10 @@ class TestAllRoutesComprehensive:
             success_rate = success_count / tested_count if tested_count > 0 else 0
             assert success_rate >= 0.5, f"Too many server errors on dynamic routes: {success_count}/{tested_count}"
 
-    def test_course_routes_comprehensive(self, session_full_db_setup, client):
+    def test_course_routes_comprehensive(self, session_full_db_setup):
         """Focus specifically on course routes to improve coverage."""
+        client = session_full_db_setup.test_client()
+
         with session_full_db_setup.app_context():
             # Test with admin user for broader access
             admin_user = Usuario.query.filter_by(usuario="lms-admin").first()
@@ -363,8 +373,10 @@ class TestAllRoutesComprehensive:
             # Verify key course functionality was tested
             assert course_view_tested or course_enroll_tested or course_take_tested, "Key course routes should be tested"
 
-    def test_error_handling_routes(self, session_basic_db_setup, client):
+    def test_error_handling_routes(self, session_basic_db_setup):
         """Test that custom error pages work correctly."""
+        client = session_basic_db_setup.test_client()
+
         # Test 404 page
         response = client.get("/nonexistent-page")
         assert response.status_code == 404
@@ -372,8 +384,10 @@ class TestAllRoutesComprehensive:
         # Test that 404 page renders without server error
         assert b"404" in response.data or b"Not Found" in response.data or response.status_code == 404
 
-    def test_common_public_routes(self, session_basic_db_setup, client):
+    def test_common_public_routes(self, session_basic_db_setup):
         """Test critical public routes that must work."""
+        client = session_basic_db_setup.test_client()
+
         critical_routes = [
             "/",  # Homepage
             "/blog",  # Blog

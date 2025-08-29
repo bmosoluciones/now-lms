@@ -29,6 +29,9 @@ Visit http://127.0.0.1:8080/ in your browser, default user and password are lms-
 
 """
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -38,7 +41,7 @@ from platform import python_version
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import Flask, flash, g, render_template, request
+from flask import Flask, flash, g, redirect, render_template, request
 from flask_alembic import Alembic
 from flask_babel import Babel
 from flask_login import LoginManager, current_user
@@ -54,7 +57,18 @@ from werkzeug.exceptions import HTTPException
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.cache import cache
-from now_lms.config import CONFIGURACION, DIRECTORIO_ARCHIVOS, DIRECTORIO_PLANTILLAS, audio, files, images, log_messages
+from now_lms.config import (
+    CONFIGURACION,
+    DESARROLLO,
+    DIRECTORIO_ARCHIVOS,
+    DIRECTORIO_PLANTILLAS,
+    FORCE_HTTPS,
+    TESTING,
+    audio,
+    files,
+    images,
+    log_messages,
+)
 from now_lms.db import Configuracion, Usuario, database
 from now_lms.db.info import app_info, course_info, lms_info
 from now_lms.db.initial_data import (
@@ -181,6 +195,9 @@ def inicializa_extenciones_terceros(flask_app: Flask):
 
         database.init_app(flask_app)
         alembic.init_app(flask_app)
+        # Remove alembic "db" command from flask cli if it exists
+        if "db" in flask_app.cli.commands:
+            flask_app.cli.commands.pop("db")
         administrador_sesion.init_app(flask_app)
 
         # Initialize cache using new cache_utils module
@@ -270,13 +287,7 @@ def config():
             CONFIG = database.session.execute(database.select(Configuracion)).scalars().first()
         # Si no existe una entrada en la tabla de configuración uno de los siguientes errores puede ocurrir
         # en dependencia del motor de base de datos utilizado.
-        except OperationalError:
-            CONFIG = None
-        except ProgrammingError:
-            CONFIG = None
-        except PGProgrammingError:
-            CONFIG = None
-        except DatabaseError:
+        except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError):
             CONFIG = None
     return CONFIG
 
@@ -287,6 +298,8 @@ def config():
 def define_variables_globales_jinja2(flask_app: Flask):
     """Define variables globales de Jinja2 para su disponibilidad en plantillas HTML."""
     log.trace("Defining Jinja2 global variables.")
+    from now_lms.i18n import get_locale
+
     flask_app.jinja_env.globals["adsense_code"] = get_addsense_code
     flask_app.jinja_env.globals["adsense_meta"] = get_addsense_meta
     flask_app.jinja_env.globals["adsense_enabled"] = get_adsense_enabled
@@ -303,6 +316,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["course_info"] = course_info
     flask_app.jinja_env.globals["course_logo"] = get_current_course_logo
     flask_app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
+    flask_app.jinja_env.globals["current_locale"] = get_locale
     flask_app.jinja_env.globals["current_theme"] = current_theme
     flask_app.jinja_env.globals["current_user"] = current_user
     flask_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
@@ -311,6 +325,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["favicon_perzonalizado"] = favicon_perzonalizado
     flask_app.jinja_env.globals["get_all_from_db"] = get_all_records
     flask_app.jinja_env.globals["get_course_sections"] = get_course_sections
+    flask_app.jinja_env.globals["get_locale"] = get_locale
     flask_app.jinja_env.globals["get_one_from_db"] = get_one_record
     flask_app.jinja_env.globals["get_slideshowid"] = get_slideshowid
     flask_app.jinja_env.globals["iconos_recursos"] = ICONOS_RECURSOS
@@ -331,6 +346,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["pyversion"] = python_version()
     flask_app.jinja_env.globals["site_logo"] = get_site_logo
     flask_app.jinja_env.globals["site_favicon"] = get_site_favicon
+    flask_app.jinja_env.globals["testing"] = TESTING
     flask_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
     flask_app.jinja_env.globals["version"] = VERSION
 
@@ -424,7 +440,7 @@ def create_app(app_name="now_lms", testing=False, config_overrides=None):
         flask_app.config.update(config_overrides)
 
     # Configure for testing if needed
-    if testing:
+    if testing or TESTING:
         flask_app.config.update(
             {
                 "TESTING": True,
@@ -437,6 +453,7 @@ def create_app(app_name="now_lms", testing=False, config_overrides=None):
                 "SERVER_NAME": "localhost.localdomain",
                 "APPLICATION_ROOT": "/",
                 "PREFERRED_URL_SCHEME": "http",
+                "DEBUG_TB_INTERCEPT_REDIRECTS": False,  # Disable redirect interception in tests
             }
         )
 
@@ -453,6 +470,23 @@ def create_app(app_name="now_lms", testing=False, config_overrides=None):
         # Register request handlers and error handlers
         _register_before_request_handlers(flask_app)
         _register_error_handlers(flask_app)
+
+    if DESARROLLO:
+        try:
+            from flask_debugtoolbar import DebugToolbarExtension
+
+            toolbar = DebugToolbarExtension()
+        except (ImportError, ModuleNotFoundError):
+            log.trace("Flask Debug Toolbar not installed, skipping.")
+            toolbar = None
+
+        if toolbar:
+            toolbar.init_app(flask_app)
+
+    if FORCE_HTTPS:
+        from werkzeug.middleware.proxy_fix import ProxyFix
+
+        flask_app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
 
     log.trace(f"Flask application created successfully: {app_name}")
     return flask_app
@@ -485,6 +519,15 @@ def _register_before_request_handlers(flask_app):
             and request.endpoint != "static"
         ):
             return render_template("error_pages/401.html")
+        return None
+
+    @flask_app.before_request
+    def enforce_https():
+        """Force HTTPS behind a proxy (e.g., Nginx)."""
+        if not TESTING and FORCE_HTTPS:
+            if request.headers.get("X-Forwarded-Proto", "http") != "https":
+                url = request.url.replace("http://", "https://", 1)
+                return redirect(url, code=301)
         return None
 
 
@@ -591,7 +634,9 @@ def initial_setup(with_examples=False, with_tests=False, flask_app=None):
             from now_lms.db.data_test import crear_data_para_pruebas
 
             crear_data_para_pruebas()
-    log.info(f"Welcome to NOW LMS version: {VERSION}, release: {CODE_NAME} ")
+    log.info("Welcome to NOW Learning Management System")
+    log.info(f"Version: {VERSION}")
+    log.info(f"Code name: {CODE_NAME}")
     log.info("NOW - LMS started successfully.")
 
 

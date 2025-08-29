@@ -15,13 +15,16 @@
 
 """Codigo para crear cursos iniciales."""
 
+# Python 3.7+ - Postponed evaluation of annotations
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
 from datetime import datetime, time, timedelta, timezone
 from os import environ, listdir, makedirs, path
 from shutil import copyfile, copytree
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -85,7 +88,7 @@ def system_info(app: "Flask"):
         database.session.commit()
 
 
-def crear_etiquetas():
+def crear_etiquetas() -> None:
     """Crea etiquetas de demostración."""
     log.trace("Creating demonstration tags.")
     etiqueta1 = Etiqueta(nombre="Python", color="#FFD43B")
@@ -98,7 +101,7 @@ def crear_etiquetas():
     database.session.commit()
 
 
-def crear_categorias():
+def crear_categorias() -> None:
     """Crea categorias de demostración."""
     log.trace("Creating demonstration categories.")
     cat1 = Categoria(nombre="Learning", descripcion="Cursos sobre aprendizaje")
@@ -112,7 +115,7 @@ def crear_categorias():
     database.session.commit()
 
 
-def copy_sample_pdf():
+def copy_sample_pdf() -> None:
     """Crea un archivo PDF de ejemplo."""
     log.trace("Creating test PDF file.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "NOW_Learning_Management_System.pdf")
@@ -126,13 +129,11 @@ def copy_sample_pdf():
     destino = path.join(directorio_destino, "NOW_Learning_Management_System.pdf")
     try:
         copyfile(origen, destino)
-    except FileExistsError:
-        pass
-    except FileNotFoundError:
+    except (FileExistsError, FileNotFoundError):
         pass
 
 
-def copy_sample_audio():
+def copy_sample_audio() -> None:
     """Crea un archivo audio de ejemplo."""
     log.trace("Creating test audio file.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "examples", "En-us-hello.ogg")
@@ -146,13 +147,11 @@ def copy_sample_audio():
     destino = path.join(directorio_destino, "En-us-hello.ogg")
     try:
         copyfile(origen, destino)
-    except FileExistsError:
-        pass
-    except FileNotFoundError:
+    except (FileExistsError, FileNotFoundError):
         pass
 
 
-def copy_sample_img():
+def copy_sample_img() -> None:
     """Crea un archivo de imagen de ejemplo."""
     log.trace("Creating test image file.")
     origen = path.join(DIRECTORIO_ARCHIVOS, "icons", "logo", "logo_large.png")
@@ -166,13 +165,11 @@ def copy_sample_img():
     destino = path.join(directorio_destino, "logo_large.png")
     try:
         copyfile(origen, destino)
-    except FileExistsError:
-        pass
-    except FileNotFoundError:
+    except (FileExistsError, FileNotFoundError):
         pass
 
 
-def curse_logo(curso: str, image: str, program=False):
+def curse_logo(curso: str, image: str, program: bool = False) -> None:
     """Crea un archivo de imagen de ejemplo."""
     log.trace("Setting demonstration course logo.")
     origen = path.join(str(DIRECTORIO_ARCHIVOS), "img", image)
@@ -190,9 +187,7 @@ def curse_logo(curso: str, image: str, program=False):
     destino = path.join(directorio_destino, "logo.jpg")
     try:
         copyfile(origen, destino)
-    except FileExistsError:
-        pass
-    except FileNotFoundError:
+    except (FileExistsError, FileNotFoundError):
         pass
 
 
@@ -211,7 +206,7 @@ demo_external_code = """
     """
 
 
-def crear_curso_demo():
+def crear_curso_demo() -> None:
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
     log.trace("Creating resource demo course.")
@@ -472,7 +467,7 @@ p{
 """
 
 
-def crear_certificados():
+def crear_certificados() -> None:
     """Crea un certificado de prueba."""
     log.trace("Creating demo certificate.")
 
@@ -509,7 +504,7 @@ def crear_certificados():
     log.info("Demo certificate created successfully.")
 
 
-def crear_curso_predeterminado():
+def crear_curso_predeterminado() -> None:
     # pylint: disable=too-many-locals
     """Crea un recurso publico."""
     log.trace("Creating demonstration course.")
@@ -709,7 +704,7 @@ def crear_curso_predeterminado():
     log.debug("Demonstration course created successfully.")
 
 
-def crear_certificacion():
+def crear_certificacion() -> None:
     """Create default certification for demonstration."""
     certificacion = Certificacion(
         id="01JS2NK7NJ74DBSHD83MGRH5HE",
@@ -721,7 +716,7 @@ def crear_certificacion():
     database.session.commit()
 
 
-def crear_evaluacion_predeterminada():
+def crear_evaluacion_predeterminada() -> None:
     """Crea una evaluación básica de ejemplo para el curso 'now'."""
     log.trace("Creating demonstration evaluation for 'now' course.")
 
@@ -870,7 +865,7 @@ def crear_evaluacion_predeterminada():
     log.debug("Demonstration evaluation created successfully.")
 
 
-def crear_usuarios_predeterminados():
+def crear_usuarios_predeterminados() -> None:
     """Crea en la base de datos los usuarios iniciales."""
     log.info("Creating administrator user.")
     administrador = Usuario(
@@ -887,7 +882,7 @@ def crear_usuarios_predeterminados():
     log.debug("Administrator user created successfully.")
 
 
-def crear_curso_demo1():
+def crear_curso_demo1() -> None:
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
     log.trace("Creating PostgreSQL demonstration course.")
@@ -1083,7 +1078,7 @@ def crear_curso_demo1():
     log.debug("PostgreSQL demonstration course created successfully.")
 
 
-def crear_curso_demo2():
+def crear_curso_demo2() -> None:
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
     log.trace("Creating Python demonstration course.")
@@ -1230,7 +1225,7 @@ def crear_curso_demo2():
         descripcion="Hands-on coding exercise using control structures.",
         indice=2,
         publico=True,
-        text='# Coding Exercise: Number Guessing Game\n\n## Challenge:\nCreate a simple number guessing game using control structures.\n\n## Requirements:\n1. Generate a random number between 1-10\n2. Ask user to guess the number\n3. Give feedback (too high, too low, correct)\n4. Allow multiple attempts\n\n## Example Code:\n```python\nimport random\n\n# Generate random number\nsecret_number = random.randint(1, 10)\nmax_attempts = 3\nattempts = 0\n\nprint("Guess the number between 1-10!")\n\nwhile attempts < max_attempts:\n    guess = int(input("Enter your guess: "))\n    attempts += 1\n    \n    if guess == secret_number:\n        print("Congratulations! You won!")\n        break\n    elif guess < secret_number:\n        print("Too low!")\n    else:\n        print("Too high!")\n        \n    if attempts == max_attempts:\n        print(f"Game over! The number was {secret_number}")\n```',
+        text='# Coding Exercise: Number Guessing Game\n\n## Challenge:\nCreate a simple number guessing game using control structures.\n\n## Requirements:\n1. Generate a random number between 1-10\n2. Ask user to guess the number\n3. Give feedback (too high, too low, correct)\n4. Allow multiple attempts\n\n## Example Code:\n```python\n# Python 3.6+ - Use secrets module for cryptographically strong random numbers\nimport secrets\n\n# Generate random number (secrets provides better randomness)\nsecret_number = secrets.randbelow(10) + 1  # 1-10 range\nmax_attempts = 3\nattempts = 0\n\nprint("Guess the number between 1-10!")\n\nwhile attempts < max_attempts:\n    guess = int(input("Enter your guess: "))\n    attempts += 1\n    \n    if guess == secret_number:\n        print("Congratulations! You won!")\n        break\n    elif guess < secret_number:\n        print("Too low!")\n    else:\n        print("Too high!")\n        \n    if attempts == max_attempts:\n        print(f"Game over! The number was {secret_number}")\n```',
     )
     database.session.add(recurso3_2)
     database.session.flush()
@@ -1266,7 +1261,7 @@ def crear_curso_demo2():
     log.debug("Python demonstration course created successfully.")
 
 
-def crear_curso_demo3():
+def crear_curso_demo3() -> None:
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
     log.trace("Creating HTML demonstration course.")
@@ -1420,7 +1415,7 @@ def crear_curso_demo3():
     log.debug("HTML demonstration course created successfully.")
 
 
-def asignar_cursos_a_etiquetas():
+def asignar_cursos_a_etiquetas() -> None:
     """Asigna cursos a Categorias."""
     log.trace("Assigning tags to courses.")
     etiqueta_python = database.session.execute(
@@ -1447,7 +1442,7 @@ def asignar_cursos_a_etiquetas():
     database.session.commit()
 
 
-def asignar_cursos_a_categoria():
+def asignar_cursos_a_categoria() -> None:
     """Asigna cursos a Categorias."""
     categoria_learning = database.session.execute(
         database.select(Categoria).filter(Categoria.nombre == "Learning")
@@ -1469,7 +1464,7 @@ def asignar_cursos_a_categoria():
     database.session.commit()
 
 
-def asignar_programas_a_etiquetas():
+def asignar_programas_a_etiquetas() -> None:
     """Asigna programas a etiquetas."""
     log.trace("Assigning tags to programs.")
     etiqueta_learning = database.session.execute(
@@ -1487,7 +1482,7 @@ def asignar_programas_a_etiquetas():
     database.session.commit()
 
 
-def asignar_programas_a_categoria():
+def asignar_programas_a_categoria() -> None:
     """Asigna programas a categorias."""
     log.trace("Assigning categories to programs.")
     categoria_learning = database.session.execute(
@@ -1528,7 +1523,7 @@ nulla pariatur?
 """
 
 
-def crear_programa():
+def crear_programa() -> None:
     """Crea programa de pruebas."""
     programa = Programa(
         nombre="Programing 101",
@@ -1560,7 +1555,7 @@ def crear_programa():
     database.session.commit()
 
 
-def crear_recurso_descargable():
+def crear_recurso_descargable() -> None:
     """Recurso descargable de ejemplo."""
     recurso1 = Recurso(
         nombre="Romeo and Juliet",
@@ -1673,7 +1668,7 @@ def crear_recurso_descargable():
     database.session.commit()
 
 
-def populate_custmon_data_dir():
+def populate_custmon_data_dir() -> None:
     """Crea un directorio de archivos personalizado."""
     from now_lms.config import DIRECTORIO_ARCHIVOS_BASE
 
@@ -1689,7 +1684,7 @@ def populate_custmon_data_dir():
                 pass
 
 
-def populate_custom_theme_dir():
+def populate_custom_theme_dir() -> None:
     """Crea un directorio de tema personalizado."""
     from now_lms.config import DIRECTORIO_PLANTILLAS, DIRECTORIO_PLANTILLAS_BASE
 
@@ -1704,7 +1699,7 @@ def populate_custom_theme_dir():
                 pass
 
 
-def crear_curso_autoaprendizaje():
+def crear_curso_autoaprendizaje() -> None:
     """Crea un curso completo de autoaprendizaje para administrar y usar NOW LMS.
 
     Este curso está diseñado para enseñar a administradores e instructores
@@ -1786,7 +1781,7 @@ Este curso te enseñará paso a paso cómo utilizar todas las funcionalidades de
         secciones_creadas.append(seccion)
 
     # Crear algunos recursos básicos de ejemplo
-    recursos_ejemplo = [
+    recursos_ejemplo: list[Dict[str, Any]] = [
         {
             "seccion": secciones_creadas[0],  # Introducción
             "nombre": "¿Qué es NOW LMS?",
@@ -1832,7 +1827,7 @@ Este curso te enseñará paso a paso cómo utilizar todas las funcionalidades de
     log.info("LMS training course created successfully.")
 
 
-def crear_evaluaciones_training(secciones):
+def crear_evaluaciones_training(secciones: list[CursoSeccion]) -> None:
     """Crea evaluaciones para el curso de entrenamiento con límite de 3 intentos."""
     # Evaluación básica para la sección de usuarios
     evaluacion_usuarios = Evaluation(
@@ -1968,7 +1963,7 @@ def crear_evaluaciones_training(secciones):
     database.session.flush()
 
 
-def crear_blog_post_predeterminado():
+def crear_blog_post_predeterminado() -> None:
     """Crea el blog post predeterminado para ayudar a los usuarios a descubrir la funcionalidad del blog."""
     log.info("Creating default blog post.")
 

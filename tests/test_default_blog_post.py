@@ -20,10 +20,10 @@ from now_lms.db import BlogPost, database
 class TestDefaultBlogPost:
     """Test the default blog post functionality."""
 
-    def test_default_blog_post_created(self, full_db_setup_with_examples):
+    def test_default_blog_post_created(self, session_full_db_setup_with_examples):
         """Test that the default blog post is created during initialization."""
         # The default blog post should exist after initialization
-        with full_db_setup_with_examples.app_context():
+        with session_full_db_setup_with_examples.app_context():
             blog_post = database.session.execute(
                 database.select(BlogPost).filter(BlogPost.title == "The Importance of Online Learning in Today's World")
             ).scalar_one_or_none()
@@ -35,9 +35,9 @@ class TestDefaultBlogPost:
             assert "Learning Management System" in blog_post.content, "Blog post should mention LMS"
             assert blog_post.slug == "the-importance-of-online-learning-in-todays-world", "Slug should be correct"
 
-    def test_default_blog_post_has_tags(self, full_db_setup_with_examples):
+    def test_default_blog_post_has_tags(self, session_full_db_setup_with_examples):
         """Test that the default blog post has appropriate tags."""
-        with full_db_setup_with_examples.app_context():
+        with session_full_db_setup_with_examples.app_context():
             blog_post = database.session.execute(
                 database.select(BlogPost).filter(BlogPost.title == "The Importance of Online Learning in Today's World")
             ).scalar_one_or_none()
@@ -50,9 +50,9 @@ class TestDefaultBlogPost:
             for expected_tag in expected_tags:
                 assert expected_tag in tag_names, f"Tag '{expected_tag}' should be associated with the blog post"
 
-    def test_default_blog_post_accessible_via_web(self, full_db_setup_with_examples):
+    def test_default_blog_post_accessible_via_web(self, session_full_db_setup_with_examples):
         """Test that the default blog post is accessible via the web interface."""
-        client = full_db_setup_with_examples.test_client()
+        client = session_full_db_setup_with_examples.test_client()
 
         # Test the blog index page
         response = client.get("/blog")
@@ -65,9 +65,9 @@ class TestDefaultBlogPost:
         assert b"COVID-19 pandemic" in response.data
         assert b"Learning Management System" in response.data
 
-    def test_default_blog_post_not_duplicated(self, full_db_setup_with_examples):
+    def test_default_blog_post_not_duplicated(self, session_full_db_setup_with_examples):
         """Test that initializing twice doesn't create duplicate blog posts."""
-        with full_db_setup_with_examples.app_context():
+        with session_full_db_setup_with_examples.app_context():
             # Count initial blog posts
             initial_count = database.session.execute(database.select(database.func.count(BlogPost.id))).scalar()
 

@@ -21,29 +21,28 @@ Casos de uso mas comunes.
 """
 
 
-def test_user_registration_to_free_course_enroll(full_db_setup, client):
+def test_user_registration_to_free_course_enroll(session_full_db_setup, isolated_db_session):
     """Test user registration to free course enrollment."""
-    app = full_db_setup
     from now_lms.db import Usuario, database
 
-    # Test user registration
-    post = client.post(
-        "/user/logon",
-        data={
-            "nombre": "Brenda",
-            "apellido": "Mercado",
-            "correo_electronico": "bmercado@nowlms.com",
-            "acceso": "bmercado",
-        },
-        follow_redirects=True,
-    )
-    assert post.status_code == 200
+    with session_full_db_setup.test_client() as client:
+        # Test user registration
+        post = client.post(
+            "/user/logon",
+            data={
+                "nombre": "Brenda",
+                "apellido": "Mercado",
+                "correo_electronico": "bmercado@nowlms.com",
+                "acceso": "bmercado",
+            },
+            follow_redirects=True,
+        )
+        assert post.status_code == 200
 
-    with app.app_context():
         # User must be created
-        user = database.session.execute(database.select(Usuario).filter_by(correo_electronico="bmercado@nowlms.com")).first()[
-            0
-        ]
+        user = isolated_db_session.execute(
+            database.select(Usuario).filter_by(correo_electronico="bmercado@nowlms.com")
+        ).first()[0]
         assert user is not None
         assert user.activo is False
 
@@ -52,54 +51,53 @@ def test_user_registration_to_free_course_enroll(full_db_setup, client):
 
         token = generate_confirmation_token("bmercado@nowlms.com")
         # Create a request context for email sending
-        with app.test_request_context():
+        with session_full_db_setup.test_request_context():
             send_confirmation_email(user)  # Just to cover the code
         assert validate_confirmation_token(token) is True
         assert user.activo is True
 
-    # User must be able to navigate to the free course
-    client.get("/course/free/view", follow_redirects=True)
-    assert b"Free Course" in client.get("/course/free/view").data
-    assert b"Iniciar Sesi" in client.get("/course/free/view").data
-    assert b"Crear Cuenta" in client.get("/course/free/view").data
+        # User must be able to navigate to the free course
+        client.get("/course/free/view", follow_redirects=True)
+        assert b"Free Course" in client.get("/course/free/view").data
+        assert b"Iniciar Sesi" in client.get("/course/free/view").data
+        assert b"Crear Cuenta" in client.get("/course/free/view").data
 
-    # Once active, user must be able to login
-    login_response = client.post("/user/login", data={"usuario": "bmercado@nowlms.com", "acceso": "bmercado"})
-    assert login_response.status_code == 302  # Successful login redirect
+        # Once active, user must be able to login
+        login_response = client.post("/user/login", data={"usuario": "bmercado@nowlms.com", "acceso": "bmercado"})
+        assert login_response.status_code == 302  # Successful login redirect
 
-    # User must be able to enroll to a free course
-    view_course = client.get("/course/free/view", follow_redirects=True)
-    assert view_course.status_code == 200
-    assert b"Free Course" in view_course.data
-    assert b"Inscribirse al Curso" in view_course.data
-    assert b"/course/free/enroll" in view_course.data
-    enroll_view = client.get("/course/free/enroll")
-    assert enroll_view.status_code == 200
-    assert b"Esta a punto de inscribirse al curso FREE - FREE COURSE" in enroll_view.data
-    assert b"Free Course" in enroll_view.data
-    assert b"This is a free course." in enroll_view.data
-    assert b"Inscribirse al curso" in enroll_view.data
-    enroll = client.post(
-        "/course/free/enroll",
-        data={
-            "nombre": "Brenda",
-            "apellido": "Mercado",
-            "correo_electronico": "bmercado@nowlms.com",
-            "direccion1": "Calle Falsa 123",
-            "direccion2": "Apto. 456",
-            "pais": "Mexico",
-            "provincia": "CDMX",
-            "codigo_postal": "01234",
-        },
-        follow_redirects=True,
-    )
-    assert enroll.status_code == 200
+        # User must be able to enroll to a free course
+        view_course = client.get("/course/free/view", follow_redirects=True)
+        assert view_course.status_code == 200
+        assert b"Free Course" in view_course.data
+        assert b"Inscribirse al Curso" in view_course.data
+        assert b"/course/free/enroll" in view_course.data
+        enroll_view = client.get("/course/free/enroll")
+        assert enroll_view.status_code == 200
+        assert b"Esta a punto de inscribirse al curso FREE - FREE COURSE" in enroll_view.data
+        assert b"Free Course" in enroll_view.data
+        assert b"This is a free course." in enroll_view.data
+        assert b"Inscribirse al curso" in enroll_view.data
+        enroll = client.post(
+            "/course/free/enroll",
+            data={
+                "nombre": "Brenda",
+                "apellido": "Mercado",
+                "correo_electronico": "bmercado@nowlms.com",
+                "direccion1": "Calle Falsa 123",
+                "direccion2": "Apto. 456",
+                "pais": "Mexico",
+                "provincia": "CDMX",
+                "codigo_postal": "01234",
+            },
+            follow_redirects=True,
+        )
+        assert enroll.status_code == 200
 
-    with app.app_context():
         # A payment must be created
         from now_lms.db import Pago
 
-        payment = database.session.execute(
+        payment = isolated_db_session.execute(
             database.select(Pago).filter_by(usuario="bmercado@nowlms.com", curso="free")
         ).first()[0]
         assert payment is not None
@@ -108,35 +106,36 @@ def test_user_registration_to_free_course_enroll(full_db_setup, client):
         # User must be enrolled to the course
         from now_lms.db import EstudianteCurso
 
-        enrollment = database.session.execute(
+        enrollment = isolated_db_session.execute(
             database.select(EstudianteCurso).filter_by(usuario="bmercado@nowlms.com", curso="free")
         ).first()[0]
         assert enrollment is not None
         assert enrollment.vigente is True
 
-    # User must be able to see the course
-    course_view = client.get("/course/free/view", follow_redirects=True)
-    assert course_view.status_code == 200
-    assert b"Free Course" in course_view.data
-    assert b"Inscribirse al Curso" not in course_view.data
+        # User must be able to see the course
+        course_view = client.get("/course/free/view", follow_redirects=True)
+        assert course_view.status_code == 200
+        assert b"Free Course" in course_view.data
+        assert b"Inscribirse al Curso" not in course_view.data
 
-    # User must be able to access the course content
-    content_view = client.get("/course/free/resource/youtube/02HPB3AP3QNVK9ES6JGG5YK7CA", follow_redirects=True)
-    assert content_view.status_code == 200
-    assert b"Free Course" in content_view.data
-    assert b"Contenido del Curso" in content_view.data
-    assert b"Marcar Completado" in content_view.data
+        # User must be able to access the course content
+        content_view = client.get("/course/free/resource/youtube/02HPB3AP3QNVK9ES6JGG5YK7CA", follow_redirects=True)
+        assert content_view.status_code == 200
+        assert b"Free Course" in content_view.data
+        assert b"Contenido del Curso" in content_view.data
+        assert b"Marcar Completado" in content_view.data
 
-    # User must be able to mark the content as completed
-    complete_resource = client.get("/course/free/resource/youtube/02HPB3AP3QNVK9ES6JGG5YK7CA/complete", follow_redirects=True)
-    assert complete_resource.status_code == 200
-    assert b"Recurso marcado como completado" in complete_resource.data
+        # User must be able to mark the content as completed
+        complete_resource = client.get(
+            "/course/free/resource/youtube/02HPB3AP3QNVK9ES6JGG5YK7CA/complete", follow_redirects=True
+        )
+        assert complete_resource.status_code == 200
+        assert b"Recurso marcado como completado" in complete_resource.data
 
-    with app.app_context():
         # Recurso must be marked as completed
         from now_lms.db import CursoRecursoAvance
 
-        resource_progress = database.session.execute(
+        resource_progress = isolated_db_session.execute(
             database.select(CursoRecursoAvance).filter_by(
                 usuario="bmercado@nowlms.com", curso="free", recurso="02HPB3AP3QNVK9ES6JGG5YK7CA"
             )
@@ -144,15 +143,14 @@ def test_user_registration_to_free_course_enroll(full_db_setup, client):
         assert resource_progress is not None
         assert resource_progress.completado is True
 
-    recurso = client.get("/course/free/resource/youtube/02HPB3AP3QNVK9ES6JGG5YK7CA", follow_redirects=True)
-    assert recurso.status_code == 200
-    assert b"Recurso Completado" in recurso.data
+        recurso = client.get("/course/free/resource/youtube/02HPB3AP3QNVK9ES6JGG5YK7CA", follow_redirects=True)
+        assert recurso.status_code == 200
+        assert b"Recurso Completado" in recurso.data
 
-    with app.app_context():
         # User must be able to complete the course
         from now_lms.db import CursoUsuarioAvance
 
-        course_progress = database.session.execute(
+        course_progress = isolated_db_session.execute(
             database.select(CursoUsuarioAvance).filter_by(usuario="bmercado@nowlms.com", curso="free")
         ).first()[0]
         assert course_progress is not None
@@ -161,126 +159,122 @@ def test_user_registration_to_free_course_enroll(full_db_setup, client):
         # A certificate must be issued
         from now_lms.db import Certificacion
 
-        certificate = database.session.execute(
+        certificate = isolated_db_session.execute(
             database.select(Certificacion).filter_by(usuario="bmercado@nowlms.com", curso="free")
         ).first()[0]
         assert certificate is not None
         assert certificate.certificado == "horizontal"
 
 
-def test_user_password_change(basic_config_setup, client):
+def test_user_password_change(session_full_db_setup, isolated_db_session):
     """Test password change functionality for users."""
-    app = basic_config_setup
     from now_lms.auth import proteger_passwd, validar_acceso
     from now_lms.db import Usuario, database
 
-    with app.app_context():
-        # Create a test user
-        test_user = Usuario(
-            usuario="testuser@nowlms.com",
-            acceso=proteger_passwd("oldpassword"),
-            nombre="Test",
-            apellido="User",
-            correo_electronico="testuser@nowlms.com",
-            tipo="student",
-            activo=True,
-            correo_electronico_verificado=True,
+    # Create a test user
+    test_user = Usuario(
+        usuario="testuser@nowlms.com",
+        acceso=proteger_passwd("oldpassword"),
+        nombre="Test",
+        apellido="User",
+        correo_electronico="testuser@nowlms.com",
+        tipo="student",
+        activo=True,
+        correo_electronico_verificado=True,
+    )
+    isolated_db_session.add(test_user)
+    isolated_db_session.commit()
+    test_user_id = test_user.id  # Get the ID after commit
+
+    with session_full_db_setup.test_client() as client:
+        # User logs in with old password
+        login = client.post("/user/login", data={"usuario": "testuser@nowlms.com", "acceso": "oldpassword"})
+        assert login.status_code == 302  # Redirect after successful login
+
+        # Access password change page
+        password_change_page = client.get(f"/perfil/cambiar_contraseña/{test_user_id}")
+        assert password_change_page.status_code == 200
+        assert "Cambiar Contraseña".encode("utf-8") in password_change_page.data
+        assert "Contraseña Actual".encode("utf-8") in password_change_page.data
+        assert "Nueva Contraseña".encode("utf-8") in password_change_page.data
+
+        # Try to change password with wrong current password
+        wrong_password_change = client.post(
+            f"/perfil/cambiar_contraseña/{test_user_id}",
+            data={
+                "current_password": "wrongpassword",
+                "new_password": "newpassword123",
+                "confirm_password": "newpassword123",
+            },
         )
-        database.session.add(test_user)
-        database.session.commit()
-        test_user_id = test_user.id  # Get the ID before leaving the context
+        assert wrong_password_change.status_code == 200
+        assert "La contraseña actual es incorrecta".encode("utf-8") in wrong_password_change.data
 
-    # User logs in with old password
-    login = client.post("/user/login", data={"usuario": "testuser@nowlms.com", "acceso": "oldpassword"})
-    assert login.status_code == 302  # Redirect after successful login
+        # Try to change password with mismatched new passwords
+        mismatched_change = client.post(
+            f"/perfil/cambiar_contraseña/{test_user_id}",
+            data={
+                "current_password": "oldpassword",
+                "new_password": "newpassword123",
+                "confirm_password": "differentpassword",
+            },
+        )
+        assert mismatched_change.status_code == 200
+        assert "Las nuevas contraseñas no coinciden".encode("utf-8") in mismatched_change.data
 
-    # Access password change page
-    password_change_page = client.get(f"/perfil/cambiar_contraseña/{test_user_id}")
-    assert password_change_page.status_code == 200
-    assert "Cambiar Contraseña".encode("utf-8") in password_change_page.data
-    assert "Contraseña Actual".encode("utf-8") in password_change_page.data
-    assert "Nueva Contraseña".encode("utf-8") in password_change_page.data
+        # Successfully change password
+        successful_change = client.post(
+            f"/perfil/cambiar_contraseña/{test_user_id}",
+            data={
+                "current_password": "oldpassword",
+                "new_password": "newpassword123",
+                "confirm_password": "newpassword123",
+            },
+            follow_redirects=True,
+        )
+        assert successful_change.status_code == 200
+        assert "Contraseña actualizada exitosamente".encode("utf-8") in successful_change.data
 
-    # Try to change password with wrong current password
-    wrong_password_change = client.post(
-        f"/perfil/cambiar_contraseña/{test_user_id}",
-        data={
-            "current_password": "wrongpassword",
-            "new_password": "newpassword123",
-            "confirm_password": "newpassword123",
-        },
-    )
-    assert wrong_password_change.status_code == 200
-    assert "La contraseña actual es incorrecta".encode("utf-8") in wrong_password_change.data
-
-    # Try to change password with mismatched new passwords
-    mismatched_change = client.post(
-        f"/perfil/cambiar_contraseña/{test_user_id}",
-        data={
-            "current_password": "oldpassword",
-            "new_password": "newpassword123",
-            "confirm_password": "differentpassword",
-        },
-    )
-    assert mismatched_change.status_code == 200
-    assert "Las nuevas contraseñas no coinciden".encode("utf-8") in mismatched_change.data
-
-    # Successfully change password
-    successful_change = client.post(
-        f"/perfil/cambiar_contraseña/{test_user_id}",
-        data={
-            "current_password": "oldpassword",
-            "new_password": "newpassword123",
-            "confirm_password": "newpassword123",
-        },
-        follow_redirects=True,
-    )
-    assert successful_change.status_code == 200
-    assert "Contraseña actualizada exitosamente".encode("utf-8") in successful_change.data
-
-    with app.app_context():
-        # Verify password was actually changed in database
-        updated_user = database.session.execute(
-            database.select(Usuario).filter_by(correo_electronico="testuser@nowlms.com")
-        ).first()[0]
-        assert validar_acceso("testuser@nowlms.com", "newpassword123")
-        assert not validar_acceso("testuser@nowlms.com", "oldpassword")
+    # Verify password was actually changed in database
+    updated_user = isolated_db_session.execute(
+        database.select(Usuario).filter_by(correo_electronico="testuser@nowlms.com")
+    ).first()[0]
+    assert validar_acceso("testuser@nowlms.com", "newpassword123")
+    assert not validar_acceso("testuser@nowlms.com", "oldpassword")
 
 
-def test_password_recovery_functionality(basic_config_setup):
+def test_password_recovery_functionality(session_full_db_setup, isolated_db_session):
     """Test the complete password recovery flow."""
 
     from now_lms.auth import proteger_passwd, validar_acceso
     from now_lms.db import MailConfig, Usuario
 
-    with basic_config_setup.app_context():
+    # Update the default mail configuration to enable email verification
+    mail_config = isolated_db_session.execute(database.select(MailConfig)).first()[0]
+    mail_config.MAIL_SERVER = "smtp.test.com"
+    mail_config.MAIL_PORT = "587"
+    mail_config.MAIL_USERNAME = "test@nowlms.com"
+    mail_config.MAIL_DEFAULT_SENDER = "test@nowlms.com"
+    mail_config.MAIL_DEFAULT_SENDER_NAME = "Test LMS"
+    mail_config.MAIL_USE_TLS = True
+    mail_config.email_verificado = True
 
-        # Update the default mail configuration to enable email verification
-        mail_config = database.session.execute(database.select(MailConfig)).first()[0]
-        mail_config.MAIL_SERVER = "smtp.test.com"
-        mail_config.MAIL_PORT = "587"
-        mail_config.MAIL_USERNAME = "test@nowlms.com"
-        mail_config.MAIL_DEFAULT_SENDER = "test@nowlms.com"
-        mail_config.MAIL_DEFAULT_SENDER_NAME = "Test LMS"
-        mail_config.MAIL_USE_TLS = True
-        mail_config.email_verificado = True
+    # Create a test user with verified email
+    test_user = Usuario(
+        usuario="testuser2",
+        correo_electronico="testuser2@nowlms.com",
+        acceso=proteger_passwd("originalpassword"),
+        nombre="Test",
+        apellido="User",
+        tipo="student",
+        activo=True,
+        correo_electronico_verificado=True,
+        creado_por="system",
+    )
+    isolated_db_session.add(test_user)
+    isolated_db_session.commit()
 
-        # Create a test user with verified email
-        test_user = Usuario(
-            usuario="testuser2",
-            correo_electronico="testuser2@nowlms.com",
-            acceso=proteger_passwd("originalpassword"),
-            nombre="Test",
-            apellido="User",
-            tipo="student",
-            activo=True,
-            correo_electronico_verificado=True,
-            creado_por="system",
-        )
-        database.session.add(test_user)
-        database.session.commit()
-
-    with basic_config_setup.test_client() as client:
+    with session_full_db_setup.test_client() as client:
 
         # Test that forgot password link shows on login page when email is configured
         login_response = client.get("/user/login")
@@ -303,20 +297,19 @@ def test_password_recovery_functionality(basic_config_setup):
             mock_send_mail.assert_called_once()
 
         # Test submitting forgot password form with unverified email
-        with basic_config_setup.app_context():
-            unverified_user = Usuario(
-                usuario="unverified",
-                correo_electronico="unverified@nowlms.com",
-                acceso=proteger_passwd("password"),
-                nombre="Unverified",
-                apellido="User",
-                tipo="student",
-                activo=True,
-                correo_electronico_verificado=False,
-                creado_por="system",
-            )
-            database.session.add(unverified_user)
-            database.session.commit()
+        unverified_user = Usuario(
+            usuario="unverified",
+            correo_electronico="unverified@nowlms.com",
+            acceso=proteger_passwd("password"),
+            nombre="Unverified",
+            apellido="User",
+            tipo="student",
+            activo=True,
+            correo_electronico_verificado=False,
+            creado_por="system",
+        )
+        isolated_db_session.add(unverified_user)
+        isolated_db_session.commit()
 
         forgot_unverified = client.post(
             "/user/forgot_password", data={"email": "unverified@nowlms.com"}, follow_redirects=True
@@ -326,10 +319,9 @@ def test_password_recovery_functionality(basic_config_setup):
         assert "Se ha enviado un correo".encode("utf-8") in forgot_unverified.data
 
         # Test password reset with valid token
-        with basic_config_setup.app_context():
-            from now_lms.auth import generate_password_reset_token
+        from now_lms.auth import generate_password_reset_token
 
-            reset_token = generate_password_reset_token("testuser2@nowlms.com")
+        reset_token = generate_password_reset_token("testuser2@nowlms.com")
 
         reset_form_response = client.get(f"/user/reset_password/{reset_token}")
         assert reset_form_response.status_code == 200
@@ -353,27 +345,25 @@ def test_password_recovery_functionality(basic_config_setup):
         assert "Contraseña actualizada exitosamente".encode("utf-8") in reset_success.data
 
         # Verify password was actually changed
-        with basic_config_setup.app_context():
-            updated_user = database.session.execute(
-                database.select(Usuario).filter_by(correo_electronico="testuser2@nowlms.com")
-            ).first()[0]
-            assert validar_acceso("testuser2@nowlms.com", "newpassword456")
-            assert not validar_acceso("testuser2@nowlms.com", "originalpassword")
+        updated_user = isolated_db_session.execute(
+            database.select(Usuario).filter_by(correo_electronico="testuser2@nowlms.com")
+        ).first()[0]
+        assert validar_acceso("testuser2@nowlms.com", "newpassword456")
+        assert not validar_acceso("testuser2@nowlms.com", "originalpassword")
 
         # Test password reset with invalid token
         invalid_token_response = client.get("/user/reset_password/invalidtoken")
         assert invalid_token_response.status_code == 302  # Redirect to login
 
         # Test that token validation works
-        with basic_config_setup.app_context():
-            from now_lms.auth import generate_password_reset_token, validate_password_reset_token
+        from now_lms.auth import generate_password_reset_token, validate_password_reset_token
 
-            valid_token = generate_password_reset_token("testuser2@nowlms.com")
-            email = validate_password_reset_token(valid_token)
-            assert email == "testuser2@nowlms.com"  # Fresh token should work
+        valid_token = generate_password_reset_token("testuser2@nowlms.com")
+        email = validate_password_reset_token(valid_token)
+        assert email == "testuser2@nowlms.com"  # Fresh token should work
 
 
-def test_theme_functionality_comprehensive(basic_config_setup):
+def test_theme_functionality_comprehensive(isolated_db_session):
     """Test comprehensive theme functionality including overrides and custom pages."""
 
     from now_lms import database
@@ -385,61 +375,65 @@ def test_theme_functionality_comprehensive(basic_config_setup):
         get_program_view_template,
     )
 
-    with basic_config_setup.app_context():
+    # Test default template returns
+    assert get_home_template() == "inicio/home.html"
+    assert get_course_list_template() == "inicio/cursos.html"
+    assert get_program_list_template() == "inicio/programas.html"
+    assert get_course_view_template() == "learning/curso/curso.html"
+    assert get_program_view_template() == "learning/programa.html"
 
-        # Test default template returns
-        assert get_home_template() == "inicio/home.html"
-        assert get_course_list_template() == "inicio/cursos.html"
-        assert get_program_list_template() == "inicio/programas.html"
-        assert get_course_view_template() == "learning/curso/curso.html"
-        assert get_program_view_template() == "learning/programa.html"
+    # Test theme configuration change
+    from now_lms.db import Style
 
-        # Test theme configuration change
-        from now_lms.db import Style
+    config = isolated_db_session.execute(database.select(Style)).first()[0]
+    original_theme = config.theme
 
-        config = database.session.execute(database.select(Style)).first()[0]
-        original_theme = config.theme
+    # Change to Harvard theme
+    config.theme = "harvard"
+    isolated_db_session.commit()
 
-        # Change to Harvard theme
-        config.theme = "harvard"
-        database.session.commit()
+    # Test template override detection
+    expected_harvard_home = "themes/harvard/overrides/home.j2"
 
-        # Test template override detection
-        expected_harvard_home = "themes/harvard/overrides/home.j2"
+    assert get_home_template() == expected_harvard_home
 
-        assert get_home_template() == expected_harvard_home
+    # Test Cambridge theme
+    config.theme = "cambridge"
+    isolated_db_session.commit()
 
-        # Test Cambridge theme
-        config.theme = "cambridge"
-        database.session.commit()
+    assert get_home_template() == "themes/cambridge/overrides/home.j2"
 
-        assert get_home_template() == "themes/cambridge/overrides/home.j2"
+    # Test Oxford theme
+    config.theme = "oxford"
+    isolated_db_session.commit()
 
-        # Test Oxford theme
-        config.theme = "oxford"
-        database.session.commit()
+    assert get_home_template() == "themes/oxford/overrides/home.j2"
 
-        assert get_home_template() == "themes/oxford/overrides/home.j2"
+    # Test all other themes have override templates
+    themes_to_test = ["classic", "corporative", "finance", "oxford", "cambridge", "harvard"]
 
-        # Test all other themes have override templates
-        themes_to_test = ["classic", "corporative", "finance", "oxford", "cambridge", "harvard"]
+    for theme in themes_to_test:
+        config.theme = theme
+        isolated_db_session.commit()
 
-        for theme in themes_to_test:
-            config.theme = theme
-            database.session.commit()
+        # All themes should have override templates
+        assert get_home_template() == f"themes/{theme}/overrides/home.j2"
 
-            # All themes should have override templates
-            assert get_home_template() == f"themes/{theme}/overrides/home.j2"
+    # Restore original theme
+    config.theme = original_theme
+    isolated_db_session.commit()
 
-        # Restore original theme
-        config.theme = original_theme
-        database.session.commit()
 
-    with basic_config_setup.test_client() as client:
+def test_theme_custom_pages(session_full_db_setup):
+    """Test custom pages functionality with themes."""
+    from now_lms import database
+    from now_lms.db import Style
+
+    with session_full_db_setup.test_client() as client:
         # Test custom pages functionality
 
         # Test valid custom page access with Harvard theme
-        with basic_config_setup.app_context():
+        with session_full_db_setup.app_context():
             config = database.session.execute(database.select(Style)).first()[0]
             config.theme = "harvard"
             database.session.commit()

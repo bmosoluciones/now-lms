@@ -126,7 +126,7 @@ def usuarios_inactivos():
 def cambiar_tipo_usario():
     """Actualiza el tipo de usuario."""
     cambia_tipo_de_usuario_por_id(
-        id_usuario=request.args.get("user"),
+        request.args.get("user"),
         nuevo_tipo=request.args.get("type"),
         usuario=current_user.usuario,
     )

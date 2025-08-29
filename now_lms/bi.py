@@ -15,6 +15,9 @@
 
 """Business logic implementation."""
 
+# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+from __future__ import annotations
+
 # pylint: disable=E1101
 
 
@@ -24,7 +27,6 @@
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
-from typing import Union
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -40,8 +42,8 @@ from now_lms.logs import log
 
 
 def modificar_indice_curso(
-    codigo_curso: Union[None, str] = None,
-    task: Union[None, str] = None,
+    codigo_curso: str | None = None,
+    task: str | None = None,
     indice: int = 0,
 ):
     """Modica el número de indice de una sección dentro de un curso."""
@@ -79,7 +81,7 @@ def modificar_indice_curso(
                 database.session.commit()
 
 
-def reorganiza_indice_curso(codigo_curso: Union[None, str] = None):
+def reorganiza_indice_curso(codigo_curso: str | None = None):
     """Al eliminar una sección de un curso se debe generar el indice nuevamente."""
     secciones = (
         database.session.execute(database.select(CursoSeccion).filter_by(curso=codigo_curso).order_by(CursoSeccion.indice))
@@ -95,7 +97,7 @@ def reorganiza_indice_curso(codigo_curso: Union[None, str] = None):
             indice = indice + 1
 
 
-def reorganiza_indice_seccion(seccion: Union[None, str] = None):
+def reorganiza_indice_seccion(seccion: str | None = None):
     """Al eliminar una sección de un curso se debe generar el indice nuevamente."""
     recursos = (
         database.session.execute(database.select(CursoRecurso).filter_by(seccion=seccion).order_by(CursoRecurso.indice))
@@ -112,8 +114,8 @@ def reorganiza_indice_seccion(seccion: Union[None, str] = None):
 
 
 def modificar_indice_seccion(
-    seccion_id: Union[None, str] = None,
-    task: Union[None, str] = None,
+    seccion_id: str | None = None,
+    task: str | None = None,
     # increment: aumenta el numero de indice por lo que el recurso "baja" en la lista de recursos.
     # decrement: disminuye el numero de indice por lo que el recurso "sube" nala lista de recursos.
     indice: int = 0,
@@ -151,7 +153,7 @@ def modificar_indice_seccion(
     database.session.commit()
 
 
-def asignar_curso_a_instructor(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
+def asignar_curso_a_instructor(curso_codigo: str | None, /, usuario_id: str | None = None):
     """Asigna un usuario como instructor de un curso."""
     log.trace("Assigning {curso_codigo} to instructor {usuario_id}")
     ASIGNACION = DocenteCurso(curso=curso_codigo, usuario=usuario_id, vigente=True, creado_por=current_user.usuario)
@@ -159,7 +161,7 @@ def asignar_curso_a_instructor(curso_codigo: Union[None, str] = None, usuario_id
     database.session.commit()
 
 
-def asignar_curso_a_moderador(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
+def asignar_curso_a_moderador(curso_codigo: str | None, /, usuario_id: str | None = None):
     """Asigna un usuario como moderador de un curso."""
     log.trace("Assigning {curso_codigo} to moderator {usuario_id}")
     ASIGNACION = ModeradorCurso(usuario=usuario_id, curso=curso_codigo, vigente=True, creado_por=current_user.usuario)
@@ -167,7 +169,7 @@ def asignar_curso_a_moderador(curso_codigo: Union[None, str] = None, usuario_id:
     database.session.commit()
 
 
-def asignar_curso_a_estudiante(curso_codigo: Union[None, str] = None, usuario_id: Union[None, str] = None):
+def asignar_curso_a_estudiante(curso_codigo: str | None, /, usuario_id: str | None = None):
     """Asigna un usuario como moderador de un curso."""
     log.trace("Assigning {curso_codigo} to student {usuario_id}")
     ASIGNACION = EstudianteCurso(
@@ -180,9 +182,7 @@ def asignar_curso_a_estudiante(curso_codigo: Union[None, str] = None, usuario_id
     database.session.commit()
 
 
-def cambia_tipo_de_usuario_por_id(
-    id_usuario: Union[None, str] = None, nuevo_tipo: Union[None, str] = None, usuario: Union[None, str] = None
-):
+def cambia_tipo_de_usuario_por_id(id_usuario: str | None, /, nuevo_tipo: str | None = None, usuario: str | None = None):
     """
     Cambia el estatus de un usuario del sistema.
 
@@ -195,9 +195,7 @@ def cambia_tipo_de_usuario_por_id(
     database.session.commit()
 
 
-def cambia_estado_curso_por_id(
-    id_curso: Union[None, str, int] = None, nuevo_estado: Union[None, str] = None, usuario: Union[None, str] = None
-):
+def cambia_estado_curso_por_id(id_curso: str | int | None, /, nuevo_estado: str | None = None, usuario: str | None = None):
     """
     Cambia el estatus de un curso.
 
@@ -232,7 +230,7 @@ def cambia_estado_curso_por_id(
             pass
 
 
-def cambia_curso_publico(id_curso: Union[None, str, int] = None):
+def cambia_curso_publico(id_curso: str | int | None = None):
     """Cambia el estatus publico de un curso."""
     CURSO = database.session.execute(database.select(Curso).filter(Curso.codigo == id_curso)).first()[0]
     if CURSO.estado == "open":
@@ -246,7 +244,7 @@ def cambia_curso_publico(id_curso: Union[None, str, int] = None):
         flash("No se puede publicar el curso", "warning")
 
 
-def cambia_seccion_publico(codigo: Union[None, str, int] = None):
+def cambia_seccion_publico(codigo: str | int | None = None):
     """Cambia el estatus publico de una sección."""
     SECCION = database.session.execute(database.select(CursoSeccion).filter_by(id=codigo)).scalar_one_or_none()
     if SECCION.estado:
