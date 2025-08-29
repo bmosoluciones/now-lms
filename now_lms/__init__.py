@@ -528,6 +528,7 @@ def _register_before_request_handlers(flask_app):
             if request.headers.get("X-Forwarded-Proto", "http") != "https":
                 url = request.url.replace("http://", "https://", 1)
                 return redirect(url, code=301)
+        return None
 
 
 def _register_error_handlers(flask_app):
@@ -633,7 +634,7 @@ def initial_setup(with_examples=False, with_tests=False, flask_app=None):
             from now_lms.db.data_test import crear_data_para_pruebas
 
             crear_data_para_pruebas()
-    log.info(f"Welcome to NOW Learning Management System")
+    log.info("Welcome to NOW Learning Management System")
     log.info(f"Version: {VERSION}")
     log.info(f"Code name: {CODE_NAME}")
     log.info("NOW - LMS started successfully.")
