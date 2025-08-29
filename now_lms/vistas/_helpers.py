@@ -36,9 +36,7 @@ def get_current_course_logo(course_code):
     try:
         logo_file = logo_file[0]
         return logo_file.name
-    except FileNotFoundError:
-        return None
-    except IndexError:
+    except (FileNotFoundError, IndexError):
         return None
 
 
