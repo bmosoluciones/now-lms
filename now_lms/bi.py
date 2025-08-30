@@ -38,6 +38,7 @@ from flask_login import current_user
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.db import Curso, CursoRecurso, CursoSeccion, DocenteCurso, EstudianteCurso, ModeradorCurso, Usuario, database
+from now_lms.i18n import _
 from now_lms.logs import log
 
 
@@ -214,7 +215,7 @@ def cambia_estado_curso_por_id(id_curso: str | int | None, /, nuevo_estado: str 
         ForoMensaje.close_all_for_course(id_curso)
         # Solo mostrar flash si estamos en contexto de request
         try:
-            flash("Curso finalizado. Todos los mensajes del foro han sido cerrados.", "info")
+            flash(_("Curso finalizado. Todos los mensajes del foro han sido cerrados."), "info")
         except RuntimeError:
             # No estamos en contexto de request (ej: durante pruebas)
             pass
@@ -224,7 +225,7 @@ def cambia_estado_curso_por_id(id_curso: str | int | None, /, nuevo_estado: str 
         CURSO.publico = False
         database.session.commit()
         try:
-            flash("Curso eliminado del sitio Web.", "info")
+            flash(_("Curso eliminado del sitio Web."), "info")
         except RuntimeError:
             # No estamos en contexto de request (ej: durante pruebas)
             pass
@@ -241,7 +242,7 @@ def cambia_curso_publico(id_curso: str | int | None = None):
             CURSO.modificado_por = current_user.usuario
             database.session.commit()
     else:
-        flash("No se puede publicar el curso", "warning")
+        flash(_("No se puede publicar el curso"), "warning")
 
 
 def cambia_seccion_publico(codigo: str | int | None = None):

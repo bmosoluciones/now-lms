@@ -71,6 +71,7 @@ from now_lms.config import (
 )
 from now_lms.db import Configuracion, Usuario, database
 from now_lms.db.info import app_info, course_info, lms_info
+from now_lms.i18n import _
 from now_lms.db.initial_data import (
     asignar_cursos_a_categoria,
     asignar_cursos_a_etiquetas,
@@ -268,7 +269,7 @@ def cargar_sesion(identidad):
 @administrador_sesion.unauthorized_handler
 def no_autorizado():
     """Redirecciona al inicio de sesión usuarios no autorizados."""
-    flash("Favor iniciar sesión para acceder al sistema.", "warning")
+    flash(_("Favor iniciar sesión para acceder al sistema."), "warning")
     return INICIO_SESION
 
 
@@ -381,7 +382,7 @@ makes a payment.
 def handle_402(error):
     """Pagina personalizada para recursos que requieren pago."""
     if not current_user.is_authenticated:
-        flash("Favor iniciar sesión para acceder a este recurso.", "warning")
+        flash(_("Favor iniciar sesión para acceder a este recurso."), "warning")
         log.warning(f"Resource not available for anonymous user, payment required: {error}")
     else:
         log.warning(f"Resource not available, payment required for {current_user.usuario}: {error}")
@@ -544,7 +545,7 @@ def _register_error_handlers(flask_app):
     def error_403(error):
         """Pagina personalizada para recursos no autorizados."""
         if not current_user.is_authenticated:
-            flash("Favor iniciar sesión para acceder a este recurso.", "warning")
+            flash(_("Favor iniciar sesión para acceder a este recurso."), "warning")
             log.warning(f"Resource not authorized for anonymous user: {error}")
         else:
             log.warning(f"Resource not authorized for {current_user.usuario}: {error}")

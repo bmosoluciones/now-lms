@@ -69,6 +69,7 @@ from now_lms.db.tools import (
     verificar_usuario_inscrito_programa,
 )
 from now_lms.forms import ProgramaForm
+from now_lms.i18n import _
 from now_lms.themes import get_program_list_template, get_program_view_template
 
 # Constants
@@ -124,11 +125,11 @@ def nuevo_programa():
 
             database.session.commit()
             cache.delete("view/" + url_for(PROGRAMS_ROUTE))
-            flash("Nuevo Programa creado.", "success")
+            flash(_("Nuevo Programa creado."), "success")
             return redirect(url_for("program.pagina_programa", codigo=programa.codigo))
         except OperationalError:
             database.session.rollback()
-            flash("Hubo un error al crear el programa.", "warning")
+            flash(_("Hubo un error al crear el programa."), "warning")
             return redirect(url_for(PROGRAMS_ROUTE))
 
     return render_template("learning/programas/nuevo_programa.html", form=form)
@@ -215,11 +216,11 @@ def edit_program(ulid: str):
         programa.plantilla_certificado = form.plantilla_certificado.data
 
         if programa.publico is True and cuenta_cursos_por_programa(programa.codigo) == 0:
-            flash("No se puede cambiar estatus de programa a publico porque no tiene cursos añadidos", "error")
+            flash(_("No se puede cambiar estatus de programa a publico porque no tiene cursos añadidos"), "error")
             programa.publico = False
 
         if programa.estado == "open" and cuenta_cursos_por_programa(programa.codigo) == 0:
-            flash("No se puede cambiar programa a abierto porque no tiene cursos añadidos", "error")
+            flash(_("No se puede cambiar programa a abierto porque no tiene cursos añadidos"), "error")
             programa.estado = "draft"
 
         try:
@@ -250,15 +251,15 @@ def edit_program(ulid: str):
                     picture_file = images.save(request.files["logo"], folder="program" + programa.codigo, name="logo.jpg")
                     if picture_file:
                         programa.logo = True
-                        flash("Portada del curso actualizada correctamente", "success")
+                        flash(_("Portada del curso actualizada correctamente"), "success")
                         database.session.commit()
                 except UploadNotAllowed:
-                    flash("No se pudo actualizar la portada del curso.", "warning")
+                    flash(_("No se pudo actualizar la portada del curso."), "warning")
 
-            flash("Programa editado correctamente.", "success")
+            flash(_("Programa editado correctamente."), "success")
         except OperationalError:
             database.session.rollback()
-            flash("No se puedo editar el programa.")
+            flash(_("No se puedo editar el programa."))
         return redirect(url_for(PROGRAMS_ROUTE))
 
     return render_template("learning/programas/editar_programa.html", form=form, programa=programa)
@@ -368,7 +369,7 @@ def inscribir_programa(codigo):
 
     # Check if already enrolled
     if verificar_usuario_inscrito_programa(current_user.usuario, codigo):
-        flash("Ya estás inscrito en este programa.", "info")
+        flash(_("Ya estás inscrito en este programa."), "info")
         return redirect(url_for("program.tomar_programa", codigo=codigo))
 
     if request.method == "POST":
@@ -378,11 +379,11 @@ def inscribir_programa(codigo):
         try:
             database.session.add(inscripcion)
             database.session.commit()
-            flash("Te has inscrito exitosamente al programa.", "success")
+            flash(_("Te has inscrito exitosamente al programa."), "success")
             return redirect(url_for("program.tomar_programa", codigo=codigo))
         except OperationalError:
             database.session.rollback()
-            flash("Hubo un error al inscribirte al programa.", "error")
+            flash(_("Hubo un error al inscribirte al programa."), "error")
 
     return render_template("learning/programas/inscribir_programa.html", programa=programa)
 
@@ -399,7 +400,7 @@ def tomar_programa(codigo):
 
     # Check if enrolled
     if not verificar_usuario_inscrito_programa(current_user.usuario, codigo):
-        flash("Debes inscribirte al programa primero.", "warning")
+        flash(_("Debes inscribirte al programa primero."), "warning")
         return redirect(url_for("program.inscribir_programa", codigo=codigo))
 
     # Get program progress
@@ -467,7 +468,7 @@ def gestionar_cursos_programa(codigo):
                 database.session.commit()
                 flash(f"Curso {curso_codigo} agregado al programa.", "success")
             else:
-                flash("El curso ya está en el programa.", "warning")
+                flash(_("El curso ya está en el programa."), "warning")
 
         elif action == "remove_course":
             curso_codigo = request.form.get("curso_codigo")
@@ -512,9 +513,9 @@ def inscribir_usuario_programa(codigo):
         ).scalar_one_or_none()
 
         if not usuario:
-            flash("Usuario no encontrado.", "error")
+            flash(_("Usuario no encontrado."), "error")
         elif verificar_usuario_inscrito_programa(usuario.usuario, codigo):
-            flash("El usuario ya está inscrito en este programa.", "warning")
+            flash(_("El usuario ya está inscrito en este programa."), "warning")
         else:
             inscripcion = ProgramaEstudiante(usuario=usuario.usuario, programa=programa.id, creado_por=current_user.usuario)
 
@@ -524,7 +525,7 @@ def inscribir_usuario_programa(codigo):
                 flash(f"Usuario {usuario.nombre} {usuario.apellido} inscrito exitosamente.", "success")
             except OperationalError:
                 database.session.rollback()
-                flash("Error al inscribir usuario.", "error")
+                flash(_("Error al inscribir usuario."), "error")
 
         return redirect(url_for("program.inscribir_usuario_programa", codigo=codigo))
 
@@ -539,7 +540,7 @@ def _emitir_certificado_programa(codigo_programa, usuario, plantilla):
     ).scalar_one_or_none()
 
     if not programa:
-        flash("Programa no encontrado.", "error")
+        flash(_("Programa no encontrado."), "error")
         return
 
     certificado = CertificacionPrograma(
@@ -551,4 +552,4 @@ def _emitir_certificado_programa(codigo_programa, usuario, plantilla):
     certificado.creado_por = current_user.usuario
     database.session.add(certificado)
     database.session.commit()
-    flash("Certificado de programa emitido por completar todos los cursos.", "success")
+    flash(_("Certificado de programa emitido por completar todos los cursos."), "success")

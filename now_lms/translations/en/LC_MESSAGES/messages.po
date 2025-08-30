@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-08-30 05:00+0000\n"
+"POT-Creation-Date: 2025-08-30 11:33+0000\n"
 "PO-Revision-Date: 2025-08-30 04:48+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,11 +18,41 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
+#: now_lms/__init__.py:272
+msgid "Favor iniciar sesión para acceder al sistema."
+msgstr ""
+
+#: now_lms/__init__.py:385 now_lms/__init__.py:548
+msgid "Favor iniciar sesión para acceder a este recurso."
+msgstr ""
+
+#: now_lms/bi.py:218
+msgid "Curso finalizado. Todos los mensajes del foro han sido cerrados."
+msgstr ""
+
+#: now_lms/bi.py:228
+msgid "Curso eliminado del sitio Web."
+msgstr ""
+
+#: now_lms/bi.py:245
+msgid "No se puede publicar el curso"
+msgstr ""
+
 #: now_lms/db/tools.py:140
 msgid "Sistema de aprendizaje en linea."
 msgstr ""
 
+#: now_lms/db/tools.py:403
+msgid "Imagen de usuario eliminada correctamente."
+msgstr ""
+
+#: now_lms/db/tools.py:405
+msgid "Imagen de usuario no existe."
+msgstr ""
+
 #: now_lms/templates/learning/curso.html:29
+#: now_lms/templates/themes/cambridge/navbar.j2:38
+#: now_lms/templates/themes/cambridge/navbar.j2:42
 #: now_lms/templates/themes/now_lms/navbar.j2:39
 #: now_lms/templates/themes/now_lms/navbar.j2:45
 msgid "Inicio"
@@ -88,25 +118,159 @@ msgstr ""
 msgid "Contenido del Curso"
 msgstr ""
 
+#: now_lms/templates/themes/cambridge/base.j2:6
+msgid "Aplicación para gestión del aprendizaje."
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:46
 #: now_lms/templates/themes/now_lms/navbar.j2:51
 msgid "Cursos"
 msgstr "Courses"
 
+#: now_lms/templates/themes/cambridge/navbar.j2:50
 #: now_lms/templates/themes/now_lms/navbar.j2:57
 msgid "Programas"
 msgstr "Programs"
 
+#: now_lms/templates/themes/cambridge/navbar.j2:54
 #: now_lms/templates/themes/now_lms/navbar.j2:63
 #, fuzzy
 msgid "Recursos"
 msgstr "Resources"
 
+#: now_lms/templates/themes/cambridge/navbar.j2:58
 #: now_lms/templates/themes/now_lms/navbar.j2:69
 msgid "Clases Magistrales"
 msgstr ""
 
+#: now_lms/templates/themes/cambridge/navbar.j2:63
+msgid "Moderación"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:67
+msgid "Docente"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:71
+msgid "Administración"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:78
+msgid "Iniciar Sesión"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:81
+msgid "Crear Cuenta"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:93
+msgid "Bienvenido"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:97
+msgid "Perfil de Usuario"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:106
+msgid "Información"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:112
+msgid "Cerrar Sesión"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:139
+msgid "Versión"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:163
+msgid "Manual de Usuario"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:170
+msgid "Manual de Administración"
+msgstr ""
+
+#: now_lms/vistas/programs.py:128
+msgid "Nuevo Programa creado."
+msgstr ""
+
+#: now_lms/vistas/programs.py:132
+msgid "Hubo un error al crear el programa."
+msgstr ""
+
+#: now_lms/vistas/programs.py:219
+msgid ""
+"No se puede cambiar estatus de programa a publico porque no tiene cursos "
+"añadidos"
+msgstr ""
+
+#: now_lms/vistas/programs.py:223
+msgid "No se puede cambiar programa a abierto porque no tiene cursos añadidos"
+msgstr ""
+
+#: now_lms/vistas/programs.py:254
+msgid "Portada del curso actualizada correctamente"
+msgstr ""
+
+#: now_lms/vistas/programs.py:257
+msgid "No se pudo actualizar la portada del curso."
+msgstr ""
+
+#: now_lms/vistas/programs.py:259
+msgid "Programa editado correctamente."
+msgstr ""
+
+#: now_lms/vistas/programs.py:262
+msgid "No se puedo editar el programa."
+msgstr ""
+
+#: now_lms/vistas/programs.py:372
+msgid "Ya estás inscrito en este programa."
+msgstr ""
+
+#: now_lms/vistas/programs.py:382
+msgid "Te has inscrito exitosamente al programa."
+msgstr ""
+
+#: now_lms/vistas/programs.py:386
+msgid "Hubo un error al inscribirte al programa."
+msgstr ""
+
+#: now_lms/vistas/programs.py:403
+msgid "Debes inscribirte al programa primero."
+msgstr ""
+
+#: now_lms/vistas/programs.py:471
+msgid "El curso ya está en el programa."
+msgstr ""
+
+#: now_lms/vistas/programs.py:516
+msgid "Usuario no encontrado."
+msgstr ""
+
+#: now_lms/vistas/programs.py:518
+msgid "El usuario ya está inscrito en este programa."
+msgstr ""
+
+#: now_lms/vistas/programs.py:528
+msgid "Error al inscribir usuario."
+msgstr ""
+
+#: now_lms/vistas/programs.py:543
+msgid "Programa no encontrado."
+msgstr ""
+
+#: now_lms/vistas/programs.py:555
+msgid "Certificado de programa emitido por completar todos los cursos."
+msgstr ""
+
 #: now_lms/vistas/settings.py:108
 msgid "Tema del sitio web actualizado exitosamente."
+msgstr ""
+
+#: now_lms/vistas/settings.py:112
+msgid "No se pudo actualizar el tema del sitio web."
 msgstr ""
 
 #: now_lms/vistas/settings.py:153
@@ -117,5 +281,37 @@ msgstr ""
 
 #: now_lms/vistas/settings.py:173
 msgid "Sitio web actualizado exitosamente."
+msgstr ""
+
+#: now_lms/vistas/settings.py:176
+msgid "No se pudo actualizar la configuración del sitio web."
+msgstr ""
+
+#: now_lms/vistas/settings.py:215
+msgid "Configuración de correo electronico actualizada exitosamente."
+msgstr ""
+
+#: now_lms/vistas/settings.py:219
+msgid "No se pudo actualizar la configuración de correo electronico."
+msgstr ""
+
+#: now_lms/vistas/settings.py:275
+msgid "Hubo un error al enviar un correo de prueba. Revise su configuración."
+msgstr ""
+
+#: now_lms/vistas/settings.py:340
+msgid "Configuración de Google AdSense actualizada exitosamente."
+msgstr ""
+
+#: now_lms/vistas/settings.py:345
+msgid "No se pudo actualizar la configuración de Google AdSense."
+msgstr ""
+
+#: now_lms/vistas/settings.py:450
+msgid "Configuración de Paypal actualizada exitosamente."
+msgstr ""
+
+#: now_lms/vistas/settings.py:455
+msgid "No se pudo actualizar la configuración de Paypal."
 msgstr ""
 

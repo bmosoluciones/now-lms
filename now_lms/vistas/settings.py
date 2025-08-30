@@ -109,7 +109,7 @@ def personalizacion():
             return redirect(url_for(SETTING_PERSONALIZACION_ROUTE))
         except OperationalError:
             database.session.rollback()
-            flash("No se pudo actualizar el tema del sitio web.", "warning")
+            flash(_("No se pudo actualizar el tema del sitio web."), "warning")
             return redirect(url_for(SETTING_PERSONALIZACION_ROUTE))
 
     else:
@@ -173,7 +173,7 @@ def configuracion():
             flash(_("Sitio web actualizado exitosamente."), "success")
             return redirect(url_for("setting.configuracion"))
         except OperationalError:
-            flash("No se pudo actualizar la configuración del sitio web.", "warning")
+            flash(_("No se pudo actualizar la configuración del sitio web."), "warning")
             return redirect(url_for("setting.configuracion"))
 
     else:
@@ -212,11 +212,11 @@ def mail():
 
         try:
             database.session.commit()
-            flash("Configuración de correo electronico actualizada exitosamente.", "success")
+            flash(_("Configuración de correo electronico actualizada exitosamente."), "success")
             return redirect(url_for(SETTING_MAIL_ROUTE))
 
         except OperationalError:
-            flash("No se pudo actualizar la configuración de correo electronico.", "warning")
+            flash(_("No se pudo actualizar la configuración de correo electronico."), "warning")
             return redirect(url_for(SETTING_MAIL_ROUTE))
 
     else:
@@ -272,7 +272,7 @@ def mail_check():
             database.session.commit()
             return redirect(url_for(SETTING_MAIL_ROUTE))
         except Exception as e:  # noqa: E722
-            flash("Hubo un error al enviar un correo de prueba. Revise su configuración.", "warning")
+            flash(_("Hubo un error al enviar un correo de prueba. Revise su configuración."), "warning")
 
             config_g = database.session.execute(database.select(Configuracion)).first()[0]
             config.email_verificado = False
@@ -337,12 +337,12 @@ def adsense():
 
         try:
             database.session.commit()
-            flash("Configuración de Google AdSense actualizada exitosamente.", "success")
+            flash(_("Configuración de Google AdSense actualizada exitosamente."), "success")
             return redirect(url_for("setting.adsense"))
 
         except OperationalError:
             database.session.rollback()
-            flash("No se pudo actualizar la configuración de Google AdSense.", "warning")
+            flash(_("No se pudo actualizar la configuración de Google AdSense."), "warning")
             return redirect(url_for("setting.adsense"))
 
     else:
@@ -447,12 +447,12 @@ def paypal():
 
         try:
             database.session.commit()
-            flash("Configuración de Paypal actualizada exitosamente.", "success")
+            flash(_("Configuración de Paypal actualizada exitosamente."), "success")
             return redirect(url_for("setting.paypal"))
 
         except OperationalError:
             database.session.rollback()
-            flash("No se pudo actualizar la configuración de Paypal.", "warning")
+            flash(_("No se pudo actualizar la configuración de Paypal."), "warning")
             return redirect(url_for("setting.paypal"))
 
     else:
