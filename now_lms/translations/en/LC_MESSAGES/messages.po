@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-08-13 15:37+0000\n"
-"PO-Revision-Date: 2025-08-13 15:31+0000\n"
+"POT-Creation-Date: 2025-08-30 05:00+0000\n"
+"PO-Revision-Date: 2025-08-30 04:48+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
@@ -18,87 +18,104 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: now_lms/db/tools.py:135
+#: now_lms/db/tools.py:140
 msgid "Sistema de aprendizaje en linea."
-msgstr "Online learning system."
+msgstr ""
 
 #: now_lms/templates/learning/curso.html:29
+#: now_lms/templates/themes/now_lms/navbar.j2:39
+#: now_lms/templates/themes/now_lms/navbar.j2:45
 msgid "Inicio"
 msgstr "Home"
 
 #: now_lms/templates/learning/curso.html:45
 msgid "Portada del Curso"
-msgstr "Course Cover"
+msgstr ""
 
-#: now_lms/templates/learning/curso.html:140
+#: now_lms/templates/learning/curso.html:135
 msgid "Mensajes"
 msgstr "Messages"
 
-#: now_lms/templates/learning/curso.html:143
+#: now_lms/templates/learning/curso.html:139
 msgid "¿Tienes alguna pregunta sobre el curso? Contacta a tus instructores."
-msgstr "Do you have any questions about the course? Contact your instructors."
+msgstr ""
 
-#: now_lms/templates/learning/curso.html:149
+#: now_lms/templates/learning/curso.html:146
 msgid "Ver Mensajes"
-msgstr "View Messages"
+msgstr ""
 
-#: now_lms/templates/learning/curso.html:155
+#: now_lms/templates/learning/curso.html:152
 msgid "Nuevo Mensaje"
 msgstr "New Message"
 
-#: now_lms/templates/learning/curso.html:165
+#: now_lms/templates/learning/curso.html:162
 msgid "Foro del Curso"
-msgstr "Course Forum"
+msgstr "Cource Forum"
 
-#: now_lms/templates/learning/curso.html:169
+#: now_lms/templates/learning/curso.html:166
 msgid "Participa en discusiones con otros estudiantes y compartir conocimientos."
-msgstr "Participate in discussions with other students and share knowledge."
+msgstr ""
 
-#: now_lms/templates/learning/curso.html:176
+#: now_lms/templates/learning/curso.html:173
 msgid "Ver Foro"
-msgstr "View Forum"
+msgstr "See Forum"
 
-#: now_lms/templates/learning/curso.html:183
+#: now_lms/templates/learning/curso.html:180
 msgid "Nuevo Mensaje en Foro"
-msgstr "New Forum Message"
+msgstr ""
 
 #: now_lms/templates/learning/resources/type_macros.html:76
 msgid "Requerido"
-msgstr "Required"
+msgstr ""
 
 #: now_lms/templates/learning/resources/type_macros.html:79
 msgid "Opcional"
-msgstr "Optional"
+msgstr ""
 
 #: now_lms/templates/learning/resources/type_macros.html:80
 msgid "Alternativo"
-msgstr "Alternative"
+msgstr ""
 
 #: now_lms/templates/learning/resources/type_macros.html:83
 msgid "Completado"
-msgstr "Completed"
+msgstr ""
 
 #: now_lms/templates/learning/resources/type_macros.html:86
 msgid "Pendiente"
-msgstr "Pending"
+msgstr ""
 
 #: now_lms/templates/learning/resources/type_macros.html:89
 msgid "Contenido del Curso"
-msgstr "Course Content"
+msgstr ""
 
-#: now_lms/vistas/settings.py:105
+#: now_lms/templates/themes/now_lms/navbar.j2:51
+msgid "Cursos"
+msgstr "Courses"
+
+#: now_lms/templates/themes/now_lms/navbar.j2:57
+msgid "Programas"
+msgstr "Programs"
+
+#: now_lms/templates/themes/now_lms/navbar.j2:63
+#, fuzzy
+msgid "Recursos"
+msgstr "Resources"
+
+#: now_lms/templates/themes/now_lms/navbar.j2:69
+msgid "Clases Magistrales"
+msgstr ""
+
+#: now_lms/vistas/settings.py:108
 msgid "Tema del sitio web actualizado exitosamente."
-msgstr "Website theme updated successfully."
+msgstr ""
 
-#: now_lms/vistas/settings.py:145
+#: now_lms/vistas/settings.py:153
 msgid ""
 "Debe configurar el correo electronico antes de habilitar verificación por"
 " e-mail."
 msgstr ""
-"You must configure email before enabling email verification."
 
-#: now_lms/vistas/settings.py:161
+#: now_lms/vistas/settings.py:173
 msgid "Sitio web actualizado exitosamente."
-msgstr "Website updated successfully."
 msgstr ""
 

@@ -36,37 +36,37 @@
                 {% if not current_user.is_authenticated %}
                 <li>
                     <a href="{{ url_for('home.pagina_de_inicio') }}" class="nav-link text-light px-2"
-                        ><i class="bi bi-house-fill" aria-hidden="true"></i> Inicio</a
+                        ><i class="bi bi-house-fill" aria-hidden="true"></i> {{ _("Inicio") }}</a
                     >
                 </li>
                 {% else %}
                 <li>
                     <a href="{{ url_for('home.panel') }}" class="nav-link text-light px-2"
-                        ><i class="bi bi-house-fill" aria-hidden="true"></i> Inicio</a
+                        ><i class="bi bi-house-fill" aria-hidden="true"></i>  {{ _("Inicio") }}</a
                     >
                 </li>
                 {% endif %}
                 <li>
                     <a href="{{ url_for('course.lista_cursos', page=1) }}" class="nav-link text-light px-2"
-                        ><i class="bi bi-card-checklist" aria-hidden="true"></i> Cursos</a
+                        ><i class="bi bi-card-checklist" aria-hidden="true"></i>  {{ _("Cursos") }}</a
                     >
                 </li>
                 {% if is_programs_enabled() %}
                 <li>
                     <a href="{{ url_for('program.lista_programas', page=1) }}" class="nav-link text-light px-2"
-                        ><i class="bi bi-diagram-3-fill" aria-hidden="true"></i> Programas</a
+                        ><i class="bi bi-diagram-3-fill" aria-hidden="true"></i>  {{ _("Programas") }}</a
                     >
                 </li>
                 {% endif %} {% if is_resources_enabled() %}
                 <li>
                     <a href="{{ url_for('resource.lista_de_recursos', page=1) }}" class="nav-link text-light px-2"
-                        ><i class="bi bi-book" aria-hidden="true"></i> Recursos</a
+                        ><i class="bi bi-book" aria-hidden="true"></i>  {{ _("Recursos") }}</a
                     >
                 </li>
                 {% endif %} {% if is_masterclass_enabled() %}
                 <li>
                     <a href="{{ url_for('masterclass.list_public') }}" class="nav-link text-light px-2"
-                        ><i class="bi bi-camera-video" aria-hidden="true"></i> Clases Magistrales</a
+                        ><i class="bi bi-camera-video" aria-hidden="true"></i> {{ _("Clases Magistrales") }}</a
                     >
                 </li>
                 {% endif %} {% if current_user.is_authenticated %} {% if current_user.tipo == "moderator" or current_user.tipo
