@@ -129,21 +129,25 @@ NO_LMS_CACHE=True hupper -m now_lms
 
 #### Use semantic commits:
 
-| Type        | Scope      | Example Commit Message                                   | Purpose                                                      |
-|-------------|-----------|----------------------------------------------------------|--------------------------------------------------------------|
-| feat        | courses   | feat(courses): add new enrollment flow                   | Introduce a new feature                                      |
-| fix         | auth      | fix(auth): resolve login redirect issue                   | Bug fix                                                      |
-| chore       | i18n      | chore(i18n): add missing English translations             | Maintenance / non-feature / non-fix task                     |
-| chore       | deps      | chore(deps): update Flask to 3.0                          | Dependency update / maintenance                              |
-| docs        | readme    | docs(readme): update setup instructions                   | Documentation changes                                        |
-| style       | ui        | style(ui): fix spacing and alignment in dashboard         | Code style / formatting (no logic change)                    |
-| refactor    | db        | refactor(db): optimize course query                       | Code refactor without changing behavior                      |
-| test        | blog      | test(blog): add unit tests for post creation              | Adding or improving tests                                    |
-| build       | ci        | build(ci): add GitHub Actions workflow                    | Changes to build system / CI/CD pipelines                    |
-| perf        | cache     | perf(cache): improve course listing load time             | Performance improvements                                     |
-| ci          | pipeline  | ci(pipeline): add coverage report upload                  | Continuous Integration related changes                       |
-| revert      | auth      | revert(auth): undo broken login commit                    | Revert a previous commit                                     |
-| release     | version   | release: v0.0.1-rc1                                       | Release tagging                                              |
+
+
+| Type     | Scope     | Example Commit Message                      | Purpose                                          | SemVer Impact         |
+|----------|-----------|---------------------------------------------|--------------------------------------------------|-----------------------|
+| feat     | courses   | feat(courses): add new enrollment flow      | Introduce a new feature                          | **MINOR** (x.↑.x)     |
+| fix      | auth      | fix(auth): resolve login redirect issue     | Bug fix                                          | **PATCH** (x.x.↑)     |
+| chore    | i18n      | chore(i18n): add missing English translations | Maintenance / i18n updates                      | None (no release bump)|
+| chore    | deps      | chore(deps): update Flask to 3.0            | Dependency update / maintenance                  | None / MINOR if breaking |
+| docs     | readme    | docs(readme): update setup instructions     | Documentation changes                            | None                  |
+| style    | ui        | style(ui): fix spacing in dashboard         | Code style / formatting (no logic change)        | None                  |
+| refactor | db        | refactor(db): optimize course query         | Code refactor without behavior change            | None                  |
+| test     | blog      | test(blog): add unit tests for post creation| Adding or improving tests                        | None                  |
+| build    | ci        | build(ci): add GitHub Actions workflow      | Build system / CI/CD pipeline changes            | None                  |
+| perf     | cache     | perf(cache): improve course load time       | Performance improvements                         | PATCH (if non-breaking) |
+| ci       | pipeline  | ci(pipeline): add coverage report upload    | Continuous Integration related changes           | None                  |
+| revert   | auth      | revert(auth): undo broken login commit      | Revert a previous commit                         | Depends (inherits type)|
+| release  | version   | release: v0.0.1-rc1                         | Release tagging                                  | Not applicable        |
+
+
 
 #### Certify the origin of your contributions.
 
