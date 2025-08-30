@@ -1219,6 +1219,7 @@ class BlogPost(database.Model, BaseTabla):
     allow_comments = database.Column(database.Boolean(), default=True, nullable=False)
     published_at = database.Column(database.DateTime(), nullable=True)
     comment_count = database.Column(database.Integer(), default=0, nullable=False)
+    view_count = database.Column(database.Integer(), default=0, nullable=False)
 
     # Relationships
     author = database.relationship("Usuario", backref="blog_posts")
