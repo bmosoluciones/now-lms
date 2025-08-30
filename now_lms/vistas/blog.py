@@ -27,7 +27,7 @@ from datetime import datetime, timezone
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
+from flask import Blueprint, abort, flash, redirect, render_template, request, url_for, jsonify
 from flask_login import current_user, login_required
 from sqlalchemy import and_, func, or_
 
@@ -138,6 +138,20 @@ def blog_post(slug):
     comment_form = BlogCommentForm() if current_user.is_authenticated and post.allow_comments else None
 
     return render_template("blog/post_detail.html", post=post, comments=comments, comment_form=comment_form)
+
+
+@blog.route("/blog/count_view/<post_id>", methods=["POST"])
+def count_view(post_id):
+    """Increment view count for a blog post."""
+    post = database.session.get(BlogPost, post_id)
+    if not post or post.status != "published":
+        return jsonify({"status": "error", "message": "Post not found"}), 404
+
+    # Increment view count
+    post.view_count = (post.view_count or 0) + 1
+    database.session.commit()
+
+    return jsonify({"status": "ok", "view_count": post.view_count})
 
 
 @blog.route("/blog/<slug>/comments", methods=["POST"])

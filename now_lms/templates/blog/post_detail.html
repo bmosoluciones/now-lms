@@ -32,6 +32,7 @@
                                 Por {{ post.author.nombre }} {{ post.author.apellido or '' }} {% if post.published_at %} el {{
                                 post.published_at.strftime('%d/%m/%Y a las %H:%M') }} {% else %} el {{
                                 post.timestamp.strftime('%d/%m/%Y a las %H:%M') }} {% endif %}
+                                {% if post.view_count is defined and post.view_count is not none %} - <span id="view-count">{{ post.view_count }}</span> vista{{ 's' if post.view_count != 1 else '' }}{% endif %}
                             </div>
 
                             {% if post.tags %}
@@ -195,5 +196,31 @@
                 </div>
             </div>
         </main>
+        
+        <!-- View counter script -->
+        <script>
+            // Increment view count when page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                const postId = {{ post.id | tojson }};
+                fetch('/blog/count_view/' + postId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }).then(response => {
+                    return response.json();
+                }).then(data => {
+                    if (data.status === 'ok') {
+                        // Update view count display if element exists
+                        const viewCountElement = document.getElementById('view-count');
+                        if (viewCountElement) {
+                            viewCountElement.textContent = data.view_count;
+                        }
+                    }
+                }).catch(error => {
+                    console.log('Error updating view count:', error);
+                });
+            });
+        </script>
     </body>
 </html>

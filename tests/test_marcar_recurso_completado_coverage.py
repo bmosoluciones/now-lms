@@ -15,6 +15,9 @@
 
 """Test coverage for marcar_recurso_completado function lines 1023-1033."""
 
+import time
+
+import pytest
 
 from now_lms.db import CursoRecursoAvance, database
 
@@ -22,45 +25,52 @@ from now_lms.db import CursoRecursoAvance, database
 class TestMarcarRecursoCompletadoCoverage:
     """Test marcar_recurso_completado function to hit lines 1023-1033."""
 
-    def test_marcar_recurso_completado_lines_1023_1033_existing_progress(self, full_db_setup, client):
+    @pytest.fixture(scope="function")
+    def test_client(self, session_full_db_setup):
+        """Provide test client using session fixture."""
+        return session_full_db_setup.test_client()
+
+    def test_marcar_recurso_completado_lines_1023_1033_existing_progress(self, session_full_db_setup, test_client):
         """Test hitting lines 1023-1033 AND the 'if avance:' branch on line 1033."""
-        app = full_db_setup
+        # Generate unique identifiers to avoid conflicts
+        unique_suffix = int(time.time() * 1000) % 1000000
+        unique_email = f"coverage_{unique_suffix}@test.com"
 
-        # Register a user using the same pattern as the working test
-        post = client.post(
-            "/user/logon",
-            data={
-                "nombre": "Coverage",
-                "apellido": "Student",
-                "correo_electronico": "coverage@test.com",
-                "acceso": "coverage123",
-            },
-            follow_redirects=True,
-        )
-        assert post.status_code == 200
+        with session_full_db_setup.app_context():
+            # Register a user using the same pattern as the working test
+            post = test_client.post(
+                "/user/logon",
+                data={
+                    "nombre": "Coverage",
+                    "apellido": "Student",
+                    "correo_electronico": unique_email,
+                    "acceso": "coverage123",
+                },
+                follow_redirects=True,
+            )
+            assert post.status_code == 200
 
-        with app.app_context():
             # Activate the user
             from now_lms.db import Usuario
 
             user = database.session.execute(
-                database.select(Usuario).filter_by(correo_electronico="coverage@test.com")
+                database.select(Usuario).filter_by(correo_electronico=unique_email)
             ).first()[0]
 
             user.activo = True
             database.session.commit()
 
         # Login
-        login_response = client.post("/user/login", data={"usuario": "coverage@test.com", "acceso": "coverage123"})
+        login_response = test_client.post("/user/login", data={"usuario": unique_email, "acceso": "coverage123"})
         assert login_response.status_code == 302  # Successful login redirect
 
         # Enroll to free course using the same pattern
-        enroll = client.post(
+        enroll = test_client.post(
             "/course/free/enroll",
             data={
                 "nombre": "Coverage",
                 "apellido": "Student",
-                "correo_electronico": "coverage@test.com",
+                "correo_electronico": unique_email,
                 "direccion1": "Calle Test 123",
                 "direccion2": "Apto. 456",
                 "pais": "Mexico",
@@ -71,11 +81,11 @@ class TestMarcarRecursoCompletadoCoverage:
         )
         assert enroll.status_code == 200
 
-        with app.app_context():
+        with session_full_db_setup.app_context():
             # Create existing progress record for the youtube resource to hit the "if avance:" branch
             resource_id = "02HPB3AP3QNVK9ES6JGG5YK7CA"
             existing_progress = CursoRecursoAvance(
-                usuario="coverage@test.com",
+                usuario=unique_email,
                 curso="free",
                 recurso=resource_id,
                 completado=False,
@@ -85,17 +95,17 @@ class TestMarcarRecursoCompletadoCoverage:
 
         # Now make the request to complete the resource - this should hit lines 1023-1033
         # and find the existing progress record, thus executing the "if avance:" branch
-        complete_resource = client.get(f"/course/free/resource/youtube/{resource_id}/complete", follow_redirects=True)
+        complete_resource = test_client.get(f"/course/free/resource/youtube/{resource_id}/complete", follow_redirects=True)
         assert complete_resource.status_code == 200
         assert b"Recurso marcado como completado" in complete_resource.data
 
-        with app.app_context():
+        with session_full_db_setup.app_context():
             # Verify the existing progress was updated (not a new one created)
 
             progress_records = (
                 database.session.execute(
                     database.select(CursoRecursoAvance).filter_by(
-                        usuario="coverage@test.com", curso="free", recurso=resource_id
+                        usuario=unique_email, curso="free", recurso=resource_id
                     )
                 )
                 .scalars()
@@ -110,45 +120,47 @@ class TestMarcarRecursoCompletadoCoverage:
             completed_records = [r for r in progress_records if r.completado]
             assert len(completed_records) >= 1
 
-    def test_marcar_recurso_completado_lines_1023_1033_no_existing_progress(self, full_db_setup, client):
+    def test_marcar_recurso_completado_lines_1023_1033_no_existing_progress(self, session_full_db_setup, test_client):
         """Test hitting lines 1023-1033 AND the 'else:' branch after line 1037."""
-        app = full_db_setup
+        # Generate unique identifiers to avoid conflicts
+        unique_suffix = int(time.time() * 1000) % 1000000
+        unique_email = f"coverage2_{unique_suffix}@test.com"
 
-        # Register a different user
-        post = client.post(
-            "/user/logon",
-            data={
-                "nombre": "Coverage2",
-                "apellido": "Student",
-                "correo_electronico": "coverage2@test.com",
-                "acceso": "coverage123",
-            },
-            follow_redirects=True,
-        )
-        assert post.status_code == 200
+        with session_full_db_setup.app_context():
+            # Register a different user
+            post = test_client.post(
+                "/user/logon",
+                data={
+                    "nombre": "Coverage2",
+                    "apellido": "Student",
+                    "correo_electronico": unique_email,
+                    "acceso": "coverage123",
+                },
+                follow_redirects=True,
+            )
+            assert post.status_code == 200
 
-        with app.app_context():
             # Activate the user
             from now_lms.db import Usuario
 
             user = database.session.execute(
-                database.select(Usuario).filter_by(correo_electronico="coverage2@test.com")
+                database.select(Usuario).filter_by(correo_electronico=unique_email)
             ).first()[0]
 
             user.activo = True
             database.session.commit()
 
         # Login
-        login_response = client.post("/user/login", data={"usuario": "coverage2@test.com", "acceso": "coverage123"})
+        login_response = test_client.post("/user/login", data={"usuario": unique_email, "acceso": "coverage123"})
         assert login_response.status_code == 302  # Successful login redirect
 
         # Enroll to free course
-        enroll = client.post(
+        enroll = test_client.post(
             "/course/free/enroll",
             data={
                 "nombre": "Coverage2",
                 "apellido": "Student",
-                "correo_electronico": "coverage2@test.com",
+                "correo_electronico": unique_email,
                 "direccion1": "Calle Test 123",
                 "direccion2": "Apto. 456",
                 "pais": "Mexico",
@@ -164,16 +176,16 @@ class TestMarcarRecursoCompletadoCoverage:
         # Thus executing the "else:" branch after line 1037
         resource_id = "02HPB3AP3QNVK9ES6JGG5YK7CA"
 
-        complete_resource = client.get(f"/course/free/resource/youtube/{resource_id}/complete", follow_redirects=True)
+        complete_resource = test_client.get(f"/course/free/resource/youtube/{resource_id}/complete", follow_redirects=True)
         assert complete_resource.status_code == 200
         assert b"Recurso marcado como completado" in complete_resource.data
 
-        with app.app_context():
+        with session_full_db_setup.app_context():
             # Verify a new progress record was created
             progress_records = (
                 database.session.execute(
                     database.select(CursoRecursoAvance).filter_by(
-                        usuario="coverage2@test.com", curso="free", recurso=resource_id
+                        usuario=unique_email, curso="free", recurso=resource_id
                     )
                 )
                 .scalars()
