@@ -360,8 +360,8 @@ def reset_password():
 
 
 @admin.command()
-def set_emergency():
-    """Disable all admin users and create a new one (emergency security measure)."""
+def set_admin():
+    """Disable all admin users and create a new one."""
     from now_lms.auth import proteger_passwd
     from now_lms.db import Usuario
 

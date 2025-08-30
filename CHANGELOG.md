@@ -7,7 +7,23 @@ All notable changes to this project will be documented in this file.
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/).
 
 
+
+
 ## [ unreleased ]
+
+-------------------
+
+## [ release: v0.0.1b15.dev20250830 ] - 2025-08-30
+
+### Added:
+ - View counter in blog posts.
+
+### Fixed
+ - Babel translation directory discovery.
+
+-------------------
+
+## [ release: v0.0.1b14.dev20250828 ] - 2025-08-28
 
 ### Added:
  - Define TESTING

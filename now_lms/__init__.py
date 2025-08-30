@@ -71,6 +71,7 @@ from now_lms.config import (
 )
 from now_lms.db import Configuracion, Usuario, database
 from now_lms.db.info import app_info, course_info, lms_info
+from now_lms.i18n import _
 from now_lms.db.initial_data import (
     asignar_cursos_a_categoria,
     asignar_cursos_a_etiquetas,
@@ -208,7 +209,11 @@ def inicializa_extenciones_terceros(flask_app: Flask):
         mde.init_app(flask_app)
         _mail_instance.init_app(flask_app)
         flask_app.config["BABEL_DEFAULT_LOCALE"] = "es"
-        flask_app.config["BABEL_TRANSLATION_DIRECTORIES"] = "now_lms/translations"
+        # Use absolute path for translations directory
+        from os.path import dirname, join as path_join
+
+        translations_dir = path_join(dirname(__file__), "translations")
+        flask_app.config["BABEL_TRANSLATION_DIRECTORIES"] = translations_dir
         flask_app.config["BABEL_SUPPORTED_LOCALES"] = ["es", "en"]
         babel.init_app(flask_app, locale_selector=get_locale, timezone_selector=get_timezone)
     log.trace("Third-party extensions started successfully.")
@@ -264,7 +269,7 @@ def cargar_sesion(identidad):
 @administrador_sesion.unauthorized_handler
 def no_autorizado():
     """Redirecciona al inicio de sesión usuarios no autorizados."""
-    flash("Favor iniciar sesión para acceder al sistema.", "warning")
+    flash(_("Favor iniciar sesión para acceder al sistema."), "warning")
     return INICIO_SESION
 
 
@@ -377,7 +382,7 @@ makes a payment.
 def handle_402(error):
     """Pagina personalizada para recursos que requieren pago."""
     if not current_user.is_authenticated:
-        flash("Favor iniciar sesión para acceder a este recurso.", "warning")
+        flash(_("Favor iniciar sesión para acceder a este recurso."), "warning")
         log.warning(f"Resource not available for anonymous user, payment required: {error}")
     else:
         log.warning(f"Resource not available, payment required for {current_user.usuario}: {error}")
@@ -540,7 +545,7 @@ def _register_error_handlers(flask_app):
     def error_403(error):
         """Pagina personalizada para recursos no autorizados."""
         if not current_user.is_authenticated:
-            flash("Favor iniciar sesión para acceder a este recurso.", "warning")
+            flash(_("Favor iniciar sesión para acceder a este recurso."), "warning")
             log.warning(f"Resource not authorized for anonymous user: {error}")
         else:
             log.warning(f"Resource not authorized for {current_user.usuario}: {error}")

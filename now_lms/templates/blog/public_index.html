@@ -27,9 +27,11 @@
                             </h2>
                             <div class="text-muted mb-2">
                                 Por {{ post.author.nombre }} {{ post.author.apellido or '' }} {% if post.published_at %} el {{
-                                post.published_at.strftime('%d/%m/%Y') }} {% else %} el {{ post.fecha_alta.strftime('%d/%m/%Y')
+                                post.published_at.strftime('%d/%m/%Y') }} {% else %} el {{ post.timestamp.strftime('%d/%m/%Y')
                                 }} {% endif %} {% if post.comment_count > 0 %} - {{ post.comment_count }} comentario{{ 's' if
-                                post.comment_count != 1 else '' }} {% endif %}
+                                post.comment_count != 1 else '' }} {% endif %} {% if post.view_count is defined and
+                                post.view_count is not none %} - {{ post.view_count }} vista{{ 's' if post.view_count != 1 else
+                                '' }} {% endif %}
                             </div>
 
                             {% if post.tags %}

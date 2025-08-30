@@ -48,6 +48,7 @@ from wtforms.widgets import ColorInput, TextArea, html_params
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
+from now_lms.i18n import _l
 
 
 # Form label constants
@@ -164,17 +165,17 @@ class ConfigForm(FlaskForm):
     descripcion = StringField(validators=[DataRequired()])
 
     # Localización
-    moneda = SelectField("Moneda", choices=MONEDAS, validators=[])
-    lang = SelectField("Idioma", choices=[("es", "Español"), ("en", "Inglés")], validators=[])
-    timezone = SelectField("Zona Horaria", choices=ZONAS_HORARIAS, validators=[])
+    moneda = SelectField(_l("Moneda"), choices=MONEDAS, validators=[])
+    lang = SelectField(_l("Idioma"), choices=[("es", "Español"), ("en", "Inglés")], validators=[])
+    timezone = SelectField(_l("Zona Horaria"), choices=ZONAS_HORARIAS, validators=[])
 
     verify_user_by_email = BooleanField(validators=[])
 
     # Navigation configuration
-    enable_programs = BooleanField("Habilitar Programas", default=False, validators=[])
-    enable_masterclass = BooleanField("Habilitar Master Class", default=False, validators=[])
-    enable_resources = BooleanField("Habilitar Recursos descargables", default=False, validators=[])
-    enable_blog = BooleanField("Habilitar Blog", default=False, validators=[])
+    enable_programs = BooleanField(_l("Habilitar Programas"), default=False, validators=[])
+    enable_masterclass = BooleanField(_l("Habilitar Master Class"), default=False, validators=[])
+    enable_resources = BooleanField(_l("Habilitar Recursos descargables"), default=False, validators=[])
+    enable_blog = BooleanField(_l("Habilitar Blog"), default=False, validators=[])
 
 
 class ThemeForm(FlaskForm):
@@ -235,17 +236,17 @@ class CurseForm(BaseForm):
     # Nombre y descripción de la base.
     codigo = StringField(validators=[DataRequired()])
     descripcion_corta = StringField(validators=[DataRequired()])
-    nivel = SelectField("User", choices=[(0, "Introductorio"), (1, "Principiante"), (2, "Intermedio"), (3, "Avanzado")])
+    nivel = SelectField(_l("Nivel"), choices=[(0, "Introductorio"), (1, "Principiante"), (2, "Intermedio"), (3, "Avanzado")])
     duracion = IntegerField(validators=[])
     # Estado de publicación
     publico = BooleanField(validators=[])
     # Modalidad
     modalidad = SelectField(
-        "Modalidad",
+        _l("Modalidad"),
         choices=[("self_paced", "A su propio ritmo"), ("time_based", "Con tiempo definido"), ("live", "En vivo")],
     )
     # Configuración del foro
-    foro_habilitado = BooleanField("Habilitar foro", validators=[])
+    foro_habilitado = BooleanField(_l("Habilitar foro"), validators=[])
     # Disponibilidad de cupos
     limitado = BooleanField(validators=[])
     capacidad = IntegerField(validators=[])

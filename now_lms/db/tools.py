@@ -400,9 +400,9 @@ def elimina_imagen_usuario(ulid: str):
 
     try:
         remove(LOGO)
-        flash("Imagen de usuario eliminada correctamente.", "success")
+        flash(_("Imagen de usuario eliminada correctamente."), "success")
     except FileNotFoundError:
-        flash("Imagen de usuario no existe.", "error")
+        flash(_("Imagen de usuario no existe."), "error")
 
 
 def cursos_por_etiqueta(tag: str) -> int:
