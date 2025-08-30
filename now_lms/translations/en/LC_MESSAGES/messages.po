@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-08-30 16:52+0000\n"
+"POT-Creation-Date: 2025-08-30 18:01+0000\n"
 "PO-Revision-Date: 2025-08-30 04:48+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -133,16 +133,20 @@ msgstr "Verify ads file"
 
 #: now_lms/templates/admin/adsense.html:132
 #: now_lms/templates/admin/config.html:151
+#: now_lms/templates/admin/mail.html:109
+#: now_lms/templates/admin/mail_check.html:37
 msgid "Cancelar"
 msgstr "Cancel"
 
 #: now_lms/templates/admin/adsense.html:134
 #: now_lms/templates/admin/config.html:153
+#: now_lms/templates/admin/mail.html:112
 #, fuzzy
 msgid "Actualizar Configuración"
 msgstr "The course cover could not be updated."
 
-#: now_lms/templates/admin/config.html:6
+#: now_lms/templates/admin/config.html:6 now_lms/templates/admin/mail.html:7
+#: now_lms/templates/admin/mail_check.html:7
 msgid "Editar configuracion"
 msgstr "Edit configuration"
 
@@ -163,7 +167,6 @@ msgstr "Website Name"
 #: now_lms/templates/admin/config.html:34
 msgid "Descripción del Sitio"
 msgstr "Website Description"
-
 
 #: now_lms/templates/admin/config.html:41
 msgid "Configuración Regional"
@@ -202,6 +205,7 @@ msgid ""
 "Configure qué elementos del menú de navegación estarán visibles para los "
 "usuarios"
 msgstr ""
+"Configure which elements of the navigation menu will be visible to users"
 
 #: now_lms/templates/admin/config.html:81
 #, fuzzy
@@ -274,13 +278,189 @@ msgstr "Administration"
 msgid "Inicio"
 msgstr "Home"
 
-#: now_lms/templates/learning/curso.html:45
-msgid "Portada del Curso"
-msgstr "Course Cover"
+#: now_lms/templates/admin/flagged_messages.html:45
+msgid ""
+"Se encontraron {{ flagged_messages|length }} mensaje(s) reportado(s) que "
+"requieren\n"
+"                            revisión."
+msgstr ""
 
+#: now_lms/templates/admin/flagged_messages.html:55
+#, fuzzy
+msgid "Mensaje Reportado"
+msgstr "New Forum Message"
+
+#: now_lms/templates/admin/flagged_messages.html:57
+#, fuzzy
+msgid "Reportado"
+msgstr "New Forum Message"
+
+#: now_lms/templates/admin/flagged_messages.html:63
+#, fuzzy
+msgid "Información del Mensaje"
+msgstr "Information"
+
+#: now_lms/templates/admin/flagged_messages.html:69
+msgid "Fecha"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:72
+#, fuzzy
+msgid "Curso"
+msgstr "Courses"
+
+#: now_lms/templates/admin/flagged_messages.html:82
+#, fuzzy
+msgid "Estudiante"
+msgstr "Pending"
+
+#: now_lms/templates/admin/flagged_messages.html:86
+#, fuzzy
+msgid "Contenido del Mensaje"
+msgstr "Course Content"
+
+#: now_lms/templates/admin/flagged_messages.html:89
+msgid "Motivo del Reporte"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:93
+msgid "Acciones"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:99
+msgid "Ver Conversación Completa"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:105
+msgid "Ver Curso"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:112
+msgid "Marcar como Revisado"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:117
+msgid "Estadísticas del Hilo"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:119
+msgid "Estado"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:122
+msgid "Resuelto"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:124
+msgid "Cerrado"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:127
 #: now_lms/templates/learning/curso.html:135
 msgid "Mensajes"
 msgstr "Messages"
+
+#: now_lms/templates/admin/flagged_messages.html:129
+msgid "Creado"
+msgstr "Created"
+
+#: now_lms/templates/admin/inactive_users.html:6
+msgid "Usuarios inativos"
+msgstr "Inactive Users"
+
+#: now_lms/templates/admin/inactive_users.html:16
+msgid "Usuarios pendientes de activación."
+msgstr "Users pending activation."
+
+#: now_lms/templates/admin/inactive_users.html:21
+msgid "Lista de usuarios registrados en el sistema pendientes de activar."
+msgstr "List of registered users pending activation."
+
+#: now_lms/templates/admin/inactive_users.html:25
+#: now_lms/templates/admin/mail.html:50
+msgid "Usuario"
+msgstr "User"
+
+#: now_lms/templates/admin/inactive_users.html:26
+msgid "Nombre"
+msgstr "First Name"
+
+#: now_lms/templates/admin/inactive_users.html:27
+msgid "Apellido"
+msgstr "Last Name"
+
+#: now_lms/templates/admin/inactive_users.html:28
+msgid "Correo Electronico"
+msgstr "Email"
+
+#: now_lms/templates/admin/inactive_users.html:29
+msgid "Accion"
+msgstr "Action"
+
+#: now_lms/templates/admin/inactive_users.html:60
+msgid "Aprobar"
+msgstr "Approve"
+
+#: now_lms/templates/admin/inactive_users.html:67
+msgid "Rechazar"
+msgstr "Reject"
+
+#: now_lms/templates/admin/mail.html:21
+#: now_lms/templates/admin/mail_check.html:21
+msgid "Configuración del Correo Electronico"
+msgstr "Email Configuration"
+
+#: now_lms/templates/admin/mail.html:26
+#, fuzzy
+msgid ""
+"La configuración de correo electrónico ha sido\n"
+"                    verificada correctamente"
+msgstr "Email configuration has been verified successfully."
+
+#: now_lms/templates/admin/mail.html:33
+msgid "Datos de acceso al servidor SMTP"
+msgstr "SMTP Server Access Details"
+
+#: now_lms/templates/admin/mail.html:36
+msgid "Servidor"
+msgstr "Server"
+
+#: now_lms/templates/admin/mail.html:41
+msgid "Puerto"
+msgstr "Port"
+
+#: now_lms/templates/admin/mail.html:55
+msgid "Contraseña (Oculta por seguridad.)"
+msgstr "Password (Hidden for security.)"
+
+#: now_lms/templates/admin/mail.html:64
+msgid "Utilizar TLS"
+msgstr "Use TLS"
+
+#: now_lms/templates/admin/mail.html:69
+msgid "Utilizar SSL"
+msgstr "Use SSL"
+
+#: now_lms/templates/admin/mail.html:78
+msgid "Correo predeterminado como enviado por"
+msgstr "Default email as sent by"
+
+#: now_lms/templates/admin/mail.html:85
+msgid "Correo predeterminado enviado por nombre"
+msgstr "Default email sent by name"
+
+#: now_lms/templates/admin/mail.html:99
+#: now_lms/templates/admin/mail_check.html:40
+msgid "Enviar Correo de Prueba"
+msgstr "Send Test Email"
+
+#: now_lms/templates/admin/mail_check.html:25
+msgid "Permitir Correo Electronico"
+msgstr "Allow Email"
+
+#: now_lms/templates/learning/curso.html:45
+msgid "Portada del Curso"
+msgstr "Course Cover"
 
 #: now_lms/templates/learning/curso.html:139
 msgid "¿Tienes alguna pregunta sobre el curso? Contacta a tus instructores."
@@ -491,7 +671,9 @@ msgid "No se pudo actualizar el tema del sitio web."
 msgstr "The website theme could not be updated."
 
 #: now_lms/vistas/settings.py:153
-msgid "Debe configurar el correo electronico antes de habilitar verificación por e-mail."
+msgid ""
+"Debe configurar el correo electronico antes de habilitar verificación por"
+" e-mail."
 msgstr "You must configure email before enabling email verification."
 
 #: now_lms/vistas/settings.py:173
@@ -529,3 +711,4 @@ msgstr "PayPal settings updated successfully."
 #: now_lms/vistas/settings.py:455
 msgid "No se pudo actualizar la configuración de Paypal."
 msgstr "The PayPal settings could not be updated."
+

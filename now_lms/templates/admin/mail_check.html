@@ -4,7 +4,7 @@
     <head>
         {{ current_theme.headertags() }}
 
-        <title>Editar configuracion</title>
+        <title>{{_("Editar configuracion")}}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -18,11 +18,11 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h5 class="pb-2 border-bottom">Configuración del Correo Electronico.</h5>
+                <h5 class="pb-2 border-bottom">{{_("Configuración del Correo Electronico")}}.</h5>
                 <form method="post">
                     <div class="row">
                         <div class="col-sm-6">
-                            <label for="email" class="form-label">Permitir Correo Electronico:</label>
+                            <label for="email" class="form-label">{{_("Permitir Correo Electronico")}}:</label>
                             {{ form.email(class="form-control") }}
                         </div>
                     </div>
@@ -34,9 +34,11 @@
                         <div>
                             <br />
                             <a class="btn btn-danger" href="{{ url_for('admin_profile.pagina_admin') }}" role="button"
-                                >Cancelar</a
+                                >{{_("Cancelar")}}</a
                             >
-                            <button class="w-10 btn btn-primary btn-block" type="submit">Enviar Correo de Prueba</button>
+                            <button class="w-10 btn btn-primary btn-block" type="submit">
+                                {{_("Enviar Correo de Prueba")}}
+                            </button>
                         </div>
                     </div>
                 </form>
