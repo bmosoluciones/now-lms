@@ -10,6 +10,13 @@ All notable changes to this project will be documented in this file.
 ## [ unreleased ]
 
 ### Added:
+ - View counter in blog posts.
+
+-------------------
+
+## [ release: v0.0.1b14.dev20250828 ] - 2025-08-28
+
+### Added:
  - Define TESTING
  - Define FORCE_HTTPS
 
