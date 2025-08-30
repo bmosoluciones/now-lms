@@ -51,7 +51,6 @@ msgid "Imagen de usuario no existe."
 msgstr "User image does not exist."
 
 #: now_lms/templates/admin/adsense.html:7
-#, fuzzy
 msgid "Configuración de Anuncios de AdSense"
 msgstr "Edit AdSense settings."
 
@@ -72,14 +71,12 @@ msgid "Header scritp"
 msgstr "Header script"
 
 #: now_lms/templates/admin/adsense.html:42
-#, fuzzy
 msgid "ID de Usuario de AdSense"
-msgstr "AdSense user settings."
+msgstr "AdSense user ID."
 
 #: now_lms/templates/admin/adsense.html:51
-#, fuzzy
 msgid "Configuración de anuncios en el sitio"
-msgstr "Edit AdSense settings."
+msgstr "AdSense settings."
 
 #: now_lms/templates/admin/adsense.html:59
 msgid "Código Glogal de AdSense"
@@ -207,9 +204,8 @@ msgstr ""
 "Configure which elements of the navigation menu will be visible to users"
 
 #: now_lms/templates/admin/config.html:81
-#, fuzzy
 msgid "Habilitar Programas"
-msgstr "Programs"
+msgstr "Enable Programs"
 
 #: now_lms/templates/admin/config.html:84
 msgid "Los usuarios verán la opción Programas en el menú de navegación"
@@ -240,9 +236,8 @@ msgid "Los usuarios verán la opción Blog en el menú de navegación"
 msgstr "Users will see the Blog option in the navigation menu"
 
 #: now_lms/templates/admin/config.html:126
-#, fuzzy
 msgid "Configuración de verificación de usuarios"
-msgstr "Edit AdSense settings."
+msgstr "User Verification Settings"
 
 #: now_lms/templates/admin/config.html:138
 msgid ""
@@ -258,9 +253,8 @@ msgstr "Allow new users to verify via email"
 
 #: now_lms/templates/admin/flagged_messages.html:6
 #: now_lms/templates/admin/flagged_messages.html:34
-#, fuzzy
 msgid "Mensajes Reportados"
-msgstr "New Forum Message"
+msgstr "Reported Messages"
 
 #: now_lms/templates/admin/flagged_messages.html:6
 #: now_lms/templates/admin/flagged_messages.html:31
@@ -406,7 +400,6 @@ msgid "Configuración del Correo Electronico"
 msgstr "Email Configuration"
 
 #: now_lms/templates/admin/mail.html:26
-#, fuzzy
 msgid ""
 "La configuración de correo electrónico ha sido\n"
 "                    verificada correctamente"
@@ -525,7 +518,6 @@ msgstr "Programs"
 
 #: now_lms/templates/themes/cambridge/navbar.j2:54
 #: now_lms/templates/themes/now_lms/navbar.j2:63
-#, fuzzy
 msgid "Recursos"
 msgstr "Resources"
 
@@ -623,9 +615,8 @@ msgid "Te has inscrito exitosamente al programa."
 msgstr "You have successfully enrolled in the program."
 
 #: now_lms/vistas/programs.py:386
-#, fuzzy
 msgid "Hubo un error al inscribirte al programa."
-msgstr "There was an error creating the program."
+msgstr "There was an error enrolling you in the program."
 
 #: now_lms/vistas/programs.py:403
 msgid "Debes inscribirte al programa primero."
@@ -648,7 +639,6 @@ msgid "Error al inscribir usuario."
 msgstr "Error enrolling user."
 
 #: now_lms/vistas/programs.py:543
-#, fuzzy
 msgid "Programa no encontrado."
 msgstr "Program not found."
 
@@ -657,7 +647,6 @@ msgid "Certificado de programa emitido por completar todos los cursos."
 msgstr "Program certificate issued for completing all courses."
 
 #: now_lms/vistas/settings.py:108
-#, fuzzy
 msgid "Tema del sitio web actualizado exitosamente."
 msgstr "Website theme updated successfully."
 
