@@ -3,7 +3,7 @@
 <html lang="es" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Usuarios inativos</title>
+        <title>{{_("Usuarios inativos")}}</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -13,20 +13,20 @@
 
         <main>
             <div class="container px-0 py-3" id="user_list">
-                <h4 class="pb-2 border-bottom">Usuarios pendientes de activación.</h4>
+                <h4 class="pb-2 border-bottom">{{_("Usuarios pendientes de activación.")}}</h4>
 
                 <div class="container" id="user_table">
                     <table class="table table-sm table-borderless">
                         <caption>
-                            Lista de usuarios registrados en el sistema pendientes de activar.
+                            {{_("Lista de usuarios registrados en el sistema pendientes de activar.")}}
                         </caption>
                         <thead>
                             <tr>
-                                <th scope="col">Usuario</th>
-                                <th scope="col">Nombre</th>
-                                <th scope="col">Apellido</th>
-                                <th scope="col">Correo Electronico</th>
-                                <th scope="col">Accion</th>
+                                <th scope="col">{{_("Usuario")}}</th>
+                                <th scope="col">{{_("Nombre")}}</th>
+                                <th scope="col">{{_("Apellido")}}</th>
+                                <th scope="col">{{_("Correo Electronico")}}</th>
+                                <th scope="col">{{_("Accion")}}</th>
                             </tr>
                         </thead>
                         {% for item in consulta.items -%}
@@ -57,14 +57,14 @@
                                         <a
                                             href="{{ url_for('admin_profile.activar_usuario', user_id=item.id, ruta='usuarios_inactivos') }}"
                                             class="link-light"
-                                            >Aprobar</a
+                                            >{{_("Aprobar")}}</a
                                         >
                                     </span>
                                     <span class="badge bg-danger">
                                         <a
                                             href="{{ url_for('admin_profile.eliminar_usuario', user_id=item.id, ruta='usuarios_inactivos') }}"
                                             class="link-light"
-                                            >Rechazar</a
+                                            >{{_("Rechazar")}}</a
                                         >
                                     </span>
                                 </td>
