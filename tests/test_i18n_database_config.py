@@ -50,7 +50,7 @@ def test_locale_respects_database_spanish_setting(session_full_db_setup):
             assert locale == "es", f"Expected 'es' when database is set to Spanish, got '{locale}'"
 
 
-@pytest.mark.xfail
+@pytest.mark.xfail(raises=AssertionError)
 def test_english_translations_work_when_enabled(session_full_db_setup):
     """Test that English translations work when database language is set to 'en'."""
     with session_full_db_setup.app_context():
