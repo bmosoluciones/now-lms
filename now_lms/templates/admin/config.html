@@ -3,7 +3,7 @@
 <html lang="es" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
-        <title>Editar configuracion</title>
+        <title>{{_("Editar configuracion")}}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -17,58 +17,58 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Editar configuración del sitio web.</h4>
+                <h4 class="pb-2 border-bottom">{{_("Editar configuración del sitio web")}}.</h4>
                 <form method="post">
                     <div class="row">
                         <div class="col-sm-8">
-                            <h5>Datos Generales del Sitio Web.</h5>
+                            <h5>{{_("Datos Generales del Sitio Web")}}.</h5>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
-                            <label for="titulo" class="form-label">Nombre del Sitio Web</label>
+                            <label for="titulo" class="form-label">{{_("Nombre del Sitio Web")}}:</label>
                             {{ form.titulo(class="form-control", id="titulo", value=config.titulo) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="descripcion" class="form-label">Descripción del Sitio</label>
+                            <label for="descripcion" class="form-label">{{_("Descripción del Sitio")}}:</label>
                             {{ form.descripcion(class="form-control", id="descripcion", value=config.descripcion) }}
                         </div>
                     </div>
                     <br />
                     <div class="row">
                         <div class="col-sm-8">
-                            <h5>Configuración Regional.</h5>
+                            <h5>{{_("Configuración Regional")}}.</h5>
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="moneda" class="form-label">Moneda del Sitio</label>
+                            <label for="moneda" class="form-label">{{_("Moneda del Sitio")}}:</label>
                             {{ form.moneda(class="form-control form-select", id="moneda", value=config.moneda) }}
                             <div class="form-text">
-                                Seleccione la moneda predeterminada para procesar pagos y mostrar precios.
+                                {{_("Seleccione la moneda predeterminada para procesar pagos y mostrar precios")}}.
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <label for="timezone" class="form-label">Zona Horaria</label>
+                            <label for="timezone" class="form-label">{{_("Zona Horaria")}}:</label>
                             {{ form.timezone(class="form-control form-select", id="timezone", value=config.timezone) }}
-                            <div class="form-text">Seleccione la zona horaria adecuada para su pais.</div>
+                            <div class="form-text">{{_("Seleccione la zona horaria adecuada para su pais")}}.</div>
                         </div>
                     </div>
                     <br />
                     <div class="row">
                         <div class="col-sm-6">
-                            <label for="lang" class="form-label">Idioma del sitio web.</label>
+                            <label for="lang" class="form-label">{{_("Idioma del sitio web")}}.</label>
                             {{ form.lang(class="form-control form-select", id="timezone", value=config.lang) }}
-                            <div class="form-text">Seleccione el idioma de su sitio web.</div>
+                            <div class="form-text">{{_("Seleccione el idioma de su sitio web")}}.</div>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-sm-8">
                             <br />
-                            <h5>Configuración de Navegación.</h5>
+                            <h5>{{_("Configuración de Navegación")}}.</h5>
                             <p class="text-muted">
-                                Configure qué elementos del menú de navegación estarán visibles para los usuarios.
+                                {{_("Configure qué elementos del menú de navegación estarán visibles para los usuarios")}}.
                             </p>
                         </div>
                     </div>
@@ -78,18 +78,22 @@
                             <div class="form-check">
                                 {{ form.enable_programs(class="form-check-input", id="enable_programs",
                                 checked=config.enable_programs) }}
-                                <label class="form-check-label" for="enable_programs"> Habilitar Programas </label>
+                                <label class="form-check-label" for="enable_programs">{{_("Habilitar Programas")}}:</label>
                             </div>
-                            <div class="form-text">Los usuarios verán la opción "Programas" en el menú de navegación.</div>
+                            <div class="form-text">
+                                {{_("Los usuarios verán la opción Programas en el menú de navegación")}}.
+                            </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-check">
                                 {{ form.enable_masterclass(class="form-check-input", id="enable_masterclass",
                                 checked=config.enable_masterclass) }}
-                                <label class="form-check-label" for="enable_masterclass"> Habilitar Master Class </label>
+                                <label class="form-check-label" for="enable_masterclass">
+                                    {{_("Habilitar Master Class")}}:
+                                </label>
                             </div>
                             <div class="form-text">
-                                Los usuarios verán la opción "Clases Magistrales" en el menú de navegación.
+                                {{_("Los usuarios verán la opción Clases Magistrales en el menú de navegación")}}.
                             </div>
                         </div>
                     </div>
@@ -100,49 +104,53 @@
                                 {{ form.enable_resources(class="form-check-input", id="enable_resources",
                                 checked=config.enable_resources) }}
                                 <label class="form-check-label" for="enable_resources">
-                                    Habilitar Recursos descargables
+                                    {{_("Habilitar Recursos descargables")}}:
                                 </label>
                             </div>
-                            <div class="form-text">Los usuarios verán la opción "Recursos" en el menú de navegación.</div>
+                            <div class="form-text">
+                                {{_("Los usuarios verán la opción Recursos en el menú de navegación")}}.
+                            </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-check">
                                 {{ form.enable_blog(class="form-check-input", id="enable_blog", checked=config.enable_blog) }}
-                                <label class="form-check-label" for="enable_resources"> Habilitar Blog </label>
+                                <label class="form-check-label" for="enable_resources"> {{_("Habilitar Blog")}} </label>
                             </div>
-                            <div class="form-text">Los usuarios verán la opción "Blog" en el menú de navegación.</div>
+                            <div class="form-text">{{_("Los usuarios verán la opción Blog en el menú de navegación")}}.</div>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-sm-8">
                             <br />
-                            <h5>Configuración de verificación de usuarios.</h5>
+                            <h5>{{_("Configuración de verificación de usuarios")}}.</h5>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
                             {% if config.email_verificado %}
                             <div class="alert alert-success" role="alert">
-                                <i class="bi bi-check-circle" aria-hidden="true"></i> La configuración de correo electrónico ha
-                                sido verificada correctamente.
+                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{("La configuración de correo
+                                electrónico ha sido verificada correctamente.")}}
                             </div>
                             {% else %}
                             <div class="alert alert-warning" role="alert">
-                                <i class="bi bi-dash-circle-dotted" aria-hidden="true"></i> La configuración de correo
-                                electrónico no ha sido verificada.
+                                <i class="bi bi-dash-circle-dotted" aria-hidden="true"></i> {{_("La configuración de correo
+                                electrónico no ha sido verificada.")}}
                             </div>
                             {% endif %}
                             <label for="verificacion" class="form-label"
-                                >Permitir a nuevos usuarios verificarse vía correo electronico:</label
+                                >{{_("Permitir a nuevos usuarios verificarse vía correo electronico")}}:</label
                             >
                             {{ form.verify_user_by_email(value=config.verify_user_by_email) }}
                         </div>
                     </div>
 
                     <br />
-                    <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button">Cancelar</a>
-                    <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
+                    <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button"
+                        >{{_("Cancelar")}}</a
+                    >
+                    <button class="w-10 btn btn-primary btn-block" type="submit">{{_("Actualizar Configuración")}}</button>
                 </form>
             </div>
         </main>

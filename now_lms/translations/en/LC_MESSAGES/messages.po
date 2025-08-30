@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-08-30 11:33+0000\n"
+"POT-Creation-Date: 2025-08-30 16:52+0000\n"
 "PO-Revision-Date: 2025-08-30 04:48+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -20,36 +20,252 @@ msgstr ""
 
 #: now_lms/__init__.py:272
 msgid "Favor iniciar sesión para acceder al sistema."
-msgstr ""
+msgstr "Please log in to access the system."
 
 #: now_lms/__init__.py:385 now_lms/__init__.py:548
 msgid "Favor iniciar sesión para acceder a este recurso."
-msgstr ""
+msgstr "Please log in to access this resource."
 
 #: now_lms/bi.py:218
 msgid "Curso finalizado. Todos los mensajes del foro han sido cerrados."
-msgstr ""
+msgstr "Course completed. All forum messages have been closed."
 
 #: now_lms/bi.py:228
 msgid "Curso eliminado del sitio Web."
-msgstr ""
+msgstr "Course removed from the website."
 
 #: now_lms/bi.py:245
 msgid "No se puede publicar el curso"
-msgstr ""
+msgstr "The course cannot be published."
 
 #: now_lms/db/tools.py:140
 msgid "Sistema de aprendizaje en linea."
-msgstr ""
+msgstr "Online learning system."
 
 #: now_lms/db/tools.py:403
 msgid "Imagen de usuario eliminada correctamente."
-msgstr ""
+msgstr "User image deleted successfully."
 
 #: now_lms/db/tools.py:405
 msgid "Imagen de usuario no existe."
+msgstr "User image does not exist."
+
+#: now_lms/templates/admin/adsense.html:7
+#, fuzzy
+msgid "Configuración de Anuncios de AdSense"
+msgstr "Edit AdSense settings."
+
+#: now_lms/templates/admin/adsense.html:21
+msgid "Editar configuración de anunciós de AdSense."
+msgstr "Edit AdSense settings."
+
+#: now_lms/templates/admin/adsense.html:25
+msgid "Configuración de usuario de AdSense."
+msgstr "AdSense user settings."
+
+#: now_lms/templates/admin/adsense.html:26
+msgid "Mostrar etiqueta en Header"
+msgstr "Show tag in Header"
+
+#: now_lms/templates/admin/adsense.html:33
+msgid "Header scritp"
+msgstr "Header script"
+
+#: now_lms/templates/admin/adsense.html:42
+#, fuzzy
+msgid "ID de Usuario de AdSense"
+msgstr "AdSense user settings."
+
+#: now_lms/templates/admin/adsense.html:51
+#, fuzzy
+msgid "Configuración de anuncios en el sitio"
+msgstr "Edit AdSense settings."
+
+#: now_lms/templates/admin/adsense.html:59
+msgid "Código Glogal de AdSense"
 msgstr ""
 
+#: now_lms/templates/admin/adsense.html:66
+msgid "Anuncios específicos por tamaño"
+msgstr ""
+
+#: now_lms/templates/admin/adsense.html:68
+msgid ""
+"Solo se mostrarán en\n"
+"                        cursos gratuitos."
+msgstr ""
+
+#: now_lms/templates/admin/adsense.html:74
+msgid "Leaderboard"
+msgstr "Leaderboard"
+
+#: now_lms/templates/admin/adsense.html:78
+msgid "Medium Rectangle"
+msgstr "Medium Rectangle"
+
+#: now_lms/templates/admin/adsense.html:87
+msgid "Large Rectangle"
+msgstr "Large Rectangle"
+
+#: now_lms/templates/admin/adsense.html:91
+msgid "Mobile Banner"
+msgstr "Mobile Banner"
+
+#: now_lms/templates/admin/adsense.html:100
+msgid "Wide Skyscraper"
+msgstr "Wide Skyscraper"
+
+#: now_lms/templates/admin/adsense.html:104
+msgid "Skyscraper"
+msgstr "Skyscraper"
+
+#: now_lms/templates/admin/adsense.html:113
+msgid "Large Skyscraper"
+msgstr "Large Skyscraper"
+
+#: now_lms/templates/admin/adsense.html:117
+msgid "Billboard"
+msgstr "Billboard"
+
+#: now_lms/templates/admin/adsense.html:125
+msgid "Verificar archivo ads"
+msgstr "Verify ads file"
+
+#: now_lms/templates/admin/adsense.html:132
+#: now_lms/templates/admin/config.html:151
+msgid "Cancelar"
+msgstr "Cancel"
+
+#: now_lms/templates/admin/adsense.html:134
+#: now_lms/templates/admin/config.html:153
+#, fuzzy
+msgid "Actualizar Configuración"
+msgstr "The course cover could not be updated."
+
+#: now_lms/templates/admin/config.html:6
+msgid "Editar configuracion"
+msgstr "Edit configuration"
+
+#: now_lms/templates/admin/config.html:20
+#, fuzzy
+msgid "Editar configuración del sitio web"
+msgstr "Edit website settings"
+
+#: now_lms/templates/admin/config.html:24
+msgid "Datos Generales del Sitio Web"
+msgstr "General Website Information"
+
+#: now_lms/templates/admin/config.html:29
+#, fuzzy
+msgid "Nombre del Sitio Web"
+msgstr "Website Name"
+
+#: now_lms/templates/admin/config.html:34
+msgid "Descripción del Sitio"
+msgstr "Website Description"
+
+
+#: now_lms/templates/admin/config.html:41
+msgid "Configuración Regional"
+msgstr "Edit AdSense settings."
+
+#: now_lms/templates/admin/config.html:45
+msgid "Moneda del Sitio"
+msgstr "Course Content"
+
+#: now_lms/templates/admin/config.html:48
+msgid "Seleccione la moneda predeterminada para procesar pagos y mostrar precios"
+msgstr "Select the default currency for processing payments and displaying prices"
+
+#: now_lms/templates/admin/config.html:52
+msgid "Zona Horaria"
+msgstr "Time Zone"
+
+#: now_lms/templates/admin/config.html:54
+msgid "Seleccione la zona horaria adecuada para su pais"
+msgstr "Select the appropriate time zone for your country"
+
+#: now_lms/templates/admin/config.html:60
+msgid "Idioma del sitio web"
+msgstr "Course removed from the website."
+
+#: now_lms/templates/admin/config.html:62
+msgid "Seleccione el idioma de su sitio web"
+msgstr "Course removed from the website."
+
+#: now_lms/templates/admin/config.html:69
+msgid "Configuración de Navegación"
+msgstr "Edit AdSense settings."
+
+#: now_lms/templates/admin/config.html:71
+msgid ""
+"Configure qué elementos del menú de navegación estarán visibles para los "
+"usuarios"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:81
+#, fuzzy
+msgid "Habilitar Programas"
+msgstr "Programs"
+
+#: now_lms/templates/admin/config.html:84
+msgid "Los usuarios verán la opción Programas en el menú de navegación"
+msgstr "Users will see the Programs option in the navigation menu"
+
+#: now_lms/templates/admin/config.html:92
+msgid "Habilitar Master Class"
+msgstr "Enable Master Class"
+
+#: now_lms/templates/admin/config.html:96
+msgid "Los usuarios verán la opción Clases Magistrales en el menú de navegación"
+msgstr "Users will see the Masterclasses option in the navigation menu"
+
+#: now_lms/templates/admin/config.html:107
+msgid "Habilitar Recursos descargables"
+msgstr "Enable Downloadable Resources"
+
+#: now_lms/templates/admin/config.html:111
+msgid "Los usuarios verán la opción Recursos en el menú de navegación"
+msgstr "Users will see the Resources option in the navigation menu"
+
+#: now_lms/templates/admin/config.html:117
+msgid "Habilitar Blog"
+msgstr "Enable Blog"
+
+#: now_lms/templates/admin/config.html:119
+msgid "Los usuarios verán la opción Blog en el menú de navegación"
+msgstr "Users will see the Blog option in the navigation menu"
+
+#: now_lms/templates/admin/config.html:126
+#, fuzzy
+msgid "Configuración de verificación de usuarios"
+msgstr "Edit AdSense settings."
+
+#: now_lms/templates/admin/config.html:138
+msgid ""
+"La configuración de correo\n"
+"                                electrónico no ha sido verificada."
+msgstr ""
+"Email configuration\n"
+"                                has not been verified."
+
+#: now_lms/templates/admin/config.html:143
+msgid "Permitir a nuevos usuarios verificarse vía correo electronico"
+msgstr "Allow new users to verify via email"
+
+#: now_lms/templates/admin/flagged_messages.html:6
+#: now_lms/templates/admin/flagged_messages.html:34
+#, fuzzy
+msgid "Mensajes Reportados"
+msgstr "New Forum Message"
+
+#: now_lms/templates/admin/flagged_messages.html:6
+#: now_lms/templates/admin/flagged_messages.html:31
+#: now_lms/templates/themes/cambridge/navbar.j2:71
+msgid "Administración"
+msgstr "Administration"
+
+#: now_lms/templates/admin/flagged_messages.html:23
 #: now_lms/templates/learning/curso.html:29
 #: now_lms/templates/themes/cambridge/navbar.j2:38
 #: now_lms/templates/themes/cambridge/navbar.j2:42
@@ -60,7 +276,7 @@ msgstr "Home"
 
 #: now_lms/templates/learning/curso.html:45
 msgid "Portada del Curso"
-msgstr ""
+msgstr "Course Cover"
 
 #: now_lms/templates/learning/curso.html:135
 msgid "Mensajes"
@@ -68,11 +284,11 @@ msgstr "Messages"
 
 #: now_lms/templates/learning/curso.html:139
 msgid "¿Tienes alguna pregunta sobre el curso? Contacta a tus instructores."
-msgstr ""
+msgstr "Do you have any questions about the course? Contact your instructors."
 
 #: now_lms/templates/learning/curso.html:146
 msgid "Ver Mensajes"
-msgstr ""
+msgstr "View Messages"
 
 #: now_lms/templates/learning/curso.html:152
 msgid "Nuevo Mensaje"
@@ -84,7 +300,7 @@ msgstr "Cource Forum"
 
 #: now_lms/templates/learning/curso.html:166
 msgid "Participa en discusiones con otros estudiantes y compartir conocimientos."
-msgstr ""
+msgstr "Join discussions with other students and share knowledge."
 
 #: now_lms/templates/learning/curso.html:173
 msgid "Ver Foro"
@@ -92,35 +308,35 @@ msgstr "See Forum"
 
 #: now_lms/templates/learning/curso.html:180
 msgid "Nuevo Mensaje en Foro"
-msgstr ""
+msgstr "New Forum Message"
 
 #: now_lms/templates/learning/resources/type_macros.html:76
 msgid "Requerido"
-msgstr ""
+msgstr "Required"
 
 #: now_lms/templates/learning/resources/type_macros.html:79
 msgid "Opcional"
-msgstr ""
+msgstr "Optional"
 
 #: now_lms/templates/learning/resources/type_macros.html:80
 msgid "Alternativo"
-msgstr ""
+msgstr "Alternative"
 
 #: now_lms/templates/learning/resources/type_macros.html:83
 msgid "Completado"
-msgstr ""
+msgstr "Completed"
 
 #: now_lms/templates/learning/resources/type_macros.html:86
 msgid "Pendiente"
-msgstr ""
+msgstr "Pending"
 
 #: now_lms/templates/learning/resources/type_macros.html:89
 msgid "Contenido del Curso"
-msgstr ""
+msgstr "Course Content"
 
 #: now_lms/templates/themes/cambridge/base.j2:6
 msgid "Aplicación para gestión del aprendizaje."
-msgstr ""
+msgstr "Application for learning management."
 
 #: now_lms/templates/themes/cambridge/navbar.j2:46
 #: now_lms/templates/themes/now_lms/navbar.j2:51
@@ -141,89 +357,87 @@ msgstr "Resources"
 #: now_lms/templates/themes/cambridge/navbar.j2:58
 #: now_lms/templates/themes/now_lms/navbar.j2:69
 msgid "Clases Magistrales"
-msgstr ""
+msgstr "Masterclasses"
 
 #: now_lms/templates/themes/cambridge/navbar.j2:63
 msgid "Moderación"
-msgstr ""
+msgstr "Moderation"
 
 #: now_lms/templates/themes/cambridge/navbar.j2:67
 msgid "Docente"
-msgstr ""
-
-#: now_lms/templates/themes/cambridge/navbar.j2:71
-msgid "Administración"
-msgstr ""
+msgstr "Teacher"
 
 #: now_lms/templates/themes/cambridge/navbar.j2:78
 msgid "Iniciar Sesión"
-msgstr ""
+msgstr "Log In"
 
 #: now_lms/templates/themes/cambridge/navbar.j2:81
 msgid "Crear Cuenta"
-msgstr ""
+msgstr "Create Account"
 
 #: now_lms/templates/themes/cambridge/navbar.j2:93
 msgid "Bienvenido"
-msgstr ""
+msgstr "Welcome"
 
-#: now_lms/templates/themes/cambridge/navbar.j2:97
+#: now_lms/templates/themes/cambridge/navbar.j2:98
 msgid "Perfil de Usuario"
-msgstr ""
+msgstr "User Profile"
 
-#: now_lms/templates/themes/cambridge/navbar.j2:106
+#: now_lms/templates/themes/cambridge/navbar.j2:108
 msgid "Información"
-msgstr ""
+msgstr "Information"
 
-#: now_lms/templates/themes/cambridge/navbar.j2:112
+#: now_lms/templates/themes/cambridge/navbar.j2:114
 msgid "Cerrar Sesión"
-msgstr ""
+msgstr "Log Out"
 
-#: now_lms/templates/themes/cambridge/navbar.j2:139
+#: now_lms/templates/themes/cambridge/navbar.j2:141
 msgid "Versión"
-msgstr ""
+msgstr "Version"
 
-#: now_lms/templates/themes/cambridge/navbar.j2:163
+#: now_lms/templates/themes/cambridge/navbar.j2:165
 msgid "Manual de Usuario"
-msgstr ""
+msgstr "User Manual"
 
-#: now_lms/templates/themes/cambridge/navbar.j2:170
+#: now_lms/templates/themes/cambridge/navbar.j2:172
 msgid "Manual de Administración"
-msgstr ""
+msgstr "Administration Manual"
 
 #: now_lms/vistas/programs.py:128
 msgid "Nuevo Programa creado."
-msgstr ""
+msgstr "New Program created."
 
 #: now_lms/vistas/programs.py:132
 msgid "Hubo un error al crear el programa."
-msgstr ""
+msgstr "There was an error creating the program."
 
 #: now_lms/vistas/programs.py:219
 msgid ""
 "No se puede cambiar estatus de programa a publico porque no tiene cursos "
 "añadidos"
 msgstr ""
+"The program status cannot be changed to public because it has no courses "
+"added."
 
 #: now_lms/vistas/programs.py:223
 msgid "No se puede cambiar programa a abierto porque no tiene cursos añadidos"
-msgstr ""
+msgstr "The program cannot be changed to open because it has no courses added."
 
 #: now_lms/vistas/programs.py:254
 msgid "Portada del curso actualizada correctamente"
-msgstr ""
+msgstr "Course cover updated successfully."
 
 #: now_lms/vistas/programs.py:257
 msgid "No se pudo actualizar la portada del curso."
-msgstr ""
+msgstr "The course cover could not be updated."
 
 #: now_lms/vistas/programs.py:259
 msgid "Programa editado correctamente."
-msgstr ""
+msgstr "Program edited successfully."
 
 #: now_lms/vistas/programs.py:262
 msgid "No se puedo editar el programa."
-msgstr ""
+msgstr "The program could "
 
 #: now_lms/vistas/programs.py:372
 msgid "Ya estás inscrito en este programa."
@@ -234,8 +448,9 @@ msgid "Te has inscrito exitosamente al programa."
 msgstr ""
 
 #: now_lms/vistas/programs.py:386
+#, fuzzy
 msgid "Hubo un error al inscribirte al programa."
-msgstr ""
+msgstr "There was an error creating the program."
 
 #: now_lms/vistas/programs.py:403
 msgid "Debes inscribirte al programa primero."
@@ -251,67 +466,66 @@ msgstr ""
 
 #: now_lms/vistas/programs.py:518
 msgid "El usuario ya está inscrito en este programa."
-msgstr ""
+msgstr "The user is already enrolled in this program."
 
 #: now_lms/vistas/programs.py:528
 msgid "Error al inscribir usuario."
-msgstr ""
+msgstr "Error enrolling user."
 
 #: now_lms/vistas/programs.py:543
+#, fuzzy
 msgid "Programa no encontrado."
-msgstr ""
+msgstr "Program not found."
 
 #: now_lms/vistas/programs.py:555
 msgid "Certificado de programa emitido por completar todos los cursos."
-msgstr ""
+msgstr "Program certificate issued for completing all courses."
 
 #: now_lms/vistas/settings.py:108
+#, fuzzy
 msgid "Tema del sitio web actualizado exitosamente."
-msgstr ""
+msgstr "Website theme updated successfully."
 
 #: now_lms/vistas/settings.py:112
 msgid "No se pudo actualizar el tema del sitio web."
-msgstr ""
+msgstr "The website theme could not be updated."
 
 #: now_lms/vistas/settings.py:153
-msgid ""
-"Debe configurar el correo electronico antes de habilitar verificación por"
-" e-mail."
-msgstr ""
+msgid "Debe configurar el correo electronico antes de habilitar verificación por e-mail."
+msgstr "You must configure email before enabling email verification."
 
 #: now_lms/vistas/settings.py:173
 msgid "Sitio web actualizado exitosamente."
-msgstr ""
+msgstr "Website updated successfully."
 
 #: now_lms/vistas/settings.py:176
 msgid "No se pudo actualizar la configuración del sitio web."
-msgstr ""
+msgstr "The website settings could not be updated."
 
 #: now_lms/vistas/settings.py:215
 msgid "Configuración de correo electronico actualizada exitosamente."
-msgstr ""
+msgstr "Email settings updated successfully."
 
 #: now_lms/vistas/settings.py:219
 msgid "No se pudo actualizar la configuración de correo electronico."
-msgstr ""
+msgstr "The email settings could not be updated."
 
 #: now_lms/vistas/settings.py:275
 msgid "Hubo un error al enviar un correo de prueba. Revise su configuración."
-msgstr ""
+msgstr "There was an error sending a test email. Please check your settings."
 
 #: now_lms/vistas/settings.py:340
 msgid "Configuración de Google AdSense actualizada exitosamente."
-msgstr ""
+msgstr "Google AdSense settings updated successfully."
 
 #: now_lms/vistas/settings.py:345
 msgid "No se pudo actualizar la configuración de Google AdSense."
-msgstr ""
+msgstr "The Google AdSense settings could not be updated."
 
 #: now_lms/vistas/settings.py:450
 msgid "Configuración de Paypal actualizada exitosamente."
-msgstr ""
+msgstr "PayPal settings updated successfully."
 
 #: now_lms/vistas/settings.py:455
 msgid "No se pudo actualizar la configuración de Paypal."
-msgstr ""
-
+msgstr "The PayPal settings could not be updated."
