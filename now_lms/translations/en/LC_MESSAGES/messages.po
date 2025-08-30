@@ -83,17 +83,19 @@ msgstr "Edit AdSense settings."
 
 #: now_lms/templates/admin/adsense.html:59
 msgid "Código Glogal de AdSense"
-msgstr ""
+msgstr "Global AdSense Code"
 
 #: now_lms/templates/admin/adsense.html:66
 msgid "Anuncios específicos por tamaño"
-msgstr ""
+msgstr "Ads by Specific Size"
 
 #: now_lms/templates/admin/adsense.html:68
 msgid ""
 "Solo se mostrarán en\n"
 "                        cursos gratuitos."
 msgstr ""
+"They will only be displayed in\n"
+"                        free courses."
 
 #: now_lms/templates/admin/adsense.html:74
 msgid "Leaderboard"
@@ -141,9 +143,8 @@ msgstr "Cancel"
 #: now_lms/templates/admin/adsense.html:134
 #: now_lms/templates/admin/config.html:153
 #: now_lms/templates/admin/mail.html:112
-#, fuzzy
 msgid "Actualizar Configuración"
-msgstr "The course cover could not be updated."
+msgstr "Update Configuration"
 
 #: now_lms/templates/admin/config.html:6 now_lms/templates/admin/mail.html:7
 #: now_lms/templates/admin/mail_check.html:7
@@ -151,7 +152,6 @@ msgid "Editar configuracion"
 msgstr "Edit configuration"
 
 #: now_lms/templates/admin/config.html:20
-#, fuzzy
 msgid "Editar configuración del sitio web"
 msgstr "Edit website settings"
 
@@ -160,7 +160,6 @@ msgid "Datos Generales del Sitio Web"
 msgstr "General Website Information"
 
 #: now_lms/templates/admin/config.html:29
-#, fuzzy
 msgid "Nombre del Sitio Web"
 msgstr "Website Name"
 
@@ -284,76 +283,72 @@ msgid ""
 "requieren\n"
 "                            revisión."
 msgstr ""
+"{{ flagged_messages|length }} reported message(s) require\n"
+"                            review."
 
 #: now_lms/templates/admin/flagged_messages.html:55
-#, fuzzy
 msgid "Mensaje Reportado"
-msgstr "New Forum Message"
+msgstr "Reported Message"
 
 #: now_lms/templates/admin/flagged_messages.html:57
-#, fuzzy
 msgid "Reportado"
-msgstr "New Forum Message"
+msgstr "Reported"
 
 #: now_lms/templates/admin/flagged_messages.html:63
-#, fuzzy
 msgid "Información del Mensaje"
-msgstr "Information"
+msgstr "Message Information"
 
 #: now_lms/templates/admin/flagged_messages.html:69
 msgid "Fecha"
-msgstr ""
+msgstr "Date"
 
 #: now_lms/templates/admin/flagged_messages.html:72
-#, fuzzy
 msgid "Curso"
-msgstr "Courses"
+msgstr "Course"
 
 #: now_lms/templates/admin/flagged_messages.html:82
-#, fuzzy
 msgid "Estudiante"
-msgstr "Pending"
+msgstr "Student"
 
 #: now_lms/templates/admin/flagged_messages.html:86
-#, fuzzy
 msgid "Contenido del Mensaje"
-msgstr "Course Content"
+msgstr "Message Content"
 
 #: now_lms/templates/admin/flagged_messages.html:89
 msgid "Motivo del Reporte"
-msgstr ""
+msgstr "Reason for Report"
 
 #: now_lms/templates/admin/flagged_messages.html:93
 msgid "Acciones"
-msgstr ""
+msgstr "Actions"
 
 #: now_lms/templates/admin/flagged_messages.html:99
 msgid "Ver Conversación Completa"
-msgstr ""
+msgstr "View Full Conversation"
 
 #: now_lms/templates/admin/flagged_messages.html:105
 msgid "Ver Curso"
-msgstr ""
+msgstr "View Course"
 
 #: now_lms/templates/admin/flagged_messages.html:112
 msgid "Marcar como Revisado"
-msgstr ""
+msgstr "Mark as Reviewed"
 
 #: now_lms/templates/admin/flagged_messages.html:117
 msgid "Estadísticas del Hilo"
-msgstr ""
+msgstr "Thread Statistics"
 
 #: now_lms/templates/admin/flagged_messages.html:119
 msgid "Estado"
-msgstr ""
+msgstr "Status"
 
 #: now_lms/templates/admin/flagged_messages.html:122
 msgid "Resuelto"
-msgstr ""
+msgstr "Resolved"
 
 #: now_lms/templates/admin/flagged_messages.html:124
 msgid "Cerrado"
-msgstr ""
+msgstr "Closed"
 
 #: now_lms/templates/admin/flagged_messages.html:127
 #: now_lms/templates/learning/curso.html:135
@@ -621,11 +616,11 @@ msgstr "The program could "
 
 #: now_lms/vistas/programs.py:372
 msgid "Ya estás inscrito en este programa."
-msgstr ""
+msgstr "You are already enrolled in this program."
 
 #: now_lms/vistas/programs.py:382
 msgid "Te has inscrito exitosamente al programa."
-msgstr ""
+msgstr "You have successfully enrolled in the program."
 
 #: now_lms/vistas/programs.py:386
 #, fuzzy
@@ -634,15 +629,15 @@ msgstr "There was an error creating the program."
 
 #: now_lms/vistas/programs.py:403
 msgid "Debes inscribirte al programa primero."
-msgstr ""
+msgstr "You must enroll in the program first."
 
 #: now_lms/vistas/programs.py:471
 msgid "El curso ya está en el programa."
-msgstr ""
+msgstr "The course is already in the program."
 
 #: now_lms/vistas/programs.py:516
 msgid "Usuario no encontrado."
-msgstr ""
+msgstr "User not found."
 
 #: now_lms/vistas/programs.py:518
 msgid "El usuario ya está inscrito en este programa."
@@ -711,4 +706,3 @@ msgstr "PayPal settings updated successfully."
 #: now_lms/vistas/settings.py:455
 msgid "No se pudo actualizar la configuración de Paypal."
 msgstr "The PayPal settings could not be updated."
-
