@@ -87,17 +87,28 @@ def get_configuracion():
 
 def get_locale() -> str:
     """Obtiene el idioma desde la configuración en g."""
-    # In CI/testing mode, always use Spanish
-    if is_testing_mode():
-        return "es"
-    if hasattr(g, "configuracion") and g.configuracion:
-        return getattr(g.configuracion, "lang", "en")
-    # Fallback si no hay configuración disponible
+    # Check for configuration in g first (respects database setting)
+    try:
+        if hasattr(g, "configuracion") and g.configuracion:
+            return getattr(g.configuracion, "lang", "en")
+    except RuntimeError:
+        # Working outside application context
+        pass
+
+    # Fallback: if no configuration in g, check from database directly
+    try:
+        config = get_configuracion()
+        if config and config.lang:
+            return config.lang
+    except Exception:
+        pass  # Continue to next fallback
+
+    # Final fallback: use browser preference or default
     try:
         return request.accept_languages.best_match(["es", "en"]) or "en"
     except RuntimeError:
-        # Working outside request context
-        return "es"  # Default to Spanish
+        # Working outside request context - use default based on testing mode
+        return "es" if is_testing_mode() else "en"
 
 
 def get_timezone() -> str:

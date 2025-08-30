@@ -12,6 +12,9 @@ All notable changes to this project will be documented in this file.
 ### Added:
  - View counter in blog posts.
 
+### Fixed
+ - Babel translation directory discovery.
+
 -------------------
 
 ## [ release: v0.0.1b14.dev20250828 ] - 2025-08-28

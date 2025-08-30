@@ -208,7 +208,11 @@ def inicializa_extenciones_terceros(flask_app: Flask):
         mde.init_app(flask_app)
         _mail_instance.init_app(flask_app)
         flask_app.config["BABEL_DEFAULT_LOCALE"] = "es"
-        flask_app.config["BABEL_TRANSLATION_DIRECTORIES"] = "now_lms/translations"
+        # Use absolute path for translations directory
+        from os.path import dirname, join as path_join
+
+        translations_dir = path_join(dirname(__file__), "translations")
+        flask_app.config["BABEL_TRANSLATION_DIRECTORIES"] = translations_dir
         flask_app.config["BABEL_SUPPORTED_LOCALES"] = ["es", "en"]
         babel.init_app(flask_app, locale_selector=get_locale, timezone_selector=get_timezone)
     log.trace("Third-party extensions started successfully.")

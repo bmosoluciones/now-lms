@@ -1,6 +1,6 @@
 <!doctype html>
 {% set config = config() %} {% set current_theme = current_theme() %}
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
         <title>{{ config.titulo }}</title>
