@@ -24,18 +24,6 @@ However, users cannot:
 -   Make use of the project trademarks without explicit permission.
 -   Require warranties of any kind; the project is distributed as is without guarantees that it may be useful for any specific purpose.
 
-## Certify the origin of your contributions.
-
-To incorporate your contributions to the project we require that you certify that the contribution or contributions are your property or that you have permission from third parties to incorporate the contribution or contributions to the project, following the [developer certificate of origin](https://developercertificate.org/).
-
-We recommend running:
-
-```bash
-git commit -s
-```
-
-And an appropriate signature will be added to the commit, not included in the commits project without the corresponding Sing-Off.
-
 ## Collaborating with the project:
 
 ### Ways to collaborate.
@@ -59,7 +47,7 @@ The development is cross-platform, you can use both Windows, Linux or Mac to con
 -   [NPM](https://www.npmjs.com/).
 -   [Python](https://www.python.org/downloads/).
 
-Minimal Python version is: >=3.8
+Minimal Python version is: >=3.11
 
 Technologies used:
 
@@ -77,11 +65,9 @@ Technologies used:
 
 Other libraries used in the project are:
 
--   appdirs: App directories.
 -   bleach: HTML sanitisation.
 -   configobj: Configuration files parser.
 -   argon2-cffi: Password hashing.
--   loguru: Logging.
 -   markdown: Render markdown as HTML.
 -   python-ulid: Generate uniques id.
 -   waitress: WSGI server.
@@ -140,6 +126,36 @@ NO_LMS_CACHE=True hupper -m now_lms
 
 [PEP8](https://www.python.org/dev/peps/pep-0008/) with a maximum line length of 127 characters.
 [Prettier](https://github.com/prettier/prettier) for html templates.
+
+#### Use semantic commits:
+
+| Type        | Scope      | Example Commit Message                                   | Purpose                                                      |
+|-------------|-----------|----------------------------------------------------------|--------------------------------------------------------------|
+| feat        | courses   | feat(courses): add new enrollment flow                   | Introduce a new feature                                      |
+| fix         | auth      | fix(auth): resolve login redirect issue                   | Bug fix                                                      |
+| chore       | i18n      | chore(i18n): add missing English translations             | Maintenance / non-feature / non-fix task                     |
+| chore       | deps      | chore(deps): update Flask to 3.0                          | Dependency update / maintenance                              |
+| docs        | readme    | docs(readme): update setup instructions                   | Documentation changes                                        |
+| style       | ui        | style(ui): fix spacing and alignment in dashboard         | Code style / formatting (no logic change)                    |
+| refactor    | db        | refactor(db): optimize course query                       | Code refactor without changing behavior                      |
+| test        | blog      | test(blog): add unit tests for post creation              | Adding or improving tests                                    |
+| build       | ci        | build(ci): add GitHub Actions workflow                    | Changes to build system / CI/CD pipelines                    |
+| perf        | cache     | perf(cache): improve course listing load time             | Performance improvements                                     |
+| ci          | pipeline  | ci(pipeline): add coverage report upload                  | Continuous Integration related changes                       |
+| revert      | auth      | revert(auth): undo broken login commit                    | Revert a previous commit                                     |
+| release     | version   | release: v0.0.1-rc1                                       | Release tagging                                              |
+
+#### Certify the origin of your contributions.
+
+To incorporate your contributions to the project we require that you certify that the contribution or contributions are your property or that you have permission from third parties to incorporate the contribution or contributions to the project, following the [developer certificate of origin](https://developercertificate.org/).
+
+We recommend running:
+
+```bash
+git commit -s
+```
+
+And an appropriate signature will be added to the commit, not included in the commits project without the corresponding Sing-Off.
 
 ## Database Support
 
