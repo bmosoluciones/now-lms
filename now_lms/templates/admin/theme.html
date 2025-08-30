@@ -4,7 +4,7 @@
 
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
-        <title>Editar configuracion</title>
+        <title>{{_("Editar apaciencia del sitio web")}}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -18,10 +18,10 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Editar apariencia del sitio web.</h4>
+                <h4 class="pb-2 border-bottom">{{_("Editar apariencia del sitio web")}}.</h4>
                 <form method="post" enctype="multipart/form-data">
                     <div class="row">
-                        <h4>Logo y Favicon del sitio web.</h4>
+                        <h4>{{_("Logo y Favicon del sitio web")}}.</h4>
                         <div class="col-sm-6">
                             {% if logo_perzonalizado() and site_logo() %}
                             <div>
@@ -30,9 +30,9 @@
                                     alt="NOW LMS"
                                 />
                             </div>
-                            <a href="{{ url_for('setting.elimina_logo') }}">Eliminar Logo actual</a>
+                            <a href="{{ url_for('setting.elimina_logo') }}">{{_("Eliminar Logo actual")}}</a>
                             {% else %}
-                            <label for="logo" class="form-label">Logotipo</label>
+                            <label for="logo" class="form-label">{{_("Logotipo")}}</label>
                             <input
                                 type="file"
                                 name="logo"
@@ -49,24 +49,26 @@
                                 />
                             </div>
                             {% else %}
-                            <label for="favicon" class="form-label">Favicon</label>
+                            <label for="favicon" class="form-label">{{_("Favicon")}}</label>
                             <input type="file" name="favicon" accept="image/png" />
                             {% endif %}
                         </div>
                     </div>
                     <br />
                     <div class="row">
-                        <h4>Tema del sitio web.</h4>
+                        <h4>{{_("Tema del sitio web")}}.</h4>
                         <div class="col-sm-6">
-                            <label for="style" class="form-label">Estilo de la barra principal.</label>
+                            <label for="style" class="form-label">{{_("Tema")}}.</label>
                             {{ form.style(class="form-control", id="style") }}
-                            <div class="form-text">Los temas cambian varios aspectos visuales del sitio web.</div>
+                            <div class="form-text">{{_("Los temas cambian varios aspectos visuales del sitio web")}}.</div>
                         </div>
                     </div>
                     <br />
 
-                    <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button">Cancelar</a>
-                    <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Tema</button>
+                    <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button"
+                        >{{_("Cancelar")}}</a
+                    >
+                    <button class="w-10 btn btn-primary btn-block" type="submit">{{_("Actualizar Tema")}}</button>
                 </form>
             </div>
         </main>

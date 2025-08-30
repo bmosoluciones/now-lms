@@ -4,7 +4,7 @@
     <head>
         {{ current_theme.headertags() }}
 
-        <title>Editar configuracion</title>
+        <title>{{_("Editar configuracion")}}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -18,27 +18,27 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h5 class="pb-2 border-bottom">Configuración del Correo Electronico.</h5>
+                <h5 class="pb-2 border-bottom">{{_("Configuración del Correo Electronico")}}.</h5>
                 {% if error %}
                 <div class="alert alert-danger" role="alert">{{ error }}</div>
                 {% endif %} {% if config.email_verificado %}
                 <div class="alert alert-success" role="alert">
-                    <i class="bi bi-check-circle" aria-hidden="true"></i> La configuración de correo electrónico ha sido
-                    verificada correctamente.
+                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{_("La configuración de correo electrónico ha sido
+                    verificada correctamente")}}.
                 </div>
                 {% endif %}
                 <form method="post">
                     <div class="row">
                         <br />
-                        <h5 class="pb-2 border-bottom">Datos de acceso al servidor SMTP.</h5>
+                        <h5 class="pb-2 border-bottom">{{_("Datos de acceso al servidor SMTP")}}.</h5>
 
                         <div class="col-sm-6">
-                            <label for="servidor" class="form-label">Servidor:</label>
+                            <label for="servidor" class="form-label">{{_("Servidor")}}:</label>
                             {{ form.MAIL_SERVER(class="form-control", id="servidor",) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="puerto" class="form-label">Puerto:</label>
+                            <label for="puerto" class="form-label">{{_("Puerto")}}:</label>
                             {{ form.MAIL_PORT(class="form-control", id="puerto",) }}
                         </div>
                     </div>
@@ -47,12 +47,12 @@
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <label for="usuario" class="form-label">Usuario:</label>
+                            <label for="usuario" class="form-label">{{_("Usuario")}}:</label>
                             {{ form.MAIL_USERNAME(class="form-control", id="usuario") }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="contrasena" class="form-label">Contraseña (Oculta por seguridad.):</label>
+                            <label for="contrasena" class="form-label">{{_("Contraseña (Oculta por seguridad.)")}}:</label>
                             {{ form.MAIL_PASSWORD(class="form-control", id="contrasena") }}
                         </div>
                     </div>
@@ -61,12 +61,12 @@
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <label for="tls" class="form-label">Utilizar TLS.</label>
+                            <label for="tls" class="form-label">{{_("Utilizar TLS")}}.</label>
                             {{ form.MAIL_USE_TLS() }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="ssl" class="form-label">Utilizar SSL.</label>
+                            <label for="ssl" class="form-label">{{_("Utilizar SSL")}}.</label>
                             {{ form.MAIL_USE_SSL() }}
                         </div>
                     </div>
@@ -74,12 +74,16 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <br />
-                            <label for="default_sender" class="form-label">Default sender.</label>
+                            <label for="default_sender" class="form-label"
+                                >{{_("Correo predeterminado como enviado por")}}.</label
+                            >
                             {{ form.MAIL_DEFAULT_SENDER(class="form-control", id="default_sender") }}
                         </div>
                         <div class="col-sm-6">
                             <br />
-                            <label for="default_sender_name" class="form-label">Default sender name.</label>
+                            <label for="default_sender_name" class="form-label"
+                                >{{_("Correo predeterminado enviado por nombre")}}.</label
+                            >
                             {{ form.MAIL_DEFAULT_SENDER_NAME(class="form-control", id="default_sender_name") }}
                         </div>
                     </div>
@@ -92,7 +96,7 @@
                         <div class="col">
                             <div>
                                 <a href="{{ url_for('setting.mail_check') }}" type="button" class="btn btn-primary"
-                                    >Enviar Correo de Prueba</a
+                                    >{{_("Enviar Correo de Prueba")}}</a
                                 >
                             </div>
                         </div>
@@ -102,9 +106,11 @@
                         <div>
                             <br />
                             <a class="btn btn-danger" href="{{ url_for('admin_profile.pagina_admin') }}" role="button"
-                                >Cancelar</a
+                                >{{_("Cancelar")}}</a
                             >
-                            <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
+                            <button class="w-10 btn btn-primary btn-block" type="submit">
+                                {{_("Actualizar Configuración")}}
+                            </button>
                         </div>
                     </div>
                 </form>
