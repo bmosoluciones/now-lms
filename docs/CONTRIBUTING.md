@@ -30,9 +30,9 @@ However, users cannot:
 
 You can collaborate in different ways:
 
--   As a developer.
--   As a Quality Assurance (QA).
--   [Writing and improving documentation.](https://now-lms-manual.readthedocs.io/en/latest/)
+-   [As a developer](https://github.com/bmosoluciones/now-lms).
+-   [As a Quality Assurance (QA)](https://github.com/bmosoluciones/now-lms/issues).
+-   [Writing and improving documentation.](https://github.com/bmosoluciones/now-lms/tree/main/docs)
 -   [Contributing ideas of new characteristics.](https://github.com/bmosoluciones/now-lms/discussions)
 -   [Reporting bugs.](https://github.com/bmosoluciones/now-lms/issues)
 -   Translating.
@@ -51,7 +51,7 @@ Minimal Python version is: >=3.11
 
 Technologies used:
 
--   Backend: [Flask](https://flask.palletsprojects.com/en/1.1.x/), with a set of many libraries:
+-   Backend: [Flask](https://flask.palletsprojects.com/en/stable/), with a set of many libraries:
     -   flask-babel
     -   flask-caching
     -   flask-login
@@ -63,25 +63,30 @@ Technologies used:
 -   ORM: [SQLAlchemy](https://www.sqlalchemy.org/):
     -   flask-alembic
 
-Other libraries used in the project are:
+#### Libraries used in the project are:
 
--   bleach: HTML sanitisation.
--   configobj: Configuration files parser.
--   argon2-cffi: Password hashing.
--   markdown: Render markdown as HTML.
--   python-ulid: Generate uniques id.
--   waitress: WSGI server.
+##### Python
+
+| Library                                       | License     | Description                               |
+|-----------------------------------------------|-------------|-------------------------------------------|
+| [alembic](https://pypi.org/project/alembic/)  | MIT License | A database migration tool for SQLAlchemy. |
+
+##### JavaScritp
+
+| Library                                              | License     | Description                                         |
+|------------------------------------------------------|-------------|-----------------------------------------------------|
+| [bootstrap](https://www.npmjs.com/package/bootstrap) | MIT License | Sleek, intuitive, and powerful front-end framework. |
 
 Development is done in the branch `development`, once the project is released for production the branch `main` will contain the latest version suitable for use in production.
 
-### Getting the source code
+### Getting the source code:
 
 ```
 git clone https://github.com/bmosoluciones/now-lms.git
 cd now-lms
 ```
 
-### Create a python virtual env
+### Create a python virtual env:
 
 ```
 python3 -m venv venv
@@ -91,13 +96,21 @@ source venv/bin/activate
 venv\Scripts\activate.bat
 ```
 
-### Install python deps
+### Install python deps:
 
 ```
 python3 - m pip install -r development.txt
 ```
 
-### Install Boostrap
+### Compile translations:
+
+The system is development in Spanish, compile translations to get English strings.
+
+```
+pybabel compile -d now_lms/translations
+```
+
+### Install frontend tools:
 
 ```
  cd now_lms/static/
@@ -106,20 +119,24 @@ python3 - m pip install -r development.txt
  cd ..
 ```
 
-### Start a development server
+### Start a development server:
 
 ```
-hupper -m now_lms
+python dev/server.sh
 ```
-
-Please note that we use waitress as WSGI server because gunicorn do not works on Windows, hupper will live reload the WSGI server as you save changes in the source code so you will be able to verify your changes as you work, please note that changes to the jinja html templates will not trigger the server reload, only changes to python source files.
 
 Default user and password are `lms-admin`, default url to work with the development server will be `http://127.0.0.1:8080/`.
 
-You can disable the default cache service with:
+### Run formating tools:
 
 ```
-NO_LMS_CACHE=True hupper -m now_lms
+python dev/lint.sh
+```
+
+### Run the full tests suite:
+
+```
+python dev/test.sh
 ```
 
 #### Style Guide:
@@ -128,8 +145,6 @@ NO_LMS_CACHE=True hupper -m now_lms
 [Prettier](https://github.com/prettier/prettier) for html templates.
 
 #### Use semantic commits:
-
-
 
 | Type     | Scope     | Example Commit Message                      | Purpose                                          | SemVer Impact         |
 |----------|-----------|---------------------------------------------|--------------------------------------------------|-----------------------|
@@ -146,8 +161,6 @@ NO_LMS_CACHE=True hupper -m now_lms
 | ci       | pipeline  | ci(pipeline): add coverage report upload    | Continuous Integration related changes           | None                  |
 | revert   | auth      | revert(auth): undo broken login commit      | Revert a previous commit                         | Depends (inherits type)|
 | release  | version   | release: v0.0.1-rc1                         | Release tagging                                  | Not applicable        |
-
-
 
 #### Certify the origin of your contributions.
 

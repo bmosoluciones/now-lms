@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file.
 
 ## [ unreleased ]
 
+### Changed:
+ - Improved courses page.
+ - Improved programs page.
+ - Improved administrative lists.
+
 -------------------
 
 ## [ release: v0.0.1b16.dev20250830 ] - 2025-08-30
