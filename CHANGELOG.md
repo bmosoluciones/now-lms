@@ -7,9 +7,11 @@ All notable changes to this project will be documented in this file.
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/).
 
 
-
-
 ## [ unreleased ]
+
+-------------------
+
+## [ release: v0.0.1b16.dev20250830 ] - 2025-08-30
 
 ### Added:
  - Administrative user enrollment in programs and courses.
@@ -17,6 +19,7 @@ All notable changes to this project will be documented in this file.
 ### Changed:
  - Improved course page.
  - Improved resources pages.
+ - Improved list pages, see: 51fd1534c34f56479564a77b73899ea655f89e8
 
 -------------------
 
