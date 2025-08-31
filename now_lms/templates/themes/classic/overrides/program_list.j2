@@ -531,7 +531,7 @@
                                                 />
                                                 <path d="M6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
                                             </svg>
-                                            {{ cuenta_cursos(curso.codigo) }} cursos
+                                            {{ cuenta_cursos(curso.codigo) if cuenta_cursos else 'Múltiples' }} cursos
                                         </div>
 
                                         <div class="program-price {% if not curso.precio %}free{% endif %}">
