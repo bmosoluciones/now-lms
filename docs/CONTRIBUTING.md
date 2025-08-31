@@ -30,9 +30,9 @@ However, users cannot:
 
 You can collaborate in different ways:
 
--   As a developer.
--   As a Quality Assurance (QA).
--   [Writing and improving documentation.](https://now-lms-manual.readthedocs.io/en/latest/)
+-   [As a developer](https://github.com/bmosoluciones/now-lms).
+-   [As a Quality Assurance (QA)](https://github.com/bmosoluciones/now-lms/issues).
+-   [Writing and improving documentation.](https://github.com/bmosoluciones/now-lms/tree/main/docs)
 -   [Contributing ideas of new characteristics.](https://github.com/bmosoluciones/now-lms/discussions)
 -   [Reporting bugs.](https://github.com/bmosoluciones/now-lms/issues)
 -   Translating.
@@ -51,7 +51,7 @@ Minimal Python version is: >=3.11
 
 Technologies used:
 
--   Backend: [Flask](https://flask.palletsprojects.com/en/1.1.x/), with a set of many libraries:
+-   Backend: [Flask](https://flask.palletsprojects.com/en/stable/), with a set of many libraries:
     -   flask-babel
     -   flask-caching
     -   flask-login
@@ -63,25 +63,66 @@ Technologies used:
 -   ORM: [SQLAlchemy](https://www.sqlalchemy.org/):
     -   flask-alembic
 
-Other libraries used in the project are:
+#### Libraries used in the project are:
 
--   bleach: HTML sanitisation.
--   configobj: Configuration files parser.
--   argon2-cffi: Password hashing.
--   markdown: Render markdown as HTML.
--   python-ulid: Generate uniques id.
--   waitress: WSGI server.
+##### Python
+
+| Library                                                        | License                 | Description                                                               |
+| -------------------------------------------------------------- | ----------------------- | ------------------------------------------------------------------------- |
+| [alembic](https://pypi.org/project/alembic/)                   | MIT License             | A database migration tool for SQLAlchemy.                                 |
+| [appdirs](https://pypi.org/project/appdirs/)                   | MIT License             | A small Python module for determining appropriate platform-specific dirs. |
+| [argon2-cffi](https://pypi.org/project/argon2-cffi/)           | MIT License             | The secure Argon2 password hashing algorithm.                             |
+| [babel](https://pypi.org/project/babel/)                       | BSD License             | Internationalization utilities for Python.                                |
+| [bleach](https://pypi.org/project/bleach/)                     | Apache Software License | An easy safelist-based HTML-sanitizing tool.                              |
+| [configobj](https://pypi.org/project/configobj/)               | BSD License             | Config file reading, writing and validation.                              |
+| [cryptography](https://pypi.org/project/cryptography/)         | Apache Software License | Cryptographic recipes and primitives for Python.                          |
+| [cuid2](https://pypi.org/project/cuid2/)                       | MIT License             | Collision-resistant unique identifier generator.                          |
+| [flask](https://pypi.org/project/flask/)                       | BSD License             | A simple framework for building complex web applications.                 |
+| [flask-alembic](https://pypi.org/project/flask-alembic/)       | MIT License             | Flask extension for Alembic database migrations.                          |
+| [flask-babel](https://pypi.org/project/flask-babel/)           | BSD License             | Adds i18n/l10n support to Flask applications.                             |
+| [flask-caching](https://pypi.org/project/flask-caching/)       | BSD License             | Adds caching support to your Flask application.                           |
+| [flask-login](https://pypi.org/project/flask-login/)           | MIT License             | User session management for Flask.                                        |
+| [flask-mail](https://pypi.org/project/flask-mail/)             | BSD License             | Flask extension for sending email.                                        |
+| [flask-mde](https://pypi.org/project/flask-mde/)               | MIT License             | Markdown editor for Flask applications.                                   |
+| [flask-reuploaded](https://pypi.org/project/flask-reuploaded/) | MIT License             | Flexible and efficient upload handling for Flask.                         |
+| [flask-sqlalchemy](https://pypi.org/project/flask-sqlalchemy/) | BSD License             | Adds SQLAlchemy support to your Flask application.                        |
+| [flask_weasyprint](https://pypi.org/project/flask-weasyprint/) | BSD License             | Make PDF from HTML with Flask and WeasyPrint.                             |
+| [flask-wtf](https://pypi.org/project/flask-wtf/)               | BSD License             | Simple integration of Flask and WTForms.                                  |
+| [markdown](https://pypi.org/project/markdown/)                 | BSD License             | Python implementation of Markdown.                                        |
+| [memcache](https://pypi.org/project/memcache/)                 | Apache Software License | Pure Python memcached client.                                             |
+| [pg8000](https://pypi.org/project/pg8000/)                     | BSD License             | PostgreSQL interface library for Python.                                  |
+| [pyjwt](https://pypi.org/project/pyjwt/)                       | MIT License             | JSON Web Token implementation in Python.                                  |
+| [python-slugify](https://pypi.org/project/python-slugify/)     | MIT License             | A Python slugify application that handles Unicode.                        |
+| [python-ulid](https://pypi.org/project/python-ulid/)           | MIT License             | Universally Unique Lexicographically Sortable Identifier.                 |
+| [qrcode](https://pypi.org/project/qrcode/)                     | BSD License             | QR Code image generator.                                                  |
+| [sqlalchemy](https://pypi.org/project/sqlalchemy/)             | MIT License             | Database Abstraction Library.                                             |
+| [requests](https://pypi.org/project/requests/)                 | Apache Software License | Python HTTP for Humans.                                                   |
+| [redis](https://pypi.org/project/redis/)                       | MIT License             | Python client for Redis key-value store.                                  |
+| [waitress](https://pypi.org/project/waitress/)                 | ZPL 2.1                 | Waitress WSGI server.                                                     |
+| [weasyprint](https://pypi.org/project/weasyprint/)             | BSD License             | WeasyPrint converts web documents to PDF.                                 |
+| [wtforms](https://pypi.org/project/wtforms/)                   | BSD License             | A flexible forms validation and rendering library.                        |
+
+##### JavaScript
+
+| Library                                                          | License     | Description                                                    |
+| ---------------------------------------------------------------- | ----------- | -------------------------------------------------------------- |
+| [alpinejs](https://www.npmjs.com/package/alpinejs)               | MIT License | A rugged, minimal framework for composing JavaScript behavior. |
+| [bootstrap](https://www.npmjs.com/package/bootstrap)             | MIT License | Sleek, intuitive, and powerful front-end framework.            |
+| [bootstrap-icons](https://www.npmjs.com/package/bootstrap-icons) | MIT License | Official open source SVG icon library for Bootstrap.           |
+| [jquery](https://www.npmjs.com/package/jquery)                   | MIT License | Fast, small, and feature-rich JavaScript library.              |
+| [reveal.js](https://www.npmjs.com/package/reveal.js)             | MIT License | HTML presentation framework.                                   |
+| [select2](https://www.npmjs.com/package/select2)                 | MIT License | Select2 is a jQuery based replacement for select boxes.        |
 
 Development is done in the branch `development`, once the project is released for production the branch `main` will contain the latest version suitable for use in production.
 
-### Getting the source code
+### Getting the source code:
 
 ```
 git clone https://github.com/bmosoluciones/now-lms.git
 cd now-lms
 ```
 
-### Create a python virtual env
+### Create a python virtual env:
 
 ```
 python3 -m venv venv
@@ -91,13 +132,21 @@ source venv/bin/activate
 venv\Scripts\activate.bat
 ```
 
-### Install python deps
+### Install python deps:
 
 ```
 python3 - m pip install -r development.txt
 ```
 
-### Install Boostrap
+### Compile translations:
+
+The system is development in Spanish, compile translations to get English strings.
+
+```
+pybabel compile -d now_lms/translations
+```
+
+### Install frontend tools:
 
 ```
  cd now_lms/static/
@@ -106,20 +155,24 @@ python3 - m pip install -r development.txt
  cd ..
 ```
 
-### Start a development server
+### Start a development server:
 
 ```
-hupper -m now_lms
+python dev/server.sh
 ```
-
-Please note that we use waitress as WSGI server because gunicorn do not works on Windows, hupper will live reload the WSGI server as you save changes in the source code so you will be able to verify your changes as you work, please note that changes to the jinja html templates will not trigger the server reload, only changes to python source files.
 
 Default user and password are `lms-admin`, default url to work with the development server will be `http://127.0.0.1:8080/`.
 
-You can disable the default cache service with:
+### Run formating tools:
 
 ```
-NO_LMS_CACHE=True hupper -m now_lms
+python dev/lint.sh
+```
+
+### Run the full tests suite:
+
+```
+python dev/test.sh
 ```
 
 #### Style Guide:
@@ -128,8 +181,6 @@ NO_LMS_CACHE=True hupper -m now_lms
 [Prettier](https://github.com/prettier/prettier) for html templates.
 
 #### Use semantic commits:
-
-
 
 | Type     | Scope     | Example Commit Message                      | Purpose                                          | SemVer Impact         |
 |----------|-----------|---------------------------------------------|--------------------------------------------------|-----------------------|
@@ -146,8 +197,6 @@ NO_LMS_CACHE=True hupper -m now_lms
 | ci       | pipeline  | ci(pipeline): add coverage report upload    | Continuous Integration related changes           | None                  |
 | revert   | auth      | revert(auth): undo broken login commit      | Revert a previous commit                         | Depends (inherits type)|
 | release  | version   | release: v0.0.1-rc1                         | Release tagging                                  | Not applicable        |
-
-
 
 #### Certify the origin of your contributions.
 
