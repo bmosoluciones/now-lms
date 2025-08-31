@@ -34,5 +34,6 @@ jobs:
               env:
                   CI: True
               run: |
+                  pybabel compile -d now_lms/translations
                   pytest
 

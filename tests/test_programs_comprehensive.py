@@ -225,13 +225,15 @@ class TestProgramsComprehensive:
 
     def test_programas_list_instructor(self, session_full_db_setup, test_client, isolated_db_session):
         """Test programas list view as instructor (filtered by creator)."""
-        # Create instructor user
+        import time
+        # Create instructor user with unique identifier
+        unique_id = int(time.time() * 1000) % 1000000
         instructor = Usuario(
-            usuario="test_instructor",
+            usuario=f"test_instructor_{unique_id}",
             acceso=proteger_passwd("testpass"),
             nombre="Test",
             apellido="Instructor",
-            correo_electronico="instructor@test.com",
+            correo_electronico=f"instructor_test_{unique_id}@test.com",
             tipo="instructor",
             activo=True,
             correo_electronico_verificado=True,
@@ -242,7 +244,7 @@ class TestProgramsComprehensive:
         # Login as instructor
         login_response = test_client.post(
             "/user/login",
-            data={"usuario": "test_instructor", "acceso": "testpass"},
+            data={"usuario": f"test_instructor_{unique_id}", "acceso": "testpass"},
             follow_redirects=True,
         )
         assert login_response.status_code == 200

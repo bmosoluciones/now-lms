@@ -1,0 +1,113 @@
+{% set current_theme = current_theme() %} {% set config = config() %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>Inscripciones - {{ programa.nombre }}</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+            <br />
+
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h4><i class="fas fa-users"></i> Inscripciones del Programa</h4>
+                                    <p class="mb-0 text-muted">{{ programa.nombre }} ({{ programa.codigo }})</p>
+                                </div>
+                                <div>
+                                    <a
+                                        href="{{ url_for('program.admin_program_enrollment', codigo=programa.codigo) }}"
+                                        class="btn btn-primary"
+                                    >
+                                        <i class="fas fa-user-plus"></i> Inscribir Estudiante
+                                    </a>
+                                    <a
+                                        href="{{ url_for('program.programa_cursos', codigo=programa.codigo) }}"
+                                        class="btn btn-secondary"
+                                    >
+                                        <i class="fas fa-arrow-left"></i> Volver al Programa
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                {% if enrollments %}
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Estudiante</th>
+                                                <th>Email</th>
+                                                <th>Fecha de Inscripción</th>
+                                                <th>Inscrito Por</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for enrollment, usuario in enrollments %}
+                                            <tr>
+                                                <td>
+                                                    <div>
+                                                        <strong>{{ usuario.nombre }} {{ usuario.apellido }}</strong><br />
+                                                        <small class="text-muted">{{ usuario.usuario }}</small>
+                                                    </div>
+                                                </td>
+                                                <td>{{ usuario.correo_electronico }}</td>
+                                                <td>
+                                                    {{ enrollment.creado.strftime('%d/%m/%Y') if enrollment.creado else 'N/A'
+                                                    }}
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">{{ enrollment.creado_por or 'Sistema' }}</small>
+                                                </td>
+                                                <td>
+                                                    <form
+                                                        method="POST"
+                                                        action="{{ url_for('program.admin_program_unenrollment', codigo=programa.codigo, student_username=usuario.usuario) }}"
+                                                        style="display: inline"
+                                                        onsubmit="return confirm('¿Estás seguro de que deseas desinscribir a {{ usuario.nombre }} {{ usuario.apellido }} del programa y todos sus cursos?');"
+                                                    >
+                                                        <button
+                                                            type="submit"
+                                                            class="btn btn-sm btn-outline-danger"
+                                                            title="Desinscribir del programa"
+                                                        >
+                                                            <i class="fas fa-user-times"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {% else %}
+                                <div class="text-center py-5">
+                                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No hay estudiantes inscritos</h5>
+                                    <p class="text-muted">Aún no hay estudiantes inscritos en este programa.</p>
+                                    <a
+                                        href="{{ url_for('program.admin_program_enrollment', codigo=programa.codigo) }}"
+                                        class="btn btn-primary"
+                                    >
+                                        <i class="fas fa-user-plus"></i> Inscribir Primer Estudiante
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

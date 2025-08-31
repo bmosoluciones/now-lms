@@ -809,3 +809,38 @@ class BlogCommentForm(BaseForm):
     """Formulario para comentarios de blog."""
 
     content = TextAreaField("Comentario", validators=[DataRequired()])
+
+
+# ---------------------------------------------------------------------------------------
+# Administrative Enrollment Forms
+# ---------------------------------------------------------------------------------------
+
+
+class AdminCourseEnrollmentForm(FlaskForm):
+    """Formulario para inscripción administrativa de estudiantes a cursos."""
+
+    student_username = StringField(
+        "Usuario del Estudiante", validators=[DataRequired()], render_kw={"placeholder": "Nombre de usuario del estudiante"}
+    )
+    bypass_payment = BooleanField(
+        "Omitir Pago",
+        default=True,
+        render_kw={"title": "Si está marcado, el estudiante tendrá acceso completo sin importar si el curso es pagado"},
+    )
+    notes = TextAreaField("Notas (opcional)", render_kw={"rows": 3, "placeholder": "Notas adicionales sobre la inscripción"})
+
+
+class AdminProgramEnrollmentForm(FlaskForm):
+    """Formulario para inscripción administrativa de estudiantes a programas."""
+
+    student_username = StringField(
+        "Usuario del Estudiante", validators=[DataRequired()], render_kw={"placeholder": "Nombre de usuario del estudiante"}
+    )
+    bypass_payment = BooleanField(
+        "Omitir Pago",
+        default=True,
+        render_kw={
+            "title": "Si está marcado, el estudiante tendrá acceso completo a todos los cursos sin importar si son pagados"
+        },
+    )
+    notes = TextAreaField("Notas (opcional)", render_kw={"rows": 3, "placeholder": "Notas adicionales sobre la inscripción"})
