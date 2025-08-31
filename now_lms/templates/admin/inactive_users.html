@@ -13,78 +13,65 @@
 
         <main>
             <div class="container px-0 py-3" id="user_list">
-                <div class="row align-items-center border-bottom pb-3 mb-4">
-                    <div class="col-md-8">
-                        <h4 class="mb-0"><i class="bi bi-person-x me-2"></i>{{_("Usuarios pendientes de activación")}}</h4>
-                        <p class="text-muted mb-0">Usuarios registrados que requieren aprobación para acceder al sistema</p>
-                    </div>
-                </div>
+                <h4 class="pb-2 border-bottom">{{_("Usuarios pendientes de activación.")}}</h4>
 
-                <div class="card shadow-sm">
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <caption class="ms-3 mt-2">
-                                    {{_("Lista de usuarios registrados en el sistema pendientes de activar.")}}
-                                </caption>
-                                <thead class="table-light">
-                                    <tr>
-                                        <th scope="col" class="fw-semibold">
-                                            <i class="bi bi-person me-1"></i>{{_("Usuario")}}
-                                        </th>
-                                        <th class="fw-semibold"><i class="bi bi-person-badge me-1"></i>{{_("Nombre")}}</th>
-                                        <th class="fw-semibold"><i class="bi bi-person-badge me-1"></i>{{_("Apellido")}}</th>
-                                        <th class="fw-semibold">
-                                            <i class="bi bi-envelope me-1"></i>{{_("Correo Electronico")}}
-                                        </th>
-                                        <th class="fw-semibold text-center">{{_("Accion")}}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for item in consulta.items -%}
-                                    <tr>
-                                        <td>
-                                            <a
-                                                class="text-decoration-none fw-medium"
-                                                href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}"
-                                            >
-                                                {{ item.usuario }}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <span class="text-muted">{{ item.nombre }}</span>
-                                        </td>
-                                        <td>
-                                            <span class="text-muted">{{ item.apellido }}</span>
-                                        </td>
-                                        <td>
-                                            <span class="text-muted">{{ item.correo_electronico }}</span>
-                                        </td>
-                                        <td>
-                                            <div class="btn-group" role="group" aria-label="Acciones del usuario">
-                                                <a
-                                                    href="{{ url_for('admin_profile.activar_usuario', user_id=item.id, ruta='usuarios_inactivos') }}"
-                                                    class="btn btn-sm btn-outline-success"
-                                                    title="Aprobar usuario"
-                                                >
-                                                    <i class="bi bi-check-circle" aria-hidden="true"></i>
-                                                </a>
-                                                <a
-                                                    href="{{ url_for('admin_profile.eliminar_usuario', user_id=item.id, ruta='usuarios_inactivos') }}"
-                                                    class="btn btn-sm btn-outline-danger"
-                                                    title="Rechazar usuario"
-                                                    onclick="return confirm('¿Está seguro de que desea rechazar este usuario?')"
-                                                >
-                                                    <i class="bi bi-x-circle" aria-hidden="true"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                <div class="container" id="user_table">
+                    <table class="table table-sm table-borderless">
+                        <caption>
+                            {{_("Lista de usuarios registrados en el sistema pendientes de activar.")}}
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">{{_("Usuario")}}</th>
+                                <th scope="col">{{_("Nombre")}}</th>
+                                <th scope="col">{{_("Apellido")}}</th>
+                                <th scope="col">{{_("Correo Electronico")}}</th>
+                                <th scope="col">{{_("Accion")}}</th>
+                            </tr>
+                        </thead>
+                        {% for item in consulta.items -%}
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a class="link-dark" href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}">
+                                        {{ item.usuario }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a class="link-dark" href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}">
+                                        {{ item.nombre }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a class="link-dark" href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}">
+                                        {{ item.apellido }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a class="link-dark" href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}">
+                                        {{ item.correo_electronico }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">
+                                        <a
+                                            href="{{ url_for('admin_profile.activar_usuario', user_id=item.id, ruta='usuarios_inactivos') }}"
+                                            class="link-light"
+                                            >{{_("Aprobar")}}</a
+                                        >
+                                    </span>
+                                    <span class="badge bg-danger">
+                                        <a
+                                            href="{{ url_for('admin_profile.eliminar_usuario', user_id=item.id, ruta='usuarios_inactivos') }}"
+                                            class="link-light"
+                                            >{{_("Rechazar")}}</a
+                                        >
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
                 </div>
 
                 <div class="container" id="user_paginatios">
