@@ -33,14 +33,17 @@ def test_master_class_enrollment_model_exists(session_basic_db_setup):
 def test_master_class_creation(isolated_db_session):
     """Test creating a master class."""
     from now_lms.auth import proteger_passwd
+    import time as time_module
+    from datetime import time
 
-    # Create instructor user first
+    # Create instructor user first with unique identifier
+    unique_id = int(time_module.time() * 1000) % 1000000
     instructor = Usuario(
-        usuario="instructor_test",
+        usuario=f"instructor_test_{unique_id}",
         acceso=proteger_passwd("test_password"),
         nombre="Juan",
         apellido="Instructor",
-        correo_electronico="instructor@test.com",
+        correo_electronico=f"instructor_test_{unique_id}@test.com",
         tipo="instructor",
         activo=True,
         correo_electronico_verificado=True,

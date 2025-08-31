@@ -2150,6 +2150,12 @@ def slide_show(recurso_code):
     abort(404)
 
 
+@course.route("/course/")
+def course_index():
+    """Redirect to course exploration page."""
+    return redirect(url_for("course.lista_cursos"))
+
+
 @course.route("/course/explore")
 @cache.cached(unless=no_guardar_en_cache_global)
 def lista_cursos():
@@ -2725,3 +2731,174 @@ def new_evaluation_from_section(course_code, section_id):
     """Create a new evaluation for a course section from section actions."""
     # Redirect to the existing instructor profile route for evaluation creation
     return redirect(url_for("instructor_profile.new_evaluation", course_code=course_code, section_id=section_id))
+
+
+# ---------------------------------------------------------------------------------------
+# Administrative Enrollment Routes
+# ---------------------------------------------------------------------------------------
+
+
+@course.route("/course/<course_code>/admin/enroll", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def admin_course_enrollment(course_code):
+    """Administrative enrollment of students to a course."""
+    from now_lms.forms import AdminCourseEnrollmentForm
+
+    # Verify course exists
+    _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
+    if not _curso:
+        abort(404)
+
+    # Only allow instructors to enroll in their own courses (or admins for any course)
+    if current_user.tipo != "admin":
+        # Check if current user is instructor of this course
+        instructor_assignment = database.session.execute(
+            database.select(DocenteCurso).filter_by(curso=course_code, usuario=current_user.usuario)
+        ).scalar_one_or_none()
+        if not instructor_assignment:
+            abort(403)
+
+    form = AdminCourseEnrollmentForm()
+
+    if form.validate_on_submit():
+        student_username = form.student_username.data.strip()
+        bypass_payment = form.bypass_payment.data
+        notes = form.notes.data.strip() if form.notes.data else ""
+
+        # Verify student exists
+        usuario_existe = database.session.execute(
+            database.select(Usuario).filter_by(usuario=student_username)
+        ).scalar_one_or_none()
+
+        if not usuario_existe:
+            flash(f"El usuario '{student_username}' no existe en el sistema.", "error")
+            return render_template("learning/curso/admin_enroll.html", curso=_curso, form=form)
+
+        # Check if student is already enrolled
+        existing_enrollment = database.session.execute(
+            database.select(EstudianteCurso).filter_by(curso=course_code, usuario=student_username, vigente=True)
+        ).scalar_one_or_none()
+
+        if existing_enrollment:
+            flash(f"El estudiante '{student_username}' ya está inscrito en este curso.", "warning")
+            return render_template("learning/curso/admin_enroll.html", curso=_curso, form=form)
+
+        try:
+            # Create payment record for administrative enrollment
+            pago = Pago()
+            pago.usuario = student_username
+            pago.curso = course_code
+            pago.estado = "completed"
+            pago.metodo = "admin_enrollment"
+            pago.monto = 0 if bypass_payment else _curso.precio
+            pago.descripcion = f"Inscripción administrativa por {current_user.usuario}"
+            if notes:
+                pago.descripcion += f" - Notas: {notes}"
+            pago.audit = not bypass_payment and _curso.pagado
+            pago.creado = datetime.now(timezone.utc).date()
+            pago.creado_por = current_user.usuario
+            database.session.add(pago)
+            database.session.flush()
+
+            # Create student enrollment record
+            enrollment = EstudianteCurso(
+                curso=course_code,
+                usuario=student_username,
+                vigente=True,
+                pago=pago.id,
+            )
+            enrollment.creado = datetime.now(timezone.utc).date()
+            enrollment.creado_por = current_user.usuario
+            database.session.add(enrollment)
+            database.session.commit()
+
+            # Create course progress index
+            _crear_indice_avance_curso(course_code)
+
+            # Create calendar events for the enrolled student
+            create_events_for_student_enrollment(student_username, course_code)
+
+            flash(f"Estudiante '{student_username}' inscrito exitosamente en el curso '{_curso.nombre}'.", "success")
+            return redirect(url_for("course.administrar_curso", course_code=course_code))
+
+        except Exception as e:
+            database.session.rollback()
+            flash(f"Error al inscribir al estudiante: {str(e)}", "error")
+
+    return render_template("learning/curso/admin_enroll.html", curso=_curso, form=form)
+
+
+@course.route("/course/<course_code>/admin/enrollments")
+@login_required
+@perfil_requerido("instructor")
+def admin_course_enrollments(course_code):
+    """View and manage course enrollments."""
+    # Verify course exists
+    _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
+    if not _curso:
+        abort(404)
+
+    # Only allow instructors to view their own course enrollments (or admins for any course)
+    if current_user.tipo != "admin":
+        # Check if current user is instructor of this course
+        instructor_assignment = database.session.execute(
+            database.select(DocenteCurso).filter_by(curso=course_code, usuario=current_user.usuario)
+        ).scalar_one_or_none()
+        if not instructor_assignment:
+            abort(403)
+
+    # Get all enrollments for this course
+    enrollments = database.session.execute(
+        database.select(EstudianteCurso, Usuario, Pago)
+        .join(Usuario, EstudianteCurso.usuario == Usuario.usuario)
+        .outerjoin(Pago, EstudianteCurso.pago == Pago.id)
+        .filter(EstudianteCurso.curso == course_code, EstudianteCurso.vigente.is_(True))
+        .order_by(EstudianteCurso.creado.desc())
+    ).all()
+
+    return render_template("learning/curso/admin_enrollments.html", curso=_curso, enrollments=enrollments)
+
+
+@course.route("/course/<course_code>/admin/unenroll/<student_username>", methods=["POST"])
+@login_required
+@perfil_requerido("instructor")
+def admin_course_unenrollment(course_code, student_username):
+    """Administrative unenrollment of a student from a course."""
+    # Verify course exists
+    _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
+    if not _curso:
+        abort(404)
+
+    # Only allow instructors to unenroll from their own courses (or admins for any course)
+    if current_user.tipo != "admin":
+        # Check if current user is instructor of this course
+        instructor_assignment = database.session.execute(
+            database.select(DocenteCurso).filter_by(curso=course_code, usuario=current_user.usuario)
+        ).scalar_one_or_none()
+        if not instructor_assignment:
+            abort(403)
+
+    # Find the enrollment
+    enrollment = database.session.execute(
+        database.select(EstudianteCurso).filter_by(curso=course_code, usuario=student_username, vigente=True)
+    ).scalar_one_or_none()
+
+    if not enrollment:
+        flash(f"El estudiante '{student_username}' no está inscrito en este curso.", "error")
+        return redirect(url_for("course.admin_course_enrollments", course_code=course_code))
+
+    try:
+        # Mark enrollment as inactive
+        enrollment.vigente = False
+        enrollment.modificado = datetime.now(timezone.utc).date()
+        enrollment.modificado_por = current_user.usuario
+        database.session.commit()
+
+        flash(f"Estudiante '{student_username}' desinscrito del curso exitosamente.", "success")
+
+    except Exception as e:
+        database.session.rollback()
+        flash(f"Error al desinscribir al estudiante: {str(e)}", "error")
+
+    return redirect(url_for("course.admin_course_enrollments", course_code=course_code))

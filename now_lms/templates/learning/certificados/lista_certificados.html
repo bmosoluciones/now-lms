@@ -15,96 +15,130 @@
             {{ current_theme.notify() }}
 
             <div class="container px-0 py-3" id="curse_list">
-                <div class="d-flex justify-content-between border-bottom">
-                    <h4>Lista de Certificados Disponibles.</h4>
-
-                    <p>
-                        <span class="badge bg-success">
-                            <a href="{{ url_for('certificate.certificate_new') }}" class="link-light">Nueva Plantilla</a>
-                        </span>
-                        <span class="badge bg-success">
-                            <a href="{{ url_for('certificate.certificacion_generar') }}" class="link-light"
-                                >Nuevo Certificado</a
-                            >
-                        </span>
-                    </p>
+                <div class="row align-items-center border-bottom pb-3 mb-4">
+                    <div class="col-md-8">
+                        <h4 class="mb-0"><i class="bi bi-award me-2"></i>Lista de Certificados Disponibles</h4>
+                        <p class="text-muted mb-0">Gestiona y administra las plantillas de certificados</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="btn-group" role="group">
+                            <a href="{{ url_for('certificate.certificate_new') }}" class="btn btn-success">
+                                <i class="bi bi-plus-lg me-1"></i>Nueva Plantilla
+                            </a>
+                            <a href="{{ url_for('certificate.certificacion_generar') }}" class="btn btn-outline-primary">
+                                <i class="bi bi-file-earmark-plus me-1"></i>Nuevo Certificado
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
                 {% if consulta %}
-                <div class="container" id="curse_table">
-                    <table class="table table-sm table-borderless">
-                        <caption>
-                            Lista de certificados disponibles en el sistema.
-                        </caption>
-                        <thead>
-                            <tr>
-                                <th scope="col">Certificado</th>
-                                <th scope="col">Habilitado</th>
-                                <th scope="col">Publico</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        {% for item in consulta.items -%}
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <a href="" class="link-dark"> {{ item.titulo }} </a>
-                                </td>
-                                <td>{{ item.habilitado }}</td>
-                                <td>{{ item.publico }}</td>
-                                <td>
-                                    <div class="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
-                                        {% if item.habilitado %}
-                                        <a
-                                            href="{{ url_for('certificate.certificate_remove', ulid=item.id) }}"
-                                            type="button"
-                                            class="btn btn-danger"
-                                            ><ion-icon name="alert-circle-sharp"></ion-icon> Deshabilitar</a
-                                        >
-                                        {% else %}
-                                        <a
-                                            href="{{ url_for('certificate.certificate_add', ulid=item.id) }}"
-                                            type="button"
-                                            class="btn btn-info"
-                                            ><ion-icon name="add-circle-sharp"></ion-icon> Habilitar</a
-                                        >
-                                        {% endif %} {% if item.publico %}
-                                        <a
-                                            href="{{ url_for('certificate.certificate_unpublish', ulid=item.id) }}"
-                                            type="button"
-                                            class="btn btn-warning"
-                                            ><ion-icon name="trash-bin-sharp"></ion-icon> Remover</a
-                                        >
-                                        {% else %}
-                                        <a
-                                            href="{{ url_for('certificate.certificate_publish', ulid=item.id) }}"
-                                            type="button"
-                                            class="btn btn-info"
-                                            ><ion-icon name="checkbox-outline"></ion-icon> Publicar</a
-                                        >
-                                        {% endif %}
-                                        <a
-                                            href="{{ url_for('certificate.certificate_edit', ulid=item.id) }}"
-                                            type="button"
-                                            class="btn btn-success"
-                                            ><ion-icon name="create-sharp"></ion-icon> Editar</a
-                                        >
-                                        <a
-                                            href="{{ url_for('certificate.certificate_inspect', ulid=item.id) }}"
-                                            target="_blank"
-                                            type="button"
-                                            class="btn btn-primary"
-                                            ><ion-icon name="eye-sharp"></ion-icon> Visualizar</a
-                                        >
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                        {% endfor %}
-                    </table>
+                <div class="card shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <caption class="ms-3 mt-2">
+                                    Lista de certificados disponibles en el sistema.
+                                </caption>
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" class="fw-semibold"><i class="bi bi-bookmark me-1"></i>Certificado</th>
+                                        <th class="fw-semibold text-center"><i class="bi bi-check-circle me-1"></i>Habilitado</th>
+                                        <th class="fw-semibold text-center"><i class="bi bi-globe me-1"></i>Público</th>
+                                        <th class="fw-semibold text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in consulta.items -%}
+                                    <tr>
+                                        <td>
+                                            <span class="fw-medium">{{ item.titulo }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            {% if item.habilitado %}
+                                            <i class="bi bi-check-circle-fill text-success" title="Habilitado"></i>
+                                            {% else %}
+                                            <i class="bi bi-x-circle-fill text-danger" title="Deshabilitado"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if item.publico %}
+                                            <i class="bi bi-check-circle-fill text-success" title="Público"></i>
+                                            {% else %}
+                                            <i class="bi bi-lock-fill text-secondary" title="Privado"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group" aria-label="Acciones del certificado">
+                                                {% if item.habilitado %}
+                                                <a
+                                                    href="{{ url_for('certificate.certificate_remove', ulid=item.id) }}"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    title="Deshabilitar"
+                                                >
+                                                    <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                                </a>
+                                                {% else %}
+                                                <a
+                                                    href="{{ url_for('certificate.certificate_add', ulid=item.id) }}"
+                                                    class="btn btn-sm btn-outline-success"
+                                                    title="Habilitar"
+                                                >
+                                                    <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                                </a>
+                                                {% endif %}
+                                                {% if item.publico %}
+                                                <a
+                                                    href="{{ url_for('certificate.certificate_unpublish', ulid=item.id) }}"
+                                                    class="btn btn-sm btn-outline-warning"
+                                                    title="Hacer privado"
+                                                >
+                                                    <i class="bi bi-eye-slash" aria-hidden="true"></i>
+                                                </a>
+                                                {% else %}
+                                                <a
+                                                    href="{{ url_for('certificate.certificate_publish', ulid=item.id) }}"
+                                                    class="btn btn-sm btn-outline-info"
+                                                    title="Publicar"
+                                                >
+                                                    <i class="bi bi-eye" aria-hidden="true"></i>
+                                                </a>
+                                                {% endif %}
+                                                <a
+                                                    href="{{ url_for('certificate.certificate_edit', ulid=item.id) }}"
+                                                    class="btn btn-sm btn-outline-secondary"
+                                                    title="Editar"
+                                                >
+                                                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                                                </a>
+                                                <a
+                                                    href="{{ url_for('certificate.certificate_inspect', ulid=item.id) }}"
+                                                    target="_blank"
+                                                    class="btn btn-sm btn-outline-primary"
+                                                    title="Visualizar"
+                                                >
+                                                    <i class="bi bi-eye-fill" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 {% else %}
-                <p>Usted no ha creado ninguna etiqueta todavia.</p>
+                <div class="card shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-inbox text-muted" style="font-size: 3rem"></i>
+                        <h5 class="text-muted mt-3">No hay certificados disponibles</h5>
+                        <p class="text-muted">Usted no ha creado ningún certificado todavía.</p>
+                        <a href="{{ url_for('certificate.certificate_new') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-lg me-2"></i>Crear Primera Plantilla
+                        </a>
+                    </div>
+                </div>
                 {% endif %}
 
                 <div class="container" id="user_pagination">
@@ -112,7 +146,7 @@
                 </div>
             </div>
         </main>
-        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    </body>
+</html>
     </body>
 </html>

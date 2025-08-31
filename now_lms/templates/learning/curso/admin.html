@@ -158,7 +158,21 @@ permitir_docente %}
                         <a href="{{ url_for('course.list_coupons', course_code=curso.codigo) }}" class="btn btn-sm btn-primary"
                             ><i class="bi bi-tags" aria-hidden="true"></i> Gestionar Cupones</a
                         >
-                        {% endif %} {% if secciones %}
+                        {% endif %}
+
+                        <!-- Administrative Enrollment Management -->
+                        <a
+                            href="{{ url_for('course.admin_course_enrollment', course_code=curso.codigo) }}"
+                            class="btn btn-sm btn-info"
+                            ><i class="bi bi-person-plus" aria-hidden="true"></i> Inscribir Estudiante</a
+                        >
+                        <a
+                            href="{{ url_for('course.admin_course_enrollments', course_code=curso.codigo) }}"
+                            class="btn btn-sm btn-outline-info"
+                            ><i class="bi bi-people" aria-hidden="true"></i> Ver Inscripciones</a
+                        >
+
+                        {% if secciones %}
                         <div>
                             {% for seccion in secciones %}
                             <div class="d-flex justify-content-between border-bottom">

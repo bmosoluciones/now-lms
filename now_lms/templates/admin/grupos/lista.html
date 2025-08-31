@@ -13,44 +13,67 @@
 
         <main>
             <div class="container px-0 py-3" id="lista-usarios">
-                <div class="d-flex justify-content-between border-bottom">
-                    <h4>Grupos registrados en el sistema.</h4>
-
-                    <p>
-                        <span class="badge bg-success">
-                            <a href="{{ url_for('group.nuevo_grupo') }}" class="link-light">Nuevo Grupo</a>
-                        </span>
-                    </p>
+                <div class="row align-items-center border-bottom pb-3 mb-4">
+                    <div class="col-md-8">
+                        <h4 class="mb-0"><i class="bi bi-people-fill me-2"></i>Grupos registrados en el sistema</h4>
+                        <p class="text-muted mb-0">Gestiona y administra los grupos de usuarios</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="btn-group" role="group">
+                            <a href="{{ url_for('group.nuevo_grupo') }}" class="btn btn-success">
+                                <i class="bi bi-plus-lg me-1"></i>Nuevo Grupo
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="container" id="user_table">
-                    <table class="table table-sm table-borderless">
-                        <caption>
-                            Lista de grupos registrados en el sistema.
-                        </caption>
-                        <thead>
-                            <tr>
-                                <th scope="col">Grupo</th>
-                                <th scope="col">Activo</th>
-                                <th scope="col">Tutor</th>
-                            </tr>
-                        </thead>
-                        {% for item in grupos.items -%}
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <a href="#" class="link-dark">{{ item.nombre }}</a>
-                                </td>
-                                <td>
-                                    <a href="#" class="link-dark">{{ item.activo }}</a>
-                                </td>
-                                <td>
-                                    <a href="#" class="link-dark">{{ item.tutor }}</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                        {% endfor %}
-                    </table>
+                <div class="card shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <caption class="ms-3 mt-2">
+                                    Lista de grupos registrados en el sistema.
+                                </caption>
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" class="fw-semibold"><i class="bi bi-people me-1"></i>Grupo</th>
+                                        <th class="fw-semibold text-center"><i class="bi bi-check-circle me-1"></i>Activo</th>
+                                        <th class="fw-semibold"><i class="bi bi-person-gear me-1"></i>Tutor</th>
+                                        <th class="fw-semibold text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in grupos.items -%}
+                                    <tr>
+                                        <td>
+                                            <span class="fw-medium">{{ item.nombre }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            {% if item.activo %}
+                                            <i class="bi bi-check-circle-fill text-success" title="Activo"></i>
+                                            {% else %}
+                                            <i class="bi bi-x-circle-fill text-danger" title="Inactivo"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="text-muted">{{ item.tutor }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group" aria-label="Acciones del grupo">
+                                                <a href="#" class="btn btn-sm btn-outline-primary" title="Ver grupo">
+                                                    <i class="bi bi-eye" aria-hidden="true"></i>
+                                                </a>
+                                                <a href="#" class="btn btn-sm btn-outline-secondary" title="Editar grupo">
+                                                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="container" id="user_pagination">

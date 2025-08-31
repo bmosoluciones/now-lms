@@ -55,8 +55,9 @@ def test_english_translations_work_when_enabled(session_full_db_setup):
     """Test that English translations work when database language is set to 'en'."""
     with session_full_db_setup.app_context():
         from flask import g
+        from flask_babel import get_locale
         from now_lms.db import Configuracion, database
-        from now_lms.i18n import get_locale, _
+        from now_lms.i18n import _
 
         # Set database configuration to English
         config = database.session.execute(database.select(Configuracion)).scalars().first()
@@ -71,7 +72,7 @@ def test_english_translations_work_when_enabled(session_full_db_setup):
 
             # Verify locale is English
             locale = get_locale()
-            assert locale == "en"
+            assert str(locale) == "en"
 
             # Test that translations work
             # These translations exist in the English .po file

@@ -31,6 +31,7 @@ jobs:
                   SECRET_KEY: ASD123klj+aAddS
                   LOG_LEVEL: TRACE
               run: |
+                  pybabel compile -d now_lms/translations
                   pytest --cov=now_lms
             - name: Test with MySQL
               env:
