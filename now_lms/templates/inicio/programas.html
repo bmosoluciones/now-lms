@@ -10,7 +10,7 @@
 
         <!-- Custom styles for this template -->
         <link href="{{ url_for('static', filename='css/sidebars.css') }}" rel="stylesheet" />
-        
+
         <!-- Modern program explore page styles -->
         <style>
             .modern-program-grid {
@@ -19,7 +19,7 @@
                 gap: 2rem;
                 margin-bottom: 2rem;
             }
-            
+
             .modern-program-card {
                 background: white;
                 border-radius: 20px;
@@ -29,13 +29,13 @@
                 position: relative;
                 border: 1px solid rgba(0, 0, 0, 0.05);
             }
-            
+
             .modern-program-card:hover {
                 transform: translateY(-12px);
                 box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
                 border-color: var(--classic-primary);
             }
-            
+
             .program-image-container {
                 position: relative;
                 width: 100%;
@@ -43,18 +43,18 @@
                 overflow: hidden;
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             }
-            
+
             .program-image-container img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
                 transition: transform 0.4s ease;
             }
-            
+
             .modern-program-card:hover .program-image-container img {
                 transform: scale(1.08);
             }
-            
+
             .program-image-placeholder {
                 display: flex;
                 align-items: center;
@@ -68,18 +68,19 @@
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 position: relative;
             }
-            
+
             .program-image-placeholder::before {
-                content: '';
+                content: "";
                 position: absolute;
                 top: 0;
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+                background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
+                    repeat;
                 opacity: 0.3;
             }
-            
+
             .program-overlay {
                 position: absolute;
                 top: 0;
@@ -93,23 +94,23 @@
                 align-items: center;
                 justify-content: center;
             }
-            
+
             .modern-program-card:hover .program-overlay {
                 opacity: 1;
             }
-            
+
             .program-overlay-icon {
                 width: 48px;
                 height: 48px;
                 color: white;
                 opacity: 0.9;
             }
-            
+
             .program-card-body {
                 padding: 2rem;
                 position: relative;
             }
-            
+
             .program-title {
                 font-size: 1.5rem;
                 font-weight: 800;
@@ -120,7 +121,7 @@
                 align-items: center;
                 gap: 0.75rem;
             }
-            
+
             .program-icon {
                 width: 32px;
                 height: 32px;
@@ -133,7 +134,7 @@
                 font-weight: bold;
                 font-size: 0.9rem;
             }
-            
+
             .program-description {
                 color: var(--classic-text-secondary);
                 font-size: 1rem;
@@ -144,7 +145,7 @@
                 -webkit-box-orient: vertical;
                 overflow: hidden;
             }
-            
+
             .program-meta {
                 display: flex;
                 justify-content: space-between;
@@ -154,7 +155,7 @@
                 background: var(--classic-light);
                 border-radius: 12px;
             }
-            
+
             .program-courses-count {
                 display: flex;
                 align-items: center;
@@ -163,7 +164,7 @@
                 font-weight: 600;
                 font-size: 0.9rem;
             }
-            
+
             .program-price {
                 font-weight: 800;
                 font-size: 1.25rem;
@@ -172,16 +173,16 @@
                 align-items: center;
                 gap: 0.5rem;
             }
-            
+
             .program-price.free {
                 color: #22c55e;
             }
-            
+
             .program-price-icon {
                 width: 20px;
                 height: 20px;
             }
-            
+
             .program-action-btn {
                 width: 100%;
                 background: linear-gradient(135deg, var(--classic-primary), var(--classic-secondary));
@@ -199,7 +200,7 @@
                 box-shadow: 0 6px 20px rgba(46, 46, 46, 0.25);
                 font-size: 1.05rem;
             }
-            
+
             .program-action-btn:hover {
                 background: linear-gradient(135deg, var(--classic-secondary), #1a1a1a);
                 color: white;
@@ -207,17 +208,17 @@
                 box-shadow: 0 10px 30px rgba(46, 46, 46, 0.4);
                 text-decoration: none;
             }
-            
+
             .btn-icon {
                 width: 20px;
                 height: 20px;
                 transition: transform 0.3s ease;
             }
-            
+
             .program-action-btn:hover .btn-icon {
                 transform: translateX(4px);
             }
-            
+
             .modern-sidebar {
                 background: white;
                 border-radius: 20px;
@@ -227,7 +228,7 @@
                 top: 2rem;
                 border: 1px solid rgba(0, 0, 0, 0.05);
             }
-            
+
             .sidebar-title {
                 font-size: 1.6rem;
                 font-weight: 800;
@@ -237,7 +238,7 @@
                 align-items: center;
                 gap: 1rem;
             }
-            
+
             .sidebar-title-icon {
                 width: 28px;
                 height: 28px;
@@ -248,15 +249,15 @@
                 justify-content: center;
                 color: white;
             }
-            
+
             .filter-section {
                 margin-bottom: 2.5rem;
             }
-            
+
             .filter-section:last-child {
                 margin-bottom: 0;
             }
-            
+
             .filter-title {
                 font-weight: 700;
                 color: var(--classic-text);
@@ -272,18 +273,18 @@
                 transition: all 0.3s ease;
                 border: 2px solid transparent;
             }
-            
+
             .filter-title:hover {
                 color: var(--classic-primary);
                 border-color: var(--classic-primary);
                 background: white;
                 box-shadow: 0 4px 15px rgba(46, 46, 46, 0.1);
             }
-            
+
             .filter-options {
                 padding-top: 1.25rem;
             }
-            
+
             .filter-option {
                 display: block;
                 padding: 1rem 1.25rem;
@@ -297,9 +298,9 @@
                 position: relative;
                 overflow: hidden;
             }
-            
+
             .filter-option::before {
-                content: '';
+                content: "";
                 position: absolute;
                 top: 0;
                 left: -100%;
@@ -308,11 +309,11 @@
                 background: linear-gradient(90deg, transparent, rgba(46, 46, 46, 0.1), transparent);
                 transition: left 0.5s ease;
             }
-            
+
             .filter-option:hover::before {
                 left: 100%;
             }
-            
+
             .filter-option:hover {
                 background: var(--classic-primary);
                 color: white;
@@ -320,7 +321,7 @@
                 transform: translateX(8px);
                 box-shadow: 0 4px 15px rgba(46, 46, 46, 0.2);
             }
-            
+
             .pagination-modern {
                 display: flex;
                 justify-content: center;
@@ -329,7 +330,7 @@
                 gap: 1.5rem;
                 flex-wrap: wrap;
             }
-            
+
             .pagination-info {
                 background: white;
                 padding: 1.25rem 2.5rem;
@@ -340,7 +341,7 @@
                 border: 1px solid rgba(0, 0, 0, 0.05);
                 font-size: 1.05rem;
             }
-            
+
             .pagination-nav a {
                 background: linear-gradient(135deg, var(--classic-primary), var(--classic-secondary));
                 color: white;
@@ -355,7 +356,7 @@
                 gap: 0.75rem;
                 font-size: 1.05rem;
             }
-            
+
             .pagination-nav a:hover {
                 background: linear-gradient(135deg, var(--classic-secondary), #1a1a1a);
                 transform: translateY(-3px);
@@ -363,11 +364,11 @@
                 text-decoration: none;
                 color: white;
             }
-            
+
             .page-header {
                 margin-bottom: 3rem;
             }
-            
+
             .breadcrumb-modern {
                 background: white;
                 border-radius: 16px;
@@ -376,7 +377,7 @@
                 margin-bottom: 2rem;
                 border: 1px solid rgba(0, 0, 0, 0.05);
             }
-            
+
             .empty-state {
                 text-align: center;
                 padding: 4rem 2rem;
@@ -385,52 +386,52 @@
                 box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
                 border: 1px solid rgba(0, 0, 0, 0.05);
             }
-            
+
             .empty-state-icon {
                 width: 80px;
                 height: 80px;
                 margin: 0 auto 2rem;
                 color: var(--classic-text-secondary);
             }
-            
+
             .empty-state h3 {
                 color: var(--classic-text);
                 font-weight: 700;
                 margin-bottom: 1rem;
                 font-size: 1.5rem;
             }
-            
+
             .empty-state p {
                 color: var(--classic-text-secondary);
                 font-size: 1.1rem;
                 line-height: 1.6;
             }
-            
+
             @media (max-width: 768px) {
                 .modern-program-grid {
                     grid-template-columns: 1fr;
                     gap: 1.5rem;
                 }
-                
+
                 .modern-sidebar {
                     margin-top: 2rem;
                     position: static;
                     padding: 2rem;
                 }
-                
+
                 .program-card-body {
                     padding: 1.5rem;
                 }
-                
+
                 .pagination-modern {
                     flex-direction: column;
                     gap: 1rem;
                 }
-                
+
                 .sidebar-title {
                     font-size: 1.4rem;
                 }
-                
+
                 .program-title {
                     font-size: 1.3rem;
                 }
@@ -468,7 +469,11 @@
                                 <a href="{{ url_for('program.lista_programas', page=cursos.next_num) }}">
                                     Siguiente
                                     <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                            clip-rule="evenodd"
+                                        />
                                     </svg>
                                 </a>
                             </div>
@@ -488,38 +493,43 @@
                                     />
                                     {% else %}
                                     <div class="program-image-placeholder">
-                                        <div style="position: relative; z-index: 1;">
-                                            {{ curso.nombre }}
-                                        </div>
+                                        <div style="position: relative; z-index: 1">{{ curso.nombre }}</div>
                                     </div>
                                     {% endif %}
 
                                     <div class="program-overlay">
                                         <svg class="program-overlay-icon" viewBox="0 0 20 20" fill="currentColor">
-                                            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                                            <path
+                                                d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"
+                                            />
                                         </svg>
                                     </div>
                                 </div>
 
                                 <div class="program-card-body">
                                     <h5 class="program-title">
-                                        <div class="program-icon">
-                                            {{ curso.nombre[0] }}
-                                        </div>
+                                        <div class="program-icon">{{ curso.nombre[0] }}</div>
                                         {{ curso.nombre }}
                                     </h5>
-                                    
+
                                     <p class="program-description">
-                                        {{ curso.descripcion if curso.descripcion else "Programa educativo completo diseñado para proporcionar un aprendizaje integral en el tema." }}
+                                        {{ curso.descripcion if curso.descripcion else "Programa educativo completo diseñado
+                                        para proporcionar un aprendizaje integral en el tema." }}
                                     </p>
 
                                     <div class="program-meta">
                                         <div class="program-courses-count">
                                             <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z"/>
-                                                <path d="M3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762z"/>
-                                                <path d="M9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0z"/>
-                                                <path d="M6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                                                <path
+                                                    d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z"
+                                                />
+                                                <path
+                                                    d="M3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762z"
+                                                />
+                                                <path
+                                                    d="M9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0z"
+                                                />
+                                                <path d="M6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
                                             </svg>
                                             {{ cuenta_cursos(curso.codigo) }} cursos
                                         </div>
@@ -527,24 +537,38 @@
                                         <div class="program-price {% if not curso.precio %}free{% endif %}">
                                             {% if curso.precio %}
                                             <svg class="program-price-icon" viewBox="0 0 20 20" fill="currentColor">
-                                                <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.51-1.31c-.562-.649-1.413-1.076-2.353-1.253V5z" clip-rule="evenodd"/>
+                                                <path
+                                                    d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"
+                                                />
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.51-1.31c-.562-.649-1.413-1.076-2.353-1.253V5z"
+                                                    clip-rule="evenodd"
+                                                />
                                             </svg>
-                                            {{ curso.precio | float }} {{ config.moneda }}
-                                            {% else %}
+                                            {{ curso.precio | float }} {{ config.moneda }} {% else %}
                                             <svg class="program-price-icon" viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                                                    clip-rule="evenodd"
+                                                />
                                             </svg>
-                                            Gratis
-                                            {% endif %}
+                                            Gratis {% endif %}
                                         </div>
                                     </div>
 
-                                    <a href="{{ url_for('program.pagina_programa', codigo=curso.codigo) }}" 
-                                       class="program-action-btn">
+                                    <a
+                                        href="{{ url_for('program.pagina_programa', codigo=curso.codigo) }}"
+                                        class="program-action-btn"
+                                    >
                                         <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
-                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                                                clip-rule="evenodd"
+                                            />
                                         </svg>
                                         Ver Programa
                                     </a>
@@ -556,10 +580,15 @@
                         <!-- Empty State -->
                         <div class="empty-state">
                             <svg class="empty-state-icon" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                                <path
+                                    d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"
+                                />
                             </svg>
                             <h3>No hay programas disponibles</h3>
-                            <p>Actualmente no hay programas disponibles. Por favor, inténtelo más tarde o contacte al administrador.</p>
+                            <p>
+                                Actualmente no hay programas disponibles. Por favor, inténtelo más tarde o contacte al
+                                administrador.
+                            </p>
                         </div>
                         {% endif %}
 
@@ -570,23 +599,31 @@
                             <div class="pagination-nav">
                                 <a href="{{ url_for('program.lista_programas', page=cursos.prev_num) }}">
                                     <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"
+                                        />
                                     </svg>
                                     Anterior
                                 </a>
                             </div>
                             {% endif %}
-                            
+
                             <div class="pagination-info">
                                 Página {{ cursos.page }} de {{ cursos.pages }} - {{ cursos.total }} programas encontrados
                             </div>
-                            
+
                             {% if cursos.has_next %}
                             <div class="pagination-nav">
                                 <a href="{{ url_for('program.lista_programas', page=cursos.next_num) }}">
                                     Siguiente
                                     <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                            clip-rule="evenodd"
+                                        />
                                     </svg>
                                 </a>
                             </div>
@@ -601,7 +638,9 @@
                             <h5 class="sidebar-title">
                                 <div class="sidebar-title-icon">
                                     <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                                        <path
+                                            d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"
+                                        />
                                     </svg>
                                 </div>
                                 Filtrar Programas
@@ -609,16 +648,27 @@
 
                             <!-- Categories Filter -->
                             <div class="filter-section">
-                                <div class="filter-title" data-bs-toggle="collapse" data-bs-target="#categories-filter" aria-expanded="true">
+                                <div
+                                    class="filter-title"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#categories-filter"
+                                    aria-expanded="true"
+                                >
                                     Categorías
                                     <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd"
+                                        />
                                     </svg>
                                 </div>
                                 <div class="collapse show filter-options" id="categories-filter">
                                     {% for categoria in categorias %}
-                                    <a href="{{ url_for('program.lista_programas') + parametros_url(parametros=parametros, arg='category', val=categoria.nombre, char='?') }}" 
-                                       class="filter-option">
+                                    <a
+                                        href="{{ url_for('program.lista_programas') + parametros_url(parametros=parametros, arg='category', val=categoria.nombre, char='?') }}"
+                                        class="filter-option"
+                                    >
                                         {{ categoria.nombre }}
                                     </a>
                                     {% endfor %}
@@ -627,16 +677,27 @@
 
                             <!-- Tags Filter -->
                             <div class="filter-section">
-                                <div class="filter-title" data-bs-toggle="collapse" data-bs-target="#tags-filter" aria-expanded="false">
+                                <div
+                                    class="filter-title"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#tags-filter"
+                                    aria-expanded="false"
+                                >
                                     Etiquetas
                                     <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd"
+                                        />
                                     </svg>
                                 </div>
                                 <div class="collapse filter-options" id="tags-filter">
                                     {% for etiqueta in etiquetas %}
-                                    <a href="{{ url_for('program.lista_programas') + parametros_url(parametros=parametros, arg='tag', val=etiqueta.nombre, char='?') }}" 
-                                       class="filter-option">
+                                    <a
+                                        href="{{ url_for('program.lista_programas') + parametros_url(parametros=parametros, arg='tag', val=etiqueta.nombre, char='?') }}"
+                                        class="filter-option"
+                                    >
                                         {{ etiqueta.nombre }}
                                     </a>
                                     {% endfor %}
@@ -645,27 +706,44 @@
 
                             <!-- Level Filter -->
                             <div class="filter-section">
-                                <div class="filter-title" data-bs-toggle="collapse" data-bs-target="#level-filter" aria-expanded="false">
+                                <div
+                                    class="filter-title"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#level-filter"
+                                    aria-expanded="false"
+                                >
                                     Nivel
                                     <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd"
+                                        />
                                     </svg>
                                 </div>
                                 <div class="collapse filter-options" id="level-filter">
-                                    <a href="{{ url_for('program.lista_programas') + parametros_url(parametros=parametros, arg='nivel', val='0', char='?') }}" 
-                                       class="filter-option">
+                                    <a
+                                        href="{{ url_for('program.lista_programas') + parametros_url(parametros=parametros, arg='nivel', val='0', char='?') }}"
+                                        class="filter-option"
+                                    >
                                         Introductorio
                                     </a>
-                                    <a href="{{ url_for('program.lista_programas') + parametros_url(parametros=parametros, arg='nivel', val='1', char='?') }}" 
-                                       class="filter-option">
+                                    <a
+                                        href="{{ url_for('program.lista_programas') + parametros_url(parametros=parametros, arg='nivel', val='1', char='?') }}"
+                                        class="filter-option"
+                                    >
                                         Principiante
                                     </a>
-                                    <a href="{{ url_for('program.lista_programas') + parametros_url(parametros=parametros, arg='nivel', val='2', char='?') }}" 
-                                       class="filter-option">
+                                    <a
+                                        href="{{ url_for('program.lista_programas') + parametros_url(parametros=parametros, arg='nivel', val='2', char='?') }}"
+                                        class="filter-option"
+                                    >
                                         Intermedio
                                     </a>
-                                    <a href="{{ url_for('program.lista_programas') + parametros_url(parametros=parametros, arg='nivel', val='3', char='?') }}" 
-                                       class="filter-option">
+                                    <a
+                                        href="{{ url_for('program.lista_programas') + parametros_url(parametros=parametros, arg='nivel', val='3', char='?') }}"
+                                        class="filter-option"
+                                    >
                                         Avanzado
                                     </a>
                                 </div>
