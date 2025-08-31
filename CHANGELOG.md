@@ -11,6 +11,13 @@ All notable changes to this project will be documented in this file.
 
 ## [ unreleased ]
 
+### Added:
+ - Administrative user enrollment in programs and courses.
+
+### Changed:
+ - Improved course page.
+ - Improved resources pages.
+
 -------------------
 
 ## [ release: v0.0.1b15.dev20250830 ] - 2025-08-30

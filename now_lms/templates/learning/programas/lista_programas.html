@@ -15,93 +15,149 @@
             {{ current_theme.notify() }}
 
             <div class="container px-0 py-3" id="curse_list">
-                <div class="d-flex justify-content-between border-bottom">
-                    <h4>Lista de Programas Disponibles.</h4>
-
-                    <p>
-                        <span class="badge bg-success">
-                            <a href="{{ url_for('program.nuevo_programa') }}" class="link-light">Nuevo Programa</a>
-                        </span>
-                    </p>
+                <div class="row align-items-center border-bottom pb-3 mb-4">
+                    <div class="col-md-8">
+                        <h4 class="mb-0"><i class="bi bi-collection me-2"></i>Lista de Programas Disponibles</h4>
+                        <p class="text-muted mb-0">Gestiona y administra tus programas de aprendizaje</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="btn-group" role="group">
+                            <a href="{{ url_for('program.nuevo_programa') }}" class="btn btn-success">
+                                <i class="bi bi-plus-lg me-1"></i>Nuevo Programa
+                            </a>
+                            <a href="{{ url_for('program.lista_programas') }}" class="btn btn-outline-primary">
+                                <i class="bi bi-eye me-1"></i>Ver Públicos
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
                 {% if consulta %}
-                <div class="container" id="curse_table">
-                    <table class="table table-sm table-borderless">
-                        <caption>
-                            Lista de programas disponibles en el sistema.
-                        </caption>
-                        <thead>
-                            <tr>
-                                <th scope="col">Codigo</th>
-                                <th>Nombre</th>
-                                <th>Cursos</th>
-                                <th>Publico</th>
-                                <th>Precio</th>
-                                <th>Estatus</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        {% for item in consulta.items -%}
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <a href="{{ url_for('program.pagina_programa', codigo=item.codigo) }}" class="link-dark">
-                                        {{ item.codigo }}
-                                    </a>
-                                </td>
-
-                                <td>
-                                    <a href="{{ url_for('program.pagina_programa', codigo=item.codigo) }}" class="link-dark">
-                                        {{ item.nombre }}
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="{{ url_for('program.pagina_programa', codigo=item.codigo) }}" class="link-dark">
-                                        {{ cuenta_cursos(item.codigo) }}
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="{{ url_for('program.pagina_programa', codigo=item.codigo) }}" class="link-dark">
-                                        {{ item.publico }}
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="{{ url_for('program.pagina_programa', codigo=item.codigo) }}" class="link-dark">
-                                        {{ item.precio }}
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="{{ url_for('program.pagina_programa', codigo=item.codigo) }}" class="link-dark">
-                                        {{ item.estado }}
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="badge bg-danger">
-                                        <a href="{{ url_for('program.delete_program', ulid=item.id) }}" class="link-light"
-                                            >Eliminar Programa</a
-                                        >
-                                    </span>
-                                    <span class="badge bg-info">
-                                        <a href="{{ url_for('program.edit_program', ulid=item.id) }}" class="link-light"
-                                            >Editar Programa</a
-                                        >
-                                    </span>
-                                    <span class="badge bg-primary">
-                                        <a
-                                            href="{{ url_for('program.programa_cursos', codigo=item.codigo) }}"
-                                            class="link-light"
-                                            >Lista de Cursos</a
-                                        >
-                                    </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                        {% endfor %}
-                    </table>
+                <div class="card shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <caption class="ms-3 mt-2">
+                                    Lista de programas disponibles en el sistema.
+                                </caption>
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" class="fw-semibold"><i class="bi bi-code-slash me-1"></i>Código</th>
+                                        <th class="fw-semibold"><i class="bi bi-bookmark me-1"></i>Nombre</th>
+                                        <th class="fw-semibold text-center"><i class="bi bi-collection me-1"></i>Cursos</th>
+                                        <th class="fw-semibold text-center"><i class="bi bi-globe me-1"></i>Público</th>
+                                        <th class="fw-semibold text-center">
+                                            <i class="bi bi-currency-dollar me-1"></i>Precio
+                                        </th>
+                                        <th class="fw-semibold text-center"><i class="bi bi-flag me-1"></i>Estado</th>
+                                        <th class="fw-semibold text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in consulta.items -%}
+                                    <tr>
+                                        <td>
+                                            <code class="text-primary">{{ item.codigo }}</code>
+                                        </td>
+                                        <td>
+                                            <a
+                                                href="{{ url_for('program.pagina_programa', codigo=item.codigo) }}"
+                                                class="text-decoration-none fw-medium"
+                                            >
+                                                {{ item.nombre }}
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-info rounded-pill"> {{ cuenta_cursos(item.codigo) }} </span>
+                                        </td>
+                                        <td class="text-center">
+                                            {% if item.publico %}
+                                            <i class="bi bi-check-circle-fill text-success" title="Público"></i>
+                                            {% else %}
+                                            <i class="bi bi-lock-fill text-secondary" title="Privado"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if item.precio and item.precio > 0 %}
+                                            <span class="fw-medium text-success">${{ item.precio }}</span>
+                                            {% else %}
+                                            <span class="text-muted">Gratis</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if item.estado == "open" %}
+                                            <span class="badge bg-success">Abierto</span>
+                                            {% elif item.estado == "closed" %}
+                                            <span class="badge bg-danger">Cerrado</span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">Borrador</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group" aria-label="Acciones del programa">
+                                                <a
+                                                    href="{{ url_for('program.pagina_programa', codigo=item.codigo) }}"
+                                                    class="btn btn-sm btn-outline-primary"
+                                                    title="Ver programa"
+                                                >
+                                                    <i class="bi bi-eye" aria-hidden="true"></i>
+                                                </a>
+                                                <a
+                                                    href="{{ url_for('program.edit_program', ulid=item.id) }}"
+                                                    class="btn btn-sm btn-outline-secondary"
+                                                    title="Editar programa"
+                                                >
+                                                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                                                </a>
+                                                <a
+                                                    href="{{ url_for('program.programa_cursos', codigo=item.codigo) }}"
+                                                    class="btn btn-sm btn-outline-info"
+                                                    title="Gestionar cursos"
+                                                >
+                                                    <i class="bi bi-collection" aria-hidden="true"></i>
+                                                </a>
+                                                <a
+                                                    href="{{ url_for('program.gestionar_cursos_programa', codigo=item.codigo) }}"
+                                                    class="btn btn-sm btn-outline-success"
+                                                    title="Administrar cursos"
+                                                >
+                                                    <i class="bi bi-gear" aria-hidden="true"></i>
+                                                </a>
+                                                <a
+                                                    href="{{ url_for('program.inscribir_usuario_programa', codigo=item.codigo) }}"
+                                                    class="btn btn-sm btn-outline-warning"
+                                                    title="Inscribir usuario"
+                                                >
+                                                    <i class="bi bi-person-plus" aria-hidden="true"></i>
+                                                </a>
+                                                <a
+                                                    href="{{ url_for('program.delete_program', ulid=item.id) }}"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    title="Eliminar programa"
+                                                    onclick="return confirm('¿Está seguro de que desea eliminar este programa?')"
+                                                >
+                                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 {% else %}
-                <p>Usted no ha creado ningun programa todavia.</p>
+                <div class="card shadow-sm">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-inbox text-muted" style="font-size: 3rem"></i>
+                        <h5 class="text-muted mt-3">No hay programas disponibles</h5>
+                        <p class="text-muted">Usted no ha creado ningún programa todavía.</p>
+                        <a href="{{ url_for('program.nuevo_programa') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-lg me-2"></i>Crear Primer Programa
+                        </a>
+                    </div>
+                </div>
                 {% endif %}
 
                 <div class="container" id="user_paginatios">
