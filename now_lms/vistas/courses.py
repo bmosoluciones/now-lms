@@ -187,6 +187,27 @@ def curso(course_code):
                 editable = True
             else:
                 editable = False
+    elif current_user.is_authenticated:
+        # Check if user is enrolled in the course
+        enrollment = (
+            database.session.execute(
+                database.select(EstudianteCurso).filter_by(curso=course_code, usuario=current_user.usuario, vigente=True)
+            )
+            .scalars()
+            .first()
+        )
+
+        if enrollment:
+            # Enrolled student has access
+            acceso = True
+            editable = False
+        elif _curso and _curso.publico:
+            # Public course access
+            acceso = _curso.estado == "open" and _curso.publico is True
+            editable = False
+        else:
+            acceso = False
+            editable = False
     elif _curso and _curso.publico:
         acceso = _curso.estado == "open" and _curso.publico is True
         editable = False
