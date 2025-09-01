@@ -54,19 +54,6 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                             class="w-100"
                                             style="min-height: 500px; border: none"
                                         ></iframe>
-
-                                        <!-- Loading overlay -->
-                                        <div
-                                            id="loading-overlay"
-                                            class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-light"
-                                        >
-                                            <div class="text-center">
-                                                <div class="spinner-border text-primary mb-3" role="status">
-                                                    <span class="visually-hidden">Cargando...</span>
-                                                </div>
-                                                <p class="text-muted">Cargando contenido...</p>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -99,34 +86,6 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         </div>
                     </div>
                 </div>
-
-                <script>
-                    // Improved iframe loading with better UX
-                    const frame = document.getElementById("Iframe")
-                    const loadingOverlay = document.getElementById("loading-overlay")
-
-                    frame.addEventListener("load", function () {
-                        // Hide loading overlay
-                        loadingOverlay.style.display = "none"
-
-                        try {
-                            // Auto-resize iframe
-                            const contentHeight = frame.contentWindow.document.body.scrollHeight
-                            if (contentHeight > 200) {
-                                frame.style.height = contentHeight + "px"
-                            }
-                        } catch (e) {
-                            // Cross-origin restrictions, use default height
-                            frame.style.height = "600px"
-                        }
-                    })
-
-                    // Fallback: hide loading after 10 seconds
-                    setTimeout(() => {
-                        loadingOverlay.style.display = "none"
-                        frame.style.height = "600px"
-                    }, 10000)
-                </script>
             </div>
 
             {{ r_macros.nav_footer(indice=indice, curso=recurso.curso, type=recurso.tipo, codigo=recurso.id,

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-08-30 18:01+0000\n"
+"POT-Creation-Date: 2025-08-31 10:41-0600\n"
 "PO-Revision-Date: 2025-08-30 04:48+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -134,6 +134,7 @@ msgstr "Verify ads file"
 #: now_lms/templates/admin/config.html:151
 #: now_lms/templates/admin/mail.html:109
 #: now_lms/templates/admin/mail_check.html:37
+#: now_lms/templates/admin/theme.html:69
 msgid "Cancelar"
 msgstr "Cancel"
 
@@ -200,8 +201,7 @@ msgstr "Edit AdSense settings."
 msgid ""
 "Configure qué elementos del menú de navegación estarán visibles para los "
 "usuarios"
-msgstr ""
-"Configure which elements of the navigation menu will be visible to users"
+msgstr "Configure which elements of the navigation menu will be visible to users"
 
 #: now_lms/templates/admin/config.html:81
 msgid "Habilitar Programas"
@@ -301,6 +301,7 @@ msgid "Curso"
 msgstr "Course"
 
 #: now_lms/templates/admin/flagged_messages.html:82
+#: now_lms/templates/admin/users.html:93
 msgid "Estudiante"
 msgstr "Student"
 
@@ -313,6 +314,7 @@ msgid "Motivo del Reporte"
 msgstr "Reason for Report"
 
 #: now_lms/templates/admin/flagged_messages.html:93
+#: now_lms/templates/admin/users.html:54
 msgid "Acciones"
 msgstr "Actions"
 
@@ -333,6 +335,7 @@ msgid "Estadísticas del Hilo"
 msgstr "Thread Statistics"
 
 #: now_lms/templates/admin/flagged_messages.html:119
+#: now_lms/templates/admin/users.html:52
 msgid "Estado"
 msgstr "Status"
 
@@ -357,40 +360,54 @@ msgstr "Created"
 msgid "Usuarios inativos"
 msgstr "Inactive Users"
 
-#: now_lms/templates/admin/inactive_users.html:16
-msgid "Usuarios pendientes de activación."
+#: now_lms/templates/admin/inactive_users.html:19
+msgid "Usuarios pendientes de activación"
 msgstr "Users pending activation."
 
 #: now_lms/templates/admin/inactive_users.html:21
+msgid "Gestiona las solicitudes de nuevos usuarios en el sistema"
+msgstr "Manage new user requests in the system"
+
+#: now_lms/templates/admin/inactive_users.html:30
 msgid "Lista de usuarios registrados en el sistema pendientes de activar."
 msgstr "List of registered users pending activation."
 
-#: now_lms/templates/admin/inactive_users.html:25
-#: now_lms/templates/admin/mail.html:50
+#: now_lms/templates/admin/inactive_users.html:35
+#: now_lms/templates/admin/mail.html:50 now_lms/templates/admin/users.html:40
+#: now_lms/templates/auth/login.html:42
 msgid "Usuario"
 msgstr "User"
 
-#: now_lms/templates/admin/inactive_users.html:26
+#: now_lms/templates/admin/inactive_users.html:38
+#: now_lms/templates/admin/users.html:43
 msgid "Nombre"
 msgstr "First Name"
 
-#: now_lms/templates/admin/inactive_users.html:27
+#: now_lms/templates/admin/inactive_users.html:41
+#: now_lms/templates/admin/users.html:46
 msgid "Apellido"
 msgstr "Last Name"
 
-#: now_lms/templates/admin/inactive_users.html:28
+#: now_lms/templates/admin/inactive_users.html:44
 msgid "Correo Electronico"
 msgstr "Email"
 
-#: now_lms/templates/admin/inactive_users.html:29
+#: now_lms/templates/admin/inactive_users.html:46
 msgid "Accion"
 msgstr "Action"
 
-#: now_lms/templates/admin/inactive_users.html:60
+#: now_lms/templates/admin/inactive_users.html:85
+#: now_lms/templates/admin/users.html:120
+msgid "Acciones del usuario"
+msgstr "User actions"
+
+#: now_lms/templates/admin/inactive_users.html:89
+#: now_lms/templates/admin/inactive_users.html:91
 msgid "Aprobar"
 msgstr "Approve"
 
-#: now_lms/templates/admin/inactive_users.html:67
+#: now_lms/templates/admin/inactive_users.html:96
+#: now_lms/templates/admin/inactive_users.html:98
 msgid "Rechazar"
 msgstr "Reject"
 
@@ -446,6 +463,135 @@ msgstr "Send Test Email"
 msgid "Permitir Correo Electronico"
 msgstr "Allow Email"
 
+#: now_lms/templates/admin/theme.html:7
+msgid "Editar apaciencia del sitio web"
+msgstr "Edit website look and feel"
+
+#: now_lms/templates/admin/theme.html:21
+msgid "Editar apariencia del sitio web"
+msgstr "Edit website look and feel"
+
+#: now_lms/templates/admin/theme.html:24
+msgid "Logo y Favicon del sitio web"
+msgstr "Web site Logo and Favicon"
+
+#: now_lms/templates/admin/theme.html:33
+msgid "Eliminar Logo actual"
+msgstr "Delete current Logo"
+
+#: now_lms/templates/admin/theme.html:35
+msgid "Logotipo"
+msgstr "Logo"
+
+#: now_lms/templates/admin/theme.html:52
+msgid "Favicon"
+msgstr "Favicon"
+
+#: now_lms/templates/admin/theme.html:59
+msgid "Tema del sitio web"
+msgstr "Web site Theme"
+
+#: now_lms/templates/admin/theme.html:61
+msgid "Tema"
+msgstr "Theme"
+
+#: now_lms/templates/admin/theme.html:63
+msgid "Los temas cambian varios aspectos visuales del sitio web"
+msgstr "Themes changes many visual aspects of the web site"
+
+#: now_lms/templates/admin/theme.html:71
+msgid "Actualizar Tema"
+msgstr "Update Theme"
+
+#: now_lms/templates/admin/users.html:6
+msgid "Lista de usuarios"
+msgstr "Users List"
+
+#: now_lms/templates/admin/users.html:18
+msgid "Usuarios registrados en el sistema"
+msgstr "Users registered in the system"
+
+#: now_lms/templates/admin/users.html:19
+msgid "Gestiona y administra los usuarios del sistema"
+msgstr "Manage and administer system users"
+
+#: now_lms/templates/admin/users.html:24
+msgid "Nuevo Usuario"
+msgstr "New User"
+
+#: now_lms/templates/admin/users.html:35
+msgid "Lista de usuarios registrados en el sistema"
+msgstr "List of registered users in the system"
+
+#: now_lms/templates/admin/users.html:49
+msgid "Tipo"
+msgstr "Type"
+
+#: now_lms/templates/admin/users.html:56
+msgid "Fecha registro"
+msgstr "Registration Date"
+
+#: now_lms/templates/admin/users.html:59
+msgid "Ultimo Inicio"
+msgstr "Last Login"
+
+#: now_lms/templates/admin/users.html:97
+msgid "Moderador"
+msgstr "Moderator"
+
+#: now_lms/templates/admin/users.html:101
+msgid "Instructor"
+msgstr "Instructor"
+
+#: now_lms/templates/admin/users.html:105
+msgid "Admin"
+msgstr "Admin"
+
+#: now_lms/templates/admin/users.html:113
+msgid "Usuario Activo"
+msgstr "Active User"
+
+#: now_lms/templates/admin/users.html:116
+msgid "Usuario Inactivo"
+msgstr "Inactive User"
+
+#: now_lms/templates/admin/users.html:124
+msgid "Ver usuario"
+msgstr "View User"
+
+#: now_lms/templates/admin/users.html:132
+msgid "Inactivar Usuario"
+msgstr "Deactivate User"
+
+#: now_lms/templates/admin/users.html:140
+msgid "Activar Usuario"
+msgstr "Activate User"
+
+#: now_lms/templates/auth/login.html:6 now_lms/templates/auth/login.html:9
+msgid "Inicio de sesión"
+msgstr "Log In"
+
+#: now_lms/templates/auth/login.html:38
+msgid "Inicio de Sesión"
+msgstr "Log In"
+
+#: now_lms/templates/auth/login.html:44
+msgid "Contraseña"
+msgstr "Password"
+
+#: now_lms/templates/auth/login.html:46
+#: now_lms/templates/themes/cambridge/navbar.j2:78
+msgid "Iniciar Sesión"
+msgstr "Log In"
+
+#: now_lms/templates/auth/login.html:50
+msgid "¿Olvidaste tu contraseña?"
+msgstr "Forgot your password?"
+
+#: now_lms/templates/auth/login.html:55
+msgid "Regresar"
+msgstr "Go Back"
+
 #: now_lms/templates/learning/curso.html:45
 msgid "Portada del Curso"
 msgstr "Course Cover"
@@ -478,27 +624,27 @@ msgstr "See Forum"
 msgid "Nuevo Mensaje en Foro"
 msgstr "New Forum Message"
 
-#: now_lms/templates/learning/resources/type_macros.html:76
+#: now_lms/templates/learning/resources/type_macros.html:85
 msgid "Requerido"
 msgstr "Required"
 
-#: now_lms/templates/learning/resources/type_macros.html:79
+#: now_lms/templates/learning/resources/type_macros.html:88
 msgid "Opcional"
 msgstr "Optional"
 
-#: now_lms/templates/learning/resources/type_macros.html:80
+#: now_lms/templates/learning/resources/type_macros.html:89
 msgid "Alternativo"
 msgstr "Alternative"
 
-#: now_lms/templates/learning/resources/type_macros.html:83
+#: now_lms/templates/learning/resources/type_macros.html:92
 msgid "Completado"
 msgstr "Completed"
 
-#: now_lms/templates/learning/resources/type_macros.html:86
+#: now_lms/templates/learning/resources/type_macros.html:95
 msgid "Pendiente"
 msgstr "Pending"
 
-#: now_lms/templates/learning/resources/type_macros.html:89
+#: now_lms/templates/learning/resources/type_macros.html:100
 msgid "Contenido del Curso"
 msgstr "Course Content"
 
@@ -534,10 +680,6 @@ msgstr "Moderation"
 msgid "Docente"
 msgstr "Teacher"
 
-#: now_lms/templates/themes/cambridge/navbar.j2:78
-msgid "Iniciar Sesión"
-msgstr "Log In"
-
 #: now_lms/templates/themes/cambridge/navbar.j2:81
 msgid "Crear Cuenta"
 msgstr "Create Account"
@@ -570,15 +712,15 @@ msgstr "User Manual"
 msgid "Manual de Administración"
 msgstr "Administration Manual"
 
-#: now_lms/vistas/programs.py:128
+#: now_lms/vistas/programs.py:131
 msgid "Nuevo Programa creado."
 msgstr "New Program created."
 
-#: now_lms/vistas/programs.py:132
+#: now_lms/vistas/programs.py:135
 msgid "Hubo un error al crear el programa."
 msgstr "There was an error creating the program."
 
-#: now_lms/vistas/programs.py:219
+#: now_lms/vistas/programs.py:222
 msgid ""
 "No se puede cambiar estatus de programa a publico porque no tiene cursos "
 "añadidos"
@@ -586,63 +728,63 @@ msgstr ""
 "The program status cannot be changed to public because it has no courses "
 "added."
 
-#: now_lms/vistas/programs.py:223
+#: now_lms/vistas/programs.py:226
 msgid "No se puede cambiar programa a abierto porque no tiene cursos añadidos"
 msgstr "The program cannot be changed to open because it has no courses added."
 
-#: now_lms/vistas/programs.py:254
+#: now_lms/vistas/programs.py:257
 msgid "Portada del curso actualizada correctamente"
 msgstr "Course cover updated successfully."
 
-#: now_lms/vistas/programs.py:257
+#: now_lms/vistas/programs.py:260
 msgid "No se pudo actualizar la portada del curso."
 msgstr "The course cover could not be updated."
 
-#: now_lms/vistas/programs.py:259
+#: now_lms/vistas/programs.py:262
 msgid "Programa editado correctamente."
 msgstr "Program edited successfully."
 
-#: now_lms/vistas/programs.py:262
+#: now_lms/vistas/programs.py:265
 msgid "No se puedo editar el programa."
 msgstr "The program could "
 
-#: now_lms/vistas/programs.py:372
+#: now_lms/vistas/programs.py:375
 msgid "Ya estás inscrito en este programa."
 msgstr "You are already enrolled in this program."
 
-#: now_lms/vistas/programs.py:382
+#: now_lms/vistas/programs.py:385
 msgid "Te has inscrito exitosamente al programa."
 msgstr "You have successfully enrolled in the program."
 
-#: now_lms/vistas/programs.py:386
+#: now_lms/vistas/programs.py:389
 msgid "Hubo un error al inscribirte al programa."
 msgstr "There was an error enrolling you in the program."
 
-#: now_lms/vistas/programs.py:403
+#: now_lms/vistas/programs.py:406
 msgid "Debes inscribirte al programa primero."
 msgstr "You must enroll in the program first."
 
-#: now_lms/vistas/programs.py:471
+#: now_lms/vistas/programs.py:474
 msgid "El curso ya está en el programa."
 msgstr "The course is already in the program."
 
-#: now_lms/vistas/programs.py:516
+#: now_lms/vistas/programs.py:517
 msgid "Usuario no encontrado."
 msgstr "User not found."
 
-#: now_lms/vistas/programs.py:518
+#: now_lms/vistas/programs.py:519
 msgid "El usuario ya está inscrito en este programa."
 msgstr "The user is already enrolled in this program."
 
-#: now_lms/vistas/programs.py:528
+#: now_lms/vistas/programs.py:529
 msgid "Error al inscribir usuario."
 msgstr "Error enrolling user."
 
-#: now_lms/vistas/programs.py:543
+#: now_lms/vistas/programs.py:544
 msgid "Programa no encontrado."
 msgstr "Program not found."
 
-#: now_lms/vistas/programs.py:555
+#: now_lms/vistas/programs.py:556
 msgid "Certificado de programa emitido por completar todos los cursos."
 msgstr "Program certificate issued for completing all courses."
 
@@ -695,3 +837,4 @@ msgstr "PayPal settings updated successfully."
 #: now_lms/vistas/settings.py:455
 msgid "No se pudo actualizar la configuración de Paypal."
 msgstr "The PayPal settings could not be updated."
+

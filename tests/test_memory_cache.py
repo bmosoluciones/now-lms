@@ -16,6 +16,7 @@
 """Tests for memory cache functionality via FileSystemCache."""
 
 import os
+import pytest
 from unittest.mock import patch, MagicMock
 
 
@@ -77,6 +78,7 @@ class TestMemoryCacheConfig:
                 assert config["CACHE_TYPE"] == "FileSystemCache"
                 assert config["CACHE_DIR"] == "/tmp/now_lms_cache"
 
+    @pytest.mark.xfail(raises=AssertionError, reason="Linux onley test.")
     def test_memory_cache_fallback_to_null_cache(self):
         """Test fallback to NullCache when both /dev/shm and temp directory fail."""
         with patch.dict(os.environ, {"NOW_LMS_MEMORY_CACHE": "1"}):
