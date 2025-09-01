@@ -103,6 +103,7 @@ from now_lms.db.tools import (
     generate_template_choices,
     get_course_category,
     get_course_tags,
+    verifica_estudiante_asignado_a_curso,
 )
 from now_lms.forms import (
     CouponApplicationForm,
@@ -187,6 +188,27 @@ def curso(course_code):
                 editable = True
             else:
                 editable = False
+    elif current_user.is_authenticated:
+        # Check if user is enrolled in the course
+        enrollment = (
+            database.session.execute(
+                database.select(EstudianteCurso).filter_by(curso=course_code, usuario=current_user.usuario, vigente=True)
+            )
+            .scalars()
+            .first()
+        )
+
+        if enrollment:
+            # Enrolled student has access
+            acceso = True
+            editable = False
+        elif _curso and _curso.publico:
+            # Public course access
+            acceso = _curso.estado == "open" and _curso.publico is True
+            editable = False
+        else:
+            acceso = False
+            editable = False
     elif _curso and _curso.publico:
         acceso = _curso.estado == "open" and _curso.publico is True
         editable = False
@@ -949,8 +971,6 @@ def _get_course_evaluations_and_attempts(curso_id, usuario=None):
 @course.route("/course/<curso_id>/resource/<resource_type>/<codigo>")
 def pagina_recurso(curso_id, resource_type, codigo):
     """Pagina de un recurso."""
-    from now_lms.db.tools import verifica_estudiante_asignado_a_curso
-
     CURSO = database.session.execute(select(Curso).filter(Curso.codigo == curso_id)).scalars().first()
     RECURSO = database.session.execute(select(CursoRecurso).filter(CursoRecurso.id == codigo)).scalars().first()
 
@@ -1122,8 +1142,6 @@ def _actualizar_avance_curso(curso_id, usuario):
 @perfil_requerido("student")
 def marcar_recurso_completado(curso_id, resource_type, codigo):
     """Registra avance de un 100% en un recurso."""
-    from now_lms.db.tools import verifica_estudiante_asignado_a_curso
-
     if current_user.is_authenticated:
         if current_user.tipo == "student":
             if verifica_estudiante_asignado_a_curso(curso_id):
@@ -2066,7 +2084,7 @@ def recurso_file(course_code, recurso_code):
     config = current_app.upload_set_config.get(doc.base_doc_url)
 
     if current_user.is_authenticated:
-        if doc.publico or current_user.tipo == "admin":
+        if doc.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
             return send_from_directory(config.destination, doc.doc)
         return abort(403)
     return redirect(INICIO_SESION)
@@ -2087,7 +2105,7 @@ def pdf_viewer(course_code, recurso_code):
         return abort(404)
 
     if current_user.is_authenticated:
-        if recurso.publico or current_user.tipo == "admin":
+        if recurso.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
             return render_template("learning/resources/pdf_viewer.html", recurso=recurso)
         return abort(403)
     return redirect(INICIO_SESION)
@@ -2105,7 +2123,7 @@ def external_code(course_code, recurso_code):
     )
 
     if current_user.is_authenticated:
-        if recurso.publico or current_user.tipo == "admin":
+        if recurso.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
             return recurso.external_code
 
         return abort(403)
@@ -2464,8 +2482,6 @@ def delete_coupon(course_code, coupon_id):
 @login_required
 def download_meet_calendar(course_code, codigo):
     """Download ICS calendar file for a meet resource."""
-    from now_lms.db.tools import verifica_estudiante_asignado_a_curso
-
     # Get the meet resource
     recurso = (
         database.session.execute(
@@ -2516,7 +2532,6 @@ def download_meet_calendar(course_code, codigo):
 @login_required
 def google_calendar_link(course_code, codigo):
     """Redirect to Google Calendar to add meet event."""
-    from now_lms.db.tools import verifica_estudiante_asignado_a_curso
     from urllib.parse import quote
 
     # Get the meet resource (reuse permission logic)
@@ -2590,7 +2605,6 @@ def google_calendar_link(course_code, codigo):
 @login_required
 def outlook_calendar_link(course_code, codigo):
     """Redirect to Outlook Calendar to add meet event."""
-    from now_lms.db.tools import verifica_estudiante_asignado_a_curso
     from urllib.parse import quote
 
     # Get the meet resource (reuse permission logic)

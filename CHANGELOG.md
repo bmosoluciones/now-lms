@@ -7,7 +7,19 @@ All notable changes to this project will be documented in this file.
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/).
 
 
-## [ unreleased ]
+## [ release: v0.0.1b18.dev20250831 ] - 2025-08-31
+
+### Fixed:
+ - Fixed a critical error in the access logic to course resources, see: https://github.com/bmosoluciones/now-lms/issues/111
+
+-------------------
+
+## [ release: v0.0.1b17.dev20250831 ] - 2025-08-31
+
+### Changed:
+ - Improved courses page.
+ - Improved programs page.
+ - Improved administrative lists.
 
 -------------------
 
@@ -68,7 +80,7 @@ All notable changes to this project will be documented in this file.
  - Configuration ca be loaded from a file.
  - `NOW_LMS_MEMORY_CACHE` can force the system to use a in memory shared cache.
  - In `/blog` strip HTML tags.
- - Updated admin page. 
+ - Updated admin page.
 
 ### Notes:
 
