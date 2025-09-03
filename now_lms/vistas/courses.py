@@ -1753,6 +1753,20 @@ def nuevo_recurso_audio(course_code, seccion):
         audio_name = str(ULID()) + ".ogg"
         audio_file = audio.save(request.files["audio"], folder=course_code, name=audio_name)
 
+        # Handle VTT subtitle file upload
+        subtitle_vtt_content = None
+        if "vtt_subtitle" in request.files and request.files["vtt_subtitle"].filename:
+            vtt_file = request.files["vtt_subtitle"]
+            if vtt_file.filename.endswith(".vtt"):
+                subtitle_vtt_content = vtt_file.read().decode("utf-8")
+
+        # Handle secondary VTT subtitle file upload
+        subtitle_vtt_secondary_content = None
+        if "vtt_subtitle_secondary" in request.files and request.files["vtt_subtitle_secondary"].filename:
+            vtt_secondary_file = request.files["vtt_subtitle_secondary"]
+            if vtt_secondary_file.filename.endswith(".vtt"):
+                subtitle_vtt_secondary_content = vtt_secondary_file.read().decode("utf-8")
+
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
             seccion=seccion,
@@ -1763,6 +1777,8 @@ def nuevo_recurso_audio(course_code, seccion):
             indice=nuevo_indice,
             base_doc_url=audio.name,
             doc=audio_file,
+            subtitle_vtt=subtitle_vtt_content,
+            subtitle_vtt_secondary=subtitle_vtt_secondary_content,
             creado_por=current_user.usuario,
         )
         try:
@@ -1805,6 +1821,18 @@ def editar_recurso_audio(course_code, seccion, resource_id):
             audio_file = audio.save(request.files["audio"], folder=course_code, name=audio_name)
             recurso.base_doc_url = audio.name
             recurso.doc = audio_file
+
+        # Handle VTT subtitle file upload
+        if "vtt_subtitle" in request.files and request.files["vtt_subtitle"].filename:
+            vtt_file = request.files["vtt_subtitle"]
+            if vtt_file.filename.endswith(".vtt"):
+                recurso.subtitle_vtt = vtt_file.read().decode("utf-8")
+
+        # Handle secondary VTT subtitle file upload
+        if "vtt_subtitle_secondary" in request.files and request.files["vtt_subtitle_secondary"].filename:
+            vtt_secondary_file = request.files["vtt_subtitle_secondary"]
+            if vtt_secondary_file.filename.endswith(".vtt"):
+                recurso.subtitle_vtt_secondary = vtt_secondary_file.read().decode("utf-8")
 
         try:
             database.session.commit()
@@ -2086,6 +2114,50 @@ def recurso_file(course_code, recurso_code):
     if current_user.is_authenticated:
         if doc.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
             return send_from_directory(config.destination, doc.doc)
+        return abort(403)
+    return redirect(INICIO_SESION)
+
+
+@course.route("/course/<course_code>/vtt/<recurso_code>")
+def recurso_vtt(course_code, recurso_code):
+    """Devuelve el contenido VTT de subtítulos para un recurso de audio."""
+    doc = (
+        database.session.execute(
+            select(CursoRecurso).filter(CursoRecurso.id == recurso_code, CursoRecurso.curso == course_code)
+        )
+        .scalars()
+        .first()
+    )
+
+    if not doc or not doc.subtitle_vtt:
+        return abort(404)
+
+    if current_user.is_authenticated:
+        if doc.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
+            return Response(doc.subtitle_vtt, mimetype="text/vtt", headers={"Content-Type": "text/vtt; charset=utf-8"})
+        return abort(403)
+    return redirect(INICIO_SESION)
+
+
+@course.route("/course/<course_code>/vtt_secondary/<recurso_code>")
+def recurso_vtt_secondary(course_code, recurso_code):
+    """Devuelve el contenido VTT de subtítulos secundarios para un recurso de audio."""
+    doc = (
+        database.session.execute(
+            select(CursoRecurso).filter(CursoRecurso.id == recurso_code, CursoRecurso.curso == course_code)
+        )
+        .scalars()
+        .first()
+    )
+
+    if not doc or not doc.subtitle_vtt_secondary:
+        return abort(404)
+
+    if current_user.is_authenticated:
+        if doc.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
+            return Response(
+                doc.subtitle_vtt_secondary, mimetype="text/vtt", headers={"Content-Type": "text/vtt; charset=utf-8"}
+            )
         return abort(403)
     return redirect(INICIO_SESION)
 

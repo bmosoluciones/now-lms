@@ -328,6 +328,8 @@ class CursoRecurso(database.Model, BaseTabla):
     text = database.Column(database.Text())
     external_code = database.Column(database.Text())
     notes = database.Column(database.String(20))
+    subtitle_vtt = database.Column(database.Text(), nullable=True)
+    subtitle_vtt_secondary = database.Column(database.Text(), nullable=True)
 
 
 class CursoRecursoAvance(database.Model, BaseTabla):
