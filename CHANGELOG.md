@@ -7,6 +7,13 @@ All notable changes to this project will be documented in this file.
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/).
 
 
+## [ unreleased ]
+
+### Changed:
+ - Custom HTML5 audio player with suppot for up to 2 subtitles files in .vtt format. See: 4b3460c729558990f65c38c851119c17c891f22a
+
+-------------------
+
 ## [ release: v0.0.1b18.dev20250831 ] - 2025-08-31
 
 ### Fixed:
