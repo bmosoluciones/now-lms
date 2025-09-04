@@ -177,6 +177,10 @@ class ConfigForm(FlaskForm):
     enable_resources = BooleanField(_l("Habilitar Recursos descargables"), default=False, validators=[])
     enable_blog = BooleanField(_l("Habilitar Blog"), default=False, validators=[])
 
+    # File upload configuration
+    enable_file_uploads = BooleanField(_l("Habilitar subida de archivos descargables"), default=False, validators=[])
+    max_file_size = IntegerField(_l("Tamaño máximo de archivo (MB)"), default=1, validators=[])
+
 
 class ThemeForm(FlaskForm):
     """Formulario para editar el tema del sistema."""
@@ -310,6 +314,10 @@ class CursoRecursoArchivoAudio(CursoRecursoForm):
 
 class CursoRecursoArchivoImagen(CursoRecursoForm):
     """Formulario para un nuevo recurso de audio."""
+
+
+class CursoRecursoArchivoDescargable(CursoRecursoForm):
+    """Formulario para un nuevo recurso descargable."""
 
 
 class CursoRecursoArchivoText(CursoRecursoForm):

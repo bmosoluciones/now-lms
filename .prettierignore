@@ -6,9 +6,9 @@
 now_lms/templates/learning/curso/coupons/create.html
 now_lms/templates/learning/curso/coupons/edit.html
 now_lms/templates/learning/resources_new/editar_slideshow.html
+now_lms/templates/learning/resources/type_audio.html
+now_lms/templates/blog/post_detail.html
 
-# Templates with HTML structure issues
-now_lms/templates/perfiles/instructor.html
 
 # General patterns for build and dependency files
 node_modules/

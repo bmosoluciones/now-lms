@@ -43,7 +43,9 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th scope="col" class="fw-semibold"><i class="bi bi-bookmark me-1"></i>Certificado</th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-check-circle me-1"></i>Habilitado</th>
+                                        <th class="fw-semibold text-center">
+                                            <i class="bi bi-check-circle me-1"></i>Habilitado
+                                        </th>
                                         <th class="fw-semibold text-center"><i class="bi bi-globe me-1"></i>Público</th>
                                         <th class="fw-semibold text-center">Acciones</th>
                                     </tr>
@@ -86,8 +88,7 @@
                                                 >
                                                     <i class="bi bi-check-circle" aria-hidden="true"></i>
                                                 </a>
-                                                {% endif %}
-                                                {% if item.publico %}
+                                                {% endif %} {% if item.publico %}
                                                 <a
                                                     href="{{ url_for('certificate.certificate_unpublish', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-warning"
@@ -146,7 +147,5 @@
                 </div>
             </div>
         </main>
-    </body>
-</html>
     </body>
 </html>

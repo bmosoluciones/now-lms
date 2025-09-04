@@ -519,6 +519,10 @@ class Configuracion(database.Model, BaseTabla):
     enable_resources = database.Column(database.Boolean(), default=False, nullable=False)
     enable_blog = database.Column(database.Boolean(), default=False, nullable=False)
 
+    # File upload configuration
+    enable_file_uploads = database.Column(database.Boolean(), default=False, nullable=False)
+    max_file_size = database.Column(database.Integer(), default=1, nullable=False)  # Maximum file size in megabytes
+
 
 class Style(database.Model, BaseTabla):
     """Configuration for site appearance and theming."""
