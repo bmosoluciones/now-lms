@@ -133,6 +133,8 @@ def configuracion():
         enable_masterclass=config.enable_masterclass,
         enable_resources=config.enable_resources,
         enable_blog=config.enable_blog,
+        enable_file_uploads=config.enable_file_uploads,
+        max_file_size=config.max_file_size,
         verify_user_by_email=config.verify_user_by_email,
     )
     if form.validate_on_submit() or request.method == "POST":
@@ -145,6 +147,8 @@ def configuracion():
         config.enable_masterclass = form.enable_masterclass.data
         config.enable_resources = form.enable_resources.data
         config.enable_blog = form.enable_blog.data
+        config.enable_file_uploads = form.enable_file_uploads.data
+        config.max_file_size = form.max_file_size.data
         config.verify_user_by_email = form.verify_user_by_email.data
 
         if form.verify_user_by_email.data is True:

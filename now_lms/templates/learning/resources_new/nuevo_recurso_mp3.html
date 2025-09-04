@@ -28,7 +28,24 @@
 
                         <div class="col-md-12">
                             <label for="descripcion" class="form-label">Audio</label>
-                            <input type="file" name="audio" accept="audio/ogg" />
+                            <input type="file" name="audio" accept="audio/ogg,audio/mp3,audio/wav" />
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="vtt_subtitle" class="form-label">Subtítulos Principales (Opcional)</label>
+                            <input type="file" name="vtt_subtitle" accept=".vtt" />
+                            <div class="form-text">
+                                Archivo WebVTT (.vtt) con los subtítulos principales para mejorar la accesibilidad
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="vtt_subtitle_secondary" class="form-label">Subtítulos Secundarios (Opcional)</label>
+                            <input type="file" name="vtt_subtitle_secondary" accept=".vtt" />
+                            <div class="form-text">
+                                Archivo WebVTT (.vtt) con subtítulos secundarios (ej: traducción). Se mostrarán con estilo
+                                diferenciado
+                            </div>
                         </div>
 
                         <div class="col-sm-6">
