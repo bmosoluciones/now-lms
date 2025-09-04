@@ -73,6 +73,7 @@ from now_lms.db import (
     Categoria,
     CategoriaCurso,
     Certificacion,
+    Configuracion,
     Coupon,
     Curso,
     CursoRecurso,
@@ -110,6 +111,7 @@ from now_lms.forms import (
     CouponForm,
     CurseForm,
     CursoRecursoArchivoAudio,
+    CursoRecursoArchivoDescargable,
     CursoRecursoArchivoImagen,
     CursoRecursoArchivoPDF,
     CursoRecursoArchivoText,
@@ -129,6 +131,75 @@ from now_lms.themes import get_course_list_template, get_course_view_template
 # ---------------------------------------------------------------------------------------
 RECURSO_AGREGADO = "Recurso agregado correctamente al curso."
 ERROR_AL_AGREGAR_CURSO = "Hubo en error al crear el recurso."
+
+# Safe file extensions for downloadable resources
+SAFE_FILE_EXTENSIONS = {
+    ".pdf",
+    ".doc",
+    ".docx",
+    ".xls",
+    ".xlsx",
+    ".ppt",
+    ".pptx",
+    ".txt",
+    ".rtf",
+    ".csv",
+    ".zip",
+    ".rar",
+    ".7z",
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+    ".bmp",
+    ".svg",
+    ".webp",
+    ".mp3",
+    ".wav",
+    ".ogg",
+    ".mp4",
+    ".avi",
+    ".mov",
+    ".wmv",
+    ".flv",
+    ".webm",
+    ".json",
+    ".xml",
+    ".yaml",
+    ".yml",
+    ".md",
+    ".html",
+    ".css",
+    ".prn",  # Project files (e.g., Microsoft Project)
+}
+
+# Dangerous file extensions that should never be allowed
+DANGEROUS_FILE_EXTENSIONS = {
+    ".exe",
+    ".bat",
+    ".cmd",
+    ".com",
+    ".scr",
+    ".pif",
+    ".msi",
+    ".dll",
+    ".vbs",
+    ".js",
+    ".jar",
+    ".app",
+    ".deb",
+    ".rpm",
+    ".dmg",
+    ".pkg",
+    ".sh",
+    ".ps1",
+    ".py",
+    ".pl",
+    ".rb",
+    ".php",
+    ".asp",
+    ".jsp",
+}
 VISTA_CURSOS = "course.curso"
 VISTA_ADMINISTRAR_CURSO = "course.administrar_curso"
 NO_AUTORIZADO_MSG = "No se encuentra autorizado a acceder al recurso solicitado."
@@ -147,6 +218,47 @@ ROUTE_LIST_COUPONS = "course.list_coupons"
 # ---------------------------------------------------------------------------------------
 # Helper functions
 # ---------------------------------------------------------------------------------------
+def validate_downloadable_file(file, max_size_mb=1):
+    """
+    Validate uploaded file for downloadable resources.
+
+    Args:
+        file: Flask uploaded file object
+        max_size_mb: Maximum file size in megabytes
+
+    Returns:
+        tuple: (is_valid, error_message)
+    """
+    if not file or not file.filename:
+        return False, "No se ha seleccionado ningún archivo"
+
+    # Check file extension
+    filename = file.filename.lower()
+    file_ext = splitext(filename)[1].lower()
+
+    if file_ext in DANGEROUS_FILE_EXTENSIONS:
+        return False, f"Tipo de archivo no permitido por seguridad: {file_ext}"
+
+    if file_ext not in SAFE_FILE_EXTENSIONS:
+        return False, f"Tipo de archivo no soportado: {file_ext}"
+
+    # Check file size (read position and reset)
+    file.seek(0, 2)  # Seek to end
+    file_size = file.tell()
+    file.seek(0)  # Reset position
+
+    max_size_bytes = max_size_mb * 1024 * 1024
+    if file_size > max_size_bytes:
+        return False, f"El archivo es demasiado grande. Máximo permitido: {max_size_mb}MB"
+
+    return True, ""
+
+
+def get_site_config():
+    """Get site configuration."""
+    return database.session.execute(database.select(Configuracion)).first()[0]
+
+
 def markdown2html(text):
     """Convierte texto en markdown a HTML."""
     allowed_tags = HTML_TAGS
@@ -1663,7 +1775,9 @@ def nuevo_recurso_img(course_code, seccion):
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int(recursos + 1)
     if (form.validate_on_submit() or request.method == "POST") and "img" in request.files:
-        file_name = str(ULID()) + ".jpg"
+        img_filename = request.files["img"].filename
+        img_ext = splitext(img_filename)[1]
+        file_name = str(ULID()) + img_ext
         picture_file = images.save(request.files["img"], folder=course_code, name=file_name)
 
         nuevo_recurso_ = CursoRecurso(
@@ -1714,7 +1828,9 @@ def editar_recurso_img(course_code, seccion, resource_id):
 
         # Handle file replacement if a new image is uploaded
         if "img" in request.files and request.files["img"].filename:
-            file_name = str(ULID()) + ".jpg"
+            img_filename = request.files["img"].filename
+            img_ext = splitext(img_filename)[1]
+            file_name = str(ULID()) + img_ext
             picture_file = images.save(request.files["img"], folder=course_code, name=file_name)
             recurso.base_doc_url = images.name
             recurso.doc = picture_file
@@ -1750,8 +1866,24 @@ def nuevo_recurso_audio(course_code, seccion):
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int(recursos + 1)
     if (form.validate_on_submit() or request.method == "POST") and "audio" in request.files:
-        audio_name = str(ULID()) + ".ogg"
+        audio_filename = request.files["audio"].filename
+        audio_ext = splitext(audio_filename)[1]
+        audio_name = str(ULID()) + audio_ext
         audio_file = audio.save(request.files["audio"], folder=course_code, name=audio_name)
+
+        # Handle VTT subtitle file upload
+        subtitle_vtt_content = None
+        if "vtt_subtitle" in request.files and request.files["vtt_subtitle"].filename:
+            vtt_file = request.files["vtt_subtitle"]
+            if vtt_file.filename.endswith(".vtt"):
+                subtitle_vtt_content = vtt_file.read().decode("utf-8")
+
+        # Handle secondary VTT subtitle file upload
+        subtitle_vtt_secondary_content = None
+        if "vtt_subtitle_secondary" in request.files and request.files["vtt_subtitle_secondary"].filename:
+            vtt_secondary_file = request.files["vtt_subtitle_secondary"]
+            if vtt_secondary_file.filename.endswith(".vtt"):
+                subtitle_vtt_secondary_content = vtt_secondary_file.read().decode("utf-8")
 
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
@@ -1763,6 +1895,8 @@ def nuevo_recurso_audio(course_code, seccion):
             indice=nuevo_indice,
             base_doc_url=audio.name,
             doc=audio_file,
+            subtitle_vtt=subtitle_vtt_content,
+            subtitle_vtt_secondary=subtitle_vtt_secondary_content,
             creado_por=current_user.usuario,
         )
         try:
@@ -1801,10 +1935,24 @@ def editar_recurso_audio(course_code, seccion, resource_id):
 
         # Handle file replacement if a new audio file is uploaded
         if "audio" in request.files and request.files["audio"].filename:
-            audio_name = str(ULID()) + ".ogg"
+            audio_filename = request.files["audio"].filename
+            audio_ext = splitext(audio_filename)[1]
+            audio_name = str(ULID()) + audio_ext
             audio_file = audio.save(request.files["audio"], folder=course_code, name=audio_name)
             recurso.base_doc_url = audio.name
             recurso.doc = audio_file
+
+        # Handle VTT subtitle file upload
+        if "vtt_subtitle" in request.files and request.files["vtt_subtitle"].filename:
+            vtt_file = request.files["vtt_subtitle"]
+            if vtt_file.filename.endswith(".vtt"):
+                recurso.subtitle_vtt = vtt_file.read().decode("utf-8")
+
+        # Handle secondary VTT subtitle file upload
+        if "vtt_subtitle_secondary" in request.files and request.files["vtt_subtitle_secondary"].filename:
+            vtt_secondary_file = request.files["vtt_subtitle_secondary"]
+            if vtt_secondary_file.filename.endswith(".vtt"):
+                recurso.subtitle_vtt_secondary = vtt_secondary_file.read().decode("utf-8")
 
         try:
             database.session.commit()
@@ -1825,6 +1973,147 @@ def editar_recurso_audio(course_code, seccion, resource_id):
             id_seccion=seccion,
             recurso=recurso,
             form=form,
+        )
+
+
+@course.route("/course/<course_code>/<seccion>/descargable/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_recurso_descargable(course_code, seccion):
+    """Formulario para crear un nuevo recurso descargable."""
+    # Check if file uploads are enabled by admin
+    site_config = get_site_config()
+    if not site_config.enable_file_uploads:
+        flash("La subida de archivos descargables no está habilitada por el administrador.", "warning")
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+
+    form = CursoRecursoArchivoDescargable()
+    recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
+    nuevo_indice = int(recursos + 1)
+
+    if (form.validate_on_submit() or request.method == "POST") and "archivo" in request.files:
+        uploaded_file = request.files["archivo"]
+
+        # Validate file
+        is_valid, error_msg = validate_downloadable_file(uploaded_file, site_config.max_file_size)
+        if not is_valid:
+            flash(error_msg, "warning")
+            return render_template(
+                "learning/resources_new/nuevo_recurso_descargable.html", id_curso=course_code, id_seccion=seccion, form=form
+            )
+
+        # Save file with original extension
+        filename = uploaded_file.filename
+        file_ext = splitext(filename)[1]
+        file_name = str(ULID()) + file_ext
+
+        try:
+            saved_file = files.save(uploaded_file, folder=course_code, name=file_name)
+
+            nuevo_recurso_ = CursoRecurso(
+                curso=course_code,
+                seccion=seccion,
+                tipo="descargable",
+                nombre=form.nombre.data,
+                descripcion=form.descripcion.data,
+                requerido=form.requerido.data,
+                indice=nuevo_indice,
+                base_doc_url=files.name,
+                doc=saved_file,
+                creado_por=current_user.usuario,
+            )
+
+            database.session.add(nuevo_recurso_)
+            database.session.commit()
+            flash(RECURSO_AGREGADO, "success")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+
+        except UploadNotAllowed:
+            flash("Tipo de archivo no permitido.", "warning")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+        except OperationalError:
+            flash(ERROR_AL_AGREGAR_CURSO, "warning")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+    else:
+        return render_template(
+            "learning/resources_new/nuevo_recurso_descargable.html",
+            id_curso=course_code,
+            id_seccion=seccion,
+            form=form,
+            max_file_size=site_config.max_file_size,
+        )
+
+
+@course.route("/course/<course_code>/<seccion>/descargable/<resource_id>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def editar_recurso_descargable(course_code, seccion, resource_id):
+    """Formulario para editar un recurso descargable."""
+    # Check if file uploads are enabled by admin
+    site_config = get_site_config()
+    if not site_config.enable_file_uploads:
+        flash("La subida de archivos descargables no está habilitada por el administrador.", "warning")
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+
+    recurso = database.session.execute(select(CursoRecurso).filter_by(id=resource_id)).scalar_one()
+    form = CursoRecursoArchivoDescargable()
+
+    if form.validate_on_submit() or request.method == "POST":
+        if "archivo" in request.files and request.files["archivo"].filename:
+            # New file uploaded
+            uploaded_file = request.files["archivo"]
+
+            # Validate file
+            is_valid, error_msg = validate_downloadable_file(uploaded_file, site_config.max_file_size)
+            if not is_valid:
+                flash(error_msg, "warning")
+                return render_template(
+                    "learning/resources_new/editar_recurso_descargable.html",
+                    id_curso=course_code,
+                    id_seccion=seccion,
+                    recurso=recurso,
+                    form=form,
+                    max_file_size=site_config.max_file_size,
+                )
+
+            # Save new file with original extension
+            filename = uploaded_file.filename
+            file_ext = splitext(filename)[1]
+            file_name = str(ULID()) + file_ext
+
+            try:
+                saved_file = files.save(uploaded_file, folder=course_code, name=file_name)
+                recurso.doc = saved_file
+            except UploadNotAllowed:
+                flash("Tipo de archivo no permitido.", "warning")
+                return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+
+        # Update resource metadata
+        recurso.nombre = form.nombre.data
+        recurso.descripcion = form.descripcion.data
+        recurso.requerido = form.requerido.data
+        recurso.modificado_por = current_user.usuario
+
+        try:
+            database.session.commit()
+            flash(RECURSO_AGREGADO, "success")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+        except OperationalError:
+            flash(ERROR_AL_AGREGAR_CURSO, "warning")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+    else:
+        # Pre-populate form with existing data
+        form.nombre.data = recurso.nombre
+        form.descripcion.data = recurso.descripcion
+        form.requerido.data = recurso.requerido
+
+        return render_template(
+            "learning/resources_new/editar_recurso_descargable.html",
+            id_curso=course_code,
+            id_seccion=seccion,
+            recurso=recurso,
+            form=form,
+            max_file_size=site_config.max_file_size,
         )
 
 
@@ -2086,6 +2375,50 @@ def recurso_file(course_code, recurso_code):
     if current_user.is_authenticated:
         if doc.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
             return send_from_directory(config.destination, doc.doc)
+        return abort(403)
+    return redirect(INICIO_SESION)
+
+
+@course.route("/course/<course_code>/vtt/<recurso_code>")
+def recurso_vtt(course_code, recurso_code):
+    """Devuelve el contenido VTT de subtítulos para un recurso de audio."""
+    doc = (
+        database.session.execute(
+            select(CursoRecurso).filter(CursoRecurso.id == recurso_code, CursoRecurso.curso == course_code)
+        )
+        .scalars()
+        .first()
+    )
+
+    if not doc or not doc.subtitle_vtt:
+        return abort(404)
+
+    if current_user.is_authenticated:
+        if doc.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
+            return Response(doc.subtitle_vtt, mimetype="text/vtt", headers={"Content-Type": "text/vtt; charset=utf-8"})
+        return abort(403)
+    return redirect(INICIO_SESION)
+
+
+@course.route("/course/<course_code>/vtt_secondary/<recurso_code>")
+def recurso_vtt_secondary(course_code, recurso_code):
+    """Devuelve el contenido VTT de subtítulos secundarios para un recurso de audio."""
+    doc = (
+        database.session.execute(
+            select(CursoRecurso).filter(CursoRecurso.id == recurso_code, CursoRecurso.curso == course_code)
+        )
+        .scalars()
+        .first()
+    )
+
+    if not doc or not doc.subtitle_vtt_secondary:
+        return abort(404)
+
+    if current_user.is_authenticated:
+        if doc.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
+            return Response(
+                doc.subtitle_vtt_secondary, mimetype="text/vtt", headers={"Content-Type": "text/vtt; charset=utf-8"}
+            )
         return abort(403)
     return redirect(INICIO_SESION)
 

@@ -23,6 +23,30 @@ All notable changes to this project will be documented in this file.
 
 -------------------
 
+## [ release: v0.0.1b19.dev20250903 ] - 2025-09-03
+
+### Changed:
+ - Custom HTML5 audio player with suppot for up to 2 subtitles files in .vtt format. See: 4b3460c729558990f65c38c851119c17c891f22a
+ - Improved file uploads. See 1726f68891195ad2b34b08cd8bb0815ee620ed1e
+
+-------------------
+
+## [ release: v0.0.1b18.dev20250831 ] - 2025-08-31
+
+### Fixed:
+ - Fixed a critical error in the access logic to course resources, see: https://github.com/bmosoluciones/now-lms/issues/111
+
+-------------------
+
+## [ release: v0.0.1b17.dev20250831 ] - 2025-08-31
+
+### Changed:
+ - Improved courses page.
+ - Improved programs page.
+ - Improved administrative lists.
+
+-------------------
+
 ## [ release: v0.0.1b17.dev20250831 ] - 2025-08-31
 
 ### Changed:

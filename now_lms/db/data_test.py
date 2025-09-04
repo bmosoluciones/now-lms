@@ -173,15 +173,47 @@ def crear_curso_para_pruebas():
     database.session.commit()
 
     copy_sample_audio()
+
+    # VTT subtitle content for the demo audio
+    demo_vtt_content = """WEBVTT
+
+00:00.000 --> 00:02.000
+And if you're still breathing, you're the lucky ones
+
+00:02.000 --> 00:06.000
+'Cause most of us are heaving through corrupted lungs
+
+00:06.000 --> 00:08.500
+Setting fire to our insides for fun
+
+00:08.500 --> 00:12.000
+Collecting names of the lovers that went wrong
+
+00:12.000 --> 00:16.000
+The lovers that went wrong
+
+00:16.000 --> 00:18.500
+We are the reckless
+
+00:18.500 --> 00:21.000
+We are the wild youth
+
+00:21.000 --> 00:23.500
+Chasing visions of our futures
+
+00:23.500 --> 00:26.000
+One day we'll reveal the truth"""
+
     nuevo_recurso6 = CursoRecurso(
-        id="01HNZYDA9WKT2FHCBZSFV7JQBR",
+        id="01K45XN0YP1XBWM0F11YXY9ZYZ",
         curso="test",
         seccion=seccion_id,
-        tipo="mp3",
-        nombre="A demo audio resource.",
-        descripcion="Audio is easy to produce that videos.",
+        tipo="audio",
+        nombre="A demo audio resource with subtitles.",
+        descripcion="Audio demo with WebVTT subtitles for accessibility testing.",
         base_doc_url="audio",
         doc="resources/En-us-hello.ogg",
+        subtitle_vtt=demo_vtt_content,
         indice=1,
         publico=False,
     )

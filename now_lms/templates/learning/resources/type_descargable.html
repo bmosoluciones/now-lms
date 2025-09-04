@@ -1,0 +1,181 @@
+{% set current_theme = current_theme() %} {% import "learning/resources/type_macros.html" as r_macros %} {% set
+permitir_docente = docente_asignado(id_curso=curso.codigo) %} {% set permitir_moderador =
+moderador_asignado(id_curso=curso.codigo) %} {% set permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %} {% set
+permitir_editar = current_user.tipo == "admin" or permitir_docente %}
+
+<!doctype html>
+<html lang="es" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-0 py-3" id="icon-grid">
+                <h4 class="pb-2 border-bottom">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
+                                    >Inicio</a
+                                >
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a
+                                    class="text-reset text-decoration-none link-dark"
+                                    href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+                                    >{{ curso.nombre }}</a
+                                >
+                            </li>
+                            <li class="breadcrumb-item">{{ recurso.nombre }}</li>
+                        </ol>
+                    </nav>
+                </h4>
+
+                <div class="row">
+                    <div class="col-sm-8">
+                        <!-- File Information -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <!-- Dynamic icon based on file extension -->
+                                        {% set file_ext = recurso.doc.split('.')[-1].lower() %}
+                                        <div class="text-primary" style="font-size: 3rem">
+                                            {% if file_ext in ['pdf'] %}
+                                            <i class="bi bi-file-earmark-pdf-fill"></i>
+                                            {% elif file_ext in ['doc', 'docx'] %}
+                                            <i class="bi bi-file-earmark-word-fill"></i>
+                                            {% elif file_ext in ['xls', 'xlsx'] %}
+                                            <i class="bi bi-file-earmark-excel-fill"></i>
+                                            {% elif file_ext in ['ppt', 'pptx'] %}
+                                            <i class="bi bi-file-earmark-ppt-fill"></i>
+                                            {% elif file_ext in ['zip', 'rar', '7z'] %}
+                                            <i class="bi bi-file-earmark-zip-fill"></i>
+                                            {% elif file_ext in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'] %}
+                                            <i class="bi bi-file-earmark-image-fill"></i>
+                                            {% elif file_ext in ['mp3', 'wav', 'ogg'] %}
+                                            <i class="bi bi-file-earmark-music-fill"></i>
+                                            {% elif file_ext in ['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm'] %}
+                                            <i class="bi bi-file-earmark-play-fill"></i>
+                                            {% elif file_ext in ['txt', 'rtf', 'md'] %}
+                                            <i class="bi bi-file-earmark-text-fill"></i>
+                                            {% elif file_ext in ['html', 'css', 'js', 'json', 'xml', 'yaml', 'yml'] %}
+                                            <i class="bi bi-file-earmark-code-fill"></i>
+                                            {% else %}
+                                            <i class="bi bi-file-earmark-fill"></i>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <h5 class="card-title mb-1">{{ recurso.nombre }}</h5>
+                                        <p class="card-text text-muted mb-2">
+                                            <small>Archivo: {{ recurso.doc }}</small>
+                                        </p>
+                                        <p class="card-text text-muted mb-0">
+                                            <small>Tipo: {{ file_ext.upper() }}</small>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Download Button -->
+                        <div class="d-flex justify-content-center mb-4">
+                            <a
+                                type="button"
+                                class="btn btn-success btn-lg"
+                                id="download"
+                                href="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
+                                download
+                            >
+                                <i class="bi bi-download" aria-hidden="true"></i>
+                                Descargar Archivo
+                            </a>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <h6>Descripción:</h6>
+                            <div>{{ markdown2html(recurso.descripcion) | safe }}</div>
+                        </div>
+
+                        <!-- Preview for supported file types -->
+                        {% if file_ext in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'] %}
+                        <div class="mb-4">
+                            <h6>Vista previa:</h6>
+                            <div class="text-center">
+                                <img
+                                    src="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
+                                    alt="{{ recurso.nombre }}"
+                                    class="img-fluid"
+                                    style="max-height: 400px; border: 1px solid #ddd; border-radius: 4px"
+                                />
+                            </div>
+                        </div>
+                        {% elif file_ext in ['mp3', 'wav', 'ogg'] %}
+                        <div class="mb-4">
+                            <h6>Reproductor de audio:</h6>
+                            <audio controls class="w-100">
+                                <source
+                                    src="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
+                                    type="{% if file_ext == 'mp3' %}audio/mpeg{% elif file_ext == 'wav' %}audio/wav{% else %}audio/ogg{% endif %}"
+                                />
+                                Su navegador no soporta el elemento de audio.
+                            </audio>
+                        </div>
+                        {% elif file_ext in ['mp4', 'webm'] %}
+                        <div class="mb-4">
+                            <h6>Reproductor de video:</h6>
+                            <video controls class="w-100" style="max-height: 400px">
+                                <source
+                                    src="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
+                                    type="{% if file_ext == 'mp4' %}video/mp4{% else %}video/webm{% endif %}"
+                                />
+                                Su navegador no soporta el elemento de video.
+                            </video>
+                        </div>
+                        {% elif file_ext == 'pdf' %}
+                        <div class="mb-4">
+                            <h6>Vista previa del PDF:</h6>
+                            <div class="text-center">
+                                <iframe
+                                    title="{{ recurso.nombre }}"
+                                    src="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
+                                    width="100%"
+                                    height="600px"
+                                    style="border: 1px solid #ddd; border-radius: 4px"
+                                ></iframe>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- AdSense Ad after resource description for free courses -->
+                        {% if adsense_enabled() and not curso.pagado %} {% set ad_code = ad_large_rectangle() %} {% if ad_code
+                        %}
+                        <div class="mt-4 mb-4" style="text-align: center">
+                            <small class="text-muted">Publicidad</small>
+                            {{ ad_code | safe }}
+                        </div>
+                        {% endif %} {% endif %}
+                    </div>
+
+                    <div class="col-sm-4">
+                        {{ r_macros.resource_nav(recursos=recursos, secciones=secciones, user_progress=user_progress,
+                        evaluaciones=evaluaciones, evaluation_attempts=evaluation_attempts) }}
+                    </div>
+                </div>
+            </div>
+
+            {{ r_macros.nav_footer(indice=indice, curso=recurso.curso, type=recurso.tipo, codigo=recurso.id,
+            recurso_completado=recurso_completado) }}
+        </main>
+    </body>
+</html>

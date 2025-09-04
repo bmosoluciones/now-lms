@@ -328,6 +328,8 @@ class CursoRecurso(database.Model, BaseTabla):
     text = database.Column(database.Text())
     external_code = database.Column(database.Text())
     notes = database.Column(database.String(20))
+    subtitle_vtt = database.Column(database.Text(), nullable=True)
+    subtitle_vtt_secondary = database.Column(database.Text(), nullable=True)
 
 
 class CursoRecursoAvance(database.Model, BaseTabla):
@@ -516,6 +518,10 @@ class Configuracion(database.Model, BaseTabla):
     enable_masterclass = database.Column(database.Boolean(), default=False, nullable=False)
     enable_resources = database.Column(database.Boolean(), default=False, nullable=False)
     enable_blog = database.Column(database.Boolean(), default=False, nullable=False)
+
+    # File upload configuration
+    enable_file_uploads = database.Column(database.Boolean(), default=False, nullable=False)
+    max_file_size = database.Column(database.Integer(), default=1, nullable=False)  # Maximum file size in megabytes
 
 
 class Style(database.Model, BaseTabla):
