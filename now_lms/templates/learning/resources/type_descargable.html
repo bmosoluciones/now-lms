@@ -48,29 +48,29 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                     <div class="col-auto">
                                         <!-- Dynamic icon based on file extension -->
                                         {% set file_ext = recurso.doc.split('.')[-1].lower() %}
-                                        <div class="text-primary" style="font-size: 3rem;">
+                                        <div class="text-primary" style="font-size: 3rem">
                                             {% if file_ext in ['pdf'] %}
-                                                <i class="bi bi-file-earmark-pdf-fill"></i>
+                                            <i class="bi bi-file-earmark-pdf-fill"></i>
                                             {% elif file_ext in ['doc', 'docx'] %}
-                                                <i class="bi bi-file-earmark-word-fill"></i>
+                                            <i class="bi bi-file-earmark-word-fill"></i>
                                             {% elif file_ext in ['xls', 'xlsx'] %}
-                                                <i class="bi bi-file-earmark-excel-fill"></i>
+                                            <i class="bi bi-file-earmark-excel-fill"></i>
                                             {% elif file_ext in ['ppt', 'pptx'] %}
-                                                <i class="bi bi-file-earmark-ppt-fill"></i>
+                                            <i class="bi bi-file-earmark-ppt-fill"></i>
                                             {% elif file_ext in ['zip', 'rar', '7z'] %}
-                                                <i class="bi bi-file-earmark-zip-fill"></i>
+                                            <i class="bi bi-file-earmark-zip-fill"></i>
                                             {% elif file_ext in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'] %}
-                                                <i class="bi bi-file-earmark-image-fill"></i>
+                                            <i class="bi bi-file-earmark-image-fill"></i>
                                             {% elif file_ext in ['mp3', 'wav', 'ogg'] %}
-                                                <i class="bi bi-file-earmark-music-fill"></i>
+                                            <i class="bi bi-file-earmark-music-fill"></i>
                                             {% elif file_ext in ['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm'] %}
-                                                <i class="bi bi-file-earmark-play-fill"></i>
+                                            <i class="bi bi-file-earmark-play-fill"></i>
                                             {% elif file_ext in ['txt', 'rtf', 'md'] %}
-                                                <i class="bi bi-file-earmark-text-fill"></i>
+                                            <i class="bi bi-file-earmark-text-fill"></i>
                                             {% elif file_ext in ['html', 'css', 'js', 'json', 'xml', 'yaml', 'yml'] %}
-                                                <i class="bi bi-file-earmark-code-fill"></i>
+                                            <i class="bi bi-file-earmark-code-fill"></i>
                                             {% else %}
-                                                <i class="bi bi-file-earmark-fill"></i>
+                                            <i class="bi bi-file-earmark-fill"></i>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -112,11 +112,11 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         <div class="mb-4">
                             <h6>Vista previa:</h6>
                             <div class="text-center">
-                                <img 
-                                    src="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}" 
-                                    alt="{{ recurso.nombre }}" 
+                                <img
+                                    src="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
+                                    alt="{{ recurso.nombre }}"
                                     class="img-fluid"
-                                    style="max-height: 400px; border: 1px solid #ddd; border-radius: 4px;"
+                                    style="max-height: 400px; border: 1px solid #ddd; border-radius: 4px"
                                 />
                             </div>
                         </div>
@@ -124,8 +124,8 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         <div class="mb-4">
                             <h6>Reproductor de audio:</h6>
                             <audio controls class="w-100">
-                                <source 
-                                    src="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}" 
+                                <source
+                                    src="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
                                     type="{% if file_ext == 'mp3' %}audio/mpeg{% elif file_ext == 'wav' %}audio/wav{% else %}audio/ogg{% endif %}"
                                 />
                                 Su navegador no soporta el elemento de audio.
@@ -134,9 +134,9 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         {% elif file_ext in ['mp4', 'webm'] %}
                         <div class="mb-4">
                             <h6>Reproductor de video:</h6>
-                            <video controls class="w-100" style="max-height: 400px;">
-                                <source 
-                                    src="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}" 
+                            <video controls class="w-100" style="max-height: 400px">
+                                <source
+                                    src="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
                                     type="{% if file_ext == 'mp4' %}video/mp4{% else %}video/webm{% endif %}"
                                 />
                                 Su navegador no soporta el elemento de video.
