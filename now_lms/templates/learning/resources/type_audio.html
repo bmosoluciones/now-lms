@@ -209,7 +209,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                 <audio id="player" style="display: none;">
                                     <source
                                         src="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
-                                        type="audio/ogg"
+                                        type="{% if recurso.doc.endswith('.mp3') %}audio/mpeg{% elif recurso.doc.endswith('.wav') %}audio/wav{% else %}audio/ogg{% endif %}"
                                     />
                                     {% if recurso.subtitle_vtt %}
                                     <track 

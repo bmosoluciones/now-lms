@@ -141,8 +141,7 @@
                         </div>
                         <div class="col-sm-6">
                             <label for="max_file_size" class="form-label">{{_("Tamaño máximo de archivo (MB)")}}:</label>
-                            {{ form.max_file_size(class="form-control", id="max_file_size", value=config.max_file_size,
-                            min="1", max="100") }}
+                            {{ form.max_file_size(class="form-control", id="max_file_size", value=config.max_file_size, min="1", max="100") }}
                             <div class="form-text">
                                 {{_("Tamaño máximo permitido para archivos descargables (1-100 MB)")}}.
                             </div>

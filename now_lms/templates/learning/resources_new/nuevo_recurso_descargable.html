@@ -2,7 +2,7 @@
 <!doctype html>
 <html lang="es" class="h-100">
     <head>
-        {{ current_theme.headertags() }} {{ mde.css }}
+        {{ current_theme.headertags() }}
         <title>Agregar Recurso Descargable</title>
 
         {{ current_theme.local_style() }}
@@ -20,7 +20,7 @@
                 <h3 class="pb-2 border-bottom">Agregar Recurso Descargable al Curso</h3>
                 <p class="text-muted">
                     Suba un archivo descargable para sus estudiantes. Tamaño máximo: {{ max_file_size }}MB.
-                    <br />
+                    <br>
                     Tipos permitidos: PDF, Word, Excel, PowerPoint, imágenes, audio, video, archivos comprimidos, etc.
                 </p>
 
@@ -34,12 +34,18 @@
                     </div>
 
                     <div class="col-md-12">
+                        <label for="descripcion" class="form-label">Descripción *</label>
+                        {{ form.descripcion(class="form-control", rows="4", required=true) }}
+                        <div class="invalid-feedback">Por favor, ingrese una descripción para el recurso.</div>
+                    </div>
+
+                    <div class="col-md-12">
                         <label for="archivo" class="form-label">Archivo *</label>
-                        <input
-                            type="file"
-                            class="form-control"
-                            name="archivo"
-                            id="archivo"
+                        <input 
+                            type="file" 
+                            class="form-control" 
+                            name="archivo" 
+                            id="archivo" 
                             accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.rtf,.csv,.zip,.rar,.7z,.jpg,.jpeg,.png,.gif,.bmp,.svg,.webp,.mp3,.wav,.ogg,.mp4,.avi,.mov,.wmv,.flv,.webm,.json,.xml,.yaml,.yml,.md,.html,.css,.prn"
                             required
                         />
@@ -54,15 +60,14 @@
                         {{ form.requerido(class="form-select") }}
                     </div>
 
-                    <div class="col-md-12">
-                        <label for="descripcion" class="form-label">Descripción *</label>
-                        {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
-                        <div class="invalid-feedback">Por favor, ingrese una descripción para el recurso.</div>
-                    </div>
-
                     <div class="col-12">
-                        <button class="btn btn-primary" type="submit"><i class="bi bi-upload"></i> Subir Archivo</button>
-                        <a href="{{ url_for('course.administrar_curso', course_code=id_curso) }}" class="btn btn-secondary">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-upload"></i> Subir Archivo
+                        </button>
+                        <a 
+                            href="{{ url_for('course.administrar_curso', course_code=id_curso) }}" 
+                            class="btn btn-secondary"
+                        >
                             <i class="bi bi-arrow-left"></i> Cancelar
                         </a>
                     </div>
@@ -70,34 +75,37 @@
             </div>
         </main>
 
+        {{ current_theme.footer() }}
+        {{ current_theme.local_scripts() }}
+
         <!-- Bootstrap form validation -->
         <script>
             // Example starter JavaScript for disabling form submissions if there are invalid fields
-            ;(function () {
-                "use strict"
+            (function () {
+                'use strict';
                 window.addEventListener(
-                    "load",
+                    'load',
                     function () {
                         // Fetch all the forms we want to apply custom Bootstrap validation styles to
-                        var forms = document.getElementsByClassName("needs-validation")
+                        var forms = document.getElementsByClassName('needs-validation');
                         // Loop over them and prevent submission
                         var validation = Array.prototype.filter.call(forms, function (form) {
                             form.addEventListener(
-                                "submit",
+                                'submit',
                                 function (event) {
                                     if (form.checkValidity() === false) {
-                                        event.preventDefault()
-                                        event.stopPropagation()
+                                        event.preventDefault();
+                                        event.stopPropagation();
                                     }
-                                    form.classList.add("was-validated")
+                                    form.classList.add('was-validated');
                                 },
                                 false
-                            )
-                        })
+                            );
+                        });
                     },
                     false
-                )
-            })()
+                );
+            })();
         </script>
     </body>
 </html>

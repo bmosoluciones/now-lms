@@ -1866,7 +1866,9 @@ def nuevo_recurso_audio(course_code, seccion):
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int(recursos + 1)
     if (form.validate_on_submit() or request.method == "POST") and "audio" in request.files:
-        audio_name = str(ULID()) + ".ogg"
+        audio_filename = request.files["audio"].filename
+        audio_ext = splitext(audio_filename)[1]
+        audio_name = str(ULID()) + audio_ext
         audio_file = audio.save(request.files["audio"], folder=course_code, name=audio_name)
 
         # Handle VTT subtitle file upload
@@ -1933,7 +1935,9 @@ def editar_recurso_audio(course_code, seccion, resource_id):
 
         # Handle file replacement if a new audio file is uploaded
         if "audio" in request.files and request.files["audio"].filename:
-            audio_name = str(ULID()) + ".ogg"
+            audio_filename = request.files["audio"].filename
+            audio_ext = splitext(audio_filename)[1]
+            audio_name = str(ULID()) + audio_ext
             audio_file = audio.save(request.files["audio"], folder=course_code, name=audio_name)
             recurso.base_doc_url = audio.name
             recurso.doc = audio_file
@@ -1981,7 +1985,7 @@ def nuevo_recurso_descargable(course_code, seccion):
     site_config = get_site_config()
     if not site_config.enable_file_uploads:
         flash("La subida de archivos descargables no está habilitada por el administrador.", "warning")
-        return redirect(url_for("course.nuevo_recurso", course_code=course_code, seccion=seccion))
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
     form = CursoRecursoArchivoDescargable()
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
