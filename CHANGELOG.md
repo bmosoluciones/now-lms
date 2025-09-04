@@ -9,8 +9,13 @@ All notable changes to this project will be documented in this file.
 
 ## [ unreleased ]
 
+-------------------
+
+## [ release: v0.0.1b19.dev20250903 ] - 2025-09-03
+
 ### Changed:
  - Custom HTML5 audio player with suppot for up to 2 subtitles files in .vtt format. See: 4b3460c729558990f65c38c851119c17c891f22a
+ - Improved file uploads. See 1726f68891195ad2b34b08cd8bb0815ee620ed1e
 
 -------------------
 
