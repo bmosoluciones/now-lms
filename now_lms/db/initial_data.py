@@ -122,12 +122,7 @@ def copy_sample_pdf() -> None:
     directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "files", "resources")
     try:
         makedirs(directorio_destino)
-    except FileExistsError:
-        pass
-    except FileNotFoundError:
-        pass
-    destino = path.join(directorio_destino, "NOW_Learning_Management_System.pdf")
-    try:
+        destino = path.join(directorio_destino, "NOW_Learning_Management_System.pdf")
         copyfile(origen, destino)
     except (FileExistsError, FileNotFoundError):
         pass
@@ -140,12 +135,7 @@ def copy_sample_audio() -> None:
     directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "audio", "resources")
     try:
         makedirs(directorio_destino)
-    except FileExistsError:
-        pass
-    except FileNotFoundError:
-        pass
-    destino = path.join(directorio_destino, "En-us-hello.ogg")
-    try:
+        destino = path.join(directorio_destino, "En-us-hello.ogg")
         copyfile(origen, destino)
     except (FileExistsError, FileNotFoundError):
         pass
@@ -158,12 +148,7 @@ def copy_sample_img() -> None:
     directorio_destino = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "images", "resources")
     try:
         makedirs(directorio_destino)
-    except FileExistsError:
-        pass
-    except FileNotFoundError:
-        pass
-    destino = path.join(directorio_destino, "logo_large.png")
-    try:
+        destino = path.join(directorio_destino, "logo_large.png")
         copyfile(origen, destino)
     except (FileExistsError, FileNotFoundError):
         pass
@@ -180,12 +165,7 @@ def curse_logo(curso: str, image: str, program: bool = False) -> None:
 
     try:
         makedirs(directorio_destino)
-    except FileExistsError:
-        pass
-    except FileNotFoundError:
-        pass
-    destino = path.join(directorio_destino, "logo.jpg")
-    try:
+        destino = path.join(directorio_destino, "logo.jpg")
         copyfile(origen, destino)
     except (FileExistsError, FileNotFoundError):
         pass
