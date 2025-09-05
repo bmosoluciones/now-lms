@@ -1,4 +1,4 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from 'macros/form_buttons.j2' import render_form_buttons %}
 <!doctype html>
 <html lang="es" class="h-100">
     <head>
@@ -61,14 +61,8 @@
                             {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
                         </div>
 
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-lg btn-primary" type="submit">Actualizar Recurso</button>
-                            <a
-                                href="{{ url_for('course.administrar_curso', course_code=id_curso) }}"
-                                class="btn btn-lg btn-secondary"
-                                >Cancelar</a
-                            >
-                        </div>
+                        {{ render_form_buttons("Actualizar Recurso", url_for('course.administrar_curso', course_code=id_curso))
+                        }}
                     </div>
                 </form>
             </div>

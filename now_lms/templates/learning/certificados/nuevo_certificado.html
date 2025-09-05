@@ -1,4 +1,4 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
 <html lang="es" class="h-100">
     <head>
@@ -45,9 +45,7 @@
                         {{ form.css(class="form-control", id="css", rows="15") | safe }}
                     </div>
 
-                    <br />
-
-                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Certificado</button>
+                    {{ render_form_buttons("Crear Certificado", "/certificate/list") }}
                 </form>
             </div>
         </main>

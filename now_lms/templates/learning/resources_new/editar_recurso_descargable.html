@@ -1,4 +1,4 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from 'macros/form_buttons.j2' import render_form_buttons %}
 <!doctype html>
 <html lang="es" class="h-100">
     <head>
@@ -60,10 +60,7 @@
                     </div>
 
                     <div class="col-12">
-                        <button class="btn btn-primary" type="submit"><i class="bi bi-save"></i> Guardar Cambios</button>
-                        <a href="{{ url_for('course.administrar_curso', course_code=id_curso) }}" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left"></i> Cancelar
-                        </a>
+                        {{ render_form_buttons("Guardar Cambios", url_for('course.administrar_curso', course_code=id_curso)) }}
                     </div>
                 </form>
             </div>

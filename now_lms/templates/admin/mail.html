@@ -1,4 +1,4 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
 <html lang="es" class="h-100">
     <head>
@@ -102,17 +102,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div>
-                            <br />
-                            <a class="btn btn-danger" href="{{ url_for('admin_profile.pagina_admin') }}" role="button"
-                                >{{_("Cancelar")}}</a
-                            >
-                            <button class="w-10 btn btn-primary btn-block" type="submit">
-                                {{_("Actualizar Configuración")}}
-                            </button>
-                        </div>
-                    </div>
+                    {{ render_form_buttons(_("Actualizar Configuración"), url_for('admin_profile.pagina_admin')) }}
                 </form>
             </div>
         </main>

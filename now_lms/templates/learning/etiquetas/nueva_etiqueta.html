@@ -1,4 +1,4 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
 <html lang="es" class="h-100">
     <head>
@@ -32,9 +32,7 @@
                         </div>
                     </div>
 
-                    <br />
-
-                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Etiqueta</button>
+                    {{ render_form_buttons("Crear Etiqueta", "/tag/list") }}
                 </form>
             </div>
         </main>

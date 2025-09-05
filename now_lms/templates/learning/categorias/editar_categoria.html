@@ -1,4 +1,4 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
 <html lang="es" class="h-100">
     <head>
@@ -34,8 +34,7 @@
 
                     <br />
 
-                    <a href="/categories" class="w-10 btn btn-lg btn-danger btn-block">Cancelar</a>
-                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Actualizar Categoria</button>
+                    {{ render_form_buttons("Actualizar Categoria", "/category/list") }}
                 </form>
             </div>
         </main>

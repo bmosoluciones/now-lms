@@ -1,4 +1,5 @@
 {% set current_theme = current_theme() %}
+{% from 'macros/form_buttons.j2' import render_form_buttons %}
 <!doctype html>
 <html lang="es" class="h-100">
     <head>
@@ -136,17 +137,12 @@
                                 </div>
                             </div>
 
-                            <div class="mt-4">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="bi bi-save me-2"></i>Guardar Presentación
-                                </button>
-                                <a href="{{ url_for('course.preview_slideshow', course_code=course_code, slideshow_id=slideshow.id) }}" class="btn btn-info btn-lg ms-2" target="_blank">
+                            {% set extra_buttons %}
+                                <a href="{{ url_for('course.preview_slideshow', course_code=course_code, slideshow_id=slideshow.id) }}" class="btn btn-info me-md-2" target="_blank">
                                     <i class="bi bi-eye me-2"></i>Vista Previa
                                 </a>
-                                <a href="{{ url_for('course.administrar_curso', course_code=course_code) }}" class="btn btn-secondary btn-lg ms-2">
-                                    <i class="bi bi-arrow-left me-2"></i>Volver al Curso
-                                </a>
-                            </div>
+                            {% endset %}
+                            {{ render_form_buttons("Guardar Presentación", url_for('course.administrar_curso', course_code=course_code), cancel_text="Volver al Curso", show_icons=true, extra_buttons=extra_buttons) }}
                         </form>
                     </div>
                     
