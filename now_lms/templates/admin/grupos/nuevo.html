@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ get_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Nuevo Grupo</title>
+        <title>{{ _("Nuevo Grupo") }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -17,22 +17,23 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Agregar un nuevo Grupo de Usuarios.</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Agregar un nuevo Grupo de Usuarios.") }}</h4>
                 <form method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }}
                     <div class="row g-3">
                         <div class="col-sm-12">
-                            <label for="nombre" class="form-label">Nombre del Grupo.</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Nombre del Grupo.") }}
+                            <label for="nombre" class="form-label">{{ _("Nombre del Grupo.") }}</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Nombre del Grupo.")) }}
                         </div>
 
                         <div>
-                            <label for="descripcion" class="form-label">Descripción</label>
-                            {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripción del Grupo") }}
+                            <label for="descripcion" class="form-label">{{ _("Descripción") }}</label>
+                            {{ form.descripcion(class="form-control", id="descripcion", placeholder=_("Descripción del Grupo"))
+                            }}
                         </div>
                     </div>
                     <br />
-                    {{ render_form_buttons("Crear Grupo", "/admin/panel") }}
+                    {{ render_form_buttons(_("Crear Grupo"), "/admin/panel") }}
                 </form>
             </div>
         </main>

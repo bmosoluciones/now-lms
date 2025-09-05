@@ -51,7 +51,7 @@
                         <div class="col-sm-6">
                             <label for="timezone" class="form-label">{{_("Zona Horaria")}}:</label>
                             {{ form.timezone(class="form-control form-select", id="timezone", value=config.timezone) }}
-                            <div class="form-text">{{_("Seleccione la zona horaria adecuada para su pais")}}.</div>
+                            <div class="form-text">{{_("Seleccione la zona horaria adecuada para su país")}}.</div>
                         </div>
                     </div>
                     <br />
@@ -159,7 +159,7 @@
                         <div class="col-sm-6">
                             {% if config.email_verificado %}
                             <div class="alert alert-success" role="alert">
-                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{("La configuración de correo
+                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{_("La configuración de correo
                                 electrónico ha sido verificada correctamente.")}}
                             </div>
                             {% else %}

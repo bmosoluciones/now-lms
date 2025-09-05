@@ -1,6 +1,6 @@
 {% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ get_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
 
@@ -18,7 +18,7 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">{{ _("Editar configuración de anunciós de AdSense.") }}</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Editar configuración de anuncios de AdSense.") }}</h4>
                 <form method="post">
                     <div class="row">
                         <div class="col-sm-6">
@@ -30,8 +30,8 @@
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <label for="meta_tag" class="form-label">{{ _("Header scritp") }}:</label>
-                            {{ form.meta_tag(class="form-control", id="meta_tag",) }}
+                            <label for="meta_tag" class="form-label">{{ _("Header script") }}:</label>
+                            {{ form.meta_tag(class="form-control", id="meta_tag") }}
                         </div>
                     </div>
 
@@ -39,8 +39,8 @@
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <label for="pug_id" class="form-label">{{ _("ID de Usuario de AdSense") }}:</label>
-                            {{ form.pub_id(class="form-control", id="pub_id",) }}
+                            <label for="pub_id" class="form-label">{{ _("ID de Usuario de AdSense") }}:</label>
+                            {{ form.pub_id(class="form-control", id="pub_id") }}
                         </div>
                     </div>
 
@@ -49,34 +49,34 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <h4>{{ _("Configuración de anuncios en el sitio") }}.</h4>
-                            <label for="show_ads" class="form-label">Mostrar anuncios:</label>
+                            <label for="show_ads" class="form-label">{{ _("Mostrar anuncios") }}:</label>
                             {{ form.show_ads() }}
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <label for="add_code" class="form-label">{{ _("Código Glogal de AdSense") }}:</label>
-                            {{ form.add_code(class="form-control", id="add_code",) }}
+                            <label for="add_code" class="form-label">{{ _("Código Global de AdSense") }}:</label>
+                            {{ form.add_code(class="form-control", id="add_code") }}
                         </div>
                     </div>
 
                     <br />
 
-                    <h4>{{_("Anuncios específicos por tamaño")}}</h4>
+                    <h4>{{ _("Anuncios específicos por tamaño") }}</h4>
                     <p class="text-muted">
-                        {{-("Configure códigos de anuncios específicos para diferentes tamaños")}}. {{_("Solo se mostrarán en
-                        cursos gratuitos.")}}
+                        {{ _("Configure códigos de anuncios específicos para diferentes tamaños") }}. {{ _("Solo se mostrarán
+                        en cursos gratuitos.") }}
                     </p>
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <label for="add_leaderboard" class="form-label">{{_("Leaderboard")}} (728×90):</label>
-                            {{ form.add_leaderboard(class="form-control", id="add_leaderboard",) }}
+                            <label for="add_leaderboard" class="form-label">{{ _("Leaderboard") }} (728×90):</label>
+                            {{ form.add_leaderboard(class="form-control", id="add_leaderboard") }}
                         </div>
                         <div class="col-sm-6">
-                            <label for="add_medium_rectangle" class="form-label">{{_("Medium Rectangle")}} (300×250):</label>
-                            {{ form.add_medium_rectangle(class="form-control", id="add_medium_rectangle",) }}
+                            <label for="add_medium_rectangle" class="form-label">{{ _("Medium Rectangle") }} (300×250):</label>
+                            {{ form.add_medium_rectangle(class="form-control", id="add_medium_rectangle") }}
                         </div>
                     </div>
 
@@ -84,12 +84,12 @@
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <label for="add_large_rectangle" class="form-label">{{_("Large Rectangle")}} (336×280):</label>
-                            {{ form.add_large_rectangle(class="form-control", id="add_large_rectangle",) }}
+                            <label for="add_large_rectangle" class="form-label">{{ _("Large Rectangle") }} (336×280):</label>
+                            {{ form.add_large_rectangle(class="form-control", id="add_large_rectangle") }}
                         </div>
                         <div class="col-sm-6">
-                            <label for="add_mobile_banner" class="form-label">{{_("Mobile Banner")}} (300×50):</label>
-                            {{ form.add_mobile_banner(class="form-control", id="add_mobile_banner",) }}
+                            <label for="add_mobile_banner" class="form-label">{{ _("Mobile Banner") }} (300×50):</label>
+                            {{ form.add_mobile_banner(class="form-control", id="add_mobile_banner") }}
                         </div>
                     </div>
 
@@ -97,12 +97,12 @@
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <label for="add_wide_skyscraper" class="form-label">{{_("Wide Skyscraper")}} (160×600):</label>
-                            {{ form.add_wide_skyscraper(class="form-control", id="add_wide_skyscraper",) }}
+                            <label for="add_wide_skyscraper" class="form-label">{{ _("Wide Skyscraper") }} (160×600):</label>
+                            {{ form.add_wide_skyscraper(class="form-control", id="add_wide_skyscraper") }}
                         </div>
                         <div class="col-sm-6">
-                            <label for="add_skyscraper" class="form-label">{{_("Skyscraper")}} (120×600):</label>
-                            {{ form.add_skyscraper(class="form-control", id="add_skyscraper",) }}
+                            <label for="add_skyscraper" class="form-label">{{ _("Skyscraper") }} (120×600):</label>
+                            {{ form.add_skyscraper(class="form-control", id="add_skyscraper") }}
                         </div>
                     </div>
 
@@ -110,23 +110,22 @@
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <label for="add_large_skyscraper" class="form-label">{{_("Large Skyscraper")}} (300×600):</label>
-                            {{ form.add_large_skyscraper(class="form-control", id="add_large_skyscraper",) }}
+                            <label for="add_large_skyscraper" class="form-label">{{ _("Large Skyscraper") }} (300×600):</label>
+                            {{ form.add_large_skyscraper(class="form-control", id="add_large_skyscraper") }}
                         </div>
                         <div class="col-sm-6">
-                            <label for="add_billboard" class="form-label">{{_("Billboard")}} (970×250):</label>
-                            {{ form.add_billboard(class="form-control", id="add_billboard",) }}
+                            <label for="add_billboard" class="form-label">{{ _("Billboard") }} (970×250):</label>
+                            {{ form.add_billboard(class="form-control", id="add_billboard") }}
                         </div>
                     </div>
 
                     <br />
 
-                    <a class="btn btn-success" target="_blank" href="{{ url_for('setting.ads_txt') }}" role="button"
-                        >{{_("Verificar archivo ads")}}.txt</a
-                    >
+                    <a class="btn btn-success" target="_blank" href="{{ url_for('setting.ads_txt') }}" role="button">
+                        {{ _("Verificar archivo ads.txt") }}
+                    </a>
 
-                    <br />
-                    <br />
+                    <br /><br />
 
                     {{ render_form_buttons(_("Actualizar Configuración"), url_for('admin_profile.pagina_admin')) }}
                 </form>
