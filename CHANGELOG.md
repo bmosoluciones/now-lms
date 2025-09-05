@@ -7,6 +7,13 @@ All notable changes to this project will be documented in this file.
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/).
 
 
+## [ unreleased ]
+
+### Changed:
+ - Improved user dashboards.
+
+-------------------
+
 ## [ release: v0.0.1b18.dev20250831 ] - 2025-08-31
 
 ### Fixed:

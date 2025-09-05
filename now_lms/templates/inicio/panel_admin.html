@@ -4,9 +4,44 @@
 
     <head>
         {{ current_theme.headertags() }}
-        <title>Panel del usuario</title>
+        <title>Panel de Administrador</title>
 
         {{ current_theme.local_style() }}
+        <style>
+            .admin-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-radius: 10px;
+                margin-bottom: 2rem;
+            }
+            .stat-card {
+                border: none;
+                border-radius: 15px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
+            }
+            .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            }
+            .stat-icon {
+                font-size: 2.5rem;
+                opacity: 0.2;
+            }
+            .quick-action-btn {
+                border-radius: 25px;
+                padding: 0.5rem 1.5rem;
+                margin: 0.25rem;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                transition: all 0.2s ease;
+            }
+            .quick-action-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            }
+        </style>
     </head>
 
     <body>
@@ -16,108 +51,134 @@
             {{ current_theme.notify() }}
 
             <div class="container px-0 py-3" id="icon-grid">
-                <h4 class="pb-2 border-bottom">
-                    Bienvenido {% if current_user.tipo == "admin" %} Administrador del Sistema. {% else %} {{
-                    current_user.nombre }} {{ current_user.apellido }} {% endif %}
-                </h4>
-                <div class="row mb-2 mb-xl-3">
-                    <div class="col-auto d-none d-sm-block">
-                        <h3>Información del sistema.</h3>
-                    </div>
-
-                    <div class="col-auto ms-auto text-end mt-n1">
-                        <span class="badge bg-success">
-                            <a href="{{ url_for('user.crear_usuario') }}" class="link-light">Nuevo Usuario</a>
-                        </span>
-                        <span class="badge bg-success">
-                            <a href="{{ url_for('course.nuevo_curso') }}" class="link-light">Nuevo Curso</a>
-                        </span>
+                <!-- Enhanced Welcome Header -->
+                <div class="admin-header p-4 mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-1">
+                                <i class="bi bi-shield-check me-2"></i>
+                                Bienvenido, Administrador del Sistema
+                            </h2>
+                            <p class="mb-0 opacity-75">Panel de control y administración de NOW LMS</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="d-flex flex-wrap justify-content-end">
+                                <a href="{{ url_for('user.crear_usuario') }}" class="btn btn-light quick-action-btn">
+                                    <i class="bi bi-person-plus me-1"></i> Nuevo Usuario
+                                </a>
+                                <a href="{{ url_for('course.nuevo_curso') }}" class="btn btn-light quick-action-btn">
+                                    <i class="bi bi-book me-1"></i> Nuevo Curso
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <!-- Statistics Cards -->
                 <div class="row">
                     <div class="col-xl-6 col-xxl-5 d-flex">
                         <div class="w-100">
                             <div class="row">
                                 <div class="col-sm-6 mb-3">
-                                    <div class="card">
+                                    <div class="card stat-card border-primary">
                                         <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">
-                                                        <i class="bi bi-person-vcard-fill" aria-hidden="true"></i> Cursos
-                                                    </h5>
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-primary mb-2">
+                                                        <i class="bi bi-book-fill me-2"></i>Total de Cursos
+                                                    </h6>
+                                                    <h2 class="mb-0 text-primary">{{ cursos_actuales }}</h2>
+                                                    <small class="text-muted">Cursos en el sistema</small>
                                                 </div>
-
                                                 <div class="col-auto">
-                                                    <div class="stat text-primary">
-                                                        <i class="align-middle" data-feather="truck"></i>
-                                                    </div>
+                                                    <i class="bi bi-book-fill stat-icon text-primary"></i>
                                                 </div>
                                             </div>
-                                            <h1 class="mt-1 mb-3">{{ cursos_actuales }}</h1>
+                                            <div class="mt-3">
+                                                <a
+                                                    href="{{ url_for('course.lista_cursos') }}"
+                                                    class="btn btn-outline-primary btn-sm"
+                                                >
+                                                    <i class="bi bi-eye me-1"></i>Ver Cursos
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 mb-3">
-                                    <div class="card">
+                                    <div class="card stat-card border-info">
                                         <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">
-                                                        <i class="bi bi-card-checklist" aria-hidden="true"></i> Recursos
-                                                        Creados
-                                                    </h5>
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-info mb-2">
+                                                        <i class="bi bi-file-earmark-text me-2"></i>Recursos Creados
+                                                    </h6>
+                                                    <h2 class="mb-0 text-info">{{ recursos_creados }}</h2>
+                                                    <small class="text-muted">Recursos de aprendizaje</small>
                                                 </div>
-
                                                 <div class="col-auto">
-                                                    <div class="stat text-primary">
-                                                        <i class="align-middle" data-feather="dollar-sign"></i>
-                                                    </div>
+                                                    <i class="bi bi-file-earmark-text stat-icon text-info"></i>
                                                 </div>
                                             </div>
-                                            <h1 class="mt-1 mb-3">{{ recursos_creados }}</h1>
+                                            <div class="mt-3">
+                                                <a
+                                                    href="{{ url_for('resource.lista_de_recursos') }}"
+                                                    class="btn btn-outline-info btn-sm"
+                                                >
+                                                    <i class="bi bi-collection me-1"></i>Gestionar
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 mb-3">
-                                    <div class="card">
+                                    <div class="card stat-card border-success">
                                         <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">
-                                                        <i class="bi bi-people-fill" aria-hidden="true"></i> Usuarios
-                                                        Registrados
-                                                    </h5>
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-success mb-2">
+                                                        <i class="bi bi-people-fill me-2"></i>Usuarios Registrados
+                                                    </h6>
+                                                    <h2 class="mb-0 text-success">{{ usuarios_registrados }}</h2>
+                                                    <small class="text-muted">Usuarios del sistema</small>
                                                 </div>
-
                                                 <div class="col-auto">
-                                                    <div class="stat text-primary">
-                                                        <i class="align-middle" data-feather="users"></i>
-                                                    </div>
+                                                    <i class="bi bi-people-fill stat-icon text-success"></i>
                                                 </div>
                                             </div>
-                                            <h1 class="mt-1 mb-3">{{ usuarios_registrados }}</h1>
+                                            <div class="mt-3">
+                                                <a
+                                                    href="{{ url_for('admin_profile.usuarios') }}"
+                                                    class="btn btn-outline-success btn-sm"
+                                                >
+                                                    <i class="bi bi-person-lines-fill me-1"></i>Ver Lista
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 mb-3">
-                                    <div class="card">
+                                    <div class="card stat-card border-warning">
                                         <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">
-                                                        <i class="bi bi-award-fill" aria-hidden="true"></i> Certificados
-                                                        Extendidos
-                                                    </h5>
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-warning mb-2">
+                                                        <i class="bi bi-award-fill me-2"></i>Certificados Emitidos
+                                                    </h6>
+                                                    <h2 class="mb-0 text-warning">{{ certificados_emitidos }}</h2>
+                                                    <small class="text-muted">Certificaciones otorgadas</small>
                                                 </div>
-
                                                 <div class="col-auto">
-                                                    <div class="stat text-primary">
-                                                        <i class="align-middle" data-feather="shopping-cart"></i>
-                                                    </div>
+                                                    <i class="bi bi-award-fill stat-icon text-warning"></i>
                                                 </div>
                                             </div>
-                                            <h1 class="mt-1 mb-3">{{ certificados_emitidos }}</h1>
+                                            <div class="mt-3">
+                                                <a
+                                                    href="{{ url_for('certificate.certificaciones') }}"
+                                                    class="btn btn-outline-warning btn-sm"
+                                                >
+                                                    <i class="bi bi-trophy me-1"></i>Ver Certificados
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -125,34 +186,122 @@
                         </div>
                     </div>
 
+                    <!-- Content Management Section -->
                     <div class="col-xl-6 col-xxl-7">
-                        <div class="card flex-fill w-100">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Cursos Recientes</h5>
+                        <!-- Recent Courses -->
+                        <div
+                            class="card mb-3"
+                            style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
+                        >
+                            <div class="card-header bg-light" style="border-radius: 15px 15px 0 0">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h5 class="card-title mb-0">
+                                            <i class="bi bi-clock-history text-primary me-2"></i>Cursos Recientes
+                                        </h5>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-arrow-right me-1"></i>Ver Todos
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-body pt-2 pb-3">
-                                <ul>
+                            <div class="card-body">
+                                {% if cursos_por_fecha %}
+                                <div class="list-group list-group-flush">
                                     {% for curso in cursos_por_fecha %}
-                                    <li>
-                                        <a href="{{ url_for('course.curso', course_code=curso.codigo) }}"
-                                            >{{ curso.nombre }}</a
-                                        >
-                                    </li>
+                                    <div class="list-group-item border-0 px-0">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <h6 class="mb-1">
+                                                    <a
+                                                        href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+                                                        class="text-decoration-none"
+                                                    >
+                                                        {{ curso.nombre }}
+                                                    </a>
+                                                </h6>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-calendar3 me-1"></i>
+                                                    Creado: {{ curso.creado.strftime('%d/%m/%Y') if curso.creado else 'N/A' }}
+                                                </small>
+                                            </div>
+                                            <div class="col-auto">
+                                                <span class="badge bg-primary">{{ curso.codigo }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                     {% endfor %}
-                                </ul>
+                                </div>
+                                {% else %}
+                                <div class="text-center text-muted py-3">
+                                    <i class="bi bi-inbox display-6 opacity-25"></i>
+                                    <p class="mt-2 mb-0">No hay cursos recientes</p>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
 
-                        <!-- Messages Section for Admin -->
-                        <div class="card flex-fill w-100 mt-3">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0"><i class="bi bi-chat-left-text"></i> Mensajes Reportados</h5>
+                        <!-- Admin Tools Section -->
+                        <div
+                            class="card mb-3"
+                            style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
+                        >
+                            <div class="card-header bg-warning bg-opacity-10">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>Mensajes Reportados
+                                </h5>
                             </div>
-                            <div class="card-body pt-2 pb-3">
-                                <p class="text-muted">Gestiona los mensajes reportados por los usuarios del sistema.</p>
-                                <a href="{{ url_for('msg.admin_flagged_messages') }}" class="btn btn-warning btn-sm">
-                                    <i class="bi bi-exclamation-triangle"></i> Ver Mensajes Reportados
-                                </a>
+                            <div class="card-body">
+                                <p class="text-muted mb-3">
+                                    Gestiona los mensajes reportados por los usuarios del sistema para mantener un ambiente
+                                    seguro.
+                                </p>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ url_for('msg.admin_flagged_messages') }}" class="btn btn-warning">
+                                        <i class="bi bi-flag me-1"></i>Ver Reportes
+                                    </a>
+                                    <a href="{{ url_for('msg.user_messages') }}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-envelope me-1"></i>Todos los Mensajes
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Admin Actions -->
+                        <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)">
+                            <div class="card-header bg-success bg-opacity-10">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-tools text-success me-2"></i>Herramientas de Administración
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <a href="{{ url_for('category.categories') }}" class="btn btn-outline-primary w-100">
+                                            <i class="bi bi-tags me-2"></i>Categorías
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <a href="{{ url_for('program.programas') }}" class="btn btn-outline-info w-100">
+                                            <i class="bi bi-collection me-2"></i>Programas
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <a
+                                            href="{{ url_for('setting.configuracion') }}"
+                                            class="btn btn-outline-secondary w-100"
+                                        >
+                                            <i class="bi bi-gear me-2"></i>Configuración
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <a href="{{ url_for('blog.admin_blog_index') }}" class="btn btn-outline-success w-100">
+                                            <i class="bi bi-newspaper me-2"></i>Blog
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

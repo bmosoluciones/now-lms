@@ -4,9 +4,37 @@
 
     <head>
         {{ current_theme.headertags() }}
-        <title>Panel del usuario</title>
+        <title>Panel del Estudiante</title>
 
         {{ current_theme.local_style() }}
+        <style>
+            .student-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-radius: 10px;
+                margin-bottom: 2rem;
+            }
+            .learning-card {
+                border: none;
+                border-radius: 15px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
+            }
+            .learning-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            }
+            .stat-icon {
+                font-size: 2.5rem;
+                opacity: 0.2;
+            }
+            .progress-ring {
+                width: 60px;
+                height: 60px;
+            }
+        </style>
     </head>
 
     <body>
@@ -16,78 +44,103 @@
             {{ current_theme.notify() }}
 
             <div class="container px-0 py-3" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Bienvenido {{ current_user.nombre }} {{ current_user.apellido }}</h4>
-                <div class="row mb-2 mb-xl-3">
-                    <div class="col-auto d-none d-sm-block">
-                        <h3>Información del sistema.</h3>
+                <!-- Enhanced Welcome Header -->
+                <div class="student-header p-4 mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-1">
+                                <i class="bi bi-mortarboard-fill me-2"></i>
+                                Bienvenido, {{ current_user.nombre }} {{ current_user.apellido }}
+                            </h2>
+                            <p class="mb-0 opacity-75">Tu portal de aprendizaje y desarrollo personal</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-light" style="border-radius: 25px">
+                                <i class="bi bi-search me-1"></i> Explorar Cursos
+                            </a>
+                        </div>
                     </div>
                 </div>
+                <!-- Learning Statistics -->
                 <div class="row">
                     <div class="col-xl-6 col-xxl-5 d-flex">
                         <div class="w-100">
                             <div class="row">
-                                <div class="col-sm-4">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">
-                                                        <i class="bi bi-person-vcard-fill" aria-hidden="true"></i> Cursos
-                                                    </h5>
+                                <div class="col-sm-4 mb-3">
+                                    <div class="card learning-card border-primary">
+                                        <div class="card-body text-center">
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-primary mb-2">
+                                                        <i class="bi bi-book me-2"></i>Mis Cursos
+                                                    </h6>
+                                                    <h2 class="mb-0 text-primary">{{ cuenta_cursos }}</h2>
+                                                    <small class="text-muted">Cursos inscritos</small>
                                                 </div>
-
                                                 <div class="col-auto">
-                                                    <div class="stat text-primary">
-                                                        <i class="align-middle" data-feather="truck"></i>
-                                                    </div>
+                                                    <i class="bi bi-book stat-icon text-primary"></i>
                                                 </div>
                                             </div>
-                                            <h1 class="mt-1 mb-3">{{ cuenta_cursos }}</h1>
+                                            <div class="mt-3">
+                                                <a
+                                                    href="{{ url_for('course.lista_cursos') }}"
+                                                    class="btn btn-outline-primary btn-sm"
+                                                >
+                                                    <i class="bi bi-plus-circle me-1"></i>Más Cursos
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">
-                                                        <i class="bi bi-camera-video" aria-hidden="true"></i>
-                                                        <a
-                                                            href="{{ url_for('masterclass.my_enrollments') }}"
-                                                            class="text-decoration-none text-dark"
-                                                            >Clases Magistrales</a
-                                                        >
-                                                    </h5>
+                                <div class="col-sm-4 mb-3">
+                                    <div class="card learning-card border-info">
+                                        <div class="card-body text-center">
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-info mb-2">
+                                                        <i class="bi bi-camera-video me-2"></i>Clases Magistrales
+                                                    </h6>
+                                                    <h2 class="mb-0 text-info">0</h2>
+                                                    <small class="text-muted">Próximamente</small>
                                                 </div>
-
                                                 <div class="col-auto">
-                                                    <div class="stat text-primary">
-                                                        <i class="align-middle" data-feather="video"></i>
-                                                    </div>
+                                                    <i class="bi bi-camera-video stat-icon text-info"></i>
                                                 </div>
                                             </div>
-                                            <h1 class="mt-1 mb-3">0</h1>
+                                            <div class="mt-3">
+                                                <a
+                                                    href="{{ url_for('masterclass.my_enrollments') }}"
+                                                    class="btn btn-outline-info btn-sm"
+                                                >
+                                                    <i class="bi bi-eye me-1"></i>Ver Clases
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">
-                                                        <i class="bi bi-award-fill" aria-hidden="true"></i> Certificaciones
-                                                    </h5>
+                                <div class="col-sm-4 mb-3">
+                                    <div class="card learning-card border-success">
+                                        <div class="card-body text-center">
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-success mb-2">
+                                                        <i class="bi bi-award me-2"></i>Certificaciones
+                                                    </h6>
+                                                    <h2 class="mb-0 text-success">{{ cuenta_certificados }}</h2>
+                                                    <small class="text-muted">Logros obtenidos</small>
                                                 </div>
-
                                                 <div class="col-auto">
-                                                    <div class="stat text-primary">
-                                                        <i class="align-middle" data-feather="dollar-sign"></i>
-                                                    </div>
+                                                    <i class="bi bi-award stat-icon text-success"></i>
                                                 </div>
                                             </div>
-                                            <h1 class="mt-1 mb-3">{{ cuenta_certificados }}</h1>
+                                            <div class="mt-3">
+                                                <a
+                                                    href="{{ url_for('certificate.certificaciones') }}"
+                                                    class="btn btn-outline-success btn-sm"
+                                                >
+                                                    <i class="bi bi-trophy me-1"></i>Ver Certificados
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -95,38 +148,132 @@
                         </div>
                     </div>
 
+                    <!-- Learning Progress Section -->
                     <div class="col-xl-6 col-xxl-7">
-                        <div class="card flex-fill w-100">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Mis Cursos</h5>
+                        <!-- My Courses -->
+                        <div
+                            class="card mb-3"
+                            style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
+                        >
+                            <div class="card-header bg-primary bg-opacity-10">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h5 class="card-title mb-0">
+                                            <i class="bi bi-journal-bookmark text-primary me-2"></i>Mis Cursos
+                                        </h5>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-search me-1"></i>Buscar Más
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-body pt-2 pb-3">
-                                <ul>
+                            <div class="card-body">
+                                {% if mis_cursos %}
+                                <div class="list-group list-group-flush">
                                     {% for curso in mis_cursos %}
-                                    <li>
-                                        <a href="{{ url_for('course.tomar_curso', course_code=curso.codigo) }}"
-                                            >{{ curso.nombre }}</a
-                                        >
-                                    </li>
+                                    <div class="list-group-item border-0 px-0">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <h6 class="mb-1">
+                                                    <a
+                                                        href="{{ url_for('course.tomar_curso', course_code=curso.codigo) }}"
+                                                        class="text-decoration-none"
+                                                    >
+                                                        {{ curso.nombre }}
+                                                    </a>
+                                                </h6>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-play-circle me-1"></i>Continuar aprendiendo
+                                                </small>
+                                            </div>
+                                            <div class="col-auto">
+                                                <span class="badge bg-primary">{{ curso.codigo }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                     {% endfor %}
-                                </ul>
+                                </div>
+                                {% else %}
+                                <div class="text-center text-muted py-4">
+                                    <i class="bi bi-book display-6 opacity-25"></i>
+                                    <h5 class="mt-3 mb-2">¡Comienza tu viaje de aprendizaje!</h5>
+                                    <p class="mb-3">Explora nuestra amplia gama de cursos y encuentra el perfecto para ti.</p>
+                                    <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-primary">
+                                        <i class="bi bi-search me-2"></i>Explorar Cursos
+                                    </a>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
 
-                        <!-- Messages Section -->
+                        <!-- Student Messages -->
                         {% if current_user.tipo in ["student", "instructor", "moderator"] %}
-                        <div class="card flex-fill w-100 mt-3">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0"><i class="bi bi-chat-left-text"></i> Mensajes</h5>
+                        <div
+                            class="card mb-3"
+                            style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
+                        >
+                            <div class="card-header bg-success bg-opacity-10">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-chat-dots text-success me-2"></i>Centro de Comunicación
+                                </h5>
                             </div>
-                            <div class="card-body pt-2 pb-3">
-                                <p class="text-muted">Gestiona tus conversaciones con instructores y estudiantes.</p>
-                                <a href="{{ url_for('msg.user_messages') }}" class="btn btn-primary btn-sm">
-                                    <i class="bi bi-envelope"></i> Ver Mis Mensajes
-                                </a>
+                            <div class="card-body">
+                                <p class="text-muted mb-3">
+                                    Mantente conectado con tus instructores y compañeros de clase. Haz preguntas, participa en
+                                    discusiones y recibe apoyo.
+                                </p>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ url_for('msg.user_messages') }}" class="btn btn-success">
+                                        <i class="bi bi-envelope me-1"></i>Mis Mensajes
+                                    </a>
+                                </div>
                             </div>
                         </div>
                         {% endif %}
+
+                        <!-- Learning Resources -->
+                        <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)">
+                            <div class="card-header bg-info bg-opacity-10">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-tools text-info me-2"></i>Recursos de Aprendizaje
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <a href="{{ url_for('user_profile.perfil') }}" class="btn btn-outline-primary w-100">
+                                            <i class="bi bi-person-circle me-2"></i>Mi Perfil
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <a
+                                            href="{{ url_for('calendar.calendar_view') }}"
+                                            class="btn btn-outline-success w-100"
+                                        >
+                                            <i class="bi bi-calendar-event me-2"></i>Calendario
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <a
+                                            href="{{ url_for('certificate.certificaciones') }}"
+                                            class="btn btn-outline-warning w-100"
+                                        >
+                                            <i class="bi bi-trophy me-2"></i>Mis Logros
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <a
+                                            href="{{ url_for('public_announcements.global_announcements') }}"
+                                            class="btn btn-outline-info w-100"
+                                        >
+                                            <i class="bi bi-megaphone me-2"></i>Anuncios
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
