@@ -18,9 +18,7 @@
                 border: none;
                 border-radius: 15px;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                transition:
-                    transform 0.2s ease,
-                    box-shadow 0.2s ease;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
             }
             .learning-card:hover {
                 transform: translateY(-5px);
@@ -55,7 +53,7 @@
                             <p class="mb-0 opacity-75">Tu portal de aprendizaje y desarrollo personal</p>
                         </div>
                         <div class="col-md-4 text-end">
-                            <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-light" style="border-radius: 25px">
+                            <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-light" style="border-radius: 25px;">
                                 <i class="bi bi-search me-1"></i> Explorar Cursos
                             </a>
                         </div>
@@ -82,10 +80,7 @@
                                                 </div>
                                             </div>
                                             <div class="mt-3">
-                                                <a
-                                                    href="{{ url_for('course.lista_cursos') }}"
-                                                    class="btn btn-outline-primary btn-sm"
-                                                >
+                                                <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-outline-primary btn-sm">
                                                     <i class="bi bi-plus-circle me-1"></i>Más Cursos
                                                 </a>
                                             </div>
@@ -108,10 +103,7 @@
                                                 </div>
                                             </div>
                                             <div class="mt-3">
-                                                <a
-                                                    href="{{ url_for('masterclass.my_enrollments') }}"
-                                                    class="btn btn-outline-info btn-sm"
-                                                >
+                                                <a href="{{ url_for('masterclass.my_enrollments') }}" class="btn btn-outline-info btn-sm">
                                                     <i class="bi bi-eye me-1"></i>Ver Clases
                                                 </a>
                                             </div>
@@ -134,10 +126,7 @@
                                                 </div>
                                             </div>
                                             <div class="mt-3">
-                                                <a
-                                                    href="{{ url_for('certificate.certificaciones') }}"
-                                                    class="btn btn-outline-success btn-sm"
-                                                >
+                                                <a href="{{ url_for('certificate.certificaciones') }}" class="btn btn-outline-success btn-sm">
                                                     <i class="bi bi-trophy me-1"></i>Ver Certificados
                                                 </a>
                                             </div>
@@ -151,10 +140,7 @@
                     <!-- Learning Progress Section -->
                     <div class="col-xl-6 col-xxl-7">
                         <!-- My Courses -->
-                        <div
-                            class="card mb-3"
-                            style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
-                        >
+                        <div class="card mb-3" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                             <div class="card-header bg-primary bg-opacity-10">
                                 <div class="row align-items-center">
                                     <div class="col">
@@ -177,10 +163,8 @@
                                         <div class="row align-items-center">
                                             <div class="col">
                                                 <h6 class="mb-1">
-                                                    <a
-                                                        href="{{ url_for('course.tomar_curso', course_code=curso.codigo) }}"
-                                                        class="text-decoration-none"
-                                                    >
+                                                    <a href="{{ url_for('course.tomar_curso', course_code=curso.codigo) }}" 
+                                                       class="text-decoration-none">
                                                         {{ curso.nombre }}
                                                     </a>
                                                 </h6>
@@ -210,10 +194,7 @@
 
                         <!-- Student Messages -->
                         {% if current_user.tipo in ["student", "instructor", "moderator"] %}
-                        <div
-                            class="card mb-3"
-                            style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
-                        >
+                        <div class="card mb-3" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                             <div class="card-header bg-success bg-opacity-10">
                                 <h5 class="card-title mb-0">
                                     <i class="bi bi-chat-dots text-success me-2"></i>Centro de Comunicación
@@ -221,8 +202,7 @@
                             </div>
                             <div class="card-body">
                                 <p class="text-muted mb-3">
-                                    Mantente conectado con tus instructores y compañeros de clase. Haz preguntas, participa en
-                                    discusiones y recibe apoyo.
+                                    Mantente conectado con tus instructores y compañeros de clase. Haz preguntas, participa en discusiones y recibe apoyo.
                                 </p>
                                 <div class="d-flex gap-2">
                                     <a href="{{ url_for('msg.user_messages') }}" class="btn btn-success">
@@ -234,7 +214,7 @@
                         {% endif %}
 
                         <!-- Learning Resources -->
-                        <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)">
+                        <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                             <div class="card-header bg-info bg-opacity-10">
                                 <h5 class="card-title mb-0">
                                     <i class="bi bi-tools text-info me-2"></i>Recursos de Aprendizaje
@@ -248,26 +228,17 @@
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <a
-                                            href="{{ url_for('calendar.calendar_view') }}"
-                                            class="btn btn-outline-success w-100"
-                                        >
+                                        <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-outline-success w-100">
                                             <i class="bi bi-calendar-event me-2"></i>Calendario
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <a
-                                            href="{{ url_for('certificate.certificaciones') }}"
-                                            class="btn btn-outline-warning w-100"
-                                        >
+                                        <a href="{{ url_for('certificate.certificaciones') }}" class="btn btn-outline-warning w-100">
                                             <i class="bi bi-trophy me-2"></i>Mis Logros
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <a
-                                            href="{{ url_for('public_announcements.global_announcements') }}"
-                                            class="btn btn-outline-info w-100"
-                                        >
+                                        <a href="{{ url_for('public_announcements.global_announcements') }}" class="btn btn-outline-info w-100">
                                             <i class="bi bi-megaphone me-2"></i>Anuncios
                                         </a>
                                     </div>

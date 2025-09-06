@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed:
  - Improved user dashboards.
+ - Improved user profiles.
 
 -------------------
 

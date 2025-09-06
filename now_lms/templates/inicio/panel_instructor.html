@@ -18,9 +18,7 @@
                 border: none;
                 border-radius: 15px;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                transition:
-                    transform 0.2s ease,
-                    box-shadow 0.2s ease;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
             }
             .teaching-card:hover {
                 transform: translateY(-5px);
@@ -51,7 +49,7 @@
                             <p class="mb-0 opacity-75">Tu centro de enseñanza y gestión de cursos</p>
                         </div>
                         <div class="col-md-4 text-end">
-                            <a href="{{ url_for('course.nuevo_curso') }}" class="btn btn-light" style="border-radius: 25px">
+                            <a href="{{ url_for('course.nuevo_curso') }}" class="btn btn-light" style="border-radius: 25px;">
                                 <i class="bi bi-plus-circle me-1"></i> Crear Curso
                             </a>
                         </div>
@@ -78,10 +76,7 @@
                                                 </div>
                                             </div>
                                             <div class="mt-3">
-                                                <a
-                                                    href="{{ url_for('course.lista_cursos') }}"
-                                                    class="btn btn-outline-success btn-sm"
-                                                >
+                                                <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-outline-success btn-sm">
                                                     <i class="bi bi-eye me-1"></i>Ver Cursos
                                                 </a>
                                             </div>
@@ -104,10 +99,7 @@
                                                 </div>
                                             </div>
                                             <div class="mt-3">
-                                                <a
-                                                    href="{{ url_for('certificate.certificaciones') }}"
-                                                    class="btn btn-outline-warning btn-sm"
-                                                >
+                                                <a href="{{ url_for('certificate.certificaciones') }}" class="btn btn-outline-warning btn-sm">
                                                     <i class="bi bi-trophy me-1"></i>Ver Certificados
                                                 </a>
                                             </div>
@@ -130,10 +122,7 @@
                                                 </div>
                                             </div>
                                             <div class="mt-3">
-                                                <a
-                                                    href="{{ url_for('admin_profile.usuarios') }}"
-                                                    class="btn btn-outline-primary btn-sm"
-                                                >
+                                                <a href="{{ url_for('admin_profile.usuarios') }}" class="btn btn-outline-primary btn-sm">
                                                     <i class="bi bi-person-lines-fill me-1"></i>Ver Estudiantes
                                                 </a>
                                             </div>
@@ -147,10 +136,7 @@
                     <!-- Course Management Section -->
                     <div class="col-xl-6 col-xxl-7">
                         <!-- My Recent Courses -->
-                        <div
-                            class="card mb-3"
-                            style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
-                        >
+                        <div class="card mb-3" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                             <div class="card-header bg-success bg-opacity-10">
                                 <div class="row align-items-center">
                                     <div class="col">
@@ -173,10 +159,8 @@
                                         <div class="row align-items-center">
                                             <div class="col">
                                                 <h6 class="mb-1">
-                                                    <a
-                                                        href="{{ url_for('course.curso', course_code=curso.codigo) }}"
-                                                        class="text-decoration-none"
-                                                    >
+                                                    <a href="{{ url_for('course.curso', course_code=curso.codigo) }}" 
+                                                       class="text-decoration-none">
                                                         {{ curso.nombre }}
                                                     </a>
                                                 </h6>
@@ -205,10 +189,7 @@
                         </div>
 
                         <!-- Messages Section for Instructor -->
-                        <div
-                            class="card mb-3"
-                            style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
-                        >
+                        <div class="card mb-3" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                             <div class="card-header bg-primary bg-opacity-10">
                                 <h5 class="card-title mb-0">
                                     <i class="bi bi-chat-dots text-primary me-2"></i>Centro de Mensajes
@@ -227,7 +208,7 @@
                         </div>
 
                         <!-- Teaching Resources -->
-                        <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)">
+                        <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                             <div class="card-header bg-info bg-opacity-10">
                                 <h5 class="card-title mb-0">
                                     <i class="bi bi-tools text-info me-2"></i>Herramientas de Enseñanza
@@ -236,10 +217,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6 mb-2">
-                                        <a
-                                            href="{{ url_for('resource.lista_de_recursos') }}"
-                                            class="btn btn-outline-info w-100"
-                                        >
+                                        <a href="{{ url_for('resource.lista_de_recursos') }}" class="btn btn-outline-info w-100">
                                             <i class="bi bi-collection me-2"></i>Mis Recursos
                                         </a>
                                     </div>
@@ -249,18 +227,12 @@
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <a
-                                            href="{{ url_for('calendar.calendar_view') }}"
-                                            class="btn btn-outline-success w-100"
-                                        >
+                                        <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-outline-success w-100">
                                             <i class="bi bi-calendar-event me-2"></i>Calendario
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <a
-                                            href="{{ url_for('instructor_announcements.list_announcements') }}"
-                                            class="btn btn-outline-primary w-100"
-                                        >
+                                        <a href="{{ url_for('instructor_announcements.list_announcements') }}" class="btn btn-outline-primary w-100">
                                             <i class="bi bi-megaphone me-2"></i>Anuncios
                                         </a>
                                     </div>
