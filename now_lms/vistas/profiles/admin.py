@@ -38,14 +38,10 @@ def pagina_admin():
     total_courses = database.session.execute(database.select(func.count(Curso.id))).scalar() or 0
 
     # Get recent courses (for display)
-    cursos_recientes = database.session.execute(
-        database.select(Curso).order_by(Curso.creado.desc()).limit(5)
-    ).scalars().all()
+    cursos_recientes = database.session.execute(database.select(Curso).order_by(Curso.creado.desc()).limit(5)).scalars().all()
 
     # Get total enrollments
-    total_enrollments = database.session.execute(
-        database.select(func.count(EstudianteCurso.id))
-    ).scalar() or 0
+    total_enrollments = database.session.execute(database.select(func.count(EstudianteCurso.id))).scalar() or 0
 
     return render_template(
         "perfiles/admin.html",

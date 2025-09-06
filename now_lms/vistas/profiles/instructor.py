@@ -57,37 +57,50 @@ instructor_profile = Blueprint("instructor_profile", __name__, template_folder=D
 def pagina_instructor():
     """Perfil de usuario instructor."""
     # Get instructor statistics
-    created_courses = database.session.execute(
-        select(func.count(Curso.id)).join(DocenteCurso).filter(DocenteCurso.usuario == current_user.usuario)
-    ).scalar() or 0
+    created_courses = (
+        database.session.execute(
+            select(func.count(Curso.id)).join(DocenteCurso).filter(DocenteCurso.usuario == current_user.usuario)
+        ).scalar()
+        or 0
+    )
 
     # Get enrolled students across all instructor courses
-    enrolled_students = database.session.execute(
-        select(func.count(Usuario.id.distinct()))
-        .select_from(Usuario)
-        .join(EstudianteCurso, Usuario.usuario == EstudianteCurso.usuario)
-        .join(Curso, EstudianteCurso.curso == Curso.codigo)
-        .join(DocenteCurso, Curso.codigo == DocenteCurso.curso)
-        .filter(DocenteCurso.usuario == current_user.usuario)
-    ).scalar() or 0
+    enrolled_students = (
+        database.session.execute(
+            select(func.count(Usuario.id.distinct()))
+            .select_from(Usuario)
+            .join(EstudianteCurso, Usuario.usuario == EstudianteCurso.usuario)
+            .join(Curso, EstudianteCurso.curso == Curso.codigo)
+            .join(DocenteCurso, Curso.codigo == DocenteCurso.curso)
+            .filter(DocenteCurso.usuario == current_user.usuario)
+        ).scalar()
+        or 0
+    )
 
     # Get evaluations created by instructor (through course sections)
-    created_evaluations = database.session.execute(
-        select(func.count(Evaluation.id))
-        .join(CursoSeccion, Evaluation.section_id == CursoSeccion.id)
-        .join(Curso, CursoSeccion.curso == Curso.codigo)
-        .join(DocenteCurso, Curso.codigo == DocenteCurso.curso)
-        .filter(DocenteCurso.usuario == current_user.usuario)
-    ).scalar() or 0
+    created_evaluations = (
+        database.session.execute(
+            select(func.count(Evaluation.id))
+            .join(CursoSeccion, Evaluation.section_id == CursoSeccion.id)
+            .join(Curso, CursoSeccion.curso == Curso.codigo)
+            .join(DocenteCurso, Curso.codigo == DocenteCurso.curso)
+            .filter(DocenteCurso.usuario == current_user.usuario)
+        ).scalar()
+        or 0
+    )
 
     # Get recent courses by this instructor (for display)
-    cursos_por_fecha = database.session.execute(
-        select(Curso)
-        .join(DocenteCurso)
-        .filter(DocenteCurso.usuario == current_user.usuario)
-        .order_by(Curso.creado.desc())
-        .limit(5)
-    ).scalars().all()
+    cursos_por_fecha = (
+        database.session.execute(
+            select(Curso)
+            .join(DocenteCurso)
+            .filter(DocenteCurso.usuario == current_user.usuario)
+            .order_by(Curso.creado.desc())
+            .limit(5)
+        )
+        .scalars()
+        .all()
+    )
 
     return render_template(
         "perfiles/instructor.html",

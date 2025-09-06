@@ -190,24 +190,21 @@ def crear_curso_demo() -> None:
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
     log.trace("Creating resource demo course.")
-    demo = Curso(
-        nombre="Demo Course",
-        codigo="resources",
-        descripcion_corta="Demo Course for resources types.",
-        descripcion="This course will let you learn resource types.",
-        estado="open",
-        certificado=False,
-        publico=True,
-        duracion=7,
-        nivel=1,
-        auditable=False,
-        portada=True,
-        fecha_inicio=datetime.today() + timedelta(days=7),
-        fecha_fin=datetime.today() + timedelta(days=14),
-        promocionado=True,
-        fecha_promocionado=datetime.today(),
-        plantilla_certificado="horizontal",
-    )
+    demo = Curso(nombre="Demo Course", codigo="resources")
+    demo.descripcion_corta = "Demo Course for resources types."
+    demo.descripcion = "This course will let you learn resource types."
+    demo.estado = "open"
+    demo.certificado = False
+    demo.publico = True
+    demo.duracion = 7
+    demo.nivel = 1
+    demo.auditable = False
+    demo.portada = True
+    demo.fecha_inicio = datetime.today() + timedelta(days=7)
+    demo.fecha_fin = datetime.today() + timedelta(days=14)
+    demo.promocionado = True
+    demo.fecha_promocionado = datetime.today()
+    demo.plantilla_certificado = "horizontal"
     demo.pagado = False
     demo.certificado = True
     demo.plantilla_certificado = "default"
@@ -475,9 +472,9 @@ def crear_certificados() -> None:
             css=certificado[3],
             code=certificado[4],
             tipo=certificado[5],
-            habilitado=True,
-            publico=True,
         )
+        cert.habilitado = True
+        cert.publico = True
         database.session.add(cert)
         database.session.flush()
     database.session.commit()
@@ -488,89 +485,89 @@ def crear_curso_predeterminado() -> None:
     # pylint: disable=too-many-locals
     """Crea un recurso publico."""
     log.trace("Creating demonstration course.")
-    demo = Curso(
-        id="FFFFFFFFFF",
-        nombre="OnLine Teaching 101",
-        codigo="now",
-        descripcion_corta="This is your first course.",
-        descripcion="Welcome! This is your first course.",
-        estado="open",
-        publico=True,
-        fecha_inicio=datetime.today() + timedelta(days=7),
-        fecha_fin=datetime.today() + timedelta(days=14),
-        duracion=7,
-        nivel=1,
-        precio=10,
-        capacidad=50,
-        auditable=True,
-        portada=True,
-        promocionado=True,
-        fecha_promocionado=datetime.today(),
-    )
-    demo.certificado = True
-    demo.plantilla_certificado = "default"
+    demo_ = Curso(id="FFFFFFFFFF", nombre="OnLine Teaching 101", codigo="now")
+    demo_.descripcion_corta = "This is your first course."
+    demo_.descripcion = "Welcome! This is your first course."
+    demo_.estado = "open"
+    demo_.publico = True
+    demo_.fecha_inicio = datetime.today() + timedelta(days=7)
+    demo_.fecha_fin = datetime.today() + timedelta(days=14)
+    demo_.duracion = 7
+    demo_.nivel = 1
+    demo_.precio = 10
+    demo_.capacidad = 50
+    demo_.auditable = True
+    demo_.portada = True
+    demo_.promocionado = True
+    demo_.fecha_promocionado = datetime.today()
+    demo_.certificado = True
+    demo_.plantilla_certificado = "default"
+
     form = Curso(
         nombre="Course Details",
         codigo="details",
-        descripcion_corta="This is a course details example.",
-        descripcion="#Course Details Example",
-        portada=True,
-        nivel=2,
-        duracion=40,
-        # Estado de publicación
-        estado="draft",
-        publico=False,
-        # Modalidad
-        modalidad="time_based",
-        # Disponibilidad de cupos
-        limitado=True,
-        capacidad=100,
-        # Fechas de inicio y fin
-        fecha_inicio=datetime.today() + timedelta(days=7),
-        fecha_fin=datetime.today() + timedelta(days=14),
-        # Información de marketing
-        promocionado=True,
-        fecha_promocionado=datetime.today(),
-        # Información de pago
-        pagado=True,
-        auditable=True,
-        precio=100,
     )
+    form.descripcion_corta = "This is a course details example."
+    form.descripcion = "#Course Details Example"
+    form.portada = True
+    form.nivel = 2
+    form.duracion = 40
+    # Estado de publicación
+    form.estado = "draft"
+    form.publico = False
+    # Modalidad
+    form.modalidad = "time_based"
+    # Disponibilidad de cupos
+    form.limitado = True
+    form.capacidad = 100
+    # Fechas de inicio y fin
+    form.fecha_inicio = datetime.today() + timedelta(days=7)
+    form.fecha_fin = datetime.today() + timedelta(days=14)
+    # Información de marketing
+    form.promocionado = True
+    form.fecha_promocionado = datetime.today()
+    # Información de pago
+    form.pagado = True
+    form.auditable = True
+    form.precio = 100
     form.certificado = True
     form.plantilla_certificado = "horizontal"
+
     free = Curso(
         nombre="Free Course",
         codigo="free",
-        descripcion_corta="This is a free course.",
-        descripcion="#Free demo course",
-        portada=True,
-        nivel=0,
-        duracion=1,
-        # Estado de publicación
-        estado="open",
-        publico=True,
-        # Modalidad
-        modalidad="self_paced",
-        # Disponibilidad de cupos
-        limitado=False,
-        capacidad=0,
-        # Fechas de inicio y fin
-        fecha_inicio=datetime.today() + timedelta(days=7),
-        fecha_fin=datetime.today() + timedelta(days=14),
-        # Información de marketing
-        promocionado=True,
-        fecha_promocionado=datetime.today(),
-        # Información de pago
-        pagado=False,
-        auditable=False,
-        precio=0,
-        certificado=True,
-        plantilla_certificado="horizontal",
     )
-    for curso in demo, form, free:
+    free.descripcion_corta = "This is a free course."
+    free.descripcion = "#Free demo course"
+    free.portada = True
+    free.nivel = 0
+    free.duracion = 1
+    # Estado de publicación
+    free.estado = "open"
+    free.publico = True
+    # Modalidad
+    free.modalidad = "self_paced"
+    # Disponibilidad de cupos
+    free.limitado = False
+    free.capacidad = 0
+    # Fechas de inicio y fin
+    free.fecha_inicio = datetime.today() + timedelta(days=7)
+    free.fecha_fin = datetime.today() + timedelta(days=14)
+    # Información de marketing
+    free.promocionado = True
+    free.fecha_promocionado = datetime.today()
+    # Información de pago
+    free.pagado = False
+    free.auditable = False
+    free.precio = 0
+    free.certificado = True
+    free.plantilla_certificado = "horizontal"
+
+    for curso in demo_, form, free:
         database.session.add(curso)
         database.session.flush()
     database.session.commit()
+
     curse_logo("now", "5218255.jpg")
     curse_logo("details", "online-course.jpg")
     curse_logo("free", "manos-trabajando.jpg")
@@ -866,28 +863,28 @@ def crear_curso_demo1() -> None:
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
     log.trace("Creating PostgreSQL demonstration course.")
-    demo = Curso(
+    demo_course = Curso(
         nombre="PostgreSQL Basics",
         codigo="postgresql",
-        descripcion_corta="Learn the fundamentals of PostgreSQL database.",
-        descripcion="Learn the fundamentals of PostgreSQL, one of the most powerful open-source relational database systems. Perfect for beginners in databases.",
-        estado="open",
-        certificado=False,
-        publico=True,
-        duracion=7,
-        nivel=1,
-        auditable=False,
-        portada=True,
-        fecha_inicio=datetime.today() + timedelta(days=7),
-        fecha_fin=datetime.today() + timedelta(days=14),
-        promocionado=True,
-        fecha_promocionado=datetime.today(),
     )
-    demo.pagado = False
-    demo.certificado = True
-    demo.plantilla_certificado = "default"
+    demo_course.descripcion_corta = "Learn the fundamentals of PostgreSQL database."
+    demo_course.descripcion = "Learn the fundamentals of PostgreSQL, one of the most powerful open-source relational database systems. Perfect for beginners in databases."
+    demo_course.estado = "open"
+    demo_course.certificado = False
+    demo_course.publico = True
+    demo_course.duracion = 7
+    demo_course.nivel = 1
+    demo_course.auditable = False
+    demo_course.portada = True
+    demo_course.fecha_inicio = datetime.today() + timedelta(days=7)
+    demo_course.fecha_fin = datetime.today() + timedelta(days=14)
+    demo_course.promocionado = True
+    demo_course.fecha_promocionado = datetime.today()
+    demo_course.pagado = False
+    demo_course.certificado = True
+    demo_course.plantilla_certificado = "default"
 
-    database.session.add(demo)
+    database.session.add(demo_course)
     database.session.commit()
     curse_logo("postgresql", "999454.jpg")
 
@@ -1065,20 +1062,22 @@ def crear_curso_demo2() -> None:
     demo2 = Curso(
         nombre="Python Fundamentals",
         codigo="python",
-        descripcion_corta="An introduction to programming with Python.",
-        descripcion="An introduction to programming with Python. Learn the basic syntax, data types, and control structures.",
-        estado="open",
-        certificado=False,
-        publico=True,
-        duracion=7,
-        nivel=1,
-        auditable=False,
-        portada=True,
-        fecha_inicio=datetime.today() + timedelta(days=7),
-        fecha_fin=datetime.today() + timedelta(days=14),
-        promocionado=True,
-        fecha_promocionado=datetime.today(),
     )
+    demo2.descripcion_corta = "An introduction to programming with Python."
+    demo2.descripcion = (
+        "An introduction to programming with Python. Learn the basic syntax, data types, and control structures."
+    )
+    demo2.estado = "open"
+    demo2.certificado = False
+    demo2.publico = True
+    demo2.duracion = 7
+    demo2.nivel = 1
+    demo2.auditable = False
+    demo2.portada = True
+    demo2.fecha_inicio = datetime.today() + timedelta(days=7)
+    demo2.fecha_fin = datetime.today() + timedelta(days=14)
+    demo2.promocionado = True
+    demo2.fecha_promocionado = datetime.today()
     demo2.pagado = False
     demo2.certificado = True
     demo2.plantilla_certificado = "default"
