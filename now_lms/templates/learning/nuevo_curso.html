@@ -1,4 +1,4 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
 <html lang="es" class="h-100">
     <head>
@@ -133,6 +133,7 @@
                             <input
                                 type="file"
                                 name="logo"
+                                class="form-control"
                                 accept="image/jpeg, image/png, image/gif, image/webp, image/bmp, image/svg+xml"
                             />
                         </div>
@@ -167,14 +168,9 @@
                             <br />
                         </div>
                     </div>
-                    {% if curso %}
-                    <a class="btn btn-warning" href="{{ url_for('course.curso', course_code=curso.codigo) }}" role="button"
-                        >Cancelar</a
-                    >
-                    <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Curso</button>
-                    {% else %}
-                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Curso</button>
-                    {% endif %}
+                    {% if curso %} {{ render_form_buttons("Actualizar Curso", url_for('course.curso',
+                    course_code=curso.codigo)) }} {% else %} {{ render_form_buttons("Crear Curso", "/course/explore") }} {%
+                    endif %}
                 </form>
             </div>
         </main>

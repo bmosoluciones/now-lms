@@ -1,4 +1,4 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from 'macros/form_buttons.j2' import render_form_buttons %}
 <!doctype html>
 <html lang="es" class="h-100">
     <head>
@@ -35,13 +35,13 @@
 
                         <div class="col-md-12">
                             <label for="file" class="form-label">Reemplazar Audio (opcional)</label>
-                            <input type="file" name="audio" accept="audio/*" />
+                            <input type="file" class="form-control" name="audio" accept="audio/*" />
                             <div class="form-text">Deje vacío para mantener el archivo actual</div>
                         </div>
 
                         <div class="col-md-12">
                             <label for="vtt_subtitle" class="form-label">Subtítulos Principales (Opcional)</label>
-                            <input type="file" name="vtt_subtitle" accept=".vtt" />
+                            <input type="file" class="form-control" name="vtt_subtitle" accept=".vtt" />
                             <div class="form-text">
                                 Archivo WebVTT (.vtt) con los subtítulos principales. Deje vacío para mantener los subtítulos
                                 actuales
@@ -53,7 +53,7 @@
 
                         <div class="col-md-12">
                             <label for="vtt_subtitle_secondary" class="form-label">Subtítulos Secundarios (Opcional)</label>
-                            <input type="file" name="vtt_subtitle_secondary" accept=".vtt" />
+                            <input type="file" class="form-control" name="vtt_subtitle_secondary" accept=".vtt" />
                             <div class="form-text">
                                 Archivo WebVTT (.vtt) con subtítulos secundarios (ej: traducción). Se mostrarán con estilo
                                 diferenciado. Deje vacío para mantener los subtítulos secundarios actuales
@@ -73,14 +73,8 @@
                             {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
                         </div>
 
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-lg btn-primary" type="submit">Actualizar Recurso</button>
-                            <a
-                                href="{{ url_for('course.administrar_curso', course_code=id_curso) }}"
-                                class="btn btn-lg btn-secondary"
-                                >Cancelar</a
-                            >
-                        </div>
+                        {{ render_form_buttons("Actualizar Recurso", url_for('course.administrar_curso', course_code=id_curso))
+                        }}
                     </div>
                 </form>
             </div>

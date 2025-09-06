@@ -148,7 +148,9 @@ class TestAutomaticAuditFields:
 
         with session_basic_db_setup.app_context():
             # Create a record without user context (e.g., from a background job)
-            categoria = Categoria(nombre=f"Background Category {unique_suffix}", descripcion="Category created without user context")
+            categoria = Categoria(
+                nombre=f"Background Category {unique_suffix}", descripcion="Category created without user context"
+            )
 
             database.session.add(categoria)
             database.session.commit()

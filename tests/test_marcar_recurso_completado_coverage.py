@@ -53,9 +53,7 @@ class TestMarcarRecursoCompletadoCoverage:
             # Activate the user
             from now_lms.db import Usuario
 
-            user = database.session.execute(
-                database.select(Usuario).filter_by(correo_electronico=unique_email)
-            ).first()[0]
+            user = database.session.execute(database.select(Usuario).filter_by(correo_electronico=unique_email)).first()[0]
 
             user.activo = True
             database.session.commit()
@@ -104,9 +102,7 @@ class TestMarcarRecursoCompletadoCoverage:
 
             progress_records = (
                 database.session.execute(
-                    database.select(CursoRecursoAvance).filter_by(
-                        usuario=unique_email, curso="free", recurso=resource_id
-                    )
+                    database.select(CursoRecursoAvance).filter_by(usuario=unique_email, curso="free", recurso=resource_id)
                 )
                 .scalars()
                 .all()
@@ -143,9 +139,7 @@ class TestMarcarRecursoCompletadoCoverage:
             # Activate the user
             from now_lms.db import Usuario
 
-            user = database.session.execute(
-                database.select(Usuario).filter_by(correo_electronico=unique_email)
-            ).first()[0]
+            user = database.session.execute(database.select(Usuario).filter_by(correo_electronico=unique_email)).first()[0]
 
             user.activo = True
             database.session.commit()
@@ -184,9 +178,7 @@ class TestMarcarRecursoCompletadoCoverage:
             # Verify a new progress record was created
             progress_records = (
                 database.session.execute(
-                    database.select(CursoRecursoAvance).filter_by(
-                        usuario=unique_email, curso="free", recurso=resource_id
-                    )
+                    database.select(CursoRecursoAvance).filter_by(usuario=unique_email, curso="free", recurso=resource_id)
                 )
                 .scalars()
                 .all()

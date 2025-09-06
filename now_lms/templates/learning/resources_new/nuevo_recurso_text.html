@@ -1,4 +1,4 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
 <html lang="es" class="h-100">
     <head>
@@ -31,9 +31,8 @@
                             {{ form.requerido(class="form-control", id="requerido") }}
                         </div>
 
-                        {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
-
-                        <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Agregar Recurso</button>
+                        {{ form.descripcion }} {{ mde.preview }} {{ mde.js }} {{ render_form_buttons("Agregar Recurso",
+                        "/course/explore") }}
                     </div>
                 </form>
             </div>

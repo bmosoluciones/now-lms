@@ -3,7 +3,7 @@
 <html lang="es" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>Moderador</title>
+        <title>Panel de Moderación</title>
 
         <style>
             .bd-placeholder-img {
@@ -29,16 +29,88 @@
             {{ current_theme.notify() }}
 
             <div class="container px-0 py-3" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Panel de Moderación.</h4>
+                <h4 class="pb-2 border-bottom">
+                    <i class="bi bi-shield-check" aria-hidden="true"></i>
+                    Bienvenido Moderador {{ current_user.nombre }} {{ current_user.apellido }}
+                </h4>
+                <p class="text-muted mb-4">Gestiona los mensajes y comunicaciones del sistema.</p>
 
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-3">
+                    <!-- Messages Section -->
                     <div class="col d-flex align-items-start">
-                        <h3><i class="bi bi-chat-right-text-fill" aria-hidden="true"></i></h3>
-                        <div>
+                        <h3><i class="bi bi-chat-right-text-fill text-primary" aria-hidden="true"></i></h3>
+                        <div class="ms-3">
                             <h4 class="fw-bold mb-0">Mensajes</h4>
+                            <p class="text-muted">Gestiona las conversaciones de usuarios</p>
                             <p>
-                                <a href=" {{ url_for('instructor_profile.cursos') }} " class="link-dark">Mensajes</a>
+                                <a href="{{ url_for('msg.user_messages') }}" class="link-dark">Ver Mis Mensajes</a>
                             </p>
+                        </div>
+                    </div>
+
+                    <!-- Flagged Messages Section -->
+                    <div class="col d-flex align-items-start">
+                        <h3><i class="bi bi-exclamation-triangle-fill text-warning" aria-hidden="true"></i></h3>
+                        <div class="ms-3">
+                            <h4 class="fw-bold mb-0">Mensajes Reportados</h4>
+                            <p class="text-muted">Revisa contenido reportado por usuarios</p>
+                            <p>
+                                <a href="{{ url_for('msg.admin_flagged_messages') }}" class="link-dark">Ver Reportes</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Profile Management -->
+                    <div class="col d-flex align-items-start">
+                        <h3><i class="bi bi-person-vcard text-info" aria-hidden="true"></i></h3>
+                        <div class="ms-3">
+                            <h4 class="fw-bold mb-0">Mi Perfil</h4>
+                            <p class="text-muted">Actualiza tu información personal</p>
+                            <p>
+                                <a href="{{ url_for('user_profile.perfil') }}" class="link-dark">Ver Perfil</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Calendar Access -->
+                    <div class="col d-flex align-items-start">
+                        <h3><i class="bi bi-calendar3 text-success" aria-hidden="true"></i></h3>
+                        <div class="ms-3">
+                            <h4 class="fw-bold mb-0">Calendario</h4>
+                            <p class="text-muted">Revisa fechas importantes</p>
+                            <p>
+                                <a href="{{ url_for('calendar.calendar_view') }}" class="link-dark">Ver Calendario</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Section -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-lightning-charge" aria-hidden="true"></i>
+                                    Acciones Rápidas
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap gap-2">
+                                    <a href="{{ url_for('msg.user_messages') }}" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-envelope"></i> Mis Mensajes
+                                    </a>
+                                    <a href="{{ url_for('msg.admin_flagged_messages') }}" class="btn btn-warning btn-sm">
+                                        <i class="bi bi-exclamation-circle"></i> Mensajes Reportados
+                                    </a>
+                                    <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-success btn-sm">
+                                        <i class="bi bi-calendar"></i> Calendario
+                                    </a>
+                                    <a href="{{ url_for('user_profile.perfil') }}" class="btn btn-info btn-sm">
+                                        <i class="bi bi-person-circle"></i> Mi Perfil
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

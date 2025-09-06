@@ -1,6 +1,6 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ get_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
         <link href="{{ url_for('static', filename='node_modules/select2/dist/css/select2.css') }}" rel="stylesheet" />
@@ -12,7 +12,7 @@
             })
         </script>
 
-        <title>Miembros del Grupo {{ grupo.nombre }}</title>
+        <title>{{ _("Miembros del Grupo") }} {{ grupo.nombre }}</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -23,7 +23,7 @@
         <main>
             <div class="container px-0 py-3" id="lista-usarios">
                 <div class="d-flex justify-content-between border-bottom">
-                    <h4>Miembros del Grupo {{ grupo.nombre }}.</h4>
+                    <h4>{{ _("Miembros del Grupo") }} {{ grupo.nombre }}.</h4>
                 </div>
             </div>
 
@@ -31,7 +31,6 @@
                 <div class="col-auto">
                     <form action="{{ '/group/add?id=' + grupo.id }}" method="post" class="row g-3">
                         <div class="col-auto">
-                            >
                             <select class="select2-usuario" name="usuario">
                                 {% for student in estudiantes %}
                                 <option value="{{ student.usuario }}">{{ student.nombre }} {{ student.apellido }}</option>
@@ -39,7 +38,7 @@
                             </select>
                         </div>
                         <div class="col-auto">
-                            <button class="btn btn-success btn-sm" type="submit">Agregar Usuario</button>
+                            <button class="btn btn-success btn-sm" type="submit">{{ _("Agregar Usuario") }}</button>
                         </div>
                     </form>
                 </div>
@@ -54,22 +53,22 @@
                             </select>
                         </div>
                         <div class="col-auto">
-                            <button class="btn btn-warning btn-sm" type="submit">Asignar Tutor</button>
+                            <button class="btn btn-warning btn-sm" type="submit">{{ _("Asignar Tutor") }}</button>
                         </div>
                     </form>
                 </div>
 
                 <table class="table table-sm table-borderless">
                     <caption>
-                        Lista de miembros del Grupo {{ grupo.nombre }}.
+                        {{ _("Lista de miembros del Grupo") }} {{ grupo.nombre }}.
                     </caption>
                     <thead>
                         <tr>
-                            <th scope="col">Usuario</th>
-                            <th scope="col">Tipo</th>
-                            <th scope="col">Estado</th>
-                            <th scope="col">Fecha registro</th>
-                            <th scope="col">Acciones</th>
+                            <th scope="col">{{ _("Usuario") }}</th>
+                            <th scope="col">{{ _("Tipo") }}</th>
+                            <th scope="col">{{ _("Estado") }}</th>
+                            <th scope="col">{{ _("Fecha registro") }}</th>
+                            <th scope="col">{{ _("Acciones") }}</th>
                         </tr>
                     </thead>
                     {% for item in consulta.items -%}
@@ -83,19 +82,19 @@
                             <td>
                                 {% if item.tipo == "student" %}
                                 <span class="badge p-1 bg-success border border-light rounded-circle">
-                                    <span class="visually-hidden">Usuario</span>
+                                    <span class="visually-hidden">{{ _("Usuario") }}</span>
                                 </span>
                                 {% elif item.tipo == "moderator" %}
                                 <span class="badge p-1 bg-info border border-light rounded-circle">
-                                    <span class="visually-hidden">Moderador</span>
+                                    <span class="visually-hidden">{{ _("Moderador") }}</span>
                                 </span>
                                 {% elif item.tipo == "instructor" %}
                                 <span class="badge p-1 bg-primary border border-light rounded-circle">
-                                    <span class="visually-hidden">Moderador</span>
+                                    <span class="visually-hidden">{{ _("Instructor") }}</span>
                                 </span>
                                 {% else %}
                                 <span class="badge p-1 bg-warning border border-light rounded-circle">
-                                    <span class="visually-hidden">Instructor</span>
+                                    <span class="visually-hidden">{{ _("Otro") }}</span>
                                 </span>
                                 {% endif %}
 
@@ -106,16 +105,16 @@
                             <td>
                                 {% if item.activo %}
                                 <span class="badge p-1 bg-primary border border-light rounded-circle">
-                                    <span class="visually-hidden">Usuario Activo</span>
+                                    <span class="visually-hidden">{{ _("Usuario Activo") }}</span>
                                 </span>
                                 {% else %}
                                 <span class="badge p-1 bg-danger border border-light rounded-circle">
-                                    <span class="visually-hidden">Usuario Inactivo</span>
+                                    <span class="visually-hidden">{{ _("Usuario Inactivo") }}</span>
                                 </span>
                                 {% endif %}
 
                                 <a href="{{ url_for('usuario', id_usuario=item.usuario) }}" class="link-dark">
-                                    {{ item.activo | replace("True", "Activo") | replace("False", "Inactivo") }}
+                                    {{ item.activo | replace("True", _("Activo")) | replace("False", _("Inactivo")) }}
                                 </a>
                             </td>
                             <td>
@@ -128,7 +127,7 @@
                                     <a
                                         href="{{ url_for('elimina_usuario__grupo', group=grupo.id, user=item.usuario) }}"
                                         class="link-light"
-                                        >Eliminar</a
+                                        >{{ _("Eliminar") }}</a
                                     >
                                 </span>
                             </td>

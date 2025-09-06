@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es" class="h-100">
-    {% set current_theme = current_theme() %}
+    {% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
@@ -76,14 +76,10 @@
                                 {{mde.preview}}
                             </div>
 
-                            <div class="mb-3">
-                                <button type="submit" class="btn btn-primary">Grabar entrada</button>
-
-                                {% if current_user.tipo == 'admin' %}
-                                <a href="{{ url_for('blog.admin_blog_index') }}" class="btn btn-secondary">Cancelar</a>
-                                {% else %}
-                                <a href="{{ url_for('blog.instructor_blog_index') }}" class="btn btn-secondary">Cancelar</a>
-                                {% endif %}
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                {% if current_user.tipo == 'admin' %} {{ render_form_buttons("Grabar entrada",
+                                url_for('blog.admin_blog_index')) }} {% else %} {{ render_form_buttons("Grabar entrada",
+                                url_for('blog.instructor_blog_index')) }} {% endif %}
                             </div>
                         </form>
                     </div>

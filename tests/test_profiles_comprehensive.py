@@ -1022,8 +1022,8 @@ def test_change_password_mismatch(full_db_setup, client):
     assert response.status_code == 200  # Returns form with error
 
 
-def test_moderator_panel_redirect(full_db_setup, client):
-    """Test moderator panel redirects to messages."""
+def test_moderator_panel_shows_dashboard(full_db_setup, client):
+    """Test moderator panel shows dashboard template instead of redirecting."""
     app = full_db_setup
 
     with app.app_context():
@@ -1049,7 +1049,9 @@ def test_moderator_panel_redirect(full_db_setup, client):
 
     # Access moderator panel
     response = client.get("/moderator")
-    assert response.status_code == 302  # Redirects to messages
+    assert response.status_code == 200  # Shows dashboard template
+    assert b"Panel de Moderaci" in response.data  # Check for dashboard content
+    assert b"Mensajes" in response.data  # Check for messages section
 
 
 def test_normal_user_cannot_access_admin_routes(full_db_setup, client):

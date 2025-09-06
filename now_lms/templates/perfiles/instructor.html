@@ -1,23 +1,32 @@
-{% set current_theme = current_theme() %}
 <!doctype html>
 <html lang="es" class="h-100">
+    {% set current_theme = current_theme() %}
+
     <head>
-        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>Docente</title>
+        {{ current_theme.headertags() }}
+        <title>Panel del Instructor</title>
 
+        {{ current_theme.local_style() }}
         <style>
-            .bd-placeholder-img {
-                font-size: 1.125rem;
-                text-anchor: middle;
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                user-select: none;
+            .instructor-header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-radius: 10px;
+                margin-bottom: 2rem;
             }
-
-            @media (min-width: 768px) {
-                .bd-placeholder-img-lg {
-                    font-size: 3.5rem;
-                }
+            .instructor-card {
+                border: none;
+                border-radius: 15px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .instructor-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            }
+            .stat-icon {
+                font-size: 2.5rem;
+                opacity: 0.2;
             }
         </style>
     </head>
@@ -29,139 +38,283 @@
             {{ current_theme.notify() }}
 
             <div class="container px-0 py-3" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Panel del docente.</h4>
+                <!-- Enhanced Welcome Header -->
+                <div class="instructor-header p-4 mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-1">
+                                <i class="bi bi-mortarboard me-2"></i>
+                                Bienvenido, Instructor {{ current_user.nombre }} {{ current_user.apellido }}
+                            </h2>
+                            <p class="mb-0 opacity-75">Tu centro de enseñanza y gestión académica</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="{{ url_for('instructor_profile.cursos') }}" class="btn btn-light" style="border-radius: 25px;">
+                                <i class="bi bi-book me-1"></i> Ver Cursos
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
-                    <div class="col d-flex align-items-start">
-                        <h3><i class="bi bi-card-checklist" aria-hidden="true"></i></h3>
-                        <div>
-                            <h4 class="fw-bold mb-0">Cursos</h4>
-                            <p>
-                                <a href=" {{ url_for('instructor_profile.cursos') }} " class="link-dark">Cursos</a>
-                                -
-                                <a href="{{ url_for('course.nuevo_curso') }}" class="link-dark">Nuevo Curso</a>
-                            </p>
+                <!-- Instructor Statistics -->
+                <div class="row">
+                    <div class="col-xl-6 col-xxl-5 d-flex">
+                        <div class="w-100">
+                            <div class="row">
+                                <div class="col-sm-6 mb-3">
+                                    <div class="card instructor-card border-primary">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-primary mb-2">
+                                                        <i class="bi bi-book-half me-2"></i>Cursos Creados
+                                                    </h6>
+                                                    <h2 class="mb-0 text-primary">{{ created_courses }}</h2>
+                                                    <small class="text-muted">Total de cursos</small>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="bi bi-book-half stat-icon text-primary"></i>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <a href="{{ url_for('instructor_profile.cursos') }}" class="btn btn-outline-primary btn-sm">
+                                                    <i class="bi bi-eye me-1"></i>Ver Cursos
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <div class="card instructor-card border-success">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-success mb-2">
+                                                        <i class="bi bi-people me-2"></i>Estudiantes Inscritos
+                                                    </h6>
+                                                    <h2 class="mb-0 text-success">{{ enrolled_students }}</h2>
+                                                    <small class="text-muted">En mis cursos</small>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="bi bi-people stat-icon text-success"></i>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <a href="{{ url_for('instructor_profile.cursos') }}" class="btn btn-outline-success btn-sm">
+                                                    <i class="bi bi-person-lines-fill me-1"></i>Ver Estudiantes
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <div class="card instructor-card border-warning">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-warning mb-2">
+                                                        <i class="bi bi-clipboard-check me-2"></i>Evaluaciones
+                                                    </h6>
+                                                    <h2 class="mb-0 text-warning">{{ created_evaluations }}</h2>
+                                                    <small class="text-muted">Evaluaciones creadas</small>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="bi bi-clipboard-check stat-icon text-warning"></i>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <a href="{{ url_for('instructor_profile.evaluaciones_lista') }}" class="btn btn-outline-warning btn-sm">
+                                                    <i class="bi bi-list-check me-1"></i>Ver Evaluaciones
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <div class="card instructor-card border-info">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-info mb-2">
+                                                        <i class="bi bi-camera-video me-2"></i>Clases Magistrales
+                                                    </h6>
+                                                    <h2 class="mb-0 text-info">--</h2>
+                                                    <small class="text-muted">Clases disponibles</small>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="bi bi-camera-video stat-icon text-info"></i>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <a href="{{ url_for('masterclass.instructor_list') }}" class="btn btn-outline-info btn-sm">
+                                                    <i class="bi bi-play me-1"></i>Ver Clases
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col d-flex align-items-start">
-                        <h3><i class="bi bi-diagram-3-fill" aria-hidden="true"></i></h3>
-                        <div>
-                            <h4 class="fw-bold mb-0">Programas</h4>
-                            <p>
-                                <a href="{{ url_for('program.programas') }}" class="link-dark">Programas</a>
-                                -
-                                <a href="{{ url_for('program.nuevo_programa') }}" class="link-dark">Nuevo Progama</a>
-                            </p>
+
+                    <!-- Instructor Management Section -->
+                    <div class="col-xl-6 col-xxl-7">
+                        <!-- My Courses -->
+                        <div class="card mb-3" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                            <div class="card-header bg-primary bg-opacity-10">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h5 class="card-title mb-0">
+                                            <i class="bi bi-book text-primary me-2"></i>Mis Cursos Recientes
+                                        </h5>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a href="{{ url_for('instructor_profile.cursos') }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-arrow-right me-1"></i>Ver Todos
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                {% if cursos_por_fecha %}
+                                <div class="list-group list-group-flush">
+                                    {% for curso in cursos_por_fecha %}
+                                    <div class="list-group-item border-0 px-0">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <h6 class="mb-1">
+                                                    <a href="{{ url_for('course.curso', course_code=curso.codigo) }}" 
+                                                       class="text-decoration-none">
+                                                        {{ curso.nombre }}
+                                                    </a>
+                                                </h6>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-calendar3 me-1"></i>
+                                                    Creado: {{ curso.creado.strftime('%d/%m/%Y') if curso.creado else 'N/A' }}
+                                                </small>
+                                            </div>
+                                            <div class="col-auto">
+                                                <span class="badge bg-primary">{{ curso.codigo }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="text-center text-muted py-3">
+                                    <i class="bi bi-book display-6 opacity-25"></i>
+                                    <p class="mt-2 mb-0">No hay cursos creados aún</p>
+                                    <a href="{{ url_for('course.nuevo_curso') }}" class="btn btn-primary mt-2">
+                                        <i class="bi bi-plus me-1"></i>Crear Primer Curso
+                                    </a>
+                                </div>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
-                    <div class="col d-flex align-items-start">
-                        <h3><i class="bi bi-camera-video" aria-hidden="true"></i></h3>
-                        <div>
-                            <h4 class="fw-bold mb-0">Clases Magistrales</h4>
-                            <p>
-                                <a href="{{ url_for('masterclass.instructor_list') }}" class="link-dark">Mis Clases</a>
-                                -
-                                <a href="{{ url_for('masterclass.instructor_create') }}" class="link-dark">Nueva Clase</a>
-                            </p>
+
+                        <!-- Quick Actions Section -->
+                        <div class="card mb-3" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                            <div class="card-header bg-success bg-opacity-10">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-lightning text-success me-2"></i>Acciones Rápidas
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <a href="{{ url_for('course.nuevo_curso') }}" class="btn btn-outline-primary w-100">
+                                            <i class="bi bi-plus-circle me-2"></i>Nuevo Curso
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <a href="{{ url_for('instructor_profile.nueva_evaluacion_global') }}" class="btn btn-outline-warning w-100">
+                                            <i class="bi bi-clipboard-plus me-2"></i>Nueva Evaluación
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <a href="{{ url_for('program.nuevo_programa') }}" class="btn btn-outline-success w-100">
+                                            <i class="bi bi-diagram-3 me-2"></i>Nuevo Programa
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <a href="{{ url_for('masterclass.instructor_create') }}" class="btn btn-outline-info w-100">
+                                            <i class="bi bi-camera-video me-2"></i>Nueva Clase
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
-                    <div class="col d-flex align-items-start">
-                        <h3><i class="bi bi-tags-fill" aria-hidden="true"></i></h3>
-                        <div>
-                            <h4 class="fw-bold mb-0">Etiquetas</h4>
-                            <p>
-                                <a href="{{ url_for('tag.tags') }}" class="link-dark">Etiquetas</a>
-                                -
-                                <a href="{{ url_for('tag.new_tag') }}" class="link-dark">Nueva Etiqueta</a>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col d-flex align-items-start">
-                        <h3><i class="bi bi-bookmarks-fill" aria-hidden="true"></i></h3>
-                        <div>
-                            <h4 class="fw-bold mb-0">Categorias</h4>
-                            <p>
-                                <a href="{{ url_for('category.categories') }}" class="link-dark">Categorias</a>
-                                -
-                                <a href="{{ url_for('category.new_category') }}" class="link-dark">Nueva Categoria</a>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col d-flex align-items-start">
-                        <h3><i class="bi bi-cloud-arrow-down-fill" aria-hidden="true"></i></h3>
-                        <div>
-                            <h4 class="fw-bold mb-0">Recuros Descargables</h4>
-                            <p>
-                                <a href="{{ url_for('resource.lista_de_recursos') }}" class="link-dark">Recursos</a>
-                                -
-                                <a href="{{ url_for('resource.new_resource') }}" class="link-dark">Nuevo Recurso</a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
-                    <div class="col d-flex align-items-start">
-                        <h3><i class="bi bi-clipboard-check-fill" aria-hidden="true"></i></h3>
-                        <div>
-                            <h4 class="fw-bold mb-0">Evaluaciones</h4>
-                            <p>
-                                <a href="{{ url_for('instructor_profile.evaluaciones_lista') }}" class="link-dark"
-                                    >Mis Evaluaciones</a
-                                >
-                                -
-                                <a href="{{ url_for('instructor_profile.nueva_evaluacion_global') }}" class="link-dark"
-                                    >Nueva Evaluación</a
-                                >
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col d-flex align-items-start">
-                        <h3><i class="bi bi-megaphone-fill" aria-hidden="true"></i></h3>
-                        <div>
-                            <h4 class="fw-bold mb-0">Anuncios</h4>
-                            <p>
-                                <a href="{{ url_for('instructor_announcements.list_announcements') }}" class="link-dark"
-                                    >Mis Anuncios</a
-                                >
-                                -
-                                <a href="{{ url_for('instructor_announcements.new_announcement') }}" class="link-dark"
-                                    >Nuevo Anuncio</a
-                                >
-                            </p>
-                        </div>
-                    </div>
-                    <div class="col d-flex align-items-start">
-                        <h3><i class="bi bi-journal-text" aria-hidden="true"></i></h3>
-                        <div>
-                            <h4 class="fw-bold mb-0">Blog</h4>
-                            <p>
-                                <a href="{{ url_for('blog.instructor_blog_index') }}" class="link-dark">Mis Publicaciones</a>
-                                -
-                                <a href="{{ url_for('blog.admin_create_post') }}" class="link-dark">Nueva Entrada</a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
-                    <div class="col d-flex align-items-start">
-                        <h3><i class="bi bi-award-fill" aria-hidden="true"></i></h3>
-                        <div>
-                            <h4 class="fw-bold mb-0">Certificados</h4>
-                            <p>
-                                <a href="{{ url_for('certificate.certificados') }}" class="link-dark">Plantillas</a>
-                                -
-                                <a href="{{ url_for('certificate.certificate_new') }}" class="link-dark">Nueva Plantilla</a>
-                                -
-                                <a href="{{ url_for('certificate.certificaciones') }}" class="link-dark"
-                                    >Certicados Emitidos</a
-                                >
-                                -
-                                <a href="{{ url_for('certificate.certificacion_generar') }}" class="link-dark"
-                                    >Emitir Certificado</a
-                                >
-                            </p>
+
+                        <!-- Management Tools -->
+                        <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                            <div class="card-header bg-info bg-opacity-10">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-tools text-info me-2"></i>Herramientas de Gestión
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <!-- Courses and Programs -->
+                                    <div class="col-md-6">
+                                        <div class="card border-primary border-opacity-25">
+                                            <div class="card-body p-3">
+                                                <h6 class="card-title text-primary">
+                                                    <i class="bi bi-book me-2"></i>Cursos y Programas
+                                                </h6>
+                                                <div class="d-grid gap-1">
+                                                    <a href="{{ url_for('instructor_profile.cursos') }}" class="btn btn-sm btn-outline-primary">Mis Cursos</a>
+                                                    <a href="{{ url_for('program.programas') }}" class="btn btn-sm btn-outline-primary">Programas</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Content Management -->
+                                    <div class="col-md-6">
+                                        <div class="card border-success border-opacity-25">
+                                            <div class="card-body p-3">
+                                                <h6 class="card-title text-success">
+                                                    <i class="bi bi-folder me-2"></i>Contenido
+                                                </h6>
+                                                <div class="d-grid gap-1">
+                                                    <a href="{{ url_for('resource.lista_de_recursos') }}" class="btn btn-sm btn-outline-success">Recursos</a>
+                                                    <a href="{{ url_for('tag.tags') }}" class="btn btn-sm btn-outline-success">Etiquetas</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Evaluation and Certification -->
+                                    <div class="col-md-6">
+                                        <div class="card border-warning border-opacity-25">
+                                            <div class="card-body p-3">
+                                                <h6 class="card-title text-warning">
+                                                    <i class="bi bi-award me-2"></i>Evaluación y Certificación
+                                                </h6>
+                                                <div class="d-grid gap-1">
+                                                    <a href="{{ url_for('instructor_profile.evaluaciones_lista') }}" class="btn btn-sm btn-outline-warning">Evaluaciones</a>
+                                                    <a href="{{ url_for('certificate.certificados') }}" class="btn btn-sm btn-outline-warning">Certificados</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Communication -->
+                                    <div class="col-md-6">
+                                        <div class="card border-info border-opacity-25">
+                                            <div class="card-body p-3">
+                                                <h6 class="card-title text-info">
+                                                    <i class="bi bi-chat me-2"></i>Comunicación
+                                                </h6>
+                                                <div class="d-grid gap-1">
+                                                    <a href="{{ url_for('blog.instructor_blog_index') }}" class="btn btn-sm btn-outline-info">Blog</a>
+                                                    <a href="{{ url_for('instructor_announcements.list_announcements') }}" class="btn btn-sm btn-outline-info">Anuncios</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

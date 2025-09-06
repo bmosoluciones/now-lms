@@ -537,10 +537,8 @@ def crear_recurso_prueba():
     try:
         makedirs(directorio_destino_archivo)
         makedirs(directorio_destino_imagen)
-    except FileExistsError:
-        log.trace("Directorios de recursos ya existen.")
-    except FileNotFoundError:
-        log.trace("Directorios de recursos no encontrados.")
+    except (FileExistsError, FileNotFoundError) as e:
+        log.trace(f"Error al crear el archivo: {e}")
 
     # Copiar pdf de ejemplo.
     archivos = [
@@ -551,10 +549,8 @@ def crear_recurso_prueba():
         destino = path.join(directorio_destino_archivo, archivo[1])
         try:
             copyfile(origen, destino)
-        except FileExistsError:
-            log.trace("Archivo de recurso ya existe.")
-        except FileNotFoundError:
-            log.trace("Archivo de recurso no encontrado.")
+        except (FileExistsError, FileNotFoundError) as e:
+            log.trace(f"Error al crear el archivo {archivo[0]}: {e}")
 
     # Copiar img de ejemplo.
     imagenes = [
@@ -565,10 +561,8 @@ def crear_recurso_prueba():
         destino = path.join(directorio_destino_imagen, image[1])
         try:
             copyfile(origen, destino)
-        except FileExistsError:
-            log.trace("Imagen de recurso ya existe.")
-        except FileNotFoundError:
-            log.trace("Imagen de recurso no encontrada.")
+        except (FileExistsError, FileNotFoundError) as e:
+            log.trace(f"Error al crear la imagen {image[0]}: {e}")
 
     database.session.commit()
 
