@@ -37,6 +37,7 @@ from flask_uploads import AUDIO, DOCUMENTS, IMAGES, UploadSet
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.logs import log
+from tkinter.tix import AUTO
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -103,19 +104,20 @@ def load_config_from_file() -> dict:
 
 # < --------------------------------------------------------------------------------------------- >
 # Configuración central de la aplicación.
-# Python 3.5+ - Extended unpacking for cleaner set creation
 VALORES_TRUE = {*["1", "true", "yes", "on"], *["development", "dev"]}
-
-# Python 3.5+ - Extended unpacking for cleaner environment variable lists
 DEBUG_VARS = ["DEBUG", "CI", "DEV", "DEVELOPMENT"]
 FRAMEWORK_VARS = ["FLASK_ENV", "DJANGO_DEBUG", "NODE_ENV"]
 GENERIC_VARS = ["ENV", "APP_ENV"]
 
+
+# < --------------------------------------------------------------------------------------------- >
+# Gestión de variables de entorno.
 DESARROLLO = any(
     str(environ.get(var, "")).strip().lower() in VALORES_TRUE for var in [*DEBUG_VARS, *FRAMEWORK_VARS, *GENERIC_VARS]
 )
+FORCE_HTTPS = environ.get("NOW_LMS_FORCE_HTTPS", "0").strip().lower() in VALORES_TRUE
+AUTO_MIGRATE = environ.get("NOW_LMS_AUTO_MIGRATE", "0").strip().lower() in VALORES_TRUE
 
-FORCE_HTTPS = environ.get("FORCE_HTTPS", "0").strip().lower() in VALORES_TRUE
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios base de la aplicacion
@@ -143,6 +145,7 @@ if custom_themes_dir:
 else:
     DIRECTORIO_PLANTILLAS = DIRECTORIO_PLANTILLAS_BASE
 
+
 # < --------------------------------------------------------------------------------------------- >
 # Directorios utilizados para la carga de archivos.
 DIRECTORIO_BASE_ARCHIVOS_USUARIO = Path(path.join(str(DIRECTORIO_ARCHIVOS), "files"))
@@ -152,6 +155,7 @@ DIRECTORIO_UPLOAD_IMAGENES: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "image
 DIRECTORIO_UPLOAD_ARCHIVOS: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "files")
 DIRECTORIO_UPLOAD_AUDIO: str = path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "audio")
 
+# Crea los directorios si no existen.
 if not path.isdir(DIRECTORIO_BASE_ARCHIVOS_USUARIO):
     try:
         makedirs(DIRECTORIO_BASE_ARCHIVOS_USUARIO)
@@ -167,9 +171,11 @@ if access(DIRECTORIO_BASE_ARCHIVOS_USUARIO, R_OK) and access(DIRECTORIO_BASE_ARC
 else:
     log.warning(f"No access to upload files to directory: {DIRECTORIO_BASE_ARCHIVOS_USUARIO}")
 
+
 # < --------------------------------------------------------------------------------------------- >
 # Directorio base temas.
 DIRECTORIO_BASE_UPLOADS = Path(str(path.join(str(DIRECTORIO_ARCHIVOS), "files")))
+
 
 # < --------------------------------------------------------------------------------------------- >
 # Ubicación predeterminada de base de datos SQLITE
@@ -192,8 +198,6 @@ else:
 # < --------------------------------------------------------------------------------------------- >
 # Configuración de la aplicación:
 # Se siguen las recomendaciones de "Twelve Factors App" y las opciones se leen del entorno.
-
-# Python 3.6+ - Variable annotations for configuration dictionary
 CONFIGURACION: dict[str, str | bool | Path] = {}
 CONFIGURACION["SECRET_KEY"] = environ.get("SECRET_KEY") or "dev"  # nosec
 CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("DATABASE_URL") or SQLITE  # nosec
@@ -212,6 +216,7 @@ if DESARROLLO:
     CONFIGURACION["TEMPLATES_AUTO_RELOAD"] = True
 
 
+# < --------------------------------------------------------------------------------------------- >
 # Corrige URI de conexion a la base de datos si el usuario omite el driver apropiado.
 if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
     # En Heroku va a estar disponible psycopg2.
@@ -247,12 +252,15 @@ if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
         CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
 
 
+# < --------------------------------------------------------------------------------------------- >
 # Configuración de Directorio de carga de archivos.
 images = UploadSet("images", IMAGES)
 files = UploadSet("files", DOCUMENTS)
 audio = UploadSet("audio", AUDIO)
 
 
+# < --------------------------------------------------------------------------------------------- >
+# Información del sistema en que se ejecuta la aplicación.
 def is_running_in_container() -> bool:
     """Detecta si se está ejecutando en un contenedor como Docker."""
     # Revisión común en Docker/Linux

@@ -63,7 +63,7 @@ NOW-LMS supports loading configuration from files using the [ConfigObj](http://c
 NOW-LMS searches for configuration files in the following order, using the first file found:
 
 1. **Environment variable**: `NOW_LMS_CONFIG=/path/to/config.conf`
-2. **System-wide config**: `/etc/now-lms/now-lms.conf` 
+2. **System-wide config**: `/etc/now-lms/now-lms.conf`
 3. **Alternative system config**: `/etc/now-lms.conf`
 4. **User config**: `~/.config/now-lms/now-lms.conf`
 5. **Local config**: `./now-lms.conf` (current directory)
@@ -78,7 +78,7 @@ SECRET_KEY = set_a_very_secure_secret_key
 DATABASE_URL = postgresql+pg8000://scott:tiger@localhost/mydatabase
 LOG_LEVEL = INFO
 
-# Cache configuration  
+# Cache configuration
 REDIS_URL = redis://localhost:6379/0
 CACHE_MEMCACHED_SERVERS = 127.0.0.1:11211
 
@@ -173,6 +173,8 @@ You can use the following options to configure NOW-LMS:
 -   **REDIS_URL** (<span style="color:green">optional</span>): User friendly alias to `CACHE_REDIS_URL`. Connection
     string to use [Redis](https://redis.io/) as cache backend, for example `redis://localhost:6379/0`.
 -   **CACHE_MEMCACHED_SERVERS** (<span style="color:green">optional</span>): Connection string to use [Memcached](https://memcached.org/) as cache backend.
+-   **NOW_LMS_AUTO_MIGRATE** (<span style="color:green">optional</span>): Run database migrations at app starup.
+-   **NOW_LMS_FORCE_HTTPS** (<span style="color:green">optional</span>): Force the app to run in HTTPS.
 -   **CUSTOM_DATA_DIR** (<span style="color:purple">recomended</span>): Directory to save system, must be writable by the
     main app proccess. Note that this variable can NOT be set AD-HOC because the order we parse the configuration
     options, so you must set this options before the app starts. You MUST have backups this directory in the same way
