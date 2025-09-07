@@ -37,7 +37,6 @@ from flask_uploads import AUDIO, DOCUMENTS, IMAGES, UploadSet
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.logs import log
-from tkinter.tix import AUTO
 
 if TYPE_CHECKING:
     from flask import Flask
