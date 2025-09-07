@@ -194,6 +194,8 @@ def inicializa_extenciones_terceros(flask_app: Flask):
     with flask_app.app_context():
         from now_lms.i18n import get_locale, get_timezone
 
+        flask_app.config.from_mapping({"ALEMBIC": {"script_location": "migrations"}})
+
         database.init_app(flask_app)
         alembic.init_app(flask_app)
         # Remove alembic "db" command from flask cli if it exists
