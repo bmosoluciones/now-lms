@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2025-09-05 06:17+0000\n"
-"PO-Revision-Date: 2025-08-30 04:48+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: en\n"
+"PO-Revision-Date: 2025-09-07 09:46-0600\n"
+"Last-Translator: \n"
 "Language-Team: en <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: Babel 2.17.0\n"
+"X-Generator: Poedit 3.7\n"
 
 #: now_lms/__init__.py:272
 msgid "Favor iniciar sesión para acceder al sistema."
@@ -36,7 +37,7 @@ msgstr "Course removed from the website."
 
 #: now_lms/bi.py:245
 msgid "No se puede publicar el curso"
-msgstr "The course cannot be published."
+msgstr "The course cannot be published"
 
 #: now_lms/db/tools.py:140
 msgid "Sistema de aprendizaje en linea."
@@ -52,11 +53,11 @@ msgstr "User image does not exist."
 
 #: now_lms/templates/admin/adsense.html:7
 msgid "Configuración de Anuncios de AdSense"
-msgstr "Edit AdSense settings."
+msgstr "Edit AdSense settings"
 
 #: now_lms/templates/admin/adsense.html:21
 msgid "Editar configuración de anuncios de AdSense."
-msgstr ""
+msgstr "Edit AdSense ad settings."
 
 #: now_lms/templates/admin/adsense.html:25
 msgid "Configuración de usuario de AdSense."
@@ -72,15 +73,15 @@ msgstr "Header script"
 
 #: now_lms/templates/admin/adsense.html:42
 msgid "ID de Usuario de AdSense"
-msgstr "AdSense user ID."
+msgstr "AdSense user ID"
 
 #: now_lms/templates/admin/adsense.html:51
 msgid "Configuración de anuncios en el sitio"
-msgstr "AdSense settings."
+msgstr "AdSense settings"
 
 #: now_lms/templates/admin/adsense.html:52
 msgid "Mostrar anuncios"
-msgstr ""
+msgstr "Show adds"
 
 #: now_lms/templates/admin/adsense.html:59
 msgid "Código Global de AdSense"
@@ -92,13 +93,15 @@ msgstr "Ads by Specific Size"
 
 #: now_lms/templates/admin/adsense.html:68
 msgid "Configure códigos de anuncios específicos para diferentes tamaños"
-msgstr ""
+msgstr "Set up specific ad codes for different sizes"
 
 #: now_lms/templates/admin/adsense.html:68
 msgid ""
 "Solo se mostrarán\n"
 "                        en cursos gratuitos."
 msgstr ""
+"They will only be displayed\n"
+"in free courses."
 
 #: now_lms/templates/admin/adsense.html:74
 msgid "Leaderboard"
@@ -137,8 +140,7 @@ msgid "Verificar archivo ads.txt"
 msgstr "Verify ads file"
 
 #: now_lms/templates/admin/adsense.html:130
-#: now_lms/templates/admin/config.html:178
-#: now_lms/templates/admin/mail.html:105
+#: now_lms/templates/admin/config.html:178 now_lms/templates/admin/mail.html:105
 #: now_lms/templates/admin/paypal.html:103
 msgid "Actualizar Configuración"
 msgstr "Update Configuration"
@@ -166,7 +168,7 @@ msgstr "Website Description"
 
 #: now_lms/templates/admin/config.html:41
 msgid "Configuración Regional"
-msgstr "Edit AdSense settings."
+msgstr "Edit AdSense settings"
 
 #: now_lms/templates/admin/config.html:45
 msgid "Moneda del Sitio"
@@ -186,15 +188,15 @@ msgstr "Select the appropriate time zone for your country"
 
 #: now_lms/templates/admin/config.html:60
 msgid "Idioma del sitio web"
-msgstr "Course removed from the website."
+msgstr "Course removed from the website"
 
 #: now_lms/templates/admin/config.html:62
 msgid "Seleccione el idioma de su sitio web"
-msgstr "Course removed from the website."
+msgstr "Course removed from the website"
 
 #: now_lms/templates/admin/config.html:69
 msgid "Configuración de Navegación"
-msgstr "Edit AdSense settings."
+msgstr "Edit AdSense settings"
 
 #: now_lms/templates/admin/config.html:71
 msgid ""
@@ -236,7 +238,7 @@ msgstr "Users will see the Blog option in the navigation menu"
 
 #: now_lms/templates/admin/config.html:126
 msgid "Configuración de subida de archivos"
-msgstr ""
+msgstr "Edit file uploads settings"
 
 #: now_lms/templates/admin/config.html:135
 msgid "Habilitar subida de archivos descargables"
@@ -244,17 +246,16 @@ msgstr "Enable Downloadable Resources"
 
 #: now_lms/templates/admin/config.html:139
 msgid ""
-"Permite a los instructores subir archivos descargables como recursos del "
-"curso"
-msgstr ""
+"Permite a los instructores subir archivos descargables como recursos del curso"
+msgstr "Allows instructors to upload downloadable files as course resources"
 
 #: now_lms/templates/admin/config.html:143
 msgid "Tamaño máximo de archivo (MB)"
-msgstr ""
+msgstr "Maximum file size (MB)"
 
 #: now_lms/templates/admin/config.html:147
 msgid "Tamaño máximo permitido para archivos descargables (1-100 MB)"
-msgstr ""
+msgstr "Maximum size allowed for downloadable files (1-100 MB)"
 
 #: now_lms/templates/admin/config.html:155
 msgid "Configuración de verificación de usuarios"
@@ -263,8 +264,7 @@ msgstr "User Verification Settings"
 #: now_lms/templates/admin/config.html:162
 msgid ""
 "La configuración de correo\n"
-"                                electrónico ha sido verificada "
-"correctamente."
+"                                electrónico ha sido verificada correctamente."
 msgstr ""
 "Email configuration\n"
 "                                has not been verified."
@@ -303,7 +303,7 @@ msgstr "Home"
 
 #: now_lms/templates/admin/flagged_messages.html:45
 msgid "Se encontraron %(num)d mensaje(s) reportado(s) que requieren revisión."
-msgstr ""
+msgstr "%(num)d reported message(s) were found that require review."
 
 #: now_lms/templates/admin/flagged_messages.html:55
 msgid "Mensaje Reportado"
@@ -319,7 +319,7 @@ msgstr "Message Information"
 
 #: now_lms/templates/admin/flagged_messages.html:65
 msgid "De"
-msgstr ""
+msgstr "From"
 
 #: now_lms/templates/admin/flagged_messages.html:69
 msgid "Fecha"
@@ -394,23 +394,23 @@ msgstr "Created"
 
 #: now_lms/templates/admin/flagged_messages.html:143
 msgid "¡Excelente!"
-msgstr ""
+msgstr "Excelent!"
 
 #: now_lms/templates/admin/flagged_messages.html:144
 msgid "No hay mensajes reportados en este momento."
-msgstr ""
+msgstr "There are no messages reported at this time."
 
 #: now_lms/templates/admin/flagged_messages.html:151
 msgid "¿Está seguro de que desea marcar este reporte como revisado?"
-msgstr ""
+msgstr "Are you sure you want to mark this report as reviewed?"
 
 #: now_lms/templates/admin/flagged_messages.html:152
 msgid "Error al procesar la solicitud"
-msgstr ""
+msgstr "Error processing request"
 
 #: now_lms/templates/admin/flagged_messages.html:153
 msgid "Error al procesar la solicitud:"
-msgstr ""
+msgstr "Error processing request:"
 
 #: now_lms/templates/admin/inactive_users.html:6
 msgid "Usuarios inativos"
@@ -418,7 +418,7 @@ msgstr "Inactive Users"
 
 #: now_lms/templates/admin/inactive_users.html:19
 msgid "Usuarios pendientes de activación"
-msgstr "Users pending activation."
+msgstr "Users pending activation"
 
 #: now_lms/templates/admin/inactive_users.html:21
 msgid "Gestiona las solicitudes de nuevos usuarios en el sistema"
@@ -469,8 +469,7 @@ msgstr "Approve"
 msgid "Rechazar"
 msgstr "Reject"
 
-#: now_lms/templates/admin/mail.html:21
-#: now_lms/templates/admin/mail_check.html:21
+#: now_lms/templates/admin/mail.html:21 now_lms/templates/admin/mail_check.html:21
 msgid "Configuración del Correo Electronico"
 msgstr "Email Configuration"
 
@@ -478,7 +477,7 @@ msgstr "Email Configuration"
 msgid ""
 "La configuración de correo electrónico ha sido\n"
 "                    verificada correctamente"
-msgstr "Email configuration has been verified successfully."
+msgstr "Email configuration has been verified successfully"
 
 #: now_lms/templates/admin/mail.html:33
 msgid "Datos de acceso al servidor SMTP"
@@ -512,8 +511,7 @@ msgstr "Default email as sent by"
 msgid "Correo predeterminado enviado por nombre"
 msgstr "Default email sent by name"
 
-#: now_lms/templates/admin/mail.html:99
-#: now_lms/templates/admin/mail_check.html:40
+#: now_lms/templates/admin/mail.html:99 now_lms/templates/admin/mail_check.html:40
 msgid "Enviar Correo de Prueba"
 msgstr "Send Test Email"
 
@@ -571,8 +569,7 @@ msgid ""
 "                            producción"
 msgstr "Enter the production Client Secret"
 
-#: now_lms/templates/admin/paypal.html:63
-#: now_lms/templates/admin/paypal.html:83
+#: now_lms/templates/admin/paypal.html:63 now_lms/templates/admin/paypal.html:83
 msgid "Deje en blanco para mantener el valor actual."
 msgstr "Leave blank to keep the current value."
 
@@ -787,7 +784,7 @@ msgstr "New Group"
 
 #: now_lms/templates/admin/grupos/lista.html:35
 msgid "Lista de grupos registrados en el sistema."
-msgstr "List of registered groups in the system"
+msgstr "List of registered groups in the system."
 
 #: now_lms/templates/admin/grupos/lista.html:40
 msgid "Grupo"
@@ -799,7 +796,7 @@ msgstr "Tutor"
 
 #: now_lms/templates/admin/grupos/lista.html:66
 msgid "Acciones del grupo"
-msgstr "Group" actions"
+msgstr "Group actions"
 
 #: now_lms/templates/admin/grupos/lista.html:70
 msgid "Ver grupo"
@@ -811,12 +808,12 @@ msgstr "Edit Group"
 
 #: now_lms/templates/admin/grupos/nuevo.html:20
 msgid "Agregar un nuevo Grupo de Usuarios."
-msgstr "Add a New User Group"
+msgstr "Add a New User Group."
 
 #: now_lms/templates/admin/grupos/nuevo.html:25
 #: now_lms/templates/admin/grupos/nuevo.html:26
 msgid "Nombre del Grupo."
-msgstr "Group Name"
+msgstr "Group Name."
 
 #: now_lms/templates/admin/grupos/nuevo.html:30
 msgid "Descripción"
@@ -988,16 +985,15 @@ msgid ""
 "No se puede cambiar estatus de programa a publico porque no tiene cursos "
 "añadidos"
 msgstr ""
-"The program status cannot be changed to public because it has no courses "
-"added."
+"The program status cannot be changed to public because it has no courses added"
 
 #: now_lms/vistas/programs.py:226
 msgid "No se puede cambiar programa a abierto porque no tiene cursos añadidos"
-msgstr "The program cannot be changed to open because it has no courses added."
+msgstr "The program cannot be changed to open because it has no courses added"
 
 #: now_lms/vistas/programs.py:257
 msgid "Portada del curso actualizada correctamente"
-msgstr "Course cover updated successfully."
+msgstr "Course cover updated successfully"
 
 #: now_lms/vistas/programs.py:260
 msgid "No se pudo actualizar la portada del curso."
@@ -1009,7 +1005,7 @@ msgstr "Program edited successfully."
 
 #: now_lms/vistas/programs.py:265
 msgid "No se puedo editar el programa."
-msgstr "The program could "
+msgstr "The program could not be edited."
 
 #: now_lms/vistas/programs.py:375
 msgid "Ya estás inscrito en este programa."
@@ -1061,8 +1057,8 @@ msgstr "The website theme could not be updated."
 
 #: now_lms/vistas/settings.py:157
 msgid ""
-"Debe configurar el correo electronico antes de habilitar verificación por"
-" e-mail."
+"Debe configurar el correo electronico antes de habilitar verificación por e-"
+"mail."
 msgstr "You must configure email before enabling email verification."
 
 #: now_lms/vistas/settings.py:177
@@ -1100,4 +1096,3 @@ msgstr "PayPal settings updated successfully."
 #: now_lms/vistas/settings.py:459
 msgid "No se pudo actualizar la configuración de Paypal."
 msgstr "The PayPal settings could not be updated."
-
