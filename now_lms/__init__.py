@@ -58,6 +58,7 @@ from werkzeug.exceptions import HTTPException
 # ---------------------------------------------------------------------------------------
 from now_lms.cache import cache
 from now_lms.config import (
+    AUTO_MIGRATE,
     CONFIGURACION,
     DESARROLLO,
     DIRECTORIO_ARCHIVOS,
@@ -661,6 +662,15 @@ def init_app(with_examples=False, flask_app=None):
         log.trace("Database access verified.")
         if DB_INICIALIZADA:
             log.trace("Database initialized.")
+            if AUTO_MIGRATE:
+                log.info("Auto-migrating database to latest schema.")
+                try:
+                    with app_to_use.app_context():
+                        alembic.upgrade()
+                    log.info("Database migrated successfully.")
+                except Exception as e:
+                    log.error(f"Error during database migration: {e}")
+                    return False
             return True
         log.info("Starting new database.")
         initial_setup(with_examples=with_examples, flask_app=app_to_use)
