@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-09-10 18:15+0000\n"
+"POT-Creation-Date: 2025-09-10 14:42-0600\n"
 "PO-Revision-Date: 2025-09-10 03:36+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
 
-#: now_lms/__init__.py:275
+#: now_lms/__init__.py:281
 msgid "Favor iniciar sesión para acceder al sistema."
 msgstr "Por favor, faça login para acessar o sistema."
 
-#: now_lms/__init__.py:388 now_lms/__init__.py:551
+#: now_lms/__init__.py:396 now_lms/__init__.py:559
 msgid "Favor iniciar sesión para acceder a este recurso."
 msgstr "Por favor, faça login para acessar este recurso."
 
@@ -779,7 +779,7 @@ msgstr ""
 #: now_lms/templates/learning/resources_new/nuevo_recurso_descargable.html:66
 #: now_lms/templates/learning/resources_new/nuevo_recurso_slides.html:54
 #: now_lms/templates/macros/form_buttons.j2:4
-#: now_lms/templates/masterclass/enroll.html:138
+#: now_lms/templates/masterclass/enroll.html:139
 #: now_lms/templates/masterclass/instructor_create.html:221
 #: now_lms/templates/masterclass/instructor_edit.html:221
 msgid "Cancelar"
@@ -1162,7 +1162,7 @@ msgstr ""
 #: now_lms/templates/learning/resources_new/nuevo_recurso_slides.html:42
 #: now_lms/templates/learning/resources_new/nuevo_recurso_youtube.html:40
 #: now_lms/templates/masterclass/detail_public.html:102
-#: now_lms/templates/masterclass/enroll.html:101
+#: now_lms/templates/masterclass/enroll.html:102
 msgid "Descripción"
 msgstr "Descrição"
 
@@ -1385,7 +1385,7 @@ msgstr ""
 #: now_lms/templates/masterclass/admin_list.html:125
 #: now_lms/templates/masterclass/instructor_list.html:110
 #: now_lms/templates/masterclass/list_public.html:125
-#: now_lms/templates/masterclass/my_enrollments.html:141
+#: now_lms/templates/masterclass/my_enrollments.html:140
 msgid "Anterior"
 msgstr "Anterior"
 
@@ -1405,7 +1405,7 @@ msgstr "Anterior"
 #: now_lms/templates/masterclass/admin_list.html:148
 #: now_lms/templates/masterclass/instructor_list.html:133
 #: now_lms/templates/masterclass/list_public.html:148
-#: now_lms/templates/masterclass/my_enrollments.html:164
+#: now_lms/templates/masterclass/my_enrollments.html:163
 msgid "Siguiente"
 msgstr "Próximo"
 
@@ -2674,7 +2674,7 @@ msgstr "Avançado"
 #: now_lms/templates/learning/programas/lista_programas.html:84
 #: now_lms/templates/learning/recursos/lista_recursos.html:76
 #: now_lms/templates/masterclass/admin_list.html:80
-#: now_lms/templates/masterclass/enroll.html:95
+#: now_lms/templates/masterclass/enroll.html:96
 #: now_lms/templates/masterclass/instructor_list.html:67
 #: now_lms/templates/masterclass/list_public.html:88
 msgid "Gratis"
@@ -4796,7 +4796,7 @@ msgstr "Certificado"
 #: now_lms/templates/masterclass/admin_list.html:118
 #: now_lms/templates/masterclass/instructor_list.html:103
 #: now_lms/templates/masterclass/list_public.html:118
-#: now_lms/templates/masterclass/my_enrollments.html:134
+#: now_lms/templates/masterclass/my_enrollments.html:133
 msgid "Navegación de páginas"
 msgstr ""
 
@@ -4839,12 +4839,6 @@ msgstr ""
 msgid "Clases Magistrales"
 msgstr ""
 
-#: now_lms/templates/masterclass/detail_public.html:34
-#: now_lms/templates/masterclass/list_public.html:32
-#: now_lms/templates/masterclass/my_enrollments.html:30
-msgid "{{ master_class.title }}"
-msgstr ""
-
 #: now_lms/templates/masterclass/detail_public.html:42
 msgid "¡Sesión en Progreso - Haz clic para unirte!"
 msgstr ""
@@ -4864,12 +4858,16 @@ msgid "Información del Evento"
 msgstr "Informação"
 
 #: now_lms/templates/masterclass/detail_public.html:58
-msgid "</i> <strong>Fecha:"
-msgstr ""
+#: now_lms/templates/masterclass/enroll.html:50
+#, fuzzy
+msgid "Fecha:"
+msgstr "Data"
 
 #: now_lms/templates/masterclass/detail_public.html:62
-msgid "</i> <strong>Horario:"
-msgstr ""
+#: now_lms/templates/masterclass/enroll.html:54
+#, fuzzy
+msgid "Horario:"
+msgstr "Fuso Horário"
 
 #: now_lms/templates/masterclass/detail_public.html:85
 msgid "Próximamente"
@@ -4881,8 +4879,9 @@ msgid "Finalizado"
 msgstr "Habilitado"
 
 #: now_lms/templates/masterclass/detail_public.html:107
-msgid "<i class=\"fas fa-lock-open\"></i> Información para Participantes"
-msgstr ""
+#, fuzzy
+msgid "Información para Participantes"
+msgstr "Informação"
 
 #: now_lms/templates/masterclass/detail_public.html:117
 msgid "Únete 5 minutos antes del inicio"
@@ -4893,7 +4892,7 @@ msgid "Obtén acceso completo a la sesión en vivo y material exclusivo."
 msgstr ""
 
 #: now_lms/templates/masterclass/detail_public.html:155
-msgid "<i class=\"fas fa-video\"></i> Grabación Disponible"
+msgid "Grabación Disponible"
 msgstr ""
 
 #: now_lms/templates/masterclass/detail_public.html:156
@@ -4905,27 +4904,16 @@ msgstr ""
 msgid "Información del Instructor"
 msgstr "Painel do Instrutor"
 
-#: now_lms/templates/masterclass/enroll.html:49
-msgid ""
-"</i>\n"
-"                                                <strong>Fecha:"
-msgstr ""
+#: now_lms/templates/masterclass/enroll.html:108
+#, fuzzy
+msgid "Información de Pago"
+msgstr "Informação"
 
-#: now_lms/templates/masterclass/enroll.html:53
-msgid ""
-"</i>\n"
-"                                                <strong>Horario:"
-msgstr ""
-
-#: now_lms/templates/masterclass/enroll.html:107
-msgid "<i class=\"fas fa-info-circle\"></i> Información de Pago"
-msgstr ""
-
-#: now_lms/templates/masterclass/enroll.html:119
+#: now_lms/templates/masterclass/enroll.html:120
 msgid "Al inscribirte confirmas que puedes asistir en la fecha y hora programada"
 msgstr ""
 
-#: now_lms/templates/masterclass/enroll.html:123
+#: now_lms/templates/masterclass/enroll.html:124
 msgid "Se recomienda unirse 5 minutos antes del inicio"
 msgstr ""
 
@@ -4939,29 +4927,6 @@ msgstr ""
 #, fuzzy
 msgid "Información Básica"
 msgstr "Informação"
-
-#: now_lms/templates/masterclass/instructor_create.html:53
-#: now_lms/templates/masterclass/instructor_create.html:65
-#: now_lms/templates/masterclass/instructor_create.html:80
-#: now_lms/templates/masterclass/instructor_create.html:103
-#: now_lms/templates/masterclass/instructor_create.html:115
-#: now_lms/templates/masterclass/instructor_create.html:127
-#: now_lms/templates/masterclass/instructor_create.html:149
-#: now_lms/templates/masterclass/instructor_create.html:161
-#: now_lms/templates/masterclass/instructor_create.html:188
-#: now_lms/templates/masterclass/instructor_create.html:208
-#: now_lms/templates/masterclass/instructor_edit.html:53
-#: now_lms/templates/masterclass/instructor_edit.html:65
-#: now_lms/templates/masterclass/instructor_edit.html:80
-#: now_lms/templates/masterclass/instructor_edit.html:103
-#: now_lms/templates/masterclass/instructor_edit.html:115
-#: now_lms/templates/masterclass/instructor_edit.html:127
-#: now_lms/templates/masterclass/instructor_edit.html:149
-#: now_lms/templates/masterclass/instructor_edit.html:161
-#: now_lms/templates/masterclass/instructor_edit.html:188
-#: now_lms/templates/masterclass/instructor_edit.html:208
-msgid "{{ error }}"
-msgstr ""
 
 #: now_lms/templates/masterclass/instructor_create.html:70
 #: now_lms/templates/masterclass/instructor_edit.html:70
@@ -4994,16 +4959,21 @@ msgstr ""
 msgid "Vuelve pronto para ver nuevas clases magistrales."
 msgstr ""
 
+#: now_lms/templates/masterclass/my_enrollments.html:30
+msgid "{{ master_class.title }}"
+msgstr ""
+
 #: now_lms/templates/masterclass/my_enrollments.html:66
 #, fuzzy
 msgid "En Vivo Ahora"
 msgstr "Enviar"
 
 #: now_lms/templates/masterclass/my_enrollments.html:80
-msgid "<i class=\"fas fa-play-circle\"></i> ¡En vivo ahora!"
-msgstr ""
+#, fuzzy
+msgid "¡En vivo ahora!"
+msgstr "Enviar"
 
-#: now_lms/templates/masterclass/my_enrollments.html:174
+#: now_lms/templates/masterclass/my_enrollments.html:173
 msgid "Explora nuestras clases magistrales disponibles."
 msgstr ""
 
@@ -5745,5 +5715,36 @@ msgstr ""
 #~ msgstr "Inativo"
 
 #~ msgid "Panel de Estudiante - {{ config.sitio_nombre }}"
+#~ msgstr ""
+
+#~ msgid "</i> <strong>Fecha:"
+#~ msgstr ""
+
+#~ msgid "</i> <strong>Horario:"
+#~ msgstr ""
+
+#~ msgid "<i class=\"fas fa-lock-open\"></i> Información para Participantes"
+#~ msgstr ""
+
+#~ msgid "<i class=\"fas fa-video\"></i> Grabación Disponible"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "</i>\n"
+#~ "                                                <strong>Fecha:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "</i>\n"
+#~ "                                                <strong>Horario:"
+#~ msgstr ""
+
+#~ msgid "<i class=\"fas fa-info-circle\"></i> Información de Pago"
+#~ msgstr ""
+
+#~ msgid "{{ error }}"
+#~ msgstr ""
+
+#~ msgid "<i class=\"fas fa-play-circle\"></i> ¡En vivo ahora!"
 #~ msgstr ""
 

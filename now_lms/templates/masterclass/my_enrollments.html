@@ -27,7 +27,7 @@
                                     <img
                                         src="{{ master_class.image_path }}"
                                         class="card-img-top"
-                                        alt="{{ _('{{ master_class.title }}') }}"
+                                        alt="{{ master_class.title }}"
                                         style="height: 150px; object-fit: cover"
                                     />
                                     {% endif %}
@@ -77,8 +77,7 @@
 
                                         {% if master_class.is_ongoing() and enrollment.is_access_granted() %}
                                         <div class="alert alert-warning mb-3">
-                                            <strong>{{ _('<i class="fas fa-play-circle"></i> ¡En vivo ahora!') }} }}</strong>
-                                            >
+                                            <strong><i class="fas fa-play-circle"></i> {{ _('¡En vivo ahora!') }}</strong>
                                         </div>
                                         {% endif %}
                                     </div>

@@ -54,7 +54,7 @@
                                         <td>
                                             {{ master_class.instructor.nombre }} {{ master_class.instructor.apellido or '' }}
                                             <br />
-                                            <small class="text-muted">{{ _('{{ master_class.instructor.usuario }}') }}</small>
+                                            <small class="text-muted">{{ master_class.instructor.usuario }}</small>
                                         </td>
                                         <td>{{ master_class.date.strftime('%d/%m/%Y') }}</td>
                                         <td>

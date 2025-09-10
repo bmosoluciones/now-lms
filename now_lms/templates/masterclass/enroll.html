@@ -46,13 +46,14 @@
                                         <h6>{{ _('Información del Evento') }}</h6>
                                         <ul class="list-unstyled">
                                             <li>
-                                                <i class="fas fa-calendar text-primary">{{ _('</i>
-                                                <strong>Fecha:') }}</strong> {{ master_class.date.strftime('%d/%m/%Y') }}
+                                                <i class="fas fa-calendar text-primary"></i>
+                                                <strong>{{ _('Fecha:') }}</strong> {{ master_class.date.strftime('%d/%m/%Y') }}
                                             </li>
                                             <li>
-                                                <i class="fas fa-clock text-primary">{{ _('</i>
-                                                <strong>Horario:') }}</strong> {{ master_class.start_time.strftime('%H:%M') }}
-                                                - {{ master_class.end_time.strftime('%H:%M') }}
+                                                <i class="fas fa-clock text-primary"></i>
+                                                <strong>{{ _('Horario:') }}</strong> {{
+                                                master_class.start_time.strftime('%H:%M') }} - {{
+                                                master_class.end_time.strftime('%H:%M') }}
                                             </li>
                                             <li>
                                                 <i class="fas fa-desktop text-primary"></i> <strong>Plataforma:</strong> {{
@@ -104,7 +105,7 @@
 
                                 {% if master_class.is_paid %}
                                 <div class="alert alert-info">
-                                    <h6>{{ _('<i class="fas fa-info-circle"></i> Información de Pago') }}</h6>
+                                    <h6><i class="fas fa-info-circle"></i> {{ _('Información de Pago') }}</h6>
                                     <p>
                                         Esta clase magistral requiere pago. Serás redirigido al proceso de pago después de
                                         confirmar tu inscripción.
