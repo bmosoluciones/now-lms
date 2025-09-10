@@ -1,10 +1,10 @@
 {% set current_theme = current_theme() %}
 {% from 'macros/form_buttons.j2' import render_form_buttons %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Editar Presentación - {{ slideshow.title }}</title>
+        <title>{{ _("{{ _("Editar") }}") }} Presentación - {{ slideshow.title }}</title>
         {{ current_theme.local_style() }}
         
         <!-- Editor styles -->
@@ -52,11 +52,11 @@
                 <div class="row">
                     <div class="col-md-8">
                         <h4 class="pb-2 border-bottom">
-                            <i class="bi bi-file-slides me-2"></i>Editar Presentación: {{ slideshow.title }}
+                            <i class="bi bi-file-slides me-2"></i>{{ _("{{ _("Editar") }}") }} Presentación: {{ slideshow.title }}
                         </h4>
                         
                         <form method="post" id="slideshow-form">
-                            <!-- Información básica de la presentación -->
+                            <!-- {{ _("{{ _("Información") }}") }} básica de la presentación -->
                             <div class="card mb-4">
                                 <div class="card-header">
                                     <h5 class="card-title mb-0">Configuración de la Presentación</h5>
@@ -142,7 +142,7 @@
                                     <i class="bi bi-eye me-2"></i>Vista Previa
                                 </a>
                             {% endset %}
-                            {{ render_form_buttons("Guardar Presentación", url_for('course.administrar_curso', course_code=course_code), cancel_text="Volver al Curso", show_icons=true, extra_buttons=extra_buttons) }}
+                            {{ render_form_buttons("{{ _("{{ _("Guardar") }}") }} Presentación", url_for('course.administrar_curso', course_code=course_code), cancel_text="Volver al {{ _("{{ _("Curso") }}") }}", show_icons=true, extra_buttons=extra_buttons) }}
                         </form>
                     </div>
                     

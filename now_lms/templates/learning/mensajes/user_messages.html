@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Mis Mensajes</title>
+        <title>Mis {{ _("Mensajes") }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -20,10 +20,10 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}">
-                                        Inicio
+                                        {{ _("Inicio") }}
                                     </a>
                                 </li>
-                                <li class="breadcrumb-item active">Mis Mensajes</li>
+                                <li class="breadcrumb-item active">Mis {{ _("Mensajes") }}</li>
                             </ol>
                         </nav>
                     </h4>
@@ -49,7 +49,7 @@
                                         </h6>
                                         <p class="card-text">
                                             <small class="text-muted">
-                                                Curso:
+                                                {{ _("Curso") }}:
                                                 <a
                                                     href="{{ url_for('course.curso', course_code=thread.course_id) }}"
                                                     class="text-decoration-none"
@@ -57,18 +57,18 @@
                                                     {{ thread.course.nombre }}
                                                 </a>
                                                 | Por: {{ thread.student.nombre }} {{ thread.student.apellido }} | {{
-                                                thread.timestamp.strftime('%d/%m/%Y %H:%M') }} | Mensajes: {{
+                                                thread.timestamp.strftime('%d/%m/%Y %H:%M') }} | {{ _("Mensajes") }}: {{
                                                 thread.messages.count() }}
                                             </small>
                                         </p>
                                     </div>
                                     <div class="ms-3">
                                         {% if thread.status == "open" %}
-                                        <span class="badge bg-success">Abierto</span>
+                                        <span class="badge bg-success">{{ _("Abierto") }}</span>
                                         {% elif thread.status == "fixed" %}
                                         <span class="badge bg-warning">Resuelto</span>
                                         {% elif thread.status == "closed" %}
-                                        <span class="badge bg-secondary">Cerrado</span>
+                                        <span class="badge bg-secondary">{{ _("Cerrado") }}</span>
                                         {% endif %}
                                     </div>
                                 </div>

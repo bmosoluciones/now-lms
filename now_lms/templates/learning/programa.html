@@ -1,7 +1,7 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
 {% set config = config() %}
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
         <title>{{ programa.nombre }}</title>
@@ -23,18 +23,18 @@
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                <div class="">Cursos</div>
+                                <div class="">{{ _('{{ _("Cursos") }}') }}</div>
                                 <h6 class="">{{ cuenta_cursos(programa.codigo) }}</h6>
                             </div>
                             {% if programa.precio %}
                             <div class="col">
-                                <div class="">Precio</div>
+                                <div class="">{{ _('{{ _("Precio") }}') }}</div>
                                 <h6 class="">{{ config.moneda }} {{ programa.precio }}</h6>
                             </div>
                             {% endif %}
                             <div class="col">
-                                <div class="">Acceso</div>
-                                <h6 class="">De por vida</h6>
+                                <div class="">{{ _('Acceso') }}</div>
+                                <h6 class="">{{ _('De por vida') }}</h6>
                             </div>
                         </div>
                     </div>

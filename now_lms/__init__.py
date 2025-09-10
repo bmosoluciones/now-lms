@@ -217,7 +217,7 @@ def inicializa_extenciones_terceros(flask_app: Flask):
 
         translations_dir = path_join(dirname(__file__), "translations")
         flask_app.config["BABEL_TRANSLATION_DIRECTORIES"] = translations_dir
-        flask_app.config["BABEL_SUPPORTED_LOCALES"] = ["es", "en"]
+        flask_app.config["BABEL_SUPPORTED_LOCALES"] = ["es", "en", "pt_BR"]
         babel.init_app(flask_app, locale_selector=get_locale, timezone_selector=get_timezone)
     log.trace("Third-party extensions started successfully.")
 

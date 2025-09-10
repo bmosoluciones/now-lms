@@ -1,10 +1,10 @@
 {% set current_theme = current_theme() %} {% set config = config() %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>Panel de Estudiante - {{ config.sitio_nombre }}</title>
+        <title>{{ _(\'Panel de Estudiante - {{ config.sitio_nombre }}\') }}</title>
 
         <style>
             .bd-placeholder-img {
@@ -33,11 +33,11 @@
             <div class="container">
                 <div class="d-flex justify-content-between border-bottom mb-4">
                     <h2>
-                        <nav aria-label="breadcrumb">
+                        <nav aria-label="{{ _(\'breadcrumb\') }}">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
-                                        >Inicio</a
+                                        >{{ _(\'{{ _(\'Inicio\') }}\') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">Panel de Estudiante</li>
@@ -71,7 +71,9 @@
                                                 <i class="fas fa-book fa-2x text-primary mb-2"></i>
                                                 <h5>Mis Cursos</h5>
                                                 <p class="text-muted">Accede a tus cursos inscritos</p>
-                                                <a href="{{ url_for('home.panel') }}" class="btn btn-primary">Ver Cursos</a>
+                                                <a href="{{ url_for('home.panel') }}" class="btn btn-primary"
+                                                    >{{ _(\'Ver Cursos\') }}</a
+                                                >
                                             </div>
                                         </div>
                                     </div>
@@ -81,9 +83,9 @@
                                             <div class="card-body text-center">
                                                 <i class="fas fa-calendar-alt fa-2x text-success mb-2"></i>
                                                 <h5>Mi Calendario</h5>
-                                                <p class="text-muted">Gestiona tus fechas importantes</p>
+                                                <p class="text-muted">{{ _(\'Gestiona tus fechas importantes\') }}</p>
                                                 <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-success"
-                                                    >Ver Calendario</a
+                                                    >{{ _(\'Ver Calendario\') }}</a
                                                 >
                                             </div>
                                         </div>
@@ -95,10 +97,10 @@
                                         <div class="card border-info">
                                             <div class="card-body text-center">
                                                 <i class="fas fa-user fa-2x text-info mb-2"></i>
-                                                <h5>Mi Perfil</h5>
-                                                <p class="text-muted">Actualiza tu información personal</p>
+                                                <h5>{{ _(\'Mi Perfil\') }}</h5>
+                                                <p class="text-muted">{{ _(\'Actualiza tu información personal\') }}</p>
                                                 <a href="{{ url_for('user_profile.perfil') }}" class="btn btn-info"
-                                                    >Ver Perfil</a
+                                                    >{{ _(\'{{ _(\'Ver Perfil\') }}\') }}</a
                                                 >
                                             </div>
                                         </div>
@@ -111,7 +113,7 @@
                                                 <h5>Certificaciones</h5>
                                                 <p class="text-muted">Revisa tus logros obtenidos</p>
                                                 <a href="{{ url_for('user_profile.perfil') }}" class="btn btn-warning"
-                                                    >Ver Certificados</a
+                                                    >{{ _(\'Ver Certificados\') }}</a
                                                 >
                                             </div>
                                         </div>
@@ -146,8 +148,8 @@
                                         <i class="fas fa-download"></i> Exportar Calendario
                                     </a>
                                     <a href="{{ url_for('user_profile.perfil') }}" class="btn btn-outline-secondary btn-sm">
-                                        <i class="fas fa-cog"></i> Configuración
-                                    </a>
+                                        <i class="fas fa-cog">{{ _(\'</i>{{ _(\'Configuración\') }}\') }}</a
+                                    >
                                 </div>
                             </div>
                         </div>

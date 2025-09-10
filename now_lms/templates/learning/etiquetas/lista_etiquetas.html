@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Lista de Etiquetas.</title>
+        <title>{{ _('Lista de Etiquetas') }}.</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -17,13 +17,13 @@
             <div class="container px-0 py-3" id="curse_list">
                 <div class="row align-items-center border-bottom pb-3 mb-4">
                     <div class="col-md-8">
-                        <h4 class="mb-0"><i class="bi bi-tag me-2"></i>Lista de Etiquetas Disponibles</h4>
-                        <p class="text-muted mb-0">Gestiona y administra las etiquetas del sistema</p>
+                        <h4 class="mb-0"><i class="bi bi-tag me-2"></i>{{ _('Lista de Etiquetas Disponibles') }}</h4>
+                        <p class="text-muted mb-0">{{ _('Gestiona y administra las etiquetas del sistema') }}</p>
                     </div>
                     <div class="col-md-4 text-end">
                         <div class="btn-group" role="group">
                             <a href="{{ url_for('tag.new_tag') }}" class="btn btn-success">
-                                <i class="bi bi-plus-lg me-1"></i>Nueva Etiqueta
+                                <i class="bi bi-plus-lg me-1"></i>{{ _('{{ _("Nueva") }} Etiqueta') }}
                             </a>
                         </div>
                     </div>
@@ -41,9 +41,9 @@
                                     <tr>
                                         <th scope="col" class="fw-semibold"><i class="bi bi-bookmark me-1"></i>Etiqueta</th>
                                         <th class="fw-semibold text-center"><i class="bi bi-palette me-1"></i>Color</th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-book me-1"></i>Cursos</th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-collection me-1"></i>Programas</th>
-                                        <th class="fw-semibold text-center">Acciones</th>
+                                        <th class="fw-semibold text-center"><i class="bi bi-book me-1"></i>{{ _("Cursos") }}</th>
+                                        <th class="fw-semibold text-center"><i class="bi bi-collection me-1"></i>{{ _("Programas") }}</th>
+                                        <th class="fw-semibold text-center">{{ _("Acciones") }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -66,18 +66,18 @@
                                             >
                                         </td>
                                         <td>
-                                            <div class="btn-group" role="group" aria-label="Acciones de la etiqueta">
+                                            <div class="btn-group" role="group" aria-label="{{ _("Acciones") }} de la etiqueta">
                                                 <a
                                                     href="{{ url_for('tag.edit_tag', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-secondary"
-                                                    title="Editar etiqueta"
+                                                    title="{{ _("Editar") }} etiqueta"
                                                 >
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('tag.delete_tag', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-danger"
-                                                    title="Eliminar etiqueta"
+                                                    title="{{ _("Eliminar") }} etiqueta"
                                                     onclick="return confirm('¿Está seguro de que desea eliminar esta etiqueta?')"
                                                 >
                                                     <i class="bi bi-trash" aria-hidden="true"></i>
@@ -98,7 +98,7 @@
                         <h5 class="text-muted mt-3">No hay etiquetas disponibles</h5>
                         <p class="text-muted">Usted no ha creado ninguna etiqueta todavía.</p>
                         <a href="{{ url_for('tag.new_tag') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-lg me-2"></i>Crear Primera Etiqueta
+                            <i class="bi bi-plus-lg me-2"></i>{{ _("Crear") }} Primera Etiqueta
                         </a>
                     </div>
                 </div>

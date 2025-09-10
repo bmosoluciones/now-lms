@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
-        <title>Nuevo Recurso - Documento</title>
+        <title>{{ _('{{ _("Nuevo") }} {{ _("Recurso") }} - Documento') }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -17,13 +17,13 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Nuevo Mensaje.</h4>
+                <h4 class="pb-2 border-bottom">{{ _('{{ _("Nuevo") }} {{ _("Mensaje") }}') }}.</h4>
                 <form method="post">
                     {{ form.csrf_token }}
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="nombre" class="form-label">Asunto</label>
-                            {{ form.titulo(class="form-control", id="titulo", placeholder="Asunto") }}
+                            <label for="nombre" class="form-label">{{ _('Asunto') }}</label>
+                            {{ form.titulo(class="form-control", id="titulo", placeholder=_('Asunto')) }}
                         </div>
                     </div>
 
@@ -31,7 +31,7 @@
                         {{ form.editor }} {{ mde.preview }} {{ mde.js }}
 
                         <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">
-                            <i class="bi bi-envelope-plus" aria-hidden="true"></i> Publicar Nuevo Mensaje
+                            <i class="bi bi-envelope-plus" aria-hidden="true"></i> Publicar {{ _("Nuevo") }} {{ _("Mensaje") }}
                         </button>
                     </div>
                 </form>

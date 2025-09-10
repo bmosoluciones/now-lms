@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     {% set current_theme = current_theme() %}
 
     <head>
@@ -18,7 +18,9 @@
                 border: none;
                 border-radius: 15px;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
             }
             .instructor-card:hover {
                 transform: translateY(-5px);
@@ -49,7 +51,11 @@
                             <p class="mb-0 opacity-75">Tu centro de enseñanza y gestión académica</p>
                         </div>
                         <div class="col-md-4 text-end">
-                            <a href="{{ url_for('instructor_profile.cursos') }}" class="btn btn-light" style="border-radius: 25px;">
+                            <a
+                                href="{{ url_for('instructor_profile.cursos') }}"
+                                class="btn btn-light"
+                                style="border-radius: 25px"
+                            >
                                 <i class="bi bi-book me-1"></i> Ver Cursos
                             </a>
                         </div>
@@ -77,7 +83,10 @@
                                                 </div>
                                             </div>
                                             <div class="mt-3">
-                                                <a href="{{ url_for('instructor_profile.cursos') }}" class="btn btn-outline-primary btn-sm">
+                                                <a
+                                                    href="{{ url_for('instructor_profile.cursos') }}"
+                                                    class="btn btn-outline-primary btn-sm"
+                                                >
                                                     <i class="bi bi-eye me-1"></i>Ver Cursos
                                                 </a>
                                             </div>
@@ -100,7 +109,10 @@
                                                 </div>
                                             </div>
                                             <div class="mt-3">
-                                                <a href="{{ url_for('instructor_profile.cursos') }}" class="btn btn-outline-success btn-sm">
+                                                <a
+                                                    href="{{ url_for('instructor_profile.cursos') }}"
+                                                    class="btn btn-outline-success btn-sm"
+                                                >
                                                     <i class="bi bi-person-lines-fill me-1"></i>Ver Estudiantes
                                                 </a>
                                             </div>
@@ -123,7 +135,10 @@
                                                 </div>
                                             </div>
                                             <div class="mt-3">
-                                                <a href="{{ url_for('instructor_profile.evaluaciones_lista') }}" class="btn btn-outline-warning btn-sm">
+                                                <a
+                                                    href="{{ url_for('instructor_profile.evaluaciones_lista') }}"
+                                                    class="btn btn-outline-warning btn-sm"
+                                                >
                                                     <i class="bi bi-list-check me-1"></i>Ver Evaluaciones
                                                 </a>
                                             </div>
@@ -139,14 +154,17 @@
                                                         <i class="bi bi-camera-video me-2"></i>Clases Magistrales
                                                     </h6>
                                                     <h2 class="mb-0 text-info">--</h2>
-                                                    <small class="text-muted">Clases disponibles</small>
+                                                    <small class="text-muted">{{ _(\'Clases disponibles\') }}</small>
                                                 </div>
                                                 <div class="col-auto">
                                                     <i class="bi bi-camera-video stat-icon text-info"></i>
                                                 </div>
                                             </div>
                                             <div class="mt-3">
-                                                <a href="{{ url_for('masterclass.instructor_list') }}" class="btn btn-outline-info btn-sm">
+                                                <a
+                                                    href="{{ url_for('masterclass.instructor_list') }}"
+                                                    class="btn btn-outline-info btn-sm"
+                                                >
                                                     <i class="bi bi-play me-1"></i>Ver Clases
                                                 </a>
                                             </div>
@@ -160,7 +178,10 @@
                     <!-- Instructor Management Section -->
                     <div class="col-xl-6 col-xxl-7">
                         <!-- My Courses -->
-                        <div class="card mb-3" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                        <div
+                            class="card mb-3"
+                            style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
+                        >
                             <div class="card-header bg-primary bg-opacity-10">
                                 <div class="row align-items-center">
                                     <div class="col">
@@ -169,7 +190,10 @@
                                         </h5>
                                     </div>
                                     <div class="col-auto">
-                                        <a href="{{ url_for('instructor_profile.cursos') }}" class="btn btn-sm btn-outline-primary">
+                                        <a
+                                            href="{{ url_for('instructor_profile.cursos') }}"
+                                            class="btn btn-sm btn-outline-primary"
+                                        >
                                             <i class="bi bi-arrow-right me-1"></i>Ver Todos
                                         </a>
                                     </div>
@@ -183,8 +207,10 @@
                                         <div class="row align-items-center">
                                             <div class="col">
                                                 <h6 class="mb-1">
-                                                    <a href="{{ url_for('course.curso', course_code=curso.codigo) }}" 
-                                                       class="text-decoration-none">
+                                                    <a
+                                                        href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+                                                        class="text-decoration-none"
+                                                    >
                                                         {{ curso.nombre }}
                                                     </a>
                                                 </h6>
@@ -203,7 +229,7 @@
                                 {% else %}
                                 <div class="text-center text-muted py-3">
                                     <i class="bi bi-book display-6 opacity-25"></i>
-                                    <p class="mt-2 mb-0">No hay cursos creados aún</p>
+                                    <p class="mt-2 mb-0">{{ _(\'No hay cursos creados aún\') }}</p>
                                     <a href="{{ url_for('course.nuevo_curso') }}" class="btn btn-primary mt-2">
                                         <i class="bi bi-plus me-1"></i>Crear Primer Curso
                                     </a>
@@ -213,7 +239,10 @@
                         </div>
 
                         <!-- Quick Actions Section -->
-                        <div class="card mb-3" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                        <div
+                            class="card mb-3"
+                            style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
+                        >
                             <div class="card-header bg-success bg-opacity-10">
                                 <h5 class="card-title mb-0">
                                     <i class="bi bi-lightning text-success me-2"></i>Acciones Rápidas
@@ -227,17 +256,26 @@
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <a href="{{ url_for('instructor_profile.nueva_evaluacion_global') }}" class="btn btn-outline-warning w-100">
+                                        <a
+                                            href="{{ url_for('instructor_profile.nueva_evaluacion_global') }}"
+                                            class="btn btn-outline-warning w-100"
+                                        >
                                             <i class="bi bi-clipboard-plus me-2"></i>Nueva Evaluación
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <a href="{{ url_for('program.nuevo_programa') }}" class="btn btn-outline-success w-100">
+                                        <a
+                                            href="{{ url_for('program.nuevo_programa') }}"
+                                            class="btn btn-outline-success w-100"
+                                        >
                                             <i class="bi bi-diagram-3 me-2"></i>Nuevo Programa
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <a href="{{ url_for('masterclass.instructor_create') }}" class="btn btn-outline-info w-100">
+                                        <a
+                                            href="{{ url_for('masterclass.instructor_create') }}"
+                                            class="btn btn-outline-info w-100"
+                                        >
                                             <i class="bi bi-camera-video me-2"></i>Nueva Clase
                                         </a>
                                     </div>
@@ -246,7 +284,7 @@
                         </div>
 
                         <!-- Management Tools -->
-                        <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                        <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)">
                             <div class="card-header bg-info bg-opacity-10">
                                 <h5 class="card-title mb-0">
                                     <i class="bi bi-tools text-info me-2"></i>Herramientas de Gestión
@@ -262,13 +300,21 @@
                                                     <i class="bi bi-book me-2"></i>Cursos y Programas
                                                 </h6>
                                                 <div class="d-grid gap-1">
-                                                    <a href="{{ url_for('instructor_profile.cursos') }}" class="btn btn-sm btn-outline-primary">Mis Cursos</a>
-                                                    <a href="{{ url_for('program.programas') }}" class="btn btn-sm btn-outline-primary">Programas</a>
+                                                    <a
+                                                        href="{{ url_for('instructor_profile.cursos') }}"
+                                                        class="btn btn-sm btn-outline-primary"
+                                                        >Mis Cursos</a
+                                                    >
+                                                    <a
+                                                        href="{{ url_for('program.programas') }}"
+                                                        class="btn btn-sm btn-outline-primary"
+                                                        >Programas</a
+                                                    >
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- Content Management -->
                                     <div class="col-md-6">
                                         <div class="card border-success border-opacity-25">
@@ -277,13 +323,19 @@
                                                     <i class="bi bi-folder me-2"></i>Contenido
                                                 </h6>
                                                 <div class="d-grid gap-1">
-                                                    <a href="{{ url_for('resource.lista_de_recursos') }}" class="btn btn-sm btn-outline-success">Recursos</a>
-                                                    <a href="{{ url_for('tag.tags') }}" class="btn btn-sm btn-outline-success">Etiquetas</a>
+                                                    <a
+                                                        href="{{ url_for('resource.lista_de_recursos') }}"
+                                                        class="btn btn-sm btn-outline-success"
+                                                        >Recursos</a
+                                                    >
+                                                    <a href="{{ url_for('tag.tags') }}" class="btn btn-sm btn-outline-success"
+                                                        >Etiquetas</a
+                                                    >
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- Evaluation and Certification -->
                                     <div class="col-md-6">
                                         <div class="card border-warning border-opacity-25">
@@ -292,13 +344,21 @@
                                                     <i class="bi bi-award me-2"></i>Evaluación y Certificación
                                                 </h6>
                                                 <div class="d-grid gap-1">
-                                                    <a href="{{ url_for('instructor_profile.evaluaciones_lista') }}" class="btn btn-sm btn-outline-warning">Evaluaciones</a>
-                                                    <a href="{{ url_for('certificate.certificados') }}" class="btn btn-sm btn-outline-warning">Certificados</a>
+                                                    <a
+                                                        href="{{ url_for('instructor_profile.evaluaciones_lista') }}"
+                                                        class="btn btn-sm btn-outline-warning"
+                                                        >Evaluaciones</a
+                                                    >
+                                                    <a
+                                                        href="{{ url_for('certificate.certificados') }}"
+                                                        class="btn btn-sm btn-outline-warning"
+                                                        >Certificados</a
+                                                    >
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- Communication -->
                                     <div class="col-md-6">
                                         <div class="card border-info border-opacity-25">
@@ -307,8 +367,16 @@
                                                     <i class="bi bi-chat me-2"></i>Comunicación
                                                 </h6>
                                                 <div class="d-grid gap-1">
-                                                    <a href="{{ url_for('blog.instructor_blog_index') }}" class="btn btn-sm btn-outline-info">Blog</a>
-                                                    <a href="{{ url_for('instructor_announcements.list_announcements') }}" class="btn btn-sm btn-outline-info">Anuncios</a>
+                                                    <a
+                                                        href="{{ url_for('blog.instructor_blog_index') }}"
+                                                        class="btn btn-sm btn-outline-info"
+                                                        >Blog</a
+                                                    >
+                                                    <a
+                                                        href="{{ url_for('instructor_announcements.list_announcements') }}"
+                                                        class="btn btn-sm btn-outline-info"
+                                                        >Anuncios</a
+                                                    >
                                                 </div>
                                             </div>
                                         </div>

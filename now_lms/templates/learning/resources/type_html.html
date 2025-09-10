@@ -4,7 +4,7 @@ moderador_asignado(id_curso=curso.codigo) %} {% set permitir_estudiante = estudi
 permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
         <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
@@ -24,7 +24,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         <ol class="breadcrumb bg-light rounded px-3 py-2">
                             <li class="breadcrumb-item">
                                 <a class="text-decoration-none" href="{{ url_for('home.panel') }}">
-                                    <i class="bi bi-house-fill me-1"></i>Inicio
+                                    <i class="bi bi-house-fill me-1"></i>{{ _("{{ _("Inicio") }}") }}
                                 </a>
                             </li>
                             <li class="breadcrumb-item">
@@ -62,7 +62,10 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                             {% if recurso.descripcion %}
                             <div class="card shadow-sm mb-4">
                                 <div class="card-header">
-                                    <h2 class="h6 mb-0"><i class="bi bi-info-circle me-2"></i>Información del Recurso</h2>
+                                    <h2 class="h6 mb-0">
+                                        <i class="bi bi-info-circle me-2"></i>{{ _("{{ _("Información") }}") }} del {{ _("{{
+                                        _("Recurso") }}") }}
+                                    </h2>
                                 </div>
                                 <div class="card-body">{{ markdown2html(recurso.descripcion) | safe }}</div>
                             </div>

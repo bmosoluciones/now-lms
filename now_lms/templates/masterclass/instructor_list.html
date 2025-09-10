@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     {% set current_theme = current_theme() %} {% set config = config() %}
 
     <head>
@@ -28,13 +28,13 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Título</th>
-                                        <th>Fecha</th>
-                                        <th>Horario</th>
-                                        <th>Estado</th>
+                                        <th>{{ _(\'{{ _(\'Título\') }}\') }}</th>
+                                        <th>{{ _(\'{{ _(\'Fecha\') }}\') }}</th>
+                                        <th>{{ _(\'Horario\') }}</th>
+                                        <th>{{ _(\'{{ _(\'Estado\') }}\') }}</th>
                                         <th>Inscritos</th>
                                         <th>Precio</th>
-                                        <th>Acciones</th>
+                                        <th>{{ _(\'Acciones\') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -52,11 +52,11 @@
                                         </td>
                                         <td>
                                             {% if master_class.is_ongoing() %}
-                                            <span class="badge bg-warning">En Vivo</span>
+                                            <span class="badge bg-warning">{{ _(\'En Vivo\') }}</span>
                                             {% elif master_class.is_finished() %}
                                             <span class="badge bg-secondary">Finalizada</span>
                                             {% else %}
-                                            <span class="badge bg-success">Próxima</span>
+                                            <span class="badge bg-success">{{ _(\'Próxima\') }}</span>
                                             {% endif %}
                                         </td>
                                         <td>
@@ -64,7 +64,7 @@
                                         </td>
                                         <td>
                                             {% if master_class.is_paid %} ${{ "%.2f"|format(master_class.price) }} {% else %}
-                                            <span class="text-success">Gratis</span>
+                                            <span class="text-success">{{ _(\'Gratis\') }}</span>
                                             {% endif %}
                                         </td>
                                         <td>
@@ -72,21 +72,21 @@
                                                 <a
                                                     href="{{ url_for('masterclass.detail_public', slug=master_class.slug) }}"
                                                     class="btn btn-outline-primary btn-sm"
-                                                    title="Ver"
+                                                    title="{{ _(\'{{ _(\'Ver\') }}\') }}"
                                                 >
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('masterclass.instructor_edit', master_class_id=master_class.id) }}"
                                                     class="btn btn-outline-secondary btn-sm"
-                                                    title="Editar"
+                                                    title="{{ _(\'{{ _(\'Editar\') }}\') }}"
                                                 >
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('masterclass.instructor_students', master_class_id=master_class.id) }}"
                                                     class="btn btn-outline-info btn-sm"
-                                                    title="Estudiantes"
+                                                    title="{{ _(\'Estudiantes\') }}"
                                                 >
                                                     <i class="fas fa-users"></i>
                                                 </a>
@@ -100,14 +100,14 @@
 
                         <!-- Pagination -->
                         {% if master_classes.pages > 1 %}
-                        <nav aria-label="Navegación de páginas">
+                        <nav aria-label="{{ _(\'Navegación de páginas\') }}">
                             <ul class="pagination justify-content-center">
                                 {% if master_classes.has_prev %}
                                 <li class="page-item">
                                     <a
                                         class="page-link"
                                         href="{{ url_for('masterclass.instructor_list', page=master_classes.prev_num) }}"
-                                        >Anterior</a
+                                        >{{ _(\'Anterior\') }}</a
                                     >
                                 </li>
                                 {% endif %} {% for page_num in master_classes.iter_pages() %} {% if page_num %} {% if page_num
@@ -130,7 +130,7 @@
                                     <a
                                         class="page-link"
                                         href="{{ url_for('masterclass.instructor_list', page=master_classes.next_num) }}"
-                                        >Siguiente</a
+                                        >{{ _(\'Siguiente\') }}</a
                                     >
                                 </li>
                                 {% endif %}
@@ -139,7 +139,7 @@
                         {% endif %} {% else %}
                         <div class="text-center py-5">
                             <i class="fas fa-chalkboard-teacher fa-4x text-muted mb-3"></i>
-                            <h3 class="text-muted">No tienes clases magistrales</h3>
+                            <h3 class="text-muted">{{ _(\'No tienes clases magistrales\') }}</h3>
                             <p class="text-muted">Crea tu primera clase magistral para empezar.</p>
                             <a href="{{ url_for('masterclass.instructor_create') }}" class="btn btn-primary">
                                 <i class="fas fa-plus"></i> Crear Clase Magistral

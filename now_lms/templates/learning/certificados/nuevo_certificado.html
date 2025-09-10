@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Crear Nueva Plantilla</title>
+        <title>{{ _("{{ _("Crear") }}") }} {{ _("{{ _("Nueva") }}") }} Plantilla</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -15,7 +15,7 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Crear nuevo Certificado.</h4>
+                <h4 class="pb-2 border-bottom">{{ _("{{ _("Crear") }}") }} nuevo Certificado.</h4>
                 <form method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }}
                     <div class="row g-3">
@@ -31,7 +31,7 @@
                     </div>
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="tipo" class="form-label">Tipo de Certificado</label>
+                            <label for="tipo" class="form-label">{{ _("{{ _("Tipo") }}") }} de Certificado</label>
                             {{ form.tipo(class="form-control", id="tipo") }}
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                         {{ form.css(class="form-control", id="css", rows="15") | safe }}
                     </div>
 
-                    {{ render_form_buttons("Crear Certificado", "/certificate/list") }}
+                    {{ render_form_buttons("{{ _("{{ _("Crear") }}") }} Certificado", "/certificate/list") }}
                 </form>
             </div>
         </main>

@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %} {% from 'macros/form_buttons.j2' import render_form_buttons %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Editar Recurso Descargable</title>
+        <title>{{ _("Editar") }} {{ _("Recurso") }} Descargable</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -17,7 +17,7 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h3 class="pb-2 border-bottom">Editar Recurso Descargable</h3>
+                <h3 class="pb-2 border-bottom">{{ _("Editar") }} {{ _("Recurso") }} Descargable</h3>
                 <p class="text-muted">
                     Edite la información del recurso o suba un nuevo archivo. Tamaño máximo: {{ max_file_size }}MB.
                     <br />
@@ -28,13 +28,13 @@
                     {{ form.hidden_tag() }}
 
                     <div class="col-md-12">
-                        <label for="nombre" class="form-label">Nombre del recurso *</label>
+                        <label for="nombre" class="form-label">{{ _("Nombre") }} del recurso *</label>
                         {{ form.nombre(class="form-control", required=true) }}
                         <div class="invalid-feedback">Por favor, ingrese un nombre para el recurso.</div>
                     </div>
 
                     <div class="col-md-12">
-                        <label for="descripcion" class="form-label">Descripción *</label>
+                        <label for="descripcion" class="form-label">{{ _("Descripción") }} *</label>
                         {{ form.descripcion(class="form-control", rows="4", required=true) }}
                         <div class="invalid-feedback">Por favor, ingrese una descripción para el recurso.</div>
                     </div>
@@ -55,12 +55,13 @@
                     </div>
 
                     <div class="col-md-12">
-                        <label for="requerido" class="form-label">Tipo de recurso</label>
+                        <label for="requerido" class="form-label">{{ _("Tipo") }} de recurso</label>
                         {{ form.requerido(class="form-select") }}
                     </div>
 
                     <div class="col-12">
-                        {{ render_form_buttons("Guardar Cambios", url_for('course.administrar_curso', course_code=id_curso)) }}
+                        {{ render_form_buttons("{{ _("Guardar") }} Cambios", url_for('course.administrar_curso',
+                        course_code=id_curso)) }}
                     </div>
                 </form>
             </div>

@@ -1,9 +1,11 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es">
+<html lang="{{ current_locale() }}">
     <head>
         <meta charset="utf-8" />
-        <title>{% if slideshow %}{{ slideshow.title }}{% else %}{{ resource.titulo }}{% endif %} - Presentación</title>
+        <title>
+            {% if slideshow %}{{ slideshow.title }}{% else %}{{ resource.titulo }}{% endif %} - {{ _('Presentación') }}
+        </title>
 
         <!-- Reveal.js CSS -->
         <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/reveal.js/dist/reveal.css') }}" />
@@ -60,13 +62,13 @@
     <body>
         <!-- Navigation controls -->
         <div class="slide-navigation">
-            <a href="#" onclick="window.close(); return false;" title="Cerrar">
+            <a href="#" onclick="window.close(); return false;" title="{{ _('Cerrar') }}">
                 <i class="bi bi-x-lg"></i>
             </a>
-            <a href="#" onclick="Reveal.toggleOverview(); return false;" title="Vista general">
+            <a href="#" onclick="Reveal.toggleOverview(); return false;" title="{{ _('Vista general') }}">
                 <i class="bi bi-grid-3x3-gap"></i>
             </a>
-            <a href="#" onclick="Reveal.toggleHelp(); return false;" title="Ayuda">
+            <a href="#" onclick="Reveal.toggleHelp(); return false;" title="{{ _('Ayuda') }}">
                 <i class="bi bi-question-circle"></i>
             </a>
         </div>
@@ -90,8 +92,8 @@
                 {% endfor %} {% else %}
                 <!-- Default slide if no content -->
                 <section>
-                    <h2>Presentación</h2>
-                    <p>No hay diapositivas disponibles en esta presentación.</p>
+                    <h2>{{ _('Presentación') }}</h2>
+                    <p>{{ _('No hay diapositivas disponibles en esta presentación.') }}</p>
                 </section>
                 {% endif %}
             </div>

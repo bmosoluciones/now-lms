@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
-        <title>Nuevo Recurso - HTML Externo</title>
+        <title>{{ _("Nuevo") }} {{ _("Recurso") }} - HTML Externo</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -32,16 +32,16 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="requerido" class="form-label">Tipo de Recurso</label>
+                            <label for="requerido" class="form-label">{{ _("Tipo") }} de {{ _("Recurso") }}</label>
                             {{ form.requerido(class="form-control", id="requerido") }}
                         </div>
 
                         <div>
-                            <label for="descripcion" class="form-label">Descripción</label>
+                            <label for="descripcion" class="form-label">{{ _("Descripción") }}</label>
                             {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
                         </div>
 
-                        {{ render_form_buttons("Agregar Recurso", "/course/explore") }}
+                        {{ render_form_buttons("Agregar {{ _("Recurso") }}", "/course/explore") }}
                     </div>
                 </form>
             </div>

@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Crear un nuevo recurso</title>
+        <title>{{ _("{{ _("Crear") }}") }} un nuevo recurso</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -140,7 +140,9 @@
                             <use xlink:href="#cpu-fill" />
                         </svg>
                         <div>
-                            <h5 class="fw-bold mb-0"><i class="bi bi-link" aria-hidden="true"></i> Recurso Externo</h5>
+                            <h5 class="fw-bold mb-0">
+                                <i class="bi bi-link" aria-hidden="true"></i> {{ _("{{ _("Recurso") }}") }} Externo
+                            </h5>
                             <p>Un link a un recurso externo.</p>
                             <p>
                                 <span class="badge bg-success">
@@ -199,7 +201,8 @@
                         </svg>
                         <div>
                             <h5 class="fw-bold mb-0">
-                                <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i> Recurso Descargable
+                                <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i> {{ _("{{ _("Recurso") }}") }}
+                                Descargable
                             </h5>
                             <p>Suba un archivo descargable como Excel, Word, Project, etc.</p>
                             <p>

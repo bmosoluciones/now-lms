@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Actualizar Recurso</title>
+        <title>Actualizar {{ _("Recurso") }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -17,17 +17,18 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Actualizar Recurso.</h4>
+                <h4 class="pb-2 border-bottom">Actualizar {{ _("Recurso") }}.</h4>
                 <form method="post">
                     {{ form.csrf_token }}
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="nombre" class="form-label">Recurso</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Recurso", value=recurso.nombre) }}
+                            <label for="nombre" class="form-label">{{ _("Recurso") }}</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder="{{ _("Recurso") }}",
+                            value=recurso.nombre) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="precio" class="form-label">Precio</label>
+                            <label for="precio" class="form-label">{{ _("Precio") }}</label>
                             {{ form.precio(class="form-control", id="codigo", value=recurso.precio) }}
                         </div>
                     </div>
@@ -39,22 +40,22 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="tipo" class="form-label">Tipo</label>
+                            <label for="tipo" class="form-label">{{ _("Tipo") }}</label>
                             {{ form.tipo(class="form-control", id="tipo") }}
                         </div>
                     </div>
 
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="descripcion" class="form-label">Recurso Publico</label>
+                            <label for="descripcion" class="form-label">{{ _("Recurso") }} Publico</label>
                             {{ form.publico(checked=recurso.publico) }}
 
-                            <label for="descripcion" class="form-label">Recurso Promocionado</label>
+                            <label for="descripcion" class="form-label">{{ _("Recurso") }} Promocionado</label>
                             {{ form.promocionado(checked=recurso.promocionado) }}
                         </div>
                     </div>
                     <br />
-                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Actualizar Recurso</button>
+                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Actualizar {{ _("Recurso") }}</button>
                 </form>
             </div>
 

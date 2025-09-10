@@ -4,7 +4,7 @@ moderador_asignado(id_curso=curso.codigo) %} {% set permitir_estudiante = estudi
 permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
         <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
@@ -186,7 +186,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item">
                                 <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
-                                    >Inicio</a
+                                    >{{ _("{{ _("{{ _("{{ _("{{ _("{{ _("Inicio") }}") }}") }}") }}") }}") }}</a
                                 >
                             </li>
                             <li class="breadcrumb-item">
@@ -215,7 +215,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                     <track 
                                         kind="subtitles" 
                                         src="{{ url_for('course.recurso_vtt', recurso_code=recurso.id, course_code=recurso.curso) }}" 
-                                        srclang="es" 
+                                        srclang="{{ current_locale() }}" 
                                         label="Español"
                                         default>
                                     {% endif %}

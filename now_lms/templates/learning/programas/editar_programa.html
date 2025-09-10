@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Editar Programa</title>
+        <title>{{ _("Editar") }} {{ _("Programa") }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -20,17 +20,17 @@
                 {% if not is_programs_enabled() %}
                 <div class="alert alert-warning" role="alert">
                     <strong>⚠️ Aviso:</strong> Los programas están deshabilitados en la configuración principal del sitio. Los
-                    usuarios no verán este programa en el menú de navegación hasta que se habilite la opción "Habilitar
-                    Programas" en la configuración general.
+                    usuarios no verán este programa en el menú de navegación hasta que se habilite la opción "Habilitar {{
+                    _("Programas") }}" en la configuración general.
                 </div>
                 {% endif %}
                 <div class="d-flex justify-content-between border-bottom">
-                    <h4 class="pb-2 border-bottom">Editar Programa.</h4>
+                    <h4 class="pb-2 border-bottom">{{ _("Editar") }} {{ _("Programa") }}.</h4>
 
                     <p>
                         <span class="badge bg-success">
                             <a href="{{ url_for('program.programa_cursos', codigo=programa.codigo) }}" class="link-light"
-                                >Lista de Cursos</a
+                                >Lista de {{ _("Cursos") }}</a
                             >
                         </span>
                     </p>
@@ -40,7 +40,7 @@
                     {{ form.csrf_token }}
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="nombre" class="form-label">Programa</label>
+                            <label for="nombre" class="form-label">{{ _("Programa") }}</label>
                             {{ form.nombre(class="form-control", id="nombre", placeholder="Categoria") }}
                         </div>
 
@@ -52,7 +52,7 @@
                         </div>
 
                         <div class="col-sm-3">
-                            <label for="estado" class="form-label">Estado</label>
+                            <label for="estado" class="form-label">{{ _("Estado") }}</label>
                             {{ form.estado() }}
                         </div>
                     </div>
@@ -60,11 +60,12 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="descripcion" class="form-label">Descripcion</label>
-                            {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripción") }}
+                            {{ form.descripcion(class="form-control", id="descripcion", placeholder="{{ _("Descripción") }}")
+                            }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="precio" class="form-label">Precio</label>
+                            <label for="precio" class="form-label">{{ _("Precio") }}</label>
                             {{ form.precio(class="form-control", id="codigo") }}
                         </div>
                     </div>
@@ -98,7 +99,7 @@
                             alt="Portada del programa"
                         />
                         <br />
-                        <a href="#">Eliminar Portada</a>
+                        <a href="#">{{ _("Eliminar") }} Portada</a>
                         {% else %}
                         <label for="logo" class="form-label">Portada</label>
                         <input type="file" name="logo" accept="image/jpeg" />
@@ -107,7 +108,7 @@
 
                     <br />
 
-                    {{ render_form_buttons("Actualizar Programa", "/admin/panel") }}
+                    {{ render_form_buttons("Actualizar {{ _("Programa") }}", "/admin/panel") }}
                 </form>
             </div>
         </main>

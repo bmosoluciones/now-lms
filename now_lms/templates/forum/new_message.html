@@ -1,10 +1,10 @@
 {% set current_theme = current_theme() %} {% set config = config() %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Nuevo Mensaje - {{ curso.nombre | title }}</title>
+        <title>{{ _('Nuevo Mensaje') }} - {{ curso.nombre | title }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -22,7 +22,7 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
-                                        >Inicio</a
+                                        >{{ _('Inicio') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
@@ -36,10 +36,10 @@
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('forum.ver_foro', course_code=curso.codigo) }}"
-                                        >Foro</a
+                                        >{{ _('Foro') }}</a
                                     >
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Nuevo Mensaje</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ _('Nuevo Mensaje') }}</li>
                             </ol>
                         </nav>
                     </h4>
@@ -49,8 +49,8 @@
                     <div class="col-12 col-md-8 mx-auto">
                         <div class="card">
                             <div class="card-header">
-                                <h3>Crear Nuevo Mensaje</h3>
-                                <p class="text-muted mb-0">Curso: {{ curso.nombre }}</p>
+                                <h3>{{ _('Crear Nuevo Mensaje') }}</h3>
+                                <p class="text-muted mb-0">{{ _('Curso') }}: {{ curso.nombre }}</p>
                             </div>
                             <div class="card-body">
                                 <form method="POST" action="{{ url_for('forum.nuevo_mensaje', course_code=curso.codigo) }}">
@@ -66,9 +66,9 @@
                                         </div>
                                         {% endif %}
                                         <small class="form-text text-muted">
-                                            Puedes usar
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#markdownHelp">Markdown</a> para
-                                            dar formato a tu mensaje.
+                                            {{ _('Puedes usar') }}
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#markdownHelp">Markdown</a> {{
+                                            _('para dar formato a tu mensaje.') }}
                                         </small>
                                     </div>
 
@@ -77,10 +77,10 @@
                                             href="{{ url_for('forum.ver_foro', course_code=curso.codigo) }}"
                                             class="btn btn-secondary me-md-2"
                                         >
-                                            <i class="fas fa-times"></i> Cancelar
+                                            <i class="fas fa-times"></i> {{ _('Cancelar') }}
                                         </a>
                                         <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-paper-plane"></i> Publicar Mensaje
+                                            <i class="fas fa-paper-plane"></i> {{ _('Publicar Mensaje') }}
                                         </button>
                                     </div>
                                 </form>
@@ -95,35 +95,37 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="markdownHelpLabel">Ayuda de Markdown</h5>
+                            <h5 class="modal-title" id="markdownHelpLabel">{{ _('Ayuda de Markdown') }}</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <h6>Formato básico:</h6>
+                            <h6>{{ _('Formato básico') }}:</h6>
                             <ul>
-                                <li><code>**texto en negrita**</code> → <strong>texto en negrita</strong></li>
-                                <li><code>*texto en cursiva*</code> → <em>texto en cursiva</em></li>
                                 <li>
-                                    <code># Título grande</code> →
-                                    <h5>Título grande</h5>
+                                    <code>**{{ _('texto en negrita') }}**</code> → <strong>{{ _('texto en negrita') }}</strong>
+                                </li>
+                                <li><code>*{{ _('texto en cursiva') }}*</code> → <em>{{ _('texto en cursiva') }}</em></li>
+                                <li>
+                                    <code># {{ _('Título grande') }}</code> →
+                                    <h5>{{ _('Título grande') }}</h5>
                                 </li>
                                 <li>
-                                    <code>## Título mediano</code> →
-                                    <h6>Título mediano</h6>
+                                    <code>## {{ _('Título mediano') }}</code> →
+                                    <h6>{{ _('Título mediano') }}</h6>
                                 </li>
-                                <li><code>[enlace](URL)</code> → enlace clickeable</li>
-                                <li><code>`código`</code> → <code>código</code></li>
+                                <li><code>[{{ _('enlace') }}](URL)</code> → {{ _('enlace clickeable') }}</li>
+                                <li><code>`{{ _('código') }}`</code> → <code>{{ _('código') }}</code></li>
                             </ul>
-                            <h6>Listas:</h6>
+                            <h6>{{ _('Listas') }}:</h6>
                             <ul>
-                                <li><code>- elemento 1</code></li>
-                                <li><code>- elemento 2</code></li>
+                                <li><code>- {{ _('elemento 1') }}</code></li>
+                                <li><code>- {{ _('elemento 2') }}</code></li>
                             </ul>
-                            <h6>Citas:</h6>
-                            <p><code>&gt; Esto es una cita</code></p>
+                            <h6>{{ _('Citas') }}:</h6>
+                            <p><code>&gt; {{ _('Esto es una cita') }}</code></p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cerrar') }}</button>
                         </div>
                     </div>
                 </div>

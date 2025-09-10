@@ -1,10 +1,10 @@
 {% set current_theme = current_theme() %} {% set config = config() %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Resultado de Evaluación</title>
+        <title>{{ _('Resultado de Evaluación') }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -22,17 +22,17 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
-                                        >Inicio</a
+                                        >{{ _('Inicio') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('course.tomar_curso', course_code=attempt.evaluation.section.curso) }}"
-                                        >Curso</a
+                                        >{{ _('Curso') }}</a
                                     >
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Resultado</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ _('Resultado') }}</li>
                             </ol>
                         </nav>
                     </h4>
@@ -44,11 +44,11 @@
                             <div class="card-header">
                                 <h3>{{ attempt.evaluation.title }}</h3>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span>Resultado del intento</span>
+                                    <span>{{ _('Resultado del intento') }}</span>
                                     {% if attempt.passed %}
-                                    <span class="badge bg-success fs-6">APROBADO</span>
+                                    <span class="badge bg-success fs-6">{{ _('APROBADO') }}</span>
                                     {% else %}
-                                    <span class="badge bg-danger fs-6">NO APROBADO</span>
+                                    <span class="badge bg-danger fs-6">{{ _('NO APROBADO') }}</span>
                                     {% endif %}
                                 </div>
                             </div>
@@ -60,13 +60,13 @@
                                             <h4 class="{% if attempt.passed %}text-success{% else %}text-danger{% endif %}">
                                                 {{ "%.1f"|format(attempt.score) }}%
                                             </h4>
-                                            <p class="text-muted mb-0">Puntuación obtenida</p>
+                                            <p class="text-muted mb-0">{{ _('Puntuación obtenida') }}</p>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="border rounded p-3">
                                             <h4 class="text-info">{{ attempt.evaluation.passing_score }}%</h4>
-                                            <p class="text-muted mb-0">Puntuación mínima</p>
+                                            <p class="text-muted mb-0">{{ _('Puntuación mínima') }}</p>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -74,7 +74,7 @@
                                             <h4 class="text-secondary">
                                                 {{ attempt.submitted_at.strftime('%d/%m/%Y %H:%M') }}
                                             </h4>
-                                            <p class="text-muted mb-0">Fecha de envío</p>
+                                            <p class="text-muted mb-0">{{ _('Fecha de envío') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -82,29 +82,30 @@
                                 {% if attempt.was_late %}
                                 <div class="alert alert-warning mt-3">
                                     <i class="bi bi-exclamation-triangle"></i>
-                                    Este intento fue enviado después de la fecha límite y se aplicó una penalización.
+                                    {{ _('Este intento fue enviado después de la fecha límite y se aplicó una penalización.')
+                                    }}
                                 </div>
                                 {% endif %}
 
                                 <div class="mt-4">
-                                    <h5>Detalles de respuestas</h5>
+                                    <h5>{{ _('Detalles de respuestas') }}</h5>
                                     {% for answer in attempt.answers %} {% set question = answer.question %}
                                     <div class="card mb-2">
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between align-items-start">
                                                 <div class="flex-grow-1">
-                                                    <h6>Pregunta {{ loop.index }}</h6>
+                                                    <h6>{{ _('Pregunta') }} {{ loop.index }}</h6>
                                                     <p>{{ question.text }}</p>
 
                                                     {% if question.type == "boolean" %} {% if answer.selected_option_ids %} {%
                                                     set selected_ids = answer.selected_option_ids | fromjson %} {% for
                                                     option_id in selected_ids %} {% set option = question.options |
                                                     selectattr("id", "equalto", option_id) | first %}
-                                                    <p><strong>Tu respuesta:</strong> {{ option.text }}</p>
+                                                    <p><strong>{{ _('Tu respuesta:') }}</strong> {{ option.text }}</p>
                                                     {% endfor %} {% endif %} {% elif question.type == "multiple" %} {% if
                                                     answer.selected_option_ids %} {% set selected_ids =
                                                     answer.selected_option_ids | fromjson %}
-                                                    <p><strong>Tus respuestas:</strong></p>
+                                                    <p><strong>{{ _('Tus respuestas:') }}</strong></p>
                                                     <ul>
                                                         {% for option_id in selected_ids %} {% set option = question.options |
                                                         selectattr("id", "equalto", option_id) | first %}
@@ -114,7 +115,7 @@
                                                     {% endif %} {% endif %}
 
                                                     <div class="mt-2">
-                                                        <p><strong>Respuestas correctas:</strong></p>
+                                                        <p><strong>{{ _('Respuestas correctas:') }}</strong></p>
                                                         <ul>
                                                             {% for option in question.options %} {% if option.is_correct %}
                                                             <li class="text-success">{{ option.text }}</li>
@@ -124,7 +125,7 @@
 
                                                     {% if question.explanation %}
                                                     <div class="mt-2">
-                                                        <p><strong>Explicación:</strong></p>
+                                                        <p><strong>{{ _('Explicación:') }}</strong></p>
                                                         <p class="text-muted">{{ question.explanation }}</p>
                                                     </div>
                                                     {% endif %}
@@ -137,9 +138,9 @@
                                                     map(attribute="id") | list %} {% if selected_ids | sort == correct_ids |
                                                     sort %} {% set is_correct = true %} {% endif %} {% endif %} {% if
                                                     is_correct %}
-                                                    <span class="badge bg-success">Correcta</span>
+                                                    <span class="badge bg-success">{{ _('Correcta') }}</span>
                                                     {% else %}
-                                                    <span class="badge bg-danger">Incorrecta</span>
+                                                    <span class="badge bg-danger">{{ _('Incorrecta') }}</span>
                                                     {% endif %}
                                                 </div>
                                             </div>
@@ -153,7 +154,7 @@
                                         href="{{ url_for('course.tomar_curso', course_code=attempt.evaluation.section.curso) }}"
                                         class="btn btn-primary"
                                     >
-                                        Volver al curso
+                                        {{ _('Volver al curso') }}
                                     </a>
                                 </div>
                             </div>

@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     {% set current_theme = current_theme() %}
 
     <head>
         {{ current_theme.headertags() }}
-        <title>Panel del Instructor</title>
+        <title>{{ _('Panel del Instructor') }}</title>
 
         {{ current_theme.local_style() }}
         <style>
@@ -18,7 +18,9 @@
                 border: none;
                 border-radius: 15px;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
             }
             .teaching-card:hover {
                 transform: translateY(-5px);
@@ -44,13 +46,13 @@
                         <div class="col-md-8">
                             <h2 class="mb-1">
                                 <i class="bi bi-mortarboard me-2"></i>
-                                Bienvenido, Instructor {{ current_user.nombre }} {{ current_user.apellido }}
+                                {{ _('Bienvenido, Instructor') }} {{ current_user.nombre }} {{ current_user.apellido }}
                             </h2>
-                            <p class="mb-0 opacity-75">Tu centro de enseñanza y gestión de cursos</p>
+                            <p class="mb-0 opacity-75">{{ _('Tu centro de enseñanza y gestión de cursos') }}</p>
                         </div>
                         <div class="col-md-4 text-end">
-                            <a href="{{ url_for('course.nuevo_curso') }}" class="btn btn-light" style="border-radius: 25px;">
-                                <i class="bi bi-plus-circle me-1"></i> Crear Curso
+                            <a href="{{ url_for('course.nuevo_curso') }}" class="btn btn-light" style="border-radius: 25px">
+                                <i class="bi bi-plus-circle me-1"></i> {{ _('Crear Curso') }}
                             </a>
                         </div>
                     </div>
@@ -66,18 +68,21 @@
                                             <div class="row align-items-center">
                                                 <div class="col">
                                                     <h6 class="card-title text-success mb-2">
-                                                        <i class="bi bi-book-half me-2"></i>Cursos Creados
+                                                        <i class="bi bi-book-half me-2"></i>{{ _('Cursos Creados') }}
                                                     </h6>
                                                     <h2 class="mb-0 text-success">{{ created_courses }}</h2>
-                                                    <small class="text-muted">Cursos activos</small>
+                                                    <small class="text-muted">{{ _('Cursos activos') }}</small>
                                                 </div>
                                                 <div class="col-auto">
                                                     <i class="bi bi-book-half stat-icon text-success"></i>
                                                 </div>
                                             </div>
                                             <div class="mt-3">
-                                                <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-outline-success btn-sm">
-                                                    <i class="bi bi-eye me-1"></i>Ver Cursos
+                                                <a
+                                                    href="{{ url_for('course.lista_cursos') }}"
+                                                    class="btn btn-outline-success btn-sm"
+                                                >
+                                                    <i class="bi bi-eye me-1"></i>{{ _('Ver Cursos') }}
                                                 </a>
                                             </div>
                                         </div>
@@ -89,18 +94,21 @@
                                             <div class="row align-items-center">
                                                 <div class="col">
                                                     <h6 class="card-title text-warning mb-2">
-                                                        <i class="bi bi-award me-2"></i>Certificados Emitidos
+                                                        <i class="bi bi-award me-2"></i>{{ _('Certificados Emitidos') }}
                                                     </h6>
                                                     <h2 class="mb-0 text-warning">{{ issued_certificates }}</h2>
-                                                    <small class="text-muted">Logros estudiantiles</small>
+                                                    <small class="text-muted">{{ _('Logros estudiantiles') }}</small>
                                                 </div>
                                                 <div class="col-auto">
                                                     <i class="bi bi-award stat-icon text-warning"></i>
                                                 </div>
                                             </div>
                                             <div class="mt-3">
-                                                <a href="{{ url_for('certificate.certificaciones') }}" class="btn btn-outline-warning btn-sm">
-                                                    <i class="bi bi-trophy me-1"></i>Ver Certificados
+                                                <a
+                                                    href="{{ url_for('certificate.certificaciones') }}"
+                                                    class="btn btn-outline-warning btn-sm"
+                                                >
+                                                    <i class="bi bi-trophy me-1"></i>{{ _('Ver Certificados') }}
                                                 </a>
                                             </div>
                                         </div>
@@ -112,18 +120,21 @@
                                             <div class="row align-items-center">
                                                 <div class="col">
                                                     <h6 class="card-title text-primary mb-2">
-                                                        <i class="bi bi-people me-2"></i>Estudiantes Inscritos
+                                                        <i class="bi bi-people me-2"></i>{{ _('Estudiantes Inscritos') }}
                                                     </h6>
                                                     <h2 class="mb-0 text-primary">{{ enrolled_students }}</h2>
-                                                    <small class="text-muted">Total de estudiantes</small>
+                                                    <small class="text-muted">{{ _('Total de estudiantes') }}</small>
                                                 </div>
                                                 <div class="col-auto">
                                                     <i class="bi bi-people stat-icon text-primary"></i>
                                                 </div>
                                             </div>
                                             <div class="mt-3">
-                                                <a href="{{ url_for('admin_profile.usuarios') }}" class="btn btn-outline-primary btn-sm">
-                                                    <i class="bi bi-person-lines-fill me-1"></i>Ver Estudiantes
+                                                <a
+                                                    href="{{ url_for('admin_profile.usuarios') }}"
+                                                    class="btn btn-outline-primary btn-sm"
+                                                >
+                                                    <i class="bi bi-person-lines-fill me-1"></i>{{ _('Ver Estudiantes') }}
                                                 </a>
                                             </div>
                                         </div>
@@ -136,17 +147,21 @@
                     <!-- Course Management Section -->
                     <div class="col-xl-6 col-xxl-7">
                         <!-- My Recent Courses -->
-                        <div class="card mb-3" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                        <div
+                            class="card mb-3"
+                            style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
+                        >
                             <div class="card-header bg-success bg-opacity-10">
                                 <div class="row align-items-center">
                                     <div class="col">
                                         <h5 class="card-title mb-0">
-                                            <i class="bi bi-clock-history text-success me-2"></i>Mis Cursos Recientes
+                                            <i class="bi bi-clock-history text-success me-2"></i>{{ _('Mis Cursos Recientes')
+                                            }}
                                         </h5>
                                     </div>
                                     <div class="col-auto">
                                         <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-sm btn-outline-success">
-                                            <i class="bi bi-arrow-right me-1"></i>Ver Todos
+                                            <i class="bi bi-arrow-right me-1"></i>{{ _('Ver Todos') }}
                                         </a>
                                     </div>
                                 </div>
@@ -159,14 +174,17 @@
                                         <div class="row align-items-center">
                                             <div class="col">
                                                 <h6 class="mb-1">
-                                                    <a href="{{ url_for('course.curso', course_code=curso.codigo) }}" 
-                                                       class="text-decoration-none">
+                                                    <a
+                                                        href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+                                                        class="text-decoration-none"
+                                                    >
                                                         {{ curso.nombre }}
                                                     </a>
                                                 </h6>
                                                 <small class="text-muted">
                                                     <i class="bi bi-calendar3 me-1"></i>
-                                                    Creado: {{ curso.creado.strftime('%d/%m/%Y') if curso.creado else 'N/A' }}
+                                                    {{ _('Creado') }}: {{ curso.creado.strftime('%d/%m/%Y') if curso.creado
+                                                    else 'N/A' }}
                                                 </small>
                                             </div>
                                             <div class="col-auto">
@@ -179,9 +197,9 @@
                                 {% else %}
                                 <div class="text-center text-muted py-3">
                                     <i class="bi bi-book display-6 opacity-25"></i>
-                                    <p class="mt-2 mb-0">Aún no has creado cursos</p>
+                                    <p class="mt-2 mb-0">{{ _('Aún no has creado cursos') }}</p>
                                     <a href="{{ url_for('course.nuevo_curso') }}" class="btn btn-success btn-sm mt-2">
-                                        <i class="bi bi-plus-circle me-1"></i>Crear mi primer curso
+                                        <i class="bi bi-plus-circle me-1"></i>{{ _('Crear mi primer curso') }}
                                     </a>
                                 </div>
                                 {% endif %}
@@ -189,51 +207,63 @@
                         </div>
 
                         <!-- Messages Section for Instructor -->
-                        <div class="card mb-3" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                        <div
+                            class="card mb-3"
+                            style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
+                        >
                             <div class="card-header bg-primary bg-opacity-10">
                                 <h5 class="card-title mb-0">
-                                    <i class="bi bi-chat-dots text-primary me-2"></i>Centro de Mensajes
+                                    <i class="bi bi-chat-dots text-primary me-2"></i>{{ _('Centro de Mensajes') }}
                                 </h5>
                             </div>
                             <div class="card-body">
                                 <p class="text-muted mb-3">
-                                    Mantente conectado con tus estudiantes y resuelve sus dudas de manera oportuna.
+                                    {{ _('Mantente conectado con tus estudiantes y resuelve sus dudas de manera oportuna.') }}
                                 </p>
                                 <div class="d-flex gap-2">
                                     <a href="{{ url_for('msg.user_messages') }}" class="btn btn-primary">
-                                        <i class="bi bi-envelope me-1"></i>Mis Mensajes
+                                        <i class="bi bi-envelope me-1"></i>{{ _('Mis Mensajes') }}
                                     </a>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Teaching Resources -->
-                        <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                        <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)">
                             <div class="card-header bg-info bg-opacity-10">
                                 <h5 class="card-title mb-0">
-                                    <i class="bi bi-tools text-info me-2"></i>Herramientas de Enseñanza
+                                    <i class="bi bi-tools text-info me-2"></i>{{ _('Herramientas de Enseñanza') }}
                                 </h5>
                             </div>
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6 mb-2">
-                                        <a href="{{ url_for('resource.lista_de_recursos') }}" class="btn btn-outline-info w-100">
-                                            <i class="bi bi-collection me-2"></i>Mis Recursos
+                                        <a
+                                            href="{{ url_for('resource.lista_de_recursos') }}"
+                                            class="btn btn-outline-info w-100"
+                                        >
+                                            <i class="bi bi-collection me-2"></i>{{ _('Mis Recursos') }}
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
                                         <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-outline-warning w-100">
-                                            <i class="bi bi-search me-2"></i>Buscar Cursos
+                                            <i class="bi bi-search me-2"></i>{{ _('Buscar Cursos') }}
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-outline-success w-100">
-                                            <i class="bi bi-calendar-event me-2"></i>Calendario
+                                        <a
+                                            href="{{ url_for('calendar.calendar_view') }}"
+                                            class="btn btn-outline-success w-100"
+                                        >
+                                            <i class="bi bi-calendar-event me-2"></i>{{ _('Calendario') }}
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <a href="{{ url_for('instructor_announcements.list_announcements') }}" class="btn btn-outline-primary w-100">
-                                            <i class="bi bi-megaphone me-2"></i>Anuncios
+                                        <a
+                                            href="{{ url_for('instructor_announcements.list_announcements') }}"
+                                            class="btn btn-outline-primary w-100"
+                                        >
+                                            <i class="bi bi-megaphone me-2"></i>{{ _('Anuncios') }}
                                         </a>
                                     </div>
                                 </div>

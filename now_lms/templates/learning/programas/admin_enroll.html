@@ -1,10 +1,10 @@
 {% set current_theme = current_theme() %} {% set config = config() %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Inscripción Administrativa - {{ programa.nombre }}</title>
+        <title>{{ _("Inscripción") }} Administrativa - {{ programa.nombre }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -20,18 +20,21 @@
                     <div class="col-lg-8 mx-auto">
                         <div class="card">
                             <div class="card-header">
-                                <h4><i class="fas fa-user-plus"></i> Inscripción Administrativa a Programa</h4>
+                                <h4>
+                                    <i class="fas fa-user-plus"></i> {{ _("Inscripción") }} Administrativa a {{ _("Programa")
+                                    }}
+                                </h4>
                                 <p class="mb-0 text-muted">
-                                    Inscribir estudiante al programa: <strong>{{ programa.nombre }}</strong>
+                                    {{ _("Inscribir") }} estudiante al programa: <strong>{{ programa.nombre }}</strong>
                                 </p>
                             </div>
                             <div class="card-body">
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle"></i>
-                                    <strong>Inscripción a Programa:</strong> Al inscribir un estudiante a este programa, será
-                                    automáticamente inscrito a todos los cursos que forman parte del programa. {% if
-                                    programa.pagado %} Si algunos cursos son pagados, puedes omitir el pago para dar acceso
-                                    completo al estudiante. {% endif %}
+                                    <strong>{{ _("Inscripción") }} a {{ _("Programa") }}:</strong> Al inscribir un estudiante a
+                                    este programa, será automáticamente inscrito a todos los cursos que forman parte del
+                                    programa. {% if programa.pagado %} Si algunos cursos son pagados, puedes omitir el pago
+                                    para dar acceso completo al estudiante. {% endif %}
                                 </div>
 
                                 <form method="POST">
@@ -68,10 +71,10 @@
                                             href="{{ url_for('program.programa_cursos', codigo=programa.codigo) }}"
                                             class="btn btn-secondary me-md-2"
                                         >
-                                            <i class="fas fa-arrow-left"></i> Cancelar
+                                            <i class="fas fa-arrow-left"></i> {{ _("Cancelar") }}
                                         </a>
                                         <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-user-plus"></i> Inscribir al Programa
+                                            <i class="fas fa-user-plus"></i> {{ _("Inscribir") }} al {{ _("Programa") }}
                                         </button>
                                     </div>
                                 </form>
@@ -80,14 +83,14 @@
 
                         <div class="card mt-4">
                             <div class="card-header">
-                                <h5><i class="fas fa-info-circle"></i> Información del Programa</h5>
+                                <h5><i class="fas fa-info-circle"></i> {{ _("Información") }} del {{ _("Programa") }}</h5>
                             </div>
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <strong>Nombre:</strong> {{ programa.nombre }}<br />
+                                        <strong>{{ _("Nombre") }}:</strong> {{ programa.nombre }}<br />
                                         <strong>Código:</strong> {{ programa.codigo }}<br />
-                                        <strong>Estado:</strong>
+                                        <strong>{{ _("Estado") }}:</strong>
                                         <span
                                             class="badge bg-{% if programa.estado == 'open' %}success{% elif programa.estado == 'closed' %}danger{% else %}warning{% endif %}"
                                         >
@@ -95,7 +98,7 @@
                                         </span>
                                     </div>
                                     <div class="col-md-6">
-                                        <strong>Descripción:</strong><br />
+                                        <strong>{{ _("Descripción") }}:</strong><br />
                                         <small class="text-muted"
                                             >{{ programa.descripcion[:100] }}{% if programa.descripcion|length > 100 %}...{%
                                             endif %}</small

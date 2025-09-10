@@ -1,6 +1,6 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
         <title>Plantillas Disponibles.</title>
@@ -23,10 +23,10 @@
                     <div class="col-md-4 text-end">
                         <div class="btn-group" role="group">
                             <a href="{{ url_for('certificate.certificate_new') }}" class="btn btn-success">
-                                <i class="bi bi-plus-lg me-1"></i>Nueva Plantilla
+                                <i class="bi bi-plus-lg me-1"></i>{{ _("Nueva") }} Plantilla
                             </a>
                             <a href="{{ url_for('certificate.certificacion_generar') }}" class="btn btn-outline-primary">
-                                <i class="bi bi-file-earmark-plus me-1"></i>Nuevo Certificado
+                                <i class="bi bi-file-earmark-plus me-1"></i>{{ _("Nuevo") }} Certificado
                             </a>
                         </div>
                     </div>
@@ -47,7 +47,7 @@
                                             <i class="bi bi-check-circle me-1"></i>Habilitado
                                         </th>
                                         <th class="fw-semibold text-center"><i class="bi bi-globe me-1"></i>Público</th>
-                                        <th class="fw-semibold text-center">Acciones</th>
+                                        <th class="fw-semibold text-center">{{ _("Acciones") }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -71,7 +71,7 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <div class="btn-group" role="group" aria-label="Acciones del certificado">
+                                            <div class="btn-group" role="group" aria-label="{{ _("Acciones") }} del certificado">
                                                 {% if item.habilitado %}
                                                 <a
                                                     href="{{ url_for('certificate.certificate_remove', ulid=item.id) }}"
@@ -108,7 +108,7 @@
                                                 <a
                                                     href="{{ url_for('certificate.certificate_edit', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-secondary"
-                                                    title="Editar"
+                                                    title="{{ _("Editar") }}"
                                                 >
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>
@@ -136,7 +136,7 @@
                         <h5 class="text-muted mt-3">No hay certificados disponibles</h5>
                         <p class="text-muted">Usted no ha creado ningún certificado todavía.</p>
                         <a href="{{ url_for('certificate.certificate_new') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-lg me-2"></i>Crear Primera Plantilla
+                            <i class="bi bi-plus-lg me-2"></i>{{ _("Crear") }} Primera Plantilla
                         </a>
                     </div>
                 </div>

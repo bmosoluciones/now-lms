@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Crear una nueva Etiqueta</title>
+        <title>{{ _('{{ _("Nueva") }} Etiqueta') }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -17,22 +17,22 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Crear nueva Etiqueta.</h4>
+                <h4 class="pb-2 border-bottom">{{ _('{{ _("Crear") }} nueva Etiqueta') }}.</h4>
                 <form method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }}
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="nombre" class="form-label">Etiqueta</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Etiqueta") }}
+                            <label for="nombre" class="form-label">{{ _('Etiqueta') }}</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_('Etiqueta')) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="color" class="form-label">Color</label>
+                            <label for="color" class="form-label">{{ _('Color') }}</label>
                             {{ form.color(class="form-control", id="color") }}
                         </div>
                     </div>
 
-                    {{ render_form_buttons("Crear Etiqueta", "/tag/list") }}
+                    {{ render_form_buttons(_('{{ _("Crear") }} Etiqueta'), "/tag/list") }}
                 </form>
             </div>
         </main>

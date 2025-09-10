@@ -1,6 +1,6 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
         <title>{{ title }}</title>
@@ -16,42 +16,44 @@
                 <div class="container">
                     <div class="py-5 text-center">
                         <h1 class="h2">
-                            Esta a punto de inscribirse al curso {{ curso.codigo | upper}} - {{ curso.nombre | upper }}
+                            {{ _('Esta a punto de inscribirse al curso') }} {{ curso.codigo | upper}} - {{ curso.nombre | upper
+                            }}
                         </h1>
                         {{ form.csrf_token }}
-                        <p class="lead">Complete la siguiente información para completar su registro.</p>
+                        <p class="lead">{{ _('Complete la siguiente información para completar su registro.') }}</p>
                     </div>
                     <div class="row g-5">
                         <div class="col-md-5 col-lg-4 order-md-last">
                             <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="text-primary">Resumen</span>
+                                <span class="text-primary">{{ _('Resumen') }}</span>
                             </h4>
                             <ul class="list-group mb-3">
                                 <li class="list-group-item d-flex justify-content-between lh-sm">
                                     <div>
-                                        <h6 class="my-0">Curso</h6>
+                                        <h6 class="my-0">{{ _('Curso') }}</h6>
                                         <small class="text-body-secondary">{{ curso.nombre }}</small>
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between lh-sm">
                                     <div>
-                                        <h6 class="my-0">Descripción</h6>
+                                        <h6 class="my-0">{{ _('Descripción') }}</h6>
                                         <small class="text-body-secondary">{{ curso.descripcion_corta }}</small>
                                     </div>
                                 </li>
                                 {% if curso.pagado %} {% if applied_coupon %}
                                 <li class="list-group-item d-flex justify-content-between lh-sm">
                                     <div>
-                                        <h6 class="my-0">Precio Original</h6>
+                                        <h6 class="my-0">{{ _('Precio Original') }}</h6>
                                         <small class="text-body-secondary">{{ original_price | round(2) }}</small>
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between lh-sm text-success">
                                     <div>
-                                        <h6 class="my-0">Descuento ({{ applied_coupon.code }})</h6>
+                                        <h6 class="my-0">{{ _('Descuento') }} ({{ applied_coupon.code }})</h6>
                                         <small class="text-body-secondary">
                                             {% if applied_coupon.discount_type == 'percentage' %} {{
-                                            applied_coupon.discount_value }}% descuento {% else %} Descuento fijo {% endif %}
+                                            applied_coupon.discount_value }}% {{ _('descuento') }} {% else %} {{ _('Descuento
+                                            fijo') }} {% endif %}
                                         </small>
                                     </div>
                                     <span>-{{ discount_amount | round(2) }}</span>
@@ -59,87 +61,89 @@
                                 {% else %}
                                 <li class="list-group-item d-flex justify-content-between lh-sm">
                                     <div>
-                                        <h6 class="my-0">Precio</h6>
+                                        <h6 class="my-0">{{ _('Precio') }}</h6>
                                         <small class="text-body-secondary">{{ curso.precio | round(2) }}</small>
                                     </div>
                                 </li>
                                 {% endif %}
                                 <li class="list-group-item d-flex justify-content-between">
-                                    <span>Total (USD)</span>
+                                    <span>{{ _('Total') }} (USD)</span>
                                     <strong>{{ final_price | round(2) }}</strong>
                                     {% if final_price == 0 %}
-                                    <span class="badge bg-success ms-2">¡GRATIS!</span>
+                                    <span class="badge bg-success ms-2">{{ _('¡GRATIS!') }}</span>
                                     {% endif %} {% else %}
                                 </li>
 
                                 <li class="list-group-item d-flex justify-content-between">
-                                    <span>Total</span>
-                                    <strong>GRATIS</strong>
+                                    <span>{{ _('Total') }}</span>
+                                    <strong>{{ _('GRATIS') }}</strong>
                                     {% endif %}
                                 </li>
                             </ul>
                         </div>
                         <div class="col-md-7 col-lg-8">
-                            <h4 class="mb-3">Billing address</h4>
+                            <h4 class="mb-3">{{ _('Billing address') }}</h4>
                             <div class="row g-3">
                                 <div class="col-sm-6">
-                                    <label for="nombre" class="form-label">Nombre</label>
+                                    <label for="nombre" class="form-label">{{ _('Nombre') }}</label>
                                     {{ form.nombre(class="form-control", id="nombre") }}
-                                    <div class="invalid-feedback">Valid first name is required.</div>
+                                    <div class="invalid-feedback">{{ _('Valid first name is required.') }}</div>
                                 </div>
                                 <div class="col-sm-6">
-                                    <label for="apellido" class="form-label">Apellido</label>
+                                    <label for="apellido" class="form-label">{{ _('Apellido') }}</label>
                                     {{ form.apellido(class="form-control", id="apellido") }}
-                                    <div class="invalid-feedback">Valid last name is required.</div>
+                                    <div class="invalid-feedback">{{ _('Valid last name is required.') }}</div>
                                 </div>
                                 <div class="col-12">
-                                    <label for="correo_electronico" class="form-label">Correo Electronico</label>
+                                    <label for="correo_electronico" class="form-label">{{ _('Correo Electronico') }}</label>
                                     {{ form.correo_electronico(class="form-control", id="correo_electronico") }}
                                     <div class="invalid-feedback">
-                                        Please enter a valid email address for shipping updates.
+                                        {{ _('Please enter a valid email address for shipping updates.') }}
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <label for="dirrecion1" class="form-label">Dirección</label>
+                                    <label for="dirrecion1" class="form-label">{{ _('Dirección') }}</label>
                                     {{ form.direccion1(class="form-control", id="dirrecion1") }}
-                                    <div class="invalid-feedback">Please enter your shipping address.</div>
+                                    <div class="invalid-feedback">{{ _('Please enter your shipping address.') }}</div>
                                 </div>
                                 <div class="col-12">
-                                    <label for="direccion2" class="form-label">Dirección 2</label>
+                                    <label for="direccion2" class="form-label">{{ _('Dirección 2') }}</label>
                                     {{ form.direccion2(class="form-control", id="direccion2") }}
                                 </div>
                                 <div class="col-md-5">
-                                    <label for="pais" class="form-label">País</label>
+                                    <label for="pais" class="form-label">{{ _('País') }}</label>
                                     {{ form.pais(class="form-select", id="pais") }}
-                                    <div class="invalid-feedback">Please select a valid country.</div>
+                                    <div class="invalid-feedback">{{ _('Please select a valid country.') }}</div>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="provincia" class="form-label">Estado</label>
+                                    <label for="provincia" class="form-label">{{ _('Estado') }}</label>
                                     {{ form.provincia(class="form-control", id="provincia") }}
-                                    <div class="invalid-feedback">Please provide a valid state.</div>
+                                    <div class="invalid-feedback">{{ _('Please provide a valid state.') }}</div>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="codigo_postal" class="form-label">Código Postal</label>
+                                    <label for="codigo_postal" class="form-label">{{ _('Código Postal') }}</label>
                                     {{ form.codigo_postal(class="form-control", id="codigo_postal") }}
-                                    <div class="invalid-feedback">Zip code required.</div>
+                                    <div class="invalid-feedback">{{ _('Zip code required.') }}</div>
                                 </div>
                             </div>
 
                             {% if curso.pagado %}
                             <hr class="my-4" />
-                            <h4 class="mb-3">Código de Cupón</h4>
+                            <h4 class="mb-3">{{ _('Código de Cupón') }}</h4>
                             <div class="row g-3">
                                 <div class="col-12">
                                     {{ coupon_form.csrf_token }}
-                                    <label for="coupon_code" class="form-label">Código de Cupón (Opcional)</label>
+                                    <label for="coupon_code" class="form-label">{{ _('Código de Cupón (Opcional)') }}</label>
                                     <div class="input-group">
                                         {{ coupon_form.coupon_code(class="form-control", id="coupon_code") }}
                                         <button class="btn btn-outline-secondary" type="button" onclick="applyCoupon()">
-                                            Aplicar
+                                            {{ _('Aplicar') }}
                                         </button>
                                     </div>
                                     {% if applied_coupon %}
-                                    <small class="text-success">✓ Cupón {{ applied_coupon.code }} aplicado exitosamente</small>
+                                    <small class="text-success"
+                                        >✓ {{ _('Cupón') }} {{ applied_coupon.code }} {{ _('aplicado exitosamente') }}</small
+                                    >
                                     {% endif %}
                                 </div>
                             </div>
@@ -148,27 +152,27 @@
                             <br />
                             {% if curso.pagado %} {% if curso.auditable %}
                             <button class="w-100 btn btn-warning mb-2" name="modo" value="audit" type="submit">
-                                Auditar contenido del curso
+                                {{ _('Auditar contenido del curso') }}
                             </button>
                             <p class="small text-muted">
-                                Puede acceder al contenido del curso pero no podrá resolver las evaluaciones u obtener un
-                                certificado al finalizar.
+                                {{ _('Puede acceder al contenido del curso pero no podrá resolver las evaluaciones u obtener un
+                                certificado al finalizar.') }}
                                 <br />
-                                Puede pagar el valor del curso antes de finalizarlo y acceder a las evaluaciones y la
-                                certificación.
+                                {{ _('Puede pagar el valor del curso antes de finalizarlo y acceder a las evaluaciones y la
+                                certificación.') }}
                             </p>
                             <br />
                             {% endif %} {% if final_price == 0 %}
                             <button class="w-100 btn btn-success" name="modo" value="free" type="submit">
-                                ¡Inscribirse Gratis con Cupón!
+                                {{ _('¡Inscribirse Gratis con Cupón!') }}
                             </button>
                             {% else %}
                             <button class="w-100 btn btn-primary" name="modo" value="paid" type="submit">
-                                Proceder al pago ({{ final_price | round(2) }} USD)
+                                {{ _('Proceder al pago') }} ({{ final_price | round(2) }} USD)
                             </button>
                             {% endif %} {% else %}
                             <button class="w-100 btn btn-primary" name="modo" value="free" type="submit">
-                                Inscribirse al curso
+                                {{ _('Inscribirse al curso') }}
                             </button>
                             {% endif %}
                         </div>

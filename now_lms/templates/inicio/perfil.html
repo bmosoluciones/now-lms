@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     {% set current_theme = current_theme() %}
 
     <head>
         {{ current_theme.headertags() }}
-        <title>Perfil - {{ perfil.nombre }} {{ perfil.apellido }}</title>
+        <title>{{ _('Perfil') }} - {{ perfil.nombre }} {{ perfil.apellido }}</title>
 
         {{ current_theme.local_style() }}
         <style>
@@ -70,20 +70,20 @@
                         <div class="col-md-8">
                             <h2 class="mb-1">
                                 <i class="bi bi-person-circle me-2"></i>
-                                Perfil de {% if perfil.titulo %}{{ perfil.titulo | capitalize }}.{% endif %}
-                                {{ perfil.nombre | capitalize }} {{ perfil.apellido | capitalize }}
+                                {{ _('Perfil de') }} {% if perfil.titulo %}{{ perfil.titulo | capitalize }}.{% endif %} {{
+                                perfil.nombre | capitalize }} {{ perfil.apellido | capitalize }}
                             </h2>
                             <p class="mb-0 opacity-75">{{ perfil.tipo | capitalize }} - {{ perfil.correo_electronico }}</p>
                         </div>
                         <div class="col-md-4 text-end">
                             {% if current_user.id == perfil.id %}
-                                <a
-                                    href="{{ url_for('user_profile.edit_perfil', ulid=perfil.id) }}"
-                                    class="btn btn-light me-2"
-                                    style="border-radius: 25px;"
-                                >
-                                    <i class="bi bi-pencil-square me-1"></i> Editar Perfil
-                                </a>
+                            <a
+                                href="{{ url_for('user_profile.edit_perfil', ulid=perfil.id) }}"
+                                class="btn btn-light me-2"
+                                style="border-radius: 25px"
+                            >
+                                <i class="bi bi-pencil-square me-1"></i> Editar Perfil
+                            </a>
                             {% endif %}
                         </div>
                     </div>
@@ -96,49 +96,49 @@
                             <!-- Avatar Section -->
                             <div class="avatar-container">
                                 {% if current_user.portada %}
-                                    <img
-                                        src="{{ url_for('static', filename='/files/public/images/usuarios/' + current_user.id + '.jpg') }}"
-                                        alt="{{ current_user.usuario }}"
-                                        width="100%"
-                                        height="200"
-                                        class="img-fluid"
-                                    />
+                                <img
+                                    src="{{ url_for('static', filename='/files/public/images/usuarios/' + current_user.id + '.jpg') }}"
+                                    alt="{{ current_user.usuario }}"
+                                    width="100%"
+                                    height="200"
+                                    class="img-fluid"
+                                />
                                 {% else %}
-                                    <svg
-                                        class="bd-placeholder-img"
-                                        width="100%"
-                                        height="200"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        role="img"
-                                        aria-label="Placeholder: Avatar"
-                                        preserveAspectRatio="xMidYMid slice"
-                                        focusable="false"
-                                    >
-                                        <title>{{ perfil.nombre }} {{ perfil.apellido }}</title>
-                                        <rect width="100%" height="100%" fill="#667eea" />
-                                        <text x="50%" y="50%" fill="white" dy=".3em" text-anchor="middle" font-size="16">
-                                            {{ perfil.nombre }} {{ perfil.apellido }}
-                                        </text>
-                                    </svg>
+                                <svg
+                                    class="bd-placeholder-img"
+                                    width="100%"
+                                    height="200"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    role="img"
+                                    aria-label="Placeholder: Avatar"
+                                    preserveAspectRatio="xMidYMid slice"
+                                    focusable="false"
+                                >
+                                    <title>{{ perfil.nombre }} {{ perfil.apellido }}</title>
+                                    <rect width="100%" height="100%" fill="#667eea" />
+                                    <text x="50%" y="50%" fill="white" dy=".3em" text-anchor="middle" font-size="16">
+                                        {{ perfil.nombre }} {{ perfil.apellido }}
+                                    </text>
+                                </svg>
                                 {% endif %}
                             </div>
 
                             <!-- User Actions -->
                             {% if current_user.id == perfil.id %}
-                                <div class="d-flex flex-wrap gap-2 mb-3">
-                                    <a
-                                        class="btn btn-outline-primary btn-sm flex-fill"
-                                        href="{{ url_for('user_profile.edit_perfil', ulid=perfil.id) }}"
-                                        role="button"
-                                        ><i class="bi bi-pencil-square me-1"></i> Editar Perfil</a
-                                    >
-                                    <a
-                                        class="btn btn-outline-secondary btn-sm flex-fill"
-                                        href="{{ url_for('user_profile.cambiar_contraseña', ulid=perfil.id) }}"
-                                        role="button"
-                                        ><i class="bi bi-key me-1"></i> Cambiar Contraseña</a
-                                    >
-                                </div>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <a
+                                    class="btn btn-outline-primary btn-sm flex-fill"
+                                    href="{{ url_for('user_profile.edit_perfil', ulid=perfil.id) }}"
+                                    role="button"
+                                    ><i class="bi bi-pencil-square me-1"></i> Editar Perfil</a
+                                >
+                                <a
+                                    class="btn btn-outline-secondary btn-sm flex-fill"
+                                    href="{{ url_for('user_profile.cambiar_contraseña', ulid=perfil.id) }}"
+                                    role="button"
+                                    ><i class="bi bi-key me-1"></i> Cambiar Contraseña</a
+                                >
+                            </div>
                             {% endif %}
 
                             <!-- User Information -->
@@ -146,10 +146,10 @@
                                 <h5 class="text-primary mb-3"><i class="bi bi-info-circle me-2"></i>Información Personal</h5>
 
                                 {% if perfil.bio %}
-                                    <div class="mb-3">
-                                        <strong>Sobre mí:</strong>
-                                        <p class="mb-0 text-muted">{{ perfil.bio }}</p>
-                                    </div>
+                                <div class="mb-3">
+                                    <strong>Sobre mí:</strong>
+                                    <p class="mb-0 text-muted">{{ perfil.bio }}</p>
+                                </div>
                                 {% endif %}
 
                                 <div class="row g-2 mb-3">
@@ -176,298 +176,286 @@
                             </div>
 
                             <!-- Social Links -->
-                            {% if perfil.url or perfil.linkedin or perfil.twitter or perfil.facebook or perfil.github or perfil.youtube %}
-                                <div class="info-section">
-                                    <h6 class="text-primary mb-3"><i class="bi bi-share me-2"></i>Enlaces Sociales</h6>
-                                    <div class="social-links text-center">
-                                        {% if perfil.url %}
-                                            <a href="{{ perfil.url }}" class="text-primary" target="_blank" title="Sitio Web">
-                                                <i class="bi bi-globe"></i>
-                                            </a>
-                                        {% endif %}
-                                        {% if perfil.linkedin %}
-                                            <a
-                                                href="https://www.linkedin.com/in/{{ perfil.linkedin }}"
-                                                class="text-primary"
-                                                target="_blank"
-                                                title="LinkedIn"
-                                            >
-                                                <i class="bi bi-linkedin"></i>
-                                            </a>
-                                        {% endif %}
-                                        {% if perfil.twitter %}
-                                            <a
-                                                href="https://twitter.com/{{ perfil.twitter }}"
-                                                class="text-primary"
-                                                target="_blank"
-                                                title="Twitter"
-                                            >
-                                                <i class="bi bi-twitter"></i>
-                                            </a>
-                                        {% endif %}
-                                        {% if perfil.facebook %}
-                                            <a
-                                                href="https://www.facebook.com/{{ perfil.facebook }}"
-                                                class="text-primary"
-                                                target="_blank"
-                                                title="Facebook"
-                                            >
-                                                <i class="bi bi-facebook"></i>
-                                            </a>
-                                        {% endif %}
-                                        {% if perfil.github %}
-                                            <a
-                                                href="https://github.com/{{ perfil.github }}"
-                                                class="text-primary"
-                                                target="_blank"
-                                                title="GitHub"
-                                            >
-                                                <i class="bi bi-github"></i>
-                                            </a>
-                                        {% endif %}
-                                        {% if perfil.youtube %}
-                                            <a
-                                                href="https://youtube.com/{{ perfil.youtube }}"
-                                                class="text-primary"
-                                                target="_blank"
-                                                title="YouTube"
-                                            >
-                                                <i class="bi bi-youtube"></i>
-                                            </a>
-                                        {% endif %}
-                                    </div>
+                            {% if perfil.url or perfil.linkedin or perfil.twitter or perfil.facebook or perfil.github or
+                            perfil.youtube %}
+                            <div class="info-section">
+                                <h6 class="text-primary mb-3"><i class="bi bi-share me-2"></i>Enlaces Sociales</h6>
+                                <div class="social-links text-center">
+                                    {% if perfil.url %}
+                                    <a href="{{ perfil.url }}" class="text-primary" target="_blank" title="Sitio Web">
+                                        <i class="bi bi-globe"></i>
+                                    </a>
+                                    {% endif %} {% if perfil.linkedin %}
+                                    <a
+                                        href="https://www.linkedin.com/in/{{ perfil.linkedin }}"
+                                        class="text-primary"
+                                        target="_blank"
+                                        title="LinkedIn"
+                                    >
+                                        <i class="bi bi-linkedin"></i>
+                                    </a>
+                                    {% endif %} {% if perfil.twitter %}
+                                    <a
+                                        href="https://twitter.com/{{ perfil.twitter }}"
+                                        class="text-primary"
+                                        target="_blank"
+                                        title="Twitter"
+                                    >
+                                        <i class="bi bi-twitter"></i>
+                                    </a>
+                                    {% endif %} {% if perfil.facebook %}
+                                    <a
+                                        href="https://www.facebook.com/{{ perfil.facebook }}"
+                                        class="text-primary"
+                                        target="_blank"
+                                        title="Facebook"
+                                    >
+                                        <i class="bi bi-facebook"></i>
+                                    </a>
+                                    {% endif %} {% if perfil.github %}
+                                    <a
+                                        href="https://github.com/{{ perfil.github }}"
+                                        class="text-primary"
+                                        target="_blank"
+                                        title="GitHub"
+                                    >
+                                        <i class="bi bi-github"></i>
+                                    </a>
+                                    {% endif %} {% if perfil.youtube %}
+                                    <a
+                                        href="https://youtube.com/{{ perfil.youtube }}"
+                                        class="text-primary"
+                                        target="_blank"
+                                        title="YouTube"
+                                    >
+                                        <i class="bi bi-youtube"></i>
+                                    </a>
+                                    {% endif %}
                                 </div>
+                            </div>
                             {% endif %}
                         </div>
                     </div>
                     <!-- Activity & Dashboard Section -->
                     <div class="col-lg-8">
                         {% if perfil.tipo == "student" %}
-                            <!-- Student Profile Section -->
-                            <div class="profile-card p-4 mb-4">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="me-3">
-                                        <i class="bi bi-book text-success stat-icon"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-1"><i class="bi bi-book me-2"></i>Mis Cursos Inscritos</h4>
-                                        <p class="text-muted mb-0">Explora tus cursos activos y progreso de aprendizaje</p>
-                                    </div>
+                        <!-- Student Profile Section -->
+                        <div class="profile-card p-4 mb-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    <i class="bi bi-book text-success stat-icon"></i>
                                 </div>
-
-                                {% if cursos_inscritos %}
-                                    <div class="row row-cols-1 row-cols-md-2 g-3">
-                                        {% for curso in cursos_inscritos %}
-                                            <div class="col">
-                                                <div
-                                                    class="card h-100 border-0"
-                                                    style="border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
-                                                >
-                                                    <div class="card-body">
-                                                        <h6 class="card-title text-success">{{ curso.nombre }}</h6>
-                                                        <p class="card-text text-muted small">{{ curso.descripcion_corta }}</p>
-                                                        <p class="card-text">
-                                                            <small class="text-muted">Código: {{ curso.codigo }}</small>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    <div class="text-center py-4">
-                                        <i class="bi bi-book text-muted" style="font-size: 3rem;"></i>
-                                        <p class="text-muted mt-2">No tienes cursos inscritos actualmente.</p>
-                                        <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-outline-success">
-                                            <i class="bi bi-search me-1"></i>Explorar Cursos
-                                        </a>
-                                    </div>
-                                {% endif %}
-                            </div>
-
-                            <div class="profile-card p-4 mb-4">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="me-3">
-                                        <i class="bi bi-award text-warning stat-icon"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-1"><i class="bi bi-award me-2"></i>Mis Certificaciones</h4>
-                                        <p class="text-muted mb-0">Tus logros y certificaciones obtenidas</p>
-                                    </div>
-                                </div>
-
-                                {% if certificaciones %}
-                                    <div class="row row-cols-1 row-cols-md-2 g-3">
-                                        {% for item in certificaciones %}
-                                            <div class="col">
-                                                <div
-                                                    class="card h-100 border-warning"
-                                                    style="border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
-                                                >
-                                                    <div class="card-body">
-                                                        <h6 class="card-title text-warning">{{ item.curso.nombre }}</h6>
-                                                        <p class="card-text">
-                                                            <small class="text-muted"
-                                                                >Fecha: {{ item.certificacion.fecha }}</small
-                                                            >
-                                                        </p>
-                                                        {% if item.certificacion.nota %}
-                                                            <p class="card-text">
-                                                                <small class="text-muted"
-                                                                    >Nota: {{ item.certificacion.nota }}</small
-                                                                >
-                                                            </p>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    <div class="text-center py-4">
-                                        <i class="bi bi-award text-muted" style="font-size: 3rem;"></i>
-                                        <p class="text-muted mt-2">No tienes certificaciones obtenidas aún.</p>
-                                    </div>
-                                {% endif %}
-                            </div>
-
-                            <!-- Student Dashboard Link -->
-                            <div class="profile-card p-4">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <h4 class="mb-2">
-                                            <i class="bi bi-house-door text-primary me-2"></i>Panel de Estudiante
-                                        </h4>
-                                        <p class="text-muted mb-0">
-                                            Accede al panel de estudiante para gestionar tu aprendizaje de manera completa.
-                                        </p>
-                                    </div>
-                                    <div class="col-md-4 text-end">
-                                        <a
-                                            href="{{ url_for('user_profile.pagina_estudiante') }}"
-                                            class="btn btn-success"
-                                            style="border-radius: 25px;"
-                                        >
-                                            <i class="bi bi-mortarboard me-1"></i> Ir al Panel
-                                        </a>
-                                    </div>
+                                <div>
+                                    <h4 class="mb-1"><i class="bi bi-book me-2"></i>Mis Cursos Inscritos</h4>
+                                    <p class="text-muted mb-0">Explora tus cursos activos y progreso de aprendizaje</p>
                                 </div>
                             </div>
+
+                            {% if cursos_inscritos %}
+                            <div class="row row-cols-1 row-cols-md-2 g-3">
+                                {% for curso in cursos_inscritos %}
+                                <div class="col">
+                                    <div
+                                        class="card h-100 border-0"
+                                        style="border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)"
+                                    >
+                                        <div class="card-body">
+                                            <h6 class="card-title text-success">{{ curso.nombre }}</h6>
+                                            <p class="card-text text-muted small">{{ curso.descripcion_corta }}</p>
+                                            <p class="card-text">
+                                                <small class="text-muted">Código: {{ curso.codigo }}</small>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-book text-muted" style="font-size: 3rem"></i>
+                                <p class="text-muted mt-2">No tienes cursos inscritos actualmente.</p>
+                                <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-outline-success">
+                                    <i class="bi bi-search me-1"></i>Explorar Cursos
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="profile-card p-4 mb-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    <i class="bi bi-award text-warning stat-icon"></i>
+                                </div>
+                                <div>
+                                    <h4 class="mb-1"><i class="bi bi-award me-2"></i>Mis Certificaciones</h4>
+                                    <p class="text-muted mb-0">Tus logros y certificaciones obtenidas</p>
+                                </div>
+                            </div>
+
+                            {% if certificaciones %}
+                            <div class="row row-cols-1 row-cols-md-2 g-3">
+                                {% for item in certificaciones %}
+                                <div class="col">
+                                    <div
+                                        class="card h-100 border-warning"
+                                        style="border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)"
+                                    >
+                                        <div class="card-body">
+                                            <h6 class="card-title text-warning">{{ item.curso.nombre }}</h6>
+                                            <p class="card-text">
+                                                <small class="text-muted">Fecha: {{ item.certificacion.fecha }}</small>
+                                            </p>
+                                            {% if item.certificacion.nota %}
+                                            <p class="card-text">
+                                                <small class="text-muted">Nota: {{ item.certificacion.nota }}</small>
+                                            </p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-award text-muted" style="font-size: 3rem"></i>
+                                <p class="text-muted mt-2">No tienes certificaciones obtenidas aún.</p>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Student Dashboard Link -->
+                        <div class="profile-card p-4">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h4 class="mb-2"><i class="bi bi-house-door text-primary me-2"></i>Panel de Estudiante</h4>
+                                    <p class="text-muted mb-0">
+                                        Accede al panel de estudiante para gestionar tu aprendizaje de manera completa.
+                                    </p>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <a
+                                        href="{{ url_for('user_profile.pagina_estudiante') }}"
+                                        class="btn btn-success"
+                                        style="border-radius: 25px"
+                                    >
+                                        <i class="bi bi-mortarboard me-1"></i> Ir al Panel
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                         {% elif perfil.tipo == "instructor" %}
-                            <!-- Instructor Profile Section -->
-                            <div class="profile-card p-4 mb-4">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="me-3">
-                                        <i class="bi bi-mortarboard text-primary stat-icon"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-1"><i class="bi bi-mortarboard me-2"></i>Mis Cursos Creados</h4>
-                                        <p class="text-muted mb-0">Cursos que has desarrollado y publicas</p>
-                                    </div>
+                        <!-- Instructor Profile Section -->
+                        <div class="profile-card p-4 mb-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    <i class="bi bi-mortarboard text-primary stat-icon"></i>
                                 </div>
-
-                                {% if cursos_creados %}
-                                    <div class="row row-cols-1 row-cols-md-2 g-3">
-                                        {% for curso in cursos_creados %}
-                                            <div class="col">
-                                                <div
-                                                    class="card h-100 border-0"
-                                                    style="border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"
-                                                >
-                                                    <div class="card-body">
-                                                        <h6 class="card-title text-primary">{{ curso.nombre }}</h6>
-                                                        <p class="card-text text-muted small">{{ curso.descripcion_corta }}</p>
-                                                        <p class="card-text">
-                                                            <small class="text-muted">Código: {{ curso.codigo }}</small>
-                                                        </p>
-                                                        <p class="card-text">
-                                                            <small class="text-muted"
-                                                                >Estado: {{ curso.estado | capitalize }}</small
-                                                            >
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    <div class="text-center py-4">
-                                        <i class="bi bi-mortarboard text-muted" style="font-size: 3rem;"></i>
-                                        <p class="text-muted mt-2">No tienes cursos creados actualmente.</p>
-                                    </div>
-                                {% endif %}
-                            </div>
-
-                            <!-- Instructor Dashboard Link -->
-                            <div class="profile-card p-4">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <h4 class="mb-2"><i class="bi bi-bank2 text-primary me-2"></i>Panel de Instructor</h4>
-                                        <p class="text-muted mb-0">
-                                            Accede al panel de instructor para gestionar cursos, evaluaciones y más.
-                                        </p>
-                                    </div>
-                                    <div class="col-md-4 text-end">
-                                        <a
-                                            href="{{ url_for('instructor_profile.pagina_instructor') }}"
-                                            class="btn btn-primary"
-                                            style="border-radius: 25px;"
-                                        >
-                                            <i class="bi bi-mortarboard me-1"></i> Ir al Panel
-                                        </a>
-                                    </div>
+                                <div>
+                                    <h4 class="mb-1"><i class="bi bi-mortarboard me-2"></i>Mis Cursos Creados</h4>
+                                    <p class="text-muted mb-0">Cursos que has desarrollado y publicas</p>
                                 </div>
                             </div>
+
+                            {% if cursos_creados %}
+                            <div class="row row-cols-1 row-cols-md-2 g-3">
+                                {% for curso in cursos_creados %}
+                                <div class="col">
+                                    <div
+                                        class="card h-100 border-0"
+                                        style="border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)"
+                                    >
+                                        <div class="card-body">
+                                            <h6 class="card-title text-primary">{{ curso.nombre }}</h6>
+                                            <p class="card-text text-muted small">{{ curso.descripcion_corta }}</p>
+                                            <p class="card-text">
+                                                <small class="text-muted">Código: {{ curso.codigo }}</small>
+                                            </p>
+                                            <p class="card-text">
+                                                <small class="text-muted">Estado: {{ curso.estado | capitalize }}</small>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-mortarboard text-muted" style="font-size: 3rem"></i>
+                                <p class="text-muted mt-2">No tienes cursos creados actualmente.</p>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Instructor Dashboard Link -->
+                        <div class="profile-card p-4">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h4 class="mb-2"><i class="bi bi-bank2 text-primary me-2"></i>Panel de Instructor</h4>
+                                    <p class="text-muted mb-0">
+                                        Accede al panel de instructor para gestionar cursos, evaluaciones y más.
+                                    </p>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <a
+                                        href="{{ url_for('instructor_profile.pagina_instructor') }}"
+                                        class="btn btn-primary"
+                                        style="border-radius: 25px"
+                                    >
+                                        <i class="bi bi-mortarboard me-1"></i> Ir al Panel
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                         {% elif perfil.tipo == "admin" %}
-                            <!-- Admin Profile Section -->
-                            <div class="profile-card p-4">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <h4 class="mb-2">
-                                            <i class="bi bi-shield-check text-danger me-2"></i>Panel de Administración
-                                        </h4>
-                                        <p class="text-muted mb-0">
-                                            Accede al panel de administración para gestionar el sistema completo.
-                                        </p>
-                                    </div>
-                                    <div class="col-md-4 text-end">
-                                        <a
-                                            href="{{ url_for('admin_profile.pagina_admin') }}"
-                                            class="btn btn-danger"
-                                            style="border-radius: 25px;"
-                                        >
-                                            <i class="bi bi-tools me-1"></i> Ir al Panel
-                                        </a>
-                                    </div>
+                        <!-- Admin Profile Section -->
+                        <div class="profile-card p-4">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h4 class="mb-2">
+                                        <i class="bi bi-shield-check text-danger me-2"></i>Panel de Administración
+                                    </h4>
+                                    <p class="text-muted mb-0">
+                                        Accede al panel de administración para gestionar el sistema completo.
+                                    </p>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <a
+                                        href="{{ url_for('admin_profile.pagina_admin') }}"
+                                        class="btn btn-danger"
+                                        style="border-radius: 25px"
+                                    >
+                                        <i class="bi bi-tools me-1"></i> Ir al Panel
+                                    </a>
                                 </div>
                             </div>
+                        </div>
                         {% elif perfil.tipo == "moderator" %}
-                            <!-- Moderator Profile Section -->
-                            <div class="profile-card p-4">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <h4 class="mb-2"><i class="bi bi-chat-dots text-info me-2"></i>Panel de Moderación</h4>
-                                        <p class="text-muted mb-0">Gestiona los mensajes y comunicaciones del sistema.</p>
-                                    </div>
-                                    <div class="col-md-4 text-end">
-                                        <a
-                                            href="{{ url_for('moderator_profile.pagina_moderador') }}"
-                                            class="btn btn-info"
-                                            style="border-radius: 25px;"
-                                        >
-                                            <i class="bi bi-gear me-1"></i> Ir al Panel
-                                        </a>
-                                    </div>
+                        <!-- Moderator Profile Section -->
+                        <div class="profile-card p-4">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h4 class="mb-2"><i class="bi bi-chat-dots text-info me-2"></i>Panel de Moderación</h4>
+                                    <p class="text-muted mb-0">Gestiona los mensajes y comunicaciones del sistema.</p>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <a
+                                        href="{{ url_for('moderator_profile.pagina_moderador') }}"
+                                        class="btn btn-info"
+                                        style="border-radius: 25px"
+                                    >
+                                        <i class="bi bi-gear me-1"></i> Ir al Panel
+                                    </a>
                                 </div>
                             </div>
+                        </div>
                         {% else %}
-                            <!-- Default/Unknown type -->
-                            <div class="profile-card p-4">
-                                <div class="text-center py-4">
-                                    <i class="bi bi-person text-muted" style="font-size: 3rem;"></i>
-                                    <p class="text-muted mt-2">Perfil de usuario estándar.</p>
-                                </div>
+                        <!-- Default/Unknown type -->
+                        <div class="profile-card p-4">
+                            <div class="text-center py-4">
+                                <i class="bi bi-person text-muted" style="font-size: 3rem"></i>
+                                <p class="text-muted mt-2">Perfil de usuario estándar.</p>
                             </div>
+                        </div>
                         {% endif %}
                     </div>
                 </div>

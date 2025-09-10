@@ -105,7 +105,7 @@ def get_locale() -> str:
 
     # Final fallback: use browser preference or default
     try:
-        return request.accept_languages.best_match(["es", "en"]) or "en"
+        return request.accept_languages.best_match(["es", "en", "pt_BR"]) or "en"
     except RuntimeError:
         # Working outside request context - use default based on testing mode
         return "es" if is_testing_mode() else "en"

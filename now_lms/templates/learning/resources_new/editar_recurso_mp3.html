@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %} {% from 'macros/form_buttons.j2' import render_form_buttons %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
-        <title>Editar Recurso - Audio</title>
+        <title>{{ _("Editar") }} {{ _("Recurso") }} - Audio</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -17,13 +17,13 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Editar archivo de audio: {{ recurso.nombre }}</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Editar") }} archivo de audio: {{ recurso.nombre }}</h4>
                 <form method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }}
                     <div class="row g-3">
                         <div class="col-sm-12">
-                            <label for="nombre" class="form-label">Nombre del Audio</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Nombre del Audio") }}
+                            <label for="nombre" class="form-label">{{ _("Nombre") }} del Audio</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder="{{ _("Nombre") }} del Audio") }}
                         </div>
 
                         {% if recurso.doc %}
@@ -64,17 +64,17 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="requerido" class="form-label">Tipo de Recurso</label>
+                            <label for="requerido" class="form-label">{{ _("Tipo") }} de {{ _("Recurso") }}</label>
                             {{ form.requerido(class="form-control", id="requerido") }}
                         </div>
 
                         <div>
-                            <label for="descripcion" class="form-label">Descripción</label>
+                            <label for="descripcion" class="form-label">{{ _("Descripción") }}</label>
                             {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
                         </div>
 
-                        {{ render_form_buttons("Actualizar Recurso", url_for('course.administrar_curso', course_code=id_curso))
-                        }}
+                        {{ render_form_buttons("Actualizar {{ _("Recurso") }}", url_for('course.administrar_curso',
+                        course_code=id_curso)) }}
                     </div>
                 </form>
             </div>

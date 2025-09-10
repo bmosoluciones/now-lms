@@ -1,6 +1,6 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
         <title>{{ title }}</title>
@@ -15,7 +15,7 @@
             {{ current_theme.notify() }}
 
             <div class="container px-0 py-3" id="curse_list">
-                <h4>Lista de Cursos del Programa.</h4>
+                <h4>Lista de {{ _("{{ _("{{ _("Cursos") }}") }}") }} del {{ _("{{ _("{{ _("Programa") }}") }}") }}.</h4>
             </div>
         </main>
     </body>

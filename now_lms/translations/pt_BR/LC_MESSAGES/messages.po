@@ -1,0 +1,4224 @@
+# Portuguese (Brazil) translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-09-10 03:36+0000\n"
+"PO-Revision-Date: 2025-09-10 03:36+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: now_lms/__init__.py:275
+msgid "Favor iniciar sesión para acceder al sistema."
+msgstr "Por favor, faça login para acessar o sistema."
+
+#: now_lms/__init__.py:388 now_lms/__init__.py:551
+msgid "Favor iniciar sesión para acceder a este recurso."
+msgstr "Por favor, faça login para acessar este recurso."
+
+#: now_lms/bi.py:218
+msgid "Curso finalizado. Todos los mensajes del foro han sido cerrados."
+msgstr "Curso finalizado. Todas as mensagens do fórum foram fechadas."
+
+#: now_lms/bi.py:228
+msgid "Curso eliminado del sitio Web."
+msgstr "Curso removido do site."
+
+#: now_lms/bi.py:245
+msgid "No se puede publicar el curso"
+msgstr "O curso não pode ser publicado"
+
+#: now_lms/db/tools.py:140
+msgid "Sistema de aprendizaje en linea."
+msgstr "Sistema de aprendizagem online."
+
+#: now_lms/db/tools.py:409
+msgid "Imagen de usuario eliminada correctamente."
+msgstr "Imagem do usuário excluída com sucesso."
+
+#: now_lms/db/tools.py:411
+msgid "Imagen de usuario no existe."
+msgstr "A imagem do usuário não existe."
+
+#: now_lms/templates/admin/adsense.html:7
+msgid "Configuración de Anuncios de AdSense"
+msgstr "Configuração de Anúncios do AdSense"
+
+#: now_lms/templates/admin/adsense.html:21
+msgid "Editar configuración de anuncios de AdSense."
+msgstr "Editar configurações de anúncios do AdSense."
+
+#: now_lms/templates/admin/adsense.html:25
+msgid "Configuración de usuario de AdSense."
+msgstr "Configuração de usuário do AdSense."
+
+#: now_lms/templates/admin/adsense.html:26
+msgid "Mostrar etiqueta en Header"
+msgstr "Mostrar tag no cabeçalho"
+
+#: now_lms/templates/admin/adsense.html:33
+msgid "Header script"
+msgstr "Script do cabeçalho"
+
+#: now_lms/templates/admin/adsense.html:42
+msgid "ID de Usuario de AdSense"
+msgstr "ID do usuário do AdSense"
+
+#: now_lms/templates/admin/adsense.html:51
+msgid "Configuración de anuncios en el sitio"
+msgstr "Configuração de anúncios no site"
+
+#: now_lms/templates/admin/adsense.html:52
+msgid "Mostrar anuncios"
+msgstr "Mostrar anúncios"
+
+#: now_lms/templates/admin/adsense.html:59
+msgid "Código Global de AdSense"
+msgstr "Código global do AdSense"
+
+#: now_lms/templates/admin/adsense.html:66
+msgid "Anuncios específicos por tamaño"
+msgstr "Anúncios específicos por tamanho"
+
+#: now_lms/templates/admin/adsense.html:68
+msgid "Configure códigos de anuncios específicos para diferentes tamaños"
+msgstr "Configure códigos de anúncios específicos para diferentes tamanhos"
+
+#: now_lms/templates/admin/adsense.html:68
+msgid ""
+"Solo se mostrarán\n"
+"                        en cursos gratuitos."
+msgstr ""
+
+#: now_lms/templates/admin/adsense.html:74
+msgid "Leaderboard"
+msgstr "Leaderboard"
+
+#: now_lms/templates/admin/adsense.html:78
+msgid "Medium\ Rectangle"
+msgstr "Retângulo Médio"
+
+#: now_lms/templates/admin/adsense.html:87
+msgid "Large\ Rectangle"
+msgstr "Retângulo Grande"
+
+#: now_lms/templates/admin/adsense.html:91
+msgid "Mobile\ Banner"
+msgstr "Banner Mobile"
+
+#: now_lms/templates/admin/adsense.html:100
+msgid "Wide\ Skyscraper"
+msgstr "Arranha-céu Largo"
+
+#: now_lms/templates/admin/adsense.html:104
+msgid "Skyscraper"
+msgstr "Arranha-céu"
+
+#: now_lms/templates/admin/adsense.html:113
+msgid "Large\ Skyscraper"
+msgstr "Arranha-céu Grande"
+
+#: now_lms/templates/admin/adsense.html:117
+msgid "Billboard"
+msgstr "Billboard"
+
+#: now_lms/templates/admin/adsense.html:125
+msgid "Verificar\ archivo\ ads\.txt"
+msgstr "Verificar arquivo ads.txt"
+
+#: now_lms/templates/admin/adsense.html:130
+#: now_lms/templates/admin/config.html:178
+#: now_lms/templates/admin/mail.html:105
+#: now_lms/templates/admin/paypal.html:103
+msgid "Actualizar\ Configuración"
+msgstr "Atualizar Configuração"
+
+#: now_lms/templates/admin/config.html:6 now_lms/templates/admin/mail.html:7
+#: now_lms/templates/admin/mail_check.html:7
+msgid "Editar\ configuracion"
+msgstr "Editar configuração"
+
+#: now_lms/templates/admin/config.html:20
+msgid "Editar\ configuración\ del\ sitio\ web"
+msgstr "Editar configuração do site"
+
+#: now_lms/templates/admin/config.html:24
+msgid "Datos\ Generales\ del\ Sitio\ Web"
+msgstr "Dados Gerais do Site"
+
+#: now_lms/templates/admin/config.html:29
+msgid "Nombre\ del\ Sitio\ Web"
+msgstr "Nome do Site"
+
+#: now_lms/templates/admin/config.html:34
+msgid "Descripción\ del\ Sitio"
+msgstr "Descrição do Site"
+
+#: now_lms/templates/admin/config.html:41
+msgid "Configuración\ Regional"
+msgstr "Configuração Regional"
+
+#: now_lms/templates/admin/config.html:45
+msgid "Moneda\ del\ Sitio"
+msgstr "Moeda do Site"
+
+#: now_lms/templates/admin/config.html:48
+msgid "Seleccione\ la\ moneda\ predeterminada\ para\ procesar\ pagos\ y\ mostrar\ precios"
+msgstr "Selecione a moeda padrão para processar pagamentos e exibir preços"
+
+#: now_lms/templates/admin/config.html:52
+msgid "Zona\ Horaria"
+msgstr "Fuso Horário"
+
+#: now_lms/templates/admin/config.html:54
+msgid "Seleccione la zona horaria adecuada para su país"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:60
+msgid "Idioma del sitio web"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:62
+msgid "Seleccione el idioma de su sitio web"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:69
+msgid "Configuración de Navegación"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:71
+msgid ""
+"Configure qué elementos del menú de navegación estarán visibles para los "
+"usuarios"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:81
+msgid "Habilitar Programas"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:84
+msgid "Los usuarios verán la opción Programas en el menú de navegación"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:92
+msgid "Habilitar Master Class"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:96
+msgid "Los usuarios verán la opción Clases Magistrales en el menú de navegación"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:107
+msgid "Habilitar Recursos descargables"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:111
+msgid "Los usuarios verán la opción Recursos en el menú de navegación"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:117
+msgid "Habilitar Blog"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:119
+msgid "Los usuarios verán la opción Blog en el menú de navegación"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:126
+msgid "Configuración de subida de archivos"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:135
+msgid "Habilitar subida de archivos descargables"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:139
+msgid ""
+"Permite a los instructores subir archivos descargables como recursos del "
+"curso"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:143
+msgid "Tamaño máximo de archivo (MB)"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:147
+msgid "Tamaño máximo permitido para archivos descargables (1-100 MB)"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:155
+msgid "Configuración de verificación de usuarios"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:162
+msgid ""
+"La configuración de correo\n"
+"                                electrónico ha sido verificada "
+"correctamente."
+msgstr ""
+
+#: now_lms/templates/admin/config.html:167
+msgid ""
+"La configuración de correo\n"
+"                                electrónico no ha sido verificada."
+msgstr ""
+
+#: now_lms/templates/admin/config.html:172
+msgid "Permitir a nuevos usuarios verificarse vía correo electronico"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:6
+#: now_lms/templates/admin/flagged_messages.html:34
+#: now_lms/templates/inicio/panel_admin.html:253
+msgid "Mensajes Reportados"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:6
+#: now_lms/templates/admin/flagged_messages.html:31
+#: now_lms/templates/announcements/admin_form.html:7
+#: now_lms/templates/announcements/admin_list.html:7
+#: now_lms/templates/themes/cambridge/navbar.j2:71
+msgid "Administración"
+msgstr "Administração"
+
+#: now_lms/templates/admin/flagged_messages.html:23
+#: now_lms/templates/calendar/calendar_view.html:73
+#: now_lms/templates/calendar/event_detail.html:25
+#: now_lms/templates/calendar/upcoming_events.html:25
+#: now_lms/templates/evaluations/evaluation_result.html:25
+#: now_lms/templates/evaluations/request_reopen.html:25
+#: now_lms/templates/evaluations/take_evaluation.html:25
+#: now_lms/templates/forum/forum_list.html:28
+#: now_lms/templates/forum/message_thread.html:25
+#: now_lms/templates/forum/new_message.html:25
+#: now_lms/templates/forum/reply_message.html:25
+#: now_lms/templates/inicio/cursos.html:298
+#: now_lms/templates/learning/curso.html:29
+#: now_lms/templates/learning/curso/curso.html:27
+#: now_lms/templates/learning/curso_lista.html:45
+#: now_lms/templates/learning/mensajes/new_thread.html:23
+#: now_lms/templates/learning/mensajes/standalone_report.html:23
+#: now_lms/templates/learning/mensajes/user_messages.html:23
+#: now_lms/templates/learning/mensajes/view_thread.html:23
+#: now_lms/templates/themes/cambridge/navbar.j2:38
+#: now_lms/templates/themes/cambridge/navbar.j2:42
+#: now_lms/templates/themes/now_lms/navbar.j2:39
+#: now_lms/templates/themes/now_lms/navbar.j2:45
+msgid "Inicio"
+msgstr "Início"
+
+#: now_lms/templates/admin/flagged_messages.html:45
+#, python-format
+msgid "Se encontraron %(num)d mensaje(s) reportado(s) que requieren revisión."
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:55
+msgid "Mensaje Reportado"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:57
+msgid "Reportado"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:63
+msgid "Información del Mensaje"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:65
+msgid "De"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:69
+#: now_lms/templates/blog/admin_index.html:71
+#: now_lms/templates/blog/instructor_index.html:34
+#: now_lms/templates/learning/curso/coupons/create.html:91
+#: now_lms/templates/learning/curso/coupons/edit.html:124
+#: now_lms/templates/learning/programas/admin_enrollments.html:50
+msgid "Fecha"
+msgstr "Data"
+
+#: now_lms/templates/admin/flagged_messages.html:73
+#: now_lms/templates/calendar/event_detail.html:108
+#: now_lms/templates/evaluations/evaluation_result.html:32
+#: now_lms/templates/evaluations/request_reopen.html:32
+#: now_lms/templates/evaluations/take_evaluation.html:32
+#: now_lms/templates/forum/new_message.html:53
+#: now_lms/templates/learning/certificados/emitir_certificado.html:35
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:43
+#: now_lms/templates/learning/curso/admin.html:75
+#: now_lms/templates/learning/curso/admin.html:105
+#: now_lms/templates/learning/curso/admin.html:131
+#: now_lms/templates/learning/curso/admin.html:143
+#: now_lms/templates/learning/curso/coupons/create.html:106
+#: now_lms/templates/learning/curso/coupons/edit.html:17
+#: now_lms/templates/learning/curso/coupons/edit.html:139
+#: now_lms/templates/learning/curso/coupons/list.html:16
+#: now_lms/templates/learning/curso/coupons/list.html:118
+#: now_lms/templates/learning/curso/enroll.html:32
+#: now_lms/templates/learning/curso_lista.html:121
+#: now_lms/templates/learning/mensajes/user_messages.html:52
+#: now_lms/templates/learning/mensajes/view_thread.html:228
+#: now_lms/templates/learning/paypal_payment.html:92
+#: now_lms/templates/learning/paypal_payment.html:101
+#: now_lms/templates/learning/programas/gestionar_cursos.html:89
+#: now_lms/templates/learning/programas/gestionar_cursos.html:95
+#: now_lms/templates/learning/programas/gestionar_cursos.html:105
+#: now_lms/templates/learning/resources_new/nuevo_recurso_descargable.html:20
+msgid "Curso"
+msgstr "Curso"
+
+#: now_lms/templates/admin/flagged_messages.html:83
+#: now_lms/templates/admin/users.html:93
+#: now_lms/templates/learning/curso/admin.html:167
+#: now_lms/templates/learning/curso/admin_enrollments.html:50
+#: now_lms/templates/learning/mensajes/view_thread.html:86
+#: now_lms/templates/learning/programas/admin_enrollments.html:32
+#: now_lms/templates/learning/programas/admin_enrollments.html:48
+#: now_lms/templates/learning/programas/admin_enrollments.html:102
+#: now_lms/templates/learning/programas/gestionar_cursos.html:29
+msgid "Estudiante"
+msgstr "Estudante"
+
+#: now_lms/templates/admin/flagged_messages.html:87
+msgid "Contenido del Mensaje"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:90
+msgid "Motivo del Reporte"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:94
+#: now_lms/templates/admin/grupos/grupo.html:71
+#: now_lms/templates/admin/grupos/lista.html:46
+#: now_lms/templates/admin/users.html:54
+#: now_lms/templates/blog/admin_index.html:72
+#: now_lms/templates/blog/admin_tags.html:29
+#: now_lms/templates/blog/instructor_index.html:35
+#: now_lms/templates/learning/categorias/lista_categorias.html:45
+#: now_lms/templates/learning/categorias/lista_categorias.html:63
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:45
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:61
+#: now_lms/templates/learning/certificados/lista_certificados.html:50
+#: now_lms/templates/learning/certificados/lista_certificados.html:74
+#: now_lms/templates/learning/curso/admin.html:39
+#: now_lms/templates/learning/curso/admin.html:235
+#: now_lms/templates/learning/curso/admin.html:243
+#: now_lms/templates/learning/curso/admin.html:280
+#: now_lms/templates/learning/curso/admin.html:327
+#: now_lms/templates/learning/curso/admin_enrollments.html:57
+#: now_lms/templates/learning/curso/coupons/list.html:44
+#: now_lms/templates/learning/curso_lista.html:50
+#: now_lms/templates/learning/curso_lista.html:90
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:46
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:69
+#: now_lms/templates/learning/programas/admin_enrollments.html:52
+#: now_lms/templates/learning/programas/lista_programas.html:53
+#: now_lms/templates/learning/programas/lista_programas.html:97
+#: now_lms/templates/learning/recursos/lista_recursos.html:48
+#: now_lms/templates/learning/recursos/lista_recursos.html:80
+msgid "Acciones"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:100
+msgid "Ver Conversación Completa"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:106
+#: now_lms/templates/calendar/event_detail.html:195
+#: now_lms/templates/inicio/cursos.html:412
+#: now_lms/templates/inicio/home.html:189
+msgid "Ver Curso"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:113
+msgid "Marcar como Revisado"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:118
+msgid "Estadísticas del Hilo"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:120
+#: now_lms/templates/admin/grupos/grupo.html:69
+#: now_lms/templates/admin/users.html:52
+#: now_lms/templates/blog/admin_index.html:69
+#: now_lms/templates/blog/instructor_index.html:32
+#: now_lms/templates/calendar/event_detail.html:91
+#: now_lms/templates/learning/curso/coupons/edit.html:35
+#: now_lms/templates/learning/curso/coupons/edit.html:46
+#: now_lms/templates/learning/curso/coupons/list.html:43
+#: now_lms/templates/learning/curso/enroll.html:117
+#: now_lms/templates/learning/curso_lista.html:48
+#: now_lms/templates/learning/mensajes/view_thread.html:230
+#: now_lms/templates/learning/programas/admin_enroll.html:90
+#: now_lms/templates/learning/programas/inscribir_usuario.html:65
+#: now_lms/templates/learning/programas/lista_programas.html:52
+msgid "Estado"
+msgstr "Status"
+
+#: now_lms/templates/admin/flagged_messages.html:121
+#: now_lms/templates/forum/forum_list.html:82
+#: now_lms/templates/forum/message_thread.html:97
+#: now_lms/templates/learning/curso/admin.html:62
+#: now_lms/templates/learning/curso/admin.html:139
+#: now_lms/templates/learning/curso_lista.html:77
+#: now_lms/templates/learning/mensajes/course_messages.html:73
+#: now_lms/templates/learning/mensajes/user_messages.html:67
+#: now_lms/templates/learning/mensajes/view_thread.html:48
+#: now_lms/templates/learning/mensajes/view_thread.html:232
+#: now_lms/templates/learning/programas/inscribir_usuario.html:69
+#: now_lms/templates/learning/programas/lista_programas.html:89
+msgid "Abierto"
+msgstr "Aberto"
+
+#: now_lms/templates/admin/flagged_messages.html:123
+msgid "Resuelto"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:125
+#: now_lms/templates/forum/forum_list.html:84
+#: now_lms/templates/forum/message_thread.html:99
+#: now_lms/templates/learning/curso/admin.html:69
+#: now_lms/templates/learning/curso/admin.html:141
+#: now_lms/templates/learning/curso_lista.html:79
+#: now_lms/templates/learning/mensajes/course_messages.html:77
+#: now_lms/templates/learning/mensajes/user_messages.html:71
+#: now_lms/templates/learning/mensajes/view_thread.html:73
+#: now_lms/templates/learning/mensajes/view_thread.html:92
+#: now_lms/templates/learning/mensajes/view_thread.html:236
+#: now_lms/templates/learning/mensajes/view_thread.html:241
+#: now_lms/templates/learning/programas/inscribir_usuario.html:71
+#: now_lms/templates/learning/programas/lista_programas.html:91
+msgid "Cerrado"
+msgstr "Fechado"
+
+#: now_lms/templates/admin/flagged_messages.html:128
+#: now_lms/templates/learning/curso.html:133
+#: now_lms/templates/learning/mensajes/course_messages.html:66
+#: now_lms/templates/learning/mensajes/new_thread.html:39
+#: now_lms/templates/learning/mensajes/user_messages.html:6
+#: now_lms/templates/learning/mensajes/user_messages.html:26
+#: now_lms/templates/learning/mensajes/user_messages.html:60
+#: now_lms/templates/learning/mensajes/view_thread.html:39
+#: now_lms/templates/learning/mensajes/view_thread.html:243
+msgid "Mensajes"
+msgstr "Mensagens"
+
+#: now_lms/templates/admin/flagged_messages.html:130
+#: now_lms/templates/inicio/panel_admin.html:227
+#: now_lms/templates/inicio/panel_instructor.html:185
+msgid "Creado"
+msgstr "Criado"
+
+#: now_lms/templates/admin/flagged_messages.html:143
+msgid "¡Excelente!"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:144
+msgid "No hay mensajes reportados en este momento."
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:151
+msgid "¿Está seguro de que desea marcar este reporte como revisado?"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:152
+msgid "Error al procesar la solicitud"
+msgstr ""
+
+#: now_lms/templates/admin/flagged_messages.html:153
+msgid "Error al procesar la solicitud:"
+msgstr ""
+
+#: now_lms/templates/admin/inactive_users.html:6
+msgid "Usuarios inativos"
+msgstr ""
+
+#: now_lms/templates/admin/inactive_users.html:19
+msgid "Usuarios pendientes de activación"
+msgstr ""
+
+#: now_lms/templates/admin/inactive_users.html:21
+msgid "Gestiona las solicitudes de nuevos usuarios en el sistema"
+msgstr ""
+
+#: now_lms/templates/admin/inactive_users.html:30
+msgid "Lista de usuarios registrados en el sistema pendientes de activar."
+msgstr ""
+
+#: now_lms/templates/admin/grupos/grupo.html:67
+#: now_lms/templates/admin/grupos/grupo.html:85
+#: now_lms/templates/admin/inactive_users.html:35
+#: now_lms/templates/admin/mail.html:50 now_lms/templates/admin/users.html:40
+#: now_lms/templates/auth/login.html:46
+#: now_lms/templates/learning/certificados/emitir_certificado.html:23
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:44
+#: now_lms/templates/learning/programas/inscribir_usuario.html:6
+#: now_lms/templates/learning/programas/inscribir_usuario.html:23
+#: now_lms/templates/learning/programas/inscribir_usuario.html:30
+#: now_lms/templates/learning/programas/inscribir_usuario.html:46
+msgid "Usuario"
+msgstr "Usuário"
+
+#: now_lms/templates/admin/inactive_users.html:38
+#: now_lms/templates/admin/users.html:43 now_lms/templates/auth/logon.html:44
+#: now_lms/templates/blog/admin_tags.html:26
+#: now_lms/templates/learning/categorias/lista_categorias.html:42
+#: now_lms/templates/learning/certificados/certificado.html:25
+#: now_lms/templates/learning/curso/enroll.html:86
+#: now_lms/templates/learning/curso_lista.html:43
+#: now_lms/templates/learning/programas/admin_enroll.html:88
+#: now_lms/templates/learning/programas/lista_programas.html:46
+#: now_lms/templates/learning/recursos/lista_recursos.html:43
+#: now_lms/templates/learning/resources_new/nuevo_recurso_descargable.html:31
+msgid "Nombre"
+msgstr "Nome"
+
+#: now_lms/templates/admin/inactive_users.html:41
+#: now_lms/templates/admin/users.html:46 now_lms/templates/auth/logon.html:46
+#: now_lms/templates/learning/certificados/certificado.html:26
+#: now_lms/templates/learning/curso/enroll.html:91
+msgid "Apellido"
+msgstr ""
+
+#: now_lms/templates/admin/inactive_users.html:44
+#: now_lms/templates/learning/curso/enroll.html:96
+msgid "Correo Electronico"
+msgstr ""
+
+#: now_lms/templates/admin/inactive_users.html:46
+msgid "Accion"
+msgstr ""
+
+#: now_lms/templates/admin/inactive_users.html:85
+#: now_lms/templates/admin/users.html:120
+msgid "Acciones del usuario"
+msgstr ""
+
+#: now_lms/templates/admin/inactive_users.html:89
+#: now_lms/templates/admin/inactive_users.html:91
+#: now_lms/templates/blog/admin_index.html:121
+msgid "Aprobar"
+msgstr "Aprovado"
+
+#: now_lms/templates/admin/inactive_users.html:96
+#: now_lms/templates/admin/inactive_users.html:98
+msgid "Rechazar"
+msgstr "Rejeitar"
+
+#: now_lms/templates/admin/mail.html:21
+#: now_lms/templates/admin/mail_check.html:21
+msgid "Configuración del Correo Electronico"
+msgstr ""
+
+#: now_lms/templates/admin/mail.html:26
+msgid ""
+"La configuración de correo electrónico ha sido\n"
+"                    verificada correctamente"
+msgstr ""
+
+#: now_lms/templates/admin/mail.html:33
+msgid "Datos de acceso al servidor SMTP"
+msgstr ""
+
+#: now_lms/templates/admin/mail.html:36
+msgid "Servidor"
+msgstr ""
+
+#: now_lms/templates/admin/mail.html:41
+msgid "Puerto"
+msgstr "Porta"
+
+#: now_lms/templates/admin/mail.html:55
+msgid "Contraseña (Oculta por seguridad.)"
+msgstr ""
+
+#: now_lms/templates/admin/mail.html:64
+msgid "Utilizar TLS"
+msgstr ""
+
+#: now_lms/templates/admin/mail.html:69
+msgid "Utilizar SSL"
+msgstr ""
+
+#: now_lms/templates/admin/mail.html:78
+msgid "Correo predeterminado como enviado por"
+msgstr ""
+
+#: now_lms/templates/admin/mail.html:85
+msgid "Correo predeterminado enviado por nombre"
+msgstr ""
+
+#: now_lms/templates/admin/mail.html:99
+#: now_lms/templates/admin/mail_check.html:40
+msgid "Enviar Correo de Prueba"
+msgstr ""
+
+#: now_lms/templates/admin/mail_check.html:25
+msgid "Permitir Correo Electronico"
+msgstr ""
+
+#: now_lms/templates/admin/mail_check.html:37
+#: now_lms/templates/announcements/admin_form.html:84
+#: now_lms/templates/announcements/instructor_form.html:80
+#: now_lms/templates/evaluations/request_reopen.html:97
+#: now_lms/templates/forum/new_message.html:80
+#: now_lms/templates/forum/reply_message.html:102
+#: now_lms/templates/inicio/cambiar_contraseña.html:44
+#: now_lms/templates/learning/certificados/editar_certificado.html:66
+#: now_lms/templates/learning/curso/admin_enroll.html:77
+#: now_lms/templates/learning/curso/coupons/create.html:118
+#: now_lms/templates/learning/curso/coupons/edit.html:151
+#: now_lms/templates/learning/editar_seccion.html:35
+#: now_lms/templates/learning/etiquetas/editar_etiqueta.html:36
+#: now_lms/templates/learning/mensajes/new_thread.html:86
+#: now_lms/templates/learning/mensajes/standalone_report.html:87
+#: now_lms/templates/learning/mensajes/view_thread.html:174
+#: now_lms/templates/learning/mensajes/view_thread.html:277
+#: now_lms/templates/learning/programas/admin_enroll.html:71
+#: now_lms/templates/learning/resources_new/nuevo_recurso_descargable.html:66
+#: now_lms/templates/learning/resources_new/nuevo_recurso_slides.html:54
+#: now_lms/templates/macros/form_buttons.j2:4
+msgid "Cancelar"
+msgstr "Cancelar"
+
+#: now_lms/templates/admin/paypal.html:7
+msgid "Configuración de Pagos con PayPal"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:21
+msgid "Configuración de pagos con PayPal"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:27
+msgid "Configuración General"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:34
+msgid "Habilitar PayPal en el sitio web"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:43
+msgid "Usar modo sandbox (desarrollo)"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:50
+msgid "Configuración de Producción"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:51
+msgid "Configure las credenciales de PayPal para producción."
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:55
+msgid "Client ID (Producción)"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:56
+msgid "Ingrese el Client ID de producción"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:60
+msgid "Client Secret (Producción)"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:61
+msgid ""
+"Ingrese el Client Secret de\n"
+"                            producción"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:63
+#: now_lms/templates/admin/paypal.html:83
+msgid "Deje en blanco para mantener el valor actual."
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:68
+msgid "Configuración de Sandbox"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:70
+msgid "Configure las credenciales de PayPal para pruebas en sandbox."
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:75
+msgid "Client ID (Sandbox)"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:76
+msgid "Ingrese el Client ID de sandbox"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:80
+msgid "Client Secret (Sandbox)"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:81
+msgid ""
+"Ingrese el Client Secret de\n"
+"                            sandbox"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:89
+msgid "Información importante:"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:92
+msgid "Obtenga sus credenciales de PayPal desde"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:95
+msgid "Use el modo sandbox para pruebas y desarrollo"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:96
+msgid "Los secretos se almacenan de forma cifrada en la base de datos"
+msgstr ""
+
+#: now_lms/templates/admin/paypal.html:97
+msgid "Asegúrese de configurar las URLs de retorno correctamente en PayPal"
+msgstr ""
+
+#: now_lms/templates/admin/theme.html:7
+msgid "Editar apaciencia del sitio web"
+msgstr ""
+
+#: now_lms/templates/admin/theme.html:21
+msgid "Editar apariencia del sitio web"
+msgstr ""
+
+#: now_lms/templates/admin/theme.html:24
+msgid "Logo y Favicon del sitio web"
+msgstr ""
+
+#: now_lms/templates/admin/theme.html:33
+msgid "Eliminar Logo actual"
+msgstr ""
+
+#: now_lms/templates/admin/theme.html:35
+msgid "Logotipo"
+msgstr ""
+
+#: now_lms/templates/admin/theme.html:53
+msgid "Favicon"
+msgstr ""
+
+#: now_lms/templates/admin/theme.html:60
+msgid "Tema del sitio web"
+msgstr ""
+
+#: now_lms/templates/admin/theme.html:62
+msgid "Tema"
+msgstr "Tópico"
+
+#: now_lms/templates/admin/theme.html:64
+msgid "Los temas cambian varios aspectos visuales del sitio web"
+msgstr ""
+
+#: now_lms/templates/admin/theme.html:69
+msgid "Actualizar Tema"
+msgstr ""
+
+#: now_lms/templates/admin/users.html:6
+msgid "Lista de usuarios"
+msgstr ""
+
+#: now_lms/templates/admin/users.html:18
+msgid "Usuarios registrados en el sistema"
+msgstr ""
+
+#: now_lms/templates/admin/users.html:19
+msgid "Gestiona y administra los usuarios del sistema"
+msgstr ""
+
+#: now_lms/templates/admin/users.html:24
+#: now_lms/templates/inicio/panel_admin.html:67
+msgid "Nuevo Usuario"
+msgstr ""
+
+#: now_lms/templates/admin/users.html:35
+msgid "Lista de usuarios registrados en el sistema"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/grupo.html:68
+#: now_lms/templates/admin/users.html:49
+#: now_lms/templates/learning/curso/coupons/create.html:51
+#: now_lms/templates/learning/curso/coupons/edit.html:79
+#: now_lms/templates/learning/curso/coupons/list.html:39
+#: now_lms/templates/learning/resources_new/nuevo_recurso_descargable.html:59
+msgid "Tipo"
+msgstr "Tipo"
+
+#: now_lms/templates/admin/grupos/grupo.html:70
+#: now_lms/templates/admin/users.html:56
+msgid "Fecha registro"
+msgstr ""
+
+#: now_lms/templates/admin/users.html:59
+msgid "Ultimo Inicio"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/grupo.html:89
+#: now_lms/templates/admin/users.html:97
+msgid "Moderador"
+msgstr "Moderador"
+
+#: now_lms/templates/admin/grupos/grupo.html:93
+#: now_lms/templates/admin/users.html:101
+#: now_lms/templates/announcements/instructor_form.html:7
+#: now_lms/templates/announcements/instructor_list.html:7
+msgid "Instructor"
+msgstr "Instrutor"
+
+#: now_lms/templates/admin/users.html:105
+msgid "Admin"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/grupo.html:108
+#: now_lms/templates/admin/users.html:113
+msgid "Usuario Activo"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/grupo.html:112
+#: now_lms/templates/admin/users.html:116
+msgid "Usuario Inactivo"
+msgstr ""
+
+#: now_lms/templates/admin/users.html:124
+msgid "Ver usuario"
+msgstr ""
+
+#: now_lms/templates/admin/users.html:132
+msgid "Inactivar Usuario"
+msgstr ""
+
+#: now_lms/templates/admin/users.html:140
+msgid "Activar Usuario"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/grupo.html:15
+#: now_lms/templates/admin/grupos/grupo.html:26
+msgid "Miembros del Grupo"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/grupo.html:41
+msgid "Agregar Usuario"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/grupo.html:56
+msgid "Asignar Tutor"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/grupo.html:63
+msgid "Lista de miembros del Grupo"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/grupo.html:97
+msgid "Otro"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/grupo.html:117
+#: now_lms/templates/admin/grupos/lista.html:43
+#: now_lms/templates/admin/grupos/lista.html:57
+#: now_lms/templates/learning/curso/coupons/edit.html:49
+#: now_lms/templates/learning/curso/coupons/list.html:72
+msgid "Activo"
+msgstr "Ativo"
+
+#: now_lms/templates/admin/grupos/grupo.html:117
+#: now_lms/templates/admin/grupos/lista.html:59
+msgid "Inactivo"
+msgstr "Inativo"
+
+#: now_lms/templates/admin/grupos/grupo.html:130
+#: now_lms/templates/announcements/admin_list.html:52
+#: now_lms/templates/announcements/instructor_list.html:55
+#: now_lms/templates/blog/admin_tags.html:43
+#: now_lms/templates/blog/post_detail.html:138
+#: now_lms/templates/learning/categorias/lista_categorias.html:74
+#: now_lms/templates/learning/curso/admin.html:355
+#: now_lms/templates/learning/curso/admin.html:477
+#: now_lms/templates/learning/curso/admin.html:591
+#: now_lms/templates/learning/curso/coupons/list.html:92
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:80
+#: now_lms/templates/learning/programas/lista_programas.html:136
+#: now_lms/templates/learning/recursos/lista_recursos.html:98
+msgid "Eliminar"
+msgstr "Excluir"
+
+#: now_lms/templates/admin/grupos/lista.html:6
+msgid "Lista de Grupo"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/lista.html:18
+msgid "Grupos registrados en el sistema"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/lista.html:19
+msgid "Gestiona y administra los grupos de usuarios"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/lista.html:24
+#: now_lms/templates/admin/grupos/nuevo.html:6
+msgid "Nuevo Grupo"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/lista.html:35
+msgid "Lista de grupos registrados en el sistema."
+msgstr ""
+
+#: now_lms/templates/admin/grupos/lista.html:40
+msgid "Grupo"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/lista.html:45
+msgid "Tutor"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/lista.html:66
+msgid "Acciones del grupo"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/lista.html:70
+msgid "Ver grupo"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/lista.html:77
+msgid "Editar grupo"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/nuevo.html:20
+msgid "Agregar un nuevo Grupo de Usuarios."
+msgstr ""
+
+#: now_lms/templates/admin/grupos/nuevo.html:25
+#: now_lms/templates/admin/grupos/nuevo.html:26
+msgid "Nombre del Grupo."
+msgstr ""
+
+#: now_lms/templates/admin/grupos/nuevo.html:30
+#: now_lms/templates/calendar/event_detail.html:72
+#: now_lms/templates/learning/curso/enroll.html:38
+#: now_lms/templates/learning/programas/admin_enroll.html:98
+#: now_lms/templates/learning/programas/inscribir_programa.html:37
+#: now_lms/templates/learning/programas/tomar_programa.html:27
+#: now_lms/templates/learning/resources_new/nuevo_recurso_descargable.html:37
+#: now_lms/templates/learning/resources_new/nuevo_recurso_slides.html:40
+#: now_lms/templates/learning/resources_new/nuevo_recurso_slides.html:42
+msgid "Descripción"
+msgstr "Descrição"
+
+#: now_lms/templates/admin/grupos/nuevo.html:31
+msgid "Descripción del Grupo"
+msgstr ""
+
+#: now_lms/templates/admin/grupos/nuevo.html:36
+msgid "Crear Grupo"
+msgstr ""
+
+#: now_lms/templates/announcements/admin_form.html:20
+#: now_lms/templates/announcements/instructor_form.html:20
+msgid "Volver a la lista"
+msgstr ""
+
+#: now_lms/templates/announcements/admin_form.html:49
+#: now_lms/templates/announcements/instructor_form.html:60
+msgid "Puedes usar Markdown para formatear el contenido."
+msgstr ""
+
+#: now_lms/templates/announcements/admin_form.html:63
+#: now_lms/templates/announcements/instructor_form.html:72
+msgid "Deja vacío si no quieres que expire."
+msgstr ""
+
+#: now_lms/templates/announcements/admin_form.html:73
+msgid "Los anuncios destacados aparecen al principio de la lista."
+msgstr ""
+
+#: now_lms/templates/announcements/admin_form.html:88
+#: now_lms/templates/announcements/instructor_form.html:84
+msgid "Actualizar"
+msgstr "Atualizar"
+
+#: now_lms/templates/announcements/admin_form.html:88
+#: now_lms/templates/announcements/instructor_form.html:84
+#: now_lms/templates/learning/categorias/lista_categorias.html:95
+#: now_lms/templates/learning/certificados/lista_certificados.html:139
+#: now_lms/templates/learning/curso/admin.html:196
+#: now_lms/templates/learning/curso/admin.html:333
+#: now_lms/templates/learning/curso/coupons/create.html:121
+#: now_lms/templates/learning/curso/coupons/list.html:18
+#: now_lms/templates/learning/curso/coupons/list.html:110
+#: now_lms/templates/learning/curso_lista.html:121
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:101
+#: now_lms/templates/learning/programas/lista_programas.html:157
+#: now_lms/templates/learning/recursos/lista_recursos.html:119
+#: now_lms/templates/learning/resources_new/nuevo_recurso_slides.html:21
+#: now_lms/templates/learning/resources_new/nuevo_recurso_slides.html:48
+msgid "Crear"
+msgstr "Criar"
+
+#: now_lms/templates/announcements/admin_form.html:89
+#: now_lms/templates/announcements/instructor_form.html:85
+msgid "Anuncio"
+msgstr "Anúncio"
+
+#: now_lms/templates/announcements/admin_form.html:97
+#: now_lms/templates/announcements/instructor_form.html:93
+#: now_lms/templates/learning/curso/admin.html:131
+#: now_lms/templates/learning/curso/coupons/create.html:106
+#: now_lms/templates/learning/curso/coupons/edit.html:139
+#: now_lms/templates/learning/mensajes/view_thread.html:225
+#: now_lms/templates/learning/programas/admin_enroll.html:83
+#: now_lms/templates/learning/programas/inscribir_usuario.html:54
+#: now_lms/templates/themes/cambridge/navbar.j2:108
+msgid "Información"
+msgstr "Informação"
+
+#: now_lms/templates/announcements/admin_form.html:101
+msgid ""
+"Los anuncios globales son visibles para todos los usuarios autenticados "
+"en el\n"
+"                                    sistema."
+msgstr ""
+
+#: now_lms/templates/announcements/admin_form.html:105
+#: now_lms/templates/announcements/instructor_form.html:101
+msgid "Markdown:"
+msgstr ""
+
+#: now_lms/templates/announcements/admin_form.html:105
+#: now_lms/templates/announcements/instructor_form.html:101
+msgid ""
+"Puedes usar formato Markdown para enriquecer el\n"
+"                                    contenido del anuncio."
+msgstr ""
+
+#: now_lms/templates/announcements/admin_form.html:109
+msgid "Destacado:"
+msgstr ""
+
+#: now_lms/templates/announcements/admin_form.html:109
+msgid ""
+"Los anuncios destacados aparecen fijados al\n"
+"                                    principio de la lista."
+msgstr ""
+
+#: now_lms/templates/announcements/admin_form.html:113
+#: now_lms/templates/announcements/instructor_form.html:105
+msgid "Expiración:"
+msgstr ""
+
+#: now_lms/templates/announcements/admin_form.html:113
+#: now_lms/templates/announcements/instructor_form.html:105
+msgid ""
+"Si defines una fecha de expiración, el\n"
+"                                    anuncio dejará de mostrarse "
+"automáticamente."
+msgstr ""
+
+#: now_lms/templates/announcements/admin_list.html:7
+#: now_lms/templates/announcements/admin_list.html:18
+msgid "Anuncios Globales"
+msgstr ""
+
+#: now_lms/templates/announcements/admin_list.html:20
+#: now_lms/templates/announcements/instructor_list.html:21
+msgid "Nuevo Anuncio"
+msgstr ""
+
+#: now_lms/templates/announcements/admin_list.html:40
+#: now_lms/templates/announcements/instructor_list.html:43
+#: now_lms/templates/blog/admin_index.html:113
+#: now_lms/templates/blog/instructor_index.html:73
+#: now_lms/templates/blog/instructor_index.html:75
+#: now_lms/templates/learning/categorias/lista_categorias.html:67
+#: now_lms/templates/learning/certificados/lista_certificados.html:111
+#: now_lms/templates/learning/curso/admin.html:131
+#: now_lms/templates/learning/curso/admin.html:231
+#: now_lms/templates/learning/curso/admin.html:319
+#: now_lms/templates/learning/curso/admin.html:405
+#: now_lms/templates/learning/curso/admin.html:411
+#: now_lms/templates/learning/curso/admin.html:417
+#: now_lms/templates/learning/curso/admin.html:423
+#: now_lms/templates/learning/curso/admin.html:429
+#: now_lms/templates/learning/curso/admin.html:435
+#: now_lms/templates/learning/curso/admin.html:441
+#: now_lms/templates/learning/curso/admin.html:447
+#: now_lms/templates/learning/curso/admin.html:453
+#: now_lms/templates/learning/curso/admin.html:500
+#: now_lms/templates/learning/curso/admin.html:507
+#: now_lms/templates/learning/curso/admin.html:514
+#: now_lms/templates/learning/curso/admin.html:521
+#: now_lms/templates/learning/curso/admin.html:528
+#: now_lms/templates/learning/curso/admin.html:535
+#: now_lms/templates/learning/curso/admin.html:542
+#: now_lms/templates/learning/curso/admin.html:549
+#: now_lms/templates/learning/curso/admin.html:556
+#: now_lms/templates/learning/curso/coupons/edit.html:6
+#: now_lms/templates/learning/curso/coupons/edit.html:16
+#: now_lms/templates/learning/curso/coupons/list.html:83
+#: now_lms/templates/learning/curso_lista.html:101
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:73
+#: now_lms/templates/learning/programas/lista_programas.html:108
+#: now_lms/templates/learning/recursos/lista_recursos.html:91
+msgid "Editar"
+msgstr "Editar"
+
+#: now_lms/templates/announcements/admin_list.html:50
+#: now_lms/templates/announcements/instructor_list.html:53
+msgid "¿Estás seguro de que deseas eliminar este anuncio?"
+msgstr ""
+
+#: now_lms/templates/announcements/admin_list.html:63
+#: now_lms/templates/announcements/instructor_list.html:66
+msgid "Expira:"
+msgstr ""
+
+#: now_lms/templates/announcements/admin_list.html:74
+#: now_lms/templates/announcements/course.html:51
+#: now_lms/templates/announcements/global.html:46
+#: now_lms/templates/announcements/instructor_list.html:77
+msgid "Navegación de anuncios"
+msgstr ""
+
+#: now_lms/templates/announcements/admin_list.html:81
+#: now_lms/templates/announcements/course.html:58
+#: now_lms/templates/announcements/global.html:53
+#: now_lms/templates/announcements/instructor_list.html:84
+#: now_lms/templates/blog/admin_index.html:148
+#: now_lms/templates/blog/admin_tags.html:59
+#: now_lms/templates/blog/instructor_index.html:95
+#: now_lms/templates/blog/public_index.html:71
+#: now_lms/templates/calendar/calendar_view.html:103
+#: now_lms/templates/forum/forum_list.html:125
+#: now_lms/templates/inicio/cursos.html:423
+#: now_lms/templates/learning/resources/pdf_viewer.html:272
+msgid "Anterior"
+msgstr "Anterior"
+
+#: now_lms/templates/announcements/admin_list.html:104
+#: now_lms/templates/announcements/course.html:83
+#: now_lms/templates/announcements/global.html:78
+#: now_lms/templates/announcements/instructor_list.html:109
+#: now_lms/templates/blog/admin_index.html:175
+#: now_lms/templates/blog/admin_tags.html:80
+#: now_lms/templates/blog/instructor_index.html:119
+#: now_lms/templates/blog/public_index.html:98
+#: now_lms/templates/calendar/calendar_view.html:114
+#: now_lms/templates/forum/forum_list.html:150
+#: now_lms/templates/inicio/cursos.html:315
+#: now_lms/templates/inicio/cursos.html:433
+#: now_lms/templates/learning/resources/pdf_viewer.html:274
+msgid "Siguiente"
+msgstr "Próximo"
+
+#: now_lms/templates/announcements/admin_list.html:113
+msgid "No hay anuncios globales"
+msgstr ""
+
+#: now_lms/templates/announcements/admin_list.html:114
+msgid "Crea el primer anuncio global para todos los usuarios del sistema."
+msgstr ""
+
+#: now_lms/templates/announcements/admin_list.html:116
+#: now_lms/templates/announcements/instructor_list.html:121
+msgid "Crear Primer Anuncio"
+msgstr ""
+
+#: now_lms/templates/announcements/course.html:7
+#: now_lms/templates/announcements/global.html:7
+#: now_lms/templates/inicio/panel_instructor.html:264
+msgid "Anuncios"
+msgstr "Anúncios"
+
+#: now_lms/templates/announcements/course.html:18
+msgid "Anuncios del Curso"
+msgstr ""
+
+#: now_lms/templates/announcements/course.html:20
+#: now_lms/templates/evaluations/evaluation_result.html:157
+msgid "Volver al curso"
+msgstr ""
+
+#: now_lms/templates/announcements/course.html:39
+#: now_lms/templates/announcements/global.html:34
+msgid "Válido hasta:"
+msgstr ""
+
+#: now_lms/templates/announcements/course.html:92
+msgid "No hay anuncios para este curso"
+msgstr ""
+
+#: now_lms/templates/announcements/course.html:93
+msgid "No hay anuncios disponibles para este curso en este momento."
+msgstr ""
+
+#: now_lms/templates/announcements/global.html:17
+msgid "Anuncios del Sistema"
+msgstr ""
+
+#: now_lms/templates/announcements/global.html:87
+msgid "No hay anuncios disponibles"
+msgstr ""
+
+#: now_lms/templates/announcements/global.html:88
+msgid "No hay anuncios del sistema en este momento."
+msgstr ""
+
+#: now_lms/templates/announcements/instructor_form.html:97
+msgid ""
+"Los anuncios de curso son visibles únicamente para los estudiantes "
+"inscritos en el\n"
+"                                    curso seleccionado."
+msgstr ""
+
+#: now_lms/templates/announcements/instructor_form.html:109
+msgid "Visibilidad:"
+msgstr ""
+
+#: now_lms/templates/announcements/instructor_form.html:109
+msgid ""
+"Solo puedes crear anuncios para cursos donde\n"
+"                                    eres instructor."
+msgstr ""
+
+#: now_lms/templates/announcements/instructor_list.html:7
+msgid "Anuncios de Curso"
+msgstr ""
+
+#: now_lms/templates/announcements/instructor_list.html:18
+msgid "Mis Anuncios de Curso"
+msgstr ""
+
+#: now_lms/templates/announcements/instructor_list.html:118
+msgid "No hay anuncios de curso"
+msgstr ""
+
+#: now_lms/templates/announcements/instructor_list.html:119
+msgid "Crea anuncios para comunicarte con los estudiantes de tus cursos."
+msgstr ""
+
+#: now_lms/templates/announcements/instructor_list.html:127
+msgid "No tienes cursos asignados"
+msgstr ""
+
+#: now_lms/templates/announcements/instructor_list.html:128
+msgid "Necesitas tener cursos asignados para poder crear anuncios."
+msgstr ""
+
+#: now_lms/templates/auth/forgot_password.html:6
+#: now_lms/templates/auth/forgot_password.html:9
+msgid "Recuperar contraseña"
+msgstr ""
+
+#: now_lms/templates/auth/forgot_password.html:42
+msgid "Recuperar Contraseña"
+msgstr ""
+
+#: now_lms/templates/auth/forgot_password.html:44
+msgid ""
+"Ingresa tu correo electrónico y te enviaremos instrucciones para "
+"recuperar tu contraseña."
+msgstr ""
+
+#: now_lms/templates/auth/forgot_password.html:54
+#: now_lms/templates/auth/forgot_password.html:55
+#: now_lms/templates/auth/logon.html:48
+msgid "Correo Electrónico"
+msgstr ""
+
+#: now_lms/templates/auth/forgot_password.html:57
+msgid "Enviar Enlace de Recuperación"
+msgstr ""
+
+#: now_lms/templates/auth/forgot_password.html:61
+#: now_lms/templates/auth/reset_password.html:63
+msgid "Volver al inicio de sesión"
+msgstr ""
+
+#: now_lms/templates/auth/login.html:6 now_lms/templates/auth/login.html:9
+msgid "Inicio de sesión"
+msgstr ""
+
+#: now_lms/templates/auth/login.html:42
+msgid "Inicio de Sesión"
+msgstr ""
+
+#: now_lms/templates/auth/login.html:48 now_lms/templates/auth/logon.html:51
+#: now_lms/templates/auth/logon.html:52
+msgid "Contraseña"
+msgstr "Senha"
+
+#: now_lms/templates/auth/login.html:50
+#: now_lms/templates/learning/curso.html:192
+#: now_lms/templates/learning/curso/curso.html:172
+#: now_lms/templates/themes/cambridge/navbar.j2:78
+msgid "Iniciar Sesión"
+msgstr ""
+
+#: now_lms/templates/auth/login.html:54
+msgid "¿Olvidaste tu contraseña?"
+msgstr ""
+
+#: now_lms/templates/auth/login.html:59 now_lms/templates/auth/logon.html:54
+msgid "Regresar"
+msgstr ""
+
+#: now_lms/templates/auth/logon.html:7
+msgid "Crear nueva cuenta"
+msgstr ""
+
+#: now_lms/templates/auth/logon.html:40
+msgid "Crear nuevo usuario"
+msgstr ""
+
+#: now_lms/templates/auth/logon.html:45
+msgid "Su Nombre"
+msgstr ""
+
+#: now_lms/templates/auth/logon.html:47
+msgid "Su Apellido"
+msgstr ""
+
+#: now_lms/templates/auth/logon.html:49
+msgid ""
+"Su Correo\n"
+"                Electrónico"
+msgstr ""
+
+#: now_lms/templates/auth/logon.html:53
+#: now_lms/templates/learning/curso.html:200
+#: now_lms/templates/themes/cambridge/navbar.j2:81
+msgid "Crear Cuenta"
+msgstr ""
+
+#: now_lms/templates/auth/reset_password.html:6
+#: now_lms/templates/auth/reset_password.html:10
+msgid "Restablecer\ contraseña"
+msgstr "Redefinir senha"
+
+#: now_lms/templates/auth/reset_password.html:43
+#: now_lms/templates/auth/reset_password.html:59
+msgid "Restablecer Contraseña"
+msgstr ""
+
+#: now_lms/templates/auth/reset_password.html:44
+msgid "Ingresa tu nueva contraseña."
+msgstr ""
+
+#: now_lms/templates/auth/reset_password.html:53
+#: now_lms/templates/auth/reset_password.html:54
+#: now_lms/templates/inicio/cambiar_contraseña.html:33
+msgid "Nueva Contraseña"
+msgstr ""
+
+#: now_lms/templates/auth/reset_password.html:55
+#: now_lms/templates/inicio/cambiar_contraseña.html:37
+msgid "Confirmar Nueva Contraseña"
+msgstr ""
+
+#: now_lms/templates/auth/reset_password.html:56
+msgid ""
+"Confirmar Nueva\n"
+"                Contraseña"
+msgstr ""
+
+#: now_lms/templates/blog/admin_index.html:7
+#: now_lms/templates/blog/admin_index.html:20
+msgid "Administración de Blog"
+msgstr ""
+
+#: now_lms/templates/blog/admin_index.html:22
+#: now_lms/templates/blog/instructor_index.html:22
+msgid "Nueva entrada"
+msgstr ""
+
+#: now_lms/templates/blog/admin_index.html:33
+msgid "Todas"
+msgstr ""
+
+#: now_lms/templates/blog/admin_index.html:39
+msgid "Borradores"
+msgstr "Rascunhos"
+
+#: now_lms/templates/blog/admin_index.html:45
+msgid "Pendientes"
+msgstr ""
+
+#: now_lms/templates/blog/admin_index.html:51
+msgid "Publicadas"
+msgstr ""
+
+#: now_lms/templates/blog/admin_index.html:57
+msgid "Baneadas"
+msgstr ""
+
+#: now_lms/templates/blog/admin_index.html:67
+#: now_lms/templates/blog/instructor_index.html:31
+msgid "Título"
+msgstr "Título"
+
+#: now_lms/templates/blog/admin_index.html:68
+msgid "Autor"
+msgstr "Autor"
+
+#: now_lms/templates/blog/admin_index.html:70
+#: now_lms/templates/blog/instructor_index.html:33
+#: now_lms/templates/blog/post_detail.html:69
+msgid "Comentarios"
+msgstr "Comentários"
+
+#: now_lms/templates/blog/admin_index.html:88
+#: now_lms/templates/blog/instructor_index.html:50
+msgid "Borrador"
+msgstr "Rascunho"
+
+#: now_lms/templates/blog/admin_index.html:90
+#: now_lms/templates/calendar/event_detail.html:94
+#: now_lms/templates/calendar/upcoming_events.html:88
+#: now_lms/templates/learning/curso.html:334
+#: now_lms/templates/learning/resources/type_macros.html:95
+msgid "Pendiente"
+msgstr "Pendente"
+
+#: now_lms/templates/blog/admin_index.html:92
+#: now_lms/templates/blog/instructor_index.html:54
+msgid "Publicada"
+msgstr ""
+
+#: now_lms/templates/blog/admin_index.html:94
+#: now_lms/templates/blog/instructor_index.html:56
+msgid "Baneada"
+msgstr ""
+
+#: now_lms/templates/blog/admin_index.html:99
+#: now_lms/templates/blog/instructor_index.html:61
+msgid "Deshabilitados"
+msgstr ""
+
+#: now_lms/templates/blog/admin_index.html:128
+#: now_lms/templates/blog/post_detail.html:127
+msgid "Banear"
+msgstr ""
+
+#: now_lms/templates/blog/admin_index.html:183
+msgid "No hay entradas de blog"
+msgstr ""
+
+#: now_lms/templates/blog/admin_index.html:183
+msgid "con estado"
+msgstr ""
+
+#: now_lms/templates/blog/admin_index.html:184
+msgid "en este momento."
+msgstr ""
+
+#: now_lms/templates/blog/admin_index.html:190
+msgid "Gestionar etiquetas"
+msgstr ""
+
+#: now_lms/templates/blog/admin_tags.html:7
+#: now_lms/templates/blog/admin_tags.html:19
+msgid "Gestión de Etiquetas"
+msgstr ""
+
+#: now_lms/templates/blog/admin_tags.html:7
+#: now_lms/templates/blog/instructor_index.html:7
+#: now_lms/templates/inicio/panel_admin.html:300
+msgid "Blog"
+msgstr "Blog"
+
+#: now_lms/templates/blog/admin_tags.html:27
+msgid "Slug"
+msgstr ""
+
+#: now_lms/templates/blog/admin_tags.html:28
+msgid "Publicaciones"
+msgstr ""
+
+#: now_lms/templates/blog/admin_tags.html:87
+msgid "No hay etiquetas creadas en este momento."
+msgstr ""
+
+#: now_lms/templates/blog/admin_tags.html:92
+msgid "Volver al blog"
+msgstr ""
+
+#: now_lms/templates/blog/admin_tags.html:101
+msgid "Crear nueva etiqueta"
+msgstr ""
+
+#: now_lms/templates/blog/admin_tags.html:115
+msgid "Crear etiqueta"
+msgstr ""
+
+#: now_lms/templates/blog/instructor_index.html:7
+#: now_lms/templates/blog/instructor_index.html:20
+msgid "Mis Publicaciones"
+msgstr ""
+
+#: now_lms/templates/blog/instructor_index.html:52
+msgid "Pendiente aprobación"
+msgstr ""
+
+#: now_lms/templates/blog/instructor_index.html:127
+msgid "No tienes entradas de blog en este momento."
+msgstr ""
+
+#: now_lms/templates/blog/instructor_index.html:129
+msgid "Crear tu primera entrada"
+msgstr ""
+
+#: now_lms/templates/blog/post_detail.html:32
+#: now_lms/templates/blog/public_index.html:29
+#: now_lms/templates/forum/forum_list.html:71
+msgid "Por"
+msgstr ""
+
+#: now_lms/templates/blog/post_detail.html:32
+#: now_lms/templates/blog/post_detail.html:33
+#: now_lms/templates/blog/public_index.html:30
+#: now_lms/templates/blog/public_index.html:31
+msgid "el"
+msgstr ""
+
+#: now_lms/templates/blog/post_detail.html:35
+#: now_lms/templates/blog/public_index.html:34
+msgid "vista"
+msgstr ""
+
+#: now_lms/templates/blog/post_detail.html:35
+#: now_lms/templates/blog/public_index.html:32
+#: now_lms/templates/blog/public_index.html:34
+msgid "s"
+msgstr ""
+
+#: now_lms/templates/blog/post_detail.html:60
+msgid "Editar entrada"
+msgstr ""
+
+#: now_lms/templates/blog/post_detail.html:73
+msgid "Agregar comentario"
+msgstr ""
+
+#: now_lms/templates/blog/post_detail.html:80
+msgid "Publicar comentario"
+msgstr ""
+
+#: now_lms/templates/blog/post_detail.html:85
+msgid "Inicia sesión"
+msgstr ""
+
+#: now_lms/templates/blog/post_detail.html:85
+msgid "para comentar."
+msgstr ""
+
+#: now_lms/templates/blog/post_detail.html:114
+msgid "Marcar como inapropiado"
+msgstr ""
+
+#: now_lms/templates/blog/post_detail.html:162
+msgid "Información del autor"
+msgstr ""
+
+#: now_lms/templates/blog/post_detail.html:173
+msgid "Ver todas las entradas de este autor"
+msgstr ""
+
+#: now_lms/templates/blog/post_detail.html:181
+msgid "Etiquetas relacionadas"
+msgstr ""
+
+#: now_lms/templates/blog/post_form.html:41
+msgid "Separar etiquetas con comas"
+msgstr ""
+
+#: now_lms/templates/blog/post_form.html:43
+msgid "Separa las etiquetas con comas."
+msgstr ""
+
+#: now_lms/templates/blog/post_form.html:43
+msgid ""
+"Solo\n"
+"                                    se asignarán etiquetas existentes."
+msgstr ""
+
+#: now_lms/templates/blog/post_form.html:75
+msgid "Vista Previa de la publicación:"
+msgstr ""
+
+#: now_lms/templates/blog/post_form.html:80
+#: now_lms/templates/blog/post_form.html:81
+msgid "Grabar entrada"
+msgstr ""
+
+#: now_lms/templates/blog/public_index.html:32
+msgid "comentario"
+msgstr ""
+
+#: now_lms/templates/blog/public_index.html:56
+msgid "Leer\ más"
+msgstr "Ler mais"
+
+#: now_lms/templates/blog/public_index.html:105
+msgid "No hay entradas de blog publicadas en este momento."
+msgstr ""
+
+#: now_lms/templates/blog/public_index.html:113
+msgid "Filtrar por etiqueta"
+msgstr ""
+
+#: now_lms/templates/blog/public_index.html:121
+msgid "Todas las entradas"
+msgstr ""
+
+#: now_lms/templates/calendar/calendar_view.html:7
+msgid "Mi Calendario"
+msgstr ""
+
+#: now_lms/templates/calendar/calendar_view.html:80
+#: now_lms/templates/calendar/event_detail.html:32
+#: now_lms/templates/calendar/upcoming_events.html:32
+msgid "Mi Perfil"
+msgstr ""
+
+#: now_lms/templates/calendar/calendar_view.html:83
+#: now_lms/templates/calendar/event_detail.html:7
+#: now_lms/templates/calendar/event_detail.html:39
+#: now_lms/templates/calendar/upcoming_events.html:7
+#: now_lms/templates/calendar/upcoming_events.html:39
+#: now_lms/templates/inicio/panel_instructor.html:256
+msgid "Calendario"
+msgstr "Calendário"
+
+#: now_lms/templates/calendar/calendar_view.html:90
+msgid "Exportar .ics"
+msgstr ""
+
+#: now_lms/templates/calendar/calendar_view.html:126
+msgid "Sesiones en vivo"
+msgstr ""
+
+#: now_lms/templates/calendar/calendar_view.html:130
+msgid "Fechas límite de evaluaciones"
+msgstr ""
+
+#: now_lms/templates/calendar/calendar_view.html:141
+msgid "Lunes"
+msgstr "Segunda-feira"
+
+#: now_lms/templates/calendar/calendar_view.html:142
+msgid "Martes"
+msgstr "Terça-feira"
+
+#: now_lms/templates/calendar/calendar_view.html:143
+msgid "Miércoles"
+msgstr "Quarta-feira"
+
+#: now_lms/templates/calendar/calendar_view.html:144
+msgid "Jueves"
+msgstr "Quinta-feira"
+
+#: now_lms/templates/calendar/calendar_view.html:145
+msgid "Viernes"
+msgstr "Sexta-feira"
+
+#: now_lms/templates/calendar/calendar_view.html:146
+msgid "Sábado"
+msgstr "Sábado"
+
+#: now_lms/templates/calendar/calendar_view.html:147
+msgid "Domingo"
+msgstr "Domingo"
+
+#: now_lms/templates/calendar/calendar_view.html:184
+msgid "Ir a Hoy"
+msgstr ""
+
+#: now_lms/templates/calendar/calendar_view.html:189
+#: now_lms/templates/calendar/dashboard_widget.html:6
+#: now_lms/templates/calendar/upcoming_events.html:7
+#: now_lms/templates/calendar/upcoming_events.html:42
+msgid "Próximos Eventos"
+msgstr ""
+
+#: now_lms/templates/calendar/dashboard_widget.html:9
+#: now_lms/templates/calendar/upcoming_events.html:49
+msgid "Ver Calendario"
+msgstr ""
+
+#: now_lms/templates/calendar/dashboard_widget.html:42
+msgid "Sesión"
+msgstr "Sessão"
+
+#: now_lms/templates/calendar/dashboard_widget.html:44
+#: now_lms/templates/calendar/event_detail.html:64
+#: now_lms/templates/calendar/event_detail.html:133
+#: now_lms/templates/calendar/upcoming_events.html:65
+#: now_lms/templates/evaluations/take_evaluation.html:7
+msgid "Evaluación"
+msgstr "Avaliação"
+
+#: now_lms/templates/calendar/dashboard_widget.html:52
+msgid "Ver Todos los Eventos"
+msgstr ""
+
+#: now_lms/templates/calendar/dashboard_widget.html:58
+#: now_lms/templates/calendar/upcoming_events.html:121
+msgid "No tienes eventos próximos"
+msgstr ""
+
+#: now_lms/templates/calendar/dashboard_widget.html:61
+msgid "Ver calendario completo"
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:49
+msgid "Volver al Calendario"
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:61
+#: now_lms/templates/calendar/upcoming_events.html:62
+msgid "Sesión en Vivo"
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:79
+msgid "Fecha y Hora"
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:96
+#: now_lms/templates/calendar/upcoming_events.html:90
+msgid "En Curso"
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:98
+#: now_lms/templates/calendar/upcoming_events.html:92
+#: now_lms/templates/learning/programas/tomar_programa.html:98
+#: now_lms/templates/learning/resources/type_macros.html:92
+msgid "Completado"
+msgstr "Concluído"
+
+#: now_lms/templates/calendar/event_detail.html:121
+msgid "Enlace de la Sesión"
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:125
+msgid "Unirse a la Sesión"
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:128
+msgid "El enlace de la sesión estará disponible próximamente."
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:139
+msgid "Realizar Evaluación"
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:150
+msgid "Información Adicional"
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:154
+msgid "Tipo de Evento:"
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:155
+msgid "Sesión en vivo con tutor"
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:156
+msgid "Fecha límite de evaluación"
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:161
+msgid "Zona Horaria:"
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:167
+msgid "Creado:"
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:173
+msgid "Actualizado:"
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:183
+msgid "Acciones Rápidas"
+msgstr ""
+
+#: now_lms/templates/calendar/event_detail.html:188
+msgid "Exportar Calendario"
+msgstr ""
+
+#: now_lms/templates/calendar/upcoming_events.html:99
+msgid "Ver Detalles"
+msgstr ""
+
+#: now_lms/templates/calendar/upcoming_events.html:111
+msgid "Ver Calendario Completo"
+msgstr ""
+
+#: now_lms/templates/calendar/upcoming_events.html:123
+msgid ""
+"Cuando te inscribas en cursos, aquí aparecerán tus sesiones programadas y"
+" fechas\n"
+"                                    límite de evaluaciones."
+msgstr ""
+
+#: now_lms/templates/calendar/upcoming_events.html:127
+#: now_lms/templates/inicio/home.html:36 now_lms/templates/inicio/home.html:247
+#: now_lms/templates/inicio/panel_user.html:59
+msgid "Explorar Cursos"
+msgstr ""
+
+#: now_lms/templates/error_pages/401.html:6
+#: now_lms/templates/error_pages/401.html:25
+msgid "Favor verifique su correo electronico."
+msgstr ""
+
+#: now_lms/templates/error_pages/401.html:28
+#: now_lms/templates/error_pages/402.html:28
+#: now_lms/templates/error_pages/403.html:28
+#: now_lms/templates/error_pages/404.html:28
+#: now_lms/templates/error_pages/405.html:28
+#: now_lms/templates/error_pages/500.html:28
+#: now_lms/templates/error_pages/verify_mail.html:36
+#: now_lms/templates/inicio/private.html:28
+msgid "Regresar al inicio"
+msgstr ""
+
+#: now_lms/templates/error_pages/401.html:34
+#: now_lms/templates/error_pages/402.html:34
+#: now_lms/templates/error_pages/403.html:34
+#: now_lms/templates/error_pages/404.html:34
+#: now_lms/templates/error_pages/405.html:34
+#: now_lms/templates/error_pages/500.html:34
+#: now_lms/templates/error_pages/verify_mail.html:42
+#: now_lms/templates/inicio/private.html:34
+msgid "BMO Soluciones"
+msgstr ""
+
+#: now_lms/templates/error_pages/402.html:6
+msgid "Pago requerido."
+msgstr ""
+
+#: now_lms/templates/error_pages/402.html:25
+msgid "Para acceder al recurso solicitado primero debe registrar un pago."
+msgstr ""
+
+#: now_lms/templates/error_pages/403.html:6
+#: now_lms/templates/error_pages/405.html:6
+#: now_lms/templates/inicio/private.html:6
+msgid "Permisos insuficientes."
+msgstr ""
+
+#: now_lms/templates/error_pages/403.html:25
+#: now_lms/templates/error_pages/405.html:25
+msgid "Su usuario no se encuentra autorizado a acceder al recurso solicitado."
+msgstr ""
+
+#: now_lms/templates/error_pages/404.html:6
+msgid "Página no encontrada."
+msgstr ""
+
+#: now_lms/templates/error_pages/404.html:25
+msgid "La página que solicita no se encuentra disponible."
+msgstr ""
+
+#: now_lms/templates/error_pages/500.html:6
+msgid "Error al procesar su solicitud."
+msgstr ""
+
+#: now_lms/templates/error_pages/500.html:25
+msgid "A ocurrido un error al intentar atender su solicitud."
+msgstr ""
+
+#: now_lms/templates/error_pages/verify_mail.html:6
+msgid "Favor revise su correo electronico."
+msgstr ""
+
+#: now_lms/templates/error_pages/verify_mail.html:24
+msgid "Favor revise su correo electronico"
+msgstr ""
+
+#: now_lms/templates/error_pages/verify_mail.html:25
+msgid "Su cuenta a sido creada correctamente."
+msgstr ""
+
+#: now_lms/templates/error_pages/verify_mail.html:27
+msgid "Le hemos enviado un correo electronico de verificación desde el correo"
+msgstr ""
+
+#: now_lms/templates/error_pages/verify_mail.html:31
+msgid ""
+"Es posible que el correo tome algo de tiempo en llegar, si no recibe el "
+"correo favor revise su\n"
+"                    carpeta de SPAM"
+msgstr ""
+
+#: now_lms/templates/evaluations/evaluation_result.html:7
+msgid "Resultado de Evaluación"
+msgstr ""
+
+#: now_lms/templates/evaluations/evaluation_result.html:35
+msgid "Resultado"
+msgstr "Resultado"
+
+#: now_lms/templates/evaluations/evaluation_result.html:47
+msgid "Resultado del intento"
+msgstr ""
+
+#: now_lms/templates/evaluations/evaluation_result.html:49
+msgid "APROBADO"
+msgstr ""
+
+#: now_lms/templates/evaluations/evaluation_result.html:51
+msgid "NO APROBADO"
+msgstr ""
+
+#: now_lms/templates/evaluations/evaluation_result.html:63
+msgid "Puntuación obtenida"
+msgstr ""
+
+#: now_lms/templates/evaluations/evaluation_result.html:69
+msgid "Puntuación mínima"
+msgstr ""
+
+#: now_lms/templates/evaluations/evaluation_result.html:77
+msgid "Fecha de envío"
+msgstr ""
+
+#: now_lms/templates/evaluations/evaluation_result.html:85
+msgid ""
+"Este intento fue enviado después de la fecha límite y se aplicó una "
+"penalización."
+msgstr ""
+
+#: now_lms/templates/evaluations/evaluation_result.html:91
+msgid "Detalles de respuestas"
+msgstr ""
+
+#: now_lms/templates/evaluations/evaluation_result.html:97
+#: now_lms/templates/evaluations/take_evaluation.html:79
+msgid "Pregunta"
+msgstr "Pergunta"
+
+#: now_lms/templates/evaluations/evaluation_result.html:104
+msgid "Tu respuesta:"
+msgstr ""
+
+#: now_lms/templates/evaluations/evaluation_result.html:108
+msgid "Tus respuestas:"
+msgstr ""
+
+#: now_lms/templates/evaluations/evaluation_result.html:118
+msgid "Respuestas correctas:"
+msgstr ""
+
+#: now_lms/templates/evaluations/evaluation_result.html:128
+msgid "Explicación:"
+msgstr ""
+
+#: now_lms/templates/evaluations/evaluation_result.html:141
+msgid "Correcta"
+msgstr ""
+
+#: now_lms/templates/evaluations/evaluation_result.html:143
+msgid "Incorrecta"
+msgstr ""
+
+#: now_lms/templates/evaluations/request_reopen.html:7
+#: now_lms/templates/evaluations/request_reopen.html:45
+msgid "Solicitar Reabrir Evaluación"
+msgstr ""
+
+#: now_lms/templates/evaluations/request_reopen.html:35
+msgid "Solicitar Reabrir"
+msgstr ""
+
+#: now_lms/templates/evaluations/request_reopen.html:51
+msgid "¿Por qué necesita un intento adicional?"
+msgstr ""
+
+#: now_lms/templates/evaluations/request_reopen.html:53
+msgid ""
+"Ha agotado todos los intentos permitidos para esta evaluación sin "
+"alcanzar la\n"
+"                                        puntuación mínima. Si considera "
+"que hubo circunstancias especiales que afectaron su\n"
+"                                        desempeño, puede solicitar un "
+"intento adicional proporcionando una justificación."
+msgstr ""
+
+#: now_lms/templates/evaluations/request_reopen.html:66
+msgid ""
+"Explique brevemente las razones por las cuales considera que merece un\n"
+"                                            intento adicional. Sea "
+"específico sobre las circunstancias que pudieron haber\n"
+"                                            afectado su desempeño."
+msgstr ""
+
+#: now_lms/templates/evaluations/request_reopen.html:80
+msgid "Importante:"
+msgstr ""
+
+#: now_lms/templates/evaluations/request_reopen.html:82
+msgid "Su solicitud será revisada por el instructor del curso."
+msgstr ""
+
+#: now_lms/templates/evaluations/request_reopen.html:83
+msgid "Solo será notificado si su solicitud es aprobada."
+msgstr ""
+
+#: now_lms/templates/evaluations/request_reopen.html:85
+msgid "Si se aprueba, puede aplicarse una penalización a la puntuación final."
+msgstr ""
+
+#: now_lms/templates/evaluations/request_reopen.html:88
+msgid "No hay garantía de que la solicitud sea aprobada."
+msgstr ""
+
+#: now_lms/templates/evaluations/request_reopen.html:99
+msgid "Enviar Solicitud"
+msgstr ""
+
+#: now_lms/templates/evaluations/take_evaluation.html:47
+#: now_lms/templates/learning/curso.html:297
+#: now_lms/templates/learning/curso.html:339
+#: now_lms/templates/learning/curso.html:349
+msgid "Examen"
+msgstr "Quiz"
+
+#: now_lms/templates/evaluations/take_evaluation.html:49
+#: now_lms/templates/learning/curso.html:299
+#: now_lms/templates/learning/curso.html:341
+#: now_lms/templates/learning/curso.html:351
+msgid "Quiz"
+msgstr ""
+
+#: now_lms/templates/evaluations/take_evaluation.html:59
+msgid "Instrucciones:"
+msgstr ""
+
+#: now_lms/templates/evaluations/take_evaluation.html:61
+msgid "Puntuación mínima para aprobar:"
+msgstr ""
+
+#: now_lms/templates/evaluations/take_evaluation.html:63
+msgid "Número máximo de intentos:"
+msgstr ""
+
+#: now_lms/templates/evaluations/take_evaluation.html:65
+msgid "Intentos ilimitados"
+msgstr ""
+
+#: now_lms/templates/evaluations/take_evaluation.html:68
+msgid "Disponible hasta:"
+msgstr ""
+
+#: now_lms/templates/evaluations/take_evaluation.html:93
+msgid "Verdadero"
+msgstr ""
+
+#: now_lms/templates/evaluations/take_evaluation.html:106
+msgid "Falso"
+msgstr ""
+
+#: now_lms/templates/evaluations/take_evaluation.html:113
+msgid "Seleccione todas las opciones correctas:"
+msgstr ""
+
+#: now_lms/templates/evaluations/take_evaluation.html:128
+msgid "Seleccione una opción:"
+msgstr ""
+
+#: now_lms/templates/evaluations/take_evaluation.html:150
+msgid "Enviar Evaluación"
+msgstr ""
+
+#: now_lms/templates/forum/forum_list.html:10
+#: now_lms/templates/forum/forum_list.html:38
+#: now_lms/templates/forum/message_thread.html:39
+#: now_lms/templates/forum/new_message.html:39
+#: now_lms/templates/forum/reply_message.html:39
+msgid "Foro"
+msgstr "Fórum"
+
+#: now_lms/templates/forum/forum_list.html:45
+#: now_lms/templates/forum/new_message.html:7
+#: now_lms/templates/forum/new_message.html:42
+#: now_lms/templates/learning/curso.html:150
+#: now_lms/templates/learning/mensajes/new_thread.html:6
+#: now_lms/templates/learning/mensajes/new_thread.html:42
+msgid "Nuevo Mensaje"
+msgstr ""
+
+#: now_lms/templates/forum/forum_list.html:52
+#: now_lms/templates/learning/curso.html:160
+msgid "Foro del Curso"
+msgstr ""
+
+#: now_lms/templates/forum/forum_list.html:76
+msgid "respuesta(s)"
+msgstr ""
+
+#: now_lms/templates/forum/forum_list.html:77
+msgid "Sin respuestas"
+msgstr ""
+
+#: now_lms/templates/forum/forum_list.html:94
+msgid "¿Cerrar este mensaje?"
+msgstr ""
+
+#: now_lms/templates/forum/forum_list.html:96
+#: now_lms/templates/forum/new_message.html:128
+#: now_lms/templates/forum/reply_message.html:150
+#: now_lms/templates/learning/resources/slide_show.html:63
+msgid "Cerrar"
+msgstr "Fechar"
+
+#: now_lms/templates/forum/forum_list.html:106
+msgid "Abrir"
+msgstr "Abrir"
+
+#: now_lms/templates/forum/forum_list.html:118
+msgid "Navegación del foro"
+msgstr ""
+
+#: now_lms/templates/forum/forum_list.html:158
+msgid "No hay mensajes en el foro"
+msgstr ""
+
+#: now_lms/templates/forum/forum_list.html:159
+msgid "Sé el primero en crear un mensaje en este foro."
+msgstr ""
+
+#: now_lms/templates/forum/forum_list.html:161
+msgid "Crear primer mensaje"
+msgstr ""
+
+#: now_lms/templates/forum/message_thread.html:7
+msgid "Mensaje del Foro"
+msgstr ""
+
+#: now_lms/templates/forum/message_thread.html:42
+#: now_lms/templates/learning/mensajes/course_messages.html:93
+#: now_lms/templates/learning/mensajes/new_thread.html:66
+#: now_lms/templates/learning/mensajes/nuevo_msg.html:34
+#: now_lms/templates/learning/mensajes/standalone_report.html:6
+#: now_lms/templates/learning/mensajes/standalone_report.html:26
+#: now_lms/templates/learning/mensajes/standalone_report.html:42
+#: now_lms/templates/learning/mensajes/standalone_report.html:85
+#: now_lms/templates/learning/mensajes/view_thread.html:155
+msgid "Mensaje"
+msgstr "Mensagem"
+
+#: now_lms/templates/forum/message_thread.html:53
+#: now_lms/templates/forum/reply_message.html:42
+msgid "Responder"
+msgstr "Responder"
+
+#: now_lms/templates/forum/message_thread.html:64
+msgid "¿Cerrar este hilo?"
+msgstr ""
+
+#: now_lms/templates/forum/message_thread.html:66
+msgid "Cerrar Hilo"
+msgstr ""
+
+#: now_lms/templates/forum/message_thread.html:76
+msgid "Abrir Hilo"
+msgstr ""
+
+#: now_lms/templates/forum/message_thread.html:91
+#: now_lms/templates/forum/message_thread.html:125
+#: now_lms/templates/forum/reply_message.html:60
+msgid "a las"
+msgstr ""
+
+#: now_lms/templates/forum/message_thread.html:108
+#: now_lms/templates/forum/message_thread.html:135
+msgid "Modificado"
+msgstr "Modificado"
+
+#: now_lms/templates/forum/message_thread.html:117
+msgid "Respuestas"
+msgstr ""
+
+#: now_lms/templates/forum/message_thread.html:144
+msgid "Este mensaje aún no tiene respuestas."
+msgstr ""
+
+#: now_lms/templates/forum/message_thread.html:155
+msgid "Responder a este mensaje"
+msgstr ""
+
+#: now_lms/templates/forum/message_thread.html:160
+msgid "El foro está deshabilitado para este curso."
+msgstr ""
+
+#: now_lms/templates/forum/message_thread.html:164
+msgid ""
+"Este curso ha finalizado y no se permiten nuevas\n"
+"                            respuestas."
+msgstr ""
+
+#: now_lms/templates/forum/message_thread.html:169
+msgid "Este hilo está cerrado y no se permiten nuevas respuestas."
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:52
+msgid "Crear Nuevo Mensaje"
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:69
+#: now_lms/templates/forum/reply_message.html:91
+msgid "Puedes usar"
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:71
+msgid "para dar formato a tu mensaje."
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:83
+msgid "Publicar Mensaje"
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:98
+#: now_lms/templates/forum/reply_message.html:120
+msgid "Ayuda de Markdown"
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:102
+#: now_lms/templates/forum/reply_message.html:124
+msgid "Formato básico"
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:105
+#: now_lms/templates/forum/reply_message.html:127
+msgid "texto en negrita"
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:107
+#: now_lms/templates/forum/reply_message.html:129
+msgid "texto en cursiva"
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:109
+#: now_lms/templates/forum/new_message.html:110
+#: now_lms/templates/forum/reply_message.html:131
+#: now_lms/templates/forum/reply_message.html:132
+msgid "Título grande"
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:113
+#: now_lms/templates/forum/new_message.html:114
+#: now_lms/templates/forum/reply_message.html:135
+#: now_lms/templates/forum/reply_message.html:136
+msgid "Título mediano"
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:116
+#: now_lms/templates/forum/reply_message.html:138
+msgid "enlace"
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:116
+#: now_lms/templates/forum/reply_message.html:138
+msgid "enlace clickeable"
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:117
+#: now_lms/templates/forum/reply_message.html:139
+msgid "código"
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:119
+#: now_lms/templates/forum/reply_message.html:141
+msgid "Listas"
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:121
+#: now_lms/templates/forum/reply_message.html:143
+msgid "elemento 1"
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:122
+#: now_lms/templates/forum/reply_message.html:144
+msgid "elemento 2"
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:124
+#: now_lms/templates/forum/reply_message.html:146
+msgid "Citas"
+msgstr ""
+
+#: now_lms/templates/forum/new_message.html:125
+#: now_lms/templates/forum/reply_message.html:147
+msgid "Esto es una cita"
+msgstr ""
+
+#: now_lms/templates/forum/reply_message.html:7
+msgid "Responder\ Mensaje"
+msgstr "Responder Mensagem"
+
+#: now_lms/templates/forum/reply_message.html:53
+msgid "Mensaje original"
+msgstr ""
+
+#: now_lms/templates/forum/reply_message.html:72
+msgid "Tu respuesta"
+msgstr ""
+
+#: now_lms/templates/forum/reply_message.html:93
+msgid "para dar formato a tu respuesta."
+msgstr ""
+
+#: now_lms/templates/forum/reply_message.html:105
+msgid "Enviar Respuesta"
+msgstr ""
+
+#: now_lms/templates/inicio/cambiar_contraseña.html:6
+#: now_lms/templates/inicio/cambiar_contraseña.html:24
+#: now_lms/templates/inicio/cambiar_contraseña.html:45
+msgid "Cambiar Contraseña"
+msgstr ""
+
+#: now_lms/templates/inicio/cambiar_contraseña.html:19
+msgid "Cambiar Contraseña del usuario"
+msgstr ""
+
+#: now_lms/templates/inicio/cambiar_contraseña.html:26
+msgid "Contraseña Actual"
+msgstr ""
+
+#: now_lms/templates/inicio/cursos.html:7
+msgid "Cursos Disponibles"
+msgstr ""
+
+#: now_lms/templates/inicio/cursos.html:300
+msgid "Cursos disponibles"
+msgstr ""
+
+#: now_lms/templates/inicio/cursos.html:311
+#: now_lms/templates/inicio/cursos.html:428
+msgid "cursos encontrados"
+msgstr ""
+
+#: now_lms/templates/inicio/cursos.html:311
+#: now_lms/templates/inicio/cursos.html:428
+#: now_lms/templates/learning/resources/pdf_viewer.html:273
+msgid "Página"
+msgstr "Página"
+
+#: now_lms/templates/inicio/cursos.html:311
+#: now_lms/templates/inicio/cursos.html:428
+#: now_lms/templates/learning/resources/pdf_viewer.html:273
+msgid "de"
+msgstr "de"
+
+#: now_lms/templates/inicio/cursos.html:355
+#: now_lms/templates/inicio/cursos.html:531
+msgid "Introductorio"
+msgstr ""
+
+#: now_lms/templates/inicio/cursos.html:363
+#: now_lms/templates/inicio/cursos.html:537
+#: now_lms/templates/inicio/home.html:176
+msgid "Principiante"
+msgstr "Iniciante"
+
+#: now_lms/templates/inicio/cursos.html:371
+#: now_lms/templates/inicio/cursos.html:543
+#: now_lms/templates/inicio/home.html:178
+msgid "Intermedio"
+msgstr "Intermediário"
+
+#: now_lms/templates/inicio/cursos.html:380
+#: now_lms/templates/inicio/cursos.html:549
+#: now_lms/templates/inicio/home.html:180
+msgid "Avanzado"
+msgstr "Avançado"
+
+#: now_lms/templates/inicio/cursos.html:404
+#: now_lms/templates/inicio/home.html:172
+#: now_lms/templates/learning/programas/lista_programas.html:84
+#: now_lms/templates/learning/recursos/lista_recursos.html:76
+msgid "Gratis"
+msgstr "Grátis"
+
+#: now_lms/templates/inicio/cursos.html:448
+msgid "Filtrar Cursos"
+msgstr ""
+
+#: now_lms/templates/inicio/cursos.html:459
+#: now_lms/templates/inicio/panel_admin.html:282
+msgid "Categorías"
+msgstr "Categorias"
+
+#: now_lms/templates/inicio/cursos.html:488
+msgid "Etiquetas"
+msgstr "Tags"
+
+#: now_lms/templates/inicio/cursos.html:517
+msgid "Nivel"
+msgstr "Nível"
+
+#: now_lms/templates/inicio/home.html:23
+msgid "Bienvenido a"
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:25
+msgid ""
+"Gracias por visitar nuestra plataforma educativa. Nuestra plataforma está"
+" diseñada para brindar una experiencia de aprendizaje excepcional."
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:30
+msgid "Comenzar Ahora"
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:40
+msgid "Mi Panel"
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:46
+#: now_lms/templates/inicio/panel_admin.html:101
+#: now_lms/templates/inicio/panel_instructor.html:85
+msgid "Ver Cursos"
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:60
+msgid "Aprendizaje"
+msgstr "Aprendizagem"
+
+#: now_lms/templates/inicio/home.html:61
+msgid "Digital"
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:75
+msgid "Aprende con Nosotros"
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:77
+msgid ""
+"Descubre una nueva forma de aprender con nuestra plataforma educativa "
+"moderna y eficiente."
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:91
+msgid "Cursos Especializados"
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:93
+msgid ""
+"Accede a una amplia variedad de cursos diseñados por expertos en cada "
+"área de conocimiento."
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:107
+msgid "Comunidad Activa"
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:109
+msgid ""
+"Únete a una comunidad de estudiantes y profesionales que comparten tus "
+"intereses y objetivos."
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:123
+msgid "Certificaciones"
+msgstr "Certificações"
+
+#: now_lms/templates/inicio/home.html:125
+msgid ""
+"Obtén certificaciones reconocidas que validen tu conocimiento y impulsen "
+"tu carrera profesional."
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:140
+msgid "Explora nuestra oferta educativa"
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:141
+msgid "Encuentra cursos diseñados para impulsar tu crecimiento."
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:174
+msgid "Intro"
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:208
+msgid "Explorar Todos los Cursos"
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:218
+#: now_lms/templates/inicio/panel_instructor.html:55
+msgid "Crear\ Curso"
+msgstr "Criar Curso"
+
+#: now_lms/templates/inicio/home.html:221
+msgid "No hay cursos disponibles en este momento."
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:233
+msgid "¿Listo para Comenzar?"
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:235
+msgid ""
+"Únete a nuestra plataforma educativa y comienza tu viaje de aprendizaje "
+"hoy mismo."
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:238
+msgid "Registrarse Gratis"
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:241
+msgid "Bienvenido de vuelta"
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:243
+msgid ""
+"Continúa tu viaje de aprendizaje y explora nuevas oportunidades "
+"educativas."
+msgstr ""
+
+#: now_lms/templates/inicio/home.html:245
+msgid "Ir a Mi Panel"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:7
+msgid "Panel de Administrador"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:60
+msgid "Bienvenido, Administrador del Sistema"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:62
+msgid "Panel de control y administración de NOW LMS"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:70
+msgid "Nuevo Curso"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:87
+msgid "Total de Cursos"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:90
+msgid "Cursos en el sistema"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:113
+msgid "Recursos Creados"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:116
+msgid "Recursos de aprendizaje"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:127
+#: now_lms/templates/learning/curso/admin.html:159
+#: now_lms/templates/learning/programas/gestionar_cursos.html:6
+#: now_lms/templates/learning/programas/gestionar_cursos.html:22
+#: now_lms/templates/learning/programas/inscribir_usuario.html:93
+#: now_lms/templates/learning/programas/lista_programas.html:115
+msgid "Gestionar"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:139
+msgid "Usuarios Registrados"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:142
+msgid "Usuarios del sistema"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:153
+msgid "Ver Lista"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:165
+#: now_lms/templates/inicio/panel_instructor.html:97
+msgid "Certificados Emitidos"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:168
+msgid "Certificaciones otorgadas"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:179
+#: now_lms/templates/inicio/panel_instructor.html:111
+msgid "Ver Certificados"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:200
+msgid "Cursos Recientes"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:205
+#: now_lms/templates/inicio/panel_instructor.html:163
+msgid "Ver Todos"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:240
+msgid "No hay cursos recientes"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:258
+msgid ""
+"Gestiona los mensajes reportados por los usuarios del sistema para "
+"mantener un ambiente seguro."
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:262
+#: now_lms/templates/inicio/panel_moderator.html:59
+msgid "Ver Reportes"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:265
+msgid "Todos los Mensajes"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:275
+msgid "Herramientas de Administración"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_admin.html:287
+#: now_lms/templates/learning/categorias/lista_categorias.html:44
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:45
+#: now_lms/templates/learning/programas/gestionar_cursos.html:122
+#: now_lms/templates/learning/programas/inscribir_usuario.html:102
+#: now_lms/templates/learning/programas/lista_programas.html:6
+#: now_lms/templates/learning/programas/lista_programas.html:20
+#: now_lms/templates/themes/cambridge/navbar.j2:50
+#: now_lms/templates/themes/now_lms/navbar.j2:57
+msgid "Programas"
+msgstr "Programas"
+
+#: now_lms/templates/inicio/panel_admin.html:295
+msgid "Configuración"
+msgstr "Configuração"
+
+#: now_lms/templates/inicio/panel_instructor.html:7
+msgid "Panel\ del\ Instructor"
+msgstr "Painel do Instrutor"
+
+#: now_lms/templates/inicio/panel_instructor.html:49
+msgid "Bienvenido, Instructor"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_instructor.html:51
+msgid "Tu centro de enseñanza y gestión de cursos"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_instructor.html:71
+msgid "Cursos Creados"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_instructor.html:74
+msgid "Cursos activos"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_instructor.html:100
+msgid "Logros estudiantiles"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_instructor.html:123
+msgid "Estudiantes\ Inscritos"
+msgstr "Estudantes Inscritos"
+
+#: now_lms/templates/inicio/panel_instructor.html:126
+msgid "Total de estudiantes"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_instructor.html:137
+msgid "Ver Estudiantes"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_instructor.html:158
+msgid "Mis Cursos Recientes"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_instructor.html:198
+msgid "Aún no has creado cursos"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_instructor.html:200
+msgid "Crear mi primer curso"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_instructor.html:214
+msgid "Centro de Mensajes"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_instructor.html:219
+msgid ""
+"Mantente conectado con tus estudiantes y resuelve sus dudas de manera "
+"oportuna."
+msgstr ""
+
+#: now_lms/templates/inicio/panel_instructor.html:223
+msgid "Mis Mensajes"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_instructor.html:233
+msgid "Herramientas de Enseñanza"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_instructor.html:243
+msgid "Mis Recursos"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_instructor.html:248
+msgid "Buscar Cursos"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_moderator.html:7
+msgid "Panel del Moderador"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_moderator.html:49
+msgid "Bienvenido, Moderador"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_moderator.html:51
+msgid "Tu centro de moderación y supervisión académica"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_user.html:7
+msgid "Panel del Estudiante"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_user.html:53
+#: now_lms/templates/themes/cambridge/navbar.j2:93
+msgid "Bienvenido"
+msgstr "Bem-vindo"
+
+#: now_lms/templates/inicio/panel_user.html:55
+msgid "Tu portal de aprendizaje y desarrollo personal"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil.html:7
+msgid "Perfil"
+msgstr "Perfil"
+
+#: now_lms/templates/inicio/perfil.html:73
+msgid "Perfil de"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil_editar.html:6
+msgid "Editar perfil."
+msgstr ""
+
+#: now_lms/templates/inicio/private.html:24
+msgid "Perfil Privado"
+msgstr ""
+
+#: now_lms/templates/inicio/private.html:25
+msgid "El perfil del usuario solicitado es privado."
+msgstr ""
+
+#: now_lms/templates/inicio/programas.html:7
+msgid "Programas Disponibles"
+msgstr ""
+
+#: now_lms/templates/inicio/recursos.html:7
+msgid "Recursos Disponibles"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:45
+#: now_lms/templates/learning/curso/curso.html:45
+msgid "Portada del Curso"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:54
+msgid "Placeholder: Miniatura"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:72
+msgid "¡Curso Completado con Éxito!"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:73
+msgid "Has obtenido la certificación de este curso."
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:78
+msgid "Ver Certificado"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:84
+#: now_lms/templates/learning/resources/pdf_viewer.html:283
+msgid "Descargar PDF"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:92
+msgid "Recursos disponibles con este curso:"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:110
+#: now_lms/templates/learning/curso/enroll.html:151
+msgid "Auditar contenido del curso"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:113
+#: now_lms/templates/learning/curso/enroll.html:154
+msgid ""
+"Puede acceder al contenido del curso pero no podrá resolver las "
+"evaluaciones u obtener un certificado al finalizar."
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:115
+#: now_lms/templates/learning/curso/enroll.html:156
+msgid ""
+"Puede pagar el valor del curso antes de finalizarlo y acceder a las "
+"evaluaciones y la certificación."
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:119
+#: now_lms/templates/learning/curso/enroll.html:165
+msgid "Proceder al pago"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:123
+#: now_lms/templates/learning/curso/enroll.html:169
+msgid "Inscribirse al curso"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:137
+msgid "¿Tienes alguna pregunta sobre el curso? Contacta a tus instructores."
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:144
+msgid "Ver Mensajes"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:164
+msgid "Participa en discusiones con otros estudiantes y compartir conocimientos."
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:171
+msgid "Ver Foro"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:178
+msgid "Nuevo Mensaje en Foro"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:209
+msgid "Publicidad"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:215
+msgid "Contenido del curso."
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:272
+msgid "Preview"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:312
+msgid "Aprobado"
+msgstr "Aprovado"
+
+#: now_lms/templates/learning/curso.html:316
+msgid "No Aprobado"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:326
+msgid "Solicitud de reapertura pendiente"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:331
+msgid "Solicitar nuevo intento"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:344
+msgid "Pago requerido"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:371
+msgid "Crear Nueva Sección"
+msgstr ""
+
+#: now_lms/templates/learning/curso.html:374
+#: now_lms/templates/learning/curso/curso.html:257
+msgid "Este curso actualmente no cuenta con secciones disponibles."
+msgstr ""
+
+#: now_lms/templates/learning/curso_lista.html:6
+msgid "Listado de cursos."
+msgstr ""
+
+#: now_lms/templates/learning/curso_lista.html:20
+msgid "Lista de {{ _(\"Cursos\") }} Disponibles"
+msgstr ""
+
+#: now_lms/templates/learning/curso_lista.html:21
+msgid "Gestiona y administra tus cursos de aprendizaje"
+msgstr ""
+
+#: now_lms/templates/learning/curso_lista.html:26
+msgid "{{ _(\"Nuevo\") }} {{ _(\"Curso\") }}"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin.html:172
+#: now_lms/templates/learning/curso_lista.html:94
+#: now_lms/templates/learning/programas/gestionar_cursos.html:35
+#: now_lms/templates/learning/programas/inscribir_usuario.html:99
+#: now_lms/templates/learning/programas/lista_programas.html:29
+#: now_lms/templates/learning/programas/lista_programas.html:101
+#: now_lms/templates/learning/programas/tomar_programa.html:121
+#: now_lms/templates/learning/recursos/lista_recursos.html:84
+msgid "Ver"
+msgstr "Ver"
+
+#: now_lms/templates/learning/editar_seccion.html:6
+msgid "Editar Sección"
+msgstr ""
+
+#: now_lms/templates/learning/editar_seccion.html:20
+msgid "Editar sección."
+msgstr ""
+
+#: now_lms/templates/learning/editar_seccion.html:25
+msgid "Nombre de la Nueva Sección."
+msgstr ""
+
+#: now_lms/templates/learning/editar_seccion.html:26
+msgid "Nombre de la Nueva Sección"
+msgstr ""
+
+#: now_lms/templates/learning/editar_seccion.html:30
+msgid "Descripción de la Sección"
+msgstr ""
+
+#: now_lms/templates/learning/editar_seccion.html:31
+msgid "Descripción de la nueva Sección."
+msgstr ""
+
+#: now_lms/templates/learning/editar_seccion.html:37
+msgid "Actualizar Sección"
+msgstr ""
+
+#: now_lms/templates/learning/paypal_payment.html:7
+msgid "Pago con PayPal"
+msgstr ""
+
+#: now_lms/templates/learning/paypal_payment.html:118
+msgid "Detalles"
+msgstr ""
+
+#: now_lms/templates/learning/curso/coupons/create.html:107
+#: now_lms/templates/learning/curso/coupons/create.html:169
+#: now_lms/templates/learning/curso/coupons/edit.html:140
+#: now_lms/templates/learning/curso/coupons/edit.html:203
+#: now_lms/templates/learning/curso/enroll.html:62
+#: now_lms/templates/learning/paypal_payment.html:120
+#: now_lms/templates/learning/programas/inscribir_programa.html:44
+#: now_lms/templates/learning/programas/inscribir_usuario.html:80
+#: now_lms/templates/learning/programas/lista_programas.html:50
+#: now_lms/templates/learning/recursos/lista_recursos.html:46
+msgid "Precio"
+msgstr "Preço"
+
+#: now_lms/templates/learning/curso/enroll.html:68
+#: now_lms/templates/learning/curso/enroll.html:76
+#: now_lms/templates/learning/paypal_payment.html:125
+#: now_lms/templates/learning/programas/inscribir_programa.html:49
+#: now_lms/templates/learning/programas/inscribir_programa.html:54
+msgid "Total"
+msgstr "Total"
+
+#: now_lms/templates/learning/programa.html:26
+msgid "{{ _(\"Cursos\") }}"
+msgstr ""
+
+#: now_lms/templates/learning/programa.html:31
+msgid "{{ _(\"Precio\") }}"
+msgstr ""
+
+#: now_lms/templates/learning/programa.html:36
+msgid "Acceso"
+msgstr ""
+
+#: now_lms/templates/learning/programa.html:37
+msgid "De por vida"
+msgstr ""
+
+#: now_lms/templates/learning/categorias/editar_categoria.html:6
+#: now_lms/templates/learning/categorias/editar_categoria.html:20
+msgid "{{ _(\"Editar\") }} Categoria"
+msgstr ""
+
+#: now_lms/templates/learning/categorias/editar_categoria.html:25
+#: now_lms/templates/learning/categorias/editar_categoria.html:26
+msgid "Categoria"
+msgstr ""
+
+#: now_lms/templates/learning/categorias/editar_categoria.html:30
+#: now_lms/templates/learning/certificados/editar_certificado.html:28
+#: now_lms/templates/learning/certificados/editar_certificado.html:29
+msgid "Descripcion"
+msgstr ""
+
+#: now_lms/templates/learning/categorias/editar_categoria.html:31
+msgid "{{ _(\"Descripción\") }}"
+msgstr ""
+
+#: now_lms/templates/learning/categorias/editar_categoria.html:37
+msgid "Actualizar Categoria"
+msgstr ""
+
+#: now_lms/templates/learning/categorias/lista_categorias.html:6
+msgid "Lista de Categorías."
+msgstr ""
+
+#: now_lms/templates/learning/categorias/lista_categorias.html:26
+#: now_lms/templates/learning/certificados/lista_certificados.html:26
+#: now_lms/templates/learning/curso/admin.html:154
+msgid "Nueva"
+msgstr "Nova"
+
+#: now_lms/templates/learning/categorias/lista_categorias.html:43
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:44
+#: now_lms/templates/learning/programas/gestionar_cursos.html:6
+#: now_lms/templates/learning/programas/gestionar_cursos.html:22
+#: now_lms/templates/learning/programas/gestionar_cursos.html:45
+#: now_lms/templates/learning/programas/inscribir_usuario.html:93
+#: now_lms/templates/learning/programas/lista_programas.html:47
+#: now_lms/templates/learning/programas/tomar_programa.html:35
+#: now_lms/templates/themes/cambridge/navbar.j2:46
+#: now_lms/templates/themes/now_lms/navbar.j2:51
+msgid "Cursos"
+msgstr "Cursos"
+
+#: now_lms/templates/learning/certificados/certificado.html:6
+msgid "Certificado de Finalizacion de curso"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/certificado.html:16
+msgid "Certificado de Finalización de Curso"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/certificado.html:20
+msgid "Se hace constar que"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/certificado.html:20
+msgid "ha completado satisfactoriamente el curso"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/certificado.html:20
+msgid "cumpliendo con todos los requisitos académicos y evaluaciones establecidas"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/certificado.html:24
+msgid "Datos del Estudiante"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/certificado.html:28
+msgid "Datos del Curso"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/certificado.html:29
+msgid "Nombre del Curso"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/certificado.html:30
+msgid "Descripción del Curso"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/certificado.html:32
+#: now_lms/templates/learning/certificados/certificado.html:34
+msgid "Fecha\ de\ Inicio"
+msgstr "Data de Início"
+
+#: now_lms/templates/learning/certificados/certificado.html:36
+msgid "Duración"
+msgstr "Duração"
+
+#: now_lms/templates/learning/certificados/certificado.html:36
+msgid "horas"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/certificado.html:39
+msgid "Datos del Certicado"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/certificado.html:40
+msgid "Fecha de Emisión"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/certificado.html:42
+#: now_lms/templates/learning/certificados/emitir_certificado.html:52
+msgid "Nota"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/certificado.html:53
+msgid "Ver Certicado"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/certificado.html:61
+msgid "Descargar Certificado"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/editar_certificado.html:6
+msgid "Editar Plantilla de Certicado"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/editar_certificado.html:18
+msgid "Editar Certificado"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/editar_certificado.html:23
+#: now_lms/templates/learning/certificados/editar_certificado.html:24
+msgid "Certificado"
+msgstr "Certificado"
+
+#: now_lms/templates/learning/certificados/editar_certificado.html:36
+msgid "Habilitado"
+msgstr "Habilitado"
+
+#: now_lms/templates/learning/certificados/editar_certificado.html:42
+msgid "Publico"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/editar_certificado.html:48
+msgid "Tipo de Certificado"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/editar_certificado.html:64
+msgid "Actualizar Certificado"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/emitir_certificado.html:6
+msgid "Crear Nueva Plantilla"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/emitir_certificado.html:18
+msgid "Emitir un nuevo Certificado"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/emitir_certificado.html:28
+msgid "Tipo de Contenido"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/emitir_certificado.html:40
+msgid "Clase Magistral"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/emitir_certificado.html:47
+msgid "Plantilla"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/emitir_certificado.html:57
+msgid "Crear Certificado"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:6
+msgid "Lista de Certificaciones emitidas"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:20
+msgid "Lista de Certificados Emitidos"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:21
+msgid "Gestiona y administra los certificados emitidos en el sistema"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:26
+msgid "{{ _(\"Nuevo\") }} Certificado"
+msgstr ""
+
+#: now_lms/templates/learning/certificados/lista_certificados.html:29
+#: now_lms/templates/learning/curso/admin.html:190
+#: now_lms/templates/learning/curso/admin.html:287
+#: now_lms/templates/learning/curso/coupons/list.html:18
+#: now_lms/templates/learning/mensajes/nuevo_msg.html:34
+#: now_lms/templates/learning/programas/lista_programas.html:26
+#: now_lms/templates/learning/recursos/lista_recursos.html:26
+#: now_lms/templates/learning/resources_new/nuevo_recurso_slides.html:6
+msgid "Nuevo"
+msgstr "Novo"
+
+#: now_lms/templates/learning/curso/admin.html:29
+#: now_lms/templates/learning/mensajes/course_messages.html:23
+msgid "{{ _(\"Inicio\") }}"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin.html:47
+#: now_lms/templates/learning/curso/admin.html:209
+#: now_lms/templates/learning/curso/admin.html:243
+#: now_lms/templates/learning/curso/admin.html:257
+#: now_lms/templates/learning/curso/admin.html:348
+msgid "Ocultar"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin.html:167
+#: now_lms/templates/learning/programas/admin_enroll.html:25
+#: now_lms/templates/learning/programas/admin_enroll.html:74
+#: now_lms/templates/learning/programas/admin_enrollments.html:32
+#: now_lms/templates/learning/programas/admin_enrollments.html:102
+#: now_lms/templates/learning/programas/gestionar_cursos.html:29
+#: now_lms/templates/learning/programas/inscribir_usuario.html:6
+#: now_lms/templates/learning/programas/inscribir_usuario.html:23
+#: now_lms/templates/learning/programas/inscribir_usuario.html:46
+#: now_lms/templates/learning/programas/lista_programas.html:129
+msgid "Inscribir"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin.html:190
+#: now_lms/templates/learning/curso/admin.html:287
+#: now_lms/templates/learning/recursos/lista_recursos.html:26
+#: now_lms/templates/learning/recursos/lista_recursos.html:119
+#: now_lms/templates/learning/resources_new/nuevo_recurso_descargable.html:6
+#: now_lms/templates/learning/resources_new/nuevo_recurso_descargable.html:20
+#: now_lms/templates/learning/resources_new/nuevo_recurso_slides.html:6
+msgid "Recurso"
+msgstr "Recurso"
+
+#: now_lms/templates/learning/curso/admin.html:364
+#: now_lms/templates/learning/recursos/lista_recursos.html:6
+#: now_lms/templates/learning/recursos/lista_recursos.html:20
+#: now_lms/templates/themes/cambridge/navbar.j2:54
+#: now_lms/templates/themes/now_lms/navbar.j2:63
+msgid "Recursos"
+msgstr "Recursos"
+
+#: now_lms/templates/learning/curso/admin_enroll.html:9
+#: now_lms/templates/learning/curso/admin_enroll.html:25
+msgid "Inscripción Administrativa"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:27
+msgid "Inscribir estudiante al curso:"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:34
+msgid "Curso Pagado:"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:34
+msgid "Este curso tiene un costo de"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:35
+msgid ""
+"Al usar la inscripción administrativa, puedes omitir el pago para dar "
+"acceso completo al estudiante."
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:40
+msgid "Curso Gratuito:"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:40
+msgid "Este curso es gratuito para todos los estudiantes."
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:51
+msgid "Ingresa el nombre de usuario del estudiante que deseas inscribir."
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:61
+msgid ""
+"Si está marcado, el estudiante tendrá acceso completo sin realizar el "
+"pago."
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:61
+msgid "Esta opción no afecta cursos gratuitos."
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:68
+msgid "Notas opcionales sobre esta inscripción (para referencia administrativa)."
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:80
+#: now_lms/templates/learning/curso/admin_enrollments.html:34
+msgid "Inscribir Estudiante"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:89
+msgid "Información del Curso"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:94
+msgid "Nombre:"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:95
+msgid "Código:"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:96
+msgid "Estado:"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:104
+msgid "Tipo:"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:106
+msgid "Pagado"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:108
+#: now_lms/templates/learning/curso/admin_enrollments.html:81
+msgid "Gratuito"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:110
+msgid "Auditable"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enroll.html:114
+#: now_lms/templates/learning/curso/curso.html:90
+msgid "Precio:"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:9
+msgid "Inscripciones"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:26
+msgid "Inscripciones del Curso"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:40
+msgid "Volver al Curso"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:51
+#: now_lms/templates/learning/programas/admin_enrollments.html:49
+msgid "Email"
+msgstr "Email"
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:52
+msgid "Fecha\ de\ Inscripción"
+msgstr "Data de Inscrição"
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:53
+msgid "Método de Pago"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:54
+msgid "Estado del Pago"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:55
+msgid "Monto"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:56
+msgid "Inscrito Por"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:79
+msgid "Admin. Manual"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:80
+msgid "Admin. Programa"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:82
+msgid "Auditoría"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:85
+msgid "Sin pago"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:106
+msgid "Sistema"
+msgstr "Sistema"
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:113
+msgid "¿Estás seguro de que deseas desinscribir a"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:118
+#: now_lms/templates/learning/programas/admin_enrollments.html:82
+msgid "Desinscribir"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:132
+msgid "No hay estudiantes inscritos"
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:133
+msgid "Aún no hay estudiantes inscritos en este curso."
+msgstr ""
+
+#: now_lms/templates/learning/curso/admin_enrollments.html:138
+msgid "Inscribir Primer Estudiante"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:67
+msgid "Administrar Curso"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:81
+msgid "Fechas:"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:84
+msgid "Modalidad:"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:84
+msgid "A su propio ritmo"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:98
+msgid "Curso Gratuito"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:103
+msgid "Certificación:"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:103
+msgid "Incluida"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:108
+msgid "Cupo:"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:108
+msgid "Limitado"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:114
+msgid "Nivel:"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:123
+msgid "Recursos Descargables"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:145
+msgid "Ya está inscrito en este curso"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:152
+msgid "Continuar Curso"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:161
+msgid "Inscribirse al Curso"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:166
+msgid "Para acceder al curso necesitas una cuenta"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:169
+msgid "Crear Cuenta Gratis"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:183
+msgid "Contenido del curso"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:231
+msgid "Vista Previa"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:242
+msgid "Restringido"
+msgstr ""
+
+#: now_lms/templates/learning/curso/curso.html:256
+msgid "Sin contenido disponible"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:19
+msgid "Esta a punto de inscribirse al curso"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:22
+msgid "Complete la siguiente información para completar su registro."
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:27
+#: now_lms/templates/learning/programas/inscribir_programa.html:26
+msgid "Resumen"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:45
+msgid "Precio Original"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:51
+msgid "Descuento"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:54
+msgid "descuento"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:54
+msgid "Descuento fijo"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:71
+msgid "¡GRATIS!"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:77
+msgid "GRATIS"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:83
+msgid "Billing address"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:88
+msgid "Valid first name is required."
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:93
+msgid "Valid last name is required."
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:99
+msgid "Please enter a valid email address for shipping updates."
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:103
+msgid "Dirección"
+msgstr "Endereço"
+
+#: now_lms/templates/learning/curso/enroll.html:105
+msgid "Please enter your shipping address."
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:108
+msgid "Dirección 2"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:112
+msgid "País"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:114
+msgid "Please select a valid country."
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:119
+msgid "Please provide a valid state."
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:122
+msgid "Código Postal"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:124
+msgid "Zip code required."
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:130
+msgid "Código de Cupón"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:134
+msgid "Código de Cupón (Opcional)"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:138
+msgid "Aplicar"
+msgstr "Aplicar"
+
+#: now_lms/templates/learning/curso/enroll.html:142
+msgid "Cupón"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:142
+msgid "aplicado exitosamente"
+msgstr ""
+
+#: now_lms/templates/learning/curso/enroll.html:161
+msgid "¡Inscribirse Gratis con Cupón!"
+msgstr ""
+
+#: now_lms/templates/learning/curso/coupons/create.html:6
+msgid "{{ _(\"Crear\") }} Cupón"
+msgstr ""
+
+#: now_lms/templates/learning/curso/coupons/create.html:16
+msgid "{{ _(\"Crear\") }} {{ _(\"Nuevo\") }} Cupón"
+msgstr ""
+
+#: now_lms/templates/learning/curso/coupons/create.html:17
+msgid "{{ _(\"Curso\") }}:"
+msgstr ""
+
+#: now_lms/templates/learning/etiquetas/editar_etiqueta.html:6
+#: now_lms/templates/learning/etiquetas/editar_etiqueta.html:37
+msgid "Editar Etiqueta"
+msgstr ""
+
+#: now_lms/templates/learning/etiquetas/editar_etiqueta.html:20
+msgid "Editar etiqueta"
+msgstr ""
+
+#: now_lms/templates/learning/etiquetas/editar_etiqueta.html:25
+#: now_lms/templates/learning/etiquetas/editar_etiqueta.html:26
+#: now_lms/templates/learning/etiquetas/nueva_etiqueta.html:25
+#: now_lms/templates/learning/etiquetas/nueva_etiqueta.html:26
+msgid "Etiqueta"
+msgstr "Tag"
+
+#: now_lms/templates/learning/etiquetas/editar_etiqueta.html:30
+#: now_lms/templates/learning/etiquetas/nueva_etiqueta.html:30
+msgid "Color"
+msgstr ""
+
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:6
+msgid "Lista de Etiquetas"
+msgstr ""
+
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:20
+msgid "Lista de Etiquetas Disponibles"
+msgstr ""
+
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:21
+msgid "Gestiona y administra las etiquetas del sistema"
+msgstr ""
+
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:26
+#: now_lms/templates/learning/etiquetas/nueva_etiqueta.html:6
+msgid "{{ _(\"Nueva\") }} Etiqueta"
+msgstr ""
+
+#: now_lms/templates/learning/etiquetas/nueva_etiqueta.html:20
+msgid "{{ _(\"Crear\") }} nueva Etiqueta"
+msgstr ""
+
+#: now_lms/templates/learning/etiquetas/nueva_etiqueta.html:35
+msgid "{{ _(\"Crear\") }} Etiqueta"
+msgstr ""
+
+#: now_lms/templates/learning/mensajes/course_messages.html:6
+#: now_lms/templates/learning/mensajes/course_messages.html:34
+msgid "{{ _(\"Mensajes\") }}"
+msgstr ""
+
+#: now_lms/templates/learning/mensajes/course_messages.html:40
+#: now_lms/templates/learning/mensajes/nuevo_msg.html:20
+msgid "{{ _(\"Nuevo\") }} {{ _(\"Mensaje\") }}"
+msgstr ""
+
+#: now_lms/templates/learning/mensajes/course_messages.html:93
+msgid "Enviar"
+msgstr "Enviar"
+
+#: now_lms/templates/learning/mensajes/new_thread.html:54
+#: now_lms/templates/learning/mensajes/nuevo_msg.html:25
+#: now_lms/templates/learning/mensajes/nuevo_msg.html:26
+msgid "Asunto"
+msgstr "Assunto"
+
+#: now_lms/templates/learning/mensajes/new_thread.html:55
+msgid "¿En qué podemos ayudarte?"
+msgstr ""
+
+#: now_lms/templates/learning/mensajes/new_thread.html:80
+msgid "Enviar Mensaje"
+msgstr ""
+
+#: now_lms/templates/learning/mensajes/nuevo_msg.html:6
+msgid "{{ _(\"Nuevo\") }} {{ _(\"Recurso\") }} - Documento"
+msgstr ""
+
+#: now_lms/templates/learning/programas/admin_enroll.html:7
+#: now_lms/templates/learning/programas/admin_enroll.html:23
+#: now_lms/templates/learning/programas/admin_enroll.html:31
+#: now_lms/templates/learning/programas/admin_enrollments.html:50
+#: now_lms/templates/learning/programas/inscribir_programa.html:6
+#: now_lms/templates/learning/programas/inscribir_programa.html:19
+msgid "Inscripción"
+msgstr "Inscrição"
+
+#: now_lms/templates/learning/programas/admin_enroll.html:23
+#: now_lms/templates/learning/programas/admin_enroll.html:31
+#: now_lms/templates/learning/programas/admin_enroll.html:74
+#: now_lms/templates/learning/programas/admin_enroll.html:83
+#: now_lms/templates/learning/programas/admin_enrollments.html:24
+#: now_lms/templates/learning/programas/admin_enrollments.html:38
+#: now_lms/templates/learning/programas/gestionar_cursos.html:45
+#: now_lms/templates/learning/programas/gestionar_cursos.html:119
+#: now_lms/templates/learning/programas/inscribir_programa.html:6
+#: now_lms/templates/learning/programas/inscribir_programa.html:19
+#: now_lms/templates/learning/programas/inscribir_programa.html:26
+#: now_lms/templates/learning/programas/inscribir_programa.html:31
+#: now_lms/templates/learning/programas/inscribir_usuario.html:23
+#: now_lms/templates/learning/programas/inscribir_usuario.html:54
+#: now_lms/templates/learning/programas/inscribir_usuario.html:99
+#: now_lms/templates/learning/programas/lista_programas.html:26
+#: now_lms/templates/learning/programas/lista_programas.html:157
+#: now_lms/templates/learning/programas/tomar_programa.html:6
+#: now_lms/templates/learning/programas/tomar_programa.html:27
+#: now_lms/templates/learning/programas/tomar_programa.html:35
+#: now_lms/templates/learning/programas/tomar_programa.html:98
+msgid "Programa"
+msgstr "Programa"
+
+#: now_lms/templates/learning/programas/lista_programas.html:122
+msgid "Administrar"
+msgstr ""
+
+#: now_lms/templates/learning/resources/pdf_viewer.html:7
+msgid "Visor PDF"
+msgstr ""
+
+#: now_lms/templates/learning/resources/pdf_viewer.html:291
+msgid "Cargando PDF..."
+msgstr ""
+
+#: now_lms/templates/learning/resources/pdf_viewer.html:301
+msgid "Visor PDF no disponible"
+msgstr ""
+
+#: now_lms/templates/learning/resources/pdf_viewer.html:302
+msgid ""
+"Su navegador no puede mostrar PDFs directamente. Descargue el archivo "
+"para verlo:"
+msgstr ""
+
+#: now_lms/templates/learning/resources/pdf_viewer.html:309
+msgid "Descargar"
+msgstr "Baixar"
+
+#: now_lms/templates/learning/resources/slide_show.html:6
+#: now_lms/templates/learning/resources/slide_show.html:93
+msgid "Presentación"
+msgstr ""
+
+#: now_lms/templates/learning/resources/slide_show.html:66
+msgid "Vista general"
+msgstr ""
+
+#: now_lms/templates/learning/resources/slide_show.html:69
+msgid "Ayuda"
+msgstr "Ajuda"
+
+#: now_lms/templates/learning/resources/slide_show.html:94
+msgid "No hay diapositivas disponibles en esta presentación."
+msgstr ""
+
+#: now_lms/templates/learning/resources/type_macros.html:85
+msgid "Requerido"
+msgstr "Obrigatório"
+
+#: now_lms/templates/learning/resources/type_macros.html:88
+msgid "Opcional"
+msgstr "Opcional"
+
+#: now_lms/templates/learning/resources/type_macros.html:89
+msgid "Alternativo"
+msgstr ""
+
+#: now_lms/templates/learning/resources/type_macros.html:100
+msgid "Contenido\ del\ Curso"
+msgstr "Conteúdo do Curso"
+
+#: now_lms/templates/page_info/page_info.html:6
+msgid "Page Info - Development Information"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:40
+msgid "Development Information"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:41
+msgid "CI Environment Only"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:46
+msgid "Application"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:51
+msgid "Version"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:55
+msgid "Code Name"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:59
+msgid "Database Engine"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:60
+msgid "Unknown"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:63
+msgid "Cache Type"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:73
+msgid "System"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:78
+msgid "Operating System"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:82
+msgid "System Version"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:86
+msgid "Architecture"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:90
+msgid "Python Version"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:94
+msgid "Python Implementation"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:104
+msgid "Configuration"
+msgstr "Configuração"
+
+#: now_lms/templates/page_info/page_info.html:109
+msgid "Application Directory"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:113
+msgid "Base Files Directory"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:117
+msgid "Private Files Directory"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:121
+msgid "Public Files Directory"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:125
+msgid "Templates Directory"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:129
+msgid "Time Zone"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:133
+msgid "Language"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:143
+msgid "LMS Statistics"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:150
+msgid "Courses"
+msgstr "Cursos"
+
+#: now_lms/templates/page_info/page_info.html:154
+msgid "Students"
+msgstr "Estudantes"
+
+#: now_lms/templates/page_info/page_info.html:158
+msgid "Teachers"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:162
+msgid "Moderators"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:166
+msgid "Enrollments"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:174
+msgid "Certificates"
+msgstr "Certificados"
+
+#: now_lms/templates/page_info/page_info.html:178
+msgid "Programs"
+msgstr "Programas"
+
+#: now_lms/templates/page_info/page_info.html:182
+msgid "Evaluations"
+msgstr "Avaliações"
+
+#: now_lms/templates/page_info/page_info.html:186
+msgid "Blog Posts"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:190
+msgid "Master Classes"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:203
+msgid "Environment Variables"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:204
+msgid "filtered"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:220
+msgid "No environment variables to display."
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:229
+msgid "Routes"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:230
+msgid "total"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:238
+msgid "Endpoint"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:239
+msgid "Route"
+msgstr ""
+
+#: now_lms/templates/page_info/page_info.html:240
+msgid "Methods"
+msgstr ""
+
+#: now_lms/templates/payments/paypal.html:6
+msgid "Procesando Pago"
+msgstr ""
+
+#: now_lms/templates/payments/paypal.html:21
+msgid "Cargando\.\.\."
+msgstr "Carregando..."
+
+#: now_lms/templates/payments/paypal.html:23
+msgid "Procesando su pago"
+msgstr ""
+
+#: now_lms/templates/payments/paypal.html:25
+msgid ""
+"Por favor espere mientras lo redirigimos a PayPal para completar su pago "
+"de forma segura."
+msgstr ""
+
+#: now_lms/templates/payments/paypal.html:28
+msgid "Si no es redirigido automáticamente,"
+msgstr ""
+
+#: now_lms/templates/payments/paypal.html:29
+msgid "haga clic aquí"
+msgstr ""
+
+#: now_lms/templates/themes/amber/base.j2:6
+#: now_lms/templates/themes/amber/header.j2:4
+#: now_lms/templates/themes/cambridge/base.j2:6
+#: now_lms/templates/themes/cambridge/header.j2:4
+#: now_lms/templates/themes/classic/base.j2:6
+#: now_lms/templates/themes/classic/header.j2:4
+#: now_lms/templates/themes/corporative/base.j2:6
+#: now_lms/templates/themes/corporative/header.j2:4
+#: now_lms/templates/themes/finance/base.j2:6
+#: now_lms/templates/themes/finance/header.j2:4
+#: now_lms/templates/themes/golden/base.j2:6
+#: now_lms/templates/themes/golden/header.j2:4
+#: now_lms/templates/themes/harvard/base.j2:6
+#: now_lms/templates/themes/lime/base.j2:6
+#: now_lms/templates/themes/lime/header.j2:4
+#: now_lms/templates/themes/nebula/base.j2:6
+#: now_lms/templates/themes/nebula/header.j2:4
+#: now_lms/templates/themes/now_lms/base.j2:7
+#: now_lms/templates/themes/now_lms/header.j2:4
+#: now_lms/templates/themes/ocean/base.j2:6
+#: now_lms/templates/themes/ocean/header.j2:4
+#: now_lms/templates/themes/oxford/base.j2:6
+#: now_lms/templates/themes/oxford/header.j2:4
+#: now_lms/templates/themes/sakura/base.j2:6
+#: now_lms/templates/themes/sakura/header.j2:4
+msgid "Aplicación para gestión del aprendizaje."
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:58
+#: now_lms/templates/themes/now_lms/navbar.j2:69
+msgid "Clases Magistrales"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:63
+msgid "Moderación"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:67
+msgid "Docente"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:98
+msgid "Perfil de Usuario"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:114
+msgid "Cerrar Sesión"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:141
+msgid "Versión"
+msgstr "Versão"
+
+#: now_lms/templates/themes/cambridge/navbar.j2:165
+msgid "Manual de Usuario"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/navbar.j2:172
+msgid "Manual de Administración"
+msgstr ""
+
+#: now_lms/vistas/programs.py:131
+msgid "Nuevo Programa creado."
+msgstr ""
+
+#: now_lms/vistas/programs.py:135
+msgid "Hubo un error al crear el programa."
+msgstr ""
+
+#: now_lms/vistas/programs.py:222
+msgid ""
+"No se puede cambiar estatus de programa a publico porque no tiene cursos "
+"añadidos"
+msgstr ""
+
+#: now_lms/vistas/programs.py:226
+msgid "No se puede cambiar programa a abierto porque no tiene cursos añadidos"
+msgstr ""
+
+#: now_lms/vistas/programs.py:257
+msgid "Portada del curso actualizada correctamente"
+msgstr ""
+
+#: now_lms/vistas/programs.py:260
+msgid "No se pudo actualizar la portada del curso."
+msgstr ""
+
+#: now_lms/vistas/programs.py:262
+msgid "Programa editado correctamente."
+msgstr ""
+
+#: now_lms/vistas/programs.py:265
+msgid "No se puedo editar el programa."
+msgstr ""
+
+#: now_lms/vistas/programs.py:375
+msgid "Ya estás inscrito en este programa."
+msgstr ""
+
+#: now_lms/vistas/programs.py:385
+msgid "Te has inscrito exitosamente al programa."
+msgstr ""
+
+#: now_lms/vistas/programs.py:389
+msgid "Hubo un error al inscribirte al programa."
+msgstr ""
+
+#: now_lms/vistas/programs.py:406
+msgid "Debes inscribirte al programa primero."
+msgstr ""
+
+#: now_lms/vistas/programs.py:474
+msgid "El curso ya está en el programa."
+msgstr ""
+
+#: now_lms/vistas/programs.py:517
+msgid "Usuario no encontrado."
+msgstr ""
+
+#: now_lms/vistas/programs.py:519
+msgid "El usuario ya está inscrito en este programa."
+msgstr ""
+
+#: now_lms/vistas/programs.py:529
+msgid "Error al inscribir usuario."
+msgstr ""
+
+#: now_lms/vistas/programs.py:544
+msgid "Programa no encontrado."
+msgstr ""
+
+#: now_lms/vistas/programs.py:556
+msgid "Certificado de programa emitido por completar todos los cursos."
+msgstr ""
+
+#: now_lms/vistas/settings.py:108
+msgid "Tema del sitio web actualizado exitosamente."
+msgstr ""
+
+#: now_lms/vistas/settings.py:112
+msgid "No se pudo actualizar el tema del sitio web."
+msgstr ""
+
+#: now_lms/vistas/settings.py:157
+msgid ""
+"Debe configurar el correo electronico antes de habilitar verificación por"
+" e-mail."
+msgstr ""
+
+#: now_lms/vistas/settings.py:177
+msgid "Sitio web actualizado exitosamente."
+msgstr ""
+
+#: now_lms/vistas/settings.py:180
+msgid "No se pudo actualizar la configuración del sitio web."
+msgstr ""
+
+#: now_lms/vistas/settings.py:219
+msgid "Configuración de correo electronico actualizada exitosamente."
+msgstr ""
+
+#: now_lms/vistas/settings.py:223
+msgid "No se pudo actualizar la configuración de correo electronico."
+msgstr ""
+
+#: now_lms/vistas/settings.py:279
+msgid "Hubo un error al enviar un correo de prueba. Revise su configuración."
+msgstr ""
+
+#: now_lms/vistas/settings.py:344
+msgid "Configuración de Google AdSense actualizada exitosamente."
+msgstr ""
+
+#: now_lms/vistas/settings.py:349
+msgid "No se pudo actualizar la configuración de Google AdSense."
+msgstr ""
+
+#: now_lms/vistas/settings.py:454
+msgid "Configuración de Paypal actualizada exitosamente."
+msgstr ""
+
+#: now_lms/vistas/settings.py:459
+msgid "No se pudo actualizar la configuración de Paypal."
+msgstr ""
+

@@ -1,6 +1,6 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     {% set config = config() %}
 
     <head>
@@ -24,7 +24,7 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
-                                        >Inicio</a
+                                        >{{ _('Inicio') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">{{ curso.nombre }}</li>
@@ -42,7 +42,7 @@
                                 src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/' + course_logo(curso.codigo) ) }}"
                                 class="card-img-top"
                                 style="height: 225px; object-fit: cover"
-                                alt="Portada del Curso"
+                                alt="{{ _('Portada del Curso') }}"
                             />
                             {% else %}
                             <div
@@ -64,7 +64,7 @@
                                     <a
                                         href="{{ url_for('course.administrar_curso', course_code=curso.codigo) }}"
                                         class="btn btn-outline-primary"
-                                        ><i class="bi bi-pencil-square" aria-hidden="true"></i> Administrar Curso</a
+                                        ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _('Administrar Curso') }}</a
                                     >
                                 </div>
                                 {% endif %}
@@ -78,16 +78,16 @@
                                         <li class="mb-2">
                                             {% if curso.fecha_inicio and curso.fecha_fin %}
                                             <i class="bi bi-calendar-week text-primary me-2" aria-hidden="true"></i>
-                                            <strong>Fechas:</strong> {{ curso.fecha_inicio }} - {{ curso.fecha_fin }} {% else
-                                            %}
+                                            <strong>{{ _('Fechas:') }}</strong> {{ curso.fecha_inicio }} - {{ curso.fecha_fin
+                                            }} {% else %}
                                             <i class="bi bi-calendar text-primary me-2" aria-hidden="true"></i>
-                                            <strong>Modalidad:</strong> A su propio ritmo {% endif %}
+                                            <strong>{{ _('Modalidad:') }}</strong> {{ _('A su propio ritmo') }} {% endif %}
                                         </li>
 
                                         {% if curso.precio %}
                                         <li class="mb-2">
                                             <i class="bi bi-cash-coin text-success me-2" aria-hidden="true"></i>
-                                            <strong>Precio:</strong>
+                                            <strong>{{ _('Precio:') }}</strong>
                                             <span class="fw-bold text-success"
                                                 >${{ curso.precio | float }} {{ config.moneda }}</span
                                             >
@@ -95,23 +95,23 @@
                                         {% else %}
                                         <li class="mb-2">
                                             <i class="bi bi-gift text-success me-2" aria-hidden="true"></i>
-                                            <strong class="text-success">Curso Gratuito</strong>
+                                            <strong class="text-success">{{ _('Curso Gratuito') }}</strong>
                                         </li>
                                         {% endif %} {% if curso.certificado %}
                                         <li class="mb-2">
                                             <i class="bi bi-award text-warning me-2" aria-hidden="true"></i>
-                                            <strong>Certificación:</strong> Incluida
+                                            <strong>{{ _('Certificación:') }}</strong> {{ _('Incluida') }}
                                         </li>
                                         {% endif %} {% if curso.capacidad %}
                                         <li class="mb-2">
                                             <i class="bi bi-people text-info me-2" aria-hidden="true"></i>
-                                            <strong>Cupo:</strong> Limitado
+                                            <strong>{{ _('Cupo:') }}</strong> {{ _('Limitado') }}
                                         </li>
                                         {% endif %}
 
                                         <li class="mb-2">
                                             <i class="bi bi-bar-chart text-secondary me-2" aria-hidden="true"></i>
-                                            <strong>Nivel:</strong> {{ nivel[curso.nivel] | safe }}
+                                            <strong>{{ _('Nivel:') }}</strong> {{ nivel[curso.nivel] | safe }}
                                         </li>
                                     </ul>
                                 </div>
@@ -120,7 +120,7 @@
                                 {% if descargas %}
                                 <div class="border-top pt-3 mb-3">
                                     <h6 class="fw-bold mb-2">
-                                        <i class="bi bi-download text-primary me-2"></i>Recursos Descargables
+                                        <i class="bi bi-download text-primary me-2"></i>{{ _('Recursos Descargables') }}
                                     </h6>
                                     <div class="list-group list-group-flush">
                                         {% for item in descargas %}
@@ -142,14 +142,14 @@
                                 estudiante_asignado(curso.codigo) %}
                                 <div class="alert alert-success text-center mb-3" role="alert">
                                     <i class="bi bi-check-circle-fill me-2"></i>
-                                    Ya está inscrito en este curso
+                                    {{ _('Ya está inscrito en este curso') }}
                                 </div>
                                 <div class="d-grid">
                                     <a
                                         href="{{ url_for('course.tomar_curso', course_code=curso.codigo) }}"
                                         class="btn btn-success btn-lg"
                                     >
-                                        <i class="bi bi-play-fill me-2" aria-hidden="true"></i>Continuar Curso
+                                        <i class="bi bi-play-fill me-2" aria-hidden="true"></i>{{ _('Continuar Curso') }}
                                     </a>
                                 </div>
                                 {% else %}
@@ -158,18 +158,19 @@
                                         href="{{ url_for('course.course_enroll', course_code=curso.codigo) }}"
                                         class="btn btn-primary btn-lg mb-2"
                                     >
-                                        <i class="bi bi-backpack-fill me-2" aria-hidden="true"></i>Inscribirse al Curso
+                                        <i class="bi bi-backpack-fill me-2" aria-hidden="true"></i>{{ _('Inscribirse al Curso')
+                                        }}
                                     </a>
                                 </div>
                                 {% endif %} {% endif %} {% else %}
                                 <div class="text-center">
-                                    <p class="text-muted mb-3">Para acceder al curso necesitas una cuenta</p>
+                                    <p class="text-muted mb-3">{{ _('Para acceder al curso necesitas una cuenta') }}</p>
                                     <div class="d-grid gap-2">
                                         <a href="{{ url_for('user.crear_cuenta')}}" class="btn btn-primary btn-lg">
-                                            <i class="bi bi-person-plus-fill me-2"></i>Crear Cuenta Gratis
+                                            <i class="bi bi-person-plus-fill me-2"></i>{{ _('Crear Cuenta Gratis') }}
                                         </a>
                                         <a href="{{ url_for('user.inicio_sesion')}}" class="btn btn-outline-secondary">
-                                            <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                                            <i class="bi bi-box-arrow-in-right me-2"></i>{{ _('Iniciar Sesión') }}
                                         </a>
                                     </div>
                                 </div>
@@ -180,7 +181,9 @@
                     <div class="col-lg-8">
                         <div class="card shadow-sm">
                             <div class="card-header bg-light">
-                                <h3 class="card-title mb-0"><i class="bi bi-list-ul me-2"></i>Contenido del curso</h3>
+                                <h3 class="card-title mb-0">
+                                    <i class="bi bi-list-ul me-2"></i>{{ _('Contenido del curso') }}
+                                </h3>
                             </div>
                             <div class="card-body">
                                 {% if secciones %}
@@ -228,7 +231,7 @@
                                                             <span class="fw-medium">{{ recurso.nombre }}</span>
                                                         </a>
                                                         <span class="badge bg-success">
-                                                            <i class="bi bi-eye-fill me-1"></i>Vista Previa
+                                                            <i class="bi bi-eye-fill me-1"></i>{{ _('Vista Previa') }}
                                                         </span>
                                                         {% else %}
                                                         <div class="d-flex align-items-center flex-grow-1">
@@ -239,7 +242,7 @@
                                                             <span class="fw-medium text-muted">{{ recurso.nombre }}</span>
                                                         </div>
                                                         <span class="badge bg-secondary">
-                                                            <i class="bi bi-lock-fill me-1"></i>Restringido
+                                                            <i class="bi bi-lock-fill me-1"></i>{{ _('Restringido') }}
                                                         </span>
                                                         {% endif %}
                                                     </div>
@@ -253,8 +256,10 @@
                                 {% else %}
                                 <div class="text-center py-5">
                                     <i class="bi bi-inbox text-muted" style="font-size: 3rem"></i>
-                                    <h4 class="text-muted mt-3">Sin contenido disponible</h4>
-                                    <p class="text-muted">Este curso actualmente no cuenta con secciones disponibles.</p>
+                                    <h4 class="text-muted mt-3">{{ _('Sin contenido disponible') }}</h4>
+                                    <p class="text-muted">
+                                        {{ _('Este curso actualmente no cuenta con secciones disponibles.') }}
+                                    </p>
                                 </div>
                                 {% endif %}
                             </div>

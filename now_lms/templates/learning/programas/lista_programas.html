@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Lista de Programas.</title>
+        <title>Lista de {{ _("Programas") }}.</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -17,16 +17,16 @@
             <div class="container px-0 py-3" id="curse_list">
                 <div class="row align-items-center border-bottom pb-3 mb-4">
                     <div class="col-md-8">
-                        <h4 class="mb-0"><i class="bi bi-collection me-2"></i>Lista de Programas Disponibles</h4>
+                        <h4 class="mb-0"><i class="bi bi-collection me-2"></i>Lista de {{ _("Programas") }} Disponibles</h4>
                         <p class="text-muted mb-0">Gestiona y administra tus programas de aprendizaje</p>
                     </div>
                     <div class="col-md-4 text-end">
                         <div class="btn-group" role="group">
                             <a href="{{ url_for('program.nuevo_programa') }}" class="btn btn-success">
-                                <i class="bi bi-plus-lg me-1"></i>Nuevo Programa
+                                <i class="bi bi-plus-lg me-1"></i>{{ _("Nuevo") }} {{ _("Programa") }}
                             </a>
                             <a href="{{ url_for('program.lista_programas') }}" class="btn btn-outline-primary">
-                                <i class="bi bi-eye me-1"></i>Ver Públicos
+                                <i class="bi bi-eye me-1"></i>{{ _("Ver") }} Públicos
                             </a>
                         </div>
                     </div>
@@ -43,14 +43,14 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th scope="col" class="fw-semibold"><i class="bi bi-code-slash me-1"></i>Código</th>
-                                        <th class="fw-semibold"><i class="bi bi-bookmark me-1"></i>Nombre</th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-collection me-1"></i>Cursos</th>
+                                        <th class="fw-semibold"><i class="bi bi-bookmark me-1"></i>{{ _("Nombre") }}</th>
+                                        <th class="fw-semibold text-center"><i class="bi bi-collection me-1"></i>{{ _("Cursos") }}</th>
                                         <th class="fw-semibold text-center"><i class="bi bi-globe me-1"></i>Público</th>
                                         <th class="fw-semibold text-center">
-                                            <i class="bi bi-currency-dollar me-1"></i>Precio
+                                            <i class="bi bi-currency-dollar me-1"></i>{{ _("Precio") }}
                                         </th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-flag me-1"></i>Estado</th>
-                                        <th class="fw-semibold text-center">Acciones</th>
+                                        <th class="fw-semibold text-center"><i class="bi bi-flag me-1"></i>{{ _("Estado") }}</th>
+                                        <th class="fw-semibold text-center">{{ _("Acciones") }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -81,59 +81,59 @@
                                             {% if item.precio and item.precio > 0 %}
                                             <span class="fw-medium text-success">${{ item.precio }}</span>
                                             {% else %}
-                                            <span class="text-muted">Gratis</span>
+                                            <span class="text-muted">{{ _("Gratis") }}</span>
                                             {% endif %}
                                         </td>
                                         <td class="text-center">
                                             {% if item.estado == "open" %}
-                                            <span class="badge bg-success">Abierto</span>
+                                            <span class="badge bg-success">{{ _("Abierto") }}</span>
                                             {% elif item.estado == "closed" %}
-                                            <span class="badge bg-danger">Cerrado</span>
+                                            <span class="badge bg-danger">{{ _("Cerrado") }}</span>
                                             {% else %}
                                             <span class="badge bg-secondary">Borrador</span>
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <div class="btn-group" role="group" aria-label="Acciones del programa">
+                                            <div class="btn-group" role="group" aria-label="{{ _("Acciones") }} del programa">
                                                 <a
                                                     href="{{ url_for('program.pagina_programa', codigo=item.codigo) }}"
                                                     class="btn btn-sm btn-outline-primary"
-                                                    title="Ver programa"
+                                                    title="{{ _("Ver") }} programa"
                                                 >
                                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('program.edit_program', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-secondary"
-                                                    title="Editar programa"
+                                                    title="{{ _("Editar") }} programa"
                                                 >
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('program.programa_cursos', codigo=item.codigo) }}"
                                                     class="btn btn-sm btn-outline-info"
-                                                    title="Gestionar cursos"
+                                                    title="{{ _("Gestionar") }} cursos"
                                                 >
                                                     <i class="bi bi-collection" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('program.gestionar_cursos_programa', codigo=item.codigo) }}"
                                                     class="btn btn-sm btn-outline-success"
-                                                    title="Administrar cursos"
+                                                    title="{{ _("Administrar") }} cursos"
                                                 >
                                                     <i class="bi bi-gear" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('program.inscribir_usuario_programa', codigo=item.codigo) }}"
                                                     class="btn btn-sm btn-outline-warning"
-                                                    title="Inscribir usuario"
+                                                    title="{{ _("Inscribir") }} usuario"
                                                 >
                                                     <i class="bi bi-person-plus" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('program.delete_program', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-danger"
-                                                    title="Eliminar programa"
+                                                    title="{{ _("Eliminar") }} programa"
                                                     onclick="return confirm('¿Está seguro de que desea eliminar este programa?')"
                                                 >
                                                     <i class="bi bi-trash" aria-hidden="true"></i>
@@ -154,7 +154,7 @@
                         <h5 class="text-muted mt-3">No hay programas disponibles</h5>
                         <p class="text-muted">Usted no ha creado ningún programa todavía.</p>
                         <a href="{{ url_for('program.nuevo_programa') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-lg me-2"></i>Crear Primer Programa
+                            <i class="bi bi-plus-lg me-2"></i>{{ _("Crear") }} Primer {{ _("Programa") }}
                         </a>
                     </div>
                 </div>
