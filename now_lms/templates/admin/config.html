@@ -1,9 +1,9 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
 <html lang="es" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
-        <title>{{_("Editar configuracion")}}</title>
+        <title>{{_("Editar configuración")}}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -51,7 +51,7 @@
                         <div class="col-sm-6">
                             <label for="timezone" class="form-label">{{_("Zona Horaria")}}:</label>
                             {{ form.timezone(class="form-control form-select", id="timezone", value=config.timezone) }}
-                            <div class="form-text">{{_("Seleccione la zona horaria adecuada para su pais")}}.</div>
+                            <div class="form-text">{{_("Seleccione la zona horaria adecuada para su país")}}.</div>
                         </div>
                     </div>
                     <br />
@@ -159,7 +159,7 @@
                         <div class="col-sm-6">
                             {% if config.email_verificado %}
                             <div class="alert alert-success" role="alert">
-                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{("La configuración de correo
+                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{_("La configuración de correo
                                 electrónico ha sido verificada correctamente.")}}
                             </div>
                             {% else %}
@@ -169,17 +169,13 @@
                             </div>
                             {% endif %}
                             <label for="verificacion" class="form-label"
-                                >{{_("Permitir a nuevos usuarios verificarse vía correo electronico")}}:</label
+                                >{{_("Permitir a nuevos usuarios verificarse vía correo electrónico")}}:</label
                             >
                             {{ form.verify_user_by_email(value=config.verify_user_by_email) }}
                         </div>
                     </div>
 
-                    <br />
-                    <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button"
-                        >{{_("Cancelar")}}</a
-                    >
-                    <button class="w-10 btn btn-primary btn-block" type="submit">{{_("Actualizar Configuración")}}</button>
+                    {{ render_form_buttons(_("Actualizar Configuración"), url_for('admin_profile.pagina_admin')) }}
                 </form>
             </div>
         </main>
@@ -196,7 +192,7 @@
                 const searchInput = document.createElement("input")
                 searchInput.type = "text"
                 searchInput.className = "form-control mb-2"
-                searchInput.placeholder = "Buscar moneda..."
+                searchInput.placeholder = "{{ _('Buscar moneda...') }}"
                 searchInput.style.display = "none"
 
                 // Insertar el input de búsqueda antes del select

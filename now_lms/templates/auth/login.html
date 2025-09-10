@@ -44,9 +44,9 @@
                 <div class="alert alert-success">{{ message }}</div>
                 {% endfor %}{% endif %}{% endwith %}
                 <label for="usuario" class="visually-hidden">{{_("Usuario")}}</label>
-                {{ form.usuario(class="form-control", id="usuario", placeholder="Usuario") }}
+                {{ form.usuario(class="form-control", id="usuario", placeholder=_("Usuario")) }}
                 <label for="contraseña" class="visually-hidden">{{_("Contraseña")}}</label>
-                {{ form.acceso(class="form-control", id="acceso", placeholder="Contraseña") }}
+                {{ form.acceso(class="form-control", id="acceso", placeholder=_("Contraseña")) }}
                 <button class="w-100 btn btn-lg btn-primary btn-block" type="submit">{{_("Iniciar Sesión")}}</button>
                 {% if show_forgot_password %}
                 <div class="mt-3">

@@ -1,10 +1,10 @@
 {% set current_theme = current_theme() %} {% import "learning/resources/type_macros.html" as r_macros %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
-        <title>Mensaje</title>
+        <title>{{ _("Mensaje") }}</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -16,7 +16,7 @@
             {{ current_theme.notify() }}
 
             <div class="container px-0 py-3" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Mensaje</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Mensaje") }}</h4>
 
                 <div class="row">
                     <div class="col-sm-8">
@@ -36,7 +36,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-1">
-                                    <strong>Fecha:</strong>
+                                    <strong>{{ _("Fecha") }}:</strong>
                                 </div>
                                 <div class="col-11">{{ mensaje.creado }}</div>
                             </div>

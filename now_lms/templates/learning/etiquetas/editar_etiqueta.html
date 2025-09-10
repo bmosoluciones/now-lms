@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Editar Etiqueta</title>
+        <title>{{ _('Editar Etiqueta') }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -17,24 +17,24 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Editar etiqueta.</h4>
+                <h4 class="pb-2 border-bottom">{{ _('Editar etiqueta') }}.</h4>
                 <form method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }}
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="nombre" class="form-label">Etiqueta</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Etiqueta") }}
+                            <label for="nombre" class="form-label">{{ _('Etiqueta') }}</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_('Etiqueta')) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="color" class="form-label">Color</label>
+                            <label for="color" class="form-label">{{ _('Color') }}</label>
                             {{ form.color(class="form-control", id="color") }}
                         </div>
                     </div>
 
                     <br />
-                    <a href="/tags" class="w-10 btn btn-lg btn-danger btn-block" type="submit">Cancelar</a>
-                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Editar Etiqueta</button>
+                    <a href="/tags" class="w-10 btn btn-lg btn-danger btn-block" type="submit">{{ _('Cancelar') }}</a>
+                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">{{ _('Editar Etiqueta') }}</button>
                 </form>
             </div>
         </main>

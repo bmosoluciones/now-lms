@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="es" class="h-100">
-    {% set current_theme = current_theme() %}
+<html lang="{{ get_locale() }}" class="h-100">
+    {% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
-        <title>{{_("Editar apaciencia del sitio web")}}</title>
+        <title>{{_("Editar apariencia del sitio web")}}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -23,7 +23,7 @@
                     <div class="row">
                         <h4>{{_("Logo y Favicon del sitio web")}}.</h4>
                         <div class="col-sm-6">
-                            {% if logo_perzonalizado() and site_logo() %}
+                            {% if logo_personalizado() and site_logo() %}
                             <div>
                                 <img
                                     src="{{ url_for('static', filename='/files/public/images/' + site_logo() ) }}"
@@ -36,12 +36,13 @@
                             <input
                                 type="file"
                                 name="logo"
+                                class="form-control"
                                 accept="image/jpeg, image/png, image/gif, image/webp, image/bmp, image/svg+xml"
                             />
                             {% endif %}
                         </div>
                         <div class="col-sm-6">
-                            {% if favicon_perzonalizado() and site_favicon() %}
+                            {% if favicon_personalizado() and site_favicon() %}
                             <div>
                                 <img
                                     src="{{ url_for('static', filename='/files/public/images/' + site_favicon() ) }}"
@@ -50,7 +51,7 @@
                             </div>
                             {% else %}
                             <label for="favicon" class="form-label">{{_("Favicon")}}</label>
-                            <input type="file" name="favicon" accept="image/png" />
+                            <input type="file" name="favicon" class="form-control" accept="image/png" />
                             {% endif %}
                         </div>
                     </div>
@@ -65,10 +66,7 @@
                     </div>
                     <br />
 
-                    <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button"
-                        >{{_("Cancelar")}}</a
-                    >
-                    <button class="w-10 btn btn-primary btn-block" type="submit">{{_("Actualizar Tema")}}</button>
+                    {{ render_form_buttons(_("Actualizar Tema"), url_for('admin_profile.pagina_admin')) }}
                 </form>
             </div>
         </main>

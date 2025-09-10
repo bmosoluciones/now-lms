@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, redirect, url_for
+from flask import Blueprint, render_template
 from flask_login import login_required
 
 # ---------------------------------------------------------------------------------------
@@ -24,5 +24,5 @@ moderator_profile = Blueprint("moderator_profile", __name__, template_folder=DIR
 @moderator_profile.route("/moderator")
 @login_required
 def pagina_moderador():
-    """Perfil de usuario moderador - Redirige a mensajes."""
-    return redirect(url_for("msg.user_messages"))
+    """Perfil de usuario moderador."""
+    return render_template("perfiles/moderador.html")

@@ -146,6 +146,12 @@ def crear_configuracion_predeterminada():
         lang=default_lang,
         time_zone="UTC",
     )
+    config.enable_programs = False
+    config.enable_masterclass = False
+    config.enable_resources = False
+    config.enable_blog = False
+    config.enable_file_uploads = False
+
     mail_config = MailConfig(
         MAIL_USE_TLS=False,
         MAIL_USE_SSL=False,

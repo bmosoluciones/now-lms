@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>Error al procesar su solicitud.</title>
+        <title>{{ _('Error al procesar su solicitud.') }}</title>
     </head>
 
     <body class="d-flex h-100 text-center">
@@ -22,16 +22,16 @@
             <main class="px-3">
                 <h1><i class="bi bi-bug" aria-hidden="true"></i></h1>
                 <h1>500</h1>
-                <p class="lead">A ocurrido un error al intentar atender su solicitud.</p>
+                <p class="lead">{{ _('Ha ocurrido un error al intentar atender su solicitud.') }}</p>
                 <p class="lead">
                     <a href="{{ url_for('home.pagina_de_inicio') }}" class="btn btn-warning fw-bold"
-                        ><i class="bi bi-house" aria-hidden="true"></i> Regresar al inicio</a
+                        ><i class="bi bi-house" aria-hidden="true"></i> {{ _('Regresar al inicio') }}</a
                     >
                 </p>
             </main>
 
             <footer class="mt-auto">
-                <p>BMO Soluciones</p>
+                <p>{{ _('BMO Soluciones') }}</p>
                 <p>&copy; 2025</p>
             </footer>
         </div>

@@ -1,10 +1,10 @@
 {% set current_theme = current_theme() %} {% set config = config() %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Solicitar Reabrir Evaluación</title>
+        <title>{{ _('Solicitar Reabrir Evaluación') }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -22,17 +22,17 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
-                                        >Inicio</a
+                                        >{{ _('Inicio') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('course.tomar_curso', course_code=evaluation.section.curso) }}"
-                                        >Curso</a
+                                        >{{ _('Curso') }}</a
                                     >
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Solicitar Reabrir</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ _('Solicitar Reabrir') }}</li>
                             </ol>
                         </nav>
                     </h4>
@@ -42,17 +42,17 @@
                     <div class="col-md-8 offset-md-2">
                         <div class="card">
                             <div class="card-header">
-                                <h3>Solicitar Reabrir Evaluación</h3>
+                                <h3>{{ _('Solicitar Reabrir Evaluación') }}</h3>
                                 <p class="mb-0 text-muted">{{ evaluation.title }}</p>
                             </div>
 
                             <div class="card-body">
                                 <div class="alert alert-info">
-                                    <h6>¿Por qué necesita un intento adicional?</h6>
+                                    <h6>{{ _('¿Por qué necesita un intento adicional?') }}</h6>
                                     <p class="mb-0">
-                                        Ha agotado todos los intentos permitidos para esta evaluación sin alcanzar la
+                                        {{ _('Ha agotado todos los intentos permitidos para esta evaluación sin alcanzar la
                                         puntuación mínima. Si considera que hubo circunstancias especiales que afectaron su
-                                        desempeño, puede solicitar un intento adicional proporcionando una justificación.
+                                        desempeño, puede solicitar un intento adicional proporcionando una justificación.') }}
                                     </p>
                                 </div>
 
@@ -63,9 +63,9 @@
                                         {{ form.justification_text.label(class="form-label") }} {{
                                         form.justification_text(class="form-control") }}
                                         <div class="form-text">
-                                            Explique brevemente las razones por las cuales considera que merece un intento
-                                            adicional. Sea específico sobre las circunstancias que pudieron haber afectado su
-                                            desempeño.
+                                            {{ _('Explique brevemente las razones por las cuales considera que merece un
+                                            intento adicional. Sea específico sobre las circunstancias que pudieron haber
+                                            afectado su desempeño.') }}
                                         </div>
                                         {% if form.justification_text.errors %}
                                         <div class="text-danger small">
@@ -77,12 +77,15 @@
                                     </div>
 
                                     <div class="alert alert-warning">
-                                        <h6>Importante:</h6>
+                                        <h6>{{ _('Importante:') }}</h6>
                                         <ul class="mb-0">
-                                            <li>Su solicitud será revisada por el instructor del curso.</li>
-                                            <li>Solo será notificado si su solicitud es aprobada.</li>
-                                            <li>Si se aprueba, puede aplicarse una penalización a la puntuación final.</li>
-                                            <li>No hay garantía de que la solicitud sea aprobada.</li>
+                                            <li>{{ _('Su solicitud será revisada por el instructor del curso.') }}</li>
+                                            <li>{{ _('Solo será notificado si su solicitud es aprobada.') }}</li>
+                                            <li>
+                                                {{ _('Si se aprueba, puede aplicarse una penalización a la puntuación final.')
+                                                }}
+                                            </li>
+                                            <li>{{ _('No hay garantía de que la solicitud sea aprobada.') }}</li>
                                         </ul>
                                     </div>
 
@@ -91,9 +94,9 @@
                                             href="{{ url_for('course.tomar_curso', course_code=evaluation.section.curso) }}"
                                             class="btn btn-secondary me-md-2"
                                         >
-                                            Cancelar
+                                            {{ _('Cancelar') }}
                                         </a>
-                                        <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+                                        <button type="submit" class="btn btn-primary">{{ _('Enviar Solicitud') }}</button>
                                     </div>
                                 </form>
                             </div>

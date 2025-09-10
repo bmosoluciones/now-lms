@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     {% set current_theme = current_theme() %}
 
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>Mis Publicaciones - Blog</title>
+        <title>{{ _('Mis Publicaciones') }} - {{ _('Blog') }}</title>
     </head>
 
     <body>
@@ -17,9 +17,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h1>Mis Publicaciones</h1>
+                            <h1>{{ _('Mis Publicaciones') }}</h1>
                             <a href="{{ url_for('blog.admin_create_post') }}" class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Nueva entrada
+                                <i class="fas fa-plus"></i> {{ _('Nueva entrada') }}
                             </a>
                         </div>
 
@@ -28,11 +28,11 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Título</th>
-                                        <th>Estado</th>
-                                        <th>Comentarios</th>
-                                        <th>Fecha</th>
-                                        <th>Acciones</th>
+                                        <th>{{ _('Título') }}</th>
+                                        <th>{{ _('Estado') }}</th>
+                                        <th>{{ _('Comentarios') }}</th>
+                                        <th>{{ _('Fecha') }}</th>
+                                        <th>{{ _('Acciones') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -47,18 +47,18 @@
                                         </td>
                                         <td>
                                             {% if post.status == 'draft' %}
-                                            <span class="badge bg-secondary">Borrador</span>
+                                            <span class="badge bg-secondary">{{ _('Borrador') }}</span>
                                             {% elif post.status == 'pending' %}
-                                            <span class="badge bg-warning">Pendiente aprobación</span>
+                                            <span class="badge bg-warning">{{ _('Pendiente aprobación') }}</span>
                                             {% elif post.status == 'published' %}
-                                            <span class="badge bg-success">Publicada</span>
+                                            <span class="badge bg-success">{{ _('Publicada') }}</span>
                                             {% elif post.status == 'banned' %}
-                                            <span class="badge bg-danger">Baneada</span>
+                                            <span class="badge bg-danger">{{ _('Baneada') }}</span>
                                             {% endif %}
                                         </td>
                                         <td>
                                             {% if post.allow_comments %} {{ post.comment_count }} {% else %}
-                                            <span class="text-muted">Deshabilitados</span>
+                                            <span class="text-muted">{{ _('Deshabilitados') }}</span>
                                             {% endif %}
                                         </td>
                                         <td>
@@ -70,9 +70,9 @@
                                             <a
                                                 href="{{ url_for('blog.admin_edit_post', post_id=post.id) }}"
                                                 class="btn btn-outline-primary btn-sm"
-                                                title="Editar"
+                                                title="{{ _('Editar') }}"
                                             >
-                                                <i class="fas fa-edit"></i> Editar
+                                                <i class="fas fa-edit"></i> {{ _('Editar') }}
                                             </a>
                                             {% endif %}
                                         </td>
@@ -92,7 +92,7 @@
                                         class="page-link"
                                         href="{{ url_for('blog.instructor_blog_index', page=pagination.prev_num) }}"
                                     >
-                                        Anterior
+                                        {{ _('Anterior') }}
                                     </a>
                                 </li>
                                 {% endif %} {% for page_num in pagination.iter_pages() %} {% if page_num %} {% if page_num !=
@@ -116,7 +116,7 @@
                                         class="page-link"
                                         href="{{ url_for('blog.instructor_blog_index', page=pagination.next_num) }}"
                                     >
-                                        Siguiente
+                                        {{ _('Siguiente') }}
                                     </a>
                                 </li>
                                 {% endif %}
@@ -124,8 +124,10 @@
                         </nav>
                         {% endif %} {% else %}
                         <div class="alert alert-info">
-                            No tienes entradas de blog en este momento.
-                            <a href="{{ url_for('blog.admin_create_post') }}" class="alert-link">Crear tu primera entrada</a>.
+                            {{ _('No tienes entradas de blog en este momento.') }}
+                            <a href="{{ url_for('blog.admin_create_post') }}" class="alert-link"
+                                >{{ _('Crear tu primera entrada') }}</a
+                            >.
                         </div>
                         {% endif %}
                     </div>

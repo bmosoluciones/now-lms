@@ -1,11 +1,11 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ mde.css }} {% if edit %}
-        <title>Editar curso {{ curso.nombre }}</title>
+        <title>{{ _("Editar curso") }} {{ curso.nombre }}</title>
         {% else %}
-        <title>Crear un nuevo curso</title>
+        <title>{{ _("Crear un nuevo curso") }}</title>
         {% endif %} {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
         <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
@@ -18,121 +18,121 @@
             {{ current_theme.notify() }}
             <div class="container px-4 py-5" id="icon-grid">
                 {% if edit %}
-                <h4 class="pb-2 border-bottom">Editar curso {{ curso.nombre }}.</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Editar") }} curso {{ curso.nombre }}.</h4>
                 {% else %}
-                <h4 class="pb-2 border-bottom">Crear nuevo curso.</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Crear") }} nuevo curso.</h4>
                 {% endif %}
                 <form method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }}
                     <div class="row g-3">
-                        <h6>Información General del Curso</h6>
+                        <h6>{{ _("Información") }} General del {{ _("Curso") }}</h6>
                         <div class="col-sm-6">
-                            <label for="nombre" class="form-label">Nombre del Curso</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Nombre del Curso") }}
+                            <label for="nombre" class="form-label">{{ _("Nombre") }} del {{ _("Curso") }}</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Nombre del Curso")) }}
                         </div>
                         <div class="col-sm-6">
-                            <label for="codigo" class="form-label">Codigo del Curso</label>
-                            {{ form.codigo(class="form-control", id="codigo", placeholder="Codigo del Curso") }}
+                            <label for="codigo" class="form-label">{{ _('Código del') }} {{ _("Curso") }}</label>
+                            {{ form.codigo(class="form-control", id="codigo", placeholder=_("Código del Curso")) }}
                         </div>
-                        <label for="descripcion_corta" class="form-label">Descripción Corta</label>
-                        {{ form.descripcion_corta(class="form-control", id="descripcion_corta", placeholder="Descripción
-                        Corta") }}
+                        <label for="descripcion_corta" class="form-label">{{ _("Descripción") }} Corta</label>
+                        {{ form.descripcion_corta(class="form-control", id="descripcion_corta", placeholder=_("Descripción
+                        Corta")) }}
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <br />
-                            <label for="duracion" class="form-label">Duracion (HR)</label>
+                            <label for="duracion" class="form-label">{{ _('Duración (HR)') }}</label>
                             {{ form.duracion }}
                         </div>
                         <div class="col-md-6">
                             <br />
-                            <label for="nivel" class="form-label">Nivel</label>
+                            <label for="nivel" class="form-label">{{ _('Nivel') }}</label>
                             {{ form.nivel }}
                         </div>
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <h6>Visibilidad del curso.</h6>
-                            <label for="publico" class="form-label">Curso Publico</label>
+                            <h6>{{ _('Visibilidad del curso.') }}</h6>
+                            <label for="publico" class="form-label">{{ _("Curso") }} Público</label>
                             {{ form.publico }}
                         </div>
                         <div class="col-md-6">
-                            <h6>Modalidad del curso.</h6>
-                            <label for="modalidad" class="form-label">Modalidad del curso</label>
+                            <h6>{{ _('Modalidad del curso.') }}</h6>
+                            <label for="modalidad" class="form-label">{{ _('Modalidad del curso') }}</label>
                             {{ form.modalidad }}
                         </div>
                     </div>
                     <div class="row g-3">
-                        <h6>Cupo limitado</h6>
+                        <h6>{{ _('Cupo limitado') }}</h6>
                         <div class="col-md-6">
-                            <label for="limitado" class="form-label">Cupo Limitado:</label>
+                            <label for="limitado" class="form-label">{{ _('Cupo Limitado:') }}</label>
                             {{ form.limitado }}
                         </div>
                         <div class="col-md-6">
-                            <label for="capacidad" class="form-label">Cupos:</label>
+                            <label for="capacidad" class="form-label">{{ _('Cupos:') }}</label>
                             {{ form.capacidad }}
                         </div>
                     </div>
                     <div class="row g-3">
-                        <h6>Información de pago.</h6>
+                        <h6>{{ _("Información") }} de pago.</h6>
                         <div class="col-md-4">
-                            <label for="pagado" class="form-label">Curso Pagado:</label>
+                            <label for="pagado" class="form-label">{{ _("Curso") }} {{ _("Pagado") }}:</label>
                             {{ form.pagado }}
                         </div>
                         <div class="col-md-4">
-                            <label for="precio" class="form-label">Precio:</label>
+                            <label for="precio" class="form-label">{{ _("Precio") }}:</label>
                             {{ form.precio }}
                         </div>
                         <div class="col-md-4">
-                            <label for="auditable" class="form-label">Curso Auditable</label>
+                            <label for="auditable" class="form-label">{{ _("Curso") }} Auditable</label>
                             {{ form.auditable }}
                         </div>
                         <p>
-                            Un estudiante puede auditar el curso pero no recibir un certificado al final si no cancela el valor
-                            del curso.
+                            {{ _('Un estudiante puede auditar el curso pero no recibir un certificado al final si no cancela el valor del curso.') }}
                         </p>
                     </div>
                     <div class="row g-3">
-                        <h6>Inicio y Fin del curso</h6>
+                        <h6>{{ _("Inicio") }} y Fin del curso</h6>
                         <div class="col-md-6">
-                            <label for="fecha_inicio" class="form-label">Fecha Inicio</label>
+                            <label for="fecha_inicio" class="form-label">{{ _("Fecha") }} {{ _("Inicio") }}</label>
                             {{ form.fecha_inicio }}
                         </div>
                         <div class="col-md-6">
-                            <label for="fecha_fin" class="form-label">Fecha Fin</label>
+                            <label for="fecha_fin" class="form-label">{{ _("Fecha") }} Fin</label>
                             {{ form.fecha_fin }}
                         </div>
-                        <p>Si el curso es en tiempo real o con tiempo definido defina las fechas de inicio y fin.</p>
+                        <p>{{ _('Si el curso es en tiempo real o con tiempo definido defina las fechas de inicio y fin.') }}</p>
                     </div>
                     <div class="row g-3">
-                        <h6>Certificación</h6>
+                        <h6>{{ _('Certificación') }}</h6>
                         <div class="col-md-4">
-                            <label for="certificado" class="form-label">Extender Certificado:</label>
+                            <label for="certificado" class="form-label">{{ _('Extender Certificado:') }}</label>
                             {{ form.certificado }}
                         </div>
                         <div class="col-md-4">
-                            <label for="plantilla_certificado" class="form-label">Plantilla de Certificado:</label>
+                            <label for="plantilla_certificado" class="form-label">{{ _('Plantilla de Certificado:') }}</label>
                             {{ form.plantilla_certificado() }}
                         </div>
                     </div>
                     <div class="row g-3">
-                        <h6>Portada del curso</h6>
+                        <h6>{{ _('Portada del curso') }}</h6>
                         {% if curso.portada %}
                         <div>
                             <img
                                 src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}"
-                                alt="Portada del Curso"
+                                alt="Portada del {{ _("Curso") }}"
                                 height="200"
                                 width="400"
                             />
                         </div>
-                        <a href="{{url_for('course.elimina_logo', course_code=curso.codigo)}}">Eliminar Portada</a>
+                        <a href="{{url_for('course.elimina_logo', course_code=curso.codigo)}}">{{ _("Eliminar") }} Portada</a>
                         {% else %}
                         <div class="col-md-4">
-                            <label for="logo" class="form-label">Portada</label>
+                            <label for="logo" class="form-label">{{ _('Portada') }}</label>
                             <input
                                 type="file"
                                 name="logo"
+                                class="form-control"
                                 accept="image/jpeg, image/png, image/gif, image/webp, image/bmp, image/svg+xml"
                             />
                         </div>
@@ -140,25 +140,25 @@
                     </div>
 
                     <div class="row g-3">
-                        <h6>Categorización</h6>
+                        <h6>{{ _('Categorización') }}</h6>
                         <div class="col-sm-6">
-                            <label for="categoria" class="form-label">Categoría</label>
+                            <label for="categoria" class="form-label">{{ _('Categoría') }}</label>
                             {{ form.categoria(class="form-control", id="categoria") }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="etiquetas" class="form-label">Etiquetas</label>
+                            <label for="etiquetas" class="form-label">{{ _('Etiquetas') }}</label>
                             {{ form.etiquetas(class="form-control", id="etiquetas", multiple=True) }}
                             <div class="form-text">
-                                Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples etiquetas.
+                                {{ _('Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples etiquetas.') }}
                             </div>
                         </div>
                     </div>
 
                     <div class="row g-3">
                         <div>
-                            <h6>Descripción del curso</h6>
-                            <label for="descripcion" class="form-label">Descripción del Curso:</label>
+                            <h6>{{ _("Descripción") }} del curso</h6>
+                            <label for="descripcion" class="form-label">{{ _("Descripción") }} del {{ _("Curso") }}:</label>
                             {{form.descripcion}}
                             <br />
                             <h6>Vista previa de la descripción:</h6>
@@ -167,14 +167,9 @@
                             <br />
                         </div>
                     </div>
-                    {% if curso %}
-                    <a class="btn btn-warning" href="{{ url_for('course.curso', course_code=curso.codigo) }}" role="button"
-                        >Cancelar</a
-                    >
-                    <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Curso</button>
-                    {% else %}
-                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Curso</button>
-                    {% endif %}
+                    {% if curso %} {{ render_form_buttons(_("Actualizar Curso"), url_for('course.curso',
+                    course_code=curso.codigo)) }} {% else %} {{ render_form_buttons(_("Crear Curso"), "/course/explore") }} {%
+                    endif %}
                 </form>
             </div>
         </main>

@@ -1,10 +1,10 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ get_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
 
-        <title>{{_("Editar configuracion")}}</title>
+        <title>{{_("Editar configuración")}}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -18,11 +18,11 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h5 class="pb-2 border-bottom">{{_("Configuración del Correo Electronico")}}.</h5>
+                <h5 class="pb-2 border-bottom">{{_("Configuración del Correo Electrónico")}}.</h5>
                 <form method="post">
                     <div class="row">
                         <div class="col-sm-6">
-                            <label for="email" class="form-label">{{_("Permitir Correo Electronico")}}:</label>
+                            <label for="email" class="form-label">{{_("Permitir Correo Electrónico")}}:</label>
                             {{ form.email(class="form-control") }}
                         </div>
                     </div>

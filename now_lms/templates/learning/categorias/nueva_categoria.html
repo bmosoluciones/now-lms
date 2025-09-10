@@ -1,9 +1,9 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Crear Categoria</title>
+        <title>{{ _("Crear Categoría") }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -17,24 +17,24 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Crear Categoria.</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Crear Categoría.") }}</h4>
                 <form method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }}
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="nombre" class="form-label">Categoria</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Categoria") }}
+                            <label for="nombre" class="form-label">{{ _('Categoría') }}</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Categoría")) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="descripcion" class="form-label">Descripcion</label>
-                            {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripción") }}
+                            <label for="descripcion" class="form-label">{{ _("Descripción") }}</label>
+                            {{ form.descripcion(class="form-control", id="descripcion", placeholder=_("Descripción")) }}
                         </div>
                     </div>
 
                     <br />
 
-                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Categoria</button>
+                    {{ render_form_buttons(_("Crear Categoría"), "/category/list") }}
                 </form>
             </div>
         </main>

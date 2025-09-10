@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     {% set current_theme = current_theme() %}
 
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>Gestión de Etiquetas - Blog</title>
+        <title>{{ _('Gestión de Etiquetas') }} - {{ _('Blog') }}</title>
     </head>
 
     <body>
@@ -16,17 +16,17 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-8">
-                        <h1>Gestión de Etiquetas</h1>
+                        <h1>{{ _('Gestión de Etiquetas') }}</h1>
 
                         {% if tags %}
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Nombre</th>
-                                        <th>Slug</th>
-                                        <th>Publicaciones</th>
-                                        <th>Acciones</th>
+                                        <th>{{ _('Nombre') }}</th>
+                                        <th>{{ _('Slug') }}</th>
+                                        <th>{{ _('Publicaciones') }}</th>
+                                        <th>{{ _('Acciones') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -40,7 +40,7 @@
                                                 class="badge text-bg-danger"
                                                 href="{{ url_for('blog.delete_tag', tag_id=tag.id) }}"
                                             >
-                                                Eliminar
+                                                {{ _('Eliminar') }}
                                             </a>
                                         </td>
                                     </tr>
@@ -56,7 +56,7 @@
                                 {% if pagination.has_prev %}
                                 <li class="page-item">
                                     <a class="page-link" href="{{ url_for('blog.admin_tags', page=pagination.prev_num) }}">
-                                        Anterior
+                                        {{ _('Anterior') }}
                                     </a>
                                 </li>
                                 {% endif %} {% for page_num in pagination.iter_pages() %} {% if page_num %} {% if page_num !=
@@ -77,19 +77,19 @@
                                 {% endif %} {% endfor %} {% if pagination.has_next %}
                                 <li class="page-item">
                                     <a class="page-link" href="{{ url_for('blog.admin_tags', page=pagination.next_num) }}">
-                                        Siguiente
+                                        {{ _('Siguiente') }}
                                     </a>
                                 </li>
                                 {% endif %}
                             </ul>
                         </nav>
                         {% endif %} {% else %}
-                        <div class="alert alert-info">No hay etiquetas creadas en este momento.</div>
+                        <div class="alert alert-info">{{ _('No hay etiquetas creadas en este momento.') }}</div>
                         {% endif %}
 
                         <div class="mt-4">
                             <a href="{{ url_for('blog.admin_blog_index') }}" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left"></i> Volver al blog
+                                <i class="fas fa-arrow-left"></i> {{ _('Volver al blog') }}
                             </a>
                         </div>
                     </div>
@@ -98,7 +98,7 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-header">
-                                <h5>Crear nueva etiqueta</h5>
+                                <h5>{{ _('Crear nueva etiqueta') }}</h5>
                             </div>
                             <div class="card-body">
                                 <form method="POST" action="{{ url_for('blog.create_tag') }}">
@@ -112,7 +112,7 @@
                                     </div>
 
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-plus"></i> Crear etiqueta
+                                        <i class="fas fa-plus"></i> {{ _('Crear etiqueta') }}
                                     </button>
                                 </form>
                             </div>

@@ -1,12 +1,36 @@
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     {% set current_theme = current_theme() %}
 
     <head>
         {{ current_theme.headertags() }}
-        <title>Panel del moderador</title>
+        <title>{{ _('Panel del Moderador') }}</title>
 
         {{ current_theme.local_style() }}
+        <style>
+            .moderator-header {
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                color: white;
+                border-radius: 10px;
+                margin-bottom: 2rem;
+            }
+            .moderation-card {
+                border: none;
+                border-radius: 15px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
+            }
+            .moderation-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            }
+            .stat-icon {
+                font-size: 2.5rem;
+                opacity: 0.2;
+            }
+        </style>
     </head>
 
     <body>
@@ -16,95 +40,130 @@
             {{ current_theme.notify() }}
 
             <div class="container px-0 py-3" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Bienvenido Moderador {{ current_user.nombre }} {{ current_user.apellido }}</h4>
-                <div class="row mb-2 mb-xl-3">
-                    <div class="col-auto d-none d-sm-block">
-                        <h3>Estadísticas de moderación.</h3>
+                <!-- Enhanced Welcome Header -->
+                <div class="moderator-header p-4 mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-1">
+                                <i class="bi bi-shield-check me-2"></i>
+                                {{ _('Bienvenido, Moderador') }} {{ current_user.nombre }} {{ current_user.apellido }}
+                            </h2>
+                            <p class="mb-0 opacity-75">{{ _('Tu centro de moderación y supervisión académica') }}</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a
+                                href="{{ url_for('msg.admin_flagged_messages') }}"
+                                class="btn btn-light"
+                                style="border-radius: 25px"
+                            >
+                                <i class="bi bi-flag me-1"></i> {{ _('Ver Reportes') }}
+                            </a>
+                        </div>
                     </div>
                 </div>
+                <!-- Moderation Statistics -->
                 <div class="row">
                     <div class="col-xl-6 col-xxl-5 d-flex">
                         <div class="w-100">
                             <div class="row">
                                 <div class="col-sm-6 mb-3">
-                                    <div class="card h-100">
+                                    <div class="card moderation-card border-primary">
                                         <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">
-                                                        <i class="bi bi-person-vcard-fill" aria-hidden="true"></i> Cursos
-                                                        Moderados
-                                                    </h5>
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-primary mb-2">
+                                                        <i class="bi bi-book-half me-2"></i>{{ _('Cursos Moderados') }}
+                                                    </h6>
+                                                    <h2 class="mb-0 text-primary">{{ created_courses }}</h2>
+                                                    <small class="text-muted">{{ _('Bajo supervisión') }}</small>
                                                 </div>
-
                                                 <div class="col-auto">
-                                                    <div class="stat text-primary">
-                                                        <i class="align-middle" data-feather="book"></i>
-                                                    </div>
+                                                    <i class="bi bi-book-half stat-icon text-primary"></i>
                                                 </div>
                                             </div>
-                                            <h1 class="mt-1 mb-3">{{ created_courses }}</h1>
+                                            <div class="mt-3">
+                                                <a
+                                                    href="{{ url_for('course.lista_cursos') }}"
+                                                    class="btn btn-outline-primary btn-sm"
+                                                >
+                                                    <i class="bi bi-eye me-1"></i>{{ _('Ver Cursos') }}
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 mb-3">
-                                    <div class="card h-100">
+                                    <div class="card moderation-card border-success">
                                         <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">
-                                                        <i class="bi bi-people-fill" aria-hidden="true"></i> Estudiantes
-                                                        Supervisados
-                                                    </h5>
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-success mb-2">
+                                                        <i class="bi bi-people me-2"></i>{{ _('Estudiantes Supervisados') }}
+                                                    </h6>
+                                                    <h2 class="mb-0 text-success">{{ enrolled_students }}</h2>
+                                                    <small class="text-muted">{{ _('En cursos moderados') }}</small>
                                                 </div>
-
                                                 <div class="col-auto">
-                                                    <div class="stat text-success">
-                                                        <i class="align-middle" data-feather="users"></i>
-                                                    </div>
+                                                    <i class="bi bi-people stat-icon text-success"></i>
                                                 </div>
                                             </div>
-                                            <h1 class="mt-1 mb-3">{{ enrolled_students }}</h1>
+                                            <div class="mt-3">
+                                                <a
+                                                    href="{{ url_for('admin_profile.usuarios') }}"
+                                                    class="btn btn-outline-success btn-sm"
+                                                >
+                                                    <i class="bi bi-person-lines-fill me-1"></i>{{ _('Ver Lista') }}
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 mb-3">
-                                    <div class="card h-100">
+                                    <div class="card moderation-card border-warning">
                                         <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">
-                                                        <i class="bi bi-chat-dots" aria-hidden="true"></i> Mensajes Abiertos
-                                                    </h5>
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-warning mb-2">
+                                                        <i class="bi bi-chat-dots me-2"></i>{{ _('Mensajes Abiertos') }}
+                                                    </h6>
+                                                    <h2 class="mb-0 text-warning">{{ open_messages|default(0) }}</h2>
+                                                    <small class="text-muted">{{ _('Pendientes de revisar') }}</small>
                                                 </div>
-
                                                 <div class="col-auto">
-                                                    <div class="stat text-warning">
-                                                        <i class="align-middle" data-feather="message-circle"></i>
-                                                    </div>
+                                                    <i class="bi bi-chat-dots stat-icon text-warning"></i>
                                                 </div>
                                             </div>
-                                            <h1 class="mt-1 mb-3">{{ open_messages|default(0) }}</h1>
+                                            <div class="mt-3">
+                                                <a
+                                                    href="{{ url_for('msg.user_messages') }}"
+                                                    class="btn btn-outline-warning btn-sm"
+                                                >
+                                                    <i class="bi bi-envelope me-1"></i>{{ _('Revisar') }}
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 mb-3">
-                                    <div class="card h-100">
+                                    <div class="card moderation-card border-success">
                                         <div class="card-body">
-                                            <div class="row">
-                                                <div class="col mt-0">
-                                                    <h5 class="card-title">
-                                                        <i class="bi bi-check-circle" aria-hidden="true"></i> Mensajes Cerrados
-                                                    </h5>
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-success mb-2">
+                                                        <i class="bi bi-check-circle me-2"></i>{{ _('Mensajes Resueltos') }}
+                                                    </h6>
+                                                    <h2 class="mb-0 text-success">{{ closed_messages|default(0) }}</h2>
+                                                    <small class="text-muted">{{ _('Casos cerrados') }}</small>
                                                 </div>
-
                                                 <div class="col-auto">
-                                                    <div class="stat text-success">
-                                                        <i class="align-middle" data-feather="check-circle"></i>
-                                                    </div>
+                                                    <i class="bi bi-check-circle stat-icon text-success"></i>
                                                 </div>
                                             </div>
-                                            <h1 class="mt-1 mb-3">{{ closed_messages|default(0) }}</h1>
+                                            <div class="mt-3">
+                                                <small class="text-muted">
+                                                    <i class="bi bi-info-circle me-1"></i>{{ _('Historial completo') }}
+                                                </small>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -112,41 +171,127 @@
                         </div>
                     </div>
 
+                    <!-- Moderation Management Section -->
                     <div class="col-xl-6 col-xxl-7">
-                        <div class="card flex-fill w-100">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Mis Cursos Moderados</h5>
+                        <!-- My Moderated Courses -->
+                        <div
+                            class="card mb-3"
+                            style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
+                        >
+                            <div class="card-header bg-primary bg-opacity-10">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h5 class="card-title mb-0">
+                                            <i class="bi bi-shield-check text-primary me-2"></i>{{ _('Cursos Moderados') }}
+                                        </h5>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-arrow-right me-1"></i>{{ _('Ver Todos') }}
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-body pt-2 pb-3">
-                                <ul>
+                            <div class="card-body">
+                                {% if cursos_por_fecha %}
+                                <div class="list-group list-group-flush">
                                     {% for curso in cursos_por_fecha %}
-                                    <li>
-                                        <a href="{{ url_for('course.curso', course_code=curso.codigo) }}"
-                                            >{{ curso.nombre }}</a
-                                        >
-                                    </li>
+                                    <div class="list-group-item border-0 px-0">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <h6 class="mb-1">
+                                                    <a
+                                                        href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+                                                        class="text-decoration-none"
+                                                    >
+                                                        {{ curso.nombre }}
+                                                    </a>
+                                                </h6>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-calendar3 me-1"></i>
+                                                    Creado: {{ curso.creado.strftime('%d/%m/%Y') if curso.creado else 'N/A' }}
+                                                </small>
+                                            </div>
+                                            <div class="col-auto">
+                                                <span class="badge bg-primary">{{ curso.codigo }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                     {% endfor %}
-                                </ul>
+                                </div>
+                                {% else %}
+                                <div class="text-center text-muted py-3">
+                                    <i class="bi bi-shield display-6 opacity-25"></i>
+                                    <p class="mt-2 mb-0">{{ _('No hay cursos asignados para moderar') }}</p>
+                                </div>
+                                {% endif %}
                             </div>
                         </div>
 
-                        <!-- Messages Management Section for Moderator -->
-                        <div class="card flex-fill w-100 mt-3">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0"><i class="bi bi-chat-left-text"></i> Gestión de Mensajes</h5>
+                        <!-- Messages Management Section -->
+                        <div
+                            class="card mb-3"
+                            style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)"
+                        >
+                            <div class="card-header bg-warning bg-opacity-10">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-chat-left-text text-warning me-2"></i>{{ _('Gestión de Mensajes') }}
+                                </h5>
                             </div>
-                            <div class="card-body pt-2 pb-3">
-                                <p class="text-muted">
-                                    Como moderador, ayuda a contestar los requerimientos de los estudiantes vía mensajes
-                                    directos.
+                            <div class="card-body">
+                                <p class="text-muted mb-3">
+                                    {{ _('Como moderador, ayuda a contestar los requerimientos de los estudiantes y supervisa
+                                    las conversaciones para mantener un ambiente de aprendizaje positivo.') }}
                                 </p>
-                                <div class="d-flex gap-2">
-                                    <a href="{{ url_for('msg.user_messages') }}" class="btn btn-primary btn-sm">
-                                        <i class="bi bi-envelope"></i> Mis Mensajes
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <a href="{{ url_for('msg.user_messages') }}" class="btn btn-primary">
+                                        <i class="bi bi-envelope me-1"></i>{{ _('Mis Mensajes') }}
                                     </a>
-                                    <a href="{{ url_for('msg.admin_flagged_messages') }}" class="btn btn-warning btn-sm">
-                                        <i class="bi bi-exclamation-circle"></i> Mensajes Reportados
+                                    <a href="{{ url_for('msg.admin_flagged_messages') }}" class="btn btn-warning">
+                                        <i class="bi bi-flag me-1"></i>{{ _('Mensajes Reportados') }}
                                     </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Moderation Tools -->
+                        <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)">
+                            <div class="card-header bg-info bg-opacity-10">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-tools text-info me-2"></i>{{ _('Herramientas de Moderación') }}
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <a
+                                            href="{{ url_for('admin_profile.usuarios') }}"
+                                            class="btn btn-outline-primary w-100"
+                                        >
+                                            <i class="bi bi-people me-2"></i>{{ _('Usuarios') }}
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-outline-warning w-100">
+                                            <i class="bi bi-search me-2"></i>{{ _('Buscar Cursos') }}
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <a
+                                            href="{{ url_for('resource.lista_de_recursos') }}"
+                                            class="btn btn-outline-success w-100"
+                                        >
+                                            <i class="bi bi-collection me-2"></i>{{ _('Recursos') }}
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <a
+                                            href="{{ url_for('public_announcements.global_announcements') }}"
+                                            class="btn btn-outline-info w-100"
+                                        >
+                                            <i class="bi bi-megaphone me-2"></i>{{ _('Anuncios') }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

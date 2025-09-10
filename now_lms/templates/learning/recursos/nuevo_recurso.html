@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Crear Recurso</title>
+        <title>{{ _("Crear") }} {{ _("Recurso") }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -17,13 +17,13 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Crear Recurso.</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Crear") }} {{ _("Recurso") }}.</h4>
                 <form method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }}
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="nombre" class="form-label">Recurso</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Recurso") }}
+                            <label for="nombre" class="form-label">{{ _("Recurso") }}</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Recurso")) }}
                         </div>
 
                         <div class="col-sm-6">
@@ -35,18 +35,18 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="descripcion" class="form-label">Descripcion</label>
-                            {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripción") }}
+                            {{ form.descripcion(class="form-control", id="descripcion", placeholder=_("Descripción")) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="precio" class="form-label">Precio</label>
+                            <label for="precio" class="form-label">{{ _("Precio") }}</label>
                             {{ form.precio(class="form-control", id="codigo") }}
                         </div>
                     </div>
 
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="tipo" class="form-label">Tipo</label>
+                            <label for="tipo" class="form-label">{{ _("Tipo") }}</label>
                             {{ form.tipo(class="form-control", id="tipo") }}
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <p>Seleccione el archivo que desea compartir.</p>
-                            <label for="descripcion" class="form-label">Recurso</label>
+                            <label for="descripcion" class="form-label">{{ _("Recurso") }}</label>
                             <input type="file" name="recurso" />
                         </div>
 
@@ -69,7 +69,9 @@
 
                     <br />
 
-                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Recurso</button>
+                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">
+                        {{ _("Crear") }} {{ _("Recurso") }}
+                    </button>
                 </form>
             </div>
         </main>

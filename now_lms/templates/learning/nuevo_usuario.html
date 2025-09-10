@@ -1,9 +1,9 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Crear un nuevo usuario</title>
+        <title>{{ _("Crear un nuevo usuario") }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -17,38 +17,38 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Crear nuevo Usuario.</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Crear") }} nuevo {{ _("Usuario") }}.</h4>
                 <form method="post">
                     {{ form.csrf_token }}
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="nombre" class="form-label">Nombre</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Nombre del Usuario") }}
+                            <label for="nombre" class="form-label">{{ _("Nombre") }}</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Nombre del Usuario")) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="apellido" class="form-label">Apellido</label>
-                            {{ form.apellido(class="form-control", id="apellido", placeholder="Apellido del Usuario") }}
+                            <label for="apellido" class="form-label">{{ _('Apellido') }}</label>
+                            {{ form.apellido(class="form-control", id="apellido", placeholder=_("Apellido del Usuario")) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="correo_electronico" class="form-label">Correo Electronico</label>
-                            {{ form.correo_electronico(class="form-control", id="correo_electronico", placeholder="Correo
-                            Electronico") }}
+                            <label for="correo_electronico" class="form-label">{{ _('Correo Electrónico') }}</label>
+                            {{ form.correo_electronico(class="form-control", id="correo_electronico", placeholder=_("Correo
+                            Electrónico")) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="usuario" class="form-label">Usuario</label>
-                            {{ form.usuario(class="form-control", id="usuario", placeholder="Usuario") }}
+                            <label for="usuario" class="form-label">{{ _("Usuario") }}</label>
+                            {{ form.usuario(class="form-control", id="usuario", placeholder=_("Usuario")) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="acceso" class="form-label">Contraseña</label>
-                            {{ form.acceso(class="form-control", id="acceso", placeholder="Contraseña") }}
+                            <label for="acceso" class="form-label">{{ _('Contraseña') }}</label>
+                            {{ form.acceso(class="form-control", id="acceso", placeholder=_("Contraseña")) }}
                         </div>
                     </div>
                     <br />
-                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Usuario</button>
+                    {{ render_form_buttons(_("Crear Usuario"), "/admin/panel") }}
                 </form>
             </div>
         </main>

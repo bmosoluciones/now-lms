@@ -1,0 +1,17 @@
+{# Macro para estandarizar los botones de formularios en todo el sistema Parámetros: - submit_text: Texto del botón de envío
+(ej: "Crear", "Actualizar", "Guardar") - cancel_url: URL para el botón de cancelar - cancel_text: Texto del botón de cancelar
+(por defecto: "Cancelar") - show_icons: Si mostrar iconos en los botones (por defecto: False) - extra_buttons: HTML adicional
+para botones extra (opcional) #} {% macro render_form_buttons(submit_text, cancel_url, cancel_text=_("Cancelar"),
+show_icons=false, extra_buttons="") -%}
+<div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+    {% if cancel_url %}
+    <a href="{{ cancel_url }}" class="btn btn-secondary me-md-2">
+        {% if show_icons %}<i class="bi bi-arrow-left"></i> {% endif %}{{ cancel_text }}
+    </a>
+    {% endif %} {% if extra_buttons %}{{ extra_buttons|safe }}{% endif %}
+
+    <button type="submit" class="btn btn-primary">
+        {% if show_icons %}<i class="bi bi-check-circle"></i> {% endif %}{{ submit_text }}
+    </button>
+</div>
+{%- endmacro %}

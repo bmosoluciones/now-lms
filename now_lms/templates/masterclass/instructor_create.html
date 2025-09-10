@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     {% set current_theme = current_theme() %} {% set config = config() %}
 
     <head>
@@ -16,11 +16,11 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-8 offset-md-2">
-                        <nav aria-label="breadcrumb">
+                        <nav aria-label="{{ _('breadcrumb') }}">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a href="{{ url_for('masterclass.instructor_list') }}" class="text-decoration-none"
-                                        >Mis Clases Magistrales</a
+                                        >{{ _('Mis Clases Magistrales') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
@@ -42,7 +42,7 @@
 
                             <div class="card">
                                 <div class="card-header">
-                                    <h5>Información Básica</h5>
+                                    <h5>{{ _('Información Básica') }}</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="mb-3">
@@ -67,7 +67,7 @@
                                         </div>
                                         {% endif %}
                                         <small class="form-text text-muted"
-                                            >Esta descripción será visible para todos los usuarios.</small
+                                            >{{ _('Esta descripción será visible para todos los usuarios.') }}</small
                                         >
                                     </div>
 
@@ -82,7 +82,7 @@
                                         </div>
                                         {% endif %}
                                         <small class="form-text text-muted"
-                                            >Esta descripción solo será visible para usuarios inscritos.</small
+                                            >{{ _('Esta descripción solo será visible para usuarios inscritos.') }}</small
                                         >
                                     </div>
                                 </div>
@@ -218,9 +218,9 @@
 
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                                 <a href="{{ url_for('masterclass.instructor_list') }}" class="btn btn-secondary me-md-2"
-                                    >Cancelar</a
+                                    >{{ _('Cancelar') }}</a
                                 >
-                                <button type="submit" class="btn btn-primary">Crear Clase Magistral</button>
+                                <button type="submit" class="btn btn-primary">{{ _('Crear Clase Magistral') }}</button>
                             </div>
                         </form>
                     </div>

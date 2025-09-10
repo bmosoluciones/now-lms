@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Editar Plantilla de Certicado.</title>
+        <title>{{ _('Editar Plantilla de Certicado') }}.</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -15,37 +15,37 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Editar Certificado.</h4>
+                <h4 class="pb-2 border-bottom">{{ _('Editar Certificado') }}.</h4>
                 <form method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }}
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="titulo" class="form-label">Certificado</label>
-                            {{ form.titulo(class="form-control", id="titulo", placeholder="Certificado") }}
+                            <label for="titulo" class="form-label">{{ _('Certificado') }}</label>
+                            {{ form.titulo(class="form-control", id="titulo", placeholder=_('Certificado')) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="descripcion" class="form-label">Descripcion</label>
-                            {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripcion") }}
+                            <label for="descripcion" class="form-label">{{ _('Descripcion') }}</label>
+                            {{ form.descripcion(class="form-control", id="descripcion", placeholder=_('Descripcion')) }}
                         </div>
                     </div>
 
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <br />
-                            <label for="habilitado" class="form-label">Habilitado</label>
+                            <label for="habilitado" class="form-label">{{ _('Habilitado') }}</label>
                             {{ form.habilitado() }}
                         </div>
 
                         <div class="col-sm-6">
                             <br />
-                            <label for="publico" class="form-label">Publico</label>
+                            <label for="publico" class="form-label">{{ _('Publico') }}</label>
                             {{ form.publico() }}
                         </div>
                     </div>
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="tipo" class="form-label">Tipo de Certificado</label>
+                            <label for="tipo" class="form-label">{{ _('Tipo de Certificado') }}</label>
                             {{ form.tipo(class="form-control", id="tipo") }}
                         </div>
                     </div>
@@ -61,9 +61,11 @@
 
                     <br />
 
-                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Actualizar Certificado</button>
+                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">
+                        {{ _('Actualizar Certificado') }}
+                    </button>
                     <a href="{{ url_for('certificate.certificados') }}" class="w-10 btn btn-lg btn-danger btn-block"
-                        >Cancelar</a
+                        >{{ _('Cancelar') }}</a
                     >
                 </form>
             </div>

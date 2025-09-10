@@ -3,10 +3,10 @@ docente_asignado(id_curso=curso.codigo) %} {% set permitir_moderador = moderador
 permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Inscripciones - {{ curso.nombre }}</title>
+        <title>{{ _('Inscripciones') }} - {{ curso.nombre }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -23,7 +23,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h4><i class="fas fa-users"></i> Inscripciones del Curso</h4>
+                                    <h4><i class="fas fa-users"></i> {{ _('Inscripciones del Curso') }}</h4>
                                     <p class="mb-0 text-muted">{{ curso.nombre }} ({{ curso.codigo }})</p>
                                 </div>
                                 <div>
@@ -31,13 +31,13 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                         href="{{ url_for('course.admin_course_enrollment', course_code=curso.codigo) }}"
                                         class="btn btn-primary"
                                     >
-                                        <i class="fas fa-user-plus"></i> Inscribir Estudiante
+                                        <i class="fas fa-user-plus"></i> {{ _('Inscribir Estudiante') }}
                                     </a>
                                     <a
                                         href="{{ url_for('course.administrar_curso', course_code=curso.codigo) }}"
                                         class="btn btn-secondary"
                                     >
-                                        <i class="fas fa-arrow-left"></i> Volver al Curso
+                                        <i class="fas fa-arrow-left"></i> {{ _('Volver al Curso') }}
                                     </a>
                                 </div>
                             </div>
@@ -47,14 +47,14 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th>Estudiante</th>
-                                                <th>Email</th>
-                                                <th>Fecha de Inscripción</th>
-                                                <th>Método de Pago</th>
-                                                <th>Estado del Pago</th>
-                                                <th>Monto</th>
-                                                <th>Inscrito Por</th>
-                                                <th>Acciones</th>
+                                                <th>{{ _('Estudiante') }}</th>
+                                                <th>{{ _('Email') }}</th>
+                                                <th>{{ _('Fecha de Inscripción') }}</th>
+                                                <th>{{ _('Método de Pago') }}</th>
+                                                <th>{{ _('Estado del Pago') }}</th>
+                                                <th>{{ _('Monto') }}</th>
+                                                <th>{{ _('Inscrito Por') }}</th>
+                                                <th>{{ _('Acciones') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -76,13 +76,14 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                                     <span
                                                         class="badge bg-{% if pago.metodo == 'admin_enrollment' or pago.metodo == 'admin_program_enrollment' %}info{% elif pago.metodo == 'free' %}success{% elif pago.metodo == 'audit' %}warning{% else %}primary{% endif %}"
                                                     >
-                                                        {% if pago.metodo == 'admin_enrollment' %} Admin. Manual {% elif
-                                                        pago.metodo == 'admin_program_enrollment' %} Admin. Programa {% elif
-                                                        pago.metodo == 'free' %} Gratuito {% elif pago.metodo == 'audit' %}
-                                                        Auditoría {% else %} {{ pago.metodo.title() }} {% endif %}
+                                                        {% if pago.metodo == 'admin_enrollment' %} {{ _('Admin. Manual') }} {%
+                                                        elif pago.metodo == 'admin_program_enrollment' %} {{ _('Admin.
+                                                        Programa') }} {% elif pago.metodo == 'free' %} {{ _('Gratuito') }} {%
+                                                        elif pago.metodo == 'audit' %} {{ _('Auditoría') }} {% else %} {{
+                                                        pago.metodo.title() }} {% endif %}
                                                     </span>
                                                     {% else %}
-                                                    <span class="badge bg-secondary">Sin pago</span>
+                                                    <span class="badge bg-secondary">{{ _('Sin pago') }}</span>
                                                     {% endif %}
                                                 </td>
                                                 <td>
@@ -103,19 +104,21 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                                     {% endif %}
                                                 </td>
                                                 <td>
-                                                    <small class="text-muted">{{ enrollment.creado_por or 'Sistema' }}</small>
+                                                    <small class="text-muted"
+                                                        >{{ enrollment.creado_por or _('Sistema') }}</small
+                                                    >
                                                 </td>
                                                 <td>
                                                     <form
                                                         method="POST"
                                                         action="{{ url_for('course.admin_course_unenrollment', course_code=curso.codigo, student_username=usuario.usuario) }}"
                                                         style="display: inline"
-                                                        onsubmit="return confirm('¿Estás seguro de que deseas desinscribir a {{ usuario.nombre }} {{ usuario.apellido }}?');"
+                                                        onsubmit="return confirm('{{ _('¿Estás seguro de que deseas desinscribir a') }} {{ usuario.nombre }} {{ usuario.apellido }}?');"
                                                     >
                                                         <button
                                                             type="submit"
                                                             class="btn btn-sm btn-outline-danger"
-                                                            title="Desinscribir"
+                                                            title=_("{{ _('Desinscribir') }}")
                                                         >
                                                             <i class="fas fa-user-times"></i>
                                                         </button>
@@ -129,13 +132,13 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                 {% else %}
                                 <div class="text-center py-5">
                                     <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                                    <h5 class="text-muted">No hay estudiantes inscritos</h5>
-                                    <p class="text-muted">Aún no hay estudiantes inscritos en este curso.</p>
+                                    <h5 class="text-muted">{{ _('No hay estudiantes inscritos') }}</h5>
+                                    <p class="text-muted">{{ _('Aún no hay estudiantes inscritos en este curso.') }}</p>
                                     <a
                                         href="{{ url_for('course.admin_course_enrollment', course_code=curso.codigo) }}"
                                         class="btn btn-primary"
                                     >
-                                        <i class="fas fa-user-plus"></i> Inscribir Primer Estudiante
+                                        <i class="fas fa-user-plus"></i> {{ _('Inscribir Primer Estudiante') }}
                                     </a>
                                 </div>
                                 {% endif %}

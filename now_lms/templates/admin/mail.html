@@ -1,10 +1,10 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ get_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
 
-        <title>{{_("Editar configuracion")}}</title>
+        <title>{{_("Editar configuración")}}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -18,7 +18,7 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h5 class="pb-2 border-bottom">{{_("Configuración del Correo Electronico")}}.</h5>
+                <h5 class="pb-2 border-bottom">{{_("Configuración del Correo Electrónico")}}.</h5>
                 {% if error %}
                 <div class="alert alert-danger" role="alert">{{ error }}</div>
                 {% endif %} {% if config.email_verificado %}
@@ -102,17 +102,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div>
-                            <br />
-                            <a class="btn btn-danger" href="{{ url_for('admin_profile.pagina_admin') }}" role="button"
-                                >{{_("Cancelar")}}</a
-                            >
-                            <button class="w-10 btn btn-primary btn-block" type="submit">
-                                {{_("Actualizar Configuración")}}
-                            </button>
-                        </div>
-                    </div>
+                    {{ render_form_buttons(_("Actualizar Configuración"), url_for('admin_profile.pagina_admin')) }}
                 </form>
             </div>
         </main>

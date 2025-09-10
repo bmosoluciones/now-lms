@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     {% set current_theme = current_theme() %}
 
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>Crear nueva cuenta.</title>
+        <title>{{ _('Crear nueva cuenta') }}</title>
 
         <style>
             .bd-placeholder-img {
@@ -37,21 +37,21 @@
                         width="200"
                     />
                 </a>
-                <h1 class="h3 mb-3 fw-normal">Crear nuevo usuario.</h1>
+                <h1 class="h3 mb-3 fw-normal">{{ _('Crear nuevo usuario') }}</h1>
                 {% with messages = get_flashed_messages() %}{% if messages %}{% for message in messages %}
                 <div class="alert alert-success">{{ message }}</div>
                 {% endfor %}{% endif %}{% endwith %}
-                <label for="nombre" class="visually-hidden">Apellido</label>
-                {{ form.nombre(class="form-control", id="nombre", placeholder="Su Nombre") }}
-                <label for="apellido" class="visually-hidden">Apellido</label>
-                {{ form.apellido(class="form-control", id="apellido", placeholder="Su Apellido") }}
-                <label for="correo_electronico" class="visually-hidden">Correo Electronico</label>
-                {{ form.correo_electronico(class="form-control", id="correo_electronico", placeholder="Su Correo Electronico")
-                }}
-                <label for="contraseña" class="visually-hidden">Contraseña</label>
-                {{ form.acceso(class="form-control", id="acceso", placeholder="Contraseña") }}
-                <button class="w-100 btn btn-lg btn-primary btn-block" type="submit">Crear Cuenta</button>
-                <a href="/home"><i class="bi bi-arrow-left" aria-hidden="true"></i> Regresar</a>
+                <label for="nombre" class="visually-hidden">{{ _('Nombre') }}</label>
+                {{ form.nombre(class="form-control", id="nombre", placeholder=_("Su Nombre")) }}
+                <label for="apellido" class="visually-hidden">{{ _('Apellido') }}</label>
+                {{ form.apellido(class="form-control", id="apellido", placeholder=_("Su Apellido")) }}
+                <label for="correo_electronico" class="visually-hidden">{{ _('Correo Electrónico') }}</label>
+                {{ form.correo_electronico(class="form-control", id="correo_electronico", placeholder=_("Su Correo
+                Electrónico")) }}
+                <label for="contraseña" class="visually-hidden">{{ _('Contraseña') }}</label>
+                {{ form.acceso(class="form-control", id="acceso", placeholder=_("Contraseña")) }}
+                <button class="w-100 btn btn-lg btn-primary btn-block" type="submit">{{ _('Crear Cuenta') }}</button>
+                <a href="/home"><i class="bi bi-arrow-left" aria-hidden="true"></i> {{ _('Regresar') }}</a>
                 <p class="mt-5 mb-3 text-muted text-center">BMO Soluciones &copy; 2025</p>
                 <img src="{{ url_for('static', filename='/img/bmo-logo.png') }}" alt="BMO Soluciones" />
             </form>

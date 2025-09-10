@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Crear Cupón - {{ curso.nombre }}</title>
+        <title>{{ _("Crear Cupón") }} - {{ curso.nombre }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -13,8 +13,8 @@
         <main>
             <div class="container">
                 <div class="py-5 text-center">
-                    <h1 class="h2">Crear Nuevo Cupón</h1>
-                    <p class="lead">Curso: {{ curso.nombre }}</p>
+                    <h1 class="h2">{{ _("Crear Nuevo Cupón") }}</h1>
+                    <p class="lead">{{ _("Curso:") }} {{ curso.nombre }}</p>
                 </div>
 
                 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -48,7 +48,7 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="discount_type" class="form-label">Tipo de Descuento *</label>
+                                    <label for="discount_type" class="form-label">{{ _("Tipo") }} de Descuento *</label>
                                     {{ form.discount_type(class="form-select", id="discount_type", required=True, onchange="updateDiscountHelp()") }}
                                     {% if form.discount_type.errors %}
                                         <div class="text-danger">
@@ -88,7 +88,7 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="expires_at" class="form-label">Fecha de Expiración</label>
+                                    <label for="expires_at" class="form-label">{{ _("Fecha") }} de Expiración</label>
                                     {{ form.expires_at(class="form-control", id="expires_at") }}
                                     <div class="form-text">Dejar vacío si no expira</div>
                                     {% if form.expires_at.errors %}
@@ -103,8 +103,8 @@
                                 <div class="col-12">
                                     <div class="card bg-light">
                                         <div class="card-body">
-                                            <h6>Información del Curso</h6>
-                                            <p class="mb-1"><strong>Precio actual:</strong> ${{ curso.precio }} USD</p>
+                                            <h6>{{ _("Información") }} del {{ _("Curso") }}</h6>
+                                            <p class="mb-1"><strong>{{ _("Precio") }} actual:</strong> ${{ curso.precio }} USD</p>
                                             <p class="mb-0" id="preview_discount"></p>
                                         </div>
                                     </div>
@@ -115,10 +115,10 @@
 
                             <div class="d-flex justify-content-between">
                                 <a href="{{ url_for('course.list_coupons', course_code=curso.codigo) }}" class="btn btn-secondary">
-                                    <i class="bi bi-arrow-left"></i> Cancelar
+                                    <i class="bi bi-arrow-left"></i> {{ _("Cancelar") }}
                                 </a>
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-check-circle"></i> Crear Cupón
+                                    <i class="bi bi-check-circle"></i> {{ _("Crear") }} Cupón
                                 </button>
                             </div>
                         </form>
@@ -166,7 +166,7 @@
                     previewElement.innerHTML = `
                         <strong>Vista previa:</strong> 
                         Descuento: $${discountAmount.toFixed(2)} USD | 
-                        Precio final: $${finalPrice.toFixed(2)} USD
+                        {{ _("Precio") }} final: $${finalPrice.toFixed(2)} USD
                         ${finalPrice === 0 ? '<span class="badge bg-success ms-2">¡GRATIS!</span>' : ''}
                     `;
                 } else {

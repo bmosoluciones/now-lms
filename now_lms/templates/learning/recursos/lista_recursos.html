@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Lista de Recursos.</title>
+        <title>Lista de {{ _("Recursos") }}.</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -17,13 +17,13 @@
             <div class="container px-0 py-3" id="curse_list">
                 <div class="row align-items-center border-bottom pb-3 mb-4">
                     <div class="col-md-8">
-                        <h4 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>Lista de Recursos Disponibles</h4>
-                        <p class="text-muted mb-0">Gestiona y administra tus recursos de aprendizaje</p>
+                        <h4 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>{{ _('Lista de') }} {{ _("Recursos") }} {{ _('Disponibles') }}</h4>
+                        <p class="text-muted mb-0">{{ _('Gestiona y administra tus recursos de aprendizaje') }}</p>
                     </div>
                     <div class="col-md-4 text-end">
                         <div class="btn-group" role="group">
                             <a href="{{ url_for('resource.new_resource') }}" class="btn btn-success">
-                                <i class="bi bi-plus-lg me-1"></i>Nuevo Recurso
+                                <i class="bi bi-plus-lg me-1"></i>{{ _("Nuevo recurso") }}
                             </a>
                         </div>
                     </div>
@@ -35,17 +35,17 @@
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <caption class="ms-3 mt-2">
-                                    Lista de recursos disponibles en el sistema.
+                                    {{ _('Lista de recursos disponibles en el sistema.') }}
                                 </caption>
                                 <thead class="table-light">
                                     <tr>
-                                        <th scope="col" class="fw-semibold"><i class="bi bi-code-slash me-1"></i>Código</th>
-                                        <th class="fw-semibold"><i class="bi bi-bookmark me-1"></i>Nombre</th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-globe me-1"></i>Público</th>
+                                        <th scope="col" class="fw-semibold"><i class="bi bi-code-slash me-1"></i>{{ _('Código') }}</th>
+                                        <th class="fw-semibold"><i class="bi bi-bookmark me-1"></i>{{ _("Nombre") }}</th>
+                                        <th class="fw-semibold text-center"><i class="bi bi-globe me-1"></i>{{ _('Público') }}</th>
                                         <th class="fw-semibold text-center">
-                                            <i class="bi bi-currency-dollar me-1"></i>Precio
+                                            <i class="bi bi-currency-dollar me-1"></i>{{ _("Precio") }}
                                         </th>
-                                        <th class="fw-semibold text-center">Acciones</th>
+                                        <th class="fw-semibold text-center">{{ _("Acciones") }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -64,39 +64,39 @@
                                         </td>
                                         <td class="text-center">
                                             {% if item.publico %}
-                                            <i class="bi bi-check-circle-fill text-success" title="Público"></i>
+                                            <i class="bi bi-check-circle-fill text-success" title="{{ _('Público') }}"></i>
                                             {% else %}
-                                            <i class="bi bi-lock-fill text-secondary" title="Privado"></i>
+                                            <i class="bi bi-lock-fill text-secondary" title="{{ _('Privado') }}"></i>
                                             {% endif %}
                                         </td>
                                         <td class="text-center">
                                             {% if item.precio and item.precio > 0 %}
                                             <span class="fw-medium text-success">${{ item.precio }}</span>
                                             {% else %}
-                                            <span class="text-muted">Gratis</span>
+                                            <span class="text-muted">{{ _("Gratis") }}</span>
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <div class="btn-group" role="group" aria-label="Acciones del recurso">
+                                            <div class="btn-group" role="group" aria-label="{{ _("Acciones") }} del recurso">
                                                 <a
                                                     href="{{ url_for('resource.vista_recurso', resource_code=item.codigo) }}"
                                                     class="btn btn-sm btn-outline-primary"
-                                                    title="Ver recurso"
+                                                    title=_("Ver recurso")
                                                 >
                                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('resource.edit_resource', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-secondary"
-                                                    title="Editar recurso"
+                                                    title=_("Editar recurso")
                                                 >
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('resource.delete_resource', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-danger"
-                                                    title="Eliminar recurso"
-                                                    onclick="return confirm('¿Está seguro de que desea eliminar este recurso?')"
+                                                    title=_("Eliminar recurso")
+                                                    onclick="return confirm('{{ _('¿Está seguro de que desea eliminar este recurso?') }}')"
                                                 >
                                                     <i class="bi bi-trash" aria-hidden="true"></i>
                                                 </a>
@@ -113,10 +113,10 @@
                 <div class="card shadow-sm">
                     <div class="card-body text-center py-5">
                         <i class="bi bi-inbox text-muted" style="font-size: 3rem"></i>
-                        <h5 class="text-muted mt-3">No hay recursos disponibles</h5>
-                        <p class="text-muted">Usted no ha creado ningún recurso todavía.</p>
+                        <h5 class="text-muted mt-3">{{ _('No hay recursos disponibles') }}</h5>
+                        <p class="text-muted">{{ _('Usted no ha creado ningún recurso todavía.') }}</p>
                         <a href="{{ url_for('resource.new_resource') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-lg me-2"></i>Crear Primer Recurso
+                            <i class="bi bi-plus-lg me-2"></i>{{ _("Crear primer recurso") }}
                         </a>
                     </div>
                 </div>

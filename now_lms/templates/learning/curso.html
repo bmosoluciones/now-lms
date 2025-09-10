@@ -4,7 +4,7 @@ permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %} {% set permi
 permitir_docente %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
         <title>{{ curso.nombre | title }}</title>
@@ -51,7 +51,7 @@ permitir_docente %}
                             height="225"
                             xmlns="http://www.w3.org/2000/svg"
                             role="img"
-                            aria-label="Placeholder: Thumbnail"
+                            aria-label="{{ _('Placeholder: Miniatura') }}"
                             preserveAspectRatio="xMidYMid slice"
                             focusable="false"
                         >
@@ -69,19 +69,19 @@ permitir_docente %}
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-trophy-fill me-2" style="font-size: 1.5rem"></i>
                                 <div>
-                                    <h6 class="alert-heading mb-1">¡Curso Completado con Éxito!</h6>
-                                    <p class="mb-2">Has obtenido la certificación de este curso.</p>
+                                    <h6 class="alert-heading mb-1">{{ _('¡Curso Completado con Éxito!') }}</h6>
+                                    <p class="mb-2">{{ _('Has obtenido la certificación de este curso.') }}</p>
                                     <a
                                         href="{{ url_for('certificate.certificado', ulid=user_certificate.id) }}"
                                         class="btn btn-success btn-sm"
                                     >
-                                        <i class="bi bi-award"></i> Ver Certificado
+                                        <i class="bi bi-award"></i> {{ _('Ver Certificado') }}
                                     </a>
                                     <a
                                         href="{{ url_for('certificate.certificate_serve_pdf', ulid=user_certificate.id) }}"
                                         class="btn btn-outline-success btn-sm"
                                     >
-                                        <i class="bi bi-download"></i> Descargar PDF
+                                        <i class="bi bi-download"></i> {{ _('Descargar PDF') }}
                                     </a>
                                 </div>
                             </div>
@@ -89,7 +89,7 @@ permitir_docente %}
                         {% endif %} {{ markdown2html(curso.descripcion) | safe }}
                         <br />
                         {% if descargas %}
-                        <strong>Recursos disponibles con este curso:</strong>
+                        <strong>{{ _('Recursos disponibles con este curso:') }}</strong>
                         <br />
                         {% for item in descargas %}
                         <a href="{{ url_for('resource.vista_recurso', resource_code=item.codigo) }}" class="link-dark"
@@ -107,22 +107,20 @@ permitir_docente %}
                                 href="{{ url_for('course.course_enroll', course_code=curso.codigo, modo='audit') }}"
                                 class="btn btn-warning"
                             >
-                                Auditar contenido del curso
+                                {{ _('Auditar contenido del curso') }}
                             </a>
                             <p class="small text-muted">
-                                Puede acceder al contenido del curso pero no podrá resolver las evaluaciones u obtener un
-                                certificado al finalizar.
+                                {{ _('Puede acceder al contenido del curso pero no podrá resolver las evaluaciones u obtener un certificado al finalizar.') }}
                                 <br />
-                                Puede pagar el valor del curso antes de finalizarlo y acceder a las evaluaciones y la
-                                certificación.
+                                {{ _('Puede pagar el valor del curso antes de finalizarlo y acceder a las evaluaciones y la certificación.') }}
                             </p>
                             {% endif %}
                             <a href="{{ url_for('paypal.payment_page', course_code=curso.codigo) }}" class="btn btn-primary">
-                                Proceder al pago
+                                {{ _('Proceder al pago') }}
                             </a>
                             {% else %}
                             <a href="{{ url_for('course.course_enroll', course_code=curso.codigo) }}" class="btn btn-success">
-                                Inscribirse al curso
+                                {{ _('Inscribirse al curso') }}
                             </a>
                             {% endif %}
                         </div>
@@ -191,7 +189,7 @@ permitir_docente %}
                                 role="button"
                                 aria-disabled="true"
                             >
-                                Iniciar Sesión
+                                {{ _('Iniciar Sesión') }}
                             </a>
                             <a
                                 href="{{ url_for('user.crear_cuenta')}}"
@@ -199,7 +197,7 @@ permitir_docente %}
                                 role="button"
                                 aria-disabled="true"
                             >
-                                Crear Cuenta
+                                {{ _('Crear Cuenta') }}
                             </a>
                         </div>
                         {% endif %}
@@ -208,13 +206,13 @@ permitir_docente %}
                         {% if adsense_enabled() and not curso.pagado %} {% set ad_code = ad_medium_rectangle() %} {% if ad_code
                         %}
                         <div class="mt-4 mb-3" style="text-align: center">
-                            <small class="text-muted">Publicidad</small>
+                            <small class="text-muted">{{ _('Publicidad') }}</small>
                             {{ ad_code | safe }}
                         </div>
                         {% endif %} {% endif %}
                     </div>
                     <div class="col-md-8">
-                        <h3>Contenido del curso.</h3>
+                        <h3>{{ _('Contenido del curso.') }}</h3>
 
                         {% if secciones %}
                         <div class="accordion accordion-flush" id="accordionSeccionesCurso">
@@ -271,7 +269,7 @@ permitir_docente %}
                                                             {{ recurso.nombre }}
                                                         </div>
                                                     </a>
-                                                    <span class="badge bg-success">Preview</span>
+                                                    <span class="badge bg-success">{{ _('Preview') }}</span>
                                                     {% else %}
                                                     <div class="fw-bold">
                                                         <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i>
@@ -296,9 +294,9 @@ permitir_docente %}
                                                         <div class="fw-bold">
                                                             <i class="bi bi-clipboard-check" aria-hidden="true"></i>
                                                             {{ eval.title }} {% if eval.is_exam %}
-                                                            <span class="badge bg-danger">Examen</span>
+                                                            <span class="badge bg-danger">{{ _('Examen') }}</span>
                                                             {% else %}
-                                                            <span class="badge bg-primary">Quiz</span>
+                                                            <span class="badge bg-primary">{{ _('Quiz') }}</span>
                                                             {% endif %}
                                                         </div>
                                                     </a>
@@ -311,11 +309,11 @@ permitir_docente %}
                                                     best_attempt = user_attempts | sort(attribute='score', reverse=True) |
                                                     first %} {% if best_attempt.passed %}
                                                     <span class="badge bg-success"
-                                                        >Aprobado ({{ "%.1f"|format(best_attempt.score) }}%)</span
+                                                        >{{ _('Aprobado') }} ({{ "%.1f"|format(best_attempt.score) }}%)</span
                                                     >
                                                     {% else %}
                                                     <span class="badge bg-danger"
-                                                        >No Aprobado ({{ "%.1f"|format(best_attempt.score) }}%)</span
+                                                        >{{ _('No Aprobado') }} ({{ "%.1f"|format(best_attempt.score) }}%)</span
                                                     >
 
                                                     {# Show request reopen option if applicable #} {% if eval.max_attempts and
@@ -325,32 +323,32 @@ permitir_docente %}
                                                     req.status == 'pending' %} {% set pending_request = true %} {% endif %} {%
                                                     endfor %} {% endif %} {% if curso.modalidad == 'self_paced' %} {% if
                                                     pending_request %}
-                                                    <br /><small class="text-muted">Solicitud de reapertura pendiente</small>
+                                                    <br /><small class="text-muted">{{ _('Solicitud de reapertura pendiente') }}</small>
                                                     {% else %}
                                                     <br /><a
                                                         href="{{ url_for('evaluation.request_reopen', evaluation_id=eval.id) }}"
                                                         class="btn btn-sm btn-outline-warning"
-                                                        >Solicitar nuevo intento</a
+                                                        >{{ _('Solicitar nuevo intento') }}
                                                     >
                                                     {% endif %} {% endif %} {% endif %} {% endif %} {% else %}
-                                                    <span class="badge bg-secondary">Pendiente</span>
+                                                    <span class="badge bg-secondary">{{ _('Pendiente') }}</span>
                                                     {% endif %} {% else %}
                                                     <div class="fw-bold text-muted">
                                                         <i class="bi bi-clipboard-check" aria-hidden="true"></i>
                                                         {{ eval.title }} {% if eval.is_exam %}
-                                                        <span class="badge bg-danger">Examen</span>
+                                                        <span class="badge bg-danger">{{ _('Examen') }}</span>
                                                         {% else %}
-                                                        <span class="badge bg-primary">Quiz</span>
+                                                        <span class="badge bg-primary">{{ _('Quiz') }}</span>
                                                         {% endif %}
                                                     </div>
-                                                    <span class="badge bg-warning">Pago requerido</span>
+                                                    <span class="badge bg-warning">{{ _('Pago requerido') }}</span>
                                                     {% endif %} {% else %}
                                                     <div class="fw-bold text-muted">
                                                         <i class="bi bi-clipboard-check" aria-hidden="true"></i>
                                                         {{ eval.title }} {% if eval.is_exam %}
-                                                        <span class="badge bg-danger">Examen</span>
+                                                        <span class="badge bg-danger">{{ _('Examen') }}</span>
                                                         {% else %}
-                                                        <span class="badge bg-primary">Quiz</span>
+                                                        <span class="badge bg-primary">{{ _('Quiz') }}</span>
                                                         {% endif %}
                                                     </div>
                                                     {% endif %}
@@ -370,10 +368,10 @@ permitir_docente %}
                                     class="btn btn-primary"
                                     role="button"
                                     aria-disabled="true"
-                                    >Crear Nueva Sección</a
+                                    >{{ _('Crear Nueva Sección') }}</a
                                 >
                                 {% else %}
-                                <p>Este curso actualmente no cuenta con secciones disponibles.</p>
+                                <p>{{ _('Este curso actualmente no cuenta con secciones disponibles.') }}</p>
                                 {% endif %}
                             </div>
 

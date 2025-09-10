@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>Favor revise su correo electronico.</title>
+        <title>{{ _('Favor revise su correo electrónico.') }}</title>
     </head>
 
     <body class="d-flex h-100 text-center">
@@ -21,25 +21,25 @@
 
             <main class="px-3">
                 <h1><i class="bi bi-envelope-check-fill" aria-hidden="true"></i></h1>
-                <h1>Favor revise su correo electronico</h1>
-                <p class="lead">Su cuenta a sido creada correctamente.</p>
+                <h1>{{ _('Favor revise su correo electrónico') }}</h1>
+                <p class="lead">{{ _('Su cuenta ha sido creada correctamente.') }}</p>
                 <p class="lead">
-                    Le hemos enviado un correo electronico de verificación desde el correo {{ mail_config.MAIL_DEFAULT_SENDER
-                    }}
+                    {{ _('Le hemos enviado un correo electrónico de verificación desde el correo') }} {{
+                    mail_config.MAIL_DEFAULT_SENDER }}
                 </p>
                 <p class="lead">
-                    Es posible que el correo tome algo de tiempo en llegar, si no recibe el correo favor revise su carpeta de
-                    SPAM
+                    {{ _('Es posible que el correo tome algo de tiempo en llegar, si no recibe el correo favor revise su
+                    carpeta de SPAM') }}
                 </p>
                 <p class="lead">
                     <a href="{{ url_for('home.pagina_de_inicio') }}" class="btn btn-warning fw-bold"
-                        ><i class="bi bi-house" aria-hidden="true"></i> Regresar al inicio</a
+                        ><i class="bi bi-house" aria-hidden="true"></i> {{ _('Regresar al inicio') }}</a
                     >
                 </p>
             </main>
 
             <footer class="mt-auto">
-                <p>BMO Soluciones</p>
+                <p>{{ _('BMO Soluciones') }}</p>
                 <p>&copy; 2025</p>
             </footer>
         </div>

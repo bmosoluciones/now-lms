@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Certificado de Finalizacion de curso.</title>
+        <title>{{ _('Certificado de Finalizacion de curso') }}.</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -13,35 +13,35 @@
 
         <main>
             <div class="container px-0 py-3" id="curse_list">
-                <h4>Certificado de Finalización de Curso</h4>
+                <h4>{{ _('Certificado de Finalización de Curso') }}</h4>
 
                 <div>
                     <p>
-                        Se hace constar que <strong>{{ usuario.nombre }} {{ usuario.apellido }}</strong> ha completado
-                        satisfactoriamente el curso <strong>{{ curso.nombre }} ({{ curso.codigo }})</strong> cumpliendo con
-                        todos los requisitos académicos y evaluaciones establecidas.
+                        {{ _('Se hace constar que') }} <strong>{{ usuario.nombre }} {{ usuario.apellido }}</strong> {{ _('ha
+                        completado satisfactoriamente el curso') }} <strong>{{ curso.nombre }} ({{ curso.codigo }})</strong> {{
+                        _('cumpliendo con todos los requisitos académicos y evaluaciones establecidas') }}.
                     </p>
                 </div>
 
-                <h5>Datos del Estudiante:</h5>
-                <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
-                <p><strong>Apellido:</strong> {{ usuario.apellido }}</p>
+                <h5>{{ _('Datos del Estudiante') }}:</h5>
+                <p><strong>{{ _('Nombre') }}:</strong> {{ usuario.nombre }}</p>
+                <p><strong>{{ _('Apellido') }}:</strong> {{ usuario.apellido }}</p>
 
-                <h5>Datos del Curso:</h5>
-                <p><strong>Nombre del Curso:</strong>: {{ curso.nombre }}</p>
-                <p><strong>Descripción del Curso:</strong>: {{ curso.descripcion }}</p>
+                <h5>{{ _('Datos del Curso') }}:</h5>
+                <p><strong>{{ _('Nombre del Curso') }}:</strong>: {{ curso.nombre }}</p>
+                <p><strong>{{ _('Descripción del Curso') }}:</strong>: {{ curso.descripcion }}</p>
                 {% if curso.fecha_inicio %}
-                <p><strong>Fecha de Inicio:</strong> {{ curso.fecha_inicio }}</p>
+                <p><strong>{{ _('Fecha de Inicio') }}:</strong> {{ curso.fecha_inicio }}</p>
                 {% endif %} {% if curso.fecha_fin %}
-                <p><strong>Fecha de Inicio:</strong> {{ curso.fecha_fin }}</p>
+                <p><strong>{{ _('Fecha de Inicio') }}:</strong> {{ curso.fecha_fin }}</p>
                 {% endif %} {% if curso.duracion %}
-                <p><strong>Duración:</strong> {{ curso.duracion }} horas</p>
+                <p><strong>{{ _('Duración') }}:</strong> {{ curso.duracion }} {{ _('horas') }}</p>
                 {% endif %}
 
-                <h5>Datos del Certicado:</h5>
-                <p><strong>Fecha de Emisión:</strong> {{ certificacion.fecha }}</p>
+                <h5>{{ _('Datos del Certicado') }}:</h5>
+                <p><strong>{{ _('Fecha de Emisión') }}:</strong> {{ certificacion.fecha }}</p>
                 {% if certificacion.nota %}
-                <p><strong>Nota:</strong> {{ certificacion.nota }}</p>
+                <p><strong>{{ _('Nota') }}:</strong> {{ certificacion.nota }}</p>
                 {% endif %}
 
                 <br />
@@ -52,7 +52,7 @@
                     type="button"
                     target="_blank"
                     class="btn btn-success"
-                    ><i class="bi bi-eye-fill" aria-hidden="true"></i> Ver Certicado</a
+                    ><i class="bi bi-eye-fill" aria-hidden="true"></i> {{ _('Ver Certicado') }}</a
                 >
 
                 <a
@@ -60,7 +60,7 @@
                     type="button"
                     target="_blank"
                     class="btn btn-success"
-                    ><i class="bi bi-cloud-arrow-down-fill" aria-hidden="true"></i> Descargar Certificado</a
+                    ><i class="bi bi-cloud-arrow-down-fill" aria-hidden="true"></i> {{ _('Descargar Certificado') }}</a
                 >
             </div>
         </main>
