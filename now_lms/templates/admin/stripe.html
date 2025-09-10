@@ -4,7 +4,7 @@
     <head>
         {{ current_theme.headertags() }}
 
-        <title>Editar configuracion</title>
+        <title>{{ _("Configuración de Stripe") }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -18,7 +18,7 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h5 class="pb-2 border-bottom">Configuración del Correo Electronico.</h5>
+                <h5 class="pb-2 border-bottom">{{ _("Configuración de Stripe") }}.</h5>
                 <form method="post">
                     <div class="row">
                         <div class="col-sm-6"></div>
@@ -27,9 +27,11 @@
                         <div>
                             <br />
                             <a class="btn btn-warning" href="{{ url_for('admin_profile.pagina_admin') }}" role="button"
-                                >Cancelar</a
+                                >{{ _("Cancelar") }}</a
                             >
-                            <button class="w-10 btn btn-primary btn-block" type="submit">Actualizar Configuración</button>
+                            <button class="w-10 btn btn-primary btn-block" type="submit">
+                                {{ _("Actualizar Configuración") }}
+                            </button>
                         </div>
                     </div>
                 </form>

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     {% set current_theme = current_theme() %} {% set config = config() %}
 
     <head>
@@ -85,7 +85,7 @@
                                             {% else %}
                                             <strong class="text-primary">${{ "%.2f"|format(master_class.price) }}</strong>
                                             {% endif %} {% else %}
-                                            <span class="badge bg-success">Gratis</span>
+                                            <span class="badge bg-success">{{ _('Gratis') }}</span>
                                             {% endif %}
                                         </div>
 
@@ -115,14 +115,14 @@
 
                         <!-- Pagination -->
                         {% if master_classes.pages > 1 %}
-                        <nav aria-label="Navegación de páginas">
+                        <nav aria-label="{{ _('Navegación de páginas') }}">
                             <ul class="pagination justify-content-center">
                                 {% if master_classes.has_prev %}
                                 <li class="page-item">
                                     <a
                                         class="page-link"
                                         href="{{ url_for('masterclass.list_public', page=master_classes.prev_num) }}"
-                                        >Anterior</a
+                                        >{{ _('Anterior') }}</a
                                     >
                                 </li>
                                 {% endif %} {% for page_num in master_classes.iter_pages() %} {% if page_num %} {% if page_num
@@ -145,7 +145,7 @@
                                     <a
                                         class="page-link"
                                         href="{{ url_for('masterclass.list_public', page=master_classes.next_num) }}"
-                                        >Siguiente</a
+                                        >{{ _('Siguiente') }}</a
                                     >
                                 </li>
                                 {% endif %}
@@ -154,8 +154,8 @@
                         {% endif %} {% else %}
                         <div class="text-center py-5">
                             <i class="fas fa-chalkboard-teacher fa-4x text-muted mb-3"></i>
-                            <h3 class="text-muted">No hay clases magistrales disponibles</h3>
-                            <p class="text-muted">Vuelve pronto para ver nuevas clases magistrales.</p>
+                            <h3 class="text-muted">{{ _('No hay clases magistrales disponibles') }}</h3>
+                            <p class="text-muted">{{ _('Vuelve pronto para ver nuevas clases magistrales.') }}</p>
                         </div>
                         {% endif %}
                     </div>

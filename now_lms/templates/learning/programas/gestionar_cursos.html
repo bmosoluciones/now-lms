@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Gestionar Cursos - {{ programa.nombre }}</title>
+        <title>{{ _("Gestionar") }} {{ _("Cursos") }} - {{ programa.nombre }}</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -19,20 +19,21 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
-                                <h1 class="h2">Gestionar Cursos - {{ programa.nombre }}</h1>
+                                <h1 class="h2">{{ _("Gestionar") }} {{ _("Cursos") }} - {{ programa.nombre }}</h1>
                                 <div>
                                     {% if current_user.tipo == "admin" %}
                                     <a
                                         href="{{ url_for('program.admin_program_enrollment', codigo=programa.codigo) }}"
                                         class="btn btn-sm btn-info me-2"
                                     >
-                                        <i class="bi bi-person-plus" aria-hidden="true"></i> Inscribir Estudiante
+                                        <i class="bi bi-person-plus" aria-hidden="true"></i> {{ _("Inscribir") }} {{
+                                        _("Estudiante") }}
                                     </a>
                                     <a
                                         href="{{ url_for('program.admin_program_enrollments', codigo=programa.codigo) }}"
                                         class="btn btn-sm btn-outline-info"
                                     >
-                                        <i class="bi bi-people" aria-hidden="true"></i> Ver Inscripciones
+                                        <i class="bi bi-people" aria-hidden="true"></i> {{ _("Ver") }} Inscripciones
                                     </a>
                                     {% endif %}
                                 </div>
@@ -42,7 +43,7 @@
                                 <div class="col-md-6">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h5 class="card-title mb-0">Cursos en el Programa</h5>
+                                            <h5 class="card-title mb-0">{{ _("Cursos") }} en el {{ _("Programa") }}</h5>
                                         </div>
                                         <div class="card-body">
                                             {% if cursos_programa %}
@@ -86,13 +87,15 @@
                                 <div class="col-md-6">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h5 class="card-title mb-0">Agregar Curso</h5>
+                                            <h5 class="card-title mb-0">Agregar {{ _("Curso") }}</h5>
                                         </div>
                                         <div class="card-body">
                                             <form method="post">
                                                 <input type="hidden" name="action" value="add_course" />
                                                 <div class="mb-3">
-                                                    <label for="curso_codigo" class="form-label">Seleccionar Curso</label>
+                                                    <label for="curso_codigo" class="form-label"
+                                                        >Seleccionar {{ _("Curso") }}</label
+                                                    >
                                                     <select class="form-select" id="curso_codigo" name="curso_codigo" required>
                                                         <option value="">Seleccione un curso...</option>
                                                         {% for curso in todos_cursos %}
@@ -102,7 +105,7 @@
                                                         {% endfor %}
                                                     </select>
                                                 </div>
-                                                <button type="submit" class="btn btn-primary">Agregar Curso</button>
+                                                <button type="submit" class="btn btn-primary">Agregar {{ _("Curso") }}</button>
                                             </form>
                                         </div>
                                     </div>
@@ -116,10 +119,10 @@
                                             href="{{ url_for('program.pagina_programa', codigo=programa.codigo) }}"
                                             class="btn btn-secondary me-2"
                                         >
-                                            Volver al Programa
+                                            Volver al {{ _("Programa") }}
                                         </a>
                                         <a href="{{ url_for('program.programas') }}" class="btn btn-outline-secondary">
-                                            Lista de Programas
+                                            Lista de {{ _("Programas") }}
                                         </a>
                                     </div>
                                 </div>

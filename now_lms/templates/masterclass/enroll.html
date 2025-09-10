@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     {% set current_theme = current_theme() %} {% set config = config() %}
 
     <head>
@@ -16,11 +16,11 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-8 offset-md-2">
-                        <nav aria-label="breadcrumb">
+                        <nav aria-label="{{ _('breadcrumb') }}">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a href="{{ url_for('masterclass.list_public') }}" class="text-decoration-none"
-                                        >Clases Magistrales</a
+                                        >{{ _('Clases Magistrales') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
@@ -43,14 +43,15 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h6>Información del Evento</h6>
+                                        <h6>{{ _('Información del Evento') }}</h6>
                                         <ul class="list-unstyled">
                                             <li>
-                                                <i class="fas fa-calendar text-primary"></i> <strong>Fecha:</strong> {{
-                                                master_class.date.strftime('%d/%m/%Y') }}
+                                                <i class="fas fa-calendar text-primary"></i>
+                                                <strong>{{ _('Fecha:') }}</strong> {{ master_class.date.strftime('%d/%m/%Y') }}
                                             </li>
                                             <li>
-                                                <i class="fas fa-clock text-primary"></i> <strong>Horario:</strong> {{
+                                                <i class="fas fa-clock text-primary"></i>
+                                                <strong>{{ _('Horario:') }}</strong> {{
                                                 master_class.start_time.strftime('%H:%M') }} - {{
                                                 master_class.end_time.strftime('%H:%M') }}
                                             </li>
@@ -92,19 +93,19 @@
                                         {% else %}
                                         <h4 class="text-primary">${{ "%.2f"|format(master_class.price) }}</h4>
                                         {% endif %} {% else %}
-                                        <h4 class="text-success">Gratis</h4>
+                                        <h4 class="text-success">{{ _('Gratis') }}</h4>
                                         {% endif %}
                                     </div>
                                 </div>
 
                                 <div class="mt-3">
-                                    <h6>Descripción</h6>
+                                    <h6>{{ _('Descripción') }}</h6>
                                     <p>{{ master_class.description_public }}</p>
                                 </div>
 
                                 {% if master_class.is_paid %}
                                 <div class="alert alert-info">
-                                    <h6><i class="fas fa-info-circle"></i> Información de Pago</h6>
+                                    <h6><i class="fas fa-info-circle"></i> {{ _('Información de Pago') }}</h6>
                                     <p>
                                         Esta clase magistral requiere pago. Serás redirigido al proceso de pago después de
                                         confirmar tu inscripción.
@@ -115,9 +116,12 @@
                                 <div class="alert alert-warning">
                                     <h6><i class="fas fa-exclamation-triangle"></i> Términos de Inscripción</h6>
                                     <ul class="mb-0">
-                                        <li>Al inscribirte confirmas que puedes asistir en la fecha y hora programada</li>
+                                        <li>
+                                            {{ _('Al inscribirte confirmas que puedes asistir en la fecha y hora programada')
+                                            }}
+                                        </li>
                                         <li>Recibirás el enlace de acceso una vez confirmada tu inscripción</li>
-                                        <li>Se recomienda unirse 5 minutos antes del inicio</li>
+                                        <li>{{ _('Se recomienda unirse 5 minutos antes del inicio') }}</li>
                                         {% if master_class.is_paid %}
                                         <li>Los pagos son procesados de forma segura</li>
                                         <li>Una vez confirmado el pago, no se permiten reembolsos</li>
@@ -132,7 +136,7 @@
                                         <a
                                             href="{{ url_for('masterclass.detail_public', slug=master_class.slug) }}"
                                             class="btn btn-secondary me-md-2"
-                                            >Cancelar</a
+                                            >{{ _('Cancelar') }}</a
                                         >
                                         {% if master_class.is_paid %}
                                         <button type="submit" class="btn btn-success btn-lg">

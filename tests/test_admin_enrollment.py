@@ -17,7 +17,17 @@
 
 import pytest
 from now_lms.auth import proteger_passwd
-from now_lms.db import Curso, DocenteCurso, EstudianteCurso, Pago, Programa, ProgramaCurso, ProgramaEstudiante, Usuario, database
+from now_lms.db import (
+    Curso,
+    DocenteCurso,
+    EstudianteCurso,
+    Pago,
+    Programa,
+    ProgramaCurso,
+    ProgramaEstudiante,
+    Usuario,
+    database,
+)
 
 
 class TestAdministrativeEnrollment:
@@ -74,10 +84,7 @@ class TestAdministrativeEnrollment:
             database.session.commit()  # Commit instructor first
 
             # Assign instructor to course
-            assignment = DocenteCurso(
-                curso="now",
-                usuario="test_instructor"
-            )
+            assignment = DocenteCurso(curso="now", usuario="test_instructor")
             database.session.add(assignment)
             database.session.commit()
 
@@ -87,7 +94,7 @@ class TestAdministrativeEnrollment:
 
         response = client.get("/course/now/admin/enroll")
         print(f"Response status: {response.status_code}")
-        if hasattr(response, 'location'):
+        if hasattr(response, "location"):
             print(f"Redirect location: {response.location}")
         assert response.status_code == 200
 
@@ -154,15 +161,15 @@ class TestAdministrativeEnrollment:
         with session_full_db_setup.app_context():
             # Test course enrollment form
             course_form = AdminCourseEnrollmentForm()
-            assert hasattr(course_form, 'student_username')
-            assert hasattr(course_form, 'bypass_payment')
-            assert hasattr(course_form, 'notes')
+            assert hasattr(course_form, "student_username")
+            assert hasattr(course_form, "bypass_payment")
+            assert hasattr(course_form, "notes")
 
             # Test program enrollment form
             program_form = AdminProgramEnrollmentForm()
-            assert hasattr(program_form, 'student_username')
-            assert hasattr(program_form, 'bypass_payment')
-            assert hasattr(program_form, 'notes')
+            assert hasattr(program_form, "student_username")
+            assert hasattr(program_form, "bypass_payment")
+            assert hasattr(program_form, "notes")
 
     def test_enrollment_functionality_basic(self, session_full_db_setup):
         """Test basic enrollment functionality through the interface."""
@@ -192,25 +199,24 @@ class TestAdministrativeEnrollment:
         assert response.status_code == 200
 
         # Test form submission (POST)
-        response = client.post("/course/now/admin/enroll", data={
-            'student_username': 'enroll_test_student',
-            'bypass_payment': True,
-            'notes': 'Test administrative enrollment'
-        })
-            
+        response = client.post(
+            "/course/now/admin/enroll",
+            data={
+                "student_username": "enroll_test_student",
+                "bypass_payment": True,
+                "notes": "Test administrative enrollment",
+            },
+        )
+
         # Should redirect on successful enrollment
         assert response.status_code in [200, 302]
 
         # Verify enrollment was created (if redirect to success page)
         if response.status_code == 302:
             enrollment = database.session.execute(
-                database.select(EstudianteCurso).filter_by(
-                    curso="now", 
-                    usuario="enroll_test_student",
-                    vigente=True
-                )
+                database.select(EstudianteCurso).filter_by(curso="now", usuario="enroll_test_student", vigente=True)
             ).scalar_one_or_none()
-            
+
             # Check if enrollment exists or if it was a redirect to error page
             if enrollment:
                 assert enrollment.curso == "now"

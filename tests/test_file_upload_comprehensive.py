@@ -97,17 +97,11 @@ class TestFileUploadFunctionality:
         """Enable file uploads in site configuration."""
         from now_lms.db import Configuracion
 
-        config = db_session.execute(
-            database.select(Configuracion)
-        ).scalar_one_or_none()
+        config = db_session.execute(database.select(Configuracion)).scalar_one_or_none()
         if config:
             config.enable_file_uploads = True
         else:
-            config = Configuracion(
-                titulo="Test Site",
-                descripcion="Test configuration",
-                enable_file_uploads=True
-            )
+            config = Configuracion(titulo="Test Site", descripcion="Test configuration", enable_file_uploads=True)
             db_session.add(config)
         db_session.flush()
         return config
@@ -170,24 +164,24 @@ startxref
 
     def create_downloadable_file(self, filename="document.txt", content_type="text/plain"):
         """Helper to create a downloadable file."""
-        if filename.endswith('.pdf'):
+        if filename.endswith(".pdf"):
             return self.create_pdf_file(filename)
-        elif filename.endswith(('.doc', '.docx')):
+        elif filename.endswith((".doc", ".docx")):
             # Create minimal MS Word-like content
             content = b"Downloadable document content for testing"
             return FileStorage(
                 stream=io.BytesIO(content),
                 filename=filename,
-                content_type="application/msword" if filename.endswith('.doc') else "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                content_type=(
+                    "application/msword"
+                    if filename.endswith(".doc")
+                    else "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                ),
             )
         else:
             # Default text file
             content = b"This is a downloadable text file for testing purposes."
-            return FileStorage(
-                stream=io.BytesIO(content),
-                filename=filename,
-                content_type=content_type
-            )
+            return FileStorage(stream=io.BytesIO(content), filename=filename, content_type=content_type)
 
 
 class TestCourseLogoUpload(TestFileUploadFunctionality):
@@ -414,7 +408,7 @@ class TestPDFResourceUpload(TestFileUploadFunctionality):
         mock_files.save.return_value = "updated_document.pdf"
         mock_files.name = "files"
 
-        # Create instructor user
+        # Get authenticated client
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -503,7 +497,7 @@ class TestImageResourceUpload(TestFileUploadFunctionality):
         mock_images.save.return_value = "test_image.jpg"
         mock_images.name = "images"
 
-        # Create instructor user
+        # Get authenticated client
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -595,7 +589,7 @@ This is the second subtitle line.
         mock_audio.save.return_value = "test_audio.ogg"
         mock_audio.name = "audio"
 
-        # Create instructor user
+        # Get authenticated client
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -667,7 +661,7 @@ This is the second subtitle line.
         mock_audio.save.return_value = "test_audio_with_subs.ogg"
         mock_audio.name = "audio"
 
-        # Create instructor user
+        # Get authenticated client
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -746,7 +740,7 @@ This is the second subtitle line.
         mock_audio.save.return_value = "updated_audio.ogg"
         mock_audio.name = "audio"
 
-        # Create instructor user
+        # Get authenticated client
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -824,7 +818,9 @@ This is the second subtitle line.
             assert response.status_code == 200
 
             # Verify resource was updated with VTT content
-            updated_resource = isolated_db_session.execute(select(CursoRecurso).filter_by(id=existing_resource.id)).scalar_one()
+            updated_resource = isolated_db_session.execute(
+                select(CursoRecurso).filter_by(id=existing_resource.id)
+            ).scalar_one()
 
             assert updated_resource.nombre == "Updated Audio with VTT"
             assert updated_resource.descripcion == "Updated audio with VTT subtitles"
@@ -845,7 +841,7 @@ class TestCourseEditLogoUpload(TestFileUploadFunctionality):
         mock_images.save.return_value = "logo.jpg"
         mock_images.name = "images"
 
-        # Create instructor user
+        # Get authenticated client
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -924,7 +920,7 @@ class TestCourseEditLogoUpload(TestFileUploadFunctionality):
         mock_images.save.side_effect = UploadNotAllowed("Invalid file type")
         mock_images.name = "images"
 
-        # Create instructor user
+        # Get authenticated client
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -1002,7 +998,7 @@ class TestCourseEditLogoUpload(TestFileUploadFunctionality):
         mock_images.save.return_value = None  # Upload fails silently
         mock_images.name = "images"
 
-        # Create instructor user
+        # Get authenticated client
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -1078,7 +1074,7 @@ class TestCourseEditLogoUpload(TestFileUploadFunctionality):
         mock_images.save.side_effect = AttributeError("Attribute error during upload")
         mock_images.name = "images"
 
-        # Create instructor user
+        # Get authenticated client
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -1152,8 +1148,7 @@ class TestCourseEditLogoUpload(TestFileUploadFunctionality):
 
     def test_course_edit_without_logo_upload(self, session_full_db_setup, isolated_db_session):
         """Test course edit without logo upload."""
-        
-        # Create instructor user
+        # Get authenticated client
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -1231,7 +1226,7 @@ class TestResourceFileUpload(TestFileUploadFunctionality):
         mock_files.save.return_value = "TESTRES001.pdf"
         mock_files.name = "files"
 
-        # Create instructor user
+        # Get authenticated client
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -1280,7 +1275,7 @@ class TestResourceFileUpload(TestFileUploadFunctionality):
         mock_images.save.return_value = "TESTRES002.jpg"
         mock_images.name = "images"
 
-        # Create instructor user
+        # Get authenticated client
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -1316,7 +1311,7 @@ class TestResourceFileUpload(TestFileUploadFunctionality):
         mock_files.save.return_value = "TESTRES003.pdf"
         mock_files.name = "files"
 
-        # Create instructor user
+        # Get authenticated client
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -1348,8 +1343,7 @@ class TestResourceFileUpload(TestFileUploadFunctionality):
 
     def test_new_resource_without_files_success(self, session_full_db_setup, isolated_db_session):
         """Test resource creation without files works correctly after bug fix."""
-        
-        # Create instructor user
+        # Get authenticated client
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -1375,7 +1369,9 @@ class TestResourceFileUpload(TestFileUploadFunctionality):
             # Verify the resource was created in the database
             from now_lms.db import Recurso
 
-            resource = isolated_db_session.execute(database.select(Recurso).filter_by(codigo="TESTRES004")).scalar_one_or_none()
+            resource = isolated_db_session.execute(
+                database.select(Recurso).filter_by(codigo="TESTRES004")
+            ).scalar_one_or_none()
 
             assert resource is not None
             assert resource.nombre == "Test Resource No Files"
@@ -1384,8 +1380,7 @@ class TestResourceFileUpload(TestFileUploadFunctionality):
 
     def test_new_resource_without_files_no_unbound_local_error(self, session_full_db_setup, isolated_db_session):
         """Test that resource creation without files no longer raises UnboundLocalError."""
-        
-        # Create instructor user
+        # Get authenticated client
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -1520,7 +1515,7 @@ class TestResourceFileUpload(TestFileUploadFunctionality):
         # Create instructor user
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
-        
+
         # Instead of mocking database errors (which can break authentication),
         # test that the endpoint is accessible and handles requests
         with session_full_db_setup.app_context():
@@ -1550,7 +1545,7 @@ class TestResourceFileUpload(TestFileUploadFunctionality):
         """Test that instructor can access resource list."""
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
-        
+
         with session_full_db_setup.app_context():
             response = client.get("/resource/list")
             assert response.status_code == 200
@@ -1572,7 +1567,7 @@ class TestFileServingRoutes(TestFileUploadFunctionality):
         """Test file serving route with authenticated user access."""
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
-        
+
         with session_full_db_setup.app_context():
             # Create course and section
             course = Curso(
@@ -1635,7 +1630,7 @@ class TestFileServingRoutes(TestFileUploadFunctionality):
     def test_file_serving_unauthenticated_access(self, session_full_db_setup, isolated_db_session):
         """Test file serving route with unauthenticated user redirected to login."""
         client = session_full_db_setup.test_client()
-        
+
         # Create instructor user for course ownership
         instructor_user = self.create_instructor_user(isolated_db_session)
 
@@ -1695,7 +1690,7 @@ class TestFileServingRoutes(TestFileUploadFunctionality):
         """Test VTT subtitle serving route with authenticated user access."""
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
-        
+
         with session_full_db_setup.app_context():
             # Create course and section
             course = Curso(
@@ -1766,7 +1761,7 @@ Test subtitle for serving
         """Test VTT subtitle serving route with resource that has no VTT content."""
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
-        
+
         with session_full_db_setup.app_context():
             # Create course and section
             course = Curso(
@@ -1853,7 +1848,7 @@ class TestFileUploadErrorCases(TestFileUploadFunctionality):
         """Test file upload with database error."""
         mock_files.save.return_value = "test_document.pdf"
         mock_files.name = "files"
-        
+
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -1914,19 +1909,50 @@ class TestFileUploadErrorCases(TestFileUploadFunctionality):
 class TestSettingsLogoFaviconUpload(TestFileUploadFunctionality):
     """Test logo and favicon upload functionality in settings route."""
 
-    def get_or_create_style_config(self, db_session):
+    def get_or_create_style_config(self, isolated_db_session):
         """Get or create a default Style configuration."""
-        style_result = db_session.execute(database.select(Style)).first()
+        style_result = isolated_db_session.execute(database.select(Style)).first()
         if style_result:
             return style_result[0]
         else:
             # Create default style config if it doesn't exist
             config = Style(theme="default", custom_logo=False, custom_favicon=False)
-            db_session.add(config)
-            db_session.flush()
+            isolated_db_session.add(config)
+            isolated_db_session.flush()
             return config
 
+    @pytest.fixture
+    def admin_user(self, session_full_db_setup, isolated_db_session):
+        """Create and return an admin user."""
+        from now_lms.auth import proteger_passwd
 
+        with session_full_db_setup.app_context():
+            admin = Usuario(
+                usuario="test_admin",
+                nombre="Test",
+                apellido="Admin",
+                correo_electronico="admin@test.com",
+                tipo="admin",
+                activo=True,
+                correo_electronico_verificado=True,
+                acceso=proteger_passwd("password123"),
+            )
+            isolated_db_session.add(admin)
+            isolated_db_session.flush()
+            return admin
+
+    @pytest.fixture
+    def authenticated_admin_client(self, session_full_db_setup, isolated_db_session, admin_user):
+        """Get authenticated client for admin."""
+        client = session_full_db_setup.test_client()
+
+        # Login the admin using the correct endpoint
+        with session_full_db_setup.app_context():
+            login_data = {"usuario": "test_admin", "acceso": "password123"}
+            response = client.post("/user/login", data=login_data, follow_redirects=True)
+            assert response.status_code == 200
+
+        return client
 
     @patch("now_lms.vistas.settings.images")
     def test_settings_logo_upload_success(self, mock_images, session_full_db_setup, isolated_db_session):
@@ -1934,7 +1960,7 @@ class TestSettingsLogoFaviconUpload(TestFileUploadFunctionality):
         mock_images.save.return_value = "logotipo.jpg"
         mock_images.name = "images"
 
-        # Create admin user
+        # Get authenticated admin client
         admin_user = self.create_admin_user(isolated_db_session)
         client = self.get_authenticated_admin_client(session_full_db_setup, admin_user)
 
@@ -1980,7 +2006,7 @@ class TestSettingsLogoFaviconUpload(TestFileUploadFunctionality):
         mock_images.save.return_value = "favicon.png"
         mock_images.name = "images"
 
-        # Create admin user
+        # Get authenticated admin client
         admin_user = self.create_admin_user(isolated_db_session)
         client = self.get_authenticated_admin_client(session_full_db_setup, admin_user)
 
@@ -2024,7 +2050,7 @@ class TestSettingsLogoFaviconUpload(TestFileUploadFunctionality):
         mock_images.save.side_effect = UploadNotAllowed("Invalid file type")
         mock_images.name = "images"
 
-        # Create admin user
+        # Get authenticated admin client
         admin_user = self.create_admin_user(isolated_db_session)
         client = self.get_authenticated_admin_client(session_full_db_setup, admin_user)
 
@@ -2067,7 +2093,7 @@ class TestSettingsLogoFaviconUpload(TestFileUploadFunctionality):
         mock_images.save.side_effect = UploadNotAllowed("Invalid file type")
         mock_images.name = "images"
 
-        # Create admin user
+        # Get authenticated admin client
         admin_user = self.create_admin_user(isolated_db_session)
         client = self.get_authenticated_admin_client(session_full_db_setup, admin_user)
 
@@ -2108,7 +2134,7 @@ class TestSettingsLogoFaviconUpload(TestFileUploadFunctionality):
         mock_images.save.return_value = None  # Upload fails silently
         mock_images.name = "images"
 
-        # Create admin user
+        # Get authenticated admin client
         admin_user = self.create_admin_user(isolated_db_session)
         client = self.get_authenticated_admin_client(session_full_db_setup, admin_user)
 
@@ -2149,7 +2175,7 @@ class TestSettingsLogoFaviconUpload(TestFileUploadFunctionality):
         mock_images.save.return_value = None  # Upload fails silently
         mock_images.name = "images"
 
-        # Create admin user
+        # Get authenticated admin client
         admin_user = self.create_admin_user(isolated_db_session)
         client = self.get_authenticated_admin_client(session_full_db_setup, admin_user)
 
@@ -2191,7 +2217,7 @@ class TestSettingsLogoFaviconUpload(TestFileUploadFunctionality):
         mock_images.save.return_value = "logotipo.jpg"
         mock_images.name = "images"
 
-        # Create admin user
+        # Get authenticated admin client
         admin_user = self.create_admin_user(isolated_db_session)
         client = self.get_authenticated_admin_client(session_full_db_setup, admin_user)
 
@@ -2228,7 +2254,7 @@ class TestSettingsLogoFaviconUpload(TestFileUploadFunctionality):
         mock_images.save.return_value = "favicon.png"
         mock_images.name = "images"
 
-        # Create admin user
+        # Get authenticated admin client
         admin_user = self.create_admin_user(isolated_db_session)
         client = self.get_authenticated_admin_client(session_full_db_setup, admin_user)
 
@@ -2277,7 +2303,7 @@ class TestSettingsLogoFaviconUpload(TestFileUploadFunctionality):
         """Test that settings upload requires admin role (instructor should be denied)."""
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
-        
+
         with session_full_db_setup.app_context():
             upload_data = {
                 "style": "default",
@@ -2298,7 +2324,7 @@ class TestDownloadableResourceUpload(TestFileUploadFunctionality):
         """Test successful downloadable resource upload."""
         mock_files.save.return_value = "document.pdf"
         mock_files.name = "files"
-        
+
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -2374,7 +2400,7 @@ class TestDownloadableResourceUpload(TestFileUploadFunctionality):
         """Test downloadable resource upload with text file."""
         mock_files.save.return_value = "notes.txt"
         mock_files.name = "files"
-        
+
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -2448,7 +2474,7 @@ class TestDownloadableResourceUpload(TestFileUploadFunctionality):
         """Test successful downloadable resource editing."""
         mock_files.save.return_value = "updated_document.pdf"
         mock_files.name = "files"
-        
+
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -2538,8 +2564,7 @@ class TestDownloadableResourceUpload(TestFileUploadFunctionality):
     @patch("now_lms.vistas.courses.files")
     def test_downloadable_resource_edit_metadata_only(self, mock_files, session_full_db_setup, isolated_db_session):
         """Test downloadable resource edit with metadata changes only (no new file)."""
-        
-        # Create instructor user
+        # Get authenticated client
         instructor_user = self.create_instructor_user(isolated_db_session)
         client = self.get_authenticated_client(session_full_db_setup, instructor_user)
 
@@ -2636,11 +2661,7 @@ class TestDownloadableResourceUpload(TestFileUploadFunctionality):
                 "archivo": self.create_downloadable_file("unauthorized.pdf"),
             }
 
-            response = client.post(
-                "/course/TEST001/1/descargable/new",
-                data=upload_data,
-                content_type="multipart/form-data"
-            )
+            response = client.post("/course/TEST001/1/descargable/new", data=upload_data, content_type="multipart/form-data")
 
             # Should redirect to login or return 401/403
             assert response.status_code in [302, 401, 403]

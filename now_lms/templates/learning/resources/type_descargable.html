@@ -4,7 +4,7 @@ moderador_asignado(id_curso=curso.codigo) %} {% set permitir_estudiante = estudi
 permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
         <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
@@ -24,7 +24,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item">
                                 <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
-                                    >Inicio</a
+                                    >{{ _("Inicio") }}</a
                                 >
                             </li>
                             <li class="breadcrumb-item">
@@ -80,7 +80,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                             <small>Archivo: {{ recurso.doc }}</small>
                                         </p>
                                         <p class="card-text text-muted mb-0">
-                                            <small>Tipo: {{ file_ext.upper() }}</small>
+                                            <small>{{ _("Tipo") }}: {{ file_ext.upper() }}</small>
                                         </p>
                                     </div>
                                 </div>
@@ -103,7 +103,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
                         <!-- Description -->
                         <div class="mb-4">
-                            <h6>Descripción:</h6>
+                            <h6>{{ _("Descripción") }}:</h6>
                             <div>{{ markdown2html(recurso.descripcion) | safe }}</div>
                         </div>
 

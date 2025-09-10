@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>{{ programa.nombre }} - Progreso del Programa</title>
+        <title>{{ programa.nombre }} - Progreso del {{ _("Programa") }}</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -24,7 +24,7 @@
                                 <div class="col-md-8">
                                     <div class="card mb-4">
                                         <div class="card-header">
-                                            <h5 class="card-title mb-0">Descripción del Programa</h5>
+                                            <h5 class="card-title mb-0">{{ _("Descripción") }} del {{ _("Programa") }}</h5>
                                         </div>
                                         <div class="card-body">{{ markdown2html(programa.descripcion) | safe }}</div>
                                     </div>
@@ -32,7 +32,7 @@
                                     {% if cursos_programa %}
                                     <div class="card">
                                         <div class="card-header">
-                                            <h5 class="card-title mb-0">Cursos del Programa</h5>
+                                            <h5 class="card-title mb-0">{{ _("Cursos") }} del {{ _("Programa") }}</h5>
                                         </div>
                                         <div class="card-body">
                                             <div class="list-group">
@@ -95,7 +95,9 @@
 
                                             <div class="text-center">
                                                 {% if progreso and progreso.porcentaje >= 100 %}
-                                                <span class="badge bg-success fs-6">Programa Completado</span>
+                                                <span class="badge bg-success fs-6"
+                                                    >{{ _("Programa") }} {{ _("Completado") }}</span
+                                                >
                                                 {% else %}
                                                 <span class="badge bg-primary fs-6">En Progreso</span>
                                                 {% endif %}
@@ -118,7 +120,7 @@
                                                 href="{{ url_for('program.programa_certificado', codigo=programa.codigo) }}"
                                                 class="btn btn-success btn-sm"
                                             >
-                                                Ver Certificado
+                                                {{ _("Ver") }} Certificado
                                             </a>
                                             {% else %}
                                             <p class="text-muted">Completa todos los cursos para obtener tu certificado.</p>

@@ -1,10 +1,10 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
 {% set config = config() %}
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Cursos Disponibles</title>
+        <title>{{ _('Cursos Disponibles') }}</title>
 
         {{ current_theme.local_style() }}
 
@@ -295,9 +295,9 @@
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0">
                                 <li class="breadcrumb-item">
-                                    <a class="text-reset text-decoration-none link-dark" href="/index">Inicio</a>
+                                    <a class="text-reset text-decoration-none link-dark" href="/index">{{ _('Inicio') }}</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Cursos disponibles</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ _('Cursos disponibles') }}</li>
                             </ol>
                         </nav>
                     </div>
@@ -308,11 +308,14 @@
                         <!-- Pagination Top -->
                         <div class="pagination-modern">
                             <div class="pagination-info">
-                                {{ cursos.total }} cursos encontrados - Página {{ cursos.page }} de {{ cursos.pages }}
+                                {{ cursos.total }} {{ _('cursos encontrados') }} - {{ _('Página') }} {{ cursos.page }} {{
+                                _('de') }} {{ cursos.pages }}
                             </div>
                             {% if cursos.has_next %}
                             <div class="pagination-nav">
-                                <a href="{{ url_for('course.lista_cursos', page=cursos.next_num) }}"> Siguiente → </a>
+                                <a href="{{ url_for('course.lista_cursos', page=cursos.next_num) }}">
+                                    {{ _('Siguiente') }} →
+                                </a>
                             </div>
                             {% endif %}
                         </div>
@@ -352,7 +355,7 @@
                                                 d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
                                             />
                                         </svg>
-                                        Introductorio {% elif curso.nivel == 1 %}
+                                        {{ _('Introductorio') }} {% elif curso.nivel == 1 %}
                                         <svg class="course-level-icon" viewBox="0 0 20 20" fill="currentColor">
                                             <path
                                                 fill-rule="evenodd"
@@ -360,7 +363,7 @@
                                                 clip-rule="evenodd"
                                             />
                                         </svg>
-                                        Principiante {% elif curso.nivel == 2 %}
+                                        {{ _('Principiante') }} {% elif curso.nivel == 2 %}
                                         <svg class="course-level-icon" viewBox="0 0 20 20" fill="currentColor">
                                             <path
                                                 fill-rule="evenodd"
@@ -368,7 +371,7 @@
                                                 clip-rule="evenodd"
                                             />
                                         </svg>
-                                        Intermedio {% elif curso.nivel == 3 %}
+                                        {{ _('Intermedio') }} {% elif curso.nivel == 3 %}
                                         <svg class="course-level-icon" viewBox="0 0 20 20" fill="currentColor">
                                             <path
                                                 d="M9.664 17l-2.426-4.81a9.983 9.983 0 001.676-1.06L10 13.666l1.086-2.536a9.983 9.983 0 001.676 1.06L10.336 17H9.664z"
@@ -377,7 +380,7 @@
                                                 d="M8.5 1c4.396 0 8 2.686 8 6 0 1.398-.481 2.71-1.328 3.768-.339.424-.74.806-1.182 1.144L10 15l-3.99-3.088A5.984 5.984 0 014.5 7c0-3.314 3.604-6 8-6z"
                                             />
                                         </svg>
-                                        Avanzado {% endif %}
+                                        {{ _('Avanzado') }} {% endif %}
                                     </div>
                                 </div>
 
@@ -400,8 +403,8 @@
                                         {% endif %}
 
                                         <div class="course-price {% if not curso.precio %}free{% endif %}">
-                                            {% if curso.precio %} {{ curso.precio | float }} {{ config.moneda }} {% else %}
-                                            Gratis {% endif %}
+                                            {% if curso.precio %} {{ curso.precio | float }} {{ config.moneda }} {% else %} {{
+                                            _('Gratis') }} {% endif %}
                                         </div>
                                     </div>
 
@@ -409,7 +412,7 @@
                                         href="{{ url_for('course.curso', course_code=curso.codigo) }}"
                                         class="course-action-btn"
                                     >
-                                        Ver Curso
+                                        {{ _('Ver Curso') }}
                                     </a>
                                 </div>
                             </div>
@@ -420,17 +423,22 @@
                         <div class="pagination-modern">
                             {% if cursos.has_prev %}
                             <div class="pagination-nav">
-                                <a href="{{ url_for('course.lista_cursos', page=cursos.prev_num) }}"> ← Anterior </a>
+                                <a href="{{ url_for('course.lista_cursos', page=cursos.prev_num) }}">
+                                    ← {{ _('Anterior') }}
+                                </a>
                             </div>
                             {% endif %}
 
                             <div class="pagination-info">
-                                Página {{ cursos.page }} de {{ cursos.pages }} - {{ cursos.total }} cursos encontrados
+                                {{ _('Página') }} {{ cursos.page }} {{ _('de') }} {{ cursos.pages }} - {{ cursos.total }} {{
+                                _('cursos encontrados') }}
                             </div>
 
                             {% if cursos.has_next %}
                             <div class="pagination-nav">
-                                <a href="{{ url_for('course.lista_cursos', page=cursos.next_num) }}"> Siguiente → </a>
+                                <a href="{{ url_for('course.lista_cursos', page=cursos.next_num) }}">
+                                    {{ _('Siguiente') }} →
+                                </a>
                             </div>
                             {% endif %}
                         </div>
@@ -445,7 +453,7 @@
                                         d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"
                                     />
                                 </svg>
-                                Filtrar Cursos
+                                {{ _('Filtrar Cursos') }}
                             </h5>
 
                             <!-- Categories Filter -->
@@ -456,7 +464,7 @@
                                     data-bs-target="#categories-filter"
                                     aria-expanded="true"
                                 >
-                                    Categorías
+                                    {{ _('Categorías') }}
                                     <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
                                         <path
                                             fill-rule="evenodd"
@@ -485,7 +493,7 @@
                                     data-bs-target="#tags-filter"
                                     aria-expanded="false"
                                 >
-                                    Etiquetas
+                                    {{ _('Etiquetas') }}
                                     <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
                                         <path
                                             fill-rule="evenodd"
@@ -514,7 +522,7 @@
                                     data-bs-target="#level-filter"
                                     aria-expanded="false"
                                 >
-                                    Nivel
+                                    {{ _('Nivel') }}
                                     <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
                                         <path
                                             fill-rule="evenodd"
@@ -528,25 +536,25 @@
                                         href="{{ url_for('course.lista_cursos') + parametros_url(parametros=parametros, arg='nivel', val='0', char='?') }}"
                                         class="filter-option"
                                     >
-                                        Introductorio
+                                        {{ _('Introductorio') }}
                                     </a>
                                     <a
                                         href="{{ url_for('course.lista_cursos') + parametros_url(parametros=parametros, arg='nivel', val='1', char='?') }}"
                                         class="filter-option"
                                     >
-                                        Principiante
+                                        {{ _('Principiante') }}
                                     </a>
                                     <a
                                         href="{{ url_for('course.lista_cursos') + parametros_url(parametros=parametros, arg='nivel', val='2', char='?') }}"
                                         class="filter-option"
                                     >
-                                        Intermedio
+                                        {{ _('Intermedio') }}
                                     </a>
                                     <a
                                         href="{{ url_for('course.lista_cursos') + parametros_url(parametros=parametros, arg='nivel', val='3', char='?') }}"
                                         class="filter-option"
                                     >
-                                        Avanzado
+                                        {{ _('Avanzado') }}
                                     </a>
                                 </div>
                             </div>

@@ -1,10 +1,10 @@
 {% set current_theme = current_theme() %} {% set config = config() %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Mensaje del Foro - {{ curso.nombre | title }}</title>
+        <title>{{ _('Mensaje del Foro') }} - {{ curso.nombre | title }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -22,7 +22,7 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
-                                        >Inicio</a
+                                        >{{ _('Inicio') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
@@ -36,10 +36,10 @@
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('forum.ver_foro', course_code=curso.codigo) }}"
-                                        >Foro</a
+                                        >{{ _('Foro') }}</a
                                     >
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Mensaje</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ _('Mensaje') }}</li>
                             </ol>
                         </nav>
                     </h4>
@@ -50,7 +50,7 @@
                             href="{{ url_for('forum.responder_mensaje', course_code=curso.codigo, message_id=mensaje.id) }}"
                             class="btn btn-primary"
                         >
-                            <i class="fas fa-reply"></i> Responder
+                            <i class="fas fa-reply"></i> {{ _('Responder') }}
                         </a>
                         {% endif %} {% if puede_cerrar %} {% if mensaje.estado == "abierto" %}
                         <form
@@ -61,9 +61,9 @@
                             <button
                                 type="submit"
                                 class="btn btn-outline-warning"
-                                onclick="return confirm('¿Cerrar este hilo?')"
+                                onclick="return confirm('{{ _('¿Cerrar este hilo?') }}')"
                             >
-                                <i class="fas fa-lock"></i> Cerrar Hilo
+                                <i class="fas fa-lock"></i> {{ _('Cerrar Hilo') }}
                             </button>
                         </form>
                         {% else %} {% if curso.estado != "finalizado" %}
@@ -73,7 +73,7 @@
                             class="d-inline"
                         >
                             <button type="submit" class="btn btn-outline-success">
-                                <i class="fas fa-unlock"></i> Abrir Hilo
+                                <i class="fas fa-unlock"></i> {{ _('Abrir Hilo') }}
                             </button>
                         </form>
                         {% endif %} {% endif %} {% endif %}
@@ -88,14 +88,15 @@
                                 <div>
                                     <h5 class="mb-0">{{ mensaje.usuario.nombre }} {{ mensaje.usuario.apellido }}</h5>
                                     <small class="text-muted"
-                                        >{{ mensaje.fecha_creacion.strftime('%d/%m/%Y a las %H:%M') }}</small
+                                        >{{ mensaje.fecha_creacion.strftime('%d/%m/%Y') }} {{ _('a las') }} {{
+                                        mensaje.fecha_creacion.strftime('%H:%M') }}</small
                                     >
                                 </div>
                                 <div>
                                     {% if mensaje.estado == "abierto" %}
-                                    <span class="badge bg-success">Abierto</span>
+                                    <span class="badge bg-success">{{ _('Abierto') }}</span>
                                     {% else %}
-                                    <span class="badge bg-secondary">Cerrado</span>
+                                    <span class="badge bg-secondary">{{ _('Cerrado') }}</span>
                                     {% endif %}
                                 </div>
                             </div>
@@ -103,7 +104,9 @@
                                 <div class="message-content">{{ mensaje.contenido_html | safe }}</div>
                                 {% if mensaje.fecha_modificacion %}
                                 <small class="text-muted"
-                                    ><em>Modificado: {{ mensaje.fecha_modificacion.strftime('%d/%m/%Y %H:%M') }}</em></small
+                                    ><em
+                                        >{{ _('Modificado') }}: {{ mensaje.fecha_modificacion.strftime('%d/%m/%Y %H:%M') }}</em
+                                    ></small
                                 >
                                 {% endif %}
                             </div>
@@ -111,7 +114,7 @@
 
                         <!-- Respuestas -->
                         {% if respuestas %}
-                        <h5 class="mb-3">Respuestas ({{ respuestas|length }})</h5>
+                        <h5 class="mb-3">{{ _('Respuestas') }} ({{ respuestas|length }})</h5>
 
                         {% for respuesta in respuestas %}
                         <div class="card mb-3 ms-4">
@@ -119,7 +122,8 @@
                                 <div>
                                     <h6 class="mb-0">{{ respuesta.usuario.nombre }} {{ respuesta.usuario.apellido }}</h6>
                                     <small class="text-muted"
-                                        >{{ respuesta.fecha_creacion.strftime('%d/%m/%Y a las %H:%M') }}</small
+                                        >{{ respuesta.fecha_creacion.strftime('%d/%m/%Y') }} {{ _('a las') }} {{
+                                        respuesta.fecha_creacion.strftime('%H:%M') }}</small
                                     >
                                 </div>
                             </div>
@@ -127,14 +131,17 @@
                                 <div class="message-content">{{ respuesta.contenido_html | safe }}</div>
                                 {% if respuesta.fecha_modificacion %}
                                 <small class="text-muted"
-                                    ><em>Modificado: {{ respuesta.fecha_modificacion.strftime('%d/%m/%Y %H:%M') }}</em></small
+                                    ><em
+                                        >{{ _('Modificado') }}: {{ respuesta.fecha_modificacion.strftime('%d/%m/%Y %H:%M')
+                                        }}</em
+                                    ></small
                                 >
                                 {% endif %}
                             </div>
                         </div>
                         {% endfor %} {% else %}
                         <div class="alert alert-light">
-                            <p class="mb-0">Este mensaje aún no tiene respuestas.</p>
+                            <p class="mb-0">{{ _('Este mensaje aún no tiene respuestas.') }}</p>
                         </div>
                         {% endif %}
 
@@ -145,20 +152,21 @@
                                 href="{{ url_for('forum.responder_mensaje', course_code=curso.codigo, message_id=mensaje.id) }}"
                                 class="btn btn-primary"
                             >
-                                <i class="fas fa-reply"></i> Responder a este mensaje
+                                <i class="fas fa-reply"></i> {{ _('Responder a este mensaje') }}
                             </a>
                         </div>
                         {% elif not curso.foro_habilitado %}
                         <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-triangle"></i> El foro está deshabilitado para este curso.
+                            <i class="fas fa-exclamation-triangle"></i> {{ _('El foro está deshabilitado para este curso.') }}
                         </div>
                         {% elif curso.estado == "finalizado" %}
                         <div class="alert alert-info">
-                            <i class="fas fa-info-circle"></i> Este curso ha finalizado y no se permiten nuevas respuestas.
+                            <i class="fas fa-info-circle"></i> {{ _('Este curso ha finalizado y no se permiten nuevas
+                            respuestas.') }}
                         </div>
                         {% elif mensaje.estado == "cerrado" %}
                         <div class="alert alert-secondary">
-                            <i class="fas fa-lock"></i> Este hilo está cerrado y no se permiten nuevas respuestas.
+                            <i class="fas fa-lock"></i> {{ _('Este hilo está cerrado y no se permiten nuevas respuestas.') }}
                         </div>
                         {% endif %}
                     </div>

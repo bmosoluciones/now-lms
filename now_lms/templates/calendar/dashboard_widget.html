@@ -3,9 +3,11 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">
             <i class="fas fa-calendar-alt me-2"></i>
-            Próximos Eventos
+            {{ _('Próximos Eventos') }}
         </h5>
-        <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-sm btn-outline-primary"> Ver Calendario </a>
+        <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-sm btn-outline-primary">
+            {{ _('Ver Calendario') }}
+        </a>
     </div>
     <div class="card-body">
         {% if upcoming_events %} {% for event in upcoming_events %}
@@ -37,9 +39,9 @@
             </div>
             <div class="flex-shrink-0">
                 {% if event.resource_type == 'meet' %}
-                <span class="badge bg-success">Sesión</span>
+                <span class="badge bg-success">{{ _('Sesión') }}</span>
                 {% else %}
-                <span class="badge bg-danger">Evaluación</span>
+                <span class="badge bg-danger">{{ _('Evaluación') }}</span>
                 {% endif %}
             </div>
         </div>
@@ -47,15 +49,17 @@
 
         <div class="text-center mt-3">
             <a href="{{ url_for('calendar.upcoming_events') }}" class="btn btn-sm btn-outline-primary">
-                Ver Todos los Eventos
+                {{ _('Ver Todos los Eventos') }}
             </a>
         </div>
         {% else %}
         <div class="text-center py-3">
             <i class="fas fa-calendar-alt fa-2x text-muted mb-2"></i>
-            <p class="text-muted mb-0">No tienes eventos próximos</p>
+            <p class="text-muted mb-0">{{ _('No tienes eventos próximos') }}</p>
             <small class="text-muted">
-                <a href="{{ url_for('calendar.calendar_view') }}" class="text-decoration-none"> Ver calendario completo </a>
+                <a href="{{ url_for('calendar.calendar_view') }}" class="text-decoration-none">
+                    {{ _('Ver calendario completo') }}
+                </a>
             </small>
         </div>
         {% endif %}

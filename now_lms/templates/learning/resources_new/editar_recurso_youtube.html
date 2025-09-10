@@ -1,9 +1,9 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from 'macros/form_buttons.j2' import render_form_buttons %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
-        <title>Editar Recurso - YouTube</title>
+        <title>{{ _("Editar") }} {{ _("Recurso") }} - YouTube</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -17,7 +17,7 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Editar vídeo de YouTube: {{ recurso.nombre }}</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Editar") }} vídeo de YouTube: {{ recurso.nombre }}</h4>
                 <form method="post">
                     {{ form.csrf_token }}
                     <div class="row g-3">
@@ -32,23 +32,17 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="requerido" class="form-label">Tipo de Recurso</label>
+                            <label for="requerido" class="form-label">{{ _("Tipo") }} de {{ _("Recurso") }}</label>
                             {{ form.requerido(class="form-control", id="requerido") }}
                         </div>
 
                         <div>
-                            <label for="descripcion" class="form-label">Descripción</label>
+                            <label for="descripcion" class="form-label">{{ _("Descripción") }}</label>
                             {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
                         </div>
 
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-lg btn-primary" type="submit">Actualizar Recurso</button>
-                            <a
-                                href="{{ url_for('course.administrar_curso', course_code=id_curso) }}"
-                                class="btn btn-lg btn-secondary"
-                                >Cancelar</a
-                            >
-                        </div>
+                        {{ render_form_buttons(_("Actualizar Recurso"), url_for('course.administrar_curso',
+                        course_code=id_curso)) }}
                     </div>
                 </form>
             </div>

@@ -2632,7 +2632,7 @@ def test_category_management_comprehensive_endtoend(basic_config_setup, client):
     # Test GET: Access new category form
     new_category_get = client.get("/category/new")
     assert new_category_get.status_code == 200
-    assert "Crear Categoria".encode("utf-8") in new_category_get.data
+    assert "Crear Categoría".encode("utf-8") in new_category_get.data
 
     # Test POST: Create a new category
     new_category_post = client.post(

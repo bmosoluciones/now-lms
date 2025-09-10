@@ -226,6 +226,7 @@ class TestProgramsComprehensive:
     def test_programas_list_instructor(self, session_full_db_setup, test_client, isolated_db_session):
         """Test programas list view as instructor (filtered by creator)."""
         import time
+
         # Create instructor user with unique identifier
         unique_id = int(time.time() * 1000) % 1000000
         instructor = Usuario(

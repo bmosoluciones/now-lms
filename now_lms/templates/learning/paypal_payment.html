@@ -1,10 +1,10 @@
 {% set current_theme = current_theme() %} {% set config = config() %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Pago con PayPal - {{ curso.nombre | title }}</title>
+        <title>{{ _('Pago con PayPal') }} - {{ curso.nombre | title }}</title>
         <meta name="csrf-token" content="{{ csrf_token() }}" />
 
         <!-- PayPal SDK -->
@@ -89,7 +89,7 @@
                     <div class="col-md-8">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="mb-0">Pago del Curso</h4>
+                                <h4 class="mb-0">Pago del {{ _("Curso") }}</h4>
                             </div>
                             <div class="card-body">
                                 <div class="row">
@@ -98,7 +98,7 @@
                                         <img
                                             src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}"
                                             class="img-fluid rounded"
-                                            alt="Portada del Curso"
+                                            alt="Portada del {{ _("Curso") }}"
                                         />
                                         {% else %}
                                         <div
@@ -115,14 +115,14 @@
                                         <p>{{ curso.descripcion_corta }}</p>
 
                                         <div class="mt-4">
-                                            <h6>Detalles del Pago</h6>
+                                            <h6>{{ _("Detalles") }} del Pago</h6>
                                             <div class="d-flex justify-content-between">
-                                                <span>Precio del curso:</span>
+                                                <span>{{ _("Precio") }} del curso:</span>
                                                 <strong>{{ "%.2f"|format(curso.precio) }} {{ site_currency }}</strong>
                                             </div>
                                             <hr />
                                             <div class="d-flex justify-content-between">
-                                                <span><strong>Total:</strong></span>
+                                                <span><strong>{{ _("Total") }}:</strong></span>
                                                 <strong>{{ "%.2f"|format(curso.precio) }} {{ site_currency }}</strong>
                                             </div>
                                         </div>

@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     {% set current_theme = current_theme() %}
 
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>{{ title }} - Instructor</title>
+        <title>{{ title }} - {{ _('Instructor') }}</title>
     </head>
 
     <body>
@@ -17,7 +17,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <h4 class="pb-2 border-bottom">{{ title }}</h4>
                     <a href="{{ url_for('instructor_announcements.list_announcements') }}" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Volver a la lista
+                        <i class="bi bi-arrow-left"></i> {{ _('Volver a la lista') }}
                     </a>
                 </div>
 
@@ -57,7 +57,7 @@
                                     {% endfor %}
                                 </div>
                                 {% endif %}
-                                <div class="form-text">Puedes usar Markdown para formatear el contenido.</div>
+                                <div class="form-text">{{ _('Puedes usar Markdown para formatear el contenido.') }}</div>
                             </div>
 
                             <div class="mb-3">
@@ -69,7 +69,7 @@
                                     {% endfor %}
                                 </div>
                                 {% endif %}
-                                <div class="form-text">Deja vacío si no quieres que expire.</div>
+                                <div class="form-text">{{ _('Deja vacío si no quieres que expire.') }}</div>
                             </div>
 
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -77,11 +77,12 @@
                                     href="{{ url_for('instructor_announcements.list_announcements') }}"
                                     class="btn btn-secondary me-md-2"
                                 >
-                                    Cancelar
+                                    {{ _('Cancelar') }}
                                 </a>
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-check-circle"></i>
-                                    {% if announcement %}Actualizar{% else %}Crear{% endif %} Anuncio
+                                    {% if announcement %}{{ _('Actualizar') }}{% else %}{{ _('Crear') }}{% endif %} {{
+                                    _('Anuncio') }}
                                 </button>
                             </div>
                         </form>
@@ -89,23 +90,24 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-header">
-                                <h6 class="card-title mb-0"><i class="bi bi-info-circle"></i> Información</h6>
+                                <h6 class="card-title mb-0"><i class="bi bi-info-circle"></i> {{ _('Información') }}</h6>
                             </div>
                             <div class="card-body">
                                 <p class="card-text small">
-                                    Los anuncios de curso son visibles únicamente para los estudiantes inscritos en el curso
-                                    seleccionado.
+                                    {{ _('Los anuncios de curso son visibles únicamente para los estudiantes inscritos en el
+                                    curso seleccionado.') }}
                                 </p>
                                 <p class="card-text small">
-                                    <strong>Markdown:</strong> Puedes usar formato Markdown para enriquecer el contenido del
-                                    anuncio.
+                                    <strong>{{ _('Markdown:') }}</strong> {{ _('Puedes usar formato Markdown para enriquecer el
+                                    contenido del anuncio.') }}
                                 </p>
                                 <p class="card-text small">
-                                    <strong>Expiración:</strong> Si defines una fecha de expiración, el anuncio dejará de
-                                    mostrarse automáticamente.
+                                    <strong>{{ _('Expiración:') }}</strong> {{ _('Si defines una fecha de expiración, el
+                                    anuncio dejará de mostrarse automáticamente.') }}
                                 </p>
                                 <p class="card-text small">
-                                    <strong>Visibilidad:</strong> Solo puedes crear anuncios para cursos donde eres instructor.
+                                    <strong>{{ _('Visibilidad:') }}</strong> {{ _('Solo puedes crear anuncios para cursos donde
+                                    eres instructor.') }}
                                 </p>
                             </div>
                         </div>

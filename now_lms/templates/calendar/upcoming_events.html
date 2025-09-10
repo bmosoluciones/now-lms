@@ -1,10 +1,10 @@
 {% set current_theme = current_theme() %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Próximos Eventos - Calendario</title>
+        <title>{{ _('Próximos Eventos') }} - {{ _('Calendario') }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -22,31 +22,31 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
-                                        >Inicio</a
+                                        >{{ _('Inicio') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('user_profile.pagina_estudiante') }}"
-                                        >Mi Perfil</a
+                                        >{{ _('Mi Perfil') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('calendar.calendar_view') }}"
-                                        >Calendario</a
+                                        >{{ _('Calendario') }}</a
                                     >
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Próximos Eventos</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ _('Próximos Eventos') }}</li>
                             </ol>
                         </nav>
                     </h2>
 
                     <div class="btn-group" role="group">
                         <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-calendar"></i> Ver Calendario
+                            <i class="fas fa-calendar"></i> {{ _('Ver Calendario') }}
                         </a>
                     </div>
                 </div>
@@ -59,10 +59,10 @@
                             <div class="card-header d-flex align-items-center">
                                 {% if event.resource_type == 'meet' %}
                                 <i class="fas fa-video text-success me-2"></i>
-                                <span class="badge bg-success me-2">Sesión en Vivo</span>
+                                <span class="badge bg-success me-2">{{ _('Sesión en Vivo') }}</span>
                                 {% else %}
                                 <i class="fas fa-clipboard-check text-danger me-2"></i>
-                                <span class="badge bg-danger me-2">Evaluación</span>
+                                <span class="badge bg-danger me-2">{{ _('Evaluación') }}</span>
                                 {% endif %}
                                 <small class="text-muted">{{ event.start_time.strftime('%d/%m/%Y %H:%M') }}</small>
                             </div>
@@ -85,18 +85,18 @@
                                 <div class="d-flex justify-content-between align-items-center">
                                     <small class="text-muted">
                                         {% if event.status == 'pending' %}
-                                        <span class="badge bg-warning">Pendiente</span>
+                                        <span class="badge bg-warning">{{ _('Pendiente') }}</span>
                                         {% elif event.status == 'ongoing' %}
-                                        <span class="badge bg-info">En Curso</span>
+                                        <span class="badge bg-info">{{ _('En Curso') }}</span>
                                         {% elif event.status == 'completed' %}
-                                        <span class="badge bg-success">Completado</span>
+                                        <span class="badge bg-success">{{ _('Completado') }}</span>
                                         {% endif %}
                                     </small>
                                     <a
                                         href="{{ url_for('calendar.event_detail', event_id=event.id) }}"
                                         class="btn btn-sm btn-outline-primary"
                                     >
-                                        Ver Detalles
+                                        {{ _('Ver Detalles') }}
                                     </a>
                                 </div>
                             </div>
@@ -108,7 +108,7 @@
                 <div class="row mt-4">
                     <div class="col-12 text-center">
                         <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-primary">
-                            <i class="fas fa-calendar"></i> Ver Calendario Completo
+                            <i class="fas fa-calendar"></i> {{ _('Ver Calendario Completo') }}
                         </a>
                     </div>
                 </div>
@@ -118,13 +118,13 @@
                         <div class="card">
                             <div class="card-body text-center py-5">
                                 <i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
-                                <h4>No tienes eventos próximos</h4>
+                                <h4>{{ _('No tienes eventos próximos') }}</h4>
                                 <p class="text-muted">
-                                    Cuando te inscribas en cursos, aquí aparecerán tus sesiones programadas y fechas límite de
-                                    evaluaciones.
+                                    {{ _('Cuando te inscribas en cursos, aquí aparecerán tus sesiones programadas y fechas
+                                    límite de evaluaciones.') }}
                                 </p>
                                 <a href="{{ url_for('home.panel') }}" class="btn btn-primary">
-                                    <i class="fas fa-book"></i> Explorar Cursos
+                                    <i class="fas fa-book"></i> {{ _('Explorar Cursos') }}
                                 </a>
                             </div>
                         </div>

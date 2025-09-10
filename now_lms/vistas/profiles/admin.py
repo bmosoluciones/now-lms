@@ -18,7 +18,7 @@ from now_lms.auth import perfil_requerido
 from now_lms.bi import cambia_tipo_de_usuario_por_id
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Usuario, database
+from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Usuario, Curso, EstudianteCurso, database
 
 # Constants
 ADMIN_USERS_ROUTE = "admin_profile.usuarios"
@@ -32,9 +32,24 @@ admin_profile = Blueprint("admin_profile", __name__, template_folder=DIRECTORIO_
 @cache.cached(timeout=90)
 def pagina_admin():
     """Perfil de usuario administrador."""
+    # Get admin statistics
+    total_users = database.session.execute(database.select(func.count(Usuario.id))).scalar() or 0
+    inactive_users = database.session.execute(database.select(func.count(Usuario.id)).filter_by(activo=False)).scalar() or 0
+    total_courses = database.session.execute(database.select(func.count(Curso.id))).scalar() or 0
+
+    # Get recent courses (for display)
+    cursos_recientes = database.session.execute(database.select(Curso).order_by(Curso.creado.desc()).limit(5)).scalars().all()
+
+    # Get total enrollments
+    total_enrollments = database.session.execute(database.select(func.count(EstudianteCurso.id))).scalar() or 0
+
     return render_template(
         "perfiles/admin.html",
-        inactivos=database.session.execute(database.select(func.count(Usuario.id)).filter_by(activo=False)).scalar() or 0,
+        inactivos=inactive_users,
+        total_users=total_users,
+        total_courses=total_courses,
+        total_enrollments=total_enrollments,
+        cursos_recientes=cursos_recientes,
     )
 
 

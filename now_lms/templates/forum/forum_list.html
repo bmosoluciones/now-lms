@@ -4,10 +4,10 @@ permitir_estudiante = estudiante_asignado(id_curso=curso.codigo) %} {% set permi
 permitir_docente %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Foro - {{ curso.nombre | title }}</title>
+        <title>{{ _('Foro') }} - {{ curso.nombre | title }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -25,7 +25,7 @@ permitir_docente %}
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
-                                        >Inicio</a
+                                        >{{ _('Inicio') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
@@ -35,21 +35,21 @@ permitir_docente %}
                                         >{{ curso.nombre }}</a
                                     >
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Foro</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ _('Foro') }}</li>
                             </ol>
                         </nav>
                     </h4>
 
                     <div class="btn-group" role="group">
                         <a href="{{ url_for('forum.nuevo_mensaje', course_code=curso.codigo) }}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Nuevo Mensaje
+                            <i class="fas fa-plus"></i> {{ _('Nuevo Mensaje') }}
                         </a>
                     </div>
                 </div>
 
                 <div class="row mt-4">
                     <div class="col-12">
-                        <h2>Foro del Curso: {{ curso.nombre }}</h2>
+                        <h2>{{ _('Foro del Curso') }}: {{ curso.nombre }}</h2>
 
                         {% if mensajes.items %}
                         <div class="list-group">
@@ -67,19 +67,21 @@ permitir_docente %}
                                     <small class="text-muted">{{ mensaje.fecha_creacion.strftime('%d/%m/%Y %H:%M') }}</small>
                                 </div>
 
-                                <p class="mb-1 text-muted">Por: {{ mensaje.usuario.nombre }} {{ mensaje.usuario.apellido }}</p>
+                                <p class="mb-1 text-muted">
+                                    {{ _('Por') }}: {{ mensaje.usuario.nombre }} {{ mensaje.usuario.apellido }}
+                                </p>
 
                                 <div class="d-flex justify-content-between align-items-center">
                                     <small class="text-muted">
-                                        {% if mensaje.replies %} {{ mensaje.replies|length }} respuesta(s) {% else %} Sin
-                                        respuestas {% endif %}
+                                        {% if mensaje.replies %} {{ mensaje.replies|length }} {{ _('respuesta(s)') }} {% else
+                                        %} {{ _('Sin respuestas') }} {% endif %}
                                     </small>
 
                                     <div>
                                         {% if mensaje.estado == "abierto" %}
-                                        <span class="badge bg-success">Abierto</span>
+                                        <span class="badge bg-success">{{ _('Abierto') }}</span>
                                         {% else %}
-                                        <span class="badge bg-secondary">Cerrado</span>
+                                        <span class="badge bg-secondary">{{ _('Cerrado') }}</span>
                                         {% endif %} {% if puede_cerrar %} {% if mensaje.estado == "abierto" %}
                                         <form
                                             method="POST"
@@ -89,9 +91,9 @@ permitir_docente %}
                                             <button
                                                 type="submit"
                                                 class="btn btn-sm btn-outline-warning"
-                                                onclick="return confirm('¿Cerrar este mensaje?')"
+                                                onclick="return confirm('{{ _('¿Cerrar este mensaje?') }}')"
                                             >
-                                                <i class="fas fa-lock"></i> Cerrar
+                                                <i class="fas fa-lock"></i> {{ _('Cerrar') }}
                                             </button>
                                         </form>
                                         {% else %} {% if curso.estado != "finalizado" %}
@@ -101,7 +103,7 @@ permitir_docente %}
                                             class="d-inline"
                                         >
                                             <button type="submit" class="btn btn-sm btn-outline-success">
-                                                <i class="fas fa-unlock"></i> Abrir
+                                                <i class="fas fa-unlock"></i> {{ _('Abrir') }}
                                             </button>
                                         </form>
                                         {% endif %} {% endif %} {% endif %}
@@ -113,14 +115,14 @@ permitir_docente %}
 
                         <!-- Paginación -->
                         {% if mensajes.pages > 1 %}
-                        <nav aria-label="Navegación del foro" class="mt-4">
+                        <nav aria-label="{{ _('Navegación del foro') }}" class="mt-4">
                             <ul class="pagination justify-content-center">
                                 {% if mensajes.has_prev %}
                                 <li class="page-item">
                                     <a
                                         class="page-link"
                                         href="{{ url_for('forum.ver_foro', course_code=curso.codigo, page=mensajes.prev_num) }}"
-                                        >Anterior</a
+                                        >{{ _('Anterior') }}</a
                                     >
                                 </li>
                                 {% endif %} {% for page_num in mensajes.iter_pages() %} {% if page_num %} {% if page_num !=
@@ -145,7 +147,7 @@ permitir_docente %}
                                     <a
                                         class="page-link"
                                         href="{{ url_for('forum.ver_foro', course_code=curso.codigo, page=mensajes.next_num) }}"
-                                        >Siguiente</a
+                                        >{{ _('Siguiente') }}</a
                                     >
                                 </li>
                                 {% endif %}
@@ -153,10 +155,10 @@ permitir_docente %}
                         </nav>
                         {% endif %} {% else %}
                         <div class="alert alert-info">
-                            <h5>No hay mensajes en el foro</h5>
-                            <p>Sé el primero en crear un mensaje en este foro.</p>
+                            <h5>{{ _('No hay mensajes en el foro') }}</h5>
+                            <p>{{ _('Sé el primero en crear un mensaje en este foro.') }}</p>
                             <a href="{{ url_for('forum.nuevo_mensaje', course_code=curso.codigo) }}" class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Crear primer mensaje
+                                <i class="fas fa-plus"></i> {{ _('Crear primer mensaje') }}
                             </a>
                         </div>
                         {% endif %}

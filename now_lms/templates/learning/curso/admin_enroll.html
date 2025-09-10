@@ -3,10 +3,10 @@ docente_asignado(id_curso=curso.codigo) %} {% set permitir_moderador = moderador
 permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Inscripción Administrativa - {{ curso.nombre }}</title>
+        <title>{{ _('Inscripción Administrativa') }} - {{ curso.nombre }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -22,23 +22,24 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                     <div class="col-lg-8 mx-auto">
                         <div class="card">
                             <div class="card-header">
-                                <h4><i class="fas fa-user-plus"></i> Inscripción Administrativa</h4>
+                                <h4><i class="fas fa-user-plus"></i> {{ _('Inscripción Administrativa') }}</h4>
                                 <p class="mb-0 text-muted">
-                                    Inscribir estudiante al curso: <strong>{{ curso.nombre }}</strong>
+                                    {{ _('Inscribir estudiante al curso:') }} <strong>{{ curso.nombre }}</strong>
                                 </p>
                             </div>
                             <div class="card-body">
                                 {% if curso.pagado %}
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle"></i>
-                                    <strong>Curso Pagado:</strong> Este curso tiene un costo de {{ curso.precio }} {{
-                                    curso.moneda or 'USD' }}. Al usar la inscripción administrativa, puedes omitir el pago para
-                                    dar acceso completo al estudiante.
+                                    <strong>{{ _('Curso Pagado:') }}</strong> {{ _('Este curso tiene un costo de') }} {{
+                                    curso.precio }} {{ curso.moneda or 'USD' }}. {{ _('Al usar la inscripción administrativa,
+                                    puedes omitir el pago para dar acceso completo al estudiante.') }}
                                 </div>
                                 {% else %}
                                 <div class="alert alert-success">
                                     <i class="fas fa-check-circle"></i>
-                                    <strong>Curso Gratuito:</strong> Este curso es gratuito para todos los estudiantes.
+                                    <strong>{{ _('Curso Gratuito:') }}</strong> {{ _('Este curso es gratuito para todos los
+                                    estudiantes.') }}
                                 </div>
                                 {% endif %}
 
@@ -49,7 +50,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                         {{ form.student_username.label(class="form-label") }} {{
                                         form.student_username(class="form-control") }}
                                         <div class="form-text">
-                                            Ingresa el nombre de usuario del estudiante que deseas inscribir.
+                                            {{ _('Ingresa el nombre de usuario del estudiante que deseas inscribir.') }}
                                         </div>
                                     </div>
 
@@ -59,15 +60,17 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                             form.bypass_payment.label(class="form-check-label") }}
                                         </div>
                                         <div class="form-text">
-                                            {% if curso.pagado %} Si está marcado, el estudiante tendrá acceso completo sin
-                                            realizar el pago. {% else %} Esta opción no afecta cursos gratuitos. {% endif %}
+                                            {% if curso.pagado %} {{ _('Si está marcado, el estudiante tendrá acceso completo
+                                            sin realizar el pago.') }} {% else %} {{ _('Esta opción no afecta cursos
+                                            gratuitos.') }} {% endif %}
                                         </div>
                                     </div>
 
                                     <div class="mb-3">
                                         {{ form.notes.label(class="form-label") }} {{ form.notes(class="form-control") }}
                                         <div class="form-text">
-                                            Notas opcionales sobre esta inscripción (para referencia administrativa).
+                                            {{ _('Notas opcionales sobre esta inscripción (para referencia administrativa).')
+                                            }}
                                         </div>
                                     </div>
 
@@ -76,10 +79,10 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                             href="{{ url_for('course.administrar_curso', course_code=curso.codigo) }}"
                                             class="btn btn-secondary me-md-2"
                                         >
-                                            <i class="fas fa-arrow-left"></i> Cancelar
+                                            <i class="fas fa-arrow-left"></i> {{ _('Cancelar') }}
                                         </a>
                                         <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-user-plus"></i> Inscribir Estudiante
+                                            <i class="fas fa-user-plus"></i> {{ _('Inscribir Estudiante') }}
                                         </button>
                                     </div>
                                 </form>
@@ -88,14 +91,14 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
                         <div class="card mt-4">
                             <div class="card-header">
-                                <h5><i class="fas fa-info-circle"></i> Información del Curso</h5>
+                                <h5><i class="fas fa-info-circle"></i> {{ _('Información del Curso') }}</h5>
                             </div>
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <strong>Nombre:</strong> {{ curso.nombre }}<br />
-                                        <strong>Código:</strong> {{ curso.codigo }}<br />
-                                        <strong>Estado:</strong>
+                                        <strong>{{ _('Nombre:') }}</strong> {{ curso.nombre }}<br />
+                                        <strong>{{ _('Código:') }}</strong> {{ curso.codigo }}<br />
+                                        <strong>{{ _('Estado:') }}</strong>
                                         <span
                                             class="badge bg-{% if curso.estado == 'open' %}success{% elif curso.estado == 'closed' %}danger{% else %}warning{% endif %}"
                                         >
@@ -103,17 +106,18 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                         </span>
                                     </div>
                                     <div class="col-md-6">
-                                        <strong>Tipo:</strong>
+                                        <strong>{{ _('Tipo:') }}</strong>
                                         {% if curso.pagado %}
-                                        <span class="badge bg-warning">Pagado</span>
+                                        <span class="badge bg-warning">{{ _('Pagado') }}</span>
                                         {% else %}
-                                        <span class="badge bg-success">Gratuito</span>
+                                        <span class="badge bg-success">{{ _('Gratuito') }}</span>
                                         {% endif %} {% if curso.auditable %}
-                                        <span class="badge bg-info">Auditable</span>
+                                        <span class="badge bg-info">{{ _('Auditable') }}</span>
                                         {% endif %}
                                         <br />
                                         {% if curso.pagado %}
-                                        <strong>Precio:</strong> {{ curso.precio }} {{ curso.moneda or 'USD' }} {% endif %}
+                                        <strong>{{ _('Precio:') }}</strong> {{ curso.precio }} {{ curso.moneda or 'USD' }} {%
+                                        endif %}
                                     </div>
                                 </div>
                             </div>

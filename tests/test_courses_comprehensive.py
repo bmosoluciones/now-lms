@@ -97,6 +97,7 @@ class TestCourseBasicFunctionality:
     def test_student_enrollment(self, isolated_db_session):
         """Test student enrollment in courses."""
         import time
+
         # Create user with unique identifier to avoid conflicts
         unique_id = int(time.time() * 1000) % 1000000
         user = Usuario(

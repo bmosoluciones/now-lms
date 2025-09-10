@@ -1,10 +1,10 @@
 {% set current_theme = current_theme() %} {% set config = config() %}
 
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Mi Calendario - {{ config.sitio_nombre }}</title>
+        <title>{{ _('Mi Calendario') }} - {{ config.sitio_nombre }}</title>
         {{ current_theme.local_style() }}
 
         <style>
@@ -70,24 +70,24 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
-                                        >Inicio</a
+                                        >{{ _('Inicio') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('user_profile.pagina_estudiante') }}"
-                                        >Mi Perfil</a
+                                        >{{ _('Mi Perfil') }}</a
                                     >
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Calendario</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ _('Calendario') }}</li>
                             </ol>
                         </nav>
                     </h2>
 
                     <div class="btn-group" role="group">
                         <a href="{{ url_for('calendar.export_ics') }}" class="btn btn-outline-primary">
-                            <i class="fas fa-download"></i> Exportar .ics
+                            <i class="fas fa-download"></i> {{ _('Exportar .ics') }}
                         </a>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
                                 href="{{ url_for('calendar.calendar_view', year=prev_year, month=prev_month) }}"
                                 class="btn btn-outline-secondary"
                             >
-                                <i class="fas fa-chevron-left"></i> Anterior
+                                <i class="fas fa-chevron-left"></i> {{ _('Anterior') }}
                             </a>
                         </div>
                         <div class="col-md-4 text-center">
@@ -111,7 +111,7 @@
                                 href="{{ url_for('calendar.calendar_view', year=next_year, month=next_month) }}"
                                 class="btn btn-outline-secondary"
                             >
-                                Siguiente <i class="fas fa-chevron-right"></i>
+                                {{ _('Siguiente') }} <i class="fas fa-chevron-right"></i>
                             </a>
                         </div>
                     </div>
@@ -123,11 +123,11 @@
                         <div class="d-flex gap-3">
                             <div class="d-flex align-items-center">
                                 <div class="calendar-event event-meet me-2" style="width: 20px; height: 15px"></div>
-                                <small>Sesiones en vivo</small>
+                                <small>{{ _('Sesiones en vivo') }}</small>
                             </div>
                             <div class="d-flex align-items-center">
                                 <div class="calendar-event event-evaluation me-2" style="width: 20px; height: 15px"></div>
-                                <small>Fechas límite de evaluaciones</small>
+                                <small>{{ _('Fechas límite de evaluaciones') }}</small>
                             </div>
                         </div>
                     </div>
@@ -138,13 +138,13 @@
                     <table class="table table-bordered calendar-table">
                         <thead class="table-light">
                             <tr>
-                                <th class="text-center">Lunes</th>
-                                <th class="text-center">Martes</th>
-                                <th class="text-center">Miércoles</th>
-                                <th class="text-center">Jueves</th>
-                                <th class="text-center">Viernes</th>
-                                <th class="text-center">Sábado</th>
-                                <th class="text-center">Domingo</th>
+                                <th class="text-center">{{ _('Lunes') }}</th>
+                                <th class="text-center">{{ _('Martes') }}</th>
+                                <th class="text-center">{{ _('Miércoles') }}</th>
+                                <th class="text-center">{{ _('Jueves') }}</th>
+                                <th class="text-center">{{ _('Viernes') }}</th>
+                                <th class="text-center">{{ _('Sábado') }}</th>
+                                <th class="text-center">{{ _('Domingo') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -181,12 +181,12 @@
                 <div class="row mt-4">
                     <div class="col-md-6">
                         <a href="{{ url_for('calendar.calendar_view') }}" class="btn btn-primary">
-                            <i class="fas fa-calendar-day"></i> Ir a Hoy
+                            <i class="fas fa-calendar-day"></i> {{ _('Ir a Hoy') }}
                         </a>
                     </div>
                     <div class="col-md-6 text-end">
                         <a href="{{ url_for('calendar.upcoming_events') }}" class="btn btn-outline-primary">
-                            <i class="fas fa-list"></i> Próximos Eventos
+                            <i class="fas fa-list"></i> {{ _('Próximos Eventos') }}
                         </a>
                     </div>
                 </div>

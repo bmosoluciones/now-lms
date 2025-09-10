@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Listado de cursos.</title>
+        <title>{{ _('Listado de cursos.') }}</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -17,13 +17,13 @@
             <div class="container px-0 py-3" id="curse_list">
                 <div class="row align-items-center border-bottom pb-3 mb-4">
                     <div class="col-md-8">
-                        <h4 class="mb-0"><i class="bi bi-book me-2"></i>Lista de Cursos Disponibles</h4>
-                        <p class="text-muted mb-0">Gestiona y administra tus cursos de aprendizaje</p>
+                        <h4 class="mb-0"><i class="bi bi-book me-2"></i>{{ _("Lista de Cursos Disponibles") }}</h4>
+                        <p class="text-muted mb-0">{{ _('Gestiona y administra tus cursos de aprendizaje') }}</p>
                     </div>
                     <div class="col-md-4 text-end">
                         <div class="btn-group" role="group">
                             <a href="{{ url_for('course.nuevo_curso') }}" class="btn btn-success">
-                                <i class="bi bi-plus-lg me-1"></i>Nuevo Curso
+                                <i class="bi bi-plus-lg me-1"></i>{{ _("Nuevo Curso") }}
                             </a>
                         </div>
                     </div>
@@ -35,19 +35,19 @@
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <caption class="ms-3 mt-2">
-                                    Lista de cursos disponibles en el sistema.
+                                    {{ _('Lista de cursos disponibles en el sistema.') }}
                                 </caption>
                                 <thead class="table-light">
                                     <tr>
-                                        <th scope="col" class="fw-semibold"><i class="bi bi-code-slash me-1"></i>Código</th>
-                                        <th class="fw-semibold"><i class="bi bi-bookmark me-1"></i>Nombre</th>
+                                        <th scope="col" class="fw-semibold"><i class="bi bi-code-slash me-1"></i>{{ _('Código') }}</th>
+                                        <th class="fw-semibold"><i class="bi bi-bookmark me-1"></i>{{ _("Nombre") }}</th>
                                         <th class="fw-semibold text-center">
-                                            <i class="bi bi-calendar-event me-1"></i>Inicio
+                                            <i class="bi bi-calendar-event me-1"></i>{{ _("Inicio") }}
                                         </th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-calendar-check me-1"></i>Fin</th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-flag me-1"></i>Estado</th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-globe me-1"></i>Público</th>
-                                        <th class="fw-semibold text-center">Acciones</th>
+                                        <th class="fw-semibold text-center"><i class="bi bi-calendar-check me-1"></i>{{ _('Fin') }}</th>
+                                        <th class="fw-semibold text-center"><i class="bi bi-flag me-1"></i>{{ _("Estado") }}</th>
+                                        <th class="fw-semibold text-center"><i class="bi bi-globe me-1"></i>{{ _('Público') }}</th>
+                                        <th class="fw-semibold text-center">{{ _("Acciones") }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -72,11 +72,11 @@
                                         </td>
                                         <td class="text-center">
                                             {% if item.estado == "draft" %}
-                                            <span class="badge bg-secondary">Borrador</span>
+                                            <span class="badge bg-secondary">{{ _('Borrador') }}</span>
                                             {% elif item.estado == "open" %}
-                                            <span class="badge bg-success">Abierto</span>
+                                            <span class="badge bg-success">{{ _("Abierto") }}</span>
                                             {% else %}
-                                            <span class="badge bg-danger">Cerrado</span>
+                                            <span class="badge bg-danger">{{ _("Cerrado") }}</span>
                                             {% endif %}
                                         </td>
                                         <td class="text-center">
@@ -87,18 +87,18 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <div class="btn-group" role="group" aria-label="Acciones del curso">
+                                            <div class="btn-group" role="group" aria-label="{{ _("Acciones") }} del curso">
                                                 <a
                                                     href="{{ url_for('course.curso', course_code=item.codigo, inspect=True) }}"
                                                     class="btn btn-sm btn-outline-primary"
-                                                    title="Ver curso"
+                                                    title=_("Ver curso")
                                                 >
                                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('course.administrar_curso', course_code=item.codigo) }}"
                                                     class="btn btn-sm btn-outline-secondary"
-                                                    title="Editar curso"
+                                                    title=_("Editar curso")
                                                 >
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>
@@ -115,10 +115,10 @@
                 <div class="card shadow-sm">
                     <div class="card-body text-center py-5">
                         <i class="bi bi-inbox text-muted" style="font-size: 3rem"></i>
-                        <h5 class="text-muted mt-3">No hay cursos disponibles</h5>
-                        <p class="text-muted">Usted no ha creado ningún curso todavía.</p>
+                        <h5 class="text-muted mt-3">{{ _('No hay cursos disponibles') }}</h5>
+                        <p class="text-muted">{{ _('Usted no ha creado ningún curso todavía.') }}</p>
                         <a href="{{ url_for('course.nuevo_curso') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-lg me-2"></i>Crear Primer Curso
+                            <i class="bi bi-plus-lg me-2"></i>{{ _("Crear") }} Primer {{ _("Curso") }}
                         </a>
                     </div>
                 </div>

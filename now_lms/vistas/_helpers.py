@@ -60,3 +60,29 @@ def get_site_favicon():
         return logo_file.name
     except IndexError:
         return None
+
+
+def logo_personalizado():
+    """Check if custom logo is enabled."""
+    from now_lms.db import Style, database
+
+    try:
+        style = database.session.execute(database.select(Style)).first()
+        if style:
+            return style[0].custom_logo
+        return False
+    except Exception:
+        return False
+
+
+def favicon_personalizado():
+    """Check if custom favicon is enabled."""
+    from now_lms.db import Style, database
+
+    try:
+        style = database.session.execute(database.select(Style)).first()
+        if style:
+            return style[0].custom_favicon
+        return False
+    except Exception:
+        return False

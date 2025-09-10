@@ -1,6 +1,6 @@
 <!doctype html>
-<html lang="es" class="h-100">
-    {% set current_theme = current_theme() %}
+<html lang="{{ current_locale() }}" class="h-100">
+    {% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
@@ -38,10 +38,10 @@
 
                             <div class="mb-3">
                                 {{ form.tags.label(class="form-label") }} {{ form.tags(class="form-control",
-                                placeholder="Separar etiquetas con comas") }}
+                                placeholder=_("Separar etiquetas con comas")) }}
                                 <div class="form-text">
-                                    Separa las etiquetas con comas. {% if current_user.tipo != 'admin' %}Solo se asignarán
-                                    etiquetas existentes.{% endif %}
+                                    {{ _('Separa las etiquetas con comas.') }} {% if current_user.tipo != 'admin' %}{{ _('Solo
+                                    se asignarán etiquetas existentes.') }}{% endif %}
                                 </div>
                                 {% for error in form.tags.errors %}
                                 <div class="text-danger">{{ error }}</div>
@@ -72,18 +72,14 @@
                             </div>
 
                             <div class="row">
-                                <h3>Vista Previa de la publicación:</h3>
+                                <h3>{{ _('Vista Previa de la publicación:') }}</h3>
                                 {{mde.preview}}
                             </div>
 
-                            <div class="mb-3">
-                                <button type="submit" class="btn btn-primary">Grabar entrada</button>
-
-                                {% if current_user.tipo == 'admin' %}
-                                <a href="{{ url_for('blog.admin_blog_index') }}" class="btn btn-secondary">Cancelar</a>
-                                {% else %}
-                                <a href="{{ url_for('blog.instructor_blog_index') }}" class="btn btn-secondary">Cancelar</a>
-                                {% endif %}
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                {% if current_user.tipo == 'admin' %} {{ render_form_buttons(_("Grabar entrada"),
+                                url_for('blog.admin_blog_index')) }} {% else %} {{ render_form_buttons(_("Grabar entrada"),
+                                url_for('blog.instructor_blog_index')) }} {% endif %}
                             </div>
                         </form>
                     </div>

@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Cambiar Contraseña</title>
+        <title>{{ _('Cambiar Contraseña') }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -16,33 +16,35 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">Cambiar Contraseña del usuario: {{ usuario.usuario }}</h4>
+                <h4 class="pb-2 border-bottom">{{ _('Cambiar Contraseña del usuario') }}: {{ usuario.usuario }}</h4>
                 <form method="post" action="{{ url_for('user_profile.cambiar_contraseña', ulid=usuario.id) }}">
                     {{ form.csrf_token }}
 
                     <div class="row g-3">
-                        <h6>Cambiar Contraseña:</h6>
+                        <h6>{{ _('Cambiar Contraseña') }}:</h6>
                         <div class="col-sm-6">
-                            <label for="current_password" class="form-label">Contraseña Actual</label>
+                            <label for="current_password" class="form-label">{{ _('Contraseña Actual') }}</label>
                             {{ form.current_password(class="form-control", id="current_password") }}
                         </div>
                     </div>
 
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="new_password" class="form-label">Nueva Contraseña</label>
+                            <label for="new_password" class="form-label">{{ _('Nueva Contraseña') }}</label>
                             {{ form.new_password(class="form-control", id="new_password") }}
                         </div>
                         <div class="col-sm-6">
-                            <label for="confirm_password" class="form-label">Confirmar Nueva Contraseña</label>
+                            <label for="confirm_password" class="form-label">{{ _('Confirmar Nueva Contraseña') }}</label>
                             {{ form.confirm_password(class="form-control", id="confirm_password") }}
                         </div>
                     </div>
 
                     <div class="row g-3 mt-3">
                         <div class="col-12">
-                            <a class="btn btn-warning" href="{{ url_for('user_profile.perfil') }}" role="button">Cancelar</a>
-                            <button class="btn btn-primary" type="submit">Cambiar Contraseña</button>
+                            <a class="btn btn-warning" href="{{ url_for('user_profile.perfil') }}" role="button"
+                                >{{ _('Cancelar') }}</a
+                            >
+                            <button class="btn btn-primary" type="submit">{{ _('Cambiar Contraseña') }}</button>
                         </div>
                     </div>
                 </form>

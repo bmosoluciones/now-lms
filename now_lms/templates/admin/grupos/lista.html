@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ get_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Lista de Grupo</title>
+        <title>{{ _("Lista de Grupo") }}</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -15,13 +15,13 @@
             <div class="container px-0 py-3" id="lista-usarios">
                 <div class="row align-items-center border-bottom pb-3 mb-4">
                     <div class="col-md-8">
-                        <h4 class="mb-0"><i class="bi bi-people-fill me-2"></i>Grupos registrados en el sistema</h4>
-                        <p class="text-muted mb-0">Gestiona y administra los grupos de usuarios</p>
+                        <h4 class="mb-0"><i class="bi bi-people-fill me-2"></i>{{ _("Grupos registrados en el sistema") }}</h4>
+                        <p class="text-muted mb-0">{{ _("Gestiona y administra los grupos de usuarios") }}</p>
                     </div>
                     <div class="col-md-4 text-end">
                         <div class="btn-group" role="group">
                             <a href="{{ url_for('group.nuevo_grupo') }}" class="btn btn-success">
-                                <i class="bi bi-plus-lg me-1"></i>Nuevo Grupo
+                                <i class="bi bi-plus-lg me-1"></i>{{ _("Nuevo Grupo") }}
                             </a>
                         </div>
                     </div>
@@ -32,14 +32,18 @@
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <caption class="ms-3 mt-2">
-                                    Lista de grupos registrados en el sistema.
+                                    {{ _("Lista de grupos registrados en el sistema.") }}
                                 </caption>
                                 <thead class="table-light">
                                     <tr>
-                                        <th scope="col" class="fw-semibold"><i class="bi bi-people me-1"></i>Grupo</th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-check-circle me-1"></i>Activo</th>
-                                        <th class="fw-semibold"><i class="bi bi-person-gear me-1"></i>Tutor</th>
-                                        <th class="fw-semibold text-center">Acciones</th>
+                                        <th scope="col" class="fw-semibold">
+                                            <i class="bi bi-people me-1"></i>{{ _("Grupo") }}
+                                        </th>
+                                        <th class="fw-semibold text-center">
+                                            <i class="bi bi-check-circle me-1"></i>{{ _("Activo") }}
+                                        </th>
+                                        <th class="fw-semibold"><i class="bi bi-person-gear me-1"></i>{{ _("Tutor") }}</th>
+                                        <th class="fw-semibold text-center">{{ _("Acciones") }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -50,20 +54,28 @@
                                         </td>
                                         <td class="text-center">
                                             {% if item.activo %}
-                                            <i class="bi bi-check-circle-fill text-success" title="Activo"></i>
+                                            <i class="bi bi-check-circle-fill text-success" title="{{ _('Activo') }}"></i>
                                             {% else %}
-                                            <i class="bi bi-x-circle-fill text-danger" title="Inactivo"></i>
+                                            <i class="bi bi-x-circle-fill text-danger" title="{{ _('Inactivo') }}"></i>
                                             {% endif %}
                                         </td>
                                         <td>
                                             <span class="text-muted">{{ item.tutor }}</span>
                                         </td>
                                         <td>
-                                            <div class="btn-group" role="group" aria-label="Acciones del grupo">
-                                                <a href="#" class="btn btn-sm btn-outline-primary" title="Ver grupo">
+                                            <div class="btn-group" role="group" aria-label="{{ _('Acciones del grupo') }}">
+                                                <a
+                                                    href="#"
+                                                    class="btn btn-sm btn-outline-primary"
+                                                    title="{{ _('Ver grupo') }}"
+                                                >
                                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
-                                                <a href="#" class="btn btn-sm btn-outline-secondary" title="Editar grupo">
+                                                <a
+                                                    href="#"
+                                                    class="btn btn-sm btn-outline-secondary"
+                                                    title="{{ _('Editar grupo') }}"
+                                                >
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>
                                             </div>

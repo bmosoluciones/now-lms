@@ -58,6 +58,7 @@ from werkzeug.exceptions import HTTPException
 # ---------------------------------------------------------------------------------------
 from now_lms.cache import cache
 from now_lms.config import (
+    AUTO_MIGRATE,
     CONFIGURACION,
     DESARROLLO,
     DIRECTORIO_ARCHIVOS,
@@ -137,7 +138,13 @@ from now_lms.misc import (
 )
 from now_lms.themes import current_theme
 from now_lms.version import CODE_NAME, VERSION
-from now_lms.vistas._helpers import get_current_course_logo, get_site_favicon, get_site_logo
+from now_lms.vistas._helpers import (
+    get_current_course_logo,
+    get_site_favicon,
+    get_site_logo,
+    logo_personalizado,
+    favicon_personalizado,
+)
 from now_lms.vistas.announcements.admin import admin_announcements
 from now_lms.vistas.announcements.instructor import instructor_announcements
 from now_lms.vistas.announcements.public import public_announcements
@@ -194,6 +201,8 @@ def inicializa_extenciones_terceros(flask_app: Flask):
     with flask_app.app_context():
         from now_lms.i18n import get_locale, get_timezone
 
+        flask_app.config.from_mapping({"ALEMBIC": {"script_location": "migrations"}})
+
         database.init_app(flask_app)
         alembic.init_app(flask_app)
         # Remove alembic "db" command from flask cli if it exists
@@ -214,7 +223,7 @@ def inicializa_extenciones_terceros(flask_app: Flask):
 
         translations_dir = path_join(dirname(__file__), "translations")
         flask_app.config["BABEL_TRANSLATION_DIRECTORIES"] = translations_dir
-        flask_app.config["BABEL_SUPPORTED_LOCALES"] = ["es", "en"]
+        flask_app.config["BABEL_SUPPORTED_LOCALES"] = ["es", "en", "pt_BR"]
         babel.init_app(flask_app, locale_selector=get_locale, timezone_selector=get_timezone)
     log.trace("Third-party extensions started successfully.")
 
@@ -351,6 +360,8 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["pyversion"] = python_version()
     flask_app.jinja_env.globals["site_logo"] = get_site_logo
     flask_app.jinja_env.globals["site_favicon"] = get_site_favicon
+    flask_app.jinja_env.globals["logo_personalizado"] = logo_personalizado
+    flask_app.jinja_env.globals["favicon_personalizado"] = favicon_personalizado
     flask_app.jinja_env.globals["testing"] = TESTING
     flask_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
     flask_app.jinja_env.globals["version"] = VERSION
@@ -659,6 +670,15 @@ def init_app(with_examples=False, flask_app=None):
         log.trace("Database access verified.")
         if DB_INICIALIZADA:
             log.trace("Database initialized.")
+            if AUTO_MIGRATE:
+                log.info("Auto-migrating database to latest schema.")
+                try:
+                    with app_to_use.app_context():
+                        alembic.upgrade()
+                    log.info("Database migrated successfully.")
+                except Exception as e:
+                    log.error(f"Error during database migration: {e}")
+                    return False
             return True
         log.info("Starting new database.")
         initial_setup(with_examples=with_examples, flask_app=app_to_use)

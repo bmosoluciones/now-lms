@@ -29,7 +29,7 @@ from waitress import serve
 # ---------------------------------------------------------------------------------------
 from now_lms import lms_app, init_app
 
-PORT = environ.get("DATABASE_URL") or 8080
+PORT = environ.get("PORT") or 8080
 
 if init_app():
     logger.info("Iniciando NOW Learning Management System")

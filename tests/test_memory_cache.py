@@ -57,6 +57,7 @@ class TestMemoryCacheConfig:
                 assert config["CACHE_KEY_PREFIX"] == "now_lms:"
                 mock_makedirs.assert_called_with("/dev/shm/now_lms_cache", mode=0o700, exist_ok=True)
 
+    @pytest.mark.xfail(raises=AssertionError, reason="Linux only test.")
     def test_memory_cache_fallback_to_temp_dir(self):
         """Test fallback to temp directory when /dev/shm is not available."""
         with patch.dict(os.environ, {"NOW_LMS_MEMORY_CACHE": "1"}):
@@ -78,7 +79,7 @@ class TestMemoryCacheConfig:
                 assert config["CACHE_TYPE"] == "FileSystemCache"
                 assert config["CACHE_DIR"] == "/tmp/now_lms_cache"
 
-    @pytest.mark.xfail(raises=AssertionError, reason="Linux onley test.")
+    @pytest.mark.xfail(raises=AssertionError, reason="Linux only test.")
     def test_memory_cache_fallback_to_null_cache(self):
         """Test fallback to NullCache when both /dev/shm and temp directory fail."""
         with patch.dict(os.environ, {"NOW_LMS_MEMORY_CACHE": "1"}):

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     {% set current_theme = current_theme() %} {% set config = config() %}
 
     <head>
@@ -26,12 +26,13 @@
                                 </a>
                             </h2>
                             <div class="text-muted mb-2">
-                                Por {{ post.author.nombre }} {{ post.author.apellido or '' }} {% if post.published_at %} el {{
-                                post.published_at.strftime('%d/%m/%Y') }} {% else %} el {{ post.timestamp.strftime('%d/%m/%Y')
-                                }} {% endif %} {% if post.comment_count > 0 %} - {{ post.comment_count }} comentario{{ 's' if
-                                post.comment_count != 1 else '' }} {% endif %} {% if post.view_count is defined and
-                                post.view_count is not none %} - {{ post.view_count }} vista{{ 's' if post.view_count != 1 else
-                                '' }} {% endif %}
+                                {{ _('Por') }} {{ post.author.nombre }} {{ post.author.apellido or '' }} {% if
+                                post.published_at %} {{ _('el') }} {{ post.published_at.strftime('%d/%m/%Y') }} {% else %} {{
+                                _('el') }} {{ post.timestamp.strftime('%d/%m/%Y') }} {% endif %} {% if post.comment_count > 0
+                                %} - {{ post.comment_count }} {{ _('comentarios') if post.comment_count != 1 else
+                                _('comentario') }} {% endif %} {% if post.view_count is defined and post.view_count is not none
+                                %} - {{ post.view_count }} {{ _('vistas') if post.view_count != 1 else _('vista') }} {% endif
+                                %}
                             </div>
 
                             {% if post.tags %}
@@ -53,7 +54,7 @@
                             </div>
 
                             <a href="{{ url_for('blog.blog_post', slug=post.slug) }}" class="btn btn-outline-primary btn-sm">
-                                Leer más
+                                {{ _('Leer más') }}
                             </a>
                         </article>
                         {% endfor %}
@@ -68,7 +69,7 @@
                                         class="page-link"
                                         href="{{ url_for('blog.blog_index', page=pagination.prev_num, tag=current_tag, author=current_author) }}"
                                     >
-                                        Anterior
+                                        {{ _('Anterior') }}
                                     </a>
                                 </li>
                                 {% endif %} {% for page_num in pagination.iter_pages() %} {% if page_num %} {% if page_num !=
@@ -95,14 +96,14 @@
                                         class="page-link"
                                         href="{{ url_for('blog.blog_index', page=pagination.next_num, tag=current_tag, author=current_author) }}"
                                     >
-                                        Siguiente
+                                        {{ _('Siguiente') }}
                                     </a>
                                 </li>
                                 {% endif %}
                             </ul>
                         </nav>
                         {% endif %} {% else %}
-                        <div class="alert alert-info">No hay entradas de blog publicadas en este momento.</div>
+                        <div class="alert alert-info">{{ _('No hay entradas de blog publicadas en este momento.') }}</div>
                         {% endif %}
                     </div>
 
@@ -110,7 +111,7 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-header">
-                                <h5>Filtrar por etiqueta</h5>
+                                <h5>{{ _('Filtrar por etiqueta') }}</h5>
                             </div>
                             <div class="card-body">
                                 <div class="d-grid gap-2">
@@ -118,7 +119,7 @@
                                         href="{{ url_for('blog.blog_index') }}"
                                         class="btn btn-outline-secondary btn-sm{% if not current_tag %} active{% endif %}"
                                     >
-                                        Todas las entradas
+                                        {{ _('Todas las entradas') }}
                                     </a>
                                     {% for tag in tags %}
                                     <a

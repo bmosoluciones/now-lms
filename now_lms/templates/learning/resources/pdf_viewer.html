@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="es" style="height: 100%">
+<html lang="{{ current_locale() }}" style="height: 100%">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes" />
         <meta name="google" content="notranslate" />
-        <title>{{ recurso.nombre }} - Visor PDF</title>
+        <title>{{ recurso.nombre }} - {{ _('Visor PDF') }}</title>
 
         <style>
             body {
@@ -269,9 +269,11 @@
                 <h1>{{ recurso.nombre }}</h1>
 
                 <div class="pdf-controls">
-                    <button id="prevPage" disabled>◀ Anterior</button>
-                    <span class="page-info"> Página <span id="currentPage">1</span> de <span id="totalPages">-</span> </span>
-                    <button id="nextPage" disabled>Siguiente ▶</button>
+                    <button id="prevPage" disabled>◀ {{ _('Anterior') }}</button>
+                    <span class="page-info">
+                        {{ _('Página') }} <span id="currentPage">1</span> {{ _('de') }} <span id="totalPages">-</span>
+                    </span>
+                    <button id="nextPage" disabled>{{ _('Siguiente') }} ▶</button>
                 </div>
 
                 <a
@@ -280,7 +282,7 @@
                     download="{{ recurso.nombre }}.pdf"
                 >
                     <span>⬇</span>
-                    Descargar PDF
+                    {{ _('Descargar PDF') }}
                 </a>
             </div>
 
@@ -288,7 +290,7 @@
                 <!-- Loading state -->
                 <div id="pdfLoading" class="pdf-loading">
                     <div class="loading-spinner"></div>
-                    <p>Cargando PDF...</p>
+                    <p>{{ _('Cargando PDF...') }}</p>
                 </div>
 
                 <!-- PDF pages container -->
@@ -298,15 +300,15 @@
 
                 <!-- Fallback for browsers that don't support PDF.js -->
                 <div id="pdfFallback" class="pdf-fallback">
-                    <h2>Visor PDF no disponible</h2>
-                    <p>Su navegador no puede mostrar PDFs directamente. Descargue el archivo para verlo:</p>
+                    <h2>{{ _('Visor PDF no disponible') }}</h2>
+                    <p>{{ _('Su navegador no puede mostrar PDFs directamente. Descargue el archivo para verlo:') }}</p>
                     <a
                         href="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
                         class="fallback-download"
                         download="{{ recurso.nombre }}.pdf"
                     >
                         <span>⬇</span>
-                        Descargar {{ recurso.nombre }}.pdf
+                        {{ _('Descargar') }} {{ recurso.nombre }}.pdf
                     </a>
                 </div>
             </div>

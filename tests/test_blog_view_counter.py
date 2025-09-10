@@ -24,12 +24,12 @@ class TestBlogViewCounter:
     def test_blog_post_has_view_count_field(self, session_full_db_setup_with_examples):
         """Test that blog posts have a view_count field."""
         with session_full_db_setup_with_examples.app_context():
-            blog_post = database.session.execute(
-                database.select(BlogPost).filter(BlogPost.status == "published")
-            ).scalars().first()
+            blog_post = (
+                database.session.execute(database.select(BlogPost).filter(BlogPost.status == "published")).scalars().first()
+            )
 
             assert blog_post is not None, "There should be at least one published blog post"
-            assert hasattr(blog_post, 'view_count'), "BlogPost should have view_count attribute"
+            assert hasattr(blog_post, "view_count"), "BlogPost should have view_count attribute"
             assert blog_post.view_count is not None, "view_count should not be None"
             assert isinstance(blog_post.view_count, int), "view_count should be an integer"
 
@@ -42,7 +42,7 @@ class TestBlogViewCounter:
                 slug="test-post-for-views",
                 content="This is a test post",
                 author_id="lms-admin",
-                status="published"
+                status="published",
             )
             database.session.add(blog_post)
             database.session.commit()
@@ -56,9 +56,9 @@ class TestBlogViewCounter:
 
         with session_full_db_setup_with_examples.app_context():
             # Get a published blog post
-            blog_post = database.session.execute(
-                database.select(BlogPost).filter(BlogPost.status == "published")
-            ).scalars().first()
+            blog_post = (
+                database.session.execute(database.select(BlogPost).filter(BlogPost.status == "published")).scalars().first()
+            )
 
             assert blog_post is not None, "There should be at least one published blog post"
 
@@ -66,9 +66,9 @@ class TestBlogViewCounter:
 
             # Call the count_view endpoint
             response = client.post(f"/blog/count_view/{blog_post.id}")
-            
+
             assert response.status_code == 200, "count_view endpoint should return 200"
-            
+
             data = json.loads(response.data)
             assert data["status"] == "ok", "Response should indicate success"
             assert "view_count" in data, "Response should include view_count"
@@ -84,9 +84,9 @@ class TestBlogViewCounter:
 
         with session_full_db_setup_with_examples.app_context():
             # Get a published blog post
-            blog_post = database.session.execute(
-                database.select(BlogPost).filter(BlogPost.status == "published")
-            ).scalars().first()
+            blog_post = (
+                database.session.execute(database.select(BlogPost).filter(BlogPost.status == "published")).scalars().first()
+            )
 
             assert blog_post is not None, "There should be at least one published blog post"
 
@@ -96,7 +96,7 @@ class TestBlogViewCounter:
             for i in range(3):
                 response = client.post(f"/blog/count_view/{blog_post.id}")
                 assert response.status_code == 200, f"Request {i+1} should return 200"
-                
+
                 data = json.loads(response.data)
                 expected_views = initial_views + i + 1
                 assert data["view_count"] == expected_views, f"View count should be {expected_views} after {i+1} calls"
@@ -124,11 +124,7 @@ class TestBlogViewCounter:
         with session_full_db_setup_with_examples.app_context():
             # Create a draft blog post
             draft_post = BlogPost(
-                title="Draft Post",
-                slug="draft-post",
-                content="This is a draft post",
-                author_id="lms-admin",
-                status="draft"
+                title="Draft Post", slug="draft-post", content="This is a draft post", author_id="lms-admin", status="draft"
             )
             database.session.add(draft_post)
             database.session.commit()
@@ -146,9 +142,9 @@ class TestBlogViewCounter:
 
         with session_full_db_setup_with_examples.app_context():
             # Get a published blog post and set some views
-            blog_post = database.session.execute(
-                database.select(BlogPost).filter(BlogPost.status == "published")
-            ).scalars().first()
+            blog_post = (
+                database.session.execute(database.select(BlogPost).filter(BlogPost.status == "published")).scalars().first()
+            )
 
             assert blog_post is not None, "There should be at least one published blog post"
 
@@ -159,9 +155,9 @@ class TestBlogViewCounter:
             # Test the blog post page
             response = client.get(f"/blog/{blog_post.slug}")
             assert response.status_code == 200, "Blog post page should be accessible"
-            
+
             # Check that view count is displayed
-            page_content = response.data.decode('utf-8')
+            page_content = response.data.decode("utf-8")
             # Check for the view count in the span element
             assert '<span id="view-count">42</span> vistas' in page_content, "View count should be displayed on the page"
 
@@ -171,9 +167,9 @@ class TestBlogViewCounter:
 
         with session_full_db_setup_with_examples.app_context():
             # Get a published blog post and set some views
-            blog_post = database.session.execute(
-                database.select(BlogPost).filter(BlogPost.status == "published")
-            ).scalars().first()
+            blog_post = (
+                database.session.execute(database.select(BlogPost).filter(BlogPost.status == "published")).scalars().first()
+            )
 
             assert blog_post is not None, "There should be at least one published blog post"
 
@@ -184,9 +180,9 @@ class TestBlogViewCounter:
             # Test the blog index page
             response = client.get("/blog")
             assert response.status_code == 200, "Blog index page should be accessible"
-            
+
             # Check that view count is displayed (may be plural or singular)
-            page_content = response.data.decode('utf-8')
+            page_content = response.data.decode("utf-8")
             # The blog index shows "- 15 vistas" in the metadata line
             assert "- 15 vistas" in page_content, "View count should be displayed on the blog index page"
 
@@ -196,9 +192,9 @@ class TestBlogViewCounter:
 
         with session_full_db_setup_with_examples.app_context():
             # Get a published blog post
-            blog_post = database.session.execute(
-                database.select(BlogPost).filter(BlogPost.status == "published")
-            ).scalars().first()
+            blog_post = (
+                database.session.execute(database.select(BlogPost).filter(BlogPost.status == "published")).scalars().first()
+            )
 
             assert blog_post is not None, "There should be at least one published blog post"
 
@@ -208,7 +204,7 @@ class TestBlogViewCounter:
 
             response = client.get(f"/blog/{blog_post.slug}")
             assert response.status_code == 200
-            page_content = response.data.decode('utf-8')
+            page_content = response.data.decode("utf-8")
             assert '<span id="view-count">1</span> vista' in page_content, "Should display singular form for 1 view"
 
             # Test plural (2 views)
@@ -217,5 +213,5 @@ class TestBlogViewCounter:
 
             response = client.get(f"/blog/{blog_post.slug}")
             assert response.status_code == 200
-            page_content = response.data.decode('utf-8')
+            page_content = response.data.decode("utf-8")
             assert '<span id="view-count">2</span> vistas' in page_content, "Should display plural form for multiple views"

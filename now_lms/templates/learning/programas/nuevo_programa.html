@@ -1,9 +1,9 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Crear Programa</title>
+        <title>{{ _("Crear") }} {{ _("Programa") }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -20,17 +20,17 @@
                 {% if not is_programs_enabled() %}
                 <div class="alert alert-warning" role="alert">
                     <strong>⚠️ Aviso:</strong> Los programas están deshabilitados en la configuración principal del sitio. Los
-                    usuarios no verán este programa en el menú de navegación hasta que se habilite la opción "Habilitar
-                    Programas" en la configuración general.
+                    usuarios no verán este programa en el menú de navegación hasta que se habilite la opción "Habilitar {{
+                    _("Programas") }}" en la configuración general.
                 </div>
                 {% endif %}
-                <h4 class="pb-2 border-bottom">Crear Programa.</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Crear") }} {{ _("Programa") }}.</h4>
                 <form method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }}
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="nombre" class="form-label">Programa</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Programa") }}
+                            <label for="nombre" class="form-label">{{ _("Programa") }}</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Programa")) }}
                         </div>
 
                         <div class="col-sm-6">
@@ -42,11 +42,11 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="descripcion" class="form-label">Descripcion</label>
-                            {{ form.descripcion(class="form-control", id="descripcion", placeholder="Descripción") }}
+                            {{ form.descripcion(class="form-control", id="descripcion", placeholder=_("Descripción")) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="precio" class="form-label">Precio</label>
+                            <label for="precio" class="form-label">{{ _("Precio") }}</label>
                             {{ form.precio(class="form-control", id="codigo") }}
                         </div>
                     </div>
@@ -74,7 +74,7 @@
 
                     <br />
 
-                    <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">Crear Programa</button>
+                    {{ render_form_buttons(_("Crear Programa"), "/admin/panel") }}
                 </form>
             </div>
         </main>

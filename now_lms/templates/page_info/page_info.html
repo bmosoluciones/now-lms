@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Page Info - Development Information</title>
+        <title>{{ _('Page Info - Development Information') }}</title>
         {{ current_theme.local_style() }}
         <style>
             .info-section {
@@ -37,30 +37,30 @@
                     <div class="col-12">
                         <h1 class="mb-4">
                             <i class="bi bi-info-circle"></i>
-                            Development Information
-                            <small class="text-muted">- CI Environment Only</small>
+                            {{ _('Development Information') }}
+                            <small class="text-muted">- {{ _('CI Environment Only') }}</small>
                         </h1>
 
                         <!-- Application Version -->
                         <div class="info-section">
-                            <h3><i class="bi bi-tag"></i> Application</h3>
+                            <h3><i class="bi bi-tag"></i> {{ _('Application') }}</h3>
                             <div class="card">
                                 <div class="card-body">
                                     <table class="table table-striped info-table">
                                         <tr>
-                                            <td>Version</td>
+                                            <td>{{ _('Version') }}</td>
                                             <td>{{ version }}</td>
                                         </tr>
                                         <tr>
-                                            <td>Code Name</td>
+                                            <td>{{ _('Code Name') }}</td>
                                             <td>{{ code_name }}</td>
                                         </tr>
                                         <tr>
-                                            <td>Database Engine</td>
-                                            <td>{{ app_data.DBENGINE or "Unknown" }}</td>
+                                            <td>{{ _('Database Engine') }}</td>
+                                            <td>{{ app_data.DBENGINE or _("Unknown") }}</td>
                                         </tr>
                                         <tr>
-                                            <td>Cache Type</td>
+                                            <td>{{ _('Cache Type') }}</td>
                                             <td>{{ app_data.CACHE }}</td>
                                         </tr>
                                     </table>
@@ -70,28 +70,28 @@
 
                         <!-- System Information -->
                         <div class="info-section">
-                            <h3><i class="bi bi-cpu"></i> System</h3>
+                            <h3><i class="bi bi-cpu"></i> {{ _('System') }}</h3>
                             <div class="card">
                                 <div class="card-body">
                                     <table class="table table-striped info-table">
                                         <tr>
-                                            <td>Operating System</td>
+                                            <td>{{ _('Operating System') }}</td>
                                             <td>{{ config_data.sys._system }}</td>
                                         </tr>
                                         <tr>
-                                            <td>System Version</td>
+                                            <td>{{ _('System Version') }}</td>
                                             <td>{{ config_data.sys._system_version }}</td>
                                         </tr>
                                         <tr>
-                                            <td>Architecture</td>
+                                            <td>{{ _('Architecture') }}</td>
                                             <td>{{ config_data.sys._arch[0] }} ({{ config_data.sys._arch[1] }})</td>
                                         </tr>
                                         <tr>
-                                            <td>Python Version</td>
+                                            <td>{{ _('Python Version') }}</td>
                                             <td>{{ config_data.sys._python_version }}</td>
                                         </tr>
                                         <tr>
-                                            <td>Python Implementation</td>
+                                            <td>{{ _('Python Implementation') }}</td>
                                             <td>{{ config_data.sys._python_implementation }}</td>
                                         </tr>
                                     </table>
@@ -101,36 +101,36 @@
 
                         <!-- Configuration -->
                         <div class="info-section">
-                            <h3><i class="bi bi-gear"></i> Configuration</h3>
+                            <h3><i class="bi bi-gear"></i> {{ _('Configuration') }}</h3>
                             <div class="card">
                                 <div class="card-body">
                                     <table class="table table-striped info-table">
                                         <tr>
-                                            <td>Application Directory</td>
+                                            <td>{{ _('Application Directory') }}</td>
                                             <td><code>{{ config_data._app_dir }}</code></td>
                                         </tr>
                                         <tr>
-                                            <td>Base Files Directory</td>
+                                            <td>{{ _('Base Files Directory') }}</td>
                                             <td><code>{{ config_data._base_files_dir }}</code></td>
                                         </tr>
                                         <tr>
-                                            <td>Private Files Directory</td>
+                                            <td>{{ _('Private Files Directory') }}</td>
                                             <td><code>{{ config_data._private_files_dir }}</code></td>
                                         </tr>
                                         <tr>
-                                            <td>Public Files Directory</td>
+                                            <td>{{ _('Public Files Directory') }}</td>
                                             <td><code>{{ config_data._public_files_dir }}</code></td>
                                         </tr>
                                         <tr>
-                                            <td>Templates Directory</td>
+                                            <td>{{ _('Templates Directory') }}</td>
                                             <td><code>{{ config_data._templates_dir }}</code></td>
                                         </tr>
                                         <tr>
-                                            <td>Time Zone</td>
+                                            <td>{{ _('Time Zone') }}</td>
                                             <td>{{ config_data._time_zone }}</td>
                                         </tr>
                                         <tr>
-                                            <td>Language</td>
+                                            <td>{{ _('Language') }}</td>
                                             <td>{{ config_data._language }}</td>
                                         </tr>
                                     </table>
@@ -140,30 +140,30 @@
 
                         <!-- LMS Statistics -->
                         <div class="info-section">
-                            <h3><i class="bi bi-graph-up"></i> LMS Statistics</h3>
+                            <h3><i class="bi bi-graph-up"></i> {{ _('LMS Statistics') }}</h3>
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <table class="table table-striped info-table">
                                                 <tr>
-                                                    <td>Courses</td>
+                                                    <td>{{ _('Courses') }}</td>
                                                     <td>{{ lms_data.courses_count }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Students</td>
+                                                    <td>{{ _('Students') }}</td>
                                                     <td>{{ lms_data.students_count }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Teachers</td>
+                                                    <td>{{ _('Teachers') }}</td>
                                                     <td>{{ lms_data.teachers_count }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Moderators</td>
+                                                    <td>{{ _('Moderators') }}</td>
                                                     <td>{{ lms_data.moderators_count }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Enrollments</td>
+                                                    <td>{{ _('Enrollments') }}</td>
                                                     <td>{{ lms_data.enrollments_count }}</td>
                                                 </tr>
                                             </table>
@@ -171,23 +171,23 @@
                                         <div class="col-md-6">
                                             <table class="table table-striped info-table">
                                                 <tr>
-                                                    <td>Certificates</td>
+                                                    <td>{{ _('Certificates') }}</td>
                                                     <td>{{ lms_data.certificates_count }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Programs</td>
+                                                    <td>{{ _('Programs') }}</td>
                                                     <td>{{ lms_data.programs_count }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Evaluations</td>
+                                                    <td>{{ _('Evaluations') }}</td>
                                                     <td>{{ lms_data.evaluations_count }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Blog Posts</td>
+                                                    <td>{{ _('Blog Posts') }}</td>
                                                     <td>{{ lms_data.blog_posts_count }}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Master Classes</td>
+                                                    <td>{{ _('Master Classes') }}</td>
                                                     <td>{{ lms_data.master_classes_count }}</td>
                                                 </tr>
                                             </table>
@@ -200,8 +200,8 @@
                         <!-- Environment Variables -->
                         <div class="info-section">
                             <h3>
-                                <i class="bi bi-list-task"></i> Environment Variables
-                                <small class="text-muted">(filtered)</small>
+                                <i class="bi bi-list-task"></i> {{ _('Environment Variables') }}
+                                <small class="text-muted">({{ _('filtered') }})</small>
                             </h3>
                             <div class="card">
                                 <div class="card-body">
@@ -217,7 +217,7 @@
                                         </table>
                                     </div>
                                     {% else %}
-                                    <p class="text-muted">No environment variables to display.</p>
+                                    <p class="text-muted">{{ _('No environment variables to display.') }}</p>
                                     {% endif %}
                                 </div>
                             </div>
@@ -226,8 +226,8 @@
                         <!-- Routes -->
                         <div class="info-section">
                             <h3>
-                                <i class="bi bi-signpost"></i> Routes
-                                <small class="text-muted">({{ routes | length }} total)</small>
+                                <i class="bi bi-signpost"></i> {{ _('Routes') }}
+                                <small class="text-muted">({{ routes | length }} {{ _('total') }})</small>
                             </h3>
                             <div class="card">
                                 <div class="card-body">
@@ -235,9 +235,9 @@
                                         <table class="table table-striped table-sm route-table">
                                             <thead>
                                                 <tr>
-                                                    <th>Endpoint</th>
-                                                    <th>Route</th>
-                                                    <th>Methods</th>
+                                                    <th>{{ _('Endpoint') }}</th>
+                                                    <th>{{ _('Route') }}</th>
+                                                    <th>{{ _('Methods') }}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

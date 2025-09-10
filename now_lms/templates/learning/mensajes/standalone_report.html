@@ -1,9 +1,9 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Reportar Mensaje</title>
+        <title>Reportar {{ _("Mensaje") }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -20,10 +20,10 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}">
-                                        Inicio
+                                        {{ _("Inicio") }}
                                     </a>
                                 </li>
-                                <li class="breadcrumb-item active">Reportar Mensaje</li>
+                                <li class="breadcrumb-item active">Reportar {{ _("Mensaje") }}</li>
                             </ol>
                         </nav>
                     </h4>
@@ -39,7 +39,7 @@
 
                         <form method="post">
                             <div class="mb-4">
-                                <label class="form-label fw-bold">Seleccionar Mensaje</label>
+                                <label class="form-label fw-bold">Seleccionar {{ _("Mensaje") }}</label>
                                 <div class="list-group">
                                     {% for message in messages %}
                                     <label class="list-group-item list-group-item-action">
@@ -82,9 +82,9 @@
 
                             <div class="d-flex gap-2">
                                 <button class="btn btn-danger" type="submit">
-                                    <i class="bi bi-flag-fill"></i> Reportar Mensaje
+                                    <i class="bi bi-flag-fill"></i> Reportar {{ _("Mensaje") }}
                                 </button>
-                                <a href="{{ url_for('home.panel') }}" class="btn btn-secondary"> Cancelar </a>
+                                <a href="{{ url_for('home.panel') }}" class="btn btn-secondary"> {{ _("Cancelar") }} </a>
                             </div>
                         </form>
                         {% else %}

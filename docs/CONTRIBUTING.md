@@ -35,7 +35,7 @@ You can collaborate in different ways:
 -   [Writing and improving documentation.](https://github.com/bmosoluciones/now-lms/tree/main/docs)
 -   [Contributing ideas of new characteristics.](https://github.com/bmosoluciones/now-lms/discussions)
 -   [Reporting bugs.](https://github.com/bmosoluciones/now-lms/issues)
--   Translating.
+-   [Translating.](https://crowdin.com/project/now-lms)
 -   Providing guidance and support to other users.
 -   Sharing the project with others.
 

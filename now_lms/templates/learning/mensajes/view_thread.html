@@ -1,6 +1,6 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
-<html lang="es" class="h-100">
+<html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
         <title>Conversación - {{ thread.course.nombre }}</title>
@@ -20,7 +20,7 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}">
-                                        Inicio
+                                        {{ _("Inicio") }}
                                     </a>
                                 </li>
                                 <li class="breadcrumb-item">
@@ -36,7 +36,7 @@
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('msg.course_messages', course_code=thread.course_id) }}"
                                     >
-                                        Mensajes
+                                        {{ _("Mensajes") }}
                                     </a>
                                 </li>
                                 <li class="breadcrumb-item active">Conversación</li>
@@ -45,7 +45,7 @@
                     </h4>
                     <div class="d-flex gap-2">
                         {% if thread.status == "open" %}
-                        <span class="badge bg-success fs-6">Abierto</span>
+                        <span class="badge bg-success fs-6">{{ _("Abierto") }}</span>
                         {% if current_user.tipo == "student" %}
                         <a
                             href="{{ url_for('msg.change_thread_status', thread_id=thread.id, new_status='fixed') }}"
@@ -70,7 +70,7 @@
                             <i class="bi bi-x-circle"></i> Cerrar Hilo
                         </a>
                         {% endif %} {% elif thread.status == "closed" %}
-                        <span class="badge bg-secondary fs-6">Cerrado</span>
+                        <span class="badge bg-secondary fs-6">{{ _("Cerrado") }}</span>
                         {% endif %}
                     </div>
                 </div>
@@ -83,13 +83,13 @@
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <h6 class="card-title mb-0">
-                                            Estudiante: {{ thread.student.nombre }} {{ thread.student.apellido }}
+                                            {{ _("Estudiante") }}: {{ thread.student.nombre }} {{ thread.student.apellido }}
                                         </h6>
                                         <small class="text-muted">{{ thread.timestamp.strftime('%d/%m/%Y %H:%M') }}</small>
                                     </div>
                                     {% if thread.closed_at %}
                                     <small class="text-muted"
-                                        >Cerrado: {{ thread.closed_at.strftime('%d/%m/%Y %H:%M') }}</small
+                                        >{{ _("Cerrado") }}: {{ thread.closed_at.strftime('%d/%m/%Y %H:%M') }}</small
                                     >
                                     {% endif %}
                                 </div>
@@ -152,7 +152,7 @@
                                         >
                                             {{ report_form.csrf_token }}
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Reportar Mensaje</h5>
+                                                <h5 class="modal-title">Reportar {{ _("Mensaje") }}</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
                                             <div class="modal-body">
@@ -171,7 +171,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                    Cancelar
+                                                    {{ _("Cancelar") }}
                                                 </button>
                                                 <button type="submit" class="btn btn-danger">Reportar</button>
                                             </div>
@@ -222,25 +222,27 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-header">
-                                <h6 class="mb-0">Información del Hilo</h6>
+                                <h6 class="mb-0">{{ _("Información") }} del Hilo</h6>
                             </div>
                             <div class="card-body">
-                                <p><strong>Curso:</strong><br />{{ thread.course.nombre }}</p>
+                                <p><strong>{{ _("Curso") }}:</strong><br />{{ thread.course.nombre }}</p>
                                 <p>
-                                    <strong>Estado:</strong><br />
+                                    <strong>{{ _("Estado") }}:</strong><br />
                                     {% if thread.status == "open" %}
-                                    <span class="text-success">Abierto</span>
+                                    <span class="text-success">{{ _("Abierto") }}</span>
                                     {% elif thread.status == "fixed" %}
                                     <span class="text-warning">Resuelto</span>
                                     {% elif thread.status == "closed" %}
-                                    <span class="text-secondary">Cerrado</span>
+                                    <span class="text-secondary">{{ _("Cerrado") }}</span>
                                     {% endif %}
                                 </p>
                                 <p><strong>Creado:</strong><br />{{ thread.timestamp.strftime('%d/%m/%Y %H:%M') }}</p>
                                 {% if thread.closed_at %}
-                                <p><strong>Cerrado:</strong><br />{{ thread.closed_at.strftime('%d/%m/%Y %H:%M') }}</p>
+                                <p>
+                                    <strong>{{ _("Cerrado") }}:</strong><br />{{ thread.closed_at.strftime('%d/%m/%Y %H:%M') }}
+                                </p>
                                 {% endif %}
-                                <p><strong>Mensajes:</strong><br />{{ messages|length }}</p>
+                                <p><strong>{{ _("Mensajes") }}:</strong><br />{{ messages|length }}</p>
 
                                 <!-- Thread Report Button -->
                                 <button
@@ -274,7 +276,9 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    {{ _("Cancelar") }}
+                                </button>
                                 <button type="submit" class="btn btn-danger">Reportar</button>
                             </div>
                         </form>
