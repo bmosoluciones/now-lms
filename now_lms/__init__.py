@@ -138,7 +138,13 @@ from now_lms.misc import (
 )
 from now_lms.themes import current_theme
 from now_lms.version import CODE_NAME, VERSION
-from now_lms.vistas._helpers import get_current_course_logo, get_site_favicon, get_site_logo
+from now_lms.vistas._helpers import (
+    get_current_course_logo,
+    get_site_favicon,
+    get_site_logo,
+    logo_personalizado,
+    favicon_personalizado,
+)
 from now_lms.vistas.announcements.admin import admin_announcements
 from now_lms.vistas.announcements.instructor import instructor_announcements
 from now_lms.vistas.announcements.public import public_announcements
@@ -354,6 +360,8 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["pyversion"] = python_version()
     flask_app.jinja_env.globals["site_logo"] = get_site_logo
     flask_app.jinja_env.globals["site_favicon"] = get_site_favicon
+    flask_app.jinja_env.globals["logo_personalizado"] = logo_personalizado
+    flask_app.jinja_env.globals["favicon_personalizado"] = favicon_personalizado
     flask_app.jinja_env.globals["testing"] = TESTING
     flask_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
     flask_app.jinja_env.globals["version"] = VERSION
