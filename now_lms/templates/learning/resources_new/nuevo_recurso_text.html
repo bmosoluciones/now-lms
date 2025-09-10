@@ -27,13 +27,12 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="requerido" class="form-label"
-                                >{{ _("Tipo") }} de {{ _("Recurso") }}</label
-                            >
+                            <label for="requerido" class="form-label">{{ _("Tipo") }} de {{ _("Recurso") }}</label>
                             {{ form.requerido(class="form-control", id="requerido") }}
                         </div>
 
-                        {{ form.descripcion }} {{ mde.preview }} {{ mde.js }} {{ render_form_buttons(_("Agregar Recurso"), "/course/explore") }}
+                        {{ form.descripcion }} {{ mde.preview }} {{ mde.js }} {{ render_form_buttons(_("Agregar Recurso"),
+                        "/course/explore") }}
                     </div>
                 </form>
             </div>

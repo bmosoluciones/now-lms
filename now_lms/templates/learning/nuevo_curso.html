@@ -31,8 +31,8 @@
                             {{ form.nombre(class="form-control", id="nombre", placeholder=_("Nombre del Curso")) }}
                         </div>
                         <div class="col-sm-6">
-                            <label for="codigo" class="form-label">Codigo del {{ _("Curso") }}</label>
-                            {{ form.codigo(class="form-control", id="codigo", placeholder=_("Codigo del Curso")) }}
+                            <label for="codigo" class="form-label">{{ _('Código del') }} {{ _("Curso") }}</label>
+                            {{ form.codigo(class="form-control", id="codigo", placeholder=_("Código del Curso")) }}
                         </div>
                         <label for="descripcion_corta" class="form-label">{{ _("Descripción") }} Corta</label>
                         {{ form.descripcion_corta(class="form-control", id="descripcion_corta", placeholder=_("Descripción
@@ -41,35 +41,35 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <br />
-                            <label for="duracion" class="form-label">Duracion (HR)</label>
+                            <label for="duracion" class="form-label">{{ _('Duración (HR)') }}</label>
                             {{ form.duracion }}
                         </div>
                         <div class="col-md-6">
                             <br />
-                            <label for="nivel" class="form-label">Nivel</label>
+                            <label for="nivel" class="form-label">{{ _('Nivel') }}</label>
                             {{ form.nivel }}
                         </div>
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <h6>Visibilidad del curso.</h6>
-                            <label for="publico" class="form-label">{{ _("Curso") }} Publico</label>
+                            <h6>{{ _('Visibilidad del curso.') }}</h6>
+                            <label for="publico" class="form-label">{{ _("Curso") }} Público</label>
                             {{ form.publico }}
                         </div>
                         <div class="col-md-6">
-                            <h6>Modalidad del curso.</h6>
-                            <label for="modalidad" class="form-label">Modalidad del curso</label>
+                            <h6>{{ _('Modalidad del curso.') }}</h6>
+                            <label for="modalidad" class="form-label">{{ _('Modalidad del curso') }}</label>
                             {{ form.modalidad }}
                         </div>
                     </div>
                     <div class="row g-3">
-                        <h6>Cupo limitado</h6>
+                        <h6>{{ _('Cupo limitado') }}</h6>
                         <div class="col-md-6">
-                            <label for="limitado" class="form-label">Cupo Limitado:</label>
+                            <label for="limitado" class="form-label">{{ _('Cupo Limitado:') }}</label>
                             {{ form.limitado }}
                         </div>
                         <div class="col-md-6">
-                            <label for="capacidad" class="form-label">Cupos:</label>
+                            <label for="capacidad" class="form-label">{{ _('Cupos:') }}</label>
                             {{ form.capacidad }}
                         </div>
                     </div>
@@ -88,8 +88,7 @@
                             {{ form.auditable }}
                         </div>
                         <p>
-                            Un estudiante puede auditar el curso pero no recibir un certificado al final si no cancela el valor
-                            del curso.
+                            {{ _('Un estudiante puede auditar el curso pero no recibir un certificado al final si no cancela el valor del curso.') }}
                         </p>
                     </div>
                     <div class="row g-3">
@@ -102,21 +101,21 @@
                             <label for="fecha_fin" class="form-label">{{ _("Fecha") }} Fin</label>
                             {{ form.fecha_fin }}
                         </div>
-                        <p>Si el curso es en tiempo real o con tiempo definido defina las fechas de inicio y fin.</p>
+                        <p>{{ _('Si el curso es en tiempo real o con tiempo definido defina las fechas de inicio y fin.') }}</p>
                     </div>
                     <div class="row g-3">
-                        <h6>Certificación</h6>
+                        <h6>{{ _('Certificación') }}</h6>
                         <div class="col-md-4">
-                            <label for="certificado" class="form-label">Extender Certificado:</label>
+                            <label for="certificado" class="form-label">{{ _('Extender Certificado:') }}</label>
                             {{ form.certificado }}
                         </div>
                         <div class="col-md-4">
-                            <label for="plantilla_certificado" class="form-label">Plantilla de Certificado:</label>
+                            <label for="plantilla_certificado" class="form-label">{{ _('Plantilla de Certificado:') }}</label>
                             {{ form.plantilla_certificado() }}
                         </div>
                     </div>
                     <div class="row g-3">
-                        <h6>Portada del curso</h6>
+                        <h6>{{ _('Portada del curso') }}</h6>
                         {% if curso.portada %}
                         <div>
                             <img
@@ -129,7 +128,7 @@
                         <a href="{{url_for('course.elimina_logo', course_code=curso.codigo)}}">{{ _("Eliminar") }} Portada</a>
                         {% else %}
                         <div class="col-md-4">
-                            <label for="logo" class="form-label">Portada</label>
+                            <label for="logo" class="form-label">{{ _('Portada') }}</label>
                             <input
                                 type="file"
                                 name="logo"
@@ -141,17 +140,17 @@
                     </div>
 
                     <div class="row g-3">
-                        <h6>Categorización</h6>
+                        <h6>{{ _('Categorización') }}</h6>
                         <div class="col-sm-6">
-                            <label for="categoria" class="form-label">Categoría</label>
+                            <label for="categoria" class="form-label">{{ _('Categoría') }}</label>
                             {{ form.categoria(class="form-control", id="categoria") }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="etiquetas" class="form-label">Etiquetas</label>
+                            <label for="etiquetas" class="form-label">{{ _('Etiquetas') }}</label>
                             {{ form.etiquetas(class="form-control", id="etiquetas", multiple=True) }}
                             <div class="form-text">
-                                Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples etiquetas.
+                                {{ _('Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples etiquetas.') }}
                             </div>
                         </div>
                     </div>

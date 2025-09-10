@@ -3,7 +3,7 @@
 <html lang="es" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
-        <title>{{_("Editar configuracion")}}</title>
+        <title>{{_("Editar configuración")}}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -169,7 +169,7 @@
                             </div>
                             {% endif %}
                             <label for="verificacion" class="form-label"
-                                >{{_("Permitir a nuevos usuarios verificarse vía correo electronico")}}:</label
+                                >{{_("Permitir a nuevos usuarios verificarse vía correo electrónico")}}:</label
                             >
                             {{ form.verify_user_by_email(value=config.verify_user_by_email) }}
                         </div>
@@ -192,7 +192,7 @@
                 const searchInput = document.createElement("input")
                 searchInput.type = "text"
                 searchInput.className = "form-control mb-2"
-                searchInput.placeholder = "Buscar moneda..."
+                searchInput.placeholder = "{{ _('Buscar moneda...') }}"
                 searchInput.style.display = "none"
 
                 // Insertar el input de búsqueda antes del select

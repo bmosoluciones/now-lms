@@ -54,9 +54,7 @@
                                         <td>
                                             {{ master_class.instructor.nombre }} {{ master_class.instructor.apellido or '' }}
                                             <br />
-                                            <small class="text-muted"
-                                                >{{ _('{{ master_class.instructor.usuario }}') }}</small
-                                            >
+                                            <small class="text-muted">{{ _('{{ master_class.instructor.usuario }}') }}</small>
                                         </td>
                                         <td>{{ master_class.date.strftime('%d/%m/%Y') }}</td>
                                         <td>
@@ -124,7 +122,8 @@
                                     <a
                                         class="page-link"
                                         href="{{ url_for('masterclass.admin_list', page=master_classes.prev_num) }}"
-                                        >{{ _('Anterior') }}</a>
+                                        >{{ _('Anterior') }}</a
+                                    >
                                 </li>
                                 {% endif %} {% for page_num in master_classes.iter_pages() %} {% if page_num %} {% if page_num
                                 != master_classes.page %}
@@ -146,7 +145,8 @@
                                     <a
                                         class="page-link"
                                         href="{{ url_for('masterclass.admin_list', page=master_classes.next_num) }}"
-                                        >{{ _('Siguiente') }}</a>
+                                        >{{ _('Siguiente') }}</a
+                                    >
                                 </li>
                                 {% endif %}
                             </ul>

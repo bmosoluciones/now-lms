@@ -56,7 +56,7 @@
                                 class="btn btn-light"
                                 style="border-radius: 25px"
                             >
-                                <i class="bi bi-people me-1"></i> Ver Usuarios
+                                <i class="bi bi-people me-1"></i> {{ _('Ver Usuarios') }}
                             </a>
                         </div>
                     </div>
@@ -73,7 +73,7 @@
                                             <div class="row align-items-center">
                                                 <div class="col">
                                                     <h6 class="card-title text-primary mb-2">
-                                                        <i class="bi bi-people me-2"></i>Usuarios Totales
+                                                        <i class="bi bi-people me-2"></i>{{ _('Usuarios Totales') }}
                                                     </h6>
                                                     <h2 class="mb-0 text-primary">{{ total_users }}</h2>
                                                     <small class="text-muted">{{ _('Usuarios del sistema') }}</small>
@@ -87,7 +87,7 @@
                                                     href="{{ url_for('admin_profile.usuarios') }}"
                                                     class="btn btn-outline-primary btn-sm"
                                                 >
-                                                    <i class="bi bi-eye me-1"></i>Ver Usuarios
+                                                    <i class="bi bi-eye me-1"></i>{{ _('Ver Usuarios') }}
                                                 </a>
                                             </div>
                                         </div>
@@ -99,10 +99,10 @@
                                             <div class="row align-items-center">
                                                 <div class="col">
                                                     <h6 class="card-title text-warning mb-2">
-                                                        <i class="bi bi-person-x me-2"></i>Usuarios Inactivos
+                                                        <i class="bi bi-person-x me-2"></i>{{ _('Usuarios Inactivos') }}
                                                     </h6>
-                                                    <h2 class="mb-0 text-warning">{{ _('{{ inactivos }}') }}</h2>
-                                                    <small class="text-muted">Requieren atención</small>
+                                                    <h2 class="mb-0 text-warning">{{ inactivos }}</h2>
+                                                    <small class="text-muted">{{ _('Requieren atención') }}</small>
                                                 </div>
                                                 <div class="col-auto">
                                                     <i class="bi bi-person-x stat-icon text-warning"></i>
@@ -113,7 +113,7 @@
                                                     href="{{ url_for('admin_profile.usuarios_inactivos') }}"
                                                     class="btn btn-outline-warning btn-sm"
                                                 >
-                                                    <i class="bi bi-exclamation-triangle me-1"></i>Revisar
+                                                    <i class="bi bi-exclamation-triangle me-1"></i>{{ _('Revisar') }}
                                                 </a>
                                             </div>
                                         </div>
@@ -125,10 +125,10 @@
                                             <div class="row align-items-center">
                                                 <div class="col">
                                                     <h6 class="card-title text-success mb-2">
-                                                        <i class="bi bi-book me-2"></i>Cursos Totales
+                                                        <i class="bi bi-book me-2"></i>{{ _('Cursos Totales') }}
                                                     </h6>
                                                     <h2 class="mb-0 text-success">{{ total_courses }}</h2>
-                                                    <small class="text-muted">Cursos en el sistema</small>
+                                                    <small class="text-muted">{{ _('Cursos en el sistema') }}</small>
                                                 </div>
                                                 <div class="col-auto">
                                                     <i class="bi bi-book stat-icon text-success"></i>
@@ -139,7 +139,7 @@
                                                     href="{{ url_for('course.lista_cursos') }}"
                                                     class="btn btn-outline-success btn-sm"
                                                 >
-                                                    <i class="bi bi-list me-1"></i>Ver Cursos
+                                                    <i class="bi bi-list me-1"></i>{{ _('Ver Cursos') }}
                                                 </a>
                                             </div>
                                         </div>
@@ -151,10 +151,10 @@
                                             <div class="row align-items-center">
                                                 <div class="col">
                                                     <h6 class="card-title text-info mb-2">
-                                                        <i class="bi bi-person-check me-2"></i>Inscripciones
+                                                        <i class="bi bi-person-check me-2"></i>{{ _('Inscripciones') }}
                                                     </h6>
                                                     <h2 class="mb-0 text-info">{{ total_enrollments }}</h2>
-                                                    <small class="text-muted">Estudiantes inscritos</small>
+                                                    <small class="text-muted">{{ _('Estudiantes inscritos') }}</small>
                                                 </div>
                                                 <div class="col-auto">
                                                     <i class="bi bi-person-check stat-icon text-info"></i>
@@ -162,7 +162,7 @@
                                             </div>
                                             <div class="mt-3">
                                                 <small class="text-muted">
-                                                    <i class="bi bi-info-circle me-1"></i>Total de inscripciones
+                                                    <i class="bi bi-info-circle me-1"></i>{{ _('Total de inscripciones') }}
                                                 </small>
                                             </div>
                                         </div>
@@ -183,12 +183,12 @@
                                 <div class="row align-items-center">
                                     <div class="col">
                                         <h5 class="card-title mb-0">
-                                            <i class="bi bi-book text-primary me-2"></i>Cursos Recientes
+                                            <i class="bi bi-book text-primary me-2"></i>{{ _('Cursos Recientes') }}
                                         </h5>
                                     </div>
                                     <div class="col-auto">
                                         <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-arrow-right me-1"></i>Ver Todos
+                                            <i class="bi bi-arrow-right me-1"></i>{{ _('Ver Todos') }}
                                         </a>
                                     </div>
                                 </div>
@@ -210,7 +210,8 @@
                                                 </h6>
                                                 <small class="text-muted">
                                                     <i class="bi bi-calendar3 me-1"></i>
-                                                    Creado: {{ curso.creado.strftime('%d/%m/%Y') if curso.creado else 'N/A' }}
+                                                    {{ _('Creado') }}: {{ curso.creado.strftime('%d/%m/%Y') if curso.creado
+                                                    else 'N/A' }}
                                                 </small>
                                             </div>
                                             <div class="col-auto">
@@ -236,14 +237,14 @@
                         >
                             <div class="card-header bg-warning bg-opacity-10">
                                 <h5 class="card-title mb-0">
-                                    <i class="bi bi-gear text-warning me-2"></i>Gestión del Sistema
+                                    <i class="bi bi-gear text-warning me-2"></i>{{ _('Gestión del Sistema') }}
                                 </h5>
                             </div>
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6 mb-2">
                                         <a href="{{ url_for('user.crear_usuario') }}" class="btn btn-outline-primary w-100">
-                                            <i class="bi bi-person-plus me-2"></i>Nuevo Usuario
+                                            <i class="bi bi-person-plus me-2"></i>{{ _('Nuevo Usuario') }}
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
@@ -253,12 +254,12 @@
                                     </div>
                                     <div class="col-md-6 mb-2">
                                         <a href="{{ url_for('group.nuevo_grupo') }}" class="btn btn-outline-success w-100">
-                                            <i class="bi bi-people me-2"></i>Nuevo Grupo
+                                            <i class="bi bi-people me-2"></i>{{ _('Nuevo Grupo') }}
                                         </a>
                                     </div>
                                     <div class="col-md-6 mb-2">
                                         <a href="{{ url_for('setting.personalizacion') }}" class="btn btn-outline-info w-100">
-                                            <i class="bi bi-palette me-2"></i>Personalización
+                                            <i class="bi bi-palette me-2"></i>{{ _('Personalización') }}
                                         </a>
                                     </div>
                                 </div>
@@ -269,7 +270,7 @@
                         <div class="card" style="border-radius: 15px; border: none; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)">
                             <div class="card-header bg-info bg-opacity-10">
                                 <h5 class="card-title mb-0">
-                                    <i class="bi bi-tools text-info me-2"></i>Herramientas Administrativas
+                                    <i class="bi bi-tools text-info me-2"></i>{{ _('Herramientas Administrativas') }}
                                 </h5>
                             </div>
                             <div class="card-body">
@@ -279,17 +280,19 @@
                                         <div class="card border-primary border-opacity-25">
                                             <div class="card-body p-3">
                                                 <h6 class="card-title text-primary">
-                                                    <i class="bi bi-people me-2"></i>Gestión de Usuarios
+                                                    <i class="bi bi-people me-2"></i>{{ _('Gestión de Usuarios') }}
                                                 </h6>
                                                 <div class="d-grid gap-1">
                                                     <a
                                                         href="{{ url_for('admin_profile.usuarios') }}"
                                                         class="btn btn-sm btn-outline-primary"
-                                                        >{{ _('Usuarios Activos') }}</a>
+                                                        >{{ _('Usuarios Activos') }}</a
+                                                    >
                                                     <a
                                                         href="{{ url_for('admin_profile.usuarios_inactivos') }}"
                                                         class="btn btn-sm btn-outline-warning"
-                                                        >{{ _('Usuarios Inactivos') }}</a>
+                                                        >{{ _('Usuarios Inactivos') }}</a
+                                                    >
                                                 </div>
                                             </div>
                                         </div>
@@ -306,12 +309,12 @@
                                                     <a
                                                         href="{{ url_for('setting.configuracion') }}"
                                                         class="btn btn-sm btn-outline-success"
-                                                        >Sistema</a
+                                                        >{{ _('Sistema') }}</a
                                                     >
                                                     <a
                                                         href="{{ url_for('setting.mail') }}"
                                                         class="btn btn-sm btn-outline-success"
-                                                        >Correo SMTP</a
+                                                        >{{ _('Correo SMTP') }}</a
                                                     >
                                                 </div>
                                             </div>
@@ -323,18 +326,18 @@
                                         <div class="card border-warning border-opacity-25">
                                             <div class="card-body p-3">
                                                 <h6 class="card-title text-warning">
-                                                    <i class="bi bi-journal me-2"></i>Contenido
+                                                    <i class="bi bi-journal me-2"></i>{{ _('Contenido') }}
                                                 </h6>
                                                 <div class="d-grid gap-1">
                                                     <a
                                                         href="{{ url_for('blog.admin_blog_index') }}"
                                                         class="btn btn-sm btn-outline-warning"
-                                                        >Blog</a
+                                                        >{{ _('Blog') }}</a
                                                     >
                                                     <a
                                                         href="{{ url_for('admin_announcements.list_announcements') }}"
                                                         class="btn btn-sm btn-outline-warning"
-                                                        >Anuncios</a
+                                                        >{{ _('Anuncios') }}</a
                                                     >
                                                 </div>
                                             </div>
@@ -346,18 +349,18 @@
                                         <div class="card border-info border-opacity-25">
                                             <div class="card-body p-3">
                                                 <h6 class="card-title text-info">
-                                                    <i class="bi bi-tools me-2"></i>Herramientas
+                                                    <i class="bi bi-tools me-2"></i>{{ _('Herramientas') }}
                                                 </h6>
                                                 <div class="d-grid gap-1">
                                                     <a
                                                         href="{{ url_for('setting.paypal') }}"
                                                         class="btn btn-sm btn-outline-info"
-                                                        >Pagos PayPal</a
+                                                        >{{ _('Pagos PayPal') }}</a
                                                     >
                                                     <a
                                                         href="{{ url_for('setting.adsense') }}"
                                                         class="btn btn-sm btn-outline-info"
-                                                        >AdSense</a
+                                                        >{{ _('AdSense') }}</a
                                                     >
                                                 </div>
                                             </div>

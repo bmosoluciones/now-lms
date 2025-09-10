@@ -3,7 +3,7 @@
 <html lang="{{ get_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>{{_("Usuarios inativos")}}</title>
+        <title>{{_("Usuarios inactivos")}}</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -41,9 +41,9 @@
                                             <i class="bi bi-person-badge me-1"></i>{{_("Apellido")}}
                                         </th>
                                         <th scope="col" class="fw-semibold">
-                                            <i class="bi bi-envelope me-1"></i>{{_("Correo Electronico")}}
+                                            <i class="bi bi-envelope me-1"></i>{{_("Correo Electrónico")}}
                                         </th>
-                                        <th scope="col" class="fw-semibold text-center">{{_("Accion")}}</th>
+                                        <th scope="col" class="fw-semibold text-center">{{_("Acción")}}</th>
                                     </tr>
                                 </thead>
                                 {% for item in consulta.items -%}
@@ -86,14 +86,14 @@
                                                 <a
                                                     href="{{ url_for('admin_profile.activar_usuario', user_id=item.id, ruta='usuarios_inactivos') }}"
                                                     class="btn btn-sm btn-success"
-                                                    title=_("{{_('Aprobar')}}")
+                                                    title="{{ _('Aprobar') }}"
                                                 >
                                                     <i class="bi bi-check-circle me-1"></i>{{_("Aprobar")}}
                                                 </a>
                                                 <a
                                                     href="{{ url_for('admin_profile.eliminar_usuario', user_id=item.id, ruta='usuarios_inactivos') }}"
                                                     class="btn btn-sm btn-danger"
-                                                    title=_("{{_('Rechazar')}}")
+                                                    title="{{ _('Rechazar') }}"
                                                 >
                                                     <i class="bi bi-x-circle me-1"></i>{{_("Rechazar")}}
                                                 </a>

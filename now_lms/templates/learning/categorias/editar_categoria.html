@@ -3,7 +3,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>{{ _("Editar Categoria") }}</title>
+        <title>{{ _("Editar Categoría") }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -17,25 +17,24 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">{{ _("Editar Categoria") }}.</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Editar Categoría") }}.</h4>
                 <form method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }}
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="nombre" class="form-label">{{ _('Categoria') }}</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder=_('Categoria')) }}
+                            <label for="nombre" class="form-label">{{ _('Categoría') }}</label>
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_('Categoría')) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="descripcion" class="form-label">{{ _('Descripcion') }}</label>
-                            {{ form.descripcion(class="form-control", id="descripcion", placeholder=_('{{ _("Descripción")
-                            }}')) }}
+                            <label for="descripcion" class="form-label">{{ _('Descripción') }}</label>
+                            {{ form.descripcion(class="form-control", id="descripcion", placeholder=_('Descripción')) }}
                         </div>
                     </div>
 
                     <br />
 
-                    {{ render_form_buttons(_('Actualizar Categoria'), "/category/list") }}
+                    {{ render_form_buttons(_('Actualizar Categoría'), "/category/list") }}
                 </form>
             </div>
         </main>

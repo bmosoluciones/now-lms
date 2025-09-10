@@ -1,4 +1,4 @@
-modules = ["web", "python-base-3.13", "nodejs-22"]
+modules = ["web", "nodejs-22", "python-3.11"]
 run = "LOG_LEVEL=TRACE /home/runner/workspace/venv/bin/flask run --debug --reload --port 8080 --extra-files 'now_lms/templates/'"
 
 [nix]
@@ -9,8 +9,36 @@ packages = ["cargo", "fontconfig", "ghostscript", "glib", "harfbuzz", "libiconv"
 run = "/home/runner/workspace/venv/bin/python -m now_lms"
 
 [[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
 localPort = 8080
 externalPort = 80
 
 [agent]
 expertMode = true
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "LMS Server"
+
+[[workflows.workflow]]
+name = "LMS Server"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "PORT=5000 python run.py"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"

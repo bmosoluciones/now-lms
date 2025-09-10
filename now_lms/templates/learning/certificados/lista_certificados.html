@@ -3,7 +3,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Plantillas Disponibles.</title>
+        <title>{{ _('Plantillas Disponibles.') }}</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -17,16 +17,16 @@
             <div class="container px-0 py-3" id="curse_list">
                 <div class="row align-items-center border-bottom pb-3 mb-4">
                     <div class="col-md-8">
-                        <h4 class="mb-0"><i class="bi bi-award me-2"></i>Lista de Certificados Disponibles</h4>
-                        <p class="text-muted mb-0">Gestiona y administra las plantillas de certificados</p>
+                        <h4 class="mb-0"><i class="bi bi-award me-2"></i>{{ _('Lista de Certificados Disponibles') }}</h4>
+                        <p class="text-muted mb-0">{{ _('Gestiona y administra las plantillas de certificados') }}</p>
                     </div>
                     <div class="col-md-4 text-end">
                         <div class="btn-group" role="group">
                             <a href="{{ url_for('certificate.certificate_new') }}" class="btn btn-success">
-                                <i class="bi bi-plus-lg me-1"></i>{{ _("Nueva") }} Plantilla
+                                <i class="bi bi-plus-lg me-1"></i>{{ _("Nueva plantilla") }}
                             </a>
                             <a href="{{ url_for('certificate.certificacion_generar') }}" class="btn btn-outline-primary">
-                                <i class="bi bi-file-earmark-plus me-1"></i>{{ _("Nuevo") }} Certificado
+                                <i class="bi bi-file-earmark-plus me-1"></i>{{ _("Nuevo certificado") }}
                             </a>
                         </div>
                     </div>
@@ -38,15 +38,15 @@
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <caption class="ms-3 mt-2">
-                                    Lista de certificados disponibles en el sistema.
+                                    {{ _('Lista de certificados disponibles en el sistema.') }}
                                 </caption>
                                 <thead class="table-light">
                                     <tr>
-                                        <th scope="col" class="fw-semibold"><i class="bi bi-bookmark me-1"></i>Certificado</th>
+                                        <th scope="col" class="fw-semibold"><i class="bi bi-bookmark me-1"></i>{{ _('Certificado') }}</th>
                                         <th class="fw-semibold text-center">
-                                            <i class="bi bi-check-circle me-1"></i>Habilitado
+                                            <i class="bi bi-check-circle me-1"></i>{{ _('Habilitado') }}
                                         </th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-globe me-1"></i>Público</th>
+                                        <th class="fw-semibold text-center"><i class="bi bi-globe me-1"></i>{{ _('Público') }}</th>
                                         <th class="fw-semibold text-center">{{ _("Acciones") }}</th>
                                     </tr>
                                 </thead>
@@ -58,16 +58,16 @@
                                         </td>
                                         <td class="text-center">
                                             {% if item.habilitado %}
-                                            <i class="bi bi-check-circle-fill text-success" title="Habilitado"></i>
+                                            <i class="bi bi-check-circle-fill text-success" title="{{ _('Habilitado') }}"></i>
                                             {% else %}
-                                            <i class="bi bi-x-circle-fill text-danger" title="Deshabilitado"></i>
+                                            <i class="bi bi-x-circle-fill text-danger" title="{{ _('Deshabilitado') }}"></i>
                                             {% endif %}
                                         </td>
                                         <td class="text-center">
                                             {% if item.publico %}
-                                            <i class="bi bi-check-circle-fill text-success" title="Público"></i>
+                                            <i class="bi bi-check-circle-fill text-success" title="{{ _('Público') }}"></i>
                                             {% else %}
-                                            <i class="bi bi-lock-fill text-secondary" title="Privado"></i>
+                                            <i class="bi bi-lock-fill text-secondary" title="{{ _('Privado') }}"></i>
                                             {% endif %}
                                         </td>
                                         <td>
@@ -76,7 +76,7 @@
                                                 <a
                                                     href="{{ url_for('certificate.certificate_remove', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-danger"
-                                                    title="Deshabilitar"
+                                                    title="{{ _('Deshabilitar') }}"
                                                 >
                                                     <i class="bi bi-x-circle" aria-hidden="true"></i>
                                                 </a>
@@ -84,7 +84,7 @@
                                                 <a
                                                     href="{{ url_for('certificate.certificate_add', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-success"
-                                                    title="Habilitar"
+                                                    title="{{ _('Habilitar') }}"
                                                 >
                                                     <i class="bi bi-check-circle" aria-hidden="true"></i>
                                                 </a>
@@ -92,7 +92,7 @@
                                                 <a
                                                     href="{{ url_for('certificate.certificate_unpublish', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-warning"
-                                                    title="Hacer privado"
+                                                    title="{{ _('Hacer privado') }}"
                                                 >
                                                     <i class="bi bi-eye-slash" aria-hidden="true"></i>
                                                 </a>
@@ -100,7 +100,7 @@
                                                 <a
                                                     href="{{ url_for('certificate.certificate_publish', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-info"
-                                                    title="Publicar"
+                                                    title="{{ _('Publicar') }}"
                                                 >
                                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
@@ -116,7 +116,7 @@
                                                     href="{{ url_for('certificate.certificate_inspect', ulid=item.id) }}"
                                                     target="_blank"
                                                     class="btn btn-sm btn-outline-primary"
-                                                    title="Visualizar"
+                                                    title="{{ _('Visualizar') }}"
                                                 >
                                                     <i class="bi bi-eye-fill" aria-hidden="true"></i>
                                                 </a>
@@ -133,10 +133,10 @@
                 <div class="card shadow-sm">
                     <div class="card-body text-center py-5">
                         <i class="bi bi-inbox text-muted" style="font-size: 3rem"></i>
-                        <h5 class="text-muted mt-3">No hay certificados disponibles</h5>
-                        <p class="text-muted">Usted no ha creado ningún certificado todavía.</p>
+                        <h5 class="text-muted mt-3">{{ _('No hay certificados disponibles') }}</h5>
+                        <p class="text-muted">{{ _('Usted no ha creado ningún certificado todavía.') }}</p>
                         <a href="{{ url_for('certificate.certificate_new') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-lg me-2"></i>{{ _("Crear") }} Primera Plantilla
+                            <i class="bi bi-plus-lg me-2"></i>{{ _("Crear primera plantilla") }}
                         </a>
                     </div>
                 </div>

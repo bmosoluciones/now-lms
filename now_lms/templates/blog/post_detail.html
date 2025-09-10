@@ -32,7 +32,7 @@
                                 {{ _('Por') }} {{ post.author.nombre }} {{ post.author.apellido or '' }} {% if post.published_at %} {{ _('el') }} {{
                                 post.published_at.strftime('%d/%m/%Y a las %H:%M') }} {% else %} {{ _('el') }} {{
                                 post.timestamp.strftime('%d/%m/%Y a las %H:%M') }} {% endif %}
-                                {% if post.view_count is defined and post.view_count is not none %} - <span id="view-count">{{ post.view_count }}</span> {{ _('vista') }}{{ _('s') if post.view_count != 1 else '' }}{% endif %}
+                                {% if post.view_count is defined and post.view_count is not none %} - <span id="view-count">{{ post.view_count }}</span> {{ _('vistas') if post.view_count != 1 else _('vista') }}{% endif %}
                             </div>
 
                             {% if post.tags %}

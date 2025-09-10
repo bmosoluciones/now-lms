@@ -31,7 +31,8 @@
                             {{ form.requerido(class="form-control", id="requerido") }}
                         </div>
 
-                        {{ form.editor }} {{ mde.preview }} {{ mde.js }} {{ render_form_buttons(_("Actualizar Recurso"), url_for('course.administrar_curso', course_code=id_curso)) }}
+                        {{ form.editor }} {{ mde.preview }} {{ mde.js }} {{ render_form_buttons(_("Actualizar Recurso"),
+                        url_for('course.administrar_curso', course_code=id_curso)) }}
                     </div>
                 </form>
             </div>

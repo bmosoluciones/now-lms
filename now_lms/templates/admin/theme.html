@@ -4,7 +4,7 @@
 
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
-        <title>{{_("Editar apaciencia del sitio web")}}</title>
+        <title>{{_("Editar apariencia del sitio web")}}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -23,7 +23,7 @@
                     <div class="row">
                         <h4>{{_("Logo y Favicon del sitio web")}}.</h4>
                         <div class="col-sm-6">
-                            {% if logo_perzonalizado() and site_logo() %}
+                            {% if logo_personalizado() and site_logo() %}
                             <div>
                                 <img
                                     src="{{ url_for('static', filename='/files/public/images/' + site_logo() ) }}"
@@ -42,7 +42,7 @@
                             {% endif %}
                         </div>
                         <div class="col-sm-6">
-                            {% if favicon_perzonalizado() and site_favicon() %}
+                            {% if favicon_personalizado() and site_favicon() %}
                             <div>
                                 <img
                                     src="{{ url_for('static', filename='/files/public/images/' + site_favicon() ) }}"

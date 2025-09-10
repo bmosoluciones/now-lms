@@ -27,14 +27,14 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="apellido" class="form-label">Apellido</label>
+                            <label for="apellido" class="form-label">{{ _('Apellido') }}</label>
                             {{ form.apellido(class="form-control", id="apellido", placeholder=_("Apellido del Usuario")) }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="correo_electronico" class="form-label">Correo Electronico</label>
-                            {{ form.correo_electronico(class="form-control", id="correo_electronico", placeholder="Correo
-                            Electronico") }}
+                            <label for="correo_electronico" class="form-label">{{ _('Correo Electrónico') }}</label>
+                            {{ form.correo_electronico(class="form-control", id="correo_electronico", placeholder=_("Correo
+                            Electrónico")) }}
                         </div>
 
                         <div class="col-sm-6">
@@ -43,8 +43,8 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="acceso" class="form-label">Contraseña</label>
-                            {{ form.acceso(class="form-control", id="acceso", placeholder="Contraseña") }}
+                            <label for="acceso" class="form-label">{{ _('Contraseña') }}</label>
+                            {{ form.acceso(class="form-control", id="acceso", placeholder=_("Contraseña")) }}
                         </div>
                     </div>
                     <br />

@@ -77,9 +77,7 @@
 
                                         {% if master_class.is_ongoing() and enrollment.is_access_granted() %}
                                         <div class="alert alert-warning mb-3">
-                                            <strong
-                                                >{{ _('<i class="fas fa-play-circle"></i> ¡En vivo ahora!') }}
-                                                }}</strong>
+                                            <strong>{{ _('<i class="fas fa-play-circle"></i> ¡En vivo ahora!') }} }}</strong>
                                             >
                                         </div>
                                         {% endif %}
@@ -173,9 +171,7 @@
                         <div class="text-center py-5">
                             <i class="fas fa-graduation-cap fa-4x text-muted mb-3"></i>
                             <h3 class="text-muted">No tienes inscripciones</h3>
-                            <p class="text-muted">
-                                {{ _('Explora nuestras clases magistrales disponibles.') }}
-                            </p>
+                            <p class="text-muted">{{ _('Explora nuestras clases magistrales disponibles.') }}</p>
                             <a href="{{ url_for('masterclass.list_public') }}" class="btn btn-primary">
                                 <i class="fas fa-search"></i> Explorar Clases Magistrales
                             </a>

@@ -110,10 +110,10 @@
                                             {% if item.activo %}
                                             <i
                                                 class="bi bi-check-circle-fill text-success"
-                                                title=_("{{_('Usuario Activo')}}")
+                                                title="{{ _('Usuario Activo') }}"
                                             ></i>
                                             {% else %}
-                                            <i class="bi bi-x-circle-fill text-danger" title=_("{{_('Usuario Inactivo')}}")></i>
+                                            <i class="bi bi-x-circle-fill text-danger" title="{{ _('Usuario Inactivo') }}"></i>
                                             {% endif %}
                                         </td>
                                         <td>
@@ -121,7 +121,7 @@
                                                 <a
                                                     href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}"
                                                     class="btn btn-sm btn-outline-primary"
-                                                    title=_("{{_('Ver usuario')}}")
+                                                    title="{{ _('Ver usuario') }}"
                                                 >
                                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
@@ -129,7 +129,7 @@
                                                 <a
                                                     href="{{ url_for('admin_profile.inactivar_usuario', user_id=item.id) }}"
                                                     class="btn btn-sm btn-outline-warning"
-                                                    title=_("{{_('Inactivar Usuario')}}")
+                                                    title="{{ _('Inactivar Usuario') }}"
                                                 >
                                                     <i class="bi bi-person-fill-slash" aria-hidden="true"></i>
                                                 </a>
@@ -137,7 +137,7 @@
                                                 <a
                                                     href="{{ url_for('admin_profile.activar_usuario', user_id=item.id) }}"
                                                     class="btn btn-sm btn-outline-success"
-                                                    title=_("{{_('Activar Usuario')}}")
+                                                    title="{{ _('Activar Usuario') }}"
                                                 >
                                                     <i class="bi bi-person-fill-check" aria-hidden="true"></i>
                                                 </a>

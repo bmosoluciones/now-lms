@@ -29,9 +29,10 @@
                                 {{ _('Por') }} {{ post.author.nombre }} {{ post.author.apellido or '' }} {% if
                                 post.published_at %} {{ _('el') }} {{ post.published_at.strftime('%d/%m/%Y') }} {% else %} {{
                                 _('el') }} {{ post.timestamp.strftime('%d/%m/%Y') }} {% endif %} {% if post.comment_count > 0
-                                %} - {{ post.comment_count }} {{ _('comentario') }}{{ _('s') if post.comment_count != 1 else ''
-                                }} {% endif %} {% if post.view_count is defined and post.view_count is not none %} - {{
-                                post.view_count }} {{ _('vista') }}{{ _('s') if post.view_count != 1 else '' }} {% endif %}
+                                %} - {{ post.comment_count }} {{ _('comentarios') if post.comment_count != 1 else
+                                _('comentario') }} {% endif %} {% if post.view_count is defined and post.view_count is not none
+                                %} - {{ post.view_count }} {{ _('vistas') if post.view_count != 1 else _('vista') }} {% endif
+                                %}
                             </div>
 
                             {% if post.tags %}

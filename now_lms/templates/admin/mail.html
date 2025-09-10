@@ -4,7 +4,7 @@
     <head>
         {{ current_theme.headertags() }}
 
-        <title>{{_("Editar configuracion")}}</title>
+        <title>{{_("Editar configuración")}}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -18,7 +18,7 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h5 class="pb-2 border-bottom">{{_("Configuración del Correo Electronico")}}.</h5>
+                <h5 class="pb-2 border-bottom">{{_("Configuración del Correo Electrónico")}}.</h5>
                 {% if error %}
                 <div class="alert alert-danger" role="alert">{{ error }}</div>
                 {% endif %} {% if config.email_verificado %}

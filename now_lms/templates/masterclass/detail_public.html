@@ -20,7 +20,8 @@
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a href="{{ url_for('masterclass.list_public') }}" class="text-decoration-none"
-                                        >{{ _('Clases Magistrales') }}</a>
+                                        >{{ _('Clases Magistrales') }}</a
+                                    >
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">{{ master_class.title }}</li>
                             </ol>
@@ -166,9 +167,7 @@
                                 <h5>{{ _('Información del Instructor') }}</h5>
                             </div>
                             <div class="card-body">
-                                <h6>
-                                    {{ master_class.instructor.nombre }} {{ master_class.instructor.apellido or '' }}
-                                </h6>
+                                <h6>{{ master_class.instructor.nombre }} {{ master_class.instructor.apellido or '' }}</h6>
                                 {% if master_class.instructor.bio %}
                                 <p class="text-muted">
                                     {{ master_class.instructor.bio[:200] }}{% if master_class.instructor.bio|length > 200
