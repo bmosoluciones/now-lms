@@ -17,13 +17,13 @@
             <div class="container px-0 py-3" id="curse_list">
                 <div class="row align-items-center border-bottom pb-3 mb-4">
                     <div class="col-md-8">
-                        <h4 class="mb-0"><i class="bi bi-book me-2"></i>{{ _('Lista de {{ _("Cursos") }} Disponibles') }}</h4>
+                        <h4 class="mb-0"><i class="bi bi-book me-2"></i>{{ _("Lista de Cursos Disponibles") }}</h4>
                         <p class="text-muted mb-0">{{ _('Gestiona y administra tus cursos de aprendizaje') }}</p>
                     </div>
                     <div class="col-md-4 text-end">
                         <div class="btn-group" role="group">
                             <a href="{{ url_for('course.nuevo_curso') }}" class="btn btn-success">
-                                <i class="bi bi-plus-lg me-1"></i>{{ _('{{ _("Nuevo") }} {{ _("Curso") }}') }}
+                                <i class="bi bi-plus-lg me-1"></i>{{ _("Nuevo Curso") }}
                             </a>
                         </div>
                     </div>
@@ -91,14 +91,14 @@
                                                 <a
                                                     href="{{ url_for('course.curso', course_code=item.codigo, inspect=True) }}"
                                                     class="btn btn-sm btn-outline-primary"
-                                                    title="{{ _("Ver") }} curso"
+                                                    title=_("Ver curso")
                                                 >
                                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('course.administrar_curso', course_code=item.codigo) }}"
                                                     class="btn btn-sm btn-outline-secondary"
-                                                    title="{{ _("Editar") }} curso"
+                                                    title=_("Editar curso")
                                                 >
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>

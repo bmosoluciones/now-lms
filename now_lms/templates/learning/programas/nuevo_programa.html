@@ -30,7 +30,7 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="nombre" class="form-label">{{ _("Programa") }}</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="{{ _("Programa") }}") }}
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Programa")) }}
                         </div>
 
                         <div class="col-sm-6">
@@ -42,7 +42,7 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="descripcion" class="form-label">Descripcion</label>
-                            {{ form.descripcion(class="form-control", id="descripcion", placeholder="{{ _("Descripción") }}")
+                            {{ form.descripcion(class="form-control", id="descripcion", placeholder=_("Descripción"))
                             }}
                         </div>
 
@@ -75,7 +75,7 @@
 
                     <br />
 
-                    {{ render_form_buttons("{{ _("Crear") }} {{ _("Programa") }}", "/admin/panel") }}
+                    {{ render_form_buttons(_("Crear Programa"), "/admin/panel") }}
                 </form>
             </div>
         </main>

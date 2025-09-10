@@ -3,7 +3,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
-        <title>{{ _('{{ _("Nuevo") }} {{ _("Recurso") }} - Documento') }}</title>
+        <title>{{ _("Nuevo Recurso - Documento") }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -17,7 +17,7 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">{{ _('{{ _("Nuevo") }} {{ _("Mensaje") }}') }}.</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Nuevo Mensaje") }}.</h4>
                 <form method="post">
                     {{ form.csrf_token }}
                     <div class="row g-3">

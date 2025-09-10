@@ -3,7 +3,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>{{ _('{{ _("Nueva") }} Etiqueta') }}</title>
+        <title>{{ _("Nueva Etiqueta") }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -17,7 +17,7 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">{{ _('{{ _("Crear") }} nueva Etiqueta') }}.</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Crear nueva Etiqueta") }}.</h4>
                 <form method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }}
                     <div class="row g-3">
@@ -32,7 +32,7 @@
                         </div>
                     </div>
 
-                    {{ render_form_buttons(_('{{ _("Crear") }} Etiqueta'), "/tag/list") }}
+                    {{ render_form_buttons(_('Crear Etiqueta'), "/tag/list") }}
                 </form>
             </div>
         </main>

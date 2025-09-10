@@ -3,7 +3,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>{{ _('{{ _("Crear") }} Categoría') }}</title>
+        <title>{{ _("Crear Categoría") }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -17,7 +17,7 @@
             {{ current_theme.notify() }}
 
             <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">{{ _('{{ _("Crear") }} Categoría.') }}</h4>
+                <h4 class="pb-2 border-bottom">{{ _("Crear Categoría.") }}</h4>
                 <form method="post" enctype="multipart/form-data">
                     {{ form.csrf_token }}
                     <div class="row g-3">
@@ -27,15 +27,14 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="descripcion" class="form-label">{{ _('{{ _("Descripción") }}') }}</label>
-                            {{ form.descripcion(class="form-control", id="descripcion", placeholder=_("{{ _("Descripción")
-                            }}")) }}
+                            <label for="descripcion" class="form-label">{{ _("Descripción") }}</label>
+                            {{ form.descripcion(class="form-control", id="descripcion", placeholder=_("Descripción")) }}
                         </div>
                     </div>
 
                     <br />
 
-                    {{ render_form_buttons(_("{{ _("Crear") }} Categoría"), "/category/list") }}
+                    {{ render_form_buttons(_("Crear Categoría"), "/category/list") }}
                 </form>
             </div>
         </main>

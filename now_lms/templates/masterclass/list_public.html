@@ -29,7 +29,7 @@
                                     <img
                                         src="{{ master_class.image_path }}"
                                         class="card-img-top"
-                                        alt="{{ _(\'{{ master_class.title }}\') }}"
+                                        alt="{{ _('{{ master_class.title }}') }}"
                                         style="height: 200px; object-fit: cover"
                                     />
                                     {% else %}
@@ -85,7 +85,7 @@
                                             {% else %}
                                             <strong class="text-primary">${{ "%.2f"|format(master_class.price) }}</strong>
                                             {% endif %} {% else %}
-                                            <span class="badge bg-success">{{ _(\'Gratis\') }}</span>
+                                            <span class="badge bg-success">{{ _('Gratis') }}</span>
                                             {% endif %}
                                         </div>
 
@@ -115,14 +115,14 @@
 
                         <!-- Pagination -->
                         {% if master_classes.pages > 1 %}
-                        <nav aria-label="{{ _(\'Navegación de páginas\') }}">
+                        <nav aria-label="{{ _('Navegación de páginas') }}">
                             <ul class="pagination justify-content-center">
                                 {% if master_classes.has_prev %}
                                 <li class="page-item">
                                     <a
                                         class="page-link"
                                         href="{{ url_for('masterclass.list_public', page=master_classes.prev_num) }}"
-                                        >{{ _(\'Anterior\') }}</a
+                                        >{{ _('Anterior') }}</a
                                     >
                                 </li>
                                 {% endif %} {% for page_num in master_classes.iter_pages() %} {% if page_num %} {% if page_num
@@ -145,7 +145,7 @@
                                     <a
                                         class="page-link"
                                         href="{{ url_for('masterclass.list_public', page=master_classes.next_num) }}"
-                                        >{{ _(\'Siguiente\') }}</a
+                                        >{{ _('Siguiente') }}</a
                                     >
                                 </li>
                                 {% endif %}
@@ -155,10 +155,10 @@
                         <div class="text-center py-5">
                             <i class="fas fa-chalkboard-teacher fa-4x text-muted mb-3"></i>
                             <h3 class="text-muted">
-                                {{ _(\'{{ _(\'{{ _(\'No hay clases magistrales disponibles\') }}\') }}\') }}
+                                {{ _('No hay clases magistrales disponibles') }}
                             </h3>
                             <p class="text-muted">
-                                {{ _(\'{{ _(\'Vuelve pronto para ver nuevas clases magistrales.\') }}\') }}
+                                {{ _('Vuelve pronto para ver nuevas clases magistrales.') }}
                             </p>
                         </div>
                         {% endif %}

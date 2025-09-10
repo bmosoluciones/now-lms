@@ -98,42 +98,42 @@
                                                 <a
                                                     href="{{ url_for('program.pagina_programa', codigo=item.codigo) }}"
                                                     class="btn btn-sm btn-outline-primary"
-                                                    title="{{ _("Ver") }} programa"
+                                                    title=_("Ver programa")
                                                 >
                                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('program.edit_program', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-secondary"
-                                                    title="{{ _("Editar") }} programa"
+                                                    title=_("Editar programa")
                                                 >
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('program.programa_cursos', codigo=item.codigo) }}"
                                                     class="btn btn-sm btn-outline-info"
-                                                    title="{{ _("Gestionar") }} cursos"
+                                                    title=_("Gestionar cursos")
                                                 >
                                                     <i class="bi bi-collection" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('program.gestionar_cursos_programa', codigo=item.codigo) }}"
                                                     class="btn btn-sm btn-outline-success"
-                                                    title="{{ _("Administrar") }} cursos"
+                                                    title=_("Administrar cursos")
                                                 >
                                                     <i class="bi bi-gear" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('program.inscribir_usuario_programa', codigo=item.codigo) }}"
                                                     class="btn btn-sm btn-outline-warning"
-                                                    title="{{ _("Inscribir") }} usuario"
+                                                    title=_("Inscribir usuario")
                                                 >
                                                     <i class="bi bi-person-plus" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('program.delete_program', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-danger"
-                                                    title="{{ _("Eliminar") }} programa"
+                                                    title=_("Eliminar programa")
                                                     onclick="return confirm('¿Está seguro de que desea eliminar este programa?')"
                                                 >
                                                     <i class="bi bi-trash" aria-hidden="true"></i>

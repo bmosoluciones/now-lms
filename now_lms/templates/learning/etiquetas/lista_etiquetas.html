@@ -23,7 +23,7 @@
                     <div class="col-md-4 text-end">
                         <div class="btn-group" role="group">
                             <a href="{{ url_for('tag.new_tag') }}" class="btn btn-success">
-                                <i class="bi bi-plus-lg me-1"></i>{{ _('{{ _("Nueva") }} Etiqueta') }}
+                                <i class="bi bi-plus-lg me-1"></i>{{ _("Nueva Etiqueta") }}
                             </a>
                         </div>
                     </div>
@@ -70,14 +70,14 @@
                                                 <a
                                                     href="{{ url_for('tag.edit_tag', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-secondary"
-                                                    title="{{ _("Editar") }} etiqueta"
+                                                    title=_("Editar etiqueta")
                                                 >
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('tag.delete_tag', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-danger"
-                                                    title="{{ _("Eliminar") }} etiqueta"
+                                                    title=_("Eliminar etiqueta")
                                                     onclick="return confirm('¿Está seguro de que desea eliminar esta etiqueta?')"
                                                 >
                                                     <i class="bi bi-trash" aria-hidden="true"></i>

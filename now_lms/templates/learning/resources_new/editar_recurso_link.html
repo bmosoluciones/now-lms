@@ -41,7 +41,7 @@
                             {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
                         </div>
 
-                        {{ render_form_buttons("Actualizar {{ _("Recurso") }}", url_for('course.administrar_curso',
+                        {{ render_form_buttons(_("Actualizar Recurso"), url_for('course.administrar_curso',
                         course_code=id_curso)) }}
                     </div>
                 </form>

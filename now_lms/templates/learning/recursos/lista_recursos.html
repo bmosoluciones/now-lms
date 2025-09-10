@@ -81,21 +81,21 @@
                                                 <a
                                                     href="{{ url_for('resource.vista_recurso', resource_code=item.codigo) }}"
                                                     class="btn btn-sm btn-outline-primary"
-                                                    title="{{ _("Ver") }} recurso"
+                                                    title=_("Ver recurso")
                                                 >
                                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('resource.edit_resource', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-secondary"
-                                                    title="{{ _("Editar") }} recurso"
+                                                    title=_("Editar recurso")
                                                 >
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('resource.delete_resource', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-danger"
-                                                    title="{{ _("Eliminar") }} recurso"
+                                                    title=_("Eliminar recurso")
                                                     onclick="return confirm('¿Está seguro de que desea eliminar este recurso?')"
                                                 >
                                                     <i class="bi bi-trash" aria-hidden="true"></i>

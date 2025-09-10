@@ -23,7 +23,7 @@
                     <div class="row g-3">
                         <div class="col-sm-12">
                             <label for="nombre" class="form-label">{{ _("Nombre") }} del Audio</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="{{ _("Nombre") }} del Audio") }}
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Nombre del Audio")) }}
                         </div>
 
                         {% if recurso.doc %}
@@ -73,7 +73,7 @@
                             {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
                         </div>
 
-                        {{ render_form_buttons("Actualizar {{ _("Recurso") }}", url_for('course.administrar_curso',
+                        {{ render_form_buttons(_("Actualizar Recurso"), url_for('course.administrar_curso',
                         course_code=id_curso)) }}
                     </div>
                 </form>

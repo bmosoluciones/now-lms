@@ -23,7 +23,7 @@
                     <div class="row g-3">
                         <div class="col-sm-12">
                             <label for="nombre" class="form-label">{{ _("Nombre") }} de la imagen.</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="{{ _("Nombre") }} de la imagén") }}
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Nombre de la imagén")) }}
                         </div>
 
                         <div class="col-md-12">
@@ -41,7 +41,7 @@
                             {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
                         </div>
 
-                        {{ render_form_buttons("Agregar {{ _("Recurso") }}", "/course/explore") }}
+                        {{ render_form_buttons(_("Agregar Recurso"), "/course/explore") }}
                     </div>
                 </form>
             </div>

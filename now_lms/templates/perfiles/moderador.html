@@ -41,10 +41,10 @@
                         <h3><i class="bi bi-chat-right-text-fill text-primary" aria-hidden="true"></i></h3>
                         <div class="ms-3">
                             <h4 class="fw-bold mb-0">Mensajes</h4>
-                            <p class="text-muted">{{ _(\'{{ _(\'Gestiona las conversaciones de usuarios\') }}\') }}</p>
+                            <p class="text-muted">{{ _('Gestiona las conversaciones de usuarios') }}</p>
                             <p>
                                 <a href="{{ url_for('msg.user_messages') }}" class="link-dark"
-                                    >{{ _(\'Ver Mis Mensajes\') }}</a
+                                    >{{ _('Ver Mis Mensajes') }}</a
                                 >
                             </p>
                         </div>
@@ -55,10 +55,10 @@
                         <h3><i class="bi bi-exclamation-triangle-fill text-warning" aria-hidden="true"></i></h3>
                         <div class="ms-3">
                             <h4 class="fw-bold mb-0">Mensajes Reportados</h4>
-                            <p class="text-muted">{{ _(\'Revisa contenido reportado por usuarios\') }}</p>
+                            <p class="text-muted">{{ _('Revisa contenido reportado por usuarios') }}</p>
                             <p>
                                 <a href="{{ url_for('msg.admin_flagged_messages') }}" class="link-dark"
-                                    >{{ _(\'Ver Reportes\') }}</a
+                                    >{{ _('Ver Reportes') }}</a
                                 >
                             </p>
                         </div>
@@ -68,11 +68,11 @@
                     <div class="col d-flex align-items-start">
                         <h3><i class="bi bi-person-vcard text-info" aria-hidden="true"></i></h3>
                         <div class="ms-3">
-                            <h4 class="fw-bold mb-0">{{ _(\'Mi Perfil\') }}</h4>
-                            <p class="text-muted">{{ _(\'Actualiza tu información personal\') }}</p>
+                            <h4 class="fw-bold mb-0">{{ _('Mi Perfil') }}</h4>
+                            <p class="text-muted">{{ _('Actualiza tu información personal') }}</p>
                             <p>
                                 <a href="{{ url_for('user_profile.perfil') }}" class="link-dark"
-                                    >{{ _(\'{{ _(\'Ver Perfil\') }}\') }}</a
+                                    >{{ _('Ver Perfil') }}</a
                                 >
                             </p>
                         </div>
@@ -83,10 +83,10 @@
                         <h3><i class="bi bi-calendar3 text-success" aria-hidden="true"></i></h3>
                         <div class="ms-3">
                             <h4 class="fw-bold mb-0">Calendario</h4>
-                            <p class="text-muted">{{ _(\'Revisa fechas importantes\') }}</p>
+                            <p class="text-muted">{{ _('Revisa fechas importantes') }}</p>
                             <p>
                                 <a href="{{ url_for('calendar.calendar_view') }}" class="link-dark"
-                                    >{{ _(\'Ver Calendario\') }}</a
+                                    >{{ _('Ver Calendario') }}</a
                                 >
                             </p>
                         </div>

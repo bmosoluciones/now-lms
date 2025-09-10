@@ -16,11 +16,11 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-8 offset-md-2">
-                        <nav aria-label="{{ _(\'breadcrumb\') }}">
+                        <nav aria-label="{{ _('breadcrumb') }}">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a href="{{ url_for('masterclass.instructor_list') }}" class="text-decoration-none"
-                                        >{{ _(\'Mis Clases Magistrales\') }}</a
+                                        >{{ _('Mis Clases Magistrales') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
@@ -42,7 +42,7 @@
 
                             <div class="card">
                                 <div class="card-header">
-                                    <h5>{{ _(\'Información Básica\') }}</h5>
+                                    <h5>{{ _('Información Básica') }}</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="mb-3">
@@ -50,7 +50,7 @@
                                         form.title.errors %}
                                         <div class="text-danger">
                                             {% for error in form.title.errors %}
-                                            <small>{{ _(\'{{ error }}\') }}</small>
+                                            <small>{{ _('{{ error }}') }}</small>
                                             {% endfor %}
                                         </div>
                                         {% endif %}
@@ -62,12 +62,12 @@
                                         %}
                                         <div class="text-danger">
                                             {% for error in form.description_public.errors %}
-                                            <small>{{ _(\'{{ error }}\') }}</small>
+                                            <small>{{ _('{{ error }}') }}</small>
                                             {% endfor %}
                                         </div>
                                         {% endif %}
                                         <small class="form-text text-muted"
-                                            >{{ _(\'Esta descripción será visible para todos los usuarios.\') }}</small
+                                            >{{ _('Esta descripción será visible para todos los usuarios.') }}</small
                                         >
                                     </div>
 
@@ -77,12 +77,12 @@
                                         %}
                                         <div class="text-danger">
                                             {% for error in form.description_private.errors %}
-                                            <small>{{ _(\'{{ error }}\') }}</small>
+                                            <small>{{ _('{{ error }}') }}</small>
                                             {% endfor %}
                                         </div>
                                         {% endif %}
                                         <small class="form-text text-muted"
-                                            >{{ _(\'Esta descripción solo será visible para usuarios inscritos.\') }}</small
+                                            >{{ _('Esta descripción solo será visible para usuarios inscritos.') }}</small
                                         >
                                     </div>
                                 </div>
@@ -100,7 +100,7 @@
                                                 {% if form.date.errors %}
                                                 <div class="text-danger">
                                                     {% for error in form.date.errors %}
-                                                    <small>{{ _(\'{{ error }}\') }}</small>
+                                                    <small>{{ _('{{ error }}') }}</small>
                                                     {% endfor %}
                                                 </div>
                                                 {% endif %}
@@ -112,7 +112,7 @@
                                                 form.start_time(class="form-control") }} {% if form.start_time.errors %}
                                                 <div class="text-danger">
                                                     {% for error in form.start_time.errors %}
-                                                    <small>{{ _(\'{{ error }}\') }}</small>
+                                                    <small>{{ _('{{ error }}') }}</small>
                                                     {% endfor %}
                                                 </div>
                                                 {% endif %}
@@ -124,7 +124,7 @@
                                                 form.end_time(class="form-control") }} {% if form.end_time.errors %}
                                                 <div class="text-danger">
                                                     {% for error in form.end_time.errors %}
-                                                    <small>{{ _(\'{{ error }}\') }}</small>
+                                                    <small>{{ _('{{ error }}') }}</small>
                                                     {% endfor %}
                                                 </div>
                                                 {% endif %}
@@ -146,7 +146,7 @@
                                                 form.platform_name(class="form-control") }} {% if form.platform_name.errors %}
                                                 <div class="text-danger">
                                                     {% for error in form.platform_name.errors %}
-                                                    <small>{{ _(\'{{ error }}\') }}</small>
+                                                    <small>{{ _('{{ error }}') }}</small>
                                                     {% endfor %}
                                                 </div>
                                                 {% endif %}
@@ -158,7 +158,7 @@
                                                 form.platform_url(class="form-control") }} {% if form.platform_url.errors %}
                                                 <div class="text-danger">
                                                     {% for error in form.platform_url.errors %}
-                                                    <small>{{ _(\'{{ error }}\') }}</small>
+                                                    <small>{{ _('{{ error }}') }}</small>
                                                     {% endfor %}
                                                 </div>
                                                 {% endif %}
@@ -185,7 +185,7 @@
                                             form.diploma_template_id.errors %}
                                             <div class="text-danger">
                                                 {% for error in form.diploma_template_id.errors %}
-                                                <small>{{ _(\'{{ error }}\') }}</small>
+                                                <small>{{ _('{{ error }}') }}</small>
                                                 {% endfor %}
                                             </div>
                                             {% endif %}
@@ -205,7 +205,7 @@
                                         %}
                                         <div class="text-danger">
                                             {% for error in form.video_recording_url.errors %}
-                                            <small>{{ _(\'{{ error }}\') }}</small>
+                                            <small>{{ _('{{ error }}') }}</small>
                                             {% endfor %}
                                         </div>
                                         {% endif %}
@@ -218,9 +218,9 @@
 
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                                 <a href="{{ url_for('masterclass.instructor_list') }}" class="btn btn-secondary me-md-2"
-                                    >{{ _(\'Cancelar\') }}</a
+                                    >{{ _('Cancelar') }}</a
                                 >
-                                <button type="submit" class="btn btn-primary">{{ _(\'Crear Clase Magistral\') }}</button>
+                                <button type="submit" class="btn btn-primary">{{ _('Crear Clase Magistral') }}</button>
                             </div>
                         </form>
                     </div>

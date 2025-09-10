@@ -4,7 +4,7 @@
 
     <head>
         {{ current_theme.headertags() }}
-        <title>{{ _(\'{{ _('Panel de Administración') }}\') }}</title>
+        <title>{{ _('Panel de Administración') }}</title>
 
         {{ current_theme.local_style() }}
         <style>
@@ -48,7 +48,7 @@
                                 <i class="bi bi-shield-check me-2"></i>
                                 {{ _('Bienvenido, Administrador') }} {{ current_user.nombre }} {{ current_user.apellido }}
                             </h2>
-                            <p class="mb-0 opacity-75">{{ _(\'Tu centro de control y administración del sistema\') }}</p>
+                            <p class="mb-0 opacity-75">{{ _('Tu centro de control y administración del sistema') }}</p>
                         </div>
                         <div class="col-md-4 text-end">
                             <a
@@ -76,7 +76,7 @@
                                                         <i class="bi bi-people me-2"></i>Usuarios Totales
                                                     </h6>
                                                     <h2 class="mb-0 text-primary">{{ total_users }}</h2>
-                                                    <small class="text-muted">{{ _(\'Usuarios del sistema\') }}</small>
+                                                    <small class="text-muted">{{ _('Usuarios del sistema') }}</small>
                                                 </div>
                                                 <div class="col-auto">
                                                     <i class="bi bi-people stat-icon text-primary"></i>
@@ -101,7 +101,7 @@
                                                     <h6 class="card-title text-warning mb-2">
                                                         <i class="bi bi-person-x me-2"></i>Usuarios Inactivos
                                                     </h6>
-                                                    <h2 class="mb-0 text-warning">{{ _(\'{{ inactivos }}\') }}</h2>
+                                                    <h2 class="mb-0 text-warning">{{ _('{{ inactivos }}') }}</h2>
                                                     <small class="text-muted">Requieren atención</small>
                                                 </div>
                                                 <div class="col-auto">
@@ -223,7 +223,7 @@
                                 {% else %}
                                 <div class="text-center text-muted py-3">
                                     <i class="bi bi-book display-6 opacity-25"></i>
-                                    <p class="mt-2 mb-0">{{ _(\'No hay cursos en el sistema\') }}</p>
+                                    <p class="mt-2 mb-0">{{ _('No hay cursos en el sistema') }}</p>
                                 </div>
                                 {% endif %}
                             </div>
@@ -248,7 +248,7 @@
                                     </div>
                                     <div class="col-md-6 mb-2">
                                         <a href="{{ url_for('setting.configuracion') }}" class="btn btn-outline-warning w-100">
-                                            <i class="bi bi-sliders me-2">{{ _(\'</i>{{ _(\'Configuración\') }}\') }}</a
+                                            <i class="bi bi-gear me-2"></i>{{ _('Configuración') }}</a
                                         >
                                     </div>
                                     <div class="col-md-6 mb-2">
@@ -285,13 +285,11 @@
                                                     <a
                                                         href="{{ url_for('admin_profile.usuarios') }}"
                                                         class="btn btn-sm btn-outline-primary"
-                                                        >{{ _(\'{{ _(\'Usuarios Activos\') }}\') }}</a
-                                                    >
+                                                        >{{ _('Usuarios Activos') }}</a>
                                                     <a
                                                         href="{{ url_for('admin_profile.usuarios_inactivos') }}"
                                                         class="btn btn-sm btn-outline-warning"
-                                                        >{{ _(\'{{ _(\'Usuarios Inactivos\') }}\') }}</a
-                                                    >
+                                                        >{{ _('Usuarios Inactivos') }}</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -302,7 +300,7 @@
                                         <div class="card border-success border-opacity-25">
                                             <div class="card-body p-3">
                                                 <h6 class="card-title text-success">
-                                                    <i class="bi bi-gear me-2">{{ _(\'</i>{{ _(\'Configuración\') }}\') }}
+                                                    <i class="bi bi-gear me-2"></i>{{ _('Configuración') }}
                                                 </h6>
                                                 <div class="d-grid gap-1">
                                                     <a

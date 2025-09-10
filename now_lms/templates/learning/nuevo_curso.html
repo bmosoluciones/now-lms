@@ -3,9 +3,9 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ mde.css }} {% if edit %}
-        <title>{{ _('{{ _("Editar") }} curso') }} {{ curso.nombre }}</title>
+        <title>{{ _("Editar curso") }} {{ curso.nombre }}</title>
         {% else %}
-        <title>{{ _('{{ _("Crear") }} un nuevo curso') }}</title>
+        <title>{{ _("Crear un nuevo curso") }}</title>
         {% endif %} {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
         <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
@@ -28,15 +28,15 @@
                         <h6>{{ _("Información") }} General del {{ _("Curso") }}</h6>
                         <div class="col-sm-6">
                             <label for="nombre" class="form-label">{{ _("Nombre") }} del {{ _("Curso") }}</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="{{ _("Nombre") }} del {{ _("Curso") }}") }}
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Nombre del Curso")) }}
                         </div>
                         <div class="col-sm-6">
                             <label for="codigo" class="form-label">Codigo del {{ _("Curso") }}</label>
-                            {{ form.codigo(class="form-control", id="codigo", placeholder="Codigo del {{ _("Curso") }}") }}
+                            {{ form.codigo(class="form-control", id="codigo", placeholder=_("Codigo del Curso")) }}
                         </div>
                         <label for="descripcion_corta" class="form-label">{{ _("Descripción") }} Corta</label>
-                        {{ form.descripcion_corta(class="form-control", id="descripcion_corta", placeholder="{{ _("Descripción") }}
-                        Corta") }}
+                        {{ form.descripcion_corta(class="form-control", id="descripcion_corta", placeholder=_("Descripción
+                        Corta")) }}
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
@@ -168,8 +168,8 @@
                             <br />
                         </div>
                     </div>
-                    {% if curso %} {{ render_form_buttons("Actualizar {{ _("Curso") }}", url_for('course.curso',
-                    course_code=curso.codigo)) }} {% else %} {{ render_form_buttons("{{ _("Crear") }} {{ _("Curso") }}", "/course/explore") }} {%
+                    {% if curso %} {{ render_form_buttons(_("Actualizar Curso"), url_for('course.curso',
+                    course_code=curso.codigo)) }} {% else %} {{ render_form_buttons(_("Crear Curso"), "/course/explore") }} {%
                     endif %}
                 </form>
             </div>

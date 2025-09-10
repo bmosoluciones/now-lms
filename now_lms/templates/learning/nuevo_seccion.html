@@ -3,7 +3,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>{{ _('{{ _("Crear") }} una nueva Sección.') }}</title>
+        <title>{{ _("Crear una nueva Sección.") }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -23,14 +23,12 @@
                     <div class="row g-3">
                         <div class="col-sm-12">
                             <label for="nombre" class="form-label">{{ _("Nombre") }} de la {{ _("Nueva") }} Sección.</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="{{ _("Nombre") }} de la {{
-                            _("Nueva") }} Sección") }}
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Nombre de la Nueva Sección")) }}
                         </div>
 
                         <div class="col-md-12">
                             <label for="descripcion" class="form-label">{{ _("Descripción") }} de la Sección</label>
-                            {{ form.descripcion(class="form-control", id="descripcion", placeholder="{{ _("Descripción") }} de
-                            la nueva Sección.") }}
+                            {{ form.descripcion(class="form-control", id="descripcion", placeholder=_("Descripción de la nueva Sección.")) }}
                         </div>
                     </div>
                     <button class="w-10 btn btn-lg btn-primary btn-block" type="submit">{{ _("Crear") }} Sección</button>

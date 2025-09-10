@@ -64,14 +64,14 @@
                                                 <a
                                                     href="{{ url_for('category.edit_category', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-secondary"
-                                                    title="{{ _("Editar") }} categoría"
+                                                    title=_("Editar categoría")
                                                 >
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('category.delete_category', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-danger"
-                                                    title="{{ _("Eliminar") }} categoría"
+                                                    title=_("Eliminar categoría")
                                                     onclick="return confirm('¿Está seguro de que desea eliminar esta categoría?')"
                                                 >
                                                     <i class="bi bi-trash" aria-hidden="true"></i>

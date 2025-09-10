@@ -3,7 +3,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
-        <title>{{ _("{{ _("Nuevo") }}") }} {{ _("{{ _("Recurso") }}") }} - Documento</title>
+        <title>{{ _("Nuevo") }} {{ _("Recurso") }} - Documento</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -28,13 +28,12 @@
 
                         <div class="col-sm-6">
                             <label for="requerido" class="form-label"
-                                >{{ _("{{ _("Tipo") }}") }} de {{ _("{{ _("Recurso") }}") }}</label
+                                >{{ _("Tipo") }} de {{ _("Recurso") }}</label
                             >
                             {{ form.requerido(class="form-control", id="requerido") }}
                         </div>
 
-                        {{ form.descripcion }} {{ mde.preview }} {{ mde.js }} {{ render_form_buttons("Agregar {{ _("{{
-                        _("Recurso") }}") }}", "/course/explore") }}
+                        {{ form.descripcion }} {{ mde.preview }} {{ mde.js }} {{ render_form_buttons(_("Agregar Recurso"), "/course/explore") }}
                     </div>
                 </form>
             </div>

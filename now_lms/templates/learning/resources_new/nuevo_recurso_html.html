@@ -23,13 +23,13 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="nombre" class="form-label">Titulo del {{ _("Recurso") }}</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Titulo del {{ _("Recurso") }}") }}
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Titulo del Recurso")) }}
                         </div>
 
                         <div class="col-md-12">
                             <label for="html_externo" class="form-label">{{ _("Recurso") }} Externo</label>
-                            {{ form.html_externo(class="form-control", id="html_externo", placeholder="{{ _("Recurso") }}
-                            Externo") }}
+                            {{ form.html_externo(class="form-control", id="html_externo", placeholder=_("Recurso
+                            Externo")) }}
                         </div>
 
                         <div class="col-sm-6">
@@ -42,7 +42,7 @@
                             {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
                         </div>
 
-                        {{ render_form_buttons("Agregar {{ _("Recurso") }}", "/course/explore") }}
+                        {{ render_form_buttons(_("Agregar Recurso"), "/course/explore") }}
                     </div>
                 </form>
             </div>

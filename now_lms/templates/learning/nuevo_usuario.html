@@ -3,7 +3,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>{{ _('{{ _("Crear") }} un nuevo usuario') }}</title>
+        <title>{{ _("Crear un nuevo usuario") }}</title>
 
         {{ current_theme.local_style() }}
         <!-- Custom styles for this template -->
@@ -23,14 +23,12 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="nombre" class="form-label">{{ _("Nombre") }}</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="{{ _("Nombre") }} del {{
-                            _("Usuario") }}") }}
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Nombre del Usuario")) }}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="apellido" class="form-label">Apellido</label>
-                            {{ form.apellido(class="form-control", id="apellido", placeholder="Apellido del {{ _("Usuario")
-                            }}") }}
+                            {{ form.apellido(class="form-control", id="apellido", placeholder=_("Apellido del Usuario")) }}
                         </div>
 
                         <div class="col-sm-6">
@@ -41,7 +39,7 @@
 
                         <div class="col-sm-6">
                             <label for="usuario" class="form-label">{{ _("Usuario") }}</label>
-                            {{ form.usuario(class="form-control", id="usuario", placeholder="{{ _("Usuario") }}") }}
+                            {{ form.usuario(class="form-control", id="usuario", placeholder=_("Usuario")) }}
                         </div>
 
                         <div class="col-sm-6">
@@ -50,7 +48,7 @@
                         </div>
                     </div>
                     <br />
-                    {{ render_form_buttons("{{ _("Crear") }} {{ _("Usuario") }}", "/admin/panel") }}
+                    {{ render_form_buttons(_("Crear Usuario"), "/admin/panel") }}
                 </form>
             </div>
         </main>

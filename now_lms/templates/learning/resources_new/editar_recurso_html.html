@@ -23,7 +23,7 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="nombre" class="form-label">Titulo del {{ _("Recurso") }}</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Titulo del {{ _("Recurso") }}") }}
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Titulo del Recurso")) }}
                         </div>
 
                         <div class="col-sm-6">
@@ -42,7 +42,7 @@
                             {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
                         </div>
 
-                        {{ render_form_buttons("Actualizar {{ _("Recurso") }}", url_for('course.administrar_curso',
+                        {{ render_form_buttons(_("Actualizar Recurso"), url_for('course.administrar_curso',
                         course_code=id_curso)) }}
                     </div>
                 </form>

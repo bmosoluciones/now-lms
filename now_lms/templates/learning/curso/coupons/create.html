@@ -3,7 +3,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>{{ _('{{ _("Crear") }} Cupón') }} - {{ curso.nombre }}</title>
+        <title>{{ _("Crear Cupón") }} - {{ curso.nombre }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -13,8 +13,8 @@
         <main>
             <div class="container">
                 <div class="py-5 text-center">
-                    <h1 class="h2">{{ _('{{ _("Crear") }} {{ _("Nuevo") }} Cupón') }}</h1>
-                    <p class="lead">{{ _('{{ _("Curso") }}:') }} {{ curso.nombre }}</p>
+                    <h1 class="h2">{{ _("Crear Nuevo Cupón") }}</h1>
+                    <p class="lead">{{ _("Curso:") }} {{ curso.nombre }}</p>
                 </div>
 
                 {% with messages = get_flashed_messages(with_categories=true) %}

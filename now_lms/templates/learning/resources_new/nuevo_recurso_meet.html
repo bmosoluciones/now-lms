@@ -33,7 +33,7 @@
 
                         <div class="col-sm-6">
                             <label for="fecha" class="form-label">{{ _("Fecha") }} del Meet</label>
-                            {{ form.fecha(class="form-control", id="fecha", placeholder="{{ _("Fecha") }} del Meet") }}
+                            {{ form.fecha(class="form-control", id="fecha", placeholder=_("Fecha del Meet")) }}
                         </div>
 
                         <div class="col-sm-6">
@@ -61,7 +61,7 @@
                             {{ form.descripcion }} {{ mde.preview }} {{ mde.js }}
                         </div>
 
-                        {{ render_form_buttons("Agregar {{ _("Recurso") }}", "/course/explore") }}
+                        {{ render_form_buttons(_("Agregar Recurso"), "/course/explore") }}
                     </div>
                 </form>
             </div>
