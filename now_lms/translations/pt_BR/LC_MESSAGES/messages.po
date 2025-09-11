@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-09-10 14:42-0600\n"
+"POT-Creation-Date: 2025-09-11 12:48+0000\n"
 "PO-Revision-Date: 2025-09-10 03:36+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -301,7 +301,7 @@ msgstr ""
 #: now_lms/templates/admin/flagged_messages.html:6
 #: now_lms/templates/admin/flagged_messages.html:34
 #: now_lms/templates/inicio/panel_admin.html:254
-#: now_lms/templates/inicio/panel_moderator.html:251
+#: now_lms/templates/inicio/panel_moderator.html:252
 #: now_lms/templates/perfiles/moderador.html:55
 #: now_lms/templates/perfiles/moderador.html:108
 msgid "Mensajes Reportados"
@@ -311,7 +311,18 @@ msgstr ""
 #: now_lms/templates/admin/flagged_messages.html:31
 #: now_lms/templates/announcements/admin_form.html:7
 #: now_lms/templates/announcements/admin_list.html:7
+#: now_lms/templates/themes/amber/navbar.j2:83
 #: now_lms/templates/themes/cambridge/navbar.j2:71
+#: now_lms/templates/themes/classic/navbar.j2:87
+#: now_lms/templates/themes/finance/navbar.j2:85
+#: now_lms/templates/themes/golden/navbar.j2:82
+#: now_lms/templates/themes/harvard/navbar.j2:71
+#: now_lms/templates/themes/lime/navbar.j2:83
+#: now_lms/templates/themes/nebula/navbar.j2:83
+#: now_lms/templates/themes/now_lms/navbar.j2:88
+#: now_lms/templates/themes/ocean/navbar.j2:75
+#: now_lms/templates/themes/oxford/navbar.j2:89
+#: now_lms/templates/themes/sakura/navbar.j2:89
 msgid "Administración"
 msgstr "Administração"
 
@@ -327,6 +338,8 @@ msgstr "Administração"
 #: now_lms/templates/forum/new_message.html:25
 #: now_lms/templates/forum/reply_message.html:25
 #: now_lms/templates/inicio/cursos.html:298
+#: now_lms/templates/inicio/programas.html:452
+#: now_lms/templates/inicio/recursos.html:24
 #: now_lms/templates/learning/curso.html:29
 #: now_lms/templates/learning/curso/admin.html:29
 #: now_lms/templates/learning/curso/curso.html:27
@@ -355,8 +368,20 @@ msgstr "Administração"
 #: now_lms/templates/perfiles/estudiante.html:40
 #: now_lms/templates/themes/cambridge/navbar.j2:38
 #: now_lms/templates/themes/cambridge/navbar.j2:42
+#: now_lms/templates/themes/classic/overrides/course_list.j2:298
+#: now_lms/templates/themes/classic/overrides/program_list.j2:452
+#: now_lms/templates/themes/finance/navbar.j2:39
+#: now_lms/templates/themes/harvard/navbar.j2:38
+#: now_lms/templates/themes/harvard/navbar.j2:42
+#: now_lms/templates/themes/lime/navbar.j2:39
 #: now_lms/templates/themes/now_lms/navbar.j2:39
 #: now_lms/templates/themes/now_lms/navbar.j2:45
+#: now_lms/templates/themes/ocean/navbar.j2:38
+#: now_lms/templates/themes/ocean/navbar.j2:42
+#: now_lms/templates/themes/oxford/navbar.j2:40
+#: now_lms/templates/themes/oxford/navbar.j2:46
+#: now_lms/templates/themes/sakura/navbar.j2:40
+#: now_lms/templates/themes/sakura/navbar.j2:46
 msgid "Inicio"
 msgstr "Início"
 
@@ -384,6 +409,7 @@ msgstr ""
 #: now_lms/templates/admin/flagged_messages.html:69
 #: now_lms/templates/blog/admin_index.html:71
 #: now_lms/templates/blog/instructor_index.html:34
+#: now_lms/templates/inicio/perfil.html:316
 #: now_lms/templates/learning/curso/coupons/create.html:91
 #: now_lms/templates/learning/curso/coupons/edit.html:124
 #: now_lms/templates/learning/mensajes/ver_msg.html:39
@@ -498,6 +524,10 @@ msgstr ""
 #: now_lms/templates/calendar/event_detail.html:195
 #: now_lms/templates/inicio/cursos.html:415
 #: now_lms/templates/inicio/home.html:194
+#: now_lms/templates/themes/amber/overrides/home.j2:265
+#: now_lms/templates/themes/classic/overrides/course_list.j2:415
+#: now_lms/templates/themes/classic/overrides/home.j2:265
+#: now_lms/templates/themes/golden/overrides/home.j2:247
 msgid "Ver Curso"
 msgstr ""
 
@@ -585,6 +615,7 @@ msgstr "Mensagens"
 #: now_lms/templates/admin/flagged_messages.html:130
 #: now_lms/templates/inicio/panel_admin.html:227
 #: now_lms/templates/inicio/panel_instructor.html:186
+#: now_lms/templates/inicio/panel_moderator.html:212
 #: now_lms/templates/perfiles/admin.html:213
 msgid "Creado"
 msgstr "Criado"
@@ -631,6 +662,7 @@ msgstr ""
 #: now_lms/templates/admin/inactive_users.html:35
 #: now_lms/templates/admin/mail.html:50 now_lms/templates/admin/users.html:40
 #: now_lms/templates/auth/login.html:46 now_lms/templates/auth/login.html:47
+#: now_lms/templates/inicio/perfil.html:163
 #: now_lms/templates/learning/certificados/emitir_certificado.html:23
 #: now_lms/templates/learning/certificados/lista_certificaciones.html:44
 #: now_lms/templates/learning/nuevo_usuario.html:20
@@ -646,6 +678,7 @@ msgstr "Usuário"
 #: now_lms/templates/admin/inactive_users.html:38
 #: now_lms/templates/admin/users.html:43 now_lms/templates/auth/logon.html:44
 #: now_lms/templates/blog/admin_tags.html:26
+#: now_lms/templates/inicio/perfil_editar.html:44
 #: now_lms/templates/learning/categorias/lista_categorias.html:42
 #: now_lms/templates/learning/certificados/certificado.html:27
 #: now_lms/templates/learning/curso/enroll.html:88
@@ -669,6 +702,7 @@ msgstr "Nome"
 
 #: now_lms/templates/admin/inactive_users.html:41
 #: now_lms/templates/admin/users.html:46 now_lms/templates/auth/logon.html:46
+#: now_lms/templates/inicio/perfil_editar.html:49
 #: now_lms/templates/learning/certificados/certificado.html:28
 #: now_lms/templates/learning/curso/enroll.html:93
 #: now_lms/templates/learning/nuevo_usuario.html:30
@@ -679,6 +713,8 @@ msgstr ""
 #: now_lms/templates/auth/forgot_password.html:54
 #: now_lms/templates/auth/forgot_password.html:55
 #: now_lms/templates/auth/logon.html:48
+#: now_lms/templates/inicio/perfil_editar.html:78
+#: now_lms/templates/inicio/perfil_editar.html:80
 #: now_lms/templates/learning/nuevo_usuario.html:35
 msgid "Correo Electrónico"
 msgstr ""
@@ -765,6 +801,7 @@ msgstr ""
 #: now_lms/templates/forum/new_message.html:80
 #: now_lms/templates/forum/reply_message.html:102
 #: now_lms/templates/inicio/cambiar_contraseña.html:45
+#: now_lms/templates/inicio/perfil_editar.html:117
 #: now_lms/templates/learning/certificados/editar_certificado.html:68
 #: now_lms/templates/learning/curso/admin_enroll.html:82
 #: now_lms/templates/learning/curso/coupons/create.html:118
@@ -1240,7 +1277,19 @@ msgstr "Anúncio"
 #: now_lms/templates/learning/programas/inscribir_usuario.html:58
 #: now_lms/templates/learning/resources/type_html.html:66
 #: now_lms/templates/learning/resources_new/editar_slideshow.html:59
+#: now_lms/templates/themes/amber/navbar.j2:127
 #: now_lms/templates/themes/cambridge/navbar.j2:108
+#: now_lms/templates/themes/classic/navbar.j2:131
+#: now_lms/templates/themes/corporative/navbar.j2:115
+#: now_lms/templates/themes/finance/navbar.j2:129
+#: now_lms/templates/themes/golden/navbar.j2:136
+#: now_lms/templates/themes/harvard/navbar.j2:108
+#: now_lms/templates/themes/lime/navbar.j2:127
+#: now_lms/templates/themes/nebula/navbar.j2:127
+#: now_lms/templates/themes/now_lms/navbar.j2:131
+#: now_lms/templates/themes/ocean/navbar.j2:112
+#: now_lms/templates/themes/oxford/navbar.j2:133
+#: now_lms/templates/themes/sakura/navbar.j2:132
 msgid "Información"
 msgstr "Informação"
 
@@ -1381,11 +1430,41 @@ msgstr ""
 #: now_lms/templates/calendar/calendar_view.html:103
 #: now_lms/templates/forum/forum_list.html:125
 #: now_lms/templates/inicio/cursos.html:427
+#: now_lms/templates/inicio/programas.html:609
 #: now_lms/templates/learning/resources/pdf_viewer.html:272
 #: now_lms/templates/masterclass/admin_list.html:125
 #: now_lms/templates/masterclass/instructor_list.html:110
 #: now_lms/templates/masterclass/list_public.html:125
 #: now_lms/templates/masterclass/my_enrollments.html:140
+#: now_lms/templates/themes/amber/pagination.j2:7
+#: now_lms/templates/themes/amber/pagination.j2:11
+#: now_lms/templates/themes/cambridge/pagination.j2:7
+#: now_lms/templates/themes/cambridge/pagination.j2:11
+#: now_lms/templates/themes/classic/overrides/course_list.j2:427
+#: now_lms/templates/themes/classic/overrides/program_list.j2:610
+#: now_lms/templates/themes/classic/pagination.j2:7
+#: now_lms/templates/themes/classic/pagination.j2:11
+#: now_lms/templates/themes/corporative/pagination.j2:7
+#: now_lms/templates/themes/corporative/pagination.j2:11
+#: now_lms/templates/themes/finance/pagination.j2:7
+#: now_lms/templates/themes/finance/pagination.j2:11
+#: now_lms/templates/themes/golden/pagination.j2:11
+#: now_lms/templates/themes/golden/pagination.j2:15
+#: now_lms/templates/themes/golden/pagination.j2:21
+#: now_lms/templates/themes/harvard/pagination.j2:7
+#: now_lms/templates/themes/harvard/pagination.j2:11
+#: now_lms/templates/themes/lime/pagination.j2:7
+#: now_lms/templates/themes/lime/pagination.j2:11
+#: now_lms/templates/themes/nebula/pagination.j2:7
+#: now_lms/templates/themes/nebula/pagination.j2:11
+#: now_lms/templates/themes/now_lms/pagination.j2:7
+#: now_lms/templates/themes/now_lms/pagination.j2:11
+#: now_lms/templates/themes/ocean/pagination.j2:7
+#: now_lms/templates/themes/ocean/pagination.j2:11
+#: now_lms/templates/themes/oxford/pagination.j2:7
+#: now_lms/templates/themes/oxford/pagination.j2:11
+#: now_lms/templates/themes/sakura/pagination.j2:7
+#: now_lms/templates/themes/sakura/pagination.j2:11
 msgid "Anterior"
 msgstr "Anterior"
 
@@ -1401,11 +1480,44 @@ msgstr "Anterior"
 #: now_lms/templates/forum/forum_list.html:150
 #: now_lms/templates/inicio/cursos.html:317
 #: now_lms/templates/inicio/cursos.html:440
+#: now_lms/templates/inicio/programas.html:471
+#: now_lms/templates/inicio/programas.html:622
 #: now_lms/templates/learning/resources/pdf_viewer.html:276
 #: now_lms/templates/masterclass/admin_list.html:148
 #: now_lms/templates/masterclass/instructor_list.html:133
 #: now_lms/templates/masterclass/list_public.html:148
 #: now_lms/templates/masterclass/my_enrollments.html:163
+#: now_lms/templates/themes/amber/pagination.j2:16
+#: now_lms/templates/themes/amber/pagination.j2:20
+#: now_lms/templates/themes/cambridge/pagination.j2:16
+#: now_lms/templates/themes/cambridge/pagination.j2:20
+#: now_lms/templates/themes/classic/overrides/course_list.j2:317
+#: now_lms/templates/themes/classic/overrides/course_list.j2:440
+#: now_lms/templates/themes/classic/overrides/program_list.j2:471
+#: now_lms/templates/themes/classic/overrides/program_list.j2:623
+#: now_lms/templates/themes/classic/pagination.j2:16
+#: now_lms/templates/themes/classic/pagination.j2:20
+#: now_lms/templates/themes/corporative/pagination.j2:16
+#: now_lms/templates/themes/corporative/pagination.j2:20
+#: now_lms/templates/themes/finance/pagination.j2:16
+#: now_lms/templates/themes/finance/pagination.j2:20
+#: now_lms/templates/themes/golden/pagination.j2:46
+#: now_lms/templates/themes/golden/pagination.j2:50
+#: now_lms/templates/themes/golden/pagination.j2:57
+#: now_lms/templates/themes/harvard/pagination.j2:16
+#: now_lms/templates/themes/harvard/pagination.j2:20
+#: now_lms/templates/themes/lime/pagination.j2:16
+#: now_lms/templates/themes/lime/pagination.j2:20
+#: now_lms/templates/themes/nebula/pagination.j2:16
+#: now_lms/templates/themes/nebula/pagination.j2:20
+#: now_lms/templates/themes/now_lms/pagination.j2:16
+#: now_lms/templates/themes/now_lms/pagination.j2:20
+#: now_lms/templates/themes/ocean/pagination.j2:16
+#: now_lms/templates/themes/ocean/pagination.j2:20
+#: now_lms/templates/themes/oxford/pagination.j2:16
+#: now_lms/templates/themes/oxford/pagination.j2:20
+#: now_lms/templates/themes/sakura/pagination.j2:16
+#: now_lms/templates/themes/sakura/pagination.j2:20
 msgid "Siguiente"
 msgstr "Próximo"
 
@@ -1425,8 +1537,10 @@ msgstr ""
 #: now_lms/templates/announcements/course.html:7
 #: now_lms/templates/announcements/global.html:7
 #: now_lms/templates/inicio/panel_instructor.html:266
-#: now_lms/templates/inicio/panel_moderator.html:292
+#: now_lms/templates/inicio/panel_moderator.html:293
+#: now_lms/templates/inicio/panel_user.html:273
 #: now_lms/templates/perfiles/admin.html:340
+#: now_lms/templates/perfiles/instructor.html:383
 msgid "Anuncios"
 msgstr "Anúncios"
 
@@ -1547,7 +1661,18 @@ msgstr "Senha"
 #: now_lms/templates/auth/login.html:50
 #: now_lms/templates/learning/curso.html:192
 #: now_lms/templates/learning/curso/curso.html:173
+#: now_lms/templates/themes/amber/navbar.j2:91
 #: now_lms/templates/themes/cambridge/navbar.j2:78
+#: now_lms/templates/themes/classic/navbar.j2:95
+#: now_lms/templates/themes/finance/navbar.j2:93
+#: now_lms/templates/themes/golden/navbar.j2:95
+#: now_lms/templates/themes/harvard/navbar.j2:78
+#: now_lms/templates/themes/lime/navbar.j2:91
+#: now_lms/templates/themes/nebula/navbar.j2:91
+#: now_lms/templates/themes/now_lms/navbar.j2:96
+#: now_lms/templates/themes/ocean/navbar.j2:82
+#: now_lms/templates/themes/oxford/navbar.j2:97
+#: now_lms/templates/themes/sakura/navbar.j2:97
 msgid "Iniciar Sesión"
 msgstr ""
 
@@ -1583,7 +1708,18 @@ msgstr ""
 
 #: now_lms/templates/auth/logon.html:53
 #: now_lms/templates/learning/curso.html:200
+#: now_lms/templates/themes/amber/navbar.j2:94
 #: now_lms/templates/themes/cambridge/navbar.j2:81
+#: now_lms/templates/themes/classic/navbar.j2:98
+#: now_lms/templates/themes/finance/navbar.j2:96
+#: now_lms/templates/themes/golden/navbar.j2:103
+#: now_lms/templates/themes/harvard/navbar.j2:81
+#: now_lms/templates/themes/lime/navbar.j2:94
+#: now_lms/templates/themes/nebula/navbar.j2:94
+#: now_lms/templates/themes/now_lms/navbar.j2:99
+#: now_lms/templates/themes/ocean/navbar.j2:85
+#: now_lms/templates/themes/oxford/navbar.j2:100
+#: now_lms/templates/themes/sakura/navbar.j2:100
 msgid "Crear Cuenta"
 msgstr ""
 
@@ -1651,6 +1787,7 @@ msgstr ""
 
 #: now_lms/templates/blog/admin_index.html:67
 #: now_lms/templates/blog/instructor_index.html:31
+#: now_lms/templates/inicio/perfil_editar.html:61
 #: now_lms/templates/masterclass/admin_list.html:36
 #: now_lms/templates/masterclass/instructor_list.html:31
 msgid "Título"
@@ -1728,6 +1865,7 @@ msgstr ""
 #: now_lms/templates/blog/instructor_index.html:7
 #: now_lms/templates/inicio/panel_admin.html:302
 #: now_lms/templates/perfiles/admin.html:335
+#: now_lms/templates/perfiles/instructor.html:378
 msgid "Blog"
 msgstr "Blog"
 
@@ -1891,6 +2029,7 @@ msgstr ""
 #: now_lms/templates/calendar/calendar_view.html:80
 #: now_lms/templates/calendar/event_detail.html:32
 #: now_lms/templates/calendar/upcoming_events.html:32
+#: now_lms/templates/inicio/panel_user.html:249
 #: now_lms/templates/perfiles/estudiante.html:100
 #: now_lms/templates/perfiles/moderador.html:69
 #: now_lms/templates/perfiles/moderador.html:114
@@ -1903,6 +2042,7 @@ msgstr ""
 #: now_lms/templates/calendar/upcoming_events.html:7
 #: now_lms/templates/calendar/upcoming_events.html:39
 #: now_lms/templates/inicio/panel_instructor.html:258
+#: now_lms/templates/inicio/panel_user.html:257
 #: now_lms/templates/perfiles/moderador.html:81
 #: now_lms/templates/perfiles/moderador.html:111
 msgid "Calendario"
@@ -2053,6 +2193,7 @@ msgid "Zona Horaria:"
 msgstr ""
 
 #: now_lms/templates/calendar/event_detail.html:167
+#: now_lms/templates/perfiles/instructor.html:223
 msgid "Creado:"
 msgstr ""
 
@@ -2062,6 +2203,7 @@ msgstr ""
 
 #: now_lms/templates/calendar/event_detail.html:183
 #: now_lms/templates/perfiles/estudiante.html:136
+#: now_lms/templates/perfiles/instructor.html:253
 #: now_lms/templates/perfiles/moderador.html:99
 msgid "Acciones Rápidas"
 msgstr ""
@@ -2090,7 +2232,22 @@ msgstr ""
 #: now_lms/templates/calendar/upcoming_events.html:127
 #: now_lms/templates/inicio/home.html:37 now_lms/templates/inicio/home.html:254
 #: now_lms/templates/inicio/panel_user.html:59
+#: now_lms/templates/inicio/perfil.html:287
 #: now_lms/templates/perfiles/estudiante.html:142
+#: now_lms/templates/themes/amber/overrides/home.j2:39
+#: now_lms/templates/themes/amber/overrides/home.j2:341
+#: now_lms/templates/themes/cambridge/overrides/home.j2:414
+#: now_lms/templates/themes/classic/overrides/home.j2:39
+#: now_lms/templates/themes/classic/overrides/home.j2:341
+#: now_lms/templates/themes/corporative/overrides/home.j2:321
+#: now_lms/templates/themes/finance/overrides/home.j2:442
+#: now_lms/templates/themes/golden/overrides/home.j2:296
+#: now_lms/templates/themes/harvard/overrides/home.j2:527
+#: now_lms/templates/themes/ocean/overrides/home.j2:39
+#: now_lms/templates/themes/ocean/overrides/home.j2:349
+#: now_lms/templates/themes/oxford/overrides/home.j2:409
+#: now_lms/templates/themes/sakura/overrides/home.j2:39
+#: now_lms/templates/themes/sakura/overrides/home.j2:411
 msgid "Explorar Cursos"
 msgstr ""
 
@@ -2610,6 +2767,7 @@ msgstr ""
 #: now_lms/templates/inicio/cambiar_contraseña.html:6
 #: now_lms/templates/inicio/cambiar_contraseña.html:24
 #: now_lms/templates/inicio/cambiar_contraseña.html:47
+#: now_lms/templates/inicio/perfil.html:139
 msgid "Cambiar Contraseña"
 msgstr ""
 
@@ -2622,84 +2780,194 @@ msgid "Contraseña Actual"
 msgstr ""
 
 #: now_lms/templates/inicio/cursos.html:7
+#: now_lms/templates/themes/classic/overrides/course_list.j2:7
+#: now_lms/templates/themes/harvard/overrides/home.j2:275
 msgid "Cursos Disponibles"
 msgstr ""
 
 #: now_lms/templates/inicio/cursos.html:300
+#: now_lms/templates/themes/classic/overrides/course_list.j2:300
 msgid "Cursos disponibles"
 msgstr ""
 
 #: now_lms/templates/inicio/cursos.html:311
 #: now_lms/templates/inicio/cursos.html:434
+#: now_lms/templates/themes/classic/overrides/course_list.j2:311
+#: now_lms/templates/themes/classic/overrides/course_list.j2:434
 msgid "cursos encontrados"
 msgstr ""
 
 #: now_lms/templates/inicio/cursos.html:311
 #: now_lms/templates/inicio/cursos.html:433
+#: now_lms/templates/inicio/programas.html:465
+#: now_lms/templates/inicio/programas.html:615
 #: now_lms/templates/learning/resources/pdf_viewer.html:274
+#: now_lms/templates/themes/amber/pagination.j2:13
+#: now_lms/templates/themes/cambridge/pagination.j2:13
+#: now_lms/templates/themes/classic/overrides/course_list.j2:311
+#: now_lms/templates/themes/classic/overrides/course_list.j2:433
+#: now_lms/templates/themes/classic/overrides/program_list.j2:465
+#: now_lms/templates/themes/classic/overrides/program_list.j2:616
+#: now_lms/templates/themes/classic/pagination.j2:13
+#: now_lms/templates/themes/corporative/pagination.j2:13
+#: now_lms/templates/themes/finance/pagination.j2:13
+#: now_lms/templates/themes/harvard/pagination.j2:13
+#: now_lms/templates/themes/lime/pagination.j2:13
+#: now_lms/templates/themes/nebula/pagination.j2:13
+#: now_lms/templates/themes/now_lms/pagination.j2:13
+#: now_lms/templates/themes/ocean/pagination.j2:13
+#: now_lms/templates/themes/oxford/pagination.j2:13
+#: now_lms/templates/themes/sakura/pagination.j2:13
 msgid "Página"
 msgstr "Página"
 
 #: now_lms/templates/inicio/cursos.html:312
 #: now_lms/templates/inicio/cursos.html:433
+#: now_lms/templates/inicio/programas.html:466
+#: now_lms/templates/inicio/programas.html:615
 #: now_lms/templates/learning/resources/pdf_viewer.html:274
+#: now_lms/templates/themes/amber/pagination.j2:13
+#: now_lms/templates/themes/cambridge/pagination.j2:13
+#: now_lms/templates/themes/classic/overrides/course_list.j2:312
+#: now_lms/templates/themes/classic/overrides/course_list.j2:433
+#: now_lms/templates/themes/classic/overrides/program_list.j2:466
+#: now_lms/templates/themes/classic/overrides/program_list.j2:616
+#: now_lms/templates/themes/classic/pagination.j2:13
+#: now_lms/templates/themes/corporative/pagination.j2:13
+#: now_lms/templates/themes/finance/pagination.j2:13
+#: now_lms/templates/themes/harvard/pagination.j2:13
+#: now_lms/templates/themes/lime/pagination.j2:13
+#: now_lms/templates/themes/nebula/pagination.j2:13
+#: now_lms/templates/themes/now_lms/pagination.j2:13
+#: now_lms/templates/themes/ocean/pagination.j2:13
+#: now_lms/templates/themes/oxford/pagination.j2:13
+#: now_lms/templates/themes/sakura/pagination.j2:13
 msgid "de"
 msgstr "de"
 
 #: now_lms/templates/inicio/cursos.html:358
 #: now_lms/templates/inicio/cursos.html:539
+#: now_lms/templates/inicio/programas.html:731
+#: now_lms/templates/inicio/recursos.html:193
+#: now_lms/templates/themes/classic/overrides/course_list.j2:358
+#: now_lms/templates/themes/classic/overrides/course_list.j2:539
+#: now_lms/templates/themes/classic/overrides/program_list.j2:732
+#: now_lms/templates/themes/corporative/overrides/home.j2:218
 msgid "Introductorio"
 msgstr ""
 
 #: now_lms/templates/inicio/cursos.html:366
 #: now_lms/templates/inicio/cursos.html:545
 #: now_lms/templates/inicio/home.html:181
+#: now_lms/templates/inicio/programas.html:737
+#: now_lms/templates/inicio/recursos.html:200
+#: now_lms/templates/themes/amber/overrides/home.j2:247
+#: now_lms/templates/themes/classic/overrides/course_list.j2:366
+#: now_lms/templates/themes/classic/overrides/course_list.j2:545
+#: now_lms/templates/themes/classic/overrides/home.j2:247
+#: now_lms/templates/themes/classic/overrides/program_list.j2:738
+#: now_lms/templates/themes/corporative/overrides/home.j2:222
+#: now_lms/templates/themes/finance/overrides/home.j2:347
+#: now_lms/templates/themes/golden/overrides/home.j2:231
+#: now_lms/templates/themes/sakura/overrides/home.j2:302
 msgid "Principiante"
 msgstr "Iniciante"
 
 #: now_lms/templates/inicio/cursos.html:374
 #: now_lms/templates/inicio/cursos.html:551
 #: now_lms/templates/inicio/home.html:183
+#: now_lms/templates/inicio/programas.html:743
+#: now_lms/templates/inicio/recursos.html:207
+#: now_lms/templates/themes/amber/overrides/home.j2:251
+#: now_lms/templates/themes/cambridge/overrides/home.j2:307
+#: now_lms/templates/themes/classic/overrides/course_list.j2:374
+#: now_lms/templates/themes/classic/overrides/course_list.j2:551
+#: now_lms/templates/themes/classic/overrides/home.j2:251
+#: now_lms/templates/themes/classic/overrides/program_list.j2:744
+#: now_lms/templates/themes/corporative/overrides/home.j2:226
+#: now_lms/templates/themes/finance/overrides/home.j2:351
+#: now_lms/templates/themes/golden/overrides/home.j2:234
+#: now_lms/templates/themes/sakura/overrides/home.j2:306
 msgid "Intermedio"
 msgstr "Intermediário"
 
 #: now_lms/templates/inicio/cursos.html:383
 #: now_lms/templates/inicio/cursos.html:557
 #: now_lms/templates/inicio/home.html:185
+#: now_lms/templates/inicio/programas.html:749
+#: now_lms/templates/inicio/recursos.html:214
+#: now_lms/templates/themes/amber/overrides/home.j2:255
+#: now_lms/templates/themes/cambridge/overrides/home.j2:308
+#: now_lms/templates/themes/classic/overrides/course_list.j2:383
+#: now_lms/templates/themes/classic/overrides/course_list.j2:557
+#: now_lms/templates/themes/classic/overrides/home.j2:255
+#: now_lms/templates/themes/classic/overrides/program_list.j2:750
+#: now_lms/templates/themes/finance/overrides/home.j2:354
+#: now_lms/templates/themes/golden/overrides/home.j2:236
+#: now_lms/templates/themes/sakura/overrides/home.j2:310
 msgid "Avanzado"
 msgstr "Avançado"
 
 #: now_lms/templates/inicio/cursos.html:407
 #: now_lms/templates/inicio/home.html:177
+#: now_lms/templates/inicio/programas.html:558
+#: now_lms/templates/inicio/recursos.html:122
 #: now_lms/templates/learning/programas/lista_programas.html:84
 #: now_lms/templates/learning/recursos/lista_recursos.html:76
 #: now_lms/templates/masterclass/admin_list.html:80
 #: now_lms/templates/masterclass/enroll.html:96
 #: now_lms/templates/masterclass/instructor_list.html:67
 #: now_lms/templates/masterclass/list_public.html:88
+#: now_lms/templates/themes/amber/overrides/home.j2:240
+#: now_lms/templates/themes/classic/overrides/course_list.j2:407
+#: now_lms/templates/themes/classic/overrides/home.j2:240
+#: now_lms/templates/themes/classic/overrides/program_list.j2:559
+#: now_lms/templates/themes/finance/overrides/home.j2:341
+#: now_lms/templates/themes/golden/overrides/home.j2:226
+#: now_lms/templates/themes/sakura/overrides/home.j2:294
 msgid "Gratis"
 msgstr "Grátis"
 
 #: now_lms/templates/inicio/cursos.html:456
+#: now_lms/templates/themes/classic/overrides/course_list.j2:456
 msgid "Filtrar Cursos"
 msgstr ""
 
 #: now_lms/templates/inicio/cursos.html:467
 #: now_lms/templates/inicio/panel_admin.html:284
+#: now_lms/templates/inicio/programas.html:659
+#: now_lms/templates/inicio/recursos.html:151
+#: now_lms/templates/themes/classic/overrides/course_list.j2:467
+#: now_lms/templates/themes/classic/overrides/program_list.j2:660
 msgid "Categorías"
 msgstr "Categorias"
 
 #: now_lms/templates/inicio/cursos.html:496
+#: now_lms/templates/inicio/programas.html:688
+#: now_lms/templates/inicio/recursos.html:168
 #: now_lms/templates/learning/nuevo_curso.html:150
+#: now_lms/templates/perfiles/instructor.html:337
+#: now_lms/templates/themes/classic/overrides/course_list.j2:496
+#: now_lms/templates/themes/classic/overrides/program_list.j2:689
 msgid "Etiquetas"
 msgstr "Tags"
 
 #: now_lms/templates/inicio/cursos.html:525
+#: now_lms/templates/inicio/programas.html:717
+#: now_lms/templates/inicio/recursos.html:185
 #: now_lms/templates/learning/nuevo_curso.html:49
+#: now_lms/templates/themes/classic/overrides/course_list.j2:525
+#: now_lms/templates/themes/classic/overrides/program_list.j2:718
+#: now_lms/templates/themes/harvard/overrides/home.j2:360
 msgid "Nivel"
 msgstr "Nível"
 
 #: now_lms/templates/inicio/home.html:23
+#: now_lms/templates/themes/amber/overrides/home.j2:25
+#: now_lms/templates/themes/classic/overrides/home.j2:25
+#: now_lms/templates/themes/corporative/overrides/home.j2:14
+#: now_lms/templates/themes/ocean/overrides/home.j2:25
+#: now_lms/templates/themes/sakura/overrides/home.j2:25
 msgid "Bienvenido a"
 msgstr ""
 
@@ -2712,10 +2980,21 @@ msgid ""
 msgstr ""
 
 #: now_lms/templates/inicio/home.html:31
+#: now_lms/templates/themes/amber/overrides/home.j2:33
+#: now_lms/templates/themes/classic/overrides/home.j2:33
+#: now_lms/templates/themes/ocean/overrides/home.j2:33
+#: now_lms/templates/themes/sakura/overrides/home.j2:33
 msgid "Comenzar Ahora"
 msgstr ""
 
 #: now_lms/templates/inicio/home.html:41
+#: now_lms/templates/themes/amber/overrides/home.j2:43
+#: now_lms/templates/themes/classic/overrides/home.j2:43
+#: now_lms/templates/themes/golden/overrides/home.j2:82
+#: now_lms/templates/themes/harvard/overrides/home.j2:52
+#: now_lms/templates/themes/lime/navbar.j2:43
+#: now_lms/templates/themes/ocean/overrides/home.j2:43
+#: now_lms/templates/themes/sakura/overrides/home.j2:43
 msgid "Mi Panel"
 msgstr ""
 
@@ -2725,18 +3004,40 @@ msgstr ""
 #: now_lms/templates/inicio/panel_moderator.html:89
 #: now_lms/templates/perfiles/admin.html:142
 #: now_lms/templates/perfiles/estudiante.html:75
+#: now_lms/templates/perfiles/instructor.html:62
+#: now_lms/templates/perfiles/instructor.html:94
+#: now_lms/templates/themes/amber/overrides/home.j2:49
+#: now_lms/templates/themes/classic/overrides/home.j2:49
+#: now_lms/templates/themes/ocean/overrides/home.j2:49
+#: now_lms/templates/themes/sakura/overrides/home.j2:49
 msgid "Ver Cursos"
 msgstr ""
 
 #: now_lms/templates/inicio/home.html:61
+#: now_lms/templates/themes/amber/overrides/home.j2:73
+#: now_lms/templates/themes/classic/overrides/home.j2:73
+#: now_lms/templates/themes/golden/overrides/home.j2:114
+#: now_lms/templates/themes/ocean/overrides/home.j2:73
+#: now_lms/templates/themes/sakura/overrides/home.j2:73
 msgid "Aprendizaje"
 msgstr "Aprendizagem"
 
 #: now_lms/templates/inicio/home.html:62
+#: now_lms/templates/themes/amber/overrides/home.j2:74
+#: now_lms/templates/themes/classic/overrides/home.j2:74
+#: now_lms/templates/themes/ocean/overrides/home.j2:74
+#: now_lms/templates/themes/sakura/overrides/home.j2:74
 msgid "Digital"
 msgstr ""
 
 #: now_lms/templates/inicio/home.html:76
+#: now_lms/templates/themes/amber/overrides/home.j2:88
+#: now_lms/templates/themes/cambridge/overrides/home.j2:106
+#: now_lms/templates/themes/classic/overrides/home.j2:88
+#: now_lms/templates/themes/corporative/overrides/home.j2:50
+#: now_lms/templates/themes/ocean/overrides/home.j2:88
+#: now_lms/templates/themes/oxford/overrides/home.j2:101
+#: now_lms/templates/themes/sakura/overrides/home.j2:88
 msgid "Aprende con Nosotros"
 msgstr ""
 
@@ -2748,6 +3049,14 @@ msgid ""
 msgstr ""
 
 #: now_lms/templates/inicio/home.html:93
+#: now_lms/templates/themes/amber/overrides/home.j2:121
+#: now_lms/templates/themes/cambridge/overrides/home.j2:139
+#: now_lms/templates/themes/classic/overrides/home.j2:121
+#: now_lms/templates/themes/corporative/overrides/home.j2:83
+#: now_lms/templates/themes/golden/overrides/home.j2:153
+#: now_lms/templates/themes/ocean/overrides/home.j2:121
+#: now_lms/templates/themes/oxford/overrides/home.j2:134
+#: now_lms/templates/themes/sakura/overrides/home.j2:121
 msgid "Cursos Especializados"
 msgstr ""
 
@@ -2759,6 +3068,14 @@ msgid ""
 msgstr ""
 
 #: now_lms/templates/inicio/home.html:110
+#: now_lms/templates/themes/amber/overrides/home.j2:153
+#: now_lms/templates/themes/cambridge/overrides/home.j2:171
+#: now_lms/templates/themes/classic/overrides/home.j2:153
+#: now_lms/templates/themes/corporative/overrides/home.j2:115
+#: now_lms/templates/themes/golden/overrides/home.j2:165
+#: now_lms/templates/themes/ocean/overrides/home.j2:153
+#: now_lms/templates/themes/oxford/overrides/home.j2:166
+#: now_lms/templates/themes/sakura/overrides/home.j2:153
 msgid "Comunidad Activa"
 msgstr ""
 
@@ -2770,7 +3087,16 @@ msgid ""
 msgstr ""
 
 #: now_lms/templates/inicio/home.html:127
+#: now_lms/templates/inicio/panel_user.html:127
 #: now_lms/templates/perfiles/estudiante.html:113
+#: now_lms/templates/themes/amber/overrides/home.j2:185
+#: now_lms/templates/themes/cambridge/overrides/home.j2:203
+#: now_lms/templates/themes/classic/overrides/home.j2:185
+#: now_lms/templates/themes/corporative/overrides/home.j2:147
+#: now_lms/templates/themes/golden/overrides/home.j2:177
+#: now_lms/templates/themes/ocean/overrides/home.j2:185
+#: now_lms/templates/themes/oxford/overrides/home.j2:198
+#: now_lms/templates/themes/sakura/overrides/home.j2:185
 msgid "Certificaciones"
 msgstr "Certificações"
 
@@ -2790,6 +3116,12 @@ msgid "Encuentra cursos diseñados para impulsar tu crecimiento."
 msgstr ""
 
 #: now_lms/templates/inicio/home.html:179
+#: now_lms/templates/themes/amber/overrides/home.j2:243
+#: now_lms/templates/themes/classic/overrides/home.j2:243
+#: now_lms/templates/themes/finance/overrides/home.j2:344
+#: now_lms/templates/themes/golden/overrides/home.j2:228
+#: now_lms/templates/themes/harvard/overrides/home.j2:360
+#: now_lms/templates/themes/sakura/overrides/home.j2:298
 msgid "Intro"
 msgstr ""
 
@@ -2809,30 +3141,86 @@ msgid "No hay cursos disponibles en este momento."
 msgstr ""
 
 #: now_lms/templates/inicio/home.html:238
+#: now_lms/templates/themes/amber/overrides/home.j2:299
+#: now_lms/templates/themes/cambridge/overrides/home.j2:372
+#: now_lms/templates/themes/classic/overrides/home.j2:299
+#: now_lms/templates/themes/corporative/overrides/home.j2:279
+#: now_lms/templates/themes/finance/overrides/home.j2:400
+#: now_lms/templates/themes/golden/overrides/home.j2:284
+#: now_lms/templates/themes/ocean/overrides/home.j2:307
+#: now_lms/templates/themes/oxford/overrides/home.j2:367
+#: now_lms/templates/themes/sakura/overrides/home.j2:369
 msgid "¿Listo para Comenzar?"
 msgstr ""
 
 #: now_lms/templates/inicio/home.html:240
+#: now_lms/templates/themes/amber/overrides/home.j2:301
+#: now_lms/templates/themes/cambridge/overrides/home.j2:374
+#: now_lms/templates/themes/classic/overrides/home.j2:301
+#: now_lms/templates/themes/corporative/overrides/home.j2:281
+#: now_lms/templates/themes/finance/overrides/home.j2:402
+#: now_lms/templates/themes/golden/overrides/home.j2:286
+#: now_lms/templates/themes/ocean/overrides/home.j2:309
+#: now_lms/templates/themes/oxford/overrides/home.j2:369
+#: now_lms/templates/themes/sakura/overrides/home.j2:371
 msgid ""
 "Únete a nuestra plataforma educativa y comienza tu viaje de aprendizaje "
 "hoy mismo."
 msgstr ""
 
 #: now_lms/templates/inicio/home.html:243
+#: now_lms/templates/themes/amber/overrides/home.j2:315
+#: now_lms/templates/themes/cambridge/overrides/home.j2:388
+#: now_lms/templates/themes/classic/overrides/home.j2:315
+#: now_lms/templates/themes/corporative/overrides/home.j2:295
+#: now_lms/templates/themes/finance/overrides/home.j2:416
+#: now_lms/templates/themes/golden/overrides/home.j2:288
+#: now_lms/templates/themes/ocean/overrides/home.j2:323
+#: now_lms/templates/themes/oxford/overrides/home.j2:383
+#: now_lms/templates/themes/sakura/overrides/home.j2:385
 msgid "Registrarse Gratis"
 msgstr ""
 
 #: now_lms/templates/inicio/home.html:246
+#: now_lms/templates/themes/amber/overrides/home.j2:318
+#: now_lms/templates/themes/cambridge/overrides/home.j2:391
+#: now_lms/templates/themes/classic/overrides/home.j2:318
+#: now_lms/templates/themes/corporative/overrides/home.j2:298
+#: now_lms/templates/themes/finance/overrides/home.j2:419
+#: now_lms/templates/themes/golden/overrides/home.j2:290
+#: now_lms/templates/themes/harvard/overrides/home.j2:503
+#: now_lms/templates/themes/ocean/overrides/home.j2:326
+#: now_lms/templates/themes/oxford/overrides/home.j2:386
+#: now_lms/templates/themes/sakura/overrides/home.j2:388
 msgid "Bienvenido de vuelta"
 msgstr ""
 
 #: now_lms/templates/inicio/home.html:248
+#: now_lms/templates/themes/amber/overrides/home.j2:320
+#: now_lms/templates/themes/cambridge/overrides/home.j2:393
+#: now_lms/templates/themes/classic/overrides/home.j2:320
+#: now_lms/templates/themes/corporative/overrides/home.j2:300
+#: now_lms/templates/themes/finance/overrides/home.j2:421
+#: now_lms/templates/themes/golden/overrides/home.j2:292
+#: now_lms/templates/themes/ocean/overrides/home.j2:328
+#: now_lms/templates/themes/oxford/overrides/home.j2:388
+#: now_lms/templates/themes/sakura/overrides/home.j2:390
 msgid ""
 "Continúa tu viaje de aprendizaje y explora nuevas oportunidades "
 "educativas."
 msgstr ""
 
 #: now_lms/templates/inicio/home.html:251
+#: now_lms/templates/themes/amber/overrides/home.j2:334
+#: now_lms/templates/themes/cambridge/overrides/home.j2:407
+#: now_lms/templates/themes/classic/overrides/home.j2:334
+#: now_lms/templates/themes/corporative/overrides/home.j2:314
+#: now_lms/templates/themes/finance/overrides/home.j2:435
+#: now_lms/templates/themes/golden/overrides/home.j2:294
+#: now_lms/templates/themes/harvard/overrides/home.j2:520
+#: now_lms/templates/themes/ocean/overrides/home.j2:342
+#: now_lms/templates/themes/oxford/overrides/home.j2:402
+#: now_lms/templates/themes/sakura/overrides/home.j2:404
 msgid "Ir a Mi Panel"
 msgstr ""
 
@@ -2850,6 +3238,7 @@ msgstr ""
 
 #: now_lms/templates/inicio/panel_admin.html:70
 #: now_lms/templates/learning/curso_lista.html:26
+#: now_lms/templates/perfiles/instructor.html:260
 msgid "Nuevo Curso"
 msgstr ""
 
@@ -2903,6 +3292,7 @@ msgstr ""
 
 #: now_lms/templates/inicio/panel_admin.html:179
 #: now_lms/templates/inicio/panel_instructor.html:111
+#: now_lms/templates/inicio/panel_user.html:141
 #: now_lms/templates/perfiles/estudiante.html:116
 msgid "Ver Certificados"
 msgstr ""
@@ -2916,6 +3306,7 @@ msgstr ""
 #: now_lms/templates/inicio/panel_instructor.html:164
 #: now_lms/templates/inicio/panel_moderator.html:190
 #: now_lms/templates/perfiles/admin.html:191
+#: now_lms/templates/perfiles/instructor.html:201
 msgid "Ver Todos"
 msgstr ""
 
@@ -2953,8 +3344,19 @@ msgstr ""
 #: now_lms/templates/learning/programas/lista_programas.html:6
 #: now_lms/templates/learning/programas/lista_programas.html:20
 #: now_lms/templates/learning/programas/nuevo_programa.html:24
+#: now_lms/templates/perfiles/instructor.html:316
+#: now_lms/templates/themes/amber/navbar.j2:52
 #: now_lms/templates/themes/cambridge/navbar.j2:50
+#: now_lms/templates/themes/classic/navbar.j2:52
+#: now_lms/templates/themes/finance/navbar.j2:54
+#: now_lms/templates/themes/golden/navbar.j2:51
+#: now_lms/templates/themes/harvard/navbar.j2:50
+#: now_lms/templates/themes/lime/navbar.j2:52
+#: now_lms/templates/themes/nebula/navbar.j2:52
 #: now_lms/templates/themes/now_lms/navbar.j2:57
+#: now_lms/templates/themes/ocean/navbar.j2:50
+#: now_lms/templates/themes/oxford/navbar.j2:58
+#: now_lms/templates/themes/sakura/navbar.j2:58
 msgid "Programas"
 msgstr "Programas"
 
@@ -2966,11 +3368,13 @@ msgid "Configuración"
 msgstr "Configuração"
 
 #: now_lms/templates/inicio/panel_instructor.html:7
+#: now_lms/templates/perfiles/instructor.html:8
 #, fuzzy
 msgid "Panel del Instructor"
 msgstr "Painel do Instrutor"
 
 #: now_lms/templates/inicio/panel_instructor.html:49
+#: now_lms/templates/perfiles/instructor.html:51
 msgid "Bienvenido, Instructor"
 msgstr ""
 
@@ -2979,6 +3383,7 @@ msgid "Tu centro de enseñanza y gestión de cursos"
 msgstr ""
 
 #: now_lms/templates/inicio/panel_instructor.html:71
+#: now_lms/templates/perfiles/instructor.html:80
 msgid "Cursos Creados"
 msgstr ""
 
@@ -2991,6 +3396,7 @@ msgid "Logros estudiantiles"
 msgstr ""
 
 #: now_lms/templates/inicio/panel_instructor.html:123
+#: now_lms/templates/perfiles/instructor.html:106
 #, fuzzy
 msgid "Estudiantes Inscritos"
 msgstr "Estudantes Inscritos"
@@ -3001,10 +3407,12 @@ msgstr ""
 
 #: now_lms/templates/inicio/panel_instructor.html:137
 #: now_lms/templates/masterclass/admin_list.html:104
+#: now_lms/templates/perfiles/instructor.html:120
 msgid "Ver Estudiantes"
 msgstr ""
 
 #: now_lms/templates/inicio/panel_instructor.html:158
+#: now_lms/templates/perfiles/instructor.html:193
 msgid "Mis Cursos Recientes"
 msgstr ""
 
@@ -3027,7 +3435,8 @@ msgid ""
 msgstr ""
 
 #: now_lms/templates/inicio/panel_instructor.html:225
-#: now_lms/templates/inicio/panel_moderator.html:248
+#: now_lms/templates/inicio/panel_moderator.html:249
+#: now_lms/templates/inicio/panel_user.html:231
 #: now_lms/templates/perfiles/moderador.html:105
 msgid "Mis Mensajes"
 msgstr ""
@@ -3041,7 +3450,7 @@ msgid "Mis Recursos"
 msgstr ""
 
 #: now_lms/templates/inicio/panel_instructor.html:250
-#: now_lms/templates/inicio/panel_moderator.html:276
+#: now_lms/templates/inicio/panel_moderator.html:277
 msgid "Buscar Cursos"
 msgstr ""
 
@@ -3106,16 +3515,16 @@ msgstr "Fechado"
 msgid "Historial completo"
 msgstr ""
 
-#: now_lms/templates/inicio/panel_moderator.html:225
+#: now_lms/templates/inicio/panel_moderator.html:226
 msgid "No hay cursos asignados para moderar"
 msgstr ""
 
-#: now_lms/templates/inicio/panel_moderator.html:238
+#: now_lms/templates/inicio/panel_moderator.html:239
 #, fuzzy
 msgid "Gestión de Mensajes"
 msgstr "Responder Mensagem"
 
-#: now_lms/templates/inicio/panel_moderator.html:243
+#: now_lms/templates/inicio/panel_moderator.html:244
 msgid ""
 "Como moderador, ayuda a contestar los requerimientos de los estudiantes y"
 " supervisa\n"
@@ -3123,21 +3532,32 @@ msgid ""
 "ambiente de aprendizaje positivo."
 msgstr ""
 
-#: now_lms/templates/inicio/panel_moderator.html:261
+#: now_lms/templates/inicio/panel_moderator.html:262
 msgid "Herramientas de Moderación"
 msgstr ""
 
-#: now_lms/templates/inicio/panel_moderator.html:271
+#: now_lms/templates/inicio/panel_moderator.html:272
 #, fuzzy
 msgid "Usuarios"
 msgstr "Usuário"
 
-#: now_lms/templates/inicio/panel_moderator.html:284
+#: now_lms/templates/inicio/panel_moderator.html:285
 #: now_lms/templates/learning/curso/admin.html:360
 #: now_lms/templates/learning/recursos/lista_recursos.html:6
 #: now_lms/templates/learning/recursos/lista_recursos.html:20
+#: now_lms/templates/perfiles/instructor.html:334
+#: now_lms/templates/themes/amber/navbar.j2:58
 #: now_lms/templates/themes/cambridge/navbar.j2:54
+#: now_lms/templates/themes/classic/navbar.j2:58
+#: now_lms/templates/themes/finance/navbar.j2:60
+#: now_lms/templates/themes/golden/navbar.j2:57
+#: now_lms/templates/themes/harvard/navbar.j2:54
+#: now_lms/templates/themes/lime/navbar.j2:58
+#: now_lms/templates/themes/nebula/navbar.j2:58
 #: now_lms/templates/themes/now_lms/navbar.j2:63
+#: now_lms/templates/themes/ocean/navbar.j2:54
+#: now_lms/templates/themes/oxford/navbar.j2:64
+#: now_lms/templates/themes/sakura/navbar.j2:64
 msgid "Recursos"
 msgstr "Recursos"
 
@@ -3147,13 +3567,110 @@ msgstr ""
 
 #: now_lms/templates/inicio/panel_user.html:53
 #: now_lms/templates/perfiles/estudiante.html:61
+#: now_lms/templates/themes/amber/navbar.j2:107
 #: now_lms/templates/themes/cambridge/navbar.j2:93
+#: now_lms/templates/themes/classic/navbar.j2:111
+#: now_lms/templates/themes/corporative/navbar.j2:95
+#: now_lms/templates/themes/finance/navbar.j2:109
+#: now_lms/templates/themes/golden/navbar.j2:116
+#: now_lms/templates/themes/harvard/navbar.j2:93
+#: now_lms/templates/themes/lime/navbar.j2:107
+#: now_lms/templates/themes/nebula/navbar.j2:107
+#: now_lms/templates/themes/now_lms/navbar.j2:111
+#: now_lms/templates/themes/ocean/navbar.j2:97
+#: now_lms/templates/themes/oxford/navbar.j2:113
+#: now_lms/templates/themes/sakura/navbar.j2:112
 msgid "Bienvenido"
 msgstr "Bem-vindo"
 
 #: now_lms/templates/inicio/panel_user.html:55
 msgid "Tu portal de aprendizaje y desarrollo personal"
 msgstr ""
+
+#: now_lms/templates/inicio/panel_user.html:75
+#: now_lms/templates/inicio/panel_user.html:162
+#: now_lms/templates/perfiles/estudiante.html:72
+#: now_lms/templates/perfiles/instructor.html:311
+#, fuzzy
+msgid "Mis Cursos"
+msgstr "Cursos"
+
+#: now_lms/templates/inicio/panel_user.html:78
+#, fuzzy
+msgid "Cursos inscritos"
+msgstr "Instrutor"
+
+#: now_lms/templates/inicio/panel_user.html:101
+#: now_lms/templates/masterclass/detail_public.html:23
+#: now_lms/templates/masterclass/enroll.html:23
+#: now_lms/templates/perfiles/instructor.html:158
+#: now_lms/templates/themes/amber/navbar.j2:64
+#: now_lms/templates/themes/cambridge/navbar.j2:58
+#: now_lms/templates/themes/classic/navbar.j2:64
+#: now_lms/templates/themes/finance/navbar.j2:66
+#: now_lms/templates/themes/golden/navbar.j2:63
+#: now_lms/templates/themes/harvard/navbar.j2:58
+#: now_lms/templates/themes/lime/navbar.j2:64
+#: now_lms/templates/themes/nebula/navbar.j2:64
+#: now_lms/templates/themes/now_lms/navbar.j2:69
+#: now_lms/templates/themes/ocean/navbar.j2:58
+#: now_lms/templates/themes/oxford/navbar.j2:70
+#: now_lms/templates/themes/sakura/navbar.j2:70
+msgid "Clases Magistrales"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_user.html:104
+#: now_lms/templates/masterclass/detail_public.html:85
+msgid "Próximamente"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_user.html:115
+#: now_lms/templates/perfiles/instructor.html:172
+msgid "Ver Clases"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_user.html:130
+msgid "Logros obtenidos"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_user.html:167
+msgid "Buscar Más"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_user.html:188
+#, fuzzy
+msgid "Continuar aprendiendo"
+msgstr "Conteúdo do Curso"
+
+#: now_lms/templates/inicio/panel_user.html:201
+msgid "¡Comienza tu viaje de aprendizaje!"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_user.html:203
+msgid "Explora nuestra amplia gama de cursos y encuentra el perfecto para ti."
+msgstr ""
+
+#: now_lms/templates/inicio/panel_user.html:221
+msgid "Centro de Comunicación"
+msgstr ""
+
+#: now_lms/templates/inicio/panel_user.html:226
+msgid ""
+"Mantente conectado con tus instructores y compañeros de clase. Haz "
+"preguntas,\n"
+"                                    participa en discusiones y recibe "
+"apoyo."
+msgstr ""
+
+#: now_lms/templates/inicio/panel_user.html:242
+#, fuzzy
+msgid "Recursos de Aprendizaje"
+msgstr "Aprendizagem"
+
+#: now_lms/templates/inicio/panel_user.html:265
+#, fuzzy
+msgid "Mis Logros"
+msgstr "Cursos"
 
 #: now_lms/templates/inicio/perfil.html:7
 msgid "Perfil"
@@ -3163,9 +3680,191 @@ msgstr "Perfil"
 msgid "Perfil de"
 msgstr ""
 
+#: now_lms/templates/inicio/perfil.html:85
+#: now_lms/templates/inicio/perfil.html:133
+#, fuzzy
+msgid "Editar Perfil"
+msgstr "Perfil"
+
+#: now_lms/templates/inicio/perfil.html:147
+#, fuzzy
+msgid "Información Personal"
+msgstr "Atualizar Configuração"
+
+#: now_lms/templates/inicio/perfil.html:152
+msgid "Sobre mí"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil.html:159
+#: now_lms/templates/inicio/perfil_editar.html:57
+msgid "Género"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil.html:170
+#: now_lms/templates/inicio/perfil_editar.html:65
+msgid "Nacimiento"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil.html:174
+#, fuzzy
+msgid "Fecha de Alta"
+msgstr "Data de Início"
+
+#: now_lms/templates/inicio/perfil.html:184
+msgid "Enlaces Sociales"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil.html:191
+#: now_lms/templates/inicio/perfil_editar.html:88
+#, fuzzy
+msgid "Sitio Web"
+msgstr "Nome do Site"
+
+#: now_lms/templates/inicio/perfil.html:256
+#, fuzzy
+msgid "Mis Cursos Inscritos"
+msgstr "Cursos"
+
+#: now_lms/templates/inicio/perfil.html:258
+msgid "Explora tus cursos activos y progreso de aprendizaje"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil.html:285
+msgid "No tienes cursos inscritos actualmente."
+msgstr ""
+
+#: now_lms/templates/inicio/perfil.html:299
+#, fuzzy
+msgid "Mis Certificaciones"
+msgstr "Certificações"
+
+#: now_lms/templates/inicio/perfil.html:300
+msgid "Tus logros y certificaciones obtenidas"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil.html:322
+#: now_lms/templates/learning/certificados/certificado.html:44
+#: now_lms/templates/learning/certificados/emitir_certificado.html:52
+msgid "Nota"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil.html:334
+msgid "No tienes certificaciones obtenidas aún."
+msgstr ""
+
+#: now_lms/templates/inicio/perfil.html:344
+#: now_lms/templates/perfiles/estudiante.html:7
+#: now_lms/templates/perfiles/estudiante.html:43
+#, fuzzy
+msgid "Panel de Estudiante"
+msgstr "Estudante"
+
+#: now_lms/templates/inicio/perfil.html:347
+msgid ""
+"Accede al panel de estudiante para gestionar tu aprendizaje de manera "
+"completa."
+msgstr ""
+
+#: now_lms/templates/inicio/perfil.html:357
+#: now_lms/templates/inicio/perfil.html:422
+#: now_lms/templates/inicio/perfil.html:445
+#: now_lms/templates/inicio/perfil.html:468
+msgid "Ir al Panel"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil.html:370
+#, fuzzy
+msgid "Mis Cursos Creados"
+msgstr "Cursos"
+
+#: now_lms/templates/inicio/perfil.html:410
+#, fuzzy
+msgid "Panel de Instructor"
+msgstr "Painel do Instrutor"
+
+#: now_lms/templates/inicio/perfil.html:413
+msgid "Accede al panel de instructor para gestionar cursos, evaluaciones y más."
+msgstr ""
+
+#: now_lms/templates/inicio/perfil.html:433
+#: now_lms/templates/perfiles/admin.html:7
+#, fuzzy
+msgid "Panel de Administración"
+msgstr "Administração"
+
+#: now_lms/templates/inicio/perfil.html:436
+msgid "Accede al panel de administración para gestionar el sistema completo."
+msgstr ""
+
+#: now_lms/templates/inicio/perfil.html:456
+#: now_lms/templates/perfiles/moderador.html:6
+#, fuzzy
+msgid "Panel de Moderación"
+msgstr "Administração"
+
+#: now_lms/templates/inicio/perfil.html:459
+#: now_lms/templates/perfiles/moderador.html:36
+msgid "Gestiona los mensajes y comunicaciones del sistema."
+msgstr ""
+
 #: now_lms/templates/inicio/perfil_editar.html:6
 msgid "Editar perfil."
 msgstr ""
+
+#: now_lms/templates/inicio/perfil_editar.html:19
+#, fuzzy
+msgid "Editar perfil del usuario"
+msgstr "Nome do Site"
+
+#: now_lms/templates/inicio/perfil_editar.html:33
+msgid "Eliminar Imagen de Perfil"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil_editar.html:36
+#, fuzzy
+msgid "Imagen de Perfil"
+msgstr "Perfil"
+
+#: now_lms/templates/inicio/perfil_editar.html:42
+#: now_lms/templates/masterclass/instructor_create.html:45
+#: now_lms/templates/masterclass/instructor_edit.html:45
+#, fuzzy
+msgid "Información Básica"
+msgstr "Informação"
+
+#: now_lms/templates/inicio/perfil_editar.html:72
+msgid "Biografía"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil_editar.html:86
+#, fuzzy
+msgid "Información de Contacto"
+msgstr "Painel do Instrutor"
+
+#: now_lms/templates/inicio/perfil_editar.html:92
+msgid "LinkedIn"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil_editar.html:96
+msgid "Twitter"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil_editar.html:103
+msgid "Facebook"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil_editar.html:107
+msgid "GitHub"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil_editar.html:111
+msgid "YouTube"
+msgstr ""
+
+#: now_lms/templates/inicio/perfil_editar.html:119
+#, fuzzy
+msgid "Actualizar Perfil"
+msgstr "Atualizar"
 
 #: now_lms/templates/inicio/private.html:24
 msgid "Perfil Privado"
@@ -3176,12 +3875,74 @@ msgid "El perfil del usuario solicitado es privado."
 msgstr ""
 
 #: now_lms/templates/inicio/programas.html:7
+#: now_lms/templates/themes/classic/overrides/program_list.j2:7
 msgid "Programas Disponibles"
 msgstr ""
+
+#: now_lms/templates/inicio/programas.html:454
+#: now_lms/templates/themes/classic/overrides/program_list.j2:454
+#, fuzzy
+msgid "Programas disponibles"
+msgstr "Certificações"
+
+#: now_lms/templates/inicio/programas.html:465
+#: now_lms/templates/inicio/programas.html:616
+#: now_lms/templates/themes/classic/overrides/program_list.j2:465
+#: now_lms/templates/themes/classic/overrides/program_list.j2:617
+#, fuzzy
+msgid "programas encontrados"
+msgstr "Programas"
+
+#: now_lms/templates/inicio/programas.html:535
+#: now_lms/templates/themes/classic/overrides/program_list.j2:535
+#, fuzzy
+msgid "cursos"
+msgstr "Cursos"
+
+#: now_lms/templates/inicio/programas.html:574
+#: now_lms/templates/themes/classic/overrides/program_list.j2:575
+#, fuzzy
+msgid "Ver Programa"
+msgstr "Programa"
+
+#: now_lms/templates/inicio/programas.html:588
+#: now_lms/templates/themes/classic/overrides/program_list.j2:589
+#, fuzzy
+msgid "No hay programas disponibles"
+msgstr "Certificações"
+
+#: now_lms/templates/inicio/programas.html:590
+#: now_lms/templates/themes/classic/overrides/program_list.j2:591
+msgid ""
+"Actualmente no hay programas disponibles. Por favor, inténtelo más tarde "
+"o contacte al\n"
+"                                administrador."
+msgstr ""
+
+#: now_lms/templates/inicio/programas.html:648
+#: now_lms/templates/themes/classic/overrides/program_list.j2:649
+#, fuzzy
+msgid "Filtrar Programas"
+msgstr "Programa"
 
 #: now_lms/templates/inicio/recursos.html:7
 msgid "Recursos Disponibles"
 msgstr ""
+
+#: now_lms/templates/inicio/recursos.html:26
+#, fuzzy
+msgid "Recursos disponibles"
+msgstr "Cursos"
+
+#: now_lms/templates/inicio/recursos.html:112
+#, fuzzy
+msgid "Ver Recurso"
+msgstr "Recurso"
+
+#: now_lms/templates/inicio/recursos.html:141
+#, fuzzy
+msgid "Navegar Cursos"
+msgstr "Criar Curso"
 
 #: now_lms/templates/learning/curso.html:45
 #: now_lms/templates/learning/curso/curso.html:45
@@ -3586,8 +4347,17 @@ msgstr "Total"
 #: now_lms/templates/learning/programas/lista_cursos.html:18
 #: now_lms/templates/learning/programas/lista_programas.html:47
 #: now_lms/templates/learning/programas/tomar_programa.html:35
+#: now_lms/templates/themes/amber/navbar.j2:47
 #: now_lms/templates/themes/cambridge/navbar.j2:46
+#: now_lms/templates/themes/classic/navbar.j2:47
+#: now_lms/templates/themes/golden/navbar.j2:46
+#: now_lms/templates/themes/harvard/navbar.j2:46
+#: now_lms/templates/themes/lime/navbar.j2:47
+#: now_lms/templates/themes/nebula/navbar.j2:47
 #: now_lms/templates/themes/now_lms/navbar.j2:51
+#: now_lms/templates/themes/ocean/navbar.j2:46
+#: now_lms/templates/themes/oxford/navbar.j2:52
+#: now_lms/templates/themes/sakura/navbar.j2:52
 msgid "Cursos"
 msgstr "Cursos"
 
@@ -3713,11 +4483,6 @@ msgstr ""
 
 #: now_lms/templates/learning/certificados/certificado.html:42
 msgid "Fecha de Emisión"
-msgstr ""
-
-#: now_lms/templates/learning/certificados/certificado.html:44
-#: now_lms/templates/learning/certificados/emitir_certificado.html:52
-msgid "Nota"
 msgstr ""
 
 #: now_lms/templates/learning/certificados/certificado.html:55
@@ -4767,10 +5532,6 @@ msgstr "Fuso Horário"
 msgid "Inscritos"
 msgstr "Instrutor"
 
-#: now_lms/templates/masterclass/admin_list.html:57
-msgid "{{ master_class.instructor.usuario }}"
-msgstr ""
-
 #: now_lms/templates/masterclass/admin_list.html:66
 #: now_lms/templates/masterclass/admin_list.html:180
 #: now_lms/templates/masterclass/instructor_list.html:55
@@ -4797,6 +5558,7 @@ msgstr "Certificado"
 #: now_lms/templates/masterclass/instructor_list.html:103
 #: now_lms/templates/masterclass/list_public.html:118
 #: now_lms/templates/masterclass/my_enrollments.html:133
+#: now_lms/templates/themes/golden/pagination.j2:5
 msgid "Navegación de páginas"
 msgstr ""
 
@@ -4832,13 +5594,6 @@ msgstr ""
 msgid "breadcrumb"
 msgstr ""
 
-#: now_lms/templates/masterclass/detail_public.html:23
-#: now_lms/templates/masterclass/enroll.html:23
-#: now_lms/templates/themes/cambridge/navbar.j2:58
-#: now_lms/templates/themes/now_lms/navbar.j2:69
-msgid "Clases Magistrales"
-msgstr ""
-
 #: now_lms/templates/masterclass/detail_public.html:42
 msgid "¡Sesión en Progreso - Haz clic para unirte!"
 msgstr ""
@@ -4868,10 +5623,6 @@ msgstr "Data"
 #, fuzzy
 msgid "Horario:"
 msgstr "Fuso Horário"
-
-#: now_lms/templates/masterclass/detail_public.html:85
-msgid "Próximamente"
-msgstr ""
 
 #: now_lms/templates/masterclass/detail_public.html:89
 #, fuzzy
@@ -4922,12 +5673,6 @@ msgstr ""
 msgid "Mis Clases Magistrales"
 msgstr ""
 
-#: now_lms/templates/masterclass/instructor_create.html:45
-#: now_lms/templates/masterclass/instructor_edit.html:45
-#, fuzzy
-msgid "Información Básica"
-msgstr "Informação"
-
 #: now_lms/templates/masterclass/instructor_create.html:70
 #: now_lms/templates/masterclass/instructor_edit.html:70
 msgid "Esta descripción será visible para todos los usuarios."
@@ -4957,10 +5702,6 @@ msgstr ""
 
 #: now_lms/templates/masterclass/list_public.html:158
 msgid "Vuelve pronto para ver nuevas clases magistrales."
-msgstr ""
-
-#: now_lms/templates/masterclass/my_enrollments.html:30
-msgid "{{ master_class.title }}"
 msgstr ""
 
 #: now_lms/templates/masterclass/my_enrollments.html:66
@@ -5173,11 +5914,6 @@ msgstr ""
 msgid "haga clic aquí"
 msgstr ""
 
-#: now_lms/templates/perfiles/admin.html:7
-#, fuzzy
-msgid "Panel de Administración"
-msgstr "Administração"
-
 #: now_lms/templates/perfiles/admin.html:49
 msgid "Bienvenido, Administrador"
 msgstr ""
@@ -5255,6 +5991,7 @@ msgid "Correo SMTP"
 msgstr ""
 
 #: now_lms/templates/perfiles/admin.html:329
+#: now_lms/templates/perfiles/instructor.html:328
 #, fuzzy
 msgid "Contenido"
 msgstr "Conteúdo do Curso"
@@ -5271,20 +6008,9 @@ msgstr ""
 msgid "AdSense"
 msgstr ""
 
-#: now_lms/templates/perfiles/estudiante.html:7
-#: now_lms/templates/perfiles/estudiante.html:43
-#, fuzzy
-msgid "Panel de Estudiante"
-msgstr "Estudante"
-
 #: now_lms/templates/perfiles/estudiante.html:65
 msgid "Panel principal del estudiante para gestionar tu aprendizaje."
 msgstr ""
-
-#: now_lms/templates/perfiles/estudiante.html:72
-#, fuzzy
-msgid "Mis Cursos"
-msgstr "Cursos"
 
 #: now_lms/templates/perfiles/estudiante.html:73
 msgid "Accede a tus cursos inscritos"
@@ -5310,27 +6036,92 @@ msgstr "Perfil"
 msgid "Revisa tus logros obtenidos"
 msgstr ""
 
-#: now_lms/templates/perfiles/instructor.html:157
+#: now_lms/templates/perfiles/instructor.html:53
+msgid "Tu centro de enseñanza y gestión académica"
+msgstr ""
+
+#: now_lms/templates/perfiles/instructor.html:83
+#, fuzzy
+msgid "Total de cursos"
+msgstr "Conteúdo do Curso"
+
+#: now_lms/templates/perfiles/instructor.html:109
+#, fuzzy
+msgid "En mis cursos"
+msgstr "Cursos"
+
+#: now_lms/templates/perfiles/instructor.html:132
+#: now_lms/templates/perfiles/instructor.html:355
+#, fuzzy
+msgid "Evaluaciones"
+msgstr "Avaliações"
+
+#: now_lms/templates/perfiles/instructor.html:135
+#, fuzzy
+msgid "Evaluaciones creadas"
+msgstr "Avaliações"
+
+#: now_lms/templates/perfiles/instructor.html:146
+#, fuzzy
+msgid "Ver Evaluaciones"
+msgstr "Avaliações"
+
+#: now_lms/templates/perfiles/instructor.html:161
 msgid "Clases disponibles"
 msgstr ""
 
-#: now_lms/templates/perfiles/instructor.html:232
+#: now_lms/templates/perfiles/instructor.html:237
 msgid "No hay cursos creados aún"
 msgstr ""
 
-#: now_lms/templates/perfiles/moderador.html:6
+#: now_lms/templates/perfiles/instructor.html:239
 #, fuzzy
-msgid "Panel de Moderación"
-msgstr "Administração"
+msgid "Crear Primer Curso"
+msgstr "Criar Curso"
+
+#: now_lms/templates/perfiles/instructor.html:268
+#, fuzzy
+msgid "Nueva Evaluación"
+msgstr "Avaliação"
+
+#: now_lms/templates/perfiles/instructor.html:276
+#, fuzzy
+msgid "Nuevo Programa"
+msgstr "Programa"
+
+#: now_lms/templates/perfiles/instructor.html:284
+#, fuzzy
+msgid "Nueva Clase"
+msgstr "Categorias"
+
+#: now_lms/templates/perfiles/instructor.html:295
+msgid "Herramientas de Gestión"
+msgstr ""
+
+#: now_lms/templates/perfiles/instructor.html:305
+#, fuzzy
+msgid "Cursos y Programas"
+msgstr "Programa"
+
+#: now_lms/templates/perfiles/instructor.html:349
+#, fuzzy
+msgid "Evaluación y Certificación"
+msgstr "Certificações"
+
+#: now_lms/templates/perfiles/instructor.html:360
+#, fuzzy
+msgid "Certificados"
+msgstr "Certificado"
+
+#: now_lms/templates/perfiles/instructor.html:372
+#, fuzzy
+msgid "Comunicación"
+msgstr "Configuração"
 
 #: now_lms/templates/perfiles/moderador.html:34
 #, fuzzy
 msgid "Bienvenido Moderador"
 msgstr "Bem-vindo"
-
-#: now_lms/templates/perfiles/moderador.html:36
-msgid "Gestiona los mensajes y comunicaciones del sistema."
-msgstr ""
 
 #: now_lms/templates/perfiles/moderador.html:44
 msgid "Gestiona las conversaciones de usuarios"
@@ -5377,32 +6168,792 @@ msgstr ""
 msgid "Aplicación para gestión del aprendizaje."
 msgstr ""
 
+#: now_lms/templates/themes/amber/navbar.j2:39
+#: now_lms/templates/themes/classic/navbar.j2:39
+#: now_lms/templates/themes/golden/navbar.j2:38
+#: now_lms/templates/themes/nebula/navbar.j2:39
+msgid "Academia"
+msgstr ""
+
+#: now_lms/templates/themes/amber/navbar.j2:43
+#: now_lms/templates/themes/classic/navbar.j2:43
+#: now_lms/templates/themes/golden/navbar.j2:42
+#: now_lms/templates/themes/nebula/navbar.j2:43
+msgid "Mi Academia"
+msgstr ""
+
+#: now_lms/templates/themes/amber/navbar.j2:71
 #: now_lms/templates/themes/cambridge/navbar.j2:63
+#: now_lms/templates/themes/classic/navbar.j2:75
+#: now_lms/templates/themes/finance/navbar.j2:73
+#: now_lms/templates/themes/golden/navbar.j2:70
+#: now_lms/templates/themes/harvard/navbar.j2:63
+#: now_lms/templates/themes/lime/navbar.j2:71
+#: now_lms/templates/themes/nebula/navbar.j2:71
+#: now_lms/templates/themes/now_lms/navbar.j2:76
+#: now_lms/templates/themes/ocean/navbar.j2:67
+#: now_lms/templates/themes/oxford/navbar.j2:77
+#: now_lms/templates/themes/sakura/navbar.j2:77
 msgid "Moderación"
 msgstr ""
 
+#: now_lms/templates/themes/amber/navbar.j2:77
 #: now_lms/templates/themes/cambridge/navbar.j2:67
+#: now_lms/templates/themes/classic/navbar.j2:81
+#: now_lms/templates/themes/finance/navbar.j2:79
+#: now_lms/templates/themes/golden/navbar.j2:76
+#: now_lms/templates/themes/harvard/navbar.j2:67
+#: now_lms/templates/themes/lime/navbar.j2:77
+#: now_lms/templates/themes/nebula/navbar.j2:77
+#: now_lms/templates/themes/now_lms/navbar.j2:82
+#: now_lms/templates/themes/ocean/navbar.j2:71
+#: now_lms/templates/themes/oxford/navbar.j2:83
+#: now_lms/templates/themes/sakura/navbar.j2:83
 msgid "Docente"
 msgstr ""
 
+#: now_lms/templates/themes/amber/navbar.j2:113
 #: now_lms/templates/themes/cambridge/navbar.j2:98
+#: now_lms/templates/themes/classic/navbar.j2:117
+#: now_lms/templates/themes/corporative/navbar.j2:101
+#: now_lms/templates/themes/finance/navbar.j2:115
+#: now_lms/templates/themes/golden/navbar.j2:122
+#: now_lms/templates/themes/harvard/navbar.j2:98
+#: now_lms/templates/themes/lime/navbar.j2:113
+#: now_lms/templates/themes/nebula/navbar.j2:113
+#: now_lms/templates/themes/now_lms/navbar.j2:117
+#: now_lms/templates/themes/ocean/navbar.j2:102
+#: now_lms/templates/themes/oxford/navbar.j2:119
+#: now_lms/templates/themes/sakura/navbar.j2:118
 msgid "Perfil de Usuario"
 msgstr ""
 
+#: now_lms/templates/themes/amber/navbar.j2:135
 #: now_lms/templates/themes/cambridge/navbar.j2:114
+#: now_lms/templates/themes/classic/navbar.j2:139
+#: now_lms/templates/themes/corporative/navbar.j2:123
+#: now_lms/templates/themes/finance/navbar.j2:137
+#: now_lms/templates/themes/golden/navbar.j2:144
+#: now_lms/templates/themes/harvard/navbar.j2:114
+#: now_lms/templates/themes/lime/navbar.j2:135
+#: now_lms/templates/themes/nebula/navbar.j2:135
+#: now_lms/templates/themes/now_lms/navbar.j2:139
+#: now_lms/templates/themes/ocean/navbar.j2:118
+#: now_lms/templates/themes/oxford/navbar.j2:141
+#: now_lms/templates/themes/sakura/navbar.j2:140
 msgid "Cerrar Sesión"
 msgstr ""
 
+#: now_lms/templates/themes/amber/navbar.j2:167
 #: now_lms/templates/themes/cambridge/navbar.j2:141
+#: now_lms/templates/themes/classic/navbar.j2:171
+#: now_lms/templates/themes/corporative/navbar.j2:155
+#: now_lms/templates/themes/finance/navbar.j2:169
+#: now_lms/templates/themes/golden/navbar.j2:176
+#: now_lms/templates/themes/harvard/navbar.j2:139
+#: now_lms/templates/themes/lime/navbar.j2:165
+#: now_lms/templates/themes/nebula/navbar.j2:167
+#: now_lms/templates/themes/now_lms/navbar.j2:165
+#: now_lms/templates/themes/ocean/navbar.j2:143
+#: now_lms/templates/themes/oxford/navbar.j2:169
+#: now_lms/templates/themes/sakura/navbar.j2:166
 msgid "Versión"
 msgstr "Versão"
 
+#: now_lms/templates/themes/amber/navbar.j2:200
 #: now_lms/templates/themes/cambridge/navbar.j2:165
+#: now_lms/templates/themes/classic/navbar.j2:204
+#: now_lms/templates/themes/corporative/navbar.j2:188
+#: now_lms/templates/themes/finance/navbar.j2:202
+#: now_lms/templates/themes/golden/navbar.j2:209
+#: now_lms/templates/themes/harvard/navbar.j2:163
+#: now_lms/templates/themes/lime/navbar.j2:198
+#: now_lms/templates/themes/nebula/navbar.j2:200
+#: now_lms/templates/themes/now_lms/navbar.j2:189
+#: now_lms/templates/themes/ocean/navbar.j2:167
+#: now_lms/templates/themes/oxford/navbar.j2:193
+#: now_lms/templates/themes/sakura/navbar.j2:190
 msgid "Manual de Usuario"
 msgstr ""
 
+#: now_lms/templates/themes/amber/navbar.j2:207
 #: now_lms/templates/themes/cambridge/navbar.j2:172
+#: now_lms/templates/themes/classic/navbar.j2:211
+#: now_lms/templates/themes/corporative/navbar.j2:195
+#: now_lms/templates/themes/finance/navbar.j2:209
+#: now_lms/templates/themes/golden/navbar.j2:216
+#: now_lms/templates/themes/harvard/navbar.j2:170
+#: now_lms/templates/themes/lime/navbar.j2:205
+#: now_lms/templates/themes/nebula/navbar.j2:207
+#: now_lms/templates/themes/now_lms/navbar.j2:196
+#: now_lms/templates/themes/ocean/navbar.j2:174
+#: now_lms/templates/themes/oxford/navbar.j2:200
+#: now_lms/templates/themes/sakura/navbar.j2:197
 msgid "Manual de Administración"
+msgstr ""
+
+#: now_lms/templates/themes/amber/pagination.j2:3
+#: now_lms/templates/themes/cambridge/pagination.j2:3
+#: now_lms/templates/themes/classic/pagination.j2:3
+#: now_lms/templates/themes/corporative/pagination.j2:3
+#: now_lms/templates/themes/finance/pagination.j2:3
+#: now_lms/templates/themes/harvard/pagination.j2:3
+#: now_lms/templates/themes/lime/pagination.j2:3
+#: now_lms/templates/themes/nebula/pagination.j2:3
+#: now_lms/templates/themes/now_lms/pagination.j2:3
+#: now_lms/templates/themes/ocean/pagination.j2:3
+#: now_lms/templates/themes/oxford/pagination.j2:3
+#: now_lms/templates/themes/sakura/pagination.j2:3
+msgid "items encontrados"
+msgstr ""
+
+#: now_lms/templates/themes/amber/overrides/home.j2:27
+msgid ""
+"Experimenta el aprendizaje en su forma más pura y elegante con nuestro "
+"diseño clásico.\n"
+"                                Nuestra plataforma está diseñada para "
+"brindar una experiencia de aprendizaje excepcional."
+msgstr ""
+
+#: now_lms/templates/themes/amber/overrides/home.j2:90
+#: now_lms/templates/themes/cambridge/overrides/home.j2:108
+#: now_lms/templates/themes/classic/overrides/home.j2:90
+#: now_lms/templates/themes/corporative/overrides/home.j2:52
+#: now_lms/templates/themes/ocean/overrides/home.j2:90
+#: now_lms/templates/themes/oxford/overrides/home.j2:103
+#: now_lms/templates/themes/sakura/overrides/home.j2:90
+msgid ""
+"Descubre una nueva forma de aprender con nuestra plataforma educativa "
+"moderna y eficiente."
+msgstr ""
+
+#: now_lms/templates/themes/amber/overrides/home.j2:123
+#: now_lms/templates/themes/cambridge/overrides/home.j2:141
+#: now_lms/templates/themes/classic/overrides/home.j2:123
+#: now_lms/templates/themes/corporative/overrides/home.j2:85
+#: now_lms/templates/themes/golden/overrides/home.j2:155
+#: now_lms/templates/themes/ocean/overrides/home.j2:123
+#: now_lms/templates/themes/oxford/overrides/home.j2:136
+#: now_lms/templates/themes/sakura/overrides/home.j2:123
+msgid ""
+"Accede a una amplia variedad de cursos diseñados por expertos en cada "
+"área de\n"
+"                                conocimiento."
+msgstr ""
+
+#: now_lms/templates/themes/amber/overrides/home.j2:155
+#: now_lms/templates/themes/cambridge/overrides/home.j2:173
+#: now_lms/templates/themes/classic/overrides/home.j2:155
+#: now_lms/templates/themes/corporative/overrides/home.j2:117
+#: now_lms/templates/themes/golden/overrides/home.j2:167
+#: now_lms/templates/themes/ocean/overrides/home.j2:155
+#: now_lms/templates/themes/oxford/overrides/home.j2:168
+#: now_lms/templates/themes/sakura/overrides/home.j2:155
+msgid ""
+"Únete a una comunidad de estudiantes y profesionales que comparten tus "
+"intereses y\n"
+"                                objetivos."
+msgstr ""
+
+#: now_lms/templates/themes/amber/overrides/home.j2:187
+#: now_lms/templates/themes/cambridge/overrides/home.j2:205
+#: now_lms/templates/themes/classic/overrides/home.j2:187
+#: now_lms/templates/themes/corporative/overrides/home.j2:149
+#: now_lms/templates/themes/golden/overrides/home.j2:179
+#: now_lms/templates/themes/ocean/overrides/home.j2:187
+#: now_lms/templates/themes/oxford/overrides/home.j2:200
+#: now_lms/templates/themes/sakura/overrides/home.j2:187
+msgid ""
+"Obtén certificaciones reconocidas que validen tu conocimiento y impulsen "
+"tu carrera\n"
+"                                profesional."
+msgstr ""
+
+#: now_lms/templates/themes/amber/overrides/home.j2:202
+#: now_lms/templates/themes/classic/overrides/home.j2:202
+#: now_lms/templates/themes/golden/overrides/home.j2:190
+#, fuzzy
+msgid "Cursos Destacados"
+msgstr "Moderador"
+
+#: now_lms/templates/themes/amber/overrides/home.j2:204
+#: now_lms/templates/themes/classic/overrides/home.j2:204
+msgid ""
+"Explora nuestra selección de cursos diseñados para tu crecimiento "
+"profesional."
+msgstr ""
+
+#: now_lms/templates/themes/amber/overrides/home.j2:242
+#: now_lms/templates/themes/classic/overrides/home.j2:242
+#: now_lms/templates/themes/corporative/overrides/home.j2:217
+#, fuzzy
+msgid "Nivel Introductorio"
+msgstr "Painel do Instrutor"
+
+#: now_lms/templates/themes/amber/overrides/home.j2:246
+#: now_lms/templates/themes/classic/overrides/home.j2:246
+#: now_lms/templates/themes/corporative/overrides/home.j2:221
+#, fuzzy
+msgid "Nivel Principiante"
+msgstr "Iniciante"
+
+#: now_lms/templates/themes/amber/overrides/home.j2:250
+#: now_lms/templates/themes/classic/overrides/home.j2:250
+#: now_lms/templates/themes/corporative/overrides/home.j2:225
+#, fuzzy
+msgid "Nivel Intermedio"
+msgstr "Intermediário"
+
+#: now_lms/templates/themes/amber/overrides/home.j2:254
+#: now_lms/templates/themes/classic/overrides/home.j2:254
+#: now_lms/templates/themes/corporative/overrides/home.j2:229
+#, fuzzy
+msgid "Nivel Avanzado"
+msgstr "Avançado"
+
+#: now_lms/templates/themes/amber/overrides/home.j2:286
+#: now_lms/templates/themes/classic/overrides/home.j2:286
+#: now_lms/templates/themes/golden/overrides/home.j2:266
+msgid "Ver Todos los Cursos"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/overrides/home.j2:68
+msgid "Iniciar Experimentación"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/overrides/home.j2:74
+msgid "Explorar Laboratorio"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/overrides/home.j2:81
+msgid "Mi Laboratorio"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/overrides/home.j2:87
+msgid "Ver Protocolos"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/overrides/home.j2:221
+msgid "Laboratorio de Investigación"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/overrides/home.j2:224
+msgid "Protocolos experimentales para el aprendizaje avanzado"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/overrides/home.j2:259
+#, fuzzy
+msgid "MUESTRA"
+msgstr "Status"
+
+#: now_lms/templates/themes/cambridge/overrides/home.j2:295
+msgid "de experimento"
+msgstr ""
+
+#: now_lms/templates/themes/cambridge/overrides/home.j2:307
+#, fuzzy
+msgid "Básico"
+msgstr "Aplicar"
+
+#: now_lms/templates/themes/cambridge/overrides/home.j2:308
+#, fuzzy
+msgid "Experto"
+msgstr "Porta"
+
+#: now_lms/templates/themes/cambridge/overrides/home.j2:339
+#, fuzzy
+msgid "Ver Protocolo"
+msgstr "Perfil"
+
+#: now_lms/templates/themes/cambridge/overrides/home.j2:359
+msgid "Explorar Todo el Laboratorio"
+msgstr ""
+
+#: now_lms/templates/themes/corporative/overrides/home.j2:15
+msgid "Capacitación que impulsa tu negocio."
+msgstr ""
+
+#: now_lms/templates/themes/corporative/overrides/home.j2:20
+msgid "ACCEDER"
+msgstr ""
+
+#: now_lms/templates/themes/corporative/overrides/home.j2:23
+#: now_lms/templates/themes/corporative/overrides/home.j2:30
+#, fuzzy
+msgid "VER CURSOS"
+msgstr "Recursos"
+
+#: now_lms/templates/themes/corporative/overrides/home.j2:27
+msgid "MI PANEL"
+msgstr ""
+
+#: now_lms/templates/themes/corporative/overrides/home.j2:165
+msgid "Desarrollo Profesional Corporativo"
+msgstr ""
+
+#: now_lms/templates/themes/corporative/overrides/home.j2:168
+msgid "Soluciones de capacitación empresarial para el crecimiento organizacional."
+msgstr ""
+
+#: now_lms/templates/themes/corporative/overrides/home.j2:214
+#, fuzzy
+msgid "Complimentario"
+msgstr "Comentários"
+
+#: now_lms/templates/themes/corporative/overrides/home.j2:230
+#, fuzzy
+msgid "Ejecutivo"
+msgstr "Ativo"
+
+#: now_lms/templates/themes/corporative/overrides/home.j2:243
+#, fuzzy
+msgid "Acceder al Curso"
+msgstr "Criar Curso"
+
+#: now_lms/templates/themes/corporative/overrides/home.j2:266
+msgid "Catálogo Completo de Capacitación"
+msgstr ""
+
+#: now_lms/templates/themes/finance/navbar.j2:43
+#, fuzzy
+msgid "Panel Federal"
+msgstr "Administração"
+
+#: now_lms/templates/themes/finance/navbar.j2:48
+#, fuzzy
+msgid "Cursos Financieros"
+msgstr "Inativo"
+
+#: now_lms/templates/themes/finance/overrides/home.j2:71
+msgid "Inversión en Conocimiento Financiero"
+msgstr ""
+
+#: now_lms/templates/themes/finance/overrides/home.j2:73
+msgid ""
+"Maximiza tus retornos educativos con nuestra plataforma de aprendizaje "
+"financiero de\n"
+"                                alto rendimiento. Diversifica tu "
+"portafolio de conocimientos con cursos premium del mercado\n"
+"                                educativo."
+msgstr ""
+
+#: now_lms/templates/themes/finance/overrides/home.j2:80
+msgid "Invertir Ahora"
+msgstr ""
+
+#: now_lms/templates/themes/finance/overrides/home.j2:86
+msgid "Ver Oportunidades"
+msgstr ""
+
+#: now_lms/templates/themes/finance/overrides/home.j2:90
+msgid "Mi Portafolio"
+msgstr ""
+
+#: now_lms/templates/themes/finance/overrides/home.j2:96
+msgid "Explorar Mercado"
+msgstr ""
+
+#: now_lms/templates/themes/finance/overrides/home.j2:142
+#, fuzzy
+msgid "Educación"
+msgstr "Duração"
+
+#: now_lms/templates/themes/finance/overrides/home.j2:143
+#, fuzzy
+msgid "Financiera"
+msgstr "Habilitado"
+
+#: now_lms/templates/themes/finance/overrides/home.j2:158
+msgid "Invierte en tu Futuro Financiero"
+msgstr ""
+
+#: now_lms/templates/themes/finance/overrides/home.j2:161
+msgid ""
+"Diversifica tu portafolio de conocimientos con nuestros activos "
+"educativos de alto\n"
+"                            rendimiento y bajo riesgo."
+msgstr ""
+
+#: now_lms/templates/themes/finance/overrides/home.j2:193
+msgid "Activos Premium"
+msgstr ""
+
+#: now_lms/templates/themes/finance/overrides/home.j2:195
+msgid ""
+"Cursos de alto valor diseñados por analistas financieros y expertos en "
+"inversión para\n"
+"                                maximizar tu ROI educativo."
+msgstr ""
+
+#: now_lms/templates/themes/finance/overrides/home.j2:226
+msgid "Red de Inversores"
+msgstr ""
+
+#: now_lms/templates/themes/finance/overrides/home.j2:228
+msgid ""
+"Conecta con traders, analistas y gestores de fondos en nuestra exclusiva "
+"red de\n"
+"                                profesionales del sector financiero."
+msgstr ""
+
+#: now_lms/templates/themes/finance/overrides/home.j2:259
+#, fuzzy
+msgid "Certificaciones Oro"
+msgstr "Certificações"
+
+#: now_lms/templates/themes/finance/overrides/home.j2:261
+msgid ""
+"Credenciales de oro que acreditan tu expertise financiero ante "
+"instituciones y\n"
+"                                empleadores del sector bursátil."
+msgstr ""
+
+#: now_lms/templates/themes/finance/overrides/home.j2:277
+msgid "Inversión en tu Futuro Financiero"
+msgstr ""
+
+#: now_lms/templates/themes/finance/overrides/home.j2:280
+msgid ""
+"Cursos especializados en finanzas para profesionales y empresarios "
+"exitosos."
+msgstr ""
+
+#: now_lms/templates/themes/finance/overrides/home.j2:364
+#, fuzzy
+msgid "Invertir en el Curso"
+msgstr "Conteúdo do Curso"
+
+#: now_lms/templates/themes/finance/overrides/home.j2:387
+msgid "Ver Portafolio Completo de Cursos"
+msgstr ""
+
+#: now_lms/templates/themes/golden/pagination.j2:3
+msgid "elementos encontrados"
+msgstr ""
+
+#: now_lms/templates/themes/golden/overrides/home.j2:51
+msgid "Aprende inglés"
+msgstr ""
+
+#: now_lms/templates/themes/golden/overrides/home.j2:53
+msgid "con confianza"
+msgstr ""
+
+#: now_lms/templates/themes/golden/overrides/home.j2:57
+msgid ""
+"Cursos dinámicos, prácticos y divertidos — Clases online en vivo, "
+"profesores nativos y\n"
+"                                material interactivo."
+msgstr ""
+
+#: now_lms/templates/themes/golden/overrides/home.j2:67
+msgid "Reserva tu clase gratis"
+msgstr ""
+
+#: now_lms/templates/themes/golden/overrides/home.j2:74
+#: now_lms/templates/themes/golden/overrides/home.j2:89
+#, fuzzy
+msgid "Ver cursos"
+msgstr "Recursos"
+
+#: now_lms/templates/themes/golden/overrides/home.j2:115
+msgid "Inglés"
+msgstr ""
+
+#: now_lms/templates/themes/golden/overrides/home.j2:138
+#, fuzzy
+msgid "Descubre Nuestros Cursos"
+msgstr "Criar Curso"
+
+#: now_lms/templates/themes/golden/overrides/home.j2:140
+msgid ""
+"Explora una nueva forma de aprender con nuestra plataforma educativa "
+"moderna y eficiente."
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:22
+msgid "Discute."
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:23
+#, fuzzy
+msgid "Analiza."
+msgstr "Habilitado"
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:24
+msgid "Transforma."
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:30
+msgid "El conocimiento no se memoriza, se debate."
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:38
+msgid "Unirse al Debate"
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:44
+msgid "Explorar Casos"
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:58
+#, fuzzy
+msgid "Ver Casos"
+msgstr "Criar Curso"
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:141
+msgid "Excelencia Académica Digital"
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:144
+msgid ""
+"Nuestra plataforma combina los más altos estándares académicos con "
+"tecnología de vanguardia\n"
+"                            para crear una experiencia educativa "
+"transformadora."
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:176
+#, fuzzy
+msgid "Cursos de Élite"
+msgstr "Cursos"
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:179
+msgid ""
+"Accede a una biblioteca curada de cursos diseñados por expertos "
+"académicos, con contenido\n"
+"                                riguroso y metodologías probadas."
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:210
+#, fuzzy
+msgid "Mentores Expertos"
+msgstr "Mensagens"
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:213
+msgid ""
+"Aprende de instructores distinguidos y profesionales reconocidos en sus "
+"campos, con años\n"
+"                                de experiencia académica y profesional."
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:244
+#, fuzzy
+msgid "Certificación Prestigiosa"
+msgstr "Certificações"
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:247
+msgid ""
+"Obtén certificaciones reconocidas que validen tu conocimiento y abran "
+"puertas en tu\n"
+"                                carrera profesional y académica."
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:263
+#, fuzzy
+msgid "Tasa de Finalización"
+msgstr "Avaliação"
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:269
+#, fuzzy
+msgid "Estudiantes Activos"
+msgstr "Estudantes Inscritos"
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:281
+msgid "Satisfacción Estudiantil"
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:298
+msgid "Casos reales. Debates auténticos. Soluciones transformadoras."
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:372
+msgid "Full Scholarship"
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:397
+#, fuzzy
+msgid "Analizar Caso"
+msgstr "Atualizar"
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:440
+msgid "Explorar Biblioteca de Casos"
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:471
+msgid ""
+"La educación es el arma más poderosa que puedes usar para cambiar el "
+"mundo. En\n"
+"                                    Harvard LMS, forjamos mentes "
+"brillantes para el futuro."
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:475
+msgid "Filosofía Educativa"
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:481
+msgid "¿Listo para Comenzar tu Viaje Académico?"
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:484
+msgid ""
+"Únete a nuestra comunidad de estudiantes excepcionales y descubre el "
+"poder del aprendizaje de\n"
+"                            calidad."
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:499
+#, fuzzy
+msgid "Registrarse Ahora"
+msgstr "Categorias"
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:506
+msgid "Continúa tu viaje académico y explora nuevas oportunidades de aprendizaje."
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:542
+msgid ""
+"Elevando los estándares de la educación digital con la tradición y "
+"excelencia académica que\n"
+"                            nos caracteriza."
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:549
+msgid "Todos los derechos reservados."
+msgstr ""
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:550
+msgid "Desarrollado con dedicación académica y excelencia tecnológica."
+msgstr ""
+
+#: now_lms/templates/themes/ocean/overrides/home.j2:27
+msgid ""
+"Descubre la tradición académica y la excelencia educativa que "
+"caracterizan a Cambridge.\n"
+"                                Nuestra plataforma está diseñada para "
+"brindar una experiencia de aprendizaje excepcional."
+msgstr ""
+
+#: now_lms/templates/themes/ocean/overrides/home.j2:203
+msgid "Excelencia Académica Cambridge"
+msgstr ""
+
+#: now_lms/templates/themes/ocean/overrides/home.j2:205
+msgid "Cursos de prestigio mundial con los más altos estándares académicos."
+msgstr ""
+
+#: now_lms/templates/themes/ocean/overrides/home.j2:246
+msgid "Scholarship"
+msgstr ""
+
+#: now_lms/templates/themes/ocean/overrides/home.j2:250
+#, fuzzy
+msgid "Foundation"
+msgstr "Configuração"
+
+#: now_lms/templates/themes/ocean/overrides/home.j2:254
+msgid "Undergraduate"
+msgstr ""
+
+#: now_lms/templates/themes/ocean/overrides/home.j2:258
+msgid "Graduate"
+msgstr ""
+
+#: now_lms/templates/themes/ocean/overrides/home.j2:261
+msgid "Doctorate"
+msgstr ""
+
+#: now_lms/templates/themes/ocean/overrides/home.j2:273
+msgid "Enroll Now"
+msgstr ""
+
+#: now_lms/templates/themes/ocean/overrides/home.j2:277
+#, fuzzy
+msgid "minutes"
+msgstr "Terça-feira"
+
+#: now_lms/templates/themes/ocean/overrides/home.j2:294
+msgid "View Complete Academic Catalogue"
+msgstr ""
+
+#: now_lms/templates/themes/oxford/overrides/home.j2:65
+#, fuzzy
+msgid "Consultar el Manuscrito"
+msgstr "Mostrar anúncios"
+
+#: now_lms/templates/themes/oxford/overrides/home.j2:72
+msgid "Explorar Biblioteca"
+msgstr ""
+
+#: now_lms/templates/themes/oxford/overrides/home.j2:80
+msgid "Mi Códice"
+msgstr ""
+
+#: now_lms/templates/themes/oxford/overrides/home.j2:87
+msgid "Ver Textos"
+msgstr ""
+
+#: now_lms/templates/themes/oxford/overrides/home.j2:222
+msgid "Manuscritos iluminados para mentes ilustradas"
+msgstr ""
+
+#: now_lms/templates/themes/oxford/overrides/home.j2:297
+msgid "Novicius"
+msgstr ""
+
+#: now_lms/templates/themes/oxford/overrides/home.j2:297
+msgid "Adeptus"
+msgstr ""
+
+#: now_lms/templates/themes/oxford/overrides/home.j2:298
+msgid "Magistratus"
+msgstr ""
+
+#: now_lms/templates/themes/oxford/overrides/home.j2:298
+msgid "Doctoratus"
+msgstr ""
+
+#: now_lms/templates/themes/oxford/overrides/home.j2:310
+msgid "Libertas"
+msgstr ""
+
+#: now_lms/templates/themes/oxford/overrides/home.j2:335
+#, fuzzy
+msgid "Leer Manuscrito"
+msgstr "Script do cabeçalho"
+
+#: now_lms/templates/themes/oxford/overrides/home.j2:354
+msgid "Explorar Biblioteca Completa"
+msgstr ""
+
+#: now_lms/templates/themes/sakura/overrides/home.j2:27
+msgid ""
+"Aprendizaje elegante y moderno con un toque de sofisticación rosada. "
+"Nuestra plataforma\n"
+"                                está diseñada para brindar una "
+"experiencia de aprendizaje excepcional."
+msgstr ""
+
+#: now_lms/templates/themes/sakura/overrides/home.j2:203
+msgid "Cursos que Florecen con Elegancia"
+msgstr ""
+
+#: now_lms/templates/themes/sakura/overrides/home.j2:205
+msgid "Una selección cuidada de cursos diseñados con pasión y sofisticación."
+msgstr ""
+
+#: now_lms/templates/themes/sakura/overrides/home.j2:328
+#, fuzzy
+msgid "Explorar Curso"
+msgstr "Criar Curso"
+
+#: now_lms/templates/themes/sakura/overrides/home.j2:332
+msgid "mins"
+msgstr ""
+
+#: now_lms/templates/themes/sakura/overrides/home.j2:356
+msgid "Descubrir Más Cursos Elegantes"
 msgstr ""
 
 #: now_lms/vistas/programs.py:131
@@ -5746,5 +7297,11 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "<i class=\"fas fa-play-circle\"></i> ¡En vivo ahora!"
+#~ msgstr ""
+
+#~ msgid "{{ master_class.instructor.usuario }}"
+#~ msgstr ""
+
+#~ msgid "{{ master_class.title }}"
 #~ msgstr ""
 
