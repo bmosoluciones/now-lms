@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-09-10 14:42-0600\n"
+"POT-Creation-Date: 2025-09-11 01:38+0000\n"
 "PO-Revision-Date: 2025-09-10 03:36+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -1427,6 +1427,7 @@ msgstr ""
 #: now_lms/templates/inicio/panel_instructor.html:266
 #: now_lms/templates/inicio/panel_moderator.html:292
 #: now_lms/templates/perfiles/admin.html:340
+#: now_lms/templates/perfiles/instructor.html:378
 msgid "Anuncios"
 msgstr "Anúncios"
 
@@ -1728,6 +1729,7 @@ msgstr ""
 #: now_lms/templates/blog/instructor_index.html:7
 #: now_lms/templates/inicio/panel_admin.html:302
 #: now_lms/templates/perfiles/admin.html:335
+#: now_lms/templates/perfiles/instructor.html:373
 msgid "Blog"
 msgstr "Blog"
 
@@ -2053,6 +2055,7 @@ msgid "Zona Horaria:"
 msgstr ""
 
 #: now_lms/templates/calendar/event_detail.html:167
+#: now_lms/templates/perfiles/instructor.html:219
 msgid "Creado:"
 msgstr ""
 
@@ -2062,6 +2065,7 @@ msgstr ""
 
 #: now_lms/templates/calendar/event_detail.html:183
 #: now_lms/templates/perfiles/estudiante.html:136
+#: now_lms/templates/perfiles/instructor.html:248
 #: now_lms/templates/perfiles/moderador.html:99
 msgid "Acciones Rápidas"
 msgstr ""
@@ -2691,6 +2695,7 @@ msgstr "Categorias"
 
 #: now_lms/templates/inicio/cursos.html:496
 #: now_lms/templates/learning/nuevo_curso.html:150
+#: now_lms/templates/perfiles/instructor.html:332
 msgid "Etiquetas"
 msgstr "Tags"
 
@@ -2725,6 +2730,8 @@ msgstr ""
 #: now_lms/templates/inicio/panel_moderator.html:89
 #: now_lms/templates/perfiles/admin.html:142
 #: now_lms/templates/perfiles/estudiante.html:75
+#: now_lms/templates/perfiles/instructor.html:59
+#: now_lms/templates/perfiles/instructor.html:90
 msgid "Ver Cursos"
 msgstr ""
 
@@ -2850,6 +2857,7 @@ msgstr ""
 
 #: now_lms/templates/inicio/panel_admin.html:70
 #: now_lms/templates/learning/curso_lista.html:26
+#: now_lms/templates/perfiles/instructor.html:255
 msgid "Nuevo Curso"
 msgstr ""
 
@@ -2916,6 +2924,7 @@ msgstr ""
 #: now_lms/templates/inicio/panel_instructor.html:164
 #: now_lms/templates/inicio/panel_moderator.html:190
 #: now_lms/templates/perfiles/admin.html:191
+#: now_lms/templates/perfiles/instructor.html:197
 msgid "Ver Todos"
 msgstr ""
 
@@ -2953,6 +2962,7 @@ msgstr ""
 #: now_lms/templates/learning/programas/lista_programas.html:6
 #: now_lms/templates/learning/programas/lista_programas.html:20
 #: now_lms/templates/learning/programas/nuevo_programa.html:24
+#: now_lms/templates/perfiles/instructor.html:311
 #: now_lms/templates/themes/cambridge/navbar.j2:50
 #: now_lms/templates/themes/now_lms/navbar.j2:57
 msgid "Programas"
@@ -2966,11 +2976,13 @@ msgid "Configuración"
 msgstr "Configuração"
 
 #: now_lms/templates/inicio/panel_instructor.html:7
+#: now_lms/templates/perfiles/instructor.html:7
 #, fuzzy
 msgid "Panel del Instructor"
 msgstr "Painel do Instrutor"
 
 #: now_lms/templates/inicio/panel_instructor.html:49
+#: now_lms/templates/perfiles/instructor.html:49
 msgid "Bienvenido, Instructor"
 msgstr ""
 
@@ -2979,6 +2991,7 @@ msgid "Tu centro de enseñanza y gestión de cursos"
 msgstr ""
 
 #: now_lms/templates/inicio/panel_instructor.html:71
+#: now_lms/templates/perfiles/instructor.html:76
 msgid "Cursos Creados"
 msgstr ""
 
@@ -2991,6 +3004,7 @@ msgid "Logros estudiantiles"
 msgstr ""
 
 #: now_lms/templates/inicio/panel_instructor.html:123
+#: now_lms/templates/perfiles/instructor.html:102
 #, fuzzy
 msgid "Estudiantes Inscritos"
 msgstr "Estudantes Inscritos"
@@ -3001,10 +3015,12 @@ msgstr ""
 
 #: now_lms/templates/inicio/panel_instructor.html:137
 #: now_lms/templates/masterclass/admin_list.html:104
+#: now_lms/templates/perfiles/instructor.html:116
 msgid "Ver Estudiantes"
 msgstr ""
 
 #: now_lms/templates/inicio/panel_instructor.html:158
+#: now_lms/templates/perfiles/instructor.html:189
 msgid "Mis Cursos Recientes"
 msgstr ""
 
@@ -3136,6 +3152,7 @@ msgstr "Usuário"
 #: now_lms/templates/learning/curso/admin.html:360
 #: now_lms/templates/learning/recursos/lista_recursos.html:6
 #: now_lms/templates/learning/recursos/lista_recursos.html:20
+#: now_lms/templates/perfiles/instructor.html:329
 #: now_lms/templates/themes/cambridge/navbar.j2:54
 #: now_lms/templates/themes/now_lms/navbar.j2:63
 msgid "Recursos"
@@ -4767,10 +4784,6 @@ msgstr "Fuso Horário"
 msgid "Inscritos"
 msgstr "Instrutor"
 
-#: now_lms/templates/masterclass/admin_list.html:57
-msgid "{{ master_class.instructor.usuario }}"
-msgstr ""
-
 #: now_lms/templates/masterclass/admin_list.html:66
 #: now_lms/templates/masterclass/admin_list.html:180
 #: now_lms/templates/masterclass/instructor_list.html:55
@@ -4834,6 +4847,7 @@ msgstr ""
 
 #: now_lms/templates/masterclass/detail_public.html:23
 #: now_lms/templates/masterclass/enroll.html:23
+#: now_lms/templates/perfiles/instructor.html:154
 #: now_lms/templates/themes/cambridge/navbar.j2:58
 #: now_lms/templates/themes/now_lms/navbar.j2:69
 msgid "Clases Magistrales"
@@ -4957,10 +4971,6 @@ msgstr ""
 
 #: now_lms/templates/masterclass/list_public.html:158
 msgid "Vuelve pronto para ver nuevas clases magistrales."
-msgstr ""
-
-#: now_lms/templates/masterclass/my_enrollments.html:30
-msgid "{{ master_class.title }}"
 msgstr ""
 
 #: now_lms/templates/masterclass/my_enrollments.html:66
@@ -5255,6 +5265,7 @@ msgid "Correo SMTP"
 msgstr ""
 
 #: now_lms/templates/perfiles/admin.html:329
+#: now_lms/templates/perfiles/instructor.html:323
 #, fuzzy
 msgid "Contenido"
 msgstr "Conteúdo do Curso"
@@ -5282,6 +5293,7 @@ msgid "Panel principal del estudiante para gestionar tu aprendizaje."
 msgstr ""
 
 #: now_lms/templates/perfiles/estudiante.html:72
+#: now_lms/templates/perfiles/instructor.html:306
 #, fuzzy
 msgid "Mis Cursos"
 msgstr "Cursos"
@@ -5310,13 +5322,91 @@ msgstr "Perfil"
 msgid "Revisa tus logros obtenidos"
 msgstr ""
 
+#: now_lms/templates/perfiles/instructor.html:51
+msgid "Tu centro de enseñanza y gestión académica"
+msgstr ""
+
+#: now_lms/templates/perfiles/instructor.html:79
+#, fuzzy
+msgid "Total de cursos"
+msgstr "Conteúdo do Curso"
+
+#: now_lms/templates/perfiles/instructor.html:105
+#, fuzzy
+msgid "En mis cursos"
+msgstr "Cursos"
+
+#: now_lms/templates/perfiles/instructor.html:128
+#: now_lms/templates/perfiles/instructor.html:350
+#, fuzzy
+msgid "Evaluaciones"
+msgstr "Avaliações"
+
+#: now_lms/templates/perfiles/instructor.html:131
+#, fuzzy
+msgid "Evaluaciones creadas"
+msgstr "Avaliações"
+
+#: now_lms/templates/perfiles/instructor.html:142
+#, fuzzy
+msgid "Ver Evaluaciones"
+msgstr "Avaliações"
+
 #: now_lms/templates/perfiles/instructor.html:157
 msgid "Clases disponibles"
+msgstr ""
+
+#: now_lms/templates/perfiles/instructor.html:168
+msgid "Ver Clases"
 msgstr ""
 
 #: now_lms/templates/perfiles/instructor.html:232
 msgid "No hay cursos creados aún"
 msgstr ""
+
+#: now_lms/templates/perfiles/instructor.html:234
+#, fuzzy
+msgid "Crear Primer Curso"
+msgstr "Criar Curso"
+
+#: now_lms/templates/perfiles/instructor.html:263
+#, fuzzy
+msgid "Nueva Evaluación"
+msgstr "Avaliação"
+
+#: now_lms/templates/perfiles/instructor.html:271
+#, fuzzy
+msgid "Nuevo Programa"
+msgstr "Programa"
+
+#: now_lms/templates/perfiles/instructor.html:279
+#, fuzzy
+msgid "Nueva Clase"
+msgstr "Categorias"
+
+#: now_lms/templates/perfiles/instructor.html:290
+msgid "Herramientas de Gestión"
+msgstr ""
+
+#: now_lms/templates/perfiles/instructor.html:300
+#, fuzzy
+msgid "Cursos y Programas"
+msgstr "Programa"
+
+#: now_lms/templates/perfiles/instructor.html:344
+#, fuzzy
+msgid "Evaluación y Certificación"
+msgstr "Certificações"
+
+#: now_lms/templates/perfiles/instructor.html:355
+#, fuzzy
+msgid "Certificados"
+msgstr "Certificado"
+
+#: now_lms/templates/perfiles/instructor.html:367
+#, fuzzy
+msgid "Comunicación"
+msgstr "Configuração"
 
 #: now_lms/templates/perfiles/moderador.html:6
 #, fuzzy
@@ -5746,5 +5836,11 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "<i class=\"fas fa-play-circle\"></i> ¡En vivo ahora!"
+#~ msgstr ""
+
+#~ msgid "{{ master_class.instructor.usuario }}"
+#~ msgstr ""
+
+#~ msgid "{{ master_class.title }}"
 #~ msgstr ""
 
