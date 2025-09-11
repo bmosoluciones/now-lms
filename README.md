@@ -56,7 +56,7 @@ To start a local server, simply execute:
 python3 -m venv venv
 source venv/bin/activate
 python -m pip install now_lms
-python -m now_lms
+lmsctl serve
 ```
 
 Visit `http://127.0.0.1:8080/` in your browser, the default user and password are `lms-admin`.

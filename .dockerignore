@@ -73,3 +73,5 @@ dev/*
 sonar.exclusions
 
 notes.txt
+
+replit*

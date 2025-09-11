@@ -19,7 +19,7 @@ NOW-LMS is available as a Python Package in [Pypi](https://pypi.org/project/now-
 python3 -m venv venv
 source venv/bin/activate
 python -m pip install now_lms
-python -m now_lms
+lmsctl serve
 ```
 
 Visit `http://127.0.0.1:8080` in your browser and login with the default user and password: `lms-admin`.
