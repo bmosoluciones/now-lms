@@ -4,6 +4,7 @@
 
     <head>
         {{ current_theme.headertags() }}
+
         <title>{{ _('Panel del Instructor') }}</title>
 
         {{ current_theme.local_style() }}
@@ -46,9 +47,11 @@
                         <div class="col-md-8">
                             <h2 class="mb-1">
                                 <i class="bi bi-mortarboard me-2"></i>
+
                                 {{ _('Bienvenido, Instructor') }} {{ current_user.nombre }} {{ current_user.apellido }}
                             </h2>
                             <p class="mb-0 opacity-75">{{ _('Tu centro de enseñanza y gestión académica') }}</p>
+
                         </div>
                         <div class="col-md-4 text-end">
                             <a
@@ -57,6 +60,7 @@
                                 style="border-radius: 25px"
                             >
                                 <i class="bi bi-book me-1"></i> {{ _('Ver Cursos') }}
+
                             </a>
                         </div>
                     </div>

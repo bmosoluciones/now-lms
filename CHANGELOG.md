@@ -7,10 +7,6 @@ All notable changes to this project will be documented in this file.
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/).
 
 
-## [ 0.0.1-rc1 ]
-
--------------------
-
 ## [ 0.0.1b19.dev20250903 ] - 2025-09-10
 
 ### Changed:
