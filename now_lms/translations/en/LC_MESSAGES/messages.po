@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-09-11 01:38+0000\n"
-"PO-Revision-Date: 2025-09-10 08:59-0600\n"
+"POT-Creation-Date: 2025-09-10 19:46-0600\n"
+"PO-Revision-Date: 2025-09-10 19:45-0600\n"
 "Last-Translator: \n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
@@ -2189,7 +2189,7 @@ msgid ""
 msgstr ""
 "The email may take some time to arrive. If you do not receive it, please "
 "check your\n"
-"                    SPAM folder."
+"                    SPAM folder"
 
 #: now_lms/templates/evaluations/evaluation_result.html:7
 msgid "Resultado de Evaluación"
@@ -4737,7 +4737,7 @@ msgstr "Meet Date"
 
 #: now_lms/templates/learning/resources_new/nuevo_recurso_mp3.html:26
 msgid "Nombre del archivo."
-msgstr "File Name"
+msgstr "File Name."
 
 #: now_lms/templates/masterclass/admin_list.html:23
 msgid "Vista Pública"
@@ -5269,93 +5269,77 @@ msgid "Revisa tus logros obtenidos"
 msgstr "Review your achievements"
 
 #: now_lms/templates/perfiles/instructor.html:51
-#, fuzzy
 msgid "Tu centro de enseñanza y gestión académica"
 msgstr "Your teaching and course management hub"
 
 #: now_lms/templates/perfiles/instructor.html:79
-#, fuzzy
 msgid "Total de cursos"
 msgstr "Total Courses"
 
 #: now_lms/templates/perfiles/instructor.html:105
-#, fuzzy
 msgid "En mis cursos"
-msgstr "My Courses"
+msgstr "In my Courses"
 
 #: now_lms/templates/perfiles/instructor.html:128
 #: now_lms/templates/perfiles/instructor.html:350
-#, fuzzy
 msgid "Evaluaciones"
 msgstr "Evaluations"
 
 #: now_lms/templates/perfiles/instructor.html:131
-#, fuzzy
 msgid "Evaluaciones creadas"
-msgstr "Quick Actions"
+msgstr "Created Evaluations"
 
 #: now_lms/templates/perfiles/instructor.html:142
-#, fuzzy
 msgid "Ver Evaluaciones"
-msgstr "Evaluations"
+msgstr "View Evaluations"
 
 #: now_lms/templates/perfiles/instructor.html:157
 msgid "Clases disponibles"
 msgstr "Available Classes"
 
 #: now_lms/templates/perfiles/instructor.html:168
-#, fuzzy
 msgid "Ver Clases"
-msgstr "Masterclasses"
+msgstr "View Classes"
 
 #: now_lms/templates/perfiles/instructor.html:232
 msgid "No hay cursos creados aún"
 msgstr "No courses created yet"
 
 #: now_lms/templates/perfiles/instructor.html:234
-#, fuzzy
 msgid "Crear Primer Curso"
-msgstr "Create First Resource"
+msgstr "Create First Course"
 
 #: now_lms/templates/perfiles/instructor.html:263
-#, fuzzy
 msgid "Nueva Evaluación"
-msgstr "Submit Evaluation"
+msgstr "New Evaluation"
 
 #: now_lms/templates/perfiles/instructor.html:271
-#, fuzzy
 msgid "Nuevo Programa"
-msgstr "New Program created."
+msgstr "New Program"
 
 #: now_lms/templates/perfiles/instructor.html:279
-#, fuzzy
 msgid "Nueva Clase"
-msgstr "New Password"
+msgstr "New Class"
 
 #: now_lms/templates/perfiles/instructor.html:290
-#, fuzzy
 msgid "Herramientas de Gestión"
 msgstr "Moderation Tools"
 
 #: now_lms/templates/perfiles/instructor.html:300
-#, fuzzy
 msgid "Cursos y Programas"
-msgstr "Create Program"
+msgstr "Courses and Programs"
 
 #: now_lms/templates/perfiles/instructor.html:344
-#, fuzzy
 msgid "Evaluación y Certificación"
-msgstr "Certification"
+msgstr "Evaluation and Certification"
 
 #: now_lms/templates/perfiles/instructor.html:355
-#, fuzzy
 msgid "Certificados"
-msgstr "Certificate"
+msgstr "Certificates"
 
 #: now_lms/templates/perfiles/instructor.html:367
-#, fuzzy
 msgid "Comunicación"
-msgstr "Settings"
+msgstr "Communication"
 
 #: now_lms/templates/perfiles/moderador.html:6
 msgid "Panel de Moderación"
