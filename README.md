@@ -56,6 +56,7 @@ To start a local server, simply execute:
 python3 -m venv venv
 source venv/bin/activate
 python -m pip install now_lms
+lmsctl database init
 lmsctl serve
 ```
 
