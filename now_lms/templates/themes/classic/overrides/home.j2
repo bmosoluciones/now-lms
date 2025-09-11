@@ -22,7 +22,7 @@
                 <div class="row align-items-center">
                     <div class="col-lg-8 text-white">
                         <div class="hero-content">
-                            <h1 class="display-4 fw-bold mb-4">Bienvenido a {{ site_config.nombre }}</h1>
+                            <h1 class="display-4 fw-bold mb-4">{{ _('Bienvenido a') }} {{ site_config.nombre }}</h1>
                             <p class="lead mb-4" style="font-size: 1.3rem; line-height: 1.6">
                                 Experimenta el aprendizaje en su forma más pura y elegante con nuestro diseño clásico. Nuestra
                                 plataforma está diseñada para brindar una experiencia de aprendizaje excepcional.
@@ -30,23 +30,23 @@
                             <div class="d-flex gap-3 flex-wrap">
                                 {% if not current_user.is_authenticated %}
                                 <a href="{{ url_for('user.crear_cuenta') }}" class="btn btn-light btn-lg px-4 py-2">
-                                    <strong>Comenzar Ahora</strong>
+                                    <strong>{{ _('Comenzar Ahora') }}</strong>
                                 </a>
                                 <a
                                     href="{{ url_for('course.lista_cursos', page=1) }}"
                                     class="btn btn-outline-light btn-lg px-4 py-2"
                                 >
-                                    Explorar Cursos
+                                    {{ _('Explorar Cursos') }}
                                 </a>
                                 {% else %}
                                 <a href="{{ url_for('home.panel') }}" class="btn btn-light btn-lg px-4 py-2">
-                                    <strong>Mi Panel</strong>
+                                    <strong>{{ _('Mi Panel') }}</strong>
                                 </a>
                                 <a
                                     href="{{ url_for('course.lista_cursos', page=1) }}"
                                     class="btn btn-outline-light btn-lg px-4 py-2"
                                 >
-                                    Ver Cursos
+                                    {{ _('Ver Cursos') }}
                                 </a>
                                 {% endif %}
                             </div>
@@ -70,8 +70,8 @@
                             >
                                 <div class="text-center text-white">
                                     <div style="font-size: 3rem; margin-bottom: 0.5rem">📚</div>
-                                    <div style="font-size: 1.2rem; font-weight: 600">Aprendizaje</div>
-                                    <div style="font-size: 0.9rem; opacity: 0.8">Digital</div>
+                                    <div style="font-size: 1.2rem; font-weight: 600">{{ _('Aprendizaje') }}</div>
+                                    <div style="font-size: 0.9rem; opacity: 0.8">{{ _('Digital') }}</div>
                                 </div>
                             </div>
                         </div>
@@ -85,9 +85,10 @@
             <div class="container">
                 <div class="row">
                     <div class="col-12 text-center mb-5">
-                        <h2 class="display-5 fw-bold mb-4">Aprende con Nosotros</h2>
+                        <h2 class="display-5 fw-bold mb-4">{{ _('Aprende con Nosotros') }}</h2>
                         <p class="lead">
-                            Descubre una nueva forma de aprender con nuestra plataforma educativa moderna y eficiente.
+                            {{ _('Descubre una nueva forma de aprender con nuestra plataforma educativa moderna y eficiente.')
+                            }}
                         </p>
                     </div>
                 </div>
@@ -117,9 +118,10 @@
                             >
                                 <span style="color: white; font-size: 1.5rem">🎯</span>
                             </div>
-                            <h4 class="mb-3">Cursos Especializados</h4>
+                            <h4 class="mb-3">{{ _('Cursos Especializados') }}</h4>
                             <p style="line-height: 1.6">
-                                Accede a una amplia variedad de cursos diseñados por expertos en cada área de conocimiento.
+                                {{ _('Accede a una amplia variedad de cursos diseñados por expertos en cada área de
+                                conocimiento.') }}
                             </p>
                         </div>
                     </div>
@@ -148,9 +150,10 @@
                             >
                                 <span style="color: white; font-size: 1.5rem">👥</span>
                             </div>
-                            <h4 class="mb-3">Comunidad Activa</h4>
+                            <h4 class="mb-3">{{ _('Comunidad Activa') }}</h4>
                             <p style="line-height: 1.6">
-                                Únete a una comunidad de estudiantes y profesionales que comparten tus intereses y objetivos.
+                                {{ _('Únete a una comunidad de estudiantes y profesionales que comparten tus intereses y
+                                objetivos.') }}
                             </p>
                         </div>
                     </div>
@@ -179,10 +182,10 @@
                             >
                                 <span style="color: white; font-size: 1.5rem">🏆</span>
                             </div>
-                            <h4 class="mb-3">Certificaciones</h4>
+                            <h4 class="mb-3">{{ _('Certificaciones') }}</h4>
                             <p style="line-height: 1.6">
-                                Obtén certificaciones reconocidas que validen tu conocimiento y impulsen tu carrera
-                                profesional.
+                                {{ _('Obtén certificaciones reconocidas que validen tu conocimiento y impulsen tu carrera
+                                profesional.') }}
                             </p>
                         </div>
                     </div>
@@ -196,8 +199,10 @@
             <div class="container">
                 <div class="row">
                     <div class="col-12 text-center mb-5">
-                        <h2 class="display-6 fw-bold mb-4">Cursos Destacados</h2>
-                        <p class="lead">Explora nuestra selección de cursos diseñados para tu crecimiento profesional.</p>
+                        <h2 class="display-6 fw-bold mb-4">{{ _('Cursos Destacados') }}</h2>
+                        <p class="lead">
+                            {{ _('Explora nuestra selección de cursos diseñados para tu crecimiento profesional.') }}
+                        </p>
                     </div>
                 </div>
                 <div class="row row-cols-1 row-cols-sm-2 g-4">
@@ -232,15 +237,23 @@
                                     <h5 class="card-title mb-0">{{ curso.nombre }}</h5>
                                     <div class="d-flex align-items-center gap-2">
                                         {% if not curso.precio %}
-                                        <span class="badge bg-success">Gratis</span>
+                                        <span class="badge bg-success">{{ _('Gratis') }}</span>
                                         {% endif %} {% if curso.nivel == 0 %}
-                                        <span class="badge bg-secondary" title="Nivel Introductorio">Intro</span>
+                                        <span class="badge bg-secondary" title="{{ _('Nivel Introductorio') }}"
+                                            >{{ _('Intro') }}</span
+                                        >
                                         {% elif curso.nivel == 1 %}
-                                        <span class="badge bg-primary" title="Nivel Principiante">Principiante</span>
+                                        <span class="badge bg-primary" title="{{ _('Nivel Principiante') }}"
+                                            >{{ _('Principiante') }}</span
+                                        >
                                         {% elif curso.nivel == 2 %}
-                                        <span class="badge bg-warning" title="Nivel Intermedio">Intermedio</span>
+                                        <span class="badge bg-warning" title="{{ _('Nivel Intermedio') }}"
+                                            >{{ _('Intermedio') }}</span
+                                        >
                                         {% elif curso.nivel == 3 %}
-                                        <span class="badge bg-danger" title="Nivel Avanzado">Avanzado</span>
+                                        <span class="badge bg-danger" title="{{ _('Nivel Avanzado') }}"
+                                            >{{ _('Avanzado') }}</span
+                                        >
                                         {% endif %}
                                     </div>
                                 </div>
@@ -249,7 +262,7 @@
                                     <a
                                         href="{{ url_for('course.curso', course_code=curso.codigo) }}"
                                         class="btn btn-outline-dark btn-sm"
-                                        >Ver Curso</a
+                                        >{{ _('Ver Curso') }}</a
                                     >
                                     <div class="text-end">
                                         {% if curso.duracion %}
@@ -270,7 +283,7 @@
                         class="btn btn-dark btn-lg px-4 py-2"
                         style="border-radius: 8px"
                     >
-                        Ver Todos los Cursos
+                        {{ _('Ver Todos los Cursos') }}
                     </a>
                 </div>
             </div>
@@ -283,9 +296,9 @@
                 <div class="row justify-content-center text-center">
                     <div class="col-lg-8">
                         {% if not current_user.is_authenticated %}
-                        <h3 class="mb-4">¿Listo para Comenzar?</h3>
+                        <h3 class="mb-4">{{ _('¿Listo para Comenzar?') }}</h3>
                         <p class="lead mb-4">
-                            Únete a nuestra plataforma educativa y comienza tu viaje de aprendizaje hoy mismo.
+                            {{ _('Únete a nuestra plataforma educativa y comienza tu viaje de aprendizaje hoy mismo.') }}
                         </p>
                         <a
                             href="{{ url_for('user.crear_cuenta') }}"
@@ -299,11 +312,13 @@
                                 text-decoration: none;
                             "
                         >
-                            Registrarse Gratis
+                            {{ _('Registrarse Gratis') }}
                         </a>
                         {% else %}
-                        <h3 class="mb-4">Bienvenido de vuelta, {{ current_user.nombre }}</h3>
-                        <p class="lead mb-4">Continúa tu viaje de aprendizaje y explora nuevas oportunidades educativas.</p>
+                        <h3 class="mb-4">{{ _('Bienvenido de vuelta') }}, {{ current_user.nombre }}</h3>
+                        <p class="lead mb-4">
+                            {{ _('Continúa tu viaje de aprendizaje y explora nuevas oportunidades educativas.') }}
+                        </p>
                         <a
                             href="{{ url_for('home.panel') }}"
                             class="btn btn-lg px-5 py-3 me-3"
@@ -316,14 +331,14 @@
                                 text-decoration: none;
                             "
                         >
-                            Ir a Mi Panel
+                            {{ _('Ir a Mi Panel') }}
                         </a>
                         <a
                             href="{{ url_for('course.lista_cursos', page=1) }}"
                             class="btn btn-lg btn-outline-dark px-5 py-3"
                             style="border-radius: 10px; font-weight: 600"
                         >
-                            Explorar Cursos
+                            {{ _('Explorar Cursos') }}
                         </a>
                         {% endif %}
                     </div>
