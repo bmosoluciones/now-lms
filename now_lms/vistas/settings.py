@@ -203,6 +203,11 @@ def mail():
     )
 
     if form.validate_on_submit() or request.method == "POST":
+        from now_lms.demo_mode import demo_restriction_check
+
+        # Check demo mode restrictions for mail settings
+        if demo_restriction_check("mail_settings"):
+            return render_template("admin/mail.html", form=form, config=config)
 
         config.MAIL_SERVER = form.MAIL_SERVER.data
         config.MAIL_PORT = form.MAIL_PORT.data
@@ -253,6 +258,11 @@ def mail_check():
     form = CheckMailForm()
 
     if form.validate_on_submit() or request.method == "POST":
+        from now_lms.demo_mode import demo_restriction_check
+
+        # Check demo mode restrictions for sending test mail
+        if demo_restriction_check("send_test_mail"):
+            return render_template("admin/mail_check.html", form=form)
 
         from flask_mail import Message
 
@@ -324,6 +334,11 @@ def adsense():
     )
 
     if form.validate_on_submit() or request.method == "POST":
+        from now_lms.demo_mode import demo_restriction_check
+
+        # Check demo mode restrictions for AdSense settings
+        if demo_restriction_check("adsense_settings"):
+            return render_template("admin/adsense.html", form=form, config=config)
 
         config.meta_tag = form.meta_tag.data
         config.meta_tag_include = form.meta_tag_include.data
@@ -410,6 +425,11 @@ def paypal():
     )
 
     if form.validate_on_submit() or request.method == "POST":
+        from now_lms.demo_mode import demo_restriction_check
+
+        # Check demo mode restrictions for PayPal settings
+        if demo_restriction_check("paypal_settings"):
+            return render_template("admin/paypal.html", form=form, config=config, with_paypal=True)
 
         # Validate PayPal configuration if enabling PayPal
         if form.habilitado.data:

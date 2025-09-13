@@ -13,7 +13,7 @@
     <body>
         {{ current_theme.navbar() }}
         <main>
-            {{ current_theme.notify() }}
+            {{ current_theme.notify() }} {% from "macros/demo_banner.j2" import demo_mode_banner %} {{ demo_mode_banner() }}
 
             <div class="container px-4 py-5" id="icon-grid">
                 <h4 class="pb-2 border-bottom">{{ _('Cambiar Contraseña del usuario') }}: {{ usuario.usuario }}</h4>

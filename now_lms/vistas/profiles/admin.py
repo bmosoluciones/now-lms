@@ -140,9 +140,18 @@ def usuarios_inactivos():
 @perfil_requerido("admin")
 def cambiar_tipo_usario():
     """Actualiza el tipo de usuario."""
+    from now_lms.demo_mode import demo_restriction_check
+    
+    new_type = request.args.get("type")
+    user_id = request.args.get("user")
+    
+    # Check demo mode restrictions specifically for changing to admin
+    if new_type == "admin" and demo_restriction_check("change_user_to_admin"):
+        return redirect(url_for("user_profile.usuario", id_usuario=user_id))
+    
     cambia_tipo_de_usuario_por_id(
-        request.args.get("user"),
-        nuevo_tipo=request.args.get("type"),
+        user_id,
+        nuevo_tipo=new_type,
         usuario=current_user.usuario,
     )
-    return redirect(url_for("user_profile.usuario", id_usuario=request.args.get("user")))
+    return redirect(url_for("user_profile.usuario", id_usuario=user_id))

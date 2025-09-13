@@ -1,0 +1,8 @@
+{% macro demo_mode_banner() %} {% if demo_mode() and current_user.is_authenticated and current_user.tipo == "admin" %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <strong>{{_("Modo Demostración Activo")}}</strong> - {{_("Algunas acciones administrativas están restringidas para prevenir
+    uso abusivo. Las acciones para estudiantes, instructores y moderadores funcionan normalmente.")}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %} {% endmacro %}

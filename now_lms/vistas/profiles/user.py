@@ -187,6 +187,11 @@ def cambiar_contraseña(ulid: str):
 
     if request.method == "POST" and form.validate_on_submit():
         from now_lms.auth import proteger_passwd, validar_acceso
+        from now_lms.demo_mode import demo_restriction_check
+
+        # Check demo mode restrictions for admin users
+        if demo_restriction_check("change_admin_password"):
+            return render_template(TEMPLATE_CAMBIAR_CONTRASENA, form=form, usuario=usuario_)
 
         # Verificar contraseña actual
         if not validar_acceso(usuario_.usuario, form.current_password.data):
