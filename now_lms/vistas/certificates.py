@@ -317,11 +317,46 @@ def certificate_serve_pdf(ulid: str):
 
 @certificate.route("/certificate/issued/list")
 @login_required
-@perfil_requerido("instructor")
 def certificaciones():
     """Lista de certificaciones emitidas."""
+    # Build query based on user role
+    query = database.select(Certificacion)
+
+    # Python 3.10+ - Use match statement instead of if-elif-else for role-based filtering
+    match current_user.tipo:
+        case "admin":
+            # Admins can see all certificates
+            pass  # No additional filtering needed
+        case "instructor":
+            # Instructors can see certificates for courses they own
+            from now_lms.db import DocenteCurso
+
+            # Modern SQLAlchemy 2.x query pattern following project query guide
+            instructor_courses = (
+                database.session.execute(
+                    database.select(DocenteCurso.curso).filter(
+                        DocenteCurso.usuario == current_user.usuario, DocenteCurso.vigente.is_(True)
+                    )
+                )
+                .scalars()
+                .all()
+            )
+
+            if instructor_courses:
+                # Filter certificates for instructor's courses
+                query = query.filter(Certificacion.curso.in_(instructor_courses))
+            else:
+                # Instructor has no courses, show empty list
+                query = query.filter(Certificacion.id.is_(None))
+        case "student":
+            # Students can only see their own certificates
+            query = query.filter(Certificacion.usuario == current_user.usuario)
+        case _:
+            # Other user types (like moderator) can only see their own certificates
+            query = query.filter(Certificacion.usuario == current_user.usuario)
+
     certificados_list = database.paginate(
-        database.select(Certificacion),  # noqa: E712
+        query,
         page=request.args.get("page", default=1, type=int),
         max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
         count=True,
