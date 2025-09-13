@@ -58,6 +58,10 @@
                 <li>
                     <a href="{{ url_for('masterclass.list_public') }}" class="nav-link px-2">🎓 Master Classes</a>
                 </li>
+                {% endif %} {% if is_blog_enabled() %}
+                <li>
+                    <a href="{{ url_for('blog.blog_index') }}" class="nav-link px-2">📰 Corporate Blog</a>
+                </li>
                 {% endif %} {% if current_user.is_authenticated %} {% if current_user.tipo == "moderator" or current_user.tipo
                 == "instructor" or current_user.tipo == "admin" %}
                 <li>
@@ -92,13 +96,13 @@
                             data-bs-display="static"
                             aria-expanded="false"
                             style="color: white"
-                            >Bienvenido: {{ current_user.nombre }} {{ current_user.apellido }}
+                            >{{ _('Bienvenido') }}: {{ current_user.nombre }} {{ current_user.apellido }}
                             <i class="bi bi-list" aria-hidden="true"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg-end">
                             <li>
                                 <a class="dropdown-item" href="{{ url_for('user_profile.perfil') }}">
-                                    <i class="bi bi-person-circle" aria-hidden="true"></i> Perfil de Usuario</a
+                                    <i class="bi bi-person-circle" aria-hidden="true"></i> {{ _('Perfil de Usuario') }}</a
                                 >
                             </li>
                             <li><a class="dropdown-item" href="#"> </a></li>
@@ -112,7 +116,7 @@
                                     data-bs-toggle="modal"
                                     data-bs-target="#exampleModal"
                                 >
-                                    <i class="bi bi-info-circle" aria-hidden="true"></i> Información
+                                    <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Información') }}
                                 </a>
                             </li>
                             <li>
@@ -120,7 +124,7 @@
                             </li>
                             <li>
                                 <a class="dropdown-item text-decoration-none" href="{{ url_for('user.cerrar_sesion') }}">
-                                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Cerrar Sesión
+                                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i> {{ _('Cerrar Sesión') }}
                                 </a>
                             </li>
                         </ul>
@@ -152,7 +156,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <strong><i class="bi bi-tag-fill text-primary"></i> Versión:</strong> {{ version }}
+                        <strong><i class="bi bi-tag-fill text-primary"></i> {{ _('Versión') }}:</strong> {{ version }}
                     </div>
                     <div class="col-md-6">
                         <strong><i class="bi bi-code-slash text-success"></i> Python:</strong> {{ pyversion }}
@@ -185,14 +189,14 @@
                             href="https://now-lms-manual.readthedocs.io/en/latest/"
                             class="btn btn-corporate-primary btn-sm"
                             data-dismiss="modal"
-                            ><i class="bi bi-book" aria-hidden="true"></i> Manual de Usuario</a
+                            ><i class="bi bi-book" aria-hidden="true"></i> {{ _('Manual de Usuario') }}</a
                         >
                         {% if current_user.tipo == "admin" %}
                         <a
                             href="https://bmosoluciones.github.io/now-lms/"
                             class="btn btn-corporate-secondary btn-sm"
                             data-dismiss="modal"
-                            ><i class="bi bi-tools" aria-hidden="true"></i> Manual de Administración</a
+                            ><i class="bi bi-tools" aria-hidden="true"></i> {{ _('Manual de Administración') }}</a
                         >
                         {% endif %}
                     </div>

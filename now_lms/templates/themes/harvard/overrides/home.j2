@@ -19,15 +19,15 @@
                             style="background: white; padding: 3rem; clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%)"
                         >
                             <h1 class="display-3 fw-bold" style="font-family: &quot;Charter&quot;, serif; color: #a41034">
-                                <span class="d-block mb-3">Discute.</span>
-                                <span class="d-block mb-3">Analiza.</span>
-                                <span class="d-block">Transforma.</span>
+                                <span class="d-block mb-3">{{ _('Discute.') }}</span>
+                                <span class="d-block mb-3">{{ _('Analiza.') }}</span>
+                                <span class="d-block">{{ _('Transforma.') }}</span>
                             </h1>
                             <div
                                 class="harvard-divider"
                                 style="width: 80px; height: 4px; background: #d8b866; margin: 2rem 0"
                             ></div>
-                            <p class="lead" style="max-width: 80%">El conocimiento no se memoriza, se debate.</p>
+                            <p class="lead" style="max-width: 80%">{{ _('El conocimiento no se memoriza, se debate.') }}</p>
                             <div class="d-flex gap-3 flex-wrap mt-4">
                                 {% if not current_user.is_authenticated %}
                                 <a
@@ -35,13 +35,13 @@
                                     class="btn btn-lg px-4 py-2"
                                     style="background: #a41034; color: white; border: none"
                                 >
-                                    <strong>Unirse al Debate</strong>
+                                    <strong>{{ _('Unirse al Debate') }}</strong>
                                 </a>
                                 <a
                                     href="{{ url_for('course.lista_cursos', page=1) }}"
                                     class="btn btn-outline-dark btn-lg px-4 py-2"
                                 >
-                                    Explorar Casos
+                                    {{ _('Explorar Casos') }}
                                 </a>
                                 {% else %}
                                 <a
@@ -49,13 +49,13 @@
                                     class="btn btn-lg px-4 py-2"
                                     style="background: #a41034; color: white; border: none"
                                 >
-                                    <strong>Mi Panel</strong>
+                                    <strong>{{ _('Mi Panel') }}</strong>
                                 </a>
                                 <a
                                     href="{{ url_for('course.lista_cursos', page=1) }}"
                                     class="btn btn-outline-dark btn-lg px-4 py-2"
                                 >
-                                    Ver Casos
+                                    {{ _('Ver Casos') }}
                                 </a>
                                 {% endif %}
                             </div>
@@ -138,11 +138,11 @@
                 <div class="row">
                     <div class="col-12 text-center mb-5">
                         <h2 class="display-5 fw-bold" style="color: #474340; font-family: &quot;Merriweather&quot;, serif">
-                            Excelencia Académica Digital
+                            {{ _('Excelencia Académica Digital') }}
                         </h2>
                         <p class="lead" style="color: #7a5e49; max-width: 600px; margin: 0 auto">
-                            Nuestra plataforma combina los más altos estándares académicos con tecnología de vanguardia para
-                            crear una experiencia educativa transformadora.
+                            {{ _('Nuestra plataforma combina los más altos estándares académicos con tecnología de vanguardia
+                            para crear una experiencia educativa transformadora.') }}
                         </p>
                     </div>
                 </div>
@@ -173,11 +173,11 @@
                                 <span style="color: white; font-size: 1.5rem; font-weight: bold">📚</span>
                             </div>
                             <h4 style="color: #474340; font-family: &quot;Merriweather&quot;, serif; margin-bottom: 1rem">
-                                Cursos de Élite
+                                {{ _('Cursos de Élite') }}
                             </h4>
                             <p style="color: #7a5e49; line-height: 1.6">
-                                Accede a una biblioteca curada de cursos diseñados por expertos académicos, con contenido
-                                riguroso y metodologías probadas.
+                                {{ _('Accede a una biblioteca curada de cursos diseñados por expertos académicos, con contenido
+                                riguroso y metodologías probadas.') }}
                             </p>
                         </div>
                     </div>
@@ -207,11 +207,11 @@
                                 <span style="color: white; font-size: 1.5rem; font-weight: bold">🎓</span>
                             </div>
                             <h4 style="color: #474340; font-family: &quot;Merriweather&quot;, serif; margin-bottom: 1rem">
-                                Mentores Expertos
+                                {{ _('Mentores Expertos') }}
                             </h4>
                             <p style="color: #7a5e49; line-height: 1.6">
-                                Aprende de instructores distinguidos y profesionales reconocidos en sus campos, con años de
-                                experiencia académica y profesional.
+                                {{ _('Aprende de instructores distinguidos y profesionales reconocidos en sus campos, con años
+                                de experiencia académica y profesional.') }}
                             </p>
                         </div>
                     </div>
@@ -241,11 +241,11 @@
                                 <span style="color: white; font-size: 1.5rem; font-weight: bold">⭐</span>
                             </div>
                             <h4 style="color: #474340; font-family: &quot;Merriweather&quot;, serif; margin-bottom: 1rem">
-                                Certificación Prestigiosa
+                                {{ _('Certificación Prestigiosa') }}
                             </h4>
                             <p style="color: #7a5e49; line-height: 1.6">
-                                Obtén certificaciones reconocidas que validen tu conocimiento y abran puertas en tu carrera
-                                profesional y académica.
+                                {{ _('Obtén certificaciones reconocidas que validen tu conocimiento y abran puertas en tu
+                                carrera profesional y académica.') }}
                             </p>
                         </div>
                     </div>
@@ -260,25 +260,25 @@
                     <div class="col-md-3 mb-4">
                         <div class="stat-item">
                             <h3 class="display-4 fw-bold mb-2" style="font-family: &quot;Merriweather&quot;, serif">95%</h3>
-                            <p class="lead">Tasa de Finalización</p>
+                            <p class="lead">{{ _('Tasa de Finalización') }}</p>
                         </div>
                     </div>
                     <div class="col-md-3 mb-4">
                         <div class="stat-item">
                             <h3 class="display-4 fw-bold mb-2" style="font-family: &quot;Merriweather&quot;, serif">50K+</h3>
-                            <p class="lead">Estudiantes Activos</p>
+                            <p class="lead">{{ _('Estudiantes Activos') }}</p>
                         </div>
                     </div>
                     <div class="col-md-3 mb-4">
                         <div class="stat-item">
                             <h3 class="display-4 fw-bold mb-2" style="font-family: &quot;Merriweather&quot;, serif">200+</h3>
-                            <p class="lead">Cursos Disponibles</p>
+                            <p class="lead">{{ _('Cursos Disponibles') }}</p>
                         </div>
                     </div>
                     <div class="col-md-3 mb-4">
                         <div class="stat-item">
                             <h3 class="display-4 fw-bold mb-2" style="font-family: &quot;Merriweather&quot;, serif">98%</h3>
-                            <p class="lead">Satisfacción Estudiantil</p>
+                            <p class="lead">{{ _('Satisfacción Estudiantil') }}</p>
                         </div>
                     </div>
                 </div>
@@ -295,7 +295,7 @@
                             📋 Harvard Case Study Collection
                         </h2>
                         <p class="lead" style="color: #474340; font-family: &quot;Charter&quot;, serif">
-                            Casos reales. Debates auténticos. Soluciones transformadoras.
+                            {{ _('Casos reales. Debates auténticos. Soluciones transformadoras.') }}
                         </p>
                         <div style="width: 120px; height: 3px; background: #d8b866; margin: 1rem auto"></div>
                     </div>
@@ -357,7 +357,8 @@
                                             border-radius: 3px;
                                         "
                                     >
-                                        {% if curso.nivel == 0 %}Intro{% else %}Nivel {{ curso.nivel }}{% endif %}
+                                        {% if curso.nivel == 0 %}{{ _('Intro') }}{% else %}{{ _('Nivel') }} {{ curso.nivel }}{%
+                                        endif %}
                                     </span>
                                     {% if not curso.precio %}
                                     <span
@@ -368,7 +369,7 @@
                                             padding: 0.2rem 0.8rem;
                                             border-radius: 3px;
                                         "
-                                        >Full Scholarship</span
+                                        >{{ _('Full Scholarship') }}</span
                                     >
                                     {% endif %}
                                 </div>
@@ -393,7 +394,7 @@
                                             font-family: &quot;Charter&quot;, serif;
                                         "
                                     >
-                                        📋 Analizar Caso
+                                        📋 {{ _('Analizar Caso') }}
                                     </a>
                                     {% if curso.precio %}
                                     <div style="font-weight: bold; color: #a41034; font-family: &quot;Charter&quot;, serif">
@@ -436,7 +437,7 @@
                         class="btn btn-lg px-4 py-2"
                         style="background: #a41034; color: white; border: none; font-family: &quot;Charter&quot;, serif"
                     >
-                        📚 Explorar Biblioteca de Casos
+                        📚 {{ _('Explorar Biblioteca de Casos') }}
                     </a>
                 </div>
             </div>
@@ -467,21 +468,21 @@
                                         font-family: &quot;Merriweather&quot;, serif;
                                     "
                                 >
-                                    "La educación es el arma más poderosa que puedes usar para cambiar el mundo. En Harvard
-                                    LMS, forjamos mentes brillantes para el futuro."
+                                    {{ _('La educación es el arma más poderosa que puedes usar para cambiar el mundo. En
+                                    Harvard LMS, forjamos mentes brillantes para el futuro.') }}
                                 </p>
                                 <footer class="blockquote-footer mt-3" style="color: #7a5e49">
-                                    Filosofía Educativa <cite title="Source Title">Harvard Academic LMS</cite>
+                                    {{ _('Filosofía Educativa') }} <cite title="Source Title">Harvard Academic LMS</cite>
                                 </footer>
                             </blockquote>
                         </div>
                         {% if not current_user.is_authenticated %}
                         <h3 class="mb-4" style="color: #474340; font-family: &quot;Merriweather&quot;, serif">
-                            ¿Listo para Comenzar tu Viaje Académico?
+                            {{ _('¿Listo para Comenzar tu Viaje Académico?') }}
                         </h3>
                         <p class="lead mb-4" style="color: #7a5e49">
-                            Únete a nuestra comunidad de estudiantes excepcionales y descubre el poder del aprendizaje de
-                            calidad.
+                            {{ _('Únete a nuestra comunidad de estudiantes excepcionales y descubre el poder del aprendizaje de
+                            calidad.') }}
                         </p>
                         <a
                             href="{{ url_for('user.crear_cuenta') }}"
@@ -495,14 +496,14 @@
                                 text-decoration: none;
                             "
                         >
-                            Registrarse Ahora
+                            {{ _('Registrarse Ahora') }}
                         </a>
                         {% else %}
                         <h3 class="mb-4" style="color: #474340; font-family: &quot;Merriweather&quot;, serif">
-                            Bienvenido de vuelta, {{ current_user.nombre }}
+                            {{ _('Bienvenido de vuelta') }}, {{ current_user.nombre }}
                         </h3>
                         <p class="lead mb-4" style="color: #7a5e49">
-                            Continúa tu viaje académico y explora nuevas oportunidades de aprendizaje.
+                            {{ _('Continúa tu viaje académico y explora nuevas oportunidades de aprendizaje.') }}
                         </p>
                         <a
                             href="{{ url_for('home.panel') }}"
@@ -516,14 +517,14 @@
                                 text-decoration: none;
                             "
                         >
-                            Ir a Mi Panel
+                            {{ _('Ir a Mi Panel') }}
                         </a>
                         <a
                             href="{{ url_for('course.lista_cursos', page=1) }}"
                             class="btn btn-lg btn-outline-dark px-5 py-3"
                             style="border-radius: 10px; font-weight: 600"
                         >
-                            Explorar Cursos
+                            {{ _('Explorar Cursos') }}
                         </a>
                         {% endif %}
                     </div>
@@ -538,15 +539,15 @@
                     <div class="col-md-6">
                         <h5 style="font-family: &quot;Merriweather&quot;, serif; margin-bottom: 1rem">Harvard Academic LMS</h5>
                         <p style="opacity: 0.9">
-                            Elevando los estándares de la educación digital con la tradición y excelencia académica que nos
-                            caracteriza.
+                            {{ _('Elevando los estándares de la educación digital con la tradición y excelencia académica que
+                            nos caracteriza.') }}
                         </p>
                     </div>
                     <div class="col-md-6 text-md-end">
                         <p style="opacity: 0.8; margin-bottom: 0">
                             <small>
-                                &copy; 2025 {{ site_config.nombre }}. Todos los derechos reservados.<br />
-                                Desarrollado con dedicación académica y excelencia tecnológica.
+                                &copy; 2025 {{ site_config.nombre }}. {{ _('Todos los derechos reservados.') }}<br />
+                                {{ _('Desarrollado con dedicación académica y excelencia tecnológica.') }}
                             </small>
                         </p>
                     </div>

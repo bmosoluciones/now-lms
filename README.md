@@ -15,9 +15,18 @@
 A simple-to-{install, use, configure, monetize, and maintain} learning management system.
 
 ![ScreenShot](https://bmogroup.solutions/imgs/lms/Course.png)
+
 -----------
+
 [![ScreenShot](https://bmogroup.solutions/imgs/lms/AdminDashboard_thumb.png)](https://bmogroup.solutions/imgs/lms/AdminDashboard.png) [![ScreenShot](https://bmogroup.solutions/imgs/lms/Home_thumb.png)](https://bmogroup.solutions/imgs/lms/Home.png) [![ScreenShot](https://bmogroup.solutions/imgs/lms/InstructorPanel_thumb.png)](https://bmogroup.solutions/imgs/lms/InstructorPanel.png) [![ScreenShot](https://bmogroup.solutions/imgs/lms/StudentDashboard_thumb.png)](https://bmogroup.solutions/imgs/lms/StudentDashboard.png) [![ScreenShot](https://bmogroup.solutions/imgs/lms/ModerationDashboard_thumb.png)](https://bmogroup.solutions/imgs/lms/ModerationDashboard.png)
+
 -----------
+
+NOW-LMS is a modern, lightweight Learning Management System built with Flask and Bootstrap, designed to be simple to deploy,
+configure, and scale. It empowers institutions, instructors, and learners by combining essential e-learning features—course
+management, enrollment, communication, assessments, and certification—into one accessible platform. With flexible configuration
+options, role-based access control, support for multiple databases, and built-in monetization tools, NOW-LMS addresses both
+pedagogical and andragogical needs in today’s post-pandemic learning environment.
 
 ## Documentation
 
@@ -40,7 +49,7 @@ Data in the live demo is reset on every deployment. Please wait for the free Ren
 
 Thanks for your interest in the NOW - LMS project (the project).
 
-### Stack
+### Implemented Software Stack
 
 - Backend: Python with Flask microframework
 - Frontend: Boostrap5 with Alpine.js
@@ -55,14 +64,18 @@ Thanks for your interest in the NOW - LMS project (the project).
 To start a local server, simply execute:
 
 ```
+# Python >= 3.11
 python3 -m venv venv
-source venv/bin/activate
-python -m pip install now_lms
-python -m now_lms
+venv/bin/pip install now_lms
+venv/bin/lmsctl database init
+venv/bin/lmsctl serve
 ```
 
-Visit `http://127.0.0.1:8080/` in your browser, the default user and password are `lms-admin`.
-Note: the default server binds only to localhost. You can test the software locally. If you want to deploy NOW-LMS for production use, please check the [user manual](https://bmosoluciones.github.io/now-lms/setup.html).
+Visit `http://127.0.0.1:8080/` in your browser, the default admin user and password are `lms-admin`.
+Note: the default server binds only to localhost. You can test the software locally. If you want to deploy NOW-LMS for
+production use, please check the [user manual](https://bmosoluciones.github.io/now-lms/setup.html). Never use the default
+`admin user` and `password` in a deployment open to public access in the Internet.
+
 
 ### Features
 
@@ -107,11 +120,17 @@ NOW - LMS is designed to be simple yet powerful. Here are its key features:
 
 ## Licence
 
-**Apache License 2.0**: a permissive open-source license that allows anyone to freely use, modify, and distribute software, including for commercial purposes, as long as copyright and license notices are preserved. It also provides an explicit patent grant to protect users from patent claims but terminates rights if you sue over patents. While you can combine Apache-licensed code with proprietary software, you cannot use Apache trademarks or logos without permission, and you must give proper attribution to the original authors.
+**Apache License 2.0**, a permissive open-source license that allows anyone to freely use, modify, and distribute software,
+including for commercial purposes, as long as copyright and license notices are preserved. It also provides an explicit patent
+grant to protect users from patent claims but terminates rights if you sue over patents. While you can combine Apache-licensed
+code with proprietary software, you cannot use Apache trademarks or logos without permission, and you must give proper attribution
+to the original authors.
 
 ## Contributing
 
-Thanks for your interest in contributing to the NOW-LMS project. Please note that this is an open-source project, so your contribution will be available to others for free under the terms of the Apache License. Refer to the [CONTRIBUTING](https://github.com/bmosoluciones/now-lms/blob/main/docs/CONTRIBUTING.md) file to get started.
+Thanks for your interest in contributing to the NOW-LMS project. Please note that this is an open-source project, so your
+contribution will be available to others for free under the terms of the Apache License. Please refer to the 
+[CONTRIBUTING](https://github.com/bmosoluciones/now-lms/blob/main/docs/CONTRIBUTING.md) file to get started.
 
 ## Logo
 
