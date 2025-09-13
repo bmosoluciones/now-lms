@@ -17,7 +17,7 @@ A simple-to-{install, use, configure, monetize, and maintain} learning managemen
 
 ![ScreenShot](https://bmogroup.solutions/imgs/lms/Course.png)
 -----------
-[![ScreenShot](https://bmogroup.solutions/imgs/lms/AdminDashboard_thumb.png)](https://bmogroup.solutions/imgs/lms/AdminDashboard.png)[![ScreenShot](https://bmogroup.solutions/imgs/lms/Home_thumb.png)](https://bmogroup.solutions/imgs/lms/Home.png)[![ScreenShot](https://bmogroup.solutions/imgs/lms/InstructorPanel_thumb.png)](https://bmogroup.solutions/imgs/lms/InstructorPanel.png)[![ScreenShot](https://bmogroup.solutions/imgs/lms/StudentDashboard_thumb.png)](https://bmogroup.solutions/imgs/lms/StudentDashboard.png)
+[![ScreenShot](https://bmogroup.solutions/imgs/lms/AdminDashboard_thumb.png)](https://bmogroup.solutions/imgs/lms/AdminDashboard.png) [![ScreenShot](https://bmogroup.solutions/imgs/lms/Home_thumb.png)](https://bmogroup.solutions/imgs/lms/Home.png) [![ScreenShot](https://bmogroup.solutions/imgs/lms/InstructorPanel_thumb.png)](https://bmogroup.solutions/imgs/lms/InstructorPanel.png) [![ScreenShot](https://bmogroup.solutions/imgs/lms/StudentDashboard_thumb.png)](https://bmogroup.solutions/imgs/lms/StudentDashboard.png) [![ScreenShot](https://bmogroup.solutions/imgs/lms/ModerationDashboard_thumb.png)](https://bmogroup.solutions/imgs/lms/ModerationDashboard.png)
 -----------
 
 ## Documentation
