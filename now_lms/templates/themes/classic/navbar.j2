@@ -36,27 +36,33 @@
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 {% if not current_user.is_authenticated %}
                 <li>
-                    <a href="{{ url_for('home.pagina_de_inicio') }}" class="nav-link px-2">🎓 Academia</a>
+                    <a href="{{ url_for('home.pagina_de_inicio') }}" class="nav-link px-2">🎓 {{ _('Academia') }}</a>
                 </li>
                 {% else %}
                 <li>
-                    <a href="{{ url_for('home.panel') }}" class="nav-link px-2">🎓 Mi Academia</a>
+                    <a href="{{ url_for('home.panel') }}" class="nav-link px-2">🎓 {{ _('Mi Academia') }}</a>
                 </li>
                 {% endif %}
                 <li>
-                    <a href="{{ url_for('course.lista_cursos', page=1) }}" class="nav-link px-2">📚 Cursos</a>
+                    <a href="{{ url_for('course.lista_cursos', page=1) }}" class="nav-link px-2">📚 {{ _('Cursos') }}</a>
                 </li>
                 {% if is_programs_enabled() %}
                 <li>
-                    <a href="{{ url_for('program.lista_programas', page=1) }}" class="nav-link px-2">📋 Programas</a>
+                    <a href="{{ url_for('program.lista_programas', page=1) }}" class="nav-link px-2"
+                        >📋 {{ _('Programas') }}</a
+                    >
                 </li>
                 {% endif %} {% if is_resources_enabled() %}
                 <li>
-                    <a href="{{ url_for('resource.lista_de_recursos', page=1) }}" class="nav-link px-2">📖 Recursos</a>
+                    <a href="{{ url_for('resource.lista_de_recursos', page=1) }}" class="nav-link px-2"
+                        >📖 {{ _('Recursos') }}</a
+                    >
                 </li>
                 {% endif %} {% if is_masterclass_enabled() %}
                 <li>
-                    <a href="{{ url_for('masterclass.list_public') }}" class="nav-link px-2">🎥 Clases Magistrales</a>
+                    <a href="{{ url_for('masterclass.list_public') }}" class="nav-link px-2"
+                        >🎥 {{ _('Clases Magistrales') }}</a
+                    >
                 </li>
                 {% endif %}
                 <li>
@@ -65,25 +71,31 @@
                 {% if current_user.is_authenticated %} {% if current_user.tipo == "moderator" or current_user.tipo ==
                 "instructor" or current_user.tipo == "admin" %}
                 <li>
-                    <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link px-2">🛡️ Moderación</a>
+                    <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link px-2"
+                        >🛡️ {{ _('Moderación') }}</a
+                    >
                 </li>
                 {% endif %} {% if current_user.tipo == "instructor" or current_user.tipo == "admin" %}
                 <li>
-                    <a href="{{ url_for('instructor_profile.pagina_instructor') }}" class="nav-link px-2">📖 Docente</a>
+                    <a href="{{ url_for('instructor_profile.pagina_instructor') }}" class="nav-link px-2"
+                        >📖 {{ _('Docente') }}</a
+                    >
                 </li>
                 {% endif %} {% if current_user.tipo == "admin" %}
                 <li>
-                    <a href="{{ url_for('admin_profile.pagina_admin') }}" class="nav-link px-2">⚙️ Administración</a>
+                    <a href="{{ url_for('admin_profile.pagina_admin') }}" class="nav-link px-2"
+                        >⚙️ {{ _('Administración') }}</a
+                    >
                 </li>
                 {% endif %} {% endif %}
             </ul>
             <div class="text-end">
                 {% if not current_user.is_authenticated %}
                 <a class="btn btn-classic-primary me-2" href="{{ url_for('user.inicio_sesion') }}" role="button">
-                    Iniciar Sesión
+                    {{ _('Iniciar Sesión') }}
                 </a>
                 <a class="btn btn-classic-secondary me-2" href="{{ url_for('user.crear_cuenta') }}" role="button">
-                    Crear Cuenta
+                    {{ _('Crear Cuenta') }}
                 </a>
                 {% else %}
                 <ul class="navbar-nav">
@@ -96,13 +108,13 @@
                             data-bs-display="static"
                             aria-expanded="false"
                             style="color: var(--classic-dark)"
-                            >Bienvenido: {{ current_user.nombre }} {{ current_user.apellido }}
+                            >{{ _('Bienvenido') }}: {{ current_user.nombre }} {{ current_user.apellido }}
                             <i class="bi bi-list" aria-hidden="true"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg-end">
                             <li>
                                 <a class="dropdown-item" href="{{ url_for('user_profile.perfil') }}">
-                                    <i class="bi bi-person-circle" aria-hidden="true"></i> Perfil de Usuario</a
+                                    <i class="bi bi-person-circle" aria-hidden="true"></i> {{ _('Perfil de Usuario') }}</a
                                 >
                             </li>
                             <li><a class="dropdown-item" href="#"> </a></li>
@@ -116,7 +128,7 @@
                                     data-bs-toggle="modal"
                                     data-bs-target="#exampleModal"
                                 >
-                                    <i class="bi bi-info-circle" aria-hidden="true"></i> Información
+                                    <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Información') }}
                                 </a>
                             </li>
                             <li>
@@ -124,7 +136,7 @@
                             </li>
                             <li>
                                 <a class="dropdown-item text-decoration-none" href="{{ url_for('user.cerrar_sesion') }}">
-                                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Cerrar Sesión
+                                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i> {{ _('Cerrar Sesión') }}
                                 </a>
                             </li>
                         </ul>
@@ -156,7 +168,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <strong><i class="bi bi-tag-fill text-primary"></i> Versión:</strong> {{ version }}
+                        <strong><i class="bi bi-tag-fill text-primary"></i> {{ _('Versión') }}:</strong> {{ version }}
                     </div>
                     <div class="col-md-6">
                         <strong><i class="bi bi-code-slash text-success"></i> Python:</strong> {{ pyversion }}
@@ -189,14 +201,14 @@
                             href="https://now-lms-manual.readthedocs.io/en/latest/"
                             class="btn btn-classic-primary btn-sm"
                             data-dismiss="modal"
-                            ><i class="bi bi-book" aria-hidden="true"></i> Manual de Usuario</a
+                            ><i class="bi bi-book" aria-hidden="true"></i> {{ _('Manual de Usuario') }}</a
                         >
                         {% if current_user.tipo == "admin" %}
                         <a
                             href="https://bmosoluciones.github.io/now-lms/"
                             class="btn btn-classic-secondary btn-sm"
                             data-dismiss="modal"
-                            ><i class="bi bi-tools" aria-hidden="true"></i> Manual de Administración</a
+                            ><i class="bi bi-tools" aria-hidden="true"></i> {{ _('Manual de Administración') }}</a
                         >
                         {% endif %}
                     </div>

@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-
 """Definición unica de la version de la aplicación."""
 
 # ---------------------------------------------------------------------------------------
@@ -24,11 +22,9 @@
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 
-
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
-
 
 # <--------------------------------------------------------------------------> #
 # Basic info:
@@ -46,25 +42,34 @@ PATCH = "1"
 
 # <--------------------------------------------------------------------------> #
 # Quick fix
-POST = False
+POST = ""
 
 # <--------------------------------------------------------------------------> #
 # Pre release not for production
-PRERELEASE = "b19"
+PRERELEASE = "-rc1"
 
 # <--------------------------------------------------------------------------> #
 # Date of release
-REVISION = "20250903"
+REVISION = ""
+
+# <--------------------------------------------------------------------------> #
+# Release string preprocessing
+PRE_RELEASE_PART = (PRERELEASE if PRERELEASE != "" else "") + (REVISION if REVISION != "" else "")
+POST_RELEASE_PART = (POST if POST != "" else "") + (REVISION if REVISION != "" else "")
 
 # <--------------------------------------------------------------------------> #
 # Release string
 # Refences:
 #  - https://peps.python.org/pep-0440/
-# 0.0.1b19.dev20250903
-if PRERELEASE:
-    VERSION = MAYOR + "." + MENOR + "." + PATCH + PRERELEASE + ".dev" + REVISION
-else:
-    if not POST:
-        VERSION = MAYOR + "." + MENOR + "." + PATCH
-    else:
-        VERSION = MAYOR + "." + MENOR + "." + PATCH + ".post" + REVISION
+#
+
+BASE_VERSION = MAYOR + "." + MENOR + "." + PATCH
+
+if PRERELEASE != "":
+    VERSION = BASE_VERSION + PRE_RELEASE_PART
+
+if POST != "":
+    VERSION = BASE_VERSION + POST_RELEASE_PART
+
+if PRERELEASE == "" and POST == "":
+    VERSION = BASE_VERSION
