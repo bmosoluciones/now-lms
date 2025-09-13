@@ -6,62 +6,220 @@
         <title>{{ _('Certificado de Finalizacion de curso') }}.</title>
 
         {{ current_theme.local_style() }}
+        <style>
+            .certificate-header {
+                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                color: white;
+                border-radius: 10px;
+                margin-bottom: 2rem;
+            }
+            .certificate-card {
+                border: none;
+                border-radius: 15px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
+                margin-bottom: 1.5rem;
+            }
+            .certificate-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+            }
+            .info-icon {
+                font-size: 1.2rem;
+                opacity: 0.8;
+            }
+            .certificate-statement {
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border-left: 4px solid #28a745;
+                border-radius: 0 10px 10px 0;
+                padding: 1.5rem;
+                margin: 1.5rem 0;
+                font-size: 1.1rem;
+                line-height: 1.6;
+            }
+        </style>
     </head>
 
     <body>
         {{ current_theme.navbar() }}
 
         <main>
-            <div class="container px-0 py-3" id="curse_list">
-                <h4>{{ _('Certificado de Finalización de Curso') }}</h4>
+            <div class="container px-0 py-3" id="certificate_view">
+                <!-- Enhanced Certificate Header -->
+                <div class="certificate-header p-4 mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-1">
+                                <i class="bi bi-award-fill me-2"></i>
+                                {{ _('Certificado de Finalización de Curso') }}
+                            </h2>
+                            <p class="mb-0 opacity-75">{{ _('Verificación de logro académico') }}</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <i class="bi bi-shield-check display-4 opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
 
-                <div>
-                    <p>
+                <!-- Certificate Statement -->
+                <div class="certificate-statement">
+                    <p class="mb-0">
                         {{ _('Se hace constar que') }} <strong>{{ usuario.nombre }} {{ usuario.apellido }}</strong> {{ _('ha
                         completado satisfactoriamente el curso') }} <strong>{{ curso.nombre }} ({{ curso.codigo }})</strong> {{
                         _('cumpliendo con todos los requisitos académicos y evaluaciones establecidas') }}.
                     </p>
                 </div>
 
-                <h5>{{ _('Datos del Estudiante') }}:</h5>
-                <p><strong>{{ _('Nombre') }}:</strong> {{ usuario.nombre }}</p>
-                <p><strong>{{ _('Apellido') }}:</strong> {{ usuario.apellido }}</p>
+                <div class="row">
+                    <!-- Student Information Card -->
+                    <div class="col-md-6 mb-3">
+                        <div class="certificate-card">
+                            <div class="card-header bg-primary bg-opacity-10">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-person-fill text-primary me-2 info-icon"></i>{{ _('Datos del Estudiante') }}
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-4">
+                                        <strong>{{ _('Nombre') }}:</strong>
+                                    </div>
+                                    <div class="col-8">
+                                        {{ usuario.nombre }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <strong>{{ _('Apellido') }}:</strong>
+                                    </div>
+                                    <div class="col-8">
+                                        {{ usuario.apellido }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <h5>{{ _('Datos del Curso') }}:</h5>
-                <p><strong>{{ _('Nombre del Curso') }}:</strong>: {{ curso.nombre }}</p>
-                <p><strong>{{ _('Descripción del Curso') }}:</strong>: {{ curso.descripcion }}</p>
-                {% if curso.fecha_inicio %}
-                <p><strong>{{ _('Fecha de Inicio') }}:</strong> {{ curso.fecha_inicio }}</p>
-                {% endif %} {% if curso.fecha_fin %}
-                <p><strong>{{ _('Fecha de Inicio') }}:</strong> {{ curso.fecha_fin }}</p>
-                {% endif %} {% if curso.duracion %}
-                <p><strong>{{ _('Duración') }}:</strong> {{ curso.duracion }} {{ _('horas') }}</p>
-                {% endif %}
+                    <!-- Course Information Card -->
+                    <div class="col-md-6 mb-3">
+                        <div class="certificate-card">
+                            <div class="card-header bg-info bg-opacity-10">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-book-fill text-info me-2 info-icon"></i>{{ _('Datos del Curso') }}
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-5">
+                                        <strong>{{ _('Nombre del Curso') }}:</strong>
+                                    </div>
+                                    <div class="col-7">
+                                        {{ curso.nombre }}
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-5">
+                                        <strong>{{ _('Descripción del Curso') }}:</strong>
+                                    </div>
+                                    <div class="col-7">
+                                        {{ curso.descripcion }}
+                                    </div>
+                                </div>
+                                {% if curso.fecha_inicio %}
+                                <div class="row mb-2">
+                                    <div class="col-5">
+                                        <strong>{{ _('Fecha de Inicio') }}:</strong>
+                                    </div>
+                                    <div class="col-7">
+                                        {{ curso.fecha_inicio }}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% if curso.fecha_fin %}
+                                <div class="row mb-2">
+                                    <div class="col-5">
+                                        <strong>{{ _('Fecha de Fin') }}:</strong>
+                                    </div>
+                                    <div class="col-7">
+                                        {{ curso.fecha_fin }}
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% if curso.duracion %}
+                                <div class="row">
+                                    <div class="col-5">
+                                        <strong>{{ _('Duración') }}:</strong>
+                                    </div>
+                                    <div class="col-7">
+                                        {{ curso.duracion }} {{ _('horas') }}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                <h5>{{ _('Datos del Certicado') }}:</h5>
-                <p><strong>{{ _('Fecha de Emisión') }}:</strong> {{ certificacion.fecha }}</p>
-                {% if certificacion.nota %}
-                <p><strong>{{ _('Nota') }}:</strong> {{ certificacion.nota }}</p>
-                {% endif %}
-
-                <br />
-                <br />
-
-                <a
-                    href="{{ url_for('certificate.certificacion', ulid=certificacion.id) }}"
-                    type="button"
-                    target="_blank"
-                    class="btn btn-success"
-                    ><i class="bi bi-eye-fill" aria-hidden="true"></i> {{ _('Ver Certicado') }}</a
-                >
-
-                <a
-                    href="{{ url_for('certificate.certificate_serve_pdf', ulid=certificacion.id) }}"
-                    type="button"
-                    target="_blank"
-                    class="btn btn-success"
-                    ><i class="bi bi-cloud-arrow-down-fill" aria-hidden="true"></i> {{ _('Descargar Certificado') }}</a
-                >
+                <!-- Certificate Information Card -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="certificate-card">
+                            <div class="card-header bg-success bg-opacity-10">
+                                <h5 class="card-title mb-0">
+                                    <i class="bi bi-award text-success me-2 info-icon"></i>{{ _('Datos del Certificado') }}
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <div class="row mb-2">
+                                            <div class="col-5">
+                                                <strong>{{ _('Fecha de Emisión') }}:</strong>
+                                            </div>
+                                            <div class="col-7">
+                                                {{ certificacion.fecha }}
+                                            </div>
+                                        </div>
+                                        {% if certificacion.nota %}
+                                        <div class="row">
+                                            <div class="col-5">
+                                                <strong>{{ _('Nota') }}:</strong>
+                                            </div>
+                                            <div class="col-7">
+                                                <span class="badge bg-success">{{ certificacion.nota }}</span>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6 text-end">
+                                        <div class="d-flex flex-column gap-2">
+                                            <a
+                                                href="{{ url_for('certificate.certificacion', ulid=certificacion.id) }}"
+                                                type="button"
+                                                target="_blank"
+                                                class="btn btn-success"
+                                                style="border-radius: 25px"
+                                            >
+                                                <i class="bi bi-eye-fill me-2" aria-hidden="true"></i>{{ _('Ver Certificado') }}
+                                            </a>
+                                            <a
+                                                href="{{ url_for('certificate.certificate_serve_pdf', ulid=certificacion.id) }}"
+                                                type="button"
+                                                target="_blank"
+                                                class="btn btn-outline-success"
+                                                style="border-radius: 25px"
+                                            >
+                                                <i class="bi bi-cloud-arrow-down-fill me-2" aria-hidden="true"></i>{{ _('Descargar Certificado') }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </body>
