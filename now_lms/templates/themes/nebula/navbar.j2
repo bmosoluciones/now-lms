@@ -64,6 +64,10 @@
                         >⭐ {{ _('Clases Magistrales') }}</a
                     >
                 </li>
+                {% endif %} {% if is_blog_enabled() %}
+                <li>
+                    <a href="{{ url_for('blog.blog_index') }}" class="nav-link px-2">🌌 Blog</a>
+                </li>
                 {% endif %} {% if current_user.is_authenticated %} {% if current_user.tipo == "moderator" or current_user.tipo
                 == "instructor" or current_user.tipo == "admin" %}
                 <li>

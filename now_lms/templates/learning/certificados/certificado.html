@@ -78,7 +78,8 @@
                         <div class="certificate-card">
                             <div class="card-header bg-primary bg-opacity-10">
                                 <h5 class="card-title mb-0">
-                                    <i class="bi bi-person-fill text-primary me-2 info-icon"></i>{{ _('Datos del Estudiante') }}
+                                    <i class="bi bi-person-fill text-primary me-2 info-icon"></i>{{ _('Datos del Estudiante')
+                                    }}
                                 </h5>
                             </div>
                             <div class="card-body">
@@ -86,17 +87,13 @@
                                     <div class="col-4">
                                         <strong>{{ _('Nombre') }}:</strong>
                                     </div>
-                                    <div class="col-8">
-                                        {{ usuario.nombre }}
-                                    </div>
+                                    <div class="col-8">{{ usuario.nombre }}</div>
                                 </div>
                                 <div class="row">
                                     <div class="col-4">
                                         <strong>{{ _('Apellido') }}:</strong>
                                     </div>
-                                    <div class="col-8">
-                                        {{ usuario.apellido }}
-                                    </div>
+                                    <div class="col-8">{{ usuario.apellido }}</div>
                                 </div>
                             </div>
                         </div>
@@ -115,46 +112,34 @@
                                     <div class="col-5">
                                         <strong>{{ _('Nombre del Curso') }}:</strong>
                                     </div>
-                                    <div class="col-7">
-                                        {{ curso.nombre }}
-                                    </div>
+                                    <div class="col-7">{{ curso.nombre }}</div>
                                 </div>
                                 <div class="row mb-2">
                                     <div class="col-5">
                                         <strong>{{ _('Descripción del Curso') }}:</strong>
                                     </div>
-                                    <div class="col-7">
-                                        {{ curso.descripcion }}
-                                    </div>
+                                    <div class="col-7">{{ curso.descripcion }}</div>
                                 </div>
                                 {% if curso.fecha_inicio %}
                                 <div class="row mb-2">
                                     <div class="col-5">
                                         <strong>{{ _('Fecha de Inicio') }}:</strong>
                                     </div>
-                                    <div class="col-7">
-                                        {{ curso.fecha_inicio }}
-                                    </div>
+                                    <div class="col-7">{{ curso.fecha_inicio }}</div>
                                 </div>
-                                {% endif %}
-                                {% if curso.fecha_fin %}
+                                {% endif %} {% if curso.fecha_fin %}
                                 <div class="row mb-2">
                                     <div class="col-5">
                                         <strong>{{ _('Fecha de Fin') }}:</strong>
                                     </div>
-                                    <div class="col-7">
-                                        {{ curso.fecha_fin }}
-                                    </div>
+                                    <div class="col-7">{{ curso.fecha_fin }}</div>
                                 </div>
-                                {% endif %}
-                                {% if curso.duracion %}
+                                {% endif %} {% if curso.duracion %}
                                 <div class="row">
                                     <div class="col-5">
                                         <strong>{{ _('Duración') }}:</strong>
                                     </div>
-                                    <div class="col-7">
-                                        {{ curso.duracion }} {{ _('horas') }}
-                                    </div>
+                                    <div class="col-7">{{ curso.duracion }} {{ _('horas') }}</div>
                                 </div>
                                 {% endif %}
                             </div>
@@ -178,9 +163,7 @@
                                             <div class="col-5">
                                                 <strong>{{ _('Fecha de Emisión') }}:</strong>
                                             </div>
-                                            <div class="col-7">
-                                                {{ certificacion.fecha }}
-                                            </div>
+                                            <div class="col-7">{{ certificacion.fecha }}</div>
                                         </div>
                                         {% if certificacion.nota %}
                                         <div class="row">
@@ -202,7 +185,8 @@
                                                 class="btn btn-success"
                                                 style="border-radius: 25px"
                                             >
-                                                <i class="bi bi-eye-fill me-2" aria-hidden="true"></i>{{ _('Ver Certificado') }}
+                                                <i class="bi bi-eye-fill me-2" aria-hidden="true"></i>{{ _('Ver Certificado')
+                                                }}
                                             </a>
                                             <a
                                                 href="{{ url_for('certificate.certificate_serve_pdf', ulid=certificacion.id) }}"
@@ -211,7 +195,8 @@
                                                 class="btn btn-outline-success"
                                                 style="border-radius: 25px"
                                             >
-                                                <i class="bi bi-cloud-arrow-down-fill me-2" aria-hidden="true"></i>{{ _('Descargar Certificado') }}
+                                                <i class="bi bi-cloud-arrow-down-fill me-2" aria-hidden="true"></i>{{
+                                                _('Descargar Certificado') }}
                                             </a>
                                         </div>
                                     </div>
