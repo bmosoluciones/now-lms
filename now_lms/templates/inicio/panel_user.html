@@ -83,10 +83,16 @@
                                             </div>
                                             <div class="mt-3">
                                                 <a
-                                                    href="{{ url_for('course.lista_cursos') }}"
-                                                    class="btn btn-outline-primary btn-sm"
+                                                    href="{{ url_for('course.my_courses') }}"
+                                                    class="btn btn-outline-primary btn-sm me-1"
                                                 >
-                                                    <i class="bi bi-plus-circle me-1"></i>Más Cursos
+                                                    <i class="bi bi-journal-bookmark me-1"></i>{{ _('Mis Cursos') }}
+                                                </a>
+                                                <a
+                                                    href="{{ url_for('course.lista_cursos') }}"
+                                                    class="btn btn-outline-secondary btn-sm"
+                                                >
+                                                    <i class="bi bi-plus-circle me-1"></i>{{ _('Más Cursos') }}
                                                 </a>
                                             </div>
                                         </div>
