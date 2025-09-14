@@ -31,6 +31,7 @@ from wtforms.validators import URL, DataRequired, Length, Optional, ValidationEr
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.db import Certificado, database
+from now_lms.i18n import _
 
 # ---------------------------------------------------------------------------------------
 # Master Class forms
@@ -42,27 +43,27 @@ class MasterClassForm(FlaskForm):
 
     # Basic information fields
     title = StringField(
-        "Título",
+        _("Título"),
         validators=[
-            DataRequired(message="El título es requerido"),
-            Length(min=5, max=150, message="El título debe tener entre 5 y 150 caracteres"),
+            DataRequired(message=_("El título es requerido")),
+            Length(min=5, max=150, message=_("El título debe tener entre 5 y 150 caracteres")),
         ],
-        render_kw={"placeholder": "Título de la clase magistral"},
+        render_kw={"placeholder": _("Título de la clase magistral")},
     )
 
     description_public = TextAreaField(
-        "Descripción Pública",
+        _("Descripción Pública"),
         validators=[
-            DataRequired(message="La descripción pública es requerida"),
-            Length(min=20, max=2000, message="La descripción pública debe tener entre 20 y 2000 caracteres"),
+            DataRequired(message=_("La descripción pública es requerida")),
+            Length(min=20, max=2000, message=_("La descripción pública debe tener entre 20 y 2000 caracteres")),
         ],
-        render_kw={"rows": 4, "placeholder": "Descripción visible para todos los usuarios"},
+        render_kw={"rows": 4, "placeholder": _("Descripción visible para todos los usuarios")},
     )
 
     description_private = TextAreaField(
         "Descripción Privada",
-        validators=[Optional(), Length(max=2000, message="La descripción privada no puede exceder 2000 caracteres")],
-        render_kw={"rows": 3, "placeholder": "Descripción visible solo para usuarios inscritos"},
+        validators=[Optional(), Length(max=2000, message=_("La descripción privada no puede exceder 2000 caracteres"))],
+        render_kw={"rows": 3, "placeholder": _("Descripción visible solo para usuarios inscritos")},
     )
 
     # Date and time fields
@@ -78,36 +79,36 @@ class MasterClassForm(FlaskForm):
 
     # Platform configuration
     platform_name = SelectField(
-        "Plataforma",
+        _("Plataforma"),
         choices=[
             ("Zoom", "Zoom"),
             ("Google Meet", "Google Meet"),
             ("Microsoft Teams", "Microsoft Teams"),
             ("Jitsi Meet", "Jitsi Meet"),
             ("Discord", "Discord"),
-            ("Otra", "Otra"),
+            ("Otra", _("Otra")),
         ],
         validators=[DataRequired(message="La plataforma es requerida")],
     )
 
     platform_url = StringField(
-        "Enlace de la Plataforma",
+        _("Enlace de la Plataforma"),
         validators=[
-            DataRequired(message="El enlace de la plataforma es requerido"),
-            URL(message="Debe ser una URL válida"),
-            Length(max=500, message="El enlace no puede exceder 500 caracteres"),
+            DataRequired(message=_("El enlace de la plataforma es requerido")),
+            URL(message=_("Debe ser una URL válida")),
+            Length(max=500, message=_("El enlace no puede exceder 500 caracteres")),
         ],
         render_kw={"placeholder": "https://zoom.us/j/123456789"},
     )
 
     # Certification fields
-    is_certificate = BooleanField("Otorga Certificación")
+    is_certificate = BooleanField(_("Otorga Certificación"))
 
-    diploma_template_id = SelectField("Plantilla de Certificado", coerce=str, validators=[Optional()])
+    diploma_template_id = SelectField(_("Plantilla de Certificado"), coerce=str, validators=[Optional()])
 
     # Optional recording URL
     video_recording_url = StringField(
-        "URL de Grabación",
+        _("URL de Grabación"),
         validators=[
             Optional(),
             URL(message="Debe ser una URL válida"),

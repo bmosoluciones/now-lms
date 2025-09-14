@@ -1,28 +1,29 @@
-# English translations for PROJECT.
-# Copyright (C) 2025 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+# English translations for NOW - LMS.
+# Copyright (C) 2025 BMO Soluciones
+# This file is distributed under the same license as the NOW - LMS project.
+# FIRST AUTHOR <wmoreno@bmogroup.solutions>, 2025.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-09-14 00:13+0000\n"
-"PO-Revision-Date: 2025-09-10 08:59-0600\n"
+"Project-Id-Version: 0.0.1-rc1\n"
+"Report-Msgid-Bugs-To: development@bmogroup.solutions\n"
+"POT-Creation-Date: 2025-09-14 07:02-0600\n"
+"PO-Revision-Date: 2025-09-14 07:17-0600\n"
 "Last-Translator: \n"
-"Language: en\n"
 "Language-Team: en <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Generated-By: Babel 2.17.0\n"
+"X-Generator: Poedit 3.7\n"
 
 #: now_lms/__init__.py:281
 msgid "Favor iniciar sesión para acceder al sistema."
 msgstr "Please log in to access the system."
 
-#: now_lms/__init__.py:400 now_lms/__init__.py:563
+#: now_lms/__init__.py:401 now_lms/__init__.py:564
 msgid "Favor iniciar sesión para acceder a este recurso."
 msgstr "Please log in to access this resource."
 
@@ -38,23 +39,106 @@ msgstr "Course removed from the website."
 msgid "No se puede publicar el curso"
 msgstr "The course cannot be published"
 
-#: now_lms/demo_mode.py:64
+#: now_lms/demo_mode.py:63
 msgid ""
-"Esta acción no está disponible en modo demostración para prevenir uso "
-"abusivo."
+"Esta acción no está disponible en modo demostración para prevenir uso abusivo."
 msgstr "This action is not available in demo mode to prevent abusive use."
 
-#: now_lms/db/tools.py:140
+#: now_lms/db/tools.py:142
 msgid "Sistema de aprendizaje en linea."
 msgstr "Online learning system."
 
-#: now_lms/db/tools.py:409
+#: now_lms/db/tools.py:411
 msgid "Imagen de usuario eliminada correctamente."
 msgstr "User image deleted successfully."
 
-#: now_lms/db/tools.py:411
+#: now_lms/db/tools.py:413
 msgid "Imagen de usuario no existe."
 msgstr "User image does not exist."
+
+#: now_lms/forms/__init__.py:55 now_lms/forms/masterclass.py:46
+#: now_lms/templates/blog/admin_index.html:67
+#: now_lms/templates/blog/instructor_index.html:31
+#: now_lms/templates/inicio/perfil_editar.html:61
+#: now_lms/templates/masterclass/admin_list.html:36
+#: now_lms/templates/masterclass/instructor_list.html:31
+msgid "Título"
+msgstr "Title"
+
+#: now_lms/forms/__init__.py:302
+#: now_lms/templates/learning/resources/type_macros.html:85
+msgid "Requerido"
+msgstr "Required"
+
+#: now_lms/forms/__init__.py:302
+#: now_lms/templates/learning/resources/type_macros.html:88
+msgid "Opcional"
+msgstr "Optional"
+
+#: now_lms/forms/__init__.py:302
+#: now_lms/templates/learning/resources/type_macros.html:89
+msgid "Alternativo"
+msgstr "Alternative"
+
+#: now_lms/forms/masterclass.py:48
+msgid "El título es requerido"
+msgstr "Title is required"
+
+#: now_lms/forms/masterclass.py:49
+msgid "El título debe tener entre 5 y 150 caracteres"
+msgstr "The title must be between 5 and 150 characters long"
+
+#: now_lms/forms/masterclass.py:51
+msgid "Título de la clase magistral"
+msgstr "Masterclass Title"
+
+#: now_lms/forms/masterclass.py:55
+msgid "Descripción Pública"
+msgstr "Public Description"
+
+#: now_lms/forms/masterclass.py:57
+msgid "La descripción pública es requerida"
+msgstr "Public description is required"
+
+#: now_lms/forms/masterclass.py:58
+msgid "La descripción pública debe tener entre 20 y 2000 caracteres"
+msgstr "The public description must be between 20 and 2000 characters long"
+
+#: now_lms/forms/masterclass.py:60
+msgid "Descripción visible para todos los usuarios"
+msgstr "This description will be visible to all users"
+
+#: now_lms/forms/masterclass.py:65
+msgid "La descripción privada no puede exceder 2000 caracteres"
+msgstr "The private description cannot exceed 2000 characters"
+
+#: now_lms/forms/masterclass.py:66
+msgid "Descripción visible solo para usuarios inscritos"
+msgstr "This description will only be visible to enrolled users"
+
+#: now_lms/forms/masterclass.py:82
+msgid "Plataforma"
+msgstr "Transform"
+
+#: now_lms/forms/masterclass.py:89
+msgid "Otra"
+msgstr "Other"
+
+#: now_lms/forms/masterclass.py:95
+msgid "Enlace de la Plataforma"
+msgstr "Session Link"
+
+#: now_lms/forms/masterclass.py:97
+msgid "El enlace de la plataforma es requerido"
+msgstr "The platform link is required"
+
+#: now_lms/forms/masterclass.py:98
+msgid "Debe ser una URL válida"
+msgstr "It must be a valid URL"
+
+#: now_lms/forms/masterclass.py:99
+msgid "El enlace no puede exceder 500 caracteres"
+msgstr "The link cannot exceed 500 characters"
 
 #: now_lms/templates/admin/adsense.html:7
 msgid "Configuración de Anuncios de AdSense"
@@ -145,10 +229,8 @@ msgid "Verificar archivo ads.txt"
 msgstr "Verify ads file"
 
 #: now_lms/templates/admin/adsense.html:130
-#: now_lms/templates/admin/config.html:178
-#: now_lms/templates/admin/mail.html:105
-#: now_lms/templates/admin/paypal.html:103
-#: now_lms/templates/admin/stripe.html:33
+#: now_lms/templates/admin/config.html:178 now_lms/templates/admin/mail.html:105
+#: now_lms/templates/admin/paypal.html:103 now_lms/templates/admin/stripe.html:33
 msgid "Actualizar Configuración"
 msgstr "Update Configuration"
 
@@ -253,8 +335,7 @@ msgstr "Enable Downloadable Resources"
 
 #: now_lms/templates/admin/config.html:139
 msgid ""
-"Permite a los instructores subir archivos descargables como recursos del "
-"curso"
+"Permite a los instructores subir archivos descargables como recursos del curso"
 msgstr "Allows instructors to upload downloadable files as course resources"
 
 #: now_lms/templates/admin/config.html:143
@@ -272,8 +353,7 @@ msgstr "User Verification Settings"
 #: now_lms/templates/admin/config.html:162
 msgid ""
 "La configuración de correo\n"
-"                                electrónico ha sido verificada "
-"correctamente."
+"                                electrónico ha sido verificada correctamente."
 msgstr ""
 "Email configuration\n"
 "                                has not been verified."
@@ -298,8 +378,8 @@ msgstr "Search currency..."
 #: now_lms/templates/admin/flagged_messages.html:34
 #: now_lms/templates/inicio/panel_admin.html:254
 #: now_lms/templates/inicio/panel_moderator.html:252
-#: now_lms/templates/perfiles/moderador.html:55
-#: now_lms/templates/perfiles/moderador.html:108
+#: now_lms/templates/perfiles/moderador.html:89
+#: now_lms/templates/perfiles/moderador.html:142
 msgid "Mensajes Reportados"
 msgstr "Reported Messages"
 
@@ -518,8 +598,7 @@ msgstr "View Full Conversation"
 
 #: now_lms/templates/admin/flagged_messages.html:106
 #: now_lms/templates/calendar/event_detail.html:195
-#: now_lms/templates/inicio/cursos.html:415
-#: now_lms/templates/inicio/home.html:194
+#: now_lms/templates/inicio/cursos.html:415 now_lms/templates/inicio/home.html:194
 #: now_lms/templates/themes/amber/overrides/home.j2:265
 #: now_lms/templates/themes/classic/overrides/course_list.j2:415
 #: now_lms/templates/themes/classic/overrides/home.j2:265
@@ -606,7 +685,7 @@ msgstr "Closed"
 #: now_lms/templates/learning/mensajes/user_messages.html:60
 #: now_lms/templates/learning/mensajes/view_thread.html:39
 #: now_lms/templates/learning/mensajes/view_thread.html:245
-#: now_lms/templates/perfiles/moderador.html:43
+#: now_lms/templates/perfiles/moderador.html:77
 msgid "Mensajes"
 msgstr "Messages"
 
@@ -736,8 +815,7 @@ msgstr "Approve"
 msgid "Rechazar"
 msgstr "Reject"
 
-#: now_lms/templates/admin/mail.html:21
-#: now_lms/templates/admin/mail_check.html:21
+#: now_lms/templates/admin/mail.html:21 now_lms/templates/admin/mail_check.html:21
 msgid "Configuración del Correo Electrónico"
 msgstr "Email Settings"
 
@@ -779,8 +857,7 @@ msgstr "Default email as sent by"
 msgid "Correo predeterminado enviado por nombre"
 msgstr "Default email sent by name"
 
-#: now_lms/templates/admin/mail.html:99
-#: now_lms/templates/admin/mail_check.html:40
+#: now_lms/templates/admin/mail.html:99 now_lms/templates/admin/mail_check.html:40
 msgid "Enviar Correo de Prueba"
 msgstr "Send Test Email"
 
@@ -863,8 +940,7 @@ msgid ""
 "                            producción"
 msgstr "Enter the production Client Secret"
 
-#: now_lms/templates/admin/paypal.html:63
-#: now_lms/templates/admin/paypal.html:83
+#: now_lms/templates/admin/paypal.html:63 now_lms/templates/admin/paypal.html:83
 msgid "Deje en blanco para mantener el valor actual."
 msgstr "Leave blank to keep the current value."
 
@@ -1289,8 +1365,7 @@ msgstr "Information"
 
 #: now_lms/templates/announcements/admin_form.html:101
 msgid ""
-"Los anuncios globales son visibles para todos los usuarios autenticados "
-"en el\n"
+"Los anuncios globales son visibles para todos los usuarios autenticados en el\n"
 "                                    sistema."
 msgstr ""
 "Global announcements are visible to all authenticated users in the\n"
@@ -1331,12 +1406,11 @@ msgstr "Expiration:"
 #: now_lms/templates/announcements/instructor_form.html:105
 msgid ""
 "Si defines una fecha de expiración, el\n"
-"                                    anuncio dejará de mostrarse "
-"automáticamente."
+"                                    anuncio dejará de mostrarse automáticamente."
 msgstr ""
 "If you set an expiration date, the\n"
-"                                    announcement will stop being "
-"displayed automatically."
+"                                    announcement will stop being displayed "
+"automatically."
 
 #: now_lms/templates/announcements/admin_list.html:7
 #: now_lms/templates/announcements/admin_list.html:18
@@ -1584,8 +1658,8 @@ msgstr "There are no system announcements at this time."
 
 #: now_lms/templates/announcements/instructor_form.html:97
 msgid ""
-"Los anuncios de curso son visibles únicamente para los estudiantes "
-"inscritos en el\n"
+"Los anuncios de curso son visibles únicamente para los estudiantes inscritos en "
+"el\n"
 "                                    curso seleccionado."
 msgstr ""
 "Course announcements are only visible to students enrolled in the\n"
@@ -1638,11 +1712,10 @@ msgstr "Recover Password"
 
 #: now_lms/templates/auth/forgot_password.html:44
 msgid ""
-"Ingresa tu correo electrónico y te enviaremos instrucciones para "
-"recuperar tu contraseña."
+"Ingresa tu correo electrónico y te enviaremos instrucciones para recuperar tu "
+"contraseña."
 msgstr ""
-"Enter your email, and we will send you instructions to recover your "
-"password."
+"Enter your email, and we will send you instructions to recover your password."
 
 #: now_lms/templates/auth/forgot_password.html:57
 msgid "Enviar Enlace de Recuperación"
@@ -1668,8 +1741,7 @@ msgstr "Log In"
 msgid "Contraseña"
 msgstr "Password"
 
-#: now_lms/templates/auth/login.html:50
-#: now_lms/templates/learning/curso.html:192
+#: now_lms/templates/auth/login.html:50 now_lms/templates/learning/curso.html:192
 #: now_lms/templates/learning/curso/curso.html:173
 #: now_lms/templates/themes/amber/navbar.j2:95
 #: now_lms/templates/themes/cambridge/navbar.j2:82
@@ -1718,8 +1790,7 @@ msgstr ""
 "Your Email\n"
 "                Address"
 
-#: now_lms/templates/auth/logon.html:53
-#: now_lms/templates/learning/curso.html:200
+#: now_lms/templates/auth/logon.html:53 now_lms/templates/learning/curso.html:200
 #: now_lms/templates/themes/amber/navbar.j2:98
 #: now_lms/templates/themes/cambridge/navbar.j2:85
 #: now_lms/templates/themes/classic/navbar.j2:98
@@ -1797,14 +1868,6 @@ msgstr "Published"
 #: now_lms/templates/blog/admin_index.html:57
 msgid "Baneadas"
 msgstr "Banned"
-
-#: now_lms/templates/blog/admin_index.html:67
-#: now_lms/templates/blog/instructor_index.html:31
-#: now_lms/templates/inicio/perfil_editar.html:61
-#: now_lms/templates/masterclass/admin_list.html:36
-#: now_lms/templates/masterclass/instructor_list.html:31
-msgid "Título"
-msgstr "Title"
 
 #: now_lms/templates/blog/admin_index.html:68
 msgid "Autor"
@@ -2046,8 +2109,8 @@ msgstr "My Calendar"
 #: now_lms/templates/calendar/upcoming_events.html:32
 #: now_lms/templates/inicio/panel_user.html:255
 #: now_lms/templates/perfiles/estudiante.html:100
-#: now_lms/templates/perfiles/moderador.html:69
-#: now_lms/templates/perfiles/moderador.html:114
+#: now_lms/templates/perfiles/moderador.html:103
+#: now_lms/templates/perfiles/moderador.html:148
 msgid "Mi Perfil"
 msgstr "My Profile"
 
@@ -2058,8 +2121,8 @@ msgstr "My Profile"
 #: now_lms/templates/calendar/upcoming_events.html:39
 #: now_lms/templates/inicio/panel_instructor.html:264
 #: now_lms/templates/inicio/panel_user.html:263
-#: now_lms/templates/perfiles/moderador.html:81
-#: now_lms/templates/perfiles/moderador.html:111
+#: now_lms/templates/perfiles/moderador.html:115
+#: now_lms/templates/perfiles/moderador.html:145
 msgid "Calendario"
 msgstr "Calendar"
 
@@ -2117,7 +2180,7 @@ msgstr "Upcoming Events"
 #: now_lms/templates/calendar/dashboard_widget.html:9
 #: now_lms/templates/calendar/upcoming_events.html:49
 #: now_lms/templates/perfiles/estudiante.html:88
-#: now_lms/templates/perfiles/moderador.html:85
+#: now_lms/templates/perfiles/moderador.html:119
 msgid "Ver Calendario"
 msgstr "View Calendar"
 
@@ -2219,7 +2282,7 @@ msgstr "Update Theme:"
 #: now_lms/templates/calendar/event_detail.html:183
 #: now_lms/templates/perfiles/estudiante.html:136
 #: now_lms/templates/perfiles/instructor.html:251
-#: now_lms/templates/perfiles/moderador.html:99
+#: now_lms/templates/perfiles/moderador.html:133
 msgid "Acciones Rápidas"
 msgstr "Quick Actions"
 
@@ -2239,8 +2302,8 @@ msgstr "View Full Calendar"
 
 #: now_lms/templates/calendar/upcoming_events.html:123
 msgid ""
-"Cuando te inscribas en cursos, aquí aparecerán tus sesiones programadas y"
-" fechas\n"
+"Cuando te inscribas en cursos, aquí aparecerán tus sesiones programadas y "
+"fechas\n"
 "                                    límite de evaluaciones."
 msgstr ""
 "When you enroll in courses, your scheduled sessions and evaluation\n"
@@ -2349,13 +2412,13 @@ msgstr "We have sent you a verification email from"
 
 #: now_lms/templates/error_pages/verify_mail.html:31
 msgid ""
-"Es posible que el correo tome algo de tiempo en llegar, si no recibe el "
-"correo favor revise su\n"
+"Es posible que el correo tome algo de tiempo en llegar, si no recibe el correo "
+"favor revise su\n"
 "                    carpeta de SPAM"
 msgstr ""
-"The email may take some time to arrive. If you do not receive it, please "
-"check your\n"
-"                    SPAM folder."
+"The email may take some time to arrive. If you do not receive it, please check "
+"your\n"
+"                    SPAM folder"
 
 #: now_lms/templates/evaluations/evaluation_result.html:7
 msgid "Resultado de Evaluación"
@@ -2443,30 +2506,28 @@ msgstr "Why do you need an additional attempt?"
 
 #: now_lms/templates/evaluations/request_reopen.html:53
 msgid ""
-"Ha agotado todos los intentos permitidos para esta evaluación sin "
-"alcanzar la\n"
-"                                        puntuación mínima. Si considera "
-"que hubo circunstancias especiales que afectaron su\n"
-"                                        desempeño, puede solicitar un "
-"intento adicional proporcionando una justificación."
+"Ha agotado todos los intentos permitidos para esta evaluación sin alcanzar la\n"
+"                                        puntuación mínima. Si considera que "
+"hubo circunstancias especiales que afectaron su\n"
+"                                        desempeño, puede solicitar un intento "
+"adicional proporcionando una justificación."
 msgstr ""
-"You have used all allowed attempts for this evaluation without reaching "
-"the\n"
-"                                        minimum score. If you believe "
-"there were special circumstances that affected your\n"
+"You have used all allowed attempts for this evaluation without reaching the\n"
+"                                        minimum score. If you believe there "
+"were special circumstances that affected your\n"
 "                                        performance, you may request an "
 "additional attempt providing a justification."
 
 #: now_lms/templates/evaluations/request_reopen.html:66
 msgid ""
 "Explique brevemente las razones por las cuales considera que merece un\n"
-"                                            intento adicional. Sea "
-"específico sobre las circunstancias que pudieron haber\n"
+"                                            intento adicional. Sea específico "
+"sobre las circunstancias que pudieron haber\n"
 "                                            afectado su desempeño."
 msgstr ""
 "Briefly explain the reasons why you believe you deserve an\n"
-"                                            additional attempt. Be "
-"specific about the circumstances that may have\n"
+"                                            additional attempt. Be specific "
+"about the circumstances that may have\n"
 "                                            affected your performance."
 
 #: now_lms/templates/evaluations/request_reopen.html:80
@@ -2888,8 +2949,7 @@ msgid "Introductorio"
 msgstr "Introductory"
 
 #: now_lms/templates/inicio/cursos.html:366
-#: now_lms/templates/inicio/cursos.html:545
-#: now_lms/templates/inicio/home.html:181
+#: now_lms/templates/inicio/cursos.html:545 now_lms/templates/inicio/home.html:181
 #: now_lms/templates/inicio/programas.html:737
 #: now_lms/templates/inicio/recursos.html:200
 #: now_lms/templates/themes/amber/overrides/home.j2:247
@@ -2905,8 +2965,7 @@ msgid "Principiante"
 msgstr "Beginner"
 
 #: now_lms/templates/inicio/cursos.html:374
-#: now_lms/templates/inicio/cursos.html:551
-#: now_lms/templates/inicio/home.html:183
+#: now_lms/templates/inicio/cursos.html:551 now_lms/templates/inicio/home.html:183
 #: now_lms/templates/inicio/programas.html:743
 #: now_lms/templates/inicio/recursos.html:207
 #: now_lms/templates/themes/amber/overrides/home.j2:251
@@ -2923,8 +2982,7 @@ msgid "Intermedio"
 msgstr "Intermediate"
 
 #: now_lms/templates/inicio/cursos.html:383
-#: now_lms/templates/inicio/cursos.html:557
-#: now_lms/templates/inicio/home.html:185
+#: now_lms/templates/inicio/cursos.html:557 now_lms/templates/inicio/home.html:185
 #: now_lms/templates/inicio/programas.html:749
 #: now_lms/templates/inicio/recursos.html:214
 #: now_lms/templates/themes/amber/overrides/home.j2:255
@@ -2939,8 +2997,7 @@ msgstr "Intermediate"
 msgid "Avanzado"
 msgstr "Advanced"
 
-#: now_lms/templates/inicio/cursos.html:407
-#: now_lms/templates/inicio/home.html:177
+#: now_lms/templates/inicio/cursos.html:407 now_lms/templates/inicio/home.html:177
 #: now_lms/templates/inicio/programas.html:558
 #: now_lms/templates/inicio/recursos.html:122
 #: now_lms/templates/learning/programas/lista_programas.html:84
@@ -3005,13 +3062,12 @@ msgstr "Welcome to"
 
 #: now_lms/templates/inicio/home.html:25
 msgid ""
-"Gracias por visitar nuestra plataforma educativa. Nuestra plataforma está"
-" diseñada\n"
-"                                    para brindar una experiencia de "
-"aprendizaje excepcional."
+"Gracias por visitar nuestra plataforma educativa. Nuestra plataforma está "
+"diseñada\n"
+"                                    para brindar una experiencia de aprendizaje "
+"excepcional."
 msgstr ""
-"Thank you for visiting our educational platform. Our platform is designed"
-"\n"
+"Thank you for visiting our educational platform. Our platform is designed\n"
 "                                    to provide an exceptional learning "
 "experience."
 
@@ -3079,8 +3135,8 @@ msgstr "Learn with Us"
 
 #: now_lms/templates/inicio/home.html:78
 msgid ""
-"Descubre una nueva forma de aprender con nuestra plataforma educativa "
-"moderna y\n"
+"Descubre una nueva forma de aprender con nuestra plataforma educativa moderna "
+"y\n"
 "                                eficiente."
 msgstr ""
 "Discover a new way of learning with our modern and\n"
@@ -3100,8 +3156,7 @@ msgstr "Specialized Courses"
 
 #: now_lms/templates/inicio/home.html:95
 msgid ""
-"Accede a una amplia variedad de cursos diseñados por expertos en cada "
-"área de\n"
+"Accede a una amplia variedad de cursos diseñados por expertos en cada área de\n"
 "                                        conocimiento."
 msgstr ""
 "Access a wide variety of courses designed by experts in each area of\n"
@@ -3144,12 +3199,10 @@ msgstr "Certifications"
 
 #: now_lms/templates/inicio/home.html:129
 msgid ""
-"Obtén certificaciones reconocidas que validen tu conocimiento y impulsen "
-"tu\n"
+"Obtén certificaciones reconocidas que validen tu conocimiento y impulsen tu\n"
 "                                        carrera profesional."
 msgstr ""
-"Obtain recognized certifications that validate your knowledge and boost "
-"your\n"
+"Obtain recognized certifications that validate your knowledge and boost your\n"
 "                                        professional career."
 
 #: now_lms/templates/inicio/home.html:145
@@ -3208,8 +3261,8 @@ msgstr "Ready to Get Started?"
 #: now_lms/templates/themes/oxford/overrides/home.j2:369
 #: now_lms/templates/themes/sakura/overrides/home.j2:371
 msgid ""
-"Únete a nuestra plataforma educativa y comienza tu viaje de aprendizaje "
-"hoy mismo."
+"Únete a nuestra plataforma educativa y comienza tu viaje de aprendizaje hoy "
+"mismo."
 msgstr "Join our educational platform and start your learning journey today."
 
 #: now_lms/templates/inicio/home.html:243
@@ -3250,8 +3303,7 @@ msgstr "Welcome Back"
 #: now_lms/templates/themes/oxford/overrides/home.j2:388
 #: now_lms/templates/themes/sakura/overrides/home.j2:390
 msgid ""
-"Continúa tu viaje de aprendizaje y explora nuevas oportunidades "
-"educativas."
+"Continúa tu viaje de aprendizaje y explora nuevas oportunidades educativas."
 msgstr "Continue your learning journey and explore new educational opportunities."
 
 #: now_lms/templates/inicio/home.html:251
@@ -3360,8 +3412,7 @@ msgstr "No recent courses"
 
 #: now_lms/templates/inicio/panel_admin.html:259
 msgid ""
-"Gestiona los mensajes reportados por los usuarios del sistema para "
-"mantener un\n"
+"Gestiona los mensajes reportados por los usuarios del sistema para mantener un\n"
 "                                    ambiente seguro."
 msgstr ""
 "Manage messages reported by system users to maintain a\n"
@@ -3369,7 +3420,8 @@ msgstr ""
 
 #: now_lms/templates/inicio/panel_admin.html:264
 #: now_lms/templates/inicio/panel_moderator.html:59
-#: now_lms/templates/perfiles/moderador.html:59
+#: now_lms/templates/perfiles/moderador.html:66
+#: now_lms/templates/perfiles/moderador.html:93
 msgid "Ver Reportes"
 msgstr "View Reports"
 
@@ -3441,8 +3493,8 @@ msgstr "Active Courses"
 #: now_lms/templates/inicio/panel_user.html:89
 #: now_lms/templates/inicio/panel_user.html:168
 #: now_lms/templates/perfiles/estudiante.html:72
-#: now_lms/templates/perfiles/instructor.html:309
-#: now_lms/vistas/courses.py:2524 now_lms/vistas/courses.py:2547
+#: now_lms/templates/perfiles/instructor.html:309 now_lms/vistas/courses.py:2524
+#: now_lms/vistas/courses.py:2547
 msgid "Mis Cursos"
 msgstr "My Courses"
 
@@ -3484,14 +3536,13 @@ msgstr "Message Center"
 
 #: now_lms/templates/inicio/panel_instructor.html:227
 msgid ""
-"Mantente conectado con tus estudiantes y resuelve sus dudas de manera "
-"oportuna."
+"Mantente conectado con tus estudiantes y resuelve sus dudas de manera oportuna."
 msgstr "Stay connected with your students and address their questions promptly."
 
 #: now_lms/templates/inicio/panel_instructor.html:231
 #: now_lms/templates/inicio/panel_moderator.html:249
 #: now_lms/templates/inicio/panel_user.html:237
-#: now_lms/templates/perfiles/moderador.html:105
+#: now_lms/templates/perfiles/moderador.html:139
 msgid "Mis Mensajes"
 msgstr "My Messages"
 
@@ -3513,10 +3564,12 @@ msgid "Panel del Moderador"
 msgstr "Moderator Panel"
 
 #: now_lms/templates/inicio/panel_moderator.html:49
+#: now_lms/templates/perfiles/moderador.html:56
 msgid "Bienvenido, Moderador"
 msgstr "Welcome, Moderator"
 
 #: now_lms/templates/inicio/panel_moderator.html:51
+#: now_lms/templates/perfiles/moderador.html:58
 msgid "Tu centro de moderación y supervisión académica"
 msgstr "Your academic moderation and supervision hub"
 
@@ -3572,8 +3625,8 @@ msgstr "Message Management"
 
 #: now_lms/templates/inicio/panel_moderator.html:244
 msgid ""
-"Como moderador, ayuda a contestar los requerimientos de los estudiantes y"
-" supervisa\n"
+"Como moderador, ayuda a contestar los requerimientos de los estudiantes y "
+"supervisa\n"
 "                                    las conversaciones para mantener un "
 "ambiente de aprendizaje positivo."
 msgstr ""
@@ -3698,14 +3751,11 @@ msgstr "Communication Center"
 
 #: now_lms/templates/inicio/panel_user.html:232
 msgid ""
-"Mantente conectado con tus instructores y compañeros de clase. Haz "
-"preguntas,\n"
-"                                    participa en discusiones y recibe "
-"apoyo."
+"Mantente conectado con tus instructores y compañeros de clase. Haz preguntas,\n"
+"                                    participa en discusiones y recibe apoyo."
 msgstr ""
 "Stay connected with your instructors and classmates. Ask questions,\n"
-"                                    participate in discussions, and get "
-"support."
+"                                    participate in discussions, and get support."
 
 #: now_lms/templates/inicio/panel_user.html:248
 msgid "Recursos de Aprendizaje"
@@ -3726,7 +3776,7 @@ msgstr "Profile of"
 #: now_lms/templates/inicio/perfil.html:85
 #: now_lms/templates/inicio/perfil.html:133
 msgid "Editar Perfil"
-msgstr "Edit Profile."
+msgstr "Edit Profile"
 
 #: now_lms/templates/inicio/perfil.html:147
 msgid "Información Personal"
@@ -3797,8 +3847,7 @@ msgstr "Student Dashboard"
 
 #: now_lms/templates/inicio/perfil.html:347
 msgid ""
-"Accede al panel de estudiante para gestionar tu aprendizaje de manera "
-"completa."
+"Accede al panel de estudiante para gestionar tu aprendizaje de manera completa."
 msgstr "Access the student dashboard to fully manage your learning."
 
 #: now_lms/templates/inicio/perfil.html:357
@@ -3835,7 +3884,6 @@ msgid "Panel de Moderación"
 msgstr "Moderation Dashboard"
 
 #: now_lms/templates/inicio/perfil.html:459
-#: now_lms/templates/perfiles/moderador.html:36
 msgid "Gestiona los mensajes y comunicaciones del sistema."
 msgstr "Manage system messages and communications."
 
@@ -3916,7 +3964,7 @@ msgstr "Available Programs"
 #: now_lms/templates/themes/classic/overrides/program_list.j2:465
 #: now_lms/templates/themes/classic/overrides/program_list.j2:617
 msgid "programas encontrados"
-msgstr "Programs found"
+msgstr "programs found"
 
 #: now_lms/templates/inicio/programas.html:535
 #: now_lms/templates/themes/classic/overrides/program_list.j2:535
@@ -3936,12 +3984,12 @@ msgstr "No programs available"
 #: now_lms/templates/inicio/programas.html:590
 #: now_lms/templates/themes/classic/overrides/program_list.j2:591
 msgid ""
-"Actualmente no hay programas disponibles. Por favor, inténtelo más tarde "
-"o contacte al\n"
+"Actualmente no hay programas disponibles. Por favor, inténtelo más tarde o "
+"contacte al\n"
 "                                administrador."
 msgstr ""
-"There are currently no programs available. Please try again later or "
-"contact the administrator."
+"There are currently no programs available. Please try again later or contact "
+"the administrator."
 
 #: now_lms/templates/inicio/programas.html:648
 #: now_lms/templates/themes/classic/overrides/program_list.j2:649
@@ -4002,11 +4050,11 @@ msgstr "Audit Course Content"
 
 #: now_lms/templates/learning/curso.html:113
 msgid ""
-"Puede acceder al contenido del curso pero no podrá resolver las "
-"evaluaciones u obtener un certificado al finalizar."
+"Puede acceder al contenido del curso pero no podrá resolver las evaluaciones u "
+"obtener un certificado al finalizar."
 msgstr ""
-"You can access the course content but will not be able to complete "
-"assessments or receive a certificate upon completion."
+"You can access the course content but will not be able to complete assessments "
+"or receive a certificate upon completion."
 
 #: now_lms/templates/learning/curso.html:115
 msgid ""
@@ -4317,16 +4365,16 @@ msgstr "Price"
 
 #: now_lms/templates/learning/nuevo_curso.html:91
 msgid ""
-"Un estudiante puede auditar el curso pero no recibir un certificado al "
-"final si no cancela el valor del curso."
+"Un estudiante puede auditar el curso pero no recibir un certificado al final si "
+"no cancela el valor del curso."
 msgstr ""
-"A student can audit the course but will not receive a certificate at the "
-"end if the course fee is not paid."
+"A student can audit the course but will not receive a certificate at the end if "
+"the course fee is not paid."
 
 #: now_lms/templates/learning/nuevo_curso.html:104
 msgid ""
-"Si el curso es en tiempo real o con tiempo definido defina las fechas de "
-"inicio y fin."
+"Si el curso es en tiempo real o con tiempo definido defina las fechas de inicio "
+"y fin."
 msgstr "If the course is live or time-bound, set the start and end dates."
 
 #: now_lms/templates/learning/nuevo_curso.html:107
@@ -4363,8 +4411,7 @@ msgstr "Category"
 
 #: now_lms/templates/learning/nuevo_curso.html:153
 msgid ""
-"Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples "
-"etiquetas."
+"Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples etiquetas."
 msgstr "Hold Ctrl (or Cmd on Mac) to select multiple tags."
 
 #: now_lms/templates/learning/nuevo_curso.html:170
@@ -4888,11 +4935,11 @@ msgstr "This course costs"
 #: now_lms/templates/learning/curso/admin_enroll.html:35
 msgid ""
 "Al usar la inscripción administrativa,\n"
-"                                    puedes omitir el pago para dar acceso"
-" completo al estudiante."
+"                                    puedes omitir el pago para dar acceso "
+"completo al estudiante."
 msgstr ""
-"Using administrative enrollment, you can skip the payment to grant full "
-"access to the student."
+"Using administrative enrollment, you can skip the payment to grant full access "
+"to the student."
 
 #: now_lms/templates/learning/curso/admin_enroll.html:41
 msgid "Curso Gratuito:"
@@ -5234,12 +5281,12 @@ msgstr "applied successfully"
 
 #: now_lms/templates/learning/curso/enroll.html:158
 msgid ""
-"Puede acceder al contenido del curso pero no podrá resolver las "
-"evaluaciones u obtener un\n"
+"Puede acceder al contenido del curso pero no podrá resolver las evaluaciones u "
+"obtener un\n"
 "                                certificado al finalizar."
 msgstr ""
-"You can access the course content but will not be able to complete "
-"assessments or receive a certificate upon completion."
+"You can access the course content but will not be able to complete assessments "
+"or receive a certificate upon completion."
 
 #: now_lms/templates/learning/curso/enroll.html:161
 msgid ""
@@ -5247,8 +5294,8 @@ msgid ""
 "evaluaciones y la\n"
 "                                certificación."
 msgstr ""
-"You can pay for the course before finishing to access assessments and "
-"obtain certification."
+"You can pay for the course before finishing to access assessments and obtain "
+"certification."
 
 #: now_lms/templates/learning/curso/enroll.html:167
 msgid "¡Inscribirse Gratis con Cupón!"
@@ -5433,11 +5480,10 @@ msgstr "PDF Viewer not available"
 
 #: now_lms/templates/learning/resources/pdf_viewer.html:304
 msgid ""
-"Su navegador no puede mostrar PDFs directamente. Descargue el archivo "
-"para verlo:"
+"Su navegador no puede mostrar PDFs directamente. Descargue el archivo para "
+"verlo:"
 msgstr ""
-"Your browser cannot display PDFs directly. Please download the file to "
-"view it:"
+"Your browser cannot display PDFs directly. Please download the file to view it:"
 
 #: now_lms/templates/learning/resources/pdf_viewer.html:311
 msgid "Descargar"
@@ -5459,18 +5505,6 @@ msgstr "Help"
 #: now_lms/templates/learning/resources/slide_show.html:96
 msgid "No hay diapositivas disponibles en esta presentación."
 msgstr "No slides available in this presentation."
-
-#: now_lms/templates/learning/resources/type_macros.html:85
-msgid "Requerido"
-msgstr "Required"
-
-#: now_lms/templates/learning/resources/type_macros.html:88
-msgid "Opcional"
-msgstr "Optional"
-
-#: now_lms/templates/learning/resources/type_macros.html:89
-msgid "Alternativo"
-msgstr "Alternative"
 
 #: now_lms/templates/learning/resources/type_macros.html:100
 msgid "Contenido del Curso"
@@ -5543,7 +5577,7 @@ msgstr "Meet Date"
 
 #: now_lms/templates/learning/resources_new/nuevo_recurso_mp3.html:26
 msgid "Nombre del archivo."
-msgstr "File Name"
+msgstr "File Name."
 
 #: now_lms/templates/macros/demo_banner.j2:4
 msgid "Modo Demostración Activo"
@@ -5552,8 +5586,8 @@ msgstr "Demo Mode Active"
 #: now_lms/templates/macros/demo_banner.j2:4
 msgid ""
 "Algunas acciones administrativas están restringidas para prevenir\n"
-"    uso abusivo. Las acciones para estudiantes, instructores y "
-"moderadores funcionan normalmente."
+"    uso abusivo. Las acciones para estudiantes, instructores y moderadores "
+"funcionan normalmente."
 msgstr ""
 "Some administrative actions are restricted to prevent\n"
 "    abusive use. Actions for students, instructors, and moderators work "
@@ -5698,8 +5732,7 @@ msgstr "Payment Information"
 #: now_lms/templates/masterclass/enroll.html:120
 msgid "Al inscribirte confirmas que puedes asistir en la fecha y hora programada"
 msgstr ""
-"By enrolling, you confirm that you can attend on the scheduled date and "
-"time"
+"By enrolling, you confirm that you can attend on the scheduled date and time"
 
 #: now_lms/templates/masterclass/enroll.html:124
 msgid "Se recomienda unirse 5 minutos antes del inicio"
@@ -5934,12 +5967,11 @@ msgstr "Processing your payment"
 
 #: now_lms/templates/payments/paypal.html:25
 msgid ""
-"Por favor espere mientras lo redirigimos a PayPal para completar su pago "
-"de forma\n"
+"Por favor espere mientras lo redirigimos a PayPal para completar su pago de "
+"forma\n"
 "                                segura."
 msgstr ""
-"Please wait while we redirect you to PayPal to complete your payment "
-"securely."
+"Please wait while we redirect you to PayPal to complete your payment securely."
 
 #: now_lms/templates/payments/paypal.html:29
 msgid "Si no es redirigido automáticamente,"
@@ -6045,12 +6077,12 @@ msgid "Gestiona tus fechas importantes"
 msgstr "Manage your important dates"
 
 #: now_lms/templates/perfiles/estudiante.html:101
-#: now_lms/templates/perfiles/moderador.html:70
+#: now_lms/templates/perfiles/moderador.html:104
 msgid "Actualiza tu información personal"
 msgstr "Update your personal information"
 
 #: now_lms/templates/perfiles/estudiante.html:103
-#: now_lms/templates/perfiles/moderador.html:72
+#: now_lms/templates/perfiles/moderador.html:106
 msgid "Ver Perfil"
 msgstr "View Profile"
 
@@ -6127,23 +6159,19 @@ msgstr "Certificates"
 msgid "Comunicación"
 msgstr "Comunication"
 
-#: now_lms/templates/perfiles/moderador.html:34
-msgid "Bienvenido Moderador"
-msgstr "Welcome, Moderator"
-
-#: now_lms/templates/perfiles/moderador.html:44
+#: now_lms/templates/perfiles/moderador.html:78
 msgid "Gestiona las conversaciones de usuarios"
 msgstr "Manage user conversations"
 
-#: now_lms/templates/perfiles/moderador.html:46
+#: now_lms/templates/perfiles/moderador.html:80
 msgid "Ver Mis Mensajes"
 msgstr "View My Messages"
 
-#: now_lms/templates/perfiles/moderador.html:56
+#: now_lms/templates/perfiles/moderador.html:90
 msgid "Revisa contenido reportado por usuarios"
 msgstr "Review content reported by users"
 
-#: now_lms/templates/perfiles/moderador.html:82
+#: now_lms/templates/perfiles/moderador.html:116
 msgid "Revisa fechas importantes"
 msgstr "Review important dates"
 
@@ -6316,10 +6344,10 @@ msgstr "items found"
 
 #: now_lms/templates/themes/amber/overrides/home.j2:27
 msgid ""
-"Experimenta el aprendizaje en su forma más pura y elegante con nuestro "
-"diseño clásico.\n"
-"                                Nuestra plataforma está diseñada para "
-"brindar una experiencia de aprendizaje excepcional."
+"Experimenta el aprendizaje en su forma más pura y elegante con nuestro diseño "
+"clásico.\n"
+"                                Nuestra plataforma está diseñada para brindar "
+"una experiencia de aprendizaje excepcional."
 msgstr ""
 "Experience learning in its purest and most elegant form with our classic "
 "design.\n"
@@ -6333,8 +6361,8 @@ msgstr ""
 #: now_lms/templates/themes/oxford/overrides/home.j2:103
 #: now_lms/templates/themes/sakura/overrides/home.j2:90
 msgid ""
-"Descubre una nueva forma de aprender con nuestra plataforma educativa "
-"moderna y eficiente."
+"Descubre una nueva forma de aprender con nuestra plataforma educativa moderna y "
+"eficiente."
 msgstr ""
 "Discover a new way of learning with our modern and efficient educational "
 "platform."
@@ -6348,8 +6376,7 @@ msgstr ""
 #: now_lms/templates/themes/oxford/overrides/home.j2:136
 #: now_lms/templates/themes/sakura/overrides/home.j2:123
 msgid ""
-"Accede a una amplia variedad de cursos diseñados por expertos en cada "
-"área de\n"
+"Accede a una amplia variedad de cursos diseñados por expertos en cada área de\n"
 "                                conocimiento."
 msgstr ""
 "Access a wide variety of courses designed by experts in each area of\n"
@@ -6380,12 +6407,11 @@ msgstr ""
 #: now_lms/templates/themes/oxford/overrides/home.j2:200
 #: now_lms/templates/themes/sakura/overrides/home.j2:187
 msgid ""
-"Obtén certificaciones reconocidas que validen tu conocimiento y impulsen "
-"tu carrera\n"
+"Obtén certificaciones reconocidas que validen tu conocimiento y impulsen tu "
+"carrera\n"
 "                                profesional."
 msgstr ""
-"Obtain recognized certifications that validate your knowledge and boost "
-"your\n"
+"Obtain recognized certifications that validate your knowledge and boost your\n"
 "                                        professional career."
 
 #: now_lms/templates/themes/amber/overrides/home.j2:202
@@ -6397,8 +6423,7 @@ msgstr "Featured Courses"
 #: now_lms/templates/themes/amber/overrides/home.j2:204
 #: now_lms/templates/themes/classic/overrides/home.j2:204
 msgid ""
-"Explora nuestra selección de cursos diseñados para tu crecimiento "
-"profesional."
+"Explora nuestra selección de cursos diseñados para tu crecimiento profesional."
 msgstr "Explore our selection of courses designed for your professional growth."
 
 #: now_lms/templates/themes/amber/overrides/home.j2:242
@@ -6536,14 +6561,14 @@ msgstr "Investment in Financial Knowledge"
 msgid ""
 "Maximiza tus retornos educativos con nuestra plataforma de aprendizaje "
 "financiero de\n"
-"                                alto rendimiento. Diversifica tu "
-"portafolio de conocimientos con cursos premium del mercado\n"
+"                                alto rendimiento. Diversifica tu portafolio de "
+"conocimientos con cursos premium del mercado\n"
 "                                educativo."
 msgstr ""
-"Maximize your educational returns with our high-performance financial "
-"learning platform.\n"
-"Diversify your knowledge portfolio with premium courses from the "
-"educational market."
+"Maximize your educational returns with our high-performance financial learning "
+"platform.\n"
+"Diversify your knowledge portfolio with premium courses from the educational "
+"market."
 
 #: now_lms/templates/themes/finance/overrides/home.j2:80
 msgid "Invertir Ahora"
@@ -6575,8 +6600,8 @@ msgstr "Invest in Your Financial Future"
 
 #: now_lms/templates/themes/finance/overrides/home.j2:161
 msgid ""
-"Diversifica tu portafolio de conocimientos con nuestros activos "
-"educativos de alto\n"
+"Diversifica tu portafolio de conocimientos con nuestros activos educativos de "
+"alto\n"
 "                            rendimiento y bajo riesgo."
 msgstr ""
 "Diversify your knowledge portfolio with our high-performance, low-risk "
@@ -6592,8 +6617,8 @@ msgid ""
 "inversión para\n"
 "                                maximizar tu ROI educativo."
 msgstr ""
-"High-value courses designed by financial analysts and investment experts "
-"to maximize your educational ROI."
+"High-value courses designed by financial analysts and investment experts to "
+"maximize your educational ROI."
 
 #: now_lms/templates/themes/finance/overrides/home.j2:226
 msgid "Red de Inversores"
@@ -6601,12 +6626,12 @@ msgstr "Investor Network"
 
 #: now_lms/templates/themes/finance/overrides/home.j2:228
 msgid ""
-"Conecta con traders, analistas y gestores de fondos en nuestra exclusiva "
-"red de\n"
+"Conecta con traders, analistas y gestores de fondos en nuestra exclusiva red "
+"de\n"
 "                                profesionales del sector financiero."
 msgstr ""
-"Connect with traders, analysts, and fund managers in our exclusive "
-"network of financial professionals."
+"Connect with traders, analysts, and fund managers in our exclusive network of "
+"financial professionals."
 
 #: now_lms/templates/themes/finance/overrides/home.j2:259
 msgid "Certificaciones Oro"
@@ -6614,12 +6639,11 @@ msgstr "Gold Certifications"
 
 #: now_lms/templates/themes/finance/overrides/home.j2:261
 msgid ""
-"Credenciales de oro que acreditan tu expertise financiero ante "
-"instituciones y\n"
+"Credenciales de oro que acreditan tu expertise financiero ante instituciones y\n"
 "                                empleadores del sector bursátil."
 msgstr ""
-"Gold credentials that certify your financial expertise to institutions "
-"and employers in the stock market sector."
+"Gold credentials that certify your financial expertise to institutions and "
+"employers in the stock market sector."
 
 #: now_lms/templates/themes/finance/overrides/home.j2:277
 msgid "Inversión en tu Futuro Financiero"
@@ -6627,11 +6651,9 @@ msgstr "Investment in Your Financial Future"
 
 #: now_lms/templates/themes/finance/overrides/home.j2:280
 msgid ""
-"Cursos especializados en finanzas para profesionales y empresarios "
-"exitosos."
+"Cursos especializados en finanzas para profesionales y empresarios exitosos."
 msgstr ""
-"Specialized finance courses for professionals and successful "
-"entrepreneurs."
+"Specialized finance courses for professionals and successful entrepreneurs."
 
 #: now_lms/templates/themes/finance/overrides/home.j2:364
 msgid "Invertir en el Curso"
@@ -6655,12 +6677,12 @@ msgstr "with confidence"
 
 #: now_lms/templates/themes/golden/overrides/home.j2:57
 msgid ""
-"Cursos dinámicos, prácticos y divertidos — Clases online en vivo, "
-"profesores nativos y\n"
+"Cursos dinámicos, prácticos y divertidos — Clases online en vivo, profesores "
+"nativos y\n"
 "                                material interactivo."
 msgstr ""
-"Dynamic, practical, and fun courses — Live online classes, native "
-"teachers, and interactive materials."
+"Dynamic, practical, and fun courses — Live online classes, native teachers, and "
+"interactive materials."
 
 #: now_lms/templates/themes/golden/overrides/home.j2:67
 msgid "Reserva tu clase gratis"
@@ -6681,8 +6703,8 @@ msgstr "Discover Our Courses"
 
 #: now_lms/templates/themes/golden/overrides/home.j2:140
 msgid ""
-"Explora una nueva forma de aprender con nuestra plataforma educativa "
-"moderna y eficiente."
+"Explora una nueva forma de aprender con nuestra plataforma educativa moderna y "
+"eficiente."
 msgstr ""
 "Explore a new way of learning with our modern and efficient educational "
 "platform."
@@ -6721,15 +6743,13 @@ msgstr "Digital Academic Excellence"
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:144
 msgid ""
-"Nuestra plataforma combina los más altos estándares académicos con "
-"tecnología de vanguardia\n"
-"                            para crear una experiencia educativa "
-"transformadora."
+"Nuestra plataforma combina los más altos estándares académicos con tecnología "
+"de vanguardia\n"
+"                            para crear una experiencia educativa transformadora."
 msgstr ""
 "Our platform combines the highest academic standards with cutting-edge "
 "technology\n"
-"                            to create a transformative learning "
-"experience."
+"                            to create a transformative learning experience."
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:176
 msgid "Cursos de Élite"
@@ -6737,12 +6757,12 @@ msgstr "Elite Courses"
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:179
 msgid ""
-"Accede a una biblioteca curada de cursos diseñados por expertos "
-"académicos, con contenido\n"
+"Accede a una biblioteca curada de cursos diseñados por expertos académicos, con "
+"contenido\n"
 "                                riguroso y metodologías probadas."
 msgstr ""
-"Access a curated library of courses designed by academic experts, with "
-"rigorous content\n"
+"Access a curated library of courses designed by academic experts, with rigorous "
+"content\n"
 "                                and proven methodologies."
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:210
@@ -6751,12 +6771,12 @@ msgstr "Expert Mentors"
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:213
 msgid ""
-"Aprende de instructores distinguidos y profesionales reconocidos en sus "
-"campos, con años\n"
+"Aprende de instructores distinguidos y profesionales reconocidos en sus campos, "
+"con años\n"
 "                                de experiencia académica y profesional."
 msgstr ""
-"Learn from distinguished instructors and recognized professionals in "
-"their fields, with years\n"
+"Learn from distinguished instructors and recognized professionals in their "
+"fields, with years\n"
 "                                of academic and professional experience."
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:244
@@ -6765,12 +6785,12 @@ msgstr "Prestigious Certification"
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:247
 msgid ""
-"Obtén certificaciones reconocidas que validen tu conocimiento y abran "
-"puertas en tu\n"
+"Obtén certificaciones reconocidas que validen tu conocimiento y abran puertas "
+"en tu\n"
 "                                carrera profesional y académica."
 msgstr ""
-"Obtain recognized certifications that validate your knowledge and open "
-"doors in your\n"
+"Obtain recognized certifications that validate your knowledge and open doors in "
+"your\n"
 "                                professional and academic career."
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:263
@@ -6803,15 +6823,13 @@ msgstr "Explore Case Library"
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:471
 msgid ""
-"La educación es el arma más poderosa que puedes usar para cambiar el "
-"mundo. En\n"
-"                                    Harvard LMS, forjamos mentes "
-"brillantes para el futuro."
+"La educación es el arma más poderosa que puedes usar para cambiar el mundo. En\n"
+"                                    Harvard LMS, forjamos mentes brillantes "
+"para el futuro."
 msgstr ""
-"Education is the most powerful weapon you can use to change the world. At"
-"\n"
-"                                    Harvard LMS, we shape brilliant minds"
-" for the future."
+"Education is the most powerful weapon you can use to change the world. At\n"
+"                                    Harvard LMS, we shape brilliant minds for "
+"the future."
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:475
 msgid "Filosofía Educativa"
@@ -6823,12 +6841,12 @@ msgstr "Ready to Start Your Academic Journey?"
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:484
 msgid ""
-"Únete a nuestra comunidad de estudiantes excepcionales y descubre el "
-"poder del aprendizaje de\n"
+"Únete a nuestra comunidad de estudiantes excepcionales y descubre el poder del "
+"aprendizaje de\n"
 "                            calidad."
 msgstr ""
-"Join our community of exceptional students and discover the power of "
-"high-quality learning."
+"Join our community of exceptional students and discover the power of high-"
+"quality learning."
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:499
 msgid "Registrarse Ahora"
@@ -6840,12 +6858,12 @@ msgstr "Continue your learning journey and explore new educational opportunities
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:542
 msgid ""
-"Elevando los estándares de la educación digital con la tradición y "
-"excelencia académica que\n"
+"Elevando los estándares de la educación digital con la tradición y excelencia "
+"académica que\n"
 "                            nos caracteriza."
 msgstr ""
-"Raising the standards of digital education with the tradition and "
-"academic excellence that\n"
+"Raising the standards of digital education with the tradition and academic "
+"excellence that\n"
 "                            define us."
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:549
@@ -6858,10 +6876,10 @@ msgstr "Developed with academic dedication and technological excellence."
 
 #: now_lms/templates/themes/ocean/overrides/home.j2:27
 msgid ""
-"Descubre la tradición académica y la excelencia educativa que "
-"caracterizan a Cambridge.\n"
-"                                Nuestra plataforma está diseñada para "
-"brindar una experiencia de aprendizaje excepcional."
+"Descubre la tradición académica y la excelencia educativa que caracterizan a "
+"Cambridge.\n"
+"                                Nuestra plataforma está diseñada para brindar "
+"una experiencia de aprendizaje excepcional."
 msgstr ""
 "Discover the academic tradition and educational excellence that define "
 "Cambridge.\n"
@@ -6958,15 +6976,14 @@ msgstr "Explore Complete Library"
 
 #: now_lms/templates/themes/sakura/overrides/home.j2:27
 msgid ""
-"Aprendizaje elegante y moderno con un toque de sofisticación rosada. "
-"Nuestra plataforma\n"
-"                                está diseñada para brindar una "
-"experiencia de aprendizaje excepcional."
+"Aprendizaje elegante y moderno con un toque de sofisticación rosada. Nuestra "
+"plataforma\n"
+"                                está diseñada para brindar una experiencia de "
+"aprendizaje excepcional."
 msgstr ""
-"Elegant and modern learning with a touch of pink sophistication. Our "
-"platform\n"
-"                                is designed to provide an exceptional "
-"learning experience."
+"Elegant and modern learning with a touch of pink sophistication. Our platform\n"
+"                                is designed to provide an exceptional learning "
+"experience."
 
 #: now_lms/templates/themes/sakura/overrides/home.j2:203
 msgid "Cursos que Florecen con Elegancia"
@@ -7007,8 +7024,7 @@ msgid ""
 "No se puede cambiar estatus de programa a publico porque no tiene cursos "
 "añadidos"
 msgstr ""
-"The program status cannot be changed to public because it has no courses "
-"added"
+"The program status cannot be changed to public because it has no courses added"
 
 #: now_lms/vistas/programs.py:226
 msgid "No se puede cambiar programa a abierto porque no tiene cursos añadidos"
@@ -7070,56 +7086,58 @@ msgstr "Program not found."
 msgid "Certificado de programa emitido por completar todos los cursos."
 msgstr "Program certificate issued for completing all courses."
 
-#: now_lms/vistas/settings.py:108
+#: now_lms/vistas/settings.py:164
 msgid "Tema del sitio web actualizado exitosamente."
 msgstr "Website theme updated successfully."
 
-#: now_lms/vistas/settings.py:112
+#: now_lms/vistas/settings.py:168
 msgid "No se pudo actualizar el tema del sitio web."
 msgstr "The website theme could not be updated."
 
-#: now_lms/vistas/settings.py:157
+#: now_lms/vistas/settings.py:213
 msgid ""
-"Debe configurar el correo electronico antes de habilitar verificación por"
-" e-mail."
+"Debe configurar el correo electronico antes de habilitar verificación por e-"
+"mail."
 msgstr "You must configure email before enabling email verification."
 
-#: now_lms/vistas/settings.py:177
+#: now_lms/vistas/settings.py:223
 msgid "Sitio web actualizado exitosamente."
 msgstr "Website updated successfully."
 
-#: now_lms/vistas/settings.py:180
+#: now_lms/vistas/settings.py:226
 msgid "No se pudo actualizar la configuración del sitio web."
 msgstr "The website settings could not be updated."
 
-#: now_lms/vistas/settings.py:224
+#: now_lms/vistas/settings.py:275
 msgid "Configuración de correo electronico actualizada exitosamente."
 msgstr "Email settings updated successfully."
 
-#: now_lms/vistas/settings.py:228
+#: now_lms/vistas/settings.py:279
 msgid "No se pudo actualizar la configuración de correo electronico."
 msgstr "The email settings could not be updated."
 
-#: now_lms/vistas/settings.py:289
+#: now_lms/vistas/settings.py:340
 msgid "Hubo un error al enviar un correo de prueba. Revise su configuración."
 msgstr "There was an error sending a test email. Please check your settings."
 
-#: now_lms/vistas/settings.py:359
+#: now_lms/vistas/settings.py:415
 msgid "Configuración de Google AdSense actualizada exitosamente."
 msgstr "Google AdSense settings updated successfully."
 
-#: now_lms/vistas/settings.py:364
+#: now_lms/vistas/settings.py:420
 msgid "No se pudo actualizar la configuración de Google AdSense."
 msgstr "The Google AdSense settings could not be updated."
 
-#: now_lms/vistas/settings.py:474
+#: now_lms/vistas/settings.py:535
 msgid "Configuración de Paypal actualizada exitosamente."
 msgstr "PayPal settings updated successfully."
 
-#: now_lms/vistas/settings.py:479
+#: now_lms/vistas/settings.py:540
 msgid "No se pudo actualizar la configuración de Paypal."
 msgstr "The PayPal settings could not be updated."
 
 #~ msgid "Ver Certicado"
 #~ msgstr "View Certificate"
 
+#~ msgid "Bienvenido Moderador"
+#~ msgstr "Welcome, Moderator"

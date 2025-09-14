@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-09-14 00:13+0000\n"
+"POT-Creation-Date: 2025-09-14 07:02-0600\n"
 "PO-Revision-Date: 2025-09-10 03:36+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "Favor iniciar sesión para acceder al sistema."
 msgstr "Por favor, faça login para acessar o sistema."
 
-#: now_lms/__init__.py:400 now_lms/__init__.py:563
+#: now_lms/__init__.py:401 now_lms/__init__.py:564
 msgid "Favor iniciar sesión para acceder a este recurso."
 msgstr "Por favor, faça login para acessar este recurso."
 
@@ -38,23 +38,109 @@ msgstr "Curso removido do site."
 msgid "No se puede publicar el curso"
 msgstr "O curso não pode ser publicado"
 
-#: now_lms/demo_mode.py:64
+#: now_lms/demo_mode.py:63
 msgid ""
 "Esta acción no está disponible en modo demostración para prevenir uso "
 "abusivo."
 msgstr ""
 
-#: now_lms/db/tools.py:140
+#: now_lms/db/tools.py:142
 msgid "Sistema de aprendizaje en linea."
 msgstr "Sistema de aprendizagem online."
 
-#: now_lms/db/tools.py:409
+#: now_lms/db/tools.py:411
 msgid "Imagen de usuario eliminada correctamente."
 msgstr "Imagem do usuário excluída com sucesso."
 
-#: now_lms/db/tools.py:411
+#: now_lms/db/tools.py:413
 msgid "Imagen de usuario no existe."
 msgstr "A imagem do usuário não existe."
+
+#: now_lms/forms/__init__.py:55 now_lms/forms/masterclass.py:46
+#: now_lms/templates/blog/admin_index.html:67
+#: now_lms/templates/blog/instructor_index.html:31
+#: now_lms/templates/inicio/perfil_editar.html:61
+#: now_lms/templates/masterclass/admin_list.html:36
+#: now_lms/templates/masterclass/instructor_list.html:31
+msgid "Título"
+msgstr "Título"
+
+#: now_lms/forms/__init__.py:302
+#: now_lms/templates/learning/resources/type_macros.html:85
+msgid "Requerido"
+msgstr "Obrigatório"
+
+#: now_lms/forms/__init__.py:302
+#: now_lms/templates/learning/resources/type_macros.html:88
+msgid "Opcional"
+msgstr "Opcional"
+
+#: now_lms/forms/__init__.py:302
+#: now_lms/templates/learning/resources/type_macros.html:89
+msgid "Alternativo"
+msgstr ""
+
+#: now_lms/forms/masterclass.py:48
+msgid "El título es requerido"
+msgstr ""
+
+#: now_lms/forms/masterclass.py:49
+msgid "El título debe tener entre 5 y 150 caracteres"
+msgstr ""
+
+#: now_lms/forms/masterclass.py:51
+msgid "Título de la clase magistral"
+msgstr ""
+
+#: now_lms/forms/masterclass.py:55
+#, fuzzy
+msgid "Descripción Pública"
+msgstr "Descrição"
+
+#: now_lms/forms/masterclass.py:57
+msgid "La descripción pública es requerida"
+msgstr ""
+
+#: now_lms/forms/masterclass.py:58
+msgid "La descripción pública debe tener entre 20 y 2000 caracteres"
+msgstr ""
+
+#: now_lms/forms/masterclass.py:60
+msgid "Descripción visible para todos los usuarios"
+msgstr ""
+
+#: now_lms/forms/masterclass.py:65
+msgid "La descripción privada no puede exceder 2000 caracteres"
+msgstr ""
+
+#: now_lms/forms/masterclass.py:66
+msgid "Descripción visible solo para usuarios inscritos"
+msgstr ""
+
+#: now_lms/forms/masterclass.py:82
+msgid "Plataforma"
+msgstr ""
+
+#: now_lms/forms/masterclass.py:89
+#, fuzzy
+msgid "Otra"
+msgstr "Total"
+
+#: now_lms/forms/masterclass.py:95
+msgid "Enlace de la Plataforma"
+msgstr ""
+
+#: now_lms/forms/masterclass.py:97
+msgid "El enlace de la plataforma es requerido"
+msgstr ""
+
+#: now_lms/forms/masterclass.py:98
+msgid "Debe ser una URL válida"
+msgstr ""
+
+#: now_lms/forms/masterclass.py:99
+msgid "El enlace no puede exceder 500 caracteres"
+msgstr ""
 
 #: now_lms/templates/admin/adsense.html:7
 msgid "Configuración de Anuncios de AdSense"
@@ -308,8 +394,8 @@ msgstr ""
 #: now_lms/templates/admin/flagged_messages.html:34
 #: now_lms/templates/inicio/panel_admin.html:254
 #: now_lms/templates/inicio/panel_moderator.html:252
-#: now_lms/templates/perfiles/moderador.html:55
-#: now_lms/templates/perfiles/moderador.html:108
+#: now_lms/templates/perfiles/moderador.html:89
+#: now_lms/templates/perfiles/moderador.html:142
 msgid "Mensajes Reportados"
 msgstr ""
 
@@ -616,7 +702,7 @@ msgstr "Fechado"
 #: now_lms/templates/learning/mensajes/user_messages.html:60
 #: now_lms/templates/learning/mensajes/view_thread.html:39
 #: now_lms/templates/learning/mensajes/view_thread.html:245
-#: now_lms/templates/perfiles/moderador.html:43
+#: now_lms/templates/perfiles/moderador.html:77
 msgid "Mensajes"
 msgstr "Mensagens"
 
@@ -1794,14 +1880,6 @@ msgstr ""
 msgid "Baneadas"
 msgstr ""
 
-#: now_lms/templates/blog/admin_index.html:67
-#: now_lms/templates/blog/instructor_index.html:31
-#: now_lms/templates/inicio/perfil_editar.html:61
-#: now_lms/templates/masterclass/admin_list.html:36
-#: now_lms/templates/masterclass/instructor_list.html:31
-msgid "Título"
-msgstr "Título"
-
 #: now_lms/templates/blog/admin_index.html:68
 msgid "Autor"
 msgstr "Autor"
@@ -2043,8 +2121,8 @@ msgstr ""
 #: now_lms/templates/calendar/upcoming_events.html:32
 #: now_lms/templates/inicio/panel_user.html:255
 #: now_lms/templates/perfiles/estudiante.html:100
-#: now_lms/templates/perfiles/moderador.html:69
-#: now_lms/templates/perfiles/moderador.html:114
+#: now_lms/templates/perfiles/moderador.html:103
+#: now_lms/templates/perfiles/moderador.html:148
 msgid "Mi Perfil"
 msgstr ""
 
@@ -2055,8 +2133,8 @@ msgstr ""
 #: now_lms/templates/calendar/upcoming_events.html:39
 #: now_lms/templates/inicio/panel_instructor.html:264
 #: now_lms/templates/inicio/panel_user.html:263
-#: now_lms/templates/perfiles/moderador.html:81
-#: now_lms/templates/perfiles/moderador.html:111
+#: now_lms/templates/perfiles/moderador.html:115
+#: now_lms/templates/perfiles/moderador.html:145
 msgid "Calendario"
 msgstr "Calendário"
 
@@ -2114,7 +2192,7 @@ msgstr ""
 #: now_lms/templates/calendar/dashboard_widget.html:9
 #: now_lms/templates/calendar/upcoming_events.html:49
 #: now_lms/templates/perfiles/estudiante.html:88
-#: now_lms/templates/perfiles/moderador.html:85
+#: now_lms/templates/perfiles/moderador.html:119
 msgid "Ver Calendario"
 msgstr ""
 
@@ -2216,7 +2294,7 @@ msgstr ""
 #: now_lms/templates/calendar/event_detail.html:183
 #: now_lms/templates/perfiles/estudiante.html:136
 #: now_lms/templates/perfiles/instructor.html:251
-#: now_lms/templates/perfiles/moderador.html:99
+#: now_lms/templates/perfiles/moderador.html:133
 msgid "Acciones Rápidas"
 msgstr ""
 
@@ -3337,7 +3415,8 @@ msgstr ""
 
 #: now_lms/templates/inicio/panel_admin.html:264
 #: now_lms/templates/inicio/panel_moderator.html:59
-#: now_lms/templates/perfiles/moderador.html:59
+#: now_lms/templates/perfiles/moderador.html:66
+#: now_lms/templates/perfiles/moderador.html:93
 msgid "Ver Reportes"
 msgstr ""
 
@@ -3462,7 +3541,7 @@ msgstr ""
 #: now_lms/templates/inicio/panel_instructor.html:231
 #: now_lms/templates/inicio/panel_moderator.html:249
 #: now_lms/templates/inicio/panel_user.html:237
-#: now_lms/templates/perfiles/moderador.html:105
+#: now_lms/templates/perfiles/moderador.html:139
 msgid "Mis Mensajes"
 msgstr ""
 
@@ -3484,10 +3563,12 @@ msgid "Panel del Moderador"
 msgstr ""
 
 #: now_lms/templates/inicio/panel_moderator.html:49
+#: now_lms/templates/perfiles/moderador.html:56
 msgid "Bienvenido, Moderador"
 msgstr ""
 
 #: now_lms/templates/inicio/panel_moderator.html:51
+#: now_lms/templates/perfiles/moderador.html:58
 msgid "Tu centro de moderación y supervisión académica"
 msgstr ""
 
@@ -3825,7 +3906,6 @@ msgid "Panel de Moderación"
 msgstr "Administração"
 
 #: now_lms/templates/inicio/perfil.html:459
-#: now_lms/templates/perfiles/moderador.html:36
 msgid "Gestiona los mensajes y comunicaciones del sistema."
 msgstr ""
 
@@ -5513,18 +5593,6 @@ msgstr "Ajuda"
 msgid "No hay diapositivas disponibles en esta presentación."
 msgstr ""
 
-#: now_lms/templates/learning/resources/type_macros.html:85
-msgid "Requerido"
-msgstr "Obrigatório"
-
-#: now_lms/templates/learning/resources/type_macros.html:88
-msgid "Opcional"
-msgstr "Opcional"
-
-#: now_lms/templates/learning/resources/type_macros.html:89
-msgid "Alternativo"
-msgstr ""
-
 #: now_lms/templates/learning/resources/type_macros.html:100
 #, fuzzy
 msgid "Contenido del Curso"
@@ -6127,13 +6195,13 @@ msgid "Gestiona tus fechas importantes"
 msgstr ""
 
 #: now_lms/templates/perfiles/estudiante.html:101
-#: now_lms/templates/perfiles/moderador.html:70
+#: now_lms/templates/perfiles/moderador.html:104
 #, fuzzy
 msgid "Actualiza tu información personal"
 msgstr "Atualizar Configuração"
 
 #: now_lms/templates/perfiles/estudiante.html:103
-#: now_lms/templates/perfiles/moderador.html:72
+#: now_lms/templates/perfiles/moderador.html:106
 #, fuzzy
 msgid "Ver Perfil"
 msgstr "Perfil"
@@ -6224,25 +6292,20 @@ msgstr "Certificado"
 msgid "Comunicación"
 msgstr "Configuração"
 
-#: now_lms/templates/perfiles/moderador.html:34
-#, fuzzy
-msgid "Bienvenido Moderador"
-msgstr "Bem-vindo"
-
-#: now_lms/templates/perfiles/moderador.html:44
+#: now_lms/templates/perfiles/moderador.html:78
 msgid "Gestiona las conversaciones de usuarios"
 msgstr ""
 
-#: now_lms/templates/perfiles/moderador.html:46
+#: now_lms/templates/perfiles/moderador.html:80
 #, fuzzy
 msgid "Ver Mis Mensajes"
 msgstr "Mensagens"
 
-#: now_lms/templates/perfiles/moderador.html:56
+#: now_lms/templates/perfiles/moderador.html:90
 msgid "Revisa contenido reportado por usuarios"
 msgstr ""
 
-#: now_lms/templates/perfiles/moderador.html:82
+#: now_lms/templates/perfiles/moderador.html:116
 msgid "Revisa fechas importantes"
 msgstr ""
 
@@ -7140,53 +7203,53 @@ msgstr ""
 msgid "Certificado de programa emitido por completar todos los cursos."
 msgstr ""
 
-#: now_lms/vistas/settings.py:108
+#: now_lms/vistas/settings.py:164
 msgid "Tema del sitio web actualizado exitosamente."
 msgstr ""
 
-#: now_lms/vistas/settings.py:112
+#: now_lms/vistas/settings.py:168
 msgid "No se pudo actualizar el tema del sitio web."
 msgstr ""
 
-#: now_lms/vistas/settings.py:157
+#: now_lms/vistas/settings.py:213
 msgid ""
 "Debe configurar el correo electronico antes de habilitar verificación por"
 " e-mail."
 msgstr ""
 
-#: now_lms/vistas/settings.py:177
+#: now_lms/vistas/settings.py:223
 msgid "Sitio web actualizado exitosamente."
 msgstr ""
 
-#: now_lms/vistas/settings.py:180
+#: now_lms/vistas/settings.py:226
 msgid "No se pudo actualizar la configuración del sitio web."
 msgstr ""
 
-#: now_lms/vistas/settings.py:224
+#: now_lms/vistas/settings.py:275
 msgid "Configuración de correo electronico actualizada exitosamente."
 msgstr ""
 
-#: now_lms/vistas/settings.py:228
+#: now_lms/vistas/settings.py:279
 msgid "No se pudo actualizar la configuración de correo electronico."
 msgstr ""
 
-#: now_lms/vistas/settings.py:289
+#: now_lms/vistas/settings.py:340
 msgid "Hubo un error al enviar un correo de prueba. Revise su configuración."
 msgstr ""
 
-#: now_lms/vistas/settings.py:359
+#: now_lms/vistas/settings.py:415
 msgid "Configuración de Google AdSense actualizada exitosamente."
 msgstr ""
 
-#: now_lms/vistas/settings.py:364
+#: now_lms/vistas/settings.py:420
 msgid "No se pudo actualizar la configuración de Google AdSense."
 msgstr ""
 
-#: now_lms/vistas/settings.py:474
+#: now_lms/vistas/settings.py:535
 msgid "Configuración de Paypal actualizada exitosamente."
 msgstr ""
 
-#: now_lms/vistas/settings.py:479
+#: now_lms/vistas/settings.py:540
 msgid "No se pudo actualizar la configuración de Paypal."
 msgstr ""
 
@@ -7420,4 +7483,7 @@ msgstr ""
 
 #~ msgid "Ver Certicado"
 #~ msgstr ""
+
+#~ msgid "Bienvenido Moderador"
+#~ msgstr "Bem-vindo"
 
