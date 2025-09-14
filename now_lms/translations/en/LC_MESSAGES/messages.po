@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-09-11 12:48+0000\n"
+"POT-Creation-Date: 2025-09-13 23:51+0000\n"
 "PO-Revision-Date: 2025-09-10 08:59-0600\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "Favor iniciar sesión para acceder al sistema."
 msgstr "Please log in to access the system."
 
-#: now_lms/__init__.py:396 now_lms/__init__.py:559
+#: now_lms/__init__.py:400 now_lms/__init__.py:563
 msgid "Favor iniciar sesión para acceder a este recurso."
 msgstr "Please log in to access this resource."
 
@@ -37,6 +37,12 @@ msgstr "Course removed from the website."
 #: now_lms/bi.py:245
 msgid "No se puede publicar el curso"
 msgstr "The course cannot be published"
+
+#: now_lms/demo_mode.py:64
+msgid ""
+"Esta acción no está disponible en modo demostración para prevenir uso "
+"abusivo."
+msgstr "This action is not available in demo mode to prevent abusive use."
 
 #: now_lms/db/tools.py:140
 msgid "Sistema de aprendizaje en linea."
@@ -301,18 +307,18 @@ msgstr "Reported Messages"
 #: now_lms/templates/admin/flagged_messages.html:31
 #: now_lms/templates/announcements/admin_form.html:7
 #: now_lms/templates/announcements/admin_list.html:7
-#: now_lms/templates/themes/amber/navbar.j2:83
-#: now_lms/templates/themes/cambridge/navbar.j2:71
+#: now_lms/templates/themes/amber/navbar.j2:87
+#: now_lms/templates/themes/cambridge/navbar.j2:75
 #: now_lms/templates/themes/classic/navbar.j2:87
-#: now_lms/templates/themes/finance/navbar.j2:85
-#: now_lms/templates/themes/golden/navbar.j2:82
-#: now_lms/templates/themes/harvard/navbar.j2:71
-#: now_lms/templates/themes/lime/navbar.j2:83
-#: now_lms/templates/themes/nebula/navbar.j2:83
-#: now_lms/templates/themes/now_lms/navbar.j2:88
+#: now_lms/templates/themes/finance/navbar.j2:89
+#: now_lms/templates/themes/golden/navbar.j2:86
+#: now_lms/templates/themes/harvard/navbar.j2:75
+#: now_lms/templates/themes/lime/navbar.j2:87
+#: now_lms/templates/themes/nebula/navbar.j2:87
+#: now_lms/templates/themes/now_lms/navbar.j2:94
 #: now_lms/templates/themes/ocean/navbar.j2:75
-#: now_lms/templates/themes/oxford/navbar.j2:89
-#: now_lms/templates/themes/sakura/navbar.j2:89
+#: now_lms/templates/themes/oxford/navbar.j2:95
+#: now_lms/templates/themes/sakura/navbar.j2:95
 msgid "Administración"
 msgstr "Administration"
 
@@ -541,6 +547,7 @@ msgstr "Thread Statistics"
 #: now_lms/templates/learning/curso/enroll.html:119
 #: now_lms/templates/learning/curso_lista.html:48
 #: now_lms/templates/learning/mensajes/view_thread.html:230
+#: now_lms/templates/learning/my_courses.html:104
 #: now_lms/templates/learning/programas/admin_enroll.html:93
 #: now_lms/templates/learning/programas/editar_programa.html:55
 #: now_lms/templates/learning/programas/inscribir_usuario.html:69
@@ -561,6 +568,7 @@ msgstr "Status"
 #: now_lms/templates/learning/mensajes/user_messages.html:67
 #: now_lms/templates/learning/mensajes/view_thread.html:48
 #: now_lms/templates/learning/mensajes/view_thread.html:232
+#: now_lms/templates/learning/my_courses.html:106
 #: now_lms/templates/learning/programas/inscribir_usuario.html:73
 #: now_lms/templates/learning/programas/lista_programas.html:89
 msgid "Abierto"
@@ -604,7 +612,7 @@ msgstr "Messages"
 
 #: now_lms/templates/admin/flagged_messages.html:130
 #: now_lms/templates/inicio/panel_admin.html:227
-#: now_lms/templates/inicio/panel_instructor.html:186
+#: now_lms/templates/inicio/panel_instructor.html:192
 #: now_lms/templates/inicio/panel_moderator.html:212
 #: now_lms/templates/perfiles/admin.html:213
 msgid "Creado"
@@ -669,7 +677,7 @@ msgstr "User"
 #: now_lms/templates/blog/admin_tags.html:26
 #: now_lms/templates/inicio/perfil_editar.html:44
 #: now_lms/templates/learning/categorias/lista_categorias.html:42
-#: now_lms/templates/learning/certificados/certificado.html:27
+#: now_lms/templates/learning/certificados/certificado.html:88
 #: now_lms/templates/learning/curso/enroll.html:88
 #: now_lms/templates/learning/curso_lista.html:43
 #: now_lms/templates/learning/nuevo_curso.html:30
@@ -692,7 +700,7 @@ msgstr "First Name"
 #: now_lms/templates/admin/inactive_users.html:41
 #: now_lms/templates/admin/users.html:46 now_lms/templates/auth/logon.html:46
 #: now_lms/templates/inicio/perfil_editar.html:49
-#: now_lms/templates/learning/certificados/certificado.html:28
+#: now_lms/templates/learning/certificados/certificado.html:94
 #: now_lms/templates/learning/curso/enroll.html:93
 #: now_lms/templates/learning/nuevo_usuario.html:30
 msgid "Apellido"
@@ -1263,19 +1271,19 @@ msgstr "Announce"
 #: now_lms/templates/learning/programas/inscribir_usuario.html:58
 #: now_lms/templates/learning/resources/type_html.html:66
 #: now_lms/templates/learning/resources_new/editar_slideshow.html:59
-#: now_lms/templates/themes/amber/navbar.j2:127
-#: now_lms/templates/themes/cambridge/navbar.j2:108
+#: now_lms/templates/themes/amber/navbar.j2:131
+#: now_lms/templates/themes/cambridge/navbar.j2:112
 #: now_lms/templates/themes/classic/navbar.j2:131
-#: now_lms/templates/themes/corporative/navbar.j2:115
-#: now_lms/templates/themes/finance/navbar.j2:129
-#: now_lms/templates/themes/golden/navbar.j2:136
-#: now_lms/templates/themes/harvard/navbar.j2:108
-#: now_lms/templates/themes/lime/navbar.j2:127
-#: now_lms/templates/themes/nebula/navbar.j2:127
-#: now_lms/templates/themes/now_lms/navbar.j2:131
+#: now_lms/templates/themes/corporative/navbar.j2:119
+#: now_lms/templates/themes/finance/navbar.j2:133
+#: now_lms/templates/themes/golden/navbar.j2:140
+#: now_lms/templates/themes/harvard/navbar.j2:112
+#: now_lms/templates/themes/lime/navbar.j2:131
+#: now_lms/templates/themes/nebula/navbar.j2:131
+#: now_lms/templates/themes/now_lms/navbar.j2:137
 #: now_lms/templates/themes/ocean/navbar.j2:112
-#: now_lms/templates/themes/oxford/navbar.j2:133
-#: now_lms/templates/themes/sakura/navbar.j2:132
+#: now_lms/templates/themes/oxford/navbar.j2:139
+#: now_lms/templates/themes/sakura/navbar.j2:138
 msgid "Información"
 msgstr "Information"
 
@@ -1369,6 +1377,7 @@ msgstr "New Announcement"
 #: now_lms/templates/learning/curso/coupons/edit.html:6
 #: now_lms/templates/learning/curso/coupons/edit.html:16
 #: now_lms/templates/learning/curso/coupons/list.html:83
+#: now_lms/templates/learning/my_courses.html:146
 #: now_lms/templates/learning/nuevo_curso.html:21
 #: now_lms/templates/learning/programas/editar_programa.html:6
 #: now_lms/templates/learning/programas/editar_programa.html:28
@@ -1531,11 +1540,11 @@ msgstr "Create First Announcement"
 
 #: now_lms/templates/announcements/course.html:7
 #: now_lms/templates/announcements/global.html:7
-#: now_lms/templates/inicio/panel_instructor.html:266
+#: now_lms/templates/inicio/panel_instructor.html:272
 #: now_lms/templates/inicio/panel_moderator.html:293
-#: now_lms/templates/inicio/panel_user.html:273
+#: now_lms/templates/inicio/panel_user.html:279
 #: now_lms/templates/perfiles/admin.html:340
-#: now_lms/templates/perfiles/instructor.html:383
+#: now_lms/templates/perfiles/instructor.html:381
 msgid "Anuncios"
 msgstr "Announcements"
 
@@ -1662,18 +1671,18 @@ msgstr "Password"
 #: now_lms/templates/auth/login.html:50
 #: now_lms/templates/learning/curso.html:192
 #: now_lms/templates/learning/curso/curso.html:173
-#: now_lms/templates/themes/amber/navbar.j2:91
-#: now_lms/templates/themes/cambridge/navbar.j2:78
+#: now_lms/templates/themes/amber/navbar.j2:95
+#: now_lms/templates/themes/cambridge/navbar.j2:82
 #: now_lms/templates/themes/classic/navbar.j2:95
-#: now_lms/templates/themes/finance/navbar.j2:93
-#: now_lms/templates/themes/golden/navbar.j2:95
-#: now_lms/templates/themes/harvard/navbar.j2:78
-#: now_lms/templates/themes/lime/navbar.j2:91
-#: now_lms/templates/themes/nebula/navbar.j2:91
-#: now_lms/templates/themes/now_lms/navbar.j2:96
+#: now_lms/templates/themes/finance/navbar.j2:97
+#: now_lms/templates/themes/golden/navbar.j2:99
+#: now_lms/templates/themes/harvard/navbar.j2:82
+#: now_lms/templates/themes/lime/navbar.j2:95
+#: now_lms/templates/themes/nebula/navbar.j2:95
+#: now_lms/templates/themes/now_lms/navbar.j2:102
 #: now_lms/templates/themes/ocean/navbar.j2:82
-#: now_lms/templates/themes/oxford/navbar.j2:97
-#: now_lms/templates/themes/sakura/navbar.j2:97
+#: now_lms/templates/themes/oxford/navbar.j2:103
+#: now_lms/templates/themes/sakura/navbar.j2:103
 msgid "Iniciar Sesión"
 msgstr "Log In"
 
@@ -1711,18 +1720,18 @@ msgstr ""
 
 #: now_lms/templates/auth/logon.html:53
 #: now_lms/templates/learning/curso.html:200
-#: now_lms/templates/themes/amber/navbar.j2:94
-#: now_lms/templates/themes/cambridge/navbar.j2:81
+#: now_lms/templates/themes/amber/navbar.j2:98
+#: now_lms/templates/themes/cambridge/navbar.j2:85
 #: now_lms/templates/themes/classic/navbar.j2:98
-#: now_lms/templates/themes/finance/navbar.j2:96
-#: now_lms/templates/themes/golden/navbar.j2:103
-#: now_lms/templates/themes/harvard/navbar.j2:81
-#: now_lms/templates/themes/lime/navbar.j2:94
-#: now_lms/templates/themes/nebula/navbar.j2:94
-#: now_lms/templates/themes/now_lms/navbar.j2:99
+#: now_lms/templates/themes/finance/navbar.j2:100
+#: now_lms/templates/themes/golden/navbar.j2:107
+#: now_lms/templates/themes/harvard/navbar.j2:85
+#: now_lms/templates/themes/lime/navbar.j2:98
+#: now_lms/templates/themes/nebula/navbar.j2:98
+#: now_lms/templates/themes/now_lms/navbar.j2:105
 #: now_lms/templates/themes/ocean/navbar.j2:85
-#: now_lms/templates/themes/oxford/navbar.j2:100
-#: now_lms/templates/themes/sakura/navbar.j2:100
+#: now_lms/templates/themes/oxford/navbar.j2:106
+#: now_lms/templates/themes/sakura/navbar.j2:106
 msgid "Crear Cuenta"
 msgstr "Create Account"
 
@@ -1812,6 +1821,7 @@ msgstr "Comments"
 #: now_lms/templates/learning/curso/admin.html:55
 #: now_lms/templates/learning/curso/admin.html:137
 #: now_lms/templates/learning/curso_lista.html:75
+#: now_lms/templates/learning/my_courses.html:108
 msgid "Borrador"
 msgstr "Draft"
 
@@ -1869,7 +1879,9 @@ msgstr "Tag Management"
 #: now_lms/templates/blog/instructor_index.html:7
 #: now_lms/templates/inicio/panel_admin.html:302
 #: now_lms/templates/perfiles/admin.html:335
-#: now_lms/templates/perfiles/instructor.html:378
+#: now_lms/templates/perfiles/instructor.html:376
+#: now_lms/templates/themes/cambridge/navbar.j2:62
+#: now_lms/templates/themes/now_lms/navbar.j2:75
 msgid "Blog"
 msgstr "Blog"
 
@@ -2032,7 +2044,7 @@ msgstr "My Calendar"
 #: now_lms/templates/calendar/calendar_view.html:80
 #: now_lms/templates/calendar/event_detail.html:32
 #: now_lms/templates/calendar/upcoming_events.html:32
-#: now_lms/templates/inicio/panel_user.html:249
+#: now_lms/templates/inicio/panel_user.html:255
 #: now_lms/templates/perfiles/estudiante.html:100
 #: now_lms/templates/perfiles/moderador.html:69
 #: now_lms/templates/perfiles/moderador.html:114
@@ -2044,8 +2056,8 @@ msgstr "My Profile"
 #: now_lms/templates/calendar/event_detail.html:39
 #: now_lms/templates/calendar/upcoming_events.html:7
 #: now_lms/templates/calendar/upcoming_events.html:39
-#: now_lms/templates/inicio/panel_instructor.html:258
-#: now_lms/templates/inicio/panel_user.html:257
+#: now_lms/templates/inicio/panel_instructor.html:264
+#: now_lms/templates/inicio/panel_user.html:263
 #: now_lms/templates/perfiles/moderador.html:81
 #: now_lms/templates/perfiles/moderador.html:111
 msgid "Calendario"
@@ -2196,7 +2208,7 @@ msgid "Zona Horaria:"
 msgstr "Time Zone:"
 
 #: now_lms/templates/calendar/event_detail.html:167
-#: now_lms/templates/perfiles/instructor.html:223
+#: now_lms/templates/perfiles/instructor.html:221
 msgid "Creado:"
 msgstr "Created:"
 
@@ -2206,7 +2218,7 @@ msgstr "Update Theme:"
 
 #: now_lms/templates/calendar/event_detail.html:183
 #: now_lms/templates/perfiles/estudiante.html:136
-#: now_lms/templates/perfiles/instructor.html:253
+#: now_lms/templates/perfiles/instructor.html:251
 #: now_lms/templates/perfiles/moderador.html:99
 msgid "Acciones Rápidas"
 msgstr "Quick Actions"
@@ -2238,6 +2250,7 @@ msgstr ""
 #: now_lms/templates/inicio/home.html:37 now_lms/templates/inicio/home.html:254
 #: now_lms/templates/inicio/panel_user.html:59
 #: now_lms/templates/inicio/perfil.html:287
+#: now_lms/templates/learning/my_courses.html:182
 #: now_lms/templates/perfiles/estudiante.html:142
 #: now_lms/templates/themes/amber/overrides/home.j2:39
 #: now_lms/templates/themes/amber/overrides/home.j2:341
@@ -2964,7 +2977,7 @@ msgstr "Categories"
 #: now_lms/templates/inicio/programas.html:688
 #: now_lms/templates/inicio/recursos.html:168
 #: now_lms/templates/learning/nuevo_curso.html:150
-#: now_lms/templates/perfiles/instructor.html:337
+#: now_lms/templates/perfiles/instructor.html:335
 #: now_lms/templates/themes/classic/overrides/course_list.j2:496
 #: now_lms/templates/themes/classic/overrides/program_list.j2:689
 msgid "Etiquetas"
@@ -2973,6 +2986,7 @@ msgstr "Tags"
 #: now_lms/templates/inicio/cursos.html:525
 #: now_lms/templates/inicio/programas.html:717
 #: now_lms/templates/inicio/recursos.html:185
+#: now_lms/templates/learning/my_courses.html:100
 #: now_lms/templates/learning/nuevo_curso.html:49
 #: now_lms/templates/themes/classic/overrides/course_list.j2:525
 #: now_lms/templates/themes/classic/overrides/program_list.j2:718
@@ -3022,12 +3036,12 @@ msgstr "My Dashboard"
 
 #: now_lms/templates/inicio/home.html:47
 #: now_lms/templates/inicio/panel_admin.html:101
-#: now_lms/templates/inicio/panel_instructor.html:85
+#: now_lms/templates/inicio/panel_instructor.html:91
 #: now_lms/templates/inicio/panel_moderator.html:89
 #: now_lms/templates/perfiles/admin.html:142
 #: now_lms/templates/perfiles/estudiante.html:75
-#: now_lms/templates/perfiles/instructor.html:62
-#: now_lms/templates/perfiles/instructor.html:94
+#: now_lms/templates/perfiles/instructor.html:61
+#: now_lms/templates/perfiles/instructor.html:92
 #: now_lms/templates/themes/amber/overrides/home.j2:49
 #: now_lms/templates/themes/classic/overrides/home.j2:49
 #: now_lms/templates/themes/ocean/overrides/home.j2:49
@@ -3115,7 +3129,7 @@ msgstr ""
 "                                        and goals."
 
 #: now_lms/templates/inicio/home.html:127
-#: now_lms/templates/inicio/panel_user.html:127
+#: now_lms/templates/inicio/panel_user.html:133
 #: now_lms/templates/perfiles/estudiante.html:113
 #: now_lms/templates/themes/amber/overrides/home.j2:185
 #: now_lms/templates/themes/cambridge/overrides/home.j2:203
@@ -3268,7 +3282,7 @@ msgstr "NOW LMS Control and Administration Panel"
 
 #: now_lms/templates/inicio/panel_admin.html:70
 #: now_lms/templates/learning/curso_lista.html:26
-#: now_lms/templates/perfiles/instructor.html:260
+#: now_lms/templates/perfiles/instructor.html:258
 msgid "Nuevo Curso"
 msgstr "New Course"
 
@@ -3312,7 +3326,7 @@ msgid "Ver Lista"
 msgstr "View List"
 
 #: now_lms/templates/inicio/panel_admin.html:165
-#: now_lms/templates/inicio/panel_instructor.html:97
+#: now_lms/templates/inicio/panel_instructor.html:103
 msgid "Certificados Emitidos"
 msgstr "Issued Certificates"
 
@@ -3321,8 +3335,8 @@ msgid "Certificaciones otorgadas"
 msgstr "Granted Certifications"
 
 #: now_lms/templates/inicio/panel_admin.html:179
-#: now_lms/templates/inicio/panel_instructor.html:111
-#: now_lms/templates/inicio/panel_user.html:141
+#: now_lms/templates/inicio/panel_instructor.html:117
+#: now_lms/templates/inicio/panel_user.html:147
 #: now_lms/templates/perfiles/estudiante.html:116
 msgid "Ver Certificados"
 msgstr "View Certificates"
@@ -3333,10 +3347,10 @@ msgid "Cursos Recientes"
 msgstr "Recent Courses"
 
 #: now_lms/templates/inicio/panel_admin.html:205
-#: now_lms/templates/inicio/panel_instructor.html:164
+#: now_lms/templates/inicio/panel_instructor.html:170
 #: now_lms/templates/inicio/panel_moderator.html:190
 #: now_lms/templates/perfiles/admin.html:191
-#: now_lms/templates/perfiles/instructor.html:201
+#: now_lms/templates/perfiles/instructor.html:199
 msgid "Ver Todos"
 msgstr "View All"
 
@@ -3376,7 +3390,7 @@ msgstr "Administration Tools"
 #: now_lms/templates/learning/programas/lista_programas.html:6
 #: now_lms/templates/learning/programas/lista_programas.html:20
 #: now_lms/templates/learning/programas/nuevo_programa.html:24
-#: now_lms/templates/perfiles/instructor.html:316
+#: now_lms/templates/perfiles/instructor.html:314
 #: now_lms/templates/themes/amber/navbar.j2:52
 #: now_lms/templates/themes/cambridge/navbar.j2:50
 #: now_lms/templates/themes/classic/navbar.j2:52
@@ -3414,7 +3428,7 @@ msgid "Tu centro de enseñanza y gestión de cursos"
 msgstr "Your teaching and course management hub"
 
 #: now_lms/templates/inicio/panel_instructor.html:71
-#: now_lms/templates/perfiles/instructor.html:80
+#: now_lms/templates/perfiles/instructor.html:78
 msgid "Cursos Creados"
 msgstr "Created Courses"
 
@@ -3422,64 +3436,74 @@ msgstr "Created Courses"
 msgid "Cursos activos"
 msgstr "Active Courses"
 
-#: now_lms/templates/inicio/panel_instructor.html:100
+#: now_lms/templates/inicio/panel_instructor.html:85
+#: now_lms/templates/inicio/panel_user.html:75
+#: now_lms/templates/inicio/panel_user.html:89
+#: now_lms/templates/inicio/panel_user.html:168
+#: now_lms/templates/perfiles/estudiante.html:72
+#: now_lms/templates/perfiles/instructor.html:309
+#: now_lms/vistas/courses.py:2524 now_lms/vistas/courses.py:2547
+msgid "Mis Cursos"
+msgstr "My Courses"
+
+#: now_lms/templates/inicio/panel_instructor.html:106
 msgid "Logros estudiantiles"
 msgstr "Student Achievements"
 
-#: now_lms/templates/inicio/panel_instructor.html:123
-#: now_lms/templates/perfiles/instructor.html:106
+#: now_lms/templates/inicio/panel_instructor.html:129
+#: now_lms/templates/perfiles/instructor.html:104
 msgid "Estudiantes Inscritos"
 msgstr "Enrolled Students"
 
-#: now_lms/templates/inicio/panel_instructor.html:126
+#: now_lms/templates/inicio/panel_instructor.html:132
 msgid "Total de estudiantes"
 msgstr "Total Students"
 
-#: now_lms/templates/inicio/panel_instructor.html:137
+#: now_lms/templates/inicio/panel_instructor.html:143
 #: now_lms/templates/masterclass/admin_list.html:104
-#: now_lms/templates/perfiles/instructor.html:120
+#: now_lms/templates/perfiles/instructor.html:118
 msgid "Ver Estudiantes"
 msgstr "View Students"
 
-#: now_lms/templates/inicio/panel_instructor.html:158
-#: now_lms/templates/perfiles/instructor.html:193
+#: now_lms/templates/inicio/panel_instructor.html:164
+#: now_lms/templates/perfiles/instructor.html:191
 msgid "Mis Cursos Recientes"
 msgstr "My Recent Courses"
 
-#: now_lms/templates/inicio/panel_instructor.html:200
+#: now_lms/templates/inicio/panel_instructor.html:206
 msgid "Aún no has creado cursos"
 msgstr "You haven't created any courses yet"
 
-#: now_lms/templates/inicio/panel_instructor.html:202
+#: now_lms/templates/inicio/panel_instructor.html:208
 msgid "Crear mi primer curso"
 msgstr "Create My First Course"
 
-#: now_lms/templates/inicio/panel_instructor.html:216
+#: now_lms/templates/inicio/panel_instructor.html:222
 msgid "Centro de Mensajes"
 msgstr "Message Center"
 
-#: now_lms/templates/inicio/panel_instructor.html:221
+#: now_lms/templates/inicio/panel_instructor.html:227
 msgid ""
 "Mantente conectado con tus estudiantes y resuelve sus dudas de manera "
 "oportuna."
 msgstr "Stay connected with your students and address their questions promptly."
 
-#: now_lms/templates/inicio/panel_instructor.html:225
+#: now_lms/templates/inicio/panel_instructor.html:231
 #: now_lms/templates/inicio/panel_moderator.html:249
-#: now_lms/templates/inicio/panel_user.html:231
+#: now_lms/templates/inicio/panel_user.html:237
 #: now_lms/templates/perfiles/moderador.html:105
 msgid "Mis Mensajes"
 msgstr "My Messages"
 
-#: now_lms/templates/inicio/panel_instructor.html:235
+#: now_lms/templates/inicio/panel_instructor.html:241
 msgid "Herramientas de Enseñanza"
 msgstr "Teaching Tools"
 
-#: now_lms/templates/inicio/panel_instructor.html:245
+#: now_lms/templates/inicio/panel_instructor.html:251
 msgid "Mis Recursos"
 msgstr "My Resources"
 
-#: now_lms/templates/inicio/panel_instructor.html:250
+#: now_lms/templates/inicio/panel_instructor.html:256
 #: now_lms/templates/inicio/panel_moderator.html:277
 msgid "Buscar Cursos"
 msgstr "Search Courses"
@@ -3569,7 +3593,7 @@ msgstr "Users"
 #: now_lms/templates/learning/curso/admin.html:360
 #: now_lms/templates/learning/recursos/lista_recursos.html:6
 #: now_lms/templates/learning/recursos/lista_recursos.html:20
-#: now_lms/templates/perfiles/instructor.html:334
+#: now_lms/templates/perfiles/instructor.html:332
 #: now_lms/templates/themes/amber/navbar.j2:58
 #: now_lms/templates/themes/cambridge/navbar.j2:54
 #: now_lms/templates/themes/classic/navbar.j2:58
@@ -3591,19 +3615,19 @@ msgstr "Student Dashboard"
 
 #: now_lms/templates/inicio/panel_user.html:53
 #: now_lms/templates/perfiles/estudiante.html:61
-#: now_lms/templates/themes/amber/navbar.j2:107
-#: now_lms/templates/themes/cambridge/navbar.j2:93
+#: now_lms/templates/themes/amber/navbar.j2:111
+#: now_lms/templates/themes/cambridge/navbar.j2:97
 #: now_lms/templates/themes/classic/navbar.j2:111
-#: now_lms/templates/themes/corporative/navbar.j2:95
-#: now_lms/templates/themes/finance/navbar.j2:109
-#: now_lms/templates/themes/golden/navbar.j2:116
-#: now_lms/templates/themes/harvard/navbar.j2:93
-#: now_lms/templates/themes/lime/navbar.j2:107
-#: now_lms/templates/themes/nebula/navbar.j2:107
-#: now_lms/templates/themes/now_lms/navbar.j2:111
+#: now_lms/templates/themes/corporative/navbar.j2:99
+#: now_lms/templates/themes/finance/navbar.j2:113
+#: now_lms/templates/themes/golden/navbar.j2:120
+#: now_lms/templates/themes/harvard/navbar.j2:97
+#: now_lms/templates/themes/lime/navbar.j2:111
+#: now_lms/templates/themes/nebula/navbar.j2:111
+#: now_lms/templates/themes/now_lms/navbar.j2:117
 #: now_lms/templates/themes/ocean/navbar.j2:97
-#: now_lms/templates/themes/oxford/navbar.j2:113
-#: now_lms/templates/themes/sakura/navbar.j2:112
+#: now_lms/templates/themes/oxford/navbar.j2:119
+#: now_lms/templates/themes/sakura/navbar.j2:118
 msgid "Bienvenido"
 msgstr "Welcome"
 
@@ -3611,21 +3635,18 @@ msgstr "Welcome"
 msgid "Tu portal de aprendizaje y desarrollo personal"
 msgstr "Your Learning and Personal Development Portal"
 
-#: now_lms/templates/inicio/panel_user.html:75
-#: now_lms/templates/inicio/panel_user.html:162
-#: now_lms/templates/perfiles/estudiante.html:72
-#: now_lms/templates/perfiles/instructor.html:311
-msgid "Mis Cursos"
-msgstr "My Courses"
-
 #: now_lms/templates/inicio/panel_user.html:78
 msgid "Cursos inscritos"
 msgstr "Enrolled Courses"
 
-#: now_lms/templates/inicio/panel_user.html:101
+#: now_lms/templates/inicio/panel_user.html:95
+msgid "Más Cursos"
+msgstr "More Courses"
+
+#: now_lms/templates/inicio/panel_user.html:107
 #: now_lms/templates/masterclass/detail_public.html:23
 #: now_lms/templates/masterclass/enroll.html:23
-#: now_lms/templates/perfiles/instructor.html:158
+#: now_lms/templates/perfiles/instructor.html:156
 #: now_lms/templates/themes/amber/navbar.j2:64
 #: now_lms/templates/themes/cambridge/navbar.j2:58
 #: now_lms/templates/themes/classic/navbar.j2:64
@@ -3641,41 +3662,41 @@ msgstr "Enrolled Courses"
 msgid "Clases Magistrales"
 msgstr "Masterclasses"
 
-#: now_lms/templates/inicio/panel_user.html:104
+#: now_lms/templates/inicio/panel_user.html:110
 #: now_lms/templates/masterclass/detail_public.html:85
 msgid "Próximamente"
 msgstr "Upcoming"
 
-#: now_lms/templates/inicio/panel_user.html:115
-#: now_lms/templates/perfiles/instructor.html:172
+#: now_lms/templates/inicio/panel_user.html:121
+#: now_lms/templates/perfiles/instructor.html:170
 msgid "Ver Clases"
 msgstr "View Classes"
 
-#: now_lms/templates/inicio/panel_user.html:130
+#: now_lms/templates/inicio/panel_user.html:136
 msgid "Logros obtenidos"
 msgstr "Achievements Earned"
 
-#: now_lms/templates/inicio/panel_user.html:167
+#: now_lms/templates/inicio/panel_user.html:173
 msgid "Buscar Más"
 msgstr "Search More"
 
-#: now_lms/templates/inicio/panel_user.html:188
+#: now_lms/templates/inicio/panel_user.html:194
 msgid "Continuar aprendiendo"
 msgstr "Continue Learning"
 
-#: now_lms/templates/inicio/panel_user.html:201
+#: now_lms/templates/inicio/panel_user.html:207
 msgid "¡Comienza tu viaje de aprendizaje!"
 msgstr "Start Your Learning Journey!"
 
-#: now_lms/templates/inicio/panel_user.html:203
+#: now_lms/templates/inicio/panel_user.html:209
 msgid "Explora nuestra amplia gama de cursos y encuentra el perfecto para ti."
 msgstr "Explore our wide range of courses and find the perfect one for you."
 
-#: now_lms/templates/inicio/panel_user.html:221
+#: now_lms/templates/inicio/panel_user.html:227
 msgid "Centro de Comunicación"
 msgstr "Communication Center"
 
-#: now_lms/templates/inicio/panel_user.html:226
+#: now_lms/templates/inicio/panel_user.html:232
 msgid ""
 "Mantente conectado con tus instructores y compañeros de clase. Haz "
 "preguntas,\n"
@@ -3683,13 +3704,14 @@ msgid ""
 "apoyo."
 msgstr ""
 "Stay connected with your instructors and classmates. Ask questions,\n"
-"                                    participate in discussions, and get support."
+"                                    participate in discussions, and get "
+"support."
 
-#: now_lms/templates/inicio/panel_user.html:242
+#: now_lms/templates/inicio/panel_user.html:248
 msgid "Recursos de Aprendizaje"
 msgstr "Learning Resources"
 
-#: now_lms/templates/inicio/panel_user.html:265
+#: now_lms/templates/inicio/panel_user.html:271
 msgid "Mis Logros"
 msgstr "My Achievements"
 
@@ -3758,7 +3780,7 @@ msgid "Tus logros y certificaciones obtenidas"
 msgstr "Your achievements and earned certifications"
 
 #: now_lms/templates/inicio/perfil.html:322
-#: now_lms/templates/learning/certificados/certificado.html:44
+#: now_lms/templates/learning/certificados/certificado.html:171
 #: now_lms/templates/learning/certificados/emitir_certificado.html:52
 msgid "Nota"
 msgstr "Grade"
@@ -3918,8 +3940,8 @@ msgid ""
 "o contacte al\n"
 "                                administrador."
 msgstr ""
-"There are currently no programs available. Please try again later "
-"or contact the administrator."
+"There are currently no programs available. Please try again later or "
+"contact the administrator."
 
 #: now_lms/templates/inicio/programas.html:648
 #: now_lms/templates/themes/classic/overrides/program_list.j2:649
@@ -3959,6 +3981,7 @@ msgstr "Course Successfully Completed!"
 msgid "Has obtenido la certificación de este curso."
 msgstr "You have earned the certification for this course."
 
+#: now_lms/templates/learning/certificados/certificado.html:188
 #: now_lms/templates/learning/curso.html:78
 msgid "Ver Certificado"
 msgstr "View Certificate"
@@ -4093,6 +4116,7 @@ msgstr "End"
 #: now_lms/templates/learning/certificados/lista_certificados.html:49
 #: now_lms/templates/learning/certificados/lista_certificados.html:68
 #: now_lms/templates/learning/curso_lista.html:49
+#: now_lms/templates/learning/my_courses.html:116
 #: now_lms/templates/learning/recursos/lista_recursos.html:44
 #: now_lms/templates/learning/recursos/lista_recursos.html:67
 msgid "Público"
@@ -4138,6 +4162,80 @@ msgstr "Description of the new Section."
 msgid "Actualizar Sección"
 msgstr "Update Section"
 
+#: now_lms/templates/learning/my_courses.html:52
+msgid "Mis Cursos de Aprendizaje"
+msgstr "My Learning Courses"
+
+#: now_lms/templates/learning/my_courses.html:54
+msgid "Mis Cursos de Enseñanza"
+msgstr "My Teaching Courses"
+
+#: now_lms/templates/learning/my_courses.html:59
+msgid "Continúa tu viaje de aprendizaje donde lo dejaste"
+msgstr "Continue your learning journey where you left off"
+
+#: now_lms/templates/learning/my_courses.html:61
+msgid "Gestiona y administra tus cursos creados"
+msgstr "Manage and administer your created courses"
+
+#: now_lms/templates/learning/my_courses.html:68
+msgid "Explorar Más Cursos"
+msgstr "Explore More Courses"
+
+#: now_lms/templates/learning/my_courses.html:72
+msgid "Crear Nuevo Curso"
+msgstr "Create New Course"
+
+#: now_lms/templates/learning/my_courses.html:114
+#: now_lms/templates/learning/programa.html:36
+msgid "Acceso"
+msgstr "Access"
+
+#: now_lms/templates/learning/certificados/lista_certificados.html:70
+#: now_lms/templates/learning/my_courses.html:118
+#: now_lms/templates/learning/recursos/lista_recursos.html:69
+msgid "Privado"
+msgstr "Private"
+
+#: now_lms/templates/learning/my_courses.html:128
+msgid "Continuar Aprendiendo"
+msgstr "Continue Learning"
+
+#: now_lms/templates/learning/curso/curso.html:234
+#: now_lms/templates/learning/my_courses.html:132
+#: now_lms/templates/learning/my_courses.html:142
+msgid "Vista Previa"
+msgstr "Preview"
+
+#: now_lms/templates/learning/curso/curso.html:67
+#: now_lms/templates/learning/my_courses.html:137
+msgid "Administrar Curso"
+msgstr "Manage Course"
+
+#: now_lms/templates/learning/my_courses.html:168
+msgid "No tienes cursos inscritos"
+msgstr "You have no enrolled Courses"
+
+#: now_lms/templates/learning/my_courses.html:170
+msgid "No tienes cursos creados"
+msgstr "You have no created courses"
+
+#: now_lms/templates/learning/my_courses.html:175
+msgid "¡Explora nuestro catálogo y comienza tu viaje de aprendizaje!"
+msgstr "Explore our catalog and start your learning journey!"
+
+#: now_lms/templates/learning/my_courses.html:177
+msgid "¡Crea tu primer curso y comienza a enseñar!"
+msgstr "Create your first course and start teaching!"
+
+#: now_lms/templates/learning/my_courses.html:186
+msgid "Crear Mi Primer Curso"
+msgstr "Create My First Course"
+
+#: now_lms/templates/learning/my_courses.html:195
+msgid "Regresar al Panel"
+msgstr "Return to panel"
+
 #: now_lms/templates/learning/nuevo_curso.html:6
 msgid "Editar curso"
 msgstr "Edit Course"
@@ -4146,14 +4244,14 @@ msgstr "Edit Course"
 msgid "Crear un nuevo curso"
 msgstr "Create a New Course"
 
-#: now_lms/templates/learning/certificados/certificado.html:31
+#: now_lms/templates/learning/certificados/certificado.html:113
 #: now_lms/templates/learning/nuevo_curso.html:31
 msgid "Nombre del Curso"
 msgstr "Course Name"
 
 #: now_lms/templates/learning/nuevo_curso.html:34
 msgid "Código del"
-msgstr "Course Code"
+msgstr "Code"
 
 #: now_lms/templates/learning/nuevo_curso.html:35
 msgid "Código del Curso"
@@ -4345,10 +4443,6 @@ msgstr "Total"
 msgid "Cursos"
 msgstr "Courses"
 
-#: now_lms/templates/learning/programa.html:36
-msgid "Acceso"
-msgstr "Access"
-
 #: now_lms/templates/learning/programa.html:37
 msgid "De por vida"
 msgstr "Lifetime"
@@ -4411,62 +4505,65 @@ msgstr "Create Category."
 msgid "Certificado de Finalizacion de curso"
 msgstr "Course Completion Certificate"
 
-#: now_lms/templates/learning/certificados/certificado.html:16
+#: now_lms/templates/learning/certificados/certificado.html:56
 msgid "Certificado de Finalización de Curso"
 msgstr "Course Completion Certificate"
 
-#: now_lms/templates/learning/certificados/certificado.html:20
+#: now_lms/templates/learning/certificados/certificado.html:58
+msgid "Verificación de logro académico"
+msgstr "Academic Achievement Verification"
+
+#: now_lms/templates/learning/certificados/certificado.html:69
 msgid "Se hace constar que"
 msgstr "This certifies that"
 
-#: now_lms/templates/learning/certificados/certificado.html:20
+#: now_lms/templates/learning/certificados/certificado.html:69
 msgid ""
 "ha\n"
 "                        completado satisfactoriamente el curso"
 msgstr "has successfully completed the course"
 
-#: now_lms/templates/learning/certificados/certificado.html:22
+#: now_lms/templates/learning/certificados/certificado.html:71
 msgid "cumpliendo con todos los requisitos académicos y evaluaciones establecidas"
 msgstr "fulfilling all academic requirements and evaluations"
 
-#: now_lms/templates/learning/certificados/certificado.html:26
+#: now_lms/templates/learning/certificados/certificado.html:81
 msgid "Datos del Estudiante"
 msgstr "Student Information"
 
-#: now_lms/templates/learning/certificados/certificado.html:30
+#: now_lms/templates/learning/certificados/certificado.html:107
 msgid "Datos del Curso"
 msgstr "Course Information"
 
-#: now_lms/templates/learning/certificados/certificado.html:32
+#: now_lms/templates/learning/certificados/certificado.html:119
 msgid "Descripción del Curso"
 msgstr "Course Description"
 
-#: now_lms/templates/learning/certificados/certificado.html:34
-#: now_lms/templates/learning/certificados/certificado.html:36
+#: now_lms/templates/learning/certificados/certificado.html:126
 msgid "Fecha de Inicio"
 msgstr "Start Date"
 
-#: now_lms/templates/learning/certificados/certificado.html:38
+#: now_lms/templates/learning/certificados/certificado.html:133
+msgid "Fecha de Fin"
+msgstr "End Date"
+
+#: now_lms/templates/learning/certificados/certificado.html:140
 msgid "Duración"
 msgstr "Duration"
 
-#: now_lms/templates/learning/certificados/certificado.html:38
+#: now_lms/templates/learning/certificados/certificado.html:142
 msgid "horas"
 msgstr "hours"
 
-#: now_lms/templates/learning/certificados/certificado.html:41
-msgid "Datos del Certicado"
+#: now_lms/templates/learning/certificados/certificado.html:156
+msgid "Datos del Certificado"
 msgstr "Certificate Details"
 
-#: now_lms/templates/learning/certificados/certificado.html:42
+#: now_lms/templates/learning/certificados/certificado.html:164
 msgid "Fecha de Emisión"
 msgstr "Issue Date"
 
-#: now_lms/templates/learning/certificados/certificado.html:55
-msgid "Ver Certicado"
-msgstr "View Certificate"
-
-#: now_lms/templates/learning/certificados/certificado.html:63
+#: now_lms/templates/learning/certificados/certificado.html:199
 msgid "Descargar Certificado"
 msgstr "Download Certificate"
 
@@ -4577,11 +4674,6 @@ msgstr "List of available certificates in the system."
 #: now_lms/templates/learning/certificados/lista_certificados.html:63
 msgid "Deshabilitado"
 msgstr "Disabled"
-
-#: now_lms/templates/learning/certificados/lista_certificados.html:70
-#: now_lms/templates/learning/recursos/lista_recursos.html:69
-msgid "Privado"
-msgstr "Private"
 
 #: now_lms/templates/learning/certificados/lista_certificados.html:79
 msgid "Deshabilitar"
@@ -4955,10 +5047,6 @@ msgstr "There are no students enrolled in this course yet."
 msgid "Inscribir Primer Estudiante"
 msgstr "Enroll First Student"
 
-#: now_lms/templates/learning/curso/curso.html:67
-msgid "Administrar Curso"
-msgstr "Manage Course"
-
 #: now_lms/templates/learning/curso/curso.html:81
 msgid "Fechas:"
 msgstr "Dates:"
@@ -5022,10 +5110,6 @@ msgstr "Create Free Account"
 #: now_lms/templates/learning/curso/curso.html:185
 msgid "Contenido del curso"
 msgstr "Course Content"
-
-#: now_lms/templates/learning/curso/curso.html:234
-msgid "Vista Previa"
-msgstr "Preview"
 
 #: now_lms/templates/learning/curso/curso.html:245
 msgid "Restringido"
@@ -5460,6 +5544,19 @@ msgstr "Meet Date"
 #: now_lms/templates/learning/resources_new/nuevo_recurso_mp3.html:26
 msgid "Nombre del archivo."
 msgstr "File Name"
+
+#: now_lms/templates/macros/demo_banner.j2:4
+msgid "Modo Demostración Activo"
+msgstr "Demo Mode Active"
+
+#: now_lms/templates/macros/demo_banner.j2:4
+msgid ""
+"Algunas acciones administrativas están restringidas para prevenir\n"
+"    uso abusivo. Las acciones para estudiantes, instructores y "
+"moderadores funcionan normalmente."
+msgstr ""
+"Some administrative actions are restricted to prevent\n"
+"    abusive use. Actions for students, instructors, and moderators work normally."
 
 #: now_lms/templates/masterclass/admin_list.html:23
 msgid "Vista Pública"
@@ -5918,7 +6015,7 @@ msgid "Correo SMTP"
 msgstr "SMTP Mail"
 
 #: now_lms/templates/perfiles/admin.html:329
-#: now_lms/templates/perfiles/instructor.html:328
+#: now_lms/templates/perfiles/instructor.html:326
 msgid "Contenido"
 msgstr "Content"
 
@@ -5964,68 +6061,68 @@ msgstr "Review your achievements"
 msgid "Tu centro de enseñanza y gestión académica"
 msgstr "Your teaching and course management hub"
 
-#: now_lms/templates/perfiles/instructor.html:83
+#: now_lms/templates/perfiles/instructor.html:81
 msgid "Total de cursos"
 msgstr "Total Courses"
 
-#: now_lms/templates/perfiles/instructor.html:109
+#: now_lms/templates/perfiles/instructor.html:107
 msgid "En mis cursos"
 msgstr "In my Courses"
 
-#: now_lms/templates/perfiles/instructor.html:132
-#: now_lms/templates/perfiles/instructor.html:355
+#: now_lms/templates/perfiles/instructor.html:130
+#: now_lms/templates/perfiles/instructor.html:353
 msgid "Evaluaciones"
 msgstr "Evaluations"
 
-#: now_lms/templates/perfiles/instructor.html:135
+#: now_lms/templates/perfiles/instructor.html:133
 msgid "Evaluaciones creadas"
 msgstr "Created Evaluations"
 
-#: now_lms/templates/perfiles/instructor.html:146
+#: now_lms/templates/perfiles/instructor.html:144
 msgid "Ver Evaluaciones"
 msgstr "View Evaluations"
 
-#: now_lms/templates/perfiles/instructor.html:161
+#: now_lms/templates/perfiles/instructor.html:159
 msgid "Clases disponibles"
 msgstr "Available Classes"
 
-#: now_lms/templates/perfiles/instructor.html:237
+#: now_lms/templates/perfiles/instructor.html:235
 msgid "No hay cursos creados aún"
 msgstr "No courses created yet"
 
-#: now_lms/templates/perfiles/instructor.html:239
+#: now_lms/templates/perfiles/instructor.html:237
 msgid "Crear Primer Curso"
 msgstr "Create First Course"
 
-#: now_lms/templates/perfiles/instructor.html:268
+#: now_lms/templates/perfiles/instructor.html:266
 msgid "Nueva Evaluación"
 msgstr "New Evaluation"
 
-#: now_lms/templates/perfiles/instructor.html:276
+#: now_lms/templates/perfiles/instructor.html:274
 msgid "Nuevo Programa"
 msgstr "New Program"
 
-#: now_lms/templates/perfiles/instructor.html:284
+#: now_lms/templates/perfiles/instructor.html:282
 msgid "Nueva Clase"
 msgstr "New Class"
 
-#: now_lms/templates/perfiles/instructor.html:295
+#: now_lms/templates/perfiles/instructor.html:293
 msgid "Herramientas de Gestión"
 msgstr "Moderation Tools"
 
-#: now_lms/templates/perfiles/instructor.html:305
+#: now_lms/templates/perfiles/instructor.html:303
 msgid "Cursos y Programas"
 msgstr "Courses and Programs"
 
-#: now_lms/templates/perfiles/instructor.html:349
+#: now_lms/templates/perfiles/instructor.html:347
 msgid "Evaluación y Certificación"
 msgstr "Evaluation and Certification"
 
-#: now_lms/templates/perfiles/instructor.html:360
+#: now_lms/templates/perfiles/instructor.html:358
 msgid "Certificados"
 msgstr "Certificates"
 
-#: now_lms/templates/perfiles/instructor.html:372
+#: now_lms/templates/perfiles/instructor.html:370
 msgid "Comunicación"
 msgstr "Comunication"
 
@@ -6091,113 +6188,113 @@ msgstr "Academy"
 msgid "Mi Academia"
 msgstr "My Academy"
 
-#: now_lms/templates/themes/amber/navbar.j2:71
-#: now_lms/templates/themes/cambridge/navbar.j2:63
+#: now_lms/templates/themes/amber/navbar.j2:75
+#: now_lms/templates/themes/cambridge/navbar.j2:67
 #: now_lms/templates/themes/classic/navbar.j2:75
-#: now_lms/templates/themes/finance/navbar.j2:73
-#: now_lms/templates/themes/golden/navbar.j2:70
-#: now_lms/templates/themes/harvard/navbar.j2:63
-#: now_lms/templates/themes/lime/navbar.j2:71
-#: now_lms/templates/themes/nebula/navbar.j2:71
-#: now_lms/templates/themes/now_lms/navbar.j2:76
+#: now_lms/templates/themes/finance/navbar.j2:77
+#: now_lms/templates/themes/golden/navbar.j2:74
+#: now_lms/templates/themes/harvard/navbar.j2:67
+#: now_lms/templates/themes/lime/navbar.j2:75
+#: now_lms/templates/themes/nebula/navbar.j2:75
+#: now_lms/templates/themes/now_lms/navbar.j2:82
 #: now_lms/templates/themes/ocean/navbar.j2:67
-#: now_lms/templates/themes/oxford/navbar.j2:77
-#: now_lms/templates/themes/sakura/navbar.j2:77
+#: now_lms/templates/themes/oxford/navbar.j2:83
+#: now_lms/templates/themes/sakura/navbar.j2:83
 msgid "Moderación"
 msgstr "Moderation"
 
-#: now_lms/templates/themes/amber/navbar.j2:77
-#: now_lms/templates/themes/cambridge/navbar.j2:67
+#: now_lms/templates/themes/amber/navbar.j2:81
+#: now_lms/templates/themes/cambridge/navbar.j2:71
 #: now_lms/templates/themes/classic/navbar.j2:81
-#: now_lms/templates/themes/finance/navbar.j2:79
-#: now_lms/templates/themes/golden/navbar.j2:76
-#: now_lms/templates/themes/harvard/navbar.j2:67
-#: now_lms/templates/themes/lime/navbar.j2:77
-#: now_lms/templates/themes/nebula/navbar.j2:77
-#: now_lms/templates/themes/now_lms/navbar.j2:82
+#: now_lms/templates/themes/finance/navbar.j2:83
+#: now_lms/templates/themes/golden/navbar.j2:80
+#: now_lms/templates/themes/harvard/navbar.j2:71
+#: now_lms/templates/themes/lime/navbar.j2:81
+#: now_lms/templates/themes/nebula/navbar.j2:81
+#: now_lms/templates/themes/now_lms/navbar.j2:88
 #: now_lms/templates/themes/ocean/navbar.j2:71
-#: now_lms/templates/themes/oxford/navbar.j2:83
-#: now_lms/templates/themes/sakura/navbar.j2:83
+#: now_lms/templates/themes/oxford/navbar.j2:89
+#: now_lms/templates/themes/sakura/navbar.j2:89
 msgid "Docente"
 msgstr "Teacher"
 
-#: now_lms/templates/themes/amber/navbar.j2:113
-#: now_lms/templates/themes/cambridge/navbar.j2:98
+#: now_lms/templates/themes/amber/navbar.j2:117
+#: now_lms/templates/themes/cambridge/navbar.j2:102
 #: now_lms/templates/themes/classic/navbar.j2:117
-#: now_lms/templates/themes/corporative/navbar.j2:101
-#: now_lms/templates/themes/finance/navbar.j2:115
-#: now_lms/templates/themes/golden/navbar.j2:122
-#: now_lms/templates/themes/harvard/navbar.j2:98
-#: now_lms/templates/themes/lime/navbar.j2:113
-#: now_lms/templates/themes/nebula/navbar.j2:113
-#: now_lms/templates/themes/now_lms/navbar.j2:117
+#: now_lms/templates/themes/corporative/navbar.j2:105
+#: now_lms/templates/themes/finance/navbar.j2:119
+#: now_lms/templates/themes/golden/navbar.j2:126
+#: now_lms/templates/themes/harvard/navbar.j2:102
+#: now_lms/templates/themes/lime/navbar.j2:117
+#: now_lms/templates/themes/nebula/navbar.j2:117
+#: now_lms/templates/themes/now_lms/navbar.j2:123
 #: now_lms/templates/themes/ocean/navbar.j2:102
-#: now_lms/templates/themes/oxford/navbar.j2:119
-#: now_lms/templates/themes/sakura/navbar.j2:118
+#: now_lms/templates/themes/oxford/navbar.j2:125
+#: now_lms/templates/themes/sakura/navbar.j2:124
 msgid "Perfil de Usuario"
 msgstr "User Profile"
 
-#: now_lms/templates/themes/amber/navbar.j2:135
-#: now_lms/templates/themes/cambridge/navbar.j2:114
+#: now_lms/templates/themes/amber/navbar.j2:139
+#: now_lms/templates/themes/cambridge/navbar.j2:118
 #: now_lms/templates/themes/classic/navbar.j2:139
-#: now_lms/templates/themes/corporative/navbar.j2:123
-#: now_lms/templates/themes/finance/navbar.j2:137
-#: now_lms/templates/themes/golden/navbar.j2:144
-#: now_lms/templates/themes/harvard/navbar.j2:114
-#: now_lms/templates/themes/lime/navbar.j2:135
-#: now_lms/templates/themes/nebula/navbar.j2:135
-#: now_lms/templates/themes/now_lms/navbar.j2:139
+#: now_lms/templates/themes/corporative/navbar.j2:127
+#: now_lms/templates/themes/finance/navbar.j2:141
+#: now_lms/templates/themes/golden/navbar.j2:148
+#: now_lms/templates/themes/harvard/navbar.j2:118
+#: now_lms/templates/themes/lime/navbar.j2:139
+#: now_lms/templates/themes/nebula/navbar.j2:139
+#: now_lms/templates/themes/now_lms/navbar.j2:145
 #: now_lms/templates/themes/ocean/navbar.j2:118
-#: now_lms/templates/themes/oxford/navbar.j2:141
-#: now_lms/templates/themes/sakura/navbar.j2:140
+#: now_lms/templates/themes/oxford/navbar.j2:147
+#: now_lms/templates/themes/sakura/navbar.j2:146
 msgid "Cerrar Sesión"
 msgstr "Log Out"
 
-#: now_lms/templates/themes/amber/navbar.j2:167
-#: now_lms/templates/themes/cambridge/navbar.j2:141
+#: now_lms/templates/themes/amber/navbar.j2:171
+#: now_lms/templates/themes/cambridge/navbar.j2:145
 #: now_lms/templates/themes/classic/navbar.j2:171
-#: now_lms/templates/themes/corporative/navbar.j2:155
-#: now_lms/templates/themes/finance/navbar.j2:169
-#: now_lms/templates/themes/golden/navbar.j2:176
-#: now_lms/templates/themes/harvard/navbar.j2:139
-#: now_lms/templates/themes/lime/navbar.j2:165
-#: now_lms/templates/themes/nebula/navbar.j2:167
-#: now_lms/templates/themes/now_lms/navbar.j2:165
+#: now_lms/templates/themes/corporative/navbar.j2:159
+#: now_lms/templates/themes/finance/navbar.j2:173
+#: now_lms/templates/themes/golden/navbar.j2:180
+#: now_lms/templates/themes/harvard/navbar.j2:143
+#: now_lms/templates/themes/lime/navbar.j2:169
+#: now_lms/templates/themes/nebula/navbar.j2:171
+#: now_lms/templates/themes/now_lms/navbar.j2:171
 #: now_lms/templates/themes/ocean/navbar.j2:143
-#: now_lms/templates/themes/oxford/navbar.j2:169
-#: now_lms/templates/themes/sakura/navbar.j2:166
+#: now_lms/templates/themes/oxford/navbar.j2:175
+#: now_lms/templates/themes/sakura/navbar.j2:172
 msgid "Versión"
 msgstr "Version"
 
-#: now_lms/templates/themes/amber/navbar.j2:200
-#: now_lms/templates/themes/cambridge/navbar.j2:165
+#: now_lms/templates/themes/amber/navbar.j2:204
+#: now_lms/templates/themes/cambridge/navbar.j2:169
 #: now_lms/templates/themes/classic/navbar.j2:204
-#: now_lms/templates/themes/corporative/navbar.j2:188
-#: now_lms/templates/themes/finance/navbar.j2:202
-#: now_lms/templates/themes/golden/navbar.j2:209
-#: now_lms/templates/themes/harvard/navbar.j2:163
-#: now_lms/templates/themes/lime/navbar.j2:198
-#: now_lms/templates/themes/nebula/navbar.j2:200
-#: now_lms/templates/themes/now_lms/navbar.j2:189
+#: now_lms/templates/themes/corporative/navbar.j2:192
+#: now_lms/templates/themes/finance/navbar.j2:206
+#: now_lms/templates/themes/golden/navbar.j2:213
+#: now_lms/templates/themes/harvard/navbar.j2:167
+#: now_lms/templates/themes/lime/navbar.j2:202
+#: now_lms/templates/themes/nebula/navbar.j2:204
+#: now_lms/templates/themes/now_lms/navbar.j2:195
 #: now_lms/templates/themes/ocean/navbar.j2:167
-#: now_lms/templates/themes/oxford/navbar.j2:193
-#: now_lms/templates/themes/sakura/navbar.j2:190
+#: now_lms/templates/themes/oxford/navbar.j2:199
+#: now_lms/templates/themes/sakura/navbar.j2:196
 msgid "Manual de Usuario"
 msgstr "User Manual"
 
-#: now_lms/templates/themes/amber/navbar.j2:207
-#: now_lms/templates/themes/cambridge/navbar.j2:172
+#: now_lms/templates/themes/amber/navbar.j2:211
+#: now_lms/templates/themes/cambridge/navbar.j2:176
 #: now_lms/templates/themes/classic/navbar.j2:211
-#: now_lms/templates/themes/corporative/navbar.j2:195
-#: now_lms/templates/themes/finance/navbar.j2:209
-#: now_lms/templates/themes/golden/navbar.j2:216
-#: now_lms/templates/themes/harvard/navbar.j2:170
-#: now_lms/templates/themes/lime/navbar.j2:205
-#: now_lms/templates/themes/nebula/navbar.j2:207
-#: now_lms/templates/themes/now_lms/navbar.j2:196
+#: now_lms/templates/themes/corporative/navbar.j2:199
+#: now_lms/templates/themes/finance/navbar.j2:213
+#: now_lms/templates/themes/golden/navbar.j2:220
+#: now_lms/templates/themes/harvard/navbar.j2:174
+#: now_lms/templates/themes/lime/navbar.j2:209
+#: now_lms/templates/themes/nebula/navbar.j2:211
+#: now_lms/templates/themes/now_lms/navbar.j2:202
 #: now_lms/templates/themes/ocean/navbar.j2:174
-#: now_lms/templates/themes/oxford/navbar.j2:200
-#: now_lms/templates/themes/sakura/navbar.j2:197
+#: now_lms/templates/themes/oxford/navbar.j2:206
+#: now_lms/templates/themes/sakura/navbar.j2:203
 msgid "Manual de Administración"
 msgstr "Administration Manual"
 
@@ -6223,7 +6320,8 @@ msgid ""
 "                                Nuestra plataforma está diseñada para "
 "brindar una experiencia de aprendizaje excepcional."
 msgstr ""
-"Experience learning in its purest and most elegant form with our classic design.\n"
+"Experience learning in its purest and most elegant form with our classic "
+"design.\n"
 "Our platform is designed to provide an exceptional learning experience."
 
 #: now_lms/templates/themes/amber/overrides/home.j2:90
@@ -6236,7 +6334,9 @@ msgstr ""
 msgid ""
 "Descubre una nueva forma de aprender con nuestra plataforma educativa "
 "moderna y eficiente."
-msgstr "Discover a new way of learning with our modern and efficient educational platform."
+msgstr ""
+"Discover a new way of learning with our modern and efficient educational "
+"platform."
 
 #: now_lms/templates/themes/amber/overrides/home.j2:123
 #: now_lms/templates/themes/cambridge/overrides/home.j2:141
@@ -6292,6 +6392,13 @@ msgstr ""
 #: now_lms/templates/themes/golden/overrides/home.j2:190
 msgid "Cursos Destacados"
 msgstr "Featured Courses"
+
+#: now_lms/templates/themes/amber/overrides/home.j2:204
+#: now_lms/templates/themes/classic/overrides/home.j2:204
+msgid ""
+"Explora nuestra selección de cursos diseñados para tu crecimiento "
+"profesional."
+msgstr "Explore our selection of courses designed for your professional growth."
 
 #: now_lms/templates/themes/amber/overrides/home.j2:242
 #: now_lms/templates/themes/classic/overrides/home.j2:242
@@ -6497,8 +6604,8 @@ msgid ""
 "red de\n"
 "                                profesionales del sector financiero."
 msgstr ""
-"Connect with traders, analysts, and fund managers in our exclusive network "
-"of financial professionals."
+"Connect with traders, analysts, and fund managers in our exclusive "
+"network of financial professionals."
 
 #: now_lms/templates/themes/finance/overrides/home.j2:259
 msgid "Certificaciones Oro"
@@ -6521,7 +6628,9 @@ msgstr "Investment in Your Financial Future"
 msgid ""
 "Cursos especializados en finanzas para profesionales y empresarios "
 "exitosos."
-msgstr "Specialized finance courses for professionals and successful entrepreneurs."
+msgstr ""
+"Specialized finance courses for professionals and successful "
+"entrepreneurs."
 
 #: now_lms/templates/themes/finance/overrides/home.j2:364
 msgid "Invertir en el Curso"
@@ -6549,8 +6658,8 @@ msgid ""
 "profesores nativos y\n"
 "                                material interactivo."
 msgstr ""
-"Dynamic, practical, and fun courses — Live online classes, native teachers, "
-"and interactive materials."
+"Dynamic, practical, and fun courses — Live online classes, native "
+"teachers, and interactive materials."
 
 #: now_lms/templates/themes/golden/overrides/home.j2:67
 msgid "Reserva tu clase gratis"
@@ -6573,7 +6682,9 @@ msgstr "Discover Our Courses"
 msgid ""
 "Explora una nueva forma de aprender con nuestra plataforma educativa "
 "moderna y eficiente."
-msgstr "Explore a new way of learning with our modern and efficient educational platform."
+msgstr ""
+"Explore a new way of learning with our modern and efficient educational "
+"platform."
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:22
 msgid "Discute."
@@ -6616,7 +6727,8 @@ msgid ""
 msgstr ""
 "Our platform combines the highest academic standards with cutting-edge "
 "technology\n"
-"                            to create a transformative learning experience."
+"                            to create a transformative learning "
+"experience."
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:176
 msgid "Cursos de Élite"
@@ -6642,8 +6754,8 @@ msgid ""
 "campos, con años\n"
 "                                de experiencia académica y profesional."
 msgstr ""
-"Learn from distinguished instructors and recognized professionals in their "
-"fields, with years\n"
+"Learn from distinguished instructors and recognized professionals in "
+"their fields, with years\n"
 "                                of academic and professional experience."
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:244
@@ -6695,8 +6807,10 @@ msgid ""
 "                                    Harvard LMS, forjamos mentes "
 "brillantes para el futuro."
 msgstr ""
-"Education is the most powerful weapon you can use to change the world. At\n"
-"                                    Harvard LMS, we shape brilliant minds for the future."
+"Education is the most powerful weapon you can use to change the world. At"
+"\n"
+"                                    Harvard LMS, we shape brilliant minds"
+" for the future."
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:475
 msgid "Filosofía Educativa"
@@ -6712,11 +6826,16 @@ msgid ""
 "poder del aprendizaje de\n"
 "                            calidad."
 msgstr ""
-"Join our community of exceptional students and discover the power of high-quality learning."
+"Join our community of exceptional students and discover the power of "
+"high-quality learning."
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:499
 msgid "Registrarse Ahora"
 msgstr "Register Now"
+
+#: now_lms/templates/themes/harvard/overrides/home.j2:506
+msgid "Continúa tu viaje académico y explora nuevas oportunidades de aprendizaje."
+msgstr "Continue your learning journey and explore new educational opportunities."
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:542
 msgid ""
@@ -6724,7 +6843,8 @@ msgid ""
 "excelencia académica que\n"
 "                            nos caracteriza."
 msgstr ""
-"Raising the standards of digital education with the tradition and academic excellence that\n"
+"Raising the standards of digital education with the tradition and "
+"academic excellence that\n"
 "                            define us."
 
 #: now_lms/templates/themes/harvard/overrides/home.j2:549
@@ -6742,9 +6862,10 @@ msgid ""
 "                                Nuestra plataforma está diseñada para "
 "brindar una experiencia de aprendizaje excepcional."
 msgstr ""
-"Discover the academic tradition and educational excellence that "
-"define Cambridge.\n"
-"                                Our platform is designed to provide an exceptional learning experience."
+"Discover the academic tradition and educational excellence that define "
+"Cambridge.\n"
+"                                Our platform is designed to provide an "
+"exceptional learning experience."
 
 #: now_lms/templates/themes/ocean/overrides/home.j2:203
 msgid "Excelencia Académica Cambridge"
@@ -6841,9 +6962,10 @@ msgid ""
 "                                está diseñada para brindar una "
 "experiencia de aprendizaje excepcional."
 msgstr ""
-"Elegant and modern learning with a touch of pink sophistication. "
-"Our platform\n"
-"                                is designed to provide an exceptional learning experience."
+"Elegant and modern learning with a touch of pink sophistication. Our "
+"platform\n"
+"                                is designed to provide an exceptional "
+"learning experience."
 
 #: now_lms/templates/themes/sakura/overrides/home.j2:203
 msgid "Cursos que Florecen con Elegancia"
@@ -6851,7 +6973,9 @@ msgstr "Courses that Bloom with Elegance"
 
 #: now_lms/templates/themes/sakura/overrides/home.j2:205
 msgid "Una selección cuidada de cursos diseñados con pasión y sofisticación."
-msgstr "A carefully curated selection of courses designed with passion and sophistication."
+msgstr ""
+"A carefully curated selection of courses designed with passion and "
+"sophistication."
 
 #: now_lms/templates/themes/sakura/overrides/home.j2:328
 msgid "Explorar Curso"
@@ -6864,6 +6988,10 @@ msgstr "mins"
 #: now_lms/templates/themes/sakura/overrides/home.j2:356
 msgid "Descubrir Más Cursos Elegantes"
 msgstr "Discover More Elegant Courses"
+
+#: now_lms/vistas/courses.py:2551
+msgid "Tipo de usuario no autorizado para esta página."
+msgstr "User type not authorized for this page."
 
 #: now_lms/vistas/programs.py:131
 msgid "Nuevo Programa creado."
@@ -6963,31 +7091,34 @@ msgstr "Website updated successfully."
 msgid "No se pudo actualizar la configuración del sitio web."
 msgstr "The website settings could not be updated."
 
-#: now_lms/vistas/settings.py:219
+#: now_lms/vistas/settings.py:224
 msgid "Configuración de correo electronico actualizada exitosamente."
 msgstr "Email settings updated successfully."
 
-#: now_lms/vistas/settings.py:223
+#: now_lms/vistas/settings.py:228
 msgid "No se pudo actualizar la configuración de correo electronico."
 msgstr "The email settings could not be updated."
 
-#: now_lms/vistas/settings.py:279
+#: now_lms/vistas/settings.py:289
 msgid "Hubo un error al enviar un correo de prueba. Revise su configuración."
 msgstr "There was an error sending a test email. Please check your settings."
 
-#: now_lms/vistas/settings.py:344
+#: now_lms/vistas/settings.py:359
 msgid "Configuración de Google AdSense actualizada exitosamente."
 msgstr "Google AdSense settings updated successfully."
 
-#: now_lms/vistas/settings.py:349
+#: now_lms/vistas/settings.py:364
 msgid "No se pudo actualizar la configuración de Google AdSense."
 msgstr "The Google AdSense settings could not be updated."
 
-#: now_lms/vistas/settings.py:454
+#: now_lms/vistas/settings.py:474
 msgid "Configuración de Paypal actualizada exitosamente."
 msgstr "PayPal settings updated successfully."
 
-#: now_lms/vistas/settings.py:459
+#: now_lms/vistas/settings.py:479
 msgid "No se pudo actualizar la configuración de Paypal."
 msgstr "The PayPal settings could not be updated."
+
+#~ msgid "Ver Certicado"
+#~ msgstr "View Certificate"
 
