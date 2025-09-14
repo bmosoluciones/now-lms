@@ -368,6 +368,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
 
     # Demo mode functionality
     from now_lms.demo_mode import is_demo_mode
+
     flask_app.jinja_env.globals["demo_mode"] = is_demo_mode
 
     # Add custom Jinja2 filters

@@ -60,10 +60,7 @@ def check_demo_admin_restriction() -> bool:
 
 def flash_demo_restriction_message():
     """Flash a message indicating the action is restricted in demo mode."""
-    flash(
-        _("Esta acción no está disponible en modo demostración para prevenir uso abusivo."),
-        "warning"
-    )
+    flash(_("Esta acción no está disponible en modo demostración para prevenir uso abusivo."), "warning")
 
 
 def demo_restriction_check(action_name: str | None = None) -> bool:
