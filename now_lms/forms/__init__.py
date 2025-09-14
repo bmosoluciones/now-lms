@@ -48,262 +48,115 @@ from wtforms.widgets import ColorInput, TextArea, html_params
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
-from now_lms.i18n import _, _l
-
-
-# ---------------------------------------------------------------------------------------
-# Choice generation functions for translated SelectField options
-# ---------------------------------------------------------------------------------------
-def get_nivel_choices():
-    """Return course level choices with proper translations."""
-    return [(0, _l("Introductorio")), (1, _l("Principiante")), (2, _l("Intermedio")), (3, _l("Avanzado"))]
-
-
-def get_modalidad_choices():
-    """Return course modality choices with proper translations."""
-    return [("self_paced", _l("A su propio ritmo")), ("time_based", _l("Con tiempo definido")), ("live", _l("En vivo"))]
-
-
-def get_requerido_choices():
-    """Return required field choices with proper translations."""
-    return [("required", _l("Requerido")), ("optional", _l("Opcional")), ("substitute", _l("Alternativo"))]
-
-
-def get_content_type_choices():
-    """Return content type choices with proper translations."""
-    return [("course", _l("Curso")), ("masterclass", _l("Clase Magistral"))]
-
-
-def get_question_type_choices():
-    """Return question type choices with proper translations."""
-    return [("multiple", _l("Opción múltiple")), ("boolean", _l("Verdadero/Falso"))]
-
-
-def get_discount_type_choices():
-    """Return discount type choices with proper translations."""
-    return [("percentage", _l("Porcentaje")), ("fixed", _l("Cantidad Fija"))]
-
-
-def get_estado_choices():
-    """Return status choices with proper translations."""
-    return [
-        ("draft", _l("Borrador")),
-        ("open", _l("Abierto")),
-        ("closed", _l("Cerrado")),
-    ]
-
-
-def get_blog_status_choices():
-    """Return blog status choices with proper translations."""
-    return [
-        ("draft", _l("Borrador")),
-        ("pending", _l("Pendiente")),
-        ("published", _l("Publicado")),
-        ("banned", _l("Baneado")),
-    ]
-
-
-def get_resource_type_choices():
-    """Return resource type choices with proper translations."""
-    return [
-        ("cheat_sheet", _l("Hoja de Guía")),
-        ("ebook", _l("Libro Electronico")),
-        ("template", _l("Plantilla")),
-        ("guide", _l("Guia")),
-    ]
-
-
-def get_genero_choices():
-    """Return gender choices with proper translations."""
-    return [
-        ("none", _l("No especificado")),
-        ("other", _l("Otros")),
-        ("male", _l("Masculino")),
-        ("female", _l("Femenino")),
-    ]
-
-
-def get_titulo_choices():
-    """Return title choices with proper translations."""
-    return [
-        ("", _l("No especificado")),
-        ("ing", _l("Ingeniero")),
-        ("lic", _l("Licenciado")),
-        ("dr", _l("Doctor")),
-    ]
-
-
-def get_certificate_type_choices():
-    """Return certificate type choices with proper translations."""
-    return [
-        ("course", _l("Curso")),
-        ("program", _l("Programa")),
-    ]
-
-
-def get_monedas_choices():
-    """Return currency choices with proper translations."""
-    return [
-        # América del Norte
-        ("USD", _l("Dólar Estadounidense")),
-        ("CAD", _l("Dólar Canadiense")),
-        ("MXN", _l("Peso Mexicano")),
-        # América Central
-        ("GTQ", _l("Quetzal Guatemalteco")),
-        ("BZD", _l("Dólar de Belice")),
-        ("HNL", _l("Lempira Hondureño")),
-        ("NIO", _l("Córdoba Nicaragüense")),
-        ("CRC", _l("Colón Costarricense")),
-        ("PAB", _l("Balboa Panameño")),
-        # El Caribe
-        ("DOP", _l("Peso Dominicano")),
-        ("CUP", _l("Peso Cubano")),
-        ("JMD", _l("Dólar Jamaicano")),
-        ("TTD", _l("Dólar de Trinidad y Tobago")),
-        ("BBD", _l("Dólar de Barbados")),
-        # América del Sur
-        ("COP", _l("Peso Colombiano")),
-        ("VES", _l("Bolívar Venezolano")),
-        ("GYD", _l("Dólar Guyanés")),
-        ("SRD", _l("Dólar Surinamés")),
-        ("BRL", _l("Real Brasileño")),
-        ("PEN", _l("Sol Peruano")),
-        ("BOB", _l("Boliviano")),
-        ("PYG", _l("Guaraní Paraguayo")),
-        ("UYU", _l("Peso Uruguayo")),
-        ("ARS", _l("Peso Argentino")),
-        ("CLP", _l("Peso Chileno")),
-        # Europa
-        ("EUR", _l("Euro")),
-        ("GBP", _l("Libra Esterlina")),
-        ("CHF", _l("Franco Suizo")),
-        ("NOK", _l("Corona Noruega")),
-        ("SEK", _l("Corona Sueca")),
-        ("DKK", _l("Corona Danesa")),
-        ("PLN", _l("Zloty Polaco")),
-        ("CZK", _l("Corona Checa")),
-        ("HUF", _l("Florín Húngaro")),
-        ("RON", _l("Leu Rumano")),
-        ("BGN", _l("Lev Búlgaro")),
-        ("HRK", _l("Kuna Croata")),
-        ("RSD", _l("Dinar Serbio")),
-        ("BAM", _l("Marco Bosnio")),
-        ("MKD", _l("Denar Macedonio")),
-        ("ALL", _l("Lek Albanés")),
-        ("MDL", _l("Leu Moldavo")),
-        ("UAH", _l("Grivna Ucraniana")),
-        ("BYN", _l("Rublo Bielorruso")),
-        ("RUB", _l("Rublo Ruso")),
-        ("TRY", _l("Lira Turca")),
-        ("ISK", _l("Corona Islandesa")),
-    ]
-
-
-def get_zonas_horarias_choices():
-    """Return timezone choices."""
-    return [
-        # UTC
-        ("UTC", "UTC"),
-        # América del Norte
-        ("America/New_York", "America/New_York"),  # EE.UU. Este
-        ("America/Chicago", "America/Chicago"),  # EE.UU. Central
-        ("America/Denver", "America/Denver"),  # EE.UU. Montaña
-        ("America/Los_Angeles", "America/Los_Angeles"),  # EE.UU. Pacífico
-        ("America/Mexico_City", "America/Mexico_City"),  # México
-        # Centroamérica
-        ("America/Guatemala", "America/Guatemala"),  # Guatemala
-        ("America/El_Salvador", "America/El_Salvador"),  # El Salvador
-        ("America/Tegucigalpa", "America/Tegucigalpa"),  # Honduras
-        ("America/Managua", "America/Managua"),  # Nicaragua
-        ("America/Costa_Rica", "America/Costa_Rica"),  # Costa Rica
-        ("America/Panama", "America/Panama"),  # Panamá
-        # Caribe
-        ("America/Havana", "America/Havana"),  # Cuba
-        ("America/Santo_Domingo", "America/Santo_Domingo"),  # R. Dominicana
-        ("America/Puerto_Rico", "America/Puerto_Rico"),  # Puerto Rico
-        ("America/Jamaica", "America/Jamaica"),  # Jamaica
-        # Sudamérica
-        ("America/Bogota", "America/Bogota"),  # Colombia
-        ("America/Lima", "America/Lima"),  # Perú
-        ("America/Caracas", "America/Caracas"),  # Venezuela
-        ("America/La_Paz", "America/La_Paz"),  # Bolivia
-        ("America/Santiago", "America/Santiago"),  # Chile
-        ("America/Asuncion", "America/Asuncion"),  # Paraguay
-        ("America/Montevideo", "America/Montevideo"),  # Uruguay
-        ("America/Argentina/Buenos_Aires", "America/Argentina/Buenos_Aires"),  # Argentina
-        ("America/Sao_Paulo", "America/Sao_Paulo"),  # Brasil
-        # Europa
-        ("Europe/London", "Europe/London"),  # Reino Unido
-        ("Europe/Madrid", "Europe/Madrid"),  # España
-        ("Europe/Paris", "Europe/Paris"),  # Francia
-        ("Europe/Berlin", "Europe/Berlin"),  # Alemania
-        ("Europe/Rome", "Europe/Rome"),  # Italia
-        ("Europe/Moscow", "Europe/Moscow"),  # Rusia
-        # Asia
-        ("Asia/Dubai", "Asia/Dubai"),  # Emiratos Árabes
-        ("Asia/Kolkata", "Asia/Kolkata"),  # India
-        ("Asia/Bangkok", "Asia/Bangkok"),  # Tailandia
-        ("Asia/Shanghai", "Asia/Shanghai"),  # China
-        ("Asia/Tokyo", "Asia/Tokyo"),  # Japón
-        ("Asia/Seoul", "Asia/Seoul"),  # Corea del Sur
-        ("Asia/Singapore", "Asia/Singapore"),  # Singapur
-    ]
-
-
-def get_plataforma_choices():
-    """Return platform choices with proper translations."""
-    return [
-        ("none", _l("Seleccione")),
-        ("bluejeans", "BlueJeans"),
-        ("zoom", "Zoom"),
-        ("teams", "MS Teams"),
-        ("meet", "Google Meet"),
-        ("zoho", "Zoho Backstage"),
-        ("click", "ClickMeeting"),
-        ("goto", "GoTo Meeting"),
-        ("webex", "Webex"),
-        ("intermedia", "Intermedia AnyMeeting"),
-        ("whatsapp", "WhatsApp"),
-        ("otros", _l("Otros")),
-    ]
-
-
-def get_slideshow_theme_choices():
-    """Return slideshow theme choices with proper translations."""
-    return [
-        ("beige", "Beige"),
-        ("black", "Black"),
-        ("blood", "Blood"),
-        ("league", "League"),
-        ("moon", "Moon"),
-        ("night", "Night"),
-        ("serif", "Serif"),
-        ("simple", "Simple"),
-        ("sky", "Sky"),
-        ("solarized", "Solarized"),
-        ("ocean_blue", "Ocean Blue"),
-        ("rose_pink", "Rose Pink"),
-        ("corporativo", _l("Corporativo")),
-    ]
-
-
-def get_reveal_theme_choices():
-    """Return reveal.js theme choices."""
-    return [
-        ("black", "Black"),
-        ("white", "White"),
-        ("league", "League"),
-        ("beige", "Beige"),
-        ("sky", "Sky"),
-        ("night", "Night"),
-        ("serif", "Serif"),
-        ("simple", "Simple"),
-        ("solarized", "Solarized"),
-    ]
+from now_lms.i18n import _
 
 
 # Form label constants
 LABEL_TITULO: str = _("Título")
+
+MONEDAS = [
+    # América del Norte
+    ("USD", _("Dólar Estadounidense")),
+    ("CAD", _("Dólar Canadiense")),
+    ("MXN", _("Peso Mexicano")),
+    # América Central
+    ("GTQ", _("Quetzal Guatemalteco")),
+    ("BZD", _("Dólar de Belice")),
+    ("HNL", _("Lempira Hondureño")),
+    ("NIO", _("Córdoba Nicaragüense")),
+    ("CRC", _("Colón Costarricense")),
+    ("PAB", _("Balboa Panameño")),
+    # El Caribe
+    ("DOP", _("Peso Dominicano")),
+    ("CUP", _("Peso Cubano")),
+    ("JMD", _("Dólar Jamaicano")),
+    ("TTD", _("Dólar de Trinidad y Tobago")),
+    ("BBD", _("Dólar de Barbados")),
+    # América del Sur
+    ("COP", _("Peso Colombiano")),
+    ("VES", _("Bolívar Venezolano")),
+    ("GYD", _("Dólar Guyanés")),
+    ("SRD", _("Dólar Surinamés")),
+    ("BRL", _("Real Brasileño")),
+    ("PEN", _("Sol Peruano")),
+    ("BOB", _("Boliviano")),
+    ("PYG", _("Guaraní Paraguayo")),
+    ("UYU", _("Peso Uruguayo")),
+    ("ARS", _("Peso Argentino")),
+    ("CLP", _("Peso Chileno")),
+    # Europa
+    ("EUR", _("Euro")),
+    ("GBP", _("Libra Esterlina")),
+    ("CHF", _("Franco Suizo")),
+    ("NOK", _("Corona Noruega")),
+    ("SEK", _("Corona Sueca")),
+    ("DKK", _("Corona Danesa")),
+    ("PLN", _("Zloty Polaco")),
+    ("CZK", _("Corona Checa")),
+    ("HUF", _("Florín Húngaro")),
+    ("RON", _("Leu Rumano")),
+    ("BGN", _("Lev Búlgaro")),
+    ("HRK", _("Kuna Croata")),
+    ("RSD", _("Dinar Serbio")),
+    ("BAM", _("Marco Bosnio")),
+    ("MKD", _("Denar Macedonio")),
+    ("ALL", _("Lek Albanés")),
+    ("MDL", _("Leu Moldavo")),
+    ("UAH", _("Grivna Ucraniana")),
+    ("BYN", _("Rublo Bielorruso")),
+    ("RUB", _("Rublo Ruso")),
+    ("TRY", _("Lira Turca")),
+    ("ISK", _("Corona Islandesa")),
+]
+
+
+ZONAS_HORARIAS = [
+    # UTC
+    ("UTC", "UTC"),
+    # América del Norte
+    ("America/New_York", "America/New_York"),  # EE.UU. Este
+    ("America/Chicago", "America/Chicago"),  # EE.UU. Central
+    ("America/Denver", "America/Denver"),  # EE.UU. Montaña
+    ("America/Los_Angeles", "America/Los_Angeles"),  # EE.UU. Pacífico
+    ("America/Mexico_City", "America/Mexico_City"),  # México
+    # Centroamérica
+    ("America/Guatemala", "America/Guatemala"),  # Guatemala
+    ("America/El_Salvador", "America/El_Salvador"),  # El Salvador
+    ("America/Tegucigalpa", "America/Tegucigalpa"),  # Honduras
+    ("America/Managua", "America/Managua"),  # Nicaragua
+    ("America/Costa_Rica", "America/Costa_Rica"),  # Costa Rica
+    ("America/Panama", "America/Panama"),  # Panamá
+    # Caribe
+    ("America/Havana", "America/Havana"),  # Cuba
+    ("America/Santo_Domingo", "America/Santo_Domingo"),  # R. Dominicana
+    ("America/Puerto_Rico", "America/Puerto_Rico"),  # Puerto Rico
+    ("America/Jamaica", "America/Jamaica"),  # Jamaica
+    # Sudamérica
+    ("America/Bogota", "America/Bogota"),  # Colombia
+    ("America/Lima", "America/Lima"),  # Perú
+    ("America/Caracas", "America/Caracas"),  # Venezuela
+    ("America/La_Paz", "America/La_Paz"),  # Bolivia
+    ("America/Santiago", "America/Santiago"),  # Chile
+    ("America/Asuncion", "America/Asuncion"),  # Paraguay
+    ("America/Montevideo", "America/Montevideo"),  # Uruguay
+    ("America/Argentina/Buenos_Aires", "America/Argentina/Buenos_Aires"),  # Argentina
+    ("America/Sao_Paulo", "America/Sao_Paulo"),  # Brasil
+    # Europa
+    ("Europe/London", "Europe/London"),  # Reino Unido
+    ("Europe/Madrid", "Europe/Madrid"),  # España
+    ("Europe/Paris", "Europe/Paris"),  # Francia
+    ("Europe/Berlin", "Europe/Berlin"),  # Alemania
+    ("Europe/Rome", "Europe/Rome"),  # Italia
+    ("Europe/Moscow", "Europe/Moscow"),  # Rusia
+    # Asia
+    ("Asia/Dubai", "Asia/Dubai"),  # Emiratos Árabes
+    ("Asia/Kolkata", "Asia/Kolkata"),  # India
+    ("Asia/Bangkok", "Asia/Bangkok"),  # Tailandia
+    ("Asia/Shanghai", "Asia/Shanghai"),  # China
+    ("Asia/Tokyo", "Asia/Tokyo"),  # Japón
+    ("Asia/Seoul", "Asia/Seoul"),  # Corea del Sur
+    ("Asia/Singapore", "Asia/Singapore"),  # Singapur
+]
 
 
 class ConfigForm(FlaskForm):
@@ -313,11 +166,11 @@ class ConfigForm(FlaskForm):
     descripcion = StringField(validators=[DataRequired()])
 
     # Localización
-    moneda = SelectField(_("Moneda"), choices=[], validators=[])
+    moneda = SelectField(_("Moneda"), choices=MONEDAS, validators=[])
     lang = SelectField(
         _("Idioma"), choices=[("es", "Español"), ("en", "English"), ("pt_BR", "Português do Brasil")], validators=[]
     )
-    timezone = SelectField(_("Zona Horaria"), choices=[], validators=[])
+    timezone = SelectField(_("Zona Horaria"), choices=ZONAS_HORARIAS, validators=[])
 
     verify_user_by_email = BooleanField(validators=[])
 
@@ -330,12 +183,6 @@ class ConfigForm(FlaskForm):
     # File upload configuration
     enable_file_uploads = BooleanField(_("Habilitar subida de archivos descargables"), default=False, validators=[])
     max_file_size = IntegerField(_("Tamaño máximo de archivo (MB)"), default=1, validators=[])
-
-    def __init__(self, *args, **kwargs):
-        """Initialize form with translated choices."""
-        super().__init__(*args, **kwargs)
-        self.moneda.choices = get_monedas_choices()
-        self.timezone.choices = get_zonas_horarias_choices()
 
 
 class ThemeForm(FlaskForm):
@@ -396,12 +243,17 @@ class CurseForm(BaseForm):
     # Nombre y descripción de la base.
     codigo = StringField(validators=[DataRequired()])
     descripcion_corta = StringField(validators=[DataRequired()])
-    nivel = SelectField(_("Nivel"), choices=[], validators=[])
+    nivel = SelectField(
+        _("Nivel"), choices=[(0, _("Introductorio")), (1, _("Principiante")), (2, _("Intermedio")), (3, _("Avanzado"))]
+    )
     duracion = IntegerField(validators=[])
     # Estado de publicación
     publico = BooleanField(validators=[])
     # Modalidad
-    modalidad = SelectField(_("Modalidad"), choices=[], validators=[])
+    modalidad = SelectField(
+        _("Modalidad"),
+        choices=[("self_paced", _("A su propio ritmo")), ("time_based", _("Con tiempo definido")), ("live", _("En vivo"))],
+    )
     # Configuración del foro
     foro_habilitado = BooleanField(_("Habilitar foro"), validators=[])
     # Disponibilidad de cupos
@@ -433,12 +285,6 @@ class CurseForm(BaseForm):
         validate_choice=False,
     )
 
-    def __init__(self, *args, **kwargs):
-        """Initialize form with translated choices."""
-        super().__init__(*args, **kwargs)
-        self.nivel.choices = get_nivel_choices()
-        self.modalidad.choices = get_modalidad_choices()
-
     def validate_foro_habilitado(self, field):
         """Validación personalizada para el campo foro_habilitado."""
         if field.data and self.modalidad.data == "self_paced":
@@ -452,12 +298,9 @@ class CursoSeccionForm(BaseForm):
 class CursoRecursoForm(BaseForm):
     """Base para los recursos del curso."""
 
-    requerido = SelectField(_("Requerido"), choices=[], validators=[])
-
-    def __init__(self, *args, **kwargs):
-        """Initialize form with translated choices."""
-        super().__init__(*args, **kwargs)
-        self.requerido.choices = get_requerido_choices()
+    requerido = SelectField(
+        _("Requerido"), choices=[("required", _("Requerido")), ("optional", _("Opcional")), ("substitute", _("Alternativo"))]
+    )
 
 
 class CursoRecursoVideoYoutube(CursoRecursoForm):
@@ -503,12 +346,24 @@ class CursoRecursoExternalLink(CursoRecursoForm):
 class CursoRecursoSlides(CursoRecursoForm):
     """Formulario para insertar un SlideShow."""
 
-    notes = SelectField(_("Tema"), choices=[], validators=[])
-
-    def __init__(self, *args, **kwargs):
-        """Initialize form with translated choices."""
-        super().__init__(*args, **kwargs)
-        self.notes.choices = get_slideshow_theme_choices()
+    notes = SelectField(
+        _("Tema"),
+        choices=[
+            ("beige", "Beige"),
+            ("black", "Black"),
+            ("blood", "Blood"),
+            ("league", "League"),
+            ("moon", "Moon"),
+            ("night", "Night"),
+            ("serif", "Serif"),
+            ("simple", "Simple"),
+            ("sky", "Sky"),
+            ("solarized", "Solarized"),
+            ("ocean_blue", "Ocean Blue"),
+            ("rose_pink", "Rose Pink"),
+            ("corporativo", _("Corporativo")),
+        ],
+    )
 
 
 class SlideShowForm(BaseForm):
@@ -516,15 +371,20 @@ class SlideShowForm(BaseForm):
 
     theme = SelectField(
         _("Tema Reveal.js"),
-        choices=[],
+        choices=[
+            ("black", "Black"),
+            ("white", "White"),
+            ("league", "League"),
+            ("beige", "Beige"),
+            ("sky", "Sky"),
+            ("night", "Night"),
+            ("serif", "Serif"),
+            ("simple", "Simple"),
+            ("solarized", "Solarized"),
+        ],
         default="simple",
         validators=[DataRequired()],
     )
-
-    def __init__(self, *args, **kwargs):
-        """Initialize form with translated choices."""
-        super().__init__(*args, **kwargs)
-        self.theme.choices = get_reveal_theme_choices()
 
 
 class SlideForm(FlaskForm):
@@ -548,12 +408,23 @@ class CursoRecursoMeet(CursoRecursoForm):
     hora_inicio = TimeField(validators=[])
     hora_fin = TimeField(validators=[])
     url = StringField(validators=[DataRequired()])
-    notes = SelectField(_("Plataforma"), choices=[], validators=[])
-
-    def __init__(self, *args, **kwargs):
-        """Initialize form with translated choices."""
-        super().__init__(*args, **kwargs)
-        self.notes.choices = get_plataforma_choices()
+    notes = SelectField(
+        _("Plataforma"),
+        choices=[
+            ("none", _("Seleccione")),
+            ("bluejeans", "BlueJeans"),
+            ("zoom", "Zoom"),
+            ("teams", "MS Teams"),
+            ("meet", "Google Meet"),
+            ("zoho", "Zoho Backstage"),
+            ("click", "ClickMeeting"),
+            ("goto", "GoTo Meeting"),
+            ("webex", "Webex"),
+            ("intermedia", "Intermedia AnyMeeting"),
+            ("whatsapp", "WhatsApp"),
+            ("otros", _("Otros")),
+        ],
+    )
 
 
 class CategoriaForm(BaseForm):
@@ -572,7 +443,14 @@ class ProgramaForm(BaseForm):
     codigo = StringField(validators=[DataRequired()])
     precio = DecimalField()
     publico = BooleanField(validators=[])
-    estado = SelectField(_("Estado"), choices=[], validators=[])
+    estado = SelectField(
+        _("Estado"),
+        choices=[
+            ("draft", _("Borrador")),
+            ("open", _("Abierto")),
+            ("closed", _("Cerrado")),
+        ],
+    )
     promocionado = BooleanField(validators=[])
     pagado = BooleanField(validators=[])
     certificado = BooleanField(validators=[])
@@ -592,11 +470,6 @@ class ProgramaForm(BaseForm):
         validate_choice=False,
     )
 
-    def __init__(self, *args, **kwargs):
-        """Initialize form with translated choices."""
-        super().__init__(*args, **kwargs)
-        self.estado.choices = get_estado_choices()
-
 
 class RecursoForm(BaseForm):
     """Formulario para crear un recurso."""
@@ -605,13 +478,16 @@ class RecursoForm(BaseForm):
     precio = DecimalField()
     publico = BooleanField(validators=[])
     promocionado = BooleanField(validators=[])
-    tipo = SelectField(_("Tipo"), choices=[], validators=[])
+    tipo = SelectField(
+        _("Tipo"),
+        choices=[
+            ("cheat_sheet", _("Hoja de Guía")),
+            ("ebook", _("Libro Electronico")),
+            ("template", _("Plantilla")),
+            ("guide", _("Guia")),
+        ],
+    )
     pagado = BooleanField(validators=[])
-
-    def __init__(self, *args, **kwargs):
-        """Initialize form with translated choices."""
-        super().__init__(*args, **kwargs)
-        self.tipo.choices = get_resource_type_choices()
 
 
 class UserForm(FlaskForm):
@@ -626,16 +502,26 @@ class UserForm(FlaskForm):
     twitter = StringField(validators=[])
     github = StringField(validators=[])
     youtube = StringField(validators=[])
-    genero = SelectField(_("Genero"), choices=[], validators=[])
-    titulo = SelectField(_("Titulo"), choices=[], validators=[])
+    genero = SelectField(
+        _("Genero"),
+        choices=[
+            ("none", _("No especificado")),
+            ("other", _("Otros")),
+            ("male", _("Masculino")),
+            ("female", _("Femenino")),
+        ],
+    )
+    titulo = SelectField(
+        _("Titulo"),
+        choices=[
+            ("", _("No especificado")),
+            ("ing", _("Ingeniero")),
+            ("lic", _("Licenciado")),
+            ("dr", _("Doctor")),
+        ],
+    )
     nacimiento = DateField()
     bio = TextAreaField()
-
-    def __init__(self, *args, **kwargs):
-        """Initialize form with translated choices."""
-        super().__init__(*args, **kwargs)
-        self.genero.choices = get_genero_choices()
-        self.titulo.choices = get_titulo_choices()
 
 
 class MsgForm(FlaskForm):
@@ -695,12 +581,13 @@ class CertificateForm(FlaskForm):
     publico = BooleanField(validators=[])
     html = TextAreaField(widget=TextAreaNoEscape())
     css = TextAreaField(widget=TextAreaNoEscape())
-    tipo = SelectField(_("Tipo"), choices=[], validators=[])
-
-    def __init__(self, *args, **kwargs):
-        """Initialize form with translated choices."""
-        super().__init__(*args, **kwargs)
-        self.tipo.choices = get_certificate_type_choices()
+    tipo = SelectField(
+        _("Tipo"),
+        choices=[
+            ("course", _("Curso")),
+            ("program", _("Programa")),
+        ],
+    )
 
 
 class AdSenseForm(FlaskForm):
@@ -737,17 +624,24 @@ class PayaplForm(FlaskForm):
 class EmitCertificateForm(FlaskForm):
     """Form for emitting certificates."""
 
-    usuario = SelectField(_("Usuario"), choices=[], validators=[])
-    content_type = SelectField(_("Tipo de Contenido"), choices=[], validators=[])
-    curso = SelectField(_("Curso"), choices=[], validators=[])
-    master_class = SelectField(_("Clase Magistral"), choices=[], validators=[])
-    template = SelectField(_("Plantilla"), choices=[], validators=[])
-    nota = DecimalField(validators=[])
+    usuario = SelectField(
+        _("Usuario"),
+    )
 
-    def __init__(self, *args, **kwargs):
-        """Initialize form with translated choices."""
-        super().__init__(*args, **kwargs)
-        self.content_type.choices = get_content_type_choices()
+    content_type = SelectField(_("Tipo de Contenido"), choices=[("course", _("Curso")), ("masterclass", _("Clase Magistral"))])
+
+    curso = SelectField(
+        _("Curso"),
+    )
+
+    master_class = SelectField(
+        _("Clase Magistral"),
+    )
+
+    template = SelectField(
+        _("Plantilla"),
+    )
+    nota = DecimalField(validators=[])
 
 
 class CheckMailForm(FlaskForm):
@@ -809,13 +703,12 @@ class QuestionForm(FlaskForm):
     """Formulario para crear/editar una pregunta."""
 
     text = TextAreaField(_("Texto de la pregunta"), validators=[DataRequired()])
-    type = SelectField(_("Tipo"), choices=[], validators=[DataRequired()])
+    type = SelectField(
+        _("Tipo"),
+        choices=[("multiple", _("Opción múltiple")), ("boolean", _("Verdadero/Falso"))],
+        validators=[DataRequired()],
+    )
     explanation = TextAreaField(_("Explicación (opcional)"))
-
-    def __init__(self, *args, **kwargs):
-        """Initialize form with translated choices."""
-        super().__init__(*args, **kwargs)
-        self.type.choices = get_question_type_choices()
 
 
 class QuestionOptionForm(FlaskForm):
@@ -892,18 +785,13 @@ class CouponForm(BaseForm):
     code = StringField(_("Código del Cupón"), validators=[DataRequired()], render_kw={"placeholder": _("Ej: DESCUENTO50")})
     discount_type = SelectField(
         _("Tipo de Descuento"),
-        choices=[],
+        choices=[("percentage", _("Porcentaje")), ("fixed", _("Cantidad Fija"))],
         default="percentage",
         validators=[DataRequired()],
     )
     discount_value = DecimalField(_("Valor del Descuento"), validators=[DataRequired()], render_kw={"min": "0"})
     max_uses = IntegerField(_("Máximo de Usos"), render_kw={"min": "1", "placeholder": _("Dejar vacío para ilimitado")})
     expires_at = DateField(_("Fecha de Expiración"), render_kw={"placeholder": _("Dejar vacío si no expira")})
-
-    def __init__(self, *args, **kwargs):
-        """Initialize form with translated choices."""
-        super().__init__(*args, **kwargs)
-        self.discount_type.choices = get_discount_type_choices()
 
 
 class CouponApplicationForm(FlaskForm):
@@ -920,12 +808,15 @@ class BlogPostForm(BaseForm):
     content = MdeField(_("Contenido"), validators=[DataRequired()])
     allow_comments = BooleanField(_("Permitir comentarios"), default=True)
     tags = StringField(_("Etiquetas (separadas por comas)"))
-    status = SelectField(_("Estado"), choices=[], validators=[])
-
-    def __init__(self, *args, **kwargs):
-        """Initialize form with translated choices."""
-        super().__init__(*args, **kwargs)
-        self.status.choices = get_blog_status_choices()
+    status = SelectField(
+        _("Estado"),
+        choices=[
+            ("draft", _("Borrador")),
+            ("pending", _("Pendiente")),
+            ("published", _("Publicado")),
+            ("banned", _("Baneado")),
+        ],
+    )
 
 
 class BlogTagForm(BaseForm):

@@ -31,23 +31,7 @@ from wtforms.validators import URL, DataRequired, Length, Optional, ValidationEr
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.db import Certificado, database
-from now_lms.i18n import _, _l
-
-
-# ---------------------------------------------------------------------------------------
-# Choice generation functions for translated SelectField options
-# ---------------------------------------------------------------------------------------
-def get_platform_choices():
-    """Return platform choices with proper translations."""
-    return [
-        ("Zoom", "Zoom"),
-        ("Google Meet", "Google Meet"),
-        ("Microsoft Teams", "Microsoft Teams"),
-        ("Jitsi Meet", "Jitsi Meet"),
-        ("Discord", "Discord"),
-        ("Otra", _l("Otra")),
-    ]
-
+from now_lms.i18n import _
 
 # ---------------------------------------------------------------------------------------
 # Master Class forms
@@ -77,27 +61,34 @@ class MasterClassForm(FlaskForm):
     )
 
     description_private = TextAreaField(
-        _("Descripción Privada"),
+        "Descripción Privada",
         validators=[Optional(), Length(max=2000, message=_("La descripción privada no puede exceder 2000 caracteres"))],
         render_kw={"rows": 3, "placeholder": _("Descripción visible solo para usuarios inscritos")},
     )
 
     # Date and time fields
     date = DateField(
-        _("Fecha del Evento"), validators=[DataRequired(message=_("La fecha del evento es requerida"))], format="%Y-%m-%d"
+        "Fecha del Evento", validators=[DataRequired(message="La fecha del evento es requerida")], format="%Y-%m-%d"
     )
 
     start_time = TimeField(
-        _("Hora de Inicio"), validators=[DataRequired(message=_("La hora de inicio es requerida"))], format="%H:%M"
+        "Hora de Inicio", validators=[DataRequired(message="La hora de inicio es requerida")], format="%H:%M"
     )
 
-    end_time = TimeField(_("Hora de Fin"), validators=[DataRequired(message=_("La hora de fin es requerida"))], format="%H:%M")
+    end_time = TimeField("Hora de Fin", validators=[DataRequired(message="La hora de fin es requerida")], format="%H:%M")
 
     # Platform configuration
     platform_name = SelectField(
         _("Plataforma"),
-        choices=[],
-        validators=[DataRequired(message=_("La plataforma es requerida"))],
+        choices=[
+            ("Zoom", "Zoom"),
+            ("Google Meet", "Google Meet"),
+            ("Microsoft Teams", "Microsoft Teams"),
+            ("Jitsi Meet", "Jitsi Meet"),
+            ("Discord", "Discord"),
+            ("Otra", _("Otra")),
+        ],
+        validators=[DataRequired(message="La plataforma es requerida")],
     )
 
     platform_url = StringField(
@@ -107,7 +98,7 @@ class MasterClassForm(FlaskForm):
             URL(message=_("Debe ser una URL válida")),
             Length(max=500, message=_("El enlace no puede exceder 500 caracteres")),
         ],
-        render_kw={"placeholder": _("https://zoom.us/j/123456789")},
+        render_kw={"placeholder": "https://zoom.us/j/123456789"},
     )
 
     # Certification fields
@@ -120,10 +111,10 @@ class MasterClassForm(FlaskForm):
         _("URL de Grabación"),
         validators=[
             Optional(),
-            URL(message=_("Debe ser una URL válida")),
-            Length(max=500, message=_("La URL no puede exceder 500 caracteres")),
+            URL(message="Debe ser una URL válida"),
+            Length(max=500, message="La URL no puede exceder 500 caracteres"),
         ],
-        render_kw={"placeholder": _("https://ejemplo.com/grabacion")},
+        render_kw={"placeholder": "https://ejemplo.com/grabacion"},
     )
 
     def __init__(self, *args, **kwargs):
@@ -132,29 +123,26 @@ class MasterClassForm(FlaskForm):
 
         # Populate diploma template choices from database
         templates = database.session.execute(database.select(Certificado).filter_by(habilitado=True)).scalars().all()
-        self.diploma_template_id.choices = [("", _("Seleccionar plantilla"))] + [
+        self.diploma_template_id.choices = [("", "Seleccionar plantilla")] + [
             (template.code, template.titulo) for template in templates
         ]
-
-        # Populate platform choices
-        self.platform_name.choices = get_platform_choices()
 
     # Custom validators
     def validate_end_time(self, field):
         """Validate that end time is after start time."""
         if self.start_time.data and field.data:
             if field.data <= self.start_time.data:
-                raise ValidationError(_("La hora de fin debe ser posterior a la hora de inicio"))
+                raise ValidationError("La hora de fin debe ser posterior a la hora de inicio")
 
     def validate_date(self, field):
         """Validate that date is not in the past."""
         if field.data and field.data < date.today():
-            raise ValidationError(_("La fecha del evento no puede ser en el pasado"))
+            raise ValidationError("La fecha del evento no puede ser en el pasado")
 
     def validate_diploma_template_id(self, field):
         """Validate diploma template when is_certificate is True."""
         if self.is_certificate.data and not field.data:
-            raise ValidationError(_("La plantilla de certificado es requerida para clases con certificación"))
+            raise ValidationError("La plantilla de certificado es requerida para clases con certificación")
 
 
 class MasterClassEnrollmentForm(FlaskForm):
