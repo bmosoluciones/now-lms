@@ -141,14 +141,14 @@ def usuarios_inactivos():
 def cambiar_tipo_usario():
     """Actualiza el tipo de usuario."""
     from now_lms.demo_mode import demo_restriction_check
-    
+
     new_type = request.args.get("type")
     user_id = request.args.get("user")
-    
-    # Check demo mode restrictions specifically for changing to admin
-    if new_type == "admin" and demo_restriction_check("change_user_to_admin"):
+
+    # Check demo mode restrictions for any user type changes by admin
+    if demo_restriction_check("change_user_type"):
         return redirect(url_for("user_profile.usuario", id_usuario=user_id))
-    
+
     cambia_tipo_de_usuario_por_id(
         user_id,
         nuevo_tipo=new_type,

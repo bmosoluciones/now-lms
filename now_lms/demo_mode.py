@@ -34,7 +34,7 @@ def is_demo_mode() -> bool:
     """Check if the system is running in demo mode."""
     from os import environ
     from now_lms.config import VALORES_TRUE
-    
+
     return environ.get("NOW_LMS_DEMO_MODE", "0").strip().lower() in VALORES_TRUE
 
 
@@ -50,7 +50,7 @@ def is_admin_user() -> bool:
 def check_demo_admin_restriction() -> bool:
     """
     Check if current admin action should be restricted in demo mode.
-    
+
     Returns:
         True if action should be blocked (demo mode + admin user)
         False if action should be allowed
@@ -66,13 +66,13 @@ def flash_demo_restriction_message():
     )
 
 
-def demo_restriction_check(action_name: str = None):
+def demo_restriction_check(action_name: str | None = None) -> bool:
     """
     Decorator-like function to check demo mode restrictions and flash message.
-    
+
     Args:
         action_name: Optional name of the action for logging
-    
+
     Returns:
         True if action should be blocked, False if it should proceed
     """
