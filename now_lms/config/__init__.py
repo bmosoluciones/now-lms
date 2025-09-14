@@ -116,6 +116,7 @@ DESARROLLO = any(
 )
 FORCE_HTTPS = environ.get("NOW_LMS_FORCE_HTTPS", "0").strip().lower() in VALORES_TRUE
 AUTO_MIGRATE = environ.get("NOW_LMS_AUTO_MIGRATE", "0").strip().lower() in VALORES_TRUE
+DEMO_MODE = environ.get("NOW_LMS_DEMO_MODE", "0").strip().lower() in VALORES_TRUE
 
 
 # < --------------------------------------------------------------------------------------------- >

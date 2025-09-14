@@ -4,7 +4,7 @@
 <html lang="es" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Nueva Evaluación</title>
+        <title>{{ _('Nueva Evaluación') }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -24,24 +24,24 @@
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('instructor_profile.pagina_instructor') }}"
-                                        >Panel Instructor</a
+                                        >{{ _('Panel Instructor') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('instructor_profile.cursos') }}"
-                                        >Cursos</a
+                                        >{{ _('Cursos') }}</a
                                     >
                                 </li>
                                 <li class="breadcrumb-item">
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('instructor_profile.course_evaluations', course_code=seccion.curso) }}"
-                                        >Evaluaciones</a
+                                        >{{ _('Evaluaciones') }}</a
                                     >
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Nueva Evaluación</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ _('Nueva Evaluación') }}</li>
                             </ol>
                         </nav>
                     </h4>
@@ -51,8 +51,8 @@
                     <div class="col-md-8 offset-md-2">
                         <div class="card">
                             <div class="card-header">
-                                <h3>Nueva Evaluación</h3>
-                                <p class="mb-0 text-muted">Sección: {{ seccion.nombre }}</p>
+                                <h3>{{ _('Nueva Evaluación') }}</h3>
+                                <p class="mb-0 text-muted">{{ _('Sección') }}: {{ seccion.nombre }}</p>
                             </div>
 
                             <div class="card-body">
@@ -89,7 +89,8 @@
                                                     form.is_exam.label(class="form-check-label") }}
                                                 </div>
                                                 <div class="form-text">
-                                                    Los exámenes aparecen marcados de manera diferente a los quizzes.
+                                                    {{ _('Los exámenes aparecen marcados de manera diferente a los quizzes.')
+                                                    }}
                                                 </div>
                                             </div>
                                         </div>
@@ -114,7 +115,7 @@
                                     <div class="mb-3">
                                         {{ form.max_attempts.label(class="form-label") }} {{
                                         form.max_attempts(class="form-control") }}
-                                        <div class="form-text">Deje vacío para permitir intentos ilimitados.</div>
+                                        <div class="form-text">{{ _('Deje vacío para permitir intentos ilimitados.') }}</div>
                                         {% if form.max_attempts.errors %}
                                         <div class="text-danger small">
                                             {% for error in form.max_attempts.errors %}
@@ -125,16 +126,16 @@
                                     </div>
 
                                     <div class="alert alert-info">
-                                        <h6>Información:</h6>
+                                        <h6>{{ _('Información') }}:</h6>
                                         <ul class="mb-0">
-                                            <li>Después de crear la evaluación, podrá agregar preguntas.</li>
+                                            <li>{{ _('Después de crear la evaluación, podrá agregar preguntas.') }}</li>
                                             <li>
-                                                Las evaluaciones solo son visibles para estudiantes que hayan pagado el curso
-                                                (si es de pago).
+                                                {{ _('Las evaluaciones solo son visibles para estudiantes que hayan pagado el
+                                                curso (si es de pago).') }}
                                             </li>
                                             <li>
-                                                Los estudiantes deben completar todos los recursos antes de ver las
-                                                evaluaciones.
+                                                {{ _('Los estudiantes deben completar todos los recursos antes de ver las
+                                                evaluaciones.') }}
                                             </li>
                                         </ul>
                                     </div>
@@ -144,9 +145,9 @@
                                             href="{{ url_for('instructor_profile.course_evaluations', course_code=seccion.curso) }}"
                                             class="btn btn-secondary me-md-2"
                                         >
-                                            Cancelar
+                                            {{ _('Cancelar') }}
                                         </a>
-                                        <button type="submit" class="btn btn-primary">Crear Evaluación</button>
+                                        <button type="submit" class="btn btn-primary">{{ _('Crear Evaluación') }}</button>
                                     </div>
                                 </form>
                             </div>
