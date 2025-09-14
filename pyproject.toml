@@ -7,6 +7,7 @@ authors = [
   {name = "BMO Soluciones", email = "soluciones.bmo@gmail.com"},
 ]
 license = "Apache-2.0"
+license-files = ["LICEN[CS]E*", "AUTHORS.md"]
 classifiers = [
   'Development Status :: 4 - Beta',
   'Environment :: Web Environment',
@@ -26,6 +27,12 @@ dynamic = ["version", "dependencies"]
 [project.scripts]
 lmsctl = "now_lms.cli:command"
 
+[project.urls]
+Documentation = "https://bmosoluciones.github.io/now-lms"
+Repository = "https://github.com/bmosoluciones/now-lms"
+Issues = "https://github.com/bmosoluciones/now-lms/issues"
+Changelog = "https://github.com/bmosoluciones/now-lms/blob/main/CHANGELOG.md"
+
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
 version = {attr = "now_lms.version.VERSION"}
@@ -39,7 +46,7 @@ mariadb = [
 ]
 
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools >= 77.0.3", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.black]
@@ -50,6 +57,9 @@ line-length = 127
 
 [tool.setuptools.packages]
 find = {namespaces = false}
+
+[tool.setuptools.package-data]
+now_lms = ["*.unit *.ico *.js *.css *.png *.html *.eot *.svg *.ttf *.woff *.woff2 *.jpg *.py *.txt *.csv *.json *.pdf *.ogg *.mo", "static/*", "migrations/*", "templates/*", "translations/*"]
 
 [tool.pylint.main]
 py-version = "3.11"

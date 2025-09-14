@@ -48,114 +48,262 @@ from wtforms.widgets import ColorInput, TextArea, html_params
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
-from now_lms.i18n import _l
+from now_lms.i18n import _, _l
+
+
+# ---------------------------------------------------------------------------------------
+# Choice generation functions for translated SelectField options
+# ---------------------------------------------------------------------------------------
+def get_nivel_choices():
+    """Return course level choices with proper translations."""
+    return [(0, _l("Introductorio")), (1, _l("Principiante")), (2, _l("Intermedio")), (3, _l("Avanzado"))]
+
+
+def get_modalidad_choices():
+    """Return course modality choices with proper translations."""
+    return [("self_paced", _l("A su propio ritmo")), ("time_based", _l("Con tiempo definido")), ("live", _l("En vivo"))]
+
+
+def get_requerido_choices():
+    """Return required field choices with proper translations."""
+    return [("required", _l("Requerido")), ("optional", _l("Opcional")), ("substitute", _l("Alternativo"))]
+
+
+def get_content_type_choices():
+    """Return content type choices with proper translations."""
+    return [("course", _l("Curso")), ("masterclass", _l("Clase Magistral"))]
+
+
+def get_question_type_choices():
+    """Return question type choices with proper translations."""
+    return [("multiple", _l("Opción múltiple")), ("boolean", _l("Verdadero/Falso"))]
+
+
+def get_discount_type_choices():
+    """Return discount type choices with proper translations."""
+    return [("percentage", _l("Porcentaje")), ("fixed", _l("Cantidad Fija"))]
+
+
+def get_estado_choices():
+    """Return status choices with proper translations."""
+    return [
+        ("draft", _l("Borrador")),
+        ("open", _l("Abierto")),
+        ("closed", _l("Cerrado")),
+    ]
+
+
+def get_blog_status_choices():
+    """Return blog status choices with proper translations."""
+    return [
+        ("draft", _l("Borrador")),
+        ("pending", _l("Pendiente")),
+        ("published", _l("Publicado")),
+        ("banned", _l("Baneado")),
+    ]
+
+
+def get_resource_type_choices():
+    """Return resource type choices with proper translations."""
+    return [
+        ("cheat_sheet", _l("Hoja de Guía")),
+        ("ebook", _l("Libro Electronico")),
+        ("template", _l("Plantilla")),
+        ("guide", _l("Guia")),
+    ]
+
+
+def get_genero_choices():
+    """Return gender choices with proper translations."""
+    return [
+        ("none", _l("No especificado")),
+        ("other", _l("Otros")),
+        ("male", _l("Masculino")),
+        ("female", _l("Femenino")),
+    ]
+
+
+def get_titulo_choices():
+    """Return title choices with proper translations."""
+    return [
+        ("", _l("No especificado")),
+        ("ing", _l("Ingeniero")),
+        ("lic", _l("Licenciado")),
+        ("dr", _l("Doctor")),
+    ]
+
+
+def get_certificate_type_choices():
+    """Return certificate type choices with proper translations."""
+    return [
+        ("course", _l("Curso")),
+        ("program", _l("Programa")),
+    ]
+
+
+def get_monedas_choices():
+    """Return currency choices with proper translations."""
+    return [
+        # América del Norte
+        ("USD", _l("Dólar Estadounidense")),
+        ("CAD", _l("Dólar Canadiense")),
+        ("MXN", _l("Peso Mexicano")),
+        # América Central
+        ("GTQ", _l("Quetzal Guatemalteco")),
+        ("BZD", _l("Dólar de Belice")),
+        ("HNL", _l("Lempira Hondureño")),
+        ("NIO", _l("Córdoba Nicaragüense")),
+        ("CRC", _l("Colón Costarricense")),
+        ("PAB", _l("Balboa Panameño")),
+        # El Caribe
+        ("DOP", _l("Peso Dominicano")),
+        ("CUP", _l("Peso Cubano")),
+        ("JMD", _l("Dólar Jamaicano")),
+        ("TTD", _l("Dólar de Trinidad y Tobago")),
+        ("BBD", _l("Dólar de Barbados")),
+        # América del Sur
+        ("COP", _l("Peso Colombiano")),
+        ("VES", _l("Bolívar Venezolano")),
+        ("GYD", _l("Dólar Guyanés")),
+        ("SRD", _l("Dólar Surinamés")),
+        ("BRL", _l("Real Brasileño")),
+        ("PEN", _l("Sol Peruano")),
+        ("BOB", _l("Boliviano")),
+        ("PYG", _l("Guaraní Paraguayo")),
+        ("UYU", _l("Peso Uruguayo")),
+        ("ARS", _l("Peso Argentino")),
+        ("CLP", _l("Peso Chileno")),
+        # Europa
+        ("EUR", _l("Euro")),
+        ("GBP", _l("Libra Esterlina")),
+        ("CHF", _l("Franco Suizo")),
+        ("NOK", _l("Corona Noruega")),
+        ("SEK", _l("Corona Sueca")),
+        ("DKK", _l("Corona Danesa")),
+        ("PLN", _l("Zloty Polaco")),
+        ("CZK", _l("Corona Checa")),
+        ("HUF", _l("Florín Húngaro")),
+        ("RON", _l("Leu Rumano")),
+        ("BGN", _l("Lev Búlgaro")),
+        ("HRK", _l("Kuna Croata")),
+        ("RSD", _l("Dinar Serbio")),
+        ("BAM", _l("Marco Bosnio")),
+        ("MKD", _l("Denar Macedonio")),
+        ("ALL", _l("Lek Albanés")),
+        ("MDL", _l("Leu Moldavo")),
+        ("UAH", _l("Grivna Ucraniana")),
+        ("BYN", _l("Rublo Bielorruso")),
+        ("RUB", _l("Rublo Ruso")),
+        ("TRY", _l("Lira Turca")),
+        ("ISK", _l("Corona Islandesa")),
+    ]
+
+
+def get_zonas_horarias_choices():
+    """Return timezone choices."""
+    return [
+        # UTC
+        ("UTC", "UTC"),
+        # América del Norte
+        ("America/New_York", "America/New_York"),  # EE.UU. Este
+        ("America/Chicago", "America/Chicago"),  # EE.UU. Central
+        ("America/Denver", "America/Denver"),  # EE.UU. Montaña
+        ("America/Los_Angeles", "America/Los_Angeles"),  # EE.UU. Pacífico
+        ("America/Mexico_City", "America/Mexico_City"),  # México
+        # Centroamérica
+        ("America/Guatemala", "America/Guatemala"),  # Guatemala
+        ("America/El_Salvador", "America/El_Salvador"),  # El Salvador
+        ("America/Tegucigalpa", "America/Tegucigalpa"),  # Honduras
+        ("America/Managua", "America/Managua"),  # Nicaragua
+        ("America/Costa_Rica", "America/Costa_Rica"),  # Costa Rica
+        ("America/Panama", "America/Panama"),  # Panamá
+        # Caribe
+        ("America/Havana", "America/Havana"),  # Cuba
+        ("America/Santo_Domingo", "America/Santo_Domingo"),  # R. Dominicana
+        ("America/Puerto_Rico", "America/Puerto_Rico"),  # Puerto Rico
+        ("America/Jamaica", "America/Jamaica"),  # Jamaica
+        # Sudamérica
+        ("America/Bogota", "America/Bogota"),  # Colombia
+        ("America/Lima", "America/Lima"),  # Perú
+        ("America/Caracas", "America/Caracas"),  # Venezuela
+        ("America/La_Paz", "America/La_Paz"),  # Bolivia
+        ("America/Santiago", "America/Santiago"),  # Chile
+        ("America/Asuncion", "America/Asuncion"),  # Paraguay
+        ("America/Montevideo", "America/Montevideo"),  # Uruguay
+        ("America/Argentina/Buenos_Aires", "America/Argentina/Buenos_Aires"),  # Argentina
+        ("America/Sao_Paulo", "America/Sao_Paulo"),  # Brasil
+        # Europa
+        ("Europe/London", "Europe/London"),  # Reino Unido
+        ("Europe/Madrid", "Europe/Madrid"),  # España
+        ("Europe/Paris", "Europe/Paris"),  # Francia
+        ("Europe/Berlin", "Europe/Berlin"),  # Alemania
+        ("Europe/Rome", "Europe/Rome"),  # Italia
+        ("Europe/Moscow", "Europe/Moscow"),  # Rusia
+        # Asia
+        ("Asia/Dubai", "Asia/Dubai"),  # Emiratos Árabes
+        ("Asia/Kolkata", "Asia/Kolkata"),  # India
+        ("Asia/Bangkok", "Asia/Bangkok"),  # Tailandia
+        ("Asia/Shanghai", "Asia/Shanghai"),  # China
+        ("Asia/Tokyo", "Asia/Tokyo"),  # Japón
+        ("Asia/Seoul", "Asia/Seoul"),  # Corea del Sur
+        ("Asia/Singapore", "Asia/Singapore"),  # Singapur
+    ]
+
+
+def get_plataforma_choices():
+    """Return platform choices with proper translations."""
+    return [
+        ("none", _l("Seleccione")),
+        ("bluejeans", "BlueJeans"),
+        ("zoom", "Zoom"),
+        ("teams", "MS Teams"),
+        ("meet", "Google Meet"),
+        ("zoho", "Zoho Backstage"),
+        ("click", "ClickMeeting"),
+        ("goto", "GoTo Meeting"),
+        ("webex", "Webex"),
+        ("intermedia", "Intermedia AnyMeeting"),
+        ("whatsapp", "WhatsApp"),
+        ("otros", _l("Otros")),
+    ]
+
+
+def get_slideshow_theme_choices():
+    """Return slideshow theme choices with proper translations."""
+    return [
+        ("beige", "Beige"),
+        ("black", "Black"),
+        ("blood", "Blood"),
+        ("league", "League"),
+        ("moon", "Moon"),
+        ("night", "Night"),
+        ("serif", "Serif"),
+        ("simple", "Simple"),
+        ("sky", "Sky"),
+        ("solarized", "Solarized"),
+        ("ocean_blue", "Ocean Blue"),
+        ("rose_pink", "Rose Pink"),
+        ("corporativo", _l("Corporativo")),
+    ]
+
+
+def get_reveal_theme_choices():
+    """Return reveal.js theme choices."""
+    return [
+        ("black", "Black"),
+        ("white", "White"),
+        ("league", "League"),
+        ("beige", "Beige"),
+        ("sky", "Sky"),
+        ("night", "Night"),
+        ("serif", "Serif"),
+        ("simple", "Simple"),
+        ("solarized", "Solarized"),
+    ]
 
 
 # Form label constants
-LABEL_TITULO: str = "Título"
-
-MONEDAS = [
-    # América del Norte
-    ("USD", "Dólar Estadounidense"),
-    ("CAD", "Dólar Canadiense"),
-    ("MXN", "Peso Mexicano"),
-    # América Central
-    ("GTQ", "Quetzal Guatemalteco"),
-    ("BZD", "Dólar de Belice"),
-    ("HNL", "Lempira Hondureño"),
-    ("NIO", "Córdoba Nicaragüense"),
-    ("CRC", "Colón Costarricense"),
-    ("PAB", "Balboa Panameño"),
-    # El Caribe
-    ("DOP", "Peso Dominicano"),
-    ("CUP", "Peso Cubano"),
-    ("JMD", "Dólar Jamaicano"),
-    ("TTD", "Dólar de Trinidad y Tobago"),
-    ("BBD", "Dólar de Barbados"),
-    # América del Sur
-    ("COP", "Peso Colombiano"),
-    ("VES", "Bolívar Venezolano"),
-    ("GYD", "Dólar Guyanés"),
-    ("SRD", "Dólar Surinamés"),
-    ("BRL", "Real Brasileño"),
-    ("PEN", "Sol Peruano"),
-    ("BOB", "Boliviano"),
-    ("PYG", "Guaraní Paraguayo"),
-    ("UYU", "Peso Uruguayo"),
-    ("ARS", "Peso Argentino"),
-    ("CLP", "Peso Chileno"),
-    # Europa
-    ("EUR", "Euro"),
-    ("GBP", "Libra Esterlina"),
-    ("CHF", "Franco Suizo"),
-    ("NOK", "Corona Noruega"),
-    ("SEK", "Corona Sueca"),
-    ("DKK", "Corona Danesa"),
-    ("PLN", "Zloty Polaco"),
-    ("CZK", "Corona Checa"),
-    ("HUF", "Florín Húngaro"),
-    ("RON", "Leu Rumano"),
-    ("BGN", "Lev Búlgaro"),
-    ("HRK", "Kuna Croata"),
-    ("RSD", "Dinar Serbio"),
-    ("BAM", "Marco Bosnio"),
-    ("MKD", "Denar Macedonio"),
-    ("ALL", "Lek Albanés"),
-    ("MDL", "Leu Moldavo"),
-    ("UAH", "Grivna Ucraniana"),
-    ("BYN", "Rublo Bielorruso"),
-    ("RUB", "Rublo Ruso"),
-    ("TRY", "Lira Turca"),
-    ("ISK", "Corona Islandesa"),
-]
-
-ZONAS_HORARIAS = [
-    # UTC
-    ("UTC", "UTC"),
-    # América del Norte
-    ("America/New_York", "America/New_York"),  # EE.UU. Este
-    ("America/Chicago", "America/Chicago"),  # EE.UU. Central
-    ("America/Denver", "America/Denver"),  # EE.UU. Montaña
-    ("America/Los_Angeles", "America/Los_Angeles"),  # EE.UU. Pacífico
-    ("America/Mexico_City", "America/Mexico_City"),  # México
-    # Centroamérica
-    ("America/Guatemala", "America/Guatemala"),  # Guatemala
-    ("America/El_Salvador", "America/El_Salvador"),  # El Salvador
-    ("America/Tegucigalpa", "America/Tegucigalpa"),  # Honduras
-    ("America/Managua", "America/Managua"),  # Nicaragua
-    ("America/Costa_Rica", "America/Costa_Rica"),  # Costa Rica
-    ("America/Panama", "America/Panama"),  # Panamá
-    # Caribe
-    ("America/Havana", "America/Havana"),  # Cuba
-    ("America/Santo_Domingo", "America/Santo_Domingo"),  # R. Dominicana
-    ("America/Puerto_Rico", "America/Puerto_Rico"),  # Puerto Rico
-    ("America/Jamaica", "America/Jamaica"),  # Jamaica
-    # Sudamérica
-    ("America/Bogota", "America/Bogota"),  # Colombia
-    ("America/Lima", "America/Lima"),  # Perú
-    ("America/Caracas", "America/Caracas"),  # Venezuela
-    ("America/La_Paz", "America/La_Paz"),  # Bolivia
-    ("America/Santiago", "America/Santiago"),  # Chile
-    ("America/Asuncion", "America/Asuncion"),  # Paraguay
-    ("America/Montevideo", "America/Montevideo"),  # Uruguay
-    ("America/Argentina/Buenos_Aires", "America/Argentina/Buenos_Aires"),  # Argentina
-    ("America/Sao_Paulo", "America/Sao_Paulo"),  # Brasil
-    # Europa
-    ("Europe/London", "Europe/London"),  # Reino Unido
-    ("Europe/Madrid", "Europe/Madrid"),  # España
-    ("Europe/Paris", "Europe/Paris"),  # Francia
-    ("Europe/Berlin", "Europe/Berlin"),  # Alemania
-    ("Europe/Rome", "Europe/Rome"),  # Italia
-    ("Europe/Moscow", "Europe/Moscow"),  # Rusia
-    # Asia
-    ("Asia/Dubai", "Asia/Dubai"),  # Emiratos Árabes
-    ("Asia/Kolkata", "Asia/Kolkata"),  # India
-    ("Asia/Bangkok", "Asia/Bangkok"),  # Tailandia
-    ("Asia/Shanghai", "Asia/Shanghai"),  # China
-    ("Asia/Tokyo", "Asia/Tokyo"),  # Japón
-    ("Asia/Seoul", "Asia/Seoul"),  # Corea del Sur
-    ("Asia/Singapore", "Asia/Singapore"),  # Singapur
-]
+LABEL_TITULO: str = _("Título")
 
 
 class ConfigForm(FlaskForm):
@@ -165,21 +313,29 @@ class ConfigForm(FlaskForm):
     descripcion = StringField(validators=[DataRequired()])
 
     # Localización
-    moneda = SelectField(_l("Moneda"), choices=MONEDAS, validators=[])
-    lang = SelectField(_l("Idioma"), choices=[("es", "Español"), ("en", "Inglés")], validators=[])
-    timezone = SelectField(_l("Zona Horaria"), choices=ZONAS_HORARIAS, validators=[])
+    moneda = SelectField(_("Moneda"), choices=[], validators=[])
+    lang = SelectField(
+        _("Idioma"), choices=[("es", "Español"), ("en", "English"), ("pt_BR", "Português do Brasil")], validators=[]
+    )
+    timezone = SelectField(_("Zona Horaria"), choices=[], validators=[])
 
     verify_user_by_email = BooleanField(validators=[])
 
     # Navigation configuration
-    enable_programs = BooleanField(_l("Habilitar Programas"), default=False, validators=[])
-    enable_masterclass = BooleanField(_l("Habilitar Master Class"), default=False, validators=[])
-    enable_resources = BooleanField(_l("Habilitar Recursos descargables"), default=False, validators=[])
-    enable_blog = BooleanField(_l("Habilitar Blog"), default=False, validators=[])
+    enable_programs = BooleanField(_("Habilitar Programas"), default=False, validators=[])
+    enable_masterclass = BooleanField(_("Habilitar Master Class"), default=False, validators=[])
+    enable_resources = BooleanField(_("Habilitar Recursos descargables"), default=False, validators=[])
+    enable_blog = BooleanField(_("Habilitar Blog"), default=False, validators=[])
 
     # File upload configuration
-    enable_file_uploads = BooleanField(_l("Habilitar subida de archivos descargables"), default=False, validators=[])
-    max_file_size = IntegerField(_l("Tamaño máximo de archivo (MB)"), default=1, validators=[])
+    enable_file_uploads = BooleanField(_("Habilitar subida de archivos descargables"), default=False, validators=[])
+    max_file_size = IntegerField(_("Tamaño máximo de archivo (MB)"), default=1, validators=[])
+
+    def __init__(self, *args, **kwargs):
+        """Initialize form with translated choices."""
+        super().__init__(*args, **kwargs)
+        self.moneda.choices = get_monedas_choices()
+        self.timezone.choices = get_zonas_horarias_choices()
 
 
 class ThemeForm(FlaskForm):
@@ -240,17 +396,14 @@ class CurseForm(BaseForm):
     # Nombre y descripción de la base.
     codigo = StringField(validators=[DataRequired()])
     descripcion_corta = StringField(validators=[DataRequired()])
-    nivel = SelectField(_l("Nivel"), choices=[(0, "Introductorio"), (1, "Principiante"), (2, "Intermedio"), (3, "Avanzado")])
+    nivel = SelectField(_("Nivel"), choices=[], validators=[])
     duracion = IntegerField(validators=[])
     # Estado de publicación
     publico = BooleanField(validators=[])
     # Modalidad
-    modalidad = SelectField(
-        _l("Modalidad"),
-        choices=[("self_paced", "A su propio ritmo"), ("time_based", "Con tiempo definido"), ("live", "En vivo")],
-    )
+    modalidad = SelectField(_("Modalidad"), choices=[], validators=[])
     # Configuración del foro
-    foro_habilitado = BooleanField(_l("Habilitar foro"), validators=[])
+    foro_habilitado = BooleanField(_("Habilitar foro"), validators=[])
     # Disponibilidad de cupos
     limitado = BooleanField(validators=[])
     capacidad = IntegerField(validators=[])
@@ -264,26 +417,32 @@ class CurseForm(BaseForm):
     auditable = BooleanField(validators=[])
     certificado = BooleanField(validators=[])
     plantilla_certificado = SelectField(
-        "Plantilla de certificado",
+        _("Plantilla de certificado"),
         choices=[],
         validate_choice=False,
     )
     precio = DecimalField(validators=[])
     categoria = SelectField(
-        "Categoría",
+        _("Categoría"),
         choices=[],
         validate_choice=False,
     )
     etiquetas = SelectMultipleField(
-        "Etiquetas",
+        _("Etiquetas"),
         choices=[],
         validate_choice=False,
     )
 
+    def __init__(self, *args, **kwargs):
+        """Initialize form with translated choices."""
+        super().__init__(*args, **kwargs)
+        self.nivel.choices = get_nivel_choices()
+        self.modalidad.choices = get_modalidad_choices()
+
     def validate_foro_habilitado(self, field):
         """Validación personalizada para el campo foro_habilitado."""
         if field.data and self.modalidad.data == "self_paced":
-            raise ValueError("El foro no puede habilitarse en cursos con modalidad self-paced")
+            raise ValueError(_("El foro no puede habilitarse en cursos con modalidad self-paced"))
 
 
 class CursoSeccionForm(BaseForm):
@@ -293,9 +452,12 @@ class CursoSeccionForm(BaseForm):
 class CursoRecursoForm(BaseForm):
     """Base para los recursos del curso."""
 
-    requerido = SelectField(
-        "Requerido", choices=[("required", "Requerido"), ("optional", "Opcional"), ("substitute", "Alternativo")]
-    )
+    requerido = SelectField(_("Requerido"), choices=[], validators=[])
+
+    def __init__(self, *args, **kwargs):
+        """Initialize form with translated choices."""
+        super().__init__(*args, **kwargs)
+        self.requerido.choices = get_requerido_choices()
 
 
 class CursoRecursoVideoYoutube(CursoRecursoForm):
@@ -341,53 +503,36 @@ class CursoRecursoExternalLink(CursoRecursoForm):
 class CursoRecursoSlides(CursoRecursoForm):
     """Formulario para insertar un SlideShow."""
 
-    notes = SelectField(
-        "Tema",
-        choices=[
-            ("beige", "Beige"),
-            ("black", "Black"),
-            ("blood", "Blood"),
-            ("league", "League"),
-            ("moon", "Moon"),
-            ("night", "Night"),
-            ("serif", "Serif"),
-            ("simple", "Simple"),
-            ("sky", "Sky"),
-            ("solarized", "Solarized"),
-            ("ocean_blue", "Ocean Blue"),
-            ("rose_pink", "Rose Pink"),
-            ("corporativo", "Corporativo"),
-        ],
-    )
+    notes = SelectField(_("Tema"), choices=[], validators=[])
+
+    def __init__(self, *args, **kwargs):
+        """Initialize form with translated choices."""
+        super().__init__(*args, **kwargs)
+        self.notes.choices = get_slideshow_theme_choices()
 
 
 class SlideShowForm(BaseForm):
     """Formulario para crear una nueva presentación de diapositivas."""
 
     theme = SelectField(
-        "Tema Reveal.js",
-        choices=[
-            ("black", "Black"),
-            ("white", "White"),
-            ("league", "League"),
-            ("beige", "Beige"),
-            ("sky", "Sky"),
-            ("night", "Night"),
-            ("serif", "Serif"),
-            ("simple", "Simple"),
-            ("solarized", "Solarized"),
-        ],
+        _("Tema Reveal.js"),
+        choices=[],
         default="simple",
         validators=[DataRequired()],
     )
+
+    def __init__(self, *args, **kwargs):
+        """Initialize form with translated choices."""
+        super().__init__(*args, **kwargs)
+        self.theme.choices = get_reveal_theme_choices()
 
 
 class SlideForm(FlaskForm):
     """Formulario para crear/editar una diapositiva individual."""
 
-    title = StringField("Título de la Diapositiva", validators=[DataRequired()])
-    content = MdeField("Contenido de la Diapositiva", validators=[DataRequired()])
-    order = IntegerField("Orden", validators=[DataRequired()], default=1)
+    title = StringField(_("Título de la Diapositiva"), validators=[DataRequired()])
+    content = MdeField(_("Contenido de la Diapositiva"), validators=[DataRequired()])
+    order = IntegerField(_("Orden"), validators=[DataRequired()], default=1)
 
 
 class SlideShowEditForm(SlideShowForm):
@@ -403,23 +548,12 @@ class CursoRecursoMeet(CursoRecursoForm):
     hora_inicio = TimeField(validators=[])
     hora_fin = TimeField(validators=[])
     url = StringField(validators=[DataRequired()])
-    notes = SelectField(
-        "Plataforma",
-        choices=[
-            ("none", "Seleccione"),
-            ("bluejeans", "BlueJeans"),
-            ("zoom", "Zoom"),
-            ("teams", "MS Teams"),
-            ("meet", "Google Meet"),
-            ("zoho", "Zoho Backstage"),
-            ("click", "ClickMeeting"),
-            ("goto", "GoTo Meeting"),
-            ("webex", "Webex"),
-            ("intermedia", "Intermedia AnyMeeting"),
-            ("whatsapp", "WhatsApp"),
-            ("otros", "Otros"),
-        ],
-    )
+    notes = SelectField(_("Plataforma"), choices=[], validators=[])
+
+    def __init__(self, *args, **kwargs):
+        """Initialize form with translated choices."""
+        super().__init__(*args, **kwargs)
+        self.notes.choices = get_plataforma_choices()
 
 
 class CategoriaForm(BaseForm):
@@ -438,32 +572,30 @@ class ProgramaForm(BaseForm):
     codigo = StringField(validators=[DataRequired()])
     precio = DecimalField()
     publico = BooleanField(validators=[])
-    estado = SelectField(
-        "Estado",
-        choices=[
-            ("draft", "Borrador"),
-            ("open", "Abierto"),
-            ("closed", "Cerrado"),
-        ],
-    )
+    estado = SelectField(_("Estado"), choices=[], validators=[])
     promocionado = BooleanField(validators=[])
     pagado = BooleanField(validators=[])
     certificado = BooleanField(validators=[])
     plantilla_certificado = SelectField(
-        "Plantilla de certificado",
+        _("Plantilla de certificado"),
         choices=[],
         validate_choice=False,
     )
     categoria = SelectField(
-        "Categoría",
+        _("Categoría"),
         choices=[],
         validate_choice=False,
     )
     etiquetas = SelectMultipleField(
-        "Etiquetas",
+        _("Etiquetas"),
         choices=[],
         validate_choice=False,
     )
+
+    def __init__(self, *args, **kwargs):
+        """Initialize form with translated choices."""
+        super().__init__(*args, **kwargs)
+        self.estado.choices = get_estado_choices()
 
 
 class RecursoForm(BaseForm):
@@ -473,16 +605,13 @@ class RecursoForm(BaseForm):
     precio = DecimalField()
     publico = BooleanField(validators=[])
     promocionado = BooleanField(validators=[])
-    tipo = SelectField(
-        "Tipo",
-        choices=[
-            ("cheat_sheet", "Hoja de Guía"),
-            ("ebook", "Libro Electronico"),
-            ("template", "Plantilla"),
-            ("guide", "Guia"),
-        ],
-    )
+    tipo = SelectField(_("Tipo"), choices=[], validators=[])
     pagado = BooleanField(validators=[])
+
+    def __init__(self, *args, **kwargs):
+        """Initialize form with translated choices."""
+        super().__init__(*args, **kwargs)
+        self.tipo.choices = get_resource_type_choices()
 
 
 class UserForm(FlaskForm):
@@ -497,26 +626,16 @@ class UserForm(FlaskForm):
     twitter = StringField(validators=[])
     github = StringField(validators=[])
     youtube = StringField(validators=[])
-    genero = SelectField(
-        "Genero",
-        choices=[
-            ("none", "No especificado"),
-            ("other", "Otros"),
-            ("male", "Masculino"),
-            ("female", "Femenino"),
-        ],
-    )
-    titulo = SelectField(
-        "Titulo",
-        choices=[
-            ("", "No especificado"),
-            ("ing", "Ingeniero"),
-            ("lic", "Licenciado"),
-            ("dr", "Doctor"),
-        ],
-    )
+    genero = SelectField(_("Genero"), choices=[], validators=[])
+    titulo = SelectField(_("Titulo"), choices=[], validators=[])
     nacimiento = DateField()
     bio = TextAreaField()
+
+    def __init__(self, *args, **kwargs):
+        """Initialize form with translated choices."""
+        super().__init__(*args, **kwargs)
+        self.genero.choices = get_genero_choices()
+        self.titulo.choices = get_titulo_choices()
 
 
 class MsgForm(FlaskForm):
@@ -530,28 +649,28 @@ class MsgForm(FlaskForm):
 class MessageThreadForm(FlaskForm):
     """Form for creating a new message thread."""
 
-    subject = StringField("Asunto", validators=[DataRequired()])
-    content = MdeField("Mensaje", validators=[DataRequired()])
+    subject = StringField(_("Asunto"), validators=[DataRequired()])
+    content = MdeField(_("Mensaje"), validators=[DataRequired()])
     course_id = HiddenField(validators=[DataRequired()])
 
 
 class MessageReplyForm(FlaskForm):
     """Form for replying to a message thread."""
 
-    content = MdeField("Respuesta", validators=[DataRequired()])
+    content = MdeField(_("Respuesta"), validators=[DataRequired()])
     thread_id = HiddenField(validators=[DataRequired()])
 
 
 class MessageReportForm(FlaskForm):
     """Form for reporting a message or thread."""
 
-    reason = TextAreaField("Motivo del reporte", validators=[DataRequired()])
+    reason = TextAreaField(_("Motivo del reporte"), validators=[DataRequired()])
     message_id = HiddenField(validators=[])
     thread_id = HiddenField(validators=[])
 
 
 class TextAreaNoEscape(TextArea):
-    """Renders a multi-line text area."""
+    """Renders a multi_ine text area."""
 
     validation_attrs = ["required", "disabled", "readonly", "maxlength", "minlength"]
 
@@ -576,13 +695,12 @@ class CertificateForm(FlaskForm):
     publico = BooleanField(validators=[])
     html = TextAreaField(widget=TextAreaNoEscape())
     css = TextAreaField(widget=TextAreaNoEscape())
-    tipo = SelectField(
-        "Tipo",
-        choices=[
-            ("course", "Curso"),
-            ("program", "Programa"),
-        ],
-    )
+    tipo = SelectField(_("Tipo"), choices=[], validators=[])
+
+    def __init__(self, *args, **kwargs):
+        """Initialize form with translated choices."""
+        super().__init__(*args, **kwargs)
+        self.tipo.choices = get_certificate_type_choices()
 
 
 class AdSenseForm(FlaskForm):
@@ -619,24 +737,17 @@ class PayaplForm(FlaskForm):
 class EmitCertificateForm(FlaskForm):
     """Form for emitting certificates."""
 
-    usuario = SelectField(
-        "Usuario",
-    )
-
-    content_type = SelectField("Tipo de Contenido", choices=[("course", "Curso"), ("masterclass", "Clase Magistral")])
-
-    curso = SelectField(
-        "Curso",
-    )
-
-    master_class = SelectField(
-        "Clase Magistral",
-    )
-
-    template = SelectField(
-        "Plantilla",
-    )
+    usuario = SelectField(_("Usuario"), choices=[], validators=[])
+    content_type = SelectField(_("Tipo de Contenido"), choices=[], validators=[])
+    curso = SelectField(_("Curso"), choices=[], validators=[])
+    master_class = SelectField(_("Clase Magistral"), choices=[], validators=[])
+    template = SelectField(_("Plantilla"), choices=[], validators=[])
     nota = DecimalField(validators=[])
+
+    def __init__(self, *args, **kwargs):
+        """Initialize form with translated choices."""
+        super().__init__(*args, **kwargs)
+        self.content_type.choices = get_content_type_choices()
 
 
 class CheckMailForm(FlaskForm):
@@ -688,33 +799,36 @@ class EvaluationForm(FlaskForm):
     """Formulario para crear/editar una evaluación."""
 
     title = StringField(LABEL_TITULO, validators=[DataRequired()])
-    description = TextAreaField("Descripción")
-    is_exam = BooleanField("Es un examen")
-    passing_score = DecimalField("Puntuación mínima para aprobar", default=70.0, validators=[DataRequired()])
-    max_attempts = IntegerField("Máximo número de intentos (vacío = ilimitado)")
+    description = TextAreaField(_("Descripción"))
+    is_exam = BooleanField(_("Es un examen"))
+    passing_score = DecimalField(_("Puntuación mínima para aprobar"), default=70.0, validators=[DataRequired()])
+    max_attempts = IntegerField(_("Máximo número de intentos (vacío = ilimitado)"))
 
 
 class QuestionForm(FlaskForm):
     """Formulario para crear/editar una pregunta."""
 
-    text = TextAreaField("Texto de la pregunta", validators=[DataRequired()])
-    type = SelectField(
-        "Tipo", choices=[("multiple", "Opción múltiple"), ("boolean", "Verdadero/Falso")], validators=[DataRequired()]
-    )
-    explanation = TextAreaField("Explicación (opcional)")
+    text = TextAreaField(_("Texto de la pregunta"), validators=[DataRequired()])
+    type = SelectField(_("Tipo"), choices=[], validators=[DataRequired()])
+    explanation = TextAreaField(_("Explicación (opcional)"))
+
+    def __init__(self, *args, **kwargs):
+        """Initialize form with translated choices."""
+        super().__init__(*args, **kwargs)
+        self.type.choices = get_question_type_choices()
 
 
 class QuestionOptionForm(FlaskForm):
     """Formulario para crear/editar una opción de pregunta."""
 
-    text = StringField("Texto de la opción", validators=[DataRequired()])
-    is_correct = BooleanField("Es correcta")
+    text = StringField(_("Texto de la opción"), validators=[DataRequired()])
+    is_correct = BooleanField(_("Es correcta"))
 
 
 class EvaluationReopenRequestForm(FlaskForm):
     """Formulario para solicitar reabrir una evaluación."""
 
-    justification_text = TextAreaField("Justificación", validators=[DataRequired()], render_kw={"rows": 4})
+    justification_text = TextAreaField(_("Justificación"), validators=[DataRequired()], render_kw={"rows": 4})
 
 
 class TakeEvaluationForm(FlaskForm):
@@ -729,42 +843,42 @@ class TakeEvaluationForm(FlaskForm):
 class ForoMensajeForm(FlaskForm):
     """Formulario para crear un nuevo mensaje del foro."""
 
-    contenido = MdeField("Mensaje", validators=[DataRequired()])
+    contenido = MdeField(_("Mensaje"), validators=[DataRequired()])
     parent_id = HiddenField()
 
 
 class ForoMensajeRespuestaForm(FlaskForm):
     """Formulario para responder a un mensaje del foro."""
 
-    contenido = MdeField("Respuesta", validators=[DataRequired()])
+    contenido = MdeField(_("Respuesta"), validators=[DataRequired()])
 
 
 class AnnouncementBaseForm(FlaskForm):
     """Formulario base para crear/editar anuncios sin campos de BaseForm."""
 
     title = StringField(LABEL_TITULO, validators=[DataRequired()])
-    message = MdeField("Mensaje", validators=[DataRequired()])
-    expires_at = DateField("Fecha de expiración", validators=[], render_kw={"placeholder": "Opcional"})
+    message = MdeField(_("Mensaje"), validators=[DataRequired()])
+    expires_at = DateField(_("Fecha de expiración"), validators=[], render_kw={"placeholder": _("Opcional")})
 
 
 class AnnouncementForm(BaseForm):
     """Formulario para anuncios que requiere campos de BaseForm."""
 
     title = StringField(LABEL_TITULO, validators=[DataRequired()])
-    message = MdeField("Mensaje", validators=[DataRequired()])
-    expires_at = DateField("Fecha de expiración", validators=[], render_kw={"placeholder": "Opcional"})
+    message = MdeField(_("Mensaje"), validators=[DataRequired()])
+    expires_at = DateField(_("Fecha de expiración"), validators=[], render_kw={"placeholder": _("Opcional")})
 
 
 class GlobalAnnouncementForm(AnnouncementForm):
     """Formulario para anuncios globales (solo administradores)."""
 
-    is_sticky = BooleanField("Anuncio destacado")
+    is_sticky = BooleanField(_("Anuncio destacado"))
 
 
 class CourseAnnouncementForm(AnnouncementBaseForm):
     """Formulario para anuncios de curso (instructores)."""
 
-    course_id = SelectField("Curso", coerce=str, validators=[DataRequired()])
+    course_id = SelectField(_("Curso"), coerce=str, validators=[DataRequired()])
 
 
 # ---------------------------------------------------------------------------------------
@@ -775,22 +889,27 @@ class CourseAnnouncementForm(AnnouncementBaseForm):
 class CouponForm(BaseForm):
     """Formulario para crear y editar cupones de descuento."""
 
-    code = StringField("Código del Cupón", validators=[DataRequired()], render_kw={"placeholder": "Ej: DESCUENTO50"})
+    code = StringField(_("Código del Cupón"), validators=[DataRequired()], render_kw={"placeholder": _("Ej: DESCUENTO50")})
     discount_type = SelectField(
-        "Tipo de Descuento",
-        choices=[("percentage", "Porcentaje"), ("fixed", "Cantidad Fija")],
+        _("Tipo de Descuento"),
+        choices=[],
         default="percentage",
         validators=[DataRequired()],
     )
-    discount_value = DecimalField("Valor del Descuento", validators=[DataRequired()], render_kw={"min": "0"})
-    max_uses = IntegerField("Máximo de Usos", render_kw={"min": "1", "placeholder": "Dejar vacío para ilimitado"})
-    expires_at = DateField("Fecha de Expiración", render_kw={"placeholder": "Dejar vacío si no expira"})
+    discount_value = DecimalField(_("Valor del Descuento"), validators=[DataRequired()], render_kw={"min": "0"})
+    max_uses = IntegerField(_("Máximo de Usos"), render_kw={"min": "1", "placeholder": _("Dejar vacío para ilimitado")})
+    expires_at = DateField(_("Fecha de Expiración"), render_kw={"placeholder": _("Dejar vacío si no expira")})
+
+    def __init__(self, *args, **kwargs):
+        """Initialize form with translated choices."""
+        super().__init__(*args, **kwargs)
+        self.discount_type.choices = get_discount_type_choices()
 
 
 class CouponApplicationForm(FlaskForm):
     """Formulario para aplicar un cupón durante la inscripción."""
 
-    coupon_code = StringField("Código de Cupón", render_kw={"placeholder": "Código de cupón (opcional)"})
+    coupon_code = StringField(_("Código de Cupón"), render_kw={"placeholder": _("Código de cupón (opcional)")})
 
 
 # Blog forms
@@ -798,25 +917,27 @@ class BlogPostForm(BaseForm):
     """Formulario para crear/editar entradas de blog."""
 
     title = StringField(LABEL_TITULO, validators=[DataRequired()])
-    content = MdeField("Contenido", validators=[DataRequired()])
-    allow_comments = BooleanField("Permitir comentarios", default=True)
-    tags = StringField("Etiquetas (separadas por comas)")
-    status = SelectField(
-        "Estado",
-        choices=[("draft", "Borrador"), ("pending", "Pendiente"), ("published", "Publicado"), ("banned", "Baneado")],
-    )
+    content = MdeField(_("Contenido"), validators=[DataRequired()])
+    allow_comments = BooleanField(_("Permitir comentarios"), default=True)
+    tags = StringField(_("Etiquetas (separadas por comas)"))
+    status = SelectField(_("Estado"), choices=[], validators=[])
+
+    def __init__(self, *args, **kwargs):
+        """Initialize form with translated choices."""
+        super().__init__(*args, **kwargs)
+        self.status.choices = get_blog_status_choices()
 
 
 class BlogTagForm(BaseForm):
     """Formulario para crear etiquetas de blog."""
 
-    name = StringField("Nombre", validators=[DataRequired()])
+    name = StringField(_("Nombre"), validators=[DataRequired()])
 
 
 class BlogCommentForm(BaseForm):
     """Formulario para comentarios de blog."""
 
-    content = TextAreaField("Comentario", validators=[DataRequired()])
+    content = TextAreaField(_("Comentario"), validators=[DataRequired()])
 
 
 # ---------------------------------------------------------------------------------------
@@ -828,27 +949,35 @@ class AdminCourseEnrollmentForm(FlaskForm):
     """Formulario para inscripción administrativa de estudiantes a cursos."""
 
     student_username = StringField(
-        "Usuario del Estudiante", validators=[DataRequired()], render_kw={"placeholder": "Nombre de usuario del estudiante"}
+        _("Usuario del Estudiante"),
+        validators=[DataRequired()],
+        render_kw={"placeholder": _("Nombre de usuario del estudiante")},
     )
     bypass_payment = BooleanField(
-        "Omitir Pago",
+        _("Omitir Pago"),
         default=True,
-        render_kw={"title": "Si está marcado, el estudiante tendrá acceso completo sin importar si el curso es pagado"},
+        render_kw={"title": _("Si está marcado, el estudiante tendrá acceso completo sin importar si el curso es pagado")},
     )
-    notes = TextAreaField("Notas (opcional)", render_kw={"rows": 3, "placeholder": "Notas adicionales sobre la inscripción"})
+    notes = TextAreaField(
+        _("Notas (opcional)"), render_kw={"rows": 3, "placeholder": _("Notas adicionales sobre la inscripción")}
+    )
 
 
 class AdminProgramEnrollmentForm(FlaskForm):
     """Formulario para inscripción administrativa de estudiantes a programas."""
 
     student_username = StringField(
-        "Usuario del Estudiante", validators=[DataRequired()], render_kw={"placeholder": "Nombre de usuario del estudiante"}
+        _("Usuario del Estudiante"),
+        validators=[DataRequired()],
+        render_kw={"placeholder": _("Nombre de usuario del estudiante")},
     )
     bypass_payment = BooleanField(
-        "Omitir Pago",
+        _("Omitir Pago"),
         default=True,
         render_kw={
-            "title": "Si está marcado, el estudiante tendrá acceso completo a todos los cursos sin importar si son pagados"
+            "title": _("Si está marcado, el estudiante tendrá acceso completo a todos los cursos sin importar si son pagados")
         },
     )
-    notes = TextAreaField("Notas (opcional)", render_kw={"rows": 3, "placeholder": "Notas adicionales sobre la inscripción"})
+    notes = TextAreaField(
+        _("Notas (opcional)"), render_kw={"rows": 3, "placeholder": _("Notas adicionales sobre la inscripción")}
+    )

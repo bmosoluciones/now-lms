@@ -129,22 +129,24 @@ def verifica_estudiante_asignado_a_curso(id_curso: str | None = None):
 
 def crear_configuracion_predeterminada():
     """Crea configuración predeterminada de la aplicación."""
-    from os import urandom
+    from os import environ, urandom
     from now_lms.i18n import is_testing_mode
 
     # Use Spanish for testing/CI mode, English for production
-    default_lang = "es" if is_testing_mode() else "en"
+    default_lang = environ.get("NOW_LMS_LANG") or ("es" if is_testing_mode() else "en")
+    default_currency = environ.get("NOW_LMS_CURRENCY") or "USD"
+    default_timezone = environ.get("NOW_LMS_TIMEZONE") or "UTC"
 
     config = Configuracion(
         titulo="NOW LMS",
         descripcion=_("Sistema de aprendizaje en linea."),
-        moneda="USD",
+        moneda=default_currency,
         r=urandom(16),
         enable_programs=False,
         enable_masterclass=False,
         enable_resources=False,
         lang=default_lang,
-        time_zone="UTC",
+        time_zone=default_timezone,
     )
     config.enable_programs = False
     config.enable_masterclass = False

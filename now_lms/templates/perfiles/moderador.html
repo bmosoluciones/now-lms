@@ -6,6 +6,24 @@
         <title>{{ _('Panel de Moderación') }}</title>
 
         <style>
+            .moderator-header {
+                background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%);
+                color: white;
+                border-radius: 10px;
+                margin-bottom: 2rem;
+            }
+            .moderator-card {
+                border: none;
+                border-radius: 15px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
+            }
+            .moderator-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            }
             .bd-placeholder-img {
                 font-size: 1.125rem;
                 text-anchor: middle;
@@ -29,11 +47,27 @@
             {{ current_theme.notify() }}
 
             <div class="container px-0 py-3" id="icon-grid">
-                <h4 class="pb-2 border-bottom">
-                    <i class="bi bi-shield-check" aria-hidden="true"></i>
-                    {{ _('Bienvenido Moderador') }} {{ current_user.nombre }} {{ current_user.apellido }}
-                </h4>
-                <p class="text-muted mb-4">{{ _('Gestiona los mensajes y comunicaciones del sistema.') }}</p>
+                <!-- Enhanced Welcome Header -->
+                <div class="moderator-header p-4 mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-1">
+                                <i class="bi bi-shield-check me-2"></i>
+                                {{ _('Bienvenido, Moderador') }} {{ current_user.nombre }} {{ current_user.apellido }}
+                            </h2>
+                            <p class="mb-0 opacity-75">{{ _('Tu centro de moderación y supervisión académica') }}</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a
+                                href="{{ url_for('msg.admin_flagged_messages') }}"
+                                class="btn btn-light"
+                                style="border-radius: 25px"
+                            >
+                                <i class="bi bi-flag me-1"></i> {{ _('Ver Reportes') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-3">
                     <!-- Messages Section -->

@@ -366,6 +366,11 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["verificar_avance_recurso"] = verificar_avance_recurso
     flask_app.jinja_env.globals["version"] = VERSION
 
+    # Demo mode functionality
+    from now_lms.demo_mode import is_demo_mode
+
+    flask_app.jinja_env.globals["demo_mode"] = is_demo_mode
+
     # Add custom Jinja2 filters
     import json
 

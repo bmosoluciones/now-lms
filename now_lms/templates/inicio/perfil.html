@@ -82,7 +82,7 @@
                                 class="btn btn-light me-2"
                                 style="border-radius: 25px"
                             >
-                                <i class="bi bi-pencil-square me-1"></i> Editar Perfil
+                                <i class="bi bi-pencil-square me-1"></i> {{ _('Editar Perfil') }}
                             </a>
                             {% endif %}
                         </div>
@@ -130,46 +130,48 @@
                                     class="btn btn-outline-primary btn-sm flex-fill"
                                     href="{{ url_for('user_profile.edit_perfil', ulid=perfil.id) }}"
                                     role="button"
-                                    ><i class="bi bi-pencil-square me-1"></i> Editar Perfil</a
+                                    ><i class="bi bi-pencil-square me-1"></i> {{ _('Editar Perfil') }}</a
                                 >
                                 <a
                                     class="btn btn-outline-secondary btn-sm flex-fill"
                                     href="{{ url_for('user_profile.cambiar_contraseña', ulid=perfil.id) }}"
                                     role="button"
-                                    ><i class="bi bi-key me-1"></i> Cambiar Contraseña</a
+                                    ><i class="bi bi-key me-1"></i> {{ _('Cambiar Contraseña') }}</a
                                 >
                             </div>
                             {% endif %}
 
                             <!-- User Information -->
                             <div class="info-section">
-                                <h5 class="text-primary mb-3"><i class="bi bi-info-circle me-2"></i>Información Personal</h5>
+                                <h5 class="text-primary mb-3">
+                                    <i class="bi bi-info-circle me-2"></i>{{ _('Información Personal') }}
+                                </h5>
 
                                 {% if perfil.bio %}
                                 <div class="mb-3">
-                                    <strong>Sobre mí:</strong>
+                                    <strong>{{ _('Sobre mí') }}:</strong>
                                     <p class="mb-0 text-muted">{{ perfil.bio }}</p>
                                 </div>
                                 {% endif %}
 
                                 <div class="row g-2 mb-3">
                                     <div class="col-6">
-                                        <small class="text-muted">Género:</small><br />
+                                        <small class="text-muted">{{ _('Género') }}:</small><br />
                                         <span>{{ genero[perfil.genero] | safe }}</span>
                                     </div>
                                     <div class="col-6">
-                                        <small class="text-muted">Usuario:</small><br />
+                                        <small class="text-muted">{{ _('Usuario') }}:</small><br />
                                         <span>{{ perfil.usuario }}</span>
                                     </div>
                                 </div>
 
                                 <div class="row g-2 mb-3">
                                     <div class="col-6">
-                                        <small class="text-muted">Nacimiento:</small><br />
+                                        <small class="text-muted">{{ _('Nacimiento') }}:</small><br />
                                         <span>{{ perfil.nacimiento }}</span>
                                     </div>
                                     <div class="col-6">
-                                        <small class="text-muted">Fecha de Alta:</small><br />
+                                        <small class="text-muted">{{ _('Fecha de Alta') }}:</small><br />
                                         <span>{{ perfil.fecha_alta }}</span>
                                     </div>
                                 </div>
@@ -179,10 +181,15 @@
                             {% if perfil.url or perfil.linkedin or perfil.twitter or perfil.facebook or perfil.github or
                             perfil.youtube %}
                             <div class="info-section">
-                                <h6 class="text-primary mb-3"><i class="bi bi-share me-2"></i>Enlaces Sociales</h6>
+                                <h6 class="text-primary mb-3"><i class="bi bi-share me-2"></i>{{ _('Enlaces Sociales') }}</h6>
                                 <div class="social-links text-center">
                                     {% if perfil.url %}
-                                    <a href="{{ perfil.url }}" class="text-primary" target="_blank" title="Sitio Web">
+                                    <a
+                                        href="{{ perfil.url }}"
+                                        class="text-primary"
+                                        target="_blank"
+                                        title="{{ _('Sitio Web') }}"
+                                    >
                                         <i class="bi bi-globe"></i>
                                     </a>
                                     {% endif %} {% if perfil.linkedin %}
@@ -246,8 +253,10 @@
                                     <i class="bi bi-book text-success stat-icon"></i>
                                 </div>
                                 <div>
-                                    <h4 class="mb-1"><i class="bi bi-book me-2"></i>Mis Cursos Inscritos</h4>
-                                    <p class="text-muted mb-0">Explora tus cursos activos y progreso de aprendizaje</p>
+                                    <h4 class="mb-1"><i class="bi bi-book me-2"></i>{{ _('Mis Cursos Inscritos') }}</h4>
+                                    <p class="text-muted mb-0">
+                                        {{ _('Explora tus cursos activos y progreso de aprendizaje') }}
+                                    </p>
                                 </div>
                             </div>
 
@@ -273,9 +282,9 @@
                             {% else %}
                             <div class="text-center py-4">
                                 <i class="bi bi-book text-muted" style="font-size: 3rem"></i>
-                                <p class="text-muted mt-2">No tienes cursos inscritos actualmente.</p>
+                                <p class="text-muted mt-2">{{ _('No tienes cursos inscritos actualmente.') }}</p>
                                 <a href="{{ url_for('course.lista_cursos') }}" class="btn btn-outline-success">
-                                    <i class="bi bi-search me-1"></i>Explorar Cursos
+                                    <i class="bi bi-search me-1"></i>{{ _('Explorar Cursos') }}
                                 </a>
                             </div>
                             {% endif %}
@@ -287,8 +296,8 @@
                                     <i class="bi bi-award text-warning stat-icon"></i>
                                 </div>
                                 <div>
-                                    <h4 class="mb-1"><i class="bi bi-award me-2"></i>Mis Certificaciones</h4>
-                                    <p class="text-muted mb-0">Tus logros y certificaciones obtenidas</p>
+                                    <h4 class="mb-1"><i class="bi bi-award me-2"></i>{{ _('Mis Certificaciones') }}</h4>
+                                    <p class="text-muted mb-0">{{ _('Tus logros y certificaciones obtenidas') }}</p>
                                 </div>
                             </div>
 
@@ -303,11 +312,15 @@
                                         <div class="card-body">
                                             <h6 class="card-title text-warning">{{ item.curso.nombre }}</h6>
                                             <p class="card-text">
-                                                <small class="text-muted">Fecha: {{ item.certificacion.fecha }}</small>
+                                                <small class="text-muted"
+                                                    >{{ _('Fecha') }}: {{ item.certificacion.fecha }}</small
+                                                >
                                             </p>
                                             {% if item.certificacion.nota %}
                                             <p class="card-text">
-                                                <small class="text-muted">Nota: {{ item.certificacion.nota }}</small>
+                                                <small class="text-muted"
+                                                    >{{ _('Nota') }}: {{ item.certificacion.nota }}</small
+                                                >
                                             </p>
                                             {% endif %}
                                         </div>
@@ -318,7 +331,7 @@
                             {% else %}
                             <div class="text-center py-4">
                                 <i class="bi bi-award text-muted" style="font-size: 3rem"></i>
-                                <p class="text-muted mt-2">No tienes certificaciones obtenidas aún.</p>
+                                <p class="text-muted mt-2">{{ _('No tienes certificaciones obtenidas aún.') }}</p>
                             </div>
                             {% endif %}
                         </div>
@@ -327,9 +340,12 @@
                         <div class="profile-card p-4">
                             <div class="row align-items-center">
                                 <div class="col-md-8">
-                                    <h4 class="mb-2"><i class="bi bi-house-door text-primary me-2"></i>Panel de Estudiante</h4>
+                                    <h4 class="mb-2">
+                                        <i class="bi bi-house-door text-primary me-2"></i>{{ _('Panel de Estudiante') }}
+                                    </h4>
                                     <p class="text-muted mb-0">
-                                        Accede al panel de estudiante para gestionar tu aprendizaje de manera completa.
+                                        {{ _('Accede al panel de estudiante para gestionar tu aprendizaje de manera completa.')
+                                        }}
                                     </p>
                                 </div>
                                 <div class="col-md-4 text-end">
@@ -338,7 +354,7 @@
                                         class="btn btn-success"
                                         style="border-radius: 25px"
                                     >
-                                        <i class="bi bi-mortarboard me-1"></i> Ir al Panel
+                                        <i class="bi bi-mortarboard me-1"></i> {{ _('Ir al Panel') }}
                                     </a>
                                 </div>
                             </div>
@@ -351,7 +367,7 @@
                                     <i class="bi bi-mortarboard text-primary stat-icon"></i>
                                 </div>
                                 <div>
-                                    <h4 class="mb-1"><i class="bi bi-mortarboard me-2"></i>Mis Cursos Creados</h4>
+                                    <h4 class="mb-1"><i class="bi bi-mortarboard me-2"></i>{{ _('Mis Cursos Creados') }}</h4>
                                     <p class="text-muted mb-0">Cursos que has desarrollado y publicas</p>
                                 </div>
                             </div>
@@ -390,9 +406,11 @@
                         <div class="profile-card p-4">
                             <div class="row align-items-center">
                                 <div class="col-md-8">
-                                    <h4 class="mb-2"><i class="bi bi-bank2 text-primary me-2"></i>Panel de Instructor</h4>
+                                    <h4 class="mb-2">
+                                        <i class="bi bi-bank2 text-primary me-2"></i>{{ _('Panel de Instructor') }}
+                                    </h4>
                                     <p class="text-muted mb-0">
-                                        Accede al panel de instructor para gestionar cursos, evaluaciones y más.
+                                        {{ _('Accede al panel de instructor para gestionar cursos, evaluaciones y más.') }}
                                     </p>
                                 </div>
                                 <div class="col-md-4 text-end">
@@ -401,7 +419,7 @@
                                         class="btn btn-primary"
                                         style="border-radius: 25px"
                                     >
-                                        <i class="bi bi-mortarboard me-1"></i> Ir al Panel
+                                        <i class="bi bi-mortarboard me-1"></i> {{ _('Ir al Panel') }}
                                     </a>
                                 </div>
                             </div>
@@ -412,10 +430,10 @@
                             <div class="row align-items-center">
                                 <div class="col-md-8">
                                     <h4 class="mb-2">
-                                        <i class="bi bi-shield-check text-danger me-2"></i>Panel de Administración
+                                        <i class="bi bi-shield-check text-danger me-2"></i>{{ _('Panel de Administración') }}
                                     </h4>
                                     <p class="text-muted mb-0">
-                                        Accede al panel de administración para gestionar el sistema completo.
+                                        {{ _('Accede al panel de administración para gestionar el sistema completo.') }}
                                     </p>
                                 </div>
                                 <div class="col-md-4 text-end">
@@ -424,7 +442,7 @@
                                         class="btn btn-danger"
                                         style="border-radius: 25px"
                                     >
-                                        <i class="bi bi-tools me-1"></i> Ir al Panel
+                                        <i class="bi bi-tools me-1"></i> {{ _('Ir al Panel') }}
                                     </a>
                                 </div>
                             </div>
@@ -434,8 +452,12 @@
                         <div class="profile-card p-4">
                             <div class="row align-items-center">
                                 <div class="col-md-8">
-                                    <h4 class="mb-2"><i class="bi bi-chat-dots text-info me-2"></i>Panel de Moderación</h4>
-                                    <p class="text-muted mb-0">Gestiona los mensajes y comunicaciones del sistema.</p>
+                                    <h4 class="mb-2">
+                                        <i class="bi bi-chat-dots text-info me-2"></i>{{ _('Panel de Moderación') }}
+                                    </h4>
+                                    <p class="text-muted mb-0">
+                                        {{ _('Gestiona los mensajes y comunicaciones del sistema.') }}
+                                    </p>
                                 </div>
                                 <div class="col-md-4 text-end">
                                     <a
@@ -443,7 +465,7 @@
                                         class="btn btn-info"
                                         style="border-radius: 25px"
                                     >
-                                        <i class="bi bi-gear me-1"></i> Ir al Panel
+                                        <i class="bi bi-gear me-1"></i> {{ _('Ir al Panel') }}
                                     </a>
                                 </div>
                             </div>

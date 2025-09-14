@@ -9,7 +9,7 @@
         {{ current_theme.local_style() }}
         <style>
             .moderator-header {
-                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                background: linear-gradient(135deg, #dc3545 0%, #a71e2a 100%);
                 color: white;
                 border-radius: 10px;
                 margin-bottom: 2rem;
@@ -209,7 +209,8 @@
                                                 </h6>
                                                 <small class="text-muted">
                                                     <i class="bi bi-calendar3 me-1"></i>
-                                                    Creado: {{ curso.creado.strftime('%d/%m/%Y') if curso.creado else 'N/A' }}
+                                                    {{ _('Creado') }}: {{ curso.creado.strftime('%d/%m/%Y') if curso.creado
+                                                    else 'N/A' }}
                                                 </small>
                                             </div>
                                             <div class="col-auto">

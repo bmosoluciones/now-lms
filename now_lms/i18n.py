@@ -81,7 +81,9 @@ def get_configuracion():
         # Fallback en caso de que no haya configuración cargada
         # Use Spanish for testing/CI mode, English for production
         default_lang = "es" if is_testing_mode() else "en"
-        config = Configuracion(lang=default_lang, time_zone="UTC", titulo="Título por defecto", descripcion="Descripción")
+        config = Configuracion(
+            lang=default_lang, time_zone="UTC", titulo=_("Título por defecto"), descripcion=_("Descripción")
+        )
     return config
 
 
@@ -122,7 +124,7 @@ def get_timezone() -> str:
 def invalidate_configuracion_cache() -> None:
     """Invalida la caché de configuración cuando se actualice."""
     cache.delete("configuracion_global")
-    log.trace("Cache de configuración invalidada")
+    log.trace(_("Cache de configuración invalidada"))
 
 
 # Guia de uso:

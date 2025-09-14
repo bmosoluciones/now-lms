@@ -54,8 +54,8 @@ Always follow these exact steps in order:
 **CRITICAL**: Always run tests to validate any code changes.
 
 ```bash
-# Run full test suite (recommended)
-python -m pytest tests/ -v --exitfirst
+# Run full test suite (required)
+source source venv/bin/activate && bash dev/test.sh
 ```
 
 **Timing**: Takes ~57 seconds. NEVER CANCEL. Set timeout to 15+ minutes.
@@ -70,11 +70,6 @@ python -m pytest tests/test_all_routes_comprehensive.py -v
 CI=True pytest -v --exitfirst --cov=now_lms
 ```
 
-```bash
-# Alternative: Use development test script (includes linting)
-./dev/test.sh
-```
-
 **Timing**: Takes ~76 seconds. NEVER CANCEL. Set timeout to 15+ minutes.
 
 ### Run the Application
@@ -82,7 +77,7 @@ CI=True pytest -v --exitfirst --cov=now_lms
 **Production Mode (Recommended for Validation)**:
 
 ```bash
-python -m now_lms
+venv/bin/lmsctl serve
 ```
 
 **Timing**: Starts in ~2 seconds. Application runs on http://127.0.0.1:8080/
@@ -152,22 +147,12 @@ python -m pytest tests/test_basicos.py::TestBasicos::test_importable -v
 
 Should pass in ~1 second.
 
-```bash
-# Test application startup (production mode)
-python -m now_lms &
-sleep 3
-curl -I http://127.0.0.1:8080/
-pkill -f "python -m now_lms"
-```
-
-Should return HTTP 200 OK.
-
 **ALWAYS test these scenarios after making changes**:
 
 1. **Basic Application Startup**:
 
     ```bash
-    python -m now_lms
+    venv/bin/lmsctl serve
     curl -I http://127.0.0.1:8080/
     ```
 
@@ -286,3 +271,4 @@ Use those fictures to improved tests time execution.
 4. **isolated_db_session**: Function-scoped session for modifying data while using session fixtures
 
 **ALWAYS ensure your changes pass all these checks locally before committing.**
+**ALWAYS mark new string to translation before committing.**

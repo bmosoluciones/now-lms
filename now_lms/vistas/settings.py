@@ -53,6 +53,61 @@ SETTING_MAIL_ROUTE = "setting.mail"
 setting = Blueprint("setting", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
+def invalidar_cache():
+    """
+    Invalida comprensivamente todas las entradas de la cache relacionadas con la configuración del sistema.
+
+    Esta función debe ejecutarse al actualizar la configuración o la apariencia del sistema para asegurar
+    que los usuarios no vean información incorrecta o desactualizada.
+
+    Invalida:
+    - Configuración global del sistema (moneda, lenguaje, zona horaria)
+    - Configuración de navegación (programas, masterclass, recursos, blog)
+    - Configuración del sitio (título, descripción)
+    - Logos y favicons personalizados
+    - Estilos y temas
+    - Configuración de PayPal
+    - Configuración de idioma para Babel
+    - Todas las demás entradas de cache del sistema
+
+    Returns:
+        bool: True if cache invalidation was successful, False otherwise
+    """
+    try:
+        # Invalidate specific configuration caches
+        cache.delete("configuracion_global")  # i18n configuration
+        cache.delete("site_config")  # site configuration
+        cache.delete("global_config")  # global config from db/tools.py
+
+        # Invalidate navigation configuration caches
+        cache.delete("nav_programs_enabled")
+        cache.delete("nav_masterclass_enabled")
+        cache.delete("nav_resources_enabled")
+        cache.delete("nav_blog_enabled")
+
+        # Invalidate appearance caches
+        cache.delete("cached_style")
+        cache.delete("cached_logo")
+        cache.delete("cached_favicon")
+
+        # Invalidate PayPal configuration caches
+        from now_lms.vistas.paypal import get_site_currency, check_paypal_enabled
+
+        cache.delete_memoized(get_site_currency)
+        cache.delete_memoized(check_paypal_enabled)
+
+        # Clear all remaining cache entries to ensure complete invalidation
+        # This is safe for configuration changes as they are infrequent operations
+        invalidate_all_cache()
+
+        log.trace("Comprehensive cache invalidation completed successfully")
+        return True
+
+    except Exception as e:
+        log.error(f"Error during comprehensive cache invalidation: {e}")
+        return False
+
+
 @setting.route("/setting/theming", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
@@ -81,7 +136,6 @@ def personalizacion():
                 picture_file = images.save(request.files["logo"], name="logotipo.jpg")
                 if picture_file:
                     config.custom_logo = True
-                    cache.delete("cached_logo")
 
             except UploadNotAllowed:
                 log.warning("An error occurred while updating the website logo.")
@@ -91,19 +145,21 @@ def personalizacion():
                 picture_file = images.save(request.files["favicon"], name="favicon.png")
                 if picture_file:
                     config.custom_favicon = True
-                    cache.delete("cached_favicon")
 
             except UploadNotAllowed:
                 log.warning("An error occurred while updating the website favicon.")
 
         try:
             database.session.commit()
-            cache.delete("cached_style")
 
-            # Invalidate all cache if theme changed
+            # Always invalidate cache when appearance settings change
+            # This includes theme changes, logo updates, and favicon updates
+            invalidar_cache()
+
             if theme_changed:
-                invalidate_all_cache()
-                log.trace(f"Theme changed from {old_theme} to {new_theme}, cache invalidated")
+                log.trace(f"Theme changed from {old_theme} to {new_theme}, comprehensive cache invalidated")
+            else:
+                log.trace("Appearance settings updated, comprehensive cache invalidated")
 
             flash(_("Tema del sitio web actualizado exitosamente."), "success")
             return redirect(url_for(SETTING_PERSONALIZACION_ROUTE))
@@ -160,18 +216,8 @@ def configuracion():
                 config.verify_user_by_email = True
 
         try:
-            # Clear navigation cache when configuration changes
-            cache.delete("site_config")
-            cache.delete("global_config")
-            cache.delete("nav_programs_enabled")
-            cache.delete("nav_masterclass_enabled")
-            cache.delete("nav_resources_enabled")
-            cache.delete("nav_blog_enabled")
-
-            # Invalidate site currency cache when configuration changes
-            from now_lms.vistas.paypal import get_site_currency
-
-            cache.delete_memoized(get_site_currency)
+            # Invalidate all configuration-related cache
+            invalidar_cache()
 
             database.session.commit()
             flash(_("Sitio web actualizado exitosamente."), "success")
@@ -203,6 +249,11 @@ def mail():
     )
 
     if form.validate_on_submit() or request.method == "POST":
+        from now_lms.demo_mode import demo_restriction_check
+
+        # Check demo mode restrictions for mail settings
+        if demo_restriction_check("mail_settings"):
+            return render_template("admin/mail.html", form=form, config=config)
 
         config.MAIL_SERVER = form.MAIL_SERVER.data
         config.MAIL_PORT = form.MAIL_PORT.data
@@ -216,6 +267,11 @@ def mail():
 
         try:
             database.session.commit()
+
+            # Invalidate cache when mail configuration changes
+            # This ensures mail-related settings are properly refreshed
+            invalidar_cache()
+
             flash(_("Configuración de correo electronico actualizada exitosamente."), "success")
             return redirect(url_for(SETTING_MAIL_ROUTE))
 
@@ -253,6 +309,11 @@ def mail_check():
     form = CheckMailForm()
 
     if form.validate_on_submit() or request.method == "POST":
+        from now_lms.demo_mode import demo_restriction_check
+
+        # Check demo mode restrictions for sending test mail
+        if demo_restriction_check("send_test_mail"):
+            return render_template("admin/mail_check.html", form=form)
 
         from flask_mail import Message
 
@@ -324,6 +385,11 @@ def adsense():
     )
 
     if form.validate_on_submit() or request.method == "POST":
+        from now_lms.demo_mode import demo_restriction_check
+
+        # Check demo mode restrictions for AdSense settings
+        if demo_restriction_check("adsense_settings"):
+            return render_template("admin/adsense.html", form=form, config=config)
 
         config.meta_tag = form.meta_tag.data
         config.meta_tag_include = form.meta_tag_include.data
@@ -341,6 +407,11 @@ def adsense():
 
         try:
             database.session.commit()
+
+            # Invalidate cache when AdSense configuration changes
+            # This ensures ad settings are properly refreshed across the site
+            invalidar_cache()
+
             flash(_("Configuración de Google AdSense actualizada exitosamente."), "success")
             return redirect(url_for("setting.adsense"))
 
@@ -410,6 +481,11 @@ def paypal():
     )
 
     if form.validate_on_submit() or request.method == "POST":
+        from now_lms.demo_mode import demo_restriction_check
+
+        # Check demo mode restrictions for PayPal settings
+        if demo_restriction_check("paypal_settings"):
+            return render_template("admin/paypal.html", form=form, config=config, with_paypal=True)
 
         # Validate PayPal configuration if enabling PayPal
         if form.habilitado.data:
@@ -451,6 +527,11 @@ def paypal():
 
         try:
             database.session.commit()
+
+            # Invalidate cache when PayPal configuration changes
+            # This ensures payment settings and currency info are properly refreshed
+            invalidar_cache()
+
             flash(_("Configuración de Paypal actualizada exitosamente."), "success")
             return redirect(url_for("setting.paypal"))
 

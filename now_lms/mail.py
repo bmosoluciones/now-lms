@@ -37,6 +37,7 @@ from flask_mail import Mail, Message
 from now_lms.auth import descifrar_secreto
 from now_lms.config import DESARROLLO
 from now_lms.db import MailConfig, database
+from now_lms.i18n import _
 from now_lms.logs import LOG_LEVEL
 from now_lms.logs import log as logger
 
@@ -65,10 +66,10 @@ def _load_mail_config_from_env() -> SimpleNamespace:
     mail_username = environ.get("MAIL_USERNAME", None)
     mail_password = environ.get("MAIL_PASSWORD", None)
     if mail_server and mail_port and mail_username and mail_password:
-        logger.debug("Configuración de correo electrónico cargada desde variables de entorno.")
+        logger.debug(_("Configuración de correo electrónico cargada desde variables de entorno."))
         is_mail_configured = True
     else:
-        logger.trace("No se encontró configuración de correo electrónico en variables de entorno.")
+        logger.trace(_("No se encontró configuración de correo electrónico en variables de entorno."))
         is_mail_configured = False
     # TLS/SSL settings
     mail_use_tls = environ.get("MAIL_USE_TLS", "False").capitalize()
@@ -103,7 +104,7 @@ def _load_mail_config_from_env() -> SimpleNamespace:
 
 def _load_mail_config_from_db() -> SimpleNamespace:
     """Carga la configuración de correo electrónico desde la base de datos."""
-    logger.trace("Obteniendo configuración de correo electronico desde base de datos.")
+    logger.trace(_("Obteniendo configuración de correo electronico desde base de datos."))
     with current_app.app_context():
         mail_config = database.session.execute(database.select(MailConfig)).first()[0]
 
@@ -149,15 +150,21 @@ def send_threaded_email(app: Flask, mail: Mail, msg: Message, _log: str = "", _f
     logger.trace(f"Enviando correo a {msg.recipients} en segundo plano.")
     try:
         with app.app_context():
-            logger.trace("Intentando enviar correo electrónico en segundo plano.")
+            logger.trace(_("Intentando enviar correo electrónico en segundo plano."))
             mail.send(msg)
-            logger.trace(f"Correo enviado a {msg.recipients}.")
+            logger.trace(_("Correo enviado a {recipients}.").format(recipients=msg.recipients))
             if _log != "":
                 logger.info(_log)
             if _flush != "":
                 flash(_flush)
     except Exception as e:
-        logger.error(f"Error al enviar correo a {msg.recipients}: {e}")
+        logger.error(
+            _("Error al enviar correo a %(recipients)s: %(error)s")
+            % {
+                "recipients": msg.recipients,
+                "error": e,
+            }
+        )
 
 
 def send_mail(msg: Message, background: bool = True, no_config: bool = False, _log: str = "", _flush: str = ""):
@@ -181,23 +188,23 @@ def send_mail(msg: Message, background: bool = True, no_config: bool = False, _l
     if DESARROLLO:
         _app.config["MAIL_SUPPRESS_SEND"] = True
 
-    logger.trace("Configuración de correo electrónico cargada en la aplicación Flask.")
+    logger.trace(_("Configuración de correo electrónico cargada en la aplicación Flask."))
 
-    logger.trace("Creando instancia de Flask-Mail.")
+    logger.trace(_("Creando instancia de Flask-Mail."))
     _mail = Mail(_app)
 
     if config.mail_configured or no_config:
-        logger.trace("Configuración de correo electrónico verificada.")
+        logger.trace(_("Configuración de correo electrónico verificada."))
         if background:
-            logger.trace("Enviando correo en segundo plano.")
+            logger.trace(_("Enviando correo en segundo plano."))
             try:
                 hilo = threading.Thread(target=send_threaded_email, args=(_app, _mail, msg, _log, _flush))
                 hilo.start()
-                logger.trace(f"Hilo iniciado para enviar email a: {msg.recipients}")
+                logger.trace(_("Hilo iniciado para enviar email a: {recipients}").format(recipients=msg.recipients))
             except Exception as e:
-                logger.error(f"No se pudo iniciar el hilo de envío de correo: {e}")
+                logger.error(_("No se pudo iniciar el hilo de envío de correo: {error}").format(error=e))
         else:
-            logger.trace("Enviando correo de forma síncrona.")
+            logger.trace(_("Enviando correo de forma síncrona."))
             with _app.app_context():
                 _mail.send(msg)
-                logger.trace(f"Correo enviado a {msg.recipients}.")
+                logger.trace(_("Correo enviado a {recipients}.").format(recipients=msg.recipients))

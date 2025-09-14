@@ -7,6 +7,18 @@ All notable changes to this project will be documented in this file.
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/).
 
 
+## [ 0.0.1-rc01 ]
+
+### Changed:
+ - Updated certificate validation page.
+ - Added blog entry in navbar.
+
+### Fixed:
+ - Fixed access error to student certificates issued list.
+ - Error en translation .po file.
+
+-------------------
+
 ## [ 0.0.1b19.dev20250903 ] - 2025-09-10
 
 ### Changed:

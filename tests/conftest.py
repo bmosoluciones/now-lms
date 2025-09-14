@@ -515,3 +515,27 @@ def isolated_db_session(session_full_db_setup):
                     database.session.rollback()
                 except Exception as rollback_error:
                     log.warning(f"Error during session rollback: {rollback_error}")
+
+
+@pytest.fixture(autouse=True)
+def isolate_demo_mode():
+    """
+    Automatically isolate demo mode environment variable for each test.
+    
+    This fixture ensures that the NOW_LMS_DEMO_MODE environment variable
+    is properly isolated between tests to prevent demo mode tests from
+    affecting other unrelated tests.
+    """
+    import os
+    
+    # Store the original value (if any)
+    original_value = os.environ.get("NOW_LMS_DEMO_MODE")
+    
+    yield
+    
+    # Cleanup: restore the original state
+    if original_value is not None:
+        os.environ["NOW_LMS_DEMO_MODE"] = original_value
+    else:
+        # Remove the variable if it wasn't originally set
+        os.environ.pop("NOW_LMS_DEMO_MODE", None)

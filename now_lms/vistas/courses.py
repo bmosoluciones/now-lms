@@ -56,6 +56,7 @@ from ulid import ULID
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
+from now_lms.i18n import _
 from now_lms.bi import (
     asignar_curso_a_instructor,
     cambia_curso_publico,
@@ -2499,6 +2500,56 @@ def slide_show(recurso_code):
     # No se encontró presentación
     flash("Presentación no encontrada.", "error")
     abort(404)
+
+
+@course.route("/my_courses")
+@login_required
+def my_courses():
+    """Show user's courses based on their role."""
+    if current_user.tipo == "student":
+        # Get enrolled courses for students
+        enrolled_courses = (
+            database.session.execute(
+                database.select(Curso)
+                .join(EstudianteCurso, Curso.codigo == EstudianteCurso.curso)
+                .filter(EstudianteCurso.usuario == current_user.usuario)
+                .filter(EstudianteCurso.vigente.is_(True))
+                .order_by(Curso.nombre)
+            )
+            .scalars()
+            .all()
+        )
+
+        return render_template(
+            "learning/my_courses.html", courses=enrolled_courses, user_type="student", page_title=_("Mis Cursos")
+        )
+
+    if current_user.tipo in ("instructor", "admin"):
+        # Get owned courses for instructors
+        if current_user.tipo == "admin":
+            # Admins can see all courses
+            owned_courses = database.session.execute(database.select(Curso).order_by(Curso.nombre)).scalars().all()
+        else:
+            # Instructors see only their assigned courses
+            owned_courses = (
+                database.session.execute(
+                    database.select(Curso)
+                    .join(DocenteCurso, Curso.codigo == DocenteCurso.curso)
+                    .filter(DocenteCurso.usuario == current_user.usuario)
+                    .filter(DocenteCurso.vigente.is_(True))
+                    .order_by(Curso.nombre)
+                )
+                .scalars()
+                .all()
+            )
+
+        return render_template(
+            "learning/my_courses.html", courses=owned_courses, user_type="instructor", page_title=_("Mis Cursos")
+        )
+
+    # For other user types, redirect to course exploration
+    flash(_("Tipo de usuario no autorizado para esta página."), "warning")
+    return redirect(url_for("course.lista_cursos"))
 
 
 @course.route("/course/")
