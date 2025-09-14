@@ -4,7 +4,7 @@
 <html lang="es" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>Mis Evaluaciones</title>
+        <title>{{ _('Mis Evaluaciones') }}</title>
         {{ current_theme.local_style() }}
     </head>
 
@@ -24,16 +24,16 @@
                                     <a
                                         class="text-reset text-decoration-none link-dark"
                                         href="{{ url_for('instructor_profile.pagina_instructor') }}"
-                                        >Panel Instructor</a
+                                        >{{ _('Panel Instructor') }}</a
                                     >
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Mis Evaluaciones</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ _('Mis Evaluaciones') }}</li>
                             </ol>
                         </nav>
                     </h4>
                     <div>
                         <a href="{{ url_for('instructor_profile.nueva_evaluacion_global') }}" class="btn btn-primary">
-                            <i class="bi bi-plus"></i> Nueva Evaluación
+                            <i class="bi bi-plus"></i> {{ _('Nueva Evaluación') }}
                         </a>
                     </div>
                 </div>
@@ -42,8 +42,8 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
-                                <h3>Mis Evaluaciones</h3>
-                                <span class="badge bg-info">{{ evaluaciones|length }} evaluación(es)</span>
+                                <h3>{{ _('Mis Evaluaciones') }}</h3>
+                                <span class="badge bg-info">{{ evaluaciones|length }} {{ _('evaluación(es)') }}</span>
                             </div>
 
                             <div class="card-body">
@@ -52,14 +52,14 @@
                                     <table class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th>Título</th>
-                                                <th>Curso</th>
-                                                <th>Sección</th>
-                                                <th>Tipo</th>
-                                                <th>Puntuación Mínima</th>
-                                                <th>Preguntas</th>
-                                                <th>Estado</th>
-                                                <th>Acciones</th>
+                                                <th>{{ _('Título') }}</th>
+                                                <th>{{ _('Curso') }}</th>
+                                                <th>{{ _('Sección') }}</th>
+                                                <th>{{ _('Tipo') }}</th>
+                                                <th>{{ _('Puntuación Mínima') }}</th>
+                                                <th>{{ _('Preguntas') }}</th>
+                                                <th>{{ _('Estado') }}</th>
+                                                <th>{{ _('Acciones') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -79,19 +79,19 @@
                                                     {% if curso %} {{ curso.nombre }}
                                                     <br /><small class="text-muted">{{ curso.codigo }}</small>
                                                     {% else %}
-                                                    <span class="text-muted">Curso eliminado</span>
+                                                    <span class="text-muted">{{ _('Curso eliminado') }}</span>
                                                     {% endif %}
                                                 </td>
                                                 <td>
                                                     {% if seccion %} {{ seccion.nombre }} {% else %}
-                                                    <span class="text-muted">Sección eliminada</span>
+                                                    <span class="text-muted">{{ _('Sección eliminada') }}</span>
                                                     {% endif %}
                                                 </td>
                                                 <td>
                                                     {% if eval.is_exam %}
-                                                    <span class="badge bg-danger">Examen</span>
+                                                    <span class="badge bg-danger">{{ _('Examen') }}</span>
                                                     {% else %}
-                                                    <span class="badge bg-primary">Quiz</span>
+                                                    <span class="badge bg-primary">{{ _('Quiz') }}</span>
                                                     {% endif %}
                                                 </td>
                                                 <td>{{ eval.passing_score }}%</td>
@@ -100,9 +100,9 @@
                                                 </td>
                                                 <td>
                                                     {% if eval.available_until is none %}
-                                                    <span class="badge bg-success">Habilitada</span>
+                                                    <span class="badge bg-success">{{ _('Habilitada') }}</span>
                                                     {% else %}
-                                                    <span class="badge bg-warning">Deshabilitada</span>
+                                                    <span class="badge bg-warning">{{ _('Deshabilitada') }}</span>
                                                     {% endif %}
                                                 </td>
                                                 <td>
@@ -111,7 +111,7 @@
                                                             href="{{ url_for('instructor_profile.edit_evaluation', evaluation_id=eval.id) }}"
                                                             class="btn btn-outline-primary btn-sm"
                                                         >
-                                                            <i class="bi bi-pencil"></i> Editar
+                                                            <i class="bi bi-pencil"></i> {{ _('Editar') }}
                                                         </a>
 
                                                         {% if curso %}
@@ -119,7 +119,7 @@
                                                             href="{{ url_for('instructor_profile.course_evaluations', course_code=curso.codigo) }}"
                                                             class="btn btn-outline-info btn-sm"
                                                         >
-                                                            <i class="bi bi-eye"></i> Ver Curso
+                                                            <i class="bi bi-eye"></i> {{ _('Ver Curso') }}
                                                         </a>
                                                         {% endif %}
 
@@ -132,13 +132,13 @@
                                                             <button
                                                                 type="submit"
                                                                 class="btn btn-outline-warning btn-sm"
-                                                                onclick="return confirm('¿Está seguro que desea deshabilitar esta evaluación?')"
+                                                                onclick="return confirm('{{ _('¿Está seguro que desea deshabilitar esta evaluación?') }}')"
                                                             >
-                                                                <i class="bi bi-toggle-off"></i> Deshabilitar
+                                                                <i class="bi bi-toggle-off"></i> {{ _('Deshabilitar') }}
                                                             </button>
                                                             {% else %}
                                                             <button type="submit" class="btn btn-outline-success btn-sm">
-                                                                <i class="bi bi-toggle-on"></i> Habilitar
+                                                                <i class="bi bi-toggle-on"></i> {{ _('Habilitar') }}
                                                             </button>
                                                             {% endif %}
                                                         </form>
@@ -152,13 +152,13 @@
                                 {% else %}
                                 <div class="alert alert-info text-center">
                                     <i class="bi bi-info-circle"></i>
-                                    <h5>No hay evaluaciones creadas</h5>
-                                    <p>No ha creado evaluaciones aún. Comience creando su primera evaluación.</p>
+                                    <h5>{{ _('No hay evaluaciones creadas') }}</h5>
+                                    <p>{{ _('No ha creado evaluaciones aún. Comience creando su primera evaluación.') }}</p>
                                     <a
                                         href="{{ url_for('instructor_profile.nueva_evaluacion_global') }}"
                                         class="btn btn-primary"
                                     >
-                                        <i class="bi bi-plus"></i> Crear Primera Evaluación
+                                        <i class="bi bi-plus"></i> {{ _('Crear Primera Evaluación') }}
                                     </a>
                                 </div>
                                 {% endif %}

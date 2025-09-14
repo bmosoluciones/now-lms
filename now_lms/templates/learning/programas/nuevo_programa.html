@@ -19,9 +19,9 @@
             <div class="container px-4 py-5" id="icon-grid">
                 {% if not is_programs_enabled() %}
                 <div class="alert alert-warning" role="alert">
-                    <strong>⚠️ Aviso:</strong> Los programas están deshabilitados en la configuración principal del sitio. Los
-                    usuarios no verán este programa en el menú de navegación hasta que se habilite la opción "Habilitar {{
-                    _("Programas") }}" en la configuración general.
+                    <strong>⚠️ {{ _('Aviso') }}:</strong> {{ _('Los programas están deshabilitados en la configuración
+                    principal del sitio. Los usuarios no verán este programa en el menú de navegación hasta que se habilite la
+                    opción "Habilitar') }} {{ _("Programas") }}" {{ _('en la configuración general.') }}
                 </div>
                 {% endif %}
                 <h4 class="pb-2 border-bottom">{{ _("Crear") }} {{ _("Programa") }}.</h4>
@@ -34,14 +34,14 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="codigo" class="form-label">Codigo</label>
-                            {{ form.codigo(class="form-control", id="codigo", placeholder="Codigo") }}
+                            <label for="codigo" class="form-label">{{ _('Codigo') }}</label>
+                            {{ form.codigo(class="form-control", id="codigo", placeholder=_("Codigo")) }}
                         </div>
                     </div>
 
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="descripcion" class="form-label">Descripcion</label>
+                            <label for="descripcion" class="form-label">{{ _('Descripcion') }}</label>
                             {{ form.descripcion(class="form-control", id="descripcion", placeholder=_("Descripción")) }}
                         </div>
 
@@ -53,21 +53,21 @@
 
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="categoria" class="form-label">Categoría</label>
+                            <label for="categoria" class="form-label">{{ _('Categoría') }}</label>
                             {{ form.categoria(class="form-control", id="categoria") }}
                         </div>
 
                         <div class="col-sm-6">
-                            <label for="etiquetas" class="form-label">Etiquetas</label>
+                            <label for="etiquetas" class="form-label">{{ _('Etiquetas') }}</label>
                             {{ form.etiquetas(class="form-control", id="etiquetas", multiple=True) }}
                             <div class="form-text">
-                                Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples etiquetas.
+                                {{ _('Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples etiquetas.') }}
                             </div>
                         </div>
                     </div>
                     <div class="row g-3">
                         <div class="col-sm-6">
-                            <label for="plantilla_certificado" class="form-label">Plantilla Certificado</label>
+                            <label for="plantilla_certificado" class="form-label">{{ _('Plantilla Certificado') }}</label>
                             {{ form.plantilla_certificado(class="form-control", id="plantilla_certificado") }}
                         </div>
                     </div>

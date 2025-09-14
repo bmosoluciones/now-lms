@@ -31,9 +31,10 @@
 
                         {% if not is_masterclass_enabled() %}
                         <div class="alert alert-warning" role="alert">
-                            <strong>⚠️ Aviso:</strong> Las clases magistrales están deshabilitadas en la configuración
-                            principal del sitio. Los usuarios no verán esta clase magistral en el menú de navegación hasta que
-                            se habilite la opción "Habilitar Master Class" en la configuración general.
+                            <strong>⚠️ {{ _('Aviso') }}:</strong> {{ _('Las clases magistrales están deshabilitadas en la
+                            configuración principal del sitio. Los usuarios no verán esta clase magistral en el menú de
+                            navegación hasta que se habilite la opción "Habilitar Master Class" en la configuración general.')
+                            }}
                         </div>
                         {% endif %}
 
@@ -90,7 +91,7 @@
 
                             <div class="card mt-3">
                                 <div class="card-header">
-                                    <h5>Programación</h5>
+                                    <h5>{{ _('Programación') }}</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
@@ -136,7 +137,7 @@
 
                             <div class="card mt-3">
                                 <div class="card-header">
-                                    <h5>Plataforma</h5>
+                                    <h5>{{ _('Plataforma') }}</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
@@ -170,7 +171,7 @@
 
                             <div class="card mt-3">
                                 <div class="card-header">
-                                    <h5>Certificación</h5>
+                                    <h5>{{ _('Certificación') }}</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="mb-3 form-check">
@@ -196,7 +197,7 @@
 
                             <div class="card mt-3">
                                 <div class="card-header">
-                                    <h5>Grabación (Opcional)</h5>
+                                    <h5>{{ _('Grabación (Opcional)') }}</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="mb-3">
@@ -210,7 +211,7 @@
                                         </div>
                                         {% endif %}
                                         <small class="form-text text-muted"
-                                            >URL de la grabación para acceso posterior al evento.</small
+                                            >{{ _('URL de la grabación para acceso posterior al evento.') }}</small
                                         >
                                     </div>
                                 </div>
