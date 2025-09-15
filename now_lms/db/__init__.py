@@ -161,10 +161,10 @@ class BaseTabla:
                         self.modificado_por = None
 
 
-class SystemInfo(database.Model):
+class SystemInfo(database.Model, BaseTabla):
     """Información basica sobre la instalación."""
 
-    param = database.Column(database.String(20), primary_key=True, nullable=False, index=True)
+    param = database.Column(database.String(20), unique=True, nullable=False, index=True)
     val = database.Column(database.String(100))
 
 
@@ -338,9 +338,15 @@ class CursoRecursoAvance(database.Model, BaseTabla):
     Para que un curso de considere finalizado un alumno debe completar todos los recursos requeridos.
     """
 
-    curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False, index=True)
-    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    curso = database.Column(
+        database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True
+    )
+    recurso = database.Column(
+        database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO, ondelete="CASCADE"), nullable=False, index=True
+    )
+    usuario = database.Column(
+        database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO, ondelete="CASCADE"), nullable=False, index=True
+    )
     completado = database.Column(database.Boolean(), default=False)
     requerido = database.Column(database.String(10))
 
@@ -348,8 +354,12 @@ class CursoRecursoAvance(database.Model, BaseTabla):
 class CursoUsuarioAvance(database.Model, BaseTabla):
     """Control del avance de un usuario en un curso."""
 
-    curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    curso = database.Column(
+        database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True
+    )
+    usuario = database.Column(
+        database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO, ondelete="CASCADE"), nullable=False, index=True
+    )
     recursos_requeridos = database.Column(database.Integer, default=0)  # Cantidad de recursos requeridos
     recursos_completados = database.Column(database.Integer, default=0)  # Cantidad de recursos completados
     avance = database.Column(database.Float(asdecimal=True), default=0.0)  # Porcentaje de avance del curso
@@ -478,24 +488,36 @@ class Files(database.Model, BaseTabla):
 class DocenteCurso(database.Model, BaseTabla):
     """Uno o mas usuario de tipo intructor pueden estar a cargo de un curso."""
 
-    curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    curso = database.Column(
+        database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True
+    )
+    usuario = database.Column(
+        database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO, ondelete="CASCADE"), nullable=False, index=True
+    )
     vigente = database.Column(database.Boolean())
 
 
 class ModeradorCurso(database.Model, BaseTabla):
     """Uno o mas usuario de tipo moderator pueden estar a cargo de un curso."""
 
-    curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    curso = database.Column(
+        database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True
+    )
+    usuario = database.Column(
+        database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO, ondelete="CASCADE"), nullable=False, index=True
+    )
     vigente = database.Column(database.Boolean())
 
 
 class EstudianteCurso(database.Model, BaseTabla):
     """Uno o mas usuario de tipo user pueden estar a cargo de un curso."""
 
-    curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    curso = database.Column(
+        database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True
+    )
+    usuario = database.Column(
+        database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO, ondelete="CASCADE"), nullable=False, index=True
+    )
     vigente = database.Column(database.Boolean())
     pago = database.Column(database.String(26), database.ForeignKey("pago.id"), nullable=True, index=True)
 
@@ -811,18 +833,16 @@ class ForoMensaje(database.Model, BaseTabla):
         database.session.commit()
 
 
-class PagosConfig(database.Model):
+class PagosConfig(database.Model, BaseTabla):
     """Configuración de pagos."""
 
-    id = database.Column(
-        database.String(26), primary_key=True, nullable=False, index=True, default=generador_de_codigos_unicos
-    )
+    # Additional config fields can be added here
+    pass
 
 
-class AdSense(database.Model):
+class AdSense(database.Model, BaseTabla):
     """Configuration for Google AdSense integration."""
 
-    id = database.Column(database.Integer, primary_key=True)
     meta_tag = database.Column(database.String(100))
     meta_tag_include = database.Column(database.Boolean(), default=False)
     pub_id = database.Column(database.String(20))
@@ -840,10 +860,9 @@ class AdSense(database.Model):
     add_billboard = database.Column(database.Text())  # 970x250
 
 
-class PaypalConfig(database.Model):
+class PaypalConfig(database.Model, BaseTabla):
     """Configuration for PayPal payment integration."""
 
-    id = database.Column(database.Integer, primary_key=True)
     enable = database.Column(database.Boolean(), default=False)
     sandbox = database.Column(database.Boolean(), default=False)
     paypal_id = database.Column(database.String(200))
@@ -852,12 +871,9 @@ class PaypalConfig(database.Model):
     paypal_sandbox_secret = database.Column(database.LargeBinary())
 
 
-class Pago(database.Model):
+class Pago(database.Model, BaseTabla):
     """Registro de pagos."""
 
-    id = database.Column(
-        database.String(26), primary_key=True, nullable=False, index=True, default=generador_de_codigos_unicos
-    )
     usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
     moneda = database.Column(database.String(5))  # Ejemplo: USD, EUR, CRC
