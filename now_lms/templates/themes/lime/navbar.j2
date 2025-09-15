@@ -172,6 +172,12 @@
                         <strong><i class="bi bi-code-slash text-success"></i> Python:</strong> {{ pyversion }}
                     </div>
                 </div>
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <strong><i class="bi bi-star-fill text-warning"></i> {{ _('Nombre de Lanzamiento') }}:</strong> {{
+                        code_name }}
+                    </div>
+                </div>
                 {% if current_user.tipo == "admin" %}
                 <hr class="my-3" />
                 <div class="row">
