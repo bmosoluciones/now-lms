@@ -24,86 +24,217 @@ Before creating your first course, ensure you have:
 
 ## Step 2: Configure Course Settings
 
-### Course Level
-Choose the appropriate difficulty level:
-- **0 - Introductory**: No prior knowledge required
-- **1 - Beginner**: Basic familiarity helpful
-- **2 - Intermediate**: Some experience recommended
-- **3 - Advanced**: Significant prior knowledge required
+### Basic Course Identity
+Fill in the essential course information:
 
-### Course Duration
+#### Course Information Fields
+- **Course Name**: Enter a clear, descriptive title that accurately represents the course content
+- **Course Code**: Create a unique identifier (e.g., "INTRO-PYTHON-2024", "ADV-MARKETING-001")
+  - Must be unique across the entire system
+  - Used in URLs and course references
+  - Cannot be changed after course creation
+- **Short Description**: Write a compelling summary (displays in course listings)
+  - Keep it concise but informative
+  - Focus on key benefits and outcomes
+  - Used in course previews and search results
+
+### Course Level and Duration
+Set the appropriate course difficulty and time commitment:
+
+#### Course Level Options
+Choose the appropriate difficulty level:
+- **0 - Introductory (Introductorio)**: No prior knowledge required, perfect for complete beginners
+- **1 - Beginner (Principiante)**: Basic familiarity helpful, minimal background needed
+- **2 - Intermediate (Intermedio)**: Some experience recommended, moderate expertise required
+- **3 - Advanced (Avanzado)**: Significant prior knowledge required, expert-level content
+
+#### Course Duration
 - Set estimated completion time in hours
 - Helps students plan their learning schedule
+- Used for progress tracking and scheduling
+- Consider including both active learning time and practice time
 
-### Course Modality
-Select the learning format:
+### Course Visibility and Access Control
 
-#### Self-Paced
-```
-- Students learn independently
-- No fixed schedule
-- Forums automatically disabled
-- Best for: Individual learning, skill development
-```
+#### Public Course Settings
+- **Public Course**: Toggle to control course visibility
+  - ✅ **Enabled**: Course appears in public catalog for all users to discover
+  - ❌ **Disabled**: Course is private and requires direct enrollment or invitation
+  - Hidden courses can still be accessed via direct link if users have the URL
 
-#### Time-Based
-```
-- Fixed start and end dates
-- Structured schedule
-- Forums enabled for interaction
-- Best for: Cohort learning, group projects
-```
+### Course Modality Options
+Select the learning format that best fits your teaching style and content:
 
-#### Live
+#### Self-Paced (A su propio ritmo)
 ```
-- Real-time instruction
-- Meeting sessions included
-- Interactive discussions
-- Best for: Workshops, seminars
+✅ Students learn independently at their own speed
+✅ No fixed schedule or deadlines
+✅ Forums automatically disabled to maintain individual focus
+✅ Perfect for: Skill development, certification prep, flexible learning
+❌ Limited student interaction
+❌ Requires strong self-motivation
 ```
 
-## Step 3: Payment Configuration
+#### Time-Based (Con tiempo definido)
+```
+✅ Fixed start and end dates provide structure
+✅ Scheduled content release and deadlines
+✅ Forums enabled for student interaction and collaboration
+✅ Cohort-based learning experience
+✅ Perfect for: Group projects, peer learning, structured programs
+❌ Less flexibility for busy students
+❌ Requires active moderation
+```
+
+#### Live (En vivo)
+```
+✅ Real-time instruction with scheduled meetings
+✅ Direct interaction with instructors
+✅ Interactive discussions and Q&A sessions
+✅ Workshop-style learning environment
+✅ Perfect for: Workshops, seminars, hands-on training
+❌ Requires specific time commitment
+❌ May not accommodate all time zones
+❌ Technical requirements for live sessions
+```
+
+## Step 3: Enrollment and Capacity Management
+
+### Course Capacity Settings
+Control how many students can enroll in your course:
+
+#### Unlimited Enrollment
+- **Limited Capacity**: Leave unchecked for unlimited enrollment
+- Suitable for online courses with scalable content
+- No registration restrictions
+- Students can enroll anytime (based on course availability)
+
+#### Limited Enrollment
+- **Limited Capacity**: Check to enable enrollment restrictions
+- **Capacity Number**: Set the maximum number of students
+- **Use Cases**:
+  - Workshop-style courses requiring personal attention
+  - Laboratory courses with equipment limitations  
+  - Small group discussions and interactive sessions
+  - Courses requiring individual feedback and assessment
+  
+#### Enrollment Management Tips
+- Consider your ability to provide support and feedback
+- Factor in technical limitations (live session capacity)
+- Plan for instructor-to-student ratio requirements
+- Allow for some buffer in live courses for technical issues
+
+## Step 4: Payment Configuration and Course Access
 
 ### Free Course Setup
-1. Set `Paid` status to `False`
-2. Students can enroll immediately
-3. Full access to all materials
-4. Certificate eligibility enabled
+1. **Paid Course**: Set to `False` (unchecked)
+2. **Student Benefits**:
+   - Immediate enrollment access
+   - Full access to all course materials
+   - Certificate eligibility upon completion
+   - Complete learning experience at no cost
 
 ### Paid Course Setup
-1. Set `Paid` status to `True`
-2. Enter course price in your currency
-3. Configure PayPal integration (see [Payment Setup](../payments.md))
-4. Set `Auditable` option if desired
+1. **Paid Course**: Set to `True` (checked)
+2. **Price**: Enter course price in your system's configured currency
+3. **Payment Integration**: Ensure PayPal is configured (see [Payment Setup](../payments.md))
+4. **Revenue Model**: Consider your pricing strategy and market research
 
-### Audit Mode
-When enabled for paid courses:
-- Students can access content without payment
-- No certificate eligibility
-- Useful for course previews or trial access
+### Auditable Course Feature
+When **Auditable** option is enabled for paid courses:
 
-## Step 4: Course Capacity and Availability
+#### Student Experience
+- **Free Access**: Students can access all course content without payment
+- **Content Availability**: Course materials, videos, documents, and resources
+- **Learning Experience**: Course interaction except evaluations and certification
+- **No Evaluations**: Students cannot access quizzes, tests, or assessments
+- **No Certificate**: Students cannot receive completion certificates
+- **Upgrade Path**: Students can upgrade to paid version anytime for full access
 
-### Enrollment Limits
-- **Unlimited**: Leave `Limited` unchecked
-- **Limited**: Check `Limited` and set `Capacity` number
+#### Use Cases for Auditable Courses
+- **Course Preview**: Let students sample content before purchasing
+- **Freemium Model**: Attract students with free content, convert for certification
+- **Educational Access**: Provide learning opportunities regardless of financial situation
+- **Trial Period**: Allow students to evaluate course quality before committing payment
+- **Corporate Training**: Companies can provide access while managing certification separately
 
-### Course Dates (Time-Based/Live Courses)
-- **Start Date**: When course becomes available
-- **End Date**: Course completion deadline
-- **Registration Period**: Can be set before start date
+#### Audit Mode Best Practices
+- Clearly communicate what's included vs. what requires payment
+- Make upgrade process simple and straightforward
+- Consider offering limited-time promotions for upgrades
+- Monitor conversion rates from audit to paid enrollment
 
-## Step 5: Certificate Configuration
+## Step 5: Course Schedule and Timeline (Time-Based/Live Courses)
 
-1. **Enable Certificates**: Check `Certificate` option
-2. **Choose Template**: Select from available certificate templates
-3. **Custom Templates**: Create custom designs (see [Certificate Customization](certificate-customization.md))
+### Date Configuration for Structured Courses
+For Time-Based and Live courses, you must set specific dates:
 
-### Default Certificate Templates
-- **Basic**: Simple text-based certificate
-- **Professional**: Formal business style
-- **Academic**: University-style diploma
-- **Creative**: Colorful design with graphics
+#### Course Start and End Dates
+- **Start Date**: When the course officially begins and content becomes available
+  - Students can enroll before this date (based on enrollment settings)
+  - Course materials are released according to this schedule
+  - Affects automated email notifications and calendar integration
+  
+- **End Date**: When the course concludes and final submissions are due
+  - Students must complete course requirements by this date
+  - Late submissions may not be accepted (configurable)
+  - Certificate generation becomes available after end date
+  
+#### Date Setting Guidelines
+- **Planning Buffer**: Allow adequate time between enrollment and start date
+- **Realistic Timeline**: Ensure sufficient time for course completion
+- **Time Zone Consideration**: Dates are displayed in student's local time zone
+- **Holiday Awareness**: Consider holidays and cultural events in your target regions
+
+#### Self-Paced Course Considerations
+- **Start/End Dates**: Optional for self-paced courses
+- **Rolling Enrollment**: Students can start anytime when dates are not set
+- **Flexible Completion**: No strict deadlines unless specifically configured
+
+### Registration and Enrollment Windows
+- **Early Registration**: Allow enrollment before course start date
+- **Late Registration**: Configure if students can join after start date
+- **Registration Deadlines**: Set cutoff dates for enrollment (optional)
+
+## Step 6: Certificate Configuration and Recognition
+
+### Certificate Setup Options
+Configure how students receive recognition for course completion:
+
+#### Enable Course Certificates
+1. **Issue Certificate**: Check to enable certification upon course completion
+2. **Completion Requirements**: System automatically tracks based on:
+   - All required resources completed
+   - Minimum score achieved on assessments (if configured - not available in audit mode)
+   - Final evaluation passed (if applicable - not available in audit mode)
+   - Payment status (for paid courses)
+
+#### Certificate Template Selection
+Choose from available certificate designs:
+
+##### Default Templates Available
+- **Default**: Clean, professional template suitable for most courses
+- **Academic**: Formal university-style diploma design
+- **Professional**: Business-oriented certificate for corporate training
+- **Creative**: Colorful design with modern graphics for creative courses
+
+##### Custom Certificate Templates
+- **Administrative Upload**: Custom templates can be uploaded by system administrators
+- **Brand Consistency**: Incorporate organization logos and colors
+- **Special Recognition**: Create unique designs for premium or specialized courses
+- **Template Requirements**: Contact your administrator for custom template specifications
+
+#### Certificate Generation Process
+1. **Automatic Generation**: Certificates are created when completion criteria are met
+2. **Student Access**: Students can download PDF certificates from their profile
+3. **Verification**: Each certificate includes unique verification codes
+4. **Digital Delivery**: Automatic email notification when certificate is available
+
+### Certificate Validation and Verification
+- **Unique Codes**: Each certificate contains a verification code
+- **Online Verification**: Students and employers can verify certificate authenticity
+- **Secure Storage**: Certificates are stored securely in student profiles
+- **Reprint Capability**: Students can redownload certificates anytime
 
 ## Step 6: Forum and Messaging Setup
 
