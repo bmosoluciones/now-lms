@@ -36,6 +36,13 @@
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/configure/"/>
     </url>
     <url>
+        <loc>Nonedatabase_management_manual/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedatabase_management_manual/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/database_management_manual/"/>
+    </url>
+    <url>
         <loc>Nonedb/</loc>
         <lastmod>1980-01-01</lastmod>
         <changefreq>daily</changefreq>
@@ -293,6 +300,13 @@
         <changefreq>daily</changefreq>
         <xhtml:link rel="alternate" hreflang="es" href="Nonees/configure/"/>
         <xhtml:link rel="alternate" hreflang="en" href="Noneconfigure/"/>
+    </url>
+    <url>
+        <loc>Nonees/database_management_manual/</loc>
+        <lastmod>1980-01-01</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="Nonees/database_management_manual/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="Nonedatabase_management_manual/"/>
     </url>
     <url>
         <loc>Nonees/db/</loc>
