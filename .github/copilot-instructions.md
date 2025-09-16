@@ -39,6 +39,7 @@ Always follow these exact steps in order:
 
     ```bash
     npm install
+    cd now_lms/static && npm install && cd ../..
     ```
 
     **Timing**: Takes ~5 seconds. Set timeout to 2+ minutes.
@@ -55,6 +56,7 @@ Always follow these exact steps in order:
 
 ```bash
 # Run full test suite (required)
+cd now_lms/static && npm install && cd ../..
 source source venv/bin/activate && bash dev/test.sh
 ```
 
@@ -77,6 +79,9 @@ CI=True pytest -v --exitfirst --cov=now_lms
 **Production Mode (Recommended for Validation)**:
 
 ```bash
+cd now_lms/static && npm install && cd ../..
+venv/bin/lmsctl database init
+#Default user and password lms-admin
 venv/bin/lmsctl serve
 ```
 
@@ -94,8 +99,6 @@ FLASK_APP=now_lms python -c "from now_lms import init_app; init_app()"
 # Then run development server
 FLASK_APP=now_lms LOG_LEVEL=TRACE flask run --debug --reload --port 8080
 ```
-
-**Note**: Development mode has some known route issues. Use production mode for validation.
 
 ### Linting and Code Quality
 
@@ -152,6 +155,7 @@ Should pass in ~1 second.
 1. **Basic Application Startup**:
 
     ```bash
+    cd now_lms/static && npm install && cd ../..
     venv/bin/lmsctl serve
     curl -I http://127.0.0.1:8080/
     ```
