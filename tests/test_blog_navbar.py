@@ -115,11 +115,10 @@ class TestBlogNavbar:
             "finance",
             "golden",
             "harvard",
-            "lime",
-            "nebula",
             "ocean",
             "oxford",
             "sakura",
+            "excel",
         ],
     )
     def test_navbar_template_exists_for_all_themes(self, theme):
