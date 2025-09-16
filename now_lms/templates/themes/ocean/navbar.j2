@@ -2,22 +2,18 @@
 
 <nav class="navbar navbar-expand-md navbar-ocean" aria-label="Ocean Academic Navigation">
     <div class="container-fluid">
-        <a href="{{ url_for('home.pagina_de_inicio') }}" class="navbar-brand text-decoration-none">
-            {% if logo_perzonalizado() %}
-            <img
-                height="30"
-                src="{{ url_for('static', filename='/files/public/images/logotipo.jpg') }}"
-                alt="Ocean LMS"
-                class="d-inline-block align-top me-2"
-            />
-            {% else %}
-            <img
-                height="30"
-                src="{{ url_for('static', filename='/icons/logo/logo_white_large.png') }}"
-                alt="NOW LMS"
-                class="d-inline-block align-top me-2"
-            />
-            {% endif %}
+        <a href="{{ url_for('home.pagina_de_inicio') }}" class="navbar-brand text-decoration-none d-flex align-items-center">
+            <!-- Ocean Wave Logo -->
+            <div class="ocean-logo me-2">
+                <svg width="40" height="30" viewBox="0 0 40 30" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 15 Q10 5, 15 15 T25 15 T35 15" stroke="#94d2bd" stroke-width="3" fill="none" />
+                    <path d="M3 20 Q8 10, 13 20 T23 20 T33 20" stroke="#94d2bd" stroke-width="2" fill="none" opacity="0.7" />
+                    <circle cx="8" cy="8" r="2" fill="#94d2bd" opacity="0.6" />
+                    <circle cx="18" cy="6" r="1.5" fill="#94d2bd" opacity="0.5" />
+                    <circle cx="28" cy="10" r="1" fill="#94d2bd" opacity="0.4" />
+                </svg>
+            </div>
+            <span style="font-size: 1.5rem; font-weight: 700; color: var(--ocean-primary)">ocean</span>
         </a>
         <button
             class="navbar-toggler"
@@ -35,54 +31,31 @@
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 {% if not current_user.is_authenticated %}
                 <li class="nav-item">
-                    <a href="{{ url_for('home.pagina_de_inicio') }}" class="nav-link">{{ _('Inicio') }}</a>
+                    <a href="{{ url_for('home.pagina_de_inicio') }}" class="nav-link">{{ _('My Academy') }}</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a href="{{ url_for('home.panel') }}" class="nav-link">{{ _('Inicio') }}</a>
-                </li>
-                {% endif %}
-                <li class="nav-item">
-                    <a href="{{ url_for('course.lista_cursos', page=1) }}" class="nav-link">{{ _('Cursos') }}</a>
-                </li>
-                {% if is_programs_enabled() %}
-                <li class="nav-item">
-                    <a href="{{ url_for('program.lista_programas', page=1) }}" class="nav-link">{{ _('Programas') }}</a>
-                </li>
-                {% endif %} {% if is_resources_enabled() %}
-                <li class="nav-item">
-                    <a href="{{ url_for('resource.lista_de_recursos', page=1) }}" class="nav-link">{{ _('Recursos') }}</a>
-                </li>
-                {% endif %} {% if is_masterclass_enabled() %}
-                <li class="nav-item">
-                    <a href="{{ url_for('masterclass.list_public') }}" class="nav-link">{{ _('Clases Magistrales') }}</a>
+                    <a href="{{ url_for('home.panel') }}" class="nav-link">{{ _('My Academy') }}</a>
                 </li>
                 {% endif %} {% if is_blog_enabled() %}
                 <li class="nav-item">
-                    <a href="{{ url_for('blog.blog_index') }}" class="nav-link">Blog</a>
+                    <a href="{{ url_for('blog.blog_index') }}" class="nav-link">{{ _('Community') }}</a>
                 </li>
-                {% endif %} {% if current_user.is_authenticated %} {% if current_user.tipo == "moderator" or current_user.tipo
-                == "instructor" or current_user.tipo == "admin" %}
+                {% endif %} {% if current_user.is_authenticated and (current_user.tipo == "instructor" or current_user.tipo ==
+                "admin") %}
                 <li class="nav-item">
-                    <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link">{{ _('Moderación') }}</a>
+                    <a href="{{ url_for('instructor_profile.pagina_instructor') }}" class="nav-link">{{ _('Teacher') }}</a>
                 </li>
-                {% endif %} {% if current_user.tipo == "instructor" or current_user.tipo == "admin" %}
+                {% endif %} {% if current_user.is_authenticated and current_user.tipo == "admin" %}
                 <li class="nav-item">
-                    <a href="{{ url_for('instructor_profile.pagina_instructor') }}" class="nav-link">{{ _('Docente') }}</a>
+                    <a href="{{ url_for('admin_profile.pagina_admin') }}" class="nav-link">{{ _('Admin') }}</a>
                 </li>
-                {% endif %} {% if current_user.tipo == "admin" %}
-                <li class="nav-item">
-                    <a href="{{ url_for('admin_profile.pagina_admin') }}" class="nav-link">{{ _('Administración') }}</a>
-                </li>
-                {% endif %} {% endif %}
+                {% endif %}
             </ul>
             <div class="text-end">
                 {% if not current_user.is_authenticated %}
                 <a class="btn btn-ocean-primary me-2" href="{{ url_for('user.inicio_sesion') }}" role="button"
-                    >{{ _('Iniciar Sesión') }}</a
-                >
-                <a class="btn btn-ocean-secondary me-2" href="{{ url_for('user.crear_cuenta') }}" role="button"
-                    >{{ _('Crear Cuenta') }}</a
+                    >{{ _('Sign Up / Login') }}</a
                 >
                 {% else %}
                 <ul class="navbar-nav">
@@ -94,12 +67,12 @@
                             data-bs-toggle="dropdown"
                             data-bs-display="static"
                             aria-expanded="false"
-                            >{{ _('Bienvenido') }}: {{ current_user.nombre }} {{ current_user.apellido }}</a
+                            >{{ _('Welcome') }}: {{ current_user.nombre }} {{ current_user.apellido }}</a
                         >
                         <ul class="dropdown-menu dropdown-menu-lg-end">
                             <li>
                                 <a class="dropdown-item" href="{{ url_for('user_profile.perfil') }}">
-                                    {{ _('Perfil de Usuario') }}</a
+                                    {{ _('User Profile') }}</a
                                 >
                             </li>
                             <li><hr class="dropdown-divider" /></li>
@@ -109,13 +82,13 @@
                                     href="#"
                                     data-bs-toggle="modal"
                                     data-bs-target="#oceanModal"
-                                    >{{ _('Información') }}</a
+                                    >{{ _('Information') }}</a
                                 >
                             </li>
                             <li><hr class="dropdown-divider" /></li>
                             <li>
                                 <a class="dropdown-item text-decoration-none" href="{{ url_for('user.cerrar_sesion') }}">
-                                    {{ _('Cerrar Sesión') }}</a
+                                    {{ _('Sign Out') }}</a
                                 >
                             </li>
                         </ul>
