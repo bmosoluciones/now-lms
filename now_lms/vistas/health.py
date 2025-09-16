@@ -15,14 +15,13 @@
 
 """Health check endpoint."""
 
-# ---------------------------------------------------------------------------------------
-# Standard library
-# ---------------------------------------------------------------------------------------
+
+from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, jsonify
+from flask import Blueprint, Response, jsonify
 from sqlalchemy import text
 
 # ---------------------------------------------------------------------------------------
@@ -31,11 +30,16 @@ from sqlalchemy import text
 from now_lms.db import database
 from now_lms.version import CODE_NAME, VERSION
 
+# ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
+
+
 health_bp = Blueprint("health", __name__)
 
 
 @health_bp.route("/health", methods=["GET"])
-def health():
+def health() -> tuple[Response, int]:
     """Health check endpoint for application status monitoring."""
     # Default response
     status = {"status": "ok", "database": "ok", "version": VERSION, "code_name": CODE_NAME}

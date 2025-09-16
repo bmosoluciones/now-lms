@@ -1,8 +1,6 @@
 """Moderator profile views and functionality."""
 
-# ---------------------------------------------------------------------------------------
-# Standard library
-# ---------------------------------------------------------------------------------------
+from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -15,6 +13,11 @@ from flask_login import login_required
 # ---------------------------------------------------------------------------------------
 from now_lms.config import DIRECTORIO_PLANTILLAS
 
+# ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
+
+
 moderator_profile = Blueprint("moderator_profile", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
@@ -23,6 +26,6 @@ moderator_profile = Blueprint("moderator_profile", __name__, template_folder=DIR
 # ---------------------------------------------------------------------------------------
 @moderator_profile.route("/moderator")
 @login_required
-def pagina_moderador():
+def pagina_moderador() -> str:
     """Perfil de usuario moderador."""
     return render_template("perfiles/moderador.html")

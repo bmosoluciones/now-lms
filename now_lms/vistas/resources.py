@@ -19,7 +19,7 @@ NOW Learning Management System.
 Gestión de certificados.
 """
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 from collections import OrderedDict
@@ -37,6 +37,7 @@ from flask import Blueprint, abort, current_app, flash, redirect, render_templat
 from flask_login import current_user, login_required
 from sqlalchemy import delete
 from sqlalchemy.exc import OperationalError
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -58,7 +59,7 @@ resource_d = Blueprint("resource", __name__, template_folder=DIRECTORIO_PLANTILL
 @resource_d.route("/resource/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def new_resource():
+def new_resource() -> str | Response:
     """Nueva recursos."""
     form = RecursoForm()
     if form.validate_on_submit() or request.method == "POST":
@@ -75,7 +76,7 @@ def new_resource():
             file_name = form.codigo.data + "." + recurso.filename.split(".")[1]
             resource_file = files.save(request.files["recurso"], folder="resources_files", name=file_name)
         else:
-            resource_file = False
+            resource_file = ""
 
         recurso = Recurso(
             nombre=form.nombre.data,
@@ -102,7 +103,7 @@ def new_resource():
 @resource_d.route("/resource/list")
 @login_required
 @perfil_requerido("instructor")
-def lista_de_recursos():
+def lista_de_recursos() -> str:
     """Lista de programas."""
     if current_user.tipo == "admin":
         consulta = database.paginate(
@@ -125,7 +126,7 @@ def lista_de_recursos():
 @resource_d.route("/resource/<resource_code>/donwload")
 @login_required
 @perfil_requerido("user")
-def descargar_recurso(resource_code):
+def descargar_recurso(resource_code: str) -> Response:
     """Genera link para descargar recurso."""
     recurso = database.session.execute(database.select(Recurso).filter(Recurso.id == resource_code)).scalars().first()
     config = current_app.upload_set_config.get("files")
@@ -141,7 +142,7 @@ def descargar_recurso(resource_code):
 @resource_d.route("/resource/<ulid>/delete")
 @login_required
 @perfil_requerido("instructor")
-def delete_resource(ulid: str):
+def delete_resource(ulid: str) -> Response:
     """Elimina recurso."""
     if current_user.tipo == "admin":
         database.session.execute(delete(Recurso).where(Recurso.id == ulid))
@@ -153,7 +154,7 @@ def delete_resource(ulid: str):
 @resource_d.route("/resource/<ulid>/update", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def edit_resource(ulid: str):
+def edit_resource(ulid: str) -> str | Response:
     """Actualiza recurso."""
     recurso = database.session.execute(database.select(Recurso).filter(Recurso.id == ulid)).scalars().first()
     form = RecursoForm(nombre=recurso.nombre, descripcion=recurso.descripcion, tipo=recurso.tipo)
@@ -182,7 +183,7 @@ def edit_resource(ulid: str):
 
 @resource_d.route("/resource/<resource_code>")
 @cache.cached(unless=no_guardar_en_cache_global)
-def vista_recurso(resource_code):
+def vista_recurso(resource_code: str) -> str:
     """Pagina de un recurso."""
     return render_template(
         "learning/recursos/recurso.html",
@@ -193,7 +194,7 @@ def vista_recurso(resource_code):
 
 @resource_d.route("/resource/explore")
 @cache.cached(unless=no_guardar_en_cache_global)
-def lista_recursos():
+def lista_recursos() -> str:
     """Lista de programas."""
     if DESARROLLO:
         MAX_COUNT = 3

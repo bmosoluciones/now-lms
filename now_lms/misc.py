@@ -15,7 +15,7 @@
 
 """Miscellaneous utilities."""
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
@@ -229,17 +229,21 @@ class HTMLCleaner(HTMLParser):
     textos: list[str]
 
     def __init__(self):
+        """Initialize the HTML cleaner."""
         super().__init__()
         self.textos = []
 
     def handle_data(self, data):
+        """Handle text data from HTML elements."""
         self.textos.append(data)
 
     def get_text(self):
+        """Get the cleaned text content."""
         return "".join(self.textos)
 
 
 def limpiar_html(html: str) -> str:
+    """Clean HTML content and extract plain text."""
     parser = HTMLCleaner()
     parser.feed(html)
     return parser.get_text()

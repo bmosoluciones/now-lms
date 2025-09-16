@@ -15,9 +15,8 @@
 
 """Definición de base de datos."""
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
-from __future__ import annotations
 
+from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
 # Standard library
@@ -130,6 +129,7 @@ def verifica_estudiante_asignado_a_curso(id_curso: str | None = None):
 def crear_configuracion_predeterminada():
     """Crea configuración predeterminada de la aplicación."""
     from os import environ, urandom
+
     from now_lms.i18n import is_testing_mode
 
     # Use Spanish for testing/CI mode, English for production
@@ -377,7 +377,11 @@ def elimina_logo_perzonalizado_curso(course_code: str):
     """Elimina logo tipo perzonalizado."""
     from now_lms.vistas._helpers import get_current_course_logo
 
-    LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, course_code, get_current_course_logo(course_code))
+    logo_name = get_current_course_logo(course_code)
+    if logo_name is None:
+        return  # No logo to delete
+
+    LOGO = path.join(DIRECTORIO_UPLOAD_IMAGENES, course_code, logo_name)
     remove(LOGO)
 
     curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalars().first()

@@ -19,13 +19,8 @@ NOW Learning Management System.
 Gestión de certificados.
 """
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
-
-# ---------------------------------------------------------------------------------------
-# Standard library
-# ---------------------------------------------------------------------------------------
-
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -33,6 +28,7 @@ from __future__ import annotations
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
 from sqlalchemy.exc import OperationalError
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -42,6 +38,11 @@ from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Etiqueta, database
 from now_lms.db.tools import cursos_por_etiqueta, programas_por_etiqueta
 from now_lms.forms import EtiquetaForm
+
+# ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
+
 
 # Constants
 TAG_TAGS_ROUTE = "tag.tags"
@@ -56,7 +57,7 @@ tag = Blueprint("tag", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 @tag.route("/tag/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def new_tag():
+def new_tag() -> str | Response:
     """Formulario para crear una etiqueta."""
     form = EtiquetaForm()
     if form.validate_on_submit() or request.method == "POST":
@@ -79,7 +80,7 @@ def new_tag():
 @tag.route("/tag/list")
 @login_required
 @perfil_requerido("instructor")
-def tags():
+def tags() -> str:
     """Lista de etiquetas."""
     etiquetas = database.paginate(
         database.select(Etiqueta),  # noqa: E712
@@ -98,7 +99,7 @@ def tags():
 @tag.route("/tag/<ulid>/delete")
 @login_required
 @perfil_requerido("instructor")
-def delete_tag(ulid: str):
+def delete_tag(ulid: str) -> Response:
     """Elimina una etiqueta."""
     from sqlalchemy import delete
 
@@ -110,7 +111,7 @@ def delete_tag(ulid: str):
 @tag.route("/tag/<ulid>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def edit_tag(ulid: str):
+def edit_tag(ulid: str) -> str | Response:
     """Edita una etiqueta."""
     etiqueta = database.session.execute(database.select(Etiqueta).filter(Etiqueta.id == ulid)).scalar_one_or_none()
     form = EtiquetaForm(color=etiqueta.color, nombre=etiqueta.nombre)

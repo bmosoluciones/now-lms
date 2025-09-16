@@ -19,12 +19,8 @@ NOW Learning Management System.
 Gestión de usuarios.
 """
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
-from __future__ import annotations
 
-# ---------------------------------------------------------------------------------------
-# Standard library
-# ---------------------------------------------------------------------------------------
+from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -32,6 +28,7 @@ from __future__ import annotations
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from sqlalchemy.exc import OperationalError
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -42,6 +39,11 @@ from now_lms.db import Configuracion, MailConfig, Usuario, database
 from now_lms.forms import ForgotPasswordForm, LoginForm, LogonForm, ResetPasswordForm
 from now_lms.logs import log
 from now_lms.misc import INICIO_SESION, PANEL_DE_USUARIO
+
+# ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
+
 
 # Constants
 USER_ALREADY_LOGGED_IN_MSG = "Su usuario ya tiene una sesión iniciada."
@@ -56,7 +58,7 @@ user = Blueprint("user", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
 @user.route("/user/login", methods=["GET", "POST"])
-def inicio_sesion():
+def inicio_sesion() -> str | Response:
     """Inicio de sesión del usuario."""
     if current_user.is_authenticated:
         flash(USER_ALREADY_LOGGED_IN_MSG, "info")
@@ -85,7 +87,7 @@ def inicio_sesion():
 
 
 @user.route("/user/logout")
-def cerrar_sesion():
+def cerrar_sesion() -> Response:
     """Finaliza la sesion actual."""
     logout_user()
     return redirect("/home")
@@ -97,7 +99,7 @@ def cerrar_sesion():
 # - Crear nuevo usuario por acción del administrador del sistema.
 # ---------------------------------------------------------------------------------------
 @user.route("/user/logon", methods=["GET", "POST"])
-def crear_cuenta():
+def crear_cuenta() -> str | Response:
     """Crear cuenta de usuario desde el sistio web."""
     if current_user.is_authenticated:
         flash("Usted ya posee una cuenta en el sistema.", "warning")
@@ -148,7 +150,7 @@ def crear_cuenta():
 @user.route("/user/new_user", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def crear_usuario():
+def crear_usuario() -> str | Response:
     """Crear manualmente una cuenta de usuario."""
     form = LogonForm()
     if form.validate_on_submit() or request.method == "POST":
@@ -179,7 +181,7 @@ def crear_usuario():
 
 
 @user.route("/user/check_mail/<token>")
-def check_mail(token):
+def check_mail(token: str) -> Response:
     """Verifica correo electronico."""
     from now_lms.auth import validate_confirmation_token
 
@@ -192,7 +194,7 @@ def check_mail(token):
 
 
 @user.route("/user/forgot_password", methods=["GET", "POST"])
-def forgot_password():
+def forgot_password() -> str | Response:
     """Solicitar recuperación de contraseña."""
     if current_user.is_authenticated:
         flash(USER_ALREADY_LOGGED_IN_MSG, "info")
@@ -226,7 +228,7 @@ def forgot_password():
 
 
 @user.route("/user/reset_password/<token>", methods=["GET", "POST"])
-def reset_password(token):
+def reset_password(token: str) -> str | Response:
     """Restablecer contraseña con token."""
     if current_user.is_authenticated:
         flash(USER_ALREADY_LOGGED_IN_MSG, "info")

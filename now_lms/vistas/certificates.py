@@ -19,13 +19,14 @@ NOW Learning Management System.
 Gestión de certificados.
 """
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
 from io import BytesIO
+from typing import Any
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -33,6 +34,7 @@ from io import BytesIO
 from flask import Blueprint, abort, flash, make_response, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy.exc import OperationalError
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -66,7 +68,7 @@ VISTA_CERTIFICADOS = "certificate.certificados"
 @certificate.route("/certificate/list")
 @login_required
 @perfil_requerido("instructor")
-def certificados():
+def certificados() -> str:
     """Lista de certificados."""
     certificados_list = database.paginate(
         database.select(Certificado),
@@ -80,7 +82,7 @@ def certificados():
 @certificate.route("/certificate/<ulid>/remove")
 @login_required
 @perfil_requerido("admin")
-def certificate_remove(ulid: str):
+def certificate_remove(ulid: str) -> Response:
     """Elimina certificado."""
     consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
     consulta = consulta[0]
@@ -92,7 +94,7 @@ def certificate_remove(ulid: str):
 @certificate.route("/certificate/<ulid>/add")
 @login_required
 @perfil_requerido("admin")
-def certificate_add(ulid: str):
+def certificate_add(ulid: str) -> Response:
     """Elimina certificado."""
     consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
     consulta = consulta[0]
@@ -104,7 +106,7 @@ def certificate_add(ulid: str):
 @certificate.route("/certificate/<ulid>/publish")
 @login_required
 @perfil_requerido("admin")
-def certificate_publish(ulid: str):
+def certificate_publish(ulid: str) -> Response:
     """Elimina certificado."""
     consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
     consulta = consulta[0]
@@ -116,7 +118,7 @@ def certificate_publish(ulid: str):
 @certificate.route("/certificate/<ulid>/unpublish")
 @login_required
 @perfil_requerido("admin")
-def certificate_unpublish(ulid: str):
+def certificate_unpublish(ulid: str) -> Response:
     """Elimina certificado."""
     consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
     consulta = consulta[0]
@@ -128,7 +130,7 @@ def certificate_unpublish(ulid: str):
 @certificate.route("/certificate/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def certificate_new():
+def certificate_new() -> str | Response:
     """Nuevo certificado."""
     form = CertificateForm()
     if form.validate_on_submit() or request.method == "POST":
@@ -157,7 +159,7 @@ def certificate_new():
 @certificate.route("/certificate/<ulid>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def certificate_edit(ulid: str):
+def certificate_edit(ulid: str) -> str | Response:
     """Editar categoria."""
     certificado_result = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
     certificado_obj = certificado_result[0]
@@ -189,7 +191,7 @@ def certificate_edit(ulid: str):
     return render_template("learning/certificados/editar_certificado.html", form=form)
 
 
-def insert_style_in_html(template):
+def insert_style_in_html(template: str) -> str:
     """Insert CSS styles into HTML template."""
     html = template.html
     css = template.css
@@ -201,7 +203,7 @@ def insert_style_in_html(template):
 
 
 @certificate.route("/certificate/inspect/<ulid>/")
-def certificate_inspect(ulid: str):
+def certificate_inspect(ulid: str) -> str:
     """Inspect a certificate by its ULID."""
     consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
     consulta = consulta[0]
@@ -210,7 +212,7 @@ def certificate_inspect(ulid: str):
 
 
 @certificate.route("/certificate/get_as_qr/<cert_id>/")
-def certificacion_qr(cert_id: str):
+def certificacion_qr(cert_id: str) -> Response:
     """Generate QR code for certificate verification."""
     import qrcode
 
@@ -229,7 +231,7 @@ def certificacion_qr(cert_id: str):
 
 
 @certificate.route("/certificate/certificate/<ulid>/")
-def certificacion(ulid: str):
+def certificacion(ulid: str) -> str | Response:
     """Render a certificate based on certification ULID."""
     from jinja2 import BaseLoader, Environment
 
@@ -270,7 +272,7 @@ def certificacion(ulid: str):
 
 
 @certificate.route("/certificate/download/<ulid>/")
-def certificate_serve_pdf(ulid: str):
+def certificate_serve_pdf(ulid: str) -> Response:
     """Editar categoria."""
     from flask_weasyprint import HTML, render_pdf
     from jinja2 import BaseLoader, Environment
@@ -317,7 +319,7 @@ def certificate_serve_pdf(ulid: str):
 
 @certificate.route("/certificate/issued/list")
 @login_required
-def certificaciones():
+def certificaciones() -> str:
     """Lista de certificaciones emitidas."""
     # Build query based on user role
     query = database.select(Certificacion)
@@ -365,7 +367,7 @@ def certificaciones():
 
 
 @certificate.route("/certificate/view/<ulid>")
-def certificado(ulid):
+def certificado(ulid: str) -> str:
     """Lista de certificaciones emitidas."""
     certificacion_obj = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
     certificacion_obj = certificacion_obj[0]
@@ -403,7 +405,7 @@ def certificado(ulid):
 @certificate.route("/certificate/issue/<course>/<user>/<template>/")
 @login_required
 @perfil_requerido("instructor")
-def certificacion_crear(course, user, template):
+def certificacion_crear(course: str, user: str, template: str) -> Response:
     """Generar un nuevo certificado."""
     # Check if user meets all requirements including evaluations
     from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
@@ -425,7 +427,7 @@ def certificacion_crear(course, user, template):
 @certificate.route("/certificate/release/", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def certificacion_generar():
+def certificacion_generar() -> str | Response:
     """Generar un nuevo certificado."""
     from now_lms.db.tools import (
         generate_cource_choices,
@@ -507,7 +509,7 @@ def certificacion_generar():
 
 
 @certificate.route("/certificate/program/get_as_qr/<certificate_id>/")
-def certificacion_programa_qr(certificate_id: str):
+def certificacion_programa_qr(certificate_id: str) -> Response:
     """Generate QR code for program certificate verification."""
     import qrcode
 
@@ -526,7 +528,7 @@ def certificacion_programa_qr(certificate_id: str):
 
 
 @certificate.route("/certificate/program/view/<ulid>/")
-def certificacion_programa(ulid: str):
+def certificacion_programa(ulid: str) -> str:
     """View program certificate."""
     from jinja2 import BaseLoader, Environment
 
@@ -574,7 +576,7 @@ def certificacion_programa(ulid: str):
 
 
 @certificate.route("/certificate/program/download/<ulid>/")
-def certificate_programa_serve_pdf(ulid: str):
+def certificate_programa_serve_pdf(ulid: str) -> Any:
     """Download program certificate as PDF."""
     from flask_weasyprint import HTML, render_pdf
     from jinja2 import BaseLoader, Environment

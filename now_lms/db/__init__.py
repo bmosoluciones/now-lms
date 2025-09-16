@@ -15,7 +15,7 @@
 
 """Definición de base de datos."""
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
@@ -134,7 +134,6 @@ class BaseTabla:
 
     def validate_user_references(self):
         """Validate that audit fields reference existing users or set them to None."""
-
         # Use no_autoflush to prevent recursive flush during validation
         with database.session.no_autoflush:
             # Check if users are being created in this transaction to skip validation
@@ -837,7 +836,6 @@ class PagosConfig(database.Model, BaseTabla):
     """Configuración de pagos."""
 
     # Additional config fields can be added here
-    pass
 
 
 class AdSense(database.Model, BaseTabla):
@@ -1017,7 +1015,6 @@ class Coupon(database.Model, BaseTabla):
 
     def is_valid(self):
         """Check if coupon is valid (not expired and under usage limit)."""
-
         # Check expiration
         if self.expires_at and datetime.now() > self.expires_at:
             return False, "Cupón expirado"
@@ -1163,13 +1160,11 @@ class MasterClass(database.Model, BaseTabla):
 
     def is_upcoming(self):
         """Check if the master class is in the future."""
-
         event_datetime = datetime.combine(self.date, self.start_time)
         return event_datetime > datetime.now()
 
     def is_ongoing(self):
         """Check if the master class is currently happening."""
-
         now = datetime.now()
         event_date = self.date
         start_datetime = datetime.combine(event_date, self.start_time)
@@ -1178,7 +1173,6 @@ class MasterClass(database.Model, BaseTabla):
 
     def is_finished(self):
         """Check if the master class has ended."""
-
         end_datetime = datetime.combine(self.date, self.end_time)
         return end_datetime < datetime.now()
 

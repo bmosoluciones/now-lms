@@ -1,11 +1,6 @@
 """Home page views for NOW LMS."""
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
 from __future__ import annotations
-
-# ---------------------------------------------------------------------------------------
-# Standard library
-# ---------------------------------------------------------------------------------------
 
 from os import path
 from pathlib import Path
@@ -16,6 +11,7 @@ from pathlib import Path
 from flask import Blueprint, redirect, render_template, request
 from flask_login import current_user, login_required
 from sqlalchemy import func
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -36,6 +32,11 @@ from now_lms.db.tools import get_current_theme
 from now_lms.logs import log
 from now_lms.themes import get_home_template
 
+# ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
+
+
 home = Blueprint("home", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
@@ -45,7 +46,7 @@ home = Blueprint("home", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 @home.route("/")
 @home.route("/home")
 @cache.cached(timeout=90, unless=no_guardar_en_cache_global)
-def pagina_de_inicio():
+def pagina_de_inicio() -> str:
     """Página principal de la aplicación."""
     if DESARROLLO:
         MAX = 3
@@ -64,7 +65,7 @@ def pagina_de_inicio():
 
 @home.route("/home/panel")
 @login_required
-def panel():
+def panel() -> str | Response:
     """Panel principal de la aplicacion luego de inicar sesión."""
     if not current_user.is_authenticated:
         return redirect("/")
@@ -205,7 +206,7 @@ def panel():
 
 @home.route("/custom/<page>")
 @cache.cached(timeout=180)
-def custom_page(page):
+def custom_page(page: str) -> str | Response:
     """Muestra páginas personalizadas por tema."""
     THEME = get_current_theme()
 

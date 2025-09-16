@@ -15,15 +15,15 @@
 
 """Instructor announcements views."""
 
-# ---------------------------------------------------------------------------------------
-# Standard library
-# ---------------------------------------------------------------------------------------
+
+from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -34,13 +34,18 @@ from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Announcement, Curso, DocenteCurso, database
 from now_lms.forms import CourseAnnouncementForm
 
+# ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
+
+
 # Route constants
 ROUTE_INSTRUCTOR_ANNOUNCEMENTS_LIST = "instructor_announcements.list_announcements"
 
 instructor_announcements = Blueprint("instructor_announcements", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
-def get_instructor_courses(instructor_user):
+def get_instructor_courses(instructor_user) -> list:
     """Obtiene los cursos asignados a un instructor."""
     if instructor_user.tipo == "admin":
         # Los administradores pueden crear anuncios para cualquier curso
@@ -63,7 +68,7 @@ def get_instructor_courses(instructor_user):
 @login_required
 @perfil_requerido("instructor")
 @cache.cached(timeout=60)
-def list_announcements():
+def list_announcements() -> str:
     """Lista de anuncios de curso para instructores."""
     # Obtener cursos del instructor
     instructor_courses = get_instructor_courses(current_user)
@@ -88,7 +93,7 @@ def list_announcements():
 @instructor_announcements.route("/instructor/announcements/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def new_announcement():
+def new_announcement() -> str | Response:
     """Formulario para crear un nuevo anuncio de curso."""
     form = CourseAnnouncementForm()
 
@@ -130,7 +135,7 @@ def new_announcement():
 @instructor_announcements.route("/instructor/announcements/<announcement_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def edit_announcement(announcement_id):
+def edit_announcement(announcement_id: int) -> str | Response:
     """Formulario para editar un anuncio de curso."""
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is None:
@@ -173,7 +178,7 @@ def edit_announcement(announcement_id):
 @instructor_announcements.route("/instructor/announcements/<announcement_id>/delete", methods=["POST"])
 @login_required
 @perfil_requerido("instructor")
-def delete_announcement(announcement_id):
+def delete_announcement(announcement_id: int) -> Response:
     """Eliminar un anuncio de curso."""
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is None:

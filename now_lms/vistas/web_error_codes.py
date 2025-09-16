@@ -19,13 +19,8 @@ NOW Learning Management System.
 Gestión de certificados.
 """
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
-
-# ---------------------------------------------------------------------------------------
-# Standard library
-# ---------------------------------------------------------------------------------------
-
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -38,6 +33,11 @@ from flask import Blueprint, render_template
 from now_lms.config import DIRECTORIO_PLANTILLAS
 
 # ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
+
+
+# ---------------------------------------------------------------------------------------
 # Administración de Etiquetas.
 # ---------------------------------------------------------------------------------------
 
@@ -45,7 +45,7 @@ web_error = Blueprint("error", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
 @web_error.route("/http/error/<code>")
-def error_page(code):
+def error_page(code: str) -> str:
     """HTTP error code pages."""
     url = "error_pages/" + code + ".html"
 

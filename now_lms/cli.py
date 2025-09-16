@@ -16,7 +16,7 @@
 
 """Command line interface for NOW LMS."""
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
@@ -29,8 +29,8 @@ from pathlib import Path
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 import click
-from flask_alembic.cli import cli as alembic_cli
 from flask.cli import FlaskGroup
+from flask_alembic.cli import cli as alembic_cli
 from sqlalchemy import select
 
 # ---------------------------------------------------------------------------------------
