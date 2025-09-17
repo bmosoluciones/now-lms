@@ -1,6 +1,6 @@
 ---
 draft: false
-date: 2024-08-17
+date: 2025-07-17
 slug: validation-summary
 authors:
   - admin
