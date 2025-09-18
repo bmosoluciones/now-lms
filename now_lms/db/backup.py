@@ -15,14 +15,12 @@
 
 """Database backup functionality for NOW LMS."""
 
-
 from __future__ import annotations
-
-import os
 
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
+import os
 import shutil
 import subprocess  # nosec B404 - Subprocess used for legitimate database backup operations
 from datetime import datetime

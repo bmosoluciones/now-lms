@@ -75,7 +75,7 @@ if TYPE_CHECKING:
     from flask import Flask
 
 
-def system_info(app: "Flask"):
+def system_info(app: "Flask") -> None:
     """Información básica de la instalación."""
     with app.app_context():
         version_sistema = SystemInfo(param="version", val=VERSION)

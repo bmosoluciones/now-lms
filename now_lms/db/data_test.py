@@ -12,10 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-
 """Code to create initial test courses and data."""
-
 
 from __future__ import annotations
 
@@ -62,21 +59,21 @@ from now_lms.logs import logger as log
 USUARIO_ADMINISTRADOR = environ.get("ADMIN_USER") or environ.get("LMS_USER") or "lms-admin"
 
 
-def crear_etiqueta_prueba():
+def crear_etiqueta_prueba() -> None:
     """Crea etiquetas de demostración."""
     etiqueta = Etiqueta(id="01HNP0TTQNTR03J7ZQHR09YMJJ", nombre="Python", color="#FFD43B")
     database.session.add(etiqueta)
     database.session.commit()
 
 
-def crear_categoria_prueba():
+def crear_categoria_prueba() -> None:
     """Crea categorias de demostración."""
     categoria = Categoria(id="01HNP0TTQNTR03J7ZQHR09YMJK", nombre="Learning", descripcion="Cursos sobre aprendizaje")
     database.session.add(categoria)
     database.session.commit()
 
 
-def crear_certificado_prueba():
+def crear_certificado_prueba() -> None:
     """Crea certificado de prueba."""
     certificado = Certificado(
         id="01HNP0TTQNTR03J7ZQHR09YMKK",
@@ -90,7 +87,7 @@ def crear_certificado_prueba():
     database.session.commit()
 
 
-def crear_masterclass_prueba():
+def crear_masterclass_prueba() -> None:
     """Crea una clase magistral de prueba con inscripción para el admin."""
     # Create a future master class
     future_date = date.today() + timedelta(days=30)
@@ -133,10 +130,9 @@ def crear_masterclass_prueba():
     database.session.commit()
 
     log.info(f"Created master class test data: {masterclass.title} with certificate for admin user")
-    return masterclass
 
 
-def crear_curso_para_pruebas():
+def crear_curso_para_pruebas() -> None:
     # pylint: disable=too-many-locals
     """Crea en la base de datos un curso de demostración."""
     demo = Curso(
@@ -347,7 +343,7 @@ One day we'll reveal the truth"""
     database.session.commit()
 
 
-def crear_usuarios_de_prueba():
+def crear_usuarios_de_prueba() -> None:
     """Create test users for development and testing purposes."""
     student = Usuario(
         id="01HNZXJ6Q8CWGC6DXTHK8NC9AT",
@@ -498,7 +494,7 @@ def crear_usuarios_de_prueba():
 TEXTO_PROGRAMA = """Programa de Prueba"""
 
 
-def crear_programa_prueba():
+def crear_programa_prueba() -> None:
     """Crea programa de pruebas."""
     programa = Programa(
         id="01HNZXEMSWTSBM4PNSY4R9VMN6",
@@ -518,7 +514,7 @@ def crear_programa_prueba():
     database.session.commit()
 
 
-def crear_recurso_prueba():
+def crear_recurso_prueba() -> None:
     """Recurso descargable de ejemplo."""
     recurso = Recurso(
         id="01HNZXA1BX9B297CYAAA4MK93V",
@@ -570,7 +566,7 @@ def crear_recurso_prueba():
     database.session.commit()
 
 
-def crear_announcement_prueba():
+def crear_announcement_prueba() -> None:
     """Crea anuncio de prueba para admin."""
     announcement = Announcement(
         id=1,  # Static ID for testing

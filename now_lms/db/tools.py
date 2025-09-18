@@ -12,9 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 """Definición de base de datos."""
-
 
 from __future__ import annotations
 
@@ -75,33 +73,31 @@ from now_lms.logs import log
 # Funciones auxiliares relacionadas a consultas de la base de datos.
 
 
-def verifica_docente_asignado_a_curso(id_curso: str | None = None):
+def verifica_docente_asignado_a_curso(id_curso: str | None = None) -> bool:
     """Si el usuario no esta asignado como docente al curso devuelve None."""
     if current_user.is_authenticated:
-        query = database.session.execute(
+        if database.session.execute(
             database.select(DocenteCurso).filter(DocenteCurso.usuario == current_user.usuario, DocenteCurso.curso == id_curso)
-        ).scalar_one_or_none()
-        if query:
-            return query
-        return False
-    return False
-
-
-def verifica_moderador_asignado_a_curso(id_curso: str | None = None):
-    """Si el usuario no esta asignado como moderador al curso devuelve None."""
-    if current_user.is_authenticated:
-        query = database.session.execute(
-            database.select(ModeradorCurso).filter(
-                ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.curso == id_curso
-            )
-        ).scalar_one_or_none()
-        if query:
+        ).scalar_one_or_none():
             return True
         return False
     return False
 
 
-def verifica_estudiante_asignado_a_curso(id_curso: str | None = None):
+def verifica_moderador_asignado_a_curso(id_curso: str | None = None) -> bool:
+    """Si el usuario no esta asignado como moderador al curso devuelve None."""
+    if current_user.is_authenticated:
+        if database.session.execute(
+            database.select(ModeradorCurso).filter(
+                ModeradorCurso.usuario == current_user.usuario, ModeradorCurso.curso == id_curso
+            )
+        ).scalar_one_or_none():
+            return True
+        return False
+    return False
+
+
+def verifica_estudiante_asignado_a_curso(id_curso: str | None = None) -> bool:
     """Si el usuario no esta asignado como estudiante al curso devuelve None."""
     if current_user.is_authenticated:
         regitro = (
@@ -142,17 +138,14 @@ def crear_configuracion_predeterminada():
         descripcion=_("Sistema de aprendizaje en linea."),
         moneda=default_currency,
         r=urandom(16),
-        enable_programs=False,
-        enable_masterclass=False,
-        enable_resources=False,
-        lang=default_lang,
-        time_zone=default_timezone,
     )
     config.enable_programs = False
     config.enable_masterclass = False
     config.enable_resources = False
     config.enable_blog = False
     config.enable_file_uploads = False
+    config.lang = default_lang
+    config.time_zone = default_timezone
 
     mail_config = MailConfig(
         MAIL_USE_TLS=False,
@@ -176,11 +169,9 @@ def crear_configuracion_predeterminada():
         custom_logo=False,
     )
 
-    database.session.add(config)
-    database.session.add(mail_config)
-    database.session.add(adsense_config)
-    database.session.add(paypal_config)
-    database.session.add(theme)
+    for item in [config, mail_config, adsense_config, paypal_config, theme]:
+        database.session.add(item)
+        database.session.flush()
     database.session.commit()
 
 
@@ -283,7 +274,9 @@ def crear_indice_recurso(recurso: str) -> RecursoIndex:
     if recurso_anterior:
         has_prev = True
         prev_is_alternative = recurso_anterior.requerido == 3
-        prev_resource = RecursoInfo(recurso_anterior.curso, recurso_anterior.tipo, recurso_anterior.id)  # type: ignore[assignment]
+        prev_resource = RecursoInfo(
+            recurso_anterior.curso, recurso_anterior.tipo, recurso_anterior.id
+        )  # type: ignore[assignment]
     elif seccion_from_db:
         seccion_anterior = (
             database.session.execute(database.select(CursoSeccion).filter(CursoSeccion.indice == seccion_from_db.indice - 1))
@@ -305,12 +298,16 @@ def crear_indice_recurso(recurso: str) -> RecursoIndex:
             if recurso_de_seccion_anterior:
                 has_prev = True
                 prev_is_alternative = recurso_de_seccion_anterior.requerido == 3
-                prev_resource = RecursoInfo(recurso_de_seccion_anterior.curso, recurso_de_seccion_anterior.tipo, recurso_de_seccion_anterior.id)  # type: ignore[assignment]
+                prev_resource = RecursoInfo(
+                    recurso_de_seccion_anterior.curso, recurso_de_seccion_anterior.tipo, recurso_de_seccion_anterior.id
+                )  # type: ignore[assignment]
 
     if recurso_posterior:
         has_next = True
         next_is_alternative = recurso_posterior.requerido == 3
-        next_resource = RecursoInfo(recurso_posterior.curso, recurso_posterior.tipo, recurso_posterior.id)  # type: ignore[assignment]
+        next_resource = RecursoInfo(
+            recurso_posterior.curso, recurso_posterior.tipo, recurso_posterior.id
+        )  # type: ignore[assignment]
     elif seccion_from_db:
         seccion_posterior = (
             database.session.execute(database.select(CursoSeccion).filter(CursoSeccion.indice == seccion_from_db.indice + 1))
@@ -332,7 +329,9 @@ def crear_indice_recurso(recurso: str) -> RecursoIndex:
             if recurso_de_seccion_posterior:
                 has_next = True
                 next_is_alternative = recurso_de_seccion_posterior.requerido == 3
-                next_resource = RecursoInfo(recurso_de_seccion_posterior.curso, recurso_de_seccion_posterior.tipo, recurso_de_seccion_posterior.id)  # type: ignore[assignment]
+                next_resource = RecursoInfo(
+                    recurso_de_seccion_posterior.curso, recurso_de_seccion_posterior.tipo, recurso_de_seccion_posterior.id
+                )  # type: ignore[assignment]
 
     return RecursoIndex(has_prev, has_next, prev_is_alternative, next_is_alternative, prev_resource, next_resource)
 
