@@ -13,6 +13,9 @@
 # limitations under the License.
 #
 
+
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -28,41 +31,41 @@ from now_lms.config import DIRECTORIO_ARCHIVOS_PUBLICOS
 # ---------------------------------------------------------------------------------------
 
 
-def get_current_course_logo(course_code):
+def get_current_course_logo(course_code: str) -> str | None:
     """Return the name of the logo file for the current course."""
     course_dir = Path(str(str(DIRECTORIO_ARCHIVOS_PUBLICOS) + "/images/" + course_code))
-    logo_file = [f for f in course_dir.iterdir() if f.is_file() and f.stem == "logo"]
+    logo_files = [f for f in course_dir.iterdir() if f.is_file() and f.stem == "logo"]
 
     try:
-        logo_file = logo_file[0]
+        logo_file = logo_files[0]
         return logo_file.name
     except (FileNotFoundError, IndexError):
         return None
 
 
-def get_site_logo():
+def get_site_logo() -> str | None:
     """Return the name of the logo file of the site."""
     course_dir = Path(str(str(DIRECTORIO_ARCHIVOS_PUBLICOS) + "/images/"))
-    logo_file = [f for f in course_dir.iterdir() if f.is_file() and f.stem == "logotipo"]
+    logo_files = [f for f in course_dir.iterdir() if f.is_file() and f.stem == "logotipo"]
     try:
-        logo_file = logo_file[0]
+        logo_file = logo_files[0]
         return logo_file.name
     except IndexError:
         return None
 
 
-def get_site_favicon():
+def get_site_favicon() -> str | None:
     """Return the name of the logo file of the site."""
     course_dir = Path(str(str(DIRECTORIO_ARCHIVOS_PUBLICOS) + "/images/"))
-    logo_file = [f for f in course_dir.iterdir() if f.is_file() and f.stem == "favicon"]
+    logo_files = [f for f in course_dir.iterdir() if f.is_file() and f.stem == "favicon"]
     try:
-        logo_file = logo_file[0]
+        logo_file = logo_files[0]
         return logo_file.name
     except IndexError:
         return None
 
 
-def logo_personalizado():
+def logo_personalizado() -> bool:
     """Check if custom logo is enabled."""
     from now_lms.db import Style, database
 
@@ -75,7 +78,7 @@ def logo_personalizado():
         return False
 
 
-def favicon_personalizado():
+def favicon_personalizado() -> bool:
     """Check if custom favicon is enabled."""
     from now_lms.db import Style, database
 

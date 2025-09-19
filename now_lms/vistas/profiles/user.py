@@ -1,8 +1,6 @@
 """User profile views and functionality."""
 
-# ---------------------------------------------------------------------------------------
-# Standard library
-# ---------------------------------------------------------------------------------------
+from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -11,6 +9,7 @@ from flask import Blueprint, abort, flash, redirect, render_template, request, u
 from flask_login import current_user, login_required
 from flask_uploads import UploadNotAllowed
 from sqlalchemy.exc import OperationalError
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -24,6 +23,11 @@ from now_lms.forms import ChangePasswordForm, UserForm
 from now_lms.logs import log
 from now_lms.misc import GENEROS
 
+# ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
+
+
 # Constants
 PROFILE_ROUTE = "/perfil"
 TEMPLATE_CAMBIAR_CONTRASENA = "inicio/cambiar_contraseña.html"
@@ -36,7 +40,7 @@ user_profile = Blueprint("user_profile", __name__, template_folder=DIRECTORIO_PL
 # ---------------------------------------------------------------------------------------
 @user_profile.route("/student")
 @login_required
-def pagina_estudiante():
+def pagina_estudiante() -> str:
     """Perfil de usuario."""
     # Get upcoming calendar events for the dashboard
     upcoming_events = get_upcoming_events_for_user(current_user.usuario, limit=5)
@@ -46,7 +50,7 @@ def pagina_estudiante():
 
 @user_profile.route("/perfil")
 @login_required
-def perfil():
+def perfil() -> str:
     """Perfil del usuario."""
     registro_usuario = database.session.execute(database.select(Usuario).filter(Usuario.id == current_user.id)).first()[0]
 
@@ -96,7 +100,7 @@ def perfil():
 
 @user_profile.route("/user/<id_usuario>")
 @login_required
-def usuario(id_usuario):
+def usuario(id_usuario: str) -> str:
     """Acceso administrativo al perfil de un usuario."""
     perfil_usuario = database.session.execute(database.select(Usuario).filter_by(usuario=id_usuario)).scalar_one_or_none()
     # La misma plantilla del perfil de usuario con permisos elevados como
@@ -108,7 +112,7 @@ def usuario(id_usuario):
 
 @user_profile.route("/perfil/edit/<ulid>", methods=["GET", "POST"])
 @login_required
-def edit_perfil(ulid: str):
+def edit_perfil(ulid: str) -> str | Response:
     """Actualizar información de usuario."""
     if current_user.id != ulid:
         abort(403)
@@ -163,7 +167,7 @@ def edit_perfil(ulid: str):
 
 @user_profile.route("/perfil/<ulid>/delete_logo")
 @login_required
-def elimina_logo_usuario(ulid: str):
+def elimina_logo_usuario(ulid: str) -> Response:
     """Elimina logo de usuario."""
     if current_user.id != ulid:
         abort(403)
@@ -174,7 +178,7 @@ def elimina_logo_usuario(ulid: str):
 
 @user_profile.route("/perfil/cambiar_contraseña/<ulid>", methods=["GET", "POST"])
 @login_required
-def cambiar_contraseña(ulid: str):
+def cambiar_contraseña(ulid: str) -> str | Response:
     """Cambiar contraseña del usuario."""
     if current_user.id != ulid:
         abort(403)

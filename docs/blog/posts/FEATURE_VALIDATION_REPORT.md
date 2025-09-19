@@ -1,6 +1,9 @@
 ---
 draft: false
 date: 2025-08-17
+slug: feature-validation-report
+authors:
+  - admin
 categories:
   - Development
 ---

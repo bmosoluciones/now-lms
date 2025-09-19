@@ -19,7 +19,7 @@ NOW Learning Management System.
 Gestión de certificados.
 """
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 from collections import OrderedDict
@@ -37,6 +37,7 @@ from flask_login import current_user, login_required
 from flask_uploads import UploadNotAllowed
 from sqlalchemy import delete
 from sqlalchemy.exc import OperationalError
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -50,9 +51,9 @@ from now_lms.db import (
     CategoriaPrograma,
     CertificacionPrograma,
     Curso,
+    EstudianteCurso,
     Etiqueta,
     EtiquetaPrograma,
-    EstudianteCurso,
     Pago,
     Programa,
     ProgramaCurso,
@@ -71,7 +72,7 @@ from now_lms.db.tools import (
     verificar_programa_completo,
     verificar_usuario_inscrito_programa,
 )
-from now_lms.forms import ProgramaForm, AdminProgramEnrollmentForm
+from now_lms.forms import AdminProgramEnrollmentForm, ProgramaForm
 from now_lms.i18n import _
 from now_lms.themes import get_program_list_template, get_program_view_template
 
@@ -88,7 +89,7 @@ program = Blueprint("program", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 @program.route("/program/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def nuevo_programa():
+def nuevo_programa() -> str | Response:
     """Nueva programa."""
     form = ProgramaForm()
     form.plantilla_certificado.choices = generate_template_choices_program()
@@ -142,7 +143,7 @@ def nuevo_programa():
 @login_required
 @perfil_requerido("instructor")
 @cache.cached(timeout=60)
-def programas():
+def programas() -> str:
     """Lista de programas."""
     if current_user.tipo == "admin":
         consulta = database.paginate(
@@ -165,7 +166,7 @@ def programas():
 @program.route("/program/<ulid>/delete")
 @login_required
 @perfil_requerido("instructor")
-def delete_program(ulid: str):
+def delete_program(ulid: str) -> Response:
     """Elimina programa."""
     database.session.execute(delete(Programa).where(Programa.id == ulid))
 
@@ -179,7 +180,7 @@ def delete_program(ulid: str):
 @program.route("/program/<ulid>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def edit_program(ulid: str):
+def edit_program(ulid: str) -> str | Response:
     """Editar programa."""
     programa = database.session.execute(database.select(Programa).filter(Programa.id == ulid)).scalars().first()
 
@@ -271,7 +272,7 @@ def edit_program(ulid: str):
 @program.route("/program/<codigo>/courses")
 @login_required
 @perfil_requerido("instructor")
-def programa_cursos(codigo):
+def programa_cursos(codigo: str) -> str | Response:
     """Pagina principal del curso."""
     if current_user.tipo == "admin":
         return render_template("learning/programas/lista_cursos.html")
@@ -281,7 +282,7 @@ def programa_cursos(codigo):
 
 @program.route("/program/<codigo>")
 @cache.cached(timeout=60, unless=no_guardar_en_cache_global)
-def pagina_programa(codigo):
+def pagina_programa(codigo: str) -> str:
     """Pagina principal del curso."""
     programa_obj = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalars().first()
 
@@ -290,7 +291,7 @@ def pagina_programa(codigo):
 
 @program.route("/program/explore")
 @cache.cached(unless=no_guardar_en_cache_global)
-def lista_programas():
+def lista_programas() -> str:
     """Lista de programas."""
     if DESARROLLO:
         MAX_COUNT = 3
@@ -363,7 +364,7 @@ def lista_programas():
 @program.route("/program/<codigo>/enroll", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("student")
-def inscribir_programa(codigo):
+def inscribir_programa(codigo: str) -> str | Response:
     """Inscribir usuario a un programa."""
     programa = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalars().first()
 
@@ -394,7 +395,7 @@ def inscribir_programa(codigo):
 @program.route("/program/<codigo>/take")
 @login_required
 @perfil_requerido("student")
-def tomar_programa(codigo):
+def tomar_programa(codigo: str) -> str | Response:
     """Página para tomar un programa."""
     programa = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalars().first()
 
@@ -436,7 +437,7 @@ def tomar_programa(codigo):
 @program.route("/program/<codigo>/courses/manage", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def gestionar_cursos_programa(codigo):
+def gestionar_cursos_programa(codigo: str) -> str | Response:
     """Gestionar cursos de un programa."""
     programa = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalars().first()
 
@@ -498,7 +499,7 @@ def gestionar_cursos_programa(codigo):
 @program.route("/program/<codigo>/enroll_user", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def inscribir_usuario_programa(codigo):
+def inscribir_usuario_programa(codigo: str) -> str | Response:
     """Inscribir manualmente a un usuario en un programa (solo admin)."""
     programa = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalars().first()
 
@@ -533,7 +534,7 @@ def inscribir_usuario_programa(codigo):
     return render_template("learning/programas/inscribir_usuario.html", programa=programa)
 
 
-def _emitir_certificado_programa(codigo_programa, usuario, plantilla):
+def _emitir_certificado_programa(codigo_programa: str, usuario: str, plantilla: str) -> None:
     """Emit a program certificate for a user."""
     # Get program by codigo to get its ID
     programa = database.session.execute(
@@ -564,7 +565,7 @@ def _emitir_certificado_programa(codigo_programa, usuario, plantilla):
 @program.route("/program/<codigo>/admin/enroll", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def admin_program_enrollment(codigo):
+def admin_program_enrollment(codigo: str) -> str | Response:
     """Administrative enrollment of students to a program and all its courses."""
     from now_lms.calendar_utils import create_events_for_student_enrollment
 
@@ -691,7 +692,7 @@ def admin_program_enrollment(codigo):
 @program.route("/program/<codigo>/admin/enrollments")
 @login_required
 @perfil_requerido("instructor")
-def admin_program_enrollments(codigo):
+def admin_program_enrollments(codigo: str) -> str:
     """View and manage program enrollments."""
     # Verify program exists
     programa = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalar_one_or_none()
@@ -716,9 +717,8 @@ def admin_program_enrollments(codigo):
 @program.route("/program/<codigo>/admin/unenroll/<student_username>", methods=["POST"])
 @login_required
 @perfil_requerido("instructor")
-def admin_program_unenrollment(codigo, student_username):
+def admin_program_unenrollment(codigo: str, student_username: str) -> Response:
     """Administrative unenrollment of a student from a program and all its courses."""
-
     # Verify program exists
     programa = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalar_one_or_none()
     if not programa:

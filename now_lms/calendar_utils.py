@@ -15,7 +15,7 @@
 
 """Utilities for managing user calendar events."""
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 import threading
@@ -23,7 +23,7 @@ import threading
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
-from datetime import datetime, time, date
+from datetime import date, datetime, time
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries

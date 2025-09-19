@@ -15,13 +15,14 @@
 
 """Database backup functionality for NOW LMS."""
 
-import os
+from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
+import os
 import shutil
-import subprocess
+import subprocess  # nosec B404 - Subprocess used for legitimate database backup operations
 from datetime import datetime
 from pathlib import Path
 
@@ -66,13 +67,13 @@ def db_backup():
             shutil.copy2(ARCHIVO_ORIGEN, BACKUP_FILE)
         elif "postgresql" in DBURI:
             os.environ["PGPASSWORD"] = DBPASS
-            subprocess.run(
+            subprocess.run(  # nosec B603, B607 - Legitimate pg_dump command for database backup
                 ["pg_dump", "-h", DBHOST, "-p", DBPORT, "-U", DBUSER, "-F", "c", "-b", "-v", "-f", BACKUP_FILE, DBNAME]
             )
             os.environ["PGPASSWORD"] = ""
         elif "mysql" in DBURI:
             with BACKUP_FILE.open("w", encoding="utf-8") as f:
-                subprocess.run(
+                subprocess.run(  # nosec B603, B607 - Legitimate mysqldump command for database backup
                     ["mysqldump", "-h", DBHOST, "-P", DBPORT, "-u", DBUSER, f"--password={DBPASS}", DBNAME],
                     stdout=f,
                 )
@@ -93,7 +94,7 @@ def _restaurar_postgresql(backup_sql_file):
 
     print(f"Ejecutando: {' '.join(comando)}")
 
-    resultado = subprocess.run(
+    resultado = subprocess.run(  # nosec B603 - Legitimate database restore operation
         comando,
     )
 
@@ -116,7 +117,7 @@ def _restaurar_mysql(backup_sql_file):
     print(f"Ejecutando: {' '.join(comando[:-1])} [password oculto] {comando[-1]}")
 
     with open(backup_sql_file, "rb") as sql_file:
-        resultado = subprocess.run(comando, stdin=sql_file)
+        resultado = subprocess.run(comando, stdin=sql_file)  # nosec B603 - Legitimate database restore operation
 
     if resultado.returncode != 0:
         raise RuntimeError("Error al restaurar la base de datos MySQL con mysql")

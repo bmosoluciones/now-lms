@@ -15,6 +15,9 @@
 
 """Vistas para la funcionalidad del foro."""
 
+
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
@@ -22,6 +25,7 @@ from bleach import clean
 from flask import Blueprint, abort, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from markdown import markdown
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -74,7 +78,7 @@ forum = Blueprint("forum", __name__)
 # ---------------------------------------------------------------------------------------
 
 
-def verificar_acceso_curso(course_code, usuario_id):
+def verificar_acceso_curso(course_code: str, usuario_id: str) -> tuple[bool, str | None]:
     """Verifica si un usuario tiene acceso al curso."""
     # Verificar si es instructor
     instructor = (
@@ -106,12 +110,12 @@ def verificar_acceso_curso(course_code, usuario_id):
     return False, None
 
 
-def puede_cerrar_mensajes(role, user_type):
+def puede_cerrar_mensajes(role: str | None, user_type: str) -> bool:
     """Verifica si un usuario puede cerrar mensajes del foro."""
     return role in ["instructor", "moderador"] or user_type == "admin"
 
 
-def markdown_to_html(contenido_markdown):
+def markdown_to_html(contenido_markdown: str) -> str:
     """Convierte markdown a HTML y lo sanitiza."""
     html = markdown(contenido_markdown, extensions=["nl2br", "codehilite"])
     return clean(html, tags=ALLOWED_HTML_TAGS, attributes=ALLOWED_HTML_ATTRS)
@@ -124,7 +128,7 @@ def markdown_to_html(contenido_markdown):
 
 @forum.route("/course/<course_code>/forum")
 @login_required
-def ver_foro(course_code):
+def ver_foro(course_code: str) -> str | Response:
     """Página principal del foro de un curso."""
     # Verificar que el curso existe y tiene foro habilitado
     curso = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
@@ -160,7 +164,7 @@ def ver_foro(course_code):
 
 @forum.route("/course/<course_code>/forum/new", methods=["GET", "POST"])
 @login_required
-def nuevo_mensaje(course_code):
+def nuevo_mensaje(course_code: str) -> str | Response:
     """Crear un nuevo mensaje en el foro."""
     # Verificar curso y permisos
     curso = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
@@ -195,7 +199,7 @@ def nuevo_mensaje(course_code):
 
 @forum.route("/course/<course_code>/forum/message/<message_id>")
 @login_required
-def ver_mensaje(course_code, message_id):
+def ver_mensaje(course_code: str, message_id: str) -> str:
     """Ver un mensaje específico con sus respuestas."""
     # Verificar curso y mensaje
     curso = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
@@ -243,7 +247,7 @@ def ver_mensaje(course_code, message_id):
 
 @forum.route("/course/<course_code>/forum/message/<message_id>/reply", methods=["GET", "POST"])
 @login_required
-def responder_mensaje(course_code, message_id):
+def responder_mensaje(course_code: str, message_id: str) -> str | Response:
     """Responder a un mensaje del foro."""
     # Verificar curso y mensaje
     curso = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
@@ -295,7 +299,7 @@ def responder_mensaje(course_code, message_id):
 
 @forum.route("/course/<course_code>/forum/message/<message_id>/close", methods=["POST"])
 @login_required
-def cerrar_mensaje(course_code, message_id):
+def cerrar_mensaje(course_code: str, message_id: str) -> Response:
     """Cerrar un mensaje/hilo del foro (solo instructores, moderadores y admins)."""
     # Verificar curso y mensaje
     curso = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
@@ -323,7 +327,7 @@ def cerrar_mensaje(course_code, message_id):
 
 @forum.route("/course/<course_code>/forum/message/<message_id>/open", methods=["POST"])
 @login_required
-def abrir_mensaje(course_code, message_id):
+def abrir_mensaje(course_code: str, message_id: str) -> Response:
     """Abrir un mensaje/hilo del foro (solo instructores, moderadores y admins)."""
     # Verificar curso y mensaje
     curso = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()

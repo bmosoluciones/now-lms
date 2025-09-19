@@ -23,10 +23,10 @@
                     <div class="col-md-4 text-end">
                         <div class="btn-group" role="group">
                             <a href="{{ url_for('certificate.certificate_new') }}" class="btn btn-success">
-                                <i class="bi bi-plus-lg me-1"></i>{{ _("Nueva plantilla") }}
+                                <i class="bi bi-plus-lg me-1"></i>{{ _('Nueva plantilla') }}
                             </a>
                             <a href="{{ url_for('certificate.certificacion_generar') }}" class="btn btn-outline-primary">
-                                <i class="bi bi-file-earmark-plus me-1"></i>{{ _("Nuevo certificado") }}
+                                <i class="bi bi-file-earmark-plus me-1"></i>{{ _('Nuevo certificado') }}
                             </a>
                         </div>
                     </div>
@@ -42,12 +42,16 @@
                                 </caption>
                                 <thead class="table-light">
                                     <tr>
-                                        <th scope="col" class="fw-semibold"><i class="bi bi-bookmark me-1"></i>{{ _('Certificado') }}</th>
+                                        <th scope="col" class="fw-semibold">
+                                            <i class="bi bi-bookmark me-1"></i>{{ _('Certificado') }}
+                                        </th>
                                         <th class="fw-semibold text-center">
                                             <i class="bi bi-check-circle me-1"></i>{{ _('Habilitado') }}
                                         </th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-globe me-1"></i>{{ _('Público') }}</th>
-                                        <th class="fw-semibold text-center">{{ _("Acciones") }}</th>
+                                        <th class="fw-semibold text-center">
+                                            <i class="bi bi-globe me-1"></i>{{ _('Público') }}
+                                        </th>
+                                        <th class="fw-semibold text-center">{{ _('Acciones') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -71,7 +75,11 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <div class="btn-group" role="group" aria-label="{{ _("Acciones") }} del certificado">
+                                            <div
+                                                class="btn-group"
+                                                role="group"
+                                                aria-label="{{ _('Acciones del certificado') }}"
+                                            >
                                                 {% if item.habilitado %}
                                                 <a
                                                     href="{{ url_for('certificate.certificate_remove', ulid=item.id) }}"
@@ -108,7 +116,7 @@
                                                 <a
                                                     href="{{ url_for('certificate.certificate_edit', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-secondary"
-                                                    title=_("Editar")
+                                                    title="{{_('Editar')}}"
                                                 >
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>

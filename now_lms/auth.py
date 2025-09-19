@@ -25,6 +25,7 @@ from __future__ import annotations
 import base64
 from datetime import datetime, timedelta, timezone
 from functools import wraps
+from typing import Any, Callable
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -50,14 +51,14 @@ ph = PasswordHasher()
 # ---------------------------------------------------------------------------------------
 # Proteger contraseñas de usuarios.
 # ---------------------------------------------------------------------------------------
-def proteger_passwd(clave, /):
+def proteger_passwd(clave: str, /) -> bytes:
     """Devuelve una contraseña salteada con argon2."""
     _hash = ph.hash(clave.encode()).encode("utf-8")
 
     return _hash
 
 
-def validar_acceso(usuario_id, acceso, /):
+def validar_acceso(usuario_id: str, acceso: str, /) -> bool:
     """Verifica el inicio de sesión del usuario."""
     log.trace(f"Verifying access for {usuario_id}")
     registro = database.session.execute(database.select(Usuario).filter_by(usuario=usuario_id)).scalar_one_or_none()
@@ -88,12 +89,12 @@ def validar_acceso(usuario_id, acceso, /):
 # ---------------------------------------------------------------------------------------
 # Comprobar el acceso a un perfil de acuerdo con el perfil del usuario.
 # ---------------------------------------------------------------------------------------
-def perfil_requerido(perfil_id):
+def perfil_requerido(perfil_id: str | tuple[str, ...]) -> Callable[[Callable], Callable]:
     """Comprueba si un usuario tiene acceso a un recurso determinado en base a su tipo."""
 
-    def decorator_verifica_acceso(func):
+    def decorator_verifica_acceso(func: Callable) -> Callable:
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             if not current_user.is_authenticated:
                 flash("Favor iniciar sesión.", "warning")
                 return redirect(url_for("user.login"))
@@ -123,7 +124,7 @@ def perfil_requerido(perfil_id):
 # ---------------------------------------------------------------------------------------
 # Evita registrar información sensible en la base de datos en texto plano.
 # ---------------------------------------------------------------------------------------
-def proteger_secreto(password):
+def proteger_secreto(password: str) -> bytes:
     """Devuelve el hash de una contraseña."""
     with current_app.app_context():
         from now_lms.db import Configuracion
@@ -141,7 +142,7 @@ def proteger_secreto(password):
         return f.encrypt(password.encode())
 
 
-def descifrar_secreto(hash_value):
+def descifrar_secreto(hash_value: bytes) -> str | None:
     """Devuelve el valor de una contraseña protegida."""
     with current_app.app_context():
         from now_lms.db import Configuracion
@@ -166,19 +167,21 @@ def descifrar_secreto(hash_value):
 # ---------------------------------------------------------------------------------------
 # Validación de tokens de confirmación de correo electrónico.
 # ---------------------------------------------------------------------------------------
-def generate_confirmation_token(mail):
+def generate_confirmation_token(mail: str) -> str:
     """Generate a confirmation token for email verification."""
     # Python 3.6+ - Numeric literal underscores for readability (10 hours = 36,000 seconds)
     expiration_time = datetime.now(timezone.utc) + timedelta(seconds=36_000)
     data = {"exp": expiration_time, "confirm_id": mail}
-    token = jwt.encode(data, current_app.secret_key, algorithm="HS512")
+    secret_key = current_app.secret_key or current_app.config.get("SECRET_KEY") or ""
+    token = jwt.encode(data, secret_key, algorithm="HS512")
     return token
 
 
-def validate_confirmation_token(token):
+def validate_confirmation_token(token: str) -> bool:
     """Validate a confirmation token and return the result."""
     try:
-        data = jwt.decode(token, current_app.secret_key, algorithms=["HS512"])
+        secret_key = current_app.secret_key or current_app.config.get("SECRET_KEY") or ""
+        data = jwt.decode(token, secret_key, algorithms=["HS512"])
         log.trace(f"Confirmation token decoded: {data}")
     except jwt.ExpiredSignatureError:
         log.warning("Verification attempt expired.")
@@ -210,7 +213,7 @@ def validate_confirmation_token(token):
     return False
 
 
-def send_confirmation_email(user):
+def send_confirmation_email(user) -> None:
     """Send confirmation email to user."""
     from flask_mail import Message
 
@@ -257,19 +260,21 @@ def send_confirmation_email(user):
 # ---------------------------------------------------------------------------------------
 # Password reset functionality
 # ---------------------------------------------------------------------------------------
-def generate_password_reset_token(email):
+def generate_password_reset_token(email: str) -> str:
     """Generate a password reset token."""
     # Python 3.6+ - Numeric literal underscores for readability (1 hour = 3,600 seconds)
     expiration_time = datetime.now(timezone.utc) + timedelta(seconds=3_600)  # 1 hour expiration
     data = {"exp": expiration_time, "reset_email": email, "action": "password_reset"}
-    token = jwt.encode(data, current_app.secret_key, algorithm="HS512")
+    secret_key = current_app.secret_key or current_app.config.get("SECRET_KEY") or ""
+    token = jwt.encode(data, secret_key, algorithm="HS512")
     return token
 
 
-def validate_password_reset_token(token):
+def validate_password_reset_token(token: str) -> str | None:
     """Validate a password reset token and return the email if valid."""
     try:
-        data = jwt.decode(token, current_app.secret_key, algorithms=["HS512"])
+        secret_key = current_app.secret_key or current_app.config.get("SECRET_KEY") or ""
+        data = jwt.decode(token, secret_key, algorithms=["HS512"])
         log.trace(f"Password reset token decoded: {data}")
     except jwt.ExpiredSignatureError:
         log.warning("Password reset token expired.")
@@ -289,7 +294,7 @@ def validate_password_reset_token(token):
     return None
 
 
-def send_password_reset_email(user):
+def send_password_reset_email(user) -> bool:
     """Send password reset email to user."""
     from flask_mail import Message
 

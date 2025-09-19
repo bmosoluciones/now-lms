@@ -1,0 +1,649 @@
+/* Excel Theme for NOW LMS */
+
+/* ===== VARIABLES ===== */
+:root {
+    /* Excel Brand Colors */
+    --excel-primary: #217346;      /* Excel Green */
+    --excel-primary-light: #10A037; /* Light Green */
+    --excel-primary-dark: #0B5D2D;  /* Dark Green */
+    --excel-secondary: #FFF;        /* White */
+    --excel-accent: #F3F9F5;        /* Very Light Green */
+    
+    /* Neutral Colors */
+    --excel-gray-100: #F8F9FA;
+    --excel-gray-200: #E9ECEF;
+    --excel-gray-300: #DEE2E6;
+    --excel-gray-400: #CED4DA;
+    --excel-gray-500: #ADB5BD;
+    --excel-gray-600: #6C757D;
+    --excel-gray-700: #495057;
+    --excel-gray-800: #343A40;
+    --excel-gray-900: #212529;
+    
+    /* Typography */
+    --excel-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --excel-font-size-base: 1rem;
+    --excel-line-height: 1.5;
+    
+    /* Spacing */
+    --excel-border-radius: 0.375rem;
+    --excel-border-radius-lg: 0.5rem;
+    --excel-box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --excel-box-shadow-lg: 0 8px 25px rgba(33, 115, 70, 0.15);
+    
+    /* Transitions */
+    --excel-transition: all 0.3s ease;
+}
+
+/* ===== BASE STYLES ===== */
+.excel-theme {
+    font-family: var(--excel-font-family);
+    line-height: var(--excel-line-height);
+}
+
+/* ===== NAVBAR STYLES ===== */
+.excel-navbar {
+    background: var(--excel-secondary);
+    border-bottom: 3px solid var(--excel-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 0.75rem 0;
+}
+
+.excel-brand {
+    text-decoration: none;
+    color: var(--excel-primary) !important;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.excel-logo {
+    width: 40px;
+    height: 40px;
+    background: var(--excel-primary);
+    border-radius: var(--excel-border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.excel-icon {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.excel-brand-text {
+    color: var(--excel-primary);
+    font-weight: 600;
+}
+
+.excel-toggler {
+    border: 2px solid var(--excel-primary);
+    border-radius: var(--excel-border-radius);
+}
+
+.excel-toggler:focus {
+    box-shadow: 0 0 0 0.2rem rgba(33, 115, 70, 0.25);
+}
+
+/* Navigation Tabs */
+.excel-nav-tabs {
+    gap: 0.5rem;
+}
+
+.excel-tab {
+    color: var(--excel-gray-700) !important;
+    text-decoration: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--excel-border-radius);
+    transition: var(--excel-transition);
+    font-weight: 500;
+    border: 2px solid transparent;
+    position: relative;
+}
+
+.excel-tab:hover,
+.excel-tab.active {
+    color: var(--excel-primary) !important;
+    background: var(--excel-accent);
+    border-color: var(--excel-primary);
+}
+
+.excel-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 3px;
+    background: var(--excel-primary);
+    border-radius: 1px;
+}
+
+/* User Actions */
+.excel-actions {
+    gap: 0.5rem;
+}
+
+.excel-action-btn,
+.excel-user-btn {
+    color: var(--excel-gray-700) !important;
+    text-decoration: none;
+    padding: 0.5rem;
+    border-radius: var(--excel-border-radius);
+    transition: var(--excel-transition);
+}
+
+.excel-action-btn:hover,
+.excel-user-btn:hover {
+    background: var(--excel-accent);
+    color: var(--excel-primary) !important;
+}
+
+.excel-dropdown {
+    border: 2px solid var(--excel-primary);
+    border-radius: var(--excel-border-radius-lg);
+    box-shadow: var(--excel-box-shadow-lg);
+}
+
+.excel-dropdown .dropdown-item {
+    transition: var(--excel-transition);
+}
+
+.excel-dropdown .dropdown-item:hover {
+    background: var(--excel-accent);
+    color: var(--excel-primary);
+}
+
+/* ===== BUTTONS ===== */
+.excel-btn-primary {
+    background: var(--excel-primary);
+    border: 2px solid var(--excel-primary);
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--excel-border-radius);
+    transition: var(--excel-transition);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.excel-btn-primary:hover {
+    background: var(--excel-primary-dark);
+    border-color: var(--excel-primary-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--excel-box-shadow-lg);
+}
+
+.excel-btn-outline {
+    background: transparent;
+    border: 2px solid var(--excel-primary);
+    color: var(--excel-primary);
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--excel-border-radius);
+    transition: var(--excel-transition);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.excel-btn-outline:hover {
+    background: var(--excel-primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--excel-box-shadow-lg);
+}
+
+.excel-btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+}
+
+/* ===== HERO SECTION ===== */
+.excel-hero {
+    background: linear-gradient(135deg, var(--excel-primary) 0%, var(--excel-primary-light) 100%);
+    color: white;
+    padding: 6rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.excel-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    opacity: 0.3;
+    z-index: 1;
+}
+
+.excel-hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.excel-hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+}
+
+.excel-hero-subtitle {
+    color: var(--excel-accent);
+}
+
+.excel-hero-description {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.excel-hero-actions {
+    margin-top: 2rem;
+}
+
+/* Hero Visual */
+.excel-hero-visual {
+    position: relative;
+    z-index: 2;
+}
+
+.excel-visual-container {
+    position: relative;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.excel-big-logo {
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.excel-x-letter {
+    font-size: 6rem;
+    font-weight: 900;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.excel-floating-elements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.excel-element {
+    position: absolute;
+    font-size: 2rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.excel-element:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+.excel-element:nth-child(2) { top: 20%; right: 15%; animation-delay: 0.5s; }
+.excel-element:nth-child(3) { bottom: 20%; left: 20%; animation-delay: 1s; }
+.excel-element:nth-child(4) { bottom: 10%; right: 10%; animation-delay: 1.5s; }
+.excel-element:nth-child(5) { top: 50%; left: 5%; animation-delay: 2s; }
+.excel-element:nth-child(6) { top: 60%; right: 5%; animation-delay: 2.5s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+/* ===== COURSES SECTION ===== */
+.excel-courses-section {
+    padding: 6rem 0;
+    background: var(--excel-gray-100);
+}
+
+.excel-section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.excel-section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--excel-primary);
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.excel-section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: var(--excel-primary);
+    border-radius: 2px;
+}
+
+/* Course Cards */
+.excel-course-card {
+    background: white;
+    border-radius: var(--excel-border-radius-lg);
+    box-shadow: var(--excel-box-shadow);
+    padding: 2rem;
+    text-align: center;
+    transition: var(--excel-transition);
+    height: 100%;
+    border: 2px solid transparent;
+}
+
+.excel-course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--excel-box-shadow-lg);
+    border-color: var(--excel-primary);
+}
+
+.excel-course-icon {
+    margin-bottom: 1.5rem;
+}
+
+.excel-icon-bg {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 2rem;
+    color: white;
+}
+
+.excel-icon-fundamentals {
+    background: linear-gradient(135deg, var(--excel-primary), var(--excel-primary-light));
+}
+
+.excel-icon-analysis {
+    background: linear-gradient(135deg, #17A2B8, #20C997);
+}
+
+.excel-icon-automation {
+    background: linear-gradient(135deg, #6F42C1, #E83E8C);
+}
+
+.excel-icon-advanced {
+    background: linear-gradient(135deg, #FD7E14, #FF5722);
+}
+
+.excel-icon-general {
+    background: linear-gradient(135deg, var(--excel-primary), #28A745);
+}
+
+.excel-icon-empty {
+    background: var(--excel-gray-400);
+    color: var(--excel-gray-600);
+}
+
+.excel-course-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--excel-primary);
+    margin-bottom: 1rem;
+}
+
+.excel-course-description {
+    color: var(--excel-gray-600);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.excel-course-btn {
+    background: var(--excel-primary);
+    border: 2px solid var(--excel-primary);
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--excel-border-radius);
+    transition: var(--excel-transition);
+    text-decoration: none;
+}
+
+.excel-course-btn:hover {
+    background: var(--excel-primary-dark);
+    border-color: var(--excel-primary-dark);
+    color: white;
+}
+
+.excel-more-courses {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+/* ===== CTA SECTION ===== */
+.excel-cta-section {
+    padding: 6rem 0;
+    background: var(--excel-primary);
+    color: white;
+}
+
+.excel-cta-content {
+    text-align: center;
+}
+
+.excel-cta-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.excel-cta-description {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.excel-cta-actions {
+    margin-top: 2rem;
+}
+
+.excel-cta-section .excel-btn-outline {
+    border-color: white;
+    color: white;
+}
+
+.excel-cta-section .excel-btn-outline:hover {
+    background: white;
+    color: var(--excel-primary);
+}
+
+/* ===== NO COURSES SECTION ===== */
+.excel-no-courses {
+    padding: 6rem 0;
+    background: var(--excel-gray-100);
+}
+
+/* ===== NOTIFICATIONS ===== */
+.excel-notifications {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1050;
+    max-width: 400px;
+}
+
+.excel-alert {
+    border: none;
+    border-radius: var(--excel-border-radius-lg);
+    border-left: 4px solid;
+    box-shadow: var(--excel-box-shadow);
+    backdrop-filter: blur(10px);
+}
+
+.excel-alert-success {
+    background: rgba(40, 167, 69, 0.1);
+    border-left-color: #28A745;
+    color: #155724;
+}
+
+.excel-alert-error,
+.excel-alert-danger {
+    background: rgba(220, 53, 69, 0.1);
+    border-left-color: #DC3545;
+    color: #721C24;
+}
+
+.excel-alert-warning {
+    background: rgba(255, 193, 7, 0.1);
+    border-left-color: #FFC107;
+    color: #856404;
+}
+
+.excel-alert-info {
+    background: rgba(23, 162, 184, 0.1);
+    border-left-color: #17A2B8;
+    color: #0C5460;
+}
+
+/* ===== PAGINATION ===== */
+.excel-pagination-nav {
+    margin: 2rem 0;
+}
+
+.excel-pagination {
+    gap: 0.25rem;
+}
+
+.excel-page-link {
+    color: var(--excel-primary);
+    border: 2px solid var(--excel-gray-300);
+    border-radius: var(--excel-border-radius);
+    transition: var(--excel-transition);
+    font-weight: 500;
+}
+
+.excel-page-link:hover {
+    background: var(--excel-accent);
+    border-color: var(--excel-primary);
+    color: var(--excel-primary);
+}
+
+.excel-page-active {
+    background: var(--excel-primary) !important;
+    border-color: var(--excel-primary) !important;
+    color: white !important;
+}
+
+.excel-page-info {
+    margin-top: 1rem;
+    color: var(--excel-gray-600);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .excel-hero {
+        padding: 4rem 0;
+    }
+    
+    .excel-hero-title {
+        font-size: 2rem;
+    }
+    
+    .excel-hero-description {
+        font-size: 1rem;
+    }
+    
+    .excel-visual-container {
+        height: 300px;
+    }
+    
+    .excel-big-logo {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .excel-x-letter {
+        font-size: 4rem;
+    }
+    
+    .excel-section-title {
+        font-size: 2rem;
+    }
+    
+    .excel-cta-title {
+        font-size: 2rem;
+    }
+    
+    .excel-course-card {
+        padding: 1.5rem;
+    }
+    
+    .excel-nav-tabs {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .excel-tab {
+        padding: 0.5rem 1rem;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .excel-hero-title {
+        font-size: 1.75rem;
+    }
+    
+    .excel-btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .excel-courses-section,
+    .excel-cta-section {
+        padding: 4rem 0;
+    }
+    
+    .excel-course-card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* ===== UTILITY CLASSES ===== */
+.min-vh-75 {
+    min-height: 75vh;
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .excel-element {
+        animation: none;
+    }
+}
+
+/* Focus styles for accessibility */
+.excel-tab:focus,
+.excel-btn-primary:focus,
+.excel-btn-outline:focus,
+.excel-course-btn:focus {
+    outline: 2px solid var(--excel-primary);
+    outline-offset: 2px;
+}

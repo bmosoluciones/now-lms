@@ -1,5 +1,7 @@
 """Instructor profile views for NOW LMS."""
 
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -10,8 +12,9 @@ from datetime import datetime
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
-from sqlalchemy import delete
+from sqlalchemy import delete, func
 from sqlalchemy.exc import ArgumentError, OperationalError
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -36,7 +39,6 @@ from now_lms.db import (
     database,
     select,
 )
-from sqlalchemy import func
 from now_lms.forms import EvaluationForm, QuestionForm
 
 # Route constants
@@ -54,7 +56,7 @@ instructor_profile = Blueprint("instructor_profile", __name__, template_folder=D
 @instructor_profile.route("/instructor")
 @login_required
 @perfil_requerido("instructor")
-def pagina_instructor():
+def pagina_instructor() -> str:
     """Perfil de usuario instructor."""
     # Get instructor statistics
     created_courses = (
@@ -114,7 +116,7 @@ def pagina_instructor():
 @instructor_profile.route("/instructor/courses_list")
 @login_required
 @perfil_requerido("instructor")
-def cursos():
+def cursos() -> str:
     """Lista de cursos disponibles en el sistema."""
     if current_user.tipo == "admin":
         consulta_cursos = database.paginate(
@@ -141,7 +143,7 @@ def cursos():
 @login_required
 @perfil_requerido("instructor")
 @cache.cached(timeout=60)
-def lista_grupos():
+def lista_grupos() -> str:
     """Formulario para crear un nuevo grupo."""
     grupos = database.paginate(
         database.select(UsuarioGrupo),
@@ -158,7 +160,7 @@ def lista_grupos():
 @instructor_profile.route("/group/<ulid>")
 @login_required
 @perfil_requerido("instructor")
-def grupo(ulid: str):
+def grupo(ulid: str) -> str | Response:
     """Grupo de usuarios."""
     id_ = request.args.get("id", type=str)
     grupo_ = database.session.get(UsuarioGrupo, ulid)
@@ -180,7 +182,7 @@ def grupo(ulid: str):
 )
 @login_required
 @perfil_requerido("instructor")
-def elimina_usuario__grupo(group: str, user: str):
+def elimina_usuario__grupo(group: str, user: str) -> Response:
     """Elimina usuario de grupo."""
     database.session.execute(
         delete(UsuarioGrupoMiembro).where((UsuarioGrupoMiembro.usuario == user) & (UsuarioGrupoMiembro.grupo == group))
@@ -197,7 +199,7 @@ def elimina_usuario__grupo(group: str, user: str):
 )
 @login_required
 @perfil_requerido("instructor")
-def agrega_usuario_a_grupo():
+def agrega_usuario_a_grupo() -> Response:
     """Agrega un usuario a un grupo y redirecciona a la pagina del grupo."""
     id_ = request.args.get("id", type=str)
     registro = UsuarioGrupoMiembro(
@@ -222,7 +224,7 @@ def agrega_usuario_a_grupo():
 @instructor_profile.route("/instructor/courses/<course_code>/evaluations")
 @login_required
 @perfil_requerido("instructor")
-def course_evaluations(course_code):
+def course_evaluations(course_code: str) -> str | Response:
     """List evaluations for a course."""
     # Check if instructor has access to this course
     if current_user.tipo != "admin":
@@ -260,7 +262,7 @@ def course_evaluations(course_code):
 @instructor_profile.route("/instructor/courses/<course_code>/sections/<section_id>/evaluations/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def new_evaluation(course_code, section_id):
+def new_evaluation(course_code: str, section_id: str) -> str | Response:
     """Create a new evaluation for a course section."""
     # Check permissions
     if current_user.tipo != "admin":
@@ -308,7 +310,7 @@ def new_evaluation(course_code, section_id):
 @instructor_profile.route("/instructor/evaluations")
 @login_required
 @perfil_requerido("instructor")
-def evaluaciones_lista():
+def evaluaciones_lista() -> str:
     """Lista todas las evaluaciones creadas por el instructor."""
     if current_user.tipo == "admin":
         # Admin can see all evaluations
@@ -330,7 +332,7 @@ def evaluaciones_lista():
 @instructor_profile.route("/instructor/new-evaluation")
 @login_required
 @perfil_requerido("instructor")
-def nueva_evaluacion_global():
+def nueva_evaluacion_global() -> str:
     """Página para seleccionar curso y sección antes de crear una evaluación."""
     if current_user.tipo == "admin":
         cursos_list = database.session.execute(select(Curso)).scalars().all()
@@ -350,7 +352,7 @@ def nueva_evaluacion_global():
 @instructor_profile.route("/instructor/evaluations/<evaluation_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def edit_evaluation(evaluation_id):
+def edit_evaluation(evaluation_id: str) -> str | Response:
     """Editar una evaluación existente."""
     evaluacion = database.session.get(Evaluation, evaluation_id)
     if not evaluacion:
@@ -402,7 +404,7 @@ def edit_evaluation(evaluation_id):
 @instructor_profile.route("/instructor/evaluations/<evaluation_id>/toggle", methods=["POST"])
 @login_required
 @perfil_requerido("instructor")
-def toggle_evaluation_status(evaluation_id):
+def toggle_evaluation_status(evaluation_id: str) -> Response:
     """Habilitar o deshabilitar una evaluación."""
     evaluacion = database.session.get(Evaluation, evaluation_id)
     if not evaluacion:
@@ -441,7 +443,7 @@ def toggle_evaluation_status(evaluation_id):
 @instructor_profile.route("/instructor/evaluations/<evaluation_id>/questions/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def new_question(evaluation_id):
+def new_question(evaluation_id: str) -> str | Response:
     """Crear una nueva pregunta para una evaluación."""
     evaluacion = database.session.get(Evaluation, evaluation_id)
     if not evaluacion:
@@ -515,7 +517,7 @@ def new_question(evaluation_id):
 @instructor_profile.route("/instructor/questions/<question_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def edit_question(question_id):
+def edit_question(question_id: str) -> str | Response:
     """Edit an existing question."""
     question = database.session.get(Question, question_id)
     if not question:
@@ -553,7 +555,7 @@ def edit_question(question_id):
 @instructor_profile.route("/instructor/evaluations/<evaluation_id>/results")
 @login_required
 @perfil_requerido("instructor")
-def evaluation_results(evaluation_id):
+def evaluation_results(evaluation_id: str) -> str | Response:
     """View results and statistics for an evaluation."""
     evaluacion = database.session.get(Evaluation, evaluation_id)
     if not evaluacion:
@@ -602,7 +604,7 @@ def evaluation_results(evaluation_id):
 @instructor_profile.route("/instructor/questions/<question_id>/options/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def new_question_option(question_id):
+def new_question_option(question_id: str) -> str | Response:
     """Add a new option to a question."""
     question = database.session.get(Question, question_id)
     if not question:
@@ -653,7 +655,7 @@ def new_question_option(question_id):
 @instructor_profile.route("/instructor/options/<option_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def edit_question_option(option_id):
+def edit_question_option(option_id: str) -> str | Response:
     """Edit an existing question option."""
     option = database.session.get(QuestionOption, option_id)
     if not option:
@@ -700,7 +702,7 @@ def edit_question_option(option_id):
 @instructor_profile.route("/instructor/options/<option_id>/delete", methods=["POST"])
 @login_required
 @perfil_requerido("instructor")
-def delete_question_option(option_id):
+def delete_question_option(option_id: str) -> Response:
     """Delete a question option."""
     option = database.session.get(QuestionOption, option_id)
     if not option:
@@ -728,7 +730,7 @@ def delete_question_option(option_id):
         select(database.func.count(QuestionOption.id)).filter_by(question_id=question.id)
     ).scalar()
 
-    if remaining_options <= 2:
+    if remaining_options is not None and remaining_options <= 2:
         flash("No se puede eliminar esta opción. Las preguntas necesitan al menos 2 opciones.", "warning")
         return redirect(url_for(ROUTE_INSTRUCTOR_EDIT_EVALUATION, evaluation_id=question.evaluation_id))
 
@@ -745,7 +747,7 @@ def delete_question_option(option_id):
 @instructor_profile.route("/instructor/questions/<question_id>/delete", methods=["POST"])
 @login_required
 @perfil_requerido("instructor")
-def delete_question(question_id):
+def delete_question(question_id: str) -> Response:
     """Delete a question and all its options."""
     question = database.session.get(Question, question_id)
     if not question:

@@ -44,20 +44,20 @@ NOW LMS includes built-in PayPal integration that automatically processes paymen
 ### Setup
 
 1. **Create PayPal Developer Account**
-   - Visit [PayPal Developer Portal](https://developer.paypal.com)
-   - Create a new application for your LMS
-   - Note your Client ID and Client Secret for both sandbox and live environments
+    - Visit [PayPal Developer Portal](https://developer.paypal.com)
+    - Create a new application for your LMS
+    - Note your Client ID and Client Secret for both sandbox and live environments
 
 2. **Configure NOW LMS**
-   - Go to Admin Panel → Settings → PayPal Configuration
-   - Enable PayPal payments
-   - Enter your PayPal credentials (sandbox for testing, live for production)
-   - Configure return URLs in PayPal dashboard
+    - Go to Admin Panel → Settings → PayPal Configuration
+    - Enable PayPal payments
+    - Enter your PayPal credentials (sandbox for testing, live for production)
+    - Configure return URLs in PayPal dashboard
 
 3. **Test the Integration**
-   - Create a test course with payment enabled
-   - Use PayPal sandbox credentials
-   - Test the complete payment flow
+    - Create a test course with payment enabled
+    - Use PayPal sandbox credentials
+    - Test the complete payment flow
 
 ### Payment Flow
 
@@ -74,8 +74,8 @@ NOW LMS includes built-in PayPal integration that automatically processes paymen
 - **Free Courses**: Students can enroll immediately without payment
 - **Paid Courses**: Payment required before enrollment
 - **Auditable Courses**: Students can choose between:
-  - **Audit Mode**: Free access to content without certificates
-  - **Full Access**: Paid access with certificates and evaluations
+    - **Audit Mode**: Free access to content without certificates
+    - **Full Access**: Paid access with certificates and evaluations
 
 ## Manual PayPal Processing
 

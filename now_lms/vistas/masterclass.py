@@ -15,6 +15,9 @@
 
 """Master Class views."""
 
+
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -27,6 +30,7 @@ from flask import Blueprint, abort, flash, redirect, render_template, request, u
 from flask_login import current_user, login_required
 from slugify import slugify
 from sqlalchemy import and_
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -46,7 +50,7 @@ masterclass = Blueprint("masterclass", __name__, url_prefix="/masterclass")
 
 
 @masterclass.route("/")
-def list_public():
+def list_public() -> str:
     """Public listing of master classes."""
     page = request.args.get("page", 1, type=int)
     per_page = 9  # Display 9 items per page for card layout
@@ -65,7 +69,7 @@ def list_public():
 
 
 @masterclass.route("/<slug>")
-def detail_public(slug):
+def detail_public(slug: str) -> str:
     """Public detail view of a master class."""
     master_class = database.session.execute(select(MasterClass).filter_by(slug=slug)).scalars().first()
     if not master_class:
@@ -89,7 +93,7 @@ def detail_public(slug):
 
 @masterclass.route("/<slug>/enroll", methods=["GET", "POST"])
 @login_required
-def enroll(slug):
+def enroll(slug: str) -> str | Response:
     """Enroll in a master class."""
     master_class = database.session.execute(select(MasterClass).filter_by(slug=slug)).scalars().first()
     if not master_class:
@@ -137,7 +141,7 @@ def enroll(slug):
 
 @masterclass.route("/instructor")
 @login_required
-def instructor_list():
+def instructor_list() -> str:
     """List instructor's master classes."""
     if current_user.tipo not in ["instructor", "admin"]:
         abort(403)
@@ -157,7 +161,7 @@ def instructor_list():
 
 @masterclass.route("/instructor/create", methods=["GET", "POST"])
 @login_required
-def instructor_create():
+def instructor_create() -> str | Response:
     """Create a new master class."""
     if current_user.tipo not in ["instructor", "admin"]:
         abort(403)
@@ -206,7 +210,7 @@ def instructor_create():
 
 @masterclass.route("/instructor/<master_class_id>/edit", methods=["GET", "POST"])
 @login_required
-def instructor_edit(master_class_id):
+def instructor_edit(master_class_id: int) -> str | Response:
     """Edit a master class."""
     if current_user.tipo not in ["instructor", "admin"]:
         abort(403)
@@ -273,7 +277,7 @@ def instructor_edit(master_class_id):
 
 @masterclass.route("/instructor/<master_class_id>/students")
 @login_required
-def instructor_students(master_class_id):
+def instructor_students(master_class_id: int) -> str:
     """View enrolled students in a master class."""
     if current_user.tipo not in ["instructor", "admin"]:
         abort(403)
@@ -315,7 +319,7 @@ def instructor_students(master_class_id):
 
 @masterclass.route("/my-enrollments")
 @login_required
-def my_enrollments():
+def my_enrollments() -> str:
     """View user's master class enrollments."""
     page = request.args.get("page", 1, type=int)
     per_page = 10
@@ -341,7 +345,7 @@ def my_enrollments():
 
 @masterclass.route("/admin")
 @login_required
-def admin_list():
+def admin_list() -> str:
     """Admin view of all master classes."""
     if current_user.tipo != "admin":
         abort(403)

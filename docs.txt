@@ -2,6 +2,5 @@
 mkdocs
 mkdocs-material
 mkdocs-open-in-new-tab
-mkdocs-static-i18n[material]
 mkdocstrings-python
 mkdocs-glightbox
