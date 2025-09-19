@@ -16,13 +16,13 @@ Thank you for your interest in collaborating with NOW Learning Management System
 
 NOW LMS is free and open source software released under the Apache Version 2 license (the [license](https://github.com/bmosoluciones/now-lms/blob/main/LICENSE) of the proyect), this means that project users can:
 
--   Use the project for profit or not.
--   Modify the project to fit theirs specific needs (clearly defining the changes made to the original project).
+- Use the project for profit or not.
+- Modify the project to fit theirs specific needs (clearly defining the changes made to the original project).
 
 However, users cannot:
 
--   Make use of the project trademarks without explicit permission.
--   Require warranties of any kind; the project is distributed as is without guarantees that it may be useful for any specific purpose.
+- Make use of the project trademarks without explicit permission.
+- Require warranties of any kind; the project is distributed as is without guarantees that it may be useful for any specific purpose.
 
 ## Collaborating with the project:
 
@@ -30,38 +30,38 @@ However, users cannot:
 
 You can collaborate in different ways:
 
--   [As a developer](https://github.com/bmosoluciones/now-lms).
--   [As a Quality Assurance (QA)](https://github.com/bmosoluciones/now-lms/issues).
--   [Writing and improving documentation.](https://github.com/bmosoluciones/now-lms/tree/main/docs)
--   [Contributing ideas of new characteristics.](https://github.com/bmosoluciones/now-lms/discussions)
--   [Reporting bugs.](https://github.com/bmosoluciones/now-lms/issues)
--   [Translating.](https://crowdin.com/project/now-lms)
--   Providing guidance and support to other users.
--   Sharing the project with others.
+- [As a developer](https://github.com/bmosoluciones/now-lms).
+- [As a Quality Assurance (QA)](https://github.com/bmosoluciones/now-lms/issues).
+- [Writing and improving documentation.](https://github.com/bmosoluciones/now-lms/tree/main/docs)
+- [Contributing ideas of new characteristics.](https://github.com/bmosoluciones/now-lms/discussions)
+- [Reporting bugs.](https://github.com/bmosoluciones/now-lms/issues)
+- [Translating.](https://crowdin.com/project/now-lms)
+- Providing guidance and support to other users.
+- Sharing the project with others.
 
 ### Collaborating with the development of the project:
 
 The development is cross-platform, you can use both Windows, Linux or Mac to contribute the project, to collaborate with the project you need:
 
--   [Git](https://git-scm.com/).
--   [NPM](https://www.npmjs.com/).
--   [Python](https://www.python.org/downloads/).
+- [Git](https://git-scm.com/).
+- [NPM](https://www.npmjs.com/).
+- [Python](https://www.python.org/downloads/).
 
 Minimal Python version is: >=3.11
 
 Technologies used:
 
--   Backend: [Flask](https://flask.palletsprojects.com/en/stable/), with a set of many libraries:
-    -   flask-babel
-    -   flask-caching
-    -   flask-login
-    -   flask-mde
-    -   flask-reuploaded
-    -   flask-sqlalchemy
-    -   flask-wtf
--   Frontend: [Bootstrap 5](https://v5.getbootstrap.com/).
--   ORM: [SQLAlchemy](https://www.sqlalchemy.org/):
-    -   flask-alembic
+- Backend: [Flask](https://flask.palletsprojects.com/en/stable/), with a set of many libraries:
+    - flask-babel
+    - flask-caching
+    - flask-login
+    - flask-mde
+    - flask-reuploaded
+    - flask-sqlalchemy
+    - flask-wtf
+- Frontend: [Bootstrap 5](https://v5.getbootstrap.com/).
+- ORM: [SQLAlchemy](https://www.sqlalchemy.org/):
+    - flask-alembic
 
 #### Libraries used in the project are:
 
@@ -182,21 +182,21 @@ python dev/test.sh
 
 #### Use semantic commits:
 
-| Type     | Scope     | Example Commit Message                      | Purpose                                          | SemVer Impact         |
-|----------|-----------|---------------------------------------------|--------------------------------------------------|-----------------------|
-| feat     | courses   | feat(courses): add new enrollment flow      | Introduce a new feature                          | **MINOR** (x.↑.x)     |
-| fix      | auth      | fix(auth): resolve login redirect issue     | Bug fix                                          | **PATCH** (x.x.↑)     |
-| chore    | i18n      | chore(i18n): add missing English translations | Maintenance / i18n updates                      | None (no release bump)|
-| chore    | deps      | chore(deps): update Flask to 3.0            | Dependency update / maintenance                  | None / MINOR if breaking |
-| docs     | readme    | docs(readme): update setup instructions     | Documentation changes                            | None                  |
-| style    | ui        | style(ui): fix spacing in dashboard         | Code style / formatting (no logic change)        | None                  |
-| refactor | db        | refactor(db): optimize course query         | Code refactor without behavior change            | None                  |
-| test     | blog      | test(blog): add unit tests for post creation| Adding or improving tests                        | None                  |
-| build    | ci        | build(ci): add GitHub Actions workflow      | Build system / CI/CD pipeline changes            | None                  |
-| perf     | cache     | perf(cache): improve course load time       | Performance improvements                         | PATCH (if non-breaking) |
-| ci       | pipeline  | ci(pipeline): add coverage report upload    | Continuous Integration related changes           | None                  |
-| revert   | auth      | revert(auth): undo broken login commit      | Revert a previous commit                         | Depends (inherits type)|
-| release  | version   | release: v0.0.1-rc1                         | Release tagging                                  | Not applicable        |
+| Type     | Scope    | Example Commit Message                        | Purpose                                   | SemVer Impact            |
+| -------- | -------- | --------------------------------------------- | ----------------------------------------- | ------------------------ |
+| feat     | courses  | feat(courses): add new enrollment flow        | Introduce a new feature                   | **MINOR** (x.↑.x)        |
+| fix      | auth     | fix(auth): resolve login redirect issue       | Bug fix                                   | **PATCH** (x.x.↑)        |
+| chore    | i18n     | chore(i18n): add missing English translations | Maintenance / i18n updates                | None (no release bump)   |
+| chore    | deps     | chore(deps): update Flask to 3.0              | Dependency update / maintenance           | None / MINOR if breaking |
+| docs     | readme   | docs(readme): update setup instructions       | Documentation changes                     | None                     |
+| style    | ui       | style(ui): fix spacing in dashboard           | Code style / formatting (no logic change) | None                     |
+| refactor | db       | refactor(db): optimize course query           | Code refactor without behavior change     | None                     |
+| test     | blog     | test(blog): add unit tests for post creation  | Adding or improving tests                 | None                     |
+| build    | ci       | build(ci): add GitHub Actions workflow        | Build system / CI/CD pipeline changes     | None                     |
+| perf     | cache    | perf(cache): improve course load time         | Performance improvements                  | PATCH (if non-breaking)  |
+| ci       | pipeline | ci(pipeline): add coverage report upload      | Continuous Integration related changes    | None                     |
+| revert   | auth     | revert(auth): undo broken login commit        | Revert a previous commit                  | Depends (inherits type)  |
+| release  | version  | release: v0.0.1-rc1                           | Release tagging                           | Not applicable           |
 
 #### Certify the origin of your contributions.
 
@@ -214,14 +214,14 @@ And an appropriate signature will be added to the commit, not included in the co
 
 These database engines are supported and tested as part of the release validation process:
 
--   SQLite
--   PostgreSQL version 13 or superior.
--   MySQL version 8 or superior.
+- SQLite
+- PostgreSQL version 13 or superior.
+- MySQL version 8 or superior.
 
 These database engines should work but are not tested by default:
 
--   MariaDB
--   MS SQLServer
+- MariaDB
+- MS SQLServer
 
 ### SQLite
 

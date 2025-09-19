@@ -78,8 +78,9 @@ CUSTOM_THEMES_DIR = /var/lib/now-lms/themes
 ```
 
 **Variables that require environment variables only** (commented out above):
+
 - All `NOW_LMS_*` variables
-- All `MAIL_*` variables  
+- All `MAIL_*` variables
 - All `LMS_*` variables
 - LOG_LEVEL and other application-specific settings
 
