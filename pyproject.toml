@@ -94,3 +94,7 @@ enable = [
     "unused-variable",
 
 ]
+
+[tool.isort]
+profile = "black"
+line_length = 127

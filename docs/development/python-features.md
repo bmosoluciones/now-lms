@@ -1,4 +1,4 @@
-# Python 3.* Features in NOW-LMS
+# Python 3.\* Features in NOW-LMS
 
 NOW-LMS requires Python 3.11+ and takes advantage of modern Python language features for better code quality, performance, and maintainability.
 
@@ -21,7 +21,7 @@ VALORES_TRUE = {*["1", "true", "yes", "on"], *["development", "dev"]}
 
 # Environment variable lists with extended unpacking
 DEBUG_VARS = ["DEBUG", "CI", "DEV", "DEVELOPMENT"]
-FRAMEWORK_VARS = ["FLASK_ENV", "DJANGO_DEBUG", "NODE_ENV"] 
+FRAMEWORK_VARS = ["FLASK_ENV", "DJANGO_DEBUG", "NODE_ENV"]
 GENERIC_VARS = ["ENV", "APP_ENV"]
 
 DESARROLLO = any(
@@ -54,6 +54,7 @@ HTML_TAGS = [
 ```
 
 **Benefits**:
+
 - More readable code organization
 - Cleaner list and set concatenation
 - Better logical grouping of related items
@@ -70,7 +71,7 @@ Replaced string concatenation with f-strings for URL parameter building:
 # Before
 argumentos = argumentos + "&" + key + "=" + value
 
-# After  
+# After
 argumentos = f"{argumentos}&{key}={value}"
 ```
 
@@ -83,6 +84,7 @@ Updated example code to use secrets module with f-strings:
 ```
 
 **Benefits**:
+
 - More readable string formatting
 - Better performance than .format() or % formatting
 - Easier to maintain and debug
@@ -106,6 +108,7 @@ expiration_time = datetime.now(timezone.utc) + timedelta(seconds=3_600)   # 1 ho
 ```
 
 **Benefits**:
+
 - Improved readability of large numbers
 - Easier to spot errors in numeric literals
 - Self-documenting time constants
@@ -135,10 +138,10 @@ Added instance variable annotations:
 ```python
 class HTMLCleaner(HTMLParser):
     """HTML parser for extracting clean text content."""
-    
+
     # Python 3.6+ - Variable annotations for instance attributes
     textos: list[str]
-    
+
     def __init__(self):
         super().__init__()
         self.textos = []
@@ -157,6 +160,7 @@ CONFIGURACION: dict[str, str | bool | Path] = {}
 ```
 
 **Benefits**:
+
 - Better IDE support and autocomplete
 - Clearer code documentation
 - Enhanced type checking capabilities
@@ -178,6 +182,7 @@ secret_number = secrets.randbelow(10) + 1  # 1-10 range
 ```
 
 **Benefits**:
+
 - Cryptographically strong random number generation
 - Better security practices in example code
 - Suitable for security-sensitive applications
@@ -235,11 +240,12 @@ class EstiloAlterta:
 ```
 
 **Benefits**:
+
 - Mutable fields allow runtime configuration changes
 - Better default value support
 - Enhanced IDE support and introspection
 - More powerful than NamedTuple for configuration objects
-- Built-in __repr__, __eq__, and __hash__ methods
+- Built-in **repr**, **eq**, and **hash** methods
 
 ### Python 3.8 Features
 
@@ -264,12 +270,13 @@ Extended to business logic functions for API safety:
 ```python
 def asignar_curso_a_instructor(curso_codigo: str | None, /, usuario_id: str | None = None):
     """Course assignment requires positional course code parameter."""
-    
+
 def cambia_tipo_de_usuario_por_id(id_usuario: str | None, /, nuevo_tipo: str | None = None, usuario: str | None = None):
     """User type changes require positional user ID parameter."""
 ```
 
 **Benefits**:
+
 - Prevents accidental keyword argument usage in security-critical functions
 - Makes API intentions clearer
 - Protects against future parameter name changes
@@ -294,6 +301,7 @@ if not os.path.exists(cache_dir := os.path.join(tempfile.gettempdir(), "now_lms_
 ```
 
 **Benefits**:
+
 - Reduces variable scope and improves readability
 - Eliminates redundant computations
 - Makes file path operations more concise
@@ -311,15 +319,17 @@ Replaced old-style `Union` types with modern union operator:
 from typing import Union
 def func(param: Union[str, None]) -> Union[dict, None]:
 
-# After  
+# After
 def func(param: str | None) -> dict | None:
 ```
 
 **Latest additions in `now_lms/bi.py`**:
+
 - All business logic functions now use `str | None` instead of `Union[None, str]`
 - Multi-type unions like `str | int | None` for flexible ID parameters
 
 **Benefits**:
+
 - More readable type hints
 - Consistent with modern Python style
 - Better IDE support
@@ -349,7 +359,7 @@ match current_user.tipo:
     case "admin":
         # admin logic
     case "student":
-        # student logic  
+        # student logic
     case "instructor":
         # instructor logic
     case _:
@@ -430,6 +440,7 @@ match question.type:
 ```
 
 **Benefits**:
+
 - More readable than long if-elif chains
 - Pattern matching is more powerful and extensible
 - Better performance for multiple comparisons
@@ -456,15 +467,301 @@ class ForoMensaje(database.Model, BaseTabla):
 ```
 
 **Benefits**:
+
 - More accurate type hints for methods returning self
 - Better IDE support and type checking
 - Self-documenting code
+
+## Type Hints Guidelines
+
+### Overview
+
+NOW-LMS extensively uses type hints across all Flask routes and business logic to ensure code reliability and better developer experience. Type hints are mandatory for all public functions, especially Flask route handlers.
+
+### Flask Route Type Hints
+
+#### Required Imports for Type Hints
+
+Before implementing type hints in Flask routes, ensure you have the necessary imports:
+
+```python
+# Required for type hints
+from __future__ import annotations
+
+# Flask imports
+from flask import Blueprint, render_template, redirect, request, jsonify, abort
+from werkzeug.wrappers import Response
+
+# Alternative Response import (both are equivalent)
+# from flask import Response
+
+# For error handling with status codes
+from flask import Response as FlaskResponse  # when distinguishing from werkzeug Response
+```
+
+The `Response` type used in route return annotations comes from **Werkzeug** (`werkzeug.wrappers.Response`) or **Flask** (`flask.Response`) - both are equivalent since Flask re-exports Werkzeug's Response class.
+
+#### 1. Basic Route Return Types
+
+Flask routes in NOW-LMS follow consistent type hint patterns for return values:
+
+**Simple HTML Template Routes**:
+
+```python
+@home.route("/")
+def pagina_de_inicio() -> str:
+    """Homepage route returning rendered template."""
+    return render_template("index.html")
+```
+
+**Routes with Conditional Redirects**:
+
+```python
+@home.route("/home/panel")
+@login_required
+def panel() -> str | Response:
+    """User panel - may redirect or return template."""
+    if not current_user.is_authenticated:
+        return redirect("/user/login")
+    return render_template("panel.html")
+```
+
+**API Routes Returning JSON**:
+
+```python
+@blog.route("/blog/count_view/<post_id>", methods=["POST"])
+def count_view(post_id: int) -> tuple[Response, int]:
+    """API endpoint returning JSON response with status code."""
+    # Logic here
+    return jsonify({"status": "success"}), 200
+```
+
+**Complex Routes with Multiple Return Types**:
+
+```python
+@course.route("/course/<course_code>/payment")
+def payment_page(course_code: str) -> str | Response | tuple[FlaskResponse, int]:
+    """Payment page with multiple possible return scenarios."""
+    if not course_exists(course_code):
+        return abort(404)  # tuple[FlaskResponse, int]
+    if user_already_enrolled():
+        return redirect("/course/" + course_code)  # Response
+    return render_template("payment.html")  # str
+```
+
+#### 2. Route Parameter Type Hints
+
+All route parameters must have explicit type annotations:
+
+**String Parameters**:
+
+```python
+@course.route("/course/<course_code>")
+def curso(course_code: str) -> str:
+    """Course view with string parameter."""
+    # course_code is automatically validated as str by Flask
+```
+
+**Integer Parameters**:
+
+```python
+@evaluation.route("/evaluation/<int:evaluation_id>/take")
+def take_evaluation(evaluation_id: int) -> str | Response:
+    """Evaluation page with integer parameter."""
+    # evaluation_id is validated and converted to int by Flask
+```
+
+**Multiple Parameters**:
+
+```python
+@course.route("/course/<course_code>/resource/<resource_code>")
+def pagina_recurso(course_code: str, resource_code: str) -> str:
+    """Resource page with multiple string parameters."""
+    # Both parameters are required and typed
+```
+
+#### 3. HTTP Method Handling
+
+Routes accepting multiple HTTP methods should handle type hints consistently:
+
+**GET/POST Routes**:
+
+```python
+@course.route("/course/new_curse", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_curso() -> str | Response:
+    """Create new course - GET shows form, POST processes it."""
+    form = CurseForm()
+    if form.validate_on_submit():
+        # Process form and redirect
+        return redirect("/course/list")
+    # Show form template
+    return render_template("course_form.html", form=form)
+```
+
+**AJAX/API Endpoints**:
+
+```python
+@course.route("/course/<course_code>/mark_complete", methods=["POST"])
+@login_required
+def marcar_recurso_completado(course_code: str, resource_code: str) -> Response:
+    """AJAX endpoint for marking resources complete."""
+    # Always returns Response (JSON or redirect)
+    return jsonify({"status": "success"})
+```
+
+#### 4. Complex Return Type Scenarios
+
+**File Downloads and Responses**:
+
+```python
+@course.route("/course/<course_code>/resource/<resource_code>/file")
+def recurso_file(course_code: str, resource_code: str) -> Response:
+    """File download endpoint."""
+    # send_from_directory() returns Response
+    return send_from_directory(upload_folder, filename)
+```
+
+**Calendar and Export Routes**:
+
+```python
+@calendar.route("/calendar/export.ics")
+def export_ics() -> Response:
+    """Export calendar in ICS format."""
+    ics_content = generate_ics()
+    response = make_response(ics_content)
+    response.headers["Content-Type"] = "text/calendar"
+    return response
+```
+
+**Error Handling with Status Codes**:
+
+```python
+@admin.route("/admin/debug")
+def debug_config() -> tuple[FlaskResponse, int]:
+    """Debug endpoint returning specific status codes."""
+    if not current_user.is_admin():
+        return abort(403)  # Returns tuple[FlaskResponse, int]
+    return jsonify(debug_info), 200
+```
+
+#### 5. Authentication and Authorization Decorators
+
+Type hints work seamlessly with authentication decorators:
+
+```python
+@course.route("/admin/course/<course_code>/manage")
+@login_required
+@perfil_requerido("instructor")
+def administrar_curso(course_code: str) -> str:
+    """Course management page for instructors."""
+    # Decorators don't affect type hints
+    return render_template("course_admin.html")
+```
+
+#### 6. Helper Function Type Hints
+
+Helper functions used in routes should also be properly typed:
+
+```python
+def check_course_access(course_code: str, user) -> bool:
+    """Check if user can access course."""
+    # Returns boolean for access check
+    return user.can_access_course(course_code)
+
+def get_user_resource_progress(course_id: str, user_id: str | None = None) -> dict[int, dict[str, bool]]:
+    """Get user progress data."""
+    # Complex nested return type for progress tracking
+    return {section_id: {"completed": bool, "accessible": bool}}
+```
+
+### Best Practices for Flask Route Type Hints
+
+#### 1. Return Type Consistency
+
+- Use `str` for routes that always return rendered templates
+- Use `Response` for routes that always return redirects, JSON, or files
+- Use `str | Response` for routes that may return templates OR redirects
+- Use `tuple[FlaskResponse, int]` for routes that may return error codes
+
+#### 2. Parameter Validation
+
+- Always annotate route parameters with their expected types
+- Use Flask's built-in converters (`<int:id>`, `<float:price>`) when possible
+- Validate parameter types match the route converter
+
+#### 3. Error Handling
+
+- Consider error scenarios in return type annotations
+- Use `abort()` for HTTP errors (returns `tuple[FlaskResponse, int]`)
+- Handle `None` cases explicitly in type hints
+
+#### 4. Form Processing
+
+- Type hint form-processing routes as `str | Response`
+- GET requests typically return `str` (template)
+- POST requests typically return `Response` (redirect) on success
+
+#### 5. AJAX and API Consistency
+
+- API endpoints should return `Response` or `tuple[Response, int]`
+- Use consistent JSON response structures
+- Type hint any data serialization functions
+
+### Common Type Hint Patterns
+
+```python
+# Template-only routes
+def simple_page() -> str: ...
+
+# Routes with conditional logic
+def dynamic_page() -> str | Response: ...
+
+# API endpoints
+def api_endpoint() -> Response: ...
+def api_with_status() -> tuple[Response, int]: ...
+
+# File downloads
+def download_file() -> Response: ...
+
+# Error handlers
+def error_handler() -> tuple[FlaskResponse, int]: ...
+
+# Complex multi-scenario routes
+def complex_route() -> str | Response | tuple[FlaskResponse, int]: ...
+```
+
+### Integration with Flask Ecosystem
+
+Type hints work seamlessly with Flask extensions:
+
+```python
+# Flask-Login integration
+@login_required
+def protected_route() -> str | Response: ...
+
+# Flask-WTF forms
+def form_route() -> str | Response:
+    form = MyForm()
+    if form.validate_on_submit():
+        return redirect("/success")  # Response
+    return render_template("form.html", form=form)  # str
+
+# Flask-SQLAlchemy queries with proper typing
+def user_detail(user_id: int) -> str | Response:
+    user = database.session.get(Usuario, user_id)
+    if not user:
+        return abort(404)  # tuple[FlaskResponse, int]
+    return render_template("user.html", user=user)  # str
+```
 
 ## Code Quality Impact
 
 ### Linting and Formatting
 
 All modernized code passes:
+
 - **Black**: Python code formatter with line length 127
 - **Flake8**: Linting with project-specific rules
 - **mypy**: Type checking (when available)
@@ -473,6 +770,7 @@ All modernized code passes:
 ### Testing
 
 All features are validated by:
+
 - Unit tests continue to pass
 - Integration tests validate functionality
 - Route testing ensures no regressions

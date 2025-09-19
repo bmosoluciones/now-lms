@@ -11,6 +11,6 @@ Now -LMS requires very low resources to run, a RaspberryPI can serve as a apropi
 
 Now-LMS is available as:
 
--   [Source Code](https://github.com/bmosoluciones/now-lms).
--   [Python Package](https://pypi.org/project/now-lms/).
--   [OCI Image available](https://quay.io/repository/bmosoluciones/now_lms).
+- [Source Code](https://github.com/bmosoluciones/now-lms).
+- [Python Package](https://pypi.org/project/now-lms/).
+- [OCI Image available](https://quay.io/repository/bmosoluciones/now_lms).

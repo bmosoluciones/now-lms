@@ -15,7 +15,7 @@
 
 """Demo mode functionality for NOW LMS."""
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
@@ -33,6 +33,7 @@ from now_lms.i18n import _
 def is_demo_mode() -> bool:
     """Check if the system is running in demo mode."""
     from os import environ
+
     from now_lms.config import VALORES_TRUE
 
     return environ.get("NOW_LMS_DEMO_MODE", "0").strip().lower() in VALORES_TRUE

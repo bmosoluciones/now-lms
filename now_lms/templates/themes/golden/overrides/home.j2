@@ -33,7 +33,7 @@
         >
             <div class="container">
                 <div class="row align-items-center">
-                    <div class="col-lg-8 text-white">
+                    <div class="col-12 col-md-8 col-lg-8 order-2 order-md-1 text-white order-2 order-md-1 order-2 order-md-1">
                         <div class="hero-content">
                             <div
                                 style="
@@ -57,7 +57,7 @@
                                 {{ _('Cursos dinámicos, prácticos y divertidos — Clases online en vivo, profesores nativos y
                                 material interactivo.') }}
                             </p>
-                            <div class="d-flex gap-3 flex-wrap">
+                            <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-md-start">
                                 {% if not current_user.is_authenticated %}
                                 <a
                                     href="{{ url_for('user.crear_cuenta') }}"
@@ -92,15 +92,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 text-center">
+                    <div
+                        class="col-12 col-md-4 col-lg-4 order-1 order-md-2 mb-4 mb-md-0 text-center order-1 order-md-2 mb-4 mb-md-0 order-1 order-md-2 mb-4 mb-md-0"
+                    >
                         <div class="hero-visual">
                             <div
                                 class="learning-icon"
                                 style="
                                     background: rgba(20, 20, 17, 0.1);
                                     border-radius: 50%;
-                                    width: 250px;
-                                    height: 250px;
+                                    width: min(200px, 80vw);
+                                    height: min(200px, 80vw);
+                                    max-width: 250px;
+                                    max-height: 250px;
                                     margin: 0 auto;
                                     display: flex;
                                     align-items: center;

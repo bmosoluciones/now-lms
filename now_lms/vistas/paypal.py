@@ -14,7 +14,7 @@
 
 """PayPal Payments."""
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
@@ -26,9 +26,11 @@ import logging
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 import requests
-from flask import Blueprint, Response, current_app, flash, jsonify, redirect, render_template, request, url_for
+from flask import Blueprint, current_app, flash, jsonify, redirect, render_template, request, url_for
+from flask import Response as FlaskResponse
 from flask_login import current_user, login_required
 from sqlalchemy.exc import OperationalError
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -190,7 +192,7 @@ def verify_paypal_payment(order_id: str, access_token: str) -> dict[str, object]
 @paypal.route("/confirm_payment", methods=["POST"])
 @login_required
 @perfil_requerido("student")
-def confirm_payment():
+def confirm_payment() -> tuple[FlaskResponse, int]:
     """Confirm PayPal payment after successful client-side processing."""
     try:
         data = request.get_json()
@@ -267,7 +269,11 @@ def confirm_payment():
             expected_amount = float(curso.precio)
 
         # Compare amounts with tolerance for floating point precision
-        verified_amount = float(verification["amount"])
+        try:
+            amount_value = verification["amount"]
+            verified_amount = float(str(amount_value)) if amount_value is not None else 0.0
+        except (ValueError, TypeError):
+            verified_amount = 0.0
         amount_tolerance = 0.01  # 1 cent tolerance
 
         if abs(verified_amount - expected_amount) > amount_tolerance:
@@ -289,12 +295,15 @@ def confirm_payment():
         if existing_payment:
             if existing_payment.estado == "completed":
                 logging.info(f"Payment {order_id} already completed for user {current_user.usuario}")
-                return jsonify(
-                    {
-                        "success": True,
-                        "message": "Pago ya procesado anteriormente",
-                        "redirect_url": url_for("course.tomar_curso", course_code=course_code),
-                    }
+                return (
+                    jsonify(
+                        {
+                            "success": True,
+                            "message": "Pago ya procesado anteriormente",
+                            "redirect_url": url_for("course.tomar_curso", course_code=course_code),
+                        }
+                    ),
+                    200,
                 )
             # Update existing payment
             existing_payment.estado = "completed"
@@ -374,12 +383,15 @@ def confirm_payment():
 
             logging.info(f"Payment {order_id} successfully processed for user {current_user.usuario}, course {course_code}")
 
-            return jsonify(
-                {
-                    "success": True,
-                    "message": "Pago completado exitosamente",
-                    "redirect_url": url_for("course.tomar_curso", course_code=course_code),
-                }
+            return (
+                jsonify(
+                    {
+                        "success": True,
+                        "message": "Pago completado exitosamente",
+                        "redirect_url": url_for("course.tomar_curso", course_code=course_code),
+                    }
+                ),
+                200,
             )
 
         except OperationalError as e:
@@ -395,7 +407,7 @@ def confirm_payment():
 @paypal.route("/resume_payment/<payment_id>")
 @login_required
 @perfil_requerido("student")
-def resume_payment(payment_id):
+def resume_payment(payment_id: str) -> Response:
     """Resume an existing pending payment."""
     try:
         # Find the pending payment
@@ -423,7 +435,7 @@ def resume_payment(payment_id):
 @paypal.route("/payment/<course_code>")
 @login_required
 @perfil_requerido("student")
-def payment_page(course_code):
+def payment_page(course_code: str) -> str | Response | tuple[FlaskResponse, int]:
     """Display PayPal payment page for a course."""
     curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalars().first()
     if not curso:
@@ -447,7 +459,7 @@ def payment_page(course_code):
 
 @paypal.route("/get_client_id")
 @login_required
-def get_client_id() -> Response | tuple[Response, int]:
+def get_client_id() -> Response | tuple[FlaskResponse, int]:
     """Get PayPal client ID for JavaScript SDK."""
     try:
         paypal_config = database.session.execute(database.select(PaypalConfig)).first()[0]
@@ -459,7 +471,7 @@ def get_client_id() -> Response | tuple[Response, int]:
             logging.error(f"PayPal client ID not configured for user {current_user.usuario}")
             return jsonify({"error": "PayPal not configured"}), 500
 
-        return jsonify({"client_id": client_id, "sandbox": paypal_config.sandbox, "currency": get_site_currency()})
+        return jsonify({"client_id": client_id, "sandbox": paypal_config.sandbox, "currency": get_site_currency()}), 200
 
     except Exception as e:
         logging.error(f"Failed to get PayPal client ID for user {current_user.usuario}: {e}")
@@ -469,7 +481,7 @@ def get_client_id() -> Response | tuple[Response, int]:
 @paypal.route("/payment_status/<course_code>")
 @login_required
 @perfil_requerido("student")
-def payment_status(course_code):
+def payment_status(course_code: str) -> tuple[FlaskResponse, int]:
     """Check payment status for a course (useful for manual testing)."""
     try:
         from now_lms.db import EstudianteCurso
@@ -512,19 +524,22 @@ def payment_status(course_code):
                 }
             )
 
-        return jsonify(
-            {
-                "course_code": course_code,
-                "course_name": curso.nombre,
-                "course_paid": curso.pagado,
-                "course_auditable": curso.auditable,
-                "course_price": float(curso.precio) if curso.precio else 0,
-                "enrolled": enrollment is not None,
-                "enrollment_active": enrollment.vigente if enrollment else False,
-                "payment_id": enrollment.pago if enrollment else None,
-                "payments": payment_info,
-                "site_currency": get_site_currency(),
-            }
+        return (
+            jsonify(
+                {
+                    "course_code": course_code,
+                    "course_name": curso.nombre,
+                    "course_paid": curso.pagado,
+                    "course_auditable": curso.auditable,
+                    "course_price": float(curso.precio) if curso.precio else 0,
+                    "enrolled": enrollment is not None,
+                    "enrollment_active": enrollment.vigente if enrollment else False,
+                    "payment_id": enrollment.pago if enrollment else None,
+                    "payments": payment_info,
+                    "site_currency": get_site_currency(),
+                }
+            ),
+            200,
         )
 
     except Exception as e:
@@ -535,7 +550,7 @@ def payment_status(course_code):
 @paypal.route("/debug_config")
 @login_required
 @perfil_requerido("admin")
-def debug_config():
+def debug_config() -> tuple[FlaskResponse, int]:
     """Debug endpoint for PayPal configuration (admin only, useful for manual testing)."""
     try:
         paypal_config = database.session.execute(database.select(PaypalConfig)).first()
@@ -547,19 +562,22 @@ def debug_config():
         config_data = paypal_config[0]
         site_data = site_config[0] if site_config else None
 
-        return jsonify(
-            {
-                "paypal_enabled": config_data.enable,
-                "sandbox_mode": config_data.sandbox,
-                "client_id_configured": bool(config_data.paypal_id),
-                "sandbox_client_id_configured": bool(config_data.paypal_sandbox),
-                "client_secret_configured": bool(config_data.paypal_secret),
-                "sandbox_secret_configured": bool(config_data.paypal_sandbox_secret),
-                "site_currency": site_data.moneda if site_data else "USD",
-                "site_title": site_data.titulo if site_data else "Not configured",
-                "cache_currency": get_site_currency(),
-                "current_client_id": config_data.paypal_sandbox if config_data.sandbox else config_data.paypal_id,
-            }
+        return (
+            jsonify(
+                {
+                    "paypal_enabled": config_data.enable,
+                    "sandbox_mode": config_data.sandbox,
+                    "client_id_configured": bool(config_data.paypal_id),
+                    "sandbox_client_id_configured": bool(config_data.paypal_sandbox),
+                    "client_secret_configured": bool(config_data.paypal_secret),
+                    "sandbox_secret_configured": bool(config_data.paypal_sandbox_secret),
+                    "site_currency": site_data.moneda if site_data else "USD",
+                    "site_title": site_data.titulo if site_data else "Not configured",
+                    "cache_currency": get_site_currency(),
+                    "current_client_id": config_data.paypal_sandbox if config_data.sandbox else config_data.paypal_id,
+                }
+            ),
+            200,
         )
 
     except Exception as e:

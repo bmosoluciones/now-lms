@@ -19,7 +19,7 @@ NOW Learning Management System.
 Evaluation helper functions.
 """
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ from sqlalchemy import and_, func
 from now_lms.db import CursoSeccion, Evaluation, EvaluationAttempt, database
 
 
-def check_user_evaluations_completed(course_code, user_id):
+def check_user_evaluations_completed(course_code: str, user_id: str) -> tuple[bool, int, int]:
     """
     Check if a user has passed all evaluations for a course.
 
@@ -81,7 +81,7 @@ def check_user_evaluations_completed(course_code, user_id):
     return all_passed, failed_count, total_evaluations
 
 
-def get_user_evaluation_status(course_code, user_id):
+def get_user_evaluation_status(course_code: str, user_id: str) -> dict[str, object]:
     """
     Get detailed evaluation status for a user in a course.
 
@@ -98,7 +98,7 @@ def get_user_evaluation_status(course_code, user_id):
         .all()
     )
 
-    status = {
+    status: dict[str, object] = {
         "total_evaluations": len(evaluations),
         "passed_evaluations": 0,
         "failed_evaluations": 0,
@@ -118,18 +118,28 @@ def get_user_evaluation_status(course_code, user_id):
             .first()
         )
 
+        passed_evaluations = status["passed_evaluations"]
+        failed_evaluations = status["failed_evaluations"]
+        pending_evaluations = status["pending_evaluations"]
+        evaluation_details = status["evaluation_details"]
+
+        assert isinstance(passed_evaluations, int)
+        assert isinstance(failed_evaluations, int)
+        assert isinstance(pending_evaluations, int)
+        assert isinstance(evaluation_details, list)
+
         if best_attempt:
             if best_attempt.passed:
-                status["passed_evaluations"] += 1
+                status["passed_evaluations"] = passed_evaluations + 1
                 eval_status = "passed"
             else:
-                status["failed_evaluations"] += 1
+                status["failed_evaluations"] = failed_evaluations + 1
                 eval_status = "failed"
         else:
-            status["pending_evaluations"] += 1
+            status["pending_evaluations"] = pending_evaluations + 1
             eval_status = "pending"
 
-        status["evaluation_details"].append(
+        evaluation_details.append(
             {
                 "evaluation_id": evaluation.id,
                 "title": evaluation.title,
@@ -144,11 +154,12 @@ def get_user_evaluation_status(course_code, user_id):
                 ).scalar(),
             }
         )
+        status["evaluation_details"] = evaluation_details
 
     return status
 
 
-def can_user_receive_certificate(course_code, user_id):
+def can_user_receive_certificate(course_code: str, user_id: str) -> tuple[bool, str]:
     """Check if a user can receive a certificate for a course.
 
     This includes checking both resource completion and evaluation completion.

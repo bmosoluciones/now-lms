@@ -19,7 +19,7 @@ NOW Learning Management System.
 Gestión de certificados.
 """
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
@@ -28,6 +28,7 @@ from __future__ import annotations
 from collections import OrderedDict
 from datetime import datetime, timedelta, timezone
 from os.path import splitext
+from typing import Any, Sequence
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -35,7 +36,6 @@ from os.path import splitext
 from bleach import clean, linkify
 from flask import (
     Blueprint,
-    Response,
     abort,
     current_app,
     flash,
@@ -51,12 +51,12 @@ from markdown import markdown
 from sqlalchemy import delete, func
 from sqlalchemy.exc import OperationalError
 from ulid import ULID
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
-from now_lms.i18n import _
 from now_lms.bi import (
     asignar_curso_a_instructor,
     cambia_curso_publico,
@@ -123,6 +123,7 @@ from now_lms.forms import (
     CursoSeccionForm,
     SlideShowForm,
 )
+from now_lms.i18n import _
 from now_lms.logs import log
 from now_lms.misc import CURSO_NIVEL, HTML_TAGS, INICIO_SESION, TIPOS_RECURSOS, sanitize_slide_content
 from now_lms.themes import get_course_list_template, get_course_view_template
@@ -219,7 +220,7 @@ ROUTE_LIST_COUPONS = "course.list_coupons"
 # ---------------------------------------------------------------------------------------
 # Helper functions
 # ---------------------------------------------------------------------------------------
-def validate_downloadable_file(file, max_size_mb=1):
+def validate_downloadable_file(file, max_size_mb: int = 1) -> tuple[bool, str]:
     """
     Validate uploaded file for downloadable resources.
 
@@ -235,7 +236,7 @@ def validate_downloadable_file(file, max_size_mb=1):
 
     # Check file extension
     filename = file.filename.lower()
-    file_ext = splitext(filename)[1].lower()
+    file_ext = splitext(filename or "")[1].lower()
 
     if file_ext in DANGEROUS_FILE_EXTENSIONS:
         return False, f"Tipo de archivo no permitido por seguridad: {file_ext}"
@@ -255,12 +256,12 @@ def validate_downloadable_file(file, max_size_mb=1):
     return True, ""
 
 
-def get_site_config():
+def get_site_config() -> Configuracion:
     """Get site configuration."""
     return database.session.execute(database.select(Configuracion)).first()[0]
 
 
-def markdown2html(text):
+def markdown2html(text: str) -> str:
     """Convierte texto en markdown a HTML."""
     allowed_tags = HTML_TAGS
     allowed_attrs = {"*": ["class"], "a": ["href", "rel"], "img": ["src", "alt"]}
@@ -276,7 +277,7 @@ course = Blueprint("course", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 @course.route("/course/<course_code>/view")
 @cache.cached(unless=no_guardar_en_cache_global)
-def curso(course_code):
+def curso(course_code: str) -> str:
     """Pagina principal del curso."""
     _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
 
@@ -357,9 +358,8 @@ def curso(course_code):
     abort(403)
 
 
-def _crear_indice_avance_curso(course_code):
+def _crear_indice_avance_curso(course_code: str) -> None:
     """Crea el índice de avance del curso."""
-
     recursos = (
         database.session.execute(
             database.select(CursoRecurso).filter(CursoRecurso.curso == course_code).order_by(CursoRecurso.indice)
@@ -385,7 +385,7 @@ def _crear_indice_avance_curso(course_code):
 @course.route("/course/<course_code>/enroll", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("student")
-def course_enroll(course_code):
+def course_enroll(course_code: str) -> str | Response:
     """Pagina para inscribirse a un curso."""
     from now_lms.forms import PagoForm
 
@@ -551,7 +551,7 @@ def course_enroll(course_code):
 @login_required
 @perfil_requerido("student")
 @cache.cached(unless=no_guardar_en_cache_global)
-def tomar_curso(course_code):
+def tomar_curso(course_code: str) -> str | Response:
     """Pagina principal del curso."""
     if current_user.tipo == "student":
         # Get evaluations for this course
@@ -617,7 +617,7 @@ def tomar_curso(course_code):
 @login_required
 @perfil_requerido("moderator")
 @cache.cached(unless=no_guardar_en_cache_global)
-def moderar_curso(course_code):
+def moderar_curso(course_code: str) -> str | Response:
     """Pagina principal del curso."""
     if current_user.tipo in ("moderator", "admin"):
         return render_template(
@@ -645,7 +645,7 @@ def moderar_curso(course_code):
 @login_required
 @perfil_requerido("instructor")
 @cache.cached(unless=no_guardar_en_cache_global)
-def administrar_curso(course_code):
+def administrar_curso(course_code: str) -> str:
     """Pagina principal del curso."""
     return render_template(
         "learning/curso/admin.html",
@@ -670,7 +670,7 @@ def administrar_curso(course_code):
 @course.route("/course/new_curse", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def nuevo_curso():
+def nuevo_curso() -> str | Response:
     """Formulario para crear un nuevo usuario."""
     form = CurseForm()
     form.plantilla_certificado.choices = generate_template_choices()
@@ -732,8 +732,8 @@ def nuevo_curso():
             if "logo" in request.files:
                 logo = request.files["logo"]
                 logo_name = logo.filename
-                logo_data = splitext(logo_name)
-                logo_ext = logo_data[1]
+                logo_data = splitext(logo_name or "")
+                logo_ext = logo_data[1] or ""
                 try:
                     log.trace("Saving logo")
                     picture_file = images.save(logo, folder=form.codigo.data, name=f"logo{logo_ext}")
@@ -763,7 +763,7 @@ def nuevo_curso():
 @course.route("/course/<course_code>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def editar_curso(course_code):
+def editar_curso(course_code: str) -> str | Response:
     """Editar pagina del curso."""
     form = CurseForm()
     form.plantilla_certificado.choices = generate_template_choices()
@@ -859,8 +859,8 @@ def editar_curso(course_code):
             if "logo" in request.files:
                 logo = request.files["logo"]
                 logo_name = logo.filename
-                logo_data = splitext(logo_name)
-                logo_ext = logo_data[1]
+                logo_data = splitext(logo_name or "")
+                logo_ext = logo_data[1] or ""
                 try:
                     log.trace("Saving logo")
                     picture_file = images.save(logo, folder=form.codigo.data, name=f"logo{logo_ext}")
@@ -892,13 +892,13 @@ def editar_curso(course_code):
 @course.route("/course/<course_code>/new_seccion", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def nuevo_seccion(course_code):
+def nuevo_seccion(course_code: str) -> str | Response:
     """Formulario para crear una nueva sección en el curso."""
     # Las seccion son contenedores de recursos.
     form = CursoSeccionForm()
     if form.validate_on_submit() or request.method == "POST":
         secciones = database.session.execute(select(func.count(CursoSeccion.id)).filter_by(curso=course_code)).scalar()
-        nuevo_indice = int(secciones + 1)
+        nuevo_indice = int((secciones or 0) + 1)
         nueva_seccion = CursoSeccion(
             curso=course_code,
             nombre=form.nombre.data,
@@ -924,7 +924,7 @@ def nuevo_seccion(course_code):
 @course.route("/course/<course_code>/<seccion>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def editar_seccion(course_code, seccion):
+def editar_seccion(course_code: str, seccion: str) -> str | Response:
     """Formulario para editar una sección en el curso."""
     seccion_a_editar = database.session.get(CursoSeccion, seccion)
     if seccion_a_editar is None:
@@ -951,7 +951,7 @@ def editar_seccion(course_code, seccion):
 @course.route("/course/<course_code>/seccion/increment/<indice>")
 @login_required
 @perfil_requerido("instructor")
-def incrementar_indice_seccion(course_code, indice):
+def incrementar_indice_seccion(course_code: str, indice: str) -> Response:
     """Actualiza indice de secciones."""
     modificar_indice_curso(
         codigo_curso=course_code,
@@ -964,7 +964,7 @@ def incrementar_indice_seccion(course_code, indice):
 @course.route("/course/<course_code>/seccion/decrement/<indice>")
 @login_required
 @perfil_requerido("instructor")
-def reducir_indice_seccion(course_code, indice):
+def reducir_indice_seccion(course_code: str, indice: str) -> Response:
     """Actualiza indice de secciones."""
     modificar_indice_curso(
         codigo_curso=course_code,
@@ -977,7 +977,7 @@ def reducir_indice_seccion(course_code, indice):
 @course.route("/course/resource/<cource_code>/<seccion_id>/<task>/<resource_index>")
 @login_required
 @perfil_requerido("instructor")
-def modificar_orden_recurso(cource_code, seccion_id, resource_index, task):
+def modificar_orden_recurso(cource_code: str, seccion_id: str, resource_index: str, task: str) -> Response:
     """Actualiza indice de recursos."""
     modificar_indice_seccion(
         seccion_id=seccion_id,
@@ -990,7 +990,7 @@ def modificar_orden_recurso(cource_code, seccion_id, resource_index, task):
 @course.route("/course/<curso_code>/delete_recurso/<seccion>/<id_>")
 @login_required
 @perfil_requerido("instructor")
-def eliminar_recurso(curso_code, seccion, id_):
+def eliminar_recurso(curso_code: str, seccion: str, id_: str) -> Response:
     """Elimina una seccion del curso."""
     database.session.execute(delete(CursoRecurso).where(CursoRecurso.id == id_))
     database.session.commit()
@@ -1001,7 +1001,7 @@ def eliminar_recurso(curso_code, seccion, id_):
 @course.route("/course/<curso_id>/delete_seccion/<id_>")
 @login_required
 @perfil_requerido("instructor")
-def eliminar_seccion(curso_id, id_):
+def eliminar_seccion(curso_id: str, id_: str) -> Response:
     """Elimina una seccion del curso."""
     database.session.execute(delete(CursoSeccion).where(CursoSeccion.id == id_))
     database.session.commit()
@@ -1012,7 +1012,7 @@ def eliminar_seccion(curso_id, id_):
 @course.route("/course/change_curse_status")
 @login_required
 @perfil_requerido("instructor")
-def cambiar_estatus_curso():
+def cambiar_estatus_curso() -> Response:
     """Actualiza el estatus de un curso."""
     cambia_estado_curso_por_id(
         request.args.get("curse"), nuevo_estado=request.args.get("status"), usuario=current_user.usuario
@@ -1023,7 +1023,7 @@ def cambiar_estatus_curso():
 @course.route("/course/change_curse_public")
 @login_required
 @perfil_requerido("instructor")
-def cambiar_curso_publico():
+def cambiar_curso_publico() -> Response:
     """Actualiza el estado publico de un curso."""
     cambia_curso_publico(
         id_curso=request.args.get("curse"),
@@ -1034,7 +1034,7 @@ def cambiar_curso_publico():
 @course.route("/course/change_curse_seccion_public")
 @login_required
 @perfil_requerido("instructor")
-def cambiar_seccion_publico():
+def cambiar_seccion_publico() -> Response:
     """Actualiza el estado publico de un curso."""
     cambia_seccion_publico(
         codigo=request.args.get("codigo"),
@@ -1042,7 +1042,7 @@ def cambiar_seccion_publico():
     return redirect(url_for(VISTA_CURSOS, course_code=request.args.get("course_code")))
 
 
-def _get_user_resource_progress(curso_id, usuario=None):
+def _get_user_resource_progress(curso_id: str, usuario: str | None = None) -> dict[int, dict[str, bool]]:
     """Obtiene el progreso del usuario en todos los recursos del curso."""
     if not usuario:
         return {}
@@ -1054,7 +1054,9 @@ def _get_user_resource_progress(curso_id, usuario=None):
     return {p.recurso: {"completado": p.completado} for p in progress_data}
 
 
-def _get_course_evaluations_and_attempts(curso_id, usuario=None):
+def _get_course_evaluations_and_attempts(
+    curso_id: str, usuario: str | None = None
+) -> tuple[Sequence[Evaluation], dict[Any, Sequence[EvaluationAttempt]]]:
     """Obtiene las evaluaciones del curso y los intentos del usuario."""
     # Obtener las secciones del curso
     secciones = database.session.execute(select(CursoSeccion).filter_by(curso=curso_id)).scalars().all()
@@ -1082,7 +1084,7 @@ def _get_course_evaluations_and_attempts(curso_id, usuario=None):
 
 
 @course.route("/course/<curso_id>/resource/<resource_type>/<codigo>")
-def pagina_recurso(curso_id, resource_type, codigo):
+def pagina_recurso(curso_id: str, resource_type: str, codigo: str) -> str:
     """Pagina de un recurso."""
     CURSO = database.session.execute(select(Curso).filter(Curso.codigo == curso_id)).scalars().first()
     RECURSO = database.session.execute(select(CursoRecurso).filter(CursoRecurso.id == codigo)).scalars().first()
@@ -1150,9 +1152,9 @@ def pagina_recurso(curso_id, resource_type, codigo):
                 recurso_completado = resource_progress.completado
 
         # Obtener datos adicionales para el sidebar mejorado
-        user_progress = {}
-        evaluaciones = []
-        evaluation_attempts = {}
+        user_progress: dict[int, dict[str, bool]] = {}
+        evaluaciones: Sequence[Evaluation] = []
+        evaluation_attempts: dict[Any, Sequence[EvaluationAttempt]] = {}
 
         if current_user.is_authenticated:
             user_progress = _get_user_resource_progress(curso_id, current_user.usuario)
@@ -1176,7 +1178,7 @@ def pagina_recurso(curso_id, resource_type, codigo):
     return abort(403)
 
 
-def _emitir_certificado(curso_id, usuario, plantilla):
+def _emitir_certificado(curso_id: str, usuario: str, plantilla: str) -> None:
     """Emit a certificate for a user in a course."""
     certificado = Certificacion(
         curso=curso_id,
@@ -1194,7 +1196,7 @@ def _emitir_certificado(curso_id, usuario, plantilla):
     flash("Certificado de finalización emitido.", "success")
 
 
-def _actualizar_avance_curso(curso_id, usuario):
+def _actualizar_avance_curso(curso_id: str, usuario: str) -> None:
     """Actualiza el avance de un usuario en un curso."""
     from now_lms.db import CursoUsuarioAvance
 
@@ -1230,9 +1232,9 @@ def _actualizar_avance_curso(curso_id, usuario):
     ).scalar()
     log.warning("Required resources: %s, Completed: %s", _recursos_requeridos, _recursos_completados)
 
-    _avance.recursos_requeridos = _recursos_requeridos
-    _avance.recursos_completados = _recursos_completados
-    _avance.avance = (_recursos_completados / _recursos_requeridos) * 100
+    _avance.recursos_requeridos = _recursos_requeridos or 0
+    _avance.recursos_completados = _recursos_completados or 0
+    _avance.avance = ((_recursos_completados or 0) / (_recursos_requeridos or 1)) * 100
     if _avance.avance >= 100:
         _avance.completado = True
         flash("Curso completado", "success")
@@ -1253,7 +1255,7 @@ def _actualizar_avance_curso(curso_id, usuario):
 @course.route("/course/<curso_id>/resource/<resource_type>/<codigo>/complete")
 @login_required
 @perfil_requerido("student")
-def marcar_recurso_completado(curso_id, resource_type, codigo):
+def marcar_recurso_completado(curso_id: str, resource_type: str, codigo: str) -> Response:
     """Registra avance de un 100% en un recurso."""
     if current_user.is_authenticated:
         if current_user.tipo == "student":
@@ -1298,7 +1300,7 @@ def marcar_recurso_completado(curso_id, resource_type, codigo):
 @course.route("/course/<curso_id>/alternative/<codigo>/<order>")
 @login_required
 @perfil_requerido("student")
-def pagina_recurso_alternativo(curso_id, codigo, order):
+def pagina_recurso_alternativo(curso_id: str, codigo: str, order: str) -> str:
     """Pagina para seleccionar un curso alternativo."""
     CURSO = database.session.execute(select(Curso).filter(Curso.codigo == curso_id)).scalars().first()
     RECURSO = database.session.execute(select(CursoRecurso).filter(CursoRecurso.id == codigo)).scalars().first()
@@ -1346,7 +1348,7 @@ def pagina_recurso_alternativo(curso_id, codigo, order):
 @course.route("/course/<course_code>/<seccion>/new_resource")
 @login_required
 @perfil_requerido("instructor")
-def nuevo_recurso(course_code, seccion):
+def nuevo_recurso(course_code: str, seccion: str) -> str:
     """Página para seleccionar tipo de recurso."""
     return render_template("learning/resources_new/nuevo_recurso.html", id_curso=course_code, id_seccion=seccion)
 
@@ -1354,11 +1356,11 @@ def nuevo_recurso(course_code, seccion):
 @course.route("/course/<course_code>/<seccion>/youtube/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def nuevo_recurso_youtube_video(course_code, seccion):
+def nuevo_recurso_youtube_video(course_code: str, seccion: str) -> str | Response:
     """Formulario para crear un nuevo recurso tipo vídeo en Youtube."""
     form = CursoRecursoVideoYoutube()
     consulta_recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
-    nuevo_indice = int(consulta_recursos + 1)
+    nuevo_indice = int((consulta_recursos or 0) + 1)
     if form.validate_on_submit() or request.method == "POST":
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
@@ -1388,7 +1390,7 @@ def nuevo_recurso_youtube_video(course_code, seccion):
 @course.route("/course/<course_code>/<seccion>/youtube/<resource_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def editar_recurso_youtube_video(course_code, seccion, resource_id):
+def editar_recurso_youtube_video(course_code: str, seccion: str, resource_id: str) -> str | Response:
     """Formulario para editar un recurso tipo vídeo en Youtube."""
     recurso = database.session.execute(
         select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
@@ -1433,11 +1435,11 @@ def editar_recurso_youtube_video(course_code, seccion, resource_id):
 @course.route("/course/<course_code>/<seccion>/text/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def nuevo_recurso_text(course_code, seccion):
+def nuevo_recurso_text(course_code: str, seccion: str) -> str | Response:
     """Formulario para crear un nuevo documento de texto."""
     form = CursoRecursoArchivoText()
     consulta_recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
-    nuevo_indice = int(consulta_recursos + 1)
+    nuevo_indice = int((consulta_recursos or 0) + 1)
     if form.validate_on_submit() or request.method == "POST":
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
@@ -1469,7 +1471,7 @@ def nuevo_recurso_text(course_code, seccion):
 @course.route("/course/<course_code>/<seccion>/text/<resource_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def editar_recurso_text(course_code, seccion, resource_id):
+def editar_recurso_text(course_code: str, seccion: str, resource_id: str) -> str | Response:
     """Formulario para editar un documento de texto."""
     recurso = database.session.execute(
         select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
@@ -1514,11 +1516,11 @@ def editar_recurso_text(course_code, seccion, resource_id):
 @course.route("/course/<course_code>/<seccion>/link/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def nuevo_recurso_link(course_code, seccion):
+def nuevo_recurso_link(course_code: str, seccion: str) -> str | Response:
     """Formulario para crear un nuevo documento de texto."""
     form = CursoRecursoExternalLink()
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
-    nuevo_indice = int(recursos + 1)
+    nuevo_indice = int((recursos or 0) + 1)
     if form.validate_on_submit() or request.method == "POST":
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
@@ -1548,7 +1550,7 @@ def nuevo_recurso_link(course_code, seccion):
 @course.route("/course/<course_code>/<seccion>/link/<resource_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def editar_recurso_link(course_code, seccion, resource_id):
+def editar_recurso_link(course_code: str, seccion: str, resource_id: str) -> str | Response:
     """Formulario para editar un enlace externo."""
     recurso = database.session.execute(
         select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
@@ -1592,11 +1594,11 @@ def editar_recurso_link(course_code, seccion, resource_id):
 @course.route("/course/<course_code>/<seccion>/pdf/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def nuevo_recurso_pdf(course_code, seccion):
+def nuevo_recurso_pdf(course_code: str, seccion: str) -> str | Response:
     """Formulario para crear un nuevo recurso tipo archivo en PDF."""
     form = CursoRecursoArchivoPDF()
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
-    nuevo_indice = int(recursos + 1)
+    nuevo_indice = int((recursos or 0) + 1)
     if (form.validate_on_submit() or request.method == "POST") and "pdf" in request.files:
         file_name = str(ULID()) + ".pdf"
         pdf_file = files.save(request.files["pdf"], folder=course_code, name=file_name)
@@ -1629,7 +1631,7 @@ def nuevo_recurso_pdf(course_code, seccion):
 @course.route("/course/<course_code>/<seccion>/pdf/<resource_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def editar_recurso_pdf(course_code, seccion, resource_id):
+def editar_recurso_pdf(course_code: str, seccion: str, resource_id: str) -> str | Response:
     """Formulario para editar un recurso tipo archivo en PDF."""
     recurso = database.session.execute(
         select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
@@ -1678,11 +1680,11 @@ def editar_recurso_pdf(course_code, seccion, resource_id):
 @course.route("/course/<course_code>/<seccion>/meet/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def nuevo_recurso_meet(course_code, seccion):
+def nuevo_recurso_meet(course_code: str, seccion: str) -> str | Response:
     """Formulario para crear un nuevo recurso tipo archivo en PDF."""
     form = CursoRecursoMeet()
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
-    nuevo_indice = int(recursos + 1)
+    nuevo_indice = int((recursos or 0) + 1)
     if form.validate_on_submit() or request.method == "POST":
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
@@ -1716,7 +1718,7 @@ def nuevo_recurso_meet(course_code, seccion):
 @course.route("/course/<course_code>/<seccion>/meet/<resource_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def editar_recurso_meet(course_code, seccion, resource_id):
+def editar_recurso_meet(course_code: str, seccion: str, resource_id: str) -> str | Response:
     """Formulario para editar un recurso tipo meet."""
     recurso = database.session.execute(
         select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
@@ -1770,15 +1772,15 @@ def editar_recurso_meet(course_code, seccion, resource_id):
 @course.route("/course/<course_code>/<seccion>/img/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def nuevo_recurso_img(course_code, seccion):
+def nuevo_recurso_img(course_code: str, seccion: str) -> str | Response:
     """Formulario para crear un nuevo recurso tipo imagen."""
     form = CursoRecursoArchivoImagen()
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
-    nuevo_indice = int(recursos + 1)
+    nuevo_indice = int((recursos or 0) + 1)
     if (form.validate_on_submit() or request.method == "POST") and "img" in request.files:
         img_filename = request.files["img"].filename
-        img_ext = splitext(img_filename)[1]
-        file_name = str(ULID()) + img_ext
+        img_ext = splitext(img_filename or "")[1]
+        file_name = str(ULID()) + (img_ext or "")
         picture_file = images.save(request.files["img"], folder=course_code, name=file_name)
 
         nuevo_recurso_ = CursoRecurso(
@@ -1810,7 +1812,7 @@ def nuevo_recurso_img(course_code, seccion):
 @course.route("/course/<course_code>/<seccion>/img/<resource_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def editar_recurso_img(course_code, seccion, resource_id):
+def editar_recurso_img(course_code: str, seccion: str, resource_id: str) -> str | Response:
     """Formulario para editar un recurso tipo imagen."""
     recurso = database.session.execute(
         select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
@@ -1831,7 +1833,7 @@ def editar_recurso_img(course_code, seccion, resource_id):
         if "img" in request.files and request.files["img"].filename:
             img_filename = request.files["img"].filename
             img_ext = splitext(img_filename)[1]
-            file_name = str(ULID()) + img_ext
+            file_name = str(ULID()) + (img_ext or "")
             picture_file = images.save(request.files["img"], folder=course_code, name=file_name)
             recurso.base_doc_url = images.name
             recurso.doc = picture_file
@@ -1861,15 +1863,15 @@ def editar_recurso_img(course_code, seccion, resource_id):
 @course.route("/course/<course_code>/<seccion>/audio/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def nuevo_recurso_audio(course_code, seccion):
+def nuevo_recurso_audio(course_code: str, seccion: str) -> str | Response:
     """Formulario para crear un nuevo recurso de audio."""
     form = CursoRecursoArchivoAudio()
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
-    nuevo_indice = int(recursos + 1)
+    nuevo_indice = int((recursos or 0) + 1)
     if (form.validate_on_submit() or request.method == "POST") and "audio" in request.files:
         audio_filename = request.files["audio"].filename
-        audio_ext = splitext(audio_filename)[1]
-        audio_name = str(ULID()) + audio_ext
+        audio_ext = splitext(audio_filename or "")[1]
+        audio_name = str(ULID()) + (audio_ext or "")
         audio_file = audio.save(request.files["audio"], folder=course_code, name=audio_name)
 
         # Handle VTT subtitle file upload
@@ -1917,7 +1919,7 @@ def nuevo_recurso_audio(course_code, seccion):
 @course.route("/course/<course_code>/<seccion>/audio/<resource_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def editar_recurso_audio(course_code, seccion, resource_id):
+def editar_recurso_audio(course_code: str, seccion: str, resource_id: str) -> str | Response:
     """Formulario para editar un recurso de audio."""
     recurso = database.session.execute(
         select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
@@ -1937,8 +1939,8 @@ def editar_recurso_audio(course_code, seccion, resource_id):
         # Handle file replacement if a new audio file is uploaded
         if "audio" in request.files and request.files["audio"].filename:
             audio_filename = request.files["audio"].filename
-            audio_ext = splitext(audio_filename)[1]
-            audio_name = str(ULID()) + audio_ext
+            audio_ext = splitext(audio_filename or "")[1]
+            audio_name = str(ULID()) + (audio_ext or "")
             audio_file = audio.save(request.files["audio"], folder=course_code, name=audio_name)
             recurso.base_doc_url = audio.name
             recurso.doc = audio_file
@@ -1980,7 +1982,7 @@ def editar_recurso_audio(course_code, seccion, resource_id):
 @course.route("/course/<course_code>/<seccion>/descargable/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def nuevo_recurso_descargable(course_code, seccion):
+def nuevo_recurso_descargable(course_code: str, seccion: str) -> str | Response:
     """Formulario para crear un nuevo recurso descargable."""
     # Check if file uploads are enabled by admin
     site_config = get_site_config()
@@ -1990,7 +1992,7 @@ def nuevo_recurso_descargable(course_code, seccion):
 
     form = CursoRecursoArchivoDescargable()
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
-    nuevo_indice = int(recursos + 1)
+    nuevo_indice = int((recursos or 0) + 1)
 
     if (form.validate_on_submit() or request.method == "POST") and "archivo" in request.files:
         uploaded_file = request.files["archivo"]
@@ -2005,8 +2007,8 @@ def nuevo_recurso_descargable(course_code, seccion):
 
         # Save file with original extension
         filename = uploaded_file.filename
-        file_ext = splitext(filename)[1]
-        file_name = str(ULID()) + file_ext
+        file_ext = splitext(filename or "")[1]
+        file_name = str(ULID()) + (file_ext or "")
 
         try:
             saved_file = files.save(uploaded_file, folder=course_code, name=file_name)
@@ -2048,7 +2050,7 @@ def nuevo_recurso_descargable(course_code, seccion):
 @course.route("/course/<course_code>/<seccion>/descargable/<resource_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def editar_recurso_descargable(course_code, seccion, resource_id):
+def editar_recurso_descargable(course_code: str, seccion: str, resource_id: str) -> str | Response:
     """Formulario para editar un recurso descargable."""
     # Check if file uploads are enabled by admin
     site_config = get_site_config()
@@ -2079,8 +2081,8 @@ def editar_recurso_descargable(course_code, seccion, resource_id):
 
             # Save new file with original extension
             filename = uploaded_file.filename
-            file_ext = splitext(filename)[1]
-            file_name = str(ULID()) + file_ext
+            file_ext = splitext(filename or "")[1]
+            file_name = str(ULID()) + (file_ext or "")
 
             try:
                 saved_file = files.save(uploaded_file, folder=course_code, name=file_name)
@@ -2121,11 +2123,11 @@ def editar_recurso_descargable(course_code, seccion, resource_id):
 @course.route("/course/<course_code>/<seccion>/html/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def nuevo_recurso_html(course_code, seccion):
+def nuevo_recurso_html(course_code: str, seccion: str) -> str | Response:
     """Formulario para crear un nuevo recurso tipo HTML externo."""
     form = CursoRecursoExternalCode()
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
-    nuevo_indice = int(recursos + 1)
+    nuevo_indice = int((recursos or 0) + 1)
     if form.validate_on_submit() or request.method == "POST":
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
@@ -2155,7 +2157,7 @@ def nuevo_recurso_html(course_code, seccion):
 @course.route("/course/<course_code>/<seccion>/html/<resource_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def editar_recurso_html(course_code, seccion, resource_id):
+def editar_recurso_html(course_code: str, seccion: str, resource_id: str) -> str | Response:
     """Formulario para editar un recurso tipo HTML externo."""
     recurso = database.session.execute(
         select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
@@ -2199,7 +2201,7 @@ def editar_recurso_html(course_code, seccion, resource_id):
 @course.route("/course/<course_code>/delete_logo")
 @login_required
 @perfil_requerido("instructor")
-def elimina_logo(course_code):
+def elimina_logo(course_code: str) -> Response:
     """Elimina logotipo del curso."""
     from now_lms.db.tools import elimina_logo_perzonalizado_curso
 
@@ -2213,7 +2215,7 @@ def elimina_logo(course_code):
 @course.route("/course/<course_code>/<seccion>/slides/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def nuevo_recurso_slideshow(course_code, seccion):
+def nuevo_recurso_slideshow(course_code: str, seccion: str) -> str | Response:
     """Crear una nueva presentación de diapositivas."""
     form = SlideShowForm()
     if form.validate_on_submit():
@@ -2222,7 +2224,7 @@ def nuevo_recurso_slideshow(course_code, seccion):
             consulta_recursos = database.session.execute(
                 select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)
             ).scalar()
-            nuevo_indice = int(consulta_recursos + 1)
+            nuevo_indice = int((consulta_recursos or 0) + 1)
 
             nuevo_recurso_obj = CursoRecurso(
                 curso=course_code,
@@ -2263,7 +2265,7 @@ def nuevo_recurso_slideshow(course_code, seccion):
 @course.route("/course/<course_code>/slideshow/<slideshow_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def editar_slideshow(course_code, slideshow_id):
+def editar_slideshow(course_code: str, slideshow_id: str) -> str | Response:
     """Editar una presentación de diapositivas."""
     slideshow = database.session.get(SlideShowResource, slideshow_id)
     if not slideshow or slideshow.course_id != course_code:
@@ -2308,12 +2310,12 @@ def editar_slideshow(course_code, slideshow_id):
 
                     if slide_id:
                         # Actualizar slide existente
-                        slide = database.session.get(Slide, slide_id)
-                        if slide and slide.slide_show_id == slideshow_id:
-                            slide.title = slide_title
-                            slide.content = clean_content
-                            slide.order = slide_order
-                            slide.modificado_por = current_user.usuario
+                        existing_slide = database.session.get(Slide, slide_id)
+                        if existing_slide is not None and existing_slide.slide_show_id == slideshow_id:
+                            existing_slide.title = slide_title
+                            existing_slide.content = clean_content
+                            existing_slide.order = slide_order
+                            existing_slide.modificado_por = current_user.usuario
                     else:
                         # Crear nuevo slide
                         new_slide = Slide(
@@ -2341,7 +2343,7 @@ def editar_slideshow(course_code, slideshow_id):
 
 @course.route("/course/<course_code>/slideshow/<slideshow_id>/preview")
 @login_required
-def preview_slideshow(course_code, slideshow_id):
+def preview_slideshow(course_code: str, slideshow_id: str) -> str:
     """Previsualizar una presentación de diapositivas."""
     slideshow = database.session.get(SlideShowResource, slideshow_id)
     if not slideshow or slideshow.course_id != course_code:
@@ -2362,7 +2364,7 @@ def preview_slideshow(course_code, slideshow_id):
 # - Devolver texto en markdown como HTML para usarlo en un iframe
 # ---------------------------------------------------------------------------------------
 @course.route("/course/<course_code>/files/<recurso_code>")
-def recurso_file(course_code, recurso_code):
+def recurso_file(course_code: str, recurso_code: str) -> Response:
     """Devuelve un archivo desde el sistema de archivos."""
     doc = (
         database.session.execute(
@@ -2377,11 +2379,11 @@ def recurso_file(course_code, recurso_code):
         if doc.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
             return send_from_directory(config.destination, doc.doc)
         return abort(403)
-    return redirect(INICIO_SESION)
+    return INICIO_SESION
 
 
 @course.route("/course/<course_code>/vtt/<recurso_code>")
-def recurso_vtt(course_code, recurso_code):
+def recurso_vtt(course_code: str, recurso_code: str) -> Response:
     """Devuelve el contenido VTT de subtítulos para un recurso de audio."""
     doc = (
         database.session.execute(
@@ -2398,11 +2400,11 @@ def recurso_vtt(course_code, recurso_code):
         if doc.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
             return Response(doc.subtitle_vtt, mimetype="text/vtt", headers={"Content-Type": "text/vtt; charset=utf-8"})
         return abort(403)
-    return redirect(INICIO_SESION)
+    return INICIO_SESION
 
 
 @course.route("/course/<course_code>/vtt_secondary/<recurso_code>")
-def recurso_vtt_secondary(course_code, recurso_code):
+def recurso_vtt_secondary(course_code: str, recurso_code: str) -> Response:
     """Devuelve el contenido VTT de subtítulos secundarios para un recurso de audio."""
     doc = (
         database.session.execute(
@@ -2421,11 +2423,11 @@ def recurso_vtt_secondary(course_code, recurso_code):
                 doc.subtitle_vtt_secondary, mimetype="text/vtt", headers={"Content-Type": "text/vtt; charset=utf-8"}
             )
         return abort(403)
-    return redirect(INICIO_SESION)
+    return INICIO_SESION
 
 
 @course.route("/course/<course_code>/pdf_viewer/<recurso_code>")
-def pdf_viewer(course_code, recurso_code):
+def pdf_viewer(course_code: str, recurso_code: str) -> str | Response:
     """Renderiza el visor PDF.js para un recurso PDF."""
     recurso = (
         database.session.execute(
@@ -2442,11 +2444,11 @@ def pdf_viewer(course_code, recurso_code):
         if recurso.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
             return render_template("learning/resources/pdf_viewer.html", recurso=recurso)
         return abort(403)
-    return redirect(INICIO_SESION)
+    return INICIO_SESION
 
 
 @course.route("/course/<course_code>/external_code/<recurso_code>")
-def external_code(course_code, recurso_code):
+def external_code(course_code: str, recurso_code: str) -> str | Response:
     """Devuelve un archivo desde el sistema de archivos."""
     recurso = (
         database.session.execute(
@@ -2461,11 +2463,11 @@ def external_code(course_code, recurso_code):
             return recurso.external_code
 
         return abort(403)
-    return redirect(INICIO_SESION)
+    return INICIO_SESION
 
 
 @course.route("/course/slide_show/<recurso_code>")
-def slide_show(recurso_code):
+def slide_show(recurso_code: str) -> str:
     """Renderiza una presentación de diapositivas."""
     # Primero buscar el recurso para obtener la referencia al slideshow
     recurso = database.session.execute(select(CursoRecurso).filter(CursoRecurso.id == recurso_code)).scalars().first()
@@ -2504,7 +2506,7 @@ def slide_show(recurso_code):
 
 @course.route("/my_courses")
 @login_required
-def my_courses():
+def my_courses() -> str | Response:
     """Show user's courses based on their role."""
     if current_user.tipo == "student":
         # Get enrolled courses for students
@@ -2553,14 +2555,14 @@ def my_courses():
 
 
 @course.route("/course/")
-def course_index():
+def course_index() -> Response:
     """Redirect to course exploration page."""
     return redirect(url_for("course.lista_cursos"))
 
 
 @course.route("/course/explore")
 @cache.cached(unless=no_guardar_en_cache_global)
-def lista_cursos():
+def lista_cursos() -> str:
     """Lista de cursos."""
     if DESARROLLO:
         MAX_COUNT = 3
@@ -2642,7 +2644,7 @@ def lista_cursos():
 # ---------------------------------------------------------------------------------------
 
 
-def _validate_coupon_permissions(course_code, user):
+def _validate_coupon_permissions(course_code: str, user) -> tuple[object | None, str | None]:
     """Validate that user can manage coupons for this course."""
     course_obj = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
     if not course_obj:
@@ -2664,7 +2666,9 @@ def _validate_coupon_permissions(course_code, user):
     return course_obj, None
 
 
-def _validate_coupon_for_enrollment(course_code, coupon_code, user):
+def _validate_coupon_for_enrollment(
+    course_code: str, coupon_code: str, user
+) -> tuple[object | None, object | None, str | None]:
     """Validate coupon for enrollment use."""
     if not coupon_code:
         return None, None, "No se proporcionó código de cupón"
@@ -2698,7 +2702,7 @@ def _validate_coupon_for_enrollment(course_code, coupon_code, user):
 @course.route("/course/<course_code>/coupons/")
 @login_required
 @perfil_requerido("instructor")
-def list_coupons(course_code):
+def list_coupons(course_code: str) -> str | Response:
     """Lista cupones existentes para un curso."""
     course_obj, error = _validate_coupon_permissions(course_code, current_user)
     if error:
@@ -2717,7 +2721,7 @@ def list_coupons(course_code):
 @course.route("/course/<course_code>/coupons/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def create_coupon(course_code):
+def create_coupon(course_code: str) -> str | Response:
     """Crear nuevo cupón para un curso."""
     course_obj, error = _validate_coupon_permissions(course_code, current_user)
     if error:
@@ -2775,7 +2779,7 @@ def create_coupon(course_code):
 @course.route("/course/<course_code>/coupons/<coupon_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def edit_coupon(course_code, coupon_id):
+def edit_coupon(course_code: str, coupon_id: int) -> str | Response:
     """Editar cupón existente."""
     course_obj, error = _validate_coupon_permissions(course_code, current_user)
     if error:
@@ -2838,7 +2842,7 @@ def edit_coupon(course_code, coupon_id):
 @course.route("/course/<course_code>/coupons/<coupon_id>/delete", methods=["POST"])
 @login_required
 @perfil_requerido("instructor")
-def delete_coupon(course_code, coupon_id):
+def delete_coupon(course_code: str, coupon_id: int) -> Response:
     """Eliminar cupón."""
     _, error = _validate_coupon_permissions(course_code, current_user)
     if error:
@@ -2864,7 +2868,7 @@ def delete_coupon(course_code, coupon_id):
 
 @course.route("/course/<course_code>/resource/meet/<codigo>/calendar.ics")
 @login_required
-def download_meet_calendar(course_code, codigo):
+def download_meet_calendar(course_code: str, codigo: str) -> Response:
     """Download ICS calendar file for a meet resource."""
     # Get the meet resource
     recurso = (
@@ -2914,7 +2918,7 @@ def download_meet_calendar(course_code, codigo):
 
 @course.route("/course/<course_code>/resource/meet/<codigo>/google-calendar")
 @login_required
-def google_calendar_link(course_code, codigo):
+def google_calendar_link(course_code: str, codigo: str) -> Response:
     """Redirect to Google Calendar to add meet event."""
     from urllib.parse import quote
 
@@ -2987,7 +2991,7 @@ def google_calendar_link(course_code, codigo):
 
 @course.route("/course/<course_code>/resource/meet/<codigo>/outlook-calendar")
 @login_required
-def outlook_calendar_link(course_code, codigo):
+def outlook_calendar_link(course_code: str, codigo: str) -> str | Response:
     """Redirect to Outlook Calendar to add meet event."""
     from urllib.parse import quote
 
@@ -3059,7 +3063,7 @@ def outlook_calendar_link(course_code, codigo):
     return redirect(url_for("course.ver_recurso", course_code=course_code, codigo=codigo))
 
 
-def _generate_meet_ics_content(recurso, course_obj):
+def _generate_meet_ics_content(recurso: Any, course_obj: Any) -> str:
     """Generate ICS calendar content for a meet resource."""
     lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//NOW LMS//Meet Calendar//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"]
 
@@ -3115,7 +3119,7 @@ def _generate_meet_ics_content(recurso, course_obj):
     return "\r\n".join(lines)
 
 
-def _escape_ics_text(text):
+def _escape_ics_text(text: str | None) -> str:
     """Escape text for ICS format."""
     if not text:
         return ""
@@ -3125,7 +3129,7 @@ def _escape_ics_text(text):
 @course.route("/course/<course_code>/section/<section_id>/new_evaluation")
 @login_required
 @perfil_requerido("instructor")
-def new_evaluation_from_section(course_code, section_id):
+def new_evaluation_from_section(course_code: str, section_id: str) -> Response:
     """Create a new evaluation for a course section from section actions."""
     # Redirect to the existing instructor profile route for evaluation creation
     return redirect(url_for("instructor_profile.new_evaluation", course_code=course_code, section_id=section_id))
@@ -3139,7 +3143,7 @@ def new_evaluation_from_section(course_code, section_id):
 @course.route("/course/<course_code>/admin/enroll", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def admin_course_enrollment(course_code):
+def admin_course_enrollment(course_code: str) -> str | Response:
     """Administrative enrollment of students to a course."""
     from now_lms.forms import AdminCourseEnrollmentForm
 
@@ -3230,7 +3234,7 @@ def admin_course_enrollment(course_code):
 @course.route("/course/<course_code>/admin/enrollments")
 @login_required
 @perfil_requerido("instructor")
-def admin_course_enrollments(course_code):
+def admin_course_enrollments(course_code: str) -> str:
     """View and manage course enrollments."""
     # Verify course exists
     _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
@@ -3261,7 +3265,7 @@ def admin_course_enrollments(course_code):
 @course.route("/course/<course_code>/admin/unenroll/<student_username>", methods=["POST"])
 @login_required
 @perfil_requerido("instructor")
-def admin_course_unenrollment(course_code, student_username):
+def admin_course_unenrollment(course_code: str, student_username: str) -> Response:
     """Administrative unenrollment of a student from a course."""
     # Verify course exists
     _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()

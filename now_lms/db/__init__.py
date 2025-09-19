@@ -15,7 +15,7 @@
 
 """Definición de base de datos."""
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
@@ -134,7 +134,6 @@ class BaseTabla:
 
     def validate_user_references(self):
         """Validate that audit fields reference existing users or set them to None."""
-
         # Use no_autoflush to prevent recursive flush during validation
         with database.session.no_autoflush:
             # Check if users are being created in this transaction to skip validation
@@ -161,10 +160,10 @@ class BaseTabla:
                         self.modificado_por = None
 
 
-class SystemInfo(database.Model):
+class SystemInfo(database.Model, BaseTabla):
     """Información basica sobre la instalación."""
 
-    param = database.Column(database.String(20), primary_key=True, nullable=False, index=True)
+    param = database.Column(database.String(20), unique=True, nullable=False, index=True)
     val = database.Column(database.String(100))
 
 
@@ -338,9 +337,15 @@ class CursoRecursoAvance(database.Model, BaseTabla):
     Para que un curso de considere finalizado un alumno debe completar todos los recursos requeridos.
     """
 
-    curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    recurso = database.Column(database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO), nullable=False, index=True)
-    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    curso = database.Column(
+        database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True
+    )
+    recurso = database.Column(
+        database.String(32), database.ForeignKey(LLAVE_FORANEA_RECURSO, ondelete="CASCADE"), nullable=False, index=True
+    )
+    usuario = database.Column(
+        database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO, ondelete="CASCADE"), nullable=False, index=True
+    )
     completado = database.Column(database.Boolean(), default=False)
     requerido = database.Column(database.String(10))
 
@@ -348,8 +353,12 @@ class CursoRecursoAvance(database.Model, BaseTabla):
 class CursoUsuarioAvance(database.Model, BaseTabla):
     """Control del avance de un usuario en un curso."""
 
-    curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    curso = database.Column(
+        database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True
+    )
+    usuario = database.Column(
+        database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO, ondelete="CASCADE"), nullable=False, index=True
+    )
     recursos_requeridos = database.Column(database.Integer, default=0)  # Cantidad de recursos requeridos
     recursos_completados = database.Column(database.Integer, default=0)  # Cantidad de recursos completados
     avance = database.Column(database.Float(asdecimal=True), default=0.0)  # Porcentaje de avance del curso
@@ -478,24 +487,36 @@ class Files(database.Model, BaseTabla):
 class DocenteCurso(database.Model, BaseTabla):
     """Uno o mas usuario de tipo intructor pueden estar a cargo de un curso."""
 
-    curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    curso = database.Column(
+        database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True
+    )
+    usuario = database.Column(
+        database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO, ondelete="CASCADE"), nullable=False, index=True
+    )
     vigente = database.Column(database.Boolean())
 
 
 class ModeradorCurso(database.Model, BaseTabla):
     """Uno o mas usuario de tipo moderator pueden estar a cargo de un curso."""
 
-    curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    curso = database.Column(
+        database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True
+    )
+    usuario = database.Column(
+        database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO, ondelete="CASCADE"), nullable=False, index=True
+    )
     vigente = database.Column(database.Boolean())
 
 
 class EstudianteCurso(database.Model, BaseTabla):
     """Uno o mas usuario de tipo user pueden estar a cargo de un curso."""
 
-    curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
-    usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
+    curso = database.Column(
+        database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO, ondelete="CASCADE"), nullable=False, index=True
+    )
+    usuario = database.Column(
+        database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO, ondelete="CASCADE"), nullable=False, index=True
+    )
     vigente = database.Column(database.Boolean())
     pago = database.Column(database.String(26), database.ForeignKey("pago.id"), nullable=True, index=True)
 
@@ -811,18 +832,15 @@ class ForoMensaje(database.Model, BaseTabla):
         database.session.commit()
 
 
-class PagosConfig(database.Model):
+class PagosConfig(database.Model, BaseTabla):
     """Configuración de pagos."""
 
-    id = database.Column(
-        database.String(26), primary_key=True, nullable=False, index=True, default=generador_de_codigos_unicos
-    )
+    # Additional config fields can be added here
 
 
-class AdSense(database.Model):
+class AdSense(database.Model, BaseTabla):
     """Configuration for Google AdSense integration."""
 
-    id = database.Column(database.Integer, primary_key=True)
     meta_tag = database.Column(database.String(100))
     meta_tag_include = database.Column(database.Boolean(), default=False)
     pub_id = database.Column(database.String(20))
@@ -840,10 +858,9 @@ class AdSense(database.Model):
     add_billboard = database.Column(database.Text())  # 970x250
 
 
-class PaypalConfig(database.Model):
+class PaypalConfig(database.Model, BaseTabla):
     """Configuration for PayPal payment integration."""
 
-    id = database.Column(database.Integer, primary_key=True)
     enable = database.Column(database.Boolean(), default=False)
     sandbox = database.Column(database.Boolean(), default=False)
     paypal_id = database.Column(database.String(200))
@@ -852,12 +869,9 @@ class PaypalConfig(database.Model):
     paypal_sandbox_secret = database.Column(database.LargeBinary())
 
 
-class Pago(database.Model):
+class Pago(database.Model, BaseTabla):
     """Registro de pagos."""
 
-    id = database.Column(
-        database.String(26), primary_key=True, nullable=False, index=True, default=generador_de_codigos_unicos
-    )
     usuario = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=False, index=True)
     curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
     moneda = database.Column(database.String(5))  # Ejemplo: USD, EUR, CRC
@@ -1001,7 +1015,6 @@ class Coupon(database.Model, BaseTabla):
 
     def is_valid(self):
         """Check if coupon is valid (not expired and under usage limit)."""
-
         # Check expiration
         if self.expires_at and datetime.now() > self.expires_at:
             return False, "Cupón expirado"
@@ -1147,13 +1160,11 @@ class MasterClass(database.Model, BaseTabla):
 
     def is_upcoming(self):
         """Check if the master class is in the future."""
-
         event_datetime = datetime.combine(self.date, self.start_time)
         return event_datetime > datetime.now()
 
     def is_ongoing(self):
         """Check if the master class is currently happening."""
-
         now = datetime.now()
         event_date = self.date
         start_datetime = datetime.combine(event_date, self.start_time)
@@ -1162,7 +1173,6 @@ class MasterClass(database.Model, BaseTabla):
 
     def is_finished(self):
         """Check if the master class has ended."""
-
         end_datetime = datetime.combine(self.date, self.end_time)
         return end_datetime < datetime.now()
 

@@ -12,10 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 """Miscellaneous utilities."""
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
@@ -37,10 +35,125 @@ from markdown import markdown
 # ---------------------------------------------------------------------------------------
 
 
+# <------------------------------------------------------------------------------------->
+# Data classes
+@dataclass
+class EstiloLocal:
+    """Customizable style configuration.
+
+    Python 3.7+ dataclass provides better functionality than NamedTuple:
+    - Mutable fields for runtime configuration updates
+    - Default values and field validation
+    - Rich comparison and hashing support
+
+    Attributes:
+        navbar: Navigation bar style settings
+        texto: Text style settings
+        logo: Logo style settings
+        buttom: Button style settings
+    """
+
+    navbar: dict[str, str]
+    texto: dict[str, str]
+    logo: dict[str, str]
+    buttom: dict[str, str]
+
+
+@dataclass
+class EstiloAlterta:
+    """Alert style configuration.
+
+    Python 3.7+ dataclass replaces NamedTuple for better flexibility:
+    - Allows runtime modification of alert styles
+    - Better IDE support and introspection
+    - Cleaner initialization and validation
+
+    Attributes:
+        icono: Icon styles for alerts
+        clase: CSS class styles for alerts
+    """
+
+    icono: dict[str, str]
+    clase: dict[str, str]
+
+
+# <------------------------------------------------------------------------------------->
+# Constantes globales
 INICIO_SESION = redirect("/user/login")
+
 PANEL_DE_USUARIO = redirect("/home/panel")
 
+TIPOS_DE_USUARIO: list[str] = ["admin", "user", "instructor", "moderator"]
 
+ICONOS_RECURSOS: dict[str, str] = {
+    "html": "bi bi-code-square",
+    "img": "bi bi-image",
+    "link": "bi bi-link",
+    "meet": "bi bi-broadcast",
+    "mp3": "bi bi-soundwave",
+    "pdf": "bi bi-file-pdf-fill",
+    "slides": "bi bi-file-slides",
+    "text": "bi bi-blockquote-left",
+    "youtube": "bi bi-youtube",
+}
+
+HTML_TAGS = [
+    # Basic formatting
+    *["a", "abbr", "acronym", "b", "blockquote", "br", "code"],
+    # List and definition tags
+    *["dd", "del", "div", "dl", "dt", "em"],
+    # Headers and content
+    *["h1", "h2", "h3", "hr", "i", "img"],
+    # Lists and paragraphs
+    *["li", "ol", "p", "pre", "s", "strong", "sub", "sup"],
+    # Tables
+    *["table", "tbody", "td", "th", "thead", "tr", "ul"],
+]
+
+CURSO_NIVEL: dict[int, str] = {
+    0: """<i class="bi bi-circle" aria-hidden="true"></i> Nivel Introductorio""",
+    1: """<i class="bi bi-circle-fill" aria-hidden="true"></i> Nivel Principiante""",
+    2: """<i class="bi bi-circle-fill" aria-hidden="true"></i> <i class="bi bi-circle-fill" aria-hidden="true"></i> Nivel Intermedio""",
+    3: """
+    <i class="bi bi-circle-fill" aria-hidden="true">
+    </i> <i class="bi bi-circle-fill" aria-hidden="true">
+    </i> <i class="bi bi-circle-fill" aria-hidden="true"></i>
+    Nivel Avanzado
+    """,
+}
+
+GENEROS: dict[str, str] = {
+    "male": """<i class="bi bi-gender-male" aria-hidden="true"></i>""",
+    "female": """<i class="bi bi-gender-female" aria-hidden="true"></i>""",
+    "other": """<i class="bi bi-gender-ambiguous" aria-hidden="true"></i>""",
+    "none": """No espeficicado.""",
+}
+
+TIPOS_RECURSOS: dict[str, str] = {
+    "cheat_sheet": """<i class="bi bi-card-checklist" aria-hidden="true"></i>""",
+    "ebook": """<i class="bi bi-book" aria-hidden="true"></i>""",
+    "template": """<i class="bi bi-pencil-square" aria-hidden="true"></i>""",
+}
+
+ICONOS_ALERTAS: dict[str, str] = {
+    "info": "bi bi-info-circle",
+    "success": "bi bi-check-circle",
+    "error": "bi bi-slash-circle",
+    "warning": "bi bi-radioactive",
+}
+
+ESTILOS_ALERTAS: dict[str, str] = {
+    "info": "alert alert-primary",
+    "success": "alert alert-success",
+    "error": "alert alert-danger",
+    "warning": "alert alert-warning",
+}
+
+ESTILO_ALERTAS = EstiloAlterta(icono=ICONOS_ALERTAS, clase=ESTILOS_ALERTAS)
+
+
+# <------------------------------------------------------------------------------------->
+# Funciones auxiliares
 def concatenar_parametros_a_url(parametros: OrderedDict | None, arg: str | None, val: str | None, char: str = "") -> str:
     """Return list of parameters as a URL string.
 
@@ -69,59 +182,6 @@ def concatenar_parametros_a_url(parametros: OrderedDict | None, arg: str | None,
         argumentos = char + argumentos[2:]
 
     return argumentos
-
-
-# Python 3.6+ - Variable annotations for module-level constants
-TIPOS_DE_USUARIO: list[str] = ["admin", "user", "instructor", "moderator"]
-
-ICONOS_RECURSOS: dict[str, str] = {
-    "html": "bi bi-code-square",
-    "img": "bi bi-image",
-    "link": "bi bi-link",
-    "meet": "bi bi-broadcast",
-    "mp3": "bi bi-soundwave",
-    "pdf": "bi bi-file-pdf-fill",
-    "slides": "bi bi-file-slides",
-    "text": "bi bi-blockquote-left",
-    "youtube": "bi bi-youtube",
-}
-
-
-@dataclass
-class EstiloLocal:
-    """Customizable style configuration.
-
-    Python 3.7+ dataclass provides better functionality than NamedTuple:
-    - Mutable fields for runtime configuration updates
-    - Default values and field validation
-    - Rich comparison and hashing support
-
-    Attributes:
-        navbar: Navigation bar style settings
-        texto: Text style settings
-        logo: Logo style settings
-        buttom: Button style settings
-    """
-
-    navbar: dict[str, str]
-    texto: dict[str, str]
-    logo: dict[str, str]
-    buttom: dict[str, str]
-
-
-# Python 3.5+ - Extended unpacking for cleaner list definitions
-HTML_TAGS = [
-    # Basic formatting
-    *["a", "abbr", "acronym", "b", "blockquote", "br", "code"],
-    # List and definition tags
-    *["dd", "del", "div", "dl", "dt", "em"],
-    # Headers and content
-    *["h1", "h2", "h3", "hr", "i", "img"],
-    # Lists and paragraphs
-    *["li", "ol", "p", "pre", "s", "strong", "sub", "sup"],
-    # Tables
-    *["table", "tbody", "td", "th", "thead", "tr", "ul"],
-]
 
 
 def markdown_to_clean_html(text: str):
@@ -160,68 +220,6 @@ def sanitize_slide_content(html_content: str) -> str:
     return clean_html
 
 
-# Python 3.6+ - Variable annotations for module-level constants
-CURSO_NIVEL: dict[int, str] = {
-    0: """<i class="bi bi-circle" aria-hidden="true"></i> Nivel Introductorio""",
-    1: """<i class="bi bi-circle-fill" aria-hidden="true"></i> Nivel Principiante""",
-    2: """<i class="bi bi-circle-fill" aria-hidden="true"></i> <i class="bi bi-circle-fill" aria-hidden="true"></i> Nivel Intermedio""",
-    3: """
-    <i class="bi bi-circle-fill" aria-hidden="true">
-    </i> <i class="bi bi-circle-fill" aria-hidden="true">
-    </i> <i class="bi bi-circle-fill" aria-hidden="true"></i>
-    Nivel Avanzado
-    """,
-}
-
-GENEROS: dict[str, str] = {
-    "male": """<i class="bi bi-gender-male" aria-hidden="true"></i>""",
-    "female": """<i class="bi bi-gender-female" aria-hidden="true"></i>""",
-    "other": """<i class="bi bi-gender-ambiguous" aria-hidden="true"></i>""",
-    "none": """No espeficicado.""",
-}
-
-TIPOS_RECURSOS: dict[str, str] = {
-    "cheat_sheet": """<i class="bi bi-card-checklist" aria-hidden="true"></i>""",
-    "ebook": """<i class="bi bi-book" aria-hidden="true"></i>""",
-    "template": """<i class="bi bi-pencil-square" aria-hidden="true"></i>""",
-}
-
-
-@dataclass
-class EstiloAlterta:
-    """Alert style configuration.
-
-    Python 3.7+ dataclass replaces NamedTuple for better flexibility:
-    - Allows runtime modification of alert styles
-    - Better IDE support and introspection
-    - Cleaner initialization and validation
-
-    Attributes:
-        icono: Icon styles for alerts
-        clase: CSS class styles for alerts
-    """
-
-    icono: dict[str, str]
-    clase: dict[str, str]
-
-
-ICONOS_ALERTAS: dict[str, str] = {
-    "info": "bi bi-info-circle",
-    "success": "bi bi-check-circle",
-    "error": "bi bi-slash-circle",
-    "warning": "bi bi-radioactive",
-}
-
-ESTILOS_ALERTAS: dict[str, str] = {
-    "info": "alert alert-primary",
-    "success": "alert alert-success",
-    "error": "alert alert-danger",
-    "warning": "alert alert-warning",
-}
-
-ESTILO_ALERTAS = EstiloAlterta(icono=ICONOS_ALERTAS, clase=ESTILOS_ALERTAS)
-
-
 class HTMLCleaner(HTMLParser):
     """HTML parser for extracting clean text content."""
 
@@ -229,17 +227,21 @@ class HTMLCleaner(HTMLParser):
     textos: list[str]
 
     def __init__(self):
+        """Initialize the HTML cleaner."""
         super().__init__()
         self.textos = []
 
     def handle_data(self, data):
+        """Handle text data from HTML elements."""
         self.textos.append(data)
 
     def get_text(self):
+        """Get the cleaned text content."""
         return "".join(self.textos)
 
 
 def limpiar_html(html: str) -> str:
+    """Clean HTML content and extract plain text."""
     parser = HTMLCleaner()
     parser.feed(html)
     return parser.get_text()

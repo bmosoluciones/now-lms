@@ -23,8 +23,8 @@ python -m now_lms
 For many user [PostreSQL](https://www.postgresql.org/) is the best open source database engine, NOW - LMS supports
 PostgreSQL as a primary database host, and there many cloud providers ofering PostgreSQL as a service like:
 
--   [Google Cloud SQL for PostgreSQL](https://cloud.google.com/sql/postgresql)
--   [Amazon RDS para PostgreSQL](https://aws.amazon.com/es/rds/postgresql/)
+- [Google Cloud SQL for PostgreSQL](https://cloud.google.com/sql/postgresql)
+- [Amazon RDS para PostgreSQL](https://aws.amazon.com/es/rds/postgresql/)
 
 Also you can setup a PostgreSQL service in a Linux server following the next steps:
 
@@ -64,8 +64,8 @@ shared host services, NOW - LMS support MySQL by default.
 
 There are many cloud providers oferring MySQL as a service like:
 
--   [Oracle MySQL HeatWave Database Service](https://www.oracle.com/mysql/)
--   [Google Cloud SQL for MySQL](https://cloud.google.com/sql/mysql)
+- [Oracle MySQL HeatWave Database Service](https://www.oracle.com/mysql/)
+- [Google Cloud SQL for MySQL](https://cloud.google.com/sql/mysql)
 
 ```
 # On Fedora, Rocky Linux, Alma and RHEL

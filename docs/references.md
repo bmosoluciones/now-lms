@@ -14,36 +14,36 @@ Haven said thatm they are some really nice options to host your courses on line 
 
 These sites can be a inspiration for you:
 
--   [Ana Ivars](https://cursos.anaivars.com/)
--   [Miguel Grinberg](https://courses.miguelgrinberg.com/)
--   [Oana Labes](https://courses.oanalabes.com/courses/cashflow)
+- [Ana Ivars](https://cursos.anaivars.com/)
+- [Miguel Grinberg](https://courses.miguelgrinberg.com/)
+- [Oana Labes](https://courses.oanalabes.com/courses/cashflow)
 
 ## A flexible way to set up your course.
 
 But there is more, we want to provide a flexible way to set up your cource flow, in NOW - LMS you can set up 3 types of resources:
 
--   Required: A student must take the resource to advance her learning.
--   Optional: A student can choose to not take this resource to advance her learning.
--   Alternative: A student can choose betwen to or more equivalent leaning options to advance her learning.
+- Required: A student must take the resource to advance her learning.
+- Optional: A student can choose to not take this resource to advance her learning.
+- Alternative: A student can choose betwen to or more equivalent leaning options to advance her learning.
 
 Here is a lexample with a flaute course:
 
--   Lesson One (Required) - Introduction to floute
--   Lesson Two (Optional) - How to read music: Treble Clef (it is optional because a student may al ready know
-    how to read music)
--   Lesson Tree (Alternative) - POP easy songs
--   Lesson Four (Alternative) - Rock easy songs
--   Leasson Five (Alternative) - Classic easy songs: Here a student must finish at least one on the alternative
-    options to advance in the course, if the student takes 2 o the 3 options it will not count adicional since
-    the idea is to let student choose its learning path and ensure at less was options have been finished and
-    maybe evaluated.
+- Lesson One (Required) - Introduction to floute
+- Lesson Two (Optional) - How to read music: Treble Clef (it is optional because a student may al ready know
+  how to read music)
+- Lesson Tree (Alternative) - POP easy songs
+- Lesson Four (Alternative) - Rock easy songs
+- Leasson Five (Alternative) - Classic easy songs: Here a student must finish at least one on the alternative
+  options to advance in the course, if the student takes 2 o the 3 options it will not count adicional since
+  the idea is to let student choose its learning path and ensure at less was options have been finished and
+  maybe evaluated.
 
 Another example with a Linux course:
 
--   Lesson One (Required) - Bash command line.
--   Lesson Two (Alternative) - Installing software in Debian and derivates with apt.
--   Lesson Tree (Alternative) - Installing software in Fedora and derivates with dnf.
--   Lesson Four (Optional) - Installing software in Arch Linux with pacman.
+- Lesson One (Required) - Bash command line.
+- Lesson Two (Alternative) - Installing software in Debian and derivates with apt.
+- Lesson Tree (Alternative) - Installing software in Fedora and derivates with dnf.
+- Lesson Four (Optional) - Installing software in Arch Linux with pacman.
 
 Here a student must learn at less how to install software in Debian or Fedora and optionally learn how to
 install software in Arch Linux.

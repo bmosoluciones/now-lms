@@ -19,7 +19,7 @@ NOW Learning Management System.
 Gestión del sistema de mensajería.
 """
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
@@ -32,6 +32,7 @@ from datetime import datetime
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, abort, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -54,7 +55,7 @@ TEMPLATE_STANDALONE_REPORT = "learning/mensajes/standalone_report.html"
 msg = Blueprint("msg", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
-def check_course_access(course_code, user):
+def check_course_access(course_code: str, user) -> bool:
     """Check if user has access to course messaging."""
     if user.tipo == "admin":
         return True
@@ -86,7 +87,7 @@ def check_course_access(course_code, user):
     return False
 
 
-def check_thread_access(thread, user):
+def check_thread_access(thread, user) -> bool:
     """Check if user can access a specific thread."""
     if user.tipo == "admin":
         return True
@@ -104,7 +105,7 @@ def check_thread_access(thread, user):
 
 @msg.route("/course/<course_code>/messages")
 @login_required
-def course_messages(course_code):
+def course_messages(course_code: str) -> str | Response:
     """List all message threads for a specific course."""
     if not check_course_access(course_code, current_user):
         return abort(403)
@@ -141,7 +142,7 @@ def course_messages(course_code):
 
 @msg.route("/user/messages")
 @login_required
-def user_messages():
+def user_messages() -> str:
     """List all message threads for the current user across all courses."""
     if current_user.tipo == "student":
         # Students see their own threads
@@ -192,7 +193,7 @@ def user_messages():
 @msg.route("/course/<course_code>/messages/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("student")
-def new_thread(course_code):
+def new_thread(course_code: str) -> str | Response:
     """Create a new message thread."""
     if not check_course_access(course_code, current_user):
         return abort(403)
@@ -235,7 +236,7 @@ def new_thread(course_code):
 
 @msg.route("/thread/<thread_id>")
 @login_required
-def view_thread(thread_id):
+def view_thread(thread_id: int) -> str | Response:
     """View a message thread and its messages."""
     thread = database.session.execute(select(MessageThread).filter_by(id=thread_id)).scalars().first()
     if not thread:
@@ -277,7 +278,7 @@ def view_thread(thread_id):
 
 @msg.route("/thread/<thread_id>/reply", methods=["POST"])
 @login_required
-def reply_to_thread(thread_id):
+def reply_to_thread(thread_id: int) -> str | Response:
     """Reply to a message thread."""
     thread = database.session.execute(select(MessageThread).filter_by(id=thread_id)).scalars().first()
     if not thread:
@@ -310,7 +311,7 @@ def reply_to_thread(thread_id):
 
 @msg.route("/thread/<thread_id>/status/<new_status>")
 @login_required
-def change_thread_status(thread_id, new_status):
+def change_thread_status(thread_id: int, new_status: str) -> Response:
     """Change thread status."""
     thread = database.session.execute(select(MessageThread).filter_by(id=thread_id)).scalars().first()
     if not thread:
@@ -345,7 +346,7 @@ def change_thread_status(thread_id, new_status):
 
 @msg.route("/message/<message_id>/report", methods=["POST"])
 @login_required
-def report_message(message_id):
+def report_message(message_id: int) -> Response:
     """Report a message."""
     message = database.session.execute(select(Message).filter_by(id=message_id)).scalars().first()
     if not message:
@@ -379,7 +380,7 @@ def report_message(message_id):
 @msg.route("/admin/flagged-messages")
 @login_required
 @perfil_requerido("admin")
-def admin_flagged_messages():
+def admin_flagged_messages() -> str:
     """Admin view for flagged messages."""
     # Get all reported messages
     flagged_messages = (
@@ -394,7 +395,7 @@ def admin_flagged_messages():
 @msg.route("/admin/resolve-report/<message_id>", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
-def resolve_report(message_id):
+def resolve_report(message_id: int) -> Response:
     """Mark a reported message as resolved."""
     from flask import jsonify
 
@@ -411,7 +412,7 @@ def resolve_report(message_id):
 
 @msg.route("/message/report/", methods=["GET", "POST"])
 @login_required
-def standalone_report_message():
+def standalone_report_message() -> str | Response:
     """Standalone page for reporting messages."""
     from flask import request
 
@@ -499,13 +500,18 @@ def standalone_report_message():
             return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
 
         # Find the message
-        message = database.session.execute(select(Message).filter_by(id=message_id)).scalars().first()
-        if not message:
+        message_result = database.session.execute(select(Message).filter_by(id=message_id)).scalars().first()
+        if not message_result:
             flash("Mensaje no encontrado.", "error")
             return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
+        message = message_result
 
         # Verify user has access to this message
-        thread = database.session.execute(select(MessageThread).filter_by(id=message.thread_id)).scalars().first()
+        thread_result = database.session.execute(select(MessageThread).filter_by(id=message.thread_id)).scalars().first()
+        if not thread_result:
+            flash("Hilo de conversación no encontrado.", "error")
+            return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
+        thread = thread_result
 
         # Check access permissions
         if current_user.tipo == "student":

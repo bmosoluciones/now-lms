@@ -18,14 +18,14 @@
             <section class="bg-primary text-white py-5">
                 <div class="container py-5">
                     <div class="row align-items-center">
-                        <div class="col-lg-8">
+                        <div class="col-12 col-md-8 col-lg-8 order-2 order-md-1">
                             <div class="hero-content">
                                 <h1 class="display-4 fw-bold mb-4">{{ _('Bienvenido a') }} {{ config.titulo }}</h1>
                                 <p class="lead mb-4">
                                     {{ _('Gracias por visitar nuestra plataforma educativa. Nuestra plataforma está diseñada
                                     para brindar una experiencia de aprendizaje excepcional.') }}
                                 </p>
-                                <div class="d-flex gap-3 flex-wrap">
+                                <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-md-start">
                                     {% if not current_user.is_authenticated %}
                                     <a href="{{ url_for('user.crear_cuenta') }}" class="btn btn-light btn-lg">
                                         <strong>{{ _('Comenzar Ahora') }}</strong>
@@ -50,11 +50,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4 text-center">
+                        <div class="col-12 col-md-4 col-lg-4 text-center order-1 order-md-2 mb-4 mb-md-0">
                             <div class="hero-visual">
                                 <div
                                     class="bg-light bg-opacity-10 rounded-circle mx-auto d-flex align-items-center justify-content-center border border-light border-opacity-25"
-                                    style="width: 250px; height: 250px"
+                                    style="
+                                        width: min(200px, 80vw);
+                                        height: min(200px, 80vw);
+                                        max-width: 250px;
+                                        max-height: 250px;
+                                    "
                                 >
                                     <div class="text-center text-white">
                                         <div class="fs-1 mb-2">📚</div>

@@ -15,15 +15,15 @@
 
 """Admin announcements views."""
 
-# ---------------------------------------------------------------------------------------
-# Standard library
-# ---------------------------------------------------------------------------------------
+
+from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -35,6 +35,11 @@ from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Announcement, dat
 from now_lms.forms import GlobalAnnouncementForm
 from now_lms.logs import log
 
+# ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
+
+
 # Route constants
 ROUTE_ADMIN_ANNOUNCEMENTS_LIST = "admin_announcements.list_announcements"
 
@@ -45,7 +50,7 @@ admin_announcements = Blueprint("admin_announcements", __name__, template_folder
 @login_required
 @perfil_requerido("admin")
 @cache.cached(timeout=60)
-def list_announcements():
+def list_announcements() -> str:
     """Lista de anuncios globales para administradores."""
     consulta = database.paginate(
         database.select(Announcement)
@@ -62,7 +67,7 @@ def list_announcements():
 @admin_announcements.route("/admin/announcements/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def new_announcement():
+def new_announcement() -> str | Response:
     """Formulario para crear un nuevo anuncio global."""
     form = GlobalAnnouncementForm()
 
@@ -88,7 +93,7 @@ def new_announcement():
 @admin_announcements.route("/admin/announcements/<announcement_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def edit_announcement(announcement_id):
+def edit_announcement(announcement_id: int) -> str | Response:
     """Formulario para editar un anuncio global."""
     announcement = database.session.get(Announcement, announcement_id)
     if not announcement or announcement.course_id is not None:
@@ -117,7 +122,7 @@ def edit_announcement(announcement_id):
 @admin_announcements.route("/admin/announcements/<announcement_id>/delete", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
-def delete_announcement(announcement_id):
+def delete_announcement(announcement_id: int) -> Response:
     """Eliminar un anuncio global."""
     announcement = database.session.get(Announcement, announcement_id)
     log.debug(f"Deleting announcement: {announcement_id}")

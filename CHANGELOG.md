@@ -7,7 +7,19 @@ All notable changes to this project will be documented in this file.
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/).
 
 
-## [ 0.0.1-rc01 ]
+## [ 0.0.1-rc02 ] - 2025-09-18
+
+### Changed:
+ - Comprensive themes review.
+ - Improved type hints.
+ - Improved docs.
+
+### Fixed:
+ - HTML Errors.
+
+-------------------
+
+## [ 0.0.1-rc01 ] - 2025-09-13
 
 ### Changed:
  - Updated certificate validation page.

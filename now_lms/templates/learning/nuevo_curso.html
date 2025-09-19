@@ -88,7 +88,8 @@
                             {{ form.auditable }}
                         </div>
                         <p>
-                            {{ _('Un estudiante puede auditar el curso pero no recibir un certificado al final si no cancela el valor del curso.') }}
+                            {{ _('Un estudiante puede auditar el curso pero no recibir un certificado al final si no cancela el
+                            valor del curso.') }}
                         </p>
                     </div>
                     <div class="row g-3">
@@ -101,7 +102,9 @@
                             <label for="fecha_fin" class="form-label">{{ _("Fecha") }} Fin</label>
                             {{ form.fecha_fin }}
                         </div>
-                        <p>{{ _('Si el curso es en tiempo real o con tiempo definido defina las fechas de inicio y fin.') }}</p>
+                        <p>
+                            {{ _('Si el curso es en tiempo real o con tiempo definido defina las fechas de inicio y fin.') }}
+                        </p>
                     </div>
                     <div class="row g-3">
                         <h6>{{ _('Certificación') }}</h6>
@@ -120,7 +123,7 @@
                         <div>
                             <img
                                 src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}"
-                                alt="Portada del {{ _("Curso") }}"
+                                alt="{{ _('Portada del Curso') }}"
                                 height="200"
                                 width="400"
                             />

@@ -39,14 +39,22 @@
                                 </caption>
                                 <thead class="table-light">
                                     <tr>
-                                        <th scope="col" class="fw-semibold"><i class="bi bi-code-slash me-1"></i>{{ _('Código') }}</th>
+                                        <th scope="col" class="fw-semibold">
+                                            <i class="bi bi-code-slash me-1"></i>{{ _('Código') }}
+                                        </th>
                                         <th class="fw-semibold"><i class="bi bi-bookmark me-1"></i>{{ _("Nombre") }}</th>
                                         <th class="fw-semibold text-center">
                                             <i class="bi bi-calendar-event me-1"></i>{{ _("Inicio") }}
                                         </th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-calendar-check me-1"></i>{{ _('Fin') }}</th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-flag me-1"></i>{{ _("Estado") }}</th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-globe me-1"></i>{{ _('Público') }}</th>
+                                        <th class="fw-semibold text-center">
+                                            <i class="bi bi-calendar-check me-1"></i>{{ _('Fin') }}
+                                        </th>
+                                        <th class="fw-semibold text-center">
+                                            <i class="bi bi-flag me-1"></i>{{ _("Estado") }}
+                                        </th>
+                                        <th class="fw-semibold text-center">
+                                            <i class="bi bi-globe me-1"></i>{{ _('Público') }}
+                                        </th>
                                         <th class="fw-semibold text-center">{{ _("Acciones") }}</th>
                                     </tr>
                                 </thead>
@@ -87,18 +95,18 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <div class="btn-group" role="group" aria-label="{{ _("Acciones") }} del curso">
+                                            <div class="btn-group" role="group" aria-label="{{ _('Acciones del curso') }}">
                                                 <a
                                                     href="{{ url_for('course.curso', course_code=item.codigo, inspect=True) }}"
                                                     class="btn btn-sm btn-outline-primary"
-                                                    title=_("Ver curso")
+                                                    title="{{_('Ver curso')}}"
                                                 >
                                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('course.administrar_curso', course_code=item.codigo) }}"
                                                     class="btn btn-sm btn-outline-secondary"
-                                                    title=_("Editar curso")
+                                                    title="{{_('Editar curso')}}"
                                                 >
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>
@@ -118,7 +126,7 @@
                         <h5 class="text-muted mt-3">{{ _('No hay cursos disponibles') }}</h5>
                         <p class="text-muted">{{ _('Usted no ha creado ningún curso todavía.') }}</p>
                         <a href="{{ url_for('course.nuevo_curso') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-lg me-2"></i>{{ _("Crear") }} Primer {{ _("Curso") }}
+                            <i class="bi bi-plus-lg me-2"></i>{{ _('Crear Primer Curso') }}
                         </a>
                     </div>
                 </div>

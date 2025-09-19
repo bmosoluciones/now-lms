@@ -15,12 +15,8 @@
 
 """NOW Learning Management System."""
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
-from __future__ import annotations
 
-# ---------------------------------------------------------------------------------------
-# Standard library
-# ---------------------------------------------------------------------------------------
+from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -29,6 +25,7 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
 from flask_uploads import UploadNotAllowed
 from sqlalchemy.exc import OperationalError
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -42,6 +39,11 @@ from now_lms.forms import AdSenseForm, CheckMailForm, ConfigForm, MailForm, Paya
 from now_lms.i18n import _
 from now_lms.logs import log
 
+# ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
+
+
 # Constants
 SETTING_PERSONALIZACION_ROUTE = "setting.personalizacion"
 SETTING_MAIL_ROUTE = "setting.mail"
@@ -53,7 +55,7 @@ SETTING_MAIL_ROUTE = "setting.mail"
 setting = Blueprint("setting", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
-def invalidar_cache():
+def invalidar_cache() -> bool:
     """
     Invalida comprensivamente todas las entradas de la cache relacionadas con la configuración del sistema.
 
@@ -91,7 +93,7 @@ def invalidar_cache():
         cache.delete("cached_favicon")
 
         # Invalidate PayPal configuration caches
-        from now_lms.vistas.paypal import get_site_currency, check_paypal_enabled
+        from now_lms.vistas.paypal import check_paypal_enabled, get_site_currency
 
         cache.delete_memoized(get_site_currency)
         cache.delete_memoized(check_paypal_enabled)
@@ -111,7 +113,7 @@ def invalidar_cache():
 @setting.route("/setting/theming", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def personalizacion():
+def personalizacion() -> str | Response:
     """Personalizar el sistema."""
     from now_lms.themes import list_themes
 
@@ -175,7 +177,7 @@ def personalizacion():
 @setting.route("/setting/general", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def configuracion():
+def configuracion() -> str | Response:
     """System settings."""
     config = config = database.session.execute(database.select(Configuracion)).first()[0]
     config_mail = database.session.execute(database.select(MailConfig)).first()[0]
@@ -233,7 +235,7 @@ def configuracion():
 @setting.route("/setting/mail", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def mail():
+def mail() -> str | Response:
     """Configuración de Correo Electronico."""
     config = database.session.execute(database.select(MailConfig)).first()[0]
 
@@ -302,7 +304,7 @@ mail_check_message = """
 @setting.route("/setting/mail/verify", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def mail_check():
+def mail_check() -> str | Response:
     """Configuración de Correo Electronico."""
     config = database.session.execute(database.select(MailConfig)).first()[0]
 
@@ -364,7 +366,7 @@ def mail_check():
 @setting.route("/setting/adsense", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def adsense():
+def adsense() -> str | Response:
     """Configuración de anuncios de AdSense."""
     config = database.session.execute(database.select(AdSense)).first()[0]
 
@@ -425,7 +427,7 @@ def adsense():
 
 
 @setting.route("/ads.txt")
-def ads_txt():
+def ads_txt() -> tuple[str, int, dict[str, str]]:
     """Información de ads.txt para anuncios."""
     try:
         config = database.session.execute(database.select(AdSense)).first()[0]
@@ -445,7 +447,7 @@ def ads_txt():
 @setting.route("/setting/mail_check", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def test_mail():
+def test_mail() -> Response:
     """Envia un correo de prueba."""
     return redirect(url_for(SETTING_MAIL_ROUTE))
 
@@ -453,7 +455,7 @@ def test_mail():
 @setting.route("/setting/delete_site_logo")
 @login_required
 @perfil_requerido("admin")
-def elimina_logo():
+def elimina_logo() -> Response:
     """Elimina logo."""
     elimina_logo_perzonalizado()
     return redirect(url_for(SETTING_PERSONALIZACION_ROUTE))
@@ -462,7 +464,7 @@ def elimina_logo():
 @setting.route("/setting/stripe", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def stripe():
+def stripe() -> str:
     """Configuración de Stripe."""
     return render_template("admin/stripe.html")
 
@@ -470,7 +472,7 @@ def stripe():
 @setting.route("/setting/paypal", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def paypal():
+def paypal() -> str | Response:
     """Configuración de Paypal."""
     config = database.session.execute(database.select(PaypalConfig)).first()[0]
     form = PayaplForm(

@@ -15,7 +15,7 @@
 
 """Calendar views for student users."""
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 import calendar as cal
@@ -42,7 +42,7 @@ calendar = Blueprint("calendar", __name__, template_folder=DIRECTORIO_PLANTILLAS
 
 @calendar.route("/user/calendar")
 @login_required
-def calendar_view():
+def calendar_view() -> str:
     """Display the user's calendar with events."""
     # Get current year and month from request, default to current
     now = datetime.now()
@@ -79,7 +79,7 @@ def calendar_view():
     )
 
     # Group events by day
-    events_by_day = {}
+    events_by_day: dict[int, list] = {}
     for event in events:
         day = event.start_time.day
         if day not in events_by_day:
@@ -110,7 +110,7 @@ def calendar_view():
 
 @calendar.route("/user/calendar/event/<event_id>")
 @login_required
-def event_detail(event_id):
+def event_detail(event_id: int) -> str:
     """Display details for a specific event."""
     event = database.session.execute(
         database.select(UserEvent).filter(UserEvent.id == event_id).filter(UserEvent.user_id == current_user.usuario)
@@ -124,7 +124,7 @@ def event_detail(event_id):
 
 @calendar.route("/user/calendar/export.ics")
 @login_required
-def export_ics():
+def export_ics() -> Response:
     """Export user's calendar events as ICS file."""
     # Get all future events for the user
     now = datetime.now()
@@ -149,7 +149,7 @@ def export_ics():
     )
 
 
-def _generate_ics_content(events):
+def _generate_ics_content(events) -> str:
     """Generate ICS calendar content from events."""
     lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//NOW LMS//Calendar//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"]
 
@@ -206,7 +206,7 @@ def _generate_ics_content(events):
     return "\r\n".join(lines)
 
 
-def _escape_ics_text(text):
+def _escape_ics_text(text: str | None) -> str:
     """Escape text for ICS format."""
     if not text:
         return ""
@@ -215,7 +215,7 @@ def _escape_ics_text(text):
 
 @calendar.route("/user/calendar/upcoming")
 @login_required
-def upcoming_events():
+def upcoming_events() -> str:
     """Get upcoming events for dashboard display."""
     now = datetime.now()
     events = (

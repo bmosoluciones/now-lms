@@ -12,16 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 """Definición de formularios."""
-
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
-from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
-
+from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -54,37 +50,37 @@ from now_lms.i18n import _, _l
 # ---------------------------------------------------------------------------------------
 # Choice generation functions for translated SelectField options
 # ---------------------------------------------------------------------------------------
-def get_nivel_choices():
+def get_nivel_choices() -> list[tuple[int, str]]:
     """Return course level choices with proper translations."""
     return [(0, _l("Introductorio")), (1, _l("Principiante")), (2, _l("Intermedio")), (3, _l("Avanzado"))]
 
 
-def get_modalidad_choices():
+def get_modalidad_choices() -> list[tuple[str, str]]:
     """Return course modality choices with proper translations."""
     return [("self_paced", _l("A su propio ritmo")), ("time_based", _l("Con tiempo definido")), ("live", _l("En vivo"))]
 
 
-def get_requerido_choices():
+def get_requerido_choices() -> list[tuple[str, str]]:
     """Return required field choices with proper translations."""
     return [("required", _l("Requerido")), ("optional", _l("Opcional")), ("substitute", _l("Alternativo"))]
 
 
-def get_content_type_choices():
+def get_content_type_choices() -> list[tuple[str, str]]:
     """Return content type choices with proper translations."""
     return [("course", _l("Curso")), ("masterclass", _l("Clase Magistral"))]
 
 
-def get_question_type_choices():
+def get_question_type_choices() -> list[tuple[str, str]]:
     """Return question type choices with proper translations."""
     return [("multiple", _l("Opción múltiple")), ("boolean", _l("Verdadero/Falso"))]
 
 
-def get_discount_type_choices():
+def get_discount_type_choices() -> list[tuple[str, str]]:
     """Return discount type choices with proper translations."""
     return [("percentage", _l("Porcentaje")), ("fixed", _l("Cantidad Fija"))]
 
 
-def get_estado_choices():
+def get_estado_choices() -> list[tuple[str, str]]:
     """Return status choices with proper translations."""
     return [
         ("draft", _l("Borrador")),
@@ -93,7 +89,7 @@ def get_estado_choices():
     ]
 
 
-def get_blog_status_choices():
+def get_blog_status_choices() -> list[tuple[str, str]]:
     """Return blog status choices with proper translations."""
     return [
         ("draft", _l("Borrador")),
@@ -103,7 +99,7 @@ def get_blog_status_choices():
     ]
 
 
-def get_resource_type_choices():
+def get_resource_type_choices() -> list[tuple[str, str]]:
     """Return resource type choices with proper translations."""
     return [
         ("cheat_sheet", _l("Hoja de Guía")),
@@ -113,7 +109,7 @@ def get_resource_type_choices():
     ]
 
 
-def get_genero_choices():
+def get_genero_choices() -> list[tuple[str, str]]:
     """Return gender choices with proper translations."""
     return [
         ("none", _l("No especificado")),
@@ -123,7 +119,7 @@ def get_genero_choices():
     ]
 
 
-def get_titulo_choices():
+def get_titulo_choices() -> list[tuple[str, str]]:
     """Return title choices with proper translations."""
     return [
         ("", _l("No especificado")),
@@ -133,7 +129,7 @@ def get_titulo_choices():
     ]
 
 
-def get_certificate_type_choices():
+def get_certificate_type_choices() -> list[tuple[str, str]]:
     """Return certificate type choices with proper translations."""
     return [
         ("course", _l("Curso")),
@@ -141,7 +137,7 @@ def get_certificate_type_choices():
     ]
 
 
-def get_monedas_choices():
+def get_monedas_choices() -> list[tuple[str, str]]:
     """Return currency choices with proper translations."""
     return [
         # América del Norte
@@ -199,7 +195,7 @@ def get_monedas_choices():
     ]
 
 
-def get_zonas_horarias_choices():
+def get_zonas_horarias_choices() -> list[tuple[str, str]]:
     """Return timezone choices."""
     return [
         # UTC
@@ -250,7 +246,7 @@ def get_zonas_horarias_choices():
     ]
 
 
-def get_plataforma_choices():
+def get_plataforma_choices() -> list[tuple[str, str]]:
     """Return platform choices with proper translations."""
     return [
         ("none", _l("Seleccione")),
@@ -268,7 +264,7 @@ def get_plataforma_choices():
     ]
 
 
-def get_slideshow_theme_choices():
+def get_slideshow_theme_choices() -> list[tuple[str, str]]:
     """Return slideshow theme choices with proper translations."""
     return [
         ("beige", "Beige"),
@@ -287,7 +283,7 @@ def get_slideshow_theme_choices():
     ]
 
 
-def get_reveal_theme_choices():
+def get_reveal_theme_choices() -> list[tuple[str, str]]:
     """Return reveal.js theme choices."""
     return [
         ("black", "Black"),
@@ -306,6 +302,9 @@ def get_reveal_theme_choices():
 LABEL_TITULO: str = _("Título")
 
 
+# ---------------------------------------------------------------------------------------
+# Forms definitions
+# ---------------------------------------------------------------------------------------
 class ConfigForm(FlaskForm):
     """Formulario para editar la configuración del sistema."""
 

@@ -17,7 +17,10 @@
             <div class="container px-0 py-3" id="curse_list">
                 <div class="row align-items-center border-bottom pb-3 mb-4">
                     <div class="col-md-8">
-                        <h4 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>{{ _('Lista de') }} {{ _("Recursos") }} {{ _('Disponibles') }}</h4>
+                        <h4 class="mb-0">
+                            <i class="bi bi-file-earmark-text me-2"></i>{{ _('Lista de') }} {{ _("Recursos") }} {{
+                            _('Disponibles') }}
+                        </h4>
                         <p class="text-muted mb-0">{{ _('Gestiona y administra tus recursos de aprendizaje') }}</p>
                     </div>
                     <div class="col-md-4 text-end">
@@ -39,9 +42,13 @@
                                 </caption>
                                 <thead class="table-light">
                                     <tr>
-                                        <th scope="col" class="fw-semibold"><i class="bi bi-code-slash me-1"></i>{{ _('Código') }}</th>
+                                        <th scope="col" class="fw-semibold">
+                                            <i class="bi bi-code-slash me-1"></i>{{ _('Código') }}
+                                        </th>
                                         <th class="fw-semibold"><i class="bi bi-bookmark me-1"></i>{{ _("Nombre") }}</th>
-                                        <th class="fw-semibold text-center"><i class="bi bi-globe me-1"></i>{{ _('Público') }}</th>
+                                        <th class="fw-semibold text-center">
+                                            <i class="bi bi-globe me-1"></i>{{ _('Público') }}
+                                        </th>
                                         <th class="fw-semibold text-center">
                                             <i class="bi bi-currency-dollar me-1"></i>{{ _("Precio") }}
                                         </th>
@@ -73,29 +80,29 @@
                                             {% if item.precio and item.precio > 0 %}
                                             <span class="fw-medium text-success">${{ item.precio }}</span>
                                             {% else %}
-                                            <span class="text-muted">{{ _("Gratis") }}</span>
+                                            <span class="text-muted">{{ _('Gratis') }}</span>
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <div class="btn-group" role="group" aria-label="{{ _("Acciones") }} del recurso">
+                                            <div class="btn-group" role="group" aria-label="{{ _('Acciones del recurso') }}">
                                                 <a
                                                     href="{{ url_for('resource.vista_recurso', resource_code=item.codigo) }}"
                                                     class="btn btn-sm btn-outline-primary"
-                                                    title=_("Ver recurso")
+                                                    title="{{ _('Ver recurso') }}"
                                                 >
                                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('resource.edit_resource', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-secondary"
-                                                    title=_("Editar recurso")
+                                                    title="{{_('Editar recurso')}}"
                                                 >
                                                     <i class="bi bi-pencil" aria-hidden="true"></i>
                                                 </a>
                                                 <a
                                                     href="{{ url_for('resource.delete_resource', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-danger"
-                                                    title=_("Eliminar recurso")
+                                                    title="{{_('Eliminar recurso')}}"
                                                     onclick="return confirm('{{ _('¿Está seguro de que desea eliminar este recurso?') }}')"
                                                 >
                                                     <i class="bi bi-trash" aria-hidden="true"></i>

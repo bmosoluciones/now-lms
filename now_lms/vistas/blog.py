@@ -14,7 +14,7 @@
 
 """Blog views."""
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 import re
@@ -27,9 +27,10 @@ from datetime import datetime, timezone
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from flask import Blueprint, abort, flash, redirect, render_template, request, url_for, jsonify
+from flask import Blueprint, abort, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import and_, func, or_
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -47,14 +48,14 @@ ROUTE_BLOG_ADMIN_INDEX = "blog.admin_blog_index"
 blog = Blueprint("blog", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
-def create_slug(title):
+def create_slug(title: str) -> str:
     """Create a URL-friendly slug from title."""
     slug = re.sub(r"[^\w\s-]", "", title.lower())
     slug = re.sub(r"[-\s]+", "-", slug)
     return slug.strip("-")
 
 
-def ensure_unique_slug(title, post_id=None):
+def ensure_unique_slug(title: str, post_id: int | None = None) -> str:
     """Ensure slug is unique by appending number if needed."""
     base_slug = create_slug(title)
     slug = base_slug
@@ -76,7 +77,7 @@ def ensure_unique_slug(title, post_id=None):
 
 # Public blog routes
 @blog.route("/blog")
-def blog_index():
+def blog_index() -> str:
     """Public blog index page."""
     page = request.args.get("page", 1, type=int)
     tag_slug = request.args.get("tag")
@@ -115,7 +116,7 @@ def blog_index():
 
 
 @blog.route("/blog/<slug>")
-def blog_post(slug):
+def blog_post(slug: str) -> str:
     """Display a single blog post."""
     post = database.session.execute(
         database.select(BlogPost).filter(and_(BlogPost.slug == slug, BlogPost.status == "published"))
@@ -141,8 +142,9 @@ def blog_post(slug):
 
 
 @blog.route("/blog/count_view/<post_id>", methods=["POST"])
-def count_view(post_id):
+def count_view(post_id: int) -> tuple[Response, int]:
     """Increment view count for a blog post."""
+
     post = database.session.get(BlogPost, post_id)
     if not post or post.status != "published":
         return jsonify({"status": "error", "message": "Post not found"}), 404
@@ -151,12 +153,12 @@ def count_view(post_id):
     post.view_count = (post.view_count or 0) + 1
     database.session.commit()
 
-    return jsonify({"status": "ok", "view_count": post.view_count})
+    return jsonify({"status": "ok", "view_count": post.view_count}), 200
 
 
 @blog.route("/blog/<slug>/comments", methods=["POST"])
 @login_required
-def add_comment(slug):
+def add_comment(slug: str) -> Response:
     """Add a comment to a blog post."""
     post = database.session.execute(
         database.select(BlogPost).filter(and_(BlogPost.slug == slug, BlogPost.status == "published"))
@@ -193,7 +195,7 @@ def add_comment(slug):
 
 @blog.route("/blog/comments/<comment_id>/flag", methods=["POST"])
 @login_required
-def flag_comment(comment_id):
+def flag_comment(comment_id: int) -> Response:
     """Flag a comment as inappropriate."""
     comment = database.session.get(BlogComment, comment_id)
     if not comment:
@@ -210,7 +212,7 @@ def flag_comment(comment_id):
 @blog.route("/admin/blog")
 @login_required
 @perfil_requerido("admin")
-def admin_blog_index():
+def admin_blog_index() -> str:
     """Admin blog management index."""
     page = request.args.get("page", 1, type=int)
     status_filter = request.args.get("status", "all")
@@ -237,7 +239,7 @@ def admin_blog_index():
 @blog.route("/admin/blog/posts/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def admin_create_post():
+def admin_create_post() -> str | Response:
     """Create a new blog post."""
     form = BlogPostForm()
 
@@ -297,7 +299,7 @@ def admin_create_post():
 @blog.route("/admin/blog/posts/<post_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def admin_edit_post(post_id):
+def admin_edit_post(post_id: int) -> str | Response:
     """Edit a blog post."""
     post = database.session.get(BlogPost, post_id)
     if not post:
@@ -365,7 +367,7 @@ def admin_edit_post(post_id):
 @blog.route("/admin/blog/posts/<post_id>/approve", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
-def approve_post(post_id):
+def approve_post(post_id: int) -> Response:
     """Approve a pending blog post."""
     post = database.session.get(BlogPost, post_id)
     if not post:
@@ -382,7 +384,7 @@ def approve_post(post_id):
 @blog.route("/admin/blog/posts/<post_id>/ban", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
-def ban_post(post_id):
+def ban_post(post_id: int) -> Response:
     """Ban a blog post."""
     post = database.session.get(BlogPost, post_id)
     if not post:
@@ -399,7 +401,7 @@ def ban_post(post_id):
 @blog.route("/admin/blog/tags")
 @login_required
 @perfil_requerido("admin")
-def admin_tags():
+def admin_tags() -> str:
     """Manage blog tags."""
     page = request.args.get("page", 1, type=int)
 
@@ -418,7 +420,7 @@ def admin_tags():
 @blog.route("/admin/blog/tags", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
-def create_tag():
+def create_tag() -> str | Response:
     """Create a new blog tag."""
     form = BlogTagForm()
 
@@ -446,7 +448,7 @@ def create_tag():
 @blog.route("/admin/blog/tags/<tag_id>", methods=["DELETE"])
 @login_required
 @perfil_requerido("admin")
-def delete_tag(tag_id):
+def delete_tag(tag_id: int) -> Response:
     """Delete a blog tag."""
     tag = database.session.get(BlogTag, tag_id)
     if not tag:
@@ -463,7 +465,7 @@ def delete_tag(tag_id):
 @blog.route("/admin/blog/comments/<comment_id>/ban", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
-def ban_comment(comment_id):
+def ban_comment(comment_id: str) -> str | Response:
     """Ban a comment."""
     comment = database.session.get(BlogComment, comment_id)
     if not comment:
@@ -491,7 +493,7 @@ def ban_comment(comment_id):
 @blog.route("/admin/blog/comments/<comment_id>", methods=["DELETE"])
 @login_required
 @perfil_requerido("admin")
-def delete_comment(comment_id):
+def delete_comment(comment_id: str) -> str | Response:
     """Delete a comment."""
     comment = database.session.get(BlogComment, comment_id)
     if not comment:
@@ -520,7 +522,7 @@ def delete_comment(comment_id):
 @blog.route("/instructor/blog")
 @login_required
 @perfil_requerido("instructor")
-def instructor_blog_index():
+def instructor_blog_index() -> str:
     """Instructor blog management index."""
     page = request.args.get("page", 1, type=int)
 

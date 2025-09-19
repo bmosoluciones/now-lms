@@ -56,43 +56,55 @@
 
     /* Custom Navbar Styling */
     .navbar-ocean {
-        background: linear-gradient(90deg, var(--ocean-primary) 0%, var(--ocean-deep) 100%) !important;
-        box-shadow: 0 4px 8px rgba(0, 95, 115, 0.3);
-        border-bottom: 3px solid var(--ocean-accent);
-        padding: 0.75rem 0;
+        background: white !important;
+        box-shadow: 0 2px 8px rgba(0, 95, 115, 0.1);
+        border-bottom: 1px solid #e9ecef;
+        padding: 1rem 0;
         position: relative;
         z-index: 1030;
     }
 
-    .navbar-ocean .navbar-brand,
-    .navbar-ocean .nav-link {
-        color: white !important;
-        font-weight: 600;
+    .navbar-ocean .navbar-brand {
+        color: var(--ocean-primary) !important;
+        font-weight: 700;
         font-family: "Merriweather", serif;
         transition: all 0.3s ease;
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
         text-decoration: none;
     }
 
-    .navbar-ocean .navbar-brand {
-        font-size: 1.5rem;
-        font-weight: 700;
+    .navbar-ocean .nav-link {
+        color: var(--ocean-text) !important;
+        font-weight: 500;
+        font-family: "Open Sans", sans-serif;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        padding: 0.5rem 1rem !important;
     }
 
     .navbar-ocean .nav-link:hover {
-        color: var(--ocean-accent) !important;
-        background-color: rgba(255, 255, 255, 0.15);
+        color: var(--ocean-primary) !important;
+        background-color: rgba(148, 210, 189, 0.1);
         border-radius: 6px;
-        transform: translateY(-1px);
     }
 
     .navbar-ocean .navbar-toggler {
-        border-color: rgba(255, 255, 255, 0.3);
+        border-color: rgba(0, 95, 115, 0.3);
         padding: 0.5rem;
     }
 
     .navbar-ocean .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 95, 115, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    /* Ocean Logo Styling */
+    .ocean-logo {
+        display: inline-block;
+        animation: gentle-wave 3s ease-in-out infinite;
+    }
+
+    @keyframes gentle-wave {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-2px); }
     }
 
     /* Remove all icons from navbar */
@@ -111,24 +123,25 @@
 
     /* Custom Button Styles */
     .btn-ocean-primary {
-        background: linear-gradient(45deg, var(--ocean-primary), var(--ocean-accent));
+        background: linear-gradient(45deg, var(--ocean-info), var(--ocean-primary));
         border: 2px solid var(--ocean-primary);
         color: white;
-        border-radius: 8px;
-        padding: 0.7rem 1.5rem;
+        border-radius: 25px;
+        padding: 0.6rem 1.5rem;
         font-weight: 600;
-        font-family: "Merriweather", serif;
+        font-family: "Open Sans", sans-serif;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(0, 95, 115, 0.3);
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 12px rgba(33, 158, 188, 0.3);
+        text-decoration: none;
     }
 
     .btn-ocean-primary:hover {
-        background: linear-gradient(45deg, var(--ocean-accent), var(--ocean-primary));
-        border-color: var(--ocean-accent);
+        background: linear-gradient(45deg, var(--ocean-primary), var(--ocean-info));
+        border-color: var(--ocean-info);
         color: white;
         transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0, 95, 115, 0.4);
+        box-shadow: 0 6px 16px rgba(33, 158, 188, 0.4);
+        text-decoration: none;
     }
 
     .btn-ocean-secondary {

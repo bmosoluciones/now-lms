@@ -106,7 +106,7 @@ class TestPayPalHelpers:
         """Helper method to login as student."""
         # Logout any existing user first to ensure clean state
         test_client.get("/user/logout")
-        
+
         # Use existing student from session fixtures
         login_data = {"usuario": "student", "acceso": "student"}
         login_response = test_client.post("/user/login", data=login_data, follow_redirects=True)
@@ -117,7 +117,7 @@ class TestPayPalHelpers:
         """Helper method to login as admin."""
         # Logout any existing user first to ensure clean state
         test_client.get("/user/logout")
-        
+
         # Use existing admin from session fixtures
         login_data = {"usuario": "lms-admin", "acceso": "lms-admin"}
         login_response = test_client.post("/user/login", data=login_data, follow_redirects=True)
@@ -209,7 +209,7 @@ class TestPayPalPaymentPageRoute(TestPayPalHelpers):
         with session_full_db_setup.app_context():
             # Logout any existing user first to ensure clean state
             test_client.get("/user/logout")
-            
+
             # Login by posting to the login endpoint
             login_data = {"usuario": "student", "acceso": "student"}
             login_response = test_client.post("/user/login", data=login_data, follow_redirects=True)

@@ -1,8 +1,6 @@
 """User groups management for NOW LMS."""
 
-# ---------------------------------------------------------------------------------------
-# Standard library
-# ---------------------------------------------------------------------------------------
+from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -10,6 +8,7 @@
 from flask import Blueprint, flash, redirect, render_template, request
 from flask_login import login_required
 from sqlalchemy.exc import OperationalError
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -19,13 +18,18 @@ from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import UsuarioGrupo, database
 from now_lms.forms import GrupoForm
 
+# ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
+
+
 group = Blueprint("group", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
 @group.route("/group/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def nuevo_grupo():
+def nuevo_grupo() -> str | Response:
     """Formulario para crear un nuevo grupo."""
     form = GrupoForm()
     if form.validate_on_submit() or request.method == "POST":

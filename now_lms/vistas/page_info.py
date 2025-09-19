@@ -15,7 +15,7 @@
 
 """Page info view - development information page."""
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 import os
@@ -24,6 +24,7 @@ import os
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, current_app, redirect, render_template
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -36,7 +37,7 @@ page_info = Blueprint("page_info", __name__, template_folder=DIRECTORIO_PLANTILL
 
 
 @page_info.route("/page_info")
-def page_info_view():
+def page_info_view() -> str | Response:
     """Display development information page - only available when CI environment variable is set."""
     # Check if CI environment variable is set using the same logic as config
     ci_value = os.environ.get("CI", "").strip().lower()
@@ -58,7 +59,7 @@ def page_info_view():
                 {
                     "endpoint": rule.endpoint,
                     "rule": str(rule),
-                    "methods": sorted(list(rule.methods - {"HEAD", "OPTIONS"})),
+                    "methods": sorted((rule.methods or set()) - {"HEAD", "OPTIONS"}),
                 }
             )
     routes.sort(key=lambda x: x["rule"])

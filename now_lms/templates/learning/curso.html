@@ -110,9 +110,11 @@ permitir_docente %}
                                 {{ _('Auditar contenido del curso') }}
                             </a>
                             <p class="small text-muted">
-                                {{ _('Puede acceder al contenido del curso pero no podrá resolver las evaluaciones u obtener un certificado al finalizar.') }}
+                                {{ _('Puede acceder al contenido del curso pero no podrá resolver las evaluaciones u obtener un
+                                certificado al finalizar.') }}
                                 <br />
-                                {{ _('Puede pagar el valor del curso antes de finalizarlo y acceder a las evaluaciones y la certificación.') }}
+                                {{ _('Puede pagar el valor del curso antes de finalizarlo y acceder a las evaluaciones y la
+                                certificación.') }}
                             </p>
                             {% endif %}
                             <a href="{{ url_for('paypal.payment_page', course_code=curso.codigo) }}" class="btn btn-primary">
@@ -313,7 +315,8 @@ permitir_docente %}
                                                     >
                                                     {% else %}
                                                     <span class="badge bg-danger"
-                                                        >{{ _('No Aprobado') }} ({{ "%.1f"|format(best_attempt.score) }}%)</span
+                                                        >{{ _('No Aprobado') }} ({{ "%.1f"|format(best_attempt.score)
+                                                        }}%)</span
                                                     >
 
                                                     {# Show request reopen option if applicable #} {% if eval.max_attempts and
@@ -323,12 +326,14 @@ permitir_docente %}
                                                     req.status == 'pending' %} {% set pending_request = true %} {% endif %} {%
                                                     endfor %} {% endif %} {% if curso.modalidad == 'self_paced' %} {% if
                                                     pending_request %}
-                                                    <br /><small class="text-muted">{{ _('Solicitud de reapertura pendiente') }}</small>
+                                                    <br /><small class="text-muted"
+                                                        >{{ _('Solicitud de reapertura pendiente') }}</small
+                                                    >
                                                     {% else %}
                                                     <br /><a
                                                         href="{{ url_for('evaluation.request_reopen', evaluation_id=eval.id) }}"
                                                         class="btn btn-sm btn-outline-warning"
-                                                        >{{ _('Solicitar nuevo intento') }}
+                                                        >{{ _('Solicitar nuevo intento') }}</a
                                                     >
                                                     {% endif %} {% endif %} {% endif %} {% endif %} {% else %}
                                                     <span class="badge bg-secondary">{{ _('Pendiente') }}</span>

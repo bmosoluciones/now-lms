@@ -1,9 +1,15 @@
 # Setup NOW Learning Management System in EL9
 
-Update: 2025-05-24
+Update: 2025-01-14
 Host: Rocky Linux 9.3
 
+!!! info "Comprehensive Server Administration Guide"
+For complete server administration best practices including security hardening, monitoring, backup strategies, and enterprise compliance, see the **[RHEL/Alma/Rocky/Fedora Server Administration Guide](server-admin-rhel.md)**.
+
+This document provides a quick setup guide for NOW-LMS on EL9 systems. For production environments, we strongly recommend following the comprehensive server administration practices.
+
 ## Update your server
+
 Keep your server up to date:
 
 ```
@@ -11,6 +17,7 @@ dnf update -y
 ```
 
 ## Enable the web console
+
 With Cockpit you can administer the server with out a SSH daemon.
 
 ```
@@ -22,6 +29,7 @@ sudo firewall-cmd --add-service=cockpit --permanent
 ```
 
 ## Create a sudo user
+
 Do not use the `root` user:
 
 ```
@@ -33,6 +41,7 @@ usermod -aG wheel serveradmin
 Now you can admin your server from the web console and there is no need of the SSH daemon, be sure you can loggin with the sudo user at: `your_ip:9090`
 
 ## Secure the server
+
 Block access to the `root` user:
 
 ```
@@ -44,7 +53,6 @@ systemctl restart sshd
 
 Or disable the SSHD service and use the web console to admin the server [recomended]
 
-
 ```
 systemctl disable --now sshd
 ```
@@ -52,6 +60,7 @@ systemctl disable --now sshd
 Only disable the SSHD server after you have logedin in the web console and verified you can perform administrative tasks.
 
 ## Install the Caddy Server:
+
 Nginx is another good option:
 
 ```
@@ -60,7 +69,6 @@ sudo dnf install -y caddy
 sudo firewall-cmd --permanent --zone=public --add-service=http
 sudo firewall-cmd --permanent --zone=public --add-service=https
 ```
-
 
 ### Configure the Caddy Server:
 
@@ -71,6 +79,7 @@ vi /etc/caddy/Caddyfile
 ```
 
 Set the Caddy Server to act as a reverse proxy:
+
 ```
 :443 {
     reverse_proxy localhost:8080
@@ -84,14 +93,17 @@ systemctl enable --now caddy
 ```
 
 ## Install NOW - Learning Management System
+
 Install NOW - LMS
 
 ### Install system requirements
+
 ```
 dnf install -y npm pango python3.12 python3.12-pip python3.12-cryptography git
 ```
 
 ### Create a virtual enviroment and install now-lms
+
 Do not create the virtual enviroment using `root` or `sudo`:
 
 ```
@@ -113,7 +125,8 @@ pip install mysqlclient
 ```
 
 ### Create a start script
-Create a run script file to start your system_
+
+Create a run script file to start your system\_
 
 ```
 cd
@@ -122,6 +135,7 @@ vi run.py
 ```
 
 Use this template
+
 ```
 #! /home/serveradmin/venv/bin/python
 from waitress import serve
@@ -137,6 +151,7 @@ if init_app():
 ```
 
 ### Test your run scritp and setup ypur system
+
 Create the database and the `admin` user with:
 
 ```
@@ -144,6 +159,7 @@ ADMIN_USER=adminuser ADMIN_PSWD=passSECURE123+ /home/serveradmin/run.py
 ```
 
 This command will:
+
 1. Setup a new database for the system
 2. Create the user administrator
 3. Start the WSGI server

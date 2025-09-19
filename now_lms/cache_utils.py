@@ -15,7 +15,7 @@
 
 """Utilidades de inicialización de cache en memoria."""
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
@@ -53,7 +53,7 @@ def get_memory_cache_config() -> dict[str, object]:
 
     # First try: /dev/shm (Linux tmpfs in memory)
     try:
-        cache_dir = "/dev/shm/now_lms_cache"
+        cache_dir = "/dev/shm/now_lms_cache"  # nosec B108 - Intentional use of /dev/shm for memory-based cache
         if not os.path.exists(cache_dir):
             os.makedirs(cache_dir, mode=0o700, exist_ok=True)
 
@@ -64,7 +64,7 @@ def get_memory_cache_config() -> dict[str, object]:
 
         log.info(f"Using memory cache directory: {cache_dir}")
 
-    except (OSError, PermissionError, FileNotFoundError) as e:
+    except OSError as e:
         log.debug(f"Cannot use /dev/shm for cache: {e}")
         cache_dir = None
 
@@ -81,7 +81,7 @@ def get_memory_cache_config() -> dict[str, object]:
 
             log.info(f"Using temp cache directory: {cache_dir}")
 
-        except (OSError, PermissionError, FileNotFoundError) as e:
+        except OSError as e:
             log.warning(f"Cannot use temp directory for cache: {e}")
             cache_dir = None
 
@@ -108,10 +108,10 @@ def init_cache(app: Flask) -> None:
     Args:
         app: Flask application instance
     """
-    from now_lms.cache import cache
-
     # Get existing cache configuration from environment variables
     from os import environ
+
+    from now_lms.cache import cache
 
     # Check for external cache services first (Redis, Memcached)
     cache_config: dict[str, object]

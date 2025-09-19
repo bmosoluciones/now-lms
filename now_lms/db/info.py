@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 """System information utilities for NOW LMS."""
 
-import platform
+from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
+import platform
 from types import SimpleNamespace
 from typing import TYPE_CHECKING, Union
 
@@ -135,7 +135,7 @@ def lms_info() -> SimpleNamespace:
     )
 
 
-def _obtener_info_sistema():
+def _obtener_info_sistema() -> SimpleNamespace:
     info = SimpleNamespace(
         _system=platform.system(),
         _system_version=platform.version(),

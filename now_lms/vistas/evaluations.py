@@ -19,7 +19,7 @@ NOW Learning Management System.
 Evaluations management.
 """
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
@@ -34,6 +34,7 @@ from datetime import datetime
 from flask import Blueprint, abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import func
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -76,7 +77,7 @@ NO_AUTHORIZED_MSG = "No se encuentra autorizado a acceder al recurso solicitado.
 evaluation = Blueprint("evaluation", __name__)
 
 
-def can_user_access_evaluation(evaluation_obj, user):
+def can_user_access_evaluation(evaluation_obj, user) -> bool:
     """Check if user can access evaluation based on course payment status."""
     # Get the course from the section
     section = database.session.get(CursoSeccion, evaluation_obj.section_id)
@@ -111,21 +112,21 @@ def can_user_access_evaluation(evaluation_obj, user):
     return True
 
 
-def is_evaluation_available(evaluation_obj):
+def is_evaluation_available(evaluation_obj) -> bool:
     """Check if evaluation is currently available."""
     if evaluation_obj.available_until:
         return datetime.now() <= evaluation_obj.available_until
     return True
 
 
-def get_user_attempts_count(evaluation_id, user_id):
+def get_user_attempts_count(evaluation_id: int, user_id: str) -> int:
     """Get the number of attempts a user has made for an evaluation."""
     return database.session.execute(
         database.select(func.count(EvaluationAttempt.id)).filter_by(evaluation_id=evaluation_id, user_id=user_id)
     ).scalar()
 
 
-def can_user_attempt_evaluation(evaluation_obj, user):
+def can_user_attempt_evaluation(evaluation_obj, user) -> bool:
     """Check if user can attempt the evaluation."""
     if not can_user_access_evaluation(evaluation_obj, user):
         return False
@@ -141,7 +142,7 @@ def can_user_attempt_evaluation(evaluation_obj, user):
     return True
 
 
-def calculate_score(attempt):
+def calculate_score(attempt) -> float:
     """Calculate the score for an evaluation attempt."""
     total_questions = len(attempt.evaluation.questions)
     if total_questions == 0:
@@ -175,7 +176,7 @@ def calculate_score(attempt):
 @evaluation.route("/evaluation/<evaluation_id>/take", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("student")
-def take_evaluation(evaluation_id):
+def take_evaluation(evaluation_id: int) -> str | Response:
     """Take an evaluation."""
     eval_obj = database.session.get(Evaluation, evaluation_id)
     if not eval_obj:
@@ -238,8 +239,8 @@ def take_evaluation(evaluation_id):
         if attempt.passed:
             section = database.session.get(CursoSeccion, eval_obj.section_id)
             if section:
-                from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
                 from now_lms.vistas.courses import _emitir_certificado
+                from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
 
                 can_receive, _ = can_user_receive_certificate(section.curso, current_user.usuario)
                 if can_receive:
@@ -262,7 +263,7 @@ def take_evaluation(evaluation_id):
 @evaluation.route("/evaluation/attempt/<attempt_id>/result")
 @login_required
 @perfil_requerido("student")
-def evaluation_result(attempt_id):
+def evaluation_result(attempt_id: int) -> str:
     """Show evaluation attempt result."""
     attempt = database.session.get(EvaluationAttempt, attempt_id)
     if not attempt:
@@ -278,7 +279,7 @@ def evaluation_result(attempt_id):
 @evaluation.route("/evaluation/<evaluation_id>/request-reopen", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("student")
-def request_reopen(evaluation_id):
+def request_reopen(evaluation_id: int) -> str | Response:
     """Request to reopen an evaluation."""
     eval_obj = database.session.get(Evaluation, evaluation_id)
     if not eval_obj:

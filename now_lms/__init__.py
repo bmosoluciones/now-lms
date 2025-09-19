@@ -29,7 +29,7 @@ Visit http://127.0.0.1:8080/ in your browser, default user and password are lms-
 
 """
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
@@ -72,7 +72,6 @@ from now_lms.config import (
 )
 from now_lms.db import Configuracion, Usuario, database
 from now_lms.db.info import app_info, course_info, lms_info
-from now_lms.i18n import _
 from now_lms.db.initial_data import (
     asignar_cursos_a_categoria,
     asignar_cursos_a_etiquetas,
@@ -127,23 +126,24 @@ from now_lms.db.tools import (
     verifica_moderador_asignado_a_curso,
     verificar_avance_recurso,
 )
+from now_lms.i18n import _
 from now_lms.logs import log
 from now_lms.misc import (
     ESTILO_ALERTAS,
     ICONOS_RECURSOS,
     INICIO_SESION,
-    limpiar_html,
     concatenar_parametros_a_url,
+    limpiar_html,
     markdown_to_clean_html,
 )
 from now_lms.themes import current_theme
 from now_lms.version import CODE_NAME, VERSION
 from now_lms.vistas._helpers import (
+    favicon_personalizado,
     get_current_course_logo,
     get_site_favicon,
     get_site_logo,
     logo_personalizado,
-    favicon_personalizado,
 )
 from now_lms.vistas.announcements.admin import admin_announcements
 from now_lms.vistas.announcements.instructor import instructor_announcements
@@ -195,7 +195,7 @@ _mail_instance = mail
 # ---------------------------------------------------------------------------------------
 # Funciones auxiliares para inicializar la aplicación principal.
 # ---------------------------------------------------------------------------------------
-def inicializa_extenciones_terceros(flask_app: Flask):
+def inicializa_extenciones_terceros(flask_app: Flask) -> None:
     """Inicia extensiones de terceros."""
     log.trace("Starting third-party extensions")
     with flask_app.app_context():
@@ -219,7 +219,8 @@ def inicializa_extenciones_terceros(flask_app: Flask):
         _mail_instance.init_app(flask_app)
         flask_app.config["BABEL_DEFAULT_LOCALE"] = "es"
         # Use absolute path for translations directory
-        from os.path import dirname, join as path_join
+        from os.path import dirname
+        from os.path import join as path_join
 
         translations_dir = path_join(dirname(__file__), "translations")
         flask_app.config["BABEL_TRANSLATION_DIRECTORIES"] = translations_dir
@@ -497,7 +498,7 @@ def create_app(app_name="now_lms", testing=False, config_overrides=None):
             from flask_debugtoolbar import DebugToolbarExtension
 
             toolbar = DebugToolbarExtension()
-        except (ImportError, ModuleNotFoundError):
+        except ImportError:
             log.trace("Flask Debug Toolbar not installed, skipping.")
             toolbar = None
 

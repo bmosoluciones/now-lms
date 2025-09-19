@@ -19,13 +19,8 @@ NOW Learning Management System.
 Gestión de certificados.
 """
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
-
-# ---------------------------------------------------------------------------------------
-# Standard library
-# ---------------------------------------------------------------------------------------
-
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -33,6 +28,7 @@ from __future__ import annotations
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required
 from sqlalchemy.exc import OperationalError
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -42,6 +38,11 @@ from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Categoria, database
 from now_lms.db.tools import cursos_por_categoria, programas_por_categoria
 from now_lms.forms import CategoriaForm
+
+# ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
+
 
 # Route constants
 ROUTE_CATEGORY_CATEGORIES = "category.categories"
@@ -56,7 +57,7 @@ category = Blueprint("category", __name__, template_folder=DIRECTORIO_PLANTILLAS
 @category.route("/category/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def new_category():
+def new_category() -> str | Response:
     """Nueva Categoria."""
     form = CategoriaForm()
     if form.validate_on_submit() or request.method == "POST":
@@ -78,7 +79,7 @@ def new_category():
 @category.route("/category/list")
 @login_required
 @perfil_requerido("instructor")
-def categories():
+def categories() -> str:
     """Lista de categorias."""
     categorias = database.paginate(
         database.select(Categoria),  # noqa: E712
@@ -97,7 +98,7 @@ def categories():
 @category.route("/category/<ulid>/delete")
 @login_required
 @perfil_requerido("instructor")
-def delete_category(ulid: str):
+def delete_category(ulid: str) -> Response:
     """Elimina categoria."""
     from sqlalchemy import delete
 
@@ -109,7 +110,7 @@ def delete_category(ulid: str):
 @category.route("/category/<ulid>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
-def edit_category(ulid: str):
+def edit_category(ulid: str) -> str | Response:
     """Editar categoria."""
     categoria = database.session.execute(database.select(Categoria).filter(Categoria.id == ulid)).scalar_one_or_none()
     form = CategoriaForm(nombre=categoria.nombre, descripcion=categoria.descripcion)

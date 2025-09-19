@@ -20,14 +20,14 @@
         >
             <div class="container">
                 <div class="row align-items-center">
-                    <div class="col-lg-8 text-white">
+                    <div class="col-12 col-md-8 col-lg-8 text-white order-2 order-md-1">
                         <div class="hero-content">
                             <h1 class="display-4 fw-bold mb-4">{{ _('Bienvenido a') }} {{ site_config.nombre }}</h1>
                             <p class="lead mb-4" style="font-size: 1.3rem; line-height: 1.6">
                                 {{ _('Aprendizaje elegante y moderno con un toque de sofisticación rosada. Nuestra plataforma
                                 está diseñada para brindar una experiencia de aprendizaje excepcional.') }}
                             </p>
-                            <div class="d-flex gap-3 flex-wrap">
+                            <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-md-start">
                                 {% if not current_user.is_authenticated %}
                                 <a href="{{ url_for('user.crear_cuenta') }}" class="btn btn-light btn-lg px-4 py-2">
                                     <strong>{{ _('Comenzar Ahora') }}</strong>
@@ -52,7 +52,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 text-center">
+                    <div class="col-12 col-md-4 col-lg-4 text-center order-1 order-md-2 mb-4 mb-md-0">
                         <div class="hero-visual">
                             <div
                                 class="learning-icon"
@@ -364,7 +364,7 @@
         <section class="py-5" style="background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%)">
             <div class="container">
                 <div class="row justify-content-center text-center">
-                    <div class="col-lg-8">
+                    <div class="col-12 col-md-8 col-lg-8">
                         {% if not current_user.is_authenticated %}
                         <h3 class="mb-4">{{ _('¿Listo para Comenzar?') }}</h3>
                         <p class="lead mb-4">

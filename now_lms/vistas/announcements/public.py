@@ -15,6 +15,9 @@
 
 """Public announcements views."""
 
+
+from __future__ import annotations
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -25,6 +28,7 @@ from datetime import datetime
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
+from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -39,7 +43,7 @@ public_announcements = Blueprint("public_announcements", __name__, template_fold
 @public_announcements.route("/dashboard/announcements")
 @login_required
 @cache.cached(timeout=60)
-def global_announcements():
+def global_announcements() -> str:
     """Ver anuncios globales para todos los usuarios autenticados."""
     # Filtrar anuncios globales activos (no expirados)
     now = datetime.now()
@@ -65,7 +69,7 @@ def global_announcements():
 @public_announcements.route("/course/<course_id>/announcements")
 @login_required
 @cache.cached(timeout=60)
-def course_announcements(course_id):
+def course_announcements(course_id: str) -> str | Response:
     """Ver anuncios específicos de un curso."""
     # Verificar que el curso existe
     course = database.session.get(Curso, course_id)

@@ -15,18 +15,8 @@
 
 """Business logic implementation."""
 
-# Python 3.7+ - Postponed evaluation of annotations for cleaner forward references
+
 from __future__ import annotations
-
-# pylint: disable=E1101
-
-
-# < --------------------------------------------------------------------------------------------- >
-# Funciones auxiliares parte de la "logica de negocio" de la implementacion.
-
-# ---------------------------------------------------------------------------------------
-# Standard library
-# ---------------------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -40,6 +30,16 @@ from flask_login import current_user
 from now_lms.db import Curso, CursoRecurso, CursoSeccion, DocenteCurso, EstudianteCurso, ModeradorCurso, Usuario, database
 from now_lms.i18n import _
 from now_lms.logs import log
+
+# pylint: disable=E1101
+
+
+# < --------------------------------------------------------------------------------------------- >
+# Funciones auxiliares parte de la "logica de negocio" de la implementacion.
+
+# ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
 
 
 def modificar_indice_curso(
