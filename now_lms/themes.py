@@ -12,10 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-
 """Herramientas para interacturar con temas."""
-
 
 from __future__ import annotations
 
@@ -40,9 +37,8 @@ from now_lms.db.tools import get_current_theme
 # ---------------------------------------------------------------------------------------
 # Theme configuration constants
 # ---------------------------------------------------------------------------------------
-THEMES_DIRECTORY = "themes/"
-DIRECTORIO_TEMAS = str(Path(path.join(str(DIRECTORIO_PLANTILLAS), THEMES_DIRECTORY)))
-
+THEMES_DIRECTORY: str = "themes/"
+DIRECTORIO_TEMAS: str = str(Path(path.join(str(DIRECTORIO_PLANTILLAS), THEMES_DIRECTORY)))
 
 # ---------------------------------------------------------------------------------------
 # Theme path utilities
