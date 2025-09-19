@@ -685,6 +685,12 @@ def init_app(with_examples=False, flask_app=None):
                 except Exception as e:
                     log.error(f"Error during database migration: {e}")
                     return False
+
+            # Always populate custom directories if environment variables are set
+            # This ensures custom data/themes are available even when DB already exists
+            populate_custmon_data_dir()
+            populate_custom_theme_dir()
+
             return True
         log.info("Starting new database.")
         initial_setup(with_examples=with_examples, flask_app=app_to_use)

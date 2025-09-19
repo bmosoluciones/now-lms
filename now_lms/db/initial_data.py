@@ -1649,12 +1649,20 @@ def crear_recurso_descargable() -> None:
 
 def populate_custmon_data_dir() -> None:
     """Crea un directorio de archivos personalizado."""
-    from now_lms.config import DIRECTORIO_ARCHIVOS_BASE
+    from now_lms.config import DIRECTORIO_ARCHIVOS, DIRECTORIO_ARCHIVOS_BASE
 
     if DIRECTORIO_ARCHIVOS != DIRECTORIO_ARCHIVOS_BASE:
+        # Check if directory doesn't exist or is empty
+        should_populate = False
+        try:
+            if not path.exists(DIRECTORIO_ARCHIVOS):
+                should_populate = True
+            elif path.isdir(DIRECTORIO_ARCHIVOS) and len(listdir(DIRECTORIO_ARCHIVOS)) == 0:
+                should_populate = True
+        except OSError:
+            should_populate = True
 
-        if not path.isdir(DIRECTORIO_ARCHIVOS) and not bool(listdir(DIRECTORIO_ARCHIVOS)):
-
+        if should_populate:
             try:
                 copytree(DIRECTORIO_ARCHIVOS_BASE, DIRECTORIO_ARCHIVOS, dirs_exist_ok=True)
             except FileExistsError:
@@ -1668,8 +1676,17 @@ def populate_custom_theme_dir() -> None:
     from now_lms.config import DIRECTORIO_PLANTILLAS, DIRECTORIO_PLANTILLAS_BASE
 
     if DIRECTORIO_PLANTILLAS != DIRECTORIO_PLANTILLAS_BASE:
+        # Check if directory doesn't exist or is empty
+        should_populate = False
+        try:
+            if not path.exists(DIRECTORIO_PLANTILLAS):
+                should_populate = True
+            elif path.isdir(DIRECTORIO_PLANTILLAS) and len(listdir(DIRECTORIO_PLANTILLAS)) == 0:
+                should_populate = True
+        except OSError:
+            should_populate = True
 
-        if not (path.isdir(DIRECTORIO_PLANTILLAS) and bool(listdir(DIRECTORIO_PLANTILLAS))):
+        if should_populate:
             try:
                 copytree(DIRECTORIO_PLANTILLAS_BASE, DIRECTORIO_PLANTILLAS, dirs_exist_ok=True)
             except FileExistsError:
