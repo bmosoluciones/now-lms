@@ -23,7 +23,7 @@
                     <div class="col-md-4 text-end">
                         <div class="btn-group" role="group">
                             <a href="{{ url_for('certificate.certificacion_generar') }}" class="btn btn-success">
-                                <i class="bi bi-plus-lg me-1"></i>{{ _("Nuevo Certificado") }}
+                                <i class="bi bi-plus-lg me-1"></i>{{ _('Nuevo Certificado') }}
                             </a>
                         </div>
                     </div>
@@ -35,14 +35,16 @@
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <caption class="ms-3 mt-2">
-                                    Lista de certificados emitidos en el sistema.
+                                    {{_("Lista de certificados emitidos en el sistema.")}}
                                 </caption>
                                 <thead class="table-light">
                                     <tr>
-                                        <th scope="col" class="fw-semibold"><i class="bi bi-fingerprint me-1"></i>ID Único</th>
-                                        <th class="fw-semibold"><i class="bi bi-book me-1"></i>{{ _("Curso") }}</th>
-                                        <th class="fw-semibold"><i class="bi bi-person me-1"></i>{{ _("Usuario") }}</th>
-                                        <th class="fw-semibold text-center">{{ _("Acciones") }}</th>
+                                        <th scope="col" class="fw-semibold">
+                                            <i class="bi bi-fingerprint me-1"></i>{{ _('ID Único') }}
+                                        </th>
+                                        <th class="fw-semibold"><i class="bi bi-book me-1"></i>{{ _('Curso') }}</th>
+                                        <th class="fw-semibold"><i class="bi bi-person me-1"></i>{{ _('Usuario') }}</th>
+                                        <th class="fw-semibold text-center">{{ _('Acciones') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -58,7 +60,11 @@
                                             <span class="text-muted">{{ item.usuario }}</span>
                                         </td>
                                         <td>
-                                            <div class="btn-group" role="group" aria-label="{{ _("Acciones") }} del certificado">
+                                            <div
+                                                class="btn-group"
+                                                role="group"
+                                                aria-label="{{ _('Acciones del certificado') }}"
+                                            >
                                                 <a
                                                     href="{{ url_for('certificate.certificado', ulid=item.id) }}"
                                                     target="_blank"
@@ -80,10 +86,10 @@
                 <div class="card shadow-sm">
                     <div class="card-body text-center py-5">
                         <i class="bi bi-inbox text-muted" style="font-size: 3rem"></i>
-                        <h5 class="text-muted mt-3">No hay certificados emitidos</h5>
-                        <p class="text-muted">No se han emitido certificados todavía.</p>
+                        <h5 class="text-muted mt-3">{{_("No hay certificados emitidos")}}</h5>
+                        <p class="text-muted">{{_(No se han emitido certificados todavía.)}}</p>
                         <a href="{{ url_for('certificate.certificacion_generar') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-lg me-2"></i>Emitir Primer Certificado
+                            <i class="bi bi-plus-lg me-2"></i>{{_("Emitir Primer Certificado")}}
                         </a>
                     </div>
                 </div>

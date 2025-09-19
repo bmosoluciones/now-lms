@@ -9,6 +9,9 @@ now_lms/templates/learning/resources_new/editar_slideshow.html
 now_lms/templates/learning/resources/type_audio.html
 now_lms/templates/blog/post_detail.html
 
+# Templates with Jinja2 variables in CSS
+now_lms/templates/learning/my_courses.html
+
 
 # General patterns for build and dependency files
 node_modules/
