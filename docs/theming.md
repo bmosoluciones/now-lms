@@ -42,7 +42,7 @@ For more details on managing static assets, see the [Static Assets README](https
 
 ## Available Themes
 
-NOW LMS comes with 13 built-in themes:
+NOW LMS comes with many built-in themes:
 
 ### Base Theme
 
@@ -53,13 +53,12 @@ NOW LMS comes with 13 built-in themes:
 - **corporative**: Professional blue theme for corporate environments
 - **finance**: Federal green theme inspired by financial institutions
 - **classic**: Minimalist white/gray design with clean typography
+- **classic**: Excel inspired profesional theme
 
 ### Color Variations
 
 - **amber**: A warm, autumn-inspired theme
-- **golden**: A gold-based color theme
-- **lime**: A green-based theme
-- **nebula**: A purple-based theme
+- **golden**: A gold-based color theme with English teaching inspiring
 - **ocean**: A blue-based theme
 - **sakura**: A cherry blossom-inspired theme
 

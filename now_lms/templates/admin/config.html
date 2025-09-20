@@ -1,341 +1,344 @@
 {% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
 <!doctype html>
 <html lang="es" class="h-100">
-    <head>
-        {{ current_theme.headertags() }} {{ mde.css }}
-        <title>{{_("Editar configuración")}}</title>
 
-        {{ current_theme.local_style() }}
-        <!-- Custom styles for this template -->
-        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
-    </head>
+<head>
+  {{ current_theme.headertags() }} {{ mde.css }}
+  <title>{{_("Editar configuración")}}</title>
 
-    <body>
-        {{ current_theme.navbar() }}
+  {{ current_theme.local_style() }}
+  <!-- Custom styles for this template -->
+  <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+</head>
 
-        <main>
-            {{ current_theme.notify() }} {% from "macros/demo_banner.j2" import demo_mode_banner %} {{ demo_mode_banner() }}
+<body>
+  {{ current_theme.navbar() }}
 
-            <div class="container px-4 py-5" id="icon-grid">
-                <h4 class="pb-2 border-bottom">{{_("Editar configuración del sitio web")}}.</h4>
-                <form method="post">
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <h5>{{_("Datos Generales del Sitio Web")}}.</h5>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <label for="titulo" class="form-label">{{_("Nombre del Sitio Web")}}:</label>
-                            {{ form.titulo(class="form-control", id="titulo", value=config.titulo) }}
-                        </div>
+  <main>
+    {{ current_theme.notify() }} {% from "macros/demo_banner.j2" import demo_mode_banner %} {{ demo_mode_banner() }}
 
-                        <div class="col-sm-6">
-                            <label for="descripcion" class="form-label">{{_("Descripción del Sitio")}}:</label>
-                            {{ form.descripcion(class="form-control", id="descripcion", value=config.descripcion) }}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <br />
-                            <label for="eslogan" class="form-label">{{_("Eslogan de academia en línea.")}}:</label>
-                            {{ form.eslogan(class="form-control", id="keywords", value=config.eslogan) }}
-                        </div>
-                    </div>
-                    <br />
-                    <div class="row">
-                       <div class="col-sm-6">
-                           <label for="titulo_html" class="form-label">{{_("Titulo para mostrar en la barra de navegación")}}:</label>
-                           {{ form.titulo_html(class="form-control", id="titulo_html", value=config.titulo_html) }}
-                           <div class="form-text">
-                               {{_("Este sera el titulo que los usuario vean en su navegador web.")}} config.custom_text3.
-                           </div>
-                       </div>
-                        <div class="col-sm-6">
-                               <label for="hero" class="form-label">{{_("Texto para mostrar en el Hero")}}:</label>
-                               {{ form.hero(class="form-control", id="hero", value=config.hero) }}
-                            <div class="form-text">
-                                {{_("El hero es el elemento que se muestra debajo de la barra de navegación.")}}                       
-                           </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6"">
-                            <br />
-                            <label for="enable_feature_section" class="form-label">{{_("Mostrar sección de caracteristicas")}}:</label>
-                            {{ form.enable_feature_section(class="form-check-input", id="enable_feature_section",
-                            checked=config.enable_feature_section) }}
-                        </div>
-                        
-                        <br />
-                        <label for="custom_feature_section" class="form-label">{{_("Diseñe su propia sección de caractesticas")}}:</label>
-                        {{ form.custom_feature_section(class="form-control", id="custom_feature_section", value=config.custom_feature_section, rows="10") }}
-                        <div class="form-text">
-                            {{_("Debe ser un segmento de HTML valido que se integre en su plantilla actual.")}}.
-                        </div>
-                    
-                    <br />
-                    </div>
-                    <div class="row">
-                        <div class="row">
-                            <div class="col-sm-8">
-                                <br />
-                                <h5>{{_("Información adicional")}}.</h5>
-                                <p class="text-muted">Puede agregar información adicional para que los diseñadores de plantillas
-                                puedan incluirlo en el sitio web.</p>
-                            </div>
-                            <div class="col-sm-6">
-                                <label for="custom_text1" class="form-label">{{_("Texto personalizado")}} 1:</label>
-                                {{ form.custom_text1(class="form-control", id="custom_text1", value=config.custom_text1) }}
-                                <div class="form-text">
-                                    {{_("Este texto esta disponible como:")}} config.custom_text1.
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <label for="custom_text2" class="form-label">{{_("Texto personalizado")}} 2:</label>
-                                {{ form.custom_text2(class="form-control", id="custom_text2", value=config.custom_text2) }}
-                                <div class="form-text">
-                                    {{_("Este texto esta disponible como:")}} config.custom_text2.
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <label for="custom_text3" class="form-label">{{_("Texto personalizado")}} 3:</label>
-                                {{ form.custom_text3(class="form-control", id="custom_text3", value=config.custom_text3) }}
-                                <div class="form-text">
-                                    {{_("Este texto esta disponible como:")}} config.custom_text3.
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <label for="custom_text4" class="form-label">{{_("Texto personalizado")}} 4:</label>
-                                {{ form.custom_text4(class="form-control", id="custom_text4", value=config.custom_text4) }}
-                                <div class="form-text">
-                                    {{_("Este texto esta disponible como:")}} config.custom_text4.
-                                </div>
-                            </div>
-                            <br />
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <h5>{{_("Configuración Regional")}}.</h5>
-                        </div>
+    <div class="container px-4 py-5" id="icon-grid">
+      <h4 class="pb-2 border-bottom">{{_("Editar configuración del sitio web")}}.</h4>
+      <form method="post">
+        <div class="row">
+          <div class="col-sm-8">
+            <h5>{{_("Datos Generales del Sitio Web")}}.</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <label for="titulo" class="form-label">{{_("Nombre del Sitio Web")}}:</label>
+            {{ form.titulo(class="form-control", id="titulo", value=config.titulo) }}
+          </div>
 
-                        <div class="col-sm-6">
-                            <label for="moneda" class="form-label">{{_("Moneda del Sitio")}}:</label>
-                            {{ form.moneda(class="form-control form-select", id="moneda", value=config.moneda) }}
-                            <div class="form-text">
-                                {{_("Seleccione la moneda predeterminada para procesar pagos y mostrar precios")}}.
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <label for="timezone" class="form-label">{{_("Zona Horaria")}}:</label>
-                            {{ form.timezone(class="form-control form-select", id="timezone", value=config.timezone) }}
-                            <div class="form-text">{{_("Seleccione la zona horaria adecuada para su país")}}.</div>
-                        </div>
-                    </div>
-                    <br />
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <label for="lang" class="form-label">{{_("Idioma del sitio web")}}.</label>
-                            {{ form.lang(class="form-control form-select", id="timezone", value=config.lang) }}
-                            <div class="form-text">{{_("Seleccione el idioma predeterminado de su sitio web")}}.</div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <br />
-                            <h5>{{_("Configuración de Navegación")}}.</h5>
-                            <p class="text-muted">
-                                {{_("Configure qué elementos del menú de navegación estarán visibles para los usuarios")}}.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-check">
-                                {{ form.enable_programs(class="form-check-input", id="enable_programs",
-                                checked=config.enable_programs) }}
-                                <label class="form-check-label" for="enable_programs">{{_("Habilitar Programas")}}:</label>
-                            </div>
-                            <div class="form-text">
-                                {{_("Los usuarios verán la opción Programas en el menú de navegación")}}.
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-check">
-                                {{ form.enable_masterclass(class="form-check-input", id="enable_masterclass",
-                                checked=config.enable_masterclass) }}
-                                <label class="form-check-label" for="enable_masterclass">
-                                    {{_("Habilitar Master Class")}}:
-                                </label>
-                            </div>
-                            <div class="form-text">
-                                {{_("Los usuarios verán la opción Clases Magistrales en el menú de navegación")}}.
-                            </div>
-                        </div>
-                        <br />
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-check">
-                                {{ form.enable_resources(class="form-check-input", id="enable_resources",
-                                checked=config.enable_resources) }}
-                                <label class="form-check-label" for="enable_resources">
-                                    {{_("Habilitar Recursos descargables")}}:
-                                </label>
-                            </div>
-                            <div class="form-text">
-                                {{_("Los usuarios verán la opción Recursos en el menú de navegación")}}.
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-check">
-                                {{ form.enable_blog(class="form-check-input", id="enable_blog", checked=config.enable_blog) }}
-                                <label class="form-check-label" for="enable_resources"> {{_("Habilitar Blog")}} </label>
-                            </div>
-                            <div class="form-text">{{_("Los usuarios verán la opción Blog en el menú de navegación")}}.</div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <br />
-                            <h5>{{_("Configuración de subida de archivos")}}.</h5>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-check">
-                                {{ form.enable_file_uploads(class="form-check-input", id="enable_file_uploads",
-                                checked=config.enable_file_uploads) }}
-                                <label class="form-check-label" for="enable_file_uploads">
-                                    {{_("Habilitar subida de archivos descargables")}}:
-                                </label>
-                            </div>
-                            <div class="form-text">
-                                {{_("Permite a los instructores subir archivos descargables como recursos del curso")}}.
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <label for="max_file_size" class="form-label">{{_("Tamaño máximo de archivo (MB)")}}:</label>
-                            {{ form.max_file_size(class="form-control", id="max_file_size", value=config.max_file_size,
-                            min="1", max="100") }}
-                            <div class="form-text">
-                                {{_("Tamaño máximo permitido para archivos descargables (1-100 MB)")}}.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <br />
-                            <h5>{{_("Configuración de verificación de usuarios")}}.</h5>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            {% if config.email_verificado %}
-                            <div class="alert alert-success" role="alert">
-                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{_("La configuración de correo
-                                electrónico ha sido verificada correctamente.")}}
-                            </div>
-                            {% else %}
-                            <div class="alert alert-warning" role="alert">
-                                <i class="bi bi-dash-circle-dotted" aria-hidden="true"></i> {{_("La configuración de correo
-                                electrónico no ha sido verificada.")}}
-                            </div>
-                            {% endif %}
-                            <label for="verificacion" class="form-label"
-                                >{{_("Permitir a nuevos usuarios verificarse vía correo electrónico")}}:</label
-                            >
-                            {{ form.verify_user_by_email(value=config.verify_user_by_email) }}
-                        </div>
-                    </div>
-
-                    {{ render_form_buttons(_("Actualizar Configuración"), url_for('admin_profile.pagina_admin')) }}
-                </form>
+          <div class="col-sm-6">
+            <label for="descripcion" class="form-label">{{_("Descripción del Sitio")}}:</label>
+            {{ form.descripcion(class="form-control", id="descripcion", value=config.descripcion) }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <br />
+            <label for="eslogan" class="form-label">{{_("Eslogan de academia en línea.")}}:</label>
+            {{ form.eslogan(class="form-control", id="keywords", value=config.eslogan) }}
+          </div>
+        </div>
+        <br />
+        <div class="row">
+          <div class="col-sm-6">
+            <label for="titulo_html" class="form-label">{{_("Titulo para mostrar en la barra de navegación")}}:</label>
+            {{ form.titulo_html(class="form-control", id="titulo_html", value=config.titulo_html) }}
+            <div class="form-text">
+              {{_("Este sera el titulo que los usuario vean en su navegador web.")}} config.custom_text3.
             </div>
-        </main>
+          </div>
+          <div class="col-sm-6">
+            <label for="hero" class="form-label">{{_("Texto para mostrar en el Hero")}}:</label>
+            {{ form.hero(class="form-control", id="hero", value=config.hero) }}
+            <div class="form-text">
+              {{_("El hero es el elemento que se muestra debajo de la barra de navegación.")}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <br />
+              <label for="enable_feature_section"
+                class="form-label">{{_("Mostrar sección de caracteristicas")}}:</label>
+              {{ form.enable_feature_section(class="form-check-input", id="enable_feature_section",
+                            checked=config.enable_feature_section) }}
+            </div>
 
-        <!-- Script para hacer el selector de moneda más fácil de usar -->
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const select = document.getElementById("moneda")
+            <br />
+            <label for="custom_feature_section"
+              class="form-label">{{_("Diseñe su propia sección de caractesticas")}}:</label>
+            {{ form.custom_feature_section(class="form-control", id="custom_feature_section", value=config.custom_feature_section, rows="10") }}
+            <div class="form-text">
+              {{_("Debe ser un segmento de HTML valido que se integre en su plantilla actual.")}}.
+            </div>
 
-                // Crear un input de búsqueda
-                const searchContainer = document.createElement("div")
-                searchContainer.className = "position-relative"
+            <br />
+          </div>
+          <div class="row">
+            <div class="row">
+              <div class="col-sm-8">
+                <br />
+                <h5>{{_("Información adicional")}}.</h5>
+                <p class="text-muted">Puede agregar información adicional para que los diseñadores de plantillas
+                  puedan incluirlo en el sitio web.</p>
+              </div>
+              <div class="col-sm-6">
+                <label for="custom_text1" class="form-label">{{_("Texto personalizado")}} 1:</label>
+                {{ form.custom_text1(class="form-control", id="custom_text1", value=config.custom_text1) }}
+                <div class="form-text">
+                  {{_("Este texto esta disponible como:")}} config.custom_text1.
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <label for="custom_text2" class="form-label">{{_("Texto personalizado")}} 2:</label>
+                {{ form.custom_text2(class="form-control", id="custom_text2", value=config.custom_text2) }}
+                <div class="form-text">
+                  {{_("Este texto esta disponible como:")}} config.custom_text2.
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <label for="custom_text3" class="form-label">{{_("Texto personalizado")}} 3:</label>
+                {{ form.custom_text3(class="form-control", id="custom_text3", value=config.custom_text3) }}
+                <div class="form-text">
+                  {{_("Este texto esta disponible como:")}} config.custom_text3.
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <label for="custom_text4" class="form-label">{{_("Texto personalizado")}} 4:</label>
+                {{ form.custom_text4(class="form-control", id="custom_text4", value=config.custom_text4) }}
+                <div class="form-text">
+                  {{_("Este texto esta disponible como:")}} config.custom_text4.
+                </div>
+              </div>
+              <br />
+            </div>
+            <div class="row">
+              <div class="col-sm-8">
+                <h5>{{_("Configuración Regional")}}.</h5>
+              </div>
 
-                const searchInput = document.createElement("input")
-                searchInput.type = "text"
-                searchInput.className = "form-control mb-2"
-                searchInput.placeholder = "{{ _('Buscar moneda...') }}"
-                searchInput.style.display = "none"
+              <div class="col-sm-6">
+                <label for="moneda" class="form-label">{{_("Moneda del Sitio")}}:</label>
+                {{ form.moneda(class="form-control form-select", id="moneda", value=config.moneda) }}
+                <div class="form-text">
+                  {{_("Seleccione la moneda predeterminada para procesar pagos y mostrar precios")}}.
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <label for="timezone" class="form-label">{{_("Zona Horaria")}}:</label>
+                {{ form.timezone(class="form-control form-select", id="timezone", value=config.timezone) }}
+                <div class="form-text">{{_("Seleccione la zona horaria adecuada para su país")}}.</div>
+              </div>
+            </div>
+            <br />
+            <div class="row">
+              <div class="col-sm-6">
+                <label for="lang" class="form-label">{{_("Idioma del sitio web")}}.</label>
+                {{ form.lang(class="form-control form-select", id="timezone", value=config.lang) }}
+                <div class="form-text">{{_("Seleccione el idioma predeterminado de su sitio web")}}.</div>
+              </div>
+            </div>
 
-                // Insertar el input de búsqueda antes del select
-                select.parentNode.insertBefore(searchContainer, select)
-                searchContainer.appendChild(searchInput)
-                searchContainer.appendChild(select)
+            <div class="row">
+              <div class="col-sm-8">
+                <br />
+                <h5>{{_("Configuración de Navegación")}}.</h5>
+                <p class="text-muted">
+                  {{_("Configure qué elementos del menú de navegación estarán visibles para los usuarios")}}.
+                </p>
+              </div>
+            </div>
 
-                // Guardar las opciones originales
-                const originalOptions = Array.from(select.options)
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-check">
+                  {{ form.enable_programs(class="form-check-input", id="enable_programs",
+                                checked=config.enable_programs) }}
+                  <label class="form-check-label" for="enable_programs">{{_("Habilitar Programas")}}:</label>
+                </div>
+                <div class="form-text">
+                  {{_("Los usuarios verán la opción Programas en el menú de navegación")}}.
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-check">
+                  {{ form.enable_masterclass(class="form-check-input", id="enable_masterclass",
+                                checked=config.enable_masterclass) }}
+                  <label class="form-check-label" for="enable_masterclass">
+                    {{_("Habilitar Master Class")}}:
+                  </label>
+                </div>
+                <div class="form-text">
+                  {{_("Los usuarios verán la opción Clases Magistrales en el menú de navegación")}}.
+                </div>
+              </div>
+              <br />
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-check">
+                  {{ form.enable_resources(class="form-check-input", id="enable_resources",
+                                checked=config.enable_resources) }}
+                  <label class="form-check-label" for="enable_resources">
+                    {{_("Habilitar Recursos descargables")}}:
+                  </label>
+                </div>
+                <div class="form-text">
+                  {{_("Los usuarios verán la opción Recursos en el menú de navegación")}}.
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-check">
+                  {{ form.enable_blog(class="form-check-input", id="enable_blog", checked=config.enable_blog) }}
+                  <label class="form-check-label" for="enable_resources"> {{_("Habilitar Blog")}} </label>
+                </div>
+                <div class="form-text">{{_("Los usuarios verán la opción Blog en el menú de navegación")}}.</div>
+              </div>
+            </div>
 
-                // Función para filtrar opciones
-                function filterOptions() {
-                    const searchTerm = searchInput.value.toLowerCase()
+            <div class="row">
+              <div class="col-sm-8">
+                <br />
+                <h5>{{_("Configuración de subida de archivos")}}.</h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-check">
+                  {{ form.enable_file_uploads(class="form-check-input", id="enable_file_uploads",
+                                checked=config.enable_file_uploads) }}
+                  <label class="form-check-label" for="enable_file_uploads">
+                    {{_("Habilitar subida de archivos descargables")}}:
+                  </label>
+                </div>
+                <div class="form-text">
+                  {{_("Permite a los instructores subir archivos descargables como recursos del curso")}}.
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <label for="max_file_size" class="form-label">{{_("Tamaño máximo de archivo (MB)")}}:</label>
+                {{ form.max_file_size(class="form-control", id="max_file_size", value=config.max_file_size,
+                            min="1", max="100") }}
+                <div class="form-text">
+                  {{_("Tamaño máximo permitido para archivos descargables (1-100 MB)")}}.
+                </div>
+              </div>
+            </div>
 
-                    // Limpiar select
-                    select.innerHTML = ""
+            <div class="row">
+              <div class="col-sm-8">
+                <br />
+                <h5>{{_("Configuración de verificación de usuarios")}}.</h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                {% if config.email_verificado %}
+                <div class="alert alert-success" role="alert">
+                  <i class="bi bi-check-circle" aria-hidden="true"></i> {{_("La configuración de correo
+                                electrónico ha sido verificada correctamente.")}}
+                </div>
+                {% else %}
+                <div class="alert alert-warning" role="alert">
+                  <i class="bi bi-dash-circle-dotted" aria-hidden="true"></i> {{_("La configuración de correo
+                                electrónico no ha sido verificada.")}}
+                </div>
+                {% endif %}
+                <label for="verificacion"
+                  class="form-label">{{_("Permitir a nuevos usuarios verificarse vía correo electrónico")}}:</label>
+                {{ form.verify_user_by_email(value=config.verify_user_by_email) }}
+              </div>
+            </div>
 
-                    // Filtrar y añadir opciones que coincidan
-                    originalOptions.forEach((option) => {
-                        if (
-                            option.text.toLowerCase().includes(searchTerm) ||
-                            option.value.toLowerCase().includes(searchTerm)
-                        ) {
-                            select.appendChild(option.cloneNode(true))
-                        }
-                    })
+            {{ render_form_buttons(_("Actualizar Configuración"), url_for('admin_profile.pagina_admin')) }}
+      </form>
+    </div>
+  </main>
 
-                    // Si no hay término de búsqueda, mostrar todas las opciones
-                    if (searchTerm === "") {
-                        originalOptions.forEach((option) => {
-                            select.appendChild(option.cloneNode(true))
-                        })
-                    }
-                }
+  <!-- Script para hacer el selector de moneda más fácil de usar -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const select = document.getElementById("moneda")
 
-                // Event listeners
-                searchInput.addEventListener("input", filterOptions)
+      // Crear un input de búsqueda
+      const searchContainer = document.createElement("div")
+      searchContainer.className = "position-relative"
 
-                // Mostrar/ocultar búsqueda al hacer click en el select
-                select.addEventListener("focus", function () {
-                    searchInput.style.display = "block"
-                    searchInput.focus()
-                })
+      const searchInput = document.createElement("input")
+      searchInput.type = "text"
+      searchInput.className = "form-control mb-2"
+      searchInput.placeholder = "{{ _('Buscar moneda...') }}"
+      searchInput.style.display = "none"
 
-                // Ocultar búsqueda cuando se pierde el foco
-                document.addEventListener("click", function (e) {
-                    if (!searchContainer.contains(e.target)) {
-                        searchInput.style.display = "none"
-                        searchInput.value = ""
-                        filterOptions() // Restaurar todas las opciones
-                    }
-                })
+      // Insertar el input de búsqueda antes del select
+      select.parentNode.insertBefore(searchContainer, select)
+      searchContainer.appendChild(searchInput)
+      searchContainer.appendChild(select)
 
-                // Permitir selección con Enter
-                searchInput.addEventListener("keydown", function (e) {
-                    if (e.key === "Enter") {
-                        e.preventDefault()
-                        if (select.options.length > 0) {
-                            select.value = select.options[0].value
-                            searchInput.style.display = "none"
-                            searchInput.value = ""
-                            filterOptions()
-                        }
-                    }
-                })
-            })
-        </script>
-    </body>
+      // Guardar las opciones originales
+      const originalOptions = Array.from(select.options)
+
+      // Función para filtrar opciones
+      function filterOptions() {
+        const searchTerm = searchInput.value.toLowerCase()
+
+        // Limpiar select
+        select.innerHTML = ""
+
+        // Filtrar y añadir opciones que coincidan
+        originalOptions.forEach((option) => {
+          if (
+            option.text.toLowerCase().includes(searchTerm) ||
+            option.value.toLowerCase().includes(searchTerm)
+          ) {
+            select.appendChild(option.cloneNode(true))
+          }
+        })
+
+        // Si no hay término de búsqueda, mostrar todas las opciones
+        if (searchTerm === "") {
+          originalOptions.forEach((option) => {
+            select.appendChild(option.cloneNode(true))
+          })
+        }
+      }
+
+      // Event listeners
+      searchInput.addEventListener("input", filterOptions)
+
+      // Mostrar/ocultar búsqueda al hacer click en el select
+      select.addEventListener("focus", function () {
+        searchInput.style.display = "block"
+        searchInput.focus()
+      })
+
+      // Ocultar búsqueda cuando se pierde el foco
+      document.addEventListener("click", function (e) {
+        if (!searchContainer.contains(e.target)) {
+          searchInput.style.display = "none"
+          searchInput.value = ""
+          filterOptions() // Restaurar todas las opciones
+        }
+      })
+
+      // Permitir selección con Enter
+      searchInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault()
+          if (select.options.length > 0) {
+            select.value = select.options[0].value
+            searchInput.style.display = "none"
+            searchInput.value = ""
+            filterOptions()
+          }
+        }
+      })
+    })
+  </script>
+</body>
+
 </html>
