@@ -145,6 +145,13 @@ def crear_configuracion_predeterminada() -> None:
     config.enable_file_uploads = False
     config.lang = default_lang
     config.time_zone = default_timezone
+    config.eslogan = _("Aprende a tu ritmo.")
+    config.titulo_html = _("NOW LMS - Aprende a tu ritmo.")
+    config.hero = ""
+    config.custom_text1 = ""
+    config.custom_text2 = ""
+    config.custom_text3 = ""
+    config.custom_text4 = ""
 
     mail_config = MailConfig()
     mail_config.MAIL_USE_TLS = False
