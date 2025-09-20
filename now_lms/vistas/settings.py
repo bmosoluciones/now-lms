@@ -12,9 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 """NOW Learning Management System."""
-
 
 from __future__ import annotations
 
@@ -42,7 +40,6 @@ from now_lms.logs import log
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
-
 
 # Constants
 SETTING_PERSONALIZACION_ROUTE = "setting.personalizacion"
@@ -194,6 +191,15 @@ def configuracion() -> str | Response:
         enable_file_uploads=config.enable_file_uploads,
         max_file_size=config.max_file_size,
         verify_user_by_email=config.verify_user_by_email,
+        titulo_html=config.titulo_html,
+        hero=config.hero,
+        enable_feature_section=config.enable_feature_section,
+        custom_feature_section=config.custom_feature_section,
+        custom_text1=config.custom_text1,
+        custom_text2=config.custom_text2,
+        custom_text3=config.custom_text3,
+        custom_text4=config.custom_text4,
+        eslogan=config.eslogan,
     )
     if form.validate_on_submit() or request.method == "POST":
         config.titulo = form.titulo.data
@@ -208,6 +214,15 @@ def configuracion() -> str | Response:
         config.enable_file_uploads = form.enable_file_uploads.data
         config.max_file_size = form.max_file_size.data
         config.verify_user_by_email = form.verify_user_by_email.data
+        config.titulo_html = form.titulo_html.data
+        config.hero = form.hero.data
+        config.enable_feature_section = form.enable_feature_section.data
+        config.custom_feature_section = form.custom_feature_section.data
+        config.custom_text1 = form.custom_text1.data
+        config.custom_text2 = form.custom_text2.data
+        config.custom_text3 = form.custom_text3.data
+        config.custom_text4 = form.custom_text4.data
+        config.eslogan = form.eslogan.data
 
         if form.verify_user_by_email.data is True:
             config_mail = database.session.execute(database.select(MailConfig)).first()[0]

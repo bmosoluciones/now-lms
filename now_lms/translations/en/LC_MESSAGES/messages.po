@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  0.0.1-rc1\n"
 "Report-Msgid-Bugs-To: development@bmogroup.solutions\n"
-"POT-Creation-Date: 2025-09-16 11:49-0600\n"
+"POT-Creation-Date: 2025-09-20 02:06+0000\n"
 "PO-Revision-Date: 2025-09-14 07:39-0600\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -48,7 +48,7 @@ msgstr "This action is not available in demo mode to prevent abusive use."
 msgid "Título por defecto"
 msgstr ""
 
-#: now_lms/forms/__init__.py:801 now_lms/i18n.py:85
+#: now_lms/forms/__init__.py:814 now_lms/i18n.py:85
 #: now_lms/templates/admin/grupos/nuevo.html:30
 #: now_lms/templates/calendar/event_detail.html:72
 #: now_lms/templates/learning/categorias/editar_categoria.html:30
@@ -59,8 +59,8 @@ msgstr ""
 #: now_lms/templates/learning/certificados/nuevo_certificado.html:29
 #: now_lms/templates/learning/curso/enroll.html:39
 #: now_lms/templates/learning/nuevo_curso.html:37
-#: now_lms/templates/learning/nuevo_curso.html:160
-#: now_lms/templates/learning/nuevo_curso.html:161
+#: now_lms/templates/learning/nuevo_curso.html:163
+#: now_lms/templates/learning/nuevo_curso.html:164
 #: now_lms/templates/learning/nuevo_seccion.html:30
 #: now_lms/templates/learning/programas/admin_enroll.html:101
 #: now_lms/templates/learning/programas/editar_programa.html:63
@@ -154,7 +154,7 @@ msgstr "Failed to start email sending thread: {error}"
 msgid "Enviando correo de forma síncrona."
 msgstr "Sending email synchronously."
 
-#: now_lms/db/tools.py:142
+#: now_lms/db/tools.py:138
 msgid "Sistema de aprendizaje en linea."
 msgstr "Online learning system."
 
@@ -166,7 +166,7 @@ msgstr "User image deleted successfully."
 msgid "Imagen de usuario no existe."
 msgstr "User image does not exist."
 
-#: now_lms/forms/__init__.py:305 now_lms/forms/masterclass.py:65
+#: now_lms/forms/__init__.py:302 now_lms/forms/masterclass.py:65
 #: now_lms/templates/blog/admin_index.html:67
 #: now_lms/templates/blog/instructor_index.html:31
 #: now_lms/templates/inicio/perfil_editar.html:61
@@ -184,35 +184,35 @@ msgstr "Currency"
 msgid "Idioma"
 msgstr "Language"
 
-#: now_lms/forms/__init__.py:319 now_lms/templates/admin/config.html:52
+#: now_lms/forms/__init__.py:319 now_lms/templates/admin/config.html:129
 msgid "Zona Horaria"
 msgstr "Time Zone"
 
-#: now_lms/forms/__init__.py:324 now_lms/templates/admin/config.html:81
+#: now_lms/forms/__init__.py:324 now_lms/templates/admin/config.html:158
 msgid "Habilitar Programas"
 msgstr "Enable Programs"
 
-#: now_lms/forms/__init__.py:325 now_lms/templates/admin/config.html:92
+#: now_lms/forms/__init__.py:325 now_lms/templates/admin/config.html:169
 msgid "Habilitar Master Class"
 msgstr "Enable Master Class"
 
-#: now_lms/forms/__init__.py:326 now_lms/templates/admin/config.html:107
+#: now_lms/forms/__init__.py:326 now_lms/templates/admin/config.html:184
 msgid "Habilitar Recursos descargables"
 msgstr "Enable Downloadable Resources"
 
-#: now_lms/forms/__init__.py:327 now_lms/templates/admin/config.html:117
+#: now_lms/forms/__init__.py:327 now_lms/templates/admin/config.html:194
 msgid "Habilitar Blog"
 msgstr "Enable Blog"
 
-#: now_lms/forms/__init__.py:330 now_lms/templates/admin/config.html:135
+#: now_lms/forms/__init__.py:343 now_lms/templates/admin/config.html:212
 msgid "Habilitar subida de archivos descargables"
 msgstr "Enable Downloadable Resources"
 
-#: now_lms/forms/__init__.py:331 now_lms/templates/admin/config.html:143
+#: now_lms/forms/__init__.py:344 now_lms/templates/admin/config.html:220
 msgid "Tamaño máximo de archivo (MB)"
 msgstr "Maximum file size (MB)"
 
-#: now_lms/forms/__init__.py:398 now_lms/templates/inicio/cursos.html:525
+#: now_lms/forms/__init__.py:411 now_lms/templates/inicio/cursos.html:525
 #: now_lms/templates/inicio/programas.html:717
 #: now_lms/templates/inicio/recursos.html:185
 #: now_lms/templates/learning/my_courses.html:100
@@ -223,33 +223,33 @@ msgstr "Maximum file size (MB)"
 msgid "Nivel"
 msgstr "Level"
 
-#: now_lms/forms/__init__.py:403
+#: now_lms/forms/__init__.py:416
 msgid "Modalidad"
 msgstr "Mode"
 
-#: now_lms/forms/__init__.py:405
+#: now_lms/forms/__init__.py:418
 msgid "Habilitar foro"
 msgstr "Enable Forum"
 
-#: now_lms/forms/__init__.py:419 now_lms/forms/__init__.py:579
+#: now_lms/forms/__init__.py:432 now_lms/forms/__init__.py:592
 msgid "Plantilla de certificado"
 msgstr "Certificate Template"
 
-#: now_lms/forms/__init__.py:425 now_lms/forms/__init__.py:584
+#: now_lms/forms/__init__.py:438 now_lms/forms/__init__.py:597
 #: now_lms/templates/learning/categorias/editar_categoria.html:25
 #: now_lms/templates/learning/categorias/editar_categoria.html:26
 #: now_lms/templates/learning/categorias/nueva_categoria.html:25
 #: now_lms/templates/learning/categorias/nueva_categoria.html:26
-#: now_lms/templates/learning/nuevo_curso.html:145
+#: now_lms/templates/learning/nuevo_curso.html:148
 #: now_lms/templates/learning/programas/nuevo_programa.html:56
 msgid "Categoría"
 msgstr "Category"
 
-#: now_lms/forms/__init__.py:430 now_lms/forms/__init__.py:589
+#: now_lms/forms/__init__.py:443 now_lms/forms/__init__.py:602
 #: now_lms/templates/inicio/cursos.html:496
 #: now_lms/templates/inicio/programas.html:688
 #: now_lms/templates/inicio/recursos.html:168
-#: now_lms/templates/learning/nuevo_curso.html:150
+#: now_lms/templates/learning/nuevo_curso.html:153
 #: now_lms/templates/learning/programas/nuevo_programa.html:61
 #: now_lms/templates/perfiles/instructor.html:335
 #: now_lms/templates/themes/classic/overrides/course_list.j2:496
@@ -257,41 +257,41 @@ msgstr "Category"
 msgid "Etiquetas"
 msgstr "Tags"
 
-#: now_lms/forms/__init__.py:444
+#: now_lms/forms/__init__.py:457
 msgid "El foro no puede habilitarse en cursos con modalidad self-paced"
 msgstr "The forum cannot be enabled in self-paced courses"
 
-#: now_lms/forms/__init__.py:454
+#: now_lms/forms/__init__.py:467
 #: now_lms/templates/learning/resources/type_macros.html:85
 msgid "Requerido"
 msgstr "Required"
 
-#: now_lms/forms/__init__.py:505 now_lms/templates/admin/theme.html:62
+#: now_lms/forms/__init__.py:518 now_lms/templates/admin/theme.html:62
 msgid "Tema"
 msgstr "Theme"
 
-#: now_lms/forms/__init__.py:517
+#: now_lms/forms/__init__.py:530
 msgid "Tema Reveal.js"
 msgstr "Reveal.js Theme"
 
-#: now_lms/forms/__init__.py:532
+#: now_lms/forms/__init__.py:545
 msgid "Título de la Diapositiva"
 msgstr "Slide Title"
 
-#: now_lms/forms/__init__.py:533
+#: now_lms/forms/__init__.py:546
 msgid "Contenido de la Diapositiva"
 msgstr "Slide Content"
 
-#: now_lms/forms/__init__.py:534
+#: now_lms/forms/__init__.py:547
 msgid "Orden"
 msgstr "Sort"
 
-#: now_lms/forms/__init__.py:550 now_lms/forms/masterclass.py:101
+#: now_lms/forms/__init__.py:563 now_lms/forms/masterclass.py:101
 #: now_lms/templates/masterclass/instructor_create.html:140
 msgid "Plataforma"
 msgstr "Transform"
 
-#: now_lms/forms/__init__.py:574 now_lms/forms/__init__.py:922
+#: now_lms/forms/__init__.py:587 now_lms/forms/__init__.py:935
 #: now_lms/templates/admin/flagged_messages.html:120
 #: now_lms/templates/admin/grupos/grupo.html:69
 #: now_lms/templates/admin/users.html:52
@@ -303,7 +303,7 @@ msgstr "Transform"
 #: now_lms/templates/learning/curso/coupons/edit.html:46
 #: now_lms/templates/learning/curso/coupons/list.html:43
 #: now_lms/templates/learning/curso/enroll.html:119
-#: now_lms/templates/learning/curso_lista.html:48
+#: now_lms/templates/learning/curso_lista.html:53
 #: now_lms/templates/learning/mensajes/view_thread.html:230
 #: now_lms/templates/learning/my_courses.html:104
 #: now_lms/templates/learning/programas/admin_enroll.html:93
@@ -316,8 +316,8 @@ msgstr "Transform"
 msgid "Estado"
 msgstr "Status"
 
-#: now_lms/forms/__init__.py:607 now_lms/forms/__init__.py:697
-#: now_lms/forms/__init__.py:811 now_lms/templates/admin/grupos/grupo.html:68
+#: now_lms/forms/__init__.py:620 now_lms/forms/__init__.py:710
+#: now_lms/forms/__init__.py:824 now_lms/templates/admin/grupos/grupo.html:68
 #: now_lms/templates/admin/users.html:49
 #: now_lms/templates/instructor/evaluaciones_lista.html:58
 #: now_lms/templates/learning/certificados/nuevo_certificado.html:34
@@ -349,23 +349,23 @@ msgstr "Status"
 msgid "Tipo"
 msgstr "Type"
 
-#: now_lms/forms/__init__.py:628
+#: now_lms/forms/__init__.py:641
 msgid "Genero"
 msgstr "Gender"
 
-#: now_lms/forms/__init__.py:629
+#: now_lms/forms/__init__.py:642
 msgid "Titulo"
 msgstr "Title"
 
-#: now_lms/forms/__init__.py:651
+#: now_lms/forms/__init__.py:664
 #: now_lms/templates/learning/mensajes/new_thread.html:54
 #: now_lms/templates/learning/mensajes/nuevo_msg.html:25
 #: now_lms/templates/learning/mensajes/nuevo_msg.html:26
 msgid "Asunto"
 msgstr "Subject"
 
-#: now_lms/forms/__init__.py:652 now_lms/forms/__init__.py:845
-#: now_lms/forms/__init__.py:859 now_lms/forms/__init__.py:867
+#: now_lms/forms/__init__.py:665 now_lms/forms/__init__.py:858
+#: now_lms/forms/__init__.py:872 now_lms/forms/__init__.py:880
 #: now_lms/templates/forum/message_thread.html:42
 #: now_lms/templates/learning/mensajes/course_messages.html:93
 #: now_lms/templates/learning/mensajes/new_thread.html:66
@@ -380,22 +380,22 @@ msgstr "Subject"
 msgid "Mensaje"
 msgstr "Message"
 
-#: now_lms/forms/__init__.py:659 now_lms/forms/__init__.py:852
+#: now_lms/forms/__init__.py:672 now_lms/forms/__init__.py:865
 msgid "Respuesta"
 msgstr "Replies"
 
-#: now_lms/forms/__init__.py:666
+#: now_lms/forms/__init__.py:679
 msgid "Motivo del reporte"
 msgstr "Reason for Report"
 
-#: now_lms/forms/__init__.py:739 now_lms/templates/admin/grupos/grupo.html:67
+#: now_lms/forms/__init__.py:752 now_lms/templates/admin/grupos/grupo.html:67
 #: now_lms/templates/admin/grupos/grupo.html:85
 #: now_lms/templates/admin/inactive_users.html:35
 #: now_lms/templates/admin/mail.html:50 now_lms/templates/admin/users.html:40
 #: now_lms/templates/auth/login.html:46 now_lms/templates/auth/login.html:47
 #: now_lms/templates/inicio/perfil.html:163
 #: now_lms/templates/learning/certificados/emitir_certificado.html:23
-#: now_lms/templates/learning/certificados/lista_certificaciones.html:44
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:46
 #: now_lms/templates/learning/nuevo_usuario.html:20
 #: now_lms/templates/learning/nuevo_usuario.html:41
 #: now_lms/templates/learning/nuevo_usuario.html:42
@@ -406,12 +406,12 @@ msgstr "Reason for Report"
 msgid "Usuario"
 msgstr "User"
 
-#: now_lms/forms/__init__.py:740
+#: now_lms/forms/__init__.py:753
 #: now_lms/templates/learning/certificados/emitir_certificado.html:28
 msgid "Tipo de Contenido"
 msgstr "Content Type"
 
-#: now_lms/forms/__init__.py:741 now_lms/forms/__init__.py:880
+#: now_lms/forms/__init__.py:754 now_lms/forms/__init__.py:893
 #: now_lms/templates/admin/flagged_messages.html:73
 #: now_lms/templates/calendar/event_detail.html:108
 #: now_lms/templates/evaluations/evaluation_result.html:32
@@ -420,18 +420,16 @@ msgstr "Content Type"
 #: now_lms/templates/forum/new_message.html:53
 #: now_lms/templates/instructor/evaluaciones_lista.html:56
 #: now_lms/templates/learning/certificados/emitir_certificado.html:35
-#: now_lms/templates/learning/certificados/lista_certificaciones.html:43
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:45
 #: now_lms/templates/learning/curso/admin.html:75
-#: now_lms/templates/learning/curso/admin.html:105
-#: now_lms/templates/learning/curso/admin.html:131
-#: now_lms/templates/learning/curso/admin.html:143
+#: now_lms/templates/learning/curso/admin.html:132
+#: now_lms/templates/learning/curso/admin.html:147
 #: now_lms/templates/learning/curso/coupons/create.html:106
 #: now_lms/templates/learning/curso/coupons/edit.html:17
 #: now_lms/templates/learning/curso/coupons/edit.html:139
 #: now_lms/templates/learning/curso/coupons/list.html:16
 #: now_lms/templates/learning/curso/coupons/list.html:118
 #: now_lms/templates/learning/curso/enroll.html:33
-#: now_lms/templates/learning/curso_lista.html:121
 #: now_lms/templates/learning/mensajes/user_messages.html:52
 #: now_lms/templates/learning/mensajes/view_thread.html:228
 #: now_lms/templates/learning/nuevo_curso.html:28
@@ -440,141 +438,138 @@ msgstr "Content Type"
 #: now_lms/templates/learning/nuevo_curso.html:56
 #: now_lms/templates/learning/nuevo_curso.html:79
 #: now_lms/templates/learning/nuevo_curso.html:87
-#: now_lms/templates/learning/nuevo_curso.html:123
-#: now_lms/templates/learning/nuevo_curso.html:161
+#: now_lms/templates/learning/nuevo_curso.html:164
 #: now_lms/templates/learning/paypal_payment.html:92
-#: now_lms/templates/learning/paypal_payment.html:101
 #: now_lms/templates/learning/programas/gestionar_cursos.html:90
 #: now_lms/templates/learning/programas/gestionar_cursos.html:97
 #: now_lms/templates/learning/programas/gestionar_cursos.html:108
-#: now_lms/templates/learning/recursos/recurso.html:41
 #: now_lms/templates/learning/resources_new/nuevo_recurso_descargable.html:20
 msgid "Curso"
 msgstr "Course"
 
-#: now_lms/forms/__init__.py:742
+#: now_lms/forms/__init__.py:755
 #: now_lms/templates/learning/certificados/emitir_certificado.html:40
 msgid "Clase Magistral"
 msgstr "Masterclass"
 
-#: now_lms/forms/__init__.py:743
+#: now_lms/forms/__init__.py:756
 #: now_lms/templates/learning/certificados/emitir_certificado.html:47
 msgid "Plantilla"
 msgstr "Template"
 
-#: now_lms/forms/__init__.py:802
+#: now_lms/forms/__init__.py:815
 msgid "Es un examen"
 msgstr "Exam"
 
-#: now_lms/forms/__init__.py:803
+#: now_lms/forms/__init__.py:816
 msgid "Puntuación mínima para aprobar"
 msgstr "Minimum Score to Pass"
 
-#: now_lms/forms/__init__.py:804
+#: now_lms/forms/__init__.py:817
 msgid "Máximo número de intentos (vacío = ilimitado)"
 msgstr "Maximum number of attempts (empty = unlimited)"
 
-#: now_lms/forms/__init__.py:810
+#: now_lms/forms/__init__.py:823
 msgid "Texto de la pregunta"
 msgstr "Question text"
 
-#: now_lms/forms/__init__.py:812
+#: now_lms/forms/__init__.py:825
 msgid "Explicación (opcional)"
 msgstr "Explanation (optional)"
 
-#: now_lms/forms/__init__.py:823
+#: now_lms/forms/__init__.py:836
 msgid "Texto de la opción"
 msgstr "Option text"
 
-#: now_lms/forms/__init__.py:824
+#: now_lms/forms/__init__.py:837
 msgid "Es correcta"
 msgstr "Is correct"
 
-#: now_lms/forms/__init__.py:830
+#: now_lms/forms/__init__.py:843
 msgid "Justificación"
 msgstr "Justification"
 
-#: now_lms/forms/__init__.py:860 now_lms/forms/__init__.py:868
+#: now_lms/forms/__init__.py:873 now_lms/forms/__init__.py:881
 msgid "Fecha de expiración"
 msgstr "Expiration date"
 
-#: now_lms/forms/__init__.py:860 now_lms/forms/__init__.py:868
+#: now_lms/forms/__init__.py:873 now_lms/forms/__init__.py:881
 #: now_lms/templates/learning/resources/type_macros.html:88
 msgid "Opcional"
 msgstr "Optional"
 
-#: now_lms/forms/__init__.py:874
+#: now_lms/forms/__init__.py:887
 msgid "Anuncio destacado"
 msgstr "Featured announcement"
 
-#: now_lms/forms/__init__.py:891
+#: now_lms/forms/__init__.py:904
 msgid "Código del Cupón"
 msgstr "Coupon Code"
 
-#: now_lms/forms/__init__.py:891
+#: now_lms/forms/__init__.py:904
 msgid "Ej: DESCUENTO50"
 msgstr "Ex: DISCOUNT50"
 
-#: now_lms/forms/__init__.py:893
+#: now_lms/forms/__init__.py:906
 msgid "Tipo de Descuento"
 msgstr "Discount Type"
 
-#: now_lms/forms/__init__.py:898
+#: now_lms/forms/__init__.py:911
 msgid "Valor del Descuento"
 msgstr "Discount Value"
 
-#: now_lms/forms/__init__.py:899
+#: now_lms/forms/__init__.py:912
 msgid "Máximo de Usos"
 msgstr "Maximum Uses"
 
-#: now_lms/forms/__init__.py:899
+#: now_lms/forms/__init__.py:912
 msgid "Dejar vacío para ilimitado"
 msgstr "Leave empty for unlimited"
 
-#: now_lms/forms/__init__.py:900
+#: now_lms/forms/__init__.py:913
 msgid "Fecha de Expiración"
 msgstr "Expiration Date"
 
-#: now_lms/forms/__init__.py:900
+#: now_lms/forms/__init__.py:913
 msgid "Dejar vacío si no expira"
 msgstr "Leave empty if it does not expire"
 
-#: now_lms/forms/__init__.py:911
+#: now_lms/forms/__init__.py:924
 #: now_lms/templates/learning/curso/enroll.html:132
 msgid "Código de Cupón"
 msgstr "Coupon Code"
 
-#: now_lms/forms/__init__.py:911
+#: now_lms/forms/__init__.py:924
 msgid "Código de cupón (opcional)"
 msgstr "Coupon Code (Optional)"
 
-#: now_lms/forms/__init__.py:919 now_lms/templates/perfiles/admin.html:329
+#: now_lms/forms/__init__.py:932 now_lms/templates/perfiles/admin.html:329
 #: now_lms/templates/perfiles/instructor.html:326
 msgid "Contenido"
 msgstr "Content"
 
-#: now_lms/forms/__init__.py:920
+#: now_lms/forms/__init__.py:933
 msgid "Permitir comentarios"
 msgstr "Allow comments"
 
-#: now_lms/forms/__init__.py:921
+#: now_lms/forms/__init__.py:934
 msgid "Etiquetas (separadas por comas)"
 msgstr "Tags (separated by commas)"
 
-#: now_lms/forms/__init__.py:933 now_lms/templates/admin/inactive_users.html:38
+#: now_lms/forms/__init__.py:946 now_lms/templates/admin/inactive_users.html:38
 #: now_lms/templates/admin/users.html:43 now_lms/templates/auth/logon.html:44
 #: now_lms/templates/blog/admin_tags.html:26
 #: now_lms/templates/inicio/perfil_editar.html:44
-#: now_lms/templates/learning/categorias/lista_categorias.html:42
+#: now_lms/templates/learning/categorias/lista_categorias.html:43
 #: now_lms/templates/learning/certificados/certificado.html:88
 #: now_lms/templates/learning/curso/enroll.html:88
-#: now_lms/templates/learning/curso_lista.html:43
+#: now_lms/templates/learning/curso_lista.html:45
 #: now_lms/templates/learning/nuevo_curso.html:30
 #: now_lms/templates/learning/nuevo_seccion.html:25
 #: now_lms/templates/learning/nuevo_usuario.html:25
 #: now_lms/templates/learning/programas/admin_enroll.html:91
 #: now_lms/templates/learning/programas/lista_programas.html:51
-#: now_lms/templates/learning/recursos/lista_recursos.html:43
+#: now_lms/templates/learning/recursos/lista_recursos.html:48
 #: now_lms/templates/learning/resources_new/editar_recurso_descargable.html:31
 #: now_lms/templates/learning/resources_new/editar_recurso_img.html:25
 #: now_lms/templates/learning/resources_new/editar_recurso_mp3.html:25
@@ -586,37 +581,37 @@ msgstr "Tags (separated by commas)"
 msgid "Nombre"
 msgstr "First Name"
 
-#: now_lms/forms/__init__.py:939
+#: now_lms/forms/__init__.py:952
 msgid "Comentario"
 msgstr "Comment"
 
-#: now_lms/forms/__init__.py:951 now_lms/forms/__init__.py:969
+#: now_lms/forms/__init__.py:964 now_lms/forms/__init__.py:982
 msgid "Usuario del Estudiante"
 msgstr "Student User"
 
-#: now_lms/forms/__init__.py:953 now_lms/forms/__init__.py:971
+#: now_lms/forms/__init__.py:966 now_lms/forms/__init__.py:984
 msgid "Nombre de usuario del estudiante"
 msgstr "Student Username"
 
-#: now_lms/forms/__init__.py:956 now_lms/forms/__init__.py:974
+#: now_lms/forms/__init__.py:969 now_lms/forms/__init__.py:987
 msgid "Omitir Pago"
 msgstr "No Payment"
 
-#: now_lms/forms/__init__.py:958
+#: now_lms/forms/__init__.py:971
 msgid ""
 "Si está marcado, el estudiante tendrá acceso completo sin importar si el "
 "curso es pagado"
 msgstr "If checked, the student will have full access without making a payment"
 
-#: now_lms/forms/__init__.py:961 now_lms/forms/__init__.py:981
+#: now_lms/forms/__init__.py:974 now_lms/forms/__init__.py:994
 msgid "Notas (opcional)"
 msgstr "Notes (optional)"
 
-#: now_lms/forms/__init__.py:961 now_lms/forms/__init__.py:981
+#: now_lms/forms/__init__.py:974 now_lms/forms/__init__.py:994
 msgid "Notas adicionales sobre la inscripción"
 msgstr "Additional notes about the enrollment"
 
-#: now_lms/forms/__init__.py:977
+#: now_lms/forms/__init__.py:990
 msgid ""
 "Si está marcado, el estudiante tendrá acceso completo a todos los cursos "
 "sin importar si son pagados"
@@ -835,7 +830,7 @@ msgid "Verificar archivo ads.txt"
 msgstr "Verify ads file"
 
 #: now_lms/templates/admin/adsense.html:130
-#: now_lms/templates/admin/config.html:178
+#: now_lms/templates/admin/config.html:255
 #: now_lms/templates/admin/mail.html:105
 #: now_lms/templates/admin/paypal.html:103
 #: now_lms/templates/admin/stripe.html:33
@@ -864,74 +859,128 @@ msgid "Descripción del Sitio"
 msgstr "Website Description"
 
 #: now_lms/templates/admin/config.html:41
+#, fuzzy
+msgid "Eslogan de academia en línea."
+msgstr "Online learning system."
+
+#: now_lms/templates/admin/config.html:48
+msgid "Titulo para mostrar en la barra de navegación"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:51
+msgid "Este sera el titulo que los usuario vean en su navegador web."
+msgstr ""
+
+#: now_lms/templates/admin/config.html:55
+msgid "Texto para mostrar en el Hero"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:58
+msgid "El hero es el elemento que se muestra debajo de la barra de navegación."
+msgstr ""
+
+#: now_lms/templates/admin/config.html:64
+msgid "Mostrar sección de caracteristicas"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:70
+msgid "Diseñe su propia sección de caractesticas"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:73
+msgid "Debe ser un segmento de HTML valido que se integre en su plantilla actual."
+msgstr ""
+
+#: now_lms/templates/admin/config.html:82
+#, fuzzy
+msgid "Información adicional"
+msgstr "Additional Information"
+
+#: now_lms/templates/admin/config.html:87
+#: now_lms/templates/admin/config.html:94
+#: now_lms/templates/admin/config.html:101
+#: now_lms/templates/admin/config.html:108
+#, fuzzy
+msgid "Texto personalizado"
+msgstr "Customization"
+
+#: now_lms/templates/admin/config.html:90
+#: now_lms/templates/admin/config.html:97
+#: now_lms/templates/admin/config.html:104
+#: now_lms/templates/admin/config.html:111
+msgid "Este texto esta disponible como:"
+msgstr ""
+
+#: now_lms/templates/admin/config.html:118
 msgid "Configuración Regional"
 msgstr "Edit AdSense settings"
 
-#: now_lms/templates/admin/config.html:45
+#: now_lms/templates/admin/config.html:122
 msgid "Moneda del Sitio"
 msgstr "Course Content"
 
-#: now_lms/templates/admin/config.html:48
+#: now_lms/templates/admin/config.html:125
 msgid "Seleccione la moneda predeterminada para procesar pagos y mostrar precios"
 msgstr "Select the default currency for processing payments and displaying prices"
 
-#: now_lms/templates/admin/config.html:54
+#: now_lms/templates/admin/config.html:131
 msgid "Seleccione la zona horaria adecuada para su país"
 msgstr "Select the appropriate time zone for your country"
 
-#: now_lms/templates/admin/config.html:60
+#: now_lms/templates/admin/config.html:137
 msgid "Idioma del sitio web"
 msgstr "Course removed from the website"
 
-#: now_lms/templates/admin/config.html:62
-msgid "Seleccione el idioma de su sitio web"
+#: now_lms/templates/admin/config.html:139
+#, fuzzy
+msgid "Seleccione el idioma predeterminado de su sitio web"
 msgstr "Course removed from the website"
 
-#: now_lms/templates/admin/config.html:69
+#: now_lms/templates/admin/config.html:146
 msgid "Configuración de Navegación"
 msgstr "Edit AdSense settings"
 
-#: now_lms/templates/admin/config.html:71
+#: now_lms/templates/admin/config.html:148
 msgid ""
 "Configure qué elementos del menú de navegación estarán visibles para los "
 "usuarios"
 msgstr "Configure which elements of the navigation menu will be visible to users"
 
-#: now_lms/templates/admin/config.html:84
+#: now_lms/templates/admin/config.html:161
 msgid "Los usuarios verán la opción Programas en el menú de navegación"
 msgstr "Users will see the Programs option in the navigation menu"
 
-#: now_lms/templates/admin/config.html:96
+#: now_lms/templates/admin/config.html:173
 msgid "Los usuarios verán la opción Clases Magistrales en el menú de navegación"
 msgstr "Users will see the Masterclasses option in the navigation menu"
 
-#: now_lms/templates/admin/config.html:111
+#: now_lms/templates/admin/config.html:188
 msgid "Los usuarios verán la opción Recursos en el menú de navegación"
 msgstr "Users will see the Resources option in the navigation menu"
 
-#: now_lms/templates/admin/config.html:119
+#: now_lms/templates/admin/config.html:196
 msgid "Los usuarios verán la opción Blog en el menú de navegación"
 msgstr "Users will see the Blog option in the navigation menu"
 
-#: now_lms/templates/admin/config.html:126
+#: now_lms/templates/admin/config.html:203
 msgid "Configuración de subida de archivos"
 msgstr "Edit file uploads settings"
 
-#: now_lms/templates/admin/config.html:139
+#: now_lms/templates/admin/config.html:216
 msgid ""
 "Permite a los instructores subir archivos descargables como recursos del "
 "curso"
 msgstr "Allows instructors to upload downloadable files as course resources"
 
-#: now_lms/templates/admin/config.html:147
+#: now_lms/templates/admin/config.html:224
 msgid "Tamaño máximo permitido para archivos descargables (1-100 MB)"
 msgstr "Maximum size allowed for downloadable files (1-100 MB)"
 
-#: now_lms/templates/admin/config.html:155
+#: now_lms/templates/admin/config.html:232
 msgid "Configuración de verificación de usuarios"
 msgstr "User Verification Settings"
 
-#: now_lms/templates/admin/config.html:162
+#: now_lms/templates/admin/config.html:239
 msgid ""
 "La configuración de correo\n"
 "                                electrónico ha sido verificada "
@@ -940,7 +989,7 @@ msgstr ""
 "Email configuration\n"
 "                                has not been verified."
 
-#: now_lms/templates/admin/config.html:167
+#: now_lms/templates/admin/config.html:244
 msgid ""
 "La configuración de correo\n"
 "                                electrónico no ha sido verificada."
@@ -948,11 +997,11 @@ msgstr ""
 "Email configuration\n"
 "                                has not been verified."
 
-#: now_lms/templates/admin/config.html:172
+#: now_lms/templates/admin/config.html:249
 msgid "Permitir a nuevos usuarios verificarse vía correo electrónico"
 msgstr "Allow new users to verify via email"
 
-#: now_lms/templates/admin/config.html:195
+#: now_lms/templates/admin/config.html:272
 msgid "Buscar moneda..."
 msgstr "Search currency..."
 
@@ -999,14 +1048,14 @@ msgstr "Administration"
 #: now_lms/templates/learning/curso.html:29
 #: now_lms/templates/learning/curso/admin.html:29
 #: now_lms/templates/learning/curso/curso.html:27
-#: now_lms/templates/learning/curso_lista.html:45
+#: now_lms/templates/learning/curso_lista.html:47
 #: now_lms/templates/learning/mensajes/course_messages.html:23
 #: now_lms/templates/learning/mensajes/new_thread.html:23
 #: now_lms/templates/learning/mensajes/standalone_report.html:23
 #: now_lms/templates/learning/mensajes/user_messages.html:23
 #: now_lms/templates/learning/mensajes/view_thread.html:23
-#: now_lms/templates/learning/nuevo_curso.html:95
-#: now_lms/templates/learning/nuevo_curso.html:97
+#: now_lms/templates/learning/nuevo_curso.html:96
+#: now_lms/templates/learning/nuevo_curso.html:98
 #: now_lms/templates/learning/recursos/recurso.html:25
 #: now_lms/templates/learning/resources/type_alternativo.html:27
 #: now_lms/templates/learning/resources/type_audio.html:189
@@ -1067,8 +1116,8 @@ msgstr "From"
 #: now_lms/templates/learning/curso/coupons/create.html:91
 #: now_lms/templates/learning/curso/coupons/edit.html:124
 #: now_lms/templates/learning/mensajes/ver_msg.html:39
-#: now_lms/templates/learning/nuevo_curso.html:97
-#: now_lms/templates/learning/nuevo_curso.html:101
+#: now_lms/templates/learning/nuevo_curso.html:98
+#: now_lms/templates/learning/nuevo_curso.html:102
 #: now_lms/templates/learning/programas/admin_enrollments.html:50
 #: now_lms/templates/learning/resources_new/editar_recurso_meet.html:35
 #: now_lms/templates/learning/resources_new/nuevo_recurso_meet.html:35
@@ -1079,7 +1128,7 @@ msgstr "Date"
 
 #: now_lms/templates/admin/flagged_messages.html:83
 #: now_lms/templates/admin/users.html:93
-#: now_lms/templates/learning/curso/admin.html:167
+#: now_lms/templates/learning/curso/admin.html:171
 #: now_lms/templates/learning/curso/admin_enrollments.html:50
 #: now_lms/templates/learning/mensajes/view_thread.html:86
 #: now_lms/templates/learning/programas/admin_enrollments.html:32
@@ -1105,28 +1154,23 @@ msgstr "Reason for Report"
 #: now_lms/templates/blog/admin_tags.html:29
 #: now_lms/templates/blog/instructor_index.html:35
 #: now_lms/templates/instructor/evaluaciones_lista.html:62
-#: now_lms/templates/learning/categorias/lista_categorias.html:45
-#: now_lms/templates/learning/categorias/lista_categorias.html:63
-#: now_lms/templates/learning/certificados/lista_certificaciones.html:45
-#: now_lms/templates/learning/certificados/lista_certificaciones.html:61
-#: now_lms/templates/learning/certificados/lista_certificados.html:50
-#: now_lms/templates/learning/certificados/lista_certificados.html:74
+#: now_lms/templates/learning/categorias/lista_categorias.html:51
+#: now_lms/templates/learning/categorias/lista_categorias.html:72
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:47
+#: now_lms/templates/learning/certificados/lista_certificados.html:54
 #: now_lms/templates/learning/curso/admin.html:39
-#: now_lms/templates/learning/curso/admin.html:233
-#: now_lms/templates/learning/curso/admin.html:241
-#: now_lms/templates/learning/curso/admin.html:278
-#: now_lms/templates/learning/curso/admin.html:323
+#: now_lms/templates/learning/curso/admin.html:242
+#: now_lms/templates/learning/curso/admin.html:251
+#: now_lms/templates/learning/curso/admin.html:289
+#: now_lms/templates/learning/curso/admin.html:341
 #: now_lms/templates/learning/curso/admin_enrollments.html:57
 #: now_lms/templates/learning/curso/coupons/list.html:44
-#: now_lms/templates/learning/curso_lista.html:50
-#: now_lms/templates/learning/curso_lista.html:90
-#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:46
-#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:69
+#: now_lms/templates/learning/curso_lista.html:58
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:50
 #: now_lms/templates/learning/programas/admin_enrollments.html:52
 #: now_lms/templates/learning/programas/lista_programas.html:64
 #: now_lms/templates/learning/programas/lista_programas.html:108
-#: now_lms/templates/learning/recursos/lista_recursos.html:48
-#: now_lms/templates/learning/recursos/lista_recursos.html:80
+#: now_lms/templates/learning/recursos/lista_recursos.html:55
 #: now_lms/templates/masterclass/admin_list.html:43
 #: now_lms/templates/masterclass/instructor_list.html:37
 msgid "Acciones"
@@ -1160,8 +1204,8 @@ msgstr "Thread Statistics"
 #: now_lms/templates/forum/forum_list.html:82
 #: now_lms/templates/forum/message_thread.html:97
 #: now_lms/templates/learning/curso/admin.html:62
-#: now_lms/templates/learning/curso/admin.html:139
-#: now_lms/templates/learning/curso_lista.html:77
+#: now_lms/templates/learning/curso/admin.html:143
+#: now_lms/templates/learning/curso_lista.html:85
 #: now_lms/templates/learning/mensajes/course_messages.html:73
 #: now_lms/templates/learning/mensajes/user_messages.html:67
 #: now_lms/templates/learning/mensajes/view_thread.html:48
@@ -1180,8 +1224,8 @@ msgstr "Resolved"
 #: now_lms/templates/forum/forum_list.html:84
 #: now_lms/templates/forum/message_thread.html:99
 #: now_lms/templates/learning/curso/admin.html:69
-#: now_lms/templates/learning/curso/admin.html:141
-#: now_lms/templates/learning/curso_lista.html:79
+#: now_lms/templates/learning/curso/admin.html:145
+#: now_lms/templates/learning/curso_lista.html:87
 #: now_lms/templates/learning/mensajes/course_messages.html:77
 #: now_lms/templates/learning/mensajes/user_messages.html:71
 #: now_lms/templates/learning/mensajes/view_thread.html:73
@@ -1194,7 +1238,7 @@ msgid "Cerrado"
 msgstr "Closed"
 
 #: now_lms/templates/admin/flagged_messages.html:128
-#: now_lms/templates/learning/curso.html:133
+#: now_lms/templates/learning/curso.html:135
 #: now_lms/templates/learning/mensajes/course_messages.html:6
 #: now_lms/templates/learning/mensajes/course_messages.html:34
 #: now_lms/templates/learning/mensajes/course_messages.html:66
@@ -1616,11 +1660,11 @@ msgstr "Inactive"
 #: now_lms/templates/announcements/instructor_list.html:55
 #: now_lms/templates/blog/admin_tags.html:43
 #: now_lms/templates/blog/post_detail.html:138
-#: now_lms/templates/learning/curso/admin.html:351
-#: now_lms/templates/learning/curso/admin.html:473
-#: now_lms/templates/learning/curso/admin.html:587
+#: now_lms/templates/learning/curso/admin.html:370
+#: now_lms/templates/learning/curso/admin.html:502
+#: now_lms/templates/learning/curso/admin.html:617
 #: now_lms/templates/learning/curso/coupons/list.html:92
-#: now_lms/templates/learning/nuevo_curso.html:128
+#: now_lms/templates/learning/nuevo_curso.html:131
 #: now_lms/templates/learning/programas/editar_programa.html:101
 msgid "Eliminar"
 msgstr "Delete"
@@ -1710,13 +1754,12 @@ msgstr "Update"
 
 #: now_lms/templates/announcements/admin_form.html:88
 #: now_lms/templates/announcements/instructor_form.html:84
-#: now_lms/templates/learning/curso/admin.html:196
-#: now_lms/templates/learning/curso/admin.html:329
+#: now_lms/templates/learning/curso/admin.html:201
+#: now_lms/templates/learning/curso/admin.html:348
 #: now_lms/templates/learning/curso/coupons/create.html:121
 #: now_lms/templates/learning/curso/coupons/list.html:18
 #: now_lms/templates/learning/curso/coupons/list.html:110
-#: now_lms/templates/learning/curso_lista.html:121
-#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:101
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:109
 #: now_lms/templates/learning/nuevo_curso.html:23
 #: now_lms/templates/learning/nuevo_seccion.html:20
 #: now_lms/templates/learning/nuevo_seccion.html:35
@@ -1831,27 +1874,28 @@ msgstr "New Announcement"
 #: now_lms/templates/blog/instructor_index.html:73
 #: now_lms/templates/blog/instructor_index.html:75
 #: now_lms/templates/instructor/evaluaciones_lista.html:114
+#: now_lms/templates/learning/certificados/lista_certificados.html:119
 #: now_lms/templates/learning/curso/admin.html:131
-#: now_lms/templates/learning/curso/admin.html:229
-#: now_lms/templates/learning/curso/admin.html:315
-#: now_lms/templates/learning/curso/admin.html:401
-#: now_lms/templates/learning/curso/admin.html:407
-#: now_lms/templates/learning/curso/admin.html:413
-#: now_lms/templates/learning/curso/admin.html:419
-#: now_lms/templates/learning/curso/admin.html:425
-#: now_lms/templates/learning/curso/admin.html:431
-#: now_lms/templates/learning/curso/admin.html:437
-#: now_lms/templates/learning/curso/admin.html:443
+#: now_lms/templates/learning/curso/admin.html:237
+#: now_lms/templates/learning/curso/admin.html:332
+#: now_lms/templates/learning/curso/admin.html:421
+#: now_lms/templates/learning/curso/admin.html:428
+#: now_lms/templates/learning/curso/admin.html:435
+#: now_lms/templates/learning/curso/admin.html:442
 #: now_lms/templates/learning/curso/admin.html:449
-#: now_lms/templates/learning/curso/admin.html:496
-#: now_lms/templates/learning/curso/admin.html:503
-#: now_lms/templates/learning/curso/admin.html:510
-#: now_lms/templates/learning/curso/admin.html:517
-#: now_lms/templates/learning/curso/admin.html:524
-#: now_lms/templates/learning/curso/admin.html:531
-#: now_lms/templates/learning/curso/admin.html:538
-#: now_lms/templates/learning/curso/admin.html:545
-#: now_lms/templates/learning/curso/admin.html:552
+#: now_lms/templates/learning/curso/admin.html:456
+#: now_lms/templates/learning/curso/admin.html:463
+#: now_lms/templates/learning/curso/admin.html:470
+#: now_lms/templates/learning/curso/admin.html:477
+#: now_lms/templates/learning/curso/admin.html:525
+#: now_lms/templates/learning/curso/admin.html:532
+#: now_lms/templates/learning/curso/admin.html:539
+#: now_lms/templates/learning/curso/admin.html:546
+#: now_lms/templates/learning/curso/admin.html:553
+#: now_lms/templates/learning/curso/admin.html:560
+#: now_lms/templates/learning/curso/admin.html:567
+#: now_lms/templates/learning/curso/admin.html:574
+#: now_lms/templates/learning/curso/admin.html:581
 #: now_lms/templates/learning/curso/coupons/edit.html:6
 #: now_lms/templates/learning/curso/coupons/edit.html:16
 #: now_lms/templates/learning/curso/coupons/list.html:83
@@ -2144,7 +2188,7 @@ msgid "Contraseña"
 msgstr "Password"
 
 #: now_lms/templates/auth/login.html:50
-#: now_lms/templates/learning/curso.html:192
+#: now_lms/templates/learning/curso.html:194
 #: now_lms/templates/learning/curso/curso.html:173
 #: now_lms/templates/themes/amber/navbar.j2:95
 #: now_lms/templates/themes/cambridge/navbar.j2:82
@@ -2192,7 +2236,7 @@ msgstr ""
 "                Address"
 
 #: now_lms/templates/auth/logon.html:53
-#: now_lms/templates/learning/curso.html:200
+#: now_lms/templates/learning/curso.html:202
 #: now_lms/templates/themes/amber/navbar.j2:98
 #: now_lms/templates/themes/cambridge/navbar.j2:85
 #: now_lms/templates/themes/classic/navbar.j2:98
@@ -2281,8 +2325,8 @@ msgstr "Comments"
 #: now_lms/templates/blog/admin_index.html:88
 #: now_lms/templates/blog/instructor_index.html:50
 #: now_lms/templates/learning/curso/admin.html:55
-#: now_lms/templates/learning/curso/admin.html:137
-#: now_lms/templates/learning/curso_lista.html:75
+#: now_lms/templates/learning/curso/admin.html:140
+#: now_lms/templates/learning/curso_lista.html:83
 #: now_lms/templates/learning/my_courses.html:108
 #: now_lms/templates/learning/programas/lista_programas.html:104
 msgid "Borrador"
@@ -2291,7 +2335,7 @@ msgstr "Draft"
 #: now_lms/templates/blog/admin_index.html:90
 #: now_lms/templates/calendar/event_detail.html:94
 #: now_lms/templates/calendar/upcoming_events.html:88
-#: now_lms/templates/learning/curso.html:334
+#: now_lms/templates/learning/curso.html:339
 #: now_lms/templates/learning/resources/type_macros.html:95
 #: now_lms/templates/masterclass/my_enrollments.html:74
 msgid "Pendiente"
@@ -2960,17 +3004,17 @@ msgstr "Submit Request"
 
 #: now_lms/templates/evaluations/take_evaluation.html:47
 #: now_lms/templates/instructor/evaluaciones_lista.html:92
-#: now_lms/templates/learning/curso.html:297
-#: now_lms/templates/learning/curso.html:339
-#: now_lms/templates/learning/curso.html:349
+#: now_lms/templates/learning/curso.html:299
+#: now_lms/templates/learning/curso.html:344
+#: now_lms/templates/learning/curso.html:354
 msgid "Examen"
 msgstr "Exam"
 
 #: now_lms/templates/evaluations/take_evaluation.html:49
 #: now_lms/templates/instructor/evaluaciones_lista.html:94
-#: now_lms/templates/learning/curso.html:299
-#: now_lms/templates/learning/curso.html:341
-#: now_lms/templates/learning/curso.html:351
+#: now_lms/templates/learning/curso.html:301
+#: now_lms/templates/learning/curso.html:346
+#: now_lms/templates/learning/curso.html:356
 msgid "Quiz"
 msgstr "Quiz"
 
@@ -3025,7 +3069,7 @@ msgstr "Forum"
 #: now_lms/templates/forum/forum_list.html:45
 #: now_lms/templates/forum/new_message.html:7
 #: now_lms/templates/forum/new_message.html:42
-#: now_lms/templates/learning/curso.html:150
+#: now_lms/templates/learning/curso.html:152
 #: now_lms/templates/learning/mensajes/course_messages.html:40
 #: now_lms/templates/learning/mensajes/new_thread.html:6
 #: now_lms/templates/learning/mensajes/new_thread.html:42
@@ -3034,7 +3078,7 @@ msgid "Nuevo Mensaje"
 msgstr "New Message"
 
 #: now_lms/templates/forum/forum_list.html:52
-#: now_lms/templates/learning/curso.html:160
+#: now_lms/templates/learning/curso.html:162
 msgid "Foro del Curso"
 msgstr "Cource Forum"
 
@@ -3398,7 +3442,7 @@ msgstr "Advanced"
 #: now_lms/templates/inicio/programas.html:558
 #: now_lms/templates/inicio/recursos.html:122
 #: now_lms/templates/learning/programas/lista_programas.html:95
-#: now_lms/templates/learning/recursos/lista_recursos.html:76
+#: now_lms/templates/learning/recursos/lista_recursos.html:83
 #: now_lms/templates/masterclass/admin_list.html:80
 #: now_lms/templates/masterclass/enroll.html:96
 #: now_lms/templates/masterclass/instructor_list.html:67
@@ -3600,7 +3644,7 @@ msgstr "Explore All Courses"
 
 #: now_lms/templates/inicio/home.html:228
 #: now_lms/templates/inicio/panel_instructor.html:55
-#: now_lms/templates/learning/nuevo_curso.html:171
+#: now_lms/templates/learning/nuevo_curso.html:174
 #: now_lms/templates/themes/excel/overrides/home.j2:223
 msgid "Crear Curso"
 msgstr "Create Course"
@@ -3726,7 +3770,7 @@ msgid "Recursos de aprendizaje"
 msgstr "Learning Resources"
 
 #: now_lms/templates/inicio/panel_admin.html:127
-#: now_lms/templates/learning/curso/admin.html:159
+#: now_lms/templates/learning/curso/admin.html:163
 #: now_lms/templates/learning/programas/gestionar_cursos.html:6
 #: now_lms/templates/learning/programas/gestionar_cursos.html:22
 #: now_lms/templates/learning/programas/inscribir_usuario.html:97
@@ -3805,8 +3849,8 @@ msgid "Herramientas de Administración"
 msgstr "Administration Tools"
 
 #: now_lms/templates/inicio/panel_admin.html:289
-#: now_lms/templates/learning/categorias/lista_categorias.html:44
-#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:45
+#: now_lms/templates/learning/categorias/lista_categorias.html:49
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:48
 #: now_lms/templates/learning/programas/editar_programa.html:24
 #: now_lms/templates/learning/programas/gestionar_cursos.html:125
 #: now_lms/templates/learning/programas/inscribir_usuario.html:106
@@ -4013,9 +4057,9 @@ msgid "Usuarios"
 msgstr "Users"
 
 #: now_lms/templates/inicio/panel_moderator.html:285
-#: now_lms/templates/learning/curso/admin.html:360
+#: now_lms/templates/learning/curso/admin.html:380
 #: now_lms/templates/learning/recursos/lista_recursos.html:6
-#: now_lms/templates/learning/recursos/lista_recursos.html:20
+#: now_lms/templates/learning/recursos/lista_recursos.html:21
 #: now_lms/templates/perfiles/instructor.html:332
 #: now_lms/templates/themes/amber/navbar.j2:58
 #: now_lms/templates/themes/cambridge/navbar.j2:54
@@ -4436,12 +4480,12 @@ msgid "¿Está seguro que desea deshabilitar esta evaluación?"
 msgstr "Are you sure you want to delete this evaluation?"
 
 #: now_lms/templates/instructor/evaluaciones_lista.html:137
-#: now_lms/templates/learning/certificados/lista_certificados.html:79
+#: now_lms/templates/learning/certificados/lista_certificados.html:87
 msgid "Deshabilitar"
 msgstr "Disable"
 
 #: now_lms/templates/instructor/evaluaciones_lista.html:141
-#: now_lms/templates/learning/certificados/lista_certificados.html:87
+#: now_lms/templates/learning/certificados/lista_certificados.html:95
 msgid "Habilitar"
 msgstr "Enable"
 
@@ -4451,15 +4495,17 @@ msgstr "No evaluations created"
 
 #: now_lms/templates/instructor/evaluaciones_lista.html:156
 msgid "No ha creado evaluaciones aún. Comience creando su primera evaluación."
-msgstr "You haven’t created any evaluations yet. Start by creating your first evaluation."
+msgstr ""
+"You haven’t created any evaluations yet. Start by creating your first "
+"evaluation."
 
 #: now_lms/templates/instructor/evaluaciones_lista.html:161
 msgid "Crear Primera Evaluación"
 msgstr "Create First Evaluation"
 
 #: now_lms/templates/instructor/new_evaluation.html:34
-#: now_lms/templates/learning/categorias/lista_categorias.html:43
-#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:44
+#: now_lms/templates/learning/categorias/lista_categorias.html:46
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:45
 #: now_lms/templates/learning/programa.html:26
 #: now_lms/templates/learning/programas/editar_programa.html:33
 #: now_lms/templates/learning/programas/gestionar_cursos.html:6
@@ -4504,22 +4550,27 @@ msgid ""
 "Las evaluaciones solo son visibles para estudiantes que hayan pagado el\n"
 "                                                curso (si es de pago)."
 msgstr ""
-"Evaluations are only visible to students who have paid for the course "
-"(if it is a paid course)."
+"Evaluations are only visible to students who have paid for the course (if"
+" it is a paid course)."
 
 #: now_lms/templates/instructor/new_evaluation.html:137
 msgid ""
 "Los estudiantes deben completar todos los recursos antes de ver las\n"
 "                                                evaluaciones."
 msgstr ""
-"Students must complete all resources before they can access the evaluations."
+"Students must complete all resources before they can access the "
+"evaluations."
 
 #: now_lms/templates/instructor/new_evaluation.html:150
 msgid "Crear Evaluación"
 msgstr "Create Evaluation"
 
 #: now_lms/templates/learning/curso.html:45
+#: now_lms/templates/learning/curso/admin.html:105
 #: now_lms/templates/learning/curso/curso.html:45
+#: now_lms/templates/learning/nuevo_curso.html:126
+#: now_lms/templates/learning/paypal_payment.html:101
+#: now_lms/templates/learning/recursos/recurso.html:41
 msgid "Portada del Curso"
 msgstr "Course Cover"
 
@@ -4555,89 +4606,93 @@ msgid "Auditar contenido del curso"
 msgstr "Audit Course Content"
 
 #: now_lms/templates/learning/curso.html:113
+#: now_lms/templates/learning/curso/enroll.html:158
 msgid ""
 "Puede acceder al contenido del curso pero no podrá resolver las "
-"evaluaciones u obtener un certificado al finalizar."
+"evaluaciones u obtener un\n"
+"                                certificado al finalizar."
 msgstr ""
 "You can access the course content but will not be able to complete "
 "assessments or receive a certificate upon completion."
 
-#: now_lms/templates/learning/curso.html:115
+#: now_lms/templates/learning/curso.html:116
+#: now_lms/templates/learning/curso/enroll.html:161
 msgid ""
 "Puede pagar el valor del curso antes de finalizarlo y acceder a las "
-"evaluaciones y la certificación."
+"evaluaciones y la\n"
+"                                certificación."
 msgstr ""
-"You can pay for the course before finishing it to access assessments and "
-"receive certification."
+"You can pay for the course before finishing to access assessments and "
+"obtain certification."
 
-#: now_lms/templates/learning/curso.html:119
+#: now_lms/templates/learning/curso.html:121
 #: now_lms/templates/learning/curso/enroll.html:171
 msgid "Proceder al pago"
 msgstr "Proceed to Payment"
 
-#: now_lms/templates/learning/curso.html:123
+#: now_lms/templates/learning/curso.html:125
 #: now_lms/templates/learning/curso/enroll.html:175
 msgid "Inscribirse al curso"
 msgstr "Enroll in Course"
 
-#: now_lms/templates/learning/curso.html:137
+#: now_lms/templates/learning/curso.html:139
 msgid "¿Tienes alguna pregunta sobre el curso? Contacta a tus instructores."
 msgstr "Do you have any questions about the course? Contact your instructors."
 
-#: now_lms/templates/learning/curso.html:144
+#: now_lms/templates/learning/curso.html:146
 msgid "Ver Mensajes"
 msgstr "View Messages"
 
-#: now_lms/templates/learning/curso.html:164
+#: now_lms/templates/learning/curso.html:166
 msgid "Participa en discusiones con otros estudiantes y compartir conocimientos."
 msgstr "Join discussions with other students and share knowledge."
 
-#: now_lms/templates/learning/curso.html:171
+#: now_lms/templates/learning/curso.html:173
 msgid "Ver Foro"
 msgstr "See Forum"
 
-#: now_lms/templates/learning/curso.html:178
+#: now_lms/templates/learning/curso.html:180
 msgid "Nuevo Mensaje en Foro"
 msgstr "New Forum Message"
 
-#: now_lms/templates/learning/curso.html:209
+#: now_lms/templates/learning/curso.html:211
 msgid "Publicidad"
 msgstr "Advertisement"
 
-#: now_lms/templates/learning/curso.html:215
-#: now_lms/templates/learning/curso/admin.html:149
+#: now_lms/templates/learning/curso.html:217
+#: now_lms/templates/learning/curso/admin.html:153
 msgid "Contenido del curso."
 msgstr "Course Content."
 
-#: now_lms/templates/learning/curso.html:272
+#: now_lms/templates/learning/curso.html:274
 msgid "Preview"
 msgstr "Preview"
 
-#: now_lms/templates/learning/curso.html:312
+#: now_lms/templates/learning/curso.html:314
 msgid "Aprobado"
 msgstr "Passed"
 
-#: now_lms/templates/learning/curso.html:316
+#: now_lms/templates/learning/curso.html:318
 msgid "No Aprobado"
 msgstr "Not Passed"
 
-#: now_lms/templates/learning/curso.html:326
+#: now_lms/templates/learning/curso.html:330
 msgid "Solicitud de reapertura pendiente"
 msgstr "Reopen Request Pending"
 
-#: now_lms/templates/learning/curso.html:331
+#: now_lms/templates/learning/curso.html:336
 msgid "Solicitar nuevo intento"
 msgstr "Request New Attempt"
 
-#: now_lms/templates/learning/curso.html:344
+#: now_lms/templates/learning/curso.html:349
 msgid "Pago requerido"
 msgstr "Payment Required"
 
-#: now_lms/templates/learning/curso.html:371
+#: now_lms/templates/learning/curso.html:376
 msgid "Crear Nueva Sección"
 msgstr "Create New Section"
 
-#: now_lms/templates/learning/curso.html:374
+#: now_lms/templates/learning/curso.html:379
 #: now_lms/templates/learning/curso/curso.html:261
 msgid "Este curso actualmente no cuenta con secciones disponibles."
 msgstr "This course currently has no available sections."
@@ -4658,35 +4713,55 @@ msgstr "Manage and Administer Your Learning Courses"
 msgid "Lista de cursos disponibles en el sistema."
 msgstr "List of Available Courses in the System."
 
-#: now_lms/templates/learning/curso_lista.html:42
+#: now_lms/templates/learning/curso_lista.html:43
 #: now_lms/templates/learning/programas/lista_programas.html:49
-#: now_lms/templates/learning/recursos/lista_recursos.html:42
+#: now_lms/templates/learning/recursos/lista_recursos.html:46
 msgid "Código"
 msgstr "Code"
 
-#: now_lms/templates/learning/curso_lista.html:47
+#: now_lms/templates/learning/curso_lista.html:50
 msgid "Fin"
 msgstr "End"
 
-#: now_lms/templates/learning/certificados/lista_certificados.html:49
-#: now_lms/templates/learning/certificados/lista_certificados.html:68
-#: now_lms/templates/learning/curso_lista.html:49
+#: now_lms/templates/learning/certificados/lista_certificados.html:52
+#: now_lms/templates/learning/certificados/lista_certificados.html:72
+#: now_lms/templates/learning/curso_lista.html:56
 #: now_lms/templates/learning/my_courses.html:116
 #: now_lms/templates/learning/programas/lista_programas.html:56
 #: now_lms/templates/learning/programas/lista_programas.html:86
-#: now_lms/templates/learning/recursos/lista_recursos.html:44
-#: now_lms/templates/learning/recursos/lista_recursos.html:67
+#: now_lms/templates/learning/recursos/lista_recursos.html:50
+#: now_lms/templates/learning/recursos/lista_recursos.html:74
 msgid "Público"
 msgstr "Public"
 
-#: now_lms/templates/learning/curso_lista.html:118
+#: now_lms/templates/learning/curso_lista.html:98
+#, fuzzy
+msgid "Acciones del curso"
+msgstr "User actions"
+
+#: now_lms/templates/learning/curso_lista.html:102
+#, fuzzy
+msgid "Ver curso"
+msgstr "View Course"
+
+#: now_lms/templates/learning/curso_lista.html:109
+#: now_lms/templates/learning/nuevo_curso.html:6
+msgid "Editar curso"
+msgstr "Edit Course"
+
+#: now_lms/templates/learning/curso_lista.html:126
 #: now_lms/templates/themes/excel/overrides/home.j2:220
 msgid "No hay cursos disponibles"
 msgstr "No courses available"
 
-#: now_lms/templates/learning/curso_lista.html:119
+#: now_lms/templates/learning/curso_lista.html:127
 msgid "Usted no ha creado ningún curso todavía."
 msgstr "You have not created any courses yet."
+
+#: now_lms/templates/learning/curso_lista.html:129
+#: now_lms/templates/perfiles/instructor.html:237
+msgid "Crear Primer Curso"
+msgstr "Create First Course"
 
 #: now_lms/templates/learning/editar_seccion.html:6
 msgid "Editar Sección"
@@ -4749,10 +4824,10 @@ msgstr "Create New Course"
 msgid "Acceso"
 msgstr "Access"
 
-#: now_lms/templates/learning/certificados/lista_certificados.html:70
+#: now_lms/templates/learning/certificados/lista_certificados.html:74
 #: now_lms/templates/learning/my_courses.html:118
 #: now_lms/templates/learning/programas/lista_programas.html:88
-#: now_lms/templates/learning/recursos/lista_recursos.html:69
+#: now_lms/templates/learning/recursos/lista_recursos.html:76
 msgid "Privado"
 msgstr "Private"
 
@@ -4794,10 +4869,6 @@ msgstr "Create My First Course"
 #: now_lms/templates/learning/my_courses.html:195
 msgid "Regresar al Panel"
 msgstr "Return to panel"
-
-#: now_lms/templates/learning/nuevo_curso.html:6
-msgid "Editar curso"
-msgstr "Edit Course"
 
 #: now_lms/templates/learning/nuevo_curso.html:8
 msgid "Crear un nuevo curso"
@@ -4869,59 +4940,61 @@ msgstr "Paid"
 #: now_lms/templates/learning/programas/lista_programas.html:59
 #: now_lms/templates/learning/programas/nuevo_programa.html:49
 #: now_lms/templates/learning/recursos/editar_recurso.html:31
-#: now_lms/templates/learning/recursos/lista_recursos.html:46
+#: now_lms/templates/learning/recursos/lista_recursos.html:53
 #: now_lms/templates/learning/recursos/nuevo_recurso.html:42
 #: now_lms/templates/masterclass/instructor_list.html:36
 msgid "Precio"
 msgstr "Price"
 
 #: now_lms/templates/learning/nuevo_curso.html:91
+#, fuzzy
 msgid ""
 "Un estudiante puede auditar el curso pero no recibir un certificado al "
-"final si no cancela el valor del curso."
+"final si no cancela el\n"
+"                            valor del curso."
 msgstr ""
 "A student can audit the course but will not receive a certificate at the "
 "end if the course fee is not paid."
 
-#: now_lms/templates/learning/nuevo_curso.html:104
+#: now_lms/templates/learning/nuevo_curso.html:106
 msgid ""
 "Si el curso es en tiempo real o con tiempo definido defina las fechas de "
 "inicio y fin."
 msgstr "If the course is live or time-bound, set the start and end dates."
 
-#: now_lms/templates/learning/nuevo_curso.html:107
+#: now_lms/templates/learning/nuevo_curso.html:110
 #: now_lms/templates/masterclass/instructor_create.html:174
 msgid "Certificación"
 msgstr "Certification"
 
-#: now_lms/templates/learning/nuevo_curso.html:109
+#: now_lms/templates/learning/nuevo_curso.html:112
 msgid "Extender Certificado:"
 msgstr "Extend Certificate:"
 
-#: now_lms/templates/learning/nuevo_curso.html:113
+#: now_lms/templates/learning/nuevo_curso.html:116
 msgid "Plantilla de Certificado:"
 msgstr "Certificate Template:"
 
-#: now_lms/templates/learning/nuevo_curso.html:118
+#: now_lms/templates/learning/nuevo_curso.html:121
 msgid "Portada del curso"
 msgstr "Course Cover"
 
-#: now_lms/templates/learning/nuevo_curso.html:131
+#: now_lms/templates/learning/nuevo_curso.html:134
 msgid "Portada"
 msgstr "Cover"
 
-#: now_lms/templates/learning/nuevo_curso.html:143
+#: now_lms/templates/learning/nuevo_curso.html:146
 msgid "Categorización"
 msgstr "Categorization"
 
-#: now_lms/templates/learning/nuevo_curso.html:153
+#: now_lms/templates/learning/nuevo_curso.html:156
 #: now_lms/templates/learning/programas/nuevo_programa.html:64
 msgid ""
 "Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples "
 "etiquetas."
 msgstr "Hold Ctrl (or Cmd on Mac) to select multiple tags."
 
-#: now_lms/templates/learning/nuevo_curso.html:170
+#: now_lms/templates/learning/nuevo_curso.html:173
 msgid "Actualizar Curso"
 msgstr "Update Course"
 
@@ -4929,7 +5002,7 @@ msgstr "Update Course"
 msgid "Crear una nueva Sección."
 msgstr "Create a New Section."
 
-#: now_lms/templates/learning/curso/admin.html:154
+#: now_lms/templates/learning/curso/admin.html:158
 #: now_lms/templates/learning/nuevo_seccion.html:25
 msgid "Nueva"
 msgstr "New"
@@ -5005,19 +5078,29 @@ msgstr "New Category"
 msgid "Lista de categorías disponibles en el sistema."
 msgstr "List of available categories in the system."
 
-#: now_lms/templates/learning/categorias/lista_categorias.html:75
+#: now_lms/templates/learning/categorias/lista_categorias.html:77
+#, fuzzy
+msgid "Editar categoría"
+msgstr "Edit Category"
+
+#: now_lms/templates/learning/categorias/lista_categorias.html:84
+#, fuzzy
+msgid "Eliminar categoría"
+msgstr "Edit Category"
+
+#: now_lms/templates/learning/categorias/lista_categorias.html:85
 msgid "¿Está seguro de que desea eliminar esta categoría?"
 msgstr "Are you sure you want to delete this category?"
 
-#: now_lms/templates/learning/categorias/lista_categorias.html:92
+#: now_lms/templates/learning/categorias/lista_categorias.html:102
 msgid "No hay categorías disponibles"
 msgstr "No categories available"
 
-#: now_lms/templates/learning/categorias/lista_categorias.html:93
+#: now_lms/templates/learning/categorias/lista_categorias.html:103
 msgid "Usted no ha creado ninguna categoría todavía."
 msgstr "You haven't created any categories yet."
 
-#: now_lms/templates/learning/categorias/lista_categorias.html:95
+#: now_lms/templates/learning/categorias/lista_categorias.html:105
 msgid "Crear primera categoría"
 msgstr "Create First Category"
 
@@ -5106,7 +5189,7 @@ msgstr "Edit Certificate"
 
 #: now_lms/templates/learning/certificados/editar_certificado.html:23
 #: now_lms/templates/learning/certificados/editar_certificado.html:24
-#: now_lms/templates/learning/certificados/lista_certificados.html:45
+#: now_lms/templates/learning/certificados/lista_certificados.html:46
 #: now_lms/templates/learning/certificados/nuevo_certificado.html:23
 #: now_lms/templates/learning/certificados/nuevo_certificado.html:24
 msgid "Certificado"
@@ -5119,8 +5202,8 @@ msgid "Descripcion"
 msgstr "Description"
 
 #: now_lms/templates/learning/certificados/editar_certificado.html:36
-#: now_lms/templates/learning/certificados/lista_certificados.html:47
-#: now_lms/templates/learning/certificados/lista_certificados.html:61
+#: now_lms/templates/learning/certificados/lista_certificados.html:49
+#: now_lms/templates/learning/certificados/lista_certificados.html:65
 msgid "Habilitado"
 msgstr "Enabled"
 
@@ -5165,6 +5248,37 @@ msgstr "Manage and administer issued certificates in the system"
 msgid "Nuevo Certificado"
 msgstr "New Certificate"
 
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:38
+#, fuzzy
+msgid "Lista de certificados emitidos en el sistema."
+msgstr "List of available certificates in the system."
+
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:43
+#, fuzzy
+msgid "ID Único"
+msgstr "Home"
+
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:66
+#: now_lms/templates/learning/certificados/lista_certificados.html:81
+#, fuzzy
+msgid "Acciones del certificado"
+msgstr "Certificate Details"
+
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:89
+#, fuzzy
+msgid "No hay certificados emitidos"
+msgstr "Issued Certificates"
+
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:90
+#, fuzzy
+msgid "No se han emitido certificados todavía."
+msgstr "You haven't created any certificates yet."
+
+#: now_lms/templates/learning/certificados/lista_certificaciones.html:92
+#, fuzzy
+msgid "Emitir Primer Certificado"
+msgstr "Issue a New Certificate"
+
 #: now_lms/templates/learning/certificados/lista_certificados.html:6
 msgid "Plantillas Disponibles."
 msgstr "Available Templates."
@@ -5189,32 +5303,32 @@ msgstr "New Certificate"
 msgid "Lista de certificados disponibles en el sistema."
 msgstr "List of available certificates in the system."
 
-#: now_lms/templates/learning/certificados/lista_certificados.html:63
+#: now_lms/templates/learning/certificados/lista_certificados.html:67
 msgid "Deshabilitado"
 msgstr "Disabled"
 
-#: now_lms/templates/learning/certificados/lista_certificados.html:95
+#: now_lms/templates/learning/certificados/lista_certificados.html:103
 msgid "Hacer privado"
 msgstr "Make Private"
 
-#: now_lms/templates/learning/certificados/lista_certificados.html:103
+#: now_lms/templates/learning/certificados/lista_certificados.html:111
 #: now_lms/templates/learning/curso/admin.html:75
 msgid "Publicar"
 msgstr "Publish"
 
-#: now_lms/templates/learning/certificados/lista_certificados.html:119
+#: now_lms/templates/learning/certificados/lista_certificados.html:127
 msgid "Visualizar"
 msgstr "View"
 
-#: now_lms/templates/learning/certificados/lista_certificados.html:136
+#: now_lms/templates/learning/certificados/lista_certificados.html:144
 msgid "No hay certificados disponibles"
 msgstr "No certificates available"
 
-#: now_lms/templates/learning/certificados/lista_certificados.html:137
+#: now_lms/templates/learning/certificados/lista_certificados.html:145
 msgid "Usted no ha creado ningún certificado todavía."
 msgstr "You haven't created any certificates yet."
 
-#: now_lms/templates/learning/certificados/lista_certificados.html:139
+#: now_lms/templates/learning/certificados/lista_certificados.html:147
 msgid "Crear primera plantilla"
 msgstr "Create First Template"
 
@@ -5227,10 +5341,10 @@ msgid "Crear nuevo certificado."
 msgstr "Create New Certificate."
 
 #: now_lms/templates/learning/curso/admin.html:47
-#: now_lms/templates/learning/curso/admin.html:209
-#: now_lms/templates/learning/curso/admin.html:241
-#: now_lms/templates/learning/curso/admin.html:255
-#: now_lms/templates/learning/curso/admin.html:344
+#: now_lms/templates/learning/curso/admin.html:215
+#: now_lms/templates/learning/curso/admin.html:251
+#: now_lms/templates/learning/curso/admin.html:266
+#: now_lms/templates/learning/curso/admin.html:363
 msgid "Ocultar"
 msgstr "Hide"
 
@@ -5246,15 +5360,15 @@ msgstr "Remove from Website."
 msgid "Agregar al Sitio Web."
 msgstr "Add to Website."
 
-#: now_lms/templates/learning/curso/admin.html:137
+#: now_lms/templates/learning/curso/admin.html:139
 msgid "Estatus del curso:"
 msgstr "Course status:"
 
-#: now_lms/templates/learning/curso/admin.html:145
+#: now_lms/templates/learning/curso/admin.html:149
 msgid "Este curso no se ha publicado en el sitio Web."
 msgstr "This course has not been published on the Website."
 
-#: now_lms/templates/learning/curso/admin.html:167
+#: now_lms/templates/learning/curso/admin.html:171
 #: now_lms/templates/learning/programas/admin_enroll.html:28
 #: now_lms/templates/learning/programas/admin_enroll.html:77
 #: now_lms/templates/learning/programas/admin_enrollments.html:32
@@ -5266,7 +5380,7 @@ msgstr "This course has not been published on the Website."
 msgid "Inscribir"
 msgstr "Enroll"
 
-#: now_lms/templates/learning/curso/admin.html:172
+#: now_lms/templates/learning/curso/admin.html:176
 #: now_lms/templates/learning/programas/gestionar_cursos.html:36
 #: now_lms/templates/learning/programas/inscribir_usuario.html:103
 #: now_lms/templates/learning/programas/lista_programas.html:32
@@ -5275,8 +5389,8 @@ msgstr "Enroll"
 msgid "Ver"
 msgstr "View"
 
-#: now_lms/templates/learning/curso/admin.html:190
-#: now_lms/templates/learning/curso/admin.html:285
+#: now_lms/templates/learning/curso/admin.html:194
+#: now_lms/templates/learning/curso/admin.html:297
 #: now_lms/templates/learning/curso/coupons/list.html:18
 #: now_lms/templates/learning/mensajes/nuevo_msg.html:34
 #: now_lms/templates/learning/programas/lista_programas.html:29
@@ -5292,8 +5406,8 @@ msgstr "View"
 msgid "Nuevo"
 msgstr "New"
 
-#: now_lms/templates/learning/curso/admin.html:190
-#: now_lms/templates/learning/curso/admin.html:285
+#: now_lms/templates/learning/curso/admin.html:195
+#: now_lms/templates/learning/curso/admin.html:298
 #: now_lms/templates/learning/recursos/editar_recurso.html:6
 #: now_lms/templates/learning/recursos/editar_recurso.html:20
 #: now_lms/templates/learning/recursos/editar_recurso.html:25
@@ -5354,30 +5468,40 @@ msgstr "New"
 msgid "Recurso"
 msgstr "Resource"
 
-#: now_lms/templates/learning/curso/admin.html:201
+#: now_lms/templates/learning/curso/admin.html:207
 msgid "Ordenar"
 msgstr "Sort"
 
-#: now_lms/templates/learning/curso/admin.html:248
-#: now_lms/templates/learning/curso/admin.html:337
+#: now_lms/templates/learning/curso/admin.html:259
+#: now_lms/templates/learning/curso/admin.html:356
 msgid "Publicar Sección"
 msgstr "Publish Section"
 
-#: now_lms/templates/learning/curso/admin.html:262
+#: now_lms/templates/learning/curso/admin.html:273
 msgid "Eliminar Sección"
 msgstr "Delete Section"
 
-#: now_lms/templates/learning/curso/admin.html:292
+#: now_lms/templates/learning/curso/admin.html:306
 msgid "Ordenar Sección:"
 msgstr "Sort Section:"
 
-#: now_lms/templates/learning/curso/admin.html:298
-msgid "Bajar Sección"
-msgstr "Move Section Down"
+#: now_lms/templates/learning/curso/admin.html:313
+#, fuzzy
+msgid ""
+"Bajar\n"
+"                                                        Sección"
+msgstr ""
+"Admin.\n"
+"                                                        Program"
 
-#: now_lms/templates/learning/curso/admin.html:305
-msgid "Subir Sección"
-msgstr "Move Section Up"
+#: now_lms/templates/learning/curso/admin.html:321
+#, fuzzy
+msgid ""
+"Subir\n"
+"                                                        Sección"
+msgstr ""
+"Admin.\n"
+"                                                        Program"
 
 #: now_lms/templates/learning/curso/admin_enroll.html:9
 #: now_lms/templates/learning/curso/admin_enroll.html:25
@@ -5739,24 +5863,6 @@ msgstr "Coupon"
 msgid "aplicado exitosamente"
 msgstr "applied successfully"
 
-#: now_lms/templates/learning/curso/enroll.html:158
-msgid ""
-"Puede acceder al contenido del curso pero no podrá resolver las "
-"evaluaciones u obtener un\n"
-"                                certificado al finalizar."
-msgstr ""
-"You can access the course content but will not be able to complete "
-"assessments or receive a certificate upon completion."
-
-#: now_lms/templates/learning/curso/enroll.html:161
-msgid ""
-"Puede pagar el valor del curso antes de finalizarlo y acceder a las "
-"evaluaciones y la\n"
-"                                certificación."
-msgstr ""
-"You can pay for the course before finishing to access assessments and "
-"obtain certification."
-
 #: now_lms/templates/learning/curso/enroll.html:167
 msgid "¡Inscribirse Gratis con Cupón!"
 msgstr "Enroll Free with Coupon!"
@@ -5779,6 +5885,7 @@ msgid "Editar Etiqueta"
 msgstr "Edit Tag"
 
 #: now_lms/templates/learning/etiquetas/editar_etiqueta.html:20
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:81
 msgid "Editar etiqueta"
 msgstr "Edit tag"
 
@@ -5810,6 +5917,16 @@ msgstr "Manage and administer system tags"
 #: now_lms/templates/learning/etiquetas/nueva_etiqueta.html:6
 msgid "Nueva Etiqueta"
 msgstr "New Tag"
+
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:76
+#, fuzzy
+msgid "Acciones de la etiqueta"
+msgstr "User actions"
+
+#: now_lms/templates/learning/etiquetas/lista_etiquetas.html:88
+#, fuzzy
+msgid "Eliminar etiqueta"
+msgstr "Edit tag"
 
 #: now_lms/templates/learning/etiquetas/nueva_etiqueta.html:20
 msgid "Crear nueva Etiqueta"
@@ -5876,17 +5993,22 @@ msgstr "Enrollment"
 msgid "Programa"
 msgstr "Program"
 
+#: now_lms/templates/learning/programas/admin_enrollments.html:82
+#, fuzzy
+msgid "Desinscribir del programa"
+msgstr "You must enroll in the program first."
+
 #: now_lms/templates/learning/programas/editar_programa.html:110
 msgid "Actualizar Programa"
 msgstr "Update Program"
 
 #: now_lms/templates/learning/programas/lista_programas.html:21
-#: now_lms/templates/learning/recursos/lista_recursos.html:20
+#: now_lms/templates/learning/recursos/lista_recursos.html:21
 msgid "Lista de"
 msgstr "List of"
 
 #: now_lms/templates/learning/programas/lista_programas.html:21
-#: now_lms/templates/learning/recursos/lista_recursos.html:20
+#: now_lms/templates/learning/recursos/lista_recursos.html:22
 msgid "Disponibles"
 msgstr "Available"
 
@@ -5966,31 +6088,51 @@ msgstr "Certificate Template"
 msgid "Crear Programa"
 msgstr "Create Program"
 
-#: now_lms/templates/learning/recursos/lista_recursos.html:21
+#: now_lms/templates/learning/recursos/lista_recursos.html:24
 msgid "Gestiona y administra tus recursos de aprendizaje"
 msgstr "Manage and administer your learning resources"
 
-#: now_lms/templates/learning/recursos/lista_recursos.html:26
+#: now_lms/templates/learning/recursos/lista_recursos.html:29
 msgid "Nuevo recurso"
 msgstr "New Resource"
 
-#: now_lms/templates/learning/recursos/lista_recursos.html:38
+#: now_lms/templates/learning/recursos/lista_recursos.html:41
 msgid "Lista de recursos disponibles en el sistema."
 msgstr "List of available resources in the system."
 
-#: now_lms/templates/learning/recursos/lista_recursos.html:99
+#: now_lms/templates/learning/recursos/lista_recursos.html:87
+#, fuzzy
+msgid "Acciones del recurso"
+msgstr "Group actions"
+
+#: now_lms/templates/learning/recursos/lista_recursos.html:91
+#, fuzzy
+msgid "Ver recurso"
+msgstr "View Course"
+
+#: now_lms/templates/learning/recursos/lista_recursos.html:98
+#, fuzzy
+msgid "Editar recurso"
+msgstr "Edit Course"
+
+#: now_lms/templates/learning/recursos/lista_recursos.html:105
+#, fuzzy
+msgid "Eliminar recurso"
+msgstr "View Course"
+
+#: now_lms/templates/learning/recursos/lista_recursos.html:106
 msgid "¿Está seguro de que desea eliminar este recurso?"
 msgstr "Are you sure you want to delete this resource?"
 
-#: now_lms/templates/learning/recursos/lista_recursos.html:116
+#: now_lms/templates/learning/recursos/lista_recursos.html:123
 msgid "No hay recursos disponibles"
 msgstr "No resources available"
 
-#: now_lms/templates/learning/recursos/lista_recursos.html:117
+#: now_lms/templates/learning/recursos/lista_recursos.html:124
 msgid "Usted no ha creado ningún recurso todavía."
 msgstr "You have not created any resources yet."
 
-#: now_lms/templates/learning/recursos/lista_recursos.html:119
+#: now_lms/templates/learning/recursos/lista_recursos.html:126
 msgid "Crear primer recurso"
 msgstr "Create First Resource"
 
@@ -6678,10 +6820,6 @@ msgstr "Available Classes"
 msgid "No hay cursos creados aún"
 msgstr "No courses created yet"
 
-#: now_lms/templates/perfiles/instructor.html:237
-msgid "Crear Primer Curso"
-msgstr "Create First Course"
-
 #: now_lms/templates/perfiles/instructor.html:274
 msgid "Nuevo Programa"
 msgstr "New Program"
@@ -7163,8 +7301,8 @@ msgid ""
 "nuestros\n"
 "                                    cursos."
 msgstr ""
-"Join thousands of students who have already transformed their careers with "
-"our courses."
+"Join thousands of students who have already transformed their careers "
+"with our courses."
 
 #: now_lms/templates/themes/excel/overrides/home.j2:259
 msgid "Continúa tu aprendizaje y lleva tus habilidades al siguiente nivel."
@@ -7772,53 +7910,53 @@ msgstr "Program not found."
 msgid "Certificado de programa emitido por completar todos los cursos."
 msgstr "Program certificate issued for completing all courses."
 
-#: now_lms/vistas/settings.py:166
+#: now_lms/vistas/settings.py:163
 msgid "Tema del sitio web actualizado exitosamente."
 msgstr "Website theme updated successfully."
 
-#: now_lms/vistas/settings.py:170
+#: now_lms/vistas/settings.py:167
 msgid "No se pudo actualizar el tema del sitio web."
 msgstr "The website theme could not be updated."
 
-#: now_lms/vistas/settings.py:215
+#: now_lms/vistas/settings.py:230
 msgid ""
 "Debe configurar el correo electronico antes de habilitar verificación por"
 " e-mail."
 msgstr "You must configure email before enabling email verification."
 
-#: now_lms/vistas/settings.py:225
+#: now_lms/vistas/settings.py:240
 msgid "Sitio web actualizado exitosamente."
 msgstr "Website updated successfully."
 
-#: now_lms/vistas/settings.py:228
+#: now_lms/vistas/settings.py:243
 msgid "No se pudo actualizar la configuración del sitio web."
 msgstr "The website settings could not be updated."
 
-#: now_lms/vistas/settings.py:277
+#: now_lms/vistas/settings.py:292
 msgid "Configuración de correo electronico actualizada exitosamente."
 msgstr "Email settings updated successfully."
 
-#: now_lms/vistas/settings.py:281
+#: now_lms/vistas/settings.py:296
 msgid "No se pudo actualizar la configuración de correo electronico."
 msgstr "The email settings could not be updated."
 
-#: now_lms/vistas/settings.py:342
+#: now_lms/vistas/settings.py:357
 msgid "Hubo un error al enviar un correo de prueba. Revise su configuración."
 msgstr "There was an error sending a test email. Please check your settings."
 
-#: now_lms/vistas/settings.py:417
+#: now_lms/vistas/settings.py:432
 msgid "Configuración de Google AdSense actualizada exitosamente."
 msgstr "Google AdSense settings updated successfully."
 
-#: now_lms/vistas/settings.py:422
+#: now_lms/vistas/settings.py:437
 msgid "No se pudo actualizar la configuración de Google AdSense."
 msgstr "The Google AdSense settings could not be updated."
 
-#: now_lms/vistas/settings.py:537
+#: now_lms/vistas/settings.py:552
 msgid "Configuración de Paypal actualizada exitosamente."
 msgstr "PayPal settings updated successfully."
 
-#: now_lms/vistas/settings.py:542
+#: now_lms/vistas/settings.py:557
 msgid "No se pudo actualizar la configuración de Paypal."
 msgstr "The PayPal settings could not be updated."
 
@@ -8076,3 +8214,30 @@ msgstr "The PayPal settings could not be updated."
 
 #~ msgid "View Complete Academic Catalogue"
 #~ msgstr "View Complete Academic Catalogue"
+
+#~ msgid ""
+#~ "Puede acceder al contenido del curso "
+#~ "pero no podrá resolver las evaluaciones"
+#~ " u obtener un certificado al "
+#~ "finalizar."
+#~ msgstr ""
+#~ "You can access the course content "
+#~ "but will not be able to complete"
+#~ " assessments or receive a certificate "
+#~ "upon completion."
+
+#~ msgid ""
+#~ "Puede pagar el valor del curso "
+#~ "antes de finalizarlo y acceder a "
+#~ "las evaluaciones y la certificación."
+#~ msgstr ""
+#~ "You can pay for the course before"
+#~ " finishing it to access assessments "
+#~ "and receive certification."
+
+#~ msgid "Bajar Sección"
+#~ msgstr "Move Section Down"
+
+#~ msgid "Subir Sección"
+#~ msgstr "Move Section Up"
+

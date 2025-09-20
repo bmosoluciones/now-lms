@@ -12,9 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 """Definición de base de datos."""
-
 
 from __future__ import annotations
 
@@ -36,12 +34,10 @@ from sqlalchemy.exc import SQLAlchemyError
 
 __all__ = ["select", "database", "UserMixin", "eliminar_base_de_datos_segura", "UserEvent"]
 
-
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
 # pylint: disable=E1101
-
 
 # < --------------------------------------------------------------------------------------------- >
 # Definición principal de la clase del ORM.
@@ -526,13 +522,22 @@ class Configuracion(database.Model, BaseTabla):
 
     titulo = database.Column(database.String(150), nullable=False)
     descripcion = database.Column(database.String(500), nullable=False)
+
+    # Aditional information about the site
+    titulo_html = database.Column(database.String(50), nullable=True)
+    hero = database.Column(database.String(250), nullable=True)
+    enable_feature_section = database.Column(database.Boolean(), default=True, nullable=False)
+    custom_feature_section = database.Column(database.Text(), nullable=True)
+
+    # Payment configuration
     moneda = database.Column(database.String(5))
+
     # Send a message to the user to verify his email
     verify_user_by_email = database.Column(database.Boolean())
+
     # Internationalization
     lang = database.Column(database.String(5), default="en")
     time_zone = database.Column(database.String(50), default="UTC")
-    r = database.Column(database.LargeBinary())
 
     # Navigation configuration options
     enable_programs = database.Column(database.Boolean(), default=False, nullable=False)
@@ -540,9 +545,18 @@ class Configuracion(database.Model, BaseTabla):
     enable_resources = database.Column(database.Boolean(), default=False, nullable=False)
     enable_blog = database.Column(database.Boolean(), default=False, nullable=False)
 
+    # Custom text for template designers
+    custom_text1 = database.Column(database.String(250), nullable=True)
+    custom_text2 = database.Column(database.String(250), nullable=True)
+    custom_text3 = database.Column(database.String(250), nullable=True)
+    custom_text4 = database.Column(database.String(250), nullable=True)
+    eslogan = database.Column(database.String(500), nullable=True)
+
     # File upload configuration
     enable_file_uploads = database.Column(database.Boolean(), default=False, nullable=False)
     max_file_size = database.Column(database.Integer(), default=1, nullable=False)  # Maximum file size in megabytes
+
+    r = database.Column(database.LargeBinary())
 
 
 class Style(database.Model, BaseTabla):

@@ -326,6 +326,19 @@ class ConfigForm(FlaskForm):
     enable_resources = BooleanField(_("Habilitar Recursos descargables"), default=False, validators=[])
     enable_blog = BooleanField(_("Habilitar Blog"), default=False, validators=[])
 
+    # Custom information
+    titulo_html = StringField(validators=[])
+    hero = StringField(validators=[])
+    enable_feature_section = BooleanField(validators=[])
+    custom_feature_section = TextAreaField(validators=[])
+    eslogan = StringField(validators=[])
+
+    # Custom text for template designers
+    custom_text1 = StringField(validators=[])
+    custom_text2 = StringField(validators=[])
+    custom_text3 = StringField(validators=[])
+    custom_text4 = StringField(validators=[])
+
     # File upload configuration
     enable_file_uploads = BooleanField(_("Habilitar subida de archivos descargables"), default=False, validators=[])
     max_file_size = IntegerField(_("Tamaño máximo de archivo (MB)"), default=1, validators=[])
