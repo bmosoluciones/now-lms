@@ -302,6 +302,12 @@ def config():
             return None
 
 
+@cache.cached(timeout=60, key_prefix="site_config_global")
+def site_config():
+    """Obtiene configuración del sitio web como variable global para plantillas."""
+    return config()
+
+
 # ---------------------------------------------------------------------------------------
 # Definición de variables globales de Jinja2 para su disponibilidad en plantillas HTML
 # ---------------------------------------------------------------------------------------
@@ -356,6 +362,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["pyversion"] = python_version()
     flask_app.jinja_env.globals["site_logo"] = get_site_logo
     flask_app.jinja_env.globals["site_favicon"] = get_site_favicon
+    flask_app.jinja_env.globals["site_config"] = site_config
     flask_app.jinja_env.globals["logo_personalizado"] = logo_personalizado
     flask_app.jinja_env.globals["favicon_personalizado"] = favicon_personalizado
     flask_app.jinja_env.globals["testing"] = TESTING

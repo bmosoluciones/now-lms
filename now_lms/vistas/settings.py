@@ -76,6 +76,7 @@ def invalidar_cache() -> bool:
         # Invalidate specific configuration caches
         cache.delete("configuracion_global")  # i18n configuration
         cache.delete("site_config")  # site configuration
+        cache.delete("site_config_global")  # global site configuration for templates
         cache.delete("global_config")  # global config from db/tools.py
 
         # Invalidate navigation configuration caches
