@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-
 """
 NOW Learning Management System.
 
@@ -28,7 +26,6 @@ lmsctl serve
 Visit http://127.0.0.1:8080/ in your browser, default user and password are lms-admin
 
 """
-
 
 from __future__ import annotations
 
@@ -179,7 +176,6 @@ from now_lms.vistas.web_error_codes import web_error
 __version__: str = VERSION
 APPNAME: str = "NOW LMS"
 
-
 # ---------------------------------------------------------------------------------------
 # Extensiones de terceros
 # ---------------------------------------------------------------------------------------
@@ -299,12 +295,11 @@ def config():
 
     with app_to_use.app_context():
         try:
-            CONFIG = database.session.execute(database.select(Configuracion)).scalars().first()
+            return database.session.execute(database.select(Configuracion)).scalar_one_or_none()
         # Si no existe una entrada en la tabla de configuración uno de los siguientes errores puede ocurrir
         # en dependencia del motor de base de datos utilizado.
         except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError):
-            CONFIG = None
-    return CONFIG
+            return None
 
 
 # ---------------------------------------------------------------------------------------
