@@ -31,6 +31,7 @@ class TestDemoModeConfiguration:
         with app.app_context():
             assert not is_demo_mode()
 
+    @pytest.mark.slow
     def test_demo_mode_enabled_with_env_var(self):
         """Test that demo mode is enabled when environment variable is set."""
         test_values = ["1", "true", "yes", "on", "True", "TRUE", "YES", "ON"]
@@ -47,6 +48,7 @@ class TestDemoModeConfiguration:
         # Cleanup
         del os.environ["NOW_LMS_DEMO_MODE"]
 
+    @pytest.mark.slow
     def test_demo_mode_disabled_with_false_values(self):
         """Test that demo mode is disabled with false-like values."""
         test_values = ["0", "false", "no", "off", "False", "FALSE", "NO", "OFF", ""]
