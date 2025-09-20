@@ -159,32 +159,33 @@ class TestEnvironmentVariables:
         import tempfile
         import unittest.mock
         from now_lms.db.initial_data import populate_custmon_data_dir
-        
+
         with tempfile.TemporaryDirectory() as temp_dir:
             custom_data_dir = temp_dir + "/custom_data"
-            
+
             # Clear any existing env vars that might interfere
             env_vars = {
                 "NOW_LMS_DATA_DIR": custom_data_dir,
             }
-            
+
             with unittest.mock.patch.dict(os.environ, env_vars, clear=False):
                 # Remove other env vars that might interfere
                 for var in ["NOW_LMS_THEMES_DIR"]:
                     if var in os.environ:
                         del os.environ[var]
-                
+
                 # Re-import config to pick up the environment variable
                 import importlib
                 import sys
-                if 'now_lms.config' in sys.modules:
-                    importlib.reload(sys.modules['now_lms.config'])
+
+                if "now_lms.config" in sys.modules:
+                    importlib.reload(sys.modules["now_lms.config"])
                 else:
                     import now_lms.config
-                
+
                 # Call the populate function
                 populate_custmon_data_dir()
-                
+
                 # Verify the custom directory was created and populated
                 assert os.path.exists(custom_data_dir)
                 assert os.path.isdir(custom_data_dir)
@@ -196,32 +197,33 @@ class TestEnvironmentVariables:
         import tempfile
         import unittest.mock
         from now_lms.db.initial_data import populate_custom_theme_dir
-        
+
         with tempfile.TemporaryDirectory() as temp_dir:
             custom_themes_dir = temp_dir + "/custom_themes"
-            
+
             # Clear any existing env vars that might interfere
             env_vars = {
                 "NOW_LMS_THEMES_DIR": custom_themes_dir,
             }
-            
+
             with unittest.mock.patch.dict(os.environ, env_vars, clear=False):
                 # Remove other env vars that might interfere
                 for var in ["NOW_LMS_DATA_DIR"]:
                     if var in os.environ:
                         del os.environ[var]
-                
+
                 # Re-import config to pick up the environment variable
                 import importlib
                 import sys
-                if 'now_lms.config' in sys.modules:
-                    importlib.reload(sys.modules['now_lms.config'])
+
+                if "now_lms.config" in sys.modules:
+                    importlib.reload(sys.modules["now_lms.config"])
                 else:
                     import now_lms.config
-                
+
                 # Call the populate function
                 populate_custom_theme_dir()
-                
+
                 # Verify the custom directory was created and populated
                 assert os.path.exists(custom_themes_dir)
                 assert os.path.isdir(custom_themes_dir)
@@ -233,35 +235,38 @@ class TestEnvironmentVariables:
         import tempfile
         import unittest.mock
         from now_lms import init_app
-        
+
         with tempfile.TemporaryDirectory() as temp_dir:
             custom_data_dir = temp_dir + "/custom_data"
             custom_themes_dir = temp_dir + "/custom_themes"
-            
+
             env_vars = {
                 "NOW_LMS_DATA_DIR": custom_data_dir,
                 "NOW_LMS_THEMES_DIR": custom_themes_dir,
             }
-            
+
             with unittest.mock.patch.dict(os.environ, env_vars, clear=False):
                 # Re-import config to pick up the environment variables
                 import importlib
                 import sys
-                if 'now_lms.config' in sys.modules:
-                    importlib.reload(sys.modules['now_lms.config'])
+
+                if "now_lms.config" in sys.modules:
+                    importlib.reload(sys.modules["now_lms.config"])
                 else:
                     import now_lms.config
-                
+
                 # Mock the populate functions to track if they were called
-                with unittest.mock.patch('now_lms.populate_custmon_data_dir') as mock_data_dir, \
-                     unittest.mock.patch('now_lms.populate_custom_theme_dir') as mock_theme_dir:
-                    
+                with (
+                    unittest.mock.patch("now_lms.populate_custmon_data_dir") as mock_data_dir,
+                    unittest.mock.patch("now_lms.populate_custom_theme_dir") as mock_theme_dir,
+                ):
+
                     # Call init_app which should call the populate functions
                     result = init_app()
-                    
+
                     # Verify init_app succeeded
                     assert result is True
-                    
+
                     # Verify populate functions were called
                     mock_data_dir.assert_called_once()
                     mock_theme_dir.assert_called_once()
@@ -270,15 +275,9 @@ class TestEnvironmentVariables:
         """Ensure test environment properly unsets environment variables."""
         # This test validates that our test setup doesn't leak environment variables
         # that could affect other tests
-        
-        sensitive_env_vars = [
-            "NOW_LMS_DATA_DIR",
-            "NOW_LMS_THEMES_DIR",
-            "NOW_LMS_LANG",
-            "NOW_LMS_CURRENCY", 
-            "NOW_LMS_TIMEZONE"
-        ]
-        
+
+        sensitive_env_vars = ["NOW_LMS_DATA_DIR", "NOW_LMS_THEMES_DIR", "NOW_LMS_LANG", "NOW_LMS_CURRENCY", "NOW_LMS_TIMEZONE"]
+
         # In a proper test environment, these should not be set unless explicitly testing them
         for var in sensitive_env_vars:
             if var in os.environ:

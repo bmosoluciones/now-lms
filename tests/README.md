@@ -44,7 +44,15 @@ python -m pytest tests/test_vistas.py::test_visit_views_admin_using_static_list 
 
 # Run all route-related tests
 python -m pytest tests/test_vistas.py tests/test_all_routes_comprehensive.py -v
+
+# Fast testing (skip slow comprehensive tests) - Development mode
+bash dev/test_fast.sh
+
+# Full test suite with parallel execution - CI/Production mode
+bash dev/test.sh
 ```
+
+For more details on test performance optimizations, see [docs/test-performance.md](../docs/test-performance.md).
 
 ## Key Features
 
