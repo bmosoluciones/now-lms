@@ -859,40 +859,38 @@ msgid "Descripción del Sitio"
 msgstr "Website Description"
 
 #: now_lms/templates/admin/config.html:41
-#, fuzzy
 msgid "Eslogan de academia en línea."
-msgstr "Online learning system."
+msgstr "Online academy slogan."
 
 #: now_lms/templates/admin/config.html:48
 msgid "Titulo para mostrar en la barra de navegación"
-msgstr ""
+msgstr "Title to display in the navigation bar"
 
 #: now_lms/templates/admin/config.html:51
 msgid "Este sera el titulo que los usuario vean en su navegador web."
-msgstr ""
+msgstr "This will be the title users see in their web browser."
 
 #: now_lms/templates/admin/config.html:55
 msgid "Texto para mostrar en el Hero"
-msgstr ""
+msgstr "Text to display in the Hero section"
 
 #: now_lms/templates/admin/config.html:58
 msgid "El hero es el elemento que se muestra debajo de la barra de navegación."
-msgstr ""
+msgstr "The hero is the element displayed below the navigation bar."
 
 #: now_lms/templates/admin/config.html:64
 msgid "Mostrar sección de caracteristicas"
-msgstr ""
+msgstr "Show features section"
 
 #: now_lms/templates/admin/config.html:70
 msgid "Diseñe su propia sección de caractesticas"
-msgstr ""
+msgstr "Design your own features section"
 
 #: now_lms/templates/admin/config.html:73
 msgid "Debe ser un segmento de HTML valido que se integre en su plantilla actual."
-msgstr ""
+msgstr "It must be a valid HTML snippet that integrates into your current template."
 
 #: now_lms/templates/admin/config.html:82
-#, fuzzy
 msgid "Información adicional"
 msgstr "Additional Information"
 
@@ -900,16 +898,15 @@ msgstr "Additional Information"
 #: now_lms/templates/admin/config.html:94
 #: now_lms/templates/admin/config.html:101
 #: now_lms/templates/admin/config.html:108
-#, fuzzy
 msgid "Texto personalizado"
-msgstr "Customization"
+msgstr "Custom text"
 
 #: now_lms/templates/admin/config.html:90
 #: now_lms/templates/admin/config.html:97
 #: now_lms/templates/admin/config.html:104
 #: now_lms/templates/admin/config.html:111
 msgid "Este texto esta disponible como:"
-msgstr ""
+msgstr "This text is available as:"
 
 #: now_lms/templates/admin/config.html:118
 msgid "Configuración Regional"
@@ -932,9 +929,8 @@ msgid "Idioma del sitio web"
 msgstr "Course removed from the website"
 
 #: now_lms/templates/admin/config.html:139
-#, fuzzy
 msgid "Seleccione el idioma predeterminado de su sitio web"
-msgstr "Course removed from the website"
+msgstr "Select the default language of your website"
 
 #: now_lms/templates/admin/config.html:146
 msgid "Configuración de Navegación"
@@ -4735,12 +4731,10 @@ msgid "Público"
 msgstr "Public"
 
 #: now_lms/templates/learning/curso_lista.html:98
-#, fuzzy
 msgid "Acciones del curso"
-msgstr "User actions"
+msgstr "Course actions"
 
 #: now_lms/templates/learning/curso_lista.html:102
-#, fuzzy
 msgid "Ver curso"
 msgstr "View Course"
 
@@ -4947,7 +4941,6 @@ msgid "Precio"
 msgstr "Price"
 
 #: now_lms/templates/learning/nuevo_curso.html:91
-#, fuzzy
 msgid ""
 "Un estudiante puede auditar el curso pero no recibir un certificado al "
 "final si no cancela el\n"
@@ -5079,14 +5072,12 @@ msgid "Lista de categorías disponibles en el sistema."
 msgstr "List of available categories in the system."
 
 #: now_lms/templates/learning/categorias/lista_categorias.html:77
-#, fuzzy
 msgid "Editar categoría"
-msgstr "Edit Category"
+msgstr "Edit category"
 
 #: now_lms/templates/learning/categorias/lista_categorias.html:84
-#, fuzzy
 msgid "Eliminar categoría"
-msgstr "Edit Category"
+msgstr "Delete Category"
 
 #: now_lms/templates/learning/categorias/lista_categorias.html:85
 msgid "¿Está seguro de que desea eliminar esta categoría?"
@@ -5249,35 +5240,29 @@ msgid "Nuevo Certificado"
 msgstr "New Certificate"
 
 #: now_lms/templates/learning/certificados/lista_certificaciones.html:38
-#, fuzzy
 msgid "Lista de certificados emitidos en el sistema."
-msgstr "List of available certificates in the system."
+msgstr "List of certificates issued in the system."
 
 #: now_lms/templates/learning/certificados/lista_certificaciones.html:43
-#, fuzzy
 msgid "ID Único"
-msgstr "Home"
+msgstr "Unique ID"
 
 #: now_lms/templates/learning/certificados/lista_certificaciones.html:66
 #: now_lms/templates/learning/certificados/lista_certificados.html:81
-#, fuzzy
 msgid "Acciones del certificado"
-msgstr "Certificate Details"
+msgstr "Certificate actions"
 
 #: now_lms/templates/learning/certificados/lista_certificaciones.html:89
-#, fuzzy
 msgid "No hay certificados emitidos"
-msgstr "Issued Certificates"
+msgstr "No certificates issued"
 
 #: now_lms/templates/learning/certificados/lista_certificaciones.html:90
-#, fuzzy
 msgid "No se han emitido certificados todavía."
-msgstr "You haven't created any certificates yet."
+msgstr "No certificates have been issued yet."
 
 #: now_lms/templates/learning/certificados/lista_certificaciones.html:92
-#, fuzzy
 msgid "Emitir Primer Certificado"
-msgstr "Issue a New Certificate"
+msgstr "Issue First Certificate"
 
 #: now_lms/templates/learning/certificados/lista_certificados.html:6
 msgid "Plantillas Disponibles."
@@ -5486,22 +5471,20 @@ msgid "Ordenar Sección:"
 msgstr "Sort Section:"
 
 #: now_lms/templates/learning/curso/admin.html:313
-#, fuzzy
 msgid ""
 "Bajar\n"
 "                                                        Sección"
 msgstr ""
-"Admin.\n"
-"                                                        Program"
+"Move Down\n"
+"                                                        Section"
 
 #: now_lms/templates/learning/curso/admin.html:321
-#, fuzzy
 msgid ""
 "Subir\n"
 "                                                        Sección"
 msgstr ""
-"Admin.\n"
-"                                                        Program"
+"Move Up\n"
+"                                                        Section"
 
 #: now_lms/templates/learning/curso/admin_enroll.html:9
 #: now_lms/templates/learning/curso/admin_enroll.html:25
@@ -5919,14 +5902,12 @@ msgid "Nueva Etiqueta"
 msgstr "New Tag"
 
 #: now_lms/templates/learning/etiquetas/lista_etiquetas.html:76
-#, fuzzy
 msgid "Acciones de la etiqueta"
-msgstr "User actions"
+msgstr "Tag actions"
 
 #: now_lms/templates/learning/etiquetas/lista_etiquetas.html:88
-#, fuzzy
 msgid "Eliminar etiqueta"
-msgstr "Edit tag"
+msgstr "Delete tag"
 
 #: now_lms/templates/learning/etiquetas/nueva_etiqueta.html:20
 msgid "Crear nueva Etiqueta"
@@ -5994,9 +5975,8 @@ msgid "Programa"
 msgstr "Program"
 
 #: now_lms/templates/learning/programas/admin_enrollments.html:82
-#, fuzzy
 msgid "Desinscribir del programa"
-msgstr "You must enroll in the program first."
+msgstr "Unenroll from program"
 
 #: now_lms/templates/learning/programas/editar_programa.html:110
 msgid "Actualizar Programa"
@@ -6101,24 +6081,20 @@ msgid "Lista de recursos disponibles en el sistema."
 msgstr "List of available resources in the system."
 
 #: now_lms/templates/learning/recursos/lista_recursos.html:87
-#, fuzzy
 msgid "Acciones del recurso"
-msgstr "Group actions"
+msgstr "Resource actions"
 
 #: now_lms/templates/learning/recursos/lista_recursos.html:91
-#, fuzzy
 msgid "Ver recurso"
-msgstr "View Course"
+msgstr "View resource"
 
 #: now_lms/templates/learning/recursos/lista_recursos.html:98
-#, fuzzy
 msgid "Editar recurso"
-msgstr "Edit Course"
+msgstr "Edit resource"
 
 #: now_lms/templates/learning/recursos/lista_recursos.html:105
-#, fuzzy
 msgid "Eliminar recurso"
-msgstr "View Course"
+msgstr "Delete resource"
 
 #: now_lms/templates/learning/recursos/lista_recursos.html:106
 msgid "¿Está seguro de que desea eliminar este recurso?"
