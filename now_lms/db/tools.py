@@ -122,7 +122,7 @@ def verifica_estudiante_asignado_a_curso(id_curso: str | None = None) -> bool:
     return False
 
 
-def crear_configuracion_predeterminada():
+def crear_configuracion_predeterminada() -> None:
     """Crea configuración predeterminada de la aplicación."""
     from os import environ, urandom
 
@@ -133,12 +133,11 @@ def crear_configuracion_predeterminada():
     default_currency = environ.get("NOW_LMS_CURRENCY") or "USD"
     default_timezone = environ.get("NOW_LMS_TIMEZONE") or "UTC"
 
-    config = Configuracion(
-        titulo="NOW LMS",
-        descripcion=_("Sistema de aprendizaje en linea."),
-        moneda=default_currency,
-        r=urandom(16),
-    )
+    config = Configuracion()
+    config.titulo = "NOW LMS"
+    config.descripcion = _("Sistema de aprendizaje en linea.")
+    config.moneda = default_currency
+    config.r = urandom(16)
     config.enable_programs = False
     config.enable_masterclass = False
     config.enable_resources = False
@@ -147,27 +146,29 @@ def crear_configuracion_predeterminada():
     config.lang = default_lang
     config.time_zone = default_timezone
 
-    mail_config = MailConfig(
-        MAIL_USE_TLS=False,
-        MAIL_USE_SSL=False,
-        email_verificado=False,
-    )
-    adsense_config = AdSense(
-        meta_tag_include=False,
-        add_leaderboard="",
-        add_medium_rectangle="",
-        add_large_rectangle="",
-        add_mobile_banner="",
-        add_wide_skyscraper="",
-        add_skyscraper="",
-        add_large_skyscraper="",
-        add_billboard="",
-    )
-    paypal_config = PaypalConfig(enable=False)
-    theme = Style(
-        theme="now_lms",
-        custom_logo=False,
-    )
+    mail_config = MailConfig()
+    mail_config.MAIL_USE_TLS = False
+    mail_config.MAIL_USE_SSL = False
+    mail_config.email_verificado = False
+
+    adsense_config = AdSense()
+    adsense_config.meta_tag_include = False
+    adsense_config.add_leaderboard = ""
+    adsense_config.add_medium_rectangle = ""
+    adsense_config.add_large_rectangle = ""
+    adsense_config.add_mobile_banner = ""
+    adsense_config.add_wide_skyscraper = ""
+    adsense_config.add_skyscraper = ""
+    adsense_config.add_large_skyscraper = ""
+    adsense_config.add_billboard = ""
+
+    paypal_config = PaypalConfig()
+    paypal_config.enable = False
+
+    theme = Style()
+    theme.theme = "now_lms"
+    theme.custom_logo = False
+    theme.custom_favicon = False
 
     for item in [config, mail_config, adsense_config, paypal_config, theme]:
         database.session.add(item)

@@ -1649,7 +1649,7 @@ def crear_recurso_descargable() -> None:
 
 def populate_custmon_data_dir() -> None:
     """Crea un directorio de archivos personalizado."""
-    from now_lms.config import DIRECTORIO_ARCHIVOS, DIRECTORIO_ARCHIVOS_BASE
+    from now_lms.config import DIRECTORIO_ARCHIVOS_BASE
 
     if DIRECTORIO_ARCHIVOS != DIRECTORIO_ARCHIVOS_BASE:
         # Check if directory doesn't exist or is empty
