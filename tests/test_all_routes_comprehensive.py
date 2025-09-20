@@ -23,12 +23,18 @@ for all course routes and other application routes.
 
 import re
 
+import pytest
 from flask import url_for
 from now_lms.db import Usuario
 
 
+@pytest.mark.comprehensive
+@pytest.mark.slow
 class TestAllRoutesComprehensive:
     """Comprehensive route testing using automatic route discovery."""
+
+    # Class-level route cache to avoid rediscovering routes in each test
+    _routes_cache = None
 
     # Sample parameters for dynamic routes based on test data
     SAMPLE_PARAMS = {
@@ -101,7 +107,10 @@ class TestAllRoutesComprehensive:
     }
 
     def discover_all_routes(self, session_basic_db_setup):
-        """Discover all routes in the Flask application."""
+        """Discover all routes in the Flask application with caching."""
+        if self._routes_cache is not None:
+            return self._routes_cache
+
         with session_basic_db_setup.app_context():
             routes = []
             for rule in session_basic_db_setup.url_map.iter_rules():
@@ -114,6 +123,8 @@ class TestAllRoutesComprehensive:
                             "has_variables": bool(rule.arguments),
                         }
                     )
+            # Cache the routes for subsequent test methods
+            TestAllRoutesComprehensive._routes_cache = routes
             return routes
 
     def build_url_with_params(self, app, endpoint, rule):

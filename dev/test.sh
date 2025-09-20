@@ -1,4 +1,13 @@
 #!/bin/bash
+
+# Unset environment variables that could affect test behavior
+# This ensures tests run in a clean environment
+unset NOW_LMS_DATA_DIR
+unset NOW_LMS_THEMES_DIR
+unset NOW_LMS_LANG
+unset NOW_LMS_CURRENCY
+unset NOW_LMS_TIMEZONE
+
 echo -------------------------------------------------
 echo Check python code with flake8
 echo -------------------------------------------------
@@ -27,4 +36,4 @@ echo Run tests
 echo -------------------------------------------------
 echo
 pybabel compile -d now_lms/translations
-CI=True pytest --tb=short -q --cov=now_lms
+CI=True pytest --tb=short -q --cov=now_lms -n auto

@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-
 """
 NOW Learning Management System.
 
@@ -28,7 +26,6 @@ lmsctl serve
 Visit http://127.0.0.1:8080/ in your browser, default user and password are lms-admin
 
 """
-
 
 from __future__ import annotations
 
@@ -179,7 +176,6 @@ from now_lms.vistas.web_error_codes import web_error
 __version__: str = VERSION
 APPNAME: str = "NOW LMS"
 
-
 # ---------------------------------------------------------------------------------------
 # Extensiones de terceros
 # ---------------------------------------------------------------------------------------
@@ -299,12 +295,17 @@ def config():
 
     with app_to_use.app_context():
         try:
-            CONFIG = database.session.execute(database.select(Configuracion)).scalars().first()
+            return database.session.execute(database.select(Configuracion)).scalar_one_or_none()
         # Si no existe una entrada en la tabla de configuración uno de los siguientes errores puede ocurrir
         # en dependencia del motor de base de datos utilizado.
         except (OperationalError, ProgrammingError, PGProgrammingError, DatabaseError):
-            CONFIG = None
-    return CONFIG
+            return None
+
+
+@cache.cached(timeout=60, key_prefix="site_config_global")
+def site_config():
+    """Obtiene configuración del sitio web como variable global para plantillas."""
+    return config()
 
 
 # ---------------------------------------------------------------------------------------
@@ -361,6 +362,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["pyversion"] = python_version()
     flask_app.jinja_env.globals["site_logo"] = get_site_logo
     flask_app.jinja_env.globals["site_favicon"] = get_site_favicon
+    flask_app.jinja_env.globals["site_config"] = site_config
     flask_app.jinja_env.globals["logo_personalizado"] = logo_personalizado
     flask_app.jinja_env.globals["favicon_personalizado"] = favicon_personalizado
     flask_app.jinja_env.globals["testing"] = TESTING
@@ -685,6 +687,12 @@ def init_app(with_examples=False, flask_app=None):
                 except Exception as e:
                     log.error(f"Error during database migration: {e}")
                     return False
+
+            # Always populate custom directories if environment variables are set
+            # This ensures custom data/themes are available even when DB already exists
+            populate_custmon_data_dir()
+            populate_custom_theme_dir()
+
             return True
         log.info("Starting new database.")
         initial_setup(with_examples=with_examples, flask_app=app_to_use)

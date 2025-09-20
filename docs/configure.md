@@ -60,8 +60,8 @@ REDIS_URL = redis://localhost:6379/0
 CACHE_MEMCACHED_SERVERS = 127.0.0.1:11211
 
 # File Storage (Core - supported in config files)
-CUSTOM_DATA_DIR = /var/lib/now-lms/data
-CUSTOM_THEMES_DIR = /var/lib/now-lms/themes
+NOW_LMS_DATA_DIR = /var/lib/now-lms/data
+NOW_LMS_THEMES_DIR = /var/lib/now-lms/themes
 
 # Localization (Requires environment variables only)
 # NOW_LMS_LANG = en

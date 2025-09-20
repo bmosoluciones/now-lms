@@ -3,7 +3,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>{{ config.titulo }}</title>
+        <title>{{ config.titulo_html or "NOW - Learning Management System" }}</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -22,8 +22,9 @@
                             <div class="hero-content">
                                 <h1 class="display-4 fw-bold mb-4">{{ _('Bienvenido a') }} {{ config.titulo }}</h1>
                                 <p class="lead mb-4">
-                                    {{ _('Gracias por visitar nuestra plataforma educativa. Nuestra plataforma está diseñada
-                                    para brindar una experiencia de aprendizaje excepcional.') }}
+                                    {% if config.hero and config.hero|length > 0 %} {{ config.hero }} {% else %} {{ _('Gracias
+                                    por visitar nuestra plataforma educativa. Nuestra plataforma está diseñada para brindar una
+                                    experiencia de aprendizaje excepcional.') }} {% endif %}
                                 </p>
                                 <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-md-start">
                                     {% if not current_user.is_authenticated %}
@@ -74,6 +75,8 @@
             </section>
 
             <!-- Features Section -->
+            {% if config.enable_feature_section %} {% if config.custom_feature_section and config.custom_feature_section|length
+            > 0 %} {{ config.custom_feature_section|safe }} {% else %}
             <section class="py-5 bg-light">
                 <div class="container">
                     <div class="row">
@@ -140,6 +143,7 @@
                     </div>
                 </div>
             </section>
+            {% endif %} {% endif %}
 
             <!-- Featured Courses Section -->
             {% if cursos.total > 0 %}
