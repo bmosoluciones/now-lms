@@ -15,7 +15,6 @@
 
 """Tests for site_config global variable functionality."""
 
-import pytest
 from flask import render_template_string
 
 from now_lms import site_config

@@ -18,7 +18,6 @@
 import os
 import unittest.mock
 
-import pytest
 from sqlalchemy.orm import scoped_session
 
 from now_lms.db import Configuracion, database
@@ -181,7 +180,7 @@ class TestEnvironmentVariables:
                 if "now_lms.config" in sys.modules:
                     importlib.reload(sys.modules["now_lms.config"])
                 else:
-                    import now_lms.config
+                    pass
 
                 # Call the populate function
                 populate_custmon_data_dir()
@@ -219,7 +218,7 @@ class TestEnvironmentVariables:
                 if "now_lms.config" in sys.modules:
                     importlib.reload(sys.modules["now_lms.config"])
                 else:
-                    import now_lms.config
+                    pass
 
                 # Call the populate function
                 populate_custom_theme_dir()
@@ -253,7 +252,7 @@ class TestEnvironmentVariables:
                 if "now_lms.config" in sys.modules:
                     importlib.reload(sys.modules["now_lms.config"])
                 else:
-                    import now_lms.config
+                    pass
 
                 # Mock the populate functions to track if they were called
                 with (

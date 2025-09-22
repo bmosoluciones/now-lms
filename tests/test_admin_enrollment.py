@@ -15,16 +15,10 @@
 
 """Test administrative enrollment functionality."""
 
-import pytest
 from now_lms.auth import proteger_passwd
 from now_lms.db import (
-    Curso,
     DocenteCurso,
     EstudianteCurso,
-    Pago,
-    Programa,
-    ProgramaCurso,
-    ProgramaEstudiante,
     Usuario,
     database,
 )
@@ -213,12 +207,13 @@ class TestAdministrativeEnrollment:
 
         # Verify enrollment was created (if redirect to success page)
         if response.status_code == 302:
-            enrollment = database.session.execute(
-                database.select(EstudianteCurso).filter_by(curso="now", usuario="enroll_test_student", vigente=True)
-            ).scalar_one_or_none()
+            with session_full_db_setup.app_context():
+                enrollment = database.session.execute(
+                    database.select(EstudianteCurso).filter_by(curso="now", usuario="enroll_test_student", vigente=True)
+                ).scalar_one_or_none()
 
-            # Check if enrollment exists or if it was a redirect to error page
-            if enrollment:
-                assert enrollment.curso == "now"
-                assert enrollment.usuario == "enroll_test_student"
-                assert enrollment.vigente is True
+                # Check if enrollment exists or if it was a redirect to error page
+                if enrollment:
+                    assert enrollment.curso == "now"
+                    assert enrollment.usuario == "enroll_test_student"
+                    assert enrollment.vigente is True
