@@ -14,12 +14,8 @@
 #
 
 import inspect
-import os
-from typing import Dict, List, Tuple
 
-import pytest
 
-from now_lms import log
 
 
 def test_importable(session_basic_db_setup):

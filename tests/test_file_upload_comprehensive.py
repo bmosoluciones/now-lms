@@ -2372,12 +2372,12 @@ class TestCourseLibraryFunctionality(TestFileUploadFunctionality):
 
         with session_full_db_setup.app_context():
             course_code = "TEST123"
-            
+
             # Test get_course_library_path
             library_path = get_course_library_path(course_code)
             assert course_code in library_path
             assert "library" in library_path
-            
+
             # Test ensure_course_library_directory creates directory
             actual_path = ensure_course_library_directory(course_code)
             assert os.path.exists(actual_path)
@@ -2389,7 +2389,7 @@ class TestCourseLibraryFunctionality(TestFileUploadFunctionality):
         # Create test course
         curso = self.create_test_course(isolated_db_session, "LIB001")
         instructor = self.create_instructor_user(isolated_db_session)
-        
+
         # Assign instructor to course
         assignment = DocenteCurso(curso="LIB001", usuario=instructor.usuario)
         isolated_db_session.add(assignment)
@@ -2405,7 +2405,7 @@ class TestCourseLibraryFunctionality(TestFileUploadFunctionality):
 
     # NOTE: The following integration tests were removed as they failed due to complex test setup issues:
     # - test_library_upload_form_access: 302 redirect issues in test environment
-    # - test_library_file_upload_success: Form submission and validation issues  
+    # - test_library_file_upload_success: Form submission and validation issues
     # - test_library_file_upload_sanitizes_filename: File system path resolution issues
     # Core library functionality is verified by the unit tests above.
 
@@ -2414,7 +2414,7 @@ class TestCourseLibraryFunctionality(TestFileUploadFunctionality):
         # Create test course and instructor
         curso = self.create_test_course(isolated_db_session, "LIB005")
         instructor = self.create_instructor_user(isolated_db_session)
-        
+
         # Assign instructor to course
         assignment = DocenteCurso(curso="LIB005", usuario=instructor.usuario)
         isolated_db_session.add(assignment)
@@ -2425,6 +2425,7 @@ class TestCourseLibraryFunctionality(TestFileUploadFunctionality):
         with session_full_db_setup.app_context():
             # Disable file uploads in configuration
             from now_lms.db import Configuracion
+
             config = isolated_db_session.execute(database.select(Configuracion)).first()
             if config:
                 config[0].enable_file_uploads = False
@@ -2432,7 +2433,7 @@ class TestCourseLibraryFunctionality(TestFileUploadFunctionality):
 
             # Try to upload file - should be redirected with warning
             test_file = self.create_test_file("blocked.pdf", b"PDF content", "application/pdf")
-            
+
             upload_data = {
                 "nombre": "Blocked File",
                 "descripcion": "This upload should be blocked",
@@ -2440,10 +2441,7 @@ class TestCourseLibraryFunctionality(TestFileUploadFunctionality):
             }
 
             response = client.post(
-                "/course/LIB005/library/new",
-                data=upload_data,
-                content_type="multipart/form-data",
-                follow_redirects=True
+                "/course/LIB005/library/new", data=upload_data, content_type="multipart/form-data", follow_redirects=True
             )
 
             # Should be redirected to library with warning message
@@ -2462,11 +2460,11 @@ class TestCourseLibraryFunctionality(TestFileUploadFunctionality):
         instructor = self.create_instructor_user(isolated_db_session)
         student = self.create_instructor_user(isolated_db_session)  # Reuse function but it creates a user
         student.tipo = "student"
-        
+
         # Assign instructor to course
         instructor_assignment = DocenteCurso(curso="LIB006", usuario=instructor.usuario)
         isolated_db_session.add(instructor_assignment)
-        
+
         # Enroll student in course
         student_enrollment = EstudianteCurso(curso="LIB006", usuario=student.usuario, vigente=True)
         isolated_db_session.add(student_enrollment)
@@ -2500,7 +2498,7 @@ class TestCourseLibraryFunctionality(TestFileUploadFunctionality):
         # Create test course and instructor
         curso = self.create_test_course(isolated_db_session, "LIB007")
         instructor = self.create_instructor_user(isolated_db_session)
-        
+
         # Assign instructor to course
         assignment = DocenteCurso(curso="LIB007", usuario=instructor.usuario)
         isolated_db_session.add(assignment)
@@ -2515,7 +2513,7 @@ class TestCourseLibraryFunctionality(TestFileUploadFunctionality):
             descripcion="File uploaded via form",
             file_size=1024,
             mime_type="application/pdf",
-            creado_por=instructor.usuario
+            creado_por=instructor.usuario,
         )
         isolated_db_session.add(db_file)
         isolated_db_session.commit()
@@ -2523,13 +2521,13 @@ class TestCourseLibraryFunctionality(TestFileUploadFunctionality):
         # Create the physical file for the database record
         library_path = get_course_library_path("LIB007")
         os.makedirs(library_path, exist_ok=True)
-        
+
         db_file_path = os.path.join(library_path, "db_file.pdf")
         with open(db_file_path, "w") as f:
             f.write("Database file content")
 
         # Create a manual file (no database record)
-        manual_file_path = os.path.join(library_path, "manual_file.pdf") 
+        manual_file_path = os.path.join(library_path, "manual_file.pdf")
         with open(manual_file_path, "w") as f:
             f.write("Manual file content")
 
@@ -2538,13 +2536,13 @@ class TestCourseLibraryFunctionality(TestFileUploadFunctionality):
         with session_full_db_setup.app_context():
             response = client.get("/course/LIB007/library")
             assert response.status_code == 200
-            
+
             response_text = response.data.decode()
-            
+
             # Should show the database file with full info
             assert "Database File" in response_text
             assert "File uploaded via form" in response_text
-            
+
             # Should show the manual file with basic info
             assert "manual_file.pdf" in response_text
             assert "Archivo subido manualmente" in response_text or "Archivo manual" in response_text

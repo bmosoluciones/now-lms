@@ -1,8 +1,5 @@
 """Test certificate access control for different user roles."""
 
-import pytest
-from flask import url_for
-from flask_login import login_user
 
 from now_lms.auth import proteger_passwd
 from now_lms.db import (

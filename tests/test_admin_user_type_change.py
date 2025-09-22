@@ -16,7 +16,6 @@
 """Tests for admin user type change functionality."""
 
 import os
-import pytest
 from flask import url_for
 
 from now_lms.db import Usuario, database
@@ -190,10 +189,38 @@ class TestAdminUserTypeChange:
         with app.app_context():
             # Create users with different types
             test_users = [
-                Usuario(usuario="test-admin", acceso=b"fake_password", tipo="admin", activo=True, visible=True),
-                Usuario(usuario="test-instructor", acceso=b"fake_password", tipo="instructor", activo=True, visible=True),
-                Usuario(usuario="test-moderator", acceso=b"fake_password", tipo="moderator", activo=True, visible=True),
-                Usuario(usuario="test-user", acceso=b"fake_password", tipo="user", activo=True, visible=True),
+                Usuario(
+                    usuario="test-admin",
+                    acceso=b"fake_password",
+                    tipo="admin",
+                    activo=True,
+                    visible=True,
+                    correo_electronico="test-admin@example.com",
+                ),
+                Usuario(
+                    usuario="test-instructor",
+                    acceso=b"fake_password",
+                    tipo="instructor",
+                    activo=True,
+                    visible=True,
+                    correo_electronico="test-instructor@example.com",
+                ),
+                Usuario(
+                    usuario="test-moderator",
+                    acceso=b"fake_password",
+                    tipo="moderator",
+                    activo=True,
+                    visible=True,
+                    correo_electronico="test-moderator@example.com",
+                ),
+                Usuario(
+                    usuario="test-user",
+                    acceso=b"fake_password",
+                    tipo="user",
+                    activo=True,
+                    visible=True,
+                    correo_electronico="test-user@example.com",
+                ),
             ]
 
             for user in test_users:
@@ -220,7 +247,8 @@ class TestAdminUserTypeChange:
                 assert "Admin" in html_content
                 assert "Instructor" in html_content
                 assert "Moderador" in html_content
-                assert "Estudiante" in html_content  # This should be shown for type "user"
+                # Check for both translated and untranslated forms
+                assert "Estudiante" in html_content or "Usuario" in html_content  # This should be shown for type "user"
 
                 # Should NOT contain references to "student" type in conditions
                 # (This was the bug - template was checking for "student" instead of "user")

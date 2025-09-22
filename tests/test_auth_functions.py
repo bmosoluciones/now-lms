@@ -65,7 +65,7 @@ class TestAuthFunctions:
             acceso=hashed_password,
             nombre="Test",
             apellido="User",
-            correo_electronico="test@example.com",
+            correo_electronico="testuser-auth@example.com",
             tipo="user",
         )
         isolated_db_session.add(user)

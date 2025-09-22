@@ -8,7 +8,6 @@ are automatically populated for all BaseTabla instances when records are created
 import time
 from datetime import date, datetime
 
-import pytest
 
 from now_lms.auth import proteger_passwd
 from now_lms.db import Categoria, Curso, Usuario, database
