@@ -49,7 +49,11 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                             src="{{ url_for('course.slide_show', recurso_code=recurso.id) }}"
                         ></iframe>
 
-                        {{ markdown2html(recurso.descripcion) | safe }}
+                        {% if recurso.descripcion_html_preformateado %}
+                            {{ recurso.descripcion | safe }}
+                        {% else %}
+                            {{ markdown2html(recurso.descripcion) | safe }}
+                        {% endif %}
 
                         <!-- AdSense Ad after resource description for free courses -->
                         {% if adsense_enabled() and not curso.pagado %} {% set ad_code = ad_large_rectangle() %} {% if ad_code
