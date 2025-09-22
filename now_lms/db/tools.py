@@ -804,7 +804,10 @@ def generate_user_choices():
     usuarios = database.session.execute(database.select(Usuario)).all()
     choices = []
     for usuario in usuarios:
-        choices.append((usuario[0].usuario, usuario[0].nombre + " " + usuario[0].apellido))
+        nombre = usuario[0].nombre or ""
+        apellido = usuario[0].apellido or ""
+        display_name = f"{nombre} {apellido}".strip() or usuario[0].usuario
+        choices.append((usuario[0].usuario, display_name))
     return choices
 
 
