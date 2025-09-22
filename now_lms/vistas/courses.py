@@ -421,7 +421,7 @@ def course_enroll(course_code: str) -> str | Response:
     if coupon_code:
         coupon_form.coupon_code.data = coupon_code
 
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         pago = Pago()
         pago.usuario = _usuario.usuario
         pago.curso = _curso.codigo
@@ -3198,6 +3198,10 @@ def admin_course_enrollment(course_code: str) -> str | Response:
             if notes:
                 pago.descripcion += f" - Notas: {notes}"
             pago.audit = not bypass_payment and _curso.pagado
+            # Populate required billing fields from student's user record
+            pago.nombre = usuario_existe.nombre
+            pago.apellido = usuario_existe.apellido
+            pago.correo_electronico = usuario_existe.correo_electronico
             pago.creado = datetime.now(timezone.utc).date()
             pago.creado_por = current_user.usuario
             database.session.add(pago)
