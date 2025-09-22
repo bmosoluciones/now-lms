@@ -343,6 +343,7 @@ class CursoRecurso(database.Model, BaseTabla):
     notes = database.Column(database.String(20))
     subtitle_vtt = database.Column(database.Text(), nullable=True)
     subtitle_vtt_secondary = database.Column(database.Text(), nullable=True)
+    descripcion_html_preformateado = database.Column(database.Boolean(), default=False, nullable=False)
 
 
 class CursoRecursoAvance(database.Model, BaseTabla):
