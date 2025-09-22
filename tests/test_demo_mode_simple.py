@@ -5,9 +5,7 @@ Tests the core demo mode functionality without complex database interactions.
 """
 
 import os
-import pytest
 from unittest.mock import patch
-from flask import url_for
 
 from now_lms import create_app
 from now_lms.demo_mode import (

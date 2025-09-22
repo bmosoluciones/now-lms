@@ -1,0 +1,277 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="{{ current_locale() }}" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ _("Biblioteca") }} - {{ curso.nombre }}</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5">
+                <div class="d-flex justify-content-between align-items-center pb-3 border-bottom">
+                    <h3>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
+                                        >{{ _("Inicio") }}</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a
+                                        class="text-reset text-decoration-none link-dark"
+                                        href="{{ url_for('course.administrar_curso', course_code=curso.codigo) }}"
+                                        >{{ curso.nombre }}</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ _("Biblioteca") }}</li>
+                            </ol>
+                        </nav>
+                    </h3>
+                    <div>
+                        <a
+                            href="{{ url_for('course.upload_library_file', course_code=curso.codigo) }}"
+                            class="btn btn-primary"
+                        >
+                            <i class="bi bi-upload"></i> {{ _("Subir Archivo") }}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <p class="text-muted">
+                                {{ _("La biblioteca del curso permite a los instructores subir archivos que pueden ser
+                                utilizados en recursos del curso, como imágenes para posts del blog o documentos para las
+                                descripciones de recursos.") }}
+                            </p>
+                            <div class="alert alert-info">
+                                <strong>{{ _("Tipos de archivos:") }}</strong>
+                                <ul class="mb-0">
+                                    <li>
+                                        <i class="bi bi-file-earmark text-success"></i> {{ _("Archivos subidos por formulario
+                                        (con descripción completa)") }}
+                                    </li>
+                                    <li>
+                                        <i class="bi bi-file-earmark-plus text-warning"></i> {{ _("Archivos subidos manualmente
+                                        (solo descarga y copia de URL disponible)") }}
+                                    </li>
+                                    <li>
+                                        <i class="bi bi-file-earmark-x text-danger"></i> {{ _("Archivos en base de datos pero
+                                        no encontrados físicamente") }}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if library_files %}
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>{{ _("Nombre del archivo") }}</th>
+                                        <th>{{ _("Descripción") }}</th>
+                                        <th>{{ _("Tamaño") }}</th>
+                                        <th>{{ _("Modificado") }}</th>
+                                        <th>{{ _("Acciones") }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for file in library_files %}
+                                    <tr
+                                        {%
+                                        if
+                                        not
+                                        file.has_db_record
+                                        %}class="table-warning"
+                                        title="{{ _('Archivo subido manualmente') }}"
+                                        {%
+                                        elif
+                                        not
+                                        file.file_exists
+                                        %}class="table-danger"
+                                        title="{{ _('Archivo no encontrado en el sistema') }}"
+                                        {%
+                                        endif
+                                        %}
+                                    >
+                                        <td>
+                                            {% if not file.has_db_record %}
+                                            <i
+                                                class="bi bi-file-earmark-plus text-warning"
+                                                title="{{ _('Archivo manual') }}"
+                                            ></i>
+                                            {% elif not file.file_exists %}
+                                            <i
+                                                class="bi bi-file-earmark-x text-danger"
+                                                title="{{ _('Archivo no encontrado') }}"
+                                            ></i>
+                                            {% else %}
+                                            <i class="bi bi-file-earmark text-success" title="{{ _('Archivo completo') }}"></i>
+                                            {% endif %}
+                                            <strong>{{ file.display_name }}</strong>
+                                            {% if file.display_name != file.name %}
+                                            <br /><small class="text-muted">{{ file.name }}</small>
+                                            {% endif %} {% if not file.has_db_record %}
+                                            <br /><small class="text-warning"
+                                                ><i class="bi bi-exclamation-triangle"></i> {{ _("Archivo manual") }}</small
+                                            >
+                                            {% elif not file.file_exists %}
+                                            <br /><small class="text-danger"
+                                                ><i class="bi bi-exclamation-triangle"></i> {{ _("Archivo no encontrado")
+                                                }}</small
+                                            >
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small>{{ file.description }}</small>
+                                        </td>
+                                        <td>
+                                            {% if file.size < 1024 %} {{ file.size }} B {% elif file.size < 1024 * 1024 %} {{
+                                            "%.1f"|format(file.size / 1024) }} KB {% else %} {{ "%.1f"|format(file.size / (1024
+                                            * 1024)) }} MB {% endif %}
+                                        </td>
+                                        <td>{{ file.modified.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                {% if file.file_exists %}
+                                                <a
+                                                    href="{{ file.url }}"
+                                                    class="btn btn-sm btn-outline-primary"
+                                                    title="{{ _('Descargar') }}"
+                                                >
+                                                    <i class="bi bi-download"></i>
+                                                </a>
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-sm btn-outline-secondary"
+                                                    onclick="copyToClipboard('{{ file.url }}')"
+                                                    title="{{ _('Copiar URL') }}"
+                                                >
+                                                    <i class="bi bi-clipboard"></i>
+                                                </button>
+                                                {% else %}
+                                                <span
+                                                    class="btn btn-sm btn-outline-secondary disabled"
+                                                    title="{{ _('Archivo no disponible') }}"
+                                                >
+                                                    <i class="bi bi-download"></i>
+                                                </span>
+                                                <span
+                                                    class="btn btn-sm btn-outline-secondary disabled"
+                                                    title="{{ _('Archivo no disponible') }}"
+                                                >
+                                                    <i class="bi bi-clipboard"></i>
+                                                </span>
+                                                {% endif %} {% if file.has_db_record %}
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="confirmDelete('{{ file.id }}', '{{ file.display_name }}')"
+                                                    title="{{ _('Eliminar') }}"
+                                                >
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                {% else %}
+                                                <span
+                                                    class="btn btn-sm btn-outline-secondary disabled"
+                                                    title="{{ _('No se puede eliminar archivo manual desde la interfaz') }}"
+                                                >
+                                                    <i class="bi bi-trash"></i>
+                                                </span>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="text-center py-5">
+                            <i class="bi bi-folder-x display-4 text-muted"></i>
+                            <h5 class="mt-3 text-muted">{{ _("No hay archivos en la biblioteca") }}</h5>
+                            <p class="text-muted">
+                                {{ _("Sube archivos para que estén disponibles para usar en los recursos del curso.") }}
+                            </p>
+                            <a
+                                href="{{ url_for('course.upload_library_file', course_code=curso.codigo) }}"
+                                class="btn btn-primary"
+                            >
+                                <i class="bi bi-upload"></i> {{ _("Subir primer archivo") }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </main>
+
+        <!-- Delete confirmation modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">{{ _("Confirmar eliminación") }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ _("¿Está seguro de que desea eliminar el archivo") }} "<span id="fileName"></span>"?</p>
+                        <p class="text-danger"><small>{{ _("Esta acción no se puede deshacer.") }}</small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _("Cancelar") }}</button>
+                        <form method="POST" id="deleteForm" style="display: inline">
+                            <button type="submit" class="btn btn-danger">{{ _("Eliminar") }}</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function copyToClipboard(text) {
+                navigator.clipboard.writeText(text).then(
+                    function () {
+                        // Show a temporary tooltip or alert
+                        const btn = event.target.closest("button")
+                        const originalTitle = btn.title
+                        btn.title = '{{ _("¡Copiado!") }}'
+                        setTimeout(() => {
+                            btn.title = originalTitle
+                        }, 2000)
+                    },
+                    function (err) {
+                        console.error("Error copying to clipboard: ", err)
+                    }
+                )
+            }
+
+            function confirmDelete(fileId, fileName) {
+                document.getElementById("fileName").textContent = fileName
+                document.getElementById("deleteForm").action =
+                    "{{ url_for('course.delete_library_file', course_code=curso.codigo, file_id='__FILE_ID__') }}".replace(
+                        "__FILE_ID__",
+                        fileId
+                    )
+                new bootstrap.Modal(document.getElementById("deleteModal")).show()
+            }
+        </script>
+    </body>
+</html>

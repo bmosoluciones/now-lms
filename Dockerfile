@@ -10,6 +10,8 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHON_DISABLE_REMOTE_DEBUG=1
 ENV NOW_LMS_AUTO_MIGRATE=1
+ENV NOW_LMS_DATA_DIR=/app/data
+ENV NOW_LMS_THEMES_DIR=/app/themes
 
 WORKDIR /app
 
@@ -24,14 +26,14 @@ RUN microdnf update -y --nodocs --best --refresh \
     && rm -rf /root/.cache/pip && rm -rf /tmp \
     && microdnf remove -y --best python3.12-pip nodejs* npm \
     && microdnf clean all \
+    && pybabel compile -d now_lms/translations
 
 COPY . /app
-
-RUN chmod +x docker-entry-point.sh
-RUN pybabel compile -d now_lms/translations
-
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
-RUN chmod +x /usr/bin/tini
+
+RUN chmod +x docker-entry-point.sh && chmod +x /usr/bin/tini
+
+VOLUME ["/app/data", "/app/themes"]
 
 EXPOSE 8080
 ENTRYPOINT [ "/usr/bin/tini", "--", "/app/docker-entry-point.sh" ]

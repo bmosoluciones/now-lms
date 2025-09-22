@@ -1,4 +1,5 @@
-{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %} {% set config =
+config() %}
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
@@ -31,8 +32,22 @@
                             {{ form.requerido(class="form-control", id="requerido") }}
                         </div>
 
-                        {{ form.descripcion }} {{ mde.preview }} {{ mde.js }} {{ render_form_buttons(_("Agregar Recurso"),
-                        "/course/explore") }}
+                        {{ form.descripcion }} {{ mde.preview }} {{ mde.js }} {% if
+                        config.enable_html_preformatted_descriptions %}
+                        <div class="col-sm-12">
+                            <div class="form-check">
+                                {{ form.descripcion_html_preformateado(class="form-check-input",
+                                id="descripcion_html_preformateado") }}
+                                <label class="form-check-label" for="descripcion_html_preformateado">
+                                    {{ _("Descripción en HTML preformateado") }}
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                <strong class="text-warning">{{ _("⚠️ ADVERTENCIA:") }} </strong>
+                                {{ _("El uso de HTML preformateado puede presentar riesgos de seguridad.") }}
+                            </div>
+                        </div>
+                        {% endif %} {{ render_form_buttons(_("Agregar Recurso"), "/course/explore") }}
                     </div>
                 </form>
             </div>

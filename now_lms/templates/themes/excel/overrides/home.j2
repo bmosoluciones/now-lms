@@ -3,7 +3,7 @@
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
-        <title>{{ config.titulo }}</title>
+        <title>{{ config.titulo_html or "NOW - Learning Management System" }}</title>
 
         {{ current_theme.local_style() }}
     </head>
@@ -20,12 +20,13 @@
                     <div class="row align-items-center min-vh-50">
                         <div class="col-12 col-lg-7">
                             <div class="excel-hero-content">
-                                <h1 class="excel-hero-title">{{ _('APRENDE FINANZAS EN LÍNEA') }}</h1>
+                                <h1 class="excel-hero-title">{{ _('Bienvenido a') }} {{ config.titulo }}</h1>
                                 <p>
                                     <span class="excel-hero-subtitle">{{ _('CURSOS QUE TRANSFORMAN TUS FINANZAS') }}</span>
                                 </p>
                                 <p class="excel-hero-description">
-                                    {{ _('Aprende a dominar tus finanzas personales con nuestros cursos.') }}
+                                    {% if config.hero and config.hero != "" %} {{ config.hero }} {% else %} {{ _('Aprende a
+                                    dominar tus finanzas personales con nuestros cursos.') }} {% endif %}
                                 </p>
                                 <div class="excel-hero-actions">
                                     {% if not current_user.is_authenticated %}
@@ -65,6 +66,10 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Features Section -->
+            {% if config.enable_feature_section %} {% if config.custom_feature_section and config.custom_feature_section != ""
+            %} {{ config.custom_feature_section | safe }} {% endif %} {% endif %}
 
             <!-- Featured Courses Section - Excel Themed -->
             {% if cursos and cursos.total > 0 %}

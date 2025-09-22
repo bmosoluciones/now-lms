@@ -66,7 +66,10 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                         <i class="bi bi-info-circle me-2"></i>{{ _("Información") }} del {{ _("Recurso") }}
                                     </h2>
                                 </div>
-                                <div class="card-body">{{ markdown2html(recurso.descripcion) | safe }}</div>
+                                <div class="card-body">
+                                    {% if recurso.descripcion_html_preformateado %} {{ recurso.descripcion | safe }} {% else %}
+                                    {{ markdown2html(recurso.descripcion) | safe }} {% endif %}
+                                </div>
                             </div>
                             {% endif %}
 

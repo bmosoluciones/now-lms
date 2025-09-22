@@ -2,9 +2,9 @@ name: Databases
 
 on:
     push:
-        branches: [main, development]
+        branches: [main]
     pull_request:
-        branches: [main, development]
+        branches: [main]
 
 jobs:
     multiple_db_check:

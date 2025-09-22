@@ -3,7 +3,7 @@
     {% set current_theme = current_theme() %}{% set site_config = config() %}
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>Oxford Excellence - {{ site_config.nombre }}</title>
+        <title>{{ site_config.titulo_html or "NOW - Learning Management System" }}</title>
     </head>
     <body>
         {{ current_theme.navbar() }}
@@ -39,7 +39,7 @@
                                 position: relative;
                             "
                         >
-                            {{ site_config.nombre if site_config.nombre else 'NOW-LMS' }}
+                            {{ site_config.titulo if site_config.titulo else 'NOW-LMS' }}
                         </h1>
                         <p
                             class="lead"
@@ -53,7 +53,8 @@
                                 padding: 1rem 0;
                             "
                         >
-                            <em>Dominus illuminatio mea</em>
+                            {% if site_config.hero and site_config.hero != "" %} {{ site_config.hero }} {% else %}
+                            <em>Dominus illuminatio mea</em> {% endif %}
                         </p>
                         <div class="d-flex gap-3 flex-wrap justify-content-center mt-4">
                             {% if not current_user.is_authenticated %}
@@ -94,6 +95,8 @@
         </section>
 
         <!-- Features Section -->
+        {% if site_config.enable_feature_section %} {% if site_config.custom_feature_section and
+        site_config.custom_feature_section != "" %} {{ site_config.custom_feature_section | safe }} {% else %}
         <section class="py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)">
             <div class="container">
                 <div class="row">
@@ -205,6 +208,7 @@
                 </div>
             </div>
         </section>
+        {% endif %} {% endif %}
 
         <!-- Featured Courses Section - Oxford Medieval Manuscript Themed -->
         {% if cursos and cursos.total > 0 %}

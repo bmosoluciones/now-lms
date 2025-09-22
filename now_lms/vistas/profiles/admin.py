@@ -148,9 +148,12 @@ def cambiar_tipo_usario() -> Response:
 
     new_type = request.args.get("type")
     user_id = request.args.get("user")
+    redirect_to = request.args.get("redirect_to", "profile")
 
     # Check demo mode restrictions for any user type changes by admin
     if demo_restriction_check("change_user_type"):
+        if redirect_to == "list":
+            return redirect(url_for("admin_profile.usuarios"))
         return redirect(url_for("user_profile.usuario", id_usuario=user_id))
 
     cambia_tipo_de_usuario_por_id(
@@ -158,4 +161,8 @@ def cambiar_tipo_usario() -> Response:
         nuevo_tipo=new_type,
         usuario=current_user.usuario,
     )
+
+    # Redirect back to the appropriate page based on request
+    if redirect_to == "list":
+        return redirect(url_for("admin_profile.usuarios"))
     return redirect(url_for("user_profile.usuario", id_usuario=user_id))

@@ -1,6 +1,5 @@
 """Tests for audio player UI consistency."""
 
-import pytest
 from flask import url_for
 
 from now_lms.db import CursoRecurso, database, select

@@ -1,7 +1,6 @@
 """Tests for VTT subtitle functionality in audio resources."""
 
 import io
-import pytest
 from werkzeug.datastructures import FileStorage
 
 from now_lms.db import CursoRecurso, database, select

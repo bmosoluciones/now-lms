@@ -14,7 +14,6 @@
 #
 """Definición unica de la version de la aplicación."""
 
-
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
@@ -49,7 +48,7 @@ POST = ""
 
 # <--------------------------------------------------------------------------> #
 # Pre release not for production
-PRERELEASE = "-rc2"
+PRERELEASE = "-rc3"
 
 # <--------------------------------------------------------------------------> #
 # Date of release

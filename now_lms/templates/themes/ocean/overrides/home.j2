@@ -3,7 +3,7 @@
     {% set current_theme = current_theme() %}{% set site_config = config() %}
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>Ocean - {{ site_config.nombre }}</title>
+        <title>{{ site_config.titulo_html or "NOW - Learning Management System" }}</title>
     </head>
     <body>
         {{ current_theme.navbar() }}
@@ -112,14 +112,15 @@
                     <div class="col-12 col-md-8 text-white">
                         <div class="hero-content">
                             <h1 class="display-3 fw-bold mb-4" style="text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3)">
-                                {{ _('Dive Into Knowledge') }}
+                                {{ _('Bienvenido a') }} {{ site_config.titulo }}
                             </h1>
                             <p
                                 class="lead mb-4"
                                 style="font-size: 1.4rem; line-height: 1.6; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3)"
                             >
-                                {{ _('Explore a Vast Ocean of Courses &') }}<br />
-                                {{ _('Unlock Your Potential') }}
+                                {% if site_config.hero and site_config.hero != "" %} {{ site_config.hero }} {% else %} {{
+                                _('Explore a Vast Ocean of Courses &') }}<br />
+                                {{ _('Unlock Your Potential') }} {% endif %}
                             </p>
                             <div class="d-flex gap-3 flex-wrap">
                                 <a
@@ -252,6 +253,8 @@
         </section>
 
         <!-- Features Section - Why Choose Ocean? -->
+        {% if site_config.enable_feature_section %} {% if site_config.custom_feature_section and
+        site_config.custom_feature_section != "" %} {{ site_config.custom_feature_section | safe }} {% else %}
         <section id="features" class="py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)">
             <div class="container">
                 <div class="row">
@@ -414,6 +417,7 @@
                 </div>
             </div>
         </section>
+        {% endif %} {% endif %}
 
         <!-- Popular Courses Section -->
         {% if cursos and cursos.total > 0 %}
