@@ -10,6 +10,7 @@ black
 flake8
 pylint
 pytest
+pytest-xdist
 ruff
 
 # Cobertura de código

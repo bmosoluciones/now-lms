@@ -3,7 +3,7 @@
     {% set current_theme = current_theme() %}{% set site_config = config() %}{% set lms_info = lms_info() %}
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>Finance Academy - {{ site_config.nombre }}</title>
+        <title>{{ site_config.titulo_html or "NOW - Learning Management System" }}</title>
     </head>
     <body>
         {{ current_theme.navbar() }}
@@ -68,11 +68,12 @@
                 <div class="row align-items-center">
                     <div class="col-12 col-md-8 col-lg-8 text-white order-2 order-md-1">
                         <div class="hero-content">
-                            <h1 class="display-4 fw-bold mb-4">💰 {{ _('Inversión en Conocimiento Financiero') }}</h1>
+                            <h1 class="display-4 fw-bold mb-4">💰 {{ _('Bienvenido a') }} {{ site_config.titulo }}</h1>
                             <p class="lead mb-4" style="font-size: 1.3rem; line-height: 1.6">
-                                📊 {{ _('Maximiza tus retornos educativos con nuestra plataforma de aprendizaje financiero de
-                                alto rendimiento. Diversifica tu portafolio de conocimientos con cursos premium del mercado
-                                educativo.') }}
+                                {% if site_config.hero and site_config.hero != "" %} {{ site_config.hero }} {% else %} 📊 {{
+                                _('Maximiza tus retornos educativos con nuestra plataforma de aprendizaje financiero de alto
+                                rendimiento. Diversifica tu portafolio de conocimientos con cursos premium del mercado
+                                educativo.') }} {% endif %}
                             </p>
                             <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-md-start">
                                 {% if not current_user.is_authenticated %}
@@ -150,6 +151,8 @@
         </section>
 
         <!-- Features Section - Investment Focused -->
+        {% if site_config.enable_feature_section %} {% if site_config.custom_feature_section and
+        site_config.custom_feature_section != "" %} {{ site_config.custom_feature_section | safe }} {% else %}
         <section class="py-5" style="background: linear-gradient(135deg, #f5f3ea 0%, #faf8f0 100%)">
             <div class="container">
                 <div class="row">
@@ -266,6 +269,7 @@
                 </div>
             </div>
         </section>
+        {% endif %} {% endif %}
 
         <!-- Featured Courses Section - Finance Themed -->
         {% if cursos and cursos.total > 0 %}

@@ -88,7 +88,7 @@
                                             </a>
                                         </td>
                                         <td>
-                                            {% if item.tipo == "student" %}
+                                            {% if item.tipo == "user" %}
                                             <span class="badge bg-success rounded-pill">
                                                 <i class="bi bi-person-check me-1"></i>{{_("Estudiante")}}
                                             </span>
@@ -142,6 +142,64 @@
                                                     <i class="bi bi-person-fill-check" aria-hidden="true"></i>
                                                 </a>
                                                 {% endif %}
+                                                <div class="btn-group" role="group">
+                                                    <button
+                                                        class="btn btn-sm btn-outline-info dropdown-toggle"
+                                                        type="button"
+                                                        data-bs-toggle="dropdown"
+                                                        aria-expanded="false"
+                                                        title="{{ _('Cambiar Tipo de Usuario') }}"
+                                                        {%
+                                                        if
+                                                        demo_mode()
+                                                        %}disabled{%
+                                                        endif
+                                                        %}
+                                                    >
+                                                        <i class="bi bi-person-gear" aria-hidden="true"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><h6 class="dropdown-header">{{ _('Cambiar Tipo') }}</h6></li>
+                                                        {% if item.tipo != "admin" %}
+                                                        <li>
+                                                            <a
+                                                                class="dropdown-item"
+                                                                href="{{ url_for('admin_profile.cambiar_tipo_usario', type='admin', user=item.usuario, redirect_to='list') }}"
+                                                            >
+                                                                <i class="bi bi-shield-check me-2"></i>{{ _('Admin') }}
+                                                            </a>
+                                                        </li>
+                                                        {% endif %} {% if item.tipo != "instructor" %}
+                                                        <li>
+                                                            <a
+                                                                class="dropdown-item"
+                                                                href="{{ url_for('admin_profile.cambiar_tipo_usario', type='instructor', user=item.usuario, redirect_to='list') }}"
+                                                            >
+                                                                <i class="bi bi-person-workspace me-2"></i>{{ _('Instructor')
+                                                                }}
+                                                            </a>
+                                                        </li>
+                                                        {% endif %} {% if item.tipo != "moderator" %}
+                                                        <li>
+                                                            <a
+                                                                class="dropdown-item"
+                                                                href="{{ url_for('admin_profile.cambiar_tipo_usario', type='moderator', user=item.usuario, redirect_to='list') }}"
+                                                            >
+                                                                <i class="bi bi-person-gear me-2"></i>{{ _('Moderador') }}
+                                                            </a>
+                                                        </li>
+                                                        {% endif %} {% if item.tipo != "user" %}
+                                                        <li>
+                                                            <a
+                                                                class="dropdown-item"
+                                                                href="{{ url_for('admin_profile.cambiar_tipo_usario', type='user', user=item.usuario, redirect_to='list') }}"
+                                                            >
+                                                                <i class="bi bi-person-check me-2"></i>{{ _('Usuario') }}
+                                                            </a>
+                                                        </li>
+                                                        {% endif %}
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </td>
                                         <td>

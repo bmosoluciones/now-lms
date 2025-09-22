@@ -3,7 +3,7 @@
     {% set current_theme = current_theme() %}{% set site_config = config() %}
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>Cambridge Academic - {{ site_config.titulo }}</title>
+        <title>{{ site_config.titulo_html or "NOW - Learning Management System" }}</title>
     </head>
     <body>
         {{ current_theme.navbar() }}
@@ -56,8 +56,10 @@
                                     border-radius: 3px;
                                     font-family: &quot;Cambria&quot;, serif;
                                 "
-                                >Hypotheses non fingo</span
                             >
+                                {% if site_config.hero and site_config.hero != "" %} {{ site_config.hero }} {% else %}
+                                Hypotheses non fingo {% endif %}
+                            </span>
                         </p>
                         <div style="display: inline-flex; flex-direction: column; align-items: center; gap: 1rem">
                             {% if not current_user.is_authenticated %}
@@ -99,6 +101,8 @@
         </section>
 
         <!-- Features Section -->
+        {% if site_config.enable_feature_section %} {% if site_config.custom_feature_section and
+        site_config.custom_feature_section != "" %} {{ site_config.custom_feature_section | safe }} {% else %}
         <section class="py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)">
             <div class="container">
                 <div class="row">
@@ -210,6 +214,7 @@
                 </div>
             </div>
         </section>
+        {% endif %} {% endif %}
 
         <!-- Featured Courses Section - Cambridge Scientific Laboratory Themed -->
         {% if cursos and cursos.total > 0 %}

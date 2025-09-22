@@ -12,9 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 """Definición de base de datos."""
-
 
 from __future__ import annotations
 
@@ -34,14 +32,12 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event, select
 from sqlalchemy.exc import SQLAlchemyError
 
-__all__ = ["select", "database", "UserMixin", "eliminar_base_de_datos_segura", "UserEvent"]
-
+__all__ = ["select", "database", "UserMixin", "eliminar_base_de_datos_segura", "UserEvent", "CourseLibrary"]
 
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
 # pylint: disable=E1101
-
 
 # < --------------------------------------------------------------------------------------------- >
 # Definición principal de la clase del ORM.
@@ -291,6 +287,24 @@ class CursoRecursoDescargable(database.Model, BaseTabla):
     recurso = database.Column(database.String(10), database.ForeignKey("recurso.codigo"), nullable=False, index=True)
 
 
+class CourseLibrary(database.Model, BaseTabla):
+    """Archivos subidos a la biblioteca del curso."""
+
+    __tablename__ = "course_library"
+    __table_args__ = (database.UniqueConstraint("curso", "filename", name="course_library_unique_file"),)
+
+    curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
+    filename = database.Column(database.String(255), nullable=False, index=True)
+    original_filename = database.Column(database.String(255), nullable=False)
+    nombre = database.Column(database.String(255), nullable=False)
+    descripcion = database.Column(database.String(1000), nullable=False)
+    file_size = database.Column(database.Integer(), nullable=False)
+    mime_type = database.Column(database.String(100), nullable=True)
+
+    # Relationships
+    rel_curso = database.relationship("Curso", foreign_keys=curso)
+
+
 class CursoSeccion(database.Model, BaseTabla):
     """Los cursos tienen secciones para dividir el contenido en secciones logicas."""
 
@@ -329,6 +343,7 @@ class CursoRecurso(database.Model, BaseTabla):
     notes = database.Column(database.String(20))
     subtitle_vtt = database.Column(database.Text(), nullable=True)
     subtitle_vtt_secondary = database.Column(database.Text(), nullable=True)
+    descripcion_html_preformateado = database.Column(database.Boolean(), default=False, nullable=False)
 
 
 class CursoRecursoAvance(database.Model, BaseTabla):
@@ -526,13 +541,22 @@ class Configuracion(database.Model, BaseTabla):
 
     titulo = database.Column(database.String(150), nullable=False)
     descripcion = database.Column(database.String(500), nullable=False)
+
+    # Aditional information about the site
+    titulo_html = database.Column(database.String(50), nullable=True)
+    hero = database.Column(database.String(250), nullable=True)
+    enable_feature_section = database.Column(database.Boolean(), default=True, nullable=False)
+    custom_feature_section = database.Column(database.Text(), nullable=True)
+
+    # Payment configuration
     moneda = database.Column(database.String(5))
+
     # Send a message to the user to verify his email
     verify_user_by_email = database.Column(database.Boolean())
+
     # Internationalization
     lang = database.Column(database.String(5), default="en")
     time_zone = database.Column(database.String(50), default="UTC")
-    r = database.Column(database.LargeBinary())
 
     # Navigation configuration options
     enable_programs = database.Column(database.Boolean(), default=False, nullable=False)
@@ -540,9 +564,21 @@ class Configuracion(database.Model, BaseTabla):
     enable_resources = database.Column(database.Boolean(), default=False, nullable=False)
     enable_blog = database.Column(database.Boolean(), default=False, nullable=False)
 
+    # Custom text for template designers
+    custom_text1 = database.Column(database.String(250), nullable=True)
+    custom_text2 = database.Column(database.String(250), nullable=True)
+    custom_text3 = database.Column(database.String(250), nullable=True)
+    custom_text4 = database.Column(database.String(250), nullable=True)
+    eslogan = database.Column(database.String(500), nullable=True)
+
     # File upload configuration
     enable_file_uploads = database.Column(database.Boolean(), default=False, nullable=False)
     max_file_size = database.Column(database.Integer(), default=1, nullable=False)  # Maximum file size in megabytes
+
+    # HTML preformatted descriptions configuration
+    enable_html_preformatted_descriptions = database.Column(database.Boolean(), default=False, nullable=False)
+
+    r = database.Column(database.LargeBinary())
 
 
 class Style(database.Model, BaseTabla):
@@ -674,6 +710,7 @@ class Recurso(database.Model, BaseTabla):
     fecha_promocionado = database.Column(database.DateTime, nullable=True)
     usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
     pagado = database.Column(database.Boolean())
+    descripcion_html_preformateado = database.Column(database.Boolean(), default=False, nullable=False)
 
 
 class Certificado(database.Model, BaseTabla):

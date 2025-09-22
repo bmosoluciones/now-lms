@@ -3,7 +3,7 @@
     {% set current_theme = current_theme() %}{% set site_config = config() %}
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>Golden Learning - {{ site_config.nombre }}</title>
+        <title>{{ site_config.titulo_html or "NOW - Learning Management System" }}</title>
 
         <style>
             /* Custom styles for golden theme */
@@ -49,13 +49,14 @@
                             </div>
                             <h1 class="display-4 fw-bold mb-4" style="color: #141411">
                                 {{ _('Aprende inglés') }}
-                                <span style="color: #f49640; font-family: &quot;Caveat&quot;, cursive"
+                                <span style="color: #f1e7ddff; font-family: &quot;Caveat&quot;, cursive"
                                     >{{ _('con confianza') }}</span
                                 >
                             </h1>
                             <p class="lead mb-4" style="font-size: 1.3rem; line-height: 1.6; color: #141411">
-                                {{ _('Cursos dinámicos, prácticos y divertidos — Clases online en vivo, profesores nativos y
-                                material interactivo.') }}
+                                {% if site_config.hero and site_config.hero != "" %} {{ site_config.hero }} {% else %} {{
+                                _('Cursos dinámicos, prácticos y divertidos — Clases online en vivo y material interactivo.')
+                                }} {% endif %}
                             </p>
                             <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-md-start">
                                 {% if not current_user.is_authenticated %}
@@ -127,6 +128,7 @@
 
         <main style="max-width: 1100px; margin: 0 auto; padding: 0 1rem">
             <!-- Contenido de cursos y características -->
+            {% if site_config.enable_feature_section %}
             <section
                 style="
                     background: #fff;
@@ -186,8 +188,10 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
 
                 <!-- Featured Courses Section -->
+                <div class="row"><br /></div>
                 {% if cursos and cursos.total > 0 %}
                 <div class="row">
                     <div class="col-12 text-center mb-4">

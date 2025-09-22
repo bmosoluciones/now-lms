@@ -38,7 +38,7 @@ from wtforms import (
     TextAreaField,
     TimeField,
 )
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Length
 from wtforms.widgets import ColorInput, TextArea, html_params
 
 # ---------------------------------------------------------------------------------------
@@ -326,9 +326,27 @@ class ConfigForm(FlaskForm):
     enable_resources = BooleanField(_("Habilitar Recursos descargables"), default=False, validators=[])
     enable_blog = BooleanField(_("Habilitar Blog"), default=False, validators=[])
 
+    # Custom information
+    titulo_html = StringField(validators=[])
+    hero = StringField(validators=[])
+    enable_feature_section = BooleanField(validators=[])
+    custom_feature_section = TextAreaField(validators=[])
+    eslogan = StringField(validators=[])
+
+    # Custom text for template designers
+    custom_text1 = StringField(validators=[])
+    custom_text2 = StringField(validators=[])
+    custom_text3 = StringField(validators=[])
+    custom_text4 = StringField(validators=[])
+
     # File upload configuration
     enable_file_uploads = BooleanField(_("Habilitar subida de archivos descargables"), default=False, validators=[])
     max_file_size = IntegerField(_("Tamaño máximo de archivo (MB)"), default=1, validators=[])
+
+    # HTML preformatted descriptions configuration
+    enable_html_preformatted_descriptions = BooleanField(
+        _("Permitir HTML preformateado en la descripción de recursos"), default=False, validators=[]
+    )
 
     def __init__(self, *args, **kwargs):
         """Initialize form with translated choices."""
@@ -382,6 +400,7 @@ class BaseForm(FlaskForm):
 
     nombre = StringField(validators=[DataRequired()])
     descripcion = MdeField(validators=[DataRequired()])
+    descripcion_html_preformateado = BooleanField(_("Descripción en HTML preformateado"), default=False, validators=[])
 
 
 class GrupoForm(BaseForm):
@@ -481,6 +500,22 @@ class CursoRecursoArchivoDescargable(CursoRecursoForm):
     """Formulario para un nuevo recurso descargable."""
 
 
+class CursoLibraryFileForm(BaseForm):
+    """Formulario para subir archivos a la biblioteca del curso."""
+
+    nombre = StringField(
+        _("Nombre del archivo"),
+        validators=[DataRequired(), Length(min=1, max=255)],
+        render_kw={"placeholder": _("Nombre descriptivo para el archivo")},
+    )
+
+    descripcion = TextAreaField(
+        _("Descripción"),
+        validators=[DataRequired(), Length(min=1, max=1000)],
+        render_kw={"placeholder": _("Describe el uso o contenido del archivo"), "rows": 3},
+    )
+
+
 class CursoRecursoArchivoText(CursoRecursoForm):
     """Formulario para un nuevo recurso de audio."""
 
@@ -490,7 +525,7 @@ class CursoRecursoArchivoText(CursoRecursoForm):
 class CursoRecursoExternalCode(CursoRecursoForm):
     """Formulario para insertar un recurso HTML."""
 
-    html_externo = StringField(validators=[DataRequired()])
+    html_externo = TextAreaField(validators=[DataRequired()])
 
 
 class CursoRecursoExternalLink(CursoRecursoForm):

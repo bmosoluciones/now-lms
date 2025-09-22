@@ -15,12 +15,15 @@
 
 from now_lms.db import database
 from now_lms.logs import log
+import pytest
 
 """
 Casos de uso mas comunes.
 """
 
 
+@pytest.mark.integration
+@pytest.mark.slow
 def test_user_registration_to_free_course_enroll(session_full_db_setup, isolated_db_session):
     """Test user registration to free course enrollment."""
     from now_lms.db import Usuario, database
@@ -479,6 +482,8 @@ def test_theme_custom_pages(session_full_db_setup):
 from io import BytesIO
 
 
+@pytest.mark.integration
+@pytest.mark.slow
 def test_course_administration_flow(basic_config_setup, client):
     """Test GET and POST for creating a new course."""
     app = basic_config_setup
@@ -2243,6 +2248,8 @@ def test_announcements_basic_access_flow(basic_config_setup, client):
     # This test validates that instructor access control is working correctly
 
 
+@pytest.mark.integration
+@pytest.mark.slow
 def test_missing_course_routes_endtoend(full_db_setup, client):
     """Test GET and POST requests for course routes missing from other end-to-end tests."""
     app = full_db_setup

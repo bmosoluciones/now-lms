@@ -7,6 +7,19 @@ All notable changes to this project will be documented in this file.
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/).
 
 
+## [ 0.0.1-rc02 ] - unreleased
+
+### Fixed:
+ - Administrative user enrollment.
+
+### Changed:
+ - Added a option to change the user type in the adminstrative user list.
+
+### Added:
+ - Course library.
+
+-------------------
+
 ## [ 0.0.1-rc02 ] - 2025-09-18
 
 ### Changed:

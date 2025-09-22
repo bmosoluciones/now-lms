@@ -1,0 +1,82 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="{{ current_locale() }}" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ _("Subir archivo a biblioteca") }} - {{ curso.nombre }}</title>
+
+        {{ current_theme.local_style() }}
+        <!-- Custom styles for this template -->
+        <link href="{{ url_for('static', filename='css/form-validation') }}" rel="stylesheet" />
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5" id="icon-grid">
+                <h3 class="pb-2 border-bottom">{{ _("Subir archivo a la biblioteca del curso") }}</h3>
+                <p class="text-muted">
+                    {{ _("Suba un archivo a la biblioteca del curso para utilizarlo en recursos como imágenes en posts del blog
+                    o documentos.") }}
+                    <br />
+                    <strong>{{ _("Tamaño máximo:") }}</strong> {{ max_file_size }}MB.
+                    <br />
+                    <strong>{{ _("Tipos permitidos:") }}</strong> {{ _("PDF, Word, Excel, PowerPoint, imágenes, audio, video,
+                    archivos comprimidos, etc.") }}
+                    <br />
+                    <strong>{{ _("Nota:") }}</strong> {{ _("Los espacios en el nombre del archivo serán reemplazados por
+                    guiones bajos.") }}
+                </p>
+
+                <form method="POST" enctype="multipart/form-data" class="row g-3 needs-validation" novalidate>
+                    {{ form.hidden_tag() }}
+
+                    <div class="col-md-12">
+                        <label for="nombre" class="form-label">{{ form.nombre.label.text }} *</label>
+                        {{ form.nombre(class="form-control", required=true) }}
+                        <div class="form-text">
+                            {{ _("Un nombre descriptivo para identificar el archivo en la biblioteca.") }}
+                        </div>
+                        <div class="invalid-feedback">{{ _("Por favor, ingrese un nombre para el archivo.") }}</div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="descripcion" class="form-label">{{ form.descripcion.label.text }} *</label>
+                        {{ form.descripcion(class="form-control", required=true) }}
+                        <div class="form-text">{{ _("Describe el uso o contenido del archivo.") }}</div>
+                        <div class="invalid-feedback">{{ _("Por favor, ingrese una descripción para el archivo.") }}</div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="archivo" class="form-label">{{ _("Archivo") }} *</label>
+                        <input
+                            type="file"
+                            class="form-control"
+                            name="archivo"
+                            id="archivo"
+                            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.rtf,.csv,.zip,.rar,.7z,.jpg,.jpeg,.png,.gif,.bmp,.svg,.webp,.mp3,.wav,.ogg,.mp4,.avi,.mov,.wmv,.flv,.webm,.json,.xml,.yaml,.yml,.md,.html,.css,.prn"
+                            required
+                        />
+                        <div class="form-text">
+                            {{ _("Seleccione un archivo seguro. No se permiten archivos ejecutables (.exe, .bat, .sh, etc.).
+                            Los espacios en el nombre serán reemplazados por guiones bajos automáticamente.") }}
+                        </div>
+                        <div class="invalid-feedback">{{ _("Por favor, seleccione un archivo para subir.") }}</div>
+                    </div>
+
+                    <div class="col-12">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-upload"></i> {{ _("Subir archivo") }}
+                        </button>
+                        <a href="{{ url_for('course.course_library', course_code=curso.codigo) }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> {{ _("Cancelar") }}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </body>
+</html>
