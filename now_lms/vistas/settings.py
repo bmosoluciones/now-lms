@@ -191,6 +191,7 @@ def configuracion() -> str | Response:
         enable_blog=config.enable_blog,
         enable_file_uploads=config.enable_file_uploads,
         max_file_size=config.max_file_size,
+        enable_html_preformatted_descriptions=config.enable_html_preformatted_descriptions,
         verify_user_by_email=config.verify_user_by_email,
         titulo_html=config.titulo_html,
         hero=config.hero,
@@ -214,6 +215,7 @@ def configuracion() -> str | Response:
         config.enable_blog = form.enable_blog.data
         config.enable_file_uploads = form.enable_file_uploads.data
         config.max_file_size = form.max_file_size.data
+        config.enable_html_preformatted_descriptions = form.enable_html_preformatted_descriptions.data
         config.verify_user_by_email = form.verify_user_by_email.data
         config.titulo_html = form.titulo_html.data
         config.hero = form.hero.data

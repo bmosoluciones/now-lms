@@ -574,6 +574,9 @@ class Configuracion(database.Model, BaseTabla):
     enable_file_uploads = database.Column(database.Boolean(), default=False, nullable=False)
     max_file_size = database.Column(database.Integer(), default=1, nullable=False)  # Maximum file size in megabytes
 
+    # HTML preformatted descriptions configuration
+    enable_html_preformatted_descriptions = database.Column(database.Boolean(), default=False, nullable=False)
+
     r = database.Column(database.LargeBinary())
 
 
@@ -706,6 +709,7 @@ class Recurso(database.Model, BaseTabla):
     fecha_promocionado = database.Column(database.DateTime, nullable=True)
     usuario = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_USUARIO))
     pagado = database.Column(database.Boolean())
+    descripcion_html_preformateado = database.Column(database.Boolean(), default=False, nullable=False)
 
 
 class Certificado(database.Model, BaseTabla):

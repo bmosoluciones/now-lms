@@ -343,6 +343,11 @@ class ConfigForm(FlaskForm):
     enable_file_uploads = BooleanField(_("Habilitar subida de archivos descargables"), default=False, validators=[])
     max_file_size = IntegerField(_("Tamaño máximo de archivo (MB)"), default=1, validators=[])
 
+    # HTML preformatted descriptions configuration
+    enable_html_preformatted_descriptions = BooleanField(
+        _("Permitir HTML preformateado en la descripción de recursos"), default=False, validators=[]
+    )
+
     def __init__(self, *args, **kwargs):
         """Initialize form with translated choices."""
         super().__init__(*args, **kwargs)
@@ -395,6 +400,7 @@ class BaseForm(FlaskForm):
 
     nombre = StringField(validators=[DataRequired()])
     descripcion = MdeField(validators=[DataRequired()])
+    descripcion_html_preformateado = BooleanField(_("Descripción en HTML preformateado"), default=False, validators=[])
 
 
 class GrupoForm(BaseForm):

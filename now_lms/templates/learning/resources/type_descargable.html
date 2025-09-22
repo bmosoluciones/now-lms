@@ -104,7 +104,13 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         <!-- Description -->
                         <div class="mb-4">
                             <h6>{{ _("Descripción") }}:</h6>
-                            <div>{{ markdown2html(recurso.descripcion) | safe }}</div>
+                            <div>
+                                {% if recurso.descripcion_html_preformateado %}
+                                    {{ recurso.descripcion | safe }}
+                                {% else %}
+                                    {{ markdown2html(recurso.descripcion) | safe }}
+                                {% endif %}
+                            </div>
                         </div>
 
                         <!-- Preview for supported file types -->

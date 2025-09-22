@@ -45,7 +45,7 @@ from werkzeug.wrappers import Response
 from now_lms.auth import perfil_requerido
 from now_lms.cache import cache, no_guardar_en_cache_global
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, files, images
-from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Categoria, Etiqueta, Recurso, database
+from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Categoria, Configuracion, Etiqueta, Recurso, database
 from now_lms.forms import RecursoForm
 from now_lms.misc import TIPOS_RECURSOS
 
@@ -78,6 +78,12 @@ def new_resource() -> str | Response:
         else:
             resource_file = ""
 
+        # Get global configuration for HTML preformatted descriptions
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        html_preformateado = False
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            html_preformateado = form.descripcion_html_preformateado.data or False
+
         recurso = Recurso(
             nombre=form.nombre.data,
             descripcion=form.descripcion.data,
@@ -86,6 +92,7 @@ def new_resource() -> str | Response:
             publico=False,
             file_name=file_name,
             tipo=form.tipo.data,
+            descripcion_html_preformateado=html_preformateado,
         )
         if resource_file and picture_file:
             recurso.logo = True
@@ -157,7 +164,12 @@ def delete_resource(ulid: str) -> Response:
 def edit_resource(ulid: str) -> str | Response:
     """Actualiza recurso."""
     recurso = database.session.execute(database.select(Recurso).filter(Recurso.id == ulid)).scalars().first()
-    form = RecursoForm(nombre=recurso.nombre, descripcion=recurso.descripcion, tipo=recurso.tipo)
+    form = RecursoForm(
+        nombre=recurso.nombre,
+        descripcion=recurso.descripcion,
+        tipo=recurso.tipo,
+        descripcion_html_preformateado=recurso.descripcion_html_preformateado or False,
+    )
 
     if form.validate_on_submit() or request.method == "POST":
         if current_user.tipo == "admin":
@@ -168,6 +180,13 @@ def edit_resource(ulid: str) -> str | Response:
             recurso.precio = form.precio.data
             recurso.publico = form.publico.data
             recurso.tipo = form.tipo.data
+
+            # Handle HTML preformatted flag - only set if global config allows it
+            config = database.session.execute(database.select(Configuracion)).scalars().first()
+            if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+                recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
+            else:
+                recurso.descripcion_html_preformateado = False
         else:
             return abort(403)
 
