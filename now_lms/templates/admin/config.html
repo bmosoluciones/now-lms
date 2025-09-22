@@ -247,7 +247,8 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-check">
-                                        {{ form.enable_html_preformatted_descriptions(class="form-check-input", id="enable_html_preformatted_descriptions",
+                                        {{ form.enable_html_preformatted_descriptions(class="form-check-input",
+                                        id="enable_html_preformatted_descriptions",
                                         checked=config.enable_html_preformatted_descriptions) }}
                                         <label class="form-check-label" for="enable_html_preformatted_descriptions">
                                             {{_("Permitir HTML preformateado en la descripción de recursos")}}:
@@ -255,7 +256,8 @@
                                     </div>
                                     <div class="form-text">
                                         <strong class="text-warning">{{_("⚠️ ADVERTENCIA:")}} </strong>
-                                        {{_("El uso de HTML preformateado puede presentar riesgos de seguridad. Solo habilite esta opción si confía en todos los instructores que pueden crear recursos.")}}.
+                                        {{_("El uso de HTML preformateado puede presentar riesgos de seguridad. Solo habilite
+                                        esta opción si confía en todos los instructores que pueden crear recursos.")}}.
                                     </div>
                                 </div>
                             </div>
