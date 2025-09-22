@@ -1408,6 +1408,12 @@ def nuevo_recurso_youtube_video(course_code: str, seccion: str) -> str | Respons
     consulta_recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((consulta_recursos or 0) + 1)
     if form.validate_on_submit() or request.method == "POST":
+        # Get global configuration for HTML preformatted descriptions
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        html_preformateado = False
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            html_preformateado = form.descripcion_html_preformateado.data or False
+
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
             seccion=seccion,
@@ -1418,6 +1424,7 @@ def nuevo_recurso_youtube_video(course_code: str, seccion: str) -> str | Respons
             requerido=form.requerido.data,
             indice=nuevo_indice,
             creado_por=current_user.usuario,
+            descripcion_html_preformateado=html_preformateado,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -1455,6 +1462,13 @@ def editar_recurso_youtube_video(course_code: str, seccion: str, resource_id: st
         recurso.modificado = datetime.now(timezone.utc)
         recurso.modificado_por = current_user.usuario
 
+        # Handle HTML preformatted flag - only set if global config allows it
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
+        else:
+            recurso.descripcion_html_preformateado = False
+
         try:
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
@@ -1468,6 +1482,7 @@ def editar_recurso_youtube_video(course_code: str, seccion: str, resource_id: st
         form.descripcion.data = recurso.descripcion
         form.youtube_url.data = recurso.url
         form.requerido.data = recurso.requerido
+        form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
 
         return render_template(
             "learning/resources_new/editar_recurso_youtube.html",
@@ -1487,6 +1502,12 @@ def nuevo_recurso_text(course_code: str, seccion: str) -> str | Response:
     consulta_recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((consulta_recursos or 0) + 1)
     if form.validate_on_submit() or request.method == "POST":
+        # Get global configuration for HTML preformatted descriptions
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        html_preformateado = False
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            html_preformateado = form.descripcion_html_preformateado.data or False
+
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
             seccion=seccion,
@@ -1497,6 +1518,7 @@ def nuevo_recurso_text(course_code: str, seccion: str) -> str | Response:
             indice=nuevo_indice,
             text=form.editor.data,
             creado_por=current_user.usuario,
+            descripcion_html_preformateado=html_preformateado,
         )
         try:
             nuevo_recurso_.creado = datetime.now(timezone.utc).date()
@@ -1530,11 +1552,18 @@ def editar_recurso_text(course_code: str, seccion: str, resource_id: str) -> str
 
     if form.validate_on_submit() or request.method == "POST":
         recurso.nombre = form.nombre.data
-        recurso.descripcion = "Text resource"
+        recurso.descripcion = form.descripcion.data
         recurso.requerido = form.requerido.data
         recurso.text = form.editor.data
         recurso.modificado = datetime.now(timezone.utc)
         recurso.modificado_por = current_user.usuario
+
+        # Handle HTML preformatted flag - only set if global config allows it
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
+        else:
+            recurso.descripcion_html_preformateado = False
 
         try:
             database.session.commit()
@@ -1549,6 +1578,7 @@ def editar_recurso_text(course_code: str, seccion: str, resource_id: str) -> str
         form.descripcion.data = recurso.descripcion
         form.requerido.data = recurso.requerido
         form.editor.data = recurso.text
+        form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
 
         return render_template(
             "learning/resources_new/editar_recurso_text.html",
@@ -1568,6 +1598,12 @@ def nuevo_recurso_link(course_code: str, seccion: str) -> str | Response:
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((recursos or 0) + 1)
     if form.validate_on_submit() or request.method == "POST":
+        # Get global configuration for HTML preformatted descriptions
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        html_preformateado = False
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            html_preformateado = form.descripcion_html_preformateado.data or False
+
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
             seccion=seccion,
@@ -1578,6 +1614,7 @@ def nuevo_recurso_link(course_code: str, seccion: str) -> str | Response:
             indice=nuevo_indice,
             url=form.url.data,
             creado_por=current_user.usuario,
+            descripcion_html_preformateado=html_preformateado,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -1614,6 +1651,13 @@ def editar_recurso_link(course_code: str, seccion: str, resource_id: str) -> str
         recurso.url = form.url.data
         recurso.modificado_por = current_user.usuario
 
+        # Handle HTML preformatted flag - only set if global config allows it
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
+        else:
+            recurso.descripcion_html_preformateado = False
+
         try:
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
@@ -1627,6 +1671,7 @@ def editar_recurso_link(course_code: str, seccion: str, resource_id: str) -> str
         form.descripcion.data = recurso.descripcion
         form.requerido.data = recurso.requerido
         form.url.data = recurso.url
+        form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
 
         return render_template(
             "learning/resources_new/editar_recurso_link.html",
@@ -1646,6 +1691,12 @@ def nuevo_recurso_pdf(course_code: str, seccion: str) -> str | Response:
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((recursos or 0) + 1)
     if (form.validate_on_submit() or request.method == "POST") and "pdf" in request.files:
+        # Get global configuration for HTML preformatted descriptions
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        html_preformateado = False
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            html_preformateado = form.descripcion_html_preformateado.data or False
+
         file_name = str(ULID()) + ".pdf"
         pdf_file = files.save(request.files["pdf"], folder=course_code, name=file_name)
         nuevo_recurso_ = CursoRecurso(
@@ -1659,6 +1710,7 @@ def nuevo_recurso_pdf(course_code: str, seccion: str) -> str | Response:
             base_doc_url=files.name,
             doc=pdf_file,
             creado_por=current_user.usuario,
+            descripcion_html_preformateado=html_preformateado,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -1694,6 +1746,13 @@ def editar_recurso_pdf(course_code: str, seccion: str, resource_id: str) -> str 
         recurso.requerido = form.requerido.data
         recurso.modificado_por = current_user.usuario
 
+        # Handle HTML preformatted flag - only set if global config allows it
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
+        else:
+            recurso.descripcion_html_preformateado = False
+
         # Handle file replacement if a new PDF is uploaded
         if "pdf" in request.files and request.files["pdf"].filename:
             file_name = str(ULID()) + ".pdf"
@@ -1713,6 +1772,7 @@ def editar_recurso_pdf(course_code: str, seccion: str, resource_id: str) -> str 
         form.nombre.data = recurso.nombre
         form.descripcion.data = recurso.descripcion
         form.requerido.data = recurso.requerido
+        form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
 
         return render_template(
             "learning/resources_new/editar_recurso_pdf.html",
@@ -1732,6 +1792,12 @@ def nuevo_recurso_meet(course_code: str, seccion: str) -> str | Response:
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((recursos or 0) + 1)
     if form.validate_on_submit() or request.method == "POST":
+        # Get global configuration for HTML preformatted descriptions
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        html_preformateado = False
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            html_preformateado = form.descripcion_html_preformateado.data or False
+
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
             seccion=seccion,
@@ -1746,6 +1812,7 @@ def nuevo_recurso_meet(course_code: str, seccion: str) -> str | Response:
             hora_inicio=form.hora_inicio.data,
             hora_fin=form.hora_fin.data,
             notes=form.notes.data,
+            descripcion_html_preformateado=html_preformateado,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -1786,6 +1853,13 @@ def editar_recurso_meet(course_code: str, seccion: str, resource_id: str) -> str
         recurso.notes = form.notes.data
         recurso.modificado_por = current_user.usuario
 
+        # Handle HTML preformatted flag - only set if global config allows it
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
+        else:
+            recurso.descripcion_html_preformateado = False
+
         try:
             database.session.commit()
             # Update calendar events for this meet resource
@@ -1805,6 +1879,7 @@ def editar_recurso_meet(course_code: str, seccion: str, resource_id: str) -> str
         form.hora_inicio.data = recurso.hora_inicio
         form.hora_fin.data = recurso.hora_fin
         form.notes.data = recurso.notes
+        form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
 
         return render_template(
             "learning/resources_new/editar_recurso_meet.html",
@@ -1824,6 +1899,12 @@ def nuevo_recurso_img(course_code: str, seccion: str) -> str | Response:
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((recursos or 0) + 1)
     if (form.validate_on_submit() or request.method == "POST") and "img" in request.files:
+        # Get global configuration for HTML preformatted descriptions
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        html_preformateado = False
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            html_preformateado = form.descripcion_html_preformateado.data or False
+
         img_filename = request.files["img"].filename
         img_ext = splitext(img_filename or "")[1]
         file_name = str(ULID()) + (img_ext or "")
@@ -1840,6 +1921,7 @@ def nuevo_recurso_img(course_code: str, seccion: str) -> str | Response:
             base_doc_url=images.name,
             doc=picture_file,
             creado_por=current_user.usuario,
+            descripcion_html_preformateado=html_preformateado,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -1875,6 +1957,13 @@ def editar_recurso_img(course_code: str, seccion: str, resource_id: str) -> str 
         recurso.requerido = form.requerido.data
         recurso.modificado_por = current_user.usuario
 
+        # Handle HTML preformatted flag - only set if global config allows it
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
+        else:
+            recurso.descripcion_html_preformateado = False
+
         # Handle file replacement if a new image is uploaded
         if "img" in request.files and request.files["img"].filename:
             img_filename = request.files["img"].filename
@@ -1896,6 +1985,7 @@ def editar_recurso_img(course_code: str, seccion: str, resource_id: str) -> str 
         form.nombre.data = recurso.nombre
         form.descripcion.data = recurso.descripcion
         form.requerido.data = recurso.requerido
+        form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
 
         return render_template(
             "learning/resources_new/editar_recurso_img.html",
@@ -1915,6 +2005,12 @@ def nuevo_recurso_audio(course_code: str, seccion: str) -> str | Response:
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((recursos or 0) + 1)
     if (form.validate_on_submit() or request.method == "POST") and "audio" in request.files:
+        # Get global configuration for HTML preformatted descriptions
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        html_preformateado = False
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            html_preformateado = form.descripcion_html_preformateado.data or False
+
         audio_filename = request.files["audio"].filename
         audio_ext = splitext(audio_filename or "")[1]
         audio_name = str(ULID()) + (audio_ext or "")
@@ -1947,6 +2043,7 @@ def nuevo_recurso_audio(course_code: str, seccion: str) -> str | Response:
             subtitle_vtt=subtitle_vtt_content,
             subtitle_vtt_secondary=subtitle_vtt_secondary_content,
             creado_por=current_user.usuario,
+            descripcion_html_preformateado=html_preformateado,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -1982,6 +2079,13 @@ def editar_recurso_audio(course_code: str, seccion: str, resource_id: str) -> st
         recurso.requerido = form.requerido.data
         recurso.modificado_por = current_user.usuario
 
+        # Handle HTML preformatted flag - only set if global config allows it
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
+        else:
+            recurso.descripcion_html_preformateado = False
+
         # Handle file replacement if a new audio file is uploaded
         if "audio" in request.files and request.files["audio"].filename:
             audio_filename = request.files["audio"].filename
@@ -2015,6 +2119,7 @@ def editar_recurso_audio(course_code: str, seccion: str, resource_id: str) -> st
         form.nombre.data = recurso.nombre
         form.descripcion.data = recurso.descripcion
         form.requerido.data = recurso.requerido
+        form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
 
         return render_template(
             "learning/resources_new/editar_recurso_mp3.html",
@@ -2175,6 +2280,12 @@ def nuevo_recurso_html(course_code: str, seccion: str) -> str | Response:
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((recursos or 0) + 1)
     if form.validate_on_submit() or request.method == "POST":
+        # Get global configuration for HTML preformatted descriptions
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        html_preformateado = False
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            html_preformateado = form.descripcion_html_preformateado.data or False
+
         nuevo_recurso_ = CursoRecurso(
             curso=course_code,
             seccion=seccion,
@@ -2185,6 +2296,7 @@ def nuevo_recurso_html(course_code: str, seccion: str) -> str | Response:
             external_code=form.html_externo.data,
             indice=nuevo_indice,
             creado_por=current_user.usuario,
+            descripcion_html_preformateado=html_preformateado,
         )
         try:
             database.session.add(nuevo_recurso_)
@@ -2221,6 +2333,13 @@ def editar_recurso_html(course_code: str, seccion: str, resource_id: str) -> str
         recurso.external_code = form.html_externo.data
         recurso.modificado_por = current_user.usuario
 
+        # Handle HTML preformatted flag - only set if global config allows it
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
+        else:
+            recurso.descripcion_html_preformateado = False
+
         try:
             database.session.commit()
             flash("Recurso actualizado correctamente.", "success")
@@ -2234,6 +2353,7 @@ def editar_recurso_html(course_code: str, seccion: str, resource_id: str) -> str
         form.descripcion.data = recurso.descripcion
         form.requerido.data = recurso.requerido
         form.html_externo.data = recurso.external_code
+        form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
 
         return render_template(
             "learning/resources_new/editar_recurso_html.html",
