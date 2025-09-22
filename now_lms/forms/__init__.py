@@ -519,7 +519,7 @@ class CursoRecursoArchivoText(CursoRecursoForm):
 class CursoRecursoExternalCode(CursoRecursoForm):
     """Formulario para insertar un recurso HTML."""
 
-    html_externo = StringField(validators=[DataRequired()])
+    html_externo = TextAreaField(validators=[DataRequired()])
 
 
 class CursoRecursoExternalLink(CursoRecursoForm):
