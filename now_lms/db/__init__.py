@@ -32,7 +32,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event, select
 from sqlalchemy.exc import SQLAlchemyError
 
-__all__ = ["select", "database", "UserMixin", "eliminar_base_de_datos_segura", "UserEvent"]
+__all__ = ["select", "database", "UserMixin", "eliminar_base_de_datos_segura", "UserEvent", "CourseLibrary"]
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -285,6 +285,24 @@ class CursoRecursoDescargable(database.Model, BaseTabla):
 
     curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
     recurso = database.Column(database.String(10), database.ForeignKey("recurso.codigo"), nullable=False, index=True)
+
+
+class CourseLibrary(database.Model, BaseTabla):
+    """Archivos subidos a la biblioteca del curso."""
+
+    __tablename__ = "course_library"
+    __table_args__ = (database.UniqueConstraint("curso", "filename", name="course_library_unique_file"),)
+
+    curso = database.Column(database.String(20), database.ForeignKey(LLAVE_FORANEA_CURSO), nullable=False, index=True)
+    filename = database.Column(database.String(255), nullable=False, index=True)
+    original_filename = database.Column(database.String(255), nullable=False)
+    nombre = database.Column(database.String(255), nullable=False)
+    descripcion = database.Column(database.String(1000), nullable=False)
+    file_size = database.Column(database.Integer(), nullable=False)
+    mime_type = database.Column(database.String(100), nullable=True)
+
+    # Relationships
+    rel_curso = database.relationship("Curso", foreign_keys=curso)
 
 
 class CursoSeccion(database.Model, BaseTabla):
