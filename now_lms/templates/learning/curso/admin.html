@@ -90,6 +90,17 @@ permitir_docente %}
                                 <li>
                                     <hr class="dropdown-divider" />
                                 </li>
+                                <li><span class="dropdown-item-text">{{ _("Gestión del curso") }}:</span></li>
+                                <li>
+                                    <a
+                                        href="{{ url_for('course.course_library', course_code=curso.codigo) }}"
+                                        class="dropdown-item"
+                                        ><i class="bi bi-folder" aria-hidden="true"></i> {{ _("Biblioteca del curso") }}</a
+                                    >
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
                             </ul>
                         </div>
                     </div>

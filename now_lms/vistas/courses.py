@@ -27,7 +27,9 @@ from __future__ import annotations
 # ---------------------------------------------------------------------------------------
 from collections import OrderedDict
 from datetime import datetime, timedelta, timezone
+from os import makedirs, path, remove, listdir, stat
 from os.path import splitext
+import re
 from typing import Any, Sequence
 
 # ---------------------------------------------------------------------------------------
@@ -69,13 +71,14 @@ from now_lms.bi import (
 )
 from now_lms.cache import cache, no_guardar_en_cache_global
 from now_lms.calendar_utils import create_events_for_student_enrollment, update_meet_resource_events
-from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, audio, files, images
+from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, DIRECTORIO_ARCHIVOS_PUBLICOS, audio, files, images
 from now_lms.db import (
     Categoria,
     CategoriaCurso,
     Certificacion,
     Configuracion,
     Coupon,
+    CourseLibrary,
     Curso,
     CursoRecurso,
     CursoRecursoAvance,
@@ -111,6 +114,7 @@ from now_lms.forms import (
     CouponApplicationForm,
     CouponForm,
     CurseForm,
+    CursoLibraryFileForm,
     CursoRecursoArchivoAudio,
     CursoRecursoArchivoDescargable,
     CursoRecursoArchivoImagen,
@@ -259,6 +263,48 @@ def validate_downloadable_file(file, max_size_mb: int = 1) -> tuple[bool, str]:
 def get_site_config() -> Configuracion:
     """Get site configuration."""
     return database.session.execute(database.select(Configuracion)).first()[0]
+
+
+def sanitize_filename(filename: str) -> str:
+    """
+    Sanitize filename for library uploads.
+
+    - Replace spaces with underscores
+    - Remove unsafe characters
+    - Keep original extension
+
+    Args:
+        filename: Original filename
+
+    Returns:
+        str: Sanitized filename
+    """
+    if not filename:
+        return ""
+
+    # Get base name and extension
+    base_name, extension = splitext(filename)
+
+    # Replace spaces with underscores and remove unsafe characters
+    # Allow alphanumeric, underscore, hyphen, and dots
+    safe_base = re.sub(r"[^a-zA-Z0-9._-]", "_", base_name)
+    safe_base = re.sub(r"_+", "_", safe_base)  # Multiple underscores to single
+    safe_base = safe_base.strip("_")  # Remove leading/trailing underscores
+
+    return safe_base + extension.lower()
+
+
+def get_course_library_path(course_code: str) -> str:
+    """Get the library directory path for a course."""
+    return path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "files", course_code, "library")
+
+
+def ensure_course_library_directory(course_code: str) -> str:
+    """Ensure course library directory exists and return its path."""
+    library_path = get_course_library_path(course_code)
+    if not path.exists(library_path):
+        makedirs(library_path, exist_ok=True)
+    return library_path
 
 
 def markdown2html(text: str) -> str:
@@ -3308,3 +3354,287 @@ def admin_course_unenrollment(course_code: str, student_username: str) -> Respon
         flash(f"Error al desinscribir al estudiante: {str(e)}", "error")
 
     return redirect(url_for("course.admin_course_enrollments", course_code=course_code))
+
+
+# ---------------------------------------------------------------------------------------
+# Course Library Routes
+# ---------------------------------------------------------------------------------------
+@course.route("/course/<course_code>/library")
+@login_required
+@perfil_requerido("instructor")
+def course_library(course_code: str) -> str:
+    """View course library files."""
+    # Verify course exists and user has access
+    _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
+    if not _curso:
+        abort(404)
+
+    # Check if current user is instructor or admin
+    if current_user.tipo != "admin":
+        instructor_assignment = database.session.execute(
+            database.select(DocenteCurso).filter_by(curso=course_code, usuario=current_user.usuario)
+        ).scalar_one_or_none()
+        if not instructor_assignment:
+            abort(403)
+
+    # Get library files from database
+    library_files_db = (
+        database.session.execute(database.select(CourseLibrary).filter_by(curso=course_code).order_by(CourseLibrary.nombre))
+        .scalars()
+        .all()
+    )
+
+    # Create a mapping of filenames to database records
+    db_files_map = {file_record.filename: file_record for file_record in library_files_db}
+
+    # Get physical files from library directory
+    library_path = get_course_library_path(course_code)
+    physical_files = set()
+    if path.exists(library_path):
+        for filename in listdir(library_path):
+            file_path = path.join(library_path, filename)
+            if path.isfile(file_path):
+                physical_files.add(filename)
+
+    library_files = []
+
+    # Add files that exist in database (may or may not exist physically)
+    for file_record in library_files_db:
+        library_files.append(
+            {
+                "id": file_record.id,
+                "name": file_record.filename,
+                "display_name": file_record.nombre,
+                "description": file_record.descripcion,
+                "size": file_record.file_size,
+                "modified": file_record.modificado or file_record.timestamp,
+                "url": url_for("course.serve_library_file", course_code=course_code, filename=file_record.filename),
+                "has_db_record": True,
+                "file_exists": file_record.filename in physical_files,
+            }
+        )
+
+    # Add physical files that don't have database records (manually uploaded)
+    for filename in physical_files:
+        if filename not in db_files_map:  # Only add if not already in database
+            file_path = path.join(library_path, filename)
+            file_stat = stat(file_path)
+            library_files.append(
+                {
+                    "id": None,  # No database record
+                    "name": filename,
+                    "display_name": filename,  # Use filename as display name
+                    "description": _("Archivo subido manualmente"),  # Manual upload indicator
+                    "size": file_stat.st_size,
+                    "modified": datetime.fromtimestamp(file_stat.st_mtime),
+                    "url": url_for("course.serve_library_file", course_code=course_code, filename=filename),
+                    "has_db_record": False,
+                    "file_exists": True,
+                }
+            )
+
+    # Sort by display name
+    library_files.sort(key=lambda x: x["display_name"].lower())
+
+    return render_template("learning/curso/library.html", curso=_curso, library_files=library_files)
+
+
+@course.route("/course/<course_code>/library/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def upload_library_file(course_code: str) -> str | Response:
+    """Upload a file to the course library."""
+    # Check if file uploads are enabled by admin
+    site_config = get_site_config()
+    if not site_config.enable_file_uploads:
+        flash("La subida de archivos no está habilitada por el administrador.", "warning")
+        return redirect(url_for("course.course_library", course_code=course_code))
+
+    # Verify course exists and user has access
+    _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
+    if not _curso:
+        abort(404)
+
+    # Check if current user is instructor or admin
+    if current_user.tipo != "admin":
+        instructor_assignment = database.session.execute(
+            database.select(DocenteCurso).filter_by(curso=course_code, usuario=current_user.usuario)
+        ).scalar_one_or_none()
+        if not instructor_assignment:
+            abort(403)
+
+    form = CursoLibraryFileForm()
+
+    if (form.validate_on_submit() or request.method == "POST") and "archivo" in request.files:
+        uploaded_file = request.files["archivo"]
+
+        # Validate file
+        is_valid, error_msg = validate_downloadable_file(uploaded_file, site_config.max_file_size)
+        if not is_valid:
+            flash(error_msg, "warning")
+            return render_template(
+                "learning/curso/library_upload.html", curso=_curso, form=form, max_file_size=site_config.max_file_size
+            )
+
+        # Sanitize filename
+        original_filename = uploaded_file.filename or ""
+        sanitized_filename = sanitize_filename(original_filename)
+
+        if not sanitized_filename:
+            flash("Nombre de archivo inválido.", "warning")
+            return render_template(
+                "learning/curso/library_upload.html", curso=_curso, form=form, max_file_size=site_config.max_file_size
+            )
+
+        try:
+            # Ensure library directory exists
+            library_path = ensure_course_library_directory(course_code)
+
+            # Check if file already exists in database
+            existing_file = database.session.execute(
+                database.select(CourseLibrary).filter_by(curso=course_code, filename=sanitized_filename)
+            ).scalar_one_or_none()
+
+            if existing_file:
+                flash(f"Ya existe un archivo con el nombre '{sanitized_filename}' en la biblioteca.", "warning")
+                return render_template(
+                    "learning/curso/library_upload.html", curso=_curso, form=form, max_file_size=site_config.max_file_size
+                )
+
+            # Save file to filesystem
+            destination_path = path.join(library_path, sanitized_filename)
+            uploaded_file.save(destination_path)
+
+            # Get file size
+            file_size = uploaded_file.content_length or path.getsize(destination_path)
+
+            # Create database record
+            library_file = CourseLibrary(
+                curso=course_code,
+                filename=sanitized_filename,
+                original_filename=original_filename,
+                nombre=form.nombre.data,
+                descripcion=form.descripcion.data,
+                file_size=file_size,
+                mime_type=uploaded_file.content_type,
+                creado_por=current_user.usuario,
+            )
+
+            database.session.add(library_file)
+            database.session.commit()
+
+            flash(f"Archivo '{sanitized_filename}' subido exitosamente a la biblioteca del curso.", "success")
+            return redirect(url_for("course.course_library", course_code=course_code))
+
+        except Exception as e:
+            database.session.rollback()
+            # Try to clean up file if it was saved but database failed
+            try:
+                destination_path = path.join(library_path, sanitized_filename)
+                if path.exists(destination_path):
+                    path.remove(destination_path)
+            except Exception:
+                pass  # Ignore cleanup errors
+
+            flash(f"Error al subir el archivo: {str(e)}", "error")
+            return render_template(
+                "learning/curso/library_upload.html", curso=_curso, form=form, max_file_size=site_config.max_file_size
+            )
+
+    return render_template(
+        "learning/curso/library_upload.html", curso=_curso, form=form, max_file_size=site_config.max_file_size
+    )
+
+
+@course.route("/course/<course_code>/library/file/<filename>")
+@login_required
+def serve_library_file(course_code: str, filename: str) -> Response:
+    """Serve a file from the course library."""
+    # Verify course exists and user has access (instructor or enrolled student)
+    _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
+    if not _curso:
+        abort(404)
+
+    # Check access: admin, instructor, or enrolled student
+    has_access = False
+    if current_user.tipo == "admin":
+        has_access = True
+    else:
+        # Check if instructor
+        instructor_assignment = database.session.execute(
+            database.select(DocenteCurso).filter_by(curso=course_code, usuario=current_user.usuario)
+        ).scalar_one_or_none()
+        if instructor_assignment:
+            has_access = True
+        else:
+            # Check if enrolled student
+            student_enrollment = database.session.execute(
+                database.select(EstudianteCurso).filter_by(curso=course_code, usuario=current_user.usuario, vigente=True)
+            ).scalar_one_or_none()
+            if student_enrollment:
+                has_access = True
+
+    if not has_access:
+        abort(403)
+
+    # Sanitize filename to prevent directory traversal
+    safe_filename = path.basename(filename)
+    library_path = get_course_library_path(course_code)
+    file_path = path.join(library_path, safe_filename)
+
+    # Check if file exists
+    if not path.exists(file_path) or not path.isfile(file_path):
+        abort(404)
+
+    try:
+        return send_from_directory(library_path, safe_filename, as_attachment=True)
+    except Exception:
+        abort(404)
+
+
+@course.route("/course/<course_code>/library/delete/<file_id>", methods=["POST"])
+@login_required
+@perfil_requerido("instructor")
+def delete_library_file(course_code: str, file_id: str) -> Response:
+    """Delete a file from the course library."""
+    # Verify course exists and user has access
+    _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
+    if not _curso:
+        abort(404)
+
+    # Check if current user is instructor or admin
+    if current_user.tipo != "admin":
+        instructor_assignment = database.session.execute(
+            database.select(DocenteCurso).filter_by(curso=course_code, usuario=current_user.usuario)
+        ).scalar_one_or_none()
+        if not instructor_assignment:
+            abort(403)
+
+    # Find the library file record
+    library_file = database.session.execute(
+        database.select(CourseLibrary).filter_by(id=file_id, curso=course_code)
+    ).scalar_one_or_none()
+
+    if not library_file:
+        flash(_("Archivo no encontrado en la biblioteca."), "warning")
+        return redirect(url_for("course.course_library", course_code=course_code))
+
+    try:
+        # Delete the physical file
+        library_path = get_course_library_path(course_code)
+        file_path = path.join(library_path, library_file.filename)
+
+        if path.exists(file_path):
+            remove(file_path)
+
+        # Delete the database record
+        database.session.delete(library_file)
+        database.session.commit()
+
+        flash(_("Archivo eliminado exitosamente de la biblioteca."), "success")
+
+    except Exception as e:
+        database.session.rollback()
+        flash(f"Error al eliminar el archivo: {str(e)}", "error")
+
+    return redirect(url_for("course.course_library", course_code=course_code))

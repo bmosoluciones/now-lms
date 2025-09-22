@@ -38,7 +38,7 @@ from wtforms import (
     TextAreaField,
     TimeField,
 )
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Length
 from wtforms.widgets import ColorInput, TextArea, html_params
 
 # ---------------------------------------------------------------------------------------
@@ -492,6 +492,22 @@ class CursoRecursoArchivoImagen(CursoRecursoForm):
 
 class CursoRecursoArchivoDescargable(CursoRecursoForm):
     """Formulario para un nuevo recurso descargable."""
+
+
+class CursoLibraryFileForm(BaseForm):
+    """Formulario para subir archivos a la biblioteca del curso."""
+
+    nombre = StringField(
+        _("Nombre del archivo"),
+        validators=[DataRequired(), Length(min=1, max=255)],
+        render_kw={"placeholder": _("Nombre descriptivo para el archivo")},
+    )
+
+    descripcion = TextAreaField(
+        _("Descripción"),
+        validators=[DataRequired(), Length(min=1, max=1000)],
+        render_kw={"placeholder": _("Describe el uso o contenido del archivo"), "rows": 3},
+    )
 
 
 class CursoRecursoArchivoText(CursoRecursoForm):
