@@ -599,21 +599,22 @@ def test_course_administration_flow(basic_config_setup, client):
         "/course/testlogo/edit",
         data={
             "nombre": "Curso Editado",
+            "codigo": "testlogo",  # Include required codigo field
             "descripcion": "Descripcion actualizada del curso.",
             "descripcion_corta": "Descripcion corta editada.",
-            "nivel": "intermediate",
-            "duracion": "6 semanas",
-            "publico": False,
+            "nivel": 2,  # Use integer instead of string
+            "duracion": 6,  # Use integer instead of string
+            "publico": "",  # Use empty string for False boolean
             "modalidad": "self_paced",
-            "foro_habilitado": False,  # Modalidad self_paced fuerza foro=False
-            "limitado": True,
+            "foro_habilitado": "",  # Empty string for False in self_paced mode
+            "limitado": "y",  # Use "y" for True boolean
             "capacidad": 50,
             "fecha_inicio": "2025-08-15",
             "fecha_fin": "2025-09-20",
-            "pagado": True,
-            "auditable": False,
-            "certificado": True,
-            "plantilla_certificado": "default",
+            "pagado": "y",  # Use "y" for True boolean
+            "auditable": "",  # Use empty string for False boolean
+            "certificado": "y",  # Use "y" for True boolean
+            "plantilla_certificado": "",  # Leave empty
             "precio": 199,
         },
         follow_redirects=False,
@@ -945,6 +946,7 @@ def test_course_categories_and_tags_management(basic_config_setup, client):
         "/course/test_cat_tags/edit",
         data={
             "nombre": "Curso con Categorias y Tags",  # Keep same name
+            "codigo": "test_cat_tags",  # Include required codigo field
             "descripcion": "Curso para probar categorias y etiquetas.",
             "descripcion_corta": "Curso de prueba.",
             "nivel": 1,
