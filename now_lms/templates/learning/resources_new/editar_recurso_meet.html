@@ -75,9 +75,7 @@
                                 {{ _("El uso de HTML preformateado puede presentar riesgos de seguridad.") }}
                             </div>
                         </div>
-                        {% endif %}
-
-                        {{ render_form_buttons(_("Actualizar Recurso"), url_for('course.administrar_curso',
+                        {% endif %} {{ render_form_buttons(_("Actualizar Recurso"), url_for('course.administrar_curso',
                         course_code=id_curso)) }}
                     </div>
                 </form>
