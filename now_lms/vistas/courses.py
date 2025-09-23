@@ -108,6 +108,7 @@ from now_lms.db.tools import (
     generate_template_choices,
     get_course_category,
     get_course_tags,
+    verifica_docente_asignado_a_curso,
     verifica_estudiante_asignado_a_curso,
 )
 from now_lms.forms import (
@@ -1177,7 +1178,9 @@ def pagina_recurso(curso_id: str, resource_type: str, codigo: str) -> str:
     INDICE = crear_indice_recurso(codigo)
 
     if current_user.is_authenticated:
-        if current_user.tipo in ("admin", "instructor"):
+        if current_user.tipo == "admin":
+            show_resource = True
+        elif current_user.tipo == "instructor" and verifica_docente_asignado_a_curso(curso_id):
             show_resource = True
         elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(curso_id):
             show_resource = True
