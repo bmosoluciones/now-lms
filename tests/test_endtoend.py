@@ -525,8 +525,8 @@ def test_course_administration_flow(basic_config_setup, client):
             "codigo": "test_course",
             "descripcion": "Descripcion completa del curso.",
             "descripcion_corta": "Descripcion corta.",
-            "nivel": "beginner",
-            "duracion": "4 semanas",
+            "nivel": 1,  # Use integer: 1 = Principiante
+            "duracion": 4,  # Use integer for weeks
             "publico": True,
             "modalidad": "online",
             "foro_habilitado": True,
@@ -557,8 +557,8 @@ def test_course_administration_flow(basic_config_setup, client):
         "codigo": "testlogo",
         "descripcion": "Descripcion completa del curso con logo.",
         "descripcion_corta": "Descripcion corta.",
-        "nivel": "beginner",
-        "duracion": "4 semanas",
+        "nivel": 1,  # Use integer: 1 = Principiante
+        "duracion": 4,  # Use integer for weeks
         "publico": True,
         "modalidad": "online",
         "foro_habilitado": True,
@@ -614,7 +614,7 @@ def test_course_administration_flow(basic_config_setup, client):
             "pagado": "y",  # Use "y" for True boolean
             "auditable": "",  # Use empty string for False boolean
             "certificado": "y",  # Use "y" for True boolean
-            "plantilla_certificado": "",  # Leave empty
+            "plantilla_certificado": "default",  # Use valid certificate template
             "precio": 199,
         },
         follow_redirects=False,

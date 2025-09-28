@@ -50,6 +50,8 @@ class TestInstructorResourceAccess:
             nombre=f"Test Course {course_code}",
             descripcion_corta="Course for testing instructor access",
             descripcion="Test course for instructor access testing",
+            nivel=1,  # Use integer: 1 = Principiante
+            duracion=4,  # Use integer for weeks
             estado="draft",
             modalidad="self_paced",
             pagado=False,
@@ -91,11 +93,16 @@ class TestInstructorResourceAccess:
 
     def test_instructor_can_access_assigned_course_pdf_resource(self, session_full_db_setup, isolated_db_session):
         """Test that an instructor can access PDF resources in courses they're assigned to."""
-        # Create instructor
-        instructor = self.create_instructor_user(isolated_db_session, 1001)
+        import time
 
-        # Create course
-        course = self.create_test_course(isolated_db_session, "TEST001", instructor.usuario)
+        unique_id = int(time.time() * 1000) % 1000000
+
+        # Create instructor
+        instructor = self.create_instructor_user(isolated_db_session, unique_id)
+
+        # Create course with unique code
+        course_code = f"TEST{unique_id}_PDF"
+        course = self.create_test_course(isolated_db_session, course_code, instructor.usuario)
 
         # Create section
         section = CursoSeccion(
@@ -128,11 +135,16 @@ class TestInstructorResourceAccess:
 
     def test_instructor_can_access_assigned_course_audio_resource(self, session_full_db_setup, isolated_db_session):
         """Test that an instructor can access audio resources in courses they're assigned to."""
-        # Create instructor
-        instructor = self.create_instructor_user(isolated_db_session, 1002)
+        import time
 
-        # Create course
-        course = self.create_test_course(isolated_db_session, "TEST002", instructor.usuario)
+        unique_id = int(time.time() * 1000) % 1000000
+
+        # Create instructor
+        instructor = self.create_instructor_user(isolated_db_session, unique_id)
+
+        # Create course with unique code
+        course_code = f"TEST{unique_id}_MP3"
+        course = self.create_test_course(isolated_db_session, course_code, instructor.usuario)
 
         # Create section
         section = CursoSeccion(
@@ -165,12 +177,17 @@ class TestInstructorResourceAccess:
 
     def test_instructor_cannot_access_unassigned_course_resource(self, session_full_db_setup, isolated_db_session):
         """Test that an instructor cannot access resources in courses they're NOT assigned to."""
-        # Create two instructors
-        instructor1 = self.create_instructor_user(isolated_db_session, 1003)
-        instructor2 = self.create_instructor_user(isolated_db_session, 1004)
+        import time
 
-        # Create course owned by instructor1
-        course = self.create_test_course(isolated_db_session, "TEST003", instructor1.usuario)
+        unique_id = int(time.time() * 1000) % 1000000
+
+        # Create two instructors
+        instructor1 = self.create_instructor_user(isolated_db_session, unique_id)
+        instructor2 = self.create_instructor_user(isolated_db_session, unique_id + 1)
+
+        # Create course owned by instructor1 with unique code
+        course_code = f"TEST{unique_id}_UNAUTH"
+        course = self.create_test_course(isolated_db_session, course_code, instructor1.usuario)
 
         # Create section
         section = CursoSeccion(
@@ -209,13 +226,17 @@ class TestInstructorResourceAccess:
 
     def test_admin_can_access_any_course_resource(self, session_full_db_setup, isolated_db_session):
         """Test that admin users can access any course resource regardless of assignment."""
+        import time
+
+        unique_id = int(time.time() * 1000) % 1000000
+
         # Create instructor and admin
-        instructor = self.create_instructor_user(isolated_db_session, 1005)
+        instructor = self.create_instructor_user(isolated_db_session, unique_id)
         admin = Usuario(
-            usuario="test_admin_1005",
+            usuario=f"test_admin_{unique_id}",
             nombre="Test",
             apellido="Admin",
-            correo_electronico="admin_1005@test.com",
+            correo_electronico=f"admin_{unique_id}@test.com",
             tipo="admin",
             activo=True,
             correo_electronico_verificado=True,
@@ -224,8 +245,9 @@ class TestInstructorResourceAccess:
         isolated_db_session.add(admin)
         isolated_db_session.flush()
 
-        # Create course assigned only to instructor
-        course = self.create_test_course(isolated_db_session, "TEST004", instructor.usuario)
+        # Create course assigned only to instructor with unique code
+        course_code = f"TEST{unique_id}_ADMIN"
+        course = self.create_test_course(isolated_db_session, course_code, instructor.usuario)
 
         # Create section
         section = CursoSeccion(
