@@ -12,13 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 """
 NOW Learning Management System.
 
 Gestión de certificados.
 """
-
 
 from __future__ import annotations
 
@@ -2553,7 +2551,12 @@ def recurso_file(course_code: str, recurso_code: str) -> Response:
     config = current_app.upload_set_config.get(doc.base_doc_url)
 
     if current_user.is_authenticated:
-        if doc.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
+        if (
+            doc.publico
+            or current_user.tipo == "admin"
+            or verifica_estudiante_asignado_a_curso(course_code)
+            or verifica_docente_asignado_a_curso(course_code)
+        ):
             return send_from_directory(config.destination, doc.doc)
         return abort(403)
     return INICIO_SESION
@@ -2618,7 +2621,12 @@ def pdf_viewer(course_code: str, recurso_code: str) -> str | Response:
         return abort(404)
 
     if current_user.is_authenticated:
-        if recurso.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
+        if (
+            recurso.publico
+            or current_user.tipo == "admin"
+            or verifica_estudiante_asignado_a_curso(course_code)
+            or verifica_docente_asignado_a_curso(course_code)
+        ):
             return render_template("learning/resources/pdf_viewer.html", recurso=recurso)
         return abort(403)
     return INICIO_SESION
