@@ -858,27 +858,32 @@ def editar_curso(course_code: str) -> str | Response:
         curso_a_editar.modificado_por = current_user.usuario
 
         try:
-            curso_a_editar.modificado = datetime.now(timezone.utc)
-            curso_a_editar.modificado_por = current_user.usuario
+            with database.session.no_autoflush:
+                curso_a_editar.modificado = datetime.now(timezone.utc)
+                curso_a_editar.modificado_por = current_user.usuario
 
-            # Update category assignment
-            # First remove existing category assignment
-            database.session.execute(delete(CategoriaCurso).where(CategoriaCurso.curso == course_code))
+                # Handle category and tag updates with proper foreign key reference
+                # Use the new course code if it has changed, otherwise use the original
+                new_course_code = form.codigo.data
 
-            # Add new category if selected
-            if form.categoria.data:
-                categoria_curso = CategoriaCurso(curso=course_code, categoria=form.categoria.data)
-                database.session.add(categoria_curso)
+                # Update category assignment
+                # First remove existing category assignment using original course_code
+                database.session.execute(delete(CategoriaCurso).where(CategoriaCurso.curso == course_code))
 
-            # Update tag assignments
-            # First remove existing tag assignments
-            database.session.execute(delete(EtiquetaCurso).where(EtiquetaCurso.curso == course_code))
+                # Add new category if selected using new course code
+                if form.categoria.data:
+                    categoria_curso = CategoriaCurso(curso=new_course_code, categoria=form.categoria.data)
+                    database.session.add(categoria_curso)
 
-            # Add new tags if selected
-            if form.etiquetas.data:
-                for etiqueta_id in form.etiquetas.data:
-                    etiqueta_curso = EtiquetaCurso(curso=course_code, etiqueta=etiqueta_id)
-                    database.session.add(etiqueta_curso)
+                # Update tag assignments
+                # First remove existing tag assignments using original course_code
+                database.session.execute(delete(EtiquetaCurso).where(EtiquetaCurso.curso == course_code))
+
+                # Add new tags if selected using new course code
+                if form.etiquetas.data:
+                    for etiqueta_id in form.etiquetas.data:
+                        etiqueta_curso = EtiquetaCurso(curso=new_course_code, etiqueta=etiqueta_id)
+                        database.session.add(etiqueta_curso)
 
             database.session.commit()
 

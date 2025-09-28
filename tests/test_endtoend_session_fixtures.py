@@ -109,7 +109,7 @@ class TestEndToEndSessionFixtures:
                 "descripcion": "Course created by admin for testing",
                 "descripcion_corta": "Admin test course",
                 "nivel": 1,
-                "duracion": "4 semanas",
+                "duracion": 4,  # Use integer for weeks
                 "publico": True,
                 "modalidad": "time_based",
                 "foro_habilitado": False,
@@ -180,7 +180,7 @@ class TestEndToEndSessionFixtures:
                 "descripcion": "Course created by instructor for testing",
                 "descripcion_corta": "Instructor test course",
                 "nivel": 1,
-                "duracion": "6 semanas",
+                "duracion": 6,  # Use integer for weeks
                 "publico": True,
                 "modalidad": "time_based",
                 "foro_habilitado": True,

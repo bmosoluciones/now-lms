@@ -161,7 +161,7 @@ def crear_usuario() -> str | Response:
             apellido=form.apellido.data,
             correo_electronico=form.correo_electronico.data,
             tipo="student",
-            activo=False,
+            activo=True,
             creado_por=current_user.usuario,
             correo_electronico_verificado=True,
         )
