@@ -171,6 +171,67 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
         .small {
             color: rgba(255,255,255,0.8);
         }
+        
+        .control-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .control-label {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 0.25rem;
+        }
+        
+        .speed-btn, .zoom-btn {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 6px;
+            padding: 0.3rem 0.6rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-size: 0.85rem;
+            min-width: 45px;
+        }
+        
+        .speed-btn:hover, .zoom-btn:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.4);
+            transform: scale(1.05);
+        }
+        
+        .speed-btn.active {
+            background: linear-gradient(90deg, #ff6b6b, #ffd93d);
+            border-color: rgba(255,255,255,0.5);
+            font-weight: 600;
+        }
+        
+        .zoom-btn {
+            width: 35px;
+            height: 35px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
         </style>
     </head>
 
@@ -262,6 +323,28 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                     <button id="next" title="Avanzar 10 segundos"><i class="bi bi-skip-forward-fill"></i></button>
                                     <button id="forward5" title="Avanzar 5 segundos"><i class="bi bi-fast-forward"></i></button>
                                 </div>
+                                
+                                <!-- Additional Controls Row -->
+                                <div class="control-row">
+                                    <!-- Playback Speed Control -->
+                                    <div class="control-group">
+                                        <span class="control-label">Velocidad:</span>
+                                        <button class="speed-btn" data-speed="0.5">0.5x</button>
+                                        <button class="speed-btn" data-speed="0.75">0.75x</button>
+                                        <button class="speed-btn active" data-speed="1">1x</button>
+                                        <button class="speed-btn" data-speed="1.5">1.5x</button>
+                                        <button class="speed-btn" data-speed="2">2x</button>
+                                    </div>
+                                    
+                                    {% if recurso.subtitle_vtt or recurso.subtitle_vtt_secondary %}
+                                    <!-- Text Size Control (only show if subtitles are available) -->
+                                    <div class="control-group">
+                                        <span class="control-label">Tamaño texto:</span>
+                                        <button class="zoom-btn" id="zoomOut" title="Reducir tamaño de texto"><i class="bi bi-zoom-out"></i></button>
+                                        <button class="zoom-btn" id="zoomIn" title="Aumentar tamaño de texto"><i class="bi bi-zoom-in"></i></button>
+                                    </div>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
 
@@ -319,6 +402,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
           let isPlaying = false;
           let currentLyrics = [];
           let currentLyricsSecondary = [];
+          let currentFontSizeMultiplier = 1.0; // Track current font size multiplier
 
           // Load VTT and parse cues for both tracks
           {% if recurso.subtitle_vtt %}
@@ -651,6 +735,69 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
           document.getElementById("forward5").addEventListener("click", () => {
             audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
           });
+
+          // Playback speed control
+          const speedButtons = document.querySelectorAll('.speed-btn');
+          speedButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+              const speed = parseFloat(btn.dataset.speed);
+              audio.playbackRate = speed;
+              
+              // Update active button
+              speedButtons.forEach(b => b.classList.remove('active'));
+              btn.classList.add('active');
+            });
+          });
+
+          {% if recurso.subtitle_vtt or recurso.subtitle_vtt_secondary %}
+          // Text size control for subtitles
+          const zoomInBtn = document.getElementById('zoomIn');
+          const zoomOutBtn = document.getElementById('zoomOut');
+          
+          if (zoomInBtn) {
+            zoomInBtn.addEventListener('click', () => {
+              currentFontSizeMultiplier = Math.min(currentFontSizeMultiplier + 0.1, 2.0); // Max 2x
+              updateLyricsFontSize();
+            });
+          }
+          
+          if (zoomOutBtn) {
+            zoomOutBtn.addEventListener('click', () => {
+              currentFontSizeMultiplier = Math.max(currentFontSizeMultiplier - 0.1, 0.5); // Min 0.5x
+              updateLyricsFontSize();
+            });
+          }
+          
+          function updateLyricsFontSize() {
+            const style = document.getElementById('dynamic-lyrics-style') || document.createElement('style');
+            style.id = 'dynamic-lyrics-style';
+            
+            // Calculate font sizes based on multiplier
+            const basePrimarySize = 1.1; // rem
+            const baseActiveSize = 1.4; // rem
+            const baseSecondarySize = 0.95; // rem
+            const baseSecondaryActiveSize = 1.0; // rem
+            
+            style.textContent = `
+              .lyrics {
+                font-size: ${basePrimarySize * currentFontSizeMultiplier}rem !important;
+              }
+              .lyrics.active {
+                font-size: ${baseActiveSize * currentFontSizeMultiplier}rem !important;
+              }
+              .lyrics-secondary {
+                font-size: ${baseSecondarySize * currentFontSizeMultiplier}rem !important;
+              }
+              .lyrics-secondary.active {
+                font-size: ${baseSecondaryActiveSize * currentFontSizeMultiplier}rem !important;
+              }
+            `;
+            
+            if (!document.getElementById('dynamic-lyrics-style')) {
+              document.head.appendChild(style);
+            }
+          }
+          {% endif %}
 
           // Initialize
           loadLyrics();

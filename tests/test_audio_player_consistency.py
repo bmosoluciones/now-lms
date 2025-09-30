@@ -146,3 +146,97 @@ Test subtitle line 2
                 # Check that old icons are not present
                 assert "bi-arrow-repeat" not in response_text
                 assert "bi-shuffle" not in response_text
+
+    def test_playback_speed_controls_present(self, full_db_setup, client):
+        """Test that playback speed controls are present."""
+        with full_db_setup.app_context():
+            # Find an audio resource
+            audio_resource = database.session.execute(select(CursoRecurso).filter_by(tipo="mp3")).scalar_one_or_none()
+
+            if audio_resource:
+                audio_resource.subtitle_vtt = None
+                database.session.commit()
+
+                response = client.get(
+                    url_for("course.recurso", course_code=audio_resource.curso, resource_code=audio_resource.id)
+                )
+
+                assert response.status_code == 200
+                response_text = response.get_data(as_text=True)
+
+                # Check for playback speed control elements
+                assert "Velocidad:" in response_text
+                assert 'data-speed="0.5"' in response_text
+                assert 'data-speed="0.75"' in response_text
+                assert 'data-speed="1"' in response_text
+                assert 'data-speed="1.5"' in response_text
+                assert 'data-speed="2"' in response_text
+                assert "0.5x" in response_text
+                assert "0.75x" in response_text
+                assert "1.5x" in response_text
+                assert "2x" in response_text
+
+                # Check for playback speed JavaScript
+                assert "audio.playbackRate" in response_text
+                assert ".speed-btn" in response_text
+
+    def test_zoom_controls_present_with_subtitles(self, full_db_setup, client):
+        """Test that zoom controls are present when subtitles are available."""
+        with full_db_setup.app_context():
+            # Find an audio resource
+            audio_resource = database.session.execute(select(CursoRecurso).filter_by(tipo="mp3")).scalar_one_or_none()
+
+            if audio_resource:
+                # Add subtitles
+                vtt_content = """WEBVTT
+
+1
+00:00:00.000 --> 00:00:05.000
+Test subtitle line 1
+"""
+                audio_resource.subtitle_vtt = vtt_content
+                database.session.commit()
+
+                response = client.get(
+                    url_for("course.recurso", course_code=audio_resource.curso, resource_code=audio_resource.id)
+                )
+
+                assert response.status_code == 200
+                response_text = response.get_data(as_text=True)
+
+                # Check for text size control elements
+                assert "Tamaño texto:" in response_text
+                assert 'id="zoomIn"' in response_text
+                assert 'id="zoomOut"' in response_text
+                assert 'title="Aumentar tamaño de texto"' in response_text
+                assert 'title="Reducir tamaño de texto"' in response_text
+                assert "bi-zoom-in" in response_text
+                assert "bi-zoom-out" in response_text
+
+                # Check for zoom JavaScript
+                assert "currentFontSizeMultiplier" in response_text
+                assert "updateLyricsFontSize" in response_text
+
+    def test_zoom_controls_not_present_without_subtitles(self, full_db_setup, client):
+        """Test that zoom controls are NOT present when subtitles are unavailable."""
+        with full_db_setup.app_context():
+            # Find an audio resource
+            audio_resource = database.session.execute(select(CursoRecurso).filter_by(tipo="mp3")).scalar_one_or_none()
+
+            if audio_resource:
+                # Ensure no subtitles
+                audio_resource.subtitle_vtt = None
+                audio_resource.subtitle_vtt_secondary = None
+                database.session.commit()
+
+                response = client.get(
+                    url_for("course.recurso", course_code=audio_resource.curso, resource_code=audio_resource.id)
+                )
+
+                assert response.status_code == 200
+                response_text = response.get_data(as_text=True)
+
+                # Check that text size control elements are NOT present
+                assert "Tamaño texto:" not in response_text
+                assert 'id="zoomIn"' not in response_text
+                assert 'id="zoomOut"' not in response_text
