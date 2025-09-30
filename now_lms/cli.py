@@ -12,10 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-
 """Command line interface for NOW LMS."""
-
 
 from __future__ import annotations
 
@@ -217,8 +214,8 @@ def routes():
 
 @lms_app.cli.command()
 def serve():
-    """Serve NOW LMS with the default WSGi server."""
-    from waitress import serve as server
+    """Serve NOW LMS with the default WSGI server."""
+    import platform
 
     if environ.get("LMS_PORT"):
         PORT = environ.get("LMS_PORT")
@@ -228,17 +225,60 @@ def serve():
         PORT = 8080
 
     if DESARROLLO:
-        THREADS = 4
+        WORKERS = 1
     else:
-        if environ.get("LMS_THREADS"):
-            THREADS = environ.get("LMS_THREADS")
+        if environ.get("LMS_WORKERS"):
+            WORKERS = environ.get("LMS_WORKERS")
         else:
-            THREADS = (cpu_count() * 2) + 1
+            WORKERS = (cpu_count() * 2) + 1
 
-    log.info(f"Starting WSGI server on port {PORT} with {THREADS} threads.")
+    # On Windows, fallback to Flask development server
+    if platform.system() == "Windows":
+        log.warning("Running on Windows - using Flask development server instead of Gunicorn.")
+        log.warning("For production deployments, use Linux or containers.")
+        log.info(f"Starting Flask development server on port {PORT}")
+        with lms_app.app_context():
+            lms_app.run(host="0.0.0.0", port=int(PORT), debug=DESARROLLO)
+    else:
+        # Use Gunicorn on Linux/Unix systems
+        try:
+            from gunicorn.app.base import BaseApplication
 
-    with lms_app.app_context():
-        server(app=lms_app, port=int(PORT), threads=THREADS)
+            class StandaloneApplication(BaseApplication):
+                """Gunicorn application class for NOW LMS."""
+
+                def __init__(self, app, options=None):
+                    self.options = options or {}
+                    self.application = app
+                    super().__init__()
+
+                def load_config(self):
+                    for key, value in self.options.items():
+                        if key in self.cfg.settings and value is not None:
+                            self.cfg.set(key.lower(), value)
+
+                def load(self):
+                    return self.application
+
+            options = {
+                "bind": f"0.0.0.0:{PORT}",
+                "workers": WORKERS,
+                "worker_class": "sync",
+                "timeout": 120,
+                "keepalive": 5,
+                "accesslog": "-",
+                "errorlog": "-",
+                "loglevel": "info",
+            }
+
+            log.info(f"Starting Gunicorn WSGI server on port {PORT} with {WORKERS} workers.")
+
+            StandaloneApplication(lms_app, options).run()
+        except ImportError:
+            log.error("Gunicorn is not installed. Install it with: pip install gunicorn")
+            log.info("Falling back to Flask development server.")
+            with lms_app.app_context():
+                lms_app.run(host="0.0.0.0", port=int(PORT), debug=DESARROLLO)
 
 
 @lms_app.cli.group()

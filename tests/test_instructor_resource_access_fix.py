@@ -94,9 +94,8 @@ class TestInstructorResourceAccess:
     def test_instructor_can_access_assigned_course_pdf_resource(self, session_full_db_setup, isolated_db_session):
         """Test that an instructor can access PDF resources in courses they're assigned to."""
         import time
-
         unique_id = int(time.time() * 1000) % 1000000
-
+        
         # Create instructor
         instructor = self.create_instructor_user(isolated_db_session, unique_id)
 
@@ -136,9 +135,8 @@ class TestInstructorResourceAccess:
     def test_instructor_can_access_assigned_course_audio_resource(self, session_full_db_setup, isolated_db_session):
         """Test that an instructor can access audio resources in courses they're assigned to."""
         import time
-
         unique_id = int(time.time() * 1000) % 1000000
-
+        
         # Create instructor
         instructor = self.create_instructor_user(isolated_db_session, unique_id)
 
@@ -178,9 +176,8 @@ class TestInstructorResourceAccess:
     def test_instructor_cannot_access_unassigned_course_resource(self, session_full_db_setup, isolated_db_session):
         """Test that an instructor cannot access resources in courses they're NOT assigned to."""
         import time
-
         unique_id = int(time.time() * 1000) % 1000000
-
+        
         # Create two instructors
         instructor1 = self.create_instructor_user(isolated_db_session, unique_id)
         instructor2 = self.create_instructor_user(isolated_db_session, unique_id + 1)
@@ -227,9 +224,8 @@ class TestInstructorResourceAccess:
     def test_admin_can_access_any_course_resource(self, session_full_db_setup, isolated_db_session):
         """Test that admin users can access any course resource regardless of assignment."""
         import time
-
         unique_id = int(time.time() * 1000) % 1000000
-
+        
         # Create instructor and admin
         instructor = self.create_instructor_user(isolated_db_session, unique_id)
         admin = Usuario(

@@ -138,30 +138,60 @@ Use this template
 
 ```
 #! /home/serveradmin/venv/bin/python
-from waitress import serve
+from now_lms import create_app
 
+app = create_app()
+app.config["SECRET_KEY"] = "a_very_secret_key"
+app.config["SQLALCHEMY_DATABASE_URI"] = "database_uri"
 
-from now_lms import lms_app, init_app
-
-lms_app.config["SECRET_KEY"] = "a_very_secret_key"
-lms_app.config["SQLALCHEMY_DATABASE_URI"] = "database_uri"
-
-if init_app():
-    serve(app=lms_app, port=int(8080))
+if __name__ == "__main__":
+    # This script is designed to be used with Gunicorn
+    # Run with: gunicorn --bind 0.0.0.0:8080 --workers 4 run:app
+    pass
 ```
 
-### Test your run scritp and setup ypur system
+### Test your run script and setup your system
 
-Create the database and the `admin` user with:
+You can test the application factory works:
 
 ```
-ADMIN_USER=adminuser ADMIN_PSWD=passSECURE123+ /home/serveradmin/run.py
+python /home/serveradmin/run.py
+```
+
+If there are no errors, you can now use Gunicorn to serve the application.
+
+### Setup Gunicorn
+
+Install Gunicorn in your virtual environment:
+
+```
+source /home/serveradmin/venv/bin/activate
+pip install gunicorn
+```
+
+### Run with Gunicorn
+
+Start the WSGI server with Gunicorn:
+
+```
+/home/serveradmin/venv/bin/gunicorn --bind 0.0.0.0:8080 --workers 4 --chdir /home/serveradmin run:app
+```
+
+### Create the database and admin user
+
+Before starting the server for the first time, initialize the database:
+
+```
+export SECRET_KEY="a_very_secret_key"
+export SQLALCHEMY_DATABASE_URI="database_uri"
+ADMIN_USER=adminuser ADMIN_PSWD=passSECURE123+ /home/serveradmin/venv/bin/lmsctl database init
 ```
 
 This command will:
 
 1. Setup a new database for the system
-2. Create the user administrator
-3. Start the WSGI server
+2. Create the administrator user
 
-You can check your system now at `https://your_ip` and see your new site, type `Ctrl + C` to stop the WSGI server.
+You can check your system now at `https://your_ip` and see your new site.
+
+For production, consider using a systemd service to manage the Gunicorn process.
