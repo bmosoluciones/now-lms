@@ -87,7 +87,7 @@ class TestEndToEndEvaluationSessionFixtures:
                 "descripcion": "A course for testing evaluations.",
                 "descripcion_corta": "Evaluation test course.",
                 "nivel": 1,
-                "duracion": "4 semanas",
+                "duracion": 4,  # Use integer for weeks
                 "publico": True,
                 "modalidad": "online",
                 "foro_habilitado": True,
@@ -369,7 +369,7 @@ class TestEndToEndEvaluationSessionFixtures:
                 "descripcion": "Course for testing retries.",
                 "descripcion_corta": "Retry test course.",
                 "nivel": 1,
-                "duracion": "2 semanas",
+                "duracion": 2,  # Use integer for weeks
                 "publico": True,
                 "modalidad": "online",
                 "foro_habilitado": True,
@@ -590,7 +590,7 @@ class TestEndToEndEvaluationSessionFixtures:
                 "descripcion": "Course for testing reopen requests.",
                 "descripcion_corta": "Reopen test course.",
                 "nivel": 1,
-                "duracion": "2 semanas",
+                "duracion": 2,  # Use integer for weeks
                 "publico": True,
                 "modalidad": "online",
                 "foro_habilitado": True,

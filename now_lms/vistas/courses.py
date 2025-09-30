@@ -12,13 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 """
 NOW Learning Management System.
 
 Gestión de certificados.
 """
-
 
 from __future__ import annotations
 
@@ -108,6 +106,7 @@ from now_lms.db.tools import (
     generate_template_choices,
     get_course_category,
     get_course_tags,
+    verifica_docente_asignado_a_curso,
     verifica_estudiante_asignado_a_curso,
 )
 from now_lms.forms import (
@@ -818,30 +817,9 @@ def editar_curso(course_code: str) -> str | Response:
 
     curso_a_editar = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
 
-    form.nombre.data = curso_a_editar.nombre
-    form.codigo.data = curso_a_editar.codigo
-    form.descripcion_corta.data = curso_a_editar.descripcion_corta
-    form.descripcion.data = curso_a_editar.descripcion
-    form.nivel.data = curso_a_editar.nivel
-    form.duracion.data = curso_a_editar.duracion
-    form.publico.data = curso_a_editar.publico
-    form.modalidad.data = curso_a_editar.modalidad
-    form.foro_habilitado.data = curso_a_editar.foro_habilitado
-    form.limitado.data = curso_a_editar.limitado
-    form.capacidad.data = curso_a_editar.capacidad
-    form.fecha_inicio.data = curso_a_editar.fecha_inicio
-    form.fecha_fin.data = curso_a_editar.fecha_fin
-    form.pagado.data = curso_a_editar.pagado
-    form.auditable.data = curso_a_editar.auditable
-    form.certificado.data = curso_a_editar.certificado
-    form.plantilla_certificado.data = curso_a_editar.plantilla_certificado
-    form.precio.data = curso_a_editar.precio
-
-    # Populate category and tag current values
-    form.categoria.data = get_course_category(course_code)
-    form.etiquetas.data = get_course_tags(course_code)
     curso_url = url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code)
-    if form.validate_on_submit() or request.method == "POST":
+
+    if form.validate_on_submit():
         # Información básica
         curso_a_editar.nombre = form.nombre.data
         curso_a_editar.codigo = form.codigo.data
@@ -878,27 +856,32 @@ def editar_curso(course_code: str) -> str | Response:
         curso_a_editar.modificado_por = current_user.usuario
 
         try:
-            curso_a_editar.modificado = datetime.now(timezone.utc)
-            curso_a_editar.modificado_por = current_user.usuario
+            with database.session.no_autoflush:
+                curso_a_editar.modificado = datetime.now(timezone.utc)
+                curso_a_editar.modificado_por = current_user.usuario
 
-            # Update category assignment
-            # First remove existing category assignment
-            database.session.execute(delete(CategoriaCurso).where(CategoriaCurso.curso == course_code))
+                # Handle category and tag updates with proper foreign key reference
+                # Use the new course code if it has changed, otherwise use the original
+                new_course_code = form.codigo.data
 
-            # Add new category if selected
-            if form.categoria.data:
-                categoria_curso = CategoriaCurso(curso=course_code, categoria=form.categoria.data)
-                database.session.add(categoria_curso)
+                # Update category assignment
+                # First remove existing category assignment using original course_code
+                database.session.execute(delete(CategoriaCurso).where(CategoriaCurso.curso == course_code))
 
-            # Update tag assignments
-            # First remove existing tag assignments
-            database.session.execute(delete(EtiquetaCurso).where(EtiquetaCurso.curso == course_code))
+                # Add new category if selected using new course code
+                if form.categoria.data:
+                    categoria_curso = CategoriaCurso(curso=new_course_code, categoria=form.categoria.data)
+                    database.session.add(categoria_curso)
 
-            # Add new tags if selected
-            if form.etiquetas.data:
-                for etiqueta_id in form.etiquetas.data:
-                    etiqueta_curso = EtiquetaCurso(curso=course_code, etiqueta=etiqueta_id)
-                    database.session.add(etiqueta_curso)
+                # Update tag assignments
+                # First remove existing tag assignments using original course_code
+                database.session.execute(delete(EtiquetaCurso).where(EtiquetaCurso.curso == course_code))
+
+                # Add new tags if selected using new course code
+                if form.etiquetas.data:
+                    for etiqueta_id in form.etiquetas.data:
+                        etiqueta_curso = EtiquetaCurso(curso=new_course_code, etiqueta=etiqueta_id)
+                        database.session.add(etiqueta_curso)
 
             database.session.commit()
 
@@ -931,6 +914,30 @@ def editar_curso(course_code: str) -> str | Response:
         except OperationalError:
             flash("Hubo en error al actualizar el curso.", "warning")
             return redirect(curso_url)
+
+    # Populate form with existing data for GET requests and failed validations
+    form.nombre.data = curso_a_editar.nombre
+    form.codigo.data = curso_a_editar.codigo
+    form.descripcion_corta.data = curso_a_editar.descripcion_corta
+    form.descripcion.data = curso_a_editar.descripcion
+    form.nivel.data = curso_a_editar.nivel
+    form.duracion.data = curso_a_editar.duracion
+    form.publico.data = curso_a_editar.publico
+    form.modalidad.data = curso_a_editar.modalidad
+    form.foro_habilitado.data = curso_a_editar.foro_habilitado
+    form.limitado.data = curso_a_editar.limitado
+    form.capacidad.data = curso_a_editar.capacidad
+    form.fecha_inicio.data = curso_a_editar.fecha_inicio
+    form.fecha_fin.data = curso_a_editar.fecha_fin
+    form.pagado.data = curso_a_editar.pagado
+    form.auditable.data = curso_a_editar.auditable
+    form.certificado.data = curso_a_editar.certificado
+    form.plantilla_certificado.data = curso_a_editar.plantilla_certificado
+    form.precio.data = curso_a_editar.precio
+
+    # Populate category and tag current values
+    form.categoria.data = get_course_category(course_code)
+    form.etiquetas.data = get_course_tags(course_code)
 
     return render_template("learning/nuevo_curso.html", form=form, curso=curso_a_editar, edit=True)
 
@@ -1174,7 +1181,9 @@ def pagina_recurso(curso_id: str, resource_type: str, codigo: str) -> str:
     INDICE = crear_indice_recurso(codigo)
 
     if current_user.is_authenticated:
-        if current_user.tipo in ("admin", "instructor"):
+        if current_user.tipo == "admin":
+            show_resource = True
+        elif current_user.tipo == "instructor" and verifica_docente_asignado_a_curso(curso_id):
             show_resource = True
         elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(curso_id):
             show_resource = True
@@ -2542,7 +2551,12 @@ def recurso_file(course_code: str, recurso_code: str) -> Response:
     config = current_app.upload_set_config.get(doc.base_doc_url)
 
     if current_user.is_authenticated:
-        if doc.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
+        if (
+            doc.publico
+            or current_user.tipo == "admin"
+            or verifica_estudiante_asignado_a_curso(course_code)
+            or verifica_docente_asignado_a_curso(course_code)
+        ):
             return send_from_directory(config.destination, doc.doc)
         return abort(403)
     return INICIO_SESION
@@ -2607,7 +2621,12 @@ def pdf_viewer(course_code: str, recurso_code: str) -> str | Response:
         return abort(404)
 
     if current_user.is_authenticated:
-        if recurso.publico or current_user.tipo == "admin" or verifica_estudiante_asignado_a_curso(course_code):
+        if (
+            recurso.publico
+            or current_user.tipo == "admin"
+            or verifica_estudiante_asignado_a_curso(course_code)
+            or verifica_docente_asignado_a_curso(course_code)
+        ):
             return render_template("learning/resources/pdf_viewer.html", recurso=recurso)
         return abort(403)
     return INICIO_SESION

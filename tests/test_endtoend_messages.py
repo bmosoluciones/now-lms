@@ -69,7 +69,7 @@ def test_comprehensive_forum_workflow(full_db_setup, client):
             "descripcion": "A course for testing forum functionality.",
             "descripcion_corta": "Forum test course.",
             "nivel": 1,  # 1 = Principiante (beginner)
-            "duracion": "4 semanas",
+            "duracion": 4,  # Use integer for weeks
             "publico": True,
             "modalidad": "time_based",
             "foro_habilitado": True,
@@ -242,7 +242,7 @@ def test_comprehensive_messaging_workflow(full_db_setup, client):
             "descripcion": "A course for testing messaging functionality.",
             "descripcion_corta": "Message test course.",
             "nivel": 1,  # 1 = Principiante (beginner)
-            "duracion": "4 semanas",
+            "duracion": 4,  # Use integer for weeks
             "publico": True,
             "modalidad": "time_based",
             "foro_habilitado": False,
@@ -486,7 +486,7 @@ def test_forum_access_control_and_permissions(full_db_setup, client):
             "descripcion": "A course for testing permissions.",
             "descripcion_corta": "Permission test course.",
             "nivel": 1,  # 1 = Principiante (beginner)
-            "duracion": "4 semanas",
+            "duracion": 4,  # Use integer for weeks
             "publico": True,
             "modalidad": "time_based",
             "foro_habilitado": True,
@@ -602,7 +602,7 @@ def test_messaging_admin_functionality(full_db_setup, client):
             "descripcion": "A course for testing admin functionality.",
             "descripcion_corta": "Admin test course.",
             "nivel": 1,  # 1 = Principiante (beginner)
-            "duracion": "4 semanas",
+            "duracion": 4,  # Use integer for weeks
             "publico": True,
             "modalidad": "time_based",
             "foro_habilitado": False,
@@ -751,7 +751,7 @@ def test_forum_edge_cases_and_error_handling(full_db_setup, client):
             "descripcion": "A course for testing edge cases.",
             "descripcion_corta": "Edge test course.",
             "nivel": 1,  # 1 = Principiante (beginner)
-            "duracion": "4 semanas",
+            "duracion": 4,  # Use integer for weeks
             "publico": True,
             "modalidad": "time_based",  # Use time_based to avoid validation errors
             "foro_habilitado": False,  # Test with forum disabled
@@ -872,7 +872,7 @@ def test_messaging_standalone_report_functionality(full_db_setup, client):
             modalidad="time_based",
             foro_habilitado=False,
             nivel=1,  # 1 = Principiante (beginner)
-            duracion="4 semanas",
+            duracion=4,  # Use integer for weeks
             publico=True,
             limitado=False,
             capacidad=0,
