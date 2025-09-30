@@ -19,8 +19,10 @@ flask-reuploaded
 flask-sqlalchemy
 flask_weasyprint
 flask-wtf
+gunicorn
 markdown
 memcache
+mysql-connector-python
 pg8000
 pyjwt
 python-slugify
@@ -29,6 +31,5 @@ qrcode
 sqlalchemy
 requests
 redis
-gunicorn
 weasyprint
 wtforms
