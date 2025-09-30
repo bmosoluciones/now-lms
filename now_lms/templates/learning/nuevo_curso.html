@@ -30,10 +30,18 @@
                             <label for="nombre" class="form-label">{{ _("Nombre") }} del {{ _("Curso") }}</label>
                             {{ form.nombre(class="form-control", id="nombre", placeholder=_("Nombre del Curso")) }}
                         </div>
+                        {% if edit %}
+                        <div class="col-sm-6">
+                            <label class="form-label">{{ _('Código del') }} {{ _("Curso") }}</label>
+                            <p class="form-control-plaintext">{{ curso.codigo }}</p>
+                            {{ form.codigo(type="hidden") }}
+                        </div>
+                        {% else %}
                         <div class="col-sm-6">
                             <label for="codigo" class="form-label">{{ _('Código del') }} {{ _("Curso") }}</label>
                             {{ form.codigo(class="form-control", id="codigo", placeholder=_("Código del Curso")) }}
                         </div>
+                        {% endif %}
                         <label for="descripcion_corta" class="form-label">{{ _("Descripción") }} Corta</label>
                         {{ form.descripcion_corta(class="form-control", id="descripcion_corta", placeholder=_("Descripción
                         Corta")) }}
