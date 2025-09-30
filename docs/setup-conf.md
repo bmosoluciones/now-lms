@@ -218,7 +218,7 @@ You can use the following options to configure NOW-LMS:
 
 - **LMS_PORT** (<span style="color:green">optional</span>): Port number for the LMS server (when using lmsctl).
 - **PORT** (<span style="color:green">optional</span>): Alternative port configuration (used in cloud environments like Heroku).
-- **LMS_THREADS** (<span style="color:green">optional</span>): Number of threads for the server (when using lmsctl).
+- **LMS_WORKERS** (<span style="color:green">optional</span>): Number of worker processes for Gunicorn (when using lmsctl). Defaults to `(cpu_count * 2) + 1` in production.
 
 ### Development and Debugging
 

@@ -131,5 +131,33 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
             {{ r_macros.nav_footer(indice=indice, curso=recurso.curso, type=recurso.tipo, codigo=recurso.id,
             recurso_completado=recurso_completado) }}
         </main>
+
+        <!-- Fullscreen PDF Modal -->
+        <div
+            class="modal fade"
+            id="pdfFullscreenModal"
+            tabindex="-1"
+            aria-labelledby="pdfFullscreenModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="pdfFullscreenModalLabel">{{ recurso.nombre }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-0">
+                        <iframe
+                            id="pdfFullscreenIframe"
+                            title="{{ recurso.nombre + ' - ' + _('Pantalla completa') }}"
+                            src="{{ url_for('course.pdf_viewer', recurso_code=recurso.id, course_code=recurso.curso) }}"
+                            width="100%"
+                            height="100%"
+                            style="border: none"
+                        ></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

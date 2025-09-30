@@ -98,7 +98,7 @@ Technologies used:
 | [sqlalchemy](https://pypi.org/project/sqlalchemy/)             | MIT License             | Database Abstraction Library.                                             |
 | [requests](https://pypi.org/project/requests/)                 | Apache Software License | Python HTTP for Humans.                                                   |
 | [redis](https://pypi.org/project/redis/)                       | MIT License             | Python client for Redis key-value store.                                  |
-| [waitress](https://pypi.org/project/waitress/)                 | ZPL 2.1                 | Waitress WSGI server.                                                     |
+| [gunicorn](https://pypi.org/project/gunicorn/)                 | MIT License             | Gunicorn 'Green Unicorn' is a Python WSGI HTTP Server for UNIX.          |
 | [weasyprint](https://pypi.org/project/weasyprint/)             | BSD License             | WeasyPrint converts web documents to PDF.                                 |
 | [wtforms](https://pypi.org/project/wtforms/)                   | BSD License             | A flexible forms validation and rendering library.                        |
 

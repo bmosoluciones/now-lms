@@ -12,10 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-
 """Command line interface for NOW LMS."""
-
 
 from __future__ import annotations
 
@@ -50,8 +47,9 @@ from now_lms.version import CODE_NAME, VERSION
 # Interfaz de linea de comandos.
 # ---------------------------------------------------------------------------------------
 @click.group(
-    cls=FlaskGroup, create_app=lambda: lms_app, help="Interfaz de linea de comandos para la administración de NOW LMS."
-)
+    cls=FlaskGroup,
+    create_app=lambda: lms_app,
+    help="Interfaz de linea de comandos para la administración de NOW LMS.")
 def command() -> None:
     """Linea de comandos para administración de la aplicacion."""
 
@@ -67,8 +65,14 @@ for name, cmd in alembic_cli.commands.items():
 
 
 @database.command()
-@click.option("--with-examples", is_flag=True, default=False, help="Load example data at setup.")
-@click.option("--with-testdata", is_flag=True, default=False, help="Load data for testing.")
+@click.option("--with-examples",
+              is_flag=True,
+              default=False,
+              help="Load example data at setup.")
+@click.option("--with-testdata",
+              is_flag=True,
+              default=False,
+              help="Load data for testing.")
 def init(with_examples=False, with_testdata=False):
     """Init a new database."""
     with lms_app.app_context():
@@ -106,7 +110,11 @@ def backup():
 @database.command()
 @click.argument(
     "backup_sql_file",
-    type=click.Path(exists=True, file_okay=True, dir_okay=False, readable=True, path_type=Path),
+    type=click.Path(exists=True,
+                    file_okay=True,
+                    dir_okay=False,
+                    readable=True,
+                    path_type=Path),
 )
 def restore(backup_sql_file: Path):
     """Restore the system from a backup."""
@@ -126,7 +134,9 @@ def migrate():
 def drop():
     """Delete database schema and all the data in it."""
     with lms_app.app_context():
-        if click.confirm("This will delete the database and all the data on it. Do you want to continue?", abort=True):
+        if click.confirm(
+                "This will delete the database and all the data on it. Do you want to continue?",
+                abort=True):
             eliminar_base_de_datos_segura()
 
 
@@ -134,7 +144,9 @@ def drop():
 def reset(with_examples=False, with_tests=False) -> None:
     """Drop the system database and populate with init a new one."""
     with lms_app.app_context():
-        if click.confirm("This will delete the current database and all the data on it. Do you want to continue?", abort=True):
+        if click.confirm(
+                "This will delete the current database and all the data on it. Do you want to continue?",
+                abort=True):
             cache_instance.clear()
             eliminar_base_de_datos_segura()
             initial_setup(with_examples, with_tests)
@@ -184,7 +196,9 @@ def system():
         click.echo("NOW LMS System Information:")
         click.echo(f"  NOW LMS version: {VERSION}")
         click.echo(f"  Python version: {config_info_data.sys._python_version}")
-        click.echo(f"  Python implementation: {config_info_data.sys._python_implementation}")
+        click.echo(
+            f"  Python implementation: {config_info_data.sys._python_implementation}"
+        )
         click.echo(f"  Database engine: {config_info_data._dbengine}")
         click.echo(f"  Cache type: {config_info_data._cache_type}")
 
@@ -201,9 +215,13 @@ def path():
         config_info_data = config_info()
         click.echo("Application directories:")
         click.echo(f"  Application Directory: {config_info_data._app_dir}")
-        click.echo(f"  Base Files Directory: {config_info_data._base_files_dir}")
-        click.echo(f"  Private Files Directory: {config_info_data._private_files_dir}")
-        click.echo(f"  Public Files Directory: {config_info_data._public_files_dir}")
+        click.echo(
+            f"  Base Files Directory: {config_info_data._base_files_dir}")
+        click.echo(
+            f"  Private Files Directory: {config_info_data._private_files_dir}"
+        )
+        click.echo(
+            f"  Public Files Directory: {config_info_data._public_files_dir}")
         click.echo(f"  Templates Directory: {config_info_data._templates_dir}")
 
 
@@ -217,8 +235,8 @@ def routes():
 
 @lms_app.cli.command()
 def serve():
-    """Serve NOW LMS with the default WSGi server."""
-    from waitress import serve as server
+    """Serve NOW LMS with the default WSGI server."""
+    import platform
 
     if environ.get("LMS_PORT"):
         PORT = environ.get("LMS_PORT")
@@ -228,17 +246,66 @@ def serve():
         PORT = 8080
 
     if DESARROLLO:
-        THREADS = 4
+        WORKERS = 1
     else:
-        if environ.get("LMS_THREADS"):
-            THREADS = environ.get("LMS_THREADS")
+        if environ.get("LMS_WORKERS"):
+            WORKERS = environ.get("LMS_WORKERS")
         else:
-            THREADS = (cpu_count() * 2) + 1
+            WORKERS = (cpu_count() * 2) + 1
 
-    log.info(f"Starting WSGI server on port {PORT} with {THREADS} threads.")
+    # On Windows, fallback to Flask development server
+    if platform.system() == "Windows":
+        log.warning(
+            "Running on Windows - using Flask development server instead of Gunicorn."
+        )
+        log.warning("For production deployments, use Linux or containers.")
+        log.info(f"Starting Flask development server on port {PORT}")
+        with lms_app.app_context():
+            lms_app.run(host="0.0.0.0", port=int(PORT), debug=DESARROLLO)
+    else:
+        # Use Gunicorn on Linux/Unix systems
+        try:
+            from gunicorn.app.base import BaseApplication
 
-    with lms_app.app_context():
-        server(app=lms_app, port=int(PORT), threads=THREADS)
+            class StandaloneApplication(BaseApplication):
+                """Gunicorn application class for NOW LMS."""
+
+                def __init__(self, app, options=None):
+                    self.options = options or {}
+                    self.application = app
+                    super().__init__()
+
+                def load_config(self):
+                    for key, value in self.options.items():
+                        if key in self.cfg.settings and value is not None:
+                            self.cfg.set(key.lower(), value)
+
+                def load(self):
+                    return self.application
+
+            options = {
+                "bind": f"0.0.0.0:{PORT}",
+                "workers": WORKERS,
+                "worker_class": "sync",
+                "timeout": 120,
+                "keepalive": 5,
+                "accesslog": "-",
+                "errorlog": "-",
+                "loglevel": "info",
+            }
+
+            log.info(
+                f"Starting Gunicorn WSGI server on port {PORT} with {WORKERS} workers."
+            )
+
+            StandaloneApplication(lms_app, options).run()
+        except ImportError:
+            log.error(
+                "Gunicorn is not installed. Install it with: pip install gunicorn"
+            )
+            log.info("Falling back to Flask development server.")
+            with lms_app.app_context():
+                lms_app.run(host="0.0.0.0", port=int(PORT), debug=DESARROLLO)
 
 
 @lms_app.cli.group()
@@ -336,17 +403,24 @@ def reset_password():
         username = click.prompt("Enter username", type=str)
 
         # Find user by username or email
-        usuario = db.session.execute(select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
+        usuario = db.session.execute(
+            select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
         if not usuario:
-            usuario = db.session.execute(select(Usuario).filter_by(correo_electronico=username)).scalar_one_or_none()
+            usuario = db.session.execute(
+                select(Usuario).filter_by(
+                    correo_electronico=username)).scalar_one_or_none()
 
         if not usuario:
             click.echo(f"User '{username}' not found.")
             return
 
         # Prompt for new password with confirmation
-        password = click.prompt("Enter new password", type=str, hide_input=True)
-        confirm_password = click.prompt("Confirm new password", type=str, hide_input=True)
+        password = click.prompt("Enter new password",
+                                type=str,
+                                hide_input=True)
+        confirm_password = click.prompt("Confirm new password",
+                                        type=str,
+                                        hide_input=True)
 
         if password != confirm_password:
             click.echo("Passwords do not match.")
@@ -356,7 +430,8 @@ def reset_password():
         usuario.acceso = proteger_passwd(password)
         db.session.commit()
 
-        click.echo(f"Password updated successfully for user '{usuario.usuario}'.")
+        click.echo(
+            f"Password updated successfully for user '{usuario.usuario}'.")
 
 
 @admin.command()
@@ -367,20 +442,27 @@ def set_admin():
 
     with lms_app.app_context():
         # Security confirmation
-        click.echo("WARNING: This command will disable ALL existing admin users and create a new one.")
+        click.echo(
+            "WARNING: This command will disable ALL existing admin users and create a new one."
+        )
         click.echo("This is an emergency security measure.")
         if not click.confirm("Do you want to continue?", abort=True):
             return
 
         # Find all admin users
-        admin_users = db.session.execute(select(Usuario).filter_by(tipo="admin")).scalars().all()
+        admin_users = db.session.execute(
+            select(Usuario).filter_by(tipo="admin")).scalars().all()
 
         if admin_users:
             click.echo(f"Found {len(admin_users)} admin user(s) to disable:")
             for admin_user in admin_users:
-                click.echo(f"  - {admin_user.usuario} ({admin_user.correo_electronico})")
+                click.echo(
+                    f"  - {admin_user.usuario} ({admin_user.correo_electronico})"
+                )
 
-        if not click.confirm("Proceed to disable these admin users and create a new one?", abort=True):
+        if not click.confirm(
+                "Proceed to disable these admin users and create a new one?",
+                abort=True):
             return
 
         # Disable all existing admin users
@@ -398,7 +480,8 @@ def set_admin():
         username = click.prompt("Enter new admin username", type=str)
 
         # Check if username already exists
-        existing_user = db.session.execute(select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
+        existing_user = db.session.execute(
+            select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
         if existing_user:
             click.echo(f"Username '{username}' already exists.")
             return
@@ -410,15 +493,17 @@ def set_admin():
 
         # Check if email already exists
         existing_email = db.session.execute(
-            select(Usuario).filter_by(correo_electronico=correo_electronico)
-        ).scalar_one_or_none()
+            select(Usuario).filter_by(
+                correo_electronico=correo_electronico)).scalar_one_or_none()
         if existing_email:
             click.echo(f"Email '{correo_electronico}' already exists.")
             return
 
         # Prompt for password
         password = click.prompt("Enter password", type=str, hide_input=True)
-        confirm_password = click.prompt("Confirm password", type=str, hide_input=True)
+        confirm_password = click.prompt("Confirm password",
+                                        type=str,
+                                        hide_input=True)
 
         if password != confirm_password:
             click.echo("Passwords do not match.")
@@ -462,14 +547,16 @@ def new():
         username = click.prompt("Enter username", type=str)
 
         # Check if username already exists
-        existing_user = db.session.execute(select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
+        existing_user = db.session.execute(
+            select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
         if existing_user:
             click.echo(f"Username '{username}' already exists.")
             return
 
         # Prompt for user type with validation
         valid_types = ["student", "moderator", "instructor", "admin"]
-        tipo = click.prompt(f"Enter user type ({'/'.join(valid_types)})", type=click.Choice(valid_types))
+        tipo = click.prompt(f"Enter user type ({'/'.join(valid_types)})",
+                            type=click.Choice(valid_types))
 
         # Prompt for other required/optional fields
         nombre = click.prompt("Enter first name", type=str)
@@ -478,15 +565,17 @@ def new():
 
         # Check if email already exists
         existing_email = db.session.execute(
-            select(Usuario).filter_by(correo_electronico=correo_electronico)
-        ).scalar_one_or_none()
+            select(Usuario).filter_by(
+                correo_electronico=correo_electronico)).scalar_one_or_none()
         if existing_email:
             click.echo(f"Email '{correo_electronico}' already exists.")
             return
 
         # Prompt for password
         password = click.prompt("Enter password", type=str, hide_input=True)
-        confirm_password = click.prompt("Confirm password", type=str, hide_input=True)
+        confirm_password = click.prompt("Confirm password",
+                                        type=str,
+                                        hide_input=True)
 
         if password != confirm_password:
             click.echo("Passwords do not match.")
@@ -508,7 +597,8 @@ def new():
         db.session.add(nuevo_usuario)
         db.session.commit()
 
-        click.echo(f"User '{username}' created successfully with type '{tipo}'.")
+        click.echo(
+            f"User '{username}' created successfully with type '{tipo}'.")
 
 
 @user.command()
@@ -521,17 +611,24 @@ def set_password():
         username = click.prompt("Enter username", type=str)
 
         # Find user by username or email
-        usuario = db.session.execute(select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
+        usuario = db.session.execute(
+            select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
         if not usuario:
-            usuario = db.session.execute(select(Usuario).filter_by(correo_electronico=username)).scalar_one_or_none()
+            usuario = db.session.execute(
+                select(Usuario).filter_by(
+                    correo_electronico=username)).scalar_one_or_none()
 
         if not usuario:
             click.echo(f"User '{username}' not found.")
             return
 
         # Prompt for new password with confirmation
-        password = click.prompt("Enter new password", type=str, hide_input=True)
-        confirm_password = click.prompt("Confirm new password", type=str, hide_input=True)
+        password = click.prompt("Enter new password",
+                                type=str,
+                                hide_input=True)
+        confirm_password = click.prompt("Confirm new password",
+                                        type=str,
+                                        hide_input=True)
 
         if password != confirm_password:
             click.echo("Passwords do not match.")
@@ -541,7 +638,8 @@ def set_password():
         usuario.acceso = proteger_passwd(password)
         db.session.commit()
 
-        click.echo(f"Password updated successfully for user '{usuario.usuario}'.")
+        click.echo(
+            f"Password updated successfully for user '{usuario.usuario}'.")
 
 
 @lms_app.cli.group()
@@ -557,8 +655,11 @@ def info():  # type: ignore[no-redef]
     with lms_app.app_context():
         click.echo("Cache Configuration:")
         click.echo(f"  Type: {CTYPE}")
-        click.echo(f"  Key Prefix: {CACHE_CONFIG.get('CACHE_KEY_PREFIX', 'None')}")
-        click.echo(f"  Default Timeout: {CACHE_CONFIG.get('CACHE_DEFAULT_TIMEOUT', 'None')} seconds")
+        click.echo(
+            f"  Key Prefix: {CACHE_CONFIG.get('CACHE_KEY_PREFIX', 'None')}")
+        click.echo(
+            f"  Default Timeout: {CACHE_CONFIG.get('CACHE_DEFAULT_TIMEOUT', 'None')} seconds"
+        )
 
         if CTYPE == "RedisCache":
             redis_url = CACHE_CONFIG.get("CACHE_REDIS_URL", "Not configured")
@@ -575,10 +676,12 @@ def info():  # type: ignore[no-redef]
             else:
                 click.echo(f"  Redis URL: {redis_url}")
         elif CTYPE == "MemcachedCache":
-            servers = CACHE_CONFIG.get("CACHE_MEMCACHED_SERVERS", "Not configured")
+            servers = CACHE_CONFIG.get("CACHE_MEMCACHED_SERVERS",
+                                       "Not configured")
             click.echo(f"  Memcached Servers: {servers}")
         elif CTYPE == "NullCache":
-            click.echo("  Note: NullCache is active - no actual caching is performed")
+            click.echo(
+                "  Note: NullCache is active - no actual caching is performed")
 
 
 @cache.command()
@@ -612,18 +715,29 @@ def stats():
             # Try to get cache statistics if the backend supports it
             cache_backend = cache_instance.cache
 
-            if hasattr(cache_backend, "_read_clients") and hasattr(cache_backend, "_write_clients"):
+            if hasattr(cache_backend, "_read_clients") and hasattr(
+                    cache_backend, "_write_clients"):
                 # Redis backend
                 click.echo("Cache Statistics (Redis):")
                 try:
                     if cache_backend._read_clients:
                         client = cache_backend._read_clients[0]
                         redis_info = client.info()
-                        click.echo(f"  Connected clients: {redis_info.get('connected_clients', 'N/A')}")
-                        click.echo(f"  Used memory: {redis_info.get('used_memory_human', 'N/A')}")
-                        click.echo(f"  Total commands processed: {redis_info.get('total_commands_processed', 'N/A')}")
-                        click.echo(f"  Keyspace hits: {redis_info.get('keyspace_hits', 'N/A')}")
-                        click.echo(f"  Keyspace misses: {redis_info.get('keyspace_misses', 'N/A')}")
+                        click.echo(
+                            f"  Connected clients: {redis_info.get('connected_clients', 'N/A')}"
+                        )
+                        click.echo(
+                            f"  Used memory: {redis_info.get('used_memory_human', 'N/A')}"
+                        )
+                        click.echo(
+                            f"  Total commands processed: {redis_info.get('total_commands_processed', 'N/A')}"
+                        )
+                        click.echo(
+                            f"  Keyspace hits: {redis_info.get('keyspace_hits', 'N/A')}"
+                        )
+                        click.echo(
+                            f"  Keyspace misses: {redis_info.get('keyspace_misses', 'N/A')}"
+                        )
 
                         # Calculate hit ratio
                         hits = redis_info.get("keyspace_hits", 0)
@@ -632,9 +746,11 @@ def stats():
                             hit_ratio = (hits / (hits + misses)) * 100
                             click.echo(f"  Hit ratio: {hit_ratio:.2f}%")
                     else:
-                        click.echo("  No Redis connection available for statistics.")
+                        click.echo(
+                            "  No Redis connection available for statistics.")
                 except Exception as redis_error:
-                    click.echo(f"  Error getting Redis statistics: {redis_error}")
+                    click.echo(
+                        f"  Error getting Redis statistics: {redis_error}")
 
             elif hasattr(cache_backend, "_client"):
                 # Memcached backend
@@ -646,14 +762,23 @@ def stats():
                             for server, server_stats in memcached_stats:
                                 click.echo(f"  Server {server}:")
                                 for key, value in server_stats.items():
-                                    if key in ["get_hits", "get_misses", "cmd_get", "cmd_set", "bytes", "curr_items"]:
+                                    if key in [
+                                            "get_hits", "get_misses",
+                                            "cmd_get", "cmd_set", "bytes",
+                                            "curr_items"
+                                    ]:
                                         click.echo(f"    {key}: {value}")
                         else:
-                            click.echo("  No statistics available from Memcached.")
+                            click.echo(
+                                "  No statistics available from Memcached.")
                     else:
-                        click.echo("  Statistics not supported by this Memcached client.")
+                        click.echo(
+                            "  Statistics not supported by this Memcached client."
+                        )
                 except Exception as memcached_error:
-                    click.echo(f"  Error getting Memcached statistics: {memcached_error}")
+                    click.echo(
+                        f"  Error getting Memcached statistics: {memcached_error}"
+                    )
 
             else:
                 click.echo("Statistics not available for this cache backend.")

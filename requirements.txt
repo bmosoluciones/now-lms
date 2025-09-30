@@ -29,6 +29,6 @@ qrcode
 sqlalchemy
 requests
 redis
-waitress
+gunicorn
 weasyprint
 wtforms
