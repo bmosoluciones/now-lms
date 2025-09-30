@@ -2,7 +2,7 @@
 <html lang="{{ current_locale() }}" style="height: 100%">
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
         <meta name="google" content="notranslate" />
         <title>{{ recurso.nombre }} - {{ _('Visor PDF') }}</title>
 
@@ -81,6 +81,37 @@
                 white-space: nowrap;
             }
 
+            /* Zoom controls */
+            .zoom-controls {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                color: white;
+                font-size: 14px;
+            }
+
+            .zoom-controls button {
+                background: #555;
+                color: white;
+                border: none;
+                padding: 4px 8px;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 12px;
+                min-width: 32px;
+            }
+
+            .zoom-controls button:hover {
+                background: #666;
+            }
+
+            .zoom-level {
+                margin: 0 4px;
+                white-space: nowrap;
+                min-width: 50px;
+                text-align: center;
+            }
+
             .download-button {
                 background: #28a745;
                 color: white;
@@ -155,6 +186,19 @@
                 border-radius: 4px;
                 overflow: hidden;
                 max-width: 100%;
+                opacity: 0;
+                animation: fadeIn 0.3s ease-in forwards;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
 
             .pdf-page canvas {
@@ -227,10 +271,14 @@
                     order: 2;
                 }
 
+                .zoom-controls {
+                    order: 3;
+                }
+
                 .download-button {
                     padding: 6px 12px;
                     font-size: 13px;
-                    order: 3;
+                    order: 4;
                 }
 
                 .pdf-pages {
@@ -274,6 +322,13 @@
                         {{ _('Página') }} <span id="currentPage">1</span> {{ _('de') }} <span id="totalPages">-</span>
                     </span>
                     <button id="nextPage" disabled>{{ _('Siguiente') }} ▶</button>
+                </div>
+
+                <div class="zoom-controls">
+                    <button id="zoomOut" title="{{ _('Alejar') }}">-</button>
+                    <span class="zoom-level" id="zoomLevel">100%</span>
+                    <button id="zoomIn" title="{{ _('Acercar') }}">+</button>
+                    <button id="zoomReset" title="{{ _('Restablecer zoom') }}">⟲</button>
                 </div>
 
                 <a
@@ -325,6 +380,9 @@
             let currentPageNum = 1
             let totalPages = 0
             let scale = 1.5
+            const MIN_SCALE = 0.5
+            const MAX_SCALE = 3.0
+            const SCALE_STEP = 0.25
 
             // Get elements
             const loading = document.getElementById("pdfLoading")
@@ -334,6 +392,10 @@
             const nextBtn = document.getElementById("nextPage")
             const currentPageSpan = document.getElementById("currentPage")
             const totalPagesSpan = document.getElementById("totalPages")
+            const zoomInBtn = document.getElementById("zoomIn")
+            const zoomOutBtn = document.getElementById("zoomOut")
+            const zoomResetBtn = document.getElementById("zoomReset")
+            const zoomLevelSpan = document.getElementById("zoomLevel")
 
             // PDF URL
             const pdfUrl = "{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
@@ -350,19 +412,24 @@
                 if (!pdfDoc) return
 
                 pdfDoc.getPage(pageNum).then(function (page) {
-                    // Calculate scale based on container width
-                    const viewport = page.getViewport({ scale: 1.0 })
-                    const container = pagesContainer
-                    const maxWidth = container.clientWidth - 40 // Account for padding
-                    const calculatedScale = Math.min(maxWidth / viewport.width, scale)
+                    // Get device pixel ratio for high-DPI displays
+                    const pixelRatio = window.devicePixelRatio || 1
 
-                    const scaledViewport = page.getViewport({ scale: calculatedScale })
+                    // Use the user's zoom scale directly
+                    const calculatedScale = scale
 
-                    // Create canvas
+                    // Apply scale and pixel ratio for sharp rendering
+                    const scaledViewport = page.getViewport({ scale: calculatedScale * pixelRatio })
+
+                    // Create canvas with high resolution
                     const canvas = document.createElement("canvas")
                     const context = canvas.getContext("2d")
                     canvas.height = scaledViewport.height
                     canvas.width = scaledViewport.width
+
+                    // Scale canvas display size back to CSS pixels
+                    canvas.style.height = scaledViewport.height / pixelRatio + "px"
+                    canvas.style.width = scaledViewport.width / pixelRatio + "px"
 
                     // Create page container
                     const pageDiv = document.createElement("div")
@@ -395,6 +462,37 @@
                 nextBtn.disabled = currentPageNum >= totalPages
             }
 
+            // Function to update zoom level display
+            function updateZoomLevel() {
+                const percentage = Math.round(scale * 100)
+                zoomLevelSpan.textContent = percentage + "%"
+            }
+
+            // Function to zoom in
+            function zoomIn() {
+                if (scale < MAX_SCALE) {
+                    scale = Math.min(scale + SCALE_STEP, MAX_SCALE)
+                    updateZoomLevel()
+                    renderPage(currentPageNum)
+                }
+            }
+
+            // Function to zoom out
+            function zoomOut() {
+                if (scale > MIN_SCALE) {
+                    scale = Math.max(scale - SCALE_STEP, MIN_SCALE)
+                    updateZoomLevel()
+                    renderPage(currentPageNum)
+                }
+            }
+
+            // Function to reset zoom
+            function zoomReset() {
+                scale = 1.5
+                updateZoomLevel()
+                renderPage(currentPageNum)
+            }
+
             // Function to go to previous page
             function goToPrevPage() {
                 if (currentPageNum > 1) {
@@ -414,6 +512,9 @@
             // Event listeners
             prevBtn.addEventListener("click", goToPrevPage)
             nextBtn.addEventListener("click", goToNextPage)
+            zoomInBtn.addEventListener("click", zoomIn)
+            zoomOutBtn.addEventListener("click", zoomOut)
+            zoomResetBtn.addEventListener("click", zoomReset)
 
             // Keyboard navigation
             document.addEventListener("keydown", function (e) {
@@ -437,6 +538,22 @@
                         e.preventDefault()
                         currentPageNum = totalPages
                         renderPage(currentPageNum)
+                        break
+                    case "+":
+                    case "=":
+                        e.preventDefault()
+                        zoomIn()
+                        break
+                    case "-":
+                    case "_":
+                        e.preventDefault()
+                        zoomOut()
+                        break
+                    case "0":
+                        if (e.ctrlKey || e.metaKey) {
+                            e.preventDefault()
+                            zoomReset()
+                        }
                         break
                 }
 
@@ -494,6 +611,9 @@
                         // Hide loading, show pages
                         loading.style.display = "none"
                         pagesContainer.style.display = "flex"
+
+                        // Initialize zoom level display
+                        updateZoomLevel()
 
                         // Render first page
                         renderPage(1)
