@@ -394,7 +394,7 @@ permitir_docente %}
                                 {% for recurso in recursos %} {% if recurso.seccion == seccion.id %}
                                 <li class="list-group-item">
                                     <div class="d-flex justify-content-between border-bottom">
-                                        {% if current_user.tipo == "admin" or permitir_estudiante %}
+                                        {% if current_user.tipo == "admin" or permitir_docente or permitir_estudiante %}
                                         <a
                                             class="link-dark text-decoration-none"
                                             href="{{ url_for('course.pagina_recurso', curso_id=recurso.curso, resource_type=recurso.tipo, codigo=recurso.id) }} "

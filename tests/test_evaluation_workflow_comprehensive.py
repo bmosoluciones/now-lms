@@ -56,8 +56,8 @@ def test_instructor_complete_evaluation_workflow(full_db_setup, client):
             "codigo": "workflow_course",
             "descripcion": "A course for testing complete workflow.",
             "descripcion_corta": "Complete workflow test course.",
-            "nivel": "beginner",
-            "duracion": "4 semanas",
+            "nivel": 1,  # Use integer: 1 = Principiante
+            "duracion": 4,  # Use integer for weeks
             "publico": True,
             "modalidad": "online",
             "foro_habilitado": True,
@@ -347,8 +347,8 @@ def test_student_complete_evaluation_workflow(full_db_setup, client):
             "codigo": "student_course",
             "descripcion": "A course for testing student workflow.",
             "descripcion_corta": "Student workflow test course.",
-            "nivel": "beginner",
-            "duracion": "2 semanas",
+            "nivel": 1,  # Use integer: 1 = Principiante
+            "duracion": 2,  # Use integer for weeks
             "publico": True,
             "modalidad": "online",
             "foro_habilitado": True,
@@ -557,8 +557,8 @@ def test_instructor_question_option_management(full_db_setup, client):
             "codigo": "option_course",
             "descripcion": "Course for testing option management.",
             "descripcion_corta": "Option management course.",
-            "nivel": "beginner",
-            "duracion": "1 semana",
+            "nivel": 1,  # Use integer: 1 = Principiante
+            "duracion": 1,  # Use integer for weeks
             "publico": True,
             "modalidad": "online",
             "foro_habilitado": True,
