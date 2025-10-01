@@ -11,6 +11,8 @@ flake8
 pylint
 pytest
 pytest-xdist
+pytest-timeout
+pytest-benchmark
 ruff
 
 # Cobertura de código

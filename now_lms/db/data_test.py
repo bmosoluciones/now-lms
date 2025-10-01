@@ -439,7 +439,6 @@ def crear_usuarios_de_prueba() -> None:
         i.fecha_ultimo_grupo = datetime.today()
         i.fecha_ultimo_seguimiento = datetime.today()
         database.session.add(i)
-        database.session.flush()
     database.session.commit()
     demo_grupo = UsuarioGrupo(nombre="Grupo de Prueba", descripcion="Demo Group", activo=True)
     database.session.add(demo_grupo)
