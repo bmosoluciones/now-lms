@@ -40,11 +40,29 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
             # Evitar lecturas sucias (simula aislamiento más fuerte)
             cursor.execute("PRAGMA read_uncommitted=FALSE")
 
-            # Mejor manejo de concurrencia
-            cursor.execute("PRAGMA journal_mode=WAL")
+            # Mejor manejo de concurrencia - MEMORY for in-memory DB speed
+            cursor.execute("PRAGMA journal_mode=MEMORY")
 
-            # Asegurar escritura segura en disco
-            cursor.execute("PRAGMA synchronous=FULL")
+            # Performance optimization for in-memory test databases
+            # NORMAL is sufficient for tests while being much faster than FULL
+            cursor.execute("PRAGMA synchronous=NORMAL")
+
+            # Increase cache size for better performance (10MB)
+            cursor.execute("PRAGMA cache_size=-10000")
+
+            # Optimize for in-memory performance
+            cursor.execute("PRAGMA temp_store=MEMORY")
+
+            # Additional performance optimizations for test speed
+            # Disable auto_vacuum for faster database operations
+            cursor.execute("PRAGMA auto_vacuum=NONE")
+
+            # Increase page size for better performance (default is 4096, max is 65536)
+            # Must be set before any tables are created
+            cursor.execute("PRAGMA page_size=8192")
+
+            # Use exclusive locking mode for single-connection in-memory databases
+            cursor.execute("PRAGMA locking_mode=EXCLUSIVE")
 
             # Tipado estricto (SQLite >= 3.37)
             try:

@@ -179,7 +179,6 @@ def crear_configuracion_predeterminada() -> None:
 
     for item in [config, mail_config, adsense_config, paypal_config, theme]:
         database.session.add(item)
-        database.session.flush()
     database.session.commit()
 
 
