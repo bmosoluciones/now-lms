@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 """Application configuration."""
 
 # Python 3.7+ - Postponed evaluation of annotations
@@ -26,6 +25,7 @@ import sys
 from os import R_OK, W_OK, access, environ, makedirs, name, path
 from pathlib import Path
 from typing import TYPE_CHECKING
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -108,7 +108,6 @@ DEBUG_VARS = ["DEBUG", "CI", "DEV", "DEVELOPMENT"]
 FRAMEWORK_VARS = ["FLASK_ENV", "DJANGO_DEBUG", "NODE_ENV"]
 GENERIC_VARS = ["ENV", "APP_ENV"]
 
-
 # < --------------------------------------------------------------------------------------------- >
 # Gestión de variables de entorno.
 DESARROLLO = any(
@@ -118,7 +117,6 @@ FORCE_HTTPS = environ.get("NOW_LMS_FORCE_HTTPS", "0").strip().lower() in VALORES
 AUTO_MIGRATE = environ.get("NOW_LMS_AUTO_MIGRATE", "0").strip().lower() in VALORES_TRUE
 DEMO_MODE = environ.get("NOW_LMS_DEMO_MODE", "0").strip().lower() in VALORES_TRUE
 
-
 # < --------------------------------------------------------------------------------------------- >
 # Directorios base de la aplicacion
 DIRECTORIO_ACTUAL: Path = Path(path.abspath(path.dirname(__file__)))
@@ -127,7 +125,6 @@ DIRECTORIO_PLANTILLAS_BASE: str = path.join(DIRECTORIO_APP, "templates")
 DIRECTORIO_ARCHIVOS_BASE: str = path.join(DIRECTORIO_APP, "static")
 DIRECTORIO_BASE_APP: AppDirs = AppDirs("NOW-LMS", "BMO Soluciones")
 DIRECTORIO_PRINCICIPAL: Path = Path(DIRECTORIO_APP).parent.absolute()
-
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios personalizados para la aplicación.
@@ -144,7 +141,6 @@ if custom_themes_dir:
     DIRECTORIO_PLANTILLAS = custom_themes_dir
 else:
     DIRECTORIO_PLANTILLAS = DIRECTORIO_PLANTILLAS_BASE
-
 
 # < --------------------------------------------------------------------------------------------- >
 # Directorios utilizados para la carga de archivos.
@@ -171,11 +167,9 @@ if access(DIRECTORIO_BASE_ARCHIVOS_USUARIO, R_OK) and access(DIRECTORIO_BASE_ARC
 else:
     log.warning(f"No access to upload files to directory: {DIRECTORIO_BASE_ARCHIVOS_USUARIO}")
 
-
 # < --------------------------------------------------------------------------------------------- >
 # Directorio base temas.
 DIRECTORIO_BASE_UPLOADS = Path(str(path.join(str(DIRECTORIO_ARCHIVOS), "files")))
-
 
 # < --------------------------------------------------------------------------------------------- >
 # Ubicación predeterminada de base de datos SQLITE
@@ -193,7 +187,6 @@ else:
         SQLITE = "sqlite:///" + str(DIRECTORIO_PRINCICIPAL) + "\\now_lms.db"
     else:
         SQLITE = "sqlite:///" + str(DIRECTORIO_PRINCICIPAL) + "/now_lms.db"
-
 
 # < --------------------------------------------------------------------------------------------- >
 # Configuración de la aplicación:
@@ -215,42 +208,40 @@ if DESARROLLO:
     CONFIGURACION["SQLALCHEMY_TRACK_MODIFICATIONS"] = "False"
     CONFIGURACION["TEMPLATES_AUTO_RELOAD"] = True
 
-
 # < --------------------------------------------------------------------------------------------- >
-# Corrige URI de conexion a la base de datos si el usuario omite el driver apropiado.
-if CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
-    # En Heroku va a estar disponible psycopg2.
-    # - https://devcenter.heroku.com/articles/connecting-heroku-postgres#connecting-in-python
-    # - https://devcenter.heroku.com/changelog-items/2035
-    if (environ.get("DYNO")) and ("postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")):  # type: ignore[operator]
-        DBURI: str = str(
-            "postgresql" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:] + "?sslmode=require"  # type: ignore[index]
-        )
-        CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
+# Corrige la URI de conexión a la base de datos si el usuario omite el driver apropiado.
 
-    # La mayor parte de servicios en linea ofrecen una cadena de conexión a Postgres que comienza con "postgres"
-    # cadena de conexión va a fallar con SQLAlchemy:
-    # - https://docs.sqlalchemy.org/en/20/core/engines.html#postgresql
-    # Se utiliza por defecto el driver pg8000 que no requere compilarse y es mas amigable  en entornos de contenedores
-    # donde es mas complejo compilar psycopg2.
-    elif "postgresql:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-        DBURI = "postgresql+pg8000" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[10:]  # type: ignore[index]
-        CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
+if DATABASE_URL_BASE := CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
 
-    elif "postgres:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-        DBURI = "postgresql+pg8000" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[8:]  # type: ignore[index]
-        CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
+    DATABASE_URL_CORREGIDA = DATABASE_URL_BASE
 
-    # Agrega driver de mysql:
-    # - https://docs.sqlalchemy.org/en/14/dialects/mysql.html#module-sqlalchemy.dialects.mysql.pymysql
-    elif "mysql:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-        DBURI = "mysql+mysqlconnector" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[5:]  # type: ignore[index]
-        CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
+    prefix = DATABASE_URL_BASE.split(":", 1)[0]  # Extraer prefijo: "postgres", "mysql", etc.
 
-    elif "mariadb:" in CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):  # type: ignore[operator]
-        DBURI = "mariadb+mariadbconnector" + CONFIGURACION.get("SQLALCHEMY_DATABASE_URI")[7:]  # type: ignore[index]
-        CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DBURI
+    # Caso especial: Heroku + PostgreSQL
+    if environ.get("DYNO") and prefix in ("postgres", "postgresql"):  # type: ignore[operator]
+        parsed = urlparse(DATABASE_URL_BASE)  # type: ignore[arg-type]
+        query = parse_qs(parsed.query)
+        query["sslmode"] = ["require"]
+        DATABASE_URL_CORREGIDA = urlunparse(parsed._replace(scheme="postgresql", query=urlencode(query, doseq=True)))
 
+    else:
+        # Corrige el esquema según el prefijo detectado
+        match prefix:
+            case "postgresql":
+                DATABASE_URL_CORREGIDA = "postgresql+pg8000" + DATABASE_URL_BASE[10:]  # type: ignore[index]
+            case "postgres":
+                DATABASE_URL_CORREGIDA = "postgresql+pg8000" + DATABASE_URL_BASE[8:]  # type: ignore[index]
+            case "mysql":
+                DATABASE_URL_CORREGIDA = "mysql+pymysql" + DATABASE_URL_BASE[5:]  # type: ignore[index]
+            case "mariadb":  # Not tested, but should work.
+                DATABASE_URL_CORREGIDA = "mariadb+mariadbconnector" + DATABASE_URL_BASE[7:]  # type: ignore[index]
+            case _:
+                pass  # Prefijo desconocido o ya corregido
+
+    # Actualizar configuración si hubo cambio
+    if DATABASE_URL_BASE != DATABASE_URL_CORREGIDA:
+        log.info(f"Database URI corrected: {DATABASE_URL_BASE} → {DATABASE_URL_CORREGIDA}")
+        CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL_CORREGIDA
 
 # < --------------------------------------------------------------------------------------------- >
 # Configuración de Directorio de carga de archivos.
