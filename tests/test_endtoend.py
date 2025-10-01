@@ -169,6 +169,7 @@ def test_user_registration_to_free_course_enroll(session_full_db_setup, isolated
         assert certificate.certificado == "horizontal"
 
 
+@pytest.mark.integration
 def test_user_password_change(session_full_db_setup, isolated_db_session):
     """Test password change functionality for users."""
     from now_lms.auth import proteger_passwd, validar_acceso
@@ -246,6 +247,7 @@ def test_user_password_change(session_full_db_setup, isolated_db_session):
     assert not validar_acceso("testuser@nowlms.com", "oldpassword")
 
 
+@pytest.mark.integration
 def test_password_recovery_functionality(session_full_db_setup, isolated_db_session):
     """Test the complete password recovery flow."""
 
@@ -3358,6 +3360,7 @@ def test_program_enrollment_and_management(basic_config_setup, client):
     assert enroll_user_response.status_code in [200, 302]
 
 
+@pytest.mark.integration
 def test_tag_management_endtoend(basic_config_setup, client):
     """Test comprehensive tag management functionality including new_tag, edit_tag, delete_tag, and tags routes."""
     app = basic_config_setup

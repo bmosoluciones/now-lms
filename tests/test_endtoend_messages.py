@@ -13,6 +13,7 @@
 # limitations under the License.
 #
 
+import pytest
 from now_lms.db import database
 
 """
@@ -20,6 +21,7 @@ Comprehensive end-to-end tests for forum and messaging systems.
 """
 
 
+@pytest.mark.integration
 def test_comprehensive_forum_workflow(full_db_setup, client):
     """Test complete forum workflow focusing on core business logic."""
     app = full_db_setup
@@ -193,6 +195,7 @@ def test_comprehensive_forum_workflow(full_db_setup, client):
     print("✓ Comprehensive forum workflow test completed successfully!")
 
 
+@pytest.mark.integration
 def test_comprehensive_messaging_workflow(full_db_setup, client):
     """Test complete messaging system workflow focusing on core business logic."""
     app = full_db_setup
@@ -426,6 +429,7 @@ def test_comprehensive_messaging_workflow(full_db_setup, client):
     print("✓ Comprehensive messaging workflow test completed successfully!")
 
 
+@pytest.mark.integration
 def test_forum_access_control_and_permissions(full_db_setup, client):
     """Test forum access control and permission scenarios."""
     app = full_db_setup

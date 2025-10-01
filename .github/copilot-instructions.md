@@ -55,24 +55,43 @@ Always follow these exact steps in order:
 **CRITICAL**: Always run tests to validate any code changes.
 
 ```bash
-# Run full test suite (required)
+# Run full test suite with linting (required for CI)
 cd now_lms/static && npm install && cd ../..
-source source venv/bin/activate && bash dev/test.sh
+source venv/bin/activate && bash dev/test.sh
 ```
 
-**Timing**: Takes ~57 seconds. NEVER CANCEL. Set timeout to 15+ minutes.
+**Timing**: Takes ~3 minutes. NEVER CANCEL. Set timeout to 5+ minutes.
+
+```bash
+# Run fast test suite (development mode - skips slow/comprehensive tests)
+bash dev/test_fast.sh
+```
+
+**Timing**: Takes ~1m30s. Set timeout to 3+ minutes.
+
+```bash
+# Run tests only with parallel execution and coverage
+CI=True pytest --tb=short -q --cov=now_lms -n auto
+```
+
+**Timing**: Takes ~2m13s. Set timeout to 4+ minutes.
 
 ```bash
 # Run specific test for debugging
 python -m pytest tests/test_all_routes_comprehensive.py -v
 ```
 
-```bash
-# Run tests with coverage
-CI=True pytest -v --exitfirst --cov=now_lms
-```
+## Test Performance
 
-**Timing**: Takes ~76 seconds. NEVER CANCEL. Set timeout to 15+ minutes.
+The test suite includes several performance optimizations:
+
+- **Parallel execution** with `pytest-xdist` (`-n auto`)
+- **Test categorization** with markers (`@pytest.mark.slow`, `@pytest.mark.comprehensive`)
+- **Timeout protection** with `pytest-timeout` (300s per test)
+- **SQLite optimizations** for in-memory test databases
+- **Session-scoped fixtures** to reduce database setup overhead
+
+See `docs/test-performance.md` for detailed information.
 
 ### Run the Application
 

@@ -84,7 +84,6 @@ def system_info(app: "Flask") -> None:
 
         for i in version_sistema, version_sistema_mayor, version_sistema_menor:
             database.session.add(i)
-            database.session.flush()
         database.session.commit()
 
 
@@ -97,7 +96,6 @@ def crear_etiquetas() -> None:
     etiqueta4 = Etiqueta(nombre="Learning", color="#f2b3c4")
     for i in etiqueta1, etiqueta2, etiqueta3, etiqueta4:
         database.session.add(i)
-        database.session.flush()
     database.session.commit()
 
 
@@ -111,7 +109,6 @@ def crear_categorias() -> None:
 
     for i in cat1, cat2, cat3, cat4:
         database.session.add(i)
-        database.session.flush()
     database.session.commit()
 
 
@@ -476,7 +473,6 @@ def crear_certificados() -> None:
         cert.habilitado = True
         cert.publico = True
         database.session.add(cert)
-        database.session.flush()
     database.session.commit()
     log.info("Demo certificate created successfully.")
 
@@ -565,7 +561,6 @@ def crear_curso_predeterminado() -> None:
 
     for curso in demo_, form, free:
         database.session.add(curso)
-        database.session.flush()
     database.session.commit()
 
     curse_logo("now", "5218255.jpg")
@@ -762,7 +757,6 @@ def crear_evaluacion_predeterminada() -> None:
     ]
     for option in options1:
         database.session.add(option)
-        database.session.flush()
 
     # Question 2: True/False about online course engagement
     question2 = Question(
@@ -793,7 +787,6 @@ def crear_evaluacion_predeterminada() -> None:
     ]
     for option in options2:
         database.session.add(option)
-        database.session.flush()
 
     # Question 3: Multiple choice about course structure
     question3 = Question(
@@ -836,7 +829,6 @@ def crear_evaluacion_predeterminada() -> None:
     ]
     for option in options3:
         database.session.add(option)
-        database.session.flush()
 
     database.session.commit()
     log.debug("Demonstration evaluation created successfully.")
@@ -1416,7 +1408,6 @@ def asignar_cursos_a_etiquetas() -> None:
 
     for r in [registro1, registro2, registro3, registro4, registro5]:
         database.session.add(r)
-        database.session.flush()
 
     database.session.commit()
 
@@ -1438,7 +1429,6 @@ def asignar_cursos_a_categoria() -> None:
 
     for r in registro1, registro2, registro3, registro4, registro5:
         database.session.add(r)
-        database.session.flush()
 
     database.session.commit()
 
@@ -1529,7 +1519,6 @@ def crear_programa() -> None:
             programa=programa.codigo,
         )
         database.session.add(registro)
-        database.session.flush()
 
     database.session.commit()
 
@@ -1593,7 +1582,6 @@ def crear_recurso_descargable() -> None:
     )
     for i in recurso1, recurso2, recurso3, recurso4:
         database.session.add(i)
-        database.session.flush()
     database.session.commit()
 
     directorio_destino_archivo = path.join(DIRECTORIO_BASE_ARCHIVOS_USUARIO, "public", "files", "resources_files")
@@ -1873,7 +1861,6 @@ def crear_evaluaciones_training(secciones: list[CursoSeccion]) -> None:
     ]
     for opcion in opciones1:
         database.session.add(opcion)
-        database.session.flush()
 
     # Pregunta 2: Permisos de instructor
     pregunta2 = Question(
@@ -1904,7 +1891,6 @@ def crear_evaluaciones_training(secciones: list[CursoSeccion]) -> None:
     ]
     for opcion in opciones2:
         database.session.add(opcion)
-        database.session.flush()
 
     # Evaluación para modalidades de curso
     evaluacion_cursos = Evaluation(
@@ -1954,7 +1940,6 @@ def crear_evaluaciones_training(secciones: list[CursoSeccion]) -> None:
     ]
     for opcion in opciones3:
         database.session.add(opcion)
-        database.session.flush()
 
     database.session.flush()
 
