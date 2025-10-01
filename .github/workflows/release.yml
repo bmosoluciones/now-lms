@@ -56,7 +56,7 @@ jobs:
               env:
                   CI: True
                   SECRET_KEY: ASD123klj+aAddS
-                  DATABASE_URL: mysql://lmsctl:lmsctl@127.0.0.1/lmsctl
+                  DATABASE_URL: mysql+pymysql://lmsctl:lmsctl@127.0.0.1/lmsctl
                   ADMIN_USER: hello
                   ADMIN_PSWD: world
                   FLASK_APP: now_lms
