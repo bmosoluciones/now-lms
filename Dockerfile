@@ -24,10 +24,12 @@ RUN microdnf update -y --nodocs --best --refresh \
     && cd /app/now_lms/static && npm install --ignore-scripts \
     && rm -rf /root/.cache/pip && rm -rf /tmp \
     && microdnf remove -y --best python3.12-pip nodejs* npm \
-    && microdnf clean all \
-    && pybabel compile -d now_lms/translations
+    && microdnf clean all
 
 COPY . /app
+
+RUN pybabel compile -d /app/now_lms/translations
+
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 
 RUN chmod +x docker-entry-point.sh && chmod +x /usr/bin/tini
