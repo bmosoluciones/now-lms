@@ -112,7 +112,6 @@ class TestBlogNavbar:
             "cambridge",
             "classic",
             "corporative",
-            "finance",
             "golden",
             "harvard",
             "ocean",
