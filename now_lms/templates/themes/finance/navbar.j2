@@ -1,228 +1,120 @@
 {% macro navbar() -%}
-
-<nav class="navbar navbar-expand-md navbar-finance" aria-label="Finance navbar">
-    <div class="container-fluid">
-        <a href="{{ url_for('home.pagina_de_inicio') }}" class="d-flex align-items-center mb-2 mb-lg-0 text-decoration-none">
-            {% if logo_perzonalizado() %}
-            <img
-                height="20"
-                src="{{ url_for('static', filename='/files/public/images/logotipo.jpg') }}"
-                alt="NOW LMS"
-                class="d-inline-block align-top"
-                style="filter: brightness(0) invert(1)"
-            />
-            {% else %}
-            <img
-                height="20"
-                src="{{ url_for('static', filename='/icons/logo/logo_white_large.png') }}"
-                alt="NOW LMS"
-                class="d-inline-block align-top"
-            />
-            {% endif %}
+<nav class="navbar navbar-expand-lg finance-navbar sticky-top">
+    <div class="container">
+        <!-- Brand -->
+        <a class="navbar-brand finance-brand" href="{{ url_for('home.panel') }}">
+            <div class="d-flex align-items-center">
+                <div class="finance-logo me-2">
+                    <span class="finance-icon">₱</span>
+                </div>
+                <span class="finance-brand-text">{{ _('Academia Financiera') }}</span>
+            </div>
         </a>
+
+        <!-- Mobile toggle button -->
         <button
-            class="navbar-toggler"
+            class="navbar-toggler finance-toggler"
             type="button"
             data-bs-toggle="collapse"
-            data-bs-target="#navbarsNOWLMS"
-            aria-controls="navbarsNOWLMS"
+            data-bs-target="#navbarFinance"
+            aria-controls="navbarFinance"
             aria-expanded="false"
-            aria-label="Toggle navigation"
+            aria-label="{{ _('Alternar navegación') }}"
         >
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarsNOWLMS">
-            <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                {% if not current_user.is_authenticated %}
-                <li>
-                    <a href="{{ url_for('home.pagina_de_inicio') }}" class="nav-link px-2">🏛️ {{ _('Inicio') }}</a>
+        <!-- Navigation -->
+        <div class="collapse navbar-collapse" id="navbarFinance">
+            <!-- Main navigation tabs -->
+            <ul class="navbar-nav finance-nav-tabs me-auto">
+                <li class="nav-item">
+                    <a class="nav-link finance-tab" href="{{ url_for('home.panel') }}">
+                        <i class="bi bi-house-fill me-1"></i>{{ _('Inicio') }}
+                    </a>
                 </li>
-                {% else %}
-                <li>
-                    <a href="{{ url_for('home.panel') }}" class="nav-link px-2">🏛️ {{ _('Panel Federal') }}</a>
-                </li>
-                {% endif %}
-                <li>
-                    <a href="{{ url_for('course.lista_cursos', page=1) }}" class="nav-link px-2"
-                        >💰 {{ _('Cursos Financieros') }}</a
-                    >
+                <li class="nav-item">
+                    <a class="nav-link finance-tab" href="{{ url_for('course.lista_cursos', page=1) }}">
+                        <i class="bi bi-journal-bookmark-fill me-1"></i>{{ _('Cursos') }}
+                    </a>
                 </li>
                 {% if is_programs_enabled() %}
-                <li>
-                    <a href="{{ url_for('program.lista_programas', page=1) }}" class="nav-link px-2"
-                        >📊 {{ _('Programas') }}</a
-                    >
-                </li>
-                {% endif %} {% if is_resources_enabled() %}
-                <li>
-                    <a href="{{ url_for('resource.lista_de_recursos', page=1) }}" class="nav-link px-2"
-                        >💼 {{ _('Recursos') }}</a
-                    >
+                <li class="nav-item">
+                    <a class="nav-link finance-tab" href="{{ url_for('program.lista_programas', page=1) }}">
+                        <i class="bi bi-collection-fill me-1"></i>{{ _('Programas') }}
+                    </a>
                 </li>
                 {% endif %} {% if is_masterclass_enabled() %}
                 <li>
-                    <a href="{{ url_for('masterclass.list_public') }}" class="nav-link px-2"
-                        >🎯 {{ _('Clases Magistrales') }}</a
+                    <a href="{{ url_for('masterclass.list_public') }}" class="nav-link finance-tab"
+                        ><i class="bi bi-camera-video" aria-hidden="true"></i> {{ _("Clases Magistrales") }}</a
                     >
                 </li>
                 {% endif %} {% if is_blog_enabled() %}
-                <li>
-                    <a href="{{ url_for('blog.blog_index') }}" class="nav-link px-2">📊 Blog Financiero</a>
+                <li class="nav-item">
+                    <a class="nav-link finance-tab" href="{{ url_for('blog.blog_index') }}">
+                        <i class="bi bi-chat-quote-fill me-1"></i>{{ _('Blog') }}
+                    </a>
                 </li>
-                {% endif %} {% if current_user.is_authenticated %} {% if current_user.tipo == "moderator" or current_user.tipo
-                == "instructor" or current_user.tipo == "admin" %}
+                {% endif %} {% if current_user.is_authenticated %}
                 <li>
-                    <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link px-2"
-                        >🏦 {{ _('Moderación') }}</a
+                    <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link finance-tab"
+                        ><i class="bi bi-card-checklist" aria-hidden="true"></i> {{ _('Moderación') }}</a
                     >
                 </li>
-                {% endif %} {% if current_user.tipo == "instructor" or current_user.tipo == "admin" %}
+                <li class="nav-item">
+                    <a class="nav-link finance-tab" href="{{ url_for('instructor_profile.pagina_instructor') }}">
+                        <i class="bi bi-people-fill me-1"></i>{{ _('Instructores') }}
+                    </a>
+                </li>
                 <li>
-                    <a href="{{ url_for('instructor_profile.pagina_instructor') }}" class="nav-link px-2"
-                        >📈 {{ _('Docente') }}</a
+                    <a href="{{ url_for('admin_profile.pagina_admin') }}" class="nav-link finance-tab"
+                        ><i class="bi bi-sliders" aria-hidden="true"></i> {{ _('Administración') }}</a
                     >
                 </li>
-                {% endif %} {% if current_user.tipo == "admin" %}
-                <li>
-                    <a href="{{ url_for('admin_profile.pagina_admin') }}" class="nav-link px-2"
-                        >💵 {{ _('Administración') }}</a
-                    >
-                </li>
-                {% endif %} {% endif %}
-            </ul>
-            <div class="text-end">
-                {% if not current_user.is_authenticated %}
-                <a class="btn btn-finance-primary me-2" href="{{ url_for('user.inicio_sesion') }}" role="button">
-                    💳 {{ _('Iniciar Sesión') }}
-                </a>
-                <a class="btn btn-finance-secondary me-2" href="{{ url_for('user.crear_cuenta') }}" role="button">
-                    🏛️ {{ _('Crear Cuenta') }}
-                </a>
-                {% else %}
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a
-                            class="text-decoration-none"
-                            href="#"
-                            role="button"
-                            data-bs-toggle="dropdown"
-                            data-bs-display="static"
-                            aria-expanded="false"
-                            style="color: white"
-                            >{{ _('Bienvenido') }}: {{ current_user.nombre }} {{ current_user.apellido }}
-                            <i class="bi bi-list" aria-hidden="true"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-lg-end">
-                            <li>
-                                <a class="dropdown-item" href="{{ url_for('user_profile.perfil') }}">
-                                    <i class="bi bi-person-circle" aria-hidden="true"></i> {{ _('Perfil de Usuario') }}</a
-                                >
-                            </li>
-                            <li><a class="dropdown-item" href="#"> </a></li>
-                            <li>
-                                <hr class="dropdown-divider" />
-                            </li>
-                            <li>
-                                <a
-                                    class="dropdown-item text-decoration-none"
-                                    href="#"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#exampleModal"
-                                >
-                                    <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Información') }}
-                                </a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider" />
-                            </li>
-                            <li>
-                                <a class="dropdown-item text-decoration-none" href="{{ url_for('user.cerrar_sesion') }}">
-                                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i> {{ _('Cerrar Sesión') }}
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
                 {% endif %}
-            </div>
+            </ul>
+
+            <!-- User actions -->
+            <ul class="navbar-nav ms-auto finance-actions">
+                {% if current_user.is_authenticated %}
+                <!-- User menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link finance-user-btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle me-1"></i>
+                        <span class="d-none d-md-inline">{{ current_user.nombre }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end finance-dropdown">
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('home.panel') }}">
+                                <i class="bi bi-speedometer2 me-2"></i>{{ _('Mi Panel') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('user_profile.perfil') }}">
+                                <i class="bi bi-person me-2"></i>{{ _('Mi Perfil') }}
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('user.cerrar_sesion') }}">
+                                <i class="bi bi-box-arrow-right me-2"></i>{{ _('Cerrar Sesión') }}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item me-2">
+                    <a class="btn finance-btn-outline" href="{{ url_for('user.inicio_sesion') }}">
+                        {{ _('Iniciar Sesión') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn finance-btn-primary" href="{{ url_for('user.crear_cuenta') }}"> {{ _('Registrarse') }} </a>
+                </li>
+                {% endif %}
+            </ul>
         </div>
     </div>
 </nav>
-
-{% if current_user.is_authenticated %}
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">
-                    <i class="bi bi-cash-coin" aria-hidden="true"></i> NOW - Learning Management System
-                </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="text-center mb-3">
-                    <img
-                        src="{{ url_for('static', filename='/icons/logo/logo_large.png') }}"
-                        alt="NOW Learning Management System"
-                        style="max-width: 100%; height: auto"
-                    />
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong><i class="bi bi-tag-fill text-primary"></i> {{ _('Versión') }}:</strong> {{ version }}
-                    </div>
-                    <div class="col-md-6">
-                        <strong><i class="bi bi-code-slash text-success"></i> Python:</strong> {{ pyversion }}
-                    </div>
-                </div>
-                <div class="row mt-2">
-                    <div class="col-md-12">
-                        <strong><i class="bi bi-star-fill text-warning"></i> {{ _('Nombre de Lanzamiento') }}:</strong> {{
-                        code_name }}
-                    </div>
-                </div>
-                {% if current_user.tipo == "admin" %}
-                <hr class="my-3" />
-                <div class="row">
-                    <div class="col-md-6">
-                        <strong><i class="bi bi-database-fill text-warning"></i> Database:</strong> {{ info["DBENGINE"] }}
-                    </div>
-                    <div class="col-md-6">
-                        <strong><i class="bi bi-lightning-fill text-info"></i> Cache:</strong> {{ info["CACHE"] }}
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-            <div class="modal-footer">
-                <div class="d-flex justify-content-between w-100">
-                    <div>
-                        <img
-                            width="75"
-                            height="20"
-                            src="{{ url_for('static', filename='/img/bmo-logo.png') }}"
-                            alt="BMO Soluciones"
-                        />
-                    </div>
-                    <div>
-                        <a
-                            href="https://now-lms-manual.readthedocs.io/en/latest/"
-                            class="btn btn-finance-primary btn-sm"
-                            data-dismiss="modal"
-                            ><i class="bi bi-book" aria-hidden="true"></i> {{ _('Manual de Usuario') }}</a
-                        >
-                        {% if current_user.tipo == "admin" %}
-                        <a
-                            href="https://bmosoluciones.github.io/now-lms/"
-                            class="btn btn-finance-secondary btn-sm"
-                            data-dismiss="modal"
-                            ><i class="bi bi-tools" aria-hidden="true"></i> {{ _('Manual de Administración') }}</a
-                        >
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %} {% endmacro %}
+{% endmacro %}

@@ -22,7 +22,6 @@ flask-wtf
 gunicorn
 markdown
 memcache
-mysql-connector-python
 pg8000
 pyjwt
 PyMySQL
