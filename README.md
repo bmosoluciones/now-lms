@@ -82,6 +82,7 @@ production use, please check the [user manual](https://bmosoluciones.github.io/n
 NOW - LMS is designed to be simple yet powerful. Here are its key features:
 
 - **Clean codebase**: Python and HTML5.
+- **RAM-aware worker configuration**: Automatically optimizes Gunicorn workers based on available system memory.
 - **Compatible with multiple databases**: SQLite, PostgreSQL, and MySQL.
 - **Complete course creation functionality**, allowing full curriculum setup.
 - **Courses are organized into sections**, which group resources in a logical manner.

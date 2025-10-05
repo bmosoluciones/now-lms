@@ -218,7 +218,9 @@ You can use the following options to configure NOW-LMS:
 
 - **LMS_PORT** (<span style="color:green">optional</span>): Port number for the LMS server (when using lmsctl).
 - **PORT** (<span style="color:green">optional</span>): Alternative port configuration (used in cloud environments like Heroku).
-- **LMS_WORKERS** (<span style="color:green">optional</span>): Number of worker processes for Gunicorn (when using lmsctl). Defaults to `(cpu_count * 2) + 1` in production.
+- **NOW_LMS_WORKERS** / **WORKERS** (<span style="color:green">optional</span>): Number of worker processes for Gunicorn (when using lmsctl). If not set, automatically calculated based on available RAM and CPU cores. The calculation uses the formula: `min((cpu_count * 2) + 1, available_ram_mb / worker_memory_mb)`, adjusted by thread count if threads > 1. See [RAM Optimization Guide](blog/posts/ram-optimization.md) for detailed examples.
+- **NOW_LMS_THREADS** / **THREADS** (<span style="color:green">optional</span>): Number of threads per Gunicorn worker. Defaults to 1. When threads > 1, the worker count is automatically reduced to compensate for memory usage (workers = optimal_workers / threads). Uses `gthread` worker class when threads > 1. See [RAM Optimization Guide](blog/posts/ram-optimization.md) for best practices.
+- **NOW_LMS_WORKER_MEMORY_MB** / **WORKER_MEMORY_MB** (<span style="color:green">optional</span>): Estimated memory usage per worker in MB (default: 200). Used in automatic worker calculation to ensure system doesn't run out of RAM. Measure actual usage and adjust accordingly. See [RAM Optimization Guide](blog/posts/ram-optimization.md) for measurement techniques.
 
 ### Development and Debugging
 

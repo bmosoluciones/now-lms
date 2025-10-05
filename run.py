@@ -27,6 +27,7 @@ from loguru import logger
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms import lms_app, init_app
+from now_lms.worker_config import get_worker_config_from_env
 
 PORT = environ.get("PORT") or 8080
 
@@ -49,15 +50,20 @@ if init_app():
             def load(self):
                 return self.application
 
+        # Get optimal worker and thread configuration
+        workers, threads = get_worker_config_from_env()
+        
         options = {
             "bind": f"0.0.0.0:{PORT}",
-            "workers": 4,
-            "worker_class": "sync",
+            "workers": workers,
+            "threads": threads,
+            "worker_class": "gthread" if threads > 1 else "sync",
             "timeout": 120,
             "accesslog": "-",
             "errorlog": "-",
         }
 
+        logger.info(f"Starting with {workers} workers and {threads} threads per worker")
         StandaloneApplication(lms_app, options).run()
     except ImportError:
         logger.error("Gunicorn no está instalado. Por favor instálalo con: pip install gunicorn")
