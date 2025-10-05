@@ -232,7 +232,7 @@ def serve():
         if environ.get("LMS_WORKERS"):
             WORKERS = environ.get("LMS_WORKERS")
         else:
-            WORKERS = (cpu_count() * 2) + 1
+            WORKERS = (cpu_count() * 1) + 1
 
     # On Windows, fallback to Flask development server
     if platform.system() == "Windows":
