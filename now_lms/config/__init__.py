@@ -232,7 +232,7 @@ if DATABASE_URL_BASE := CONFIGURACION.get("SQLALCHEMY_DATABASE_URI"):
             case "postgres":
                 DATABASE_URL_CORREGIDA = "postgresql+pg8000" + DATABASE_URL_BASE[8:]  # type: ignore[index]
             case "mysql":
-                DATABASE_URL_CORREGIDA = "mysql+mysqlconnector" + DATABASE_URL_BASE[5:]  # type: ignore[index]
+                DATABASE_URL_CORREGIDA = "mysql+pymysql" + DATABASE_URL_BASE[5:]  # type: ignore[index]
             case "mariadb":  # Not tested, but should work.
                 DATABASE_URL_CORREGIDA = "mariadb+mariadbconnector" + DATABASE_URL_BASE[7:]  # type: ignore[index]
             case _:

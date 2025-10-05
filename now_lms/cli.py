@@ -19,7 +19,7 @@ from __future__ import annotations
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
-from os import cpu_count, environ
+from os import environ
 from pathlib import Path
 
 # ---------------------------------------------------------------------------------------
@@ -218,6 +218,8 @@ def serve():
     import platform
     import subprocess
     import sys
+    
+    from now_lms.worker_config import get_worker_config_from_env
 
     if environ.get("LMS_PORT"):
         PORT = environ.get("LMS_PORT")
@@ -228,11 +230,10 @@ def serve():
 
     if DESARROLLO:
         WORKERS = 1
+        THREADS = 1
     else:
-        if environ.get("LMS_WORKERS"):
-            WORKERS = environ.get("LMS_WORKERS")
-        else:
-            WORKERS = (cpu_count() * 1) + 1
+        # Get optimal worker and thread configuration
+        WORKERS, THREADS = get_worker_config_from_env()
 
     # On Windows, fallback to Flask development server
     if platform.system() == "Windows":
@@ -284,7 +285,8 @@ def serve():
             options = {
                 "bind": f"0.0.0.0:{PORT}",
                 "workers": WORKERS,
-                "worker_class": "sync",
+                "threads": THREADS,
+                "worker_class": "gthread" if THREADS > 1 else "sync",
                 "timeout": 120,
                 "keepalive": 5,
                 "accesslog": "-",
@@ -292,7 +294,7 @@ def serve():
                 "loglevel": "info",
             }
 
-            log.info(f"Starting Gunicorn WSGI server on port {PORT} with {WORKERS} workers.")
+            log.info(f"Starting Gunicorn WSGI server on port {PORT} with {WORKERS} workers and {THREADS} threads per worker.")
 
             StandaloneApplication(lms_app, options).run()
         except ImportError:
