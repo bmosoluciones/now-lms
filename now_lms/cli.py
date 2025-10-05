@@ -216,6 +216,8 @@ def routes():
 def serve():
     """Serve NOW LMS with the default WSGI server."""
     import platform
+    import subprocess
+    import sys
 
     if environ.get("LMS_PORT"):
         PORT = environ.get("LMS_PORT")
@@ -237,8 +239,27 @@ def serve():
         log.warning("Running on Windows - using Flask development server instead of Gunicorn.")
         log.warning("For production deployments, use Linux or containers.")
         log.info(f"Starting Flask development server on port {PORT}")
-        with lms_app.app_context():
-            lms_app.run(host="0.0.0.0", port=int(PORT), debug=DESARROLLO)
+
+        # Use subprocess to spawn Flask development server to avoid CLI context blocking
+        cmd_ = [
+            sys.executable,
+            "-m",
+            "flask",
+            "run",
+            "--host=0.0.0.0",
+            f"--port={PORT}",
+        ]
+        if DESARROLLO:
+            cmd_.append("--debug")
+
+        environ["FLASK_APP"] = "now_lms"
+        try:
+            subprocess.run(cmd_, check=True)
+        except KeyboardInterrupt:
+            log.info("Server stopped by user.")
+        except subprocess.CalledProcessError as e:
+            log.error(f"Failed to start Flask development server: {e}")
+            raise
     else:
         # Use Gunicorn on Linux/Unix systems
         try:
@@ -277,8 +298,27 @@ def serve():
         except ImportError:
             log.error("Gunicorn is not installed. Install it with: pip install gunicorn")
             log.info("Falling back to Flask development server.")
-            with lms_app.app_context():
-                lms_app.run(host="0.0.0.0", port=int(PORT), debug=DESARROLLO)
+
+            # Use subprocess to spawn Flask development server to avoid CLI context blocking
+            cmd_ = [
+                sys.executable,
+                "-m",
+                "flask",
+                "run",
+                "--host=0.0.0.0",
+                f"--port={PORT}",
+            ]
+            if DESARROLLO:
+                cmd_.append("--debug")
+
+            environ["FLASK_APP"] = "now_lms"
+            try:
+                subprocess.run(cmd_, check=True)
+            except KeyboardInterrupt:
+                log.info("Server stopped by user.")
+            except subprocess.CalledProcessError as e:
+                log.error(f"Failed to start Flask development server: {e}")
+                raise
 
 
 @lms_app.cli.group()

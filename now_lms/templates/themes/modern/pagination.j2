@@ -1,0 +1,70 @@
+{% macro paginate(pagination, endpoint) -%} {% if pagination.pages > 1 %}
+<nav aria-label="{{ _('Navegación de páginas') }}" class="finance-pagination-nav">
+    <ul class="pagination finance-pagination justify-content-center">
+        <!-- Previous page -->
+        {% if pagination.has_prev %}
+        <li class="page-item">
+            <a
+                class="page-link finance-page-link"
+                href="{{ url_for(endpoint, page=pagination.prev_num, **request.view_args) }}"
+            >
+                <i class="bi bi-chevron-left"></i>
+                <span class="d-none d-sm-inline ms-1">{{ _('Anterior') }}</span>
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link finance-page-link">
+                <i class="bi bi-chevron-left"></i>
+                <span class="d-none d-sm-inline ms-1">{{ _('Anterior') }}</span>
+            </span>
+        </li>
+        {% endif %}
+
+        <!-- Page numbers -->
+        {% for page in pagination.iter_pages() %} {% if page %} {% if page != pagination.page %}
+        <li class="page-item">
+            <a class="page-link finance-page-link" href="{{ url_for(endpoint, page=page, **request.view_args) }}">
+                {{ page }}
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item active">
+            <span class="page-link finance-page-link finance-page-active"> {{ page }} </span>
+        </li>
+        {% endif %} {% else %}
+        <li class="page-item disabled">
+            <span class="page-link finance-page-link">
+                <i class="bi bi-three-dots"></i>
+            </span>
+        </li>
+        {% endif %} {% endfor %}
+
+        <!-- Next page -->
+        {% if pagination.has_next %}
+        <li class="page-item">
+            <a
+                class="page-link finance-page-link"
+                href="{{ url_for(endpoint, page=pagination.next_num, **request.view_args) }}"
+            >
+                <span class="d-none d-sm-inline me-1">{{ _('Siguiente') }}</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link finance-page-link">
+                <span class="d-none d-sm-inline me-1">{{ _('Siguiente') }}</span>
+                <i class="bi bi-chevron-right"></i>
+            </span>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+
+<!-- Page info -->
+<div class="finance-page-info text-center text-muted small">
+    {{ _('Página %(current)d de %(total)d (%(count)d elementos total)', current=pagination.page, total=pagination.pages,
+    count=pagination.total) }}
+</div>
+{% endif %} {% endmacro %}

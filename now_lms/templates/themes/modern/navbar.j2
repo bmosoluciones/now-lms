@@ -1,0 +1,120 @@
+{% macro navbar() -%}
+<nav class="navbar navbar-expand-lg finance-navbar sticky-top">
+    <div class="container">
+        <!-- Brand -->
+        <a class="navbar-brand finance-brand" href="{{ url_for('home.panel') }}">
+            <div class="d-flex align-items-center">
+                <div class="finance-logo me-2">
+                    <span class="finance-icon">₱</span>
+                </div>
+                <span class="finance-brand-text">{{ _('Academia Financiera') }}</span>
+            </div>
+        </a>
+
+        <!-- Mobile toggle button -->
+        <button
+            class="navbar-toggler finance-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarFinance"
+            aria-controls="navbarFinance"
+            aria-expanded="false"
+            aria-label="{{ _('Alternar navegación') }}"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navigation -->
+        <div class="collapse navbar-collapse" id="navbarFinance">
+            <!-- Main navigation tabs -->
+            <ul class="navbar-nav finance-nav-tabs me-auto">
+                <li class="nav-item">
+                    <a class="nav-link finance-tab" href="{{ url_for('home.panel') }}">
+                        <i class="bi bi-house-fill me-1"></i>{{ _('Inicio') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link finance-tab" href="{{ url_for('course.lista_cursos', page=1) }}">
+                        <i class="bi bi-journal-bookmark-fill me-1"></i>{{ _('Cursos') }}
+                    </a>
+                </li>
+                {% if is_programs_enabled() %}
+                <li class="nav-item">
+                    <a class="nav-link finance-tab" href="{{ url_for('program.lista_programas', page=1) }}">
+                        <i class="bi bi-collection-fill me-1"></i>{{ _('Programas') }}
+                    </a>
+                </li>
+                {% endif %} {% if is_masterclass_enabled() %}
+                <li>
+                    <a href="{{ url_for('masterclass.list_public') }}" class="nav-link finance-tab"
+                        ><i class="bi bi-camera-video" aria-hidden="true"></i> {{ _("Clases Magistrales") }}</a
+                    >
+                </li>
+                {% endif %} {% if is_blog_enabled() %}
+                <li class="nav-item">
+                    <a class="nav-link finance-tab" href="{{ url_for('blog.blog_index') }}">
+                        <i class="bi bi-chat-quote-fill me-1"></i>{{ _('Blog') }}
+                    </a>
+                </li>
+                {% endif %} {% if current_user.is_authenticated %}
+                <li>
+                    <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link finance-tab"
+                        ><i class="bi bi-card-checklist" aria-hidden="true"></i> {{ _('Moderación') }}</a
+                    >
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link finance-tab" href="{{ url_for('instructor_profile.pagina_instructor') }}">
+                        <i class="bi bi-people-fill me-1"></i>{{ _('Instructores') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('admin_profile.pagina_admin') }}" class="nav-link finance-tab"
+                        ><i class="bi bi-sliders" aria-hidden="true"></i> {{ _('Administración') }}</a
+                    >
+                </li>
+                {% endif %}
+            </ul>
+
+            <!-- User actions -->
+            <ul class="navbar-nav ms-auto finance-actions">
+                {% if current_user.is_authenticated %}
+                <!-- User menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link finance-user-btn dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle me-1"></i>
+                        <span class="d-none d-md-inline">{{ current_user.nombre }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end finance-dropdown">
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('home.panel') }}">
+                                <i class="bi bi-speedometer2 me-2"></i>{{ _('Mi Panel') }}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('user_profile.perfil') }}">
+                                <i class="bi bi-person me-2"></i>{{ _('Mi Perfil') }}
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('user.cerrar_sesion') }}">
+                                <i class="bi bi-box-arrow-right me-2"></i>{{ _('Cerrar Sesión') }}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item me-2">
+                    <a class="btn finance-btn-outline" href="{{ url_for('user.inicio_sesion') }}">
+                        {{ _('Iniciar Sesión') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn finance-btn-primary" href="{{ url_for('user.crear_cuenta') }}"> {{ _('Registrarse') }} </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endmacro %}

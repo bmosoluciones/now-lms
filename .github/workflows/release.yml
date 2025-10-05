@@ -51,7 +51,7 @@ jobs:
                   sudo -u postgres psql -c "ALTER ROLE lmsctl2 CREATEDB;"
                   sudo -u postgres psql -c "GRANT USAGE ON SCHEMA public TO lmsctl2;"
                   sudo -u postgres psql -c "GRANT CREATE ON SCHEMA public TO lmsctl2;"
-                  pytest  -v -v  --cov=now_lms --cov-append tests/test_multipledb.py                  
+                  pytest  -v -v  --cov=now_lms --cov-append tests/test_multipledb.py
             - name: Test with MySQL
               env:
                   CI: True
