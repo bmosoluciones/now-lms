@@ -57,10 +57,8 @@ REVISION = ""
 
 # <--------------------------------------------------------------------------> #
 # Release string preprocessing
-PRE_RELEASE_PART = (PRERELEASE if PRERELEASE != "" else
-                    "") + (REVISION if REVISION != "" else "")
-POST_RELEASE_PART = (POST if POST != "" else "") + (REVISION
-                                                    if REVISION != "" else "")
+PRE_RELEASE_PART = (PRERELEASE if PRERELEASE != "" else "") + (REVISION if REVISION != "" else "")
+POST_RELEASE_PART = (POST if POST != "" else "") + (REVISION if REVISION != "" else "")
 
 # <--------------------------------------------------------------------------> #
 # Release string

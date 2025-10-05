@@ -51,14 +51,33 @@ NOW LMS comes with many built-in themes:
 ### Professional Themes
 
 - **corporative**: Professional blue theme for corporate environments
-- **finance**: Federal green theme inspired by financial institutions
 - **classic**: Minimalist white/gray design with clean typography
-- **classic**: Excel inspired profesional theme
+- **excel**: Modern Excel-inspired theme with green professional color scheme (#217346)
+    - Tab-style navigation inspired by Excel
+    - Clean design for educational content
+    - Professional typography for learning
+
+### Contemporary Themes
+
+- **modern**: Contemporary purple-pink gradient theme with bold, vibrant design
+    - Vibrant purple (#7c3aed) and hot pink (#ec4899) color scheme
+    - Modern gradient backgrounds and smooth animations
+    - Inter font family for crisp, contemporary look
+    - Perfect for tech-focused or creative platforms
+
+- **invest**: Professional finance-inspired theme with green palette
+    - Forest green (#2E7D32) representing growth and stability
+    - Montserrat and Roboto typography
+    - Financial icons and professional aesthetic
+    - Custom home page with investment messaging
 
 ### Color Variations
 
 - **amber**: A warm, autumn-inspired theme
-- **golden**: A gold-based color theme with English teaching inspiring
+- **golden**: Warm yellow and orange theme with golden accents
+    - Golden sun (#F0B744) and bright orange (#F49640) colors
+    - Energetic and optimistic visual design
+    - High contrast for readability
 - **ocean**: A blue-based theme
 - **sakura**: A cherry blossom-inspired theme
 
@@ -681,6 +700,67 @@ Consider creating base themes and extending them for variations, though this req
 ### Integration with Frontend Frameworks
 
 For advanced theming, you can integrate with modern frontend build tools and frameworks while maintaining compatibility with the Jinja2 template system.
+
+## Common URL Endpoints
+
+When creating custom themes, use these correct endpoint names with `url_for()`:
+
+### User and Authentication Endpoints
+
+- **Login**: `url_for('user.inicio_sesion')` - User login page
+- **Logout**: `url_for('user.cerrar_sesion')` - Logout action
+- **Create Account**: `url_for('user.crear_cuenta')` - New user registration
+
+### User Profile Endpoints
+
+- **User Profile**: `url_for('user_profile.perfil')` - View/edit user profile
+
+### Course Endpoints
+
+- **Course List**: `url_for('course.lista_cursos')` - Browse all courses
+    - Accepts optional query parameters: `page`, `nivel`, `tag`, `category`
+    - Example: `url_for('course.lista_cursos', page=1)`
+- **View Course**: `url_for('course.curso', course_code=code)` - View specific course
+
+### Dashboard/Panel Endpoints
+
+- **Main Panel**: `url_for('home.panel')` - User dashboard after login
+- **Admin Panel**: `url_for('admin_profile.pagina_admin')` - Administrator dashboard
+- **Instructor Panel**: `url_for('instructor_profile.pagina_instructor')` - Instructor dashboard
+- **Moderator Panel**: `url_for('moderator_profile.pagina_moderador')` - Moderator dashboard
+
+### Home Endpoints
+
+- **Home Page**: `url_for('home.pagina_de_inicio')` - Application home page
+
+### Program and Resource Endpoints
+
+- **Program List**: `url_for('program.lista_programas', page=1)` - Browse programs
+- **Resource List**: `url_for('resource.lista_de_recursos', page=1)` - Browse resources
+
+### Blog Endpoints
+
+- **Blog Index**: `url_for('blog.blog_index')` - Main blog page
+
+### Masterclass Endpoints
+
+- **Public Masterclasses**: `url_for('masterclass.list_public')` - List public masterclasses
+
+### Example Usage in Templates
+
+```jinja2
+<!-- Correct way to link to course list -->
+<a href="{{ url_for('course.lista_cursos') }}">View Courses</a>
+
+<!-- With query parameter -->
+<a href="{{ url_for('course.lista_cursos', page=1) }}">View Courses</a>
+
+<!-- Link to user profile -->
+<a href="{{ url_for('user_profile.perfil') }}">My Profile</a>
+
+<!-- Link to logout -->
+<a href="{{ url_for('user.cerrar_sesion') }}">Logout</a>
+```
 
 ## Support
 
