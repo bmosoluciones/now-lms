@@ -1,0 +1,21 @@
+{% macro headertags() -%}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="{{ _('Academia Financiera en Línea - Cursos que transforman tus finanzas') }}" />
+<meta name="author" content="BMO Moreno Berroteran Ortiz Soluciones Sociedad Anonima" />
+
+<!-- Código local -->
+<link href="{{ url_for('static', filename='css/cacaoaccounting.css') }}" rel="stylesheet" />
+
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.css') }}" />
+<script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.bundle.js') }}"></script>
+
+<!-- Bootstrap Font -->
+<link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap-icons/font/bootstrap-icons.css') }}" />
+
+<!-- Finance Theme Custom Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+{% endmacro %}

@@ -1,0 +1,454 @@
+    /* Money Theme Custom Variables - Green Finance Colors */
+    :root {
+        --money-forest-green: #2E7D32;      /* Verde Bosque - crecimiento, estabilidad, confianza */
+        --money-emerald: #43A047;           /* Esmeralda - prosperidad, éxito */
+        --money-dark-green: #1B5E20;        /* Verde Oscuro - seguridad, profesionalismo */
+        --money-mint: #A5D6A7;              /* Menta - frescura, accesibilidad */
+        
+        /* Derived colors for better UX */
+        --money-primary: #2E7D32;
+        --money-secondary: #43A047;
+        --money-accent: #66BB6A;
+        --money-light: #F1F8F4;
+        --money-background: #FAFFFE;
+        --money-surface: #FFFFFF;
+        --money-border: #C8E6C9;
+        --money-text: #1B5E20;
+        --money-text-secondary: #424242;
+        --money-pale-green: #E8F5E9;
+
+        --money-success: #4CAF50;
+        --money-warning: #FFA726;
+        --money-danger: #E53935;
+        --money-info: #29B6F6;
+    }
+
+    .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+    }
+
+    @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+            font-size: 3.5rem;
+        }
+    }
+
+    /* Money Theme Styles */
+    body {
+        background: var(--money-background);
+        font-family: "Roboto", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--money-text);
+    }
+
+    /* Custom Money Navbar Styling */
+    .navbar-money {
+        background: linear-gradient(90deg, var(--money-primary) 0%, var(--money-secondary) 100%) !important;
+        box-shadow: 0 4px 8px rgba(46, 125, 50, 0.2);
+        position: relative;
+        z-index: 1030;
+        border-bottom: 2px solid var(--money-border);
+    }
+
+    .navbar-money .navbar-brand,
+    .navbar-money .nav-link {
+        color: white !important;
+        font-weight: 600;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .navbar-money .nav-link:hover {
+        color: var(--money-mint) !important;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        transform: translateY(-1px);
+    }
+
+    .navbar-money .navbar-toggler {
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .navbar-money .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    /* Custom Button Styles */
+    .btn-money-primary {
+        background: linear-gradient(135deg, var(--money-primary) 0%, var(--money-secondary) 100%);
+        border: none;
+        color: white;
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-money-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4);
+        color: white;
+    }
+
+    .btn-money-primary:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+    }
+
+    .btn-money-secondary {
+        background: transparent;
+        border: 2px solid var(--money-primary);
+        color: var(--money-primary);
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-money-secondary:hover {
+        background: var(--money-primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(46, 125, 50, 0.3);
+    }
+
+    /* Card Styles */
+    .card-money {
+        background: var(--money-surface);
+        border: 1px solid var(--money-border);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(46, 125, 50, 0.1);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .card-money:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 30px rgba(46, 125, 50, 0.2);
+    }
+
+    .card-money .card-header {
+        background: linear-gradient(135deg, var(--money-light) 0%, var(--money-pale-green) 100%);
+        border-bottom: 1px solid var(--money-border);
+        color: var(--money-text);
+        font-weight: 600;
+    }
+
+    /* Hero Section Styles */
+    .hero-section {
+        position: relative;
+        background: linear-gradient(135deg, var(--money-primary) 0%, var(--money-secondary) 100%);
+        overflow: hidden;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.15) 20%, transparent 40%),
+            radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 15%, transparent 35%);
+        pointer-events: none;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-title {
+        font-family: "Montserrat", "Roboto", sans-serif;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .hero-sub {
+        color: white;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        font-size: 1.2rem;
+        line-height: 1.6;
+    }
+
+    /* Character Animation */
+    .character {
+        width: 200px;
+        height: 200px;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+
+    /* Feature Cards */
+    .feature-card {
+        background: var(--money-surface);
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 8px 25px rgba(46, 125, 50, 0.1);
+        border-top: 4px solid var(--money-primary);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--money-primary) 0%, var(--money-secondary) 100%);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(46, 125, 50, 0.2);
+    }
+
+    .feature-icon {
+        background: linear-gradient(135deg, var(--money-primary) 0%, var(--money-secondary) 100%);
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+        color: white;
+    }
+
+    /* Form Styles */
+    .form-control:focus {
+        border-color: var(--money-primary);
+        box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+    }
+
+    .form-select:focus {
+        border-color: var(--money-primary);
+        box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+    }
+
+    /* Alert Styles */
+    .alert-money {
+        background-color: var(--money-pale-green);
+        border-color: var(--money-border);
+        color: var(--money-text);
+    }
+
+    /* Badge Styles */
+    .badge-money {
+        background-color: var(--money-primary);
+        color: white;
+        font-weight: 600;
+    }
+
+    /* Progress Bar */
+    .progress-money .progress-bar {
+        background: linear-gradient(90deg, var(--money-primary) 0%, var(--money-secondary) 100%);
+    }
+
+    /* Table Styles */
+    .table-money {
+        color: var(--money-text);
+    }
+
+    .table-money th {
+        background-color: var(--money-light);
+        border-color: var(--money-border);
+        color: var(--money-text);
+    }
+
+    .table-money td {
+        border-color: var(--money-border);
+    }
+
+    .table-money tbody tr:hover {
+        background-color: var(--money-pale-green);
+    }
+
+    /* Pagination */
+    .pagination-money .page-link {
+        color: var(--money-primary);
+        border-color: var(--money-border);
+    }
+
+    .pagination-money .page-link:hover {
+        color: white;
+        background-color: var(--money-primary);
+        border-color: var(--money-primary);
+    }
+
+    .pagination-money .page-item.active .page-link {
+        background-color: var(--money-primary);
+        border-color: var(--money-primary);
+        color: white;
+    }
+
+    /* Sidebar */
+    .sidebar-money {
+        background: linear-gradient(180deg, var(--money-light) 0%, var(--money-pale-green) 100%);
+        border-right: 1px solid var(--money-border);
+    }
+
+    .sidebar-money .nav-link {
+        color: var(--money-text);
+        transition: all 0.2s ease;
+    }
+
+    .sidebar-money .nav-link:hover {
+        background-color: var(--money-primary);
+        color: white;
+        border-radius: 6px;
+    }
+
+    .sidebar-money .nav-link.active {
+        background-color: var(--money-primary);
+        color: white;
+        border-radius: 6px;
+        font-weight: 600;
+    }
+
+    /* Footer */
+    .footer-money {
+        background: linear-gradient(135deg, var(--money-text-secondary) 0%, var(--money-dark-green) 100%);
+        color: white;
+    }
+
+    .footer-money a {
+        color: var(--money-mint);
+        transition: color 0.2s ease;
+    }
+
+    .footer-money a:hover {
+        color: var(--money-accent);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-sub {
+            font-size: 1.1rem;
+        }
+        
+        .btn-money-primary,
+        .btn-money-secondary {
+            padding: 0.6rem 1.5rem;
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Custom animations for enhanced UX */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translate3d(0, 40px, 0);
+        }
+        to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    /* Loading spinner for money theme */
+    .spinner-money {
+        border: 3px solid var(--money-light);
+        border-top: 3px solid var(--money-primary);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Navbar Button Overrides for Better Contrast */
+    .navbar-money .btn-dark {
+        background-color: var(--money-dark-green) !important;
+        border-color: var(--money-dark-green) !important;
+        color: white !important;
+        transition: all 0.3s ease;
+    }
+
+    .navbar-money .btn-dark:hover {
+        background-color: #0d3d17 !important;
+        border-color: #0d3d17 !important;
+        color: white !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .navbar-money .btn-light,
+    .navbar-money .btn-outline-light {
+        background-color: white !important;
+        border-color: white !important;
+        color: var(--money-primary) !important;
+        transition: all 0.3s ease;
+    }
+
+    .navbar-money .btn-light:hover,
+    .navbar-money .btn-outline-light:hover {
+        background-color: var(--money-mint) !important;
+        border-color: var(--money-mint) !important;
+        color: var(--money-dark-green) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Money icon styles */
+    .money-icon {
+        color: var(--money-primary);
+        font-size: 2rem;
+    }
+
+    /* Price tag styles */
+    .price-tag {
+        background: linear-gradient(135deg, var(--money-primary) 0%, var(--money-secondary) 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 700;
+        display: inline-block;
+        box-shadow: 0 4px 10px rgba(46, 125, 50, 0.2);
+    }
+
+    /* Financial card styles */
+    .financial-card {
+        background: var(--money-surface);
+        border-left: 4px solid var(--money-primary);
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(46, 125, 50, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .financial-card:hover {
+        border-left-width: 6px;
+        box-shadow: 0 4px 20px rgba(46, 125, 50, 0.15);
+    }

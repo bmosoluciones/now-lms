@@ -1,0 +1,113 @@
+{% macro navbar() -%}
+<nav class="navbar navbar-expand-md navbar-money" aria-label="Money navbar">
+    <div class="container-fluid">
+        <a href="{{ url_for('home.pagina_de_inicio') }}" class="d-flex align-items-center mb-2 mb-lg-0 text-decoration-none">
+            {% if logo_perzonalizado() %}
+            <img
+                height="20"
+                src="{{ url_for('static', filename='/files/public/images/logotipo.jpg') }}"
+                alt="NOW LMS"
+                class="d-inline-block align-top"
+            />
+            {% else %}
+            <img
+                height="20"
+                src="{{ url_for('static', filename='/icons/logo/logo_horizontal_negro.svg') }}"
+                alt="NOW LMS"
+                class="d-inline-block align-top"
+            />
+            {% endif %}
+        </a>
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarsNOWLMS"
+            aria-controls="navbarsNOWLMS"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsNOWLMS">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                {% if not current_user.is_authenticated %}
+                <li>
+                    <a href="{{ url_for('home.pagina_de_inicio') }}" class="nav-link px-2">🎓 {{ _('Academia') }}</a>
+                </li>
+                {% else %}
+                <li>
+                    <a href="{{ url_for('home.pagina_de_inicio') }}" class="nav-link px-2"
+                        ><i class="bi bi-house" aria-hidden="true"></i> {{ _('Inicio') }}</a
+                    >
+                </li>
+                <li>
+                    <a href="{{ url_for('course.lista_cursos') }}" class="nav-link px-2"
+                        ><i class="bi bi-book" aria-hidden="true"></i> {{ _('Cursos') }}</a
+                    >
+                </li>
+                {% if current_user.role.can_access_instructor_panel %}
+                <li>
+                    <a href="{{ url_for('instructor_profile.pagina_instructor') }}" class="nav-link px-2"
+                        ><i class="bi bi-person-workspace" aria-hidden="true"></i> {{ _('Panel de Instructor') }}</a
+                    >
+                </li>
+                {% endif %} {% if current_user.role.can_moderate %}
+                <li>
+                    <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link px-2"
+                        ><i class="bi bi-shield-check" aria-hidden="true"></i> {{ _('Panel de Moderador') }}</a
+                    >
+                </li>
+                {% endif %} {% if current_user.role.is_admin %}
+                <li>
+                    <a href="{{ url_for('admin_profile.pagina_admin') }}" class="nav-link px-2"
+                        ><i class="bi bi-gear" aria-hidden="true"></i> {{ _('Administración') }}</a
+                    >
+                </li>
+                {% endif %} {% endif %}
+            </ul>
+
+            {% if not current_user.is_authenticated %}
+            <div class="text-end me-2 mt-2 mt-md-0">
+                <a
+                    class="btn btn-sm btn-outline-light me-2"
+                    href="{{ url_for('user.inicio_sesion') }}"
+                    aria-label="{{ _('Acceder al sistema') }}"
+                >
+                    <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> {{ _('Acceder') }}
+                </a>
+            </div>
+            {% else %}
+            <div class="d-flex align-items-center">
+                <div class="dropdown text-end">
+                    <a
+                        href="#"
+                        class="d-block link-light text-decoration-none dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                    >
+                        <i class="bi bi-person-circle fs-4" aria-hidden="true"></i>
+                    </a>
+                    <ul class="dropdown-menu text-small">
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('user_profile.perfil') }}"
+                                ><i class="bi bi-person" aria-hidden="true"></i> {{ _('Perfil') }}</a
+                            >
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider" />
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ url_for('user.cerrar_sesion') }}"
+                                ><i class="bi bi-box-arrow-right" aria-hidden="true"></i> {{ _('Cerrar Sesión') }}</a
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+{%- endmacro %}

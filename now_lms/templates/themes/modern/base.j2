@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="{{ current_locale() }}" class="h-100">
+    {% set current_theme = current_theme() %}
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>{% block title %}NOW LMS{% endblock %}</title>
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+        <main>{{ current_theme.notify() }} {% block content %}{% endblock %}</main>
+        {{ current_theme.jslibs() }}
+    </body>
+</html>

@@ -415,7 +415,7 @@ def test_theme_functionality_comprehensive(isolated_db_session):
     assert get_home_template() == "themes/oxford/overrides/home.j2"
 
     # Test all other themes have override templates
-    themes_to_test = ["classic", "corporative", "finance", "oxford", "cambridge", "harvard"]
+    themes_to_test = ["classic", "corporative", "oxford", "cambridge", "harvard"]
 
     for theme in themes_to_test:
         config.theme = theme

@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="es">
+    {% set current_theme = current_theme() %}{% set site_config = config() %}
+    <head>
+        {{ current_theme.headertags() }} {{ current_theme.local_style() }}
+        <title>{{ site_config.titulo_html or "NOW - Learning Management System" }}</title>
+
+        <style>
+            /* Custom styles for money theme */
+            @keyframes float {
+                0%,
+                100% {
+                    transform: translateY(0px);
+                }
+                50% {
+                    transform: translateY(-10px);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+
+        <!-- Hero Section -->
+        <section
+            class="hero-section py-5"
+            style="
+                background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
+                min-height: 60vh;
+                display: flex;
+                align-items: center;
+            "
+        >
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-12 col-md-8 col-lg-8 order-2 order-md-1 text-white">
+                        <div class="hero-content">
+                            <div
+                                style="
+                                    font-family: &quot;Montserrat&quot;, sans-serif;
+                                    font-weight: 700;
+                                    font-size: 1.2rem;
+                                    color: #ffffff;
+                                    margin-bottom: 1rem;
+                                    letter-spacing: 2px;
+                                "
+                            >
+                                NOW-LMS
+                            </div>
+                            <h1 class="display-4 fw-bold mb-4" style="color: #ffffff">
+                                {{ _('Invierte en tu') }}
+                                <span style="color: #a5d6a7; font-family: &quot;Montserrat&quot;, sans-serif"
+                                    >{{ _('educación') }}</span
+                                >
+                            </h1>
+                            <p class="lead mb-4" style="font-size: 1.3rem; line-height: 1.6; color: #ffffff">
+                                {% if site_config.hero and site_config.hero != "" %}{{ site_config.hero }}{% else %}{{
+                                _('Cursos profesionales que generan resultados — Desarrolla tus habilidades y alcanza tus
+                                metas.') }}{% endif %}
+                            </p>
+                            <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-md-start">
+                                {% if not current_user.is_authenticated %}
+                                <a
+                                    href="{{ url_for('user.crear_cuenta') }}"
+                                    class="btn btn-light btn-lg px-4 py-2"
+                                    style="background: #ffffff; border-color: #ffffff; color: #2e7d32; font-weight: 600"
+                                >
+                                    <strong>{{ _('Comienza ahora') }}</strong>
+                                </a>
+                                <a
+                                    href="{{ url_for('course.lista_cursos', page=1) }}"
+                                    class="btn btn-outline-light btn-lg px-4 py-2"
+                                    style="color: #ffffff; border-color: #ffffff"
+                                >
+                                    {{ _('Ver cursos') }}
+                                </a>
+                                {% else %}
+                                <a
+                                    href="{{ url_for('home.panel') }}"
+                                    class="btn btn-light btn-lg px-4 py-2"
+                                    style="background: #ffffff; border-color: #ffffff; color: #2e7d32; font-weight: 600"
+                                >
+                                    <strong>{{ _('Mi Panel') }}</strong>
+                                </a>
+                                <a
+                                    href="{{ url_for('course.lista_cursos', page=1) }}"
+                                    class="btn btn-outline-light btn-lg px-4 py-2"
+                                    style="color: #ffffff; border-color: #ffffff"
+                                >
+                                    {{ _('Ver cursos') }}
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 col-lg-4 order-1 order-md-2 mb-4 mb-md-0 text-center">
+                        <div class="hero-visual">
+                            <div
+                                class="character d-flex align-items-center justify-content-center"
+                                style="
+                                    background: rgba(255, 255, 255, 0.15);
+                                    border-radius: 50%;
+                                    width: 250px;
+                                    height: 250px;
+                                    margin: 0 auto;
+                                    backdrop-filter: blur(10px);
+                                    animation: float 3s ease-in-out infinite;
+                                "
+                            >
+                                <i class="bi bi-cash-coin" style="font-size: 6rem; color: #ffffff" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-5" style="background: #fafffe">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold" style="color: #2e7d32">{{ _('¿Por qué elegir NOW LMS?') }}</h2>
+                    <p class="lead text-muted">{{ _('La plataforma que maximiza tu inversión educativa') }}</p>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="feature-card text-center">
+                            <div class="feature-icon mx-auto">
+                                <i class="bi bi-graph-up-arrow" style="font-size: 2rem; color: white" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="h5 fw-bold mb-3" style="color: #2e7d32">{{ _('Crecimiento Profesional') }}</h3>
+                            <p class="text-muted">
+                                {{ _('Desarrolla habilidades que impulsan tu carrera y aumentan tu valor en el mercado
+                                laboral.') }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="feature-card text-center">
+                            <div class="feature-icon mx-auto">
+                                <i class="bi bi-shield-check" style="font-size: 2rem; color: white" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="h5 fw-bold mb-3" style="color: #2e7d32">{{ _('Certificaciones Reconocidas') }}</h3>
+                            <p class="text-muted">
+                                {{ _('Obtén certificados profesionales que validan tus conocimientos y habilidades.') }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="feature-card text-center">
+                            <div class="feature-icon mx-auto">
+                                <i class="bi bi-clock-history" style="font-size: 2rem; color: white" aria-hidden="true"></i>
+                            </div>
+                            <h3 class="h5 fw-bold mb-3" style="color: #2e7d32">{{ _('Flexibilidad Total') }}</h3>
+                            <p class="text-muted">
+                                {{ _('Aprende a tu ritmo, en tu horario, desde cualquier lugar del mundo.') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="py-5" style="background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%); color: white">
+            <div class="container text-center">
+                <h2 class="display-5 fw-bold mb-3">{{ _('¡Comienza tu transformación hoy!') }}</h2>
+                <p class="lead mb-4">{{ _('Únete a miles de estudiantes que ya están invirtiendo en su futuro.') }}</p>
+                {% if not current_user.is_authenticated %}
+                <a
+                    href="{{ url_for('user.crear_cuenta') }}"
+                    class="btn btn-light btn-lg px-5 py-3"
+                    style="background: #ffffff; border-color: #ffffff; color: #2e7d32; font-weight: 600"
+                >
+                    <i class="bi bi-rocket-takeoff me-2" aria-hidden="true"></i>
+                    <strong>{{ _('Registrarse Gratis') }}</strong>
+                </a>
+                {% else %}
+                <a
+                    href="{{ url_for('home.panel') }}"
+                    class="btn btn-light btn-lg px-5 py-3"
+                    style="background: #ffffff; border-color: #ffffff; color: #2e7d32; font-weight: 600"
+                >
+                    <i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>
+                    <strong>{{ _('Ir al Panel') }}</strong>
+                </a>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer-money py-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        <p class="mb-0">
+                            &copy; {{ site_config.nombre or "NOW LMS" }}. {{ _('Todos los derechos reservados.') }}
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <a href="#" class="text-decoration-none me-3">{{ _('Blog') }}</a>
+                        <a href="#" class="text-decoration-none">{{ _('Contacto') }}</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        {{ current_theme.jslibs() }}
+    </body>
+</html>
