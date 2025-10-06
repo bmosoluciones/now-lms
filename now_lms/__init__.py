@@ -206,6 +206,11 @@ def inicializa_extenciones_terceros(flask_app: Flask) -> None:
             flask_app.cli.commands.pop("db")
         administrador_sesion.init_app(flask_app)
 
+        # Initialize session storage for Gunicorn multi-worker support
+        from now_lms.session_config import init_session
+
+        init_session(flask_app)
+
         # Initialize cache using new cache_utils module
         from now_lms.cache_utils import init_cache
 

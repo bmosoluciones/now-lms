@@ -88,7 +88,34 @@ cache: Cache = Cache()
 # ---------------------------------------------------------------------------------------
 def no_guardar_en_cache_global() -> bool:
     """Si el usuario es anomino preferimos usar el sistema de cache."""
+    # Return True (don't cache) when user is authenticated
+    # Return False (do cache) when user is anonymous
+    # IMPORTANT: This only controls whether to WRITE to cache, not whether to READ from it
+    # If an anonymous user's cached page exists, authenticated users will still see it
+    # unless we use a different cache key per authentication state
     return current_user and current_user.is_authenticated
+
+
+def cache_key_with_auth_state() -> str:
+    """Generate cache key that includes authentication state.
+
+    This ensures authenticated and anonymous users get different cached versions
+    of the same page, preventing authenticated users from seeing cached anonymous
+    pages (and vice versa).
+    """
+    from flask import request
+
+    # Include authentication state in the cache key
+    auth_state = "auth" if (current_user and current_user.is_authenticated) else "anon"
+
+    # Build key from request path and auth state
+    key = f"view/{request.path}/{auth_state}"
+
+    # Include query parameters if present
+    if request.query_string:
+        key += f"?{request.query_string.decode('utf-8')}"
+
+    return key
 
 
 def invalidate_all_cache() -> bool:

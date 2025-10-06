@@ -43,7 +43,7 @@ from werkzeug.wrappers import Response
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
-from now_lms.cache import cache, no_guardar_en_cache_global
+from now_lms.cache import cache, cache_key_with_auth_state
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, files, images
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Categoria, Configuracion, Etiqueta, Recurso, database
 from now_lms.forms import RecursoForm
@@ -201,7 +201,7 @@ def edit_resource(ulid: str) -> str | Response:
 
 
 @resource_d.route("/resource/<resource_code>")
-@cache.cached(unless=no_guardar_en_cache_global)
+@cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def vista_recurso(resource_code: str) -> str:
     """Pagina de un recurso."""
     return render_template(
@@ -212,7 +212,7 @@ def vista_recurso(resource_code: str) -> str:
 
 
 @resource_d.route("/resource/explore")
-@cache.cached(unless=no_guardar_en_cache_global)
+@cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def lista_recursos() -> str:
     """Lista de programas."""
     if DESARROLLO:
