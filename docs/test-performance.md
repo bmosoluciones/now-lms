@@ -12,6 +12,7 @@ This document describes the test performance optimizations implemented to reduce
 
 ### Baseline Performance
 - **Original execution time**: 3m46s (226 seconds)
+- **Current execution time**: 1m47s (107 seconds) - **53% improvement**
 - **Total tests**: ~305 tests across 90 test files
 
 ### Optimizations Implemented
@@ -20,20 +21,24 @@ This document describes the test performance optimizations implemented to reduce
 - **Added**: `pytest-xdist` plugin for parallel test execution
 - **Configuration**: `-n auto` automatically detects CPU cores and runs tests in parallel
 - **Impact**: ~40% reduction in full test suite execution time
-- **New full test time**: 2m14s (134 seconds)
+- **Initial improvement**: 3m46s → 2m14s (134 seconds)
+- **Further optimizations**: 2m14s → 1m47s (107 seconds)
 
 #### 2. Test Categorization with Pytest Marks
 - **Added marks**:
-  - `@pytest.mark.slow`: For tests taking >1.5 seconds
-  - `@pytest.mark.comprehensive`: For comprehensive route/integration tests
+  - `@pytest.mark.slow`: For tests taking >0.7 seconds (26 tests marked)
+  - `@pytest.mark.comprehensive`: For comprehensive route/integration tests (8 tests marked)
   - `@pytest.mark.integration`: For integration tests requiring full setup
   - `@pytest.mark.unit`: For fast unit tests (planned)
+- **Impact**: Better test organization and selective execution
+- **Latest update (2025)**: Added 13 additional slow test marks for tests >0.7s
 
 #### 3. Fast Test Configuration
 - **New script**: `dev/test_fast.sh`
 - **Purpose**: Skip slow/comprehensive tests during development
 - **Command**: `-m "not slow and not comprehensive"`
-- **Performance**: 1m30s (90 seconds) - **60% reduction** from baseline
+- **Performance**: 1m34s (94 seconds) - **58% reduction** from baseline
+- **Tests skipped**: 26 slow/comprehensive tests
 - **Coverage**: Disabled in fast mode for maximum speed
 
 #### 4. Route Testing Optimizations
@@ -104,8 +109,13 @@ pytest -m "integration"
 #### Slow Tests (`@pytest.mark.slow`)
 - Comprehensive route testing (all 207 routes)
 - Demo mode configuration tests
-- Large integration workflows
+- Large integration workflows (>0.7s execution time)
 - End-to-end admin flows
+- Password recovery and authentication flows
+- Complex messaging and forum workflows
+- Calendar background thread operations
+- Comprehensive evaluation workflows
+- **Total: 26 tests marked as slow or comprehensive**
 
 #### Comprehensive Tests (`@pytest.mark.comprehensive`)
 - Complete route discovery and testing
@@ -118,7 +128,8 @@ pytest -m "integration"
 |---------------|------|-----------|----------|
 | Original | 3m46s | - | Baseline |
 | Parallel (full) | 2m14s | 40% | CI/Production |
-| Fast (parallel, no slow tests, no coverage) | 1m30s | 60% | Development |
+| Parallel (current optimized) | 1m47s | 53% | CI/Production (2025) |
+| Fast (parallel, no slow tests, no coverage) | 1m34s | 58% | Development |
 | With SQLite + timeout optimizations | ~2m0s | ~45% | CI/Production (improved) |
 
 ### Dependencies Added

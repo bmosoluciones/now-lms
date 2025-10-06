@@ -22,6 +22,7 @@ Comprehensive end-to-end tests for forum and messaging systems.
 
 
 @pytest.mark.integration
+@pytest.mark.slow
 def test_comprehensive_forum_workflow(full_db_setup, client):
     """Test complete forum workflow focusing on core business logic."""
     app = full_db_setup
@@ -196,6 +197,7 @@ def test_comprehensive_forum_workflow(full_db_setup, client):
 
 
 @pytest.mark.integration
+@pytest.mark.slow
 def test_comprehensive_messaging_workflow(full_db_setup, client):
     """Test complete messaging system workflow focusing on core business logic."""
     app = full_db_setup
@@ -430,6 +432,7 @@ def test_comprehensive_messaging_workflow(full_db_setup, client):
 
 
 @pytest.mark.integration
+@pytest.mark.slow
 def test_forum_access_control_and_permissions(full_db_setup, client):
     """Test forum access control and permission scenarios."""
     app = full_db_setup
@@ -557,6 +560,7 @@ def test_forum_access_control_and_permissions(full_db_setup, client):
     print("✓ Forum access control and permissions test completed successfully!")
 
 
+@pytest.mark.slow
 def test_messaging_admin_functionality(full_db_setup, client):
     """Test admin-specific messaging functionality."""
     app = full_db_setup

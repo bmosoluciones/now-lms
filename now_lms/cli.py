@@ -218,7 +218,7 @@ def serve():
     import platform
     import subprocess
     import sys
-    
+
     from now_lms.worker_config import get_worker_config_from_env
 
     if environ.get("LMS_PORT"):

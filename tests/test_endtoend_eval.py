@@ -30,6 +30,7 @@ class TestEndToEndEvaluationSessionFixtures:
         """Provide test client using session fixture."""
         return session_full_db_setup.test_client()
 
+    @pytest.mark.slow
     def test_comprehensive_evaluation_workflow_session(self, session_full_db_setup, test_client):
         """Test complete evaluation workflow from course creation to student completion using session fixture."""
         import time

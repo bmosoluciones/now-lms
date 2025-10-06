@@ -170,6 +170,7 @@ def test_user_registration_to_free_course_enroll(session_full_db_setup, isolated
 
 
 @pytest.mark.integration
+@pytest.mark.slow
 def test_user_password_change(session_full_db_setup, isolated_db_session):
     """Test password change functionality for users."""
     from now_lms.auth import proteger_passwd, validar_acceso
@@ -248,6 +249,7 @@ def test_user_password_change(session_full_db_setup, isolated_db_session):
 
 
 @pytest.mark.integration
+@pytest.mark.slow
 def test_password_recovery_functionality(session_full_db_setup, isolated_db_session):
     """Test the complete password recovery flow."""
 
@@ -1344,6 +1346,7 @@ def test_course_resource_edit_functionality(basic_config_setup, client):
     assert wrong_type_edit.status_code == 302, "Should redirect for wrong resource type"
 
 
+@pytest.mark.slow
 def test_course_missing_post_routes_comprehensive(basic_config_setup, client):
     """Test missing course POST routes for comprehensive end-to-end coverage."""
     app = basic_config_setup
@@ -2719,6 +2722,7 @@ def test_category_management_comprehensive_endtoend(basic_config_setup, client):
     assert unauth_post.status_code in [302, 401, 403]
 
 
+@pytest.mark.slow
 def test_course_filtering_functionality(basic_config_setup, client):
     """Test lista_cursos with different filter combinations."""
     app = basic_config_setup
@@ -3220,6 +3224,7 @@ def test_program_edit_functionality(basic_config_setup, client):
         assert float(updated_program.precio) == 250.0
 
 
+@pytest.mark.slow
 def test_program_enrollment_and_management(basic_config_setup, client):
     """Test inscribir_programa, tomar_programa, gestionar_cursos_programa, inscribir_usuario_programa."""
     app = basic_config_setup
@@ -3361,6 +3366,7 @@ def test_program_enrollment_and_management(basic_config_setup, client):
 
 
 @pytest.mark.integration
+@pytest.mark.slow
 def test_tag_management_endtoend(basic_config_setup, client):
     """Test comprehensive tag management functionality including new_tag, edit_tag, delete_tag, and tags routes."""
     app = basic_config_setup
