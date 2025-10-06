@@ -15,6 +15,7 @@
 
 """Comprehensive tests for now_lms/calendar_utils.py functionality."""
 
+import pytest
 from datetime import date, datetime
 from datetime import time as time_obj
 
@@ -1482,6 +1483,7 @@ class TestCalendarUtilsComprehensive:
             assert resource is not None
             assert resource.tipo != "meet"  # Should return early at line 138-139
 
+    @pytest.mark.slow
     def test_background_thread_execution_direct(self, session_full_db_setup):
         """Test direct execution of background thread functions to cover missing lines."""
         from unittest.mock import patch, MagicMock

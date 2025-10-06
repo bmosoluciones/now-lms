@@ -234,6 +234,33 @@ class RecursoIndex:
     next_resource: RecursoInfo | None = None
 
 
+def _is_recurso_alternativo(requerido) -> bool:
+    """Check if a resource is alternative (supports both numeric and string values)."""
+    return str(requerido) in {"3", "substitute"}
+
+
+def _check_consecutive_alternatives(recurso_actual: CursoRecurso) -> bool:
+    """Check if there are consecutive alternative resources after the given resource.
+
+    Returns True if the next resource in the same section is also alternative.
+    """
+    if not _is_recurso_alternativo(recurso_actual.requerido):
+        return False
+
+    recurso_siguiente = (
+        database.session.execute(
+            database.select(CursoRecurso).filter(
+                CursoRecurso.seccion == recurso_actual.seccion,
+                CursoRecurso.indice == recurso_actual.indice + 1,
+            )
+        )
+        .scalars()
+        .first()
+    )
+
+    return recurso_siguiente is not None and _is_recurso_alternativo(recurso_siguiente.requerido)
+
+
 def crear_indice_recurso(recurso: str) -> RecursoIndex:
     """Devuelve el indice de un recurso para determinar elemento previo y posterior."""
     has_next: bool = False
@@ -280,13 +307,24 @@ def crear_indice_recurso(recurso: str) -> RecursoIndex:
 
     if recurso_anterior:
         has_prev = True
-        prev_is_alternative = recurso_anterior.requerido == 3
+        # Check if prev resource is alternative and if current resource is also alternative (consecutive)
+        prev_is_alternative = (
+            _is_recurso_alternativo(recurso_anterior.requerido)
+            and recurso_from_db is not None
+            and _is_recurso_alternativo(recurso_from_db.requerido)
+        )
         prev_resource = RecursoInfo(
             recurso_anterior.curso, recurso_anterior.tipo, recurso_anterior.id
         )  # type: ignore[assignment]
-    elif seccion_from_db:
+    elif seccion_from_db and recurso_from_db:
+        # Filter by course to prevent cross-course navigation
         seccion_anterior = (
-            database.session.execute(database.select(CursoSeccion).filter(CursoSeccion.indice == seccion_from_db.indice - 1))
+            database.session.execute(
+                database.select(CursoSeccion).filter(
+                    CursoSeccion.curso == recurso_from_db.curso,
+                    CursoSeccion.indice == seccion_from_db.indice - 1,
+                )
+            )
             .scalars()
             .first()
         )
@@ -304,20 +342,29 @@ def crear_indice_recurso(recurso: str) -> RecursoIndex:
             )
             if recurso_de_seccion_anterior:
                 has_prev = True
-                prev_is_alternative = recurso_de_seccion_anterior.requerido == 3
+                # Check if prev resource is alternative and if current resource is also alternative (consecutive)
+                # When crossing sections, we don't treat it as consecutive alternatives
+                prev_is_alternative = False
                 prev_resource = RecursoInfo(
                     recurso_de_seccion_anterior.curso, recurso_de_seccion_anterior.tipo, recurso_de_seccion_anterior.id
                 )  # type: ignore[assignment]
 
     if recurso_posterior:
         has_next = True
-        next_is_alternative = recurso_posterior.requerido == 3
+        # Check if next resource is alternative and if there's another alternative after it (consecutive)
+        next_is_alternative = _check_consecutive_alternatives(recurso_posterior)
         next_resource = RecursoInfo(
             recurso_posterior.curso, recurso_posterior.tipo, recurso_posterior.id
         )  # type: ignore[assignment]
-    elif seccion_from_db:
+    elif seccion_from_db and recurso_from_db:
+        # Filter by course to prevent cross-course navigation
         seccion_posterior = (
-            database.session.execute(database.select(CursoSeccion).filter(CursoSeccion.indice == seccion_from_db.indice + 1))
+            database.session.execute(
+                database.select(CursoSeccion).filter(
+                    CursoSeccion.curso == recurso_from_db.curso,
+                    CursoSeccion.indice == seccion_from_db.indice + 1,
+                )
+            )
             .scalars()
             .first()
         )
@@ -335,7 +382,8 @@ def crear_indice_recurso(recurso: str) -> RecursoIndex:
             )
             if recurso_de_seccion_posterior:
                 has_next = True
-                next_is_alternative = recurso_de_seccion_posterior.requerido == 3
+                # When crossing sections, check if there are consecutive alternatives at the start of next section
+                next_is_alternative = _check_consecutive_alternatives(recurso_de_seccion_posterior)
                 next_resource = RecursoInfo(
                     recurso_de_seccion_posterior.curso, recurso_de_seccion_posterior.tipo, recurso_de_seccion_posterior.id
                 )  # type: ignore[assignment]

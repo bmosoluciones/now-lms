@@ -42,7 +42,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                 <div class="row">
                     <div class="col-sm-8">
                         <ul class="list-group list-group-flush">
-                            {% for recurso in recursos %}{% if recurso.requerido == 3 %}
+                            {% for recurso in recursos %}{% if recurso.requerido == 3 or recurso.requerido == "3" or recurso.requerido == "substitute" %}
                             <li class="list-group-item">
                                 <div class="d-flex justify-content-between">
                                     <a

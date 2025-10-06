@@ -725,6 +725,7 @@ class TestEndToEndAdminSessionFixtures:
             assert announcement.course_id is None  # Global announcement
             assert announcement.is_sticky is True
 
+    @pytest.mark.slow
     def test_admin_comprehensive_flow_session(self, session_full_db_setup, test_client):
         """Test comprehensive admin workflow covering multiple admin views using session fixture."""
         import time
