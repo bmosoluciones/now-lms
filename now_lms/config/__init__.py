@@ -193,6 +193,14 @@ else:
 # Se siguen las recomendaciones de "Twelve Factors App" y las opciones se leen del entorno.
 CONFIGURACION: dict[str, str | bool | Path] = {}
 CONFIGURACION["SECRET_KEY"] = environ.get("SECRET_KEY") or "dev"  # nosec
+
+# Warn if using default SECRET_KEY in production
+if not DESARROLLO and CONFIGURACION["SECRET_KEY"] == "dev":
+    log.warning(
+        "Using default SECRET_KEY in production! This will cause session issues "
+        "with Gunicorn multi-worker setup. Set SECRET_KEY environment variable."
+    )
+
 CONFIGURACION["SQLALCHEMY_DATABASE_URI"] = environ.get("DATABASE_URL") or SQLITE  # nosec
 # Opciones comunes de configuración.
 CONFIGURACION["PRESERVE_CONTEXT_ON_EXCEPTION"] = False

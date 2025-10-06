@@ -4,6 +4,7 @@ appdirs
 argon2-cffi
 babel
 bleach
+cachelib
 configobj
 cryptography
 cuid2
@@ -16,13 +17,13 @@ flask-login
 flask-mail
 flask-mde
 flask-reuploaded
+flask-session
 flask-sqlalchemy
 flask_weasyprint
 flask-wtf
 gunicorn
 markdown
 memcache
-mysql-connector-python
 pg8000
 psutil
 pyjwt

@@ -67,7 +67,7 @@ from now_lms.bi import (
     reorganiza_indice_curso,
     reorganiza_indice_seccion,
 )
-from now_lms.cache import cache, no_guardar_en_cache_global
+from now_lms.cache import cache, cache_key_with_auth_state
 from now_lms.calendar_utils import create_events_for_student_enrollment, update_meet_resource_events
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, DIRECTORIO_ARCHIVOS_PUBLICOS, audio, files, images
 from now_lms.db import (
@@ -321,7 +321,7 @@ course = Blueprint("course", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
 @course.route("/course/<course_code>/view")
-@cache.cached(unless=no_guardar_en_cache_global)
+@cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def curso(course_code: str) -> str:
     """Pagina principal del curso."""
     _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
@@ -595,7 +595,7 @@ def course_enroll(course_code: str) -> str | Response:
 @course.route("/course/<course_code>/take")
 @login_required
 @perfil_requerido("student")
-@cache.cached(unless=no_guardar_en_cache_global)
+@cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def tomar_curso(course_code: str) -> str | Response:
     """Pagina principal del curso."""
     if current_user.tipo == "student":
@@ -661,7 +661,7 @@ def tomar_curso(course_code: str) -> str | Response:
 @course.route("/course/<course_code>/moderate")
 @login_required
 @perfil_requerido("moderator")
-@cache.cached(unless=no_guardar_en_cache_global)
+@cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def moderar_curso(course_code: str) -> str | Response:
     """Pagina principal del curso."""
     if current_user.tipo in ("moderator", "admin"):
@@ -689,7 +689,7 @@ def moderar_curso(course_code: str) -> str | Response:
 @course.route("/course/<course_code>/admin")
 @login_required
 @perfil_requerido("instructor")
-@cache.cached(unless=no_guardar_en_cache_global)
+@cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def administrar_curso(course_code: str) -> str:
     """Pagina principal del curso."""
     return render_template(
@@ -2746,7 +2746,7 @@ def course_index() -> Response:
 
 
 @course.route("/course/explore")
-@cache.cached(unless=no_guardar_en_cache_global)
+@cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def lista_cursos() -> str:
     """Lista de cursos."""
     if DESARROLLO:
