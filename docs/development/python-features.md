@@ -385,6 +385,36 @@ match MAIL_USE_SSL:
         MAIL_USE_SSL = True
 ```
 
+**Location**: `now_lms/cache.py`
+
+Cache type detection using pattern matching:
+
+```python
+# Before
+def _get_cache_type_for_compatibility() -> str:
+    if (environ.get("CACHE_REDIS_URL")) or (environ.get("REDIS_URL")):
+        return "RedisCache"
+    if environ.get("CACHE_MEMCACHED_SERVERS"):
+        return "MemcachedCache"
+    if environ.get("NOW_LMS_MEMORY_CACHE", "0") == "1":
+        return "FileSystemCache"
+    return "NullCache"
+
+# After
+def _get_cache_type_for_compatibility() -> str:
+    cache_type = _determine_cache_type()
+    
+    match cache_type:
+        case "redis":
+            return "RedisCache"
+        case "memcached":
+            return "MemcachedCache"
+        case "filesystem":
+            return "FileSystemCache"
+        case _:
+            return "NullCache"
+```
+
 **Location**: `now_lms/vistas/messages.py`
 
 User role-based access control with pattern matching:
