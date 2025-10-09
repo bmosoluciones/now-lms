@@ -40,32 +40,50 @@ from now_lms.logs import log
 
 # For backward compatibility, we need to maintain CTYPE and CACHE_CONFIG
 # The actual cache initialization will be handled by cache_utils.py
+def _determine_cache_type() -> str:
+    """Helper to determine which cache type is configured via environment variables."""
+    if (environ.get("CACHE_REDIS_URL")) or (environ.get("REDIS_URL")):
+        return "redis"
+    if environ.get("CACHE_MEMCACHED_SERVERS"):
+        return "memcached"
+    if environ.get("NOW_LMS_MEMORY_CACHE", "0") == "1":
+        return "filesystem"
+    return "null"
+
+
 def _get_cache_type_for_compatibility() -> str:
     """Determine cache type for backward compatibility with existing code."""
-    if (environ.get("CACHE_REDIS_URL")) or (environ.get("REDIS_URL")):
-        return "RedisCache"
-    if environ.get("CACHE_MEMCACHED_SERVERS"):
-        return "MemcachedCache"
-    if environ.get("NOW_LMS_MEMORY_CACHE", "0") == "1":
-        return "FileSystemCache"
-    return "NullCache"
+    cache_type = _determine_cache_type()
+
+    match cache_type:
+        case "redis":
+            return "RedisCache"
+        case "memcached":
+            return "MemcachedCache"
+        case "filesystem":
+            return "FileSystemCache"
+        case _:
+            return "NullCache"
 
 
 def _get_cache_config_for_compatibility() -> dict[str, object]:
     """Get basic cache config for backward compatibility."""
-    config = {"CACHE_KEY_PREFIX": "now_lms:", "CACHE_DEFAULT_TIMEOUT": 300}
+    config: dict[str, object] = {"CACHE_KEY_PREFIX": "now_lms:", "CACHE_DEFAULT_TIMEOUT": 300}
 
-    if (environ.get("CACHE_REDIS_URL")) or (environ.get("REDIS_URL")):
-        config["CACHE_TYPE"] = "RedisCache"
-        config["CACHE_REDIS_URL"] = environ.get("CACHE_REDIS_URL") or environ.get("REDIS_URL")
-    elif environ.get("CACHE_MEMCACHED_SERVERS"):
-        config["CACHE_TYPE"] = "MemcachedCache"
-        config["CACHE_MEMCACHED_SERVERS"] = environ.get("CACHE_MEMCACHED_SERVERS")
-    elif environ.get("NOW_LMS_MEMORY_CACHE", "0") == "1":
-        config["CACHE_TYPE"] = "FileSystemCache"
-        # Note: CACHE_DIR will be determined dynamically by cache_utils
-    else:
-        config["CACHE_TYPE"] = "NullCache"
+    cache_type = _determine_cache_type()
+
+    match cache_type:
+        case "redis":
+            config["CACHE_TYPE"] = "RedisCache"
+            config["CACHE_REDIS_URL"] = environ.get("CACHE_REDIS_URL") or environ.get("REDIS_URL")
+        case "memcached":
+            config["CACHE_TYPE"] = "MemcachedCache"
+            config["CACHE_MEMCACHED_SERVERS"] = environ.get("CACHE_MEMCACHED_SERVERS")
+        case "filesystem":
+            config["CACHE_TYPE"] = "FileSystemCache"
+            # Note: CACHE_DIR will be determined dynamically by cache_utils
+        case _:
+            config["CACHE_TYPE"] = "NullCache"
 
     return config
 
