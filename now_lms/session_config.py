@@ -43,6 +43,7 @@ from flask import Flask
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
+from now_lms.config import TESTING
 from now_lms.logs import log
 
 
@@ -58,24 +59,31 @@ def get_session_config() -> dict[str, object] | None:
     Returns:
         dict: Configuration dictionary for Flask-Session, or None to skip
     """
-    # Check if we're in testing mode (already checked in global config)
-    testing = os.environ.get("CI") or os.environ.get("TESTING") or "pytest" in os.sys.modules
-
-    if testing:
+    if TESTING:
         # In testing mode, don't use Flask-Session at all
         # Flask's default signed cookie sessions work fine for tests
         return None
 
-    # Check for Redis availability (already checked in cache module)
-    redis_url = os.environ.get("SESSION_REDIS_URL") or os.environ.get("REDIS_URL")
+    # Use the Redis URL check pattern from now_lms/cache.py line 45
+    redis_url = os.environ.get("SESSION_REDIS_URL") or os.environ.get("CACHE_REDIS_URL") or os.environ.get("REDIS_URL")
 
     if redis_url:
         log.info("Configuring Redis-based session storage for Gunicorn workers")
+
+        # Import Redis client
+        try:
+            import redis
+
+            redis_client = redis.from_url(redis_url)
+        except ImportError:
+            log.error("Redis library not installed. Install with: pip install redis")
+            raise
+
         return {
             "SESSION_TYPE": "redis",
-            "SESSION_REDIS": redis_url,
+            "SESSION_REDIS": redis_client,  # Must be Redis client object, not URL string
             "SESSION_PERMANENT": True,
-            "SESSION_USE_SIGNER": True,
+            "SESSION_USE_SIGNER": False,  # Not needed for server-side sessions
             "SESSION_KEY_PREFIX": "session:",
             "PERMANENT_SESSION_LIFETIME": 86400,  # 24 hours
         }
@@ -102,7 +110,7 @@ def get_session_config() -> dict[str, object] | None:
         "SESSION_TYPE": "cachelib",
         "SESSION_CACHELIB": FileSystemCache(cache_dir=str(cache_dir), threshold=1000),
         "SESSION_PERMANENT": True,
-        "SESSION_USE_SIGNER": True,
+        "SESSION_USE_SIGNER": False,  # Not needed for server-side sessions
         "PERMANENT_SESSION_LIFETIME": 86400,  # 24 hours
     }
 
