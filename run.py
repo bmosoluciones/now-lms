@@ -52,15 +52,18 @@ if init_app():
 
         # Get optimal worker and thread configuration
         workers, threads = get_worker_config_from_env()
-        
+
         options = {
             "bind": f"0.0.0.0:{PORT}",
             "workers": workers,
             "threads": threads,
             "worker_class": "gthread" if threads > 1 else "sync",
+            "preload_app": True,  # Load app before forking workers for memory efficiency and shared sessions
             "timeout": 120,
+            "graceful_timeout": 30,
             "accesslog": "-",
             "errorlog": "-",
+            "loglevel": "info",
         }
 
         logger.info(f"Starting with {workers} workers and {threads} threads per worker")

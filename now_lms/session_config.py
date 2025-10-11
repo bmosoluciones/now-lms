@@ -82,10 +82,13 @@ def get_session_config() -> dict[str, object] | None:
         return {
             "SESSION_TYPE": "redis",
             "SESSION_REDIS": redis_client,  # Must be Redis client object, not URL string
-            "SESSION_PERMANENT": True,
-            "SESSION_USE_SIGNER": False,  # Not needed for server-side sessions
+            "SESSION_PERMANENT": False,
+            "SESSION_USE_SIGNER": True,  # Ensures sessions cannot be modified
             "SESSION_KEY_PREFIX": "session:",
             "PERMANENT_SESSION_LIFETIME": 86400,  # 24 hours
+            "SESSION_COOKIE_HTTPONLY": True,
+            "SESSION_COOKIE_SECURE": os.environ.get("FLASK_ENV") == "production",
+            "SESSION_COOKIE_SAMESITE": "Lax",
         }
 
     # Fallback to CacheLib FileSystemCache
@@ -109,9 +112,13 @@ def get_session_config() -> dict[str, object] | None:
     return {
         "SESSION_TYPE": "cachelib",
         "SESSION_CACHELIB": FileSystemCache(cache_dir=str(cache_dir), threshold=1000),
-        "SESSION_PERMANENT": True,
-        "SESSION_USE_SIGNER": False,  # Not needed for server-side sessions
+        "SESSION_PERMANENT": False,
+        "SESSION_USE_SIGNER": True,  # Ensures sessions cannot be modified
+        "SESSION_FILE_THRESHOLD": 1000,  # Maximum number of sessions before cleanup
         "PERMANENT_SESSION_LIFETIME": 86400,  # 24 hours
+        "SESSION_COOKIE_HTTPONLY": True,
+        "SESSION_COOKIE_SECURE": os.environ.get("FLASK_ENV") == "production",
+        "SESSION_COOKIE_SAMESITE": "Lax",
     }
 
 
