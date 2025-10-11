@@ -287,7 +287,9 @@ def serve():
                 "workers": WORKERS,
                 "threads": THREADS,
                 "worker_class": "gthread" if THREADS > 1 else "sync",
+                "preload_app": True,  # Load app before forking workers for memory efficiency and shared sessions
                 "timeout": 120,
+                "graceful_timeout": 30,
                 "keepalive": 5,
                 "accesslog": "-",
                 "errorlog": "-",
