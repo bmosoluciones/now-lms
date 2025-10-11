@@ -571,19 +571,18 @@ class TestCertificateErrorHandling:
         )
         assert login_response.status_code == 200
 
-        # Try to edit non-existent certificate - this reveals a bug
-        # The code doesn't handle None results and crashes with TypeError
-        with pytest.raises(TypeError):
-            response = client.get("/certificate/nonexistent_id/edit")
+        # Try to edit non-existent certificate - should redirect instead of crashing
+        response = client.get("/certificate/nonexistent_id/edit", follow_redirects=True)
+        assert response.status_code == 200  # Redirects to certificates list
 
     def test_certificate_view_nonexistent(self, session_full_db_setup):
         """Test viewing non-existent certificate reveals a bug."""
         client = session_full_db_setup.test_client()
 
-        # Try to view non-existent certificate - this reveals a bug
-        # The code doesn't handle None results and crashes with TypeError
-        with pytest.raises(TypeError):
-            response = client.get("/certificate/view/nonexistent_id")
+        # Try to view non-existent certificate - should return error message instead of crashing
+        response = client.get("/certificate/view/nonexistent_id")
+        assert response.status_code == 200
+        assert b"not found" in response.data.lower()
 
     def test_qr_generation_nonexistent(self, session_full_db_setup):
         """Test QR generation for non-existent certificate."""

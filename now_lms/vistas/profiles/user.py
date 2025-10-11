@@ -50,9 +50,12 @@ def pagina_estudiante() -> str:
 
 @user_profile.route("/perfil")
 @login_required
-def perfil() -> str:
+def perfil() -> str | Response:
     """Perfil del usuario."""
-    registro_usuario = database.session.execute(database.select(Usuario).filter(Usuario.id == current_user.id)).first()[0]
+    row = database.session.execute(database.select(Usuario).filter(Usuario.id == current_user.id)).first()
+    if row is None:
+        return redirect(url_for("home.pagina_de_inicio"))
+    registro_usuario = row[0]
 
     # Initialize context data
     cursos_inscritos = []
@@ -148,12 +151,14 @@ def edit_perfil(ulid: str) -> str | Response:
                 try:
                     picture_file = images.save(request.files["logo"], folder="usuarios", name=current_user.id + ".jpg")
                     if picture_file:
-                        usuario_ = database.session.execute(
+                        row = database.session.execute(
                             database.select(Usuario).filter(Usuario.id == current_user.id)
-                        ).first()[0]
-                        usuario_.portada = True
-                        database.session.commit()
-                        flash("Imagen de perfil actualizada.", "success")
+                        ).first()
+                        if row:
+                            usuario_ = row[0]
+                            usuario_.portada = True
+                            database.session.commit()
+                            flash("Imagen de perfil actualizada.", "success")
                 except UploadNotAllowed:
                     log.warning("Could not update profile image.")
         except OperationalError:

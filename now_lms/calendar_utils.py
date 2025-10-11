@@ -239,7 +239,7 @@ def get_upcoming_events_for_user(user_id: str, limit: int = 5) -> list[UserEvent
         query = query.limit(limit)
 
     events = database.session.execute(query).scalars().all()
-    return events
+    return list(events)
 
 
 def _combine_date_time(date_obj: date | None, time_obj: time | None) -> datetime | None:

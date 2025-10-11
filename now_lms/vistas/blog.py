@@ -176,14 +176,12 @@ def add_comment(slug: str) -> Response:
         database.session.add(comment)
 
         # Update comment count
-        post.comment_count = (
-            database.session.execute(
-                database.select(func.count(BlogComment.id)).filter(
-                    and_(BlogComment.post_id == post.id, BlogComment.status == "visible")
-                )
-            ).scalar()
-            + 1
-        )
+        result = database.session.execute(
+            database.select(func.count(BlogComment.id)).filter(
+                and_(BlogComment.post_id == post.id, BlogComment.status == "visible")
+            )
+        ).scalar()
+        post.comment_count = (result or 0) + 1
 
         database.session.commit()
         flash("Comentario agregado exitosamente.", "success")

@@ -62,13 +62,16 @@ def app_info(flask_app: "Flask") -> dict:
     return {"DBENGINE": DBENGINE, "CACHE": CTYPE}
 
 
-def course_info(course_code: str) -> SimpleNamespace:
+def course_info(course_code: str) -> SimpleNamespace | None:
     """Return a SimpleNamespace with course information."""
     from sqlalchemy import func
 
     from now_lms.db import Curso, CursoRecurso, CursoSeccion, EstudianteCurso, Evaluation
 
-    curso = database.session.execute(database.select(Curso).where(Curso.codigo == course_code)).first()[0]
+    row = database.session.execute(database.select(Curso).where(Curso.codigo == course_code)).first()
+    if row is None:
+        return None
+    curso = row[0]
     resources_count = database.session.execute(
         database.select(func.count()).select_from(CursoRecurso).where(CursoRecurso.curso == course_code)
     ).scalar_one()

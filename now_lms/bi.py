@@ -202,7 +202,10 @@ def cambia_estado_curso_por_id(id_curso: str | int | None, /, nuevo_estado: str 
 
     Los valores reconocidos por el sistema son: draft, public, open, closed, finalizado.
     """
-    CURSO = database.session.execute(database.select(Curso).filter(Curso.codigo == id_curso)).first()[0]
+    row = database.session.execute(database.select(Curso).filter(Curso.codigo == id_curso)).first()
+    if row is None:
+        return
+    CURSO = row[0]
     estado_anterior = CURSO.estado
     CURSO.estado = nuevo_estado
     CURSO.modificado_por = usuario
@@ -233,7 +236,10 @@ def cambia_estado_curso_por_id(id_curso: str | int | None, /, nuevo_estado: str 
 
 def cambia_curso_publico(id_curso: str | int | None = None):
     """Cambia el estatus publico de un curso."""
-    CURSO = database.session.execute(database.select(Curso).filter(Curso.codigo == id_curso)).first()[0]
+    row = database.session.execute(database.select(Curso).filter(Curso.codigo == id_curso)).first()
+    if row is None:
+        return
+    CURSO = row[0]
     if CURSO.estado == "open":
         if CURSO.publico:
             CURSO.publico = False

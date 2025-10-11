@@ -53,7 +53,10 @@ def check_paypal_enabled() -> bool:
     """Check if PayPal payments are enabled."""
     with current_app.app_context():
         try:
-            q = database.session.execute(database.select(PaypalConfig)).first()[0]
+            row = database.session.execute(database.select(PaypalConfig)).first()
+            if row is None:
+                return False
+            q = row[0]
             enabled = q.enable
             return enabled
         except OperationalError:
@@ -65,7 +68,10 @@ def get_site_currency() -> str:
     """Get the site's default currency from configuration."""
     with current_app.app_context():
         try:
-            config = database.session.execute(database.select(Configuracion)).first()[0]
+            row = database.session.execute(database.select(Configuracion)).first()
+            if row is None:
+                return "USD"
+            config = row[0]
             return config.moneda or "USD"  # Default to USD if not configured
         except OperationalError:
             return "USD"
@@ -160,7 +166,10 @@ def get_paypal_access_token() -> str | None:
 def verify_paypal_payment(order_id: str, access_token: str) -> dict[str, object]:
     """Verify a PayPal payment by order ID."""
     try:
-        paypal_config = database.session.execute(database.select(PaypalConfig)).first()[0]
+        row = database.session.execute(database.select(PaypalConfig)).first()
+        if row is None:
+            return {"status": "error", "message": "PayPal not configured"}
+        paypal_config = row[0]
         base_url = PAYPAL_SANDBOX_API_URL if paypal_config.sandbox else PAYPAL_PRODUCTION_API_URL
         order_url = f"{base_url}/v2/checkout/orders/{order_id}"
 
@@ -462,7 +471,10 @@ def payment_page(course_code: str) -> str | Response | tuple[FlaskResponse, int]
 def get_client_id() -> Response | tuple[FlaskResponse, int]:
     """Get PayPal client ID for JavaScript SDK."""
     try:
-        paypal_config = database.session.execute(database.select(PaypalConfig)).first()[0]
+        row = database.session.execute(database.select(PaypalConfig)).first()
+        if row is None:
+            return jsonify({"error": "PayPal not configured"}), 500
+        paypal_config = row[0]
 
         # Return the appropriate client ID based on sandbox mode
         client_id = paypal_config.paypal_sandbox if paypal_config.sandbox else paypal_config.paypal_id

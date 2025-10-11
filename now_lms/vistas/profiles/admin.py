@@ -81,7 +81,10 @@ def usuarios() -> str:
 @perfil_requerido("admin")
 def activar_usuario(user_id: str) -> Response:
     """Estable el usuario como activo y redirecciona a la vista dada."""
-    perfil_usuario = database.session.execute(database.select(Usuario).filter(Usuario.id == user_id)).first()[0]
+    row = database.session.execute(database.select(Usuario).filter(Usuario.id == user_id)).first()
+    if row is None:
+        return redirect(url_for(ADMIN_USERS_ROUTE))
+    perfil_usuario = row[0]
     if not perfil_usuario.activo:
         perfil_usuario.activo = True
         database.session.commit()
@@ -97,7 +100,10 @@ def activar_usuario(user_id: str) -> Response:
 @perfil_requerido("admin")
 def inactivar_usuario(user_id: str) -> Response:
     """Estable el usuario como activo y redirecciona a la vista dada."""
-    perfil_usuario = database.session.execute(database.select(Usuario).filter(Usuario.id == user_id)).first()[0]
+    row = database.session.execute(database.select(Usuario).filter(Usuario.id == user_id)).first()
+    if row is None:
+        return redirect(url_for(ADMIN_USERS_ROUTE))
+    perfil_usuario = row[0]
     if perfil_usuario.activo:
         perfil_usuario.activo = False
         database.session.commit()

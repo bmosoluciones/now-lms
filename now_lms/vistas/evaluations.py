@@ -121,9 +121,10 @@ def is_evaluation_available(evaluation_obj) -> bool:
 
 def get_user_attempts_count(evaluation_id: int, user_id: str) -> int:
     """Get the number of attempts a user has made for an evaluation."""
-    return database.session.execute(
+    result = database.session.execute(
         database.select(func.count(EvaluationAttempt.id)).filter_by(evaluation_id=evaluation_id, user_id=user_id)
     ).scalar()
+    return result or 0
 
 
 def can_user_attempt_evaluation(evaluation_obj, user) -> bool:
