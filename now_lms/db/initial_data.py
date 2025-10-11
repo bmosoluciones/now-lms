@@ -1511,14 +1511,16 @@ def crear_programa() -> None:
     database.session.commit()
 
     # Asigna cursos a programa
-    programa = database.session.execute(database.select(Programa).filter(Programa.codigo == "P001")).scalar_one_or_none()
-    for curso in ["postgresql", "python", "html"]:
-        curso = database.session.execute(database.select(Curso).filter(Curso.codigo == curso)).scalar_one_or_none()
-        registro = ProgramaCurso(
-            curso=curso.codigo,
-            programa=programa.codigo,
-        )
-        database.session.add(registro)
+    programa_obj = database.session.execute(database.select(Programa).filter(Programa.codigo == "P001")).scalar_one_or_none()
+    if programa_obj:
+        for curso_code in ["postgresql", "python", "html"]:
+            curso_obj = database.session.execute(database.select(Curso).filter(Curso.codigo == curso_code)).scalar_one_or_none()
+            if curso_obj:
+                registro = ProgramaCurso(
+                    curso=curso_obj.codigo,
+                    programa=programa_obj.codigo,
+                )
+                database.session.add(registro)
 
     database.session.commit()
 

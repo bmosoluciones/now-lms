@@ -129,7 +129,10 @@ def proteger_secreto(password: str) -> bytes:
     with current_app.app_context():
         from now_lms.db import Configuracion
 
-        config = database.session.execute(database.select(Configuracion)).first()[0]
+        row = database.session.execute(database.select(Configuracion)).first()
+        if row is None:
+            raise ValueError("No configuration found")
+        config = row[0]
 
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
@@ -147,7 +150,10 @@ def descifrar_secreto(hash_value: bytes) -> str | None:
     with current_app.app_context():
         from now_lms.db import Configuracion
 
-        config = database.session.execute(database.select(Configuracion)).first()[0]
+        row = database.session.execute(database.select(Configuracion)).first()
+        if row is None:
+            return None
+        config = row[0]
 
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
@@ -219,7 +225,10 @@ def send_confirmation_email(user) -> None:
 
     from now_lms.mail import send_mail
 
-    config = database.session.execute(database.select(MailConfig)).first()[0]
+    row = database.session.execute(database.select(MailConfig)).first()
+    if row is None:
+        return
+    config = row[0]
 
     msg = Message(
         subject="Email verification",
@@ -300,7 +309,10 @@ def send_password_reset_email(user) -> bool:
 
     from now_lms.mail import send_mail
 
-    config = database.session.execute(database.select(MailConfig)).first()[0]
+    row = database.session.execute(database.select(MailConfig)).first()
+    if row is None:
+        return False
+    config = row[0]
 
     msg = Message(
         subject="Recuperación de Contraseña - NOW LMS",

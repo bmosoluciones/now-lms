@@ -120,7 +120,10 @@ def personalizacion() -> str | Response:
     for template in list_themes():
         TEMPLATE_CHOICES.append((template, template))
 
-    config = database.session.execute(database.select(Style)).first()[0]
+    row = database.session.execute(database.select(Style)).first()
+    if row is None:
+        return redirect(url_for("home.pagina_de_inicio"))
+    config = row[0]
     form = ThemeForm(style=config.theme)
     form.style.choices = TEMPLATE_CHOICES
 
@@ -177,8 +180,14 @@ def personalizacion() -> str | Response:
 @perfil_requerido("admin")
 def configuracion() -> str | Response:
     """System settings."""
-    config = config = database.session.execute(database.select(Configuracion)).first()[0]
-    config_mail = database.session.execute(database.select(MailConfig)).first()[0]
+    row = database.session.execute(database.select(Configuracion)).first()
+    if row is None:
+        return redirect(url_for("home.pagina_de_inicio"))
+    config = row[0]
+    row = database.session.execute(database.select(MailConfig)).first()
+    if row is None:
+        return redirect(url_for("home.pagina_de_inicio"))
+    config_mail = row[0]
     form = ConfigForm(
         titulo=config.titulo,
         descripcion=config.descripcion,
@@ -228,7 +237,11 @@ def configuracion() -> str | Response:
         config.eslogan = form.eslogan.data
 
         if form.verify_user_by_email.data is True:
-            config_mail = database.session.execute(database.select(MailConfig)).first()[0]
+            row = database.session.execute(database.select(MailConfig)).first()
+            if row is None:
+                config.verify_user_by_email = False
+            else:
+                config_mail = row[0]
             if not config_mail.email_verificado:
                 flash(_("Debe configurar el correo electronico antes de habilitar verificación por e-mail."), "warning")
                 config.verify_user_by_email = False
@@ -255,7 +268,10 @@ def configuracion() -> str | Response:
 @perfil_requerido("admin")
 def mail() -> str | Response:
     """Configuración de Correo Electronico."""
-    config = database.session.execute(database.select(MailConfig)).first()[0]
+    row = database.session.execute(database.select(MailConfig)).first()
+    if row is None:
+        return redirect(url_for("home.pagina_de_inicio"))
+    config = row[0]
 
     form = MailForm(
         MAIL_SERVER=config.MAIL_SERVER,
@@ -324,7 +340,10 @@ mail_check_message = """
 @perfil_requerido("admin")
 def mail_check() -> str | Response:
     """Configuración de Correo Electronico."""
-    config = database.session.execute(database.select(MailConfig)).first()[0]
+    row = database.session.execute(database.select(MailConfig)).first()
+    if row is None:
+        return redirect(url_for("home.pagina_de_inicio"))
+    config = row[0]
 
     form = CheckMailForm()
 
@@ -359,10 +378,15 @@ def mail_check() -> str | Response:
         except Exception as e:  # noqa: E722
             flash(_("Hubo un error al enviar un correo de prueba. Revise su configuración."), "warning")
 
-            config_g = database.session.execute(database.select(Configuracion)).first()[0]
-            config.email_verificado = False
-            config_g.verify_user_by_email = False
-            database.session.commit()
+            row = database.session.execute(database.select(Configuracion)).first()
+            if row:
+                config_g = row[0]
+                config.email_verificado = False
+                config_g.verify_user_by_email = False
+                database.session.commit()
+            else:
+                config.email_verificado = False
+                database.session.commit()
             log.error(f"Error sending test email: {e}")
             # Re-render the form with the error message
             form = MailForm(
@@ -386,7 +410,10 @@ def mail_check() -> str | Response:
 @perfil_requerido("admin")
 def adsense() -> str | Response:
     """Configuración de anuncios de AdSense."""
-    config = database.session.execute(database.select(AdSense)).first()[0]
+    row = database.session.execute(database.select(AdSense)).first()
+    if row is None:
+        return redirect(url_for("home.pagina_de_inicio"))
+    config = row[0]
 
     form = AdSenseForm(
         meta_tag=config.meta_tag,
@@ -448,8 +475,12 @@ def adsense() -> str | Response:
 def ads_txt() -> tuple[str, int, dict[str, str]]:
     """Información de ads.txt para anuncios."""
     try:
-        config = database.session.execute(database.select(AdSense)).first()[0]
-        pub_id = config.pub_id if config.pub_id else ""
+        row = database.session.execute(database.select(AdSense)).first()
+        if row is None:
+            pub_id = ""
+        else:
+            config = row[0]
+            pub_id = config.pub_id if config.pub_id else ""
     except (OperationalError, TypeError):
         pub_id = ""
 
@@ -492,7 +523,10 @@ def stripe() -> str:
 @perfil_requerido("admin")
 def paypal() -> str | Response:
     """Configuración de Paypal."""
-    config = database.session.execute(database.select(PaypalConfig)).first()[0]
+    row = database.session.execute(database.select(PaypalConfig)).first()
+    if row is None:
+        return redirect(url_for("home.pagina_de_inicio"))
+    config = row[0]
     form = PayaplForm(
         habilitado=config.enable,
         sandbox=config.sandbox,

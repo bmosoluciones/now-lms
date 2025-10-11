@@ -473,37 +473,42 @@ def elimina_imagen_usuario(ulid: str):
 
 def cursos_por_etiqueta(tag: str) -> int:
     """Devuelve el numero de cursos en una etiqueta."""
-    return database.session.execute(
+    result = database.session.execute(
         database.select(func.count(EtiquetaCurso.id)).filter(EtiquetaCurso.etiqueta == tag)
     ).scalar()
+    return result or 0
 
 
 def cursos_por_categoria(tag: str) -> int:
     """Devuelve el numero de cursos en una Categoria."""
-    return database.session.execute(
+    result = database.session.execute(
         database.select(func.count(CategoriaCurso.id)).filter(CategoriaCurso.categoria == tag)
     ).scalar()
+    return result or 0
 
 
 def programas_por_etiqueta(tag: str) -> int:
     """Devuelve el numero de programas en una etiqueta."""
-    return database.session.execute(
+    result = database.session.execute(
         database.select(func.count(EtiquetaPrograma.id)).filter(EtiquetaPrograma.etiqueta == tag)
     ).scalar()
+    return result or 0
 
 
 def programas_por_categoria(tag: str) -> int:
     """Devuelve el numero de programas en una Categoria."""
-    return database.session.execute(
+    result = database.session.execute(
         database.select(func.count(CategoriaPrograma.id)).filter(CategoriaPrograma.categoria == tag)
     ).scalar()
+    return result or 0
 
 
 def cuenta_cursos_por_programa(codigo_programa: str) -> int:
     """Devuelve el número de programas que tiene un curso."""
-    return database.session.execute(
+    result = database.session.execute(
         database.select(func.count(ProgramaCurso.id)).filter(ProgramaCurso.programa == codigo_programa)
     ).scalar()
+    return result or 0
 
 
 def obtener_cursos_de_programa(codigo_programa: str):
@@ -759,8 +764,10 @@ def database_select_version(app):
 
 def get_paypal_id() -> str:
     """Return pay ID."""
-    query = database.session.execute(database.select(PaypalConfig)).first()
-    query = query[0]
+    row = database.session.execute(database.select(PaypalConfig)).first()
+    if row is None:
+        return ""
+    query = row[0]
 
     if query.sandbox:
         return query.sandbox

@@ -84,8 +84,10 @@ def certificados() -> str:
 @perfil_requerido("admin")
 def certificate_remove(ulid: str) -> Response:
     """Elimina certificado."""
-    consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
-    consulta = consulta[0]
+    row = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
+    if row is None:
+        return redirect(url_for(VISTA_CERTIFICADOS))
+    consulta = row[0]
     consulta.habilitado = False
     database.session.commit()
     return redirect(url_for(VISTA_CERTIFICADOS))
@@ -96,8 +98,10 @@ def certificate_remove(ulid: str) -> Response:
 @perfil_requerido("admin")
 def certificate_add(ulid: str) -> Response:
     """Elimina certificado."""
-    consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
-    consulta = consulta[0]
+    row = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
+    if row is None:
+        return redirect(url_for(VISTA_CERTIFICADOS))
+    consulta = row[0]
     consulta.habilitado = True
     database.session.commit()
     return redirect(url_for(VISTA_CERTIFICADOS))
@@ -108,8 +112,10 @@ def certificate_add(ulid: str) -> Response:
 @perfil_requerido("admin")
 def certificate_publish(ulid: str) -> Response:
     """Elimina certificado."""
-    consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
-    consulta = consulta[0]
+    row = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
+    if row is None:
+        return redirect(url_for(VISTA_CERTIFICADOS))
+    consulta = row[0]
     consulta.publico = True
     database.session.commit()
     return redirect(url_for(VISTA_CERTIFICADOS))
@@ -120,8 +126,10 @@ def certificate_publish(ulid: str) -> Response:
 @perfil_requerido("admin")
 def certificate_unpublish(ulid: str) -> Response:
     """Elimina certificado."""
-    consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
-    consulta = consulta[0]
+    row = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
+    if row is None:
+        return redirect(url_for(VISTA_CERTIFICADOS))
+    consulta = row[0]
     consulta.publico = False
     database.session.commit()
     return redirect(url_for(VISTA_CERTIFICADOS))
@@ -162,6 +170,8 @@ def certificate_new() -> str | Response:
 def certificate_edit(ulid: str) -> str | Response:
     """Editar categoria."""
     certificado_result = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
+    if certificado_result is None:
+        return redirect(url_for(VISTA_CERTIFICADOS))
     certificado_obj = certificado_result[0]
     form = CertificateForm(
         titulo=certificado_obj.titulo,
@@ -205,8 +215,10 @@ def insert_style_in_html(template: str) -> str:
 @certificate.route("/certificate/inspect/<ulid>/")
 def certificate_inspect(ulid: str) -> str:
     """Inspect a certificate by its ULID."""
-    consulta = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
-    consulta = consulta[0]
+    row = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
+    if row is None:
+        return "Certificate not found"
+    consulta = row[0]
 
     return insert_style_in_html(consulta)
 
@@ -235,20 +247,26 @@ def certificacion(ulid: str) -> str | Response:
     """Render a certificate based on certification ULID."""
     from jinja2 import BaseLoader, Environment
 
-    certificacion_obj = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
-    certificacion_obj = certificacion_obj[0]
+    row = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
+    if row is None:
+        return redirect(url_for("home.pagina_de_inicio"))
+    certificacion_obj = row[0]
 
-    certificado_obj = database.session.execute(
+    row = database.session.execute(
         database.select(Certificado).filter_by(code=certificacion_obj.certificado)
     ).first()
-    certificado_obj = certificado_obj[0]
+    if row is None:
+        return redirect(url_for("home.pagina_de_inicio"))
+    certificado_obj = row[0]
 
     # Get course or master class information
     content = certificacion_obj.get_content_info()
     content_type = certificacion_obj.get_content_type()
 
-    usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion_obj.usuario)).first()
-    usuario = usuario[0]
+    row = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion_obj.usuario)).first()
+    if row is None:
+        return redirect(url_for("home.pagina_de_inicio"))
+    usuario = row[0]
 
     template = Environment(loader=BaseLoader, autoescape=True).from_string(insert_style_in_html(certificado_obj))  # type: ignore[arg-type]
 
@@ -278,20 +296,26 @@ def certificate_serve_pdf(ulid: str) -> Response:
     from jinja2 import BaseLoader, Environment
     from weasyprint import CSS
 
-    certificacion_obj = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
-    certificacion_obj = certificacion_obj[0]
+    row = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
+    if row is None:
+        return redirect(url_for("home.pagina_de_inicio"))
+    certificacion_obj = row[0]
 
-    certificado_obj = database.session.execute(
+    row = database.session.execute(
         database.select(Certificado).filter_by(code=certificacion_obj.certificado)
     ).first()
-    certificado_obj = certificado_obj[0]
+    if row is None:
+        return redirect(url_for("home.pagina_de_inicio"))
+    certificado_obj = row[0]
 
     # Get course or master class information
     content = certificacion_obj.get_content_info()
     content_type = certificacion_obj.get_content_type()
 
-    usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion_obj.usuario)).first()
-    usuario = usuario[0]
+    row = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion_obj.usuario)).first()
+    if row is None:
+        return redirect(url_for("home.pagina_de_inicio"))
+    usuario = row[0]
 
     rtemplate = Environment(loader=BaseLoader, autoescape=True).from_string(certificado_obj.html)  # type: ignore[arg-type]
 
@@ -369,20 +393,26 @@ def certificaciones() -> str:
 @certificate.route("/certificate/view/<ulid>")
 def certificado(ulid: str) -> str:
     """Lista de certificaciones emitidas."""
-    certificacion_obj = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
-    certificacion_obj = certificacion_obj[0]
+    row = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
+    if row is None:
+        return "Certificate not found"
+    certificacion_obj = row[0]
 
-    certificado_obj = database.session.execute(
+    row = database.session.execute(
         database.select(Certificado).filter_by(code=certificacion_obj.certificado)
     ).first()
-    certificado_obj = certificado_obj[0]
+    if row is None:
+        return "Certificate template not found"
+    certificado_obj = row[0]
 
     # Get course or master class information
     content = certificacion_obj.get_content_info()
     content_type = certificacion_obj.get_content_type()
 
-    usuario = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion_obj.usuario)).first()
-    usuario = usuario[0]
+    row = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion_obj.usuario)).first()
+    if row is None:
+        return "User not found"
+    usuario = row[0]
 
     # Create context with both curso and master_class for template compatibility
     context = {

@@ -261,7 +261,10 @@ def validate_downloadable_file(file, max_size_mb: int = 1) -> tuple[bool, str]:
 
 def get_site_config() -> Configuracion:
     """Get site configuration."""
-    return database.session.execute(database.select(Configuracion)).first()[0]
+    row = database.session.execute(database.select(Configuracion)).first()
+    if row is None:
+        raise ValueError("No configuration found")
+    return row[0]
 
 
 def sanitize_filename(filename: str) -> str:
@@ -342,11 +345,9 @@ def curso(course_code: str) -> str:
             _consulta = database.select(DocenteCurso).filter(
                 DocenteCurso.curso == course_code, DocenteCurso.usuario == current_user.usuario
             )
-            acceso = database.session.execute(_consulta).scalars().first()
-            if acceso:
-                editable = True
-            else:
-                editable = False
+            docente_result = database.session.execute(_consulta).scalars().first()
+            acceso = bool(docente_result)
+            editable = bool(docente_result)
     elif current_user.is_authenticated:
         # Check if user is enrolled in the course
         enrollment = (
@@ -623,7 +624,7 @@ def tomar_curso(course_code: str) -> str | Response:
             enrollment = database.session.execute(
                 database.select(EstudianteCurso).filter_by(curso=course_code, usuario=current_user.usuario)
             ).scalar_one_or_none()
-            user_has_paid = enrollment and enrollment.pago
+            user_has_paid = bool(enrollment and enrollment.pago)
 
         # Check if user has a certificate for this course
         user_certificate = (

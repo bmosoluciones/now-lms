@@ -106,7 +106,10 @@ def _load_mail_config_from_db() -> SimpleNamespace:
     """Carga la configuración de correo electrónico desde la base de datos."""
     logger.trace(_("Obteniendo configuración de correo electronico desde base de datos."))
     with current_app.app_context():
-        mail_config = database.session.execute(database.select(MailConfig)).first()[0]
+        row = database.session.execute(database.select(MailConfig)).first()
+        if row is None:
+            raise ValueError("No mail configuration found in database")
+        mail_config = row[0]
 
         # If available, use the configuration from the database
         mail_server = mail_config.MAIL_SERVER
