@@ -1514,7 +1514,9 @@ def crear_programa() -> None:
     programa_obj = database.session.execute(database.select(Programa).filter(Programa.codigo == "P001")).scalar_one_or_none()
     if programa_obj:
         for curso_code in ["postgresql", "python", "html"]:
-            curso_obj = database.session.execute(database.select(Curso).filter(Curso.codigo == curso_code)).scalar_one_or_none()
+            curso_obj = database.session.execute(
+                database.select(Curso).filter(Curso.codigo == curso_code)
+            ).scalar_one_or_none()
             if curso_obj:
                 registro = ProgramaCurso(
                     curso=curso_obj.codigo,

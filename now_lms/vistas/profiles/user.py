@@ -151,9 +151,7 @@ def edit_perfil(ulid: str) -> str | Response:
                 try:
                     picture_file = images.save(request.files["logo"], folder="usuarios", name=current_user.id + ".jpg")
                     if picture_file:
-                        row = database.session.execute(
-                            database.select(Usuario).filter(Usuario.id == current_user.id)
-                        ).first()
+                        row = database.session.execute(database.select(Usuario).filter(Usuario.id == current_user.id)).first()
                         if row:
                             usuario_ = row[0]
                             usuario_.portada = True

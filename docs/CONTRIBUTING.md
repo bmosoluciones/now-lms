@@ -196,7 +196,7 @@ python dev/test.sh
 | perf     | cache    | perf(cache): improve course load time         | Performance improvements                  | PATCH (if non-breaking)  |
 | ci       | pipeline | ci(pipeline): add coverage report upload      | Continuous Integration related changes    | None                     |
 | revert   | auth     | revert(auth): undo broken login commit        | Revert a previous commit                  | Depends (inherits type)  |
-| release  | version  | release: v0.0.1-rc1                           | Release tagging                           | Not applicable           |
+| release  | version  | release: v1.0.0                               | Release tagging                           | Not applicable           |
 
 #### Certify the origin of your contributions.
 
