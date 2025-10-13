@@ -252,9 +252,7 @@ def certificacion(ulid: str) -> str | Response:
         return redirect(url_for("home.pagina_de_inicio"))
     certificacion_obj = row[0]
 
-    row = database.session.execute(
-        database.select(Certificado).filter_by(code=certificacion_obj.certificado)
-    ).first()
+    row = database.session.execute(database.select(Certificado).filter_by(code=certificacion_obj.certificado)).first()
     if row is None:
         return redirect(url_for("home.pagina_de_inicio"))
     certificado_obj = row[0]
@@ -301,9 +299,7 @@ def certificate_serve_pdf(ulid: str) -> Response:
         return redirect(url_for("home.pagina_de_inicio"))
     certificacion_obj = row[0]
 
-    row = database.session.execute(
-        database.select(Certificado).filter_by(code=certificacion_obj.certificado)
-    ).first()
+    row = database.session.execute(database.select(Certificado).filter_by(code=certificacion_obj.certificado)).first()
     if row is None:
         return redirect(url_for("home.pagina_de_inicio"))
     certificado_obj = row[0]
@@ -398,9 +394,7 @@ def certificado(ulid: str) -> str:
         return "Certificate not found"
     certificacion_obj = row[0]
 
-    row = database.session.execute(
-        database.select(Certificado).filter_by(code=certificacion_obj.certificado)
-    ).first()
+    row = database.session.execute(database.select(Certificado).filter_by(code=certificacion_obj.certificado)).first()
     if row is None:
         return "Certificate template not found"
     certificado_obj = row[0]

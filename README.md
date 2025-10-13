@@ -28,6 +28,8 @@ management, enrollment, communication, assessments, and certification—into one
 options, role-based access control, support for multiple databases, and built-in monetization tools, NOW-LMS addresses both
 pedagogical and andragogical needs in today’s post-pandemic learning environment.
 
+**Version 1.0.0** marks the first stable release of NOW LMS. This release has been validated through comprehensive testing with 880+ automated tests, manual testing of all major features, and multi-database backend validation. The system is ready for production use.
+
 ## Documentation
 
 -   Course Creators, refer to the [course creation doc](https://bmosoluciones.github.io/now-lms/course-creator/).

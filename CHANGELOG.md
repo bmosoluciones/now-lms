@@ -7,6 +7,107 @@ All notable changes to this project will be documented in this file.
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/).
 
 
+## [1.0.0] - 2025-10-12
+
+### Summary
+
+NOW LMS version 1.0.0 is the first stable release. This release provides a complete learning management system built with Flask and Bootstrap 5, supporting course creation, user management, assessments, and certificates.
+
+### Core Features
+
+#### Course Management
+- Course creation with section-based organization
+- Multiple resource types: YouTube videos, PDFs, images, audio files, rich text, external HTML, slide presentations, and external links
+- Support for free and paid courses
+- Self-paced, instructor-led, and time-limited course modes
+- Audit mode for paid courses (limited access without evaluations or certificates)
+- Course grouping into programs
+- Course library for browsing available courses
+
+#### User Management and Access Control
+- Role-based access control (Administrator, Instructor, Moderator, Student)
+- User authentication with email confirmation
+- User dashboards tailored by role
+- Administrative user enrollment in courses and programs
+- User profile management
+
+#### Assessment and Certification
+- Evaluation system with date-based availability
+- Automatic grading and result display
+- Certificate generation upon course completion
+- QR code validation for certificate authenticity
+- Support for course and program certificates
+- Multiple certificate templates
+
+#### Communication and Collaboration
+- Internal messaging between students and instructors
+- Course-specific discussion forums
+- Announcement system for course-wide notifications
+- Blog functionality with moderation and commenting
+
+#### Calendar and Events
+- User calendar showing course dates, live sessions, and evaluation deadlines
+- Event detail pages with resource links
+- Event export to iCalendar format
+- Automatic event updates when resource dates change
+
+#### Payment and Monetization
+- PayPal payment integration
+- Google AdSense support for free course monetization
+
+#### Customization and Theming
+- Multiple built-in themes
+- Theme switching capability
+- Custom favicon support
+- Homepage override capability
+
+#### Technical Features
+- Database support: SQLite, PostgreSQL, MySQL, and MariaDB
+- Configuration via environment variables or config files
+- CLI tools for database initialization and user management
+- Cache support: SimpleCache, NullCache, Redis, and Memcached
+- Email notification system
+- Health check endpoint
+- Session management with multiple backend options
+- Internationalization support (English, Spanish, Portuguese)
+- Security features: CSRF protection, Argon2 password hashing, SQL injection prevention
+
+### Quality Assurance
+
+The release has been validated through:
+
+- Test suite with 880+ automated tests (99% pass rate)
+- Manual testing of all major features
+- Multi-database backend validation
+- Security testing for authentication and authorization
+- Performance testing with concurrent users
+- Code quality checks using Black, Flake8, and Ruff
+- HTML validation and accessibility review
+
+### System Requirements
+
+- Python 3.11 or higher
+- Compatible with Linux
+- Supported databases: SQLite (included), PostgreSQL, MySQL, or MariaDB
+
+### Known Limitations
+
+- Audit mode for paid courses is partially implemented
+- Some advanced reporting features are planned for future releases
+- There is a problem handling the user session witg gunicorn, use waitress as WSGI server until the issue is fixed.
+
+### Deployment
+
+This release is available on PyPI and can be deployed using pip, Docker, or from source. Default credentials should be changed immediately in production environments.
+
+-------------------
+
+## Development History (Pre-1.0.0)
+
+The entries below document the development history leading to version 1.0.0. These entries are archived for reference.
+
+-------------------
+
 ## [ 0.0.1-rc02 ] - unreleased
 
 ### Fixed:

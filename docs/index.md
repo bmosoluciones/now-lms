@@ -7,8 +7,8 @@ mantain} learning management system (LMS).
 
 Online education can be used as a primary source of knowledge or as a reinforcement method.
 
-!!! warning
-This is beta software!
+!!! info
+NOW LMS version 1.0.0 is the first stable release, ready for production use.
 
 ## First Steps
 
