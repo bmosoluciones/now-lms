@@ -7,6 +7,14 @@ All notable changes to this project will be documented in this file.
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/).
 
 
+## [1.0.1] - 2025-10-18
+
+### Fixed
+- Resolved session persistence issue in multi-process WSGI servers (Gunicorn, Waitress).
+  Flask-Logins now initialized after Flask-Session to ensure proper session binding.
+
+---------------------
+
 ## [1.0.0] - 2025-10-12
 
 ### Summary
