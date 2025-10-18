@@ -204,7 +204,6 @@ def inicializa_extenciones_terceros(flask_app: Flask) -> None:
         # Remove alembic "db" command from flask cli if it exists
         if "db" in flask_app.cli.commands:
             flask_app.cli.commands.pop("db")
-        administrador_sesion.init_app(flask_app)
 
         # Initialize session storage for Gunicorn multi-worker support
         from now_lms.session_config import init_session
@@ -227,6 +226,10 @@ def inicializa_extenciones_terceros(flask_app: Flask) -> None:
         flask_app.config["BABEL_TRANSLATION_DIRECTORIES"] = translations_dir
         flask_app.config["BABEL_SUPPORTED_LOCALES"] = ["es", "en", "pt_BR"]
         babel.init_app(flask_app, locale_selector=get_locale, timezone_selector=get_timezone)
+
+        # Flask-Login must be after Flask-session
+        administrador_sesion.init_app(flask_app)
+
     log.trace("Third-party extensions started successfully.")
 
 
