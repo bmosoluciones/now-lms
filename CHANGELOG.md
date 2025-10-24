@@ -7,6 +7,11 @@ All notable changes to this project will be documented in this file.
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/).
 
 
+## [1.0.2] - 2025-10-23
+
+### Changed
+- Uses waitress as the defaulf WSGI server.
+
 ## [1.0.1] - 2025-10-18
 
 ### Fixed
