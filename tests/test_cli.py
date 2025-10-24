@@ -42,3 +42,15 @@ def test_command_line_interface(session_full_db_setup):
         cache_commands = ("clear", "info", "stats")
         for command in cache_commands:
             result = runner.invoke(args=["cache", command])
+
+
+def test_serve_command_wsgi_server_option():
+    """Test that serve command has --wsgi-server option."""
+    from now_lms import lms_app
+
+    runner = lms_app.test_cli_runner()
+    result = runner.invoke(args=["serve", "--help"])
+    assert result.exit_code == 0
+    assert "--wsgi-server" in result.output
+    assert "waitress" in result.output
+    assert "gunicorn" in result.output

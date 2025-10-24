@@ -145,8 +145,9 @@ app.config["SECRET_KEY"] = "a_very_secret_key"
 app.config["SQLALCHEMY_DATABASE_URI"] = "database_uri"
 
 if __name__ == "__main__":
-    # This script is designed to be used with Gunicorn
-    # Run with: gunicorn --bind 0.0.0.0:8080 --workers 4 run:app
+    # This script is designed to be used with a WSGI server like Waitress or Gunicorn
+    # Run with Waitress (default, cross-platform): python run.py
+    # Or with Gunicorn (Linux only): gunicorn --bind 0.0.0.0:8080 --workers 4 run:app
     pass
 ```
 
@@ -158,9 +159,35 @@ You can test the application factory works:
 python /home/serveradmin/run.py
 ```
 
-If there are no errors, you can now use Gunicorn to serve the application.
+If there are no errors, you can now use a WSGI server to serve the application.
 
-### Setup Gunicorn
+### Setup WSGI Server
+
+NOW-LMS supports both Waitress (default, cross-platform) and Gunicorn (Linux only) as WSGI servers.
+
+#### Option 1: Using Waitress (Recommended - Default)
+
+Waitress is the default WSGI server and works on both Linux and Windows:
+
+```
+source /home/serveradmin/venv/bin/activate
+pip install waitress
+```
+
+Run with Waitress:
+
+```
+python /home/serveradmin/run.py
+```
+
+Or using the CLI:
+
+```
+/home/serveradmin/venv/bin/lmsctl serve
+# or specify explicitly: lmsctl serve --wsgi-server waitress
+```
+
+#### Option 2: Using Gunicorn (Linux Only)
 
 Install Gunicorn in your virtual environment:
 
@@ -175,6 +202,12 @@ Start the WSGI server with Gunicorn:
 
 ```
 /home/serveradmin/venv/bin/gunicorn --bind 0.0.0.0:8080 --workers 4 --chdir /home/serveradmin run:app
+```
+
+Or using the CLI:
+
+```
+/home/serveradmin/venv/bin/lmsctl serve --wsgi-server gunicorn
 ```
 
 ### Create the database and admin user
