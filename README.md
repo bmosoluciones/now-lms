@@ -22,11 +22,10 @@ A simple-to-{install, use, configure, monetize, and maintain} learning managemen
 
 -----------
 
-NOW-LMS is a modern, lightweight Learning Management System built with Flask and Bootstrap, designed to be simple to deploy,
-configure, and scale. It empowers institutions, instructors, and learners by combining essential e-learning features—course
-management, enrollment, communication, assessments, and certification—into one accessible platform. With flexible configuration
-options, role-based access control, support for multiple databases, and built-in monetization tools, NOW-LMS addresses both
-pedagogical and andragogical needs in today’s post-pandemic learning environment.
+**NOW-LMS** is a modern, lightweight Learning Management System built with Flask and Bootstrap, designed to be simple to deploy, configure, and use. It empowers institutions, instructors, and learners by combining essential e-learning features—course management, enrollment, communication, assessments, and certification—into one accessible platform.  
+
+
+With flexible configuration options, role-based access control, support for multiple databases, and built-in monetization tools, NOW-LMS addresses both pedagogical and andragogical needs in today’s learning environment.
 
 **Version 1.0.0** marks the first stable release of NOW LMS. This release has been validated through comprehensive testing with 880+ automated tests, manual testing of all major features, and multi-database backend validation. The system is ready for production use.
 
@@ -44,28 +43,28 @@ User: lms-admin
 Password: lms-admin
 ```
 
-Data in the live demo is reset on every deployment. Please wait for the free Render instance to wake up.
+The demo data is reset on every deployment. Please allow time for the free Render instance to wake up.
 
 
 ## Getting Started
 
-Thanks for your interest in the NOW - LMS project (the project).
+Thanks for your interest in the NOW-LMS project!
 
 ### Implemented Software Stack
 
-- Backend: Python with Flask microframework
-- Frontend: Boostrap5 with Alpine.js
-- ORM: Sqlalchemy
+- **Backend:** Python with Flask microframework  
+- **Frontend:** Bootstrap 5 with Alpine.js  
+- **ORM:** SQLAlchemy
 
 ### Dependencies
 
--   Requires python >= 3.11
+- Requires **Python >= 3.11**
 
 ### Quick Start
 
 To start a local server, simply execute:
 
-```
+```bash
 # Python >= 3.11
 python3 -m venv venv
 venv/bin/pip install now_lms
@@ -73,18 +72,24 @@ venv/bin/lmsctl database init
 venv/bin/lmsctl serve
 ```
 
-Visit `http://127.0.0.1:8080/` in your browser, the default admin user and password are `lms-admin`.
-Note: the default server binds only to localhost. You can test the software locally. If you want to deploy NOW-LMS for
-production use, please check the [user manual](https://bmosoluciones.github.io/now-lms/setup.html). Never use the default
-`admin user` and `password` in a deployment open to public access in the Internet.
+Then visit http://127.0.0.1:8080/ in your browser.
+The default admin credentials are:
 
+```
+User: lms-admin
+Password: lms-admin
+```
+
+For production deployments, see the [user manual](https://bmosoluciones.github.io/now-lms/setup.html).
+
+Never use the default admin user and password in an Internet-accessible environment. It is recommended not to use easily guessable administrator usernames such as admin, root, or administrator.
+Choosing a custom admin username makes it significantly harder for attackers to access your platform.
 
 ### Features
 
 NOW - LMS is designed to be simple yet powerful. Here are its key features:
 
 - **Clean codebase**: Python and HTML5.
-- **RAM-aware worker configuration**: Automatically optimizes Gunicorn workers based on available system memory.
 - **Compatible with multiple databases**: SQLite, PostgreSQL, and MySQL.
 - **Complete course creation functionality**, allowing full curriculum setup.
 - **Courses are organized into sections**, which group resources in a logical manner.
@@ -119,15 +124,16 @@ NOW - LMS is designed to be simple yet powerful. Here are its key features:
 - **Theming and customization**:
   - Easily switch themes
   - Fully override the home page if needed
-- **Email notification system** for important events and updates.
+
+### Known Issues
+
+- The session is not shared in multithreaded WSGI servers. Work is in progress to address this issue. Meanwhile, using Waitress is recommended.
 
 ## Licence
 
-**Apache License 2.0**, a permissive open-source license that allows anyone to freely use, modify, and distribute software,
-including for commercial purposes, as long as copyright and license notices are preserved. It also provides an explicit patent
-grant to protect users from patent claims but terminates rights if you sue over patents. While you can combine Apache-licensed
-code with proprietary software, you cannot use Apache trademarks or logos without permission, and you must give proper attribution
-to the original authors.
+**Apache License 2.0** - a permissive open-source license that allows free use, modification, and distribution (including for commercial purposes), as long as copyright and license notices are preserved.
+It also includes a patent grant to protect users from patent claims but terminates rights if you file such claims.
+You may combine Apache-licensed code with proprietary software, but you cannot use Apache trademarks or logos without permission, and you must provide proper attribution to the original authors.
 
 ## Contributing
 
