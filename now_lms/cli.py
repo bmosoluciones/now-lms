@@ -213,8 +213,14 @@ def routes():
 
 
 @lms_app.cli.command()
-def serve():
-    """Serve NOW LMS with the default WSGI server."""
+@click.option(
+    "--wsgi-server",
+    type=click.Choice(["waitress", "gunicorn"], case_sensitive=False),
+    default="waitress",
+    help="WSGI server to use (default: waitress)",
+)
+def serve(wsgi_server):
+    """Serve NOW LMS with the specified WSGI server."""
     import platform
     import subprocess
     import sys
@@ -235,72 +241,25 @@ def serve():
         # Get optimal worker and thread configuration
         WORKERS, THREADS = get_worker_config_from_env()
 
-    # On Windows, fallback to Flask development server
-    if platform.system() == "Windows":
-        log.warning("Running on Windows - using Flask development server instead of Gunicorn.")
-        log.warning("For production deployments, use Linux or containers.")
-        log.info(f"Starting Flask development server on port {PORT}")
+    wsgi_server = wsgi_server.lower()
 
-        # Use subprocess to spawn Flask development server to avoid CLI context blocking
-        cmd_ = [
-            sys.executable,
-            "-m",
-            "flask",
-            "run",
-            "--host=0.0.0.0",
-            f"--port={PORT}",
-        ]
-        if DESARROLLO:
-            cmd_.append("--debug")
-
-        environ["FLASK_APP"] = "now_lms"
+    # Use Waitress as the default WSGI server (works on both Windows and Linux)
+    if wsgi_server == "waitress":
         try:
-            subprocess.run(cmd_, check=True)
-        except KeyboardInterrupt:
-            log.info("Server stopped by user.")
-        except subprocess.CalledProcessError as e:
-            log.error(f"Failed to start Flask development server: {e}")
-            raise
-    else:
-        # Use Gunicorn on Linux/Unix systems
-        try:
-            from gunicorn.app.base import BaseApplication
+            from waitress import serve as waitress_serve
 
-            class StandaloneApplication(BaseApplication):
-                """Gunicorn application class for NOW LMS."""
-
-                def __init__(self, app, options=None):
-                    self.options = options or {}
-                    self.application = app
-                    super().__init__()
-
-                def load_config(self):
-                    for key, value in self.options.items():
-                        if key in self.cfg.settings and value is not None:
-                            self.cfg.set(key.lower(), value)
-
-                def load(self):
-                    return self.application
-
-            options = {
-                "bind": f"0.0.0.0:{PORT}",
-                "workers": WORKERS,
-                "threads": THREADS,
-                "worker_class": "gthread" if THREADS > 1 else "sync",
-                "preload_app": True,  # Load app before forking workers for memory efficiency and shared sessions
-                "timeout": 120,
-                "graceful_timeout": 30,
-                "keepalive": 5,
-                "accesslog": "-",
-                "errorlog": "-",
-                "loglevel": "info",
-            }
-
-            log.info(f"Starting Gunicorn WSGI server on port {PORT} with {WORKERS} workers and {THREADS} threads per worker.")
-
-            StandaloneApplication(lms_app, options).run()
+            log.info(f"Starting Waitress WSGI server on port {PORT} with {THREADS} threads")
+            waitress_serve(
+                lms_app,
+                host="0.0.0.0",
+                port=PORT,
+                threads=THREADS,
+                channel_timeout=120,
+                cleanup_interval=30,
+                _quiet=False,
+            )
         except ImportError:
-            log.error("Gunicorn is not installed. Install it with: pip install gunicorn")
+            log.error("Waitress is not installed. Install it with: pip install waitress")
             log.info("Falling back to Flask development server.")
 
             # Use subprocess to spawn Flask development server to avoid CLI context blocking
@@ -323,6 +282,85 @@ def serve():
             except subprocess.CalledProcessError as e:
                 log.error(f"Failed to start Flask development server: {e}")
                 raise
+    elif wsgi_server == "gunicorn":
+        # Use Gunicorn (Linux/Unix only)
+        if platform.system() == "Windows":
+            log.error("Gunicorn is not supported on Windows. Use waitress instead or run on Linux/containers.")
+            log.info("Starting Waitress WSGI server instead.")
+            try:
+                from waitress import serve as waitress_serve
+
+                log.info(f"Starting Waitress WSGI server on port {PORT} with {THREADS} threads")
+                waitress_serve(
+                    lms_app,
+                    host="0.0.0.0",
+                    port=PORT,
+                    threads=THREADS,
+                    channel_timeout=120,
+                    cleanup_interval=30,
+                    _quiet=False,
+                )
+            except ImportError:
+                log.error("Waitress is not installed. Install it with: pip install waitress")
+                raise
+        else:
+            try:
+                from gunicorn.app.base import BaseApplication
+
+                class StandaloneApplication(BaseApplication):
+                    """Gunicorn application class for NOW LMS."""
+
+                    def __init__(self, app, options=None):
+                        self.options = options or {}
+                        self.application = app
+                        super().__init__()
+
+                    def load_config(self):
+                        for key, value in self.options.items():
+                            if key in self.cfg.settings and value is not None:
+                                self.cfg.set(key.lower(), value)
+
+                    def load(self):
+                        return self.application
+
+                options = {
+                    "bind": f"0.0.0.0:{PORT}",
+                    "workers": WORKERS,
+                    "threads": THREADS,
+                    "worker_class": "gthread" if THREADS > 1 else "sync",
+                    "preload_app": True,  # Load app before forking workers for memory efficiency and shared sessions
+                    "timeout": 120,
+                    "graceful_timeout": 30,
+                    "keepalive": 5,
+                    "accesslog": "-",
+                    "errorlog": "-",
+                    "loglevel": "info",
+                }
+
+                log.info(
+                    f"Starting Gunicorn WSGI server on port {PORT} with {WORKERS} workers and {THREADS} threads per worker."
+                )
+
+                StandaloneApplication(lms_app, options).run()
+            except ImportError:
+                log.error("Gunicorn is not installed. Install it with: pip install gunicorn")
+                log.info("Falling back to Waitress WSGI server.")
+                try:
+                    from waitress import serve as waitress_serve
+
+                    log.info(f"Starting Waitress WSGI server on port {PORT} with {THREADS} threads")
+                    waitress_serve(
+                        lms_app,
+                        host="0.0.0.0",
+                        port=PORT,
+                        threads=THREADS,
+                        channel_timeout=120,
+                        cleanup_interval=30,
+                        _quiet=False,
+                    )
+                except ImportError:
+                    log.error("Waitress is not installed. Install it with: pip install waitress")
+                    raise
 
 
 @lms_app.cli.group()

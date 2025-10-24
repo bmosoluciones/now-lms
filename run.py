@@ -19,57 +19,34 @@
 from os import environ
 
 # ---------------------------------------------------------------------------------------
-# Third-party libraries
-# ---------------------------------------------------------------------------------------
-from loguru import logger
-
-# ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms import lms_app, init_app
+from now_lms.logs import log
 from now_lms.worker_config import get_worker_config_from_env
 
 PORT = environ.get("PORT") or 8080
 
 if init_app():
-    logger.info("Iniciando NOW Learning Management System")
+    log.info("Iniciando NOW Learning Management System")
     try:
-        from gunicorn.app.base import BaseApplication
-
-        class StandaloneApplication(BaseApplication):
-            def __init__(self, app, options=None):
-                self.options = options or {}
-                self.application = app
-                super().__init__()
-
-            def load_config(self):
-                for key, value in self.options.items():
-                    if key in self.cfg.settings and value is not None:
-                        self.cfg.set(key.lower(), value)
-
-            def load(self):
-                return self.application
+        from waitress import serve
 
         # Get optimal worker and thread configuration
         workers, threads = get_worker_config_from_env()
 
-        options = {
-            "bind": f"0.0.0.0:{PORT}",
-            "workers": workers,
-            "threads": threads,
-            "worker_class": "gthread" if threads > 1 else "sync",
-            "preload_app": True,  # Load app before forking workers for memory efficiency and shared sessions
-            "timeout": 120,
-            "graceful_timeout": 30,
-            "accesslog": "-",
-            "errorlog": "-",
-            "loglevel": "info",
-        }
-
-        logger.info(f"Starting with {workers} workers and {threads} threads per worker")
-        StandaloneApplication(lms_app, options).run()
+        log.info(f"Starting Waitress WSGI server on port {PORT} with {threads} threads")
+        serve(
+            lms_app,
+            host="0.0.0.0",
+            port=PORT,
+            threads=threads,
+            channel_timeout=120,
+            cleanup_interval=30,
+            _quiet=False,
+        )
     except ImportError:
-        logger.error("Gunicorn no está instalado. Por favor instálalo con: pip install gunicorn")
-        logger.error("No se pudo iniciar NOW Learning Management System.")
+        log.error("Waitress no está instalado. Por favor instálalo con: pip install waitress")
+        log.error("No se pudo iniciar NOW Learning Management System.")
 else:
-    logger.error("No se pudo iniciar NOW Learning Management System.")
+    log.error("No se pudo iniciar NOW Learning Management System.")

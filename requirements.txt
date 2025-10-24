@@ -22,6 +22,7 @@ flask-sqlalchemy
 flask_weasyprint
 flask-wtf
 gunicorn
+waitress
 markdown
 memcache
 mysql-connector-python
