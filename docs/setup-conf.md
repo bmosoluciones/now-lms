@@ -82,12 +82,10 @@ DATABASE_URL = postgresql+pg8000://scott:tiger@localhost/mydatabase
 REDIS_URL = redis://localhost:6379/0
 CACHE_MEMCACHED_SERVERS = 127.0.0.1:11211
 
-# Paths (supported in config files)
-CUSTOM_DATA_DIR = /var/lib/now-lms/data
-CUSTOM_THEMES_DIR = /var/lib/now-lms/themes
-
-# Note: Application-specific variables like NOW_LMS_*, MAIL_*, LMS_*,
-# and LOG_LEVEL must be set as environment variables only
+# Note: Directory paths (NOW_LMS_DATA_DIR, NOW_LMS_THEMES_DIR), application-specific
+# variables (NOW_LMS_*), MAIL_*, LMS_*, and LOG_LEVEL must be set as environment
+# variables only because they are read during early module initialization before
+# the config file is loaded.
 ```
 
 ### Configuration Priority
@@ -118,7 +116,6 @@ sudo mkdir -p /etc/now-lms
 sudo tee /etc/now-lms/now-lms.conf > /dev/null << EOF
 SECRET_KEY = your_secure_secret_key
 DATABASE_URL = postgresql+pg8000://nowlms:password@localhost/nowlms_db
-CUSTOM_DATA_DIR = /var/lib/now-lms/data
 EOF
 
 # Set appropriate permissions
@@ -179,6 +176,7 @@ You can use the following options to configure NOW-LMS:
 - **REDIS_URL** (<span style="color:green">optional</span>): User friendly alias to `CACHE_REDIS_URL`. Connection
   string to use [Redis](https://redis.io/) as cache backend, for example `redis://localhost:6379/0`.
 - **CACHE_REDIS_URL** (<span style="color:green">optional</span>): Direct Redis cache configuration. If both `REDIS_URL` and this are set, this takes precedence.
+- **SESSION_REDIS_URL** (<span style="color:green">optional</span>): Redis connection string specifically for session storage in multi-worker environments (Gunicorn). If not set, falls back to `CACHE_REDIS_URL` or `REDIS_URL` for session storage.
 - **CACHE_MEMCACHED_SERVERS** (<span style="color:green">optional</span>): Connection string to use [Memcached](https://memcached.org/) as cache backend, for example `127.0.0.1:11211`.
 - **NOW_LMS_MEMORY_CACHE** (<span style="color:green">optional</span>): Set to `1` to enable in-memory caching (not recommended for production).
 
@@ -190,13 +188,8 @@ You can use the following options to configure NOW-LMS:
 
 ### File Storage and Directories
 
-- **CUSTOM_DATA_DIR** (<span style="color:purple">recommended</span>): Directory to save user-uploaded files and system data, must be writable by the
-  main app process. Note that this variable can NOT be set at runtime because of the configuration parsing order,
-  so you must set this option before the app starts. You MUST backup this directory in the same way
-  you backup the system database.
-- **CUSTOM_THEMES_DIR** (<span style="color:purple">recommended</span>): Directory to save custom user themes, note
-  that static files like .js or .css are not served from the themes directory and should be placed in the directory
-  "static/files/public/themes" most of the time.
+- **NOW_LMS_DATA_DIR** (<span style="color:purple">recommended</span>): Directory to save user-uploaded files and system data, must be writable by the main app process. **IMPORTANT**: This variable MUST be set as an environment variable and CANNOT be set in config files because it is read during early module initialization before config files are loaded. You MUST backup this directory in the same way you backup the system database.
+- **NOW_LMS_THEMES_DIR** (<span style="color:purple">recommended</span>): Directory to save custom user themes. **IMPORTANT**: This variable MUST be set as an environment variable and CANNOT be set in config files because it is read during early module initialization. Note that static files like .js or .css are not served from the themes directory and should be placed in the directory "static/files/public/themes" most of the time.
 
 ### Localization and Regional Settings
 
