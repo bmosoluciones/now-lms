@@ -2,4 +2,7 @@
 
 set -e
 
-exec /usr/bin/python3.12 -m gunicorn --bind 0.0.0.0:8080 --workers 4 --worker-class sync --timeout 120 --access-logfile - --error-logfile - "now_lms:create_app()"
+# Use run.py which supports both Waitress and Gunicorn with shared configuration
+# Defaults to Waitress (cross-platform, included in requirements.txt)
+# Set WSGI_SERVER=gunicorn to use Gunicorn instead (requires gunicorn in requirements.txt)
+exec /usr/bin/python3.12 /app/run.py

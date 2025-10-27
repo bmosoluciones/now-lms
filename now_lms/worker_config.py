@@ -40,9 +40,9 @@ def calculate_optimal_workers(
     threads: int = 1,
 ) -> int:
     """
-    Calculate optimal number of Gunicorn workers based on available RAM and CPU.
+    Calculate optimal number of workers based on available RAM and CPU.
 
-    Formula follows the guidelines from the issue:
+    This formula is used by both Gunicorn and Waitress configurations:
     - CPU-based: (cpu_count * 2) + 1
     - RAM-based: available_ram_mb / worker_memory_mb
     - With threads: workers / threads (rounded down)

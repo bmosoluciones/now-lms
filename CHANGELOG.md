@@ -7,6 +7,11 @@ All notable changes to this project will be documented in this file.
 - This project also follows [Conventional Commits](https://www.conventionalcommits.org/).
 
 
+## [unreleased]
+
+### Changed
+ - Updated default waitress setup.
+
 ## [1.0.2] - 2025-10-23
 
 ### Changed

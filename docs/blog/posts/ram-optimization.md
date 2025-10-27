@@ -8,21 +8,24 @@ categories:
   - Performance
   - System Administration
   - Deployment
+  - WSGI
   - Gunicorn
+  - Waitress
 ---
 
 # RAM Optimization Guide for NOW LMS
 
-This guide explains how NOW LMS automatically optimizes RAM usage through intelligent worker and thread configuration for Gunicorn.
+This guide explains how NOW LMS automatically optimizes RAM usage through intelligent worker and thread configuration for production WSGI servers (Gunicorn and Waitress).
 
 ## Overview
 
-NOW LMS implements RAM-aware worker configuration that automatically calculates the optimal number of workers and threads based on:
+NOW LMS implements RAM-aware configuration that automatically calculates the optimal number of workers and threads based on:
 
 - Available system RAM
 - Number of CPU cores
-- Estimated memory per worker
+- Estimated memory per worker/thread
 - Thread configuration
+- WSGI server being used
 
 This ensures the application doesn't consume more RAM than available, preventing crashes and performance issues.
 
@@ -30,14 +33,17 @@ This ensures the application doesn't consume more RAM than available, preventing
 
 ## How It Works
 
-### Automatic Worker Calculation
+### Automatic Worker/Thread Calculation
 
-The system follows this formula:
+The system follows this formula for both Gunicorn and Waitress:
 
 1. **CPU-based calculation**: `(cpu_count * 2) + 1`
 2. **RAM-based calculation**: `available_ram_mb / worker_memory_mb`
-3. **Final workers**: `min(cpu_based, ram_based)`
-4. **With threads**: `workers / threads` (rounded down, minimum 1)
+3. **Final optimal value**: `min(cpu_based, ram_based)`
+4. **With threads**: `optimal / threads` (rounded down, minimum 1)
+
+**For Gunicorn**: Calculates both workers and threads
+**For Waitress**: Calculates threads only (single-process server)
 
 ### Example Calculations
 
@@ -46,11 +52,14 @@ The system follows this formula:
 - RAM: 2 GB (2048 MB)
 - Worker memory: 200 MB (default)
 
-**Calculation:**
+**Calculation (applies to both Gunicorn and Waitress):**
 ```
-CPU-based: (4 * 2) + 1 = 9 workers
-RAM-based: 2048 / 200 = 10 workers
-Result: min(9, 10) = 9 workers with 1 thread
+CPU-based: (4 * 2) + 1 = 9 
+RAM-based: 2048 / 200 = 10
+Optimal: min(9, 10) = 9
+
+For Gunicorn: 9 workers with 1 thread each
+For Waitress: 9 threads (single process)
 ```
 
 #### Example 2: Low RAM System
@@ -60,12 +69,15 @@ Result: min(9, 10) = 9 workers with 1 thread
 
 **Calculation:**
 ```
-CPU-based: (4 * 2) + 1 = 9 workers
-RAM-based: 1024 / 200 = 5 workers
-Result: min(9, 5) = 5 workers with 1 thread
+CPU-based: (4 * 2) + 1 = 9
+RAM-based: 1024 / 200 = 5
+Optimal: min(9, 5) = 5 (RAM-limited)
+
+For Gunicorn: 5 workers with 1 thread each
+For Waitress: 5 threads (single process)
 ```
 
-#### Example 3: Using Threads to Save RAM
+#### Example 3: Using Threads to Save RAM (Gunicorn)
 - CPU: 4 cores
 - RAM: 1 GB (1024 MB)
 - Worker memory: 200 MB
@@ -73,24 +85,27 @@ Result: min(9, 5) = 5 workers with 1 thread
 
 **Calculation:**
 ```
-CPU-based: (4 * 2) + 1 = 9 workers
-RAM-based: 1024 / 200 = 5 workers
-Base optimal: min(9, 5) = 5 workers
-With threads: 5 / 4 = 1 worker (minimum) with 4 threads
+CPU-based: (4 * 2) + 1 = 9
+RAM-based: 1024 / 200 = 5
+Base optimal: min(9, 5) = 5
+With threads: 5 / 4 = 1 worker with 4 threads (minimum enforced)
+Total capacity: 4 concurrent requests
 ```
 
-#### Example 4: Very Low RAM (512 MB)
+#### Example 4: High Thread Count (Waitress)
 - CPU: 2 cores
 - RAM: 512 MB
 - Worker memory: 200 MB
-- Threads: 4
+- Threads: 8
 
 **Calculation:**
 ```
-CPU-based: (2 * 2) + 1 = 5 workers
-RAM-based: 512 / 200 = 2 workers
-Base optimal: min(5, 2) = 2 workers
-With threads: 2 / 4 = 0.5 → 1 worker (minimum enforced) with 4 threads
+CPU-based: (2 * 2) + 1 = 5
+RAM-based: 512 / 200 = 2
+Optimal: min(5, 2) = 2
+
+For Waitress: 8 threads (explicitly set, single process)
+Estimated RAM: ~200 MB (single process)
 ```
 
 ## Configuration Options
@@ -100,36 +115,42 @@ With threads: 2 / 4 = 0.5 → 1 worker (minimum enforced) with 4 threads
 #### NOW_LMS_WORKERS / WORKERS
 - **Type**: Integer
 - **Default**: Auto-calculated based on RAM and CPU
-- **Description**: Explicitly set the number of Gunicorn workers
+- **Description**: Number of worker processes for Gunicorn
 - **Example**: `NOW_LMS_WORKERS=4` or `WORKERS=4`
 - **Compatibility**: Both `NOW_LMS_WORKERS` (preferred) and `WORKERS` are supported
+- **Note**: Only applies to Gunicorn; Waitress is single-process
 
 When set, this overrides automatic calculation. Use this when you know your specific requirements.
 
 #### NOW_LMS_THREADS / THREADS
 - **Type**: Integer
-- **Default**: 1
-- **Description**: Number of threads per worker
+- **Default**: Auto-calculated based on RAM and CPU
+- **Description**: Number of threads for concurrent request handling
 - **Example**: `NOW_LMS_THREADS=4` or `THREADS=4`
 - **Compatibility**: Both `NOW_LMS_THREADS` (preferred) and `THREADS` are supported
+- **Note**: For Waitress, this sets total threads; for Gunicorn, threads per worker
 
 Setting threads > 1:
-- Automatically switches to `gthread` worker class
-- Reduces worker count proportionally to save RAM
+- For Gunicorn: Automatically switches to `gthread` worker class and reduces worker count proportionally to save RAM
+- For Waitress: Sets the total number of threads in the single process
 - Better for I/O-bound applications
 
 #### NOW_LMS_WORKER_MEMORY_MB / WORKER_MEMORY_MB
 - **Type**: Integer
 - **Default**: 200
-- **Description**: Estimated memory usage per worker in MB
+- **Description**: Estimated memory usage per worker/process in MB
 - **Example**: `NOW_LMS_WORKER_MEMORY_MB=250` or `WORKER_MEMORY_MB=250`
 - **Compatibility**: Both `NOW_LMS_WORKER_MEMORY_MB` (preferred) and `WORKER_MEMORY_MB` are supported
+- **Note**: Affects automatic calculation for both Gunicorn workers and Waitress threads
 
 Adjust this based on your application's actual memory usage. To measure:
 
 ```bash
-# Monitor memory usage of workers
+# For Gunicorn
 ps aux | grep gunicorn
+
+# For Waitress
+ps aux | grep waitress
 ```
 
 #### LMS_PORT / PORT
@@ -144,68 +165,72 @@ ps aux | grep gunicorn
 
 **No configuration needed** - automatic calculation works well:
 ```bash
-# Automatic: 9 workers, 1 thread
+# Using Waitress (default)
 venv/bin/lmsctl serve
+
+# Using Gunicorn
+venv/bin/lmsctl serve --wsgi-server gunicorn
 ```
 
 Expected configuration:
-- Workers: 9 (CPU-limited)
-- Threads: 1
-- Estimated RAM: ~1.8 GB
+- **Waitress**: 9 threads, single process, ~200 MB RAM
+- **Gunicorn**: 9 workers, 1 thread each, ~1.8 GB RAM
 
 ### Scenario 2: Small VPS (1 GB RAM, 2 cores)
 
-Use threads to reduce RAM usage:
+Use threads for better concurrency with less RAM:
 ```bash
 export NOW_LMS_THREADS=4
+
+# Using Waitress (recommended for small VPS)
 venv/bin/lmsctl serve
 ```
 
 Expected configuration:
-- Workers: 1 (RAM-limited, adjusted for threads)
-- Threads: 4
-- Estimated RAM: ~200 MB
+- **Waitress**: 4 threads, single process, ~200 MB RAM
+- **Gunicorn**: 1 worker with 4 threads, ~200 MB RAM
 
 ### Scenario 3: Container with Limited RAM (512 MB, 2 cores)
 
-Explicitly limit workers and use threads:
+Waitress is ideal for constrained environments:
 ```bash
-export NOW_LMS_WORKERS=1
 export NOW_LMS_THREADS=4
 export NOW_LMS_WORKER_MEMORY_MB=150
+
+# Using Waitress (recommended for containers)
 venv/bin/lmsctl serve
 ```
 
 Expected configuration:
-- Workers: 1 (explicit)
-- Threads: 4
-- Estimated RAM: ~150 MB
+- **Waitress**: 4 threads, single process, ~150 MB RAM
+- **Gunicorn** (alternative): 1 worker, 4 threads, ~150 MB RAM
 
 ### Scenario 4: High-Traffic Server (16 GB RAM, 8 cores)
 
-Maximize workers for high concurrency:
+Gunicorn with multiple workers for maximum throughput:
 ```bash
 export NOW_LMS_WORKER_MEMORY_MB=300
-venv/bin/lmsctl serve
+
+# Using Gunicorn for multi-process
+venv/bin/lmsctl serve --wsgi-server gunicorn
 ```
 
 Expected configuration:
-- Workers: 17 (CPU-based: (8*2)+1)
-- Threads: 1
-- Estimated RAM: ~5.1 GB
+- **Gunicorn**: 17 workers (CPU-based: (8*2)+1), 1 thread each, ~5.1 GB RAM
+- **Waitress** (alternative): 17 threads, single process, ~300 MB RAM
 
-With threads for even more concurrency:
+With threads for even more concurrency (Gunicorn):
 ```bash
 export NOW_LMS_THREADS=2
 export NOW_LMS_WORKER_MEMORY_MB=300
-venv/bin/lmsctl serve
+venv/bin/lmsctl serve --wsgi-server gunicorn
 ```
 
 Expected configuration:
 - Workers: 8 (17/2)
-- Threads: 2
+- Threads: 2 per worker
 - Estimated RAM: ~2.4 GB
-- Total thread capacity: 16 concurrent requests
+- Total concurrent capacity: 16 requests
 
 ## Best Practices
 
@@ -217,8 +242,8 @@ Always monitor actual RAM usage to tune settings:
 # Check total system memory
 free -m
 
-# Monitor Gunicorn processes
-ps aux | grep gunicorn | awk '{sum+=$6} END {print "Total RAM: " sum/1024 " MB"}'
+# Monitor WSGI server processes
+ps aux | grep -E "(gunicorn|waitress)" | awk '{sum+=$6} END {print "Total RAM: " sum/1024 " MB"}'
 
 # Use htop for interactive monitoring
 htop

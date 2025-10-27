@@ -1,21 +1,23 @@
 ---
 draft: false
 date: 2025-10-10
-slug: gunicorn-session
+slug: wsgi-session-storage
 authors:
   - admin
 categories:
   - Performance
   - System Administration
   - Deployment
+  - WSGI
   - Gunicorn
+  - Waitress
 ---
 
-# Gunicorn Session Storage Configuration
+# WSGI Server Session Storage Configuration
 
 ## Problem
 
-When switching from Waitress (single-threaded server) to Gunicorn (multi-process server), users experienced erratic session behavior:
+When running NOW LMS with production WSGI servers (Gunicorn multi-process or Waitress multi-threaded), users can experience erratic session behavior:
 
 - Sometimes appeared logged in after authentication
 - Sometimes appeared logged out after refresh
@@ -24,30 +26,39 @@ When switching from Waitress (single-threaded server) to Gunicorn (multi-process
 
 ## Root Cause
 
-Gunicorn spawns multiple worker processes by default (e.g., `gunicorn app:app --workers 4`), and each worker has its own memory space. Flask's default session handling uses signed cookies stored in each process's memory, which causes issues:
+Both Gunicorn and Waitress can cause session issues, but for slightly different reasons:
+
+### Gunicorn (Multi-Process)
+
+Gunicorn spawns multiple worker processes (e.g., `gunicorn app:app --workers 4`), and each worker has its own memory space. Flask's default session handling uses signed cookies stored in each process's memory:
 
 1. User logs in → Request handled by Worker 1 → Session created in Worker 1's memory
 2. User refreshes page → Request handled by Worker 2 → Worker 2 doesn't know about the session → User appears logged out
 3. User refreshes again → Request handled by Worker 1 → Session found → User appears logged in
 
-This creates the "erratic" behavior where session state is inconsistent.
+### Waitress (Multi-Threaded)
+
+Waitress uses a single process with multiple threads. While threads share memory, concurrent access to session data without proper synchronization can cause race conditions and inconsistent session state, especially under high load.
+
+Both scenarios create "erratic" behavior where session state is inconsistent.
 
 ## Solution
 
-Implement **shared session storage** that all Gunicorn workers can access:
+Implement **shared session storage** that all workers/threads can safely access:
 
 ### 1. Redis (Preferred)
 
-Redis provides optimal performance and is the recommended solution for production:
+Redis provides optimal performance and is the recommended solution for production with both Gunicorn and Waitress:
 
 - Fast in-memory storage
-- Shared across all workers
+- Shared across all workers/threads
+- Thread-safe operations
 - Persistent across server restarts
 - Supports session expiration
 
 ### 2. Filesystem (Fallback)
 
-When Redis is not available, filesystem-based sessions work as long as all workers share the same filesystem:
+When Redis is not available, filesystem-based sessions work for both servers as long as they share the same filesystem:
 
 - Sessions stored in `/tmp/now_lms_sessions/`
 - Slower than Redis but functional
@@ -80,9 +91,16 @@ export REDIS_URL=redis://localhost:6379/0
 export SESSION_REDIS_URL=redis://localhost:6379/0
 ```
 
-Then run Gunicorn:
+Then run your WSGI server of choice:
 
 ```bash
+# Using Waitress (default)
+lmsctl serve
+
+# Using Gunicorn
+lmsctl serve --wsgi-server gunicorn
+
+# Or directly
 gunicorn "now_lms:lms_app" --workers 4 --bind 0.0.0.0:8000
 ```
 
@@ -125,8 +143,8 @@ All session storage backends use these production-ready settings:
 2. **`now_lms/session_config.py`**: Session configuration with cookie security settings
 3. **`now_lms/__init__.py`**: Integrated session initialization
 4. **`now_lms/config/__init__.py`**: Added SECRET_KEY warning
-5. **`run.py`**: Gunicorn configuration with `preload_app=True` for shared sessions (for containers)
-6. **`now_lms/cli.py`**: Gunicorn configuration with `preload_app=True` for shared sessions (for CLI)
+5. **`run.py`**: Waitress configuration with shared session storage
+6. **`now_lms/cli.py`**: Both Gunicorn and Waitress configuration with shared session storage
 
 ## Testing
 
@@ -142,16 +160,38 @@ Tests verify:
 - Proper settings for production use
 - Session persistence across requests
 
-## Gunicorn Configuration
+## WSGI Server Configuration
 
-NOW LMS has built-in Gunicorn configuration in `run.py` and `now_lms/cli.py` with optimal settings for session handling:
+NOW LMS has built-in configuration for both Waitress and Gunicorn in `run.py` and `now_lms/cli.py` with optimal settings for session handling:
+
+### Waitress Configuration
+
+```python
+# Key configurations for session support
+serve(
+    lms_app,
+    host="0.0.0.0",
+    port=PORT,
+    threads=threads,  # Automatically calculated based on system resources
+    channel_timeout=120,
+    cleanup_interval=30,
+)
+```
+
+**Important**: 
+- Waitress is single-process, multi-threaded
+- Thread count is automatically calculated based on CPU and RAM
+- Works well with both Redis and filesystem sessions
+- Cross-platform (Windows, Linux, macOS)
+
+### Gunicorn Configuration
 
 ```python
 # Key configurations for session support
 options = {
     "preload_app": True,  # Load app before forking workers
     "workers": workers,  # Intelligent calculation based on CPU and RAM
-    "threads": threads,  # Default 1 for filesystem, can be >1 with Redis
+    "threads": threads,  # Default 1, can be >1 for more concurrency
     "worker_class": "gthread" if threads > 1 else "sync",
     "graceful_timeout": 30,
 }
@@ -159,36 +199,35 @@ options = {
 
 **Important**: 
 - `preload_app = True` ensures consistent app configuration across all workers
-- Use `threads = 1` when using filesystem sessions for compatibility
-- Use `threads > 1` only when using Redis for sessions
+- Works with both Redis and filesystem sessions
 - Worker/thread counts are automatically calculated based on system resources
+- Linux/Unix only (not supported on Windows)
 
-## Gunicorn Best Practices
+## WSGI Server Best Practices
 
 ### Using the CLI Command
 
 The recommended way to run NOW LMS is using the built-in CLI:
 
 ```bash
+# Using Waitress (default, cross-platform)
 lmsctl serve
+
+# Using Gunicorn (Linux/Unix only)
+lmsctl serve --wsgi-server gunicorn
 ```
 
 Or directly with Python:
 
 ```bash
+# Uses Waitress by default
 python run.py
 ```
 
-Both commands automatically configure Gunicorn with:
-- `preload_app = True` for memory efficiency and shared sessions
+The CLI command automatically configures your chosen WSGI server with:
 - Intelligent worker/thread calculation based on CPU and RAM
-- Environment variable overrides (GUNICORN_WORKERS, GUNICORN_THREADS)
-
-### Basic Command
-
-```bash
-gunicorn "now_lms:lms_app" --workers 4 --threads 2 --bind 0.0.0.0:8000
-```
+- Environment variable support (NOW_LMS_WORKERS, NOW_LMS_THREADS)
+- Proper session storage configuration
 
 ### With Environment Variables
 
@@ -196,40 +235,64 @@ gunicorn "now_lms:lms_app" --workers 4 --threads 2 --bind 0.0.0.0:8000
 export SECRET_KEY="your-secret-key"
 export REDIS_URL="redis://localhost:6379/0"
 export DATABASE_URL="postgresql://user:pass@localhost/dbname"
-export GUNICORN_WORKERS=4
-export GUNICORN_THREADS=2
+export NOW_LMS_WORKERS=4  # For Gunicorn only
+export NOW_LMS_THREADS=4  # For both Waitress and Gunicorn
 
-# Using the CLI command
+# Using Waitress (default)
 lmsctl serve
 
-# Or using run.py
-python run.py
+# Using Gunicorn
+lmsctl serve --wsgi-server gunicorn
 ```
 
-### Direct Gunicorn Command (Advanced)
+### Advanced: Direct Server Commands
 
+#### Waitress
 ```bash
-gunicorn "now_lms:lms_app" --workers 4 --bind 0.0.0.0:8000
+waitress-serve --host=0.0.0.0 --port=8000 --threads=4 now_lms:lms_app
 ```
 
-Note: Using the CLI command or `run.py` is recommended as they include the `preload_app=True` setting automatically.
+#### Gunicorn
+```bash
+gunicorn "now_lms:lms_app" --workers 4 --threads 2 --bind 0.0.0.0:8000
+```
 
-### Worker Count
+Note: Using the CLI command (`lmsctl serve`) is recommended as it automatically configures the server with optimal settings.
 
-Choose worker count based on your server:
+### Worker/Thread Count Recommendations
 
-- **CPU-bound**: `workers = (2 × CPU cores) + 1`
-- **I/O-bound**: `workers = (4 × CPU cores) + 1`
+NOW LMS automatically calculates optimal counts, but you can override:
+
+#### For Gunicorn (Multi-Process)
+- **CPU-bound workloads**: `workers = (2 × CPU cores) + 1`
+- **I/O-bound workloads**: Use more threads per worker instead
 
 Example for 4 CPU cores:
 ```bash
-gunicorn "now_lms:lms_app" --workers 9 --bind 0.0.0.0:8000
+export NOW_LMS_WORKERS=9
+lmsctl serve --wsgi-server gunicorn
 ```
 
-### With Timeout
+#### For Waitress (Single-Process Multi-Threaded)
+- **Threads**: Automatically calculated based on available RAM and CPU
+- **I/O-bound workloads**: Can benefit from higher thread counts
 
+Example:
+```bash
+export NOW_LMS_THREADS=8
+lmsctl serve
+```
+
+### Additional Server Options
+
+#### Gunicorn with Timeout
 ```bash
 gunicorn "now_lms:lms_app" --workers 4 --timeout 120 --bind 0.0.0.0:8000
+```
+
+#### Waitress with Custom Settings
+```bash
+waitress-serve --host=0.0.0.0 --port=8000 --threads=8 --channel-timeout=120 now_lms:lms_app
 ```
 
 ## Monitoring
@@ -237,17 +300,17 @@ gunicorn "now_lms:lms_app" --workers 4 --timeout 120 --bind 0.0.0.0:8000
 Check logs for session configuration:
 
 ```
-INFO: Configuring Redis-based session storage for Gunicorn workers
+INFO: Configuring Redis-based session storage for multi-worker/multi-threaded WSGI servers
 INFO: Session storage initialized: redis
-INFO: Using Redis for session storage - optimal for Gunicorn
+INFO: Using Redis for session storage - optimal for multi-worker WSGI servers
 ```
 
 or
 
 ```
-INFO: Configuring filesystem-based session storage for Gunicorn workers
-INFO: Session storage initialized: filesystem
-INFO: Session directory: /tmp/now_lms_sessions
+INFO: Configuring CacheLib FileSystemCache-based session storage for multi-worker/multi-threaded WSGI servers
+INFO: Session storage initialized: cachelib
+INFO: Session cache directory: /tmp/now_lms_sessions
 ```
 
 ## Troubleshooting
@@ -257,12 +320,12 @@ INFO: Session directory: /tmp/now_lms_sessions
 1. Verify Redis is running: `redis-cli ping` (should return "PONG")
 2. Check Redis URL is correct: `echo $REDIS_URL`
 3. Verify SECRET_KEY is set and stable: `echo $SECRET_KEY`
-4. Check Gunicorn logs for session initialization messages
+4. Check WSGI server logs for session initialization messages
 
 ### Sessions not persisting
 
 1. Check SECRET_KEY is not "dev": `echo $SECRET_KEY`
-2. If using filesystem storage, verify `/tmp/now_lms_sessions` is writable
+2. If using filesystem storage, verify `/tmp/now_lms_sessions` (or `/dev/shm/now_lms_sessions`) is writable
 3. Check session expiration (default 24 hours)
 
 ### Redis connection errors
@@ -275,14 +338,39 @@ unset REDIS_URL
 unset SESSION_REDIS_URL
 ```
 
-## Migration from Waitress
+## Choosing Between Waitress and Gunicorn
 
-When migrating from Waitress to Gunicorn:
+Both servers work well with NOW LMS and support the same session storage configuration:
 
-1. **Set SECRET_KEY** (if not already set)
-2. **Install Redis** (recommended) or accept filesystem fallback
-3. **Update deployment command** from `waitress-serve` to `gunicorn`
-4. **Test with multiple workers** to verify session persistence
+### Use Waitress When:
+- Running on Windows (Gunicorn not supported)
+- Want simple, single-process deployment
+- Prefer Python-only dependencies
+- Need cross-platform compatibility
+- Single server with moderate traffic
+
+### Use Gunicorn When:
+- Running on Linux/Unix
+- Need multiple worker processes for better CPU utilization
+- Want traditional Unix-style process management
+- High-traffic production environment
+- Want to use `preload_app` for memory efficiency
+
+### Switching Between Servers
+
+The configuration is designed to work seamlessly with both:
+
+```bash
+# No configuration changes needed!
+
+# Using Waitress
+lmsctl serve
+
+# Using Gunicorn
+lmsctl serve --wsgi-server gunicorn
+```
+
+Session storage configuration is shared and works identically with both servers.
 
 ## Performance
 
@@ -295,6 +383,7 @@ When migrating from Waitress to Gunicorn:
 | Multi-server | Yes | No |
 | Persistence | Configurable | Yes |
 | Setup | Requires Redis | No setup |
+| Thread-safe | Yes | Yes (with proper locking) |
 
 ### Recommendations
 

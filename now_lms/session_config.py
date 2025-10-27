@@ -13,17 +13,18 @@
 # limitations under the License.
 #
 
-"""Session configuration for multi-worker environments (Gunicorn).
+"""Session configuration for multi-worker/multi-threaded environments.
 
-This module configures Flask sessions to work properly with Gunicorn's
-multi-worker architecture. It supports:
-- Redis (preferred): Shared session storage across workers
+This module configures Flask sessions to work properly with production WSGI
+servers (Gunicorn, Waitress) that use multiple workers or threads. It supports:
+- Redis (preferred): Shared session storage across workers/threads
 - CacheLib FileSystemCache: Fallback when Redis is unavailable
 - NullSession: For testing environments
 
-When running with Gunicorn (multiple worker processes), the default Flask
-session (cookie-based) can cause erratic behavior because each worker has
-its own memory space. This module ensures sessions are properly shared.
+When running with production WSGI servers (multiple workers or threads), the
+default Flask session (cookie-based) can cause erratic behavior because each
+worker/thread may have its own memory space. This module ensures sessions are
+properly shared.
 """
 
 from __future__ import annotations
@@ -68,7 +69,7 @@ def get_session_config() -> dict[str, object] | None:
     redis_url = os.environ.get("SESSION_REDIS_URL") or os.environ.get("CACHE_REDIS_URL") or os.environ.get("REDIS_URL")
 
     if redis_url:
-        log.info("Configuring Redis-based session storage for Gunicorn workers")
+        log.info("Configuring Redis-based session storage for multi-worker/multi-threaded WSGI servers")
 
         # Import Redis client
         try:
@@ -93,8 +94,8 @@ def get_session_config() -> dict[str, object] | None:
 
     # Fallback to CacheLib FileSystemCache
     # Using CacheLib instead of deprecated filesystem backend
-    # This works across Gunicorn workers as long as they share the same filesystem
-    log.info("Configuring CacheLib FileSystemCache-based session storage for Gunicorn workers")
+    # This works across WSGI workers/threads as long as they share the same filesystem
+    log.info("Configuring CacheLib FileSystemCache-based session storage for multi-worker/multi-threaded WSGI servers")
 
     # Prefer /dev/shm for better performance (shared memory)
     # Fall back to temp directory if /dev/shm is not available
@@ -133,9 +134,9 @@ def init_session(app: Flask) -> None:
         app: Flask application instance
 
     Note:
-        This ensures sessions work correctly with Gunicorn's multi-worker
-        architecture by using shared storage (Redis or filesystem) instead
-        of in-memory sessions.
+        This ensures sessions work correctly with production WSGI servers
+        (Gunicorn, Waitress) using multi-worker/multi-threaded architectures
+        by using shared storage (Redis or filesystem) instead of in-memory sessions.
     """
     try:
         # Get the session configuration
@@ -159,9 +160,11 @@ def init_session(app: Flask) -> None:
 
         match session_type:
             case "redis":
-                log.info("Using Redis for session storage - optimal for Gunicorn")
+                log.info("Using Redis for session storage - optimal for multi-worker WSGI servers")
             case "cachelib":
-                log.info("Using CacheLib FileSystemCache for session storage - works with Gunicorn")
+                log.info(
+                    "Using CacheLib FileSystemCache for session storage - works with multi-worker/multi-threaded WSGI servers"
+                )
                 cache_backend = session_config.get("SESSION_CACHELIB")
                 if hasattr(cache_backend, "_path"):
                     log.info(f"Session cache directory: {cache_backend._path}")
@@ -171,7 +174,7 @@ def init_session(app: Flask) -> None:
     except ImportError:
         log.error(
             "Flask-Session is not installed. Sessions may not work correctly "
-            "with Gunicorn multi-worker setup. Install with: pip install flask-session"
+            "with multi-worker/multi-threaded WSGI servers. Install with: pip install flask-session"
         )
         raise
     except Exception as e:
