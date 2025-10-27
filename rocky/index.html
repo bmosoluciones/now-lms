@@ -868,11 +868,35 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#setup-gunicorn" class="md-nav__link">
+  <a href="#setup-wsgi-server" class="md-nav__link">
     <span class="md-ellipsis">
-      Setup Gunicorn
+      Setup WSGI Server
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Setup WSGI Server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-using-waitress-recommended-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option 1: Using Waitress (Recommended - Default)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-using-gunicorn-linux-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option 2: Using Gunicorn (Linux Only)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -2485,11 +2509,35 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#setup-gunicorn" class="md-nav__link">
+  <a href="#setup-wsgi-server" class="md-nav__link">
     <span class="md-ellipsis">
-      Setup Gunicorn
+      Setup WSGI Server
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Setup WSGI Server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-using-waitress-recommended-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option 1: Using Waitress (Recommended - Default)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-using-gunicorn-linux-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option 2: Using Gunicorn (Linux Only)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -2631,16 +2679,31 @@ app.config["SECRET_KEY"] = "a_very_secret_key"
 app.config["SQLALCHEMY_DATABASE_URI"] = "database_uri"
 
 if __name__ == "__main__":
-    # This script is designed to be used with Gunicorn
-    # Run with: gunicorn --bind 0.0.0.0:8080 --workers 4 run:app
+    # This script is designed to be used with a WSGI server like Waitress or Gunicorn
+    # Run with Waitress (default, cross-platform): python run.py
+    # Or with Gunicorn (Linux only): gunicorn --bind 0.0.0.0:8080 --workers 4 run:app
     pass
 </code></pre></div>
 <h3 id="test-your-run-script-and-setup-your-system">Test your run script and setup your system</h3>
 <p>You can test the application factory works:</p>
 <div class="highlight"><pre><span></span><code>python /home/serveradmin/run.py
 </code></pre></div>
-<p>If there are no errors, you can now use Gunicorn to serve the application.</p>
-<h3 id="setup-gunicorn">Setup Gunicorn</h3>
+<p>If there are no errors, you can now use a WSGI server to serve the application.</p>
+<h3 id="setup-wsgi-server">Setup WSGI Server</h3>
+<p>NOW-LMS supports both Waitress (default, cross-platform) and Gunicorn (Linux only) as WSGI servers.</p>
+<h4 id="option-1-using-waitress-recommended-default">Option 1: Using Waitress (Recommended - Default)</h4>
+<p>Waitress is the default WSGI server and works on both Linux and Windows:</p>
+<div class="highlight"><pre><span></span><code>source /home/serveradmin/venv/bin/activate
+pip install waitress
+</code></pre></div>
+<p>Run with Waitress:</p>
+<div class="highlight"><pre><span></span><code>python /home/serveradmin/run.py
+</code></pre></div>
+<p>Or using the CLI:</p>
+<div class="highlight"><pre><span></span><code>/home/serveradmin/venv/bin/lmsctl serve
+# or specify explicitly: lmsctl serve --wsgi-server waitress
+</code></pre></div>
+<h4 id="option-2-using-gunicorn-linux-only">Option 2: Using Gunicorn (Linux Only)</h4>
 <p>Install Gunicorn in your virtual environment:</p>
 <div class="highlight"><pre><span></span><code>source /home/serveradmin/venv/bin/activate
 pip install gunicorn
@@ -2648,6 +2711,9 @@ pip install gunicorn
 <h3 id="run-with-gunicorn">Run with Gunicorn</h3>
 <p>Start the WSGI server with Gunicorn:</p>
 <div class="highlight"><pre><span></span><code>/home/serveradmin/venv/bin/gunicorn --bind 0.0.0.0:8080 --workers 4 --chdir /home/serveradmin run:app
+</code></pre></div>
+<p>Or using the CLI:</p>
+<div class="highlight"><pre><span></span><code>/home/serveradmin/venv/bin/lmsctl serve --wsgi-server gunicorn
 </code></pre></div>
 <h3 id="create-the-database-and-admin-user">Create the database and admin user</h3>
 <p>Before starting the server for the first time, initialize the database:</p>

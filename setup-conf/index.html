@@ -2790,12 +2790,10 @@ lmsctl<span class="w"> </span>serve
 <span class="na">REDIS_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">redis://localhost:6379/0</span>
 <span class="na">CACHE_MEMCACHED_SERVERS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">127.0.0.1:11211</span>
 
-<span class="c1"># Paths (supported in config files)</span>
-<span class="na">CUSTOM_DATA_DIR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">/var/lib/now-lms/data</span>
-<span class="na">CUSTOM_THEMES_DIR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">/var/lib/now-lms/themes</span>
-
-<span class="c1"># Note: Application-specific variables like NOW_LMS_*, MAIL_*, LMS_*,</span>
-<span class="c1"># and LOG_LEVEL must be set as environment variables only</span>
+<span class="c1"># Note: Directory paths (NOW_LMS_DATA_DIR, NOW_LMS_THEMES_DIR), application-specific</span>
+<span class="c1"># variables (NOW_LMS_*), MAIL_*, LMS_*, and LOG_LEVEL must be set as environment</span>
+<span class="c1"># variables only because they are read during early module initialization before</span>
+<span class="c1"># the config file is loaded.</span>
 </code></pre></div>
 <h3 id="configuration-priority">Configuration Priority</h3>
 <p>The configuration loading follows this priority order (highest to lowest):</p>
@@ -2819,7 +2817,6 @@ sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </sp
 sudo<span class="w"> </span>tee<span class="w"> </span>/etc/now-lms/now-lms.conf<span class="w"> </span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="s">&lt;&lt; EOF</span>
 <span class="s">SECRET_KEY = your_secure_secret_key</span>
 <span class="s">DATABASE_URL = postgresql+pg8000://nowlms:password@localhost/nowlms_db</span>
-<span class="s">CUSTOM_DATA_DIR = /var/lib/now-lms/data</span>
 <span class="s">EOF</span>
 
 <span class="c1"># Set appropriate permissions</span>
@@ -2868,6 +2865,7 @@ app = lms_app
 <li><strong>REDIS_URL</strong> (<span style="color:green">optional</span>): User friendly alias to <code>CACHE_REDIS_URL</code>. Connection
   string to use <a href="https://redis.io/">Redis</a> as cache backend, for example <code>redis://localhost:6379/0</code>.</li>
 <li><strong>CACHE_REDIS_URL</strong> (<span style="color:green">optional</span>): Direct Redis cache configuration. If both <code>REDIS_URL</code> and this are set, this takes precedence.</li>
+<li><strong>SESSION_REDIS_URL</strong> (<span style="color:green">optional</span>): Redis connection string specifically for session storage in multi-worker environments (Gunicorn). If not set, falls back to <code>CACHE_REDIS_URL</code> or <code>REDIS_URL</code> for session storage.</li>
 <li><strong>CACHE_MEMCACHED_SERVERS</strong> (<span style="color:green">optional</span>): Connection string to use <a href="https://memcached.org/">Memcached</a> as cache backend, for example <code>127.0.0.1:11211</code>.</li>
 <li><strong>NOW_LMS_MEMORY_CACHE</strong> (<span style="color:green">optional</span>): Set to <code>1</code> to enable in-memory caching (not recommended for production).</li>
 </ul>
@@ -2879,13 +2877,8 @@ app = lms_app
 </ul>
 <h3 id="file-storage-and-directories">File Storage and Directories</h3>
 <ul>
-<li><strong>CUSTOM_DATA_DIR</strong> (<span style="color:purple">recommended</span>): Directory to save user-uploaded files and system data, must be writable by the
-  main app process. Note that this variable can NOT be set at runtime because of the configuration parsing order,
-  so you must set this option before the app starts. You MUST backup this directory in the same way
-  you backup the system database.</li>
-<li><strong>CUSTOM_THEMES_DIR</strong> (<span style="color:purple">recommended</span>): Directory to save custom user themes, note
-  that static files like .js or .css are not served from the themes directory and should be placed in the directory
-  "static/files/public/themes" most of the time.</li>
+<li><strong>NOW_LMS_DATA_DIR</strong> (<span style="color:purple">recommended</span>): Directory to save user-uploaded files and system data, must be writable by the main app process. <strong>IMPORTANT</strong>: This variable MUST be set as an environment variable and CANNOT be set in config files because it is read during early module initialization before config files are loaded. You MUST backup this directory in the same way you backup the system database.</li>
+<li><strong>NOW_LMS_THEMES_DIR</strong> (<span style="color:purple">recommended</span>): Directory to save custom user themes. <strong>IMPORTANT</strong>: This variable MUST be set as an environment variable and CANNOT be set in config files because it is read during early module initialization. Note that static files like .js or .css are not served from the themes directory and should be placed in the directory "static/files/public/themes" most of the time.</li>
 </ul>
 <h3 id="localization-and-regional-settings">Localization and Regional Settings</h3>
 <ul>
@@ -2907,9 +2900,9 @@ app = lms_app
 <ul>
 <li><strong>LMS_PORT</strong> (<span style="color:green">optional</span>): Port number for the LMS server (when using lmsctl).</li>
 <li><strong>PORT</strong> (<span style="color:green">optional</span>): Alternative port configuration (used in cloud environments like Heroku).</li>
-<li><strong>NOW_LMS_WORKERS</strong> / <strong>WORKERS</strong> (<span style="color:green">optional</span>): Number of worker processes for Gunicorn (when using lmsctl). If not set, automatically calculated based on available RAM and CPU cores. The calculation uses the formula: <code>min((cpu_count * 2) + 1, available_ram_mb / worker_memory_mb)</code>, adjusted by thread count if threads &gt; 1. See <a href="../blog/2025/10/05/ram-optimization-guide/">RAM Optimization Guide</a> for detailed examples.</li>
-<li><strong>NOW_LMS_THREADS</strong> / <strong>THREADS</strong> (<span style="color:green">optional</span>): Number of threads per Gunicorn worker. Defaults to 1. When threads &gt; 1, the worker count is automatically reduced to compensate for memory usage (workers = optimal_workers / threads). Uses <code>gthread</code> worker class when threads &gt; 1. See <a href="../blog/2025/10/05/ram-optimization-guide/">RAM Optimization Guide</a> for best practices.</li>
-<li><strong>NOW_LMS_WORKER_MEMORY_MB</strong> / <strong>WORKER_MEMORY_MB</strong> (<span style="color:green">optional</span>): Estimated memory usage per worker in MB (default: 200). Used in automatic worker calculation to ensure system doesn't run out of RAM. Measure actual usage and adjust accordingly. See <a href="../blog/2025/10/05/ram-optimization-guide/">RAM Optimization Guide</a> for measurement techniques.</li>
+<li><strong>NOW_LMS_WORKERS</strong> / <strong>WORKERS</strong> (<span style="color:green">optional</span>): Number of worker processes for Gunicorn (when using lmsctl serve --wsgi-server gunicorn). If not set, automatically calculated based on available RAM and CPU cores. The calculation uses the formula: <code>min((cpu_count * 2) + 1, available_ram_mb / worker_memory_mb)</code>, adjusted by thread count if threads &gt; 1. See <a href="../blog/2025/10/05/ram-optimization-guide/">RAM Optimization Guide</a> for detailed examples. Note: Waitress (the default WSGI server) does not use multiple worker processes and only uses the THREADS setting.</li>
+<li><strong>NOW_LMS_THREADS</strong> / <strong>THREADS</strong> (<span style="color:green">optional</span>): Number of threads per WSGI worker. Defaults to 1. For Waitress (default), this sets the number of threads. For Gunicorn, when threads &gt; 1, the worker count is automatically reduced to compensate for memory usage (workers = optimal_workers / threads) and uses <code>gthread</code> worker class. See <a href="../blog/2025/10/05/ram-optimization-guide/">RAM Optimization Guide</a> for best practices.</li>
+<li><strong>NOW_LMS_WORKER_MEMORY_MB</strong> / <strong>WORKER_MEMORY_MB</strong> (<span style="color:green">optional</span>): Estimated memory usage per worker in MB (default: 200). Used in automatic worker calculation for Gunicorn to ensure system doesn't run out of RAM. Not used by Waitress. Measure actual usage and adjust accordingly. See <a href="../blog/2025/10/05/ram-optimization-guide/">RAM Optimization Guide</a> for measurement techniques.</li>
 </ul>
 <h3 id="development-and-debugging">Development and Debugging</h3>
 <ul>
