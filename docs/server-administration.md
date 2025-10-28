@@ -73,6 +73,7 @@ Both guides emphasize:
 
 - [Setup Guide](setup.md) - Basic NOW-LMS installation
 - [Configuration Guide](setup-conf.md) - Application configuration options
+- [Session Troubleshooting](session-troubleshooting.md) - Multi-worker session configuration and debugging
 - [Development Guide](development/) - Development environment setup
 - [FAQ](faq.md) - Frequently asked questions
 

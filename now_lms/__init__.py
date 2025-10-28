@@ -150,6 +150,7 @@ from now_lms.vistas.calendar import calendar
 from now_lms.vistas.categories import category
 from now_lms.vistas.certificates import certificate
 from now_lms.vistas.courses import course
+from now_lms.vistas.debug import debug_bp
 from now_lms.vistas.evaluations import evaluation
 from now_lms.vistas.forum import forum
 from now_lms.vistas.groups import group
@@ -243,6 +244,7 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
         flask_app.register_blueprint(category)
         flask_app.register_blueprint(certificate)
         flask_app.register_blueprint(course)
+        flask_app.register_blueprint(debug_bp)
         flask_app.register_blueprint(evaluation)
         flask_app.register_blueprint(forum)
         flask_app.register_blueprint(group)
