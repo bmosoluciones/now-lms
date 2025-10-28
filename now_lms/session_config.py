@@ -139,6 +139,18 @@ def init_session(app: Flask) -> None:
         by using shared storage (Redis or filesystem) instead of in-memory sessions.
     """
     try:
+        # Validate SECRET_KEY configuration
+        secret_key = app.config.get("SECRET_KEY")
+        if not secret_key or secret_key in {"dev", "development", "test"}:
+            log.warning(
+                "SECRET_KEY is not set or using default value! "
+                "Set a unique SECRET_KEY for production: export SECRET_KEY=$(openssl rand -hex 32)"
+            )
+        elif len(str(secret_key)) < 32:
+            log.warning(
+                f"SECRET_KEY is too short ({len(str(secret_key))} chars). " "Use at least 32 characters for better security."
+            )
+
         # Get the session configuration
         session_config = get_session_config()
 
@@ -158,9 +170,22 @@ def init_session(app: Flask) -> None:
         session_type = session_config.get("SESSION_TYPE", "unknown")
         log.info(f"Session storage initialized: {session_type}")
 
+        # Log warnings and recommendations based on session type
+        workers_env = os.environ.get("NOW_LMS_WORKERS") or os.environ.get("WORKERS")
+        num_workers = int(workers_env) if workers_env else 1
+
         match session_type:
             case "redis":
                 log.info("Using Redis for session storage - optimal for multi-worker WSGI servers")
+                # Validate Redis connection
+                redis_client = session_config.get("SESSION_REDIS")
+                if redis_client:
+                    try:
+                        redis_client.ping()
+                        log.info("Redis connection verified successfully")
+                    except Exception as e:
+                        log.error(f"Redis connection failed: {e}")
+                        log.error("Sessions will not work correctly without Redis!")
             case "cachelib":
                 log.info(
                     "Using CacheLib FileSystemCache for session storage - works with multi-worker/multi-threaded WSGI servers"
@@ -168,8 +193,22 @@ def init_session(app: Flask) -> None:
                 cache_backend = session_config.get("SESSION_CACHELIB")
                 if hasattr(cache_backend, "_path"):
                     log.info(f"Session cache directory: {cache_backend._path}")
+
+                if num_workers > 1:
+                    log.warning(
+                        f"Running with {num_workers} workers using FileSystemCache. "
+                        "Redis is recommended for better performance and reliability. "
+                        "Set REDIS_URL environment variable to use Redis."
+                    )
             case _:
                 log.warning(f"Unknown session type: {session_type}")
+
+                if num_workers > 1:
+                    log.warning(
+                        f"Running with {num_workers} workers without shared session storage! "
+                        "Sessions may not persist correctly. "
+                        "Set REDIS_URL for Redis or ensure Flask-Session is configured."
+                    )
 
     except ImportError:
         log.error(
