@@ -180,4 +180,5 @@ sqlite://
 
 - For deployment-specific configuration, see the [Setup Guide](setup.md)
 - For database setup, see the [Database Configuration](db.md)
+- For multi-worker session configuration, see [Session Troubleshooting](session-troubleshooting.md)
 - For server deployment, see the platform-specific guides
