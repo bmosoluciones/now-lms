@@ -12,13 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 """Session configuration for multi-worker/multi-threaded environments.
 
 This module configures Flask sessions to work properly with production WSGI
 servers (Gunicorn, Waitress) that use multiple workers or threads. It supports:
 - Redis (preferred): Shared session storage across workers/threads
-- CacheLib FileSystemCache: Fallback when Redis is unavailable
+- SQLAlchemy: Database-backed session storage as fallback when Redis is unavailable
 - NullSession: For testing environments
 
 When running with production WSGI servers (multiple workers or threads), the
@@ -33,8 +32,6 @@ from __future__ import annotations
 # Standard library
 # ---------------------------------------------------------------------------------------
 import os
-import tempfile
-from pathlib import Path
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -47,6 +44,9 @@ from flask import Flask
 from now_lms.config import TESTING
 from now_lms.logs import log
 
+# Global variable to track if we've created the session model
+_session_model_created = False
+
 
 def get_session_config() -> dict[str, object] | None:
     """
@@ -54,7 +54,7 @@ def get_session_config() -> dict[str, object] | None:
 
     Priority order:
     1. Redis (if REDIS_URL or SESSION_REDIS_URL is set)
-    2. CacheLib FileSystemCache (if not in testing mode)
+    2. SQLAlchemy (database-backed session storage)
     3. None (for testing - use default Flask sessions)
 
     Returns:
@@ -92,34 +92,21 @@ def get_session_config() -> dict[str, object] | None:
             "SESSION_COOKIE_SAMESITE": "Lax",
         }
 
-    # Fallback to CacheLib FileSystemCache
-    # Using CacheLib instead of deprecated filesystem backend
-    # This works across WSGI workers/threads as long as they share the same filesystem
-    log.info("Configuring CacheLib FileSystemCache-based session storage for multi-worker/multi-threaded WSGI servers")
-
-    # Prefer /dev/shm for better performance (shared memory)
-    # Fall back to temp directory if /dev/shm is not available
-    shm_path = Path("/dev/shm")
-    if shm_path.exists() and shm_path.is_dir():
-        cache_dir = shm_path / "now_lms_sessions"
-    else:
-        cache_dir = Path(tempfile.gettempdir()) / "now_lms_sessions"
-
-    cache_dir.mkdir(parents=True, exist_ok=True)
-
-    # Import and create FileSystemCache from cachelib
-    from cachelib import FileSystemCache
+    # Fallback to SQLAlchemy-backed session storage
+    # This uses the database to store sessions, which works across WSGI workers/threads
+    log.info("Configuring SQLAlchemy-based session storage for multi-worker/multi-threaded WSGI servers")
 
     return {
-        "SESSION_TYPE": "cachelib",
-        "SESSION_CACHELIB": FileSystemCache(cache_dir=str(cache_dir), threshold=1000),
+        "SESSION_TYPE": "sqlalchemy",
+        "SESSION_SQLALCHEMY": None,  # Will be set in init_session with the app's db instance
+        "SESSION_SQLALCHEMY_TABLE": "flask_sessions",
         "SESSION_PERMANENT": False,
         "SESSION_USE_SIGNER": True,  # Ensures sessions cannot be modified
-        "SESSION_FILE_THRESHOLD": 1000,  # Maximum number of sessions before cleanup
         "PERMANENT_SESSION_LIFETIME": 86400,  # 24 hours
         "SESSION_COOKIE_HTTPONLY": True,
         "SESSION_COOKIE_SECURE": os.environ.get("FLASK_ENV") == "production",
         "SESSION_COOKIE_SAMESITE": "Lax",
+        "SESSION_CLEANUP_N_REQUESTS": 100,  # Cleanup expired sessions every 100 requests on average
     }
 
 
@@ -136,8 +123,15 @@ def init_session(app: Flask) -> None:
     Note:
         This ensures sessions work correctly with production WSGI servers
         (Gunicorn, Waitress) using multi-worker/multi-threaded architectures
-        by using shared storage (Redis or filesystem) instead of in-memory sessions.
+        by using shared storage (Redis or database) instead of in-memory sessions.
     """
+    global _session_model_created
+
+    # Check if session is already initialized for this app
+    if hasattr(app, "_session_initialized"):
+        log.debug("Session already initialized for this app, skipping")
+        return
+
     try:
         # Validate SECRET_KEY configuration
         secret_key = app.config.get("SECRET_KEY")
@@ -157,15 +151,42 @@ def init_session(app: Flask) -> None:
         # If None (testing mode), skip Flask-Session initialization
         if session_config is None:
             log.debug("Skipping Flask-Session initialization for testing mode")
+            app._session_initialized = True
             return
 
         from flask_session import Session
+
+        # For SQLAlchemy backend, inject the app's database instance
+        if session_config.get("SESSION_TYPE") == "sqlalchemy":
+            from now_lms.db import database
+
+            session_config["SESSION_SQLALCHEMY"] = database
+
+            # If the model has already been created (e.g., by another app instance),
+            # we need to skip re-creating it to avoid metadata conflicts
+            if _session_model_created:
+                log.debug("Session model already created, reusing existing model")
+                # We still need to initialize flask-session for this app instance
+                # but we need to handle the fact that the model already exists
 
         # Update Flask config with session settings
         app.config.update(session_config)
 
         # Initialize Flask-Session
-        Session(app)
+        # This may fail if called multiple times with SQLAlchemy backend
+        try:
+            Session(app)
+            if session_config.get("SESSION_TYPE") == "sqlalchemy":
+                _session_model_created = True
+        except Exception as e:
+            # If initialization fails due to table already exists, that's ok for subsequent apps
+            if "already defined" in str(e):
+                log.debug(f"Session model already defined, continuing: {e}")
+            else:
+                raise
+
+        # Mark as initialized
+        app._session_initialized = True
 
         session_type = session_config.get("SESSION_TYPE", "unknown")
         log.info(f"Session storage initialized: {session_type}")
@@ -186,19 +207,17 @@ def init_session(app: Flask) -> None:
                     except Exception as e:
                         log.error(f"Redis connection failed: {e}")
                         log.error("Sessions will not work correctly without Redis!")
-            case "cachelib":
-                log.info(
-                    "Using CacheLib FileSystemCache for session storage - works with multi-worker/multi-threaded WSGI servers"
-                )
-                cache_backend = session_config.get("SESSION_CACHELIB")
-                if hasattr(cache_backend, "_path"):
-                    log.info(f"Session cache directory: {cache_backend._path}")
+
+            case "sqlalchemy":
+                log.info("Using SQLAlchemy database for session storage - works with multi-worker/multi-threaded WSGI servers")
+                table_name = session_config.get("SESSION_SQLALCHEMY_TABLE", "flask_sessions")
+                log.info(f"Session table: {table_name}")
 
                 if num_workers > 1:
                     log.warning(
-                        f"Running with {num_workers} workers using FileSystemCache. "
+                        f"Running with {num_workers} workers using database backend."
                         "Redis is recommended for better performance and reliability. "
-                        "Set REDIS_URL environment variable to use Redis."
+                        "Set SESSION_REDIS_URL environment variable to use Redis."
                     )
             case _:
                 log.warning(f"Unknown session type: {session_type}")
@@ -207,7 +226,7 @@ def init_session(app: Flask) -> None:
                     log.warning(
                         f"Running with {num_workers} workers without shared session storage! "
                         "Sessions may not persist correctly. "
-                        "Set REDIS_URL for Redis or ensure Flask-Session is configured."
+                        "Set SESSION_REDIS_URL for Redis or ensure Flask-Session is configured."
                     )
 
     except ImportError:
