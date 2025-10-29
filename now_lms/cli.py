@@ -145,6 +145,89 @@ def engine():
         click.echo(f"Database Engine: {db_engine}")
 
 
+@database.group()
+def session():
+    """Session management tools."""
+
+
+@session.command("clear")
+def session_clear():
+    """Delete expired sessions from the database."""
+    with lms_app.app_context():
+        from datetime import datetime
+
+        # Check if session type is SQLAlchemy
+        session_type = lms_app.config.get("SESSION_TYPE")
+
+        if session_type != "sqlalchemy":
+            click.echo(
+                f"Session backend is '{session_type}', not 'sqlalchemy'. This command only works with SQLAlchemy session backend."
+            )
+            return
+
+        # Get the session table name
+        table_name = lms_app.config.get("SESSION_SQLALCHEMY_TABLE", "flask_sessions")
+
+        try:
+            # Query and delete expired sessions
+            from sqlalchemy import text
+
+            result = db.session.execute(text(f"DELETE FROM {table_name} WHERE expiry <= :now"), {"now": datetime.utcnow()})
+            deleted_count = result.rowcount
+            db.session.commit()
+
+            click.echo(f"Deleted {deleted_count} expired session(s) from {table_name} table.")
+            log.info(f"Cleared {deleted_count} expired sessions")
+
+        except Exception as e:
+            db.session.rollback()
+            click.echo(f"Error clearing expired sessions: {e}")
+            log.error(f"Error clearing expired sessions: {e}")
+            raise
+
+
+@session.command("stats")
+def session_stats():
+    """Return the number of active sessions."""
+    with lms_app.app_context():
+        from datetime import datetime
+
+        # Check if session type is SQLAlchemy
+        session_type = lms_app.config.get("SESSION_TYPE")
+
+        if session_type != "sqlalchemy":
+            click.echo(
+                f"Session backend is '{session_type}', not 'sqlalchemy'. This command only works with SQLAlchemy session backend."
+            )
+            return
+
+        # Get the session table name
+        table_name = lms_app.config.get("SESSION_SQLALCHEMY_TABLE", "flask_sessions")
+
+        try:
+            # Count active sessions (not expired)
+            from sqlalchemy import text
+
+            result = db.session.execute(
+                text(f"SELECT COUNT(*) FROM {table_name} WHERE expiry > :now"), {"now": datetime.utcnow()}
+            )
+            active_count = result.scalar()
+
+            # Count total sessions
+            total_result = db.session.execute(text(f"SELECT COUNT(*) FROM {table_name}"))
+            total_count = total_result.scalar()
+
+            click.echo(f"Session statistics for {table_name} table:")
+            click.echo(f"  Active sessions: {active_count}")
+            click.echo(f"  Expired sessions: {total_count - active_count}")
+            click.echo(f"  Total sessions: {total_count}")
+
+        except Exception as e:
+            click.echo(f"Error retrieving session statistics: {e}")
+            log.error(f"Error retrieving session statistics: {e}")
+            raise
+
+
 @lms_app.cli.command()
 def version():
     """Return the current version of the software."""
