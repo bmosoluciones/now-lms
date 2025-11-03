@@ -31,7 +31,7 @@ python-ulid==3.1.0
 qrcode==8.2
 sqlalchemy==2.0.43
 requests==2.32.5
-redis==6.4.0
+redis==7.0.1
 waitress==3.0.2
 weasyprint==66.0
 wtforms==3.2.1
