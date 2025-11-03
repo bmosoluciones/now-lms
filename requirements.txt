@@ -2,7 +2,7 @@ alembic==1.16.5
 appdirs==1.4.4
 argon2-cffi==25.1.0
 babel==2.17.0
-bleach==6.2.0
+bleach==6.3.0
 cachelib==0.13.0
 configobj==5.0.9
 cryptography==45.0.7
