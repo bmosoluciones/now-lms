@@ -5,7 +5,7 @@ babel==2.17.0
 bleach==6.2.0
 cachelib==0.13.0
 configobj==5.0.9
-cryptography==45.0.7
+cryptography==46.0.3
 cuid2==2.0.1
 flask==3.1.2
 flask-alembic==3.1.1
