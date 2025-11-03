@@ -22,7 +22,7 @@ flask-wtf==1.2.2
 gunicorn==23.0.0
 markdown==3.9
 memcache==0.14.0
-mysql-connector-python==9.4.0
+mysql-connector-python==9.5.0
 pg8000==1.31.4
 psutil==7.1.0
 pyjwt==2.10.1
