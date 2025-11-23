@@ -1,4 +1,5 @@
-{% set current_theme = current_theme() %} {% set config = config() %}
+{% set current_theme = current_theme() %} {% from "macros/form_errors.j2" import render_field_errors, render_form_errors %} {%
+set config = config() %}
 
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
@@ -42,7 +43,8 @@
 
                                     <div class="mb-3">
                                         {{ form.student_username.label(class="form-label") }} {{
-                                        form.student_username(class="form-control") }}
+                                        form.student_username(class="form-control") }} {{
+                                        render_field_errors(form.student_username) }}}
                                         <div class="form-text">
                                             Ingresa el nombre de usuario del estudiante que deseas inscribir.
                                         </div>
@@ -51,6 +53,7 @@
                                     <div class="mb-3">
                                         <div class="form-check">
                                             {{ form.bypass_payment(class="form-check-input") }} {{
+                                            render_field_errors(form.bypass_payment) }}} {{
                                             form.bypass_payment.label(class="form-check-label") }}
                                         </div>
                                         <div class="form-text">
@@ -60,7 +63,8 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        {{ form.notes.label(class="form-label") }} {{ form.notes(class="form-control") }}
+                                        {{ form.notes.label(class="form-label") }} {{ form.notes(class="form-control") }} {{
+                                        render_field_errors(form.notes) }}}
                                         <div class="form-text">
                                             Notas opcionales sobre esta inscripción (para referencia administrativa).
                                         </div>

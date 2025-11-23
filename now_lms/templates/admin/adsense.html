@@ -1,4 +1,5 @@
-{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %} {% from
+"macros/form_errors.j2" import render_field_errors, render_form_errors %}
 <!doctype html>
 <html lang="{{ get_locale() }}" class="h-100">
     <head>
@@ -24,14 +25,14 @@
                         <div class="col-sm-6">
                             <h4>{{ _("Configuración de usuario de AdSense.") }}</h4>
                             <label for="email" class="form-label">{{ _("Mostrar etiqueta en Header") }}:</label>
-                            {{ form.meta_tag_include() }}
+                            {{ form.meta_tag_include() }} {{ render_field_errors(form.meta_tag_include) }}}
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-sm-6">
                             <label for="meta_tag" class="form-label">{{ _("Header script") }}:</label>
-                            {{ form.meta_tag(class="form-control", id="meta_tag") }}
+                            {{ form.meta_tag(class="form-control", id="meta_tag") }} {{ render_field_errors(form.meta_tag) }}}
                         </div>
                     </div>
 
@@ -40,7 +41,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <label for="pub_id" class="form-label">{{ _("ID de Usuario de AdSense") }}:</label>
-                            {{ form.pub_id(class="form-control", id="pub_id") }}
+                            {{ form.pub_id(class="form-control", id="pub_id") }} {{ render_field_errors(form.pub_id) }}}
                         </div>
                     </div>
 
@@ -50,14 +51,14 @@
                         <div class="col-sm-6">
                             <h4>{{ _("Configuración de anuncios en el sitio") }}.</h4>
                             <label for="show_ads" class="form-label">{{ _("Mostrar anuncios") }}:</label>
-                            {{ form.show_ads() }}
+                            {{ form.show_ads() }} {{ render_field_errors(form.show_ads) }}}
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-sm-6">
                             <label for="add_code" class="form-label">{{ _("Código Global de AdSense") }}:</label>
-                            {{ form.add_code(class="form-control", id="add_code") }}
+                            {{ form.add_code(class="form-control", id="add_code") }} {{ render_field_errors(form.add_code) }}}
                         </div>
                     </div>
 
@@ -72,11 +73,13 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <label for="add_leaderboard" class="form-label">{{ _("Leaderboard") }} (728×90):</label>
-                            {{ form.add_leaderboard(class="form-control", id="add_leaderboard") }}
+                            {{ form.add_leaderboard(class="form-control", id="add_leaderboard") }} {{
+                            render_field_errors(form.add_leaderboard) }}}
                         </div>
                         <div class="col-sm-6">
                             <label for="add_medium_rectangle" class="form-label">{{ _("Medium Rectangle") }} (300×250):</label>
-                            {{ form.add_medium_rectangle(class="form-control", id="add_medium_rectangle") }}
+                            {{ form.add_medium_rectangle(class="form-control", id="add_medium_rectangle") }} {{
+                            render_field_errors(form.add_medium_rectangle) }}}
                         </div>
                     </div>
 
@@ -85,11 +88,13 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <label for="add_large_rectangle" class="form-label">{{ _("Large Rectangle") }} (336×280):</label>
-                            {{ form.add_large_rectangle(class="form-control", id="add_large_rectangle") }}
+                            {{ form.add_large_rectangle(class="form-control", id="add_large_rectangle") }} {{
+                            render_field_errors(form.add_large_rectangle) }}}
                         </div>
                         <div class="col-sm-6">
                             <label for="add_mobile_banner" class="form-label">{{ _("Mobile Banner") }} (300×50):</label>
-                            {{ form.add_mobile_banner(class="form-control", id="add_mobile_banner") }}
+                            {{ form.add_mobile_banner(class="form-control", id="add_mobile_banner") }} {{
+                            render_field_errors(form.add_mobile_banner) }}}
                         </div>
                     </div>
 
@@ -98,11 +103,13 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <label for="add_wide_skyscraper" class="form-label">{{ _("Wide Skyscraper") }} (160×600):</label>
-                            {{ form.add_wide_skyscraper(class="form-control", id="add_wide_skyscraper") }}
+                            {{ form.add_wide_skyscraper(class="form-control", id="add_wide_skyscraper") }} {{
+                            render_field_errors(form.add_wide_skyscraper) }}}
                         </div>
                         <div class="col-sm-6">
                             <label for="add_skyscraper" class="form-label">{{ _("Skyscraper") }} (120×600):</label>
-                            {{ form.add_skyscraper(class="form-control", id="add_skyscraper") }}
+                            {{ form.add_skyscraper(class="form-control", id="add_skyscraper") }} {{
+                            render_field_errors(form.add_skyscraper) }}}
                         </div>
                     </div>
 
@@ -111,11 +118,13 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <label for="add_large_skyscraper" class="form-label">{{ _("Large Skyscraper") }} (300×600):</label>
-                            {{ form.add_large_skyscraper(class="form-control", id="add_large_skyscraper") }}
+                            {{ form.add_large_skyscraper(class="form-control", id="add_large_skyscraper") }} {{
+                            render_field_errors(form.add_large_skyscraper) }}}
                         </div>
                         <div class="col-sm-6">
                             <label for="add_billboard" class="form-label">{{ _("Billboard") }} (970×250):</label>
-                            {{ form.add_billboard(class="form-control", id="add_billboard") }}
+                            {{ form.add_billboard(class="form-control", id="add_billboard") }} {{
+                            render_field_errors(form.add_billboard) }}}
                         </div>
                     </div>
 

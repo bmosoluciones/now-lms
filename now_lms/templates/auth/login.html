@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
-    {% set current_theme = current_theme() %}
+    {% set current_theme = current_theme() %} {% from "macros/form_errors.j2" import render_field_errors, render_form_errors %}
 
     <head>
         <title>{{_("Inicio de sesión")}}.</title>
@@ -30,7 +30,7 @@
     <body class="text-center">
         <main class="form-signin">
             <form method="post">
-                {{ form.csrf_token }}
+                {{ form.csrf_token }} {{ render_form_errors(form) }}
                 <a href="{{ url_for('home.pagina_de_inicio') }}">
                     <img
                         class="mb-4"
@@ -45,11 +45,12 @@
                 {% endfor %}{% endif %}{% endwith %}
                 <label for="usuario" class="visually-hidden">{{ _("Usuario") }}</label>
                 {{ form.usuario( class="form-control", id="usuario", placeholder=_("Usuario"), autocomplete="username",
-                autocapitalize="off", autocorrect="off", spellcheck="false" ) }}
+                autocapitalize="off", autocorrect="off", spellcheck="false" ) }} {{ render_field_errors(form.usuario) }}}
 
                 <label for="acceso" class="visually-hidden">{{ _("Contraseña") }}</label>
                 {{ form.acceso( class="form-control", id="acceso", placeholder=_("Contraseña"), type="password",
-                autocomplete="current-password", autocapitalize="off", autocorrect="off", spellcheck="false" ) }}
+                autocomplete="current-password", autocapitalize="off", autocorrect="off", spellcheck="false" ) }} {{
+                render_field_errors(form.acceso) }}}
                 <button class="w-100 btn btn-lg btn-primary btn-block" type="submit">{{_("Iniciar Sesión")}}</button>
                 {% if show_forgot_password %}
                 <div class="mt-3">

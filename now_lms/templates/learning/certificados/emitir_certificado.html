@@ -1,4 +1,5 @@
-{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %} {% from
+"macros/form_errors.j2" import render_field_errors, render_form_errors %}
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
@@ -17,40 +18,41 @@
             <div class="container px-4 py-5" id="icon-grid">
                 <h4 class="pb-2 border-bottom">{{ _('Emitir un nuevo Certificado') }}.</h4>
                 <form method="post" enctype="multipart/form-data">
-                    {{ form.csrf_token }}
+                    {{ form.csrf_token }} {{ render_form_errors(form) }}
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="usuario" class="form-label">{{ _('Usuario') }}</label>
-                            {{ form.usuario(class="form-control") }}
+                            {{ form.usuario(class="form-control") }} {{ render_field_errors(form.usuario) }}}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="content_type" class="form-label">{{ _('Tipo de Contenido') }}</label>
-                            {{ form.content_type(class="form-control", id="content_type") }}
+                            {{ form.content_type(class="form-control", id="content_type") }} {{
+                            render_field_errors(form.content_type) }}}
                         </div>
                     </div>
 
                     <div class="row g-3">
                         <div class="col-sm-6" id="curso_field">
                             <label for="curso" class="form-label">{{ _('Curso') }}</label>
-                            {{ form.curso(class="form-control") }}
+                            {{ form.curso(class="form-control") }} {{ render_field_errors(form.curso) }}}
                         </div>
 
                         <div class="col-sm-6" id="master_class_field" style="display: none">
                             <label for="master_class" class="form-label">{{ _('Clase Magistral') }}</label>
-                            {{ form.master_class(class="form-control") }}
+                            {{ form.master_class(class="form-control") }} {{ render_field_errors(form.master_class) }}}
                         </div>
                     </div>
 
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="template" class="form-label">{{ _('Plantilla') }}</label>
-                            {{ form.template(class="form-control") }}
+                            {{ form.template(class="form-control") }} {{ render_field_errors(form.template) }}}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="nota" class="form-label">{{ _('Nota') }}</label>
-                            {{ form.nota(class="form-control") }}
+                            {{ form.nota(class="form-control") }} {{ render_field_errors(form.nota) }}}
                         </div>
                     </div>
 
