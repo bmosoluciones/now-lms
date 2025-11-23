@@ -1,4 +1,5 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from "macros/form_errors.j2" import render_field_errors, render_form_errors %}
+
 {% from 'macros/form_buttons.j2' import render_form_buttons %}
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">

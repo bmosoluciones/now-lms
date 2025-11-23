@@ -1,4 +1,5 @@
-{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %} {% from
+"macros/form_errors.j2" import render_field_errors, render_form_errors %}
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
@@ -37,47 +38,52 @@
                 </div>
 
                 <form method="post" enctype="multipart/form-data">
-                    {{ form.csrf_token }}
+                    {{ form.csrf_token }} {{ render_form_errors(form) }}
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="nombre" class="form-label">{{ _("Programa") }}</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Categoria") }}
+                            {{ form.nombre(class="form-control", id="nombre", placeholder="Categoria") }} {{
+                            render_field_errors(form.nombre) }}}
                         </div>
 
                         <div class="col-sm-3">
                             <label for="codigo" class="form-label">Publico</label>
-                            {{ form.publico(checked=programa.publico) }}
+                            {{ form.publico(checked=programa.publico) }} {{ render_field_errors(form.publico) }}}
                             <label for="codigo" class="form-label">Promocionado</label>
-                            {{ form.promocionado(checked=programa.promocionado) }}
+                            {{ form.promocionado(checked=programa.promocionado) }} {{ render_field_errors(form.promocionado)
+                            }}}
                         </div>
 
                         <div class="col-sm-3">
                             <label for="estado" class="form-label">{{ _("Estado") }}</label>
-                            {{ form.estado() }}
+                            {{ form.estado() }} {{ render_field_errors(form.estado) }}}
                         </div>
                     </div>
 
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="descripcion" class="form-label">Descripcion</label>
-                            {{ form.descripcion(class="form-control", id="descripcion", placeholder=_("Descripción")) }}
+                            {{ form.descripcion(class="form-control", id="descripcion", placeholder=_("Descripción")) }} {{
+                            render_field_errors(form.descripcion) }}}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="precio" class="form-label">{{ _("Precio") }}</label>
-                            {{ form.precio(class="form-control", id="codigo") }}
+                            {{ form.precio(class="form-control", id="codigo") }} {{ render_field_errors(form.precio) }}}
                         </div>
                     </div>
 
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="categoria" class="form-label">Categoría</label>
-                            {{ form.categoria(class="form-control", id="categoria") }}
+                            {{ form.categoria(class="form-control", id="categoria") }} {{ render_field_errors(form.categoria)
+                            }}}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="etiquetas" class="form-label">Etiquetas</label>
-                            {{ form.etiquetas(class="form-control", id="etiquetas", multiple=True) }}
+                            {{ form.etiquetas(class="form-control", id="etiquetas", multiple=True) }} {{
+                            render_field_errors(form.etiquetas) }}}
                             <div class="form-text">
                                 Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples etiquetas.
                             </div>
@@ -86,7 +92,8 @@
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="plantilla_certificado" class="form-label">Plantilla Certificado</label>
-                            {{ form.plantilla_certificado(class="form-control", id="plantilla_certificado") }}
+                            {{ form.plantilla_certificado(class="form-control", id="plantilla_certificado") }} {{
+                            render_field_errors(form.plantilla_certificado) }}}
                         </div>
                     </div>
 

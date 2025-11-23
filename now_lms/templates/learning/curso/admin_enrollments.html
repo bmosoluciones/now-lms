@@ -1,6 +1,6 @@
-{% set current_theme = current_theme() %} {% set config = config() %} {% set permitir_docente =
-docente_asignado(id_curso=curso.codigo) %} {% set permitir_moderador = moderador_asignado(id_curso=curso.codigo) %} {% set
-permitir_editar = current_user.tipo == "admin" or permitir_docente %}
+{% set current_theme = current_theme() %} {% from "macros/form_errors.j2" import render_field_errors, render_form_errors %} {%
+set config = config() %} {% set permitir_docente = docente_asignado(id_curso=curso.codigo) %} {% set permitir_moderador =
+moderador_asignado(id_curso=curso.codigo) %} {% set permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">

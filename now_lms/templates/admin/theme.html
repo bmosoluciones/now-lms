@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="{{ get_locale() }}" class="h-100">
-    {% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
+    {% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %} {% from
+    "macros/form_errors.j2" import render_field_errors, render_form_errors %}
 
     <head>
         {{ current_theme.headertags() }} {{ mde.css }}
@@ -60,7 +61,7 @@
                         <h4>{{_("Tema del sitio web")}}.</h4>
                         <div class="col-sm-6">
                             <label for="style" class="form-label">{{_("Tema")}}.</label>
-                            {{ form.style(class="form-control", id="style") }}
+                            {{ form.style(class="form-control", id="style") }} {{ render_field_errors(form.style) }}}
                             <div class="form-text">{{_("Los temas cambian varios aspectos visuales del sitio web")}}.</div>
                         </div>
                     </div>

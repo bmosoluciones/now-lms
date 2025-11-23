@@ -1,4 +1,5 @@
-{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %} {% from
+"macros/form_errors.j2" import render_field_errors, render_form_errors %}
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
@@ -17,32 +18,35 @@
             <div class="container px-4 py-5" id="icon-grid">
                 <h4 class="pb-2 border-bottom">{{ _("Crear nuevo certificado.") }}</h4>
                 <form method="post" enctype="multipart/form-data">
-                    {{ form.csrf_token }}
+                    {{ form.csrf_token }} {{ render_form_errors(form) }}
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="titulo" class="form-label">{{ _('Certificado') }}</label>
-                            {{ form.titulo(class="form-control", id="titulo", placeholder=_('Certificado')) }}
+                            {{ form.titulo(class="form-control", id="titulo", placeholder=_('Certificado')) }} {{
+                            render_field_errors(form.titulo) }}}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="descripcion" class="form-label">{{ _('Descripción') }}</label>
-                            {{ form.descripcion(class="form-control", id="descripcion", placeholder=_('Descripción')) }}
+                            {{ form.descripcion(class="form-control", id="descripcion", placeholder=_('Descripción')) }} {{
+                            render_field_errors(form.descripcion) }}}
                         </div>
                     </div>
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="tipo" class="form-label">{{ _("Tipo") }} de Certificado</label>
-                            {{ form.tipo(class="form-control", id="tipo") }}
+                            {{ form.tipo(class="form-control", id="tipo") }} {{ render_field_errors(form.tipo) }}}
                         </div>
                     </div>
                     <div class="row g-3">
                         <label for="html" class="form-label">HTML</label>
-                        {{ form.html(class="form-control", id="html", rows="15") | safe }}
+                        {{ form.html(class="form-control", id="html", rows="15") | safe }} {{ render_field_errors(form.html)
+                        }}}
                     </div>
                     <div class="row g-3">
                         <br />
                         <label for="css" class="form-label">CSS</label>
-                        {{ form.css(class="form-control", id="css", rows="15") | safe }}
+                        {{ form.css(class="form-control", id="css", rows="15") | safe }} {{ render_field_errors(form.css) }}}
                     </div>
 
                     {{ render_form_buttons(_("Crear Certificado"), "/certificate/list") }}

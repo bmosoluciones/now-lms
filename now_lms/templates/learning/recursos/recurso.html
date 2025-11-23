@@ -77,7 +77,7 @@
                         {% endif %}
                     </div>
                     <div class="col-md-8">
-                        <h3>{{ tipo[curso.tipo] | safe }} {{ curso.nombre }}</h3>
+                        <h3>{{ tipo[curso.tipo] | safe }}} {{ curso.nombre }}</h3>
                         <p>{{ curso.descripcion }}</p>
                         <a href="{{ url_for('resource.descargar_recurso', resource_code=curso.id) }}"
                             ><i class="bi bi-cloud-download-fill" aria-hidden="true"></i> Descarga El {{ _("Recurso") }}</a

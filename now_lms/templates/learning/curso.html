@@ -86,14 +86,14 @@ permitir_docente %}
                                 </div>
                             </div>
                         </div>
-                        {% endif %} {{ markdown2html(curso.descripcion) | safe }}
+                        {% endif %} {{ markdown2html(curso.descripcion) | safe }}}
                         <br />
                         {% if descargas %}
                         <strong>{{ _('Recursos disponibles con este curso:') }}</strong>
                         <br />
                         {% for item in descargas %}
                         <a href="{{ url_for('resource.vista_recurso', resource_code=item.codigo) }}" class="link-dark"
-                            >{{ tipo[item.tipo] | safe }} {{ item.nombre }}</a
+                            >{{ tipo[item.tipo] | safe }}} {{ item.nombre }}</a
                         ><br />
                         {% endfor %} {% endif %}
 
@@ -209,7 +209,7 @@ permitir_docente %}
                         %}
                         <div class="mt-4 mb-3" style="text-align: center">
                             <small class="text-muted">{{ _('Publicidad') }}</small>
-                            {{ ad_code | safe }}
+                            {{ ad_code | safe }}}
                         </div>
                         {% endif %} {% endif %}
                     </div>

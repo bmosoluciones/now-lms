@@ -1,4 +1,5 @@
-{% set current_theme = current_theme() %} {% set config = config() %}
+{% set current_theme = current_theme() %} {% from "macros/form_errors.j2" import render_field_errors, render_form_errors %} {%
+set config = config() %}
 
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
@@ -101,7 +102,7 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <div class="message-content">{{ mensaje.contenido_html | safe }}</div>
+                                <div class="message-content">{{ mensaje.contenido_html | safe }}}</div>
                                 {% if mensaje.fecha_modificacion %}
                                 <small class="text-muted"
                                     ><em
@@ -128,7 +129,7 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <div class="message-content">{{ respuesta.contenido_html | safe }}</div>
+                                <div class="message-content">{{ respuesta.contenido_html | safe }}}</div>
                                 {% if respuesta.fecha_modificacion %}
                                 <small class="text-muted"
                                     ><em
