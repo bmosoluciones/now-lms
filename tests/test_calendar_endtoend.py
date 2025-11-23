@@ -15,7 +15,7 @@
 
 """End-to-end tests for calendar functionality."""
 
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from datetime import time as time_obj
 
 from now_lms.auth import proteger_passwd
@@ -386,14 +386,18 @@ class TestCalendarEndToEnd:
             database.session.add_all([user, course, section])
             database.session.commit()
 
-            # Create future events
+            # Create future events (using dynamic dates to ensure they're always in the future)
+            today = date.today()
+            future_date = today + timedelta(days=7)  # 7 days in the future
+            future_datetime = datetime.now() + timedelta(days=14)  # 14 days in the future
+            
             meet_resource = CursoRecurso(
                 seccion=section.id,
                 curso="EXPORT001",
                 nombre="Export Meeting",
                 descripcion="Meeting for export test",
                 tipo="meet",
-                fecha=date(2025, 11, 15),
+                fecha=future_date,
                 hora_inicio=time_obj(9, 0),
                 hora_fin=time_obj(10, 0),
                 publico=True,
@@ -406,7 +410,7 @@ class TestCalendarEndToEnd:
                 description="Evaluation for export test",
                 is_exam=False,
                 passing_score=60.0,
-                available_until=datetime(2025, 11, 20, 23, 59, 59),
+                available_until=future_datetime,
             )
 
             database.session.add_all([meet_resource, evaluation])

@@ -1,0 +1,19 @@
+{# Macro for displaying form field errors in a standardized way Parameters: - field: The form field object (e.g., form.nombre)
+- show_icon: Whether to show an icon with the error (default: false) #} {% macro render_field_errors(field, show_icon=false)
+-%} {% if field.errors %}
+<div class="text-danger small mt-1">
+    {% for error in field.errors %}
+    <div>{% if show_icon %}<i class="bi bi-exclamation-circle"></i> {% endif %} {{ error }}</div>
+    {% endfor %}
+</div>
+{% endif %} {%- endmacro %} {# Macro for displaying general form errors (not tied to a specific field) Parameters: - form: The
+form object - show_icon: Whether to show an icon with the error (default: false) #} {% macro render_form_errors(form,
+show_icon=false) -%} {% if form.errors %} {% for field_name, errors in form.errors.items() %} {% if field_name == '__all__' or
+field_name not in form %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {% for error in errors %}
+    <div>{% if show_icon %}<i class="bi bi-exclamation-triangle-fill"></i> {% endif %} {{ error }}</div>
+    {% endfor %}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %} {% endfor %} {% endif %} {%- endmacro %}

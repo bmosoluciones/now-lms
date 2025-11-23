@@ -1,4 +1,5 @@
-{% set current_theme = current_theme() %}
+{% set current_theme = current_theme() %} {% from "macros/form_errors.j2" import render_field_errors, render_form_errors %}
+
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
@@ -19,39 +20,41 @@
             <div class="container px-4 py-5" id="icon-grid">
                 <h4 class="pb-2 border-bottom">Actualizar {{ _("Recurso") }}.</h4>
                 <form method="post">
-                    {{ form.csrf_token }}
+                    {{ form.csrf_token }} {{ render_form_errors(form) }}
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="nombre" class="form-label">{{ _("Recurso") }}</label>
                             {{ form.nombre(class="form-control", id="nombre", placeholder=_("Recurso"), value=recurso.nombre)
-                            }}
+                            }} {{ render_field_errors(form.nombre) }}}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="precio" class="form-label">{{ _("Precio") }}</label>
-                            {{ form.precio(class="form-control", id="codigo", value=recurso.precio) }}
+                            {{ form.precio(class="form-control", id="codigo", value=recurso.precio) }} {{
+                            render_field_errors(form.precio) }}}
                         </div>
                     </div>
 
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="descripcion" class="form-label">Descripcion</label>
-                            {{ form.descripcion(class="form-control", id="descripcion", value=recurso.descripcion) }}
+                            {{ form.descripcion(class="form-control", id="descripcion", value=recurso.descripcion) }} {{
+                            render_field_errors(form.descripcion) }}}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="tipo" class="form-label">{{ _("Tipo") }}</label>
-                            {{ form.tipo(class="form-control", id="tipo") }}
+                            {{ form.tipo(class="form-control", id="tipo") }} {{ render_field_errors(form.tipo) }}}
                         </div>
                     </div>
 
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="descripcion" class="form-label">{{ _("Recurso") }} Publico</label>
-                            {{ form.publico(checked=recurso.publico) }}
+                            {{ form.publico(checked=recurso.publico) }} {{ render_field_errors(form.publico) }}}
 
                             <label for="descripcion" class="form-label">{{ _("Recurso") }} Promocionado</label>
-                            {{ form.promocionado(checked=recurso.promocionado) }}
+                            {{ form.promocionado(checked=recurso.promocionado) }} {{ render_field_errors(form.promocionado) }}}
                         </div>
                     </div>
                     <br />

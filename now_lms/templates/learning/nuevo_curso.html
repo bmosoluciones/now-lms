@@ -1,4 +1,5 @@
-{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %}
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %} {% from
+"macros/form_errors.j2" import render_field_errors, render_form_errors %}
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
@@ -23,12 +24,13 @@
                 <h4 class="pb-2 border-bottom">{{ _("Crear") }} nuevo curso.</h4>
                 {% endif %}
                 <form method="post" enctype="multipart/form-data">
-                    {{ form.csrf_token }}
+                    {{ form.csrf_token }} {{ render_form_errors(form) }}
                     <div class="row g-3">
                         <h6>{{ _("Información") }} General del {{ _("Curso") }}</h6>
                         <div class="col-sm-6">
                             <label for="nombre" class="form-label">{{ _("Nombre") }} del {{ _("Curso") }}</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Nombre del Curso")) }}
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Nombre del Curso")) }} {{
+                            render_field_errors(form.nombre) }}
                         </div>
                         {% if edit %}
                         <div class="col-sm-6">
@@ -39,61 +41,62 @@
                         {% else %}
                         <div class="col-sm-6">
                             <label for="codigo" class="form-label">{{ _('Código del') }} {{ _("Curso") }}</label>
-                            {{ form.codigo(class="form-control", id="codigo", placeholder=_("Código del Curso")) }}
+                            {{ form.codigo(class="form-control", id="codigo", placeholder=_("Código del Curso")) }} {{
+                            render_field_errors(form.codigo) }}
                         </div>
                         {% endif %}
                         <label for="descripcion_corta" class="form-label">{{ _("Descripción") }} Corta</label>
                         {{ form.descripcion_corta(class="form-control", id="descripcion_corta", placeholder=_("Descripción
-                        Corta")) }}
+                        Corta")) }} {{ render_field_errors(form.descripcion_corta) }}
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <br />
                             <label for="duracion" class="form-label">{{ _('Duración (HR)') }}</label>
-                            {{ form.duracion }}
+                            {{ form.duracion }} {{ render_field_errors(form.duracion) }}
                         </div>
                         <div class="col-md-6">
                             <br />
                             <label for="nivel" class="form-label">{{ _('Nivel') }}</label>
-                            {{ form.nivel }}
+                            {{ form.nivel }} {{ render_field_errors(form.nivel) }}
                         </div>
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <h6>{{ _('Visibilidad del curso.') }}</h6>
                             <label for="publico" class="form-label">{{ _("Curso") }} Público</label>
-                            {{ form.publico }}
+                            {{ form.publico }} {{ render_field_errors(form.publico) }}
                         </div>
                         <div class="col-md-6">
                             <h6>{{ _('Modalidad del curso.') }}</h6>
                             <label for="modalidad" class="form-label">{{ _('Modalidad del curso') }}</label>
-                            {{ form.modalidad }}
+                            {{ form.modalidad }} {{ render_field_errors(form.modalidad) }}
                         </div>
                     </div>
                     <div class="row g-3">
                         <h6>{{ _('Cupo limitado') }}</h6>
                         <div class="col-md-6">
                             <label for="limitado" class="form-label">{{ _('Cupo Limitado:') }}</label>
-                            {{ form.limitado }}
+                            {{ form.limitado }} {{ render_field_errors(form.limitado) }}
                         </div>
                         <div class="col-md-6">
                             <label for="capacidad" class="form-label">{{ _('Cupos:') }}</label>
-                            {{ form.capacidad }}
+                            {{ form.capacidad }} {{ render_field_errors(form.capacidad) }}
                         </div>
                     </div>
                     <div class="row g-3">
                         <h6>{{ _("Información") }} de pago.</h6>
                         <div class="col-md-4">
                             <label for="pagado" class="form-label">{{ _("Curso") }} {{ _("Pagado") }}:</label>
-                            {{ form.pagado }}
+                            {{ form.pagado }} {{ render_field_errors(form.pagado) }}
                         </div>
                         <div class="col-md-4">
                             <label for="precio" class="form-label">{{ _("Precio") }}:</label>
-                            {{ form.precio }}
+                            {{ form.precio }} {{ render_field_errors(form.precio) }}
                         </div>
                         <div class="col-md-4">
                             <label for="auditable" class="form-label">{{ _("Curso") }} Auditable</label>
-                            {{ form.auditable }}
+                            {{ form.auditable }} {{ render_field_errors(form.auditable) }}
                         </div>
                         <p>
                             {{ _('Un estudiante puede auditar el curso pero no recibir un certificado al final si no cancela el
@@ -104,11 +107,11 @@
                         <h6>{{ _("Inicio") }} y Fin del curso</h6>
                         <div class="col-md-6">
                             <label for="fecha_inicio" class="form-label">{{ _("Fecha") }} {{ _("Inicio") }}</label>
-                            {{ form.fecha_inicio }}
+                            {{ form.fecha_inicio }} {{ render_field_errors(form.fecha_inicio) }}
                         </div>
                         <div class="col-md-6">
                             <label for="fecha_fin" class="form-label">{{ _("Fecha") }} Fin</label>
-                            {{ form.fecha_fin }}
+                            {{ form.fecha_fin }} {{ render_field_errors(form.fecha_fin) }}
                         </div>
                         <p>
                             {{ _('Si el curso es en tiempo real o con tiempo definido defina las fechas de inicio y fin.') }}
@@ -118,11 +121,11 @@
                         <h6>{{ _('Certificación') }}</h6>
                         <div class="col-md-4">
                             <label for="certificado" class="form-label">{{ _('Extender Certificado:') }}</label>
-                            {{ form.certificado }}
+                            {{ form.certificado }} {{ render_field_errors(form.certificado) }}
                         </div>
                         <div class="col-md-4">
                             <label for="plantilla_certificado" class="form-label">{{ _('Plantilla de Certificado:') }}</label>
-                            {{ form.plantilla_certificado() }}
+                            {{ form.plantilla_certificado() }} {{ render_field_errors(form.plantilla_certificado) }}
                         </div>
                     </div>
                     <div class="row g-3">
@@ -154,7 +157,8 @@
                         <h6>{{ _('Categorización') }}</h6>
                         <div class="col-sm-6">
                             <label for="categoria" class="form-label">{{ _('Categoría') }}</label>
-                            {{ form.categoria(class="form-control", id="categoria") }}
+                            {{ form.categoria(class="form-control", id="categoria") }} {{ render_field_errors(form.categoria)
+                            }}
                         </div>
 
                         <div class="col-sm-6">
@@ -163,6 +167,7 @@
                             <div class="form-text">
                                 {{ _('Mantén presionado Ctrl (o Cmd en Mac) para seleccionar múltiples etiquetas.') }}
                             </div>
+                            {{ render_field_errors(form.etiquetas) }}
                         </div>
                     </div>
 
@@ -170,7 +175,7 @@
                         <div>
                             <h6>{{ _("Descripción") }} del curso</h6>
                             <label for="descripcion" class="form-label">{{ _("Descripción") }} del {{ _("Curso") }}:</label>
-                            {{form.descripcion}}
+                            {{form.descripcion}} {{ render_field_errors(form.descripcion) }}
                             <br />
                             <h6>Vista previa de la descripción:</h6>
                             {{mde.preview}} {{mde.js}}
