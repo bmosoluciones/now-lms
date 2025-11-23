@@ -1,5 +1,5 @@
-{% set current_theme = current_theme() %} {% from 'macros/form_buttons.j2' import render_form_buttons %} {% set config =
-config() %}
+{% set current_theme = current_theme() %} {% from "macros/form_errors.j2" import render_field_errors, render_form_errors %} {%
+from 'macros/form_buttons.j2' import render_form_buttons %} {% set config = config() %}
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
@@ -20,22 +20,24 @@ config() %}
             <div class="container px-4 py-5" id="icon-grid">
                 <h4 class="pb-2 border-bottom">{{ _("Editar") }} contenido HTML: {{ recurso.nombre }}</h4>
                 <form method="post">
-                    {{ form.csrf_token }}
+                    {{ form.csrf_token }} {{ render_form_errors(form) }}
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="nombre" class="form-label">Titulo del {{ _("Recurso") }}</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Titulo del Recurso")) }}
+                            {{ form.nombre(class="form-control", id="nombre", placeholder=_("Titulo del Recurso")) }} {{
+                            render_field_errors(form.nombre) }}}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="requerido" class="form-label">{{ _("Tipo") }} de {{ _("Recurso") }}</label>
-                            {{ form.requerido(class="form-control", id="requerido") }}
+                            {{ form.requerido(class="form-control", id="requerido") }} {{ render_field_errors(form.requerido)
+                            }}}
                         </div>
 
                         <div class="col-sm-12">
                             <label for="html_externo" class="form-label">Código HTML</label>
                             {{ form.html_externo(class="form-control", id="html_externo", rows="20", placeholder="Ingrese el
-                            código HTML") }}
+                            código HTML") }} {{ render_field_errors(form.html_externo) }}}
                         </div>
 
                         <div>
@@ -47,7 +49,8 @@ config() %}
                         <div class="col-sm-12">
                             <div class="form-check">
                                 {{ form.descripcion_html_preformateado(class="form-check-input",
-                                id="descripcion_html_preformateado") }}
+                                id="descripcion_html_preformateado") }} {{
+                                render_field_errors(form.descripcion_html_preformateado) }}}
                                 <label class="form-check-label" for="descripcion_html_preformateado">
                                     {{ _("Descripción en HTML preformateado") }}
                                 </label>

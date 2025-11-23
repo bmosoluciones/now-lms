@@ -1,4 +1,5 @@
-{% set current_theme = current_theme() %} {% import "learning/resources/type_macros.html" as r_macros %}
+{% set current_theme = current_theme() %} {% from "macros/form_errors.j2" import render_field_errors, render_form_errors %} {%
+import "learning/resources/type_macros.html" as r_macros %}
 
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
@@ -43,7 +44,7 @@
                             <div class="row border-bottom"></div>
                             <div class="row">
                                 <br />
-                                {{ mkdown2html(mensaje.texto) | safe }}
+                                {{ mkdown2html(mensaje.texto) | safe }}}
                                 <br />
                             </div>
                         </div>
@@ -51,14 +52,15 @@
                             <h5>Respuestas:</h5>
                             {% if respuestas %} {% for respuesta in respuestas %} {{ respuesta.creado }}
                             <strong>{{ respuesta[1].nombre }} {{ respuesta[1].apellido }}</strong> respondio: {{
-                            mkdown2html(respuesta[0].texto) | safe }} {% endfor %} {% else %} No hay respuestas publicadas a
+                            mkdown2html(respuesta[0].texto) | safe }}} {% endfor %} {% else %} No hay respuestas publicadas a
                             este mensaje. {% endif %}
                         </div>
                         <div class="row">
                             <br />
                             <h5>Publicar una respuesta:</h5>
                             <form action="{{ url_for('msg.nuevo_mensaje') }}" method="post">
-                                {{ form.csrf_token }} {{ form.parent }} {{ form.editor }} {{ mde.preview }} {{ mde.js }}
+                                {{ form.csrf_token }} {{ render_form_errors(form) }} {{ form.parent }} {{ form.editor }} {{
+                                mde.preview }} {{ mde.js }}
 
                                 <button class="w-10 btn btn-sml btn-primary btn-block" type="submit">
                                     <i class="bi bi-envelope-plus" aria-hidden="true"></i> Publicar Respuesta

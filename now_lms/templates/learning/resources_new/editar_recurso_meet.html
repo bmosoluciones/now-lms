@@ -1,4 +1,5 @@
-{% set current_theme = current_theme() %} {% from 'macros/form_buttons.j2' import render_form_buttons %}
+{% set current_theme = current_theme() %} {% from "macros/form_errors.j2" import render_field_errors, render_form_errors %} {%
+from 'macros/form_buttons.j2' import render_form_buttons %}
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
@@ -19,41 +20,46 @@
             <div class="container px-4 py-5" id="icon-grid">
                 <h4 class="pb-2 border-bottom">{{ _("Editar") }} reunión: {{ recurso.nombre }}</h4>
                 <form method="post">
-                    {{ form.csrf_token }}
+                    {{ form.csrf_token }} {{ render_form_errors(form) }}
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="nombre" class="form-label">Titulo de la Reunión</label>
-                            {{ form.nombre(class="form-control", id="nombre", placeholder="Titulo de la Reunión") }}
+                            {{ form.nombre(class="form-control", id="nombre", placeholder="Titulo de la Reunión") }} {{
+                            render_field_errors(form.nombre) }}}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="url" class="form-label">Link de la reunión</label>
-                            {{ form.url(class="form-control", id="url", placeholder="Link de la reunión") }}
+                            {{ form.url(class="form-control", id="url", placeholder="Link de la reunión") }} {{
+                            render_field_errors(form.url) }}}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="fecha" class="form-label">{{ _("Fecha") }}</label>
-                            {{ form.fecha(class="form-control", id="fecha") }}
+                            {{ form.fecha(class="form-control", id="fecha") }} {{ render_field_errors(form.fecha) }}}
                         </div>
 
                         <div class="col-sm-3">
                             <label for="hora_inicio" class="form-label">Hora de {{ _("Inicio") }}</label>
-                            {{ form.hora_inicio(class="form-control", id="hora_inicio") }}
+                            {{ form.hora_inicio(class="form-control", id="hora_inicio") }} {{
+                            render_field_errors(form.hora_inicio) }}}
                         </div>
 
                         <div class="col-sm-3">
                             <label for="hora_fin" class="form-label">Hora Final</label>
-                            {{ form.hora_fin(class="form-control", id="hora_fin") }}
+                            {{ form.hora_fin(class="form-control", id="hora_fin") }} {{ render_field_errors(form.hora_fin) }}}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="requerido" class="form-label">{{ _("Tipo") }} de {{ _("Recurso") }}</label>
-                            {{ form.requerido(class="form-control", id="requerido") }}
+                            {{ form.requerido(class="form-control", id="requerido") }} {{ render_field_errors(form.requerido)
+                            }}}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="notes" class="form-label">Notas</label>
-                            {{ form.notes(class="form-control", id="notes", placeholder="Notas adicionales") }}
+                            {{ form.notes(class="form-control", id="notes", placeholder="Notas adicionales") }} {{
+                            render_field_errors(form.notes) }}}
                         </div>
 
                         <div>
@@ -65,7 +71,8 @@
                         <div class="col-sm-12">
                             <div class="form-check">
                                 {{ form.descripcion_html_preformateado(class="form-check-input",
-                                id="descripcion_html_preformateado") }}
+                                id="descripcion_html_preformateado") }} {{
+                                render_field_errors(form.descripcion_html_preformateado) }}}
                                 <label class="form-check-label" for="descripcion_html_preformateado">
                                     {{ _("Descripción en HTML preformateado") }}
                                 </label>

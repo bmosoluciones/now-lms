@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
-    {% set current_theme = current_theme() %} {% set config = config() %}
+    {% set current_theme = current_theme() %} {% from "macros/form_errors.j2" import render_field_errors, render_form_errors %}
+    {% set config = config() %}
 
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}

@@ -10,7 +10,8 @@ run = "/home/runner/workspace/venv/bin/python -m now_lms"
 
 [[ports]]
 localPort = 5000
-externalPort = 80
+externalPort = 3000
+exposeLocalhost = true
 
 [[ports]]
 localPort = 8080

@@ -13,29 +13,33 @@
     <body>
         {{ current_theme.navbar() }}
         <main>
-            {{ current_theme.notify() }} {% from "macros/demo_banner.j2" import demo_mode_banner %} {{ demo_mode_banner() }}
+            {{ current_theme.notify() }} {% from "macros/demo_banner.j2" import demo_mode_banner %} {% from
+            "macros/form_errors.j2" import render_field_errors, render_form_errors %} {{ demo_mode_banner() }}
 
             <div class="container px-4 py-5" id="icon-grid">
                 <h4 class="pb-2 border-bottom">{{ _('Cambiar Contraseña del usuario') }}: {{ usuario.usuario }}</h4>
                 <form method="post" action="{{ url_for('user_profile.cambiar_contraseña', ulid=usuario.id) }}">
-                    {{ form.csrf_token }}
+                    {{ form.csrf_token }} {{ render_form_errors(form) }}
 
                     <div class="row g-3">
                         <h6>{{ _('Cambiar Contraseña') }}:</h6>
                         <div class="col-sm-6">
                             <label for="current_password" class="form-label">{{ _('Contraseña Actual') }}</label>
-                            {{ form.current_password(class="form-control", id="current_password") }}
+                            {{ form.current_password(class="form-control", id="current_password") }} {{
+                            render_field_errors(form.current_password) }}}
                         </div>
                     </div>
 
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="new_password" class="form-label">{{ _('Nueva Contraseña') }}</label>
-                            {{ form.new_password(class="form-control", id="new_password") }}
+                            {{ form.new_password(class="form-control", id="new_password") }} {{
+                            render_field_errors(form.new_password) }}}
                         </div>
                         <div class="col-sm-6">
                             <label for="confirm_password" class="form-label">{{ _('Confirmar Nueva Contraseña') }}</label>
-                            {{ form.confirm_password(class="form-control", id="confirm_password") }}
+                            {{ form.confirm_password(class="form-control", id="confirm_password") }} {{
+                            render_field_errors(form.confirm_password) }}}
                         </div>
                     </div>
 

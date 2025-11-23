@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
-    {% set current_theme = current_theme() %}
+    {% set current_theme = current_theme() %} {% from "macros/form_errors.j2" import render_field_errors, render_form_errors %}
 
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
@@ -28,7 +28,7 @@
     <body class="text-center">
         <main class="form-signin">
             <form method="post">
-                {{ form.csrf_token }}
+                {{ form.csrf_token }} {{ render_form_errors(form) }}
                 <a href="/home">
                     <img
                         class="mb-4"
@@ -42,14 +42,17 @@
                 <div class="alert alert-success">{{ message }}</div>
                 {% endfor %}{% endif %}{% endwith %}
                 <label for="nombre" class="visually-hidden">{{ _('Nombre') }}</label>
-                {{ form.nombre(class="form-control", id="nombre", placeholder=_("Su Nombre")) }}
+                {{ form.nombre(class="form-control", id="nombre", placeholder=_("Su Nombre")) }} {{
+                render_field_errors(form.nombre) }}}
                 <label for="apellido" class="visually-hidden">{{ _('Apellido') }}</label>
-                {{ form.apellido(class="form-control", id="apellido", placeholder=_("Su Apellido")) }}
+                {{ form.apellido(class="form-control", id="apellido", placeholder=_("Su Apellido")) }} {{
+                render_field_errors(form.apellido) }}}
                 <label for="correo_electronico" class="visually-hidden">{{ _('Correo Electrónico') }}</label>
                 {{ form.correo_electronico(class="form-control", id="correo_electronico", placeholder=_("Su Correo
-                Electrónico")) }}
+                Electrónico")) }} {{ render_field_errors(form.correo_electronico) }}}
                 <label for="contraseña" class="visually-hidden">{{ _('Contraseña') }}</label>
-                {{ form.acceso(class="form-control", id="acceso", placeholder=_("Contraseña")) }}
+                {{ form.acceso(class="form-control", id="acceso", placeholder=_("Contraseña")) }} {{
+                render_field_errors(form.acceso) }}}
                 <button class="w-100 btn btn-lg btn-primary btn-block" type="submit">{{ _('Crear Cuenta') }}</button>
                 <a href="/home"><i class="bi bi-arrow-left" aria-hidden="true"></i> {{ _('Regresar') }}</a>
                 <p class="mt-5 mb-3 text-muted text-center">BMO Soluciones &copy; 2025</p>
