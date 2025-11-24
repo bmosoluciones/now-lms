@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [1.0.4] - 2025-11-23
+
+### Changed:
+ - Improved fedback in errors in forms
+
 ## [1.0.3] - 2025-10-29
 
 ### Changed
