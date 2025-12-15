@@ -29,7 +29,7 @@ pyjwt==2.10.1
 python-slugify==8.0.4
 python-ulid==3.1.0
 qrcode==8.2
-sqlalchemy==2.0.44
+sqlalchemy==2.0.45
 requests==2.32.5
 redis==7.1.0
 waitress==3.0.2
