@@ -45,12 +45,12 @@
                 {% endfor %}{% endif %}{% endwith %}
                 <label for="usuario" class="visually-hidden">{{ _("Usuario") }}</label>
                 {{ form.usuario( class="form-control", id="usuario", placeholder=_("Usuario"), autocomplete="username",
-                autocapitalize="off", autocorrect="off", spellcheck="false" ) }} {{ render_field_errors(form.usuario) }}}
+                autocapitalize="off", autocorrect="off", spellcheck="false" ) }} {{ render_field_errors(form.usuario) }}
 
                 <label for="acceso" class="visually-hidden">{{ _("Contraseña") }}</label>
                 {{ form.acceso( class="form-control", id="acceso", placeholder=_("Contraseña"), type="password",
                 autocomplete="current-password", autocapitalize="off", autocorrect="off", spellcheck="false" ) }} {{
-                render_field_errors(form.acceso) }}}
+                render_field_errors(form.acceso) }}
                 <button class="w-100 btn btn-lg btn-primary btn-block" type="submit">{{_("Iniciar Sesión")}}</button>
                 {% if show_forgot_password %}
                 <div class="mt-3">
