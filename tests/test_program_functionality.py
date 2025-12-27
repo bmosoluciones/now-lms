@@ -41,14 +41,14 @@ class TestProgramFunctionality:
 
     def setup_test_data(self, app, test_suffix=None):
         """Setup test data for program functionality tests.
-        
+
         Returns a dictionary with codes/identifiers instead of ORM objects to avoid
         detached instance errors.
         """
         # Generate unique identifiers to avoid conflicts across parallel tests
         if test_suffix is None:
             test_suffix = str(int(time.time() * 1000000) % 1000000)
-        
+
         with app.app_context():
             # Create test program with unique code
             programa_codigo = f"TESTPROG{test_suffix}"
@@ -325,7 +325,7 @@ class TestProgramFunctionality:
     def test_empty_program_progress(self, basic_config_setup):
         """Test progress tracking for program with no courses."""
         app = basic_config_setup
-        
+
         # Generate unique suffix for this test
         test_suffix = str(int(time.time() * 1000000) % 1000000)
 
@@ -343,7 +343,7 @@ class TestProgramFunctionality:
             )
             database.session.add(usuario)
             database.session.commit()
-            
+
             # Create program with no courses
             programa = Programa(
                 nombre=f"Empty Program {test_suffix}",

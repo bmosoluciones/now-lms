@@ -16,8 +16,7 @@
 """Comprehensive tests for now_lms/calendar_utils.py functionality."""
 
 import pytest
-from datetime import date, datetime
-from datetime import time as time_obj
+from datetime import date, datetime, time as time_obj, timedelta
 
 from now_lms.calendar_utils import (
     _combine_date_time,
@@ -513,6 +512,8 @@ class TestCalendarUtilsComprehensive:
         database.session.commit()
 
         # Create multiple events - some in the past, some in the future
+        now = datetime.now()
+        base_future = now + timedelta(days=1)
         future_events = []
         for i in range(3):
             event = UserEvent(
@@ -520,7 +521,7 @@ class TestCalendarUtilsComprehensive:
                 course_id="UPCOMING_EVENTS",
                 resource_type="meet",
                 title=f"Future Event {i+1}",
-                start_time=datetime(2025, 12, i + 1, 10, 0),
+                start_time=base_future + timedelta(days=i),
                 status="pending",
             )
             future_events.append(event)
@@ -532,7 +533,7 @@ class TestCalendarUtilsComprehensive:
             course_id="UPCOMING_EVENTS",
             resource_type="meet",
             title="Past Event",
-            start_time=datetime(2020, 1, 1, 10, 0),
+            start_time=now - timedelta(days=365 * 5),
             status="completed",
         )
         database.session.add(past_event)
@@ -543,7 +544,7 @@ class TestCalendarUtilsComprehensive:
 
         # Should get only future events, limited to 2
         assert len(upcoming) == 2
-        assert all(event.start_time > datetime.now() for event in upcoming)
+        assert all(event.start_time > now for event in upcoming)
         assert upcoming[0].title == "Future Event 1"
         assert upcoming[1].title == "Future Event 2"
 
