@@ -77,13 +77,13 @@ set config = config() %}
 
                                             <div class="mb-3">
                                                 {{ form.title.label(class="form-label") }} {{ form.title(class="form-control")
-                                                }} {{ render_field_errors(form.title) }}}
+                                                }} {{ render_field_errors(form.title) }}
                                             </div>
 
                                             <div class="mb-3">
                                                 {{ form.description.label(class="form-label") }} {{
                                                 form.description(class="form-control", rows="3") }} {{
-                                                render_field_errors(form.description) }}}
+                                                render_field_errors(form.description) }}
                                             </div>
 
                                             <div class="row">
@@ -91,7 +91,7 @@ set config = config() %}
                                                     <div class="mb-3">
                                                         <div class="form-check">
                                                             {{ form.is_exam(class="form-check-input") }} {{
-                                                            render_field_errors(form.is_exam) }}} {{
+                                                            render_field_errors(form.is_exam) }} {{
                                                             form.is_exam.label(class="form-check-label") }}
                                                         </div>
                                                     </div>
@@ -101,7 +101,7 @@ set config = config() %}
                                                         {{ form.passing_score.label(class="form-label") }}
                                                         <div class="input-group">
                                                             {{ form.passing_score(class="form-control") }} {{
-                                                            render_field_errors(form.passing_score) }}}
+                                                            render_field_errors(form.passing_score) }}
                                                             <span class="input-group-text">%</span>
                                                         </div>
                                                     </div>
@@ -111,7 +111,7 @@ set config = config() %}
                                             <div class="mb-3">
                                                 {{ form.max_attempts.label(class="form-label") }} {{
                                                 form.max_attempts(class="form-control") }} {{
-                                                render_field_errors(form.max_attempts) }}}
+                                                render_field_errors(form.max_attempts) }}
                                                 <div class="form-text">Deje vacío para intentos ilimitados.</div>
                                             </div>
 

@@ -23,13 +23,13 @@
                         <div class="col-sm-6">
                             <label for="titulo" class="form-label">{{ _('Certificado') }}</label>
                             {{ form.titulo(class="form-control", id="titulo", placeholder=_('Certificado')) }} {{
-                            render_field_errors(form.titulo) }}}
+                            render_field_errors(form.titulo) }}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="descripcion" class="form-label">{{ _('Descripcion') }}</label>
                             {{ form.descripcion(class="form-control", id="descripcion", placeholder=_('Descripcion')) }} {{
-                            render_field_errors(form.descripcion) }}}
+                            render_field_errors(form.descripcion) }}
                         </div>
                     </div>
 
@@ -37,30 +37,30 @@
                         <div class="col-sm-6">
                             <br />
                             <label for="habilitado" class="form-label">{{ _('Habilitado') }}</label>
-                            {{ form.habilitado() }} {{ render_field_errors(form.habilitado) }}}
+                            {{ form.habilitado() }} {{ render_field_errors(form.habilitado) }}
                         </div>
 
                         <div class="col-sm-6">
                             <br />
                             <label for="publico" class="form-label">{{ _('Publico') }}</label>
-                            {{ form.publico() }} {{ render_field_errors(form.publico) }}}
+                            {{ form.publico() }} {{ render_field_errors(form.publico) }}
                         </div>
                     </div>
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="tipo" class="form-label">{{ _('Tipo de Certificado') }}</label>
-                            {{ form.tipo(class="form-control", id="tipo") }} {{ render_field_errors(form.tipo) }}}
+                            {{ form.tipo(class="form-control", id="tipo") }} {{ render_field_errors(form.tipo) }}
                         </div>
                     </div>
                     <div class="row g-3">
                         <label for="html" class="form-label">HTML</label>
                         {{ form.html(class="form-control", id="html", rows="15") | safe }} {{ render_field_errors(form.html)
-                        }}}
+                        }}
                     </div>
                     <div class="row g-3">
                         <br />
                         <label for="css" class="form-label">CSS</label>
-                        {{ form.css(class="form-control", id="css", rows="15") | safe }} {{ render_field_errors(form.css) }}}
+                        {{ form.css(class="form-control", id="css", rows="15") | safe }} {{ render_field_errors(form.css) }}
                     </div>
 
                     <br />

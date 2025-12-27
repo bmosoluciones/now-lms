@@ -25,19 +25,19 @@
                         <div class="col-sm-6">
                             <label for="nombre" class="form-label">Titulo del {{ _("Recurso") }}</label>
                             {{ form.nombre(class="form-control", id="nombre", placeholder=_("Titulo del Recurso")) }} {{
-                            render_field_errors(form.nombre) }}}
+                            render_field_errors(form.nombre) }}
                         </div>
 
                         <div class="col-md-12">
                             <label for="html_externo" class="form-label">{{ _("Recurso") }} Externo</label>
                             {{ form.html_externo(class="form-control", id="html_externo",rows="20", placeholder=_("Recurso
-                            Externo")) }} {{ render_field_errors(form.html_externo) }}}
+                            Externo")) }} {{ render_field_errors(form.html_externo) }}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="requerido" class="form-label">{{ _("Tipo") }} de {{ _("Recurso") }}</label>
                             {{ form.requerido(class="form-control", id="requerido") }} {{ render_field_errors(form.requerido)
-                            }}}
+                            }}
                         </div>
 
                         <div>
@@ -50,7 +50,7 @@
                             <div class="form-check">
                                 {{ form.descripcion_html_preformateado(class="form-check-input",
                                 id="descripcion_html_preformateado") }} {{
-                                render_field_errors(form.descripcion_html_preformateado) }}}
+                                render_field_errors(form.descripcion_html_preformateado) }}
                                 <label class="form-check-label" for="descripcion_html_preformateado">
                                     {{ _("Descripción en HTML preformateado") }}
                                 </label>

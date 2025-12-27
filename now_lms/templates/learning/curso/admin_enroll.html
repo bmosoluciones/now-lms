@@ -49,7 +49,7 @@ moderador_asignado(id_curso=curso.codigo) %} {% set permitir_editar = current_us
                                     <div class="mb-3">
                                         {{ form.student_username.label(class="form-label") }} {{
                                         form.student_username(class="form-control") }} {{
-                                        render_field_errors(form.student_username) }}}
+                                        render_field_errors(form.student_username) }}
                                         <div class="form-text">
                                             {{ _('Ingresa el nombre de usuario del estudiante que deseas inscribir.') }}
                                         </div>
@@ -58,7 +58,7 @@ moderador_asignado(id_curso=curso.codigo) %} {% set permitir_editar = current_us
                                     <div class="mb-3">
                                         <div class="form-check">
                                             {{ form.bypass_payment(class="form-check-input") }} {{
-                                            render_field_errors(form.bypass_payment) }}} {{
+                                            render_field_errors(form.bypass_payment) }} {{
                                             form.bypass_payment.label(class="form-check-label") }}
                                         </div>
                                         <div class="form-text">
@@ -70,7 +70,7 @@ moderador_asignado(id_curso=curso.codigo) %} {% set permitir_editar = current_us
 
                                     <div class="mb-3">
                                         {{ form.notes.label(class="form-label") }} {{ form.notes(class="form-control") }} {{
-                                        render_field_errors(form.notes) }}}
+                                        render_field_errors(form.notes) }}
                                         <div class="form-text">
                                             {{ _('Notas opcionales sobre esta inscripción (para referencia administrativa).')
                                             }}

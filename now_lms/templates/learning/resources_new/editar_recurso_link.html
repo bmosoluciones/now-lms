@@ -25,19 +25,19 @@ from 'macros/form_buttons.j2' import render_form_buttons %}
                         <div class="col-sm-6">
                             <label for="nombre" class="form-label">Titulo del Link.</label>
                             {{ form.nombre(class="form-control", id="nombre", placeholder="Titulo del Link.") }} {{
-                            render_field_errors(form.nombre) }}}
+                            render_field_errors(form.nombre) }}
                         </div>
 
                         <div class="col-md-6">
                             <label for="url" class="form-label">Link Externo</label>
                             {{ form.url(class="form-control", id="url", placeholder="Link Externo") }} {{
-                            render_field_errors(form.url) }}}
+                            render_field_errors(form.url) }}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="requerido" class="form-label">{{ _("Tipo") }} de {{ _("Recurso") }}</label>
                             {{ form.requerido(class="form-control", id="requerido") }} {{ render_field_errors(form.requerido)
-                            }}}
+                            }}
                         </div>
 
                         <div>
@@ -50,7 +50,7 @@ from 'macros/form_buttons.j2' import render_form_buttons %}
                             <div class="form-check">
                                 {{ form.descripcion_html_preformateado(class="form-check-input",
                                 id="descripcion_html_preformateado") }} {{
-                                render_field_errors(form.descripcion_html_preformateado) }}}
+                                render_field_errors(form.descripcion_html_preformateado) }}
                                 <label class="form-check-label" for="descripcion_html_preformateado">
                                     {{ _("Descripción en HTML preformateado") }}
                                 </label>

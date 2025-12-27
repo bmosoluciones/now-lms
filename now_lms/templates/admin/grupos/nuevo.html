@@ -25,13 +25,13 @@
                         <div class="col-sm-12">
                             <label for="nombre" class="form-label">{{ _("Nombre del Grupo.") }}</label>
                             {{ form.nombre(class="form-control", id="nombre", placeholder=_("Nombre del Grupo.")) }} {{
-                            render_field_errors(form.nombre) }}}
+                            render_field_errors(form.nombre) }}
                         </div>
 
                         <div>
                             <label for="descripcion" class="form-label">{{ _("Descripción") }}</label>
                             {{ form.descripcion(class="form-control", id="descripcion", placeholder=_("Descripción del Grupo"))
-                            }} {{ render_field_errors(form.descripcion) }}}
+                            }} {{ render_field_errors(form.descripcion) }}
                         </div>
                     </div>
                     <br />

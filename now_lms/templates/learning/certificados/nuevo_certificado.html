@@ -23,30 +23,30 @@
                         <div class="col-sm-6">
                             <label for="titulo" class="form-label">{{ _('Certificado') }}</label>
                             {{ form.titulo(class="form-control", id="titulo", placeholder=_('Certificado')) }} {{
-                            render_field_errors(form.titulo) }}}
+                            render_field_errors(form.titulo) }}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="descripcion" class="form-label">{{ _('Descripción') }}</label>
                             {{ form.descripcion(class="form-control", id="descripcion", placeholder=_('Descripción')) }} {{
-                            render_field_errors(form.descripcion) }}}
+                            render_field_errors(form.descripcion) }}
                         </div>
                     </div>
                     <div class="row g-3">
                         <div class="col-sm-6">
                             <label for="tipo" class="form-label">{{ _("Tipo") }} de Certificado</label>
-                            {{ form.tipo(class="form-control", id="tipo") }} {{ render_field_errors(form.tipo) }}}
+                            {{ form.tipo(class="form-control", id="tipo") }} {{ render_field_errors(form.tipo) }}
                         </div>
                     </div>
                     <div class="row g-3">
                         <label for="html" class="form-label">HTML</label>
                         {{ form.html(class="form-control", id="html", rows="15") | safe }} {{ render_field_errors(form.html)
-                        }}}
+                        }}
                     </div>
                     <div class="row g-3">
                         <br />
                         <label for="css" class="form-label">CSS</label>
-                        {{ form.css(class="form-control", id="css", rows="15") | safe }} {{ render_field_errors(form.css) }}}
+                        {{ form.css(class="form-control", id="css", rows="15") | safe }} {{ render_field_errors(form.css) }}
                     </div>
 
                     {{ render_form_buttons(_("Crear Certificado"), "/certificate/list") }}
