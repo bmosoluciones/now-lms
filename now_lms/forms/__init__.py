@@ -19,6 +19,8 @@
 # ---------------------------------------------------------------------------------------
 from __future__ import annotations
 
+import datetime
+
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
@@ -48,6 +50,8 @@ from now_lms.i18n import _, _l
 
 
 class MultiFormatDateField(DateField):
+    """Campo de fecha que acepta múltiples formatos de entrada."""
+
     def __init__(self, *args, formats: list[str] | None = None, **kwargs):
         self.formats = formats or ["%Y-%m-%d"]
         super().__init__(*args, format=self.formats[0], **kwargs)
@@ -66,7 +70,7 @@ class MultiFormatDateField(DateField):
 
         for fmt in self.formats:
             try:
-                self.data = self.strptime(date_str, fmt).date()
+                self.data = datetime.datetime.strptime(date_str, fmt).date()
                 return
             except (ValueError, TypeError):
                 continue
@@ -74,6 +78,8 @@ class MultiFormatDateField(DateField):
 
 
 class FlexibleDecimalField(DecimalField):
+    """Campo decimal flexible que normaliza comas a puntos."""
+
     def process_formdata(self, valuelist):
         if not valuelist:
             return
@@ -90,6 +96,8 @@ class FlexibleDecimalField(DecimalField):
 
 
 class FlexibleIntegerField(IntegerField):
+    """Campo entero flexible que tolera entrada vacía o con espacios."""
+
     def process_formdata(self, valuelist):
         if not valuelist:
             return
