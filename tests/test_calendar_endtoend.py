@@ -390,7 +390,7 @@ class TestCalendarEndToEnd:
             today = date.today()
             future_date = today + timedelta(days=7)  # 7 days in the future
             future_datetime = datetime.now() + timedelta(days=14)  # 14 days in the future
-            
+
             meet_resource = CursoRecurso(
                 seccion=section.id,
                 curso="EXPORT001",

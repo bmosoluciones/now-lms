@@ -16,8 +16,6 @@
 import inspect
 
 
-
-
 def test_importable(session_basic_db_setup):
     """El proyecto debe poder importarse sin errores."""
     assert session_basic_db_setup
