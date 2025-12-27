@@ -43,16 +43,16 @@
                 {% endfor %}{% endif %}{% endwith %}
                 <label for="nombre" class="visually-hidden">{{ _('Nombre') }}</label>
                 {{ form.nombre(class="form-control", id="nombre", placeholder=_("Su Nombre")) }} {{
-                render_field_errors(form.nombre) }}}
+                render_field_errors(form.nombre) }}
                 <label for="apellido" class="visually-hidden">{{ _('Apellido') }}</label>
                 {{ form.apellido(class="form-control", id="apellido", placeholder=_("Su Apellido")) }} {{
-                render_field_errors(form.apellido) }}}
+                render_field_errors(form.apellido) }}
                 <label for="correo_electronico" class="visually-hidden">{{ _('Correo Electrónico') }}</label>
                 {{ form.correo_electronico(class="form-control", id="correo_electronico", placeholder=_("Su Correo
-                Electrónico")) }} {{ render_field_errors(form.correo_electronico) }}}
+                Electrónico")) }} {{ render_field_errors(form.correo_electronico) }}
                 <label for="contraseña" class="visually-hidden">{{ _('Contraseña') }}</label>
                 {{ form.acceso(class="form-control", id="acceso", placeholder=_("Contraseña")) }} {{
-                render_field_errors(form.acceso) }}}
+                render_field_errors(form.acceso) }}
                 <button class="w-100 btn btn-lg btn-primary btn-block" type="submit">{{ _('Crear Cuenta') }}</button>
                 <a href="/home"><i class="bi bi-arrow-left" aria-hidden="true"></i> {{ _('Regresar') }}</a>
                 <p class="mt-5 mb-3 text-muted text-center">BMO Soluciones &copy; 2025</p>
