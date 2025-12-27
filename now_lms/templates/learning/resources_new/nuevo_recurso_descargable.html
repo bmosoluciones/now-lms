@@ -30,14 +30,14 @@
 
                     <div class="col-md-12">
                         <label for="nombre" class="form-label">{{ _("Nombre") }} del recurso *</label>
-                        {{ form.nombre(class="form-control", required=true) }} {{ render_field_errors(form.nombre) }}}
+                        {{ form.nombre(class="form-control", required=true) }} {{ render_field_errors(form.nombre) }}
                         <div class="invalid-feedback">Por favor, ingrese un nombre para el recurso.</div>
                     </div>
 
                     <div class="col-md-12">
                         <label for="descripcion" class="form-label">{{ _("Descripción") }} *</label>
                         {{ form.descripcion(class="form-control", rows="4", required=true) }} {{
-                        render_field_errors(form.descripcion) }}}
+                        render_field_errors(form.descripcion) }}
                         <div class="invalid-feedback">Por favor, ingrese una descripción para el recurso.</div>
                     </div>
 
@@ -59,7 +59,7 @@
 
                     <div class="col-md-12">
                         <label for="requerido" class="form-label">{{ _("Tipo") }} de recurso</label>
-                        {{ form.requerido(class="form-select") }} {{ render_field_errors(form.requerido) }}}
+                        {{ form.requerido(class="form-select") }} {{ render_field_errors(form.requerido) }}
                     </div>
 
                     <div class="col-12">

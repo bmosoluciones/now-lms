@@ -25,13 +25,13 @@
                         <div class="col-sm-6">
                             <label for="nombre" class="form-label">Titulo del Documento</label>
                             {{ form.nombre(class="form-control", id="nombre", placeholder="Titulo del Documento") }} {{
-                            render_field_errors(form.nombre) }}}
+                            render_field_errors(form.nombre) }}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="requerido" class="form-label">{{ _("Tipo") }} de {{ _("Recurso") }}</label>
                             {{ form.requerido(class="form-control", id="requerido") }} {{ render_field_errors(form.requerido)
-                            }}}
+                            }}
                         </div>
 
                         {{ form.descripcion }} {{ mde.preview }} {{ mde.js }} {% if
@@ -40,7 +40,7 @@
                             <div class="form-check">
                                 {{ form.descripcion_html_preformateado(class="form-check-input",
                                 id="descripcion_html_preformateado") }} {{
-                                render_field_errors(form.descripcion_html_preformateado) }}}
+                                render_field_errors(form.descripcion_html_preformateado) }}
                                 <label class="form-check-label" for="descripcion_html_preformateado">
                                     {{ _("Descripción en HTML preformateado") }}
                                 </label>

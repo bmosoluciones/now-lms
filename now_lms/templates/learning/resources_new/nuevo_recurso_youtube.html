@@ -25,19 +25,19 @@
                         <div class="col-sm-6">
                             <label for="nombre" class="form-label">Titulo del Video</label>
                             {{ form.nombre(class="form-control", id="nombre", placeholder="Titulo del Video") }} {{
-                            render_field_errors(form.nombre) }}}
+                            render_field_errors(form.nombre) }}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="youtube_url" class="form-label">Dirección del Vídeo</label>
                             {{ form.youtube_url(class="form-control", id="youtube_url", placeholder="Dirección del Vídeo") }}
-                            {{ render_field_errors(form.youtube_url) }}}
+                            {{ render_field_errors(form.youtube_url) }}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="requerido" class="form-label">{{ _("Tipo") }} de {{ _("Recurso") }}</label>
                             {{ form.requerido(class="form-control", id="requerido") }} {{ render_field_errors(form.requerido)
-                            }}}
+                            }}
                         </div>
 
                         <div>
@@ -50,7 +50,7 @@
                             <div class="form-check">
                                 {{ form.descripcion_html_preformateado(class="form-check-input",
                                 id="descripcion_html_preformateado") }} {{
-                                render_field_errors(form.descripcion_html_preformateado) }}}
+                                render_field_errors(form.descripcion_html_preformateado) }}
                                 <label class="form-check-label" for="descripcion_html_preformateado">
                                     {{ _("Descripción en HTML preformateado") }}
                                 </label>

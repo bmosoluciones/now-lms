@@ -30,7 +30,7 @@
 
                         <div class="col-sm-6">
                             <div class="form-check">
-                                {{ form.habilitado(class="form-check-input") }} {{ render_field_errors(form.habilitado) }}}
+                                {{ form.habilitado(class="form-check-input") }} {{ render_field_errors(form.habilitado) }}
                                 <label for="habilitado" class="form-check-label">
                                     {{ _("Habilitar PayPal en el sitio web") }}
                                 </label>
@@ -39,7 +39,7 @@
 
                         <div class="col-sm-6">
                             <div class="form-check">
-                                {{ form.sandbox(class="form-check-input") }} {{ render_field_errors(form.sandbox) }}}
+                                {{ form.sandbox(class="form-check-input") }} {{ render_field_errors(form.sandbox) }}
                                 <label for="sandbox" class="form-check-label">
                                     {{ _("Usar modo sandbox (desarrollo)") }}
                                 </label>
@@ -55,13 +55,13 @@
                         <div class="col-sm-6">
                             <label for="paypal_id" class="form-label">{{ _("Client ID (Producción)") }}</label>
                             {{ form.paypal_id(class="form-control", placeholder=_("Ingrese el Client ID de producción")) }} {{
-                            render_field_errors(form.paypal_id) }}}
+                            render_field_errors(form.paypal_id) }}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="paypal_secret" class="form-label">{{ _("Client Secret (Producción)") }}</label>
                             {{ form.paypal_secret(class="form-control", placeholder=_("Ingrese el Client Secret de
-                            producción")) }} {{ render_field_errors(form.paypal_secret) }}}
+                            producción")) }} {{ render_field_errors(form.paypal_secret) }}
                             <div class="form-text">{{ _("Deje en blanco para mantener el valor actual.") }}</div>
                         </div>
 
@@ -76,13 +76,13 @@
                         <div class="col-sm-6">
                             <label for="paypal_sandbox" class="form-label">{{ _("Client ID (Sandbox)") }}</label>
                             {{ form.paypal_sandbox(class="form-control", placeholder=_("Ingrese el Client ID de sandbox")) }}
-                            {{ render_field_errors(form.paypal_sandbox) }}}
+                            {{ render_field_errors(form.paypal_sandbox) }}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="paypal_sandbox_secret" class="form-label">{{ _("Client Secret (Sandbox)") }}</label>
                             {{ form.paypal_sandbox_secret(class="form-control", placeholder=_("Ingrese el Client Secret de
-                            sandbox")) }} {{ render_field_errors(form.paypal_sandbox_secret) }}}
+                            sandbox")) }} {{ render_field_errors(form.paypal_sandbox_secret) }}
                             <div class="form-text">{{ _("Deje en blanco para mantener el valor actual.") }}</div>
                         </div>
 

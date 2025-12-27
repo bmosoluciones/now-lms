@@ -37,7 +37,7 @@
 
                     <div class="col-md-12">
                         <label for="nombre" class="form-label">{{ form.nombre.label.text }} *</label>
-                        {{ form.nombre(class="form-control", required=true) }} {{ render_field_errors(form.nombre) }}}
+                        {{ form.nombre(class="form-control", required=true) }} {{ render_field_errors(form.nombre) }}
                         <div class="form-text">
                             {{ _("Un nombre descriptivo para identificar el archivo en la biblioteca.") }}
                         </div>
@@ -47,7 +47,7 @@
                     <div class="col-md-12">
                         <label for="descripcion" class="form-label">{{ form.descripcion.label.text }} *</label>
                         {{ form.descripcion(class="form-control", required=true) }} {{ render_field_errors(form.descripcion)
-                        }}}
+                        }}
                         <div class="form-text">{{ _("Describe el uso o contenido del archivo.") }}</div>
                         <div class="invalid-feedback">{{ _("Por favor, ingrese una descripción para el archivo.") }}</div>
                     </div>

@@ -36,12 +36,12 @@
                         <div class="col-sm-6">
                             <label for="servidor" class="form-label">{{_("Servidor")}}:</label>
                             {{ form.MAIL_SERVER(class="form-control", id="servidor",) }} {{
-                            render_field_errors(form.MAIL_SERVER) }}}
+                            render_field_errors(form.MAIL_SERVER) }}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="puerto" class="form-label">{{_("Puerto")}}:</label>
-                            {{ form.MAIL_PORT(class="form-control", id="puerto",) }} {{ render_field_errors(form.MAIL_PORT) }}}
+                            {{ form.MAIL_PORT(class="form-control", id="puerto",) }} {{ render_field_errors(form.MAIL_PORT) }}
                         </div>
                     </div>
 
@@ -51,13 +51,13 @@
                         <div class="col-sm-6">
                             <label for="usuario" class="form-label">{{_("Usuario")}}:</label>
                             {{ form.MAIL_USERNAME(class="form-control", id="usuario") }} {{
-                            render_field_errors(form.MAIL_USERNAME) }}}
+                            render_field_errors(form.MAIL_USERNAME) }}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="contrasena" class="form-label">{{_("Contraseña (Oculta por seguridad.)")}}:</label>
                             {{ form.MAIL_PASSWORD(class="form-control", id="contrasena") }} {{
-                            render_field_errors(form.MAIL_PASSWORD) }}}
+                            render_field_errors(form.MAIL_PASSWORD) }}
                         </div>
                     </div>
 
@@ -66,12 +66,12 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <label for="tls" class="form-label">{{_("Utilizar TLS")}}.</label>
-                            {{ form.MAIL_USE_TLS() }} {{ render_field_errors(form.MAIL_USE_TLS) }}}
+                            {{ form.MAIL_USE_TLS() }} {{ render_field_errors(form.MAIL_USE_TLS) }}
                         </div>
 
                         <div class="col-sm-6">
                             <label for="ssl" class="form-label">{{_("Utilizar SSL")}}.</label>
-                            {{ form.MAIL_USE_SSL() }} {{ render_field_errors(form.MAIL_USE_SSL) }}}
+                            {{ form.MAIL_USE_SSL() }} {{ render_field_errors(form.MAIL_USE_SSL) }}
                         </div>
                     </div>
 
@@ -82,7 +82,7 @@
                                 >{{_("Correo predeterminado como enviado por")}}.</label
                             >
                             {{ form.MAIL_DEFAULT_SENDER(class="form-control", id="default_sender") }} {{
-                            render_field_errors(form.MAIL_DEFAULT_SENDER) }}}
+                            render_field_errors(form.MAIL_DEFAULT_SENDER) }}
                         </div>
                         <div class="col-sm-6">
                             <br />
@@ -90,7 +90,7 @@
                                 >{{_("Correo predeterminado enviado por nombre")}}.</label
                             >
                             {{ form.MAIL_DEFAULT_SENDER_NAME(class="form-control", id="default_sender_name") }} {{
-                            render_field_errors(form.MAIL_DEFAULT_SENDER_NAME) }}}
+                            render_field_errors(form.MAIL_DEFAULT_SENDER_NAME) }}
                         </div>
                     </div>
 
