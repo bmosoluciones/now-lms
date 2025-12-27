@@ -916,29 +916,35 @@ def editar_curso(course_code: str) -> str | Response:
             flash("Hubo en error al actualizar el curso.", "warning")
             return redirect(curso_url)
 
-    # Populate form with existing data for GET requests and failed validations
-    form.nombre.data = curso_a_editar.nombre
-    form.codigo.data = curso_a_editar.codigo
-    form.descripcion_corta.data = curso_a_editar.descripcion_corta
-    form.descripcion.data = curso_a_editar.descripcion
-    form.nivel.data = curso_a_editar.nivel
-    form.duracion.data = curso_a_editar.duracion
-    form.publico.data = curso_a_editar.publico
-    form.modalidad.data = curso_a_editar.modalidad
-    form.foro_habilitado.data = curso_a_editar.foro_habilitado
-    form.limitado.data = curso_a_editar.limitado
-    form.capacidad.data = curso_a_editar.capacidad
-    form.fecha_inicio.data = curso_a_editar.fecha_inicio
-    form.fecha_fin.data = curso_a_editar.fecha_fin
-    form.pagado.data = curso_a_editar.pagado
-    form.auditable.data = curso_a_editar.auditable
-    form.certificado.data = curso_a_editar.certificado
-    form.plantilla_certificado.data = curso_a_editar.plantilla_certificado
-    form.precio.data = curso_a_editar.precio
+    elif request.method == "POST":
+        # Mantener los datos enviados por el usuario y mostrar errores de validación
+        if form.errors:
+            flash("El formulario tiene errores. Revisa los campos marcados.", "warning")
 
-    # Populate category and tag current values
-    form.categoria.data = get_course_category(course_code)
-    form.etiquetas.data = get_course_tags(course_code)
+    if request.method == "GET":
+        # Populate form with existing data for GET requests
+        form.nombre.data = curso_a_editar.nombre
+        form.codigo.data = curso_a_editar.codigo
+        form.descripcion_corta.data = curso_a_editar.descripcion_corta
+        form.descripcion.data = curso_a_editar.descripcion
+        form.nivel.data = curso_a_editar.nivel
+        form.duracion.data = curso_a_editar.duracion
+        form.publico.data = curso_a_editar.publico
+        form.modalidad.data = curso_a_editar.modalidad
+        form.foro_habilitado.data = curso_a_editar.foro_habilitado
+        form.limitado.data = curso_a_editar.limitado
+        form.capacidad.data = curso_a_editar.capacidad
+        form.fecha_inicio.data = curso_a_editar.fecha_inicio
+        form.fecha_fin.data = curso_a_editar.fecha_fin
+        form.pagado.data = curso_a_editar.pagado
+        form.auditable.data = curso_a_editar.auditable
+        form.certificado.data = curso_a_editar.certificado
+        form.plantilla_certificado.data = curso_a_editar.plantilla_certificado
+        form.precio.data = curso_a_editar.precio
+
+        # Populate category and tag current values
+        form.categoria.data = get_course_category(course_code)
+        form.etiquetas.data = get_course_tags(course_code)
 
     return render_template("learning/nuevo_curso.html", form=form, curso=curso_a_editar, edit=True)
 

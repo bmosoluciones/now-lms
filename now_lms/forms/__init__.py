@@ -38,13 +38,70 @@ from wtforms import (
     TextAreaField,
     TimeField,
 )
-from wtforms.validators import DataRequired, Length
+from wtforms.validators import DataRequired, Length, ValidationError
 from wtforms.widgets import ColorInput, TextArea, html_params
 
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.i18n import _, _l
+
+
+class MultiFormatDateField(DateField):
+    def __init__(self, *args, formats: list[str] | None = None, **kwargs):
+        self.formats = formats or ["%Y-%m-%d"]
+        super().__init__(*args, format=self.formats[0], **kwargs)
+
+    def process_formdata(self, valuelist):
+        if not valuelist:
+            return
+        date_str = valuelist[0]
+        if date_str is None:
+            self.data = None
+            return
+        date_str = str(date_str).strip()
+        if not date_str:
+            self.data = None
+            return
+
+        for fmt in self.formats:
+            try:
+                self.data = self.strptime(date_str, fmt).date()
+                return
+            except (ValueError, TypeError):
+                continue
+        raise ValueError(self.gettext("Not a valid date value."))
+
+
+class FlexibleDecimalField(DecimalField):
+    def process_formdata(self, valuelist):
+        if not valuelist:
+            return
+        value = valuelist[0]
+        if value is None:
+            self.data = None
+            return
+        value = str(value).strip()
+        if not value:
+            self.data = None
+            return
+        value = value.replace(",", ".")
+        super().process_formdata([value])
+
+
+class FlexibleIntegerField(IntegerField):
+    def process_formdata(self, valuelist):
+        if not valuelist:
+            return
+        value = valuelist[0]
+        if value is None:
+            self.data = None
+            return
+        value = str(value).strip()
+        if not value:
+            self.data = None
+            return
+        super().process_formdata([value])
 
 
 # ---------------------------------------------------------------------------------------
@@ -414,8 +471,8 @@ class CurseForm(BaseForm):
     # Nombre y descripción de la base.
     codigo = StringField(validators=[DataRequired()])
     descripcion_corta = StringField(validators=[DataRequired()])
-    nivel = SelectField(_("Nivel"), choices=[], validators=[])
-    duracion = IntegerField(validators=[])
+    nivel = SelectField(_("Nivel"), choices=[], coerce=int, validators=[])
+    duracion = FlexibleIntegerField(validators=[])
     # Estado de publicación
     publico = BooleanField(validators=[])
     # Modalidad
@@ -424,10 +481,10 @@ class CurseForm(BaseForm):
     foro_habilitado = BooleanField(_("Habilitar foro"), validators=[])
     # Disponibilidad de cupos
     limitado = BooleanField(validators=[])
-    capacidad = IntegerField(validators=[])
+    capacidad = FlexibleIntegerField(validators=[])
     # Fechas de inicio y fin
-    fecha_inicio = DateField(validators=[])
-    fecha_fin = DateField(validators=[])
+    fecha_inicio = MultiFormatDateField(validators=[], formats=["%d/%m/%Y", "%Y-%m-%d"])
+    fecha_fin = MultiFormatDateField(validators=[], formats=["%d/%m/%Y", "%Y-%m-%d"])
     # Información de marketing
     promocionado = BooleanField(validators=[])
     # Información de pago
@@ -439,7 +496,7 @@ class CurseForm(BaseForm):
         choices=[],
         validate_choice=False,
     )
-    precio = DecimalField(validators=[])
+    precio = FlexibleDecimalField(validators=[])
     categoria = SelectField(
         _("Categoría"),
         choices=[],
@@ -460,7 +517,7 @@ class CurseForm(BaseForm):
     def validate_foro_habilitado(self, field):
         """Validación personalizada para el campo foro_habilitado."""
         if field.data and self.modalidad.data == "self_paced":
-            raise ValueError(_("El foro no puede habilitarse en cursos con modalidad self-paced"))
+            raise ValidationError(_("El foro no puede habilitarse en cursos con modalidad self-paced"))
 
 
 class CursoSeccionForm(BaseForm):
@@ -604,7 +661,7 @@ class ProgramaForm(BaseForm):
     """Formulario para crear un programa."""
 
     codigo = StringField(validators=[DataRequired()])
-    precio = DecimalField()
+    precio = FlexibleDecimalField(validators=[])
     publico = BooleanField(validators=[])
     estado = SelectField(_("Estado"), choices=[], validators=[])
     promocionado = BooleanField(validators=[])
