@@ -9,6 +9,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [1.0.5] - 2025-12-27
+
+### Fixed
+- Fix validation error when editing a course
+- Fix HTML errors introduced in release 1.0.4
+
 ## [1.0.4] - 2025-11-23
 
 ### Changed:
