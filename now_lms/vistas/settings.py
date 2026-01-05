@@ -202,6 +202,7 @@ def configuracion() -> str | Response:
         max_file_size=config.max_file_size,
         enable_html_preformatted_descriptions=config.enable_html_preformatted_descriptions,
         verify_user_by_email=config.verify_user_by_email,
+        allow_unverified_email_login=config.allow_unverified_email_login,
         titulo_html=config.titulo_html,
         hero=config.hero,
         enable_feature_section=config.enable_feature_section,
@@ -226,6 +227,7 @@ def configuracion() -> str | Response:
         config.max_file_size = form.max_file_size.data
         config.enable_html_preformatted_descriptions = form.enable_html_preformatted_descriptions.data
         config.verify_user_by_email = form.verify_user_by_email.data
+        config.allow_unverified_email_login = form.allow_unverified_email_login.data
         config.titulo_html = form.titulo_html.data
         config.hero = form.hero.data
         config.enable_feature_section = form.enable_feature_section.data
