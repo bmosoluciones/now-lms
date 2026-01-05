@@ -384,6 +384,7 @@ class ConfigForm(FlaskForm):
     timezone = SelectField(_("Zona Horaria"), choices=[], validators=[])
 
     verify_user_by_email = BooleanField(validators=[])
+    allow_unverified_email_login = BooleanField(validators=[])
 
     # Navigation configuration
     enable_programs = BooleanField(_("Habilitar Programas"), default=False, validators=[])

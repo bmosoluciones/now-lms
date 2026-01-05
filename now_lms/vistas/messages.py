@@ -37,7 +37,7 @@ from werkzeug.wrappers import Response
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
-from now_lms.auth import perfil_requerido
+from now_lms.auth import email_verificado_requerido, perfil_requerido
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import Curso, DocenteCurso, EstudianteCurso, Message, MessageThread, ModeradorCurso, database, select
 from now_lms.forms import MessageReplyForm, MessageReportForm, MessageThreadForm
@@ -193,6 +193,7 @@ def user_messages() -> str:
 @msg.route("/course/<course_code>/messages/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("student")
+@email_verificado_requerido
 def new_thread(course_code: str) -> str | Response:
     """Create a new message thread."""
     if not check_course_access(course_code, current_user):
@@ -278,6 +279,7 @@ def view_thread(thread_id: int) -> str | Response:
 
 @msg.route("/thread/<thread_id>/reply", methods=["POST"])
 @login_required
+@email_verificado_requerido
 def reply_to_thread(thread_id: int) -> str | Response:
     """Reply to a message thread."""
     thread = database.session.execute(select(MessageThread).filter_by(id=thread_id)).scalars().first()

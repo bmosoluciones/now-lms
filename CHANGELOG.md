@@ -9,11 +9,34 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
-## [1.0.5] - 2025-12-27
+### Added
+- **Configurable Restricted Access for Unverified Email Users**
+  - New administrator configuration option `allow_unverified_email_login` enables controlled access for users with unverified email addresses
+  - When enabled, users can log in without email verification but with the following restrictions:
+    - **Allowed**: Enroll in free courses, access course resources, complete evaluations, and earn certificates
+    - **Restricted**: Enroll in paid courses, use discount coupons (including 100% off), post in forums, or send private messages
+  - Flash messages inform users about their limited access status during login
+  - Administrators can manually verify user emails from `/admin/users/list_inactive` via the new verification button
+  - Manual verification by admin immediately activates the account and grants full access
+  - Default behavior unchanged: unverified users are blocked by default (backward compatible, non-breaking change)
+  
+### Changed
+- Login flow enhanced to support conditional access for unverified users based on system configuration
+- Admin inactive users list now includes email verification functionality
 
-### Fixed
-- Fix validation error when editing a course
-- Fix HTML errors introduced in release 1.0.4
+### Database Migration Required
+**IMPORTANT**: This version introduces database schema changes. After updating, you must run database migrations:
+```bash
+# Using lmsctl
+lmsctl database upgrade
+
+# Or using Flask-Alembic directly
+flask db upgrade
+```
+
+Migration file: `now_lms/migrations/20260105_145517_add_allow_unverified_email_login.py`
+
+The migration adds the `allow_unverified_email_login` column to the `configuracion` table with a default value of `False` to maintain backward compatibility.
 
 ## [1.0.4] - 2025-11-23
 

@@ -30,6 +30,7 @@ from werkzeug.wrappers import Response
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
+from now_lms.auth import email_verificado_requerido
 from now_lms.db import Curso, DocenteCurso, EstudianteCurso, ForoMensaje, ModeradorCurso, database, select
 from now_lms.forms import ForoMensajeForm, ForoMensajeRespuestaForm
 
@@ -247,6 +248,7 @@ def ver_mensaje(course_code: str, message_id: str) -> str:
 
 @forum.route("/course/<course_code>/forum/message/<message_id>/reply", methods=["GET", "POST"])
 @login_required
+@email_verificado_requerido
 def responder_mensaje(course_code: str, message_id: str) -> str | Response:
     """Responder a un mensaje del foro."""
     # Verificar curso y mensaje

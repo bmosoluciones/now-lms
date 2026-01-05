@@ -35,5 +35,5 @@ echo -------------------------------------------------
 echo Run tests
 echo -------------------------------------------------
 echo
-python -m babel.messages.frontend compile -d now_lms/translations
-CI=True python -m pytest --tb=short -q --cov=now_lms -n auto
+pybabel compile -d now_lms/translations
+CI=True pytest --tb=short -q --cov=now_lms

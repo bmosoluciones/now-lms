@@ -145,6 +145,42 @@ def usuarios_inactivos() -> str:
     )
 
 
+@admin_profile.route("/admin/users/verify_email/<user_id>")
+@login_required
+@perfil_requerido("admin")
+def verificar_email_usuario(user_id: str) -> Response:
+    """Marca el correo electrónico del usuario como verificado y activa la cuenta."""
+    from now_lms.demo_mode import demo_restriction_check
+
+    # Check demo mode restrictions
+    if demo_restriction_check("verify_user_email"):
+        return redirect(url_for("admin_profile.usuarios_inactivos"))
+
+    row = database.session.execute(database.select(Usuario).filter(Usuario.id == user_id)).first()
+    if row is None:
+        flash("Usuario no encontrado.", "error")
+        return redirect(url_for("admin_profile.usuarios_inactivos"))
+
+    perfil_usuario = row[0]
+
+    # Mark email as verified and activate account
+    perfil_usuario.correo_electronico_verificado = True
+    perfil_usuario.activo = True
+    perfil_usuario.modificado_por = current_user.usuario
+
+    try:
+        database.session.commit()
+        flash(f"Correo electrónico de {perfil_usuario.usuario} verificado exitosamente.", "success")
+    except Exception as e:
+        database.session.rollback()
+        flash(f"Error al verificar el correo electrónico: {str(e)}", "error")
+
+    # Clear cache
+    cache.delete("view/" + url_for("admin_profile.usuarios_inactivos"))
+
+    return redirect(url_for("admin_profile.usuarios_inactivos"))
+
+
 @admin_profile.route("/admin/user/change_type")
 @login_required
 @perfil_requerido("admin")

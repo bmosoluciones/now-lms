@@ -554,6 +554,10 @@ class Configuracion(database.Model, BaseTabla):
     # Send a message to the user to verify his email
     verify_user_by_email = database.Column(database.Boolean())
 
+    # Allow users without verified email to login with restricted access
+    # Default is False to maintain backward compatibility (non-breaking change)
+    allow_unverified_email_login = database.Column(database.Boolean(), default=False, nullable=False)
+
     # Internationalization
     lang = database.Column(database.String(5), default="en")
     time_zone = database.Column(database.String(50), default="UTC")
