@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [1.1.0] - 2025-01-05
+
 ### Added
 - **Configurable Restricted Access for Unverified Email Users**
   - New administrator configuration option `allow_unverified_email_login` enables controlled access for users with unverified email addresses
@@ -37,6 +39,12 @@ flask db upgrade
 Migration file: `now_lms/migrations/20260105_145517_add_allow_unverified_email_login.py`
 
 The migration adds the `allow_unverified_email_login` column to the `configuracion` table with a default value of `False` to maintain backward compatibility.
+
+## [1.0.5] - 2025-12-27
+
+### Fixed
+- Fix validation error when editing a course
+- Fix HTML errors introduced in release 1.0.4
 
 ## [1.0.4] - 2025-11-23
 
