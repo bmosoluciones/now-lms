@@ -1,3 +1,4 @@
+
 alembic==1.16.5
 appdirs==1.4.4
 argon2-cffi==25.1.0
@@ -20,11 +21,11 @@ flask-sqlalchemy==3.1.1
 flask_weasyprint==1.1.0
 flask-wtf==1.2.2
 gunicorn==23.0.0
-markdown==3.9
+markdown==3.10
 memcache==0.14.0
-mysql-connector-python==9.4.0
-pg8000==1.31.4
-psutil==7.1.0
+mysql-connector-python==9.5.0
+pg8000==1.31.5
+psutil==7.1.3
 pyjwt==2.10.1
 python-slugify==8.0.4
 python-ulid==3.1.0

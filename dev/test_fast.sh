@@ -17,4 +17,4 @@ echo -------------------------------------------------
 echo
 pybabel compile -d now_lms/translations
 # Run without coverage for maximum speed during development
-CI=True pytest --tb=short -q -n auto -m "not slow and not comprehensive" --durations=5
+CI=True pytest --tb=short -q -m "not slow and not comprehensive" --durations=5

@@ -42,7 +42,7 @@ from flask_login import current_user
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
-from now_lms.db import MailConfig, Usuario, database
+from now_lms.db import Configuracion, MailConfig, Usuario, database
 from now_lms.logs import log
 
 ph = PasswordHasher()
@@ -86,6 +86,36 @@ def validar_acceso(usuario_id: str, acceso: str, /) -> bool:
     return clave_validada
 
 
+def usuario_requiere_verificacion_email() -> bool:
+    """Check if current user requires email verification to access restricted features.
+
+    Returns True if:
+    - User is authenticated
+    - User's email is not verified
+    - System has email verification enabled OR restricted access is enabled
+
+    Returns False otherwise (user can access all features).
+    """
+    if not current_user.is_authenticated:
+        return False
+
+    # If email is already verified, no restrictions apply
+    if current_user.correo_electronico_verificado:
+        return False
+
+    # Check system configuration
+    config = database.session.execute(database.select(Configuracion)).scalar_one_or_none()
+    if not config:
+        return False
+
+    # If system requires email verification OR allows restricted access for unverified users
+    # then the user has restrictions
+    if config.verify_user_by_email or config.allow_unverified_email_login:
+        return True
+
+    return False
+
+
 # ---------------------------------------------------------------------------------------
 # Comprobar el acceso a un perfil de acuerdo con el perfil del usuario.
 # ---------------------------------------------------------------------------------------
@@ -119,6 +149,41 @@ def perfil_requerido(perfil_id: str | tuple[str, ...]) -> Callable[[Callable], C
         return wrapper
 
     return decorator_verifica_acceso
+
+
+def email_verificado_requerido(func: Callable) -> Callable:
+    """Decorator that restricts access to users with verified email.
+
+    This decorator should be used on views that require email verification:
+    - Payment/purchase functionality
+    - Forum posting
+    - Private messaging
+
+    Admins bypass this restriction.
+    """
+
+    @wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        if not current_user.is_authenticated:
+            flash("Favor iniciar sesión.", "warning")
+            return redirect(url_for("user.login"))
+
+        # Admins bypass email verification requirement
+        if current_user.tipo == "admin":
+            return func(*args, **kwargs)
+
+        # Check if email verification is required
+        if usuario_requiere_verificacion_email():
+            flash(
+                "Debe verificar su correo electrónico para acceder a esta funcionalidad. "
+                "Revise su bandeja de entrada y confirme su dirección de correo.",
+                "warning",
+            )
+            return redirect(url_for("user_profile.usuario", id_usuario=current_user.usuario))
+
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 # ---------------------------------------------------------------------------------------
