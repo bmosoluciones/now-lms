@@ -430,14 +430,8 @@ def crear_usuarios_de_prueba() -> None:
         correo_electronico_verificado=True,
     )
     for i in student, student1, student2, student3:
-        i.fecha_registro = datetime.today()
-        i.fecha_ultimo_acceso = datetime.today()
-        i.fecha_ultimo_curso = datetime.today()
-        i.fecha_ultimo_recurso = datetime.today()
-        i.fecha_ultimo_certificado = datetime.today()
-        i.fecha_ultimo_mensaje = datetime.today()
-        i.fecha_ultimo_grupo = datetime.today()
-        i.fecha_ultimo_seguimiento = datetime.today()
+        i.fecha_alta = datetime.today()
+        i.ultimo_acceso = datetime.today()
         database.session.add(i)
     database.session.commit()
     demo_grupo = UsuarioGrupo(nombre="Grupo de Prueba", descripcion="Demo Group", activo=True)
