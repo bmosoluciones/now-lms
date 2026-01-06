@@ -306,6 +306,43 @@
                                     render_field_errors(form.verify_user_by_email) }}
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <br />
+                                    <h5>{{_("Acceso con correo electrónico no verificado")}}.</h5>
+                                    <p class="text-muted">
+                                        {{_("Configure el acceso para usuarios que aún no han verificado su correo
+                                        electrónico")}}.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-check">
+                                        {{ form.allow_unverified_email_login(class="form-check-input",
+                                        id="allow_unverified_email_login", checked=config.allow_unverified_email_login) }} {{
+                                        render_field_errors(form.allow_unverified_email_login) }}
+                                        <label class="form-check-label" for="allow_unverified_email_login">
+                                            {{_("Permitir el acceso a usuarios con correo electrónico no verificado")}}:
+                                        </label>
+                                    </div>
+                                    <div class="form-text mb-3">
+                                        {{_("Permite que los usuarios inicien sesión aunque no hayan verificado su correo
+                                        electrónico.")}}.
+                                    </div>
+                                    <div class="alert alert-warning" role="alert">
+                                        <strong
+                                            ><i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                            {{_("Advertencia")}}:</strong
+                                        >
+                                        {{_("Habilitar usuarios sin haber verificado su correo electrónico solo permite el
+                                        acceso a un conjunto limitado de opciones del sistema. El administrador debe verificar
+                                        periódicamente estos registros para mantener la seguridad e integridad de la
+                                        plataforma")}}.
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
