@@ -112,7 +112,6 @@ class TestMultipleDatabaseSupport:
         """Verifica que se puede crear un usuario en la base de datos."""
         from now_lms.auth import proteger_passwd
         from now_lms.db import Usuario
-        from datetime import datetime
 
         # Crear usuario
         user = Usuario(
@@ -126,7 +125,6 @@ class TestMultipleDatabaseSupport:
             activo=True,
             visible=True,
             correo_electronico_verificado=True,
-            fecha_registro=datetime.now(),
         )
 
         db_session.add(user)
@@ -181,7 +179,6 @@ class TestMultipleDatabaseSupport:
         """Verifica que las transacciones funcionan correctamente."""
         from now_lms.auth import proteger_passwd
         from now_lms.db import Usuario
-        from datetime import datetime
 
         # Crear usuario
         user = Usuario(
@@ -195,7 +192,6 @@ class TestMultipleDatabaseSupport:
             activo=True,
             visible=True,
             correo_electronico_verificado=True,
-            fecha_registro=datetime.now(),
         )
 
         db_session.add(user)
@@ -220,7 +216,6 @@ class TestMultipleDatabaseSupport:
         """Verifica que el filtrado de queries funciona en la base de datos."""
         from now_lms.auth import proteger_passwd
         from now_lms.db import Usuario
-        from datetime import datetime
 
         # Crear múltiples usuarios
         users = [
@@ -235,7 +230,6 @@ class TestMultipleDatabaseSupport:
                 activo=True,
                 visible=True,
                 correo_electronico_verificado=True,
-                fecha_registro=datetime.now(),
             )
             for i in range(5)
         ]
@@ -261,7 +255,6 @@ class TestMultipleDatabaseSupport:
         """Verifica que las restricciones de base de datos funcionan."""
         from now_lms.auth import proteger_passwd
         from now_lms.db import Usuario
-        from datetime import datetime
         from sqlalchemy.exc import IntegrityError
 
         # Crear usuario
@@ -276,7 +269,6 @@ class TestMultipleDatabaseSupport:
             activo=True,
             visible=True,
             correo_electronico_verificado=True,
-            fecha_registro=datetime.now(),
         )
 
         db_session.add(user1)
@@ -294,7 +286,6 @@ class TestMultipleDatabaseSupport:
             activo=True,
             visible=True,
             correo_electronico_verificado=True,
-            fecha_registro=datetime.now(),
         )
 
         with pytest.raises(IntegrityError):
