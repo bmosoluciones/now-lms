@@ -9,6 +9,18 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [1.1.2] - 2025-01-09
+
+### Added
+ - Configurable social media links
+ - Footer with static pages
+
+### Changed
+ - Improved admin menu
+
+### Fixes
+ - HTML errores
+
 ## [1.1.1] - 2025-01-05
 
 ### Fixes
