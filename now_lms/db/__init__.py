@@ -597,6 +597,14 @@ class Configuracion(database.Model, BaseTabla):
     # Footer display configuration
     enable_footer = database.Column(database.Boolean(), default=True, nullable=False)
 
+    # Social media links
+    social_facebook = database.Column(database.String(200), nullable=True)
+    social_twitter = database.Column(database.String(200), nullable=True)
+    social_linkedin = database.Column(database.String(200), nullable=True)
+    social_youtube = database.Column(database.String(200), nullable=True)
+    social_instagram = database.Column(database.String(200), nullable=True)
+    social_github = database.Column(database.String(200), nullable=True)
+
     r = database.Column(database.LargeBinary())
 
 

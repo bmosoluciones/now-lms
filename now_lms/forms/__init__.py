@@ -422,6 +422,14 @@ class ConfigForm(FlaskForm):
     # Footer display configuration
     enable_footer = BooleanField(_("Mostrar pie de página en páginas públicas"), default=True, validators=[])
 
+    # Social media links
+    social_facebook = StringField(_("URL de Facebook"), validators=[])
+    social_twitter = StringField(_("URL de Twitter/X"), validators=[])
+    social_linkedin = StringField(_("URL de LinkedIn"), validators=[])
+    social_youtube = StringField(_("URL de YouTube"), validators=[])
+    social_instagram = StringField(_("URL de Instagram"), validators=[])
+    social_github = StringField(_("URL de GitHub"), validators=[])
+
     def __init__(self, *args, **kwargs):
         """Initialize form with translated choices."""
         super().__init__(*args, **kwargs)
