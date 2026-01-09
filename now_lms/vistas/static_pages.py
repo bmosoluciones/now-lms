@@ -100,10 +100,10 @@ def list_pages() -> str:
     return render_template("admin/static_pages.html", pages=pages)
 
 
-@static_pages.route("/admin/pages/<int:page_id>/edit", methods=["GET", "POST"])
+@static_pages.route("/admin/pages/<page_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def edit_page(page_id: int) -> str | Response:
+def edit_page(page_id: str) -> str | Response:
     """Edit a static page."""
     page = database.session.get(StaticPage, page_id)
 
@@ -144,10 +144,10 @@ def list_contact_messages() -> str:
     return render_template("admin/contact_messages.html", messages=messages, status_filter=status_filter)
 
 
-@static_pages.route("/admin/contact-messages/<int:message_id>/view", methods=["GET", "POST"])
+@static_pages.route("/admin/contact-messages/<message_id>/view", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
-def view_contact_message(message_id: int) -> str | Response:
+def view_contact_message(message_id: str) -> str | Response:
     """View and update a contact message."""
     from flask_login import current_user
 
