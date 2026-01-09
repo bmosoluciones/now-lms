@@ -139,6 +139,17 @@ def current_theme() -> SimpleNamespace:
     theme = get_current_theme
     dir_ = THEMES_DIRECTORY
 
+    # Check if theme has footer macro, otherwise use default
+    theme_path = dir_ + theme()
+    footer_path = theme_path + "/footer.j2"
+
+    # Try to load theme-specific footer, fall back to default
+    try:
+        footer_macro = get_macro(footer_path, "footer")
+    except Exception:
+        # Fall back to default theme footer if theme doesn't have one
+        footer_macro = get_macro(dir_ + "now_lms/footer.j2", "footer")
+
     # Load theme macros and return as namespace object for template access
     return SimpleNamespace(
         headertags=get_macro(dir_ + theme() + "/header.j2", "headertags"),
@@ -147,6 +158,7 @@ def current_theme() -> SimpleNamespace:
         navbar=get_macro(dir_ + theme() + "/navbar.j2", "navbar"),
         notify=get_macro(dir_ + theme() + "/notify.j2", "notify"),
         rendizar_paginacion=get_macro(dir_ + theme() + "/pagination.j2", "paginate"),
+        footer=footer_macro,
     )
 
 

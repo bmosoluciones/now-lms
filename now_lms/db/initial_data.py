@@ -2027,3 +2027,224 @@ The pandemic accelerated a trend that was already underway. Online learning is n
 
     database.session.commit()
     log.debug("Default blog post created successfully.")
+
+
+def crear_paginas_estaticas_predeterminadas() -> None:
+    """Create default static pages (About Us, Privacy Policy) with translatable content."""
+    from now_lms.i18n import get_configuracion
+
+    log.trace("Creating default static pages.")
+
+    # Get system language from configuration
+    config = get_configuracion()
+    lang = config.lang if config else "en"
+
+    # Define content in different languages
+    about_us_content = {
+        "en": """<h2>About Us</h2>
+<p>Welcome to our Learning Management System. We are dedicated to providing high-quality online education and training solutions.</p>
+<h3>Our Mission</h3>
+<p>Our mission is to make education accessible to everyone, everywhere. We believe in the power of knowledge and continuous learning to transform lives and communities.</p>
+<h3>What We Offer</h3>
+<ul>
+<li>Interactive online courses</li>
+<li>Professional certifications</li>
+<li>Expert instructors</li>
+<li>Flexible learning schedules</li>
+<li>Community support and forums</li>
+</ul>
+<h3>Our Values</h3>
+<p>We are committed to excellence, innovation, and accessibility in education. Our platform is designed to support learners at every stage of their educational journey.</p>""",
+        "es": """<h2>Sobre Nosotros</h2>
+<p>Bienvenido a nuestro Sistema de Gestión de Aprendizaje. Estamos dedicados a proporcionar soluciones de educación y capacitación en línea de alta calidad.</p>
+<h3>Nuestra Misión</h3>
+<p>Nuestra misión es hacer que la educación sea accesible para todos, en todas partes. Creemos en el poder del conocimiento y el aprendizaje continuo para transformar vidas y comunidades.</p>
+<h3>Lo Que Ofrecemos</h3>
+<ul>
+<li>Cursos en línea interactivos</li>
+<li>Certificaciones profesionales</li>
+<li>Instructores expertos</li>
+<li>Horarios de aprendizaje flexibles</li>
+<li>Apoyo comunitario y foros</li>
+</ul>
+<h3>Nuestros Valores</h3>
+<p>Estamos comprometidos con la excelencia, la innovación y la accesibilidad en la educación. Nuestra plataforma está diseñada para apoyar a los estudiantes en cada etapa de su viaje educativo.</p>""",
+        "pt_BR": """<h2>Sobre Nós</h2>
+<p>Bem-vindo ao nosso Sistema de Gestão de Aprendizagem. Somos dedicados a fornecer soluções de educação e treinamento on-line de alta qualidade.</p>
+<h3>Nossa Missão</h3>
+<p>Nossa missão é tornar a educação acessível a todos, em todos os lugares. Acreditamos no poder do conhecimento e da aprendizagem contínua para transformar vidas e comunidades.</p>
+<h3>O Que Oferecemos</h3>
+<ul>
+<li>Cursos online interativos</li>
+<li>Certificações profissionais</li>
+<li>Instrutores especialistas</li>
+<li>Horários de aprendizagem flexíveis</li>
+<li>Suporte comunitário e fóruns</li>
+</ul>
+<h3>Nossos Valores</h3>
+<p>Estamos comprometidos com a excelência, inovação e acessibilidade na educação. Nossa plataforma é projetada para apoiar os alunos em cada etapa de sua jornada educacional.</p>""",
+    }
+
+    privacy_policy_content = {
+        "en": """<h2>Privacy Policy</h2>
+<p><strong>Last Updated:</strong> January 2026</p>
+<h3>Information We Collect</h3>
+<p>We collect information that you provide directly to us when you:</p>
+<ul>
+<li>Register for an account</li>
+<li>Enroll in courses</li>
+<li>Contact us through our contact form</li>
+<li>Participate in forums and discussions</li>
+</ul>
+<h3>How We Use Your Information</h3>
+<p>We use the information we collect to:</p>
+<ul>
+<li>Provide and maintain our services</li>
+<li>Process your enrollments and track your progress</li>
+<li>Communicate with you about courses and updates</li>
+<li>Improve our platform and user experience</li>
+<li>Ensure security and prevent fraud</li>
+</ul>
+<h3>Information Sharing</h3>
+<p>We do not sell or rent your personal information to third parties. We may share your information only in the following circumstances:</p>
+<ul>
+<li>With your consent</li>
+<li>With service providers who assist in our operations</li>
+<li>To comply with legal obligations</li>
+<li>To protect our rights and safety</li>
+</ul>
+<h3>Data Security</h3>
+<p>We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.</p>
+<h3>Your Rights</h3>
+<p>You have the right to access, update, or delete your personal information. You can manage your account settings or contact us for assistance.</p>
+<h3>Cookies and Tracking</h3>
+<p>We use cookies and similar technologies to enhance your experience on our platform. You can control cookie settings through your browser preferences.</p>
+<h3>Contact Us</h3>
+<p>If you have questions about this Privacy Policy, please contact us through our contact form.</p>""",
+        "es": """<h2>Política de Privacidad</h2>
+<p><strong>Última Actualización:</strong> Enero 2026</p>
+<h3>Información Que Recopilamos</h3>
+<p>Recopilamos información que usted nos proporciona directamente cuando:</p>
+<ul>
+<li>Se registra para una cuenta</li>
+<li>Se inscribe en cursos</li>
+<li>Nos contacta a través de nuestro formulario de contacto</li>
+<li>Participa en foros y discusiones</li>
+</ul>
+<h3>Cómo Usamos Su Información</h3>
+<p>Usamos la información que recopilamos para:</p>
+<ul>
+<li>Proporcionar y mantener nuestros servicios</li>
+<li>Procesar sus inscripciones y seguir su progreso</li>
+<li>Comunicarnos con usted sobre cursos y actualizaciones</li>
+<li>Mejorar nuestra plataforma y experiencia de usuario</li>
+<li>Garantizar la seguridad y prevenir fraudes</li>
+</ul>
+<h3>Compartir Información</h3>
+<p>No vendemos ni alquilamos su información personal a terceros. Podemos compartir su información solo en las siguientes circunstancias:</p>
+<ul>
+<li>Con su consentimiento</li>
+<li>Con proveedores de servicios que ayudan en nuestras operaciones</li>
+<li>Para cumplir con obligaciones legales</li>
+<li>Para proteger nuestros derechos y seguridad</li>
+</ul>
+<h3>Seguridad de Datos</h3>
+<p>Implementamos medidas técnicas y organizativas apropiadas para proteger su información personal contra acceso no autorizado, alteración, divulgación o destrucción.</p>
+<h3>Sus Derechos</h3>
+<p>Tiene derecho a acceder, actualizar o eliminar su información personal. Puede administrar la configuración de su cuenta o contactarnos para obtener ayuda.</p>
+<h3>Cookies y Seguimiento</h3>
+<p>Usamos cookies y tecnologías similares para mejorar su experiencia en nuestra plataforma. Puede controlar la configuración de cookies a través de las preferencias de su navegador.</p>
+<h3>Contáctenos</h3>
+<p>Si tiene preguntas sobre esta Política de Privacidad, contáctenos a través de nuestro formulario de contacto.</p>""",
+        "pt_BR": """<h2>Política de Privacidade</h2>
+<p><strong>Última Atualização:</strong> Janeiro 2026</p>
+<h3>Informações Que Coletamos</h3>
+<p>Coletamos informações que você nos fornece diretamente quando:</p>
+<ul>
+<li>Registra uma conta</li>
+<li>Inscreve-se em cursos</li>
+<li>Entra em contato conosco através do nosso formulário de contato</li>
+<li>Participa de fóruns e discussões</li>
+</ul>
+<h3>Como Usamos Suas Informações</h3>
+<p>Usamos as informações que coletamos para:</p>
+<ul>
+<li>Fornecer e manter nossos serviços</li>
+<li>Processar suas inscrições e acompanhar seu progresso</li>
+<li>Comunicar com você sobre cursos e atualizações</li>
+<li>Melhorar nossa plataforma e experiência do usuário</li>
+<li>Garantir segurança e prevenir fraudes</li>
+</ul>
+<h3>Compartilhamento de Informações</h3>
+<p>Não vendemos ou alugamos suas informações pessoais a terceiros. Podemos compartilhar suas informações apenas nas seguintes circunstâncias:</p>
+<ul>
+<li>Com seu consentimento</li>
+<li>Com provedores de serviços que auxiliam em nossas operações</li>
+<li>Para cumprir obrigações legais</li>
+<li>Para proteger nossos direitos e segurança</li>
+</ul>
+<h3>Segurança de Dados</h3>
+<p>Implementamos medidas técnicas e organizacionais apropriadas para proteger suas informações pessoais contra acesso não autorizado, alteração, divulgação ou destruição.</p>
+<h3>Seus Direitos</h3>
+<p>Você tem o direito de acessar, atualizar ou excluir suas informações pessoais. Você pode gerenciar as configurações da sua conta ou entrar em contato conosco para obter assistência.</p>
+<h3>Cookies e Rastreamento</h3>
+<p>Usamos cookies e tecnologias semelhantes para melhorar sua experiência em nossa plataforma. Você pode controlar as configurações de cookies através das preferências do seu navegador.</p>
+<h3>Entre em Contato</h3>
+<p>Se você tiver dúvidas sobre esta Política de Privacidade, entre em contato conosco através do nosso formulário de contato.</p>""",
+    }
+
+    about_us_titles = {
+        "en": "About Us",
+        "es": "Sobre Nosotros",
+        "pt_BR": "Sobre Nós",
+    }
+
+    privacy_policy_titles = {
+        "en": "Privacy Policy",
+        "es": "Política de Privacidad",
+        "pt_BR": "Política de Privacidade",
+    }
+
+    # Get content based on system language, fallback to English
+    about_content = about_us_content.get(lang, about_us_content["en"])
+    privacy_content = privacy_policy_content.get(lang, privacy_policy_content["en"])
+    about_title = about_us_titles.get(lang, about_us_titles["en"])
+    privacy_title = privacy_policy_titles.get(lang, privacy_policy_titles["en"])
+
+    # Check if pages already exist
+    from now_lms.db import StaticPage
+
+    existing_about = database.session.execute(
+        database.select(StaticPage).filter(StaticPage.slug == "about-us")
+    ).scalar_one_or_none()
+
+    if not existing_about:
+        about_page = StaticPage(
+            slug="about-us",
+            title=about_title,
+            content=about_content,
+            is_active=True,
+        )
+        database.session.add(about_page)
+        log.debug("About Us page created.")
+    else:
+        log.debug("About Us page already exists.")
+
+    existing_privacy = database.session.execute(
+        database.select(StaticPage).filter(StaticPage.slug == "privacy-policy")
+    ).scalar_one_or_none()
+
+    if not existing_privacy:
+        privacy_page = StaticPage(
+            slug="privacy-policy",
+            title=privacy_title,
+            content=privacy_content,
+            is_active=True,
+        )
+        database.session.add(privacy_page)
+        log.debug("Privacy Policy page created.")
+    else:
+        log.debug("Privacy Policy page already exists.")
+
+    database.session.commit()
+    log.debug("Default static pages created successfully.")

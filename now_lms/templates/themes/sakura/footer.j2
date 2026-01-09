@@ -1,0 +1,51 @@
+{% macro footer() -%} {% if config().enable_footer %}
+<footer class="footer bg-dark text-white mt-auto py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <h5>{{ _("Acerca de") }}</h5>
+                <p class="text-muted">{{ _("Sistema de gestión de aprendizaje moderno y completo.") }}</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h5>{{ _("Enlaces Útiles") }}</h5>
+                <ul class="list-unstyled">
+                    <li>
+                        <a
+                            href="{{ url_for('static_pages.view_page', slug='about-us') }}"
+                            class="text-muted text-decoration-none"
+                            >{{ _("Sobre Nosotros") }}</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="{{ url_for('static_pages.view_page', slug='privacy-policy') }}"
+                            class="text-muted text-decoration-none"
+                            >{{ _("Política de Privacidad") }}</a
+                        >
+                    </li>
+                    <li>
+                        <a href="{{ url_for('static_pages.contact') }}" class="text-muted text-decoration-none"
+                            >{{ _("Contacto") }}</a
+                        >
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h5>{{ _("Síguenos") }}</h5>
+                <div class="d-flex gap-3">
+                    <a href="#" class="text-muted" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-muted" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="text-muted" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                    <a href="#" class="text-muted" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr class="bg-secondary" />
+        <div class="row">
+            <div class="col-12 text-center">
+                <p class="text-muted mb-0">&copy; 2026 {{ config().titulo }}. {{ _("Todos los derechos reservados.") }}</p>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endif %} {%- endmacro %}

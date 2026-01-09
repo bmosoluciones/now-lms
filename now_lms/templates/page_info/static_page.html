@@ -1,0 +1,15 @@
+{% extends "themes/" + current_theme() + "/base.j2" %} {% set title = page.title %} {% block contenido %} {% set current_theme
+= current_theme() %} {{ current_theme.navbar() }}
+
+<main class="container my-5">
+    <div class="row">
+        <div class="col-12 col-lg-10 offset-lg-1">
+            <article class="bg-white p-4 shadow-sm rounded">
+                <h1 class="display-5 mb-4">{{ page.title }}</h1>
+                <div class="content">{{ page.content | safe }}</div>
+            </article>
+        </div>
+    </div>
+</main>
+
+{{ current_theme.footer() }} {% endblock %}

@@ -1,0 +1,94 @@
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %} {% from
+"macros/form_errors.j2" import render_field_errors, render_form_errors %}
+<!doctype html>
+<html lang="{{ get_locale() }}" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ _("Editar Página: ") }}{{ page.title }}</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5">
+                <div class="mb-4">
+                    <h1>{{ _("Editar Página: ") }}{{ page.title }}</h1>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('static_pages.edit_page', page_id=page.id) }}">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">{{ _("Título") }}</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="title"
+                                    name="title"
+                                    value="{{ page.title }}"
+                                    required
+                                    maxlength="200"
+                                />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="slug" class="form-label">{{ _("Slug (URL)") }}</label>
+                                <input type="text" class="form-control" value="{{ page.slug }}" disabled />
+                                <small class="form-text text-muted">{{ _("El slug no puede ser modificado.") }}</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="content" class="form-label">{{ _("Contenido (HTML)") }}</label>
+                                <textarea class="form-control" id="content" name="content" rows="20" required>
+{{ page.content }}</textarea
+                                >
+                                <small class="form-text text-muted"
+                                    >{{ _("Puede usar HTML para dar formato al contenido.") }}</small
+                                >
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    id="is_active"
+                                    name="is_active"
+                                    {%
+                                    if
+                                    page.is_active
+                                    %}checked{%
+                                    endif
+                                    %}
+                                />
+                                <label class="form-check-label" for="is_active"
+                                    >{{ _("Página activa (visible públicamente)") }}</label
+                                >
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save"></i> {{ _("Guardar Cambios") }}
+                                </button>
+                                <a href="{{ url_for('static_pages.list_pages') }}" class="btn btn-secondary">
+                                    {{ _("Cancelar") }}
+                                </a>
+                                <a
+                                    href="{{ url_for('static_pages.view_page', slug=page.slug) }}"
+                                    class="btn btn-outline-secondary"
+                                    target="_blank"
+                                >
+                                    <i class="bi bi-eye"></i> {{ _("Vista Previa") }}
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

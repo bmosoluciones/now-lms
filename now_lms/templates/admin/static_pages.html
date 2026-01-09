@@ -1,0 +1,82 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="{{ get_locale() }}" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ _("Gestión de Páginas Estáticas") }}</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>{{ _("Gestión de Páginas Estáticas") }}</h1>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>{{ _("Título") }}</th>
+                                        <th>{{ _("Slug") }}</th>
+                                        <th>{{ _("Estado") }}</th>
+                                        <th>{{ _("Última Modificación") }}</th>
+                                        <th>{{ _("Acciones") }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for page in pages %}
+                                    <tr>
+                                        <td>{{ page.title }}</td>
+                                        <td><code>{{ page.slug }}</code></td>
+                                        <td>
+                                            {% if page.is_active %}
+                                            <span class="badge bg-success">{{ _("Activa") }}</span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">{{ _("Inactiva") }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ page.modificado.strftime('%Y-%m-%d %H:%M') if page.modificado else
+                                            page.creado.strftime('%Y-%m-%d') }}
+                                        </td>
+                                        <td>
+                                            <a
+                                                href="{{ url_for('static_pages.edit_page', page_id=page.id) }}"
+                                                class="btn btn-sm btn-primary"
+                                            >
+                                                <i class="bi bi-pencil"></i> {{ _("Editar") }}
+                                            </a>
+                                            <a
+                                                href="{{ url_for('static_pages.view_page', slug=page.slug) }}"
+                                                class="btn btn-sm btn-outline-secondary"
+                                                target="_blank"
+                                            >
+                                                <i class="bi bi-eye"></i> {{ _("Ver") }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <a href="{{ url_for('setting.configuracion') }}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> {{ _("Volver a Configuración") }}
+                    </a>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

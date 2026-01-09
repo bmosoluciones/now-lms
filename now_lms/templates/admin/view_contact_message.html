@@ -1,0 +1,132 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="{{ get_locale() }}" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ _("Mensaje de Contacto") }}</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5">
+                <div class="mb-4">
+                    <h1>{{ _("Mensaje de Contacto") }}</h1>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>{{ _("Información del Remitente") }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-md-3"><strong>{{ _("Nombre:") }}</strong></div>
+                            <div class="col-md-9">{{ message.name }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3"><strong>{{ _("Email:") }}</strong></div>
+                            <div class="col-md-9">
+                                <a href="mailto:{{ message.email }}">{{ message.email }}</a>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3"><strong>{{ _("Asunto:") }}</strong></div>
+                            <div class="col-md-9">{{ message.subject }}</div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3"><strong>{{ _("Fecha:") }}</strong></div>
+                            <div class="col-md-9">{{ message.creado.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3"><strong>{{ _("Estado:") }}</strong></div>
+                            <div class="col-md-9">
+                                {% if message.status == 'not_seen' %}
+                                <span class="badge bg-warning text-dark">{{ _("No Visto") }}</span>
+                                {% elif message.status == 'seen' %}
+                                <span class="badge bg-info">{{ _("Visto") }}</span>
+                                {% elif message.status == 'answered' %}
+                                <span class="badge bg-success">{{ _("Contestado") }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>{{ _("Mensaje") }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0" style="white-space: pre-wrap">{{ message.message }}</p>
+                    </div>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>{{ _("Gestión del Mensaje") }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('static_pages.view_contact_message', message_id=message.id) }}">
+                            <div class="mb-3">
+                                <label for="status" class="form-label">{{ _("Estado") }}</label>
+                                <select name="status" id="status" class="form-select">
+                                    <option value="not_seen" {% if message.status="" ="not_seen" %}selected{% endif %}>
+                                        {{ _("No Visto") }}
+                                    </option>
+                                    <option value="seen" {% if message.status="" ="seen" %}selected{% endif %}>
+                                        {{ _("Visto") }}
+                                    </option>
+                                    <option value="answered" {% if message.status="" ="answered" %}selected{% endif %}>
+                                        {{ _("Contestado") }}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="admin_notes" class="form-label">{{ _("Notas Administrativas") }}</label>
+                                <textarea
+                                    class="form-control"
+                                    id="admin_notes"
+                                    name="admin_notes"
+                                    rows="4"
+                                    placeholder="{{ _('Agregue notas internas sobre este mensaje...') }}"
+                                >
+{{ message.admin_notes or '' }}</textarea
+                                >
+                            </div>
+
+                            {% if message.answered_at %}
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i>
+                                {{ _("Contestado el") }} {{ message.answered_at.strftime('%Y-%m-%d %H:%M:%S') }} {% if
+                                message.answered_by %} {{ _("por") }} <strong>{{ message.answered_by }}</strong>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save"></i> {{ _("Guardar Cambios") }}
+                                </button>
+                                <a href="{{ url_for('static_pages.list_contact_messages') }}" class="btn btn-secondary">
+                                    {{ _("Volver a Lista") }}
+                                </a>
+                                <a
+                                    href="mailto:{{ message.email }}?subject=Re: {{ message.subject }}"
+                                    class="btn btn-outline-primary"
+                                >
+                                    <i class="bi bi-envelope"></i> {{ _("Responder por Email") }}
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

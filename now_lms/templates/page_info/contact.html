@@ -1,0 +1,80 @@
+{% extends "themes/" + current_theme() + "/base.j2" %} {% set title = _("Contacto") %} {% block contenido %} {% set
+current_theme = current_theme() %} {{ current_theme.navbar() }}
+
+<main class="container my-5">
+    <div class="row">
+        <div class="col-12 col-lg-8 offset-lg-2">
+            <div class="bg-white p-4 shadow-sm rounded">
+                <h1 class="display-5 mb-4">{{ _("Contáctenos") }}</h1>
+                <p class="lead">{{ _("¿Tiene preguntas o comentarios? Envíenos un mensaje y le responderemos pronto.") }}</p>
+
+                <form method="POST" action="{{ url_for('static_pages.contact') }}">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">{{ _("Nombre") }} <span class="text-danger">*</span></label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="name"
+                            name="name"
+                            required
+                            maxlength="150"
+                            placeholder="{{ _('Su nombre completo') }}"
+                        />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label"
+                            >{{ _("Correo Electrónico") }} <span class="text-danger">*</span></label
+                        >
+                        <input
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            name="email"
+                            required
+                            maxlength="150"
+                            placeholder="{{ _('correo@ejemplo.com') }}"
+                        />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">{{ _("Asunto") }} <span class="text-danger">*</span></label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="subject"
+                            name="subject"
+                            required
+                            maxlength="200"
+                            placeholder="{{ _('Breve descripción del tema') }}"
+                        />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="message" class="form-label">{{ _("Mensaje") }} <span class="text-danger">*</span></label>
+                        <textarea
+                            class="form-control"
+                            id="message"
+                            name="message"
+                            required
+                            rows="6"
+                            maxlength="5000"
+                            placeholder="{{ _('Escriba su mensaje aquí...') }}"
+                        ></textarea>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-send"></i> {{ _("Enviar Mensaje") }}
+                        </button>
+                        <a href="{{ url_for('home.pagina_de_inicio') }}" class="btn btn-outline-secondary">
+                            {{ _("Cancelar") }}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+{{ current_theme.footer() }} {% endblock %}
