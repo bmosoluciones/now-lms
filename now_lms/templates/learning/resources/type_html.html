@@ -67,8 +67,8 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                                     </h2>
                                 </div>
                                 <div class="card-body">
-                                    {% if recurso.descripcion_html_preformateado %} {{ recurso.descripcion | safe }} {% else
-                                    %} {{ markdown2html(recurso.descripcion) | safe }} {% endif %}
+                                    {% if recurso.descripcion_html_preformateado %} {{ recurso.descripcion | safe }} {% else %}
+                                    {{ markdown2html(recurso.descripcion) | safe }} {% endif %}
                                 </div>
                             </div>
                             {% endif %}
