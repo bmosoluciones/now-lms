@@ -20,7 +20,9 @@ from now_lms.cache import cache, cache_key_with_auth_state
 from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS
 from now_lms.db import (
     MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+    BlogPost,
     Certificacion,
+    Configuracion,
     Curso,
     CursoRecurso,
     EstudianteCurso,
@@ -60,7 +62,31 @@ def pagina_de_inicio() -> str:
         count=True,
     )
 
-    return render_template(get_home_template(), cursos=CURSOS)
+    # Get configuration to check if blog posts should be shown
+    config_row = database.session.execute(database.select(Configuracion)).first()
+    show_blog_posts = False
+    latest_blog_posts = []
+
+    if config_row:
+        config = config_row[0]
+        show_blog_posts = config.show_latest_blog_posts_on_home and config.enable_blog
+
+        if show_blog_posts:
+            # Query latest 3 published blog posts
+            latest_blog_posts = (
+                database.session.execute(
+                    database.select(BlogPost)
+                    .filter(BlogPost.status == "published")
+                    .order_by(BlogPost.published_at.desc())
+                    .limit(3)
+                )
+                .scalars()
+                .all()
+            )
+
+    return render_template(
+        get_home_template(), cursos=CURSOS, show_blog_posts=show_blog_posts, latest_blog_posts=latest_blog_posts
+    )
 
 
 @home.route("/home/panel")

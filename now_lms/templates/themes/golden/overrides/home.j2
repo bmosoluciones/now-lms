@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="es">
-    {% set current_theme = current_theme() %}{% set site_config = config() %}
+    {% from 'macros/blog_section.j2' import render_blog_section %} {% set current_theme = current_theme() %}{% set site_config
+    = config() %}
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
         <title>{{ site_config.titulo_html or "NOW - Learning Management System" }}</title>
@@ -306,6 +307,9 @@
                     {% endif %}
                 </div>
             </section>
+
+            <!-- Blog Posts Section -->
+            {% if show_blog_posts %} {{ render_blog_section(latest_blog_posts, '#fafaf8') }} {% endif %}
 
             <footer style="text-align: center; padding: 2rem 0; color: #5a5a54">© NOW-LMS — Tema Golden</footer>
         </main>
