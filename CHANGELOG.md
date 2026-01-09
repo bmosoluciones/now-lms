@@ -9,6 +9,21 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+
+## [1.1.3] - 2026-01-09
+
+### Fixed
+ - Add missing database migration for `configuracion` table columns: `enable_file_uploads`, `max_file_size`, `enable_html_preformatted_descriptions`, and `enable_footer`
+
+**IMPORTANT**: This version includes a migration fix. After updating, you must run database migrations:
+```bash
+# Using lmsctl
+lmsctl database upgrade
+
+# Or using Flask-Alembic directly
+flask db upgrade
+```
+
 ## [1.1.2] - 2025-01-09
 
 ### Added
@@ -20,6 +35,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixes
  - HTML errores
+
 
 ## [1.1.1] - 2025-01-05
 
