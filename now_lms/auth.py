@@ -192,8 +192,6 @@ def email_verificado_requerido(func: Callable) -> Callable:
 def proteger_secreto(password: str) -> bytes:
     """Devuelve el hash de una contraseña."""
     with current_app.app_context():
-        from now_lms.db import Configuracion
-
         row = database.session.execute(database.select(Configuracion)).first()
         if row is None:
             raise ValueError("No configuration found")
@@ -213,8 +211,6 @@ def proteger_secreto(password: str) -> bytes:
 def descifrar_secreto(hash_value: bytes) -> str | None:
     """Devuelve el valor de una contraseña protegida."""
     with current_app.app_context():
-        from now_lms.db import Configuracion
-
         row = database.session.execute(database.select(Configuracion)).first()
         if row is None:
             return None

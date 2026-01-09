@@ -2900,9 +2900,9 @@ def _validate_coupon_for_enrollment(
 
     # Check if coupon gives 100% discount and user has unverified email
     # Get course to calculate final price
-    curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
-    if curso and curso.pagado:
-        final_price = coupon.calculate_final_price(curso.precio)
+    course_obj = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
+    if course_obj and course_obj.pagado:
+        final_price = coupon.calculate_final_price(course_obj.precio)
         if final_price == 0 and not user.correo_electronico_verificado:
             # 100% discount coupon requires email verification
             # Check if system has email verification requirements

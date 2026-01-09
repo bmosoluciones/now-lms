@@ -65,7 +65,7 @@ def pagina_de_inicio() -> str:
     # Get configuration to check if blog posts should be shown
     config_row = database.session.execute(database.select(Configuracion)).first()
     show_blog_posts = False
-    latest_blog_posts = []
+    latest_blog_posts: list[BlogPost] = []
 
     if config_row:
         config = config_row[0]
@@ -73,7 +73,7 @@ def pagina_de_inicio() -> str:
 
         if show_blog_posts:
             # Query latest 3 published blog posts
-            latest_blog_posts = (
+            latest_blog_posts = list(
                 database.session.execute(
                     database.select(BlogPost)
                     .filter(BlogPost.status == "published")
