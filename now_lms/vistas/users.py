@@ -99,9 +99,8 @@ def inicio_sesion() -> str | Response:
                             "warning",
                         )
                         return PANEL_DE_USUARIO
-                    else:
-                        flash("Su cuenta esta inactiva.", "info")
-                        return INICIO_SESION
+                    flash("Su cuenta esta inactiva.", "info")
+                    return INICIO_SESION
 
                 # Account is active, allow login
                 login_user(identidad)
