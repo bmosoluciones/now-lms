@@ -111,6 +111,7 @@ from now_lms.db.tools import (
     get_adsense_enabled,
     get_all_records,
     get_course_sections,
+    get_current_theme,
     get_one_record,
     get_paypal_id,
     get_slideshowid,
@@ -348,6 +349,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["current_locale"] = get_locale
     flask_app.jinja_env.globals["current_theme"] = current_theme
     flask_app.jinja_env.globals["current_user"] = current_user
+    flask_app.jinja_env.globals["get_current_theme"] = get_current_theme
     flask_app.jinja_env.globals["docente_asignado"] = verifica_docente_asignado_a_curso
     flask_app.jinja_env.globals["estilo_alerta"] = ESTILO_ALERTAS
     flask_app.jinja_env.globals["estudiante_asignado"] = verifica_estudiante_asignado_a_curso
