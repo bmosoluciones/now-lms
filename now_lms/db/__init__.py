@@ -577,6 +577,9 @@ class Configuracion(database.Model, BaseTabla):
     enable_resources = database.Column(database.Boolean(), default=False, nullable=False)
     enable_blog = database.Column(database.Boolean(), default=False, nullable=False)
 
+    # Blog display configuration
+    show_latest_blog_posts_on_home = database.Column(database.Boolean(), default=False, nullable=False)
+
     # Custom text for template designers
     custom_text1 = database.Column(database.String(250), nullable=True)
     custom_text2 = database.Column(database.String(250), nullable=True)

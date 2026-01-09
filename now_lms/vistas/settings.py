@@ -198,6 +198,7 @@ def configuracion() -> str | Response:
         enable_masterclass=config.enable_masterclass,
         enable_resources=config.enable_resources,
         enable_blog=config.enable_blog,
+        show_latest_blog_posts_on_home=config.show_latest_blog_posts_on_home,
         enable_file_uploads=config.enable_file_uploads,
         max_file_size=config.max_file_size,
         enable_html_preformatted_descriptions=config.enable_html_preformatted_descriptions,
@@ -224,6 +225,7 @@ def configuracion() -> str | Response:
         config.enable_masterclass = form.enable_masterclass.data
         config.enable_resources = form.enable_resources.data
         config.enable_blog = form.enable_blog.data
+        config.show_latest_blog_posts_on_home = form.show_latest_blog_posts_on_home.data
         config.enable_file_uploads = form.enable_file_uploads.data
         config.max_file_size = form.max_file_size.data
         config.enable_html_preformatted_descriptions = form.enable_html_preformatted_descriptions.data

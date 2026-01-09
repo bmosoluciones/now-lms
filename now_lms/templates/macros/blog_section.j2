@@ -1,0 +1,56 @@
+{% macro render_blog_section(latest_blog_posts, bg_color='white') %}
+<!-- Blog Posts Section -->
+<section class="py-5" style="background: {{ bg_color }}">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="display-6 fw-bold mb-4">{{ _('Últimas Entradas del Blog') }}</h2>
+                <p class="lead">{{ _('Descubre nuestros últimos artículos y novedades.') }}</p>
+            </div>
+        </div>
+        {% if latest_blog_posts %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for post in latest_blog_posts %}
+            <div class="col">
+                <div class="card h-100 shadow-sm" style="border: none; border-radius: 12px">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title mb-3">
+                            <a href="{{ url_for('blog.blog_post', slug=post.slug) }}" class="text-decoration-none text-dark">
+                                {{ post.title }}
+                            </a>
+                        </h5>
+                        <p class="card-text flex-grow-1">{{ post.content | striptags | truncate(120) }}</p>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <small class="text-muted">
+                                {% if post.author %} {{ _('Por') }} {{ post.author.nombre or post.author.usuario }} {% endif %}
+                            </small>
+                            <small class="text-muted">
+                                {% if post.published_at %} {{ post.published_at.strftime('%d/%m/%Y') }} {% endif %}
+                            </small>
+                        </div>
+                        <a href="{{ url_for('blog.blog_post', slug=post.slug) }}" class="btn btn-outline-dark btn-sm mt-3">
+                            {{ _('Leer más') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('blog.blog_index') }}" class="btn btn-dark btn-lg px-4 py-2" style="border-radius: 8px">
+                {{ _('Ver Todas las Entradas') }}
+            </a>
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="alert alert-info" role="alert">
+                    <i class="bi bi-info-circle me-2"></i>
+                    {{ _('No hay entradas de blog disponibles en este momento.') }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endmacro %}

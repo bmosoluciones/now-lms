@@ -392,6 +392,11 @@ class ConfigForm(FlaskForm):
     enable_resources = BooleanField(_("Habilitar Recursos descargables"), default=False, validators=[])
     enable_blog = BooleanField(_("Habilitar Blog"), default=False, validators=[])
 
+    # Blog display configuration
+    show_latest_blog_posts_on_home = BooleanField(
+        _("Mostrar últimas entradas del blog en página de inicio"), default=False, validators=[]
+    )
+
     # Custom information
     titulo_html = StringField(validators=[])
     hero = StringField(validators=[])

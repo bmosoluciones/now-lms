@@ -1,5 +1,6 @@
 <!doctype html>
-{% set config = config() %} {% set current_theme = current_theme() %}
+{% from 'macros/blog_section.j2' import render_blog_section %} {% set config = config() %} {% set current_theme =
+current_theme() %}
 <html lang="{{ current_locale() }}" class="h-100">
     <head>
         {{ current_theme.headertags() }}
@@ -269,6 +270,8 @@
             </section>
         </main>
 
-        {{ current_theme.footer() }} {{ current_theme.jslibs() }}
+        <!-- Blog Posts Section -->
+        {% if show_blog_posts %} {{ render_blog_section(latest_blog_posts, '#f8f9fa') }} {% endif %} {{ current_theme.footer()
+        }} {{ current_theme.jslibs() }}
     </body>
 </html>
