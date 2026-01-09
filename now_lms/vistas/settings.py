@@ -214,6 +214,12 @@ def configuracion() -> str | Response:
         custom_text3=config.custom_text3,
         custom_text4=config.custom_text4,
         eslogan=config.eslogan,
+        social_facebook=config.social_facebook,
+        social_twitter=config.social_twitter,
+        social_linkedin=config.social_linkedin,
+        social_youtube=config.social_youtube,
+        social_instagram=config.social_instagram,
+        social_github=config.social_github,
     )
     if form.validate_on_submit() or request.method == "POST":
         config.titulo = form.titulo.data
@@ -241,6 +247,12 @@ def configuracion() -> str | Response:
         config.custom_text3 = form.custom_text3.data
         config.custom_text4 = form.custom_text4.data
         config.eslogan = form.eslogan.data
+        config.social_facebook = form.social_facebook.data
+        config.social_twitter = form.social_twitter.data
+        config.social_linkedin = form.social_linkedin.data
+        config.social_youtube = form.social_youtube.data
+        config.social_instagram = form.social_instagram.data
+        config.social_github = form.social_github.data
 
         if form.verify_user_by_email.data is True:
             row = database.session.execute(database.select(MailConfig)).first()
