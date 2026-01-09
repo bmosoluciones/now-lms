@@ -1,5 +1,5 @@
-{% extends "themes/" + current_theme() + "/base.j2" %} {% set title = page.title %} {% block contenido %} {% set current_theme
-= current_theme() %} {{ current_theme.navbar() }}
+{% extends "themes/" + get_current_theme() + "/base.j2" %} {% set title = page.title %} {% block contenido %} {% set
+current_theme = current_theme() %} {{ current_theme.navbar() }}
 
 <main class="container my-5">
     <div class="row">
