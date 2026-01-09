@@ -249,8 +249,8 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         </div>
 
                         <div>
-                            {% if recurso.descripcion_html_preformateado %} {{ recurso.descripcion | safe }}} {% else %} {{
-                            markdown2html(recurso.descripcion) | safe }}} {% endif %}
+                            {% if recurso.descripcion_html_preformateado %} {{ recurso.descripcion | safe }} {% else %} {{
+                            markdown2html(recurso.descripcion) | safe }} {% endif %}
                         </div>
 
                         <!-- AdSense Ad after resource description for free courses -->
@@ -258,7 +258,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         %}
                         <div class="mt-4 mb-4" style="text-align: center">
                             <small class="text-muted">Publicidad</small>
-                            {{ ad_code | safe }}}
+                            {{ ad_code | safe }}
                         </div>
                         {% endif %} {% endif %}
                     </div>

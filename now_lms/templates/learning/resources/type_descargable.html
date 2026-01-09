@@ -105,8 +105,8 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         <div class="mb-4">
                             <h6>{{ _("Descripción") }}:</h6>
                             <div>
-                                {% if recurso.descripcion_html_preformateado %} {{ recurso.descripcion | safe }}} {% else %} {{
-                                markdown2html(recurso.descripcion) | safe }}} {% endif %}
+                                {% if recurso.descripcion_html_preformateado %} {{ recurso.descripcion | safe }} {% else %} {{
+                                markdown2html(recurso.descripcion) | safe }} {% endif %}
                             </div>
                         </div>
 
@@ -165,7 +165,7 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                         %}
                         <div class="mt-4 mb-4" style="text-align: center">
                             <small class="text-muted">Publicidad</small>
-                            {{ ad_code | safe }}}
+                            {{ ad_code | safe }}
                         </div>
                         {% endif %} {% endif %}
                     </div>

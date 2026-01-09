@@ -70,7 +70,7 @@
                                 {% endif %}
 
                                 <!-- Course Description -->
-                                <div class="mb-3">{{ markdown2html(curso.descripcion) | safe }}}</div>
+                                <div class="mb-3">{{ markdown2html(curso.descripcion) | safe }}</div>
 
                                 <!-- Course Information -->
                                 <div class="course-info">
@@ -111,7 +111,7 @@
 
                                         <li class="mb-2">
                                             <i class="bi bi-bar-chart text-secondary me-2" aria-hidden="true"></i>
-                                            <strong>{{ _('Nivel:') }}</strong> {{ nivel[curso.nivel] | safe }}}
+                                            <strong>{{ _('Nivel:') }}</strong> {{ nivel[curso.nivel] | safe }}
                                         </li>
                                     </ul>
                                 </div>
@@ -128,7 +128,7 @@
                                             href="{{ url_for('resource.vista_recurso', resource_code=item.codigo) }}"
                                             class="list-group-item list-group-item-action d-flex align-items-center p-2"
                                         >
-                                            <span class="me-2">{{ tipo[item.tipo] | safe }}}</span>
+                                            <span class="me-2">{{ tipo[item.tipo] | safe }}</span>
                                             <span class="flex-grow-1">{{ item.nombre }}</span>
                                             <i class="bi bi-arrow-right-circle text-primary"></i>
                                         </a>

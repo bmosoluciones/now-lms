@@ -145,7 +145,7 @@ permitir_docente %}
                         </div>
 
                         <h2>{{ curso.nombre }}</h2>
-                        {{ markdown2html(curso.descripcion) | safe }}} {% if curso.estado == "draft" %}
+                        {{ markdown2html(curso.descripcion) | safe }} {% if curso.estado == "draft" %}
                         <p>
                             {{ _('Estatus del curso:') }} <i class="bi bi-pencil-square" aria-hidden="true"></i> {{
                             _('Borrador') }}
