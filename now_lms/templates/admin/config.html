@@ -220,6 +220,19 @@
                                         {{_("Los usuarios verán la opción Blog en el menú de navegación")}}.
                                     </div>
                                 </div>
+                                <div class="col-sm-6">
+                                    <div class="form-check">
+                                        {{ form.show_latest_blog_posts_on_home(class="form-check-input",
+                                        id="show_latest_blog_posts_on_home", checked=config.show_latest_blog_posts_on_home) }}
+                                        {{ render_field_errors(form.show_latest_blog_posts_on_home) }}
+                                        <label class="form-check-label" for="show_latest_blog_posts_on_home">
+                                            {{_("Mostrar entradas del blog en página principal")}}
+                                        </label>
+                                    </div>
+                                    <div class="form-text">
+                                        {{_("Mostrar las últimas entradas del blog en la página principal del sitio")}}.
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="row">

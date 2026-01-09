@@ -39,6 +39,12 @@ def pagina_admin() -> str:
     # Get admin statistics
     total_users = database.session.execute(database.select(func.count(Usuario.id))).scalar() or 0
     inactive_users = database.session.execute(database.select(func.count(Usuario.id)).filter_by(activo=False)).scalar() or 0
+    unverified_users = (
+        database.session.execute(
+            database.select(func.count(Usuario.id)).filter_by(correo_electronico_verificado=False)
+        ).scalar()
+        or 0
+    )
     total_courses = database.session.execute(database.select(func.count(Curso.id))).scalar() or 0
 
     # Get recent courses (for display)
@@ -50,6 +56,7 @@ def pagina_admin() -> str:
     return render_template(
         "perfiles/admin.html",
         inactivos=inactive_users,
+        unverified_users=unverified_users,
         total_users=total_users,
         total_courses=total_courses,
         total_enrollments=total_enrollments,
@@ -145,6 +152,25 @@ def usuarios_inactivos() -> str:
     )
 
 
+@admin_profile.route("/admin/users/list_unverified")
+@login_required
+@perfil_requerido("admin")
+@cache.cached(timeout=60)
+def usuarios_sin_verificar() -> str:
+    """Lista de usuarios que no han verificado su correo electrónico."""
+    CONSULTA = database.paginate(
+        database.select(Usuario).filter_by(correo_electronico_verificado=False),
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+        count=True,
+    )
+
+    return render_template(
+        "admin/unverified_users.html",
+        consulta=CONSULTA,
+    )
+
+
 @admin_profile.route("/admin/users/verify_email/<user_id>")
 @login_required
 @perfil_requerido("admin")
@@ -154,12 +180,12 @@ def verificar_email_usuario(user_id: str) -> Response:
 
     # Check demo mode restrictions
     if demo_restriction_check("verify_user_email"):
-        return redirect(url_for("admin_profile.usuarios_inactivos"))
+        return redirect(url_for("admin_profile.usuarios_sin_verificar"))
 
     row = database.session.execute(database.select(Usuario).filter(Usuario.id == user_id)).first()
     if row is None:
         flash("Usuario no encontrado.", "error")
-        return redirect(url_for("admin_profile.usuarios_inactivos"))
+        return redirect(url_for("admin_profile.usuarios_sin_verificar"))
 
     perfil_usuario = row[0]
 
@@ -176,9 +202,44 @@ def verificar_email_usuario(user_id: str) -> Response:
         flash(f"Error al verificar el correo electrónico: {str(e)}", "error")
 
     # Clear cache
-    cache.delete("view/" + url_for("admin_profile.usuarios_inactivos"))
+    cache.delete("view/" + url_for("admin_profile.usuarios_sin_verificar"))
 
-    return redirect(url_for("admin_profile.usuarios_inactivos"))
+    return redirect(url_for("admin_profile.usuarios_sin_verificar"))
+
+
+@admin_profile.route("/admin/users/reject_unverified/<user_id>")
+@login_required
+@perfil_requerido("admin")
+def rechazar_usuario_sin_verificar(user_id: str) -> Response:
+    """Rechaza un usuario no verificado marcándolo como inactivo."""
+    from now_lms.demo_mode import demo_restriction_check
+
+    # Check demo mode restrictions
+    if demo_restriction_check("reject_unverified_user"):
+        return redirect(url_for("admin_profile.usuarios_sin_verificar"))
+
+    row = database.session.execute(database.select(Usuario).filter(Usuario.id == user_id)).first()
+    if row is None:
+        flash("Usuario no encontrado.", "error")
+        return redirect(url_for("admin_profile.usuarios_sin_verificar"))
+
+    perfil_usuario = row[0]
+
+    # Mark user as inactive
+    perfil_usuario.activo = False
+    perfil_usuario.modificado_por = current_user.usuario
+
+    try:
+        database.session.commit()
+        flash(f"Usuario {perfil_usuario.usuario} rechazado e inactivado.", "info")
+    except Exception as e:
+        database.session.rollback()
+        flash(f"Error al rechazar el usuario: {str(e)}", "error")
+
+    # Clear cache
+    cache.delete("view/" + url_for("admin_profile.usuarios_sin_verificar"))
+
+    return redirect(url_for("admin_profile.usuarios_sin_verificar"))
 
 
 @admin_profile.route("/admin/user/change_type")

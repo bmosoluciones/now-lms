@@ -1,0 +1,129 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="{{ get_locale() }}" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{_("Usuarios sin verificar")}}</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            <div class="container px-0 py-3" id="user_list">
+                <div class="row align-items-center border-bottom pb-3 mb-4">
+                    <div class="col-md-8">
+                        <h4 class="mb-0">
+                            <i class="bi bi-envelope-exclamation me-2"></i>{{_("Usuarios sin verificar correo electrónico")}}
+                        </h4>
+                        <p class="text-muted mb-0">
+                            {{_("Gestiona los usuarios que no han verificado su correo electrónico")}}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <caption class="ms-3 mt-2">
+                                    {{_("Lista de usuarios registrados en el sistema que no han verificado su correo
+                                    electrónico.")}}
+                                </caption>
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" class="fw-semibold">
+                                            <i class="bi bi-person me-1"></i>{{_("Usuario")}}
+                                        </th>
+                                        <th scope="col" class="fw-semibold">
+                                            <i class="bi bi-person-badge me-1"></i>{{_("Nombre")}}
+                                        </th>
+                                        <th scope="col" class="fw-semibold">
+                                            <i class="bi bi-person-badge me-1"></i>{{_("Apellido")}}
+                                        </th>
+                                        <th scope="col" class="fw-semibold">
+                                            <i class="bi bi-envelope me-1"></i>{{_("Correo Electrónico")}}
+                                        </th>
+                                        <th scope="col" class="fw-semibold">
+                                            <i class="bi bi-toggle-on me-1"></i>{{_("Estado")}}
+                                        </th>
+                                        <th scope="col" class="fw-semibold text-center">{{_("Acción")}}</th>
+                                    </tr>
+                                </thead>
+                                {% for item in consulta.items -%}
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <a
+                                                class="link-dark fw-medium"
+                                                href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}"
+                                            >
+                                                {{ item.usuario }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a
+                                                class="link-dark"
+                                                href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}"
+                                            >
+                                                {{ item.nombre }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a
+                                                class="link-dark"
+                                                href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}"
+                                            >
+                                                {{ item.apellido }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a
+                                                class="link-dark"
+                                                href="{{ url_for('user_profile.usuario', id_usuario=item.usuario) }}"
+                                            >
+                                                {{ item.correo_electronico }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            {% if item.activo %}
+                                            <span class="badge bg-success">{{_("Activo")}}</span>
+                                            {% else %}
+                                            <span class="badge bg-danger">{{_("Inactivo")}}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group" aria-label="{{_('Acciones del usuario')}}">
+                                                <a
+                                                    href="{{ url_for('admin_profile.verificar_email_usuario', user_id=item.id) }}"
+                                                    class="btn btn-sm btn-success"
+                                                    title="{{ _('Aprobar y verificar correo electrónico') }}"
+                                                >
+                                                    <i class="bi bi-check-circle me-1"></i>{{_("Aprobar")}}
+                                                </a>
+                                                <a
+                                                    href="{{ url_for('admin_profile.rechazar_usuario_sin_verificar', user_id=item.id) }}"
+                                                    class="btn btn-sm btn-danger"
+                                                    title="{{ _('Rechazar e inhabilitar usuario') }}"
+                                                >
+                                                    <i class="bi bi-x-circle me-1"></i>{{_("Rechazar")}}
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container" id="user_pagination">
+                    {{ current_theme.rendizar_paginacion(consulta=consulta, vista="usuarios_sin_verificar") }}
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
