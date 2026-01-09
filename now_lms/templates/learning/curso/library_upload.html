@@ -46,8 +46,7 @@
 
                     <div class="col-md-12">
                         <label for="descripcion" class="form-label">{{ form.descripcion.label.text }} *</label>
-                        {{ form.descripcion(class="form-control", required=true) }} {{ render_field_errors(form.descripcion)
-                        }}
+                        {{ form.descripcion(class="form-control", required=true) }} {{ render_field_errors(form.descripcion) }}
                         <div class="form-text">{{ _("Describe el uso o contenido del archivo.") }}</div>
                         <div class="invalid-feedback">{{ _("Por favor, ingrese una descripción para el archivo.") }}</div>
                     </div>

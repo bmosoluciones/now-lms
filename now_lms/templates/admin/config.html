@@ -280,6 +280,23 @@
                                 </div>
                             </div>
 
+                            <div class="row mt-3">
+                                <div class="col-sm-12">
+                                    <div class="form-check">
+                                        {{ form.enable_footer(class="form-check-input", id="enable_footer",
+                                        checked=config.enable_footer) }} {{ render_field_errors(form.enable_footer) }}
+                                        <label class="form-check-label" for="enable_footer">
+                                            {{_("Mostrar pie de página en páginas públicas")}}:
+                                        </label>
+                                    </div>
+                                    <div class="form-text">
+                                        {{_("Muestra un pie de página con enlaces a páginas estáticas (Sobre Nosotros, Política
+                                        de Privacidad, Contacto) en páginas públicas. Recomendado para cumplir con requisitos
+                                        de Google AdSense.")}}.
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="row">
                                 <div class="col-sm-8">
                                     <br />
@@ -342,6 +359,23 @@
                                         plataforma")}}.
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-sm-12">
+                            <h5>{{_("Gestión de Contenido Estático")}}.</h5>
+                            <p class="text-muted">
+                                {{_("Administre las páginas estáticas y mensajes de contacto del sitio web")}}.
+                            </p>
+                            <div class="d-flex gap-2 mb-3">
+                                <a href="{{ url_for('static_pages.list_pages') }}" class="btn btn-outline-primary">
+                                    <i class="bi bi-file-text"></i> {{_("Gestionar Páginas Estáticas")}}
+                                </a>
+                                <a href="{{ url_for('static_pages.list_contact_messages') }}" class="btn btn-outline-primary">
+                                    <i class="bi bi-envelope"></i> {{_("Ver Mensajes de Contacto")}}
+                                </a>
                             </div>
                         </div>
                     </div>

@@ -87,8 +87,7 @@
                             <div class="row g-3">
                                 <div class="col-sm-6">
                                     <label for="nombre" class="form-label">{{ _('Nombre') }}</label>
-                                    {{ form.nombre(class="form-control", id="nombre") }} {{ render_field_errors(form.nombre)
-                                    }}
+                                    {{ form.nombre(class="form-control", id="nombre") }} {{ render_field_errors(form.nombre) }}
                                     <div class="invalid-feedback">{{ _('Valid first name is required.') }}</div>
                                 </div>
                                 <div class="col-sm-6">

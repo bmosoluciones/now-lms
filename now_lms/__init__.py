@@ -86,6 +86,7 @@ from now_lms.db.initial_data import (
     crear_curso_predeterminado,
     crear_etiquetas,
     crear_evaluacion_predeterminada,
+    crear_paginas_estaticas_predeterminadas,
     crear_programa,
     crear_recurso_descargable,
     crear_usuarios_predeterminados,
@@ -167,6 +168,7 @@ from now_lms.vistas.profiles.user import user_profile
 from now_lms.vistas.programs import program
 from now_lms.vistas.resources import resource_d
 from now_lms.vistas.settings import setting
+from now_lms.vistas.static_pages import static_pages
 from now_lms.vistas.tags import tag
 from now_lms.vistas.users import user
 from now_lms.vistas.web_error_codes import web_error
@@ -255,6 +257,7 @@ def registrar_modulos_en_la_aplicacion_principal(flask_app: Flask):
         flask_app.register_blueprint(program)
         flask_app.register_blueprint(resource_d)
         flask_app.register_blueprint(setting)
+        flask_app.register_blueprint(static_pages)
         flask_app.register_blueprint(tag)
         flask_app.register_blueprint(user)
         flask_app.register_blueprint(masterclass)
@@ -645,6 +648,7 @@ def initial_setup(with_examples=False, with_tests=False, flask_app=None):
         crear_usuarios_predeterminados()
         crear_certificacion()
         crear_blog_post_predeterminado()
+        crear_paginas_estaticas_predeterminadas()
         populate_custmon_data_dir()
         populate_custom_theme_dir()
         log.debug("Sample data loaded successfully.")

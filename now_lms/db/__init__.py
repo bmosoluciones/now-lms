@@ -32,7 +32,16 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event, select
 from sqlalchemy.exc import SQLAlchemyError
 
-__all__ = ["select", "database", "UserMixin", "eliminar_base_de_datos_segura", "UserEvent", "CourseLibrary"]
+__all__ = [
+    "select",
+    "database",
+    "UserMixin",
+    "eliminar_base_de_datos_segura",
+    "UserEvent",
+    "CourseLibrary",
+    "StaticPage",
+    "ContactMessage",
+]
 
 # ---------------------------------------------------------------------------------------
 # Local resources
@@ -581,6 +590,9 @@ class Configuracion(database.Model, BaseTabla):
 
     # HTML preformatted descriptions configuration
     enable_html_preformatted_descriptions = database.Column(database.Boolean(), default=False, nullable=False)
+
+    # Footer display configuration
+    enable_footer = database.Column(database.Boolean(), default=True, nullable=False)
 
     r = database.Column(database.LargeBinary())
 
@@ -1333,6 +1345,35 @@ class UserEvent(database.Model, BaseTabla):
     section = database.relationship("CursoSeccion", backref="user_events")
     resource = database.relationship("CursoRecurso", backref="user_events")
     evaluation = database.relationship("Evaluation", backref="user_events")
+
+
+class StaticPage(database.Model, BaseTabla):
+    """Static pages like About Us, Privacy Policy, etc."""
+
+    __tablename__ = "static_pages"
+
+    slug = database.Column(database.String(50), unique=True, nullable=False, index=True)
+    title = database.Column(database.String(200), nullable=False)
+    content = database.Column(database.Text, nullable=False)
+    is_active = database.Column(database.Boolean(), default=True, nullable=False)
+
+
+class ContactMessage(database.Model, BaseTabla):
+    """Contact form messages submitted by visitors."""
+
+    __tablename__ = "contact_messages"
+
+    name = database.Column(database.String(150), nullable=False)
+    email = database.Column(database.String(150), nullable=False)
+    subject = database.Column(database.String(200), nullable=False)
+    message = database.Column(database.Text, nullable=False)
+    status = database.Column(database.String(20), default="not_seen", nullable=False, index=True)  # not_seen, seen, answered
+    admin_notes = database.Column(database.Text, nullable=True)
+    answered_at = database.Column(database.DateTime, nullable=True)
+    answered_by = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=True)
+
+    # Relationship
+    answered_by_user = database.relationship("Usuario", foreign_keys=[answered_by])
 
 
 # Event listeners for audit field population and validation

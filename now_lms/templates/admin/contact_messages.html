@@ -1,0 +1,108 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="{{ get_locale() }}" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ _("Mensajes de Contacto") }}</title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>{{ _("Mensajes de Contacto") }}</h1>
+                </div>
+
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <form method="GET" action="{{ url_for('static_pages.list_contact_messages') }}" class="row g-3">
+                            <div class="col-auto">
+                                <label for="status" class="form-label">{{ _("Filtrar por estado:") }}</label>
+                            </div>
+                            <div class="col-auto">
+                                <select name="status" id="status" class="form-select" onchange="this.form.submit()">
+                                    <option value="all" {% if status_filter="" ="all" %}selected{% endif %}>
+                                        {{ _("Todos") }}
+                                    </option>
+                                    <option value="not_seen" {% if status_filter="" ="not_seen" %}selected{% endif %}>
+                                        {{ _("No Vistos") }}
+                                    </option>
+                                    <option value="seen" {% if status_filter="" ="seen" %}selected{% endif %}>
+                                        {{ _("Vistos") }}
+                                    </option>
+                                    <option value="answered" {% if status_filter="" ="answered" %}selected{% endif %}>
+                                        {{ _("Contestados") }}
+                                    </option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        {% if messages %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>{{ _("Estado") }}</th>
+                                        <th>{{ _("Nombre") }}</th>
+                                        <th>{{ _("Email") }}</th>
+                                        <th>{{ _("Asunto") }}</th>
+                                        <th>{{ _("Fecha") }}</th>
+                                        <th>{{ _("Acciones") }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for message in messages %}
+                                    <tr {% if message.status="" ="not_seen" %}class="table-warning" {% endif %}>
+                                        <td>
+                                            {% if message.status == 'not_seen' %}
+                                            <span class="badge bg-warning text-dark">{{ _("No Visto") }}</span>
+                                            {% elif message.status == 'seen' %}
+                                            <span class="badge bg-info">{{ _("Visto") }}</span>
+                                            {% elif message.status == 'answered' %}
+                                            <span class="badge bg-success">{{ _("Contestado") }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ message.name }}</td>
+                                        <td>{{ message.email }}</td>
+                                        <td>{{ message.subject }}</td>
+                                        <td>{{ message.creado.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>
+                                            <a
+                                                href="{{ url_for('static_pages.view_contact_message', message_id=message.id) }}"
+                                                class="btn btn-sm btn-primary"
+                                            >
+                                                <i class="bi bi-eye"></i> {{ _("Ver") }}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> {{ _("No hay mensajes de contacto.") }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <a href="{{ url_for('setting.configuracion') }}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> {{ _("Volver a Configuración") }}
+                    </a>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

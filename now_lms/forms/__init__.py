@@ -414,6 +414,9 @@ class ConfigForm(FlaskForm):
         _("Permitir HTML preformateado en la descripción de recursos"), default=False, validators=[]
     )
 
+    # Footer display configuration
+    enable_footer = BooleanField(_("Mostrar pie de página en páginas públicas"), default=True, validators=[])
+
     def __init__(self, *args, **kwargs):
         """Initialize form with translated choices."""
         super().__init__(*args, **kwargs)
