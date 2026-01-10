@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
-## [1.1.5] - 2026-01-10
+## [1.1.6] - 2026-01-10
 
 ### Changed
  - Improved footer
