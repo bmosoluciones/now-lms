@@ -33,18 +33,32 @@ depends_on = None
 
 def upgrade():
     """Add cover_image and cover_image_ext columns to blog_post table."""
-    # Add cover_image boolean column with default False
-    op.add_column("blog_post", sa.Column("cover_image", sa.Boolean(), nullable=True))
-    # Set default value for existing rows
-    op.execute("UPDATE blog_post SET cover_image = 0 WHERE cover_image IS NULL")
-    # Make column not nullable
-    op.alter_column("blog_post", "cover_image", nullable=False, server_default="0")
+    # Check if columns already exist before adding them
+    conn = op.get_bind()
+    inspector = sa.inspect(conn)
+    columns = [col["name"] for col in inspector.get_columns("blog_post")]
 
-    # Add cover_image_ext string column
-    op.add_column("blog_post", sa.Column("cover_image_ext", sa.String(length=5), nullable=True))
+    if "cover_image" not in columns:
+        # Add cover_image boolean column with default False for backward compatibility
+        op.add_column(
+            "blog_post",
+            sa.Column("cover_image", sa.Boolean(), nullable=False, server_default=sa.false()),
+        )
+
+    if "cover_image_ext" not in columns:
+        # Add cover_image_ext string column
+        op.add_column("blog_post", sa.Column("cover_image_ext", sa.String(length=5), nullable=True))
 
 
 def downgrade():
     """Remove cover_image columns from blog_post table."""
-    op.drop_column("blog_post", "cover_image_ext")
-    op.drop_column("blog_post", "cover_image")
+    # Check if columns exist before dropping them
+    conn = op.get_bind()
+    inspector = sa.inspect(conn)
+    columns = [col["name"] for col in inspector.get_columns("blog_post")]
+
+    if "cover_image_ext" in columns:
+        op.drop_column("blog_post", "cover_image_ext")
+
+    if "cover_image" in columns:
+        op.drop_column("blog_post", "cover_image")
