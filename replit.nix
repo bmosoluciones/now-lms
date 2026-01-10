@@ -1,5 +1,6 @@
 {pkgs}: {
   deps = [
+    pkgs.gh
     pkgs.imagemagick
     pkgs.pango
     pkgs.harfbuzz
