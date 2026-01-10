@@ -103,3 +103,49 @@ def favicon_personalizado() -> bool:
         return False
     except Exception:
         return False
+
+
+def get_footer_pages():
+    """Get static pages to be shown in the footer."""
+    from now_lms.cache import cache
+    from now_lms.db import StaticPage, database
+
+    @cache.memoize(timeout=300)
+    def _get_footer_pages():
+        try:
+            pages = (
+                database.session.execute(
+                    database.select(StaticPage)
+                    .filter(StaticPage.is_active.is_(True), StaticPage.mostrar_en_footer.is_(True))
+                    .order_by(StaticPage.title)
+                )
+                .scalars()
+                .all()
+            )
+            return pages
+        except Exception:
+            return []
+
+    return _get_footer_pages()
+
+
+def get_footer_enlaces():
+    """Get useful links to be shown in the footer."""
+    from now_lms.cache import cache
+    from now_lms.db import EnlacesUtiles, database
+
+    @cache.memoize(timeout=300)
+    def _get_footer_enlaces():
+        try:
+            enlaces = (
+                database.session.execute(
+                    database.select(EnlacesUtiles).filter(EnlacesUtiles.activo.is_(True)).order_by(EnlacesUtiles.orden)
+                )
+                .scalars()
+                .all()
+            )
+            return enlaces
+        except Exception:
+            return []
+
+    return _get_footer_enlaces()

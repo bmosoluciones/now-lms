@@ -41,6 +41,7 @@ __all__ = [
     "CourseLibrary",
     "StaticPage",
     "ContactMessage",
+    "EnlacesUtiles",
 ]
 
 # ---------------------------------------------------------------------------------------
@@ -1369,6 +1370,7 @@ class StaticPage(database.Model, BaseTabla):
     title = database.Column(database.String(200), nullable=False)
     content = database.Column(database.Text, nullable=False)
     is_active = database.Column(database.Boolean(), default=True, nullable=False)
+    mostrar_en_footer = database.Column(database.Boolean(), default=False, nullable=False)
 
 
 class ContactMessage(database.Model, BaseTabla):
@@ -1387,6 +1389,17 @@ class ContactMessage(database.Model, BaseTabla):
 
     # Relationship
     answered_by_user = database.relationship("Usuario", foreign_keys=[answered_by])
+
+
+class EnlacesUtiles(database.Model, BaseTabla):
+    """Useful links to be displayed in the footer."""
+
+    __tablename__ = "enlaces_utiles"
+
+    titulo = database.Column(database.String(100), nullable=False)
+    url = database.Column(database.String(500), nullable=False)
+    orden = database.Column(database.Integer(), default=0, nullable=False)
+    activo = database.Column(database.Boolean(), default=True, nullable=False)
 
 
 # Event listeners for audit field population and validation

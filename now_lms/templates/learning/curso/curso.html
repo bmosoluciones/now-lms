@@ -8,7 +8,7 @@
         <title>{{ curso.nombre | title }}</title>
 
         {{ current_theme.local_style() }}
-        
+
         <!-- Course Description Collapse Styles -->
         <style>
             .course-description-content {
@@ -21,7 +21,7 @@
                 max-height: none;
             }
             .course-description-content:not(.expanded)::after {
-                content: '';
+                content: "";
                 position: absolute;
                 bottom: 0;
                 left: 0;
@@ -93,9 +93,8 @@
 
                                 <!-- Course Description -->
                                 <div class="mb-3 course-description-wrapper">
-                                    {% if curso.descripcion %}
-                                    {% set description_text = curso.descripcion | striptags %}
-                                    {% if description_text | length > 200 %}
+                                    {% if curso.descripcion %} {% set description_text = curso.descripcion | striptags %} {% if
+                                    description_text | length > 200 %}
                                     <!-- Collapsible description for long text -->
                                     <div class="course-description-container">
                                         <div class="course-description-content" id="courseDescContent">
@@ -113,9 +112,7 @@
                                     </div>
                                     {% else %}
                                     <!-- Short description, show in full -->
-                                    {{ markdown2html(curso.descripcion) | safe }}
-                                    {% endif %}
-                                    {% endif %}
+                                    {{ markdown2html(curso.descripcion) | safe }} {% endif %} {% endif %}
                                 </div>
 
                                 <!-- Course Information -->
@@ -314,30 +311,30 @@
                 </div>
             </div>
         </main>
-        
+
         <!-- Course Description Toggle Script -->
         <script>
             function toggleCourseDescription() {
-                const content = document.getElementById('courseDescContent');
-                const icon = document.getElementById('courseDescIcon');
-                const btnText = document.getElementById('courseDescBtnText');
-                
+                const content = document.getElementById("courseDescContent")
+                const icon = document.getElementById("courseDescIcon")
+                const btnText = document.getElementById("courseDescBtnText")
+
                 // Check if elements exist
                 if (!content || !icon || !btnText) {
-                    console.error('Course description elements not found');
-                    return;
+                    console.error("Course description elements not found")
+                    return
                 }
-                
-                if (content.classList.contains('expanded')) {
-                    content.classList.remove('expanded');
-                    icon.classList.remove('bi-chevron-up');
-                    icon.classList.add('bi-chevron-down');
-                    btnText.textContent = '{{ _("Ver más") }}';
+
+                if (content.classList.contains("expanded")) {
+                    content.classList.remove("expanded")
+                    icon.classList.remove("bi-chevron-up")
+                    icon.classList.add("bi-chevron-down")
+                    btnText.textContent = '{{ _("Ver más") }}'
                 } else {
-                    content.classList.add('expanded');
-                    icon.classList.remove('bi-chevron-down');
-                    icon.classList.add('bi-chevron-up');
-                    btnText.textContent = '{{ _("Ver menos") }}';
+                    content.classList.add("expanded")
+                    icon.classList.remove("bi-chevron-down")
+                    icon.classList.add("bi-chevron-up")
+                    btnText.textContent = '{{ _("Ver menos") }}'
                 }
             }
         </script>

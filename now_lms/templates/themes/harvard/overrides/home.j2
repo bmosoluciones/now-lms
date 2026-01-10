@@ -540,29 +540,8 @@
         </section>
 
         <!-- Footer -->
-        <footer class="footer" style="background: linear-gradient(45deg, #474340, #a41034); color: white; padding: 3rem 0">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5 style="font-family: &quot;Merriweather&quot;, serif; margin-bottom: 1rem">Harvard Academic LMS</h5>
-                        <p style="opacity: 0.9">
-                            {{ _('Elevando los estándares de la educación digital con la tradición y excelencia académica que
-                            nos caracteriza.') }}
-                        </p>
-                    </div>
-                    <div class="col-md-6 text-md-end">
-                        <p style="opacity: 0.8; margin-bottom: 0">
-                            <small>
-                                &copy; 2025 {{ site_config.titulo }}. {{ _('Todos los derechos reservados.') }}<br />
-                                {{ _('Desarrollado con dedicación académica y excelencia tecnológica.') }}
-                            </small>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </footer>
-
         <!-- Blog Posts Section -->
-        {% if show_blog_posts %} {{ render_blog_section(latest_blog_posts, 'white') }} {% endif %} {{ current_theme.jslibs() }}
+        {% if show_blog_posts %} {{ render_blog_section(latest_blog_posts, 'white') }} {% endif %} {{ current_theme.footer() }}
+        {{ current_theme.jslibs() }}
     </body>
 </html>

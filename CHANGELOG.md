@@ -9,7 +9,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
-## [1.1.5] - 2026-01-05
+## [1.1.5] - 2026-01-10
+
+### Changed
+ - Improved footer
+
+## [1.1.5] - 2026-01-10
 
 ### Fixed
  - Fixed database migration.

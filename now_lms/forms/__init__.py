@@ -1099,3 +1099,18 @@ class AdminProgramEnrollmentForm(FlaskForm):
     notes = TextAreaField(
         _("Notas (opcional)"), render_kw={"rows": 3, "placeholder": _("Notas adicionales sobre la inscripción")}
     )
+
+
+class EnlaceUtilForm(FlaskForm):
+    """Formulario para crear/editar enlaces útiles en el footer."""
+
+    titulo = StringField(_("Título del enlace"), validators=[DataRequired(), Length(min=1, max=100)])
+    url = StringField(_("URL"), validators=[DataRequired(), Length(min=1, max=500)])
+    orden = IntegerField(_("Orden"), default=0, validators=[])
+    activo = BooleanField(_("Activo"), default=True, validators=[])
+
+
+class StaticPageFooterForm(FlaskForm):
+    """Formulario para configurar si una página estática se muestra en el footer."""
+
+    mostrar_en_footer = BooleanField(_("Mostrar en el footer"), default=False, validators=[])

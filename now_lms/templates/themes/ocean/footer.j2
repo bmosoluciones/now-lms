@@ -1,34 +1,51 @@
-{% macro footer() -%} {% if config().enable_footer %}
+{% macro footer() -%} {% if config().enable_footer %} {% set footer_pages = get_footer_pages() %} {% set footer_enlaces =
+get_footer_enlaces() %}
 <footer class="footer bg-dark text-white mt-auto py-3">
     <div class="container">
         <div class="row">
             <div class="col-md-4 mb-2">
                 <h5>{{ _("Acerca de") }}</h5>
+                {% if footer_pages %}
+                <ul class="list-unstyled">
+                    {% for page in footer_pages %}
+                    <li>
+                        <a
+                            href="{{ url_for('static_pages.view_page', slug=page.slug) }}"
+                            class="text-muted text-decoration-none"
+                            >{{ page.title }}</a
+                        >
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
                 <p class="text-muted">{{ _("Sistema de gestión de aprendizaje moderno y completo.") }}</p>
+                {% endif %}
             </div>
             <div class="col-md-4 mb-2">
                 <h5>{{ _("Enlaces Útiles") }}</h5>
+                {% if footer_enlaces %}
                 <ul class="list-unstyled">
+                    {% for enlace in footer_enlaces %}
                     <li>
                         <a
-                            href="{{ url_for('static_pages.view_page', slug='about-us') }}"
+                            href="{{ enlace.url }}"
                             class="text-muted text-decoration-none"
-                            >{{ _("Sobre Nosotros") }}</a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >{{ enlace.titulo }}</a
                         >
                     </li>
-                    <li>
-                        <a
-                            href="{{ url_for('static_pages.view_page', slug='privacy-policy') }}"
-                            class="text-muted text-decoration-none"
-                            >{{ _("Política de Privacidad") }}</a
-                        >
-                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <ul class="list-unstyled">
                     <li>
                         <a href="{{ url_for('static_pages.contact') }}" class="text-muted text-decoration-none"
                             >{{ _("Contacto") }}</a
                         >
                     </li>
                 </ul>
+                {% endif %}
             </div>
             <div class="col-md-4 mb-2">
                 <h5>{{ _("Síguenos") }}</h5>
