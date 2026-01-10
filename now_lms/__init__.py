@@ -141,6 +141,8 @@ from now_lms.vistas._helpers import (
     favicon_personalizado,
     get_blog_post_cover_image,
     get_current_course_logo,
+    get_footer_enlaces,
+    get_footer_pages,
     get_site_favicon,
     get_site_logo,
     logo_personalizado,
@@ -358,6 +360,8 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["favicon_perzonalizado"] = favicon_perzonalizado
     flask_app.jinja_env.globals["get_all_from_db"] = get_all_records
     flask_app.jinja_env.globals["get_course_sections"] = get_course_sections
+    flask_app.jinja_env.globals["get_footer_pages"] = get_footer_pages
+    flask_app.jinja_env.globals["get_footer_enlaces"] = get_footer_enlaces
     flask_app.jinja_env.globals["get_locale"] = get_locale
     flask_app.jinja_env.globals["get_one_from_db"] = get_one_record
     flask_app.jinja_env.globals["get_slideshowid"] = get_slideshowid

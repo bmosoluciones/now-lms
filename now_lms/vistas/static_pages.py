@@ -29,7 +29,8 @@ from werkzeug.wrappers import Response
 from now_lms.auth import perfil_requerido
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
-from now_lms.db import ContactMessage, StaticPage, database
+from now_lms.db import ContactMessage, EnlacesUtiles, StaticPage, database
+from now_lms.forms import EnlaceUtilForm
 from now_lms.i18n import _
 
 static_pages = Blueprint("static_pages", __name__, template_folder=DIRECTORIO_PLANTILLAS)
@@ -115,6 +116,7 @@ def edit_page(page_id: str) -> str | Response:
         page.title = request.form.get("title", "").strip()
         page.content = request.form.get("content", "").strip()
         page.is_active = request.form.get("is_active") == "on"
+        page.mostrar_en_footer = request.form.get("mostrar_en_footer") == "on"
 
         database.session.commit()
 
@@ -183,3 +185,80 @@ def view_contact_message(message_id: str) -> str | Response:
         return redirect(url_for("static_pages.list_contact_messages"))
 
     return render_template("admin/view_contact_message.html", message=message)
+
+
+@static_pages.route("/admin/enlaces-utiles")
+@login_required
+@perfil_requerido("admin")
+def list_enlaces_utiles() -> str:
+    """List all useful links for admin."""
+    enlaces = database.session.execute(database.select(EnlacesUtiles).order_by(EnlacesUtiles.orden)).scalars().all()
+    return render_template("admin/enlaces_utiles.html", enlaces=enlaces)
+
+
+@static_pages.route("/admin/enlaces-utiles/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("admin")
+def create_enlace_util() -> str | Response:
+    """Create a new useful link."""
+    form = EnlaceUtilForm()
+
+    if form.validate_on_submit():
+        enlace = EnlacesUtiles(
+            titulo=form.titulo.data,
+            url=form.url.data,
+            orden=form.orden.data or 0,
+            activo=form.activo.data,
+        )
+        database.session.add(enlace)
+        database.session.commit()
+
+        flash(_("Enlace útil creado correctamente."), "success")
+        return redirect(url_for("static_pages.list_enlaces_utiles"))
+
+    return render_template("admin/edit_enlace_util.html", form=form, enlace=None)
+
+
+@static_pages.route("/admin/enlaces-utiles/<enlace_id>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("admin")
+def edit_enlace_util(enlace_id: str) -> str | Response:
+    """Edit a useful link."""
+    enlace = database.session.get(EnlacesUtiles, enlace_id)
+
+    if not enlace:
+        flash(_("Enlace no encontrado."), "danger")
+        return redirect(url_for("static_pages.list_enlaces_utiles"))
+
+    form = EnlaceUtilForm(obj=enlace)
+
+    if form.validate_on_submit():
+        enlace.titulo = form.titulo.data
+        enlace.url = form.url.data
+        enlace.orden = form.orden.data or 0
+        enlace.activo = form.activo.data
+
+        database.session.commit()
+
+        flash(_("Enlace útil actualizado correctamente."), "success")
+        return redirect(url_for("static_pages.list_enlaces_utiles"))
+
+    return render_template("admin/edit_enlace_util.html", form=form, enlace=enlace)
+
+
+@static_pages.route("/admin/enlaces-utiles/<enlace_id>/delete", methods=["POST"])
+@login_required
+@perfil_requerido("admin")
+def delete_enlace_util(enlace_id: str) -> Response:
+    """Delete a useful link."""
+    enlace = database.session.get(EnlacesUtiles, enlace_id)
+
+    if not enlace:
+        flash(_("Enlace no encontrado."), "danger")
+        return redirect(url_for("static_pages.list_enlaces_utiles"))
+
+    database.session.delete(enlace)
+    database.session.commit()
+
+    flash(_("Enlace útil eliminado correctamente."), "success")
+    return redirect(url_for("static_pages.list_enlaces_utiles"))

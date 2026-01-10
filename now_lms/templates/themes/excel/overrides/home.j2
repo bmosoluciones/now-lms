@@ -284,7 +284,7 @@ current_theme() %}
         </main>
 
         <!-- Blog Posts Section -->
-        {% if show_blog_posts %} {{ render_blog_section(latest_blog_posts, '#f8f9fa') }} {% endif %} {{ current_theme.jslibs()
-        }}
+        {% if show_blog_posts %} {{ render_blog_section(latest_blog_posts, '#f8f9fa') }} {% endif %} {{ current_theme.footer()
+        }} {{ current_theme.jslibs() }}
     </body>
 </html>

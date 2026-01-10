@@ -1,0 +1,80 @@
+{% set current_theme = current_theme() %} {% from "macros/form_buttons.j2" import render_form_buttons %} {% from
+"macros/form_errors.j2" import render_field_errors, render_form_errors %}
+<!doctype html>
+<html lang="{{ get_locale() }}" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>
+            {% if enlace %} {{ _("Editar Enlace: ") }}{{ enlace.titulo }} {% else %} {{ _("Nuevo Enlace Útil") }} {% endif %}
+        </title>
+
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            {{ current_theme.notify() }}
+
+            <div class="container px-4 py-5">
+                <div class="mb-4">
+                    <h1>
+                        {% if enlace %} {{ _("Editar Enlace: ") }}{{ enlace.titulo }} {% else %} {{ _("Nuevo Enlace Útil") }}
+                        {% endif %}
+                    </h1>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <form method="POST">
+                            {{ form.hidden_tag() }}
+
+                            <div class="mb-3">
+                                <label for="titulo" class="form-label">{{ _("Título del enlace") }} *</label>
+                                {{ form.titulo(class="form-control", id="titulo") }} {{ render_field_errors(form.titulo) }}
+                                <small class="form-text text-muted"> {{ _("Texto que se mostrará en el footer.") }} </small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="url" class="form-label">{{ _("URL") }} *</label>
+                                {{ form.url(class="form-control", id="url", placeholder="https://ejemplo.com") }} {{
+                                render_field_errors(form.url) }}
+                                <small class="form-text text-muted">
+                                    {{ _("URL completa del enlace (debe incluir http:// o https://).") }}
+                                </small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="orden" class="form-label">{{ _("Orden") }}</label>
+                                {{ form.orden(class="form-control", id="orden", type="number", min="0") }} {{
+                                render_field_errors(form.orden) }}
+                                <small class="form-text text-muted">
+                                    {{ _("Los enlaces se ordenan de menor a mayor. Usar 0 para el primer enlace.") }}
+                                </small>
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                {{ form.activo(class="form-check-input", id="activo") }}
+                                <label class="form-check-label" for="activo">
+                                    {{ _("Enlace activo (visible en el footer)") }}
+                                </label>
+                                {{ render_field_errors(form.activo) }}
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save"></i>
+                                    {% if enlace %} {{ _("Guardar Cambios") }} {% else %} {{ _("Crear Enlace") }} {% endif %}
+                                </button>
+                                <a href="{{ url_for('static_pages.list_enlaces_utiles') }}" class="btn btn-secondary">
+                                    {{ _("Cancelar") }}
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>
