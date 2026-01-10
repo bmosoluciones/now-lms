@@ -139,6 +139,7 @@ from now_lms.themes import current_theme
 from now_lms.version import CODE_NAME, VERSION
 from now_lms.vistas._helpers import (
     favicon_personalizado,
+    get_blog_post_cover_image,
     get_current_course_logo,
     get_site_favicon,
     get_site_logo,
@@ -345,6 +346,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["config"] = config
     flask_app.jinja_env.globals["course_info"] = course_info
     flask_app.jinja_env.globals["course_logo"] = get_current_course_logo
+    flask_app.jinja_env.globals["blog_cover"] = get_blog_post_cover_image
     flask_app.jinja_env.globals["cuenta_cursos"] = cuenta_cursos_por_programa
     flask_app.jinja_env.globals["current_locale"] = get_locale
     flask_app.jinja_env.globals["current_theme"] = current_theme

@@ -19,7 +19,7 @@
                     <div class="col-md-8 offset-md-2">
                         <h1>{{ title }}</h1>
 
-                        <form method="POST">
+                        <form method="POST" enctype="multipart/form-data">
                             {{ form.hidden_tag() }}
 
                             <div class="mb-3">
@@ -32,6 +32,27 @@
                             <div class="mb-3">
                                 {{ form.content.label(class="form-label") }} {{ form.content(class="form-control") }} {% for
                                 error in form.content.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.cover_image.label(class="form-label") }} {{ form.cover_image(class="form-control") }}
+                                <div class="form-text">
+                                    {{ _('Sube una imagen de portada para tu entrada de blog. Formatos permitidos: JPG, PNG,
+                                    WEBP.') }}
+                                </div>
+                                {% if edit and post.cover_image %}
+                                <div class="mt-2">
+                                    <img
+                                        src="{{ url_for('static', filename='/files/public/images/blog/' + post.id + '/cover' + (post.cover_image_ext or '.jpg')) }}"
+                                        alt="{{ post.title }}"
+                                        class="img-thumbnail"
+                                        style="max-width: 300px"
+                                    />
+                                    <p class="text-muted">{{ _('Imagen de portada actual') }}</p>
+                                </div>
+                                {% endif %} {% for error in form.cover_image.errors %}
                                 <div class="text-danger">{{ error }}</div>
                                 {% endfor %}
                             </div>

@@ -5,6 +5,249 @@
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
         <title>Blog - {{ config.titulo }}</title>
+
+        <style>
+            .blog-header {
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+
+            .blog-header h1 {
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin-bottom: 1.5rem;
+                color: var(--classic-text, #2c3e50);
+            }
+
+            .tag-pills-container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.75rem;
+                margin-bottom: 3rem;
+            }
+
+            .tag-pill {
+                padding: 0.5rem 1.25rem;
+                border-radius: 50px;
+                background: #f8f9fa;
+                color: #495057;
+                text-decoration: none;
+                font-weight: 500;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+                border: 2px solid transparent;
+            }
+
+            .tag-pill:hover {
+                background: var(--classic-primary, #667eea);
+                color: white;
+                text-decoration: none;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            }
+
+            .tag-pill.active {
+                background: var(--classic-primary, #667eea);
+                color: white;
+                border-color: var(--classic-primary, #667eea);
+            }
+
+            .blog-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+                gap: 2rem;
+                margin-bottom: 3rem;
+            }
+
+            .blog-card {
+                background: white;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+                transition: all 0.3s ease;
+                position: relative;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .blog-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+            }
+
+            .blog-card-image {
+                position: relative;
+                width: 100%;
+                height: 240px;
+                overflow: hidden;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+
+            .blog-card-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+
+            .blog-card:hover .blog-card-image img {
+                transform: scale(1.05);
+            }
+
+            .blog-card-image-placeholder {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                color: white;
+                font-weight: 600;
+                font-size: 1.5rem;
+                padding: 2rem;
+                text-align: center;
+            }
+
+            .blog-card-content {
+                padding: 1.5rem;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .blog-card-title {
+                font-size: 1.35rem;
+                font-weight: 700;
+                margin-bottom: 0.75rem;
+                line-height: 1.3;
+            }
+
+            .blog-card-title a {
+                color: var(--classic-text, #2c3e50);
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+
+            .blog-card-title a:hover {
+                color: var(--classic-primary, #667eea);
+            }
+
+            .blog-card-meta {
+                font-size: 0.85rem;
+                color: #6c757d;
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .blog-card-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .blog-card-tag {
+                padding: 0.25rem 0.75rem;
+                border-radius: 20px;
+                background: #e9ecef;
+                color: #495057;
+                text-decoration: none;
+                font-size: 0.8rem;
+                font-weight: 500;
+                transition: all 0.2s ease;
+            }
+
+            .blog-card-tag:hover {
+                background: var(--classic-primary, #667eea);
+                color: white;
+                text-decoration: none;
+            }
+
+            .blog-card-excerpt {
+                color: #6c757d;
+                line-height: 1.6;
+                margin-bottom: 1.5rem;
+                flex: 1;
+            }
+
+            .blog-card-footer {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding-top: 1rem;
+                border-top: 1px solid #e9ecef;
+            }
+
+            .blog-card-stats {
+                display: flex;
+                gap: 1rem;
+                font-size: 0.85rem;
+                color: #6c757d;
+            }
+
+            .blog-card-button {
+                padding: 0.5rem 1.25rem;
+                border-radius: 25px;
+                background: var(--classic-primary, #667eea);
+                color: white;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .blog-card-button:hover {
+                background: var(--classic-secondary, #764ba2);
+                color: white;
+                text-decoration: none;
+                transform: translateX(4px);
+            }
+
+            .pagination-container {
+                display: flex;
+                justify-content: center;
+                margin: 3rem 0;
+            }
+
+            .pagination {
+                display: flex;
+                gap: 0.5rem;
+            }
+
+            .page-item .page-link {
+                border-radius: 8px;
+                padding: 0.5rem 1rem;
+                color: var(--classic-text, #2c3e50);
+                border: 1px solid #dee2e6;
+                transition: all 0.3s ease;
+            }
+
+            .page-item.active .page-link {
+                background: var(--classic-primary, #667eea);
+                border-color: var(--classic-primary, #667eea);
+                color: white;
+            }
+
+            .page-item .page-link:hover {
+                background: var(--classic-primary, #667eea);
+                border-color: var(--classic-primary, #667eea);
+                color: white;
+            }
+
+            @media (max-width: 768px) {
+                .blog-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .blog-header h1 {
+                    font-size: 2rem;
+                }
+            }
+        </style>
     </head>
 
     <body>
@@ -13,127 +256,136 @@
         <main>
             {{ current_theme.notify() }}
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-8">
-                        <h1>{{ config.titulo }} - Blog</h1>
+            <div class="container py-4">
+                <!-- Header with Title -->
+                <div class="blog-header">
+                    <h1>{{ config.titulo }} - Blog</h1>
 
-                        {% if posts %} {% for post in posts %}
-                        <article class="mb-4 border-bottom pb-3">
-                            <h2>
-                                <a href="{{ url_for('blog.blog_post', slug=post.slug) }}" class="text-decoration-none">
-                                    {{ post.title }}
-                                </a>
+                    <!-- Tag Pills (Horizontal) -->
+                    <div class="tag-pills-container">
+                        <a href="{{ url_for('blog.blog_index') }}" class="tag-pill{% if not current_tag %} active{% endif %}">
+                            {{ _('Todas las entradas') }}
+                        </a>
+                        {% for tag in tags %}
+                        <a
+                            href="{{ url_for('blog.blog_index', tag=tag.slug) }}"
+                            class="tag-pill{% if current_tag == tag.slug %} active{% endif %}"
+                        >
+                            {{ tag.name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                {% if posts %}
+                <!-- Blog Grid (2-3 columns) -->
+                <div class="blog-grid">
+                    {% for post in posts %}
+                    <article class="blog-card">
+                        <!-- Featured Image -->
+                        <div class="blog-card-image">
+                            {% if post.cover_image and blog_cover(post.id) %}
+                            <img
+                                src="{{ url_for('static', filename='/files/public/images/blog/' + post.id + '/' + blog_cover(post.id)) }}"
+                                alt="{{ post.title }}"
+                            />
+                            {% else %}
+                            <div class="blog-card-image-placeholder">{{ post.title[:50] }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Card Content -->
+                        <div class="blog-card-content">
+                            <h2 class="blog-card-title">
+                                <a href="{{ url_for('blog.blog_post', slug=post.slug) }}">{{ post.title }}</a>
                             </h2>
-                            <div class="text-muted mb-2">
-                                {{ _('Por') }} {{ post.author.nombre }} {{ post.author.apellido or '' }} {% if
-                                post.published_at %} {{ _('el') }} {{ post.published_at.strftime('%d/%m/%Y') }} {% else %} {{
-                                _('el') }} {{ post.timestamp.strftime('%d/%m/%Y') }} {% endif %} {% if post.comment_count > 0
-                                %} - {{ post.comment_count }} {{ _('comentarios') if post.comment_count != 1 else
-                                _('comentario') }} {% endif %} {% if post.view_count is defined and post.view_count is not none
-                                %} - {{ post.view_count }} {{ _('vistas') if post.view_count != 1 else _('vista') }} {% endif
-                                %}
+
+                            <div class="blog-card-meta">
+                                {{ _('Por') }} {{ post.author.nombre }} {{ post.author.apellido or '' }} • {% if
+                                post.published_at %} {{ post.published_at.strftime('%d/%m/%Y') }} {% else %} {{
+                                post.timestamp.strftime('%d/%m/%Y') }} {% endif %}
                             </div>
 
                             {% if post.tags %}
-                            <div class="mb-2">
+                            <div class="blog-card-tags">
                                 {% for tag in post.tags %}
-                                <a
-                                    href="{{ url_for('blog.blog_index', tag=tag.slug) }}"
-                                    class="badge bg-secondary text-decoration-none me-1"
-                                >
+                                <a href="{{ url_for('blog.blog_index', tag=tag.slug) }}" class="blog-card-tag">
                                     {{ tag.name }}
                                 </a>
                                 {% endfor %}
                             </div>
                             {% endif %}
 
-                            <div class="mb-2">
-                                {{ limpiar_html(mkdown2html(post.content[:300])) }} {% if post.content|length > 300 %}...{%
+                            <div class="blog-card-excerpt">
+                                {{ limpiar_html(mkdown2html(post.content[:180])) }}{% if post.content|length > 180 %}...{%
                                 endif %}
                             </div>
 
-                            <a href="{{ url_for('blog.blog_post', slug=post.slug) }}" class="btn btn-outline-primary btn-sm">
-                                {{ _('Leer más') }}
-                            </a>
-                        </article>
-                        {% endfor %}
-
-                        <!-- Pagination -->
-                        {% if pagination.pages > 1 %}
-                        <nav>
-                            <ul class="pagination">
-                                {% if pagination.has_prev %}
-                                <li class="page-item">
-                                    <a
-                                        class="page-link"
-                                        href="{{ url_for('blog.blog_index', page=pagination.prev_num, tag=current_tag, author=current_author) }}"
-                                    >
-                                        {{ _('Anterior') }}
-                                    </a>
-                                </li>
-                                {% endif %} {% for page_num in pagination.iter_pages() %} {% if page_num %} {% if page_num !=
-                                pagination.page %}
-                                <li class="page-item">
-                                    <a
-                                        class="page-link"
-                                        href="{{ url_for('blog.blog_index', page=page_num, tag=current_tag, author=current_author) }}"
-                                    >
-                                        {{ page_num }}
-                                    </a>
-                                </li>
-                                {% else %}
-                                <li class="page-item active">
-                                    <span class="page-link">{{ page_num }}</span>
-                                </li>
-                                {% endif %} {% else %}
-                                <li class="page-item disabled">
-                                    <span class="page-link">...</span>
-                                </li>
-                                {% endif %} {% endfor %} {% if pagination.has_next %}
-                                <li class="page-item">
-                                    <a
-                                        class="page-link"
-                                        href="{{ url_for('blog.blog_index', page=pagination.next_num, tag=current_tag, author=current_author) }}"
-                                    >
-                                        {{ _('Siguiente') }}
-                                    </a>
-                                </li>
-                                {% endif %}
-                            </ul>
-                        </nav>
-                        {% endif %} {% else %}
-                        <div class="alert alert-info">{{ _('No hay entradas de blog publicadas en este momento.') }}</div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Sidebar -->
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5>{{ _('Filtrar por etiqueta') }}</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-grid gap-2">
-                                    <a
-                                        href="{{ url_for('blog.blog_index') }}"
-                                        class="btn btn-outline-secondary btn-sm{% if not current_tag %} active{% endif %}"
-                                    >
-                                        {{ _('Todas las entradas') }}
-                                    </a>
-                                    {% for tag in tags %}
-                                    <a
-                                        href="{{ url_for('blog.blog_index', tag=tag.slug) }}"
-                                        class="btn btn-outline-secondary btn-sm{% if current_tag == tag.slug %} active{% endif %}"
-                                    >
-                                        {{ tag.name }}
-                                    </a>
-                                    {% endfor %}
+                            <div class="blog-card-footer">
+                                <div class="blog-card-stats">
+                                    {% if post.comment_count > 0 %}
+                                    <span>💬 {{ post.comment_count }}</span>
+                                    {% endif %} {% if post.view_count is defined and post.view_count is not none %}
+                                    <span>👁 {{ post.view_count }}</span>
+                                    {% endif %}
                                 </div>
+                                <a href="{{ url_for('blog.blog_post', slug=post.slug) }}" class="blog-card-button">
+                                    {{ _('Leer más') }} →
+                                </a>
                             </div>
                         </div>
-                    </div>
+                    </article>
+                    {% endfor %}
                 </div>
+
+                <!-- Pagination -->
+                {% if pagination.pages > 1 %}
+                <div class="pagination-container">
+                    <nav>
+                        <ul class="pagination">
+                            {% if pagination.has_prev %}
+                            <li class="page-item">
+                                <a
+                                    class="page-link"
+                                    href="{{ url_for('blog.blog_index', page=pagination.prev_num, tag=current_tag, author=current_author) }}"
+                                >
+                                    ← {{ _('Anterior') }}
+                                </a>
+                            </li>
+                            {% endif %} {% for page_num in pagination.iter_pages() %} {% if page_num %} {% if page_num !=
+                            pagination.page %}
+                            <li class="page-item">
+                                <a
+                                    class="page-link"
+                                    href="{{ url_for('blog.blog_index', page=page_num, tag=current_tag, author=current_author) }}"
+                                >
+                                    {{ page_num }}
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ page_num }}</span>
+                            </li>
+                            {% endif %} {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                            {% endif %} {% endfor %} {% if pagination.has_next %}
+                            <li class="page-item">
+                                <a
+                                    class="page-link"
+                                    href="{{ url_for('blog.blog_index', page=pagination.next_num, tag=current_tag, author=current_author) }}"
+                                >
+                                    {{ _('Siguiente') }} →
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %} {% else %}
+                <div class="alert alert-info text-center">{{ _('No hay entradas de blog publicadas en este momento.') }}</div>
+                {% endif %}
             </div>
         </main>
 

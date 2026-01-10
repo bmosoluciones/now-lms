@@ -1300,6 +1300,8 @@ class BlogPost(database.Model, BaseTabla):
     published_at = database.Column(database.DateTime(), nullable=True)
     comment_count = database.Column(database.Integer(), default=0, nullable=False)
     view_count = database.Column(database.Integer(), default=0, nullable=False)
+    cover_image = database.Column(database.Boolean(), default=False)
+    cover_image_ext = database.Column(database.String(5))
 
     # Relationships
     author = database.relationship("Usuario", backref="blog_posts")
