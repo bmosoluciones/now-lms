@@ -26,6 +26,7 @@ import datetime
 # ---------------------------------------------------------------------------------------
 from flask_mde import MdeField
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileAllowed, FileField
 from wtforms import (
     BooleanField,
     DateField,
@@ -1037,6 +1038,7 @@ class BlogPostForm(BaseForm):
     allow_comments = BooleanField(_("Permitir comentarios"), default=True)
     tags = StringField(_("Etiquetas (separadas por comas)"))
     status = SelectField(_("Estado"), choices=[], validators=[])
+    cover_image = FileField(_("Imagen de portada"), validators=[FileAllowed(["jpg", "png", "webp"], _("Solo imágenes"))])
 
     def __init__(self, *args, **kwargs):
         """Initialize form with translated choices."""

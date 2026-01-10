@@ -6,6 +6,74 @@
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
         <title>{{ post.title }} - {{ config().sitio_web }}</title>
+
+        <style>
+            .post-cover-image {
+                width: 100%;
+                max-height: 500px;
+                object-fit: cover;
+                border-radius: 16px;
+                margin-bottom: 2rem;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            }
+
+            .post-header {
+                margin-bottom: 2rem;
+            }
+
+            .post-header h1 {
+                font-size: 2.5rem;
+                font-weight: 700;
+                margin-bottom: 1rem;
+                line-height: 1.2;
+            }
+
+            .post-meta {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                color: #6c757d;
+                font-size: 0.95rem;
+                margin-bottom: 1rem;
+            }
+
+            .post-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                margin-bottom: 2rem;
+            }
+
+            .post-tag {
+                padding: 0.35rem 0.85rem;
+                border-radius: 20px;
+                background: #e9ecef;
+                color: #495057;
+                text-decoration: none;
+                font-size: 0.85rem;
+                font-weight: 500;
+                transition: all 0.2s ease;
+            }
+
+            .post-tag:hover {
+                background: var(--classic-primary, #667eea);
+                color: white;
+                text-decoration: none;
+            }
+
+            .blog-content {
+                font-size: 1.1rem;
+                line-height: 1.8;
+                color: #2c3e50;
+            }
+
+            .blog-content img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 8px;
+                margin: 1.5rem 0;
+            }
+        </style>
     </head>
 
     <body>
@@ -27,27 +95,41 @@
                         </nav>
 
                         <article>
-                            <h1>{{ post.title }}</h1>
-
-                            <div class="text-muted mb-3">
-                                {{ _('Por') }} {{ post.author.nombre }} {{ post.author.apellido or '' }} {% if post.published_at %} {{ _('el') }} {{
-                                post.published_at.strftime('%d/%m/%Y a las %H:%M') }} {% else %} {{ _('el') }} {{
-                                post.timestamp.strftime('%d/%m/%Y a las %H:%M') }} {% endif %}
-                                {% if post.view_count is defined and post.view_count is not none %} - <span id="view-count">{{ post.view_count }}</span> {{ _('vistas') if post.view_count != 1 else _('vista') }}{% endif %}
-                            </div>
-
-                            {% if post.tags %}
-                            <div class="mb-3">
-                                {% for tag in post.tags %}
-                                <a
-                                    href="{{ url_for('blog.blog_index', tag=tag.slug) }}"
-                                    class="badge bg-secondary text-decoration-none me-1"
-                                >
-                                    {{ tag.name }}
-                                </a>
-                                {% endfor %}
-                            </div>
+                            <!-- Cover Image -->
+                            {% if post.cover_image and blog_cover(post.id) %}
+                            <img
+                                src="{{ url_for('static', filename='/files/public/images/blog/' + post.id + '/' + blog_cover(post.id)) }}"
+                                alt="{{ post.title }}"
+                                class="post-cover-image"
+                            />
                             {% endif %}
+
+                            <div class="post-header">
+                                <h1>{{ post.title }}</h1>
+
+                                <div class="post-meta">
+                                    <span>{{ _('Por') }} {{ post.author.nombre }} {{ post.author.apellido or '' }}</span>
+                                    <span>•</span>
+                                    <span>
+                                        {% if post.published_at %} {{ post.published_at.strftime('%d/%m/%Y') }} {% else %} {{
+                                        post.timestamp.strftime('%d/%m/%Y') }} {% endif %}
+                                    </span>
+                                    {% if post.view_count is defined and post.view_count is not none %}
+                                    <span>•</span>
+                                    <span>👁 <span id="view-count">{{ post.view_count }}</span> {{ _('vistas') }}</span>
+                                    {% endif %}
+                                </div>
+
+                                {% if post.tags %}
+                                <div class="post-tags">
+                                    {% for tag in post.tags %}
+                                    <a href="{{ url_for('blog.blog_index', tag=tag.slug) }}" class="post-tag">
+                                        {{ tag.name }}
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
 
                             <div class="blog-content">{{ mkdown2html(post.content) | safe }}</div>
 

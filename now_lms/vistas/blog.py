@@ -23,12 +23,15 @@ import re
 # Standard library
 # ---------------------------------------------------------------------------------------
 from datetime import datetime, timezone
+from os import makedirs, path
+from pathlib import Path
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, abort, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
+from flask_uploads import UploadNotAllowed
 from sqlalchemy import and_, func, or_
 from werkzeug.wrappers import Response
 
@@ -36,7 +39,7 @@ from werkzeug.wrappers import Response
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
-from now_lms.config import DIRECTORIO_PLANTILLAS
+from now_lms.config import DIRECTORIO_PLANTILLAS, images
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, BlogComment, BlogPost, BlogTag, database, select
 from now_lms.forms import BlogCommentForm, BlogPostForm, BlogTagForm
 from now_lms.logs import log
@@ -267,6 +270,29 @@ def admin_create_post() -> str | Response:
         database.session.add(post)
         database.session.flush()
 
+        # Handle cover image upload
+        if form.cover_image.data:
+            cover_image = form.cover_image.data
+            # Get file extension
+            from werkzeug.utils import secure_filename
+
+            filename = secure_filename(cover_image.filename)
+            cover_ext = path.splitext(filename)[1] if filename else ""
+
+            try:
+                log.trace("Saving blog post cover image")
+                # Save to blog/{post_id}/ directory
+                picture_file = images.save(cover_image, folder=f"blog/{post.id}", name=f"cover{cover_ext}")
+                if picture_file:
+                    post.cover_image = True
+                    post.cover_image_ext = cover_ext
+                    log.info("Blog post cover image saved")
+                else:
+                    log.warning("Blog post cover image not saved")
+            except UploadNotAllowed:
+                log.warning("Could not save blog post cover image - file type not allowed")
+                flash("Tipo de archivo no permitido para la imagen de portada.", "warning")
+
         # Handle tags
         if form.tags.data:
             tag_names = [name.strip() for name in form.tags.data.split(",") if name.strip()]
@@ -324,6 +350,27 @@ def admin_edit_post(post_id: int) -> str | Response:
         post.slug = ensure_unique_slug(form.title.data, post.id)
         post.content = form.content.data
         post.allow_comments = form.allow_comments.data
+
+        # Handle cover image upload
+        if form.cover_image.data:
+            cover_image = form.cover_image.data
+            from werkzeug.utils import secure_filename
+
+            filename = secure_filename(cover_image.filename)
+            cover_ext = path.splitext(filename)[1] if filename else ""
+
+            try:
+                log.trace("Saving blog post cover image")
+                picture_file = images.save(cover_image, folder=f"blog/{post.id}", name=f"cover{cover_ext}")
+                if picture_file:
+                    post.cover_image = True
+                    post.cover_image_ext = cover_ext
+                    log.info("Blog post cover image updated")
+                else:
+                    log.warning("Blog post cover image not saved")
+            except UploadNotAllowed:
+                log.warning("Could not update blog post cover image")
+                flash("Tipo de archivo no permitido para la imagen de portada.", "warning")
 
         # Only allow status change if admin or if changing to pending
         if current_user.tipo == "admin" or (form.status.data == "pending" and post.status == "draft"):

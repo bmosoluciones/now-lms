@@ -43,6 +43,20 @@ def get_current_course_logo(course_code: str) -> str | None:
         return None
 
 
+def get_blog_post_cover_image(post_id: str) -> str | None:
+    """Return the name of the cover image file for a blog post."""
+    blog_dir = Path(str(str(DIRECTORIO_ARCHIVOS_PUBLICOS) + "/images/blog/" + post_id))
+    try:
+        if not blog_dir.exists():
+            return None
+        cover_files = [f for f in blog_dir.iterdir() if f.is_file() and f.stem == "cover"]
+        if cover_files:
+            return cover_files[0].name
+        return None
+    except (FileNotFoundError, IndexError):
+        return None
+
+
 def get_site_logo() -> str | None:
     """Return the name of the logo file of the site."""
     course_dir = Path(str(str(DIRECTORIO_ARCHIVOS_PUBLICOS) + "/images/"))
