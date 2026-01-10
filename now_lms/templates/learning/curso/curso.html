@@ -8,6 +8,28 @@
         <title>{{ curso.nombre | title }}</title>
 
         {{ current_theme.local_style() }}
+
+        <!-- Course Description Collapse Styles -->
+        <style>
+            .course-description-content {
+                max-height: 150px;
+                overflow: hidden;
+                position: relative;
+                transition: max-height 0.3s ease;
+            }
+            .course-description-content.expanded {
+                max-height: none;
+            }
+            .course-description-content:not(.expanded)::after {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 60px;
+                background: linear-gradient(to bottom, transparent, white);
+            }
+        </style>
     </head>
 
     <body>
@@ -70,7 +92,28 @@
                                 {% endif %}
 
                                 <!-- Course Description -->
-                                <div class="mb-3">{{ markdown2html(curso.descripcion) | safe }}</div>
+                                <div class="mb-3 course-description-wrapper">
+                                    {% if curso.descripcion %} {% set description_text = curso.descripcion | striptags %} {% if
+                                    description_text | length > 200 %}
+                                    <!-- Collapsible description for long text -->
+                                    <div class="course-description-container">
+                                        <div class="course-description-content" id="courseDescContent">
+                                            {{ markdown2html(curso.descripcion) | safe }}
+                                        </div>
+                                        <button
+                                            class="btn btn-link btn-sm p-0 mt-2 text-decoration-none"
+                                            type="button"
+                                            id="courseDescToggle"
+                                            onclick="toggleCourseDescription()"
+                                        >
+                                            <i class="bi bi-chevron-down me-1" id="courseDescIcon"></i>
+                                            <span id="courseDescBtnText">{{ _('Ver más') }}</span>
+                                        </button>
+                                    </div>
+                                    {% else %}
+                                    <!-- Short description, show in full -->
+                                    {{ markdown2html(curso.descripcion) | safe }} {% endif %} {% endif %}
+                                </div>
 
                                 <!-- Course Information -->
                                 <div class="course-info">
@@ -268,5 +311,32 @@
                 </div>
             </div>
         </main>
+
+        <!-- Course Description Toggle Script -->
+        <script>
+            function toggleCourseDescription() {
+                const content = document.getElementById("courseDescContent")
+                const icon = document.getElementById("courseDescIcon")
+                const btnText = document.getElementById("courseDescBtnText")
+
+                // Check if elements exist
+                if (!content || !icon || !btnText) {
+                    console.error("Course description elements not found")
+                    return
+                }
+
+                if (content.classList.contains("expanded")) {
+                    content.classList.remove("expanded")
+                    icon.classList.remove("bi-chevron-up")
+                    icon.classList.add("bi-chevron-down")
+                    btnText.textContent = '{{ _("Ver más") }}'
+                } else {
+                    content.classList.add("expanded")
+                    icon.classList.remove("bi-chevron-down")
+                    icon.classList.add("bi-chevron-up")
+                    btnText.textContent = '{{ _("Ver menos") }}'
+                }
+            }
+        </script>
     </body>
 </html>

@@ -9057,3 +9057,9 @@ msgstr ""
 #~ msgid "Recurso Externo"
 #~ msgstr "Recurso"
 
+
+msgid "Ver más"
+msgstr "Ver mais"
+
+msgid "Ver menos"
+msgstr "Ver menos"

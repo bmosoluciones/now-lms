@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Changed
+ - Collape course descrption in mobile view.
+ - Update footer implementation.
+
 
 ## [1.1.3] - 2026-01-09
 

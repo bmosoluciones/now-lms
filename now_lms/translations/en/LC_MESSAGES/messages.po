@@ -8617,3 +8617,9 @@ msgstr "The PayPal settings could not be updated."
 #~ msgid "Recurso Externo"
 #~ msgstr "External Resource"
 
+
+msgid "Ver más"
+msgstr "Show more"
+
+msgid "Ver menos"
+msgstr "Show less"
