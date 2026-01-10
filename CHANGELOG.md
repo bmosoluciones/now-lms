@@ -9,6 +9,19 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [1.1.5] - 2026-01-05
+
+### Fixed
+ - Fixed database migration.
+
+**IMPORTANT**: This version includes a migration fix. After updating, you must run database migrations:
+```bash
+# Using lmsctl
+lmsctl database upgrade
+
+# Or using Fla directly
+flask db upgrade
+
 ## [1.1.4] - 2026-01-10
 
 ### Changed
