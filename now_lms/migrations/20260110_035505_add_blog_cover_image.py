@@ -15,7 +15,7 @@
 """Add cover image fields to blog_post table.
 
 Revision ID: add_blog_cover_image
-Revises:
+Revises: 20260109_205100
 Create Date: 2026-01-10 03:55:05.000000
 
 """
@@ -25,8 +25,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "add_blog_cover_image"
-down_revision = None
+revision = "20260110_035505"
+down_revision = "20260109_205100"
 branch_labels = None
 depends_on = None
 

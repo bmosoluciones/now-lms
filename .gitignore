@@ -282,4 +282,7 @@ now_lms/templates/themes/nowlearninginstitute
 now_lms/static/files/public/themes/sunshine
 now_lms/static/files/public/themes/nowlearninginstitute
 
+# Ignore nested migrations directory (created at runtime)
+now_lms/now_lms/
+
 notes.txtcookies.txt

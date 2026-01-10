@@ -14,7 +14,7 @@ This enables administrators to fully customize the footer content.
 
 from alembic import op
 import sqlalchemy as sa
-from now_lms.db import generador_de_codigos_unicos, utc_now
+from now_lms.db import utc_now
 from datetime import date
 
 
