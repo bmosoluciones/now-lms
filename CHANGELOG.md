@@ -21,6 +21,7 @@ lmsctl database upgrade
 
 # Or using Fla directly
 flask db upgrade
+```
 
 ## [1.1.4] - 2026-01-10
 
