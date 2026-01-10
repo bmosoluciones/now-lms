@@ -12,7 +12,28 @@
         <div class="row row-cols-1 row-cols-md-3 g-4">
             {% for post in latest_blog_posts %}
             <div class="col">
-                <div class="card h-100 shadow-sm" style="border: none; border-radius: 12px">
+                <div class="card h-100 shadow-sm" style="border: none; border-radius: 12px; overflow: hidden">
+                    {% if post.cover_image and blog_cover(post.id) %}
+                    <img
+                        src="{{ url_for('static', filename='/files/public/images/blog/' + post.id + '/' + blog_cover(post.id)) }}"
+                        alt="{{ post.title }}"
+                        class="card-img-top"
+                        style="height: 200px; object-fit: cover"
+                    />
+                    {% else %}
+                    <div
+                        class="card-img-top text-white d-flex align-items-center justify-content-center fw-semibold"
+                        style="
+                            height: 200px;
+                            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+                            font-size: 1.2rem;
+                            padding: 1.5rem;
+                            text-align: center;
+                        "
+                    >
+                        {{ post.title[:50] }}{% if post.title|length > 50 %}...{% endif %}
+                    </div>
+                    {% endif %}
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title mb-3">
                             <a href="{{ url_for('blog.blog_post', slug=post.slug) }}" class="text-decoration-none text-dark">
