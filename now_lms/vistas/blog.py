@@ -23,8 +23,7 @@ import re
 # Standard library
 # ---------------------------------------------------------------------------------------
 from datetime import datetime, timezone
-from os import makedirs, path
-from pathlib import Path
+from os import path
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries

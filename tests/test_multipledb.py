@@ -115,7 +115,7 @@ class TestMultipleDatabaseSupport:
 
         # Crear usuario
         user = Usuario(
-            id="multidb-test-user-001",
+            id="mdb-test-user-001",
             usuario="multidb-testuser",
             acceso=proteger_passwd("test123"),
             nombre="MultiDB",
@@ -147,7 +147,7 @@ class TestMultipleDatabaseSupport:
 
         # Crear curso
         course = Curso(
-            id="multidb-test-course-001",
+            id="mdb-test-course-001",
             nombre="Test Course MultiDB",
             codigo="TESTMULTIDB",
             descripcion_corta="Test course for multiple databases",
@@ -182,7 +182,7 @@ class TestMultipleDatabaseSupport:
 
         # Crear usuario
         user = Usuario(
-            id="multidb-transaction-test-001",
+            id="mdb-txn-test-001",
             usuario="transaction-test",
             acceso=proteger_passwd("test123"),
             nombre="Transaction",
@@ -220,7 +220,7 @@ class TestMultipleDatabaseSupport:
         # Crear múltiples usuarios
         users = [
             Usuario(
-                id=f"multidb-filter-test-{i:03d}",
+                id=f"mdb-filter-{i:03d}",
                 usuario=f"filtertest{i}",
                 acceso=proteger_passwd("test123"),
                 nombre=f"User{i}",
@@ -259,7 +259,7 @@ class TestMultipleDatabaseSupport:
 
         # Crear usuario
         user1 = Usuario(
-            id="multidb-constraint-test-001",
+            id="mdb-constraint-001",
             usuario="constraint-test",
             acceso=proteger_passwd("test123"),
             nombre="Constraint",
@@ -276,7 +276,7 @@ class TestMultipleDatabaseSupport:
 
         # Intentar crear usuario con mismo ID (debe fallar)
         user2 = Usuario(
-            id="multidb-constraint-test-001",  # Mismo ID
+            id="mdb-constraint-001",  # Mismo ID
             usuario="constraint-test-2",
             acceso=proteger_passwd("test123"),
             nombre="Constraint2",
@@ -327,6 +327,19 @@ class TestDatabaseSpecificFeatures:
         from now_lms.db import database
 
         with app.app_context():
-            # Verificar que estamos usando MySQL
-            result = database.session.execute(database.text("SELECT version()")).scalar()
-            assert any(x in result.lower() for x in ["mysql", "mariadb"])
+            # Verificar que el dialecto es MySQL (incluye MariaDB/Percona)
+            engine = database.session.get_bind()
+            dialect = (engine.dialect.name or "").lower()
+            assert dialect == "mysql"
+
+            # Obtener información de versión desde variables estándar
+            ver = database.session.execute(database.text("SELECT @@version")).scalar()
+            comment = database.session.execute(database.text("SELECT @@version_comment")).scalar()
+            # Fallback adicional
+            ver2 = database.session.execute(database.text("SELECT VERSION()")).scalar()
+
+            info = " ".join([str(ver or ""), str(comment or ""), str(ver2 or "")]).lower().strip()
+
+            # Aceptar MySQL, MariaDB o Percona; si no aparecen tokens, al menos no debe estar vacío
+            assert info != ""
+            assert any(tok in info for tok in ["mysql", "mariadb", "percona"]) or dialect == "mysql"

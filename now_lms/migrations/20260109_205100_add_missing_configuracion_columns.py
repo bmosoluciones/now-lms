@@ -1,7 +1,7 @@
 """Add missing columns to Configuracion
 
 Revision ID: 20260109_205100
-Revises: 20260109_152700
+Revises: 20260109_191123
 Create Date: 2026-01-09 20:51:00
 
 This migration adds missing columns to the Configuracion table that were
@@ -20,7 +20,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "20260109_205100"
-down_revision = "20260109_152700"
+down_revision = "20260109_191123"
 branch_labels = None
 depends_on = None
 
