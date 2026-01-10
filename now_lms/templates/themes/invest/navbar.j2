@@ -47,19 +47,19 @@
                         ><i class="bi bi-book" aria-hidden="true"></i> {{ _('Cursos') }}</a
                     >
                 </li>
-                {% if current_user.role.can_access_instructor_panel %}
+                {% if current_user.is_authenticated and current_user.role and current_user.role.can_access_instructor_panel %}
                 <li>
                     <a href="{{ url_for('instructor_profile.pagina_instructor') }}" class="nav-link px-2"
                         ><i class="bi bi-person-workspace" aria-hidden="true"></i> {{ _('Panel de Instructor') }}</a
                     >
                 </li>
-                {% endif %} {% if current_user.role.can_moderate %}
+                {% endif %} {% if current_user.is_authenticated and current_user.role and current_user.role.can_moderate %}
                 <li>
                     <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link px-2"
                         ><i class="bi bi-shield-check" aria-hidden="true"></i> {{ _('Panel de Moderador') }}</a
                     >
                 </li>
-                {% endif %} {% if current_user.role.is_admin %}
+                {% endif %} {% if current_user.is_authenticated and current_user.role and current_user.role.is_admin %}
                 <li>
                     <a href="{{ url_for('admin_profile.pagina_admin') }}" class="nav-link px-2"
                         ><i class="bi bi-gear" aria-hidden="true"></i> {{ _('Administración') }}</a
