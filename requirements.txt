@@ -1,4 +1,4 @@
-alembic==1.17.2
+alembic==1.18.0
 appdirs==1.4.4
 argon2-cffi==25.1.0
 babel==2.17.0
@@ -24,14 +24,14 @@ markdown==3.10
 memcache==0.14.0
 mysql-connector-python==9.5.0
 pg8000==1.31.5
-psutil==7.1.3
+psutil==7.2.1
 pyjwt==2.10.1
 python-slugify==8.0.4
 python-ulid==3.1.0
 qrcode==8.2
-sqlalchemy==2.0.44
+sqlalchemy==2.0.45
 requests==2.32.5
 redis==7.1.0
 waitress==3.0.2
-weasyprint==66.0
+weasyprint==67.0
 wtforms==3.2.1
