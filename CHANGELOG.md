@@ -9,6 +9,25 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [1.1.7.post1] - 2026-01-10
+
+### Fixed:
+ - Fix failing migrations
+ - Added a unit that validates all migrations runs in all database engines
+
+After updating, you must run database migrations:
+
+```bash
+# Using lmsctl
+lmsctl database upgrade
+
+# Or using Fla directly
+flask db upgrade
+```
+
+References:
+ - https://github.com/bmosoluciones/now-lms/blob/main/docs/blog/posts/2026-01-10-alembic-sincronizacion-y-reinicio.md
+
 ## [1.1.7] - 2026-01-10
 
 ### Fixed
@@ -85,7 +104,7 @@ flask db upgrade
   - Administrators can manually verify user emails from `/admin/users/list_inactive` via the new verification button
   - Manual verification by admin immediately activates the account and grants full access
   - Default behavior unchanged: unverified users are blocked by default (backward compatible, non-breaking change)
-  
+
 ### Changed
 - Login flow enhanced to support conditional access for unverified users based on system configuration
 - Admin inactive users list now includes email verification functionality
