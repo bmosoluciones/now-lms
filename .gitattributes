@@ -2,3 +2,5 @@
 *.png binary
 *.pdf binary
 *.ogg binary
+
+*.j2 linguist-language=PYTHON
