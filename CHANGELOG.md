@@ -12,6 +12,9 @@ All notable changes to this project will be documented in this file.
 ### Fixed:
  - Fix course image display for non-JPG formats in admin and edit routes.
 
+### Changed:
+ - Auto-redirect to next resource after marking completion
+
 
 ## [1.1.7.post1] - 2026-01-10
 
