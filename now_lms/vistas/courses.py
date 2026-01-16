@@ -1358,6 +1358,34 @@ def marcar_recurso_completado(curso_id: str, resource_type: str, codigo: str) ->
                     database.session.commit()
                     flash("Recurso marcado como completado.", "success")
                 _actualizar_avance_curso(curso_id, current_user.usuario)
+
+                # Get the next resource in the learning path
+                indice = crear_indice_recurso(codigo)
+
+                # If there's a next resource, redirect to it
+                if indice.next_resource:
+                    if indice.next_is_alternative:
+                        # Redirect to alternative resource page
+                        return redirect(
+                            url_for(
+                                "course.pagina_recurso_alternativo",
+                                curso_id=indice.next_resource.curso_id,
+                                codigo=indice.next_resource.codigo,
+                                order="asc",
+                            )
+                        )
+                    else:
+                        # Redirect to next regular resource
+                        return redirect(
+                            url_for(
+                                "course.pagina_recurso",
+                                curso_id=indice.next_resource.curso_id,
+                                resource_type=indice.next_resource.resource_type,
+                                codigo=indice.next_resource.codigo,
+                            )
+                        )
+
+                # If no next resource, stay on current page
                 return redirect(
                     url_for("course.pagina_recurso", curso_id=curso_id, resource_type=resource_type, codigo=codigo)
                 )
