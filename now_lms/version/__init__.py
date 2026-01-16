@@ -40,11 +40,11 @@ CODE_NAME = "Karla"
 # SemVer (https://semver.org)
 MAYOR = "1"
 MENOR = "1"
-PATCH = "7"
+PATCH = "8"
 
 # <--------------------------------------------------------------------------> #
 # Quick fix
-POST = "post1"
+POST = ""
 
 # <--------------------------------------------------------------------------> #
 # Pre release not for production
