@@ -38,6 +38,7 @@ from werkzeug.wrappers import Response
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
+from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, BlogComment, BlogPost, BlogTag, database, select
 from now_lms.forms import BlogCommentForm, BlogPostForm, BlogTagForm
@@ -45,6 +46,7 @@ from now_lms.logs import log
 
 # Route constants
 ROUTE_BLOG_POST = "blog.blog_post"
+ROUTE_BLOG_INDEX = "blog.blog_index"
 ROUTE_BLOG_ADMIN_INDEX = "blog.admin_blog_index"
 
 blog = Blueprint("blog", __name__, template_folder=DIRECTORIO_PLANTILLAS)
@@ -79,6 +81,7 @@ def ensure_unique_slug(title: str, post_id: int | None = None) -> str:
 
 # Public blog routes
 @blog.route("/blog")
+@cache.cached(timeout=60)
 def blog_index() -> str:
     """Public blog index page."""
     page = request.args.get("page", 1, type=int)
@@ -118,6 +121,7 @@ def blog_index() -> str:
 
 
 @blog.route("/blog/<slug>")
+@cache.cached(timeout=60)
 def blog_post(slug: str) -> str:
     """Display a single blog post."""
     post = database.session.execute(
@@ -186,6 +190,10 @@ def add_comment(slug: str) -> Response:
         post.comment_count = (result or 0) + 1
 
         database.session.commit()
+
+        # Invalidate cache for this blog post
+        cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=slug))
+
         flash("Comentario agregado exitosamente.", "success")
     else:
         flash("Error al agregar el comentario.", "error")
@@ -203,6 +211,9 @@ def flag_comment(comment_id: int) -> Response:
 
     comment.status = "flagged"
     database.session.commit()
+
+    # Invalidate cache for this blog post
+    cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
 
     flash("Comentario marcado como inapropiado.", "info")
     return redirect(url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
@@ -310,6 +321,10 @@ def admin_create_post() -> str | Response:
 
         database.session.commit()
         log.info(f"Blog post created: {post.title} by {current_user.usuario}")
+
+        # Invalidate blog index cache when a new post is created
+        cache.delete("view/" + url_for(ROUTE_BLOG_INDEX))
+
         flash("Entrada de blog creada exitosamente.", "success")
 
         if current_user.tipo == "admin":
@@ -345,6 +360,9 @@ def admin_edit_post(post_id: int) -> str | Response:
     form.tags.data = ", ".join(tag_names)
 
     if form.validate_on_submit() or request.method == "POST":
+        # Save old slug to invalidate its cache if it changes
+        old_slug = post.slug
+
         post.title = form.title.data
         post.slug = ensure_unique_slug(form.title.data, post.id)
         post.content = form.content.data
@@ -399,6 +417,15 @@ def admin_edit_post(post_id: int) -> str | Response:
 
         database.session.commit()
         log.info(f"Blog post updated: {post.title} by {current_user.usuario}")
+
+        # Invalidate cache for the blog post (both old and new slugs if changed)
+        if old_slug != post.slug:
+            cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=old_slug))
+        cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=post.slug))
+
+        # Invalidate blog index cache when a post is edited
+        cache.delete("view/" + url_for(ROUTE_BLOG_INDEX))
+
         flash("Entrada de blog actualizada exitosamente.", "success")
 
         if current_user.tipo == "admin":
@@ -421,6 +448,10 @@ def approve_post(post_id: int) -> Response:
     post.published_at = datetime.now(timezone.utc)
     database.session.commit()
 
+    # Invalidate cache for blog index and the post itself
+    cache.delete("view/" + url_for(ROUTE_BLOG_INDEX))
+    cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=post.slug))
+
     flash(f"Entrada '{post.title}' aprobada y publicada.", "success")
     return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
 
@@ -436,6 +467,10 @@ def ban_post(post_id: int) -> Response:
 
     post.status = "banned"
     database.session.commit()
+
+    # Invalidate cache for blog index and the post itself
+    cache.delete("view/" + url_for(ROUTE_BLOG_INDEX))
+    cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=post.slug))
 
     flash(f"Entrada '{post.title}' ha sido baneada.", "warning")
     return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
@@ -530,6 +565,9 @@ def ban_comment(comment_id: str) -> str | Response:
 
     database.session.commit()
 
+    # Invalidate cache for this blog post
+    cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
+
     flash("Comentario baneado.", "warning")
     return redirect(url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
 
@@ -557,6 +595,9 @@ def delete_comment(comment_id: str) -> str | Response:
     ).scalar()
 
     database.session.commit()
+
+    # Invalidate cache for this blog post
+    cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=post_slug))
 
     flash("Comentario eliminado.", "info")
     return redirect(url_for(ROUTE_BLOG_POST, slug=post_slug))
