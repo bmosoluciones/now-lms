@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [1.1.8] - 2026-01-16
+
 ### Fixed:
  - Fix course image display for non-JPG formats in admin and edit routes.
 
