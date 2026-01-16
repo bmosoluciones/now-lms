@@ -130,10 +130,10 @@
                     </div>
                     <div class="row g-3">
                         <h6>{{ _('Portada del curso') }}</h6>
-                        {% if curso.portada %}
+                        {% if curso.portada and course_logo(curso.codigo) %}
                         <div>
                             <img
-                                src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/logo.jpg') }}"
+                                src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/' + course_logo(curso.codigo)) }}"
                                 alt="{{ _('Portada del Curso') }}"
                                 height="200"
                                 width="400"
