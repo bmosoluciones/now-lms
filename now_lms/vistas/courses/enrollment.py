@@ -36,6 +36,8 @@ from .coupons import _validate_coupon_for_enrollment
 
 @dataclass
 class EnrollmentPricing:
+    """Pricing details for an enrollment, including discounts and validation."""
+
     applied_coupon: object | None
     original_price: float
     final_price: float
@@ -67,15 +69,15 @@ def _crear_indice_avance_curso(course_code: str) -> None:
             database.session.commit()
 
 
-def _calculate_enrollment_pricing(course: Curso, coupon_code: str, user: Usuario) -> EnrollmentPricing:
+def _calculate_enrollment_pricing(course_obj: Curso, coupon_code: str, user: Usuario) -> EnrollmentPricing:
     """Calculate pricing and coupon data for enrollment."""
-    original_price = course.precio if course.pagado else 0
+    original_price = course_obj.precio if course_obj.pagado else 0
     pricing = EnrollmentPricing(None, original_price, original_price, 0)
 
-    if not coupon_code or not course.pagado:
+    if not coupon_code or not course_obj.pagado:
         return pricing
 
-    coupon, _, validation_error = _validate_coupon_for_enrollment(course.codigo, coupon_code, user)
+    coupon, _, validation_error = _validate_coupon_for_enrollment(course_obj.codigo, coupon_code, user)
     if coupon:
         pricing.applied_coupon = coupon
         pricing.discount_amount = coupon.calculate_discount(original_price)
@@ -97,11 +99,11 @@ def _build_coupon_flash_message(applied_coupon: object | None, final_price: floa
     return f"¡Cupón aplicado! Descuento de {discount_amount} aplicado"
 
 
-def _build_pago_from_form(form, course: Curso, final_price: float) -> Pago:
+def _build_pago_from_form(form, course_obj: Curso, final_price: float) -> Pago:
     """Create Pago object with form data."""
     pago = Pago()
     pago.usuario = current_user.usuario
-    pago.curso = course.codigo
+    pago.curso = course_obj.codigo
     pago.nombre = form.nombre.data
     pago.apellido = form.apellido.data
     pago.correo_electronico = form.correo_electronico.data
@@ -177,12 +179,12 @@ def _process_paid_enrollment(pago: Pago, course_code: str) -> Response:
         return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
 
-def _is_free_enrollment(course: Curso, final_price: float) -> bool:
-    return not course.pagado or final_price == 0
+def _is_free_enrollment(course_obj: Curso, final_price: float) -> bool:
+    return not course_obj.pagado or final_price == 0
 
 
-def _is_audit_enrollment(mode: str, course: Curso) -> bool:
-    return mode == "audit" and course.auditable
+def _is_audit_enrollment(mode: str, course_obj: Curso) -> bool:
+    return mode == "audit" and course_obj.auditable
 
 
 @course.route("/course/<course_code>/enroll", methods=["GET", "POST"])

@@ -44,6 +44,7 @@ from now_lms.db import Configuracion, Curso, Pago, PaypalConfig, database
 PAYPAL_SANDBOX_API_URL = "https://api.sandbox.paypal.com"
 PAYPAL_PRODUCTION_API_URL = "https://api.paypal.com"
 HOME_PAGE_ROUTE = "home.pagina_de_inicio"
+PAYPAL_NOT_CONFIGURED_MESSAGE = "PayPal not configured"
 
 paypal = Blueprint("paypal", __name__, template_folder=DIRECTORIO_PLANTILLAS, url_prefix="/paypal_checkout")
 
@@ -168,7 +169,7 @@ def verify_paypal_payment(order_id: str, access_token: str) -> dict[str, object]
     try:
         row = database.session.execute(database.select(PaypalConfig)).first()
         if row is None:
-            return {"status": "error", "message": "PayPal not configured"}
+            return {"status": "error", "message": PAYPAL_NOT_CONFIGURED_MESSAGE}
         paypal_config = row[0]
         base_url = PAYPAL_SANDBOX_API_URL if paypal_config.sandbox else PAYPAL_PRODUCTION_API_URL
         order_url = f"{base_url}/v2/checkout/orders/{order_id}"
@@ -473,7 +474,7 @@ def get_client_id() -> Response | tuple[FlaskResponse, int]:
     try:
         row = database.session.execute(database.select(PaypalConfig)).first()
         if row is None:
-            return jsonify({"error": "PayPal not configured"}), 500
+            return jsonify({"error": PAYPAL_NOT_CONFIGURED_MESSAGE}), 500
         paypal_config = row[0]
 
         # Return the appropriate client ID based on sandbox mode
@@ -481,7 +482,7 @@ def get_client_id() -> Response | tuple[FlaskResponse, int]:
 
         if not client_id:
             logging.error(f"PayPal client ID not configured for user {current_user.usuario}")
-            return jsonify({"error": "PayPal not configured"}), 500
+            return jsonify({"error": PAYPAL_NOT_CONFIGURED_MESSAGE}), 500
 
         return jsonify({"client_id": client_id, "sandbox": paypal_config.sandbox, "currency": get_site_currency()}), 200
 

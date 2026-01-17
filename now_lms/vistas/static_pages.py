@@ -34,6 +34,10 @@ from now_lms.forms import EnlaceUtilForm
 from now_lms.i18n import _
 
 static_pages = Blueprint("static_pages", __name__, template_folder=DIRECTORIO_PLANTILLAS)
+PAGE_NOT_FOUND_MESSAGE = _("Página no encontrada.")
+HOME_ROUTE = "home.pagina_de_inicio"
+CONTACT_TEMPLATE = "page_info/contact.html"
+STATIC_LINKS_ROUTE = "static_pages.list_enlaces_utiles"
 
 
 @static_pages.route("/page/<slug>")
@@ -42,16 +46,16 @@ def view_page(slug: str) -> str | Response:
     """View a static page by slug."""
     # Validate slug to prevent path traversal
     if any(c in slug for c in ["/", "\\", ".", "$"]):
-        flash(_("Página no encontrada."), "danger")
-        return redirect(url_for("home.pagina_de_inicio"))
+        flash(PAGE_NOT_FOUND_MESSAGE, "danger")
+        return redirect(url_for("static_pages.list_pages"))
 
     page = database.session.execute(
         database.select(StaticPage).filter(StaticPage.slug == slug, StaticPage.is_active.is_(True))
     ).scalar_one_or_none()
 
     if not page:
-        flash(_("Página no encontrada."), "danger")
-        return redirect(url_for("home.pagina_de_inicio"))
+        flash(PAGE_NOT_FOUND_MESSAGE, "danger")
+        return redirect(url_for(HOME_ROUTE))
 
     return render_template("page_info/static_page.html", page=page)
 
@@ -68,11 +72,11 @@ def contact() -> str | Response:
         # Basic validation
         if not name or not email or not subject or not message:
             flash(_("Por favor complete todos los campos."), "warning")
-            return render_template("page_info/contact.html")
+            return render_template(CONTACT_TEMPLATE)
 
         if len(name) > 150 or len(email) > 150 or len(subject) > 200 or len(message) > 5000:
             flash(_("Uno o más campos exceden la longitud máxima permitida."), "warning")
-            return render_template("page_info/contact.html")
+            return render_template(CONTACT_TEMPLATE)
 
         # Save contact message
         contact_msg = ContactMessage(
@@ -86,9 +90,9 @@ def contact() -> str | Response:
         database.session.commit()
 
         flash(_("Gracias por contactarnos. Le responderemos pronto."), "success")
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_ROUTE))
 
-    return render_template("page_info/contact.html")
+    return render_template(CONTACT_TEMPLATE)
 
 
 @static_pages.route("/admin/pages")
@@ -109,8 +113,8 @@ def edit_page(page_id: str) -> str | Response:
     page = database.session.get(StaticPage, page_id)
 
     if not page:
-        flash(_("Página no encontrada."), "danger")
-        return redirect(url_for("static_pages.list_pages"))
+        flash(PAGE_NOT_FOUND_MESSAGE, "danger")
+        return redirect(url_for(HOME_ROUTE))
 
     if request.method == "POST":
         page.title = request.form.get("title", "").strip()
@@ -214,7 +218,7 @@ def create_enlace_util() -> str | Response:
         database.session.commit()
 
         flash(_("Enlace útil creado correctamente."), "success")
-        return redirect(url_for("static_pages.list_enlaces_utiles"))
+        return redirect(url_for(STATIC_LINKS_ROUTE))
 
     return render_template("admin/edit_enlace_util.html", form=form, enlace=None)
 
@@ -228,7 +232,7 @@ def edit_enlace_util(enlace_id: str) -> str | Response:
 
     if not enlace:
         flash(_("Enlace no encontrado."), "danger")
-        return redirect(url_for("static_pages.list_enlaces_utiles"))
+        return redirect(url_for(STATIC_LINKS_ROUTE))
 
     form = EnlaceUtilForm(obj=enlace)
 
@@ -241,7 +245,7 @@ def edit_enlace_util(enlace_id: str) -> str | Response:
         database.session.commit()
 
         flash(_("Enlace útil actualizado correctamente."), "success")
-        return redirect(url_for("static_pages.list_enlaces_utiles"))
+        return redirect(url_for(STATIC_LINKS_ROUTE))
 
     return render_template("admin/edit_enlace_util.html", form=form, enlace=enlace)
 
@@ -255,10 +259,10 @@ def delete_enlace_util(enlace_id: str) -> Response:
 
     if not enlace:
         flash(_("Enlace no encontrado."), "danger")
-        return redirect(url_for("static_pages.list_enlaces_utiles"))
+        return redirect(url_for(STATIC_LINKS_ROUTE))
 
     database.session.delete(enlace)
     database.session.commit()
 
     flash(_("Enlace útil eliminado correctamente."), "success")
-    return redirect(url_for("static_pages.list_enlaces_utiles"))
+    return redirect(url_for(STATIC_LINKS_ROUTE))

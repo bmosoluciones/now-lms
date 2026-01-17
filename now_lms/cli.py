@@ -41,6 +41,11 @@ from now_lms.db.info import config_info, course_info
 from now_lms.logs import log
 from now_lms.version import CODE_NAME, VERSION
 
+WAITRESS_INSTALL_MESSAGE = "Waitress is not installed. Install it with: pip install waitress"
+ENTER_USERNAME_PROMPT = "Enter username"
+PASSWORDS_MISMATCH_MESSAGE = "Passwords do not match."
+NOT_CONFIGURED_LABEL = "Not configured"
+
 
 # ---------------------------------------------------------------------------------------
 # Interfaz de linea de comandos.
@@ -148,7 +153,7 @@ def session():
 def session_clear():
     """Delete expired sessions from the database."""
     with lms_app.app_context():
-        from datetime import datetime
+        from datetime import datetime, timezone
 
         # Check if session type is SQLAlchemy
         session_type = lms_app.config.get("SESSION_TYPE")
@@ -166,7 +171,8 @@ def session_clear():
             # Query and delete expired sessions
             from sqlalchemy import text
 
-            result = db.session.execute(text(f"DELETE FROM {table_name} WHERE expiry <= :now"), {"now": datetime.utcnow()})
+            now_utc = datetime.now(timezone.utc)
+            result = db.session.execute(text(f"DELETE FROM {table_name} WHERE expiry <= :now"), {"now": now_utc})
             deleted_count = result.rowcount
             db.session.commit()
 
@@ -184,7 +190,7 @@ def session_clear():
 def session_stats():
     """Return the number of active sessions."""
     with lms_app.app_context():
-        from datetime import datetime
+        from datetime import datetime, timezone
 
         # Check if session type is SQLAlchemy
         session_type = lms_app.config.get("SESSION_TYPE")
@@ -202,9 +208,8 @@ def session_stats():
             # Count active sessions (not expired)
             from sqlalchemy import text
 
-            result = db.session.execute(
-                text(f"SELECT COUNT(*) FROM {table_name} WHERE expiry > :now"), {"now": datetime.utcnow()}
-            )
+            now_utc = datetime.now(timezone.utc)
+            result = db.session.execute(text(f"SELECT COUNT(*) FROM {table_name} WHERE expiry > :now"), {"now": now_utc})
             active_count = result.scalar()
 
             # Count total sessions
@@ -336,7 +341,7 @@ def serve(wsgi_server):
                 _quiet=False,
             )
         except ImportError:
-            log.error("Waitress is not installed. Install it with: pip install waitress")
+            log.error(WAITRESS_INSTALL_MESSAGE)
             log.info("Falling back to Flask development server.")
 
             # Use subprocess to spawn Flask development server to avoid CLI context blocking
@@ -378,7 +383,7 @@ def serve(wsgi_server):
                     _quiet=False,
                 )
             except ImportError:
-                log.error("Waitress is not installed. Install it with: pip install waitress")
+                log.error(WAITRESS_INSTALL_MESSAGE)
                 raise
         else:
             try:
@@ -436,7 +441,7 @@ def serve(wsgi_server):
                         _quiet=False,
                     )
                 except ImportError:
-                    log.error("Waitress is not installed. Install it with: pip install waitress")
+                    log.error(WAITRESS_INSTALL_MESSAGE)
                     raise
 
 
@@ -532,7 +537,7 @@ def reset_password():
     from now_lms.db import Usuario
 
     with lms_app.app_context():
-        username = click.prompt("Enter username", type=str)
+        username = click.prompt(ENTER_USERNAME_PROMPT, type=str)
 
         # Find user by username or email
         usuario = db.session.execute(select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
@@ -548,7 +553,7 @@ def reset_password():
         confirm_password = click.prompt("Confirm new password", type=str, hide_input=True)
 
         if password != confirm_password:
-            click.echo("Passwords do not match.")
+            click.echo(PASSWORDS_MISMATCH_MESSAGE)
             return
 
         # Update password
@@ -620,7 +625,7 @@ def set_admin():
         confirm_password = click.prompt("Confirm password", type=str, hide_input=True)
 
         if password != confirm_password:
-            click.echo("Passwords do not match.")
+            click.echo(PASSWORDS_MISMATCH_MESSAGE)
             return
 
         # Create new admin user
@@ -658,7 +663,7 @@ def new():
 
     with lms_app.app_context():
         # Prompt for required fields
-        username = click.prompt("Enter username", type=str)
+        username = click.prompt(ENTER_USERNAME_PROMPT, type=str)
 
         # Check if username already exists
         existing_user = db.session.execute(select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
@@ -688,7 +693,7 @@ def new():
         confirm_password = click.prompt("Confirm password", type=str, hide_input=True)
 
         if password != confirm_password:
-            click.echo("Passwords do not match.")
+            click.echo(PASSWORDS_MISMATCH_MESSAGE)
             return
 
         # Create new user
@@ -717,7 +722,7 @@ def set_password():
     from now_lms.db import Usuario
 
     with lms_app.app_context():
-        username = click.prompt("Enter username", type=str)
+        username = click.prompt(ENTER_USERNAME_PROMPT, type=str)
 
         # Find user by username or email
         usuario = db.session.execute(select(Usuario).filter_by(usuario=username)).scalar_one_or_none()
@@ -733,7 +738,7 @@ def set_password():
         confirm_password = click.prompt("Confirm new password", type=str, hide_input=True)
 
         if password != confirm_password:
-            click.echo("Passwords do not match.")
+            click.echo(PASSWORDS_MISMATCH_MESSAGE)
             return
 
         # Update password
@@ -760,9 +765,9 @@ def info():  # type: ignore[no-redef]
         click.echo(f"  Default Timeout: {CACHE_CONFIG.get('CACHE_DEFAULT_TIMEOUT', 'None')} seconds")
 
         if CTYPE == "RedisCache":
-            redis_url = CACHE_CONFIG.get("CACHE_REDIS_URL", "Not configured")
+            redis_url = CACHE_CONFIG.get("CACHE_REDIS_URL", NOT_CONFIGURED_LABEL)
             # Mask password in URL for security
-            if redis_url and redis_url != "Not configured":
+            if redis_url and redis_url != NOT_CONFIGURED_LABEL:
                 from urllib.parse import urlparse
 
                 parsed_url = urlparse(redis_url)
@@ -774,7 +779,7 @@ def info():  # type: ignore[no-redef]
             else:
                 click.echo(f"  Redis URL: {redis_url}")
         elif CTYPE == "MemcachedCache":
-            servers = CACHE_CONFIG.get("CACHE_MEMCACHED_SERVERS", "Not configured")
+            servers = CACHE_CONFIG.get("CACHE_MEMCACHED_SERVERS", NOT_CONFIGURED_LABEL)
             click.echo(f"  Memcached Servers: {servers}")
         elif CTYPE == "NullCache":
             click.echo("  Note: NullCache is active - no actual caching is performed")
