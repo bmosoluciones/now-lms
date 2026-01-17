@@ -1743,7 +1743,7 @@ def delete_library_file(course_code: str, file_id: str) -> Response:
 
 
 # Calendarios para recursos meet
-def _generate_meet_ics_content(recurso: Any, course_obj: Any) -> str:
+def _generate_meet_ics_content(recurso: Any) -> str:
     lines = [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
@@ -1793,10 +1793,6 @@ def download_meet_calendar(course_code: str, codigo: str) -> Response:
     if not recurso:
         abort(404)
 
-    course_obj = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
-    if not course_obj:
-        abort(404)
-
     if current_user.is_authenticated:
         if current_user.tipo in ("admin", "instructor"):
             show_resource = True
@@ -1810,7 +1806,7 @@ def download_meet_calendar(course_code: str, codigo: str) -> Response:
     if not (show_resource or recurso.publico):
         abort(403)
 
-    ics_content = _generate_meet_ics_content(recurso, course_obj)
+    ics_content = _generate_meet_ics_content(recurso)
     filename = f"meet-{recurso.nombre[:20].replace(' ', '-')}-{recurso.id}.ics"
     return Response(
         ics_content,
