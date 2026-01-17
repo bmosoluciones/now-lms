@@ -44,6 +44,9 @@ from now_lms.logs import log
 # Constants
 SETTING_PERSONALIZACION_ROUTE = "setting.personalizacion"
 SETTING_MAIL_ROUTE = "setting.mail"
+HOME_ROUTE = "home.pagina_de_inicio"
+ADMIN_MAIL_TEMPLATE = "admin/mail.html"
+ADMIN_PAYPAL_TEMPLATE = "admin/paypal.html"
 
 # ---------------------------------------------------------------------------------------
 # Administración de la configuración del sistema.
@@ -122,7 +125,7 @@ def personalizacion() -> str | Response:
 
     row = database.session.execute(database.select(Style)).first()
     if row is None:
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_ROUTE))
     config = row[0]
     form = ThemeForm(style=config.theme)
     form.style.choices = TEMPLATE_CHOICES
@@ -182,11 +185,11 @@ def configuracion() -> str | Response:
     """System settings."""
     row = database.session.execute(database.select(Configuracion)).first()
     if row is None:
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_ROUTE))
     config = row[0]
     row = database.session.execute(database.select(MailConfig)).first()
     if row is None:
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_ROUTE))
     config_mail = row[0]
     form = ConfigForm(
         titulo=config.titulo,
@@ -288,7 +291,7 @@ def mail() -> str | Response:
     """Configuración de Correo Electronico."""
     row = database.session.execute(database.select(MailConfig)).first()
     if row is None:
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_ROUTE))
     config = row[0]
 
     form = MailForm(
@@ -307,7 +310,7 @@ def mail() -> str | Response:
 
         # Check demo mode restrictions for mail settings
         if demo_restriction_check("mail_settings"):
-            return render_template("admin/mail.html", form=form, config=config)
+            return render_template(ADMIN_MAIL_TEMPLATE, form=form, config=config)
 
         config.MAIL_SERVER = form.MAIL_SERVER.data
         config.MAIL_PORT = form.MAIL_PORT.data
@@ -334,7 +337,7 @@ def mail() -> str | Response:
             return redirect(url_for(SETTING_MAIL_ROUTE))
 
     else:
-        return render_template("admin/mail.html", form=form, config=config)
+        return render_template(ADMIN_MAIL_TEMPLATE, form=form, config=config)
 
 
 mail_check_message = """
@@ -360,7 +363,7 @@ def mail_check() -> str | Response:
     """Configuración de Correo Electronico."""
     row = database.session.execute(database.select(MailConfig)).first()
     if row is None:
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_ROUTE))
     config = row[0]
 
     form = CheckMailForm()
@@ -417,7 +420,7 @@ def mail_check() -> str | Response:
                 MAIL_DEFAULT_SENDER=config.MAIL_DEFAULT_SENDER,
                 MAIL_DEFAULT_SENDER_NAME=config.MAIL_DEFAULT_SENDER_NAME,
             )
-            return render_template("admin/mail.html", form=form, config=config, error=str(e))
+            return render_template(ADMIN_MAIL_TEMPLATE, form=form, config=config, error=str(e))
 
     else:
         return render_template("admin/mail_check.html", form=form)
@@ -430,7 +433,7 @@ def adsense() -> str | Response:
     """Configuración de anuncios de AdSense."""
     row = database.session.execute(database.select(AdSense)).first()
     if row is None:
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_ROUTE))
     config = row[0]
 
     form = AdSenseForm(
@@ -543,7 +546,7 @@ def paypal() -> str | Response:
     """Configuración de Paypal."""
     row = database.session.execute(database.select(PaypalConfig)).first()
     if row is None:
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_ROUTE))
     config = row[0]
     form = PayaplForm(
         habilitado=config.enable,
@@ -557,7 +560,7 @@ def paypal() -> str | Response:
 
         # Check demo mode restrictions for PayPal settings
         if demo_restriction_check("paypal_settings"):
-            return render_template("admin/paypal.html", form=form, config=config, with_paypal=True)
+            return render_template(ADMIN_PAYPAL_TEMPLATE, form=form, config=config, with_paypal=True)
 
         # Validate PayPal configuration if enabling PayPal
         if form.habilitado.data:
@@ -584,7 +587,7 @@ def paypal() -> str | Response:
                 validation = validate_paypal_configuration(client_id, client_secret, form.sandbox.data)
                 if not validation["valid"]:
                     flash(f"Error en la configuración de PayPal: {validation['message']}", "error")
-                    return render_template("admin/paypal.html", form=form, config=config, with_paypal=True)
+                    return render_template(ADMIN_PAYPAL_TEMPLATE, form=form, config=config, with_paypal=True)
 
         config.enable = form.habilitado.data
         config.sandbox = form.sandbox.data
@@ -613,4 +616,4 @@ def paypal() -> str | Response:
             return redirect(url_for("setting.paypal"))
 
     else:
-        return render_template("admin/paypal.html", form=form, config=config, with_paypal=True)
+        return render_template(ADMIN_PAYPAL_TEMPLATE, form=form, config=config, with_paypal=True)

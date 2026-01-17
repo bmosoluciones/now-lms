@@ -55,6 +55,7 @@ from now_lms.forms import CertificateForm, EmitCertificateForm
 
 # Template constants
 TEMPLATE_EMITIR_CERTIFICADO = "learning/certificados/emitir_certificado.html"
+HOME_ROUTE = "home.pagina_de_inicio"
 
 # ---------------------------------------------------------------------------------------
 # Gestión de certificados
@@ -249,12 +250,12 @@ def certificacion(ulid: str) -> str | Response:
 
     row = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
     if row is None:
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_ROUTE))
     certificacion_obj = row[0]
 
     row = database.session.execute(database.select(Certificado).filter_by(code=certificacion_obj.certificado)).first()
     if row is None:
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_ROUTE))
     certificado_obj = row[0]
 
     # Get course or master class information
@@ -263,7 +264,7 @@ def certificacion(ulid: str) -> str | Response:
 
     row = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion_obj.usuario)).first()
     if row is None:
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_ROUTE))
     usuario = row[0]
 
     template = Environment(loader=BaseLoader, autoescape=True).from_string(insert_style_in_html(certificado_obj))  # type: ignore[arg-type]
@@ -296,12 +297,12 @@ def certificate_serve_pdf(ulid: str) -> Response:
 
     row = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
     if row is None:
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_ROUTE))
     certificacion_obj = row[0]
 
     row = database.session.execute(database.select(Certificado).filter_by(code=certificacion_obj.certificado)).first()
     if row is None:
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_ROUTE))
     certificado_obj = row[0]
 
     # Get course or master class information
@@ -310,7 +311,7 @@ def certificate_serve_pdf(ulid: str) -> Response:
 
     row = database.session.execute(database.select(Usuario).filter_by(usuario=certificacion_obj.usuario)).first()
     if row is None:
-        return redirect(url_for("home.pagina_de_inicio"))
+        return redirect(url_for(HOME_ROUTE))
     usuario = row[0]
 
     rtemplate = Environment(loader=BaseLoader, autoescape=True).from_string(certificado_obj.html)  # type: ignore[arg-type]

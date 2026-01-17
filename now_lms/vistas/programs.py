@@ -78,6 +78,7 @@ from now_lms.themes import get_program_list_template, get_program_view_template
 
 # Constants
 PROGRAMS_ROUTE = "program.programas"
+ADMIN_PROGRAM_ENROLL_TEMPLATE = "learning/programas/admin_enroll.html"
 
 # ---------------------------------------------------------------------------------------
 # Interfaz de gestión de programas
@@ -593,7 +594,7 @@ def admin_program_enrollment(codigo: str) -> str | Response:
 
         if not usuario_existe:
             flash(f"El usuario '{student_username}' no existe en el sistema.", "error")
-            return render_template("learning/programas/admin_enroll.html", programa=programa, form=form)
+            return render_template(ADMIN_PROGRAM_ENROLL_TEMPLATE, programa=programa, form=form)
 
         # Check if student is already enrolled in program
         existing_enrollment = database.session.execute(
@@ -602,7 +603,7 @@ def admin_program_enrollment(codigo: str) -> str | Response:
 
         if existing_enrollment:
             flash(f"El estudiante '{student_username}' ya está inscrito en este programa.", "warning")
-            return render_template("learning/programas/admin_enroll.html", programa=programa, form=form)
+            return render_template(ADMIN_PROGRAM_ENROLL_TEMPLATE, programa=programa, form=form)
 
         try:
             # Get all courses in the program by querying ProgramaCurso
@@ -686,7 +687,7 @@ def admin_program_enrollment(codigo: str) -> str | Response:
             database.session.rollback()
             flash(f"Error al inscribir al estudiante en el programa: {str(e)}", "error")
 
-    return render_template("learning/programas/admin_enroll.html", programa=programa, form=form)
+    return render_template(ADMIN_PROGRAM_ENROLL_TEMPLATE, programa=programa, form=form)
 
 
 @program.route("/program/<codigo>/admin/enrollments")

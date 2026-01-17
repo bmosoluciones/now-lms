@@ -1043,16 +1043,16 @@ def marcar_recurso_completado(curso_id: str, resource_type: str, codigo: str) ->
                                 order="asc",
                             )
                         )
-                    else:
-                        # Redirect to next regular resource
-                        return redirect(
-                            url_for(
-                                "course.pagina_recurso",
-                                curso_id=indice.next_resource.curso_id,
-                                resource_type=indice.next_resource.resource_type,
-                                codigo=indice.next_resource.codigo,
-                            )
+
+                    # Redirect to next regular resource
+                    return redirect(
+                        url_for(
+                            "course.pagina_recurso",
+                            curso_id=indice.next_resource.curso_id,
+                            resource_type=indice.next_resource.resource_type,
+                            codigo=indice.next_resource.codigo,
                         )
+                    )
 
                 # If no next resource, stay on current page
                 return redirect(

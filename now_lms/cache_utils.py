@@ -34,6 +34,8 @@ from flask import Flask
 # ---------------------------------------------------------------------------------------
 from now_lms.logs import log
 
+CACHE_KEY_PREFIX = "now_lms:"
+
 
 def get_memory_cache_config() -> dict[str, object]:
     """
@@ -94,7 +96,7 @@ def get_memory_cache_config() -> dict[str, object]:
         "CACHE_TYPE": "FileSystemCache",
         "CACHE_DIR": cache_dir,
         "CACHE_DEFAULT_TIMEOUT": 300,
-        "CACHE_KEY_PREFIX": "now_lms:",
+        "CACHE_KEY_PREFIX": CACHE_KEY_PREFIX,
     }
 
 
@@ -120,7 +122,7 @@ def init_cache(app: Flask) -> None:
         cache_config = {
             "CACHE_TYPE": "RedisCache",
             "CACHE_REDIS_URL": environ.get("CACHE_REDIS_URL") or environ.get("REDIS_URL"),
-            "CACHE_KEY_PREFIX": "now_lms:",
+            "CACHE_KEY_PREFIX": CACHE_KEY_PREFIX,
             "CACHE_DEFAULT_TIMEOUT": 300,
         }
         log.trace("Using RedisCache service for storage")
@@ -130,7 +132,7 @@ def init_cache(app: Flask) -> None:
         cache_config = {
             "CACHE_TYPE": "MemcachedCache",
             "CACHE_MEMCACHED_SERVERS": environ.get("CACHE_MEMCACHED_SERVERS"),
-            "CACHE_KEY_PREFIX": "now_lms:",
+            "CACHE_KEY_PREFIX": CACHE_KEY_PREFIX,
             "CACHE_DEFAULT_TIMEOUT": 300,
         }
         log.trace("Using MemcachedCache service for storage")

@@ -26,6 +26,7 @@ from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Curso, Estudiante
 
 # Constants
 ADMIN_USERS_ROUTE = "admin_profile.usuarios"
+ADMIN_UNVERIFIED_USERS_ROUTE = "admin_profile.usuarios_sin_verificar"
 
 admin_profile = Blueprint("admin_profile", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
@@ -128,7 +129,7 @@ def eliminar_usuario(user_id: str) -> Response:
     """Elimina un usuario por su id y redirecciona a la vista dada."""
     database.session.execute(delete(Usuario).where(Usuario.id == user_id))
     database.session.commit()
-    cache.delete("view/" + url_for("admin_profile.usuarios"))
+    cache.delete("view/" + url_for(ADMIN_USERS_ROUTE))
     flash("Usuario eliminado correctamente.", "info")
     return redirect(url_for(request.args.get("ruta", default="home", type=str)))
 
@@ -180,12 +181,12 @@ def verificar_email_usuario(user_id: str) -> Response:
 
     # Check demo mode restrictions
     if demo_restriction_check("verify_user_email"):
-        return redirect(url_for("admin_profile.usuarios_sin_verificar"))
+        return redirect(url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
     row = database.session.execute(database.select(Usuario).filter(Usuario.id == user_id)).first()
     if row is None:
         flash("Usuario no encontrado.", "error")
-        return redirect(url_for("admin_profile.usuarios_sin_verificar"))
+        return redirect(url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
     perfil_usuario = row[0]
 
@@ -202,9 +203,9 @@ def verificar_email_usuario(user_id: str) -> Response:
         flash(f"Error al verificar el correo electrónico: {str(e)}", "error")
 
     # Clear cache
-    cache.delete("view/" + url_for("admin_profile.usuarios_sin_verificar"))
+    cache.delete("view/" + url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
-    return redirect(url_for("admin_profile.usuarios_sin_verificar"))
+    return redirect(url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
 
 @admin_profile.route("/admin/users/reject_unverified/<user_id>")
@@ -216,12 +217,12 @@ def rechazar_usuario_sin_verificar(user_id: str) -> Response:
 
     # Check demo mode restrictions
     if demo_restriction_check("reject_unverified_user"):
-        return redirect(url_for("admin_profile.usuarios_sin_verificar"))
+        return redirect(url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
     row = database.session.execute(database.select(Usuario).filter(Usuario.id == user_id)).first()
     if row is None:
         flash("Usuario no encontrado.", "error")
-        return redirect(url_for("admin_profile.usuarios_sin_verificar"))
+        return redirect(url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
     perfil_usuario = row[0]
 
@@ -237,9 +238,9 @@ def rechazar_usuario_sin_verificar(user_id: str) -> Response:
         flash(f"Error al rechazar el usuario: {str(e)}", "error")
 
     # Clear cache
-    cache.delete("view/" + url_for("admin_profile.usuarios_sin_verificar"))
+    cache.delete("view/" + url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
-    return redirect(url_for("admin_profile.usuarios_sin_verificar"))
+    return redirect(url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
 
 @admin_profile.route("/admin/user/change_type")
@@ -256,7 +257,7 @@ def cambiar_tipo_usario() -> Response:
     # Check demo mode restrictions for any user type changes by admin
     if demo_restriction_check("change_user_type"):
         if redirect_to == "list":
-            return redirect(url_for("admin_profile.usuarios"))
+            return redirect(url_for(ADMIN_USERS_ROUTE))
         return redirect(url_for("user_profile.usuario", id_usuario=user_id))
 
     cambia_tipo_de_usuario_por_id(
@@ -267,5 +268,5 @@ def cambiar_tipo_usario() -> Response:
 
     # Redirect back to the appropriate page based on request
     if redirect_to == "list":
-        return redirect(url_for("admin_profile.usuarios"))
+        return redirect(url_for(ADMIN_USERS_ROUTE))
     return redirect(url_for("user_profile.usuario", id_usuario=user_id))

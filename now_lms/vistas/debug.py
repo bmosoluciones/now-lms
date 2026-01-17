@@ -39,6 +39,8 @@ from flask_login import current_user
 from now_lms.logs import log
 
 debug_bp = Blueprint("debug", __name__, url_prefix="/debug")
+DEBUG_HELP_MESSAGE = "Set NOW_LMS_DEBUG_ENDPOINTS=1"
+DEBUG_DISABLED_MESSAGE = "Debug endpoints are not enabled"
 
 
 def is_debug_enabled() -> bool:
@@ -70,7 +72,7 @@ def debug_session() -> tuple[Response, int]:
     """
     if not is_debug_enabled():
         log.warning("Debug endpoint accessed but NOW_LMS_DEBUG_ENDPOINTS is not enabled")
-        return jsonify({"error": "Debug endpoints are not enabled", "help": "Set NOW_LMS_DEBUG_ENDPOINTS=1"}), 403
+        return jsonify({"error": DEBUG_DISABLED_MESSAGE, "help": DEBUG_HELP_MESSAGE}), 403
 
     # Get current process ID
     pid = os.getpid()
@@ -135,7 +137,7 @@ def debug_config() -> tuple[Response, int]:
     """
     if not is_debug_enabled():
         log.warning("Debug config endpoint accessed but NOW_LMS_DEBUG_ENDPOINTS is not enabled")
-        return jsonify({"error": "Debug endpoints are not enabled", "help": "Set NOW_LMS_DEBUG_ENDPOINTS=1"}), 403
+        return jsonify({"error": DEBUG_DISABLED_MESSAGE, "help": DEBUG_HELP_MESSAGE}), 403
 
     def mask_value(value: str | None) -> str:
         """Mask sensitive configuration values."""
@@ -218,7 +220,7 @@ def debug_redis() -> tuple[Response, int]:
     """
     if not is_debug_enabled():
         log.warning("Debug redis endpoint accessed but NOW_LMS_DEBUG_ENDPOINTS is not enabled")
-        return jsonify({"error": "Debug endpoints are not enabled", "help": "Set NOW_LMS_DEBUG_ENDPOINTS=1"}), 403
+        return jsonify({"error": DEBUG_DISABLED_MESSAGE, "help": DEBUG_HELP_MESSAGE}), 403
 
     redis_url = os.environ.get("SESSION_REDIS_URL") or os.environ.get("CACHE_REDIS_URL") or os.environ.get("REDIS_URL")
 
