@@ -9,6 +9,9 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Changed:
+ - Refactor course module (no changes to user experience).
+
 ## [1.1.8] - 2026-01-16
 
 ### Fixed:
