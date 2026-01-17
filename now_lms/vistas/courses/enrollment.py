@@ -15,7 +15,6 @@ from now_lms.db import (
     Certificacion,
     Curso,
     CursoRecurso,
-    CursoRecursoAvance,
     CursoRecursoDescargable,
     CursoSeccion,
     EstudianteCurso,
@@ -31,6 +30,7 @@ from now_lms.db import (
 from now_lms.forms import CouponApplicationForm, PagoForm
 from now_lms.misc import CURSO_NIVEL, TIPOS_RECURSOS
 from .base import VISTA_CURSOS, course, markdown2html
+from .helpers import _crear_indice_avance_curso
 from .coupons import _validate_coupon_for_enrollment
 
 
@@ -43,30 +43,6 @@ class EnrollmentPricing:
     final_price: float
     discount_amount: float
     validation_error: str | None = None
-
-
-def _crear_indice_avance_curso(course_code: str) -> None:
-    """Crea el índice de avance del curso."""
-    recursos = (
-        database.session.execute(
-            database.select(CursoRecurso).filter(CursoRecurso.curso == course_code).order_by(CursoRecurso.indice)
-        )
-        .scalars()
-        .all()
-    )
-    usuario = current_user.usuario
-
-    if recursos:
-        for recurso in recursos:
-            avance = CursoRecursoAvance(
-                usuario=usuario,
-                curso=course_code,
-                recurso=recurso.id,
-                completado=False,
-                requerido=recurso.requerido,
-            )
-            database.session.add(avance)
-            database.session.commit()
 
 
 def _calculate_enrollment_pricing(course_obj: Curso, coupon_code: str, user: Usuario) -> EnrollmentPricing:

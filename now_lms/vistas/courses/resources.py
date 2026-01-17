@@ -88,6 +88,7 @@ from now_lms.forms import (
     CursoRecursoArchivoImagen,
     CursoRecursoArchivoPDF,
     CursoRecursoArchivoText,
+    CursoRecursoExternalCode,
     CursoRecursoExternalLink,
     CursoRecursoMeet,
     CursoRecursoVideoYoutube,
@@ -109,6 +110,7 @@ from now_lms.vistas.courses.helpers import (
     get_course_library_path,
     ensure_course_library_directory,
     markdown2html,
+    _actualizar_avance_curso,
     _get_course_evaluations_and_attempts,
     _get_user_resource_progress,
 )
@@ -243,9 +245,6 @@ def marcar_recurso_completado(curso_id: str, resource_type: str, codigo: str) ->
                     database.session.add(avance)
                     database.session.commit()
                     flash("Recurso marcado como completado.", "success")
-                # actualizar avance del curso
-                from now_lms.vistas.courses.base import _actualizar_avance_curso
-
                 _actualizar_avance_curso(curso_id, current_user.usuario)
 
                 indice = crear_indice_recurso(codigo)
@@ -328,6 +327,95 @@ def pagina_recurso_alternativo(curso_id: str, codigo: str, order: str) -> str:
 @perfil_requerido("instructor")
 def nuevo_recurso(course_code: str, seccion: str) -> str:
     return render_template("learning/resources_new/nuevo_recurso.html", id_curso=course_code, id_seccion=seccion)
+
+
+@resources.route("/course/<course_code>/<seccion>/html/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_recurso_html(course_code: str, seccion: str) -> str | Response:
+    """Formulario para crear un recurso HTML externo."""
+    form = CursoRecursoExternalCode()
+    recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
+    nuevo_indice = int((recursos or 0) + 1)
+    if form.validate_on_submit() or request.method == "POST":
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        html_preformateado = False
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            html_preformateado = form.descripcion_html_preformateado.data or False
+
+        nuevo_recurso_ = CursoRecurso(
+            curso=course_code,
+            seccion=seccion,
+            tipo="html",
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            requerido=form.requerido.data,
+            external_code=form.html_externo.data,
+            indice=nuevo_indice,
+            creado_por=current_user.usuario,
+            descripcion_html_preformateado=html_preformateado,
+        )
+        try:
+            database.session.add(nuevo_recurso_)
+            database.session.commit()
+            flash(RECURSO_AGREGADO, "success")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+        except OperationalError:
+            flash(ERROR_AL_AGREGAR_CURSO, "warning")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+    return render_template(
+        "learning/resources_new/nuevo_recurso_html.html", id_curso=course_code, id_seccion=seccion, form=form
+    )
+
+
+@resources.route("/course/<course_code>/<seccion>/html/<resource_id>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def editar_recurso_html(course_code: str, seccion: str, resource_id: str) -> str | Response:
+    """Formulario para editar un recurso HTML externo."""
+    recurso = database.session.execute(
+        select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
+    ).scalar_one_or_none()
+    if not recurso or recurso.tipo != "html":
+        flash("Recurso no encontrado.", "warning")
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+
+    form = CursoRecursoExternalCode()
+
+    if form.validate_on_submit() or request.method == "POST":
+        recurso.nombre = form.nombre.data
+        recurso.descripcion = form.descripcion.data
+        recurso.requerido = form.requerido.data
+        recurso.external_code = form.html_externo.data
+        recurso.modificado_por = current_user.usuario
+
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
+        else:
+            recurso.descripcion_html_preformateado = False
+
+        try:
+            database.session.commit()
+            flash("Recurso actualizado correctamente.", "success")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+        except OperationalError:
+            flash("Hubo un error al actualizar el recurso.", "warning")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+
+    form.nombre.data = recurso.nombre
+    form.descripcion.data = recurso.descripcion
+    form.requerido.data = recurso.requerido
+    form.html_externo.data = recurso.external_code
+    form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
+
+    return render_template(
+        "learning/resources_new/editar_recurso_html.html",
+        id_curso=course_code,
+        id_seccion=seccion,
+        recurso=recurso,
+        form=form,
+    )
 
 
 @resources.route("/course/<course_code>/<seccion>/youtube/new", methods=["GET", "POST"])

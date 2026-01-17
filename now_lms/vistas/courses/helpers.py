@@ -19,6 +19,7 @@ from __future__ import annotations
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
+from datetime import datetime, timezone
 from os import makedirs, path
 from os.path import splitext
 import re
@@ -28,22 +29,31 @@ from typing import Any, Sequence
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 from bleach import clean, linkify
+from flask import flash
+from flask_login import current_user
 from markdown import markdown
+from sqlalchemy import func
 
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
 from now_lms.config import DIRECTORIO_ARCHIVOS_PUBLICOS
 from now_lms.db import (
+    Certificacion,
     Configuracion,
+    Curso,
+    CursoRecurso,
     CursoRecursoAvance,
     CursoSeccion,
+    CursoUsuarioAvance,
     Evaluation,
     EvaluationAttempt,
     database,
     select,
 )
 from now_lms.misc import HTML_TAGS
+from now_lms.logs import log
+from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
 from .data import SAFE_FILE_EXTENSIONS, DANGEROUS_FILE_EXTENSIONS
 
 
@@ -160,3 +170,92 @@ def _get_user_resource_progress(curso_id: str, usuario: str | None = None) -> di
     )
 
     return {p.recurso: {"completado": p.completado} for p in progress_data}
+
+
+def _crear_indice_avance_curso(course_code: str) -> None:
+    """Crea el índice de avance del curso para el usuario actual."""
+    recursos = (
+        database.session.execute(
+            database.select(CursoRecurso).filter(CursoRecurso.curso == course_code).order_by(CursoRecurso.indice)
+        )
+        .scalars()
+        .all()
+    )
+    usuario = current_user.usuario
+
+    if recursos:
+        for recurso in recursos:
+            avance = CursoRecursoAvance(
+                usuario=usuario,
+                curso=course_code,
+                recurso=recurso.id,
+                completado=False,
+                requerido=recurso.requerido,
+            )
+            database.session.add(avance)
+            database.session.commit()
+
+
+def _emitir_certificado(curso_id: str, usuario: str, plantilla: str) -> None:
+    """Emite un certificado de finalización para un curso."""
+    certificado = Certificacion(
+        curso=curso_id,
+        usuario=usuario,
+        certificado=plantilla,
+    )
+    certificado.creado = datetime.now(timezone.utc).date()
+    certificado.creado_por = current_user.usuario if current_user.is_authenticated else "system"
+    database.session.add(certificado)
+    database.session.commit()
+    flash("Certificado de finalización emitido.", "success")
+
+
+def _actualizar_avance_curso(curso_id: str, usuario: str) -> None:
+    """Actualiza porcentaje de avance y emite certificado si corresponde."""
+    _avance = (
+        database.session.execute(
+            select(CursoUsuarioAvance).filter(CursoUsuarioAvance.curso == curso_id, CursoUsuarioAvance.usuario == usuario)
+        )
+        .scalars()
+        .first()
+    )
+
+    if not _avance:
+        _avance = CursoUsuarioAvance(
+            curso=curso_id,
+            usuario=usuario,
+            recursos_requeridos=0,
+            recursos_completados=0,
+        )
+        database.session.add(_avance)
+        database.session.commit()
+
+    _recursos_requeridos = database.session.execute(
+        select(func.count(CursoRecurso.id)).filter(CursoRecurso.curso == curso_id, CursoRecurso.requerido == "required")
+    ).scalar()
+
+    _recursos_completados = database.session.execute(
+        select(func.count(CursoRecursoAvance.id)).filter(
+            CursoRecursoAvance.curso == curso_id,
+            CursoRecursoAvance.usuario == usuario,
+            CursoRecursoAvance.completado.is_(True),
+            CursoRecursoAvance.requerido == "required",
+        )
+    ).scalar()
+    log.warning("Required resources: %s, Completed: %s", _recursos_requeridos, _recursos_completados)
+
+    _avance.recursos_requeridos = _recursos_requeridos or 0
+    _avance.recursos_completados = _recursos_completados or 0
+    _avance.avance = ((_recursos_completados or 0) / (_recursos_requeridos or 1)) * 100
+    if _avance.avance >= 100:
+        _avance.completado = True
+        flash("Curso completado", "success")
+        _curso = database.session.execute(select(Curso).filter(Curso.codigo == curso_id)).scalars().first()
+        log.warning(_curso)
+        if _curso and _curso.certificado:
+            can_receive, reason = can_user_receive_certificate(curso_id, usuario)
+            if can_receive:
+                _emitir_certificado(curso_id, usuario, _curso.plantilla_certificado)
+            else:
+                log.info(f"Certificate not issued for user {usuario} in course {curso_id}: {reason}")
+    database.session.commit()

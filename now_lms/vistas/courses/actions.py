@@ -102,6 +102,17 @@ def eliminar_seccion(curso_id: str, id_: str) -> Response:
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=curso_id))
 
 
+@course.route("/course/<course_code>/delete_logo")
+@login_required
+@perfil_requerido("instructor")
+def elimina_logo(course_code: str) -> Response:
+    """Elimina el logotipo personalizado de un curso."""
+    from now_lms.db.tools import elimina_logo_perzonalizado_curso
+
+    elimina_logo_perzonalizado_curso(course_code=course_code)
+    return redirect(url_for("course.editar_curso", course_code=course_code))
+
+
 @course.route("/course/change_curse_status")
 @login_required
 @perfil_requerido("instructor")
