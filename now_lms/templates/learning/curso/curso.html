@@ -1,342 +1,312 @@
 {% set current_theme = current_theme() %}
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
-    {% set config = config() %}
+{% set config = config() %}
 
-    <head>
-        {{ current_theme.headertags() }}
-        <title>{{ curso.nombre | title }}</title>
+<head>
+    {{ current_theme.headertags() }}
+    <title>{{ curso.nombre | title }}</title>
 
-        {{ current_theme.local_style() }}
+    {{ current_theme.local_style() }}
 
-        <!-- Course Description Collapse Styles -->
-        <style>
-            .course-description-content {
-                max-height: 150px;
-                overflow: hidden;
-                position: relative;
-                transition: max-height 0.3s ease;
-            }
-            .course-description-content.expanded {
-                max-height: none;
-            }
-            .course-description-content:not(.expanded)::after {
-                content: "";
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 60px;
-                background: linear-gradient(to bottom, transparent, white);
-            }
-        </style>
-    </head>
+    <!-- Course Description Collapse Styles -->
+    <style>
+        .course-description-content {
+            max-height: 150px;
+            overflow: hidden;
+            position: relative;
+            transition: max-height 0.3s ease;
+        }
 
-    <body>
-        {{ current_theme.navbar() }}
+        .course-description-content.expanded {
+            max-height: none;
+        }
 
-        <main>
-            {{ current_theme.notify() }}
-            <br />
+        .course-description-content:not(.expanded)::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(to bottom, transparent, white);
+        }
 
-            <div class="container">
-                <div class="d-flex justify-content-between border-bottom">
-                    <h4>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item">
-                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
-                                        >{{ _('Inicio') }}</a
-                                    >
-                                </li>
-                                <li class="breadcrumb-item">{{ curso.nombre }}</li>
-                            </ol>
-                        </nav>
-                    </h4>
-                </div>
+    </style>
+</head>
 
-                <div class="row g-4">
-                    <div class="col-lg-4">
-                        <!-- Course Image -->
-                        <div class="card shadow-sm">
-                            {% if curso.portada and course_logo(curso.codigo) %}
-                            <img
-                                src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/' + course_logo(curso.codigo) ) }}"
-                                class="card-img-top"
-                                style="height: 225px; object-fit: cover"
-                                alt="{{ _('Portada del Curso') }}"
-                            />
-                            {% else %}
-                            <div
-                                class="card-img-top d-flex align-items-center justify-content-center bg-secondary text-white"
-                                style="height: 225px"
-                            >
-                                <div class="text-center">
-                                    <i class="bi bi-book-fill fs-1 mb-2"></i>
-                                    <p class="mb-0 fw-bold">{{ curso.nombre }}</p>
+<body>
+    {{ current_theme.navbar() }}
+
+    <main>
+        {{ current_theme.notify() }}
+        <br />
+
+        <div class="container">
+            <div class="d-flex justify-content-between border-bottom">
+                <h4>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a class="text-reset text-decoration-none link-dark"
+                                    href="{{ url_for('home.panel') }}">{{ _('Inicio') }}</a>
+                            </li>
+                            <li class="breadcrumb-item">{{ curso.nombre }}</li>
+                        </ol>
+                    </nav>
+                </h4>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <!-- Course Image -->
+                    <div class="card shadow-sm">
+                        {% if curso.portada and course_logo(curso.codigo) %}
+                        <img src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/' + course_logo(curso.codigo) ) }}"
+                            class="card-img-top" style="height: 225px; object-fit: cover"
+                            alt="{{ _('Portada del Curso') }}" />
+                        {% else %}
+                        <div class="card-img-top d-flex align-items-center justify-content-center bg-secondary text-white"
+                            style="height: 225px">
+                            <div class="text-center">
+                                <i class="bi bi-book-fill fs-1 mb-2"></i>
+                                <p class="mb-0 fw-bold">{{ curso.nombre }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="card-body">
+                            <h2 class="card-title h4 mb-3">{{ curso.nombre }}</h2>
+
+                            {% if editable %}
+                            <div class="d-grid mb-3">
+                                <a href="{{ url_for('course.administrar_curso', course_code=curso.codigo) }}"
+                                    class="btn btn-outline-primary"><i class="bi bi-pencil-square"
+                                        aria-hidden="true"></i> {{ _('Administrar Curso') }}</a>
+                            </div>
+                            {% endif %}
+
+                            <!-- Course Description -->
+                            <div class="mb-3 course-description-wrapper">
+                                {% if curso.descripcion %} {% set description_text = curso.descripcion | striptags %} {% if
+                                    description_text | length > 200 %}
+                                <!-- Collapsible description for long text -->
+                                <div class="course-description-container">
+                                    <div class="course-description-content" id="courseDescContent">
+                                        {{ markdown2html(curso.descripcion) | safe }}
+                                    </div>
+                                    <button class="btn btn-link btn-sm p-0 mt-2 text-decoration-none" type="button"
+                                        id="courseDescToggle" onclick="toggleCourseDescription()">
+                                        <i class="bi bi-chevron-down me-1" id="courseDescIcon"></i>
+                                        <span id="courseDescBtnText">{{ _('Ver más') }}</span>
+                                    </button>
+                                </div>
+                                {% else %}
+                                <!-- Short description, show in full -->
+                                {{ markdown2html(curso.descripcion) | safe }} {% endif %} {% endif %}
+                            </div>
+
+                            <!-- Course Information -->
+                            <div class="course-info">
+                                <ul class="list-unstyled mb-3">
+                                    <li class="mb-2">
+                                        {% if curso.fecha_inicio and curso.fecha_fin %}
+                                        <i class="bi bi-calendar-week text-primary me-2" aria-hidden="true"></i>
+                                        <strong>{{ _('Fechas:') }}</strong> {{ curso.fecha_inicio }} - {{ curso.fecha_fin
+                                            }} {% else %}
+                                        <i class="bi bi-calendar text-primary me-2" aria-hidden="true"></i>
+                                        <strong>{{ _('Modalidad:') }}</strong> {{ _('A su propio ritmo') }} {% endif %}
+                                    </li>
+
+                                    {% if curso.precio %}
+                                    <li class="mb-2">
+                                        <i class="bi bi-cash-coin text-success me-2" aria-hidden="true"></i>
+                                        <strong>{{ _('Precio:') }}</strong>
+                                        <span class="fw-bold text-success">${{ curso.precio | float }}
+                                            {{ config.moneda }}</span>
+                                    </li>
+                                    {% else %}
+                                    <li class="mb-2">
+                                        <i class="bi bi-gift text-success me-2" aria-hidden="true"></i>
+                                        <strong class="text-success">{{ _('Curso Gratuito') }}</strong>
+                                    </li>
+                                    {% endif %} {% if curso.certificado %}
+                                    <li class="mb-2">
+                                        <i class="bi bi-award text-warning me-2" aria-hidden="true"></i>
+                                        <strong>{{ _('Certificación:') }}</strong> {{ _('Incluida') }}
+                                    </li>
+                                    {% endif %} {% if curso.capacidad %}
+                                    <li class="mb-2">
+                                        <i class="bi bi-people text-info me-2" aria-hidden="true"></i>
+                                        <strong>{{ _('Cupo:') }}</strong> {{ _('Limitado') }}
+                                    </li>
+                                    {% endif %}
+
+                                    <li class="mb-2">
+                                        <i class="bi bi-bar-chart text-secondary me-2" aria-hidden="true"></i>
+                                        <strong>{{ _('Nivel:') }}</strong> {{ nivel[curso.nivel] | safe }}
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Downloadable Resources -->
+                            {% if descargas %}
+                            <div class="border-top pt-3 mb-3">
+                                <h6 class="fw-bold mb-2">
+                                    <i class="bi bi-download text-primary me-2"></i>{{ _('Recursos Descargables') }}
+                                </h6>
+                                <div class="list-group list-group-flush">
+                                    {% for item in descargas %}
+                                    <a href="{{ url_for('resource.vista_recurso', resource_code=item.codigo) }}"
+                                        class="list-group-item list-group-item-action d-flex align-items-center p-2">
+                                        <span class="me-2">{{ tipo[item.tipo] | safe }}</span>
+                                        <span class="flex-grow-1">{{ item.nombre }}</span>
+                                        <i class="bi bi-arrow-right-circle text-primary"></i>
+                                    </a>
+                                    {% endfor %}
                                 </div>
                             </div>
                             {% endif %}
 
-                            <div class="card-body">
-                                <h2 class="card-title h4 mb-3">{{ curso.nombre }}</h2>
-
-                                {% if editable %}
-                                <div class="d-grid mb-3">
-                                    <a
-                                        href="{{ url_for('course.administrar_curso', course_code=curso.codigo) }}"
-                                        class="btn btn-outline-primary"
-                                        ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _('Administrar Curso') }}</a
-                                    >
-                                </div>
-                                {% endif %}
-
-                                <!-- Course Description -->
-                                <div class="mb-3 course-description-wrapper">
-                                    {% if curso.descripcion %} {% set description_text = curso.descripcion | striptags %} {% if
-                                    description_text | length > 200 %}
-                                    <!-- Collapsible description for long text -->
-                                    <div class="course-description-container">
-                                        <div class="course-description-content" id="courseDescContent">
-                                            {{ markdown2html(curso.descripcion) | safe }}
-                                        </div>
-                                        <button
-                                            class="btn btn-link btn-sm p-0 mt-2 text-decoration-none"
-                                            type="button"
-                                            id="courseDescToggle"
-                                            onclick="toggleCourseDescription()"
-                                        >
-                                            <i class="bi bi-chevron-down me-1" id="courseDescIcon"></i>
-                                            <span id="courseDescBtnText">{{ _('Ver más') }}</span>
-                                        </button>
-                                    </div>
-                                    {% else %}
-                                    <!-- Short description, show in full -->
-                                    {{ markdown2html(curso.descripcion) | safe }} {% endif %} {% endif %}
-                                </div>
-
-                                <!-- Course Information -->
-                                <div class="course-info">
-                                    <ul class="list-unstyled mb-3">
-                                        <li class="mb-2">
-                                            {% if curso.fecha_inicio and curso.fecha_fin %}
-                                            <i class="bi bi-calendar-week text-primary me-2" aria-hidden="true"></i>
-                                            <strong>{{ _('Fechas:') }}</strong> {{ curso.fecha_inicio }} - {{ curso.fecha_fin
-                                            }} {% else %}
-                                            <i class="bi bi-calendar text-primary me-2" aria-hidden="true"></i>
-                                            <strong>{{ _('Modalidad:') }}</strong> {{ _('A su propio ritmo') }} {% endif %}
-                                        </li>
-
-                                        {% if curso.precio %}
-                                        <li class="mb-2">
-                                            <i class="bi bi-cash-coin text-success me-2" aria-hidden="true"></i>
-                                            <strong>{{ _('Precio:') }}</strong>
-                                            <span class="fw-bold text-success"
-                                                >${{ curso.precio | float }} {{ config.moneda }}</span
-                                            >
-                                        </li>
-                                        {% else %}
-                                        <li class="mb-2">
-                                            <i class="bi bi-gift text-success me-2" aria-hidden="true"></i>
-                                            <strong class="text-success">{{ _('Curso Gratuito') }}</strong>
-                                        </li>
-                                        {% endif %} {% if curso.certificado %}
-                                        <li class="mb-2">
-                                            <i class="bi bi-award text-warning me-2" aria-hidden="true"></i>
-                                            <strong>{{ _('Certificación:') }}</strong> {{ _('Incluida') }}
-                                        </li>
-                                        {% endif %} {% if curso.capacidad %}
-                                        <li class="mb-2">
-                                            <i class="bi bi-people text-info me-2" aria-hidden="true"></i>
-                                            <strong>{{ _('Cupo:') }}</strong> {{ _('Limitado') }}
-                                        </li>
-                                        {% endif %}
-
-                                        <li class="mb-2">
-                                            <i class="bi bi-bar-chart text-secondary me-2" aria-hidden="true"></i>
-                                            <strong>{{ _('Nivel:') }}</strong> {{ nivel[curso.nivel] | safe }}
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <!-- Downloadable Resources -->
-                                {% if descargas %}
-                                <div class="border-top pt-3 mb-3">
-                                    <h6 class="fw-bold mb-2">
-                                        <i class="bi bi-download text-primary me-2"></i>{{ _('Recursos Descargables') }}
-                                    </h6>
-                                    <div class="list-group list-group-flush">
-                                        {% for item in descargas %}
-                                        <a
-                                            href="{{ url_for('resource.vista_recurso', resource_code=item.codigo) }}"
-                                            class="list-group-item list-group-item-action d-flex align-items-center p-2"
-                                        >
-                                            <span class="me-2">{{ tipo[item.tipo] | safe }}</span>
-                                            <span class="flex-grow-1">{{ item.nombre }}</span>
-                                            <i class="bi bi-arrow-right-circle text-primary"></i>
-                                        </a>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                                {% endif %}
-
-                                <!-- Action Buttons -->
-                                {% if current_user.is_authenticated %} {% if current_user.tipo == "student" %} {% if
+                            <!-- Action Buttons -->
+                            {% if current_user.is_authenticated %} {% if current_user.tipo == "student" %} {% if
                                 estudiante_asignado(curso.codigo) %}
-                                <div class="alert alert-success text-center mb-3" role="alert">
-                                    <i class="bi bi-check-circle-fill me-2"></i>
-                                    {{ _('Ya está inscrito en este curso') }}
-                                </div>
-                                <div class="d-grid">
-                                    <a
-                                        href="{{ url_for('course.tomar_curso', course_code=curso.codigo) }}"
-                                        class="btn btn-success btn-lg"
-                                    >
-                                        <i class="bi bi-play-fill me-2" aria-hidden="true"></i>{{ _('Continuar Curso') }}
-                                    </a>
-                                </div>
-                                {% else %}
-                                <div class="d-grid">
-                                    <a
-                                        href="{{ url_for('course.course_enroll', course_code=curso.codigo) }}"
-                                        class="btn btn-primary btn-lg mb-2"
-                                    >
-                                        <i class="bi bi-backpack-fill me-2" aria-hidden="true"></i>{{ _('Inscribirse al Curso')
-                                        }}
-                                    </a>
-                                </div>
-                                {% endif %} {% endif %} {% else %}
-                                <div class="text-center">
-                                    <p class="text-muted mb-3">{{ _('Para acceder al curso necesitas una cuenta') }}</p>
-                                    <div class="d-grid gap-2">
-                                        <a href="{{ url_for('user.crear_cuenta')}}" class="btn btn-primary btn-lg">
-                                            <i class="bi bi-person-plus-fill me-2"></i>{{ _('Crear Cuenta Gratis') }}
-                                        </a>
-                                        <a href="{{ url_for('user.inicio_sesion')}}" class="btn btn-outline-secondary">
-                                            <i class="bi bi-box-arrow-in-right me-2"></i>{{ _('Iniciar Sesión') }}
-                                        </a>
-                                    </div>
-                                </div>
-                                {% endif %}
+                            <div class="alert alert-success text-center mb-3" role="alert">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                {{ _('Ya está inscrito en este curso') }}
                             </div>
+                            <div class="d-grid">
+                                <a href="{{ url_for('course.tomar_curso', course_code=curso.codigo) }}"
+                                    class="btn btn-success btn-lg">
+                                    <i class="bi bi-play-fill me-2" aria-hidden="true"></i>{{ _('Continuar Curso') }}
+                                </a>
+                            </div>
+                            {% else %}
+                            <div class="d-grid">
+                                <a href="{{ url_for('course.course_enroll', course_code=curso.codigo) }}"
+                                    class="btn btn-primary btn-lg mb-2">
+                                    <i class="bi bi-backpack-fill me-2" aria-hidden="true"></i>{{ _('Inscribirse al Curso')
+                                        }}
+                                </a>
+                            </div>
+                            {% endif %} {% endif %} {% else %}
+                            <div class="text-center">
+                                <p class="text-muted mb-3">{{ _('Para acceder al curso necesitas una cuenta') }}</p>
+                                <div class="d-grid gap-2">
+                                    <a href="{{ url_for('user.crear_cuenta')}}" class="btn btn-primary btn-lg">
+                                        <i class="bi bi-person-plus-fill me-2"></i>{{ _('Crear Cuenta Gratis') }}
+                                    </a>
+                                    <a href="{{ url_for('user.inicio_sesion')}}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-box-arrow-in-right me-2"></i>{{ _('Iniciar Sesión') }}
+                                    </a>
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
-                    <div class="col-lg-8">
-                        <div class="card shadow-sm">
-                            <div class="card-header bg-light">
-                                <h3 class="card-title mb-0">
-                                    <i class="bi bi-list-ul me-2"></i>{{ _('Contenido del curso') }}
-                                </h3>
-                            </div>
-                            <div class="card-body">
-                                {% if secciones %}
-                                <div class="accordion" id="accordionSeccionesCurso">
-                                    {% for seccion in secciones %}
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="heading{{ seccion.id }}">
-                                            <button
-                                                class="accordion-button collapsed"
-                                                type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target="#collapse{{ seccion.id }}"
-                                                aria-expanded="false"
-                                                aria-controls="collapse{{ seccion.id }}"
-                                            >
-                                                <i class="bi bi-folder2-open me-2"></i>
-                                                {{ seccion.nombre }}
-                                            </button>
-                                        </h2>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-light">
+                            <h3 class="card-title mb-0">
+                                <i class="bi bi-list-ul me-2"></i>{{ _('Contenido del curso') }}
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            {% if secciones %}
+                            <div class="accordion" id="accordionSeccionesCurso">
+                                {% for seccion in secciones %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading{{ seccion.id }}">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#collapse{{ seccion.id }}"
+                                            aria-expanded="false" aria-controls="collapse{{ seccion.id }}">
+                                            <i class="bi bi-folder2-open me-2"></i>
+                                            {{ seccion.nombre }}
+                                        </button>
+                                    </h2>
 
-                                        <div
-                                            id="collapse{{ seccion.id }}"
-                                            class="accordion-collapse collapse"
-                                            aria-labelledby="heading{{ seccion.id }}"
-                                            data-bs-parent="#accordionSeccionesCurso"
-                                        >
-                                            <div class="accordion-body">
-                                                {% if seccion.descripcion %}
-                                                <p class="text-muted mb-3">{{ seccion.descripcion }}</p>
-                                                {% endif %}
-                                                <div class="list-group list-group-flush">
-                                                    {% for recurso in recursos %} {% if recurso.seccion == seccion.id %}
-                                                    <div
-                                                        class="list-group-item d-flex justify-content-between align-items-center"
-                                                    >
-                                                        {% if recurso.publico == True %}
-                                                        <a
-                                                            class="text-decoration-none d-flex align-items-center flex-grow-1"
-                                                            href="{{ url_for('course.pagina_recurso', curso_id=recurso.curso, codigo=recurso.id, resource_type=recurso.tipo) }}"
-                                                        >
-                                                            <i
-                                                                class="{{ iconos_recursos[recurso.tipo] }} me-2 text-primary"
-                                                                aria-hidden="true"
-                                                            ></i>
-                                                            <span class="fw-medium">{{ recurso.nombre }}</span>
-                                                        </a>
-                                                        <span class="badge bg-success">
-                                                            <i class="bi bi-eye-fill me-1"></i>{{ _('Vista Previa') }}
-                                                        </span>
-                                                        {% else %}
-                                                        <div class="d-flex align-items-center flex-grow-1">
-                                                            <i
-                                                                class="{{ iconos_recursos[recurso.tipo] }} me-2 text-muted"
-                                                                aria-hidden="true"
-                                                            ></i>
-                                                            <span class="fw-medium text-muted">{{ recurso.nombre }}</span>
-                                                        </div>
-                                                        <span class="badge bg-secondary">
-                                                            <i class="bi bi-lock-fill me-1"></i>{{ _('Restringido') }}
-                                                        </span>
-                                                        {% endif %}
+                                    <div id="collapse{{ seccion.id }}" class="accordion-collapse collapse"
+                                        aria-labelledby="heading{{ seccion.id }}"
+                                        data-bs-parent="#accordionSeccionesCurso">
+                                        <div class="accordion-body">
+                                            {% if seccion.descripcion %}
+                                            <p class="text-muted mb-3">{{ seccion.descripcion }}</p>
+                                            {% endif %}
+                                            <div class="list-group list-group-flush">
+                                                {% for recurso in recursos %} {% if recurso.seccion == seccion.id %}
+                                                <div
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    {% if recurso.publico == True %}
+                                                    <a class="text-decoration-none d-flex align-items-center flex-grow-1"
+                                                        href="{{ url_for('resources.pagina_recurso', curso_id=recurso.curso, codigo=recurso.id, resource_type=recurso.tipo) }}">
+                                                        <i class="{{ iconos_recursos[recurso.tipo] }} me-2 text-primary"
+                                                            aria-hidden="true"></i>
+                                                        <span class="fw-medium">{{ recurso.nombre }}</span>
+                                                    </a>
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-eye-fill me-1"></i>{{ _('Vista Previa') }}
+                                                    </span>
+                                                    {% else %}
+                                                    <div class="d-flex align-items-center flex-grow-1">
+                                                        <i class="{{ iconos_recursos[recurso.tipo] }} me-2 text-muted"
+                                                            aria-hidden="true"></i>
+                                                        <span class="fw-medium text-muted">{{ recurso.nombre }}</span>
                                                     </div>
-                                                    {% endif %} {% endfor %}
+                                                    <span class="badge bg-secondary">
+                                                        <i class="bi bi-lock-fill me-1"></i>{{ _('Restringido') }}
+                                                    </span>
+                                                    {% endif %}
                                                 </div>
+                                                {% endif %} {% endfor %}
                                             </div>
                                         </div>
                                     </div>
-                                    {% endfor %}
                                 </div>
-                                {% else %}
-                                <div class="text-center py-5">
-                                    <i class="bi bi-inbox text-muted" style="font-size: 3rem"></i>
-                                    <h4 class="text-muted mt-3">{{ _('Sin contenido disponible') }}</h4>
-                                    <p class="text-muted">
-                                        {{ _('Este curso actualmente no cuenta con secciones disponibles.') }}
-                                    </p>
-                                </div>
-                                {% endif %}
+                                {% endfor %}
                             </div>
+                            {% else %}
+                            <div class="text-center py-5">
+                                <i class="bi bi-inbox text-muted" style="font-size: 3rem"></i>
+                                <h4 class="text-muted mt-3">{{ _('Sin contenido disponible') }}</h4>
+                                <p class="text-muted">
+                                    {{ _('Este curso actualmente no cuenta con secciones disponibles.') }}
+                                </p>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
+    </main>
 
-        <!-- Course Description Toggle Script -->
-        <script>
-            function toggleCourseDescription() {
-                const content = document.getElementById("courseDescContent")
-                const icon = document.getElementById("courseDescIcon")
-                const btnText = document.getElementById("courseDescBtnText")
+    <!-- Course Description Toggle Script -->
+    <script>
+        function toggleCourseDescription() {
+            const content = document.getElementById("courseDescContent")
+            const icon = document.getElementById("courseDescIcon")
+            const btnText = document.getElementById("courseDescBtnText")
 
-                // Check if elements exist
-                if (!content || !icon || !btnText) {
-                    console.error("Course description elements not found")
-                    return
-                }
-
-                if (content.classList.contains("expanded")) {
-                    content.classList.remove("expanded")
-                    icon.classList.remove("bi-chevron-up")
-                    icon.classList.add("bi-chevron-down")
-                    btnText.textContent = '{{ _("Ver más") }}'
-                } else {
-                    content.classList.add("expanded")
-                    icon.classList.remove("bi-chevron-down")
-                    icon.classList.add("bi-chevron-up")
-                    btnText.textContent = '{{ _("Ver menos") }}'
-                }
+            // Check if elements exist
+            if (!content || !icon || !btnText) {
+                console.error("Course description elements not found")
+                return
             }
-        </script>
-    </body>
+
+            if (content.classList.contains("expanded")) {
+                content.classList.remove("expanded")
+                icon.classList.remove("bi-chevron-up")
+                icon.classList.add("bi-chevron-down")
+                btnText.textContent = '{{ _("Ver más") }}'
+            } else {
+                content.classList.add("expanded")
+                icon.classList.remove("bi-chevron-down")
+                icon.classList.add("bi-chevron-up")
+                btnText.textContent = '{{ _("Ver menos") }}'
+            }
+        }
+    </script>
+</body>
+
 </html>
