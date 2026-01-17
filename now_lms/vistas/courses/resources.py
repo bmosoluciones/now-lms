@@ -23,11 +23,17 @@ circulares.
 
 from __future__ import annotations
 
+# ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
 from datetime import datetime, timedelta, timezone
 from os import listdir, path, remove, stat
 from os.path import splitext
 from typing import Any, Sequence
 
+# ---------------------------------------------------------------------------------------
+# Third-party libraries
+# ---------------------------------------------------------------------------------------
 from flask import (
     Blueprint,
     abort,
@@ -46,6 +52,9 @@ from sqlalchemy.exc import OperationalError
 from ulid import ULID
 from werkzeug.wrappers import Response
 
+# ---------------------------------------------------------------------------------------
+# Local resources
+# ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
 from now_lms.calendar_utils import update_meet_resource_events
 from now_lms.config import DIRECTORIO_PLANTILLAS, audio, files, images
