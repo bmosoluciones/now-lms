@@ -5,273 +5,262 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
-    <head>
-        {{ current_theme.headertags() }}
-        <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
 
-        {{ current_theme.local_style() }}
-        <style>
+<head>
+    {{ current_theme.headertags() }}
+    <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
+
+    {{ current_theme.local_style() }}
+    <style>
+        .events_area {
+            padding: 130px 0 100px;
+        }
+
+        @media (max-width: 991px) {
             .events_area {
-                padding: 130px 0 100px;
+                padding: 70px 0;
             }
+        }
 
-            @media (max-width: 991px) {
-                .events_area {
-                    padding: 70px 0;
-                }
-            }
+        .events_area .event-link {
+            color: #fdc632;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
 
-            .events_area .event-link {
-                color: #fdc632;
-                font-size: 13px;
-                text-transform: uppercase;
-            }
+        .events_area .event-link img {
+            margin-left: 5px;
+            display: inline-block;
+        }
 
-            .events_area .event-link img {
-                margin-left: 5px;
-                display: inline-block;
-            }
+        .single_event {
+            margin-bottom: 30px;
+        }
 
-            .single_event {
-                margin-bottom: 30px;
-            }
+        .single_event .event_thumb {
+            overflow: hidden;
+        }
 
-            .single_event .event_thumb {
-                overflow: hidden;
-            }
+        .single_event .event_thumb img {
+            -webkit-transition: all 0.3s ease 0s;
+            -moz-transition: all 0.3s ease 0s;
+            -o-transition: all 0.3s ease 0s;
+            transition: all 0.3s ease 0s;
+        }
 
-            .single_event .event_thumb img {
-                -webkit-transition: all 0.3s ease 0s;
-                -moz-transition: all 0.3s ease 0s;
-                -o-transition: all 0.3s ease 0s;
-                transition: all 0.3s ease 0s;
-            }
+        .single_event .event_details {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 275px;
+            padding: 30px 25px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #ffffff;
+            border-radius: 8px;
+        }
 
-            .single_event .event_details {
-                position: absolute;
-                top: 0px;
-                right: 0px;
-                width: 275px;
-                padding: 30px 25px;
-                background: rgba(0, 0, 0, 0.7);
-                color: #ffffff;
-                border-radius: 8px;
-            }
+        .single_event .event_details .date {
+            color: #ffffff;
+            padding-right: 15px;
+            border-right: 2px solid #fff;
+            font-family: "Rubik", sans-serif;
+            font-size: 14px;
+        }
 
-            .single_event .event_details .date {
-                color: #ffffff;
-                padding-right: 15px;
-                border-right: 2px solid #fff;
-                font-family: "Rubik", sans-serif;
-                font-size: 14px;
-            }
+        .single_event .event_details .date span {
+            display: block;
+            color: #fdc632;
+            font-size: 35px;
+            font-weight: 500;
+        }
 
-            .single_event .event_details .date span {
-                display: block;
-                color: #fdc632;
-                font-size: 35px;
-                font-weight: 500;
-            }
+        .single_event .event_details .time-location {
+            padding-left: 15px;
+            font-size: 14px;
+        }
 
-            .single_event .event_details .time-location {
-                padding-left: 15px;
-                font-size: 14px;
-            }
+        .single_event .event_details .time-location p {
+            margin-bottom: 0px;
+            color: #ffffff;
+        }
 
-            .single_event .event_details .time-location p {
-                margin-bottom: 0px;
-                color: #ffffff;
-            }
+        .single_event .event_details .time-location p span {
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 500;
+        }
 
-            .single_event .event_details .time-location p span {
-                color: #ffffff;
-                font-size: 13px;
-                font-weight: 500;
-            }
+        .single_event:hover img {
+            transform: scale(1.1);
+        }
 
-            .single_event:hover img {
-                transform: scale(1.1);
-            }
+        .single_event:hover h4 a {
+            color: #fdc632;
+        }
 
-            .single_event:hover h4 a {
-                color: #fdc632;
-            }
-        </style>
-    </head>
+    </style>
+</head>
 
-    <body>
-        {{ current_theme.navbar() }}
+<body>
+    {{ current_theme.navbar() }}
 
-        <main>
-            {{ current_theme.notify() }}
+    <main>
+        {{ current_theme.notify() }}
 
-            <div class="container px-0 py-3" id="icon-grid">
-                <h4 class="pb-2 border-bottom">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item">
-                                <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
-                                    >{{ _("Inicio") }}</a
-                                >
-                            </li>
-                            <li class="breadcrumb-item">
-                                <a
-                                    class="text-reset text-decoration-none link-dark"
-                                    href="{{ url_for('course.curso', course_code=curso.codigo) }}"
-                                    >{{ curso.nombre }}</a
-                                >
-                            </li>
-                            <li class="breadcrumb-item">{{ recurso.nombre }}</li>
-                        </ol>
-                    </nav>
-                </h4>
+        <div class="container px-0 py-3" id="icon-grid">
+            <h4 class="pb-2 border-bottom">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a class="text-reset text-decoration-none link-dark"
+                                href="{{ url_for('home.panel') }}">{{ _("Inicio") }}</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a class="text-reset text-decoration-none link-dark"
+                                href="{{ url_for('course.curso', course_code=curso.codigo) }}">{{ curso.nombre }}</a>
+                        </li>
+                        <li class="breadcrumb-item">{{ recurso.nombre }}</li>
+                    </ol>
+                </nav>
+            </h4>
 
-                <div class="row">
-                    <div class="col-sm-8">
-                        <div class="events_area">
-                            <div class="container">
-                                <div class="single_event position-relative">
-                                    <div class="event_thumb">
-                                        <img
-                                            src="{{ url_for('static', filename='/img/hombre-negocios-videoconferencia-mientras-trabaja-casa-pandemia-coronavirus.jpg') }}"
-                                            alt="Live Meet."
-                                        />
-                                    </div>
-                                    <div class="event_details">
-                                        <div class="d-flex mb-4">
-                                            <div class="date">
-                                                {% if recurso.fecha %}
-                                                <span> {{ recurso.fecha.strftime('%d') }} </span> {{
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="events_area">
+                        <div class="container">
+                            <div class="single_event position-relative">
+                                <div class="event_thumb">
+                                    <img src="{{ url_for('static', filename='/img/hombre-negocios-videoconferencia-mientras-trabaja-casa-pandemia-coronavirus.jpg') }}"
+                                        alt="Live Meet." />
+                                </div>
+                                <div class="event_details">
+                                    <div class="d-flex mb-4">
+                                        <div class="date">
+                                            {% if recurso.fecha %}
+                                            <span> {{ recurso.fecha.strftime('%d') }} </span> {{
                                                 recurso.fecha.strftime('%b') }} {% else %} <span>--</span> Sin fecha {% endif
                                                 %}
-                                            </div>
-                                            <div class="time-location">
-                                                <p>
-                                                    <span class="ti-time mr-2"></span>
-                                                    {% if recurso.hora_inicio and recurso.hora_fin %} {{ recurso.hora_inicio }}
-                                                    - {{ recurso.hora_fin }} {% else %} Sin horario programado {% endif %}
-                                                </p>
-                                                <p>
-                                                    <span class="ti-location-pin mr-2"></span>{{ recurso.notes or 'Sin
-                                                    ubicación' }}
-                                                </p>
-                                            </div>
                                         </div>
-                                        <p>{{ recurso.nombre }}</p>
-                                        <div class="d-flex gap-2 flex-wrap">
-                                            <a href="{{ recurso.url }}" class="btn btn-primary rounded-0 mt-3">Link al Meet</a>
+                                        <div class="time-location">
+                                            <p>
+                                                <span class="ti-time mr-2"></span>
+                                                {% if recurso.hora_inicio and recurso.hora_fin %}
+                                                {{ recurso.hora_inicio }}
+                                                - {{ recurso.hora_fin }} {% else %} Sin horario programado {% endif %}
+                                            </p>
+                                            <p>
+                                                <span class="ti-location-pin mr-2"></span>{{ recurso.notes or 'Sin
+                                                    ubicación' }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <p>{{ recurso.nombre }}</p>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <a href="{{ recurso.url }}" class="btn btn-primary rounded-0 mt-3">Link al
+                                            Meet</a>
 
-                                            <!-- Calendar dropdown -->
-                                            <div class="dropdown mt-3">
-                                                <button
-                                                    class="btn btn-outline-secondary rounded-0 dropdown-toggle"
-                                                    type="button"
-                                                    id="calendarDropdown"
-                                                    data-bs-toggle="dropdown"
-                                                    aria-expanded="false"
-                                                >
-                                                    <i class="bi bi-calendar-plus"></i> Agregar al Calendario
-                                                </button>
-                                                <ul class="dropdown-menu" aria-labelledby="calendarDropdown">
-                                                    <li>
-                                                        <a
-                                                            href="{{ url_for('course.download_meet_calendar', course_code=curso.codigo, codigo=recurso.id) }}"
-                                                            class="dropdown-item"
-                                                            title="Descargar archivo ICS"
-                                                        >
-                                                            <i class="bi bi-download"></i> Descargar archivo (.ics)
-                                                        </a>
-                                                    </li>
-                                                    <li><hr class="dropdown-divider" /></li>
-                                                    <li>
-                                                        <a
-                                                            href="{{ url_for('course.google_calendar_link', course_code=curso.codigo, codigo=recurso.id) }}"
-                                                            target="_blank"
-                                                            class="dropdown-item"
-                                                        >
-                                                            <i class="bi bi-google"></i> Agregar a Google Calendar
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a
-                                                            href="{{ url_for('course.outlook_calendar_link', course_code=curso.codigo, codigo=recurso.id) }}"
-                                                            target="_blank"
-                                                            class="dropdown-item"
-                                                        >
-                                                            <i class="bi bi-microsoft"></i> Agregar a Outlook
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                        <!-- Calendar dropdown -->
+                                        <div class="dropdown mt-3">
+                                            <button class="btn btn-outline-secondary rounded-0 dropdown-toggle"
+                                                type="button" id="calendarDropdown" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                                <i class="bi bi-calendar-plus"></i> Agregar al Calendario
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="calendarDropdown">
+                                                <li>
+                                                    <a href="{{ url_for('resources.download_meet_calendar', course_code=curso.codigo, codigo=recurso.id) }}"
+                                                        class="dropdown-item" title="Descargar archivo ICS">
+                                                        <i class="bi bi-download"></i> Descargar archivo (.ics)
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider" />
+                                                </li>
+                                                <li>
+                                                    <a href="{{ url_for('resources.google_calendar_link', course_code=curso.codigo, codigo=recurso.id) }}"
+                                                        target="_blank" class="dropdown-item">
+                                                        <i class="bi bi-google"></i> Agregar a Google Calendar
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ url_for('resources.outlook_calendar_link', course_code=curso.codigo, codigo=recurso.id) }}"
+                                                        target="_blank" class="dropdown-item">
+                                                        <i class="bi bi-microsoft"></i> Agregar a Outlook
+                                                    </a>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Meeting Recommendations -->
-                        <div class="mt-4 p-4 bg-light rounded">
-                            <h5 class="text-primary mb-3"><i class="bi bi-lightbulb"></i> Recomendaciones para la reunión</h5>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <ul class="list-unstyled">
-                                        <li class="mb-2">
-                                            <i class="bi bi-check-circle text-success me-2"></i>
-                                            Revisa tu conexión a internet antes de la reunión
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check-circle text-success me-2"></i>
-                                            Asegúrate de tener cámara y micrófono funcionando
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check-circle text-success me-2"></i>
-                                            Únete 5 minutos antes del horario programado
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <ul class="list-unstyled">
-                                        <li class="mb-2">
-                                            <i class="bi bi-check-circle text-success me-2"></i>
-                                            Busca un lugar tranquilo y bien iluminado
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check-circle text-success me-2"></i>
-                                            Ten preparados tus materiales de estudio
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check-circle text-success me-2"></i>
-                                            Mantén silenciado tu micrófono cuando no hables
-                                        </li>
-                                    </ul>
-                                </div>
+                    <!-- Meeting Recommendations -->
+                    <div class="mt-4 p-4 bg-light rounded">
+                        <h5 class="text-primary mb-3"><i class="bi bi-lightbulb"></i> Recomendaciones para la reunión
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success me-2"></i>
+                                        Revisa tu conexión a internet antes de la reunión
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success me-2"></i>
+                                        Asegúrate de tener cámara y micrófono funcionando
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success me-2"></i>
+                                        Únete 5 minutos antes del horario programado
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success me-2"></i>
+                                        Busca un lugar tranquilo y bien iluminado
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success me-2"></i>
+                                        Ten preparados tus materiales de estudio
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="bi bi-check-circle text-success me-2"></i>
+                                        Mantén silenciado tu micrófono cuando no hables
+                                    </li>
+                                </ul>
                             </div>
                         </div>
+                    </div>
 
-                        <div>
-                            {% if recurso.descripcion_html_preformateado %} {{ recurso.descripcion | safe }} {% else %} {{
+                    <div>
+                        {% if recurso.descripcion_html_preformateado %} {{ recurso.descripcion | safe }} {% else %} {{
                             markdown2html(recurso.descripcion) | safe }} {% endif %}
-                        </div>
+                    </div>
 
-                        <!-- AdSense Ad after resource description for free courses -->
-                        {% if adsense_enabled() and not curso.pagado %} {% set ad_code = ad_large_rectangle() %} {% if ad_code
+                    <!-- AdSense Ad after resource description for free courses -->
+                    {% if adsense_enabled() and not curso.pagado %} {% set ad_code = ad_large_rectangle() %} {% if ad_code
                         %}
-                        <div class="mt-4 mb-4" style="text-align: center">
-                            <small class="text-muted">Publicidad</small>
-                            {{ ad_code | safe }}
-                        </div>
-                        {% endif %} {% endif %}
+                    <div class="mt-4 mb-4" style="text-align: center">
+                        <small class="text-muted">Publicidad</small>
+                        {{ ad_code | safe }}
                     </div>
+                    {% endif %} {% endif %}
+                </div>
 
-                    <div class="col-sm-4">
-                        {{ r_macros.resource_nav(recursos=recursos, secciones=secciones, user_progress=user_progress,
+                <div class="col-sm-4">
+                    {{ r_macros.resource_nav(recursos=recursos, secciones=secciones, user_progress=user_progress,
                         evaluaciones=evaluaciones, evaluation_attempts=evaluation_attempts) }}
-                    </div>
                 </div>
             </div>
+        </div>
 
-            {{ r_macros.nav_footer(indice=indice, curso=recurso.curso, type=recurso.tipo, codigo=recurso.id,
+        {{ r_macros.nav_footer(indice=indice, curso=recurso.curso, type=recurso.tipo, codigo=recurso.id,
             recurso_completado=recurso_completado) }}
-        </main>
-    </body>
+    </main>
+</body>
+
 </html>
