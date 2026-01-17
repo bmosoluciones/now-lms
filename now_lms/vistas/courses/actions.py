@@ -24,7 +24,6 @@ from now_lms.bi import (
     reorganiza_indice_seccion,
 )
 from now_lms.db import CursoRecurso, CursoSeccion, database
-from now_lms.db import select as db_select
 from now_lms.vistas.courses.base import course, VISTA_ADMINISTRAR_CURSO, VISTA_CURSOS
 
 

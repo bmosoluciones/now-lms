@@ -23,7 +23,6 @@ circulares.
 
 from __future__ import annotations
 
-from collections import OrderedDict
 from datetime import datetime, timedelta, timezone
 from os import listdir, path, remove, stat
 from os.path import splitext
@@ -48,28 +47,21 @@ from ulid import ULID
 from werkzeug.wrappers import Response
 
 from now_lms.auth import perfil_requerido
-from now_lms.cache import cache, cache_key_with_auth_state
 from now_lms.calendar_utils import update_meet_resource_events
-from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, audio, files, images
+from now_lms.config import DIRECTORIO_PLANTILLAS, audio, files, images
 from now_lms.db import (
-    Categoria,
-    CategoriaCurso,
     Configuracion,
     CourseLibrary,
     Curso,
     CursoRecurso,
     CursoRecursoAvance,
-    CursoRecursoDescargable,
     CursoRecursoSlides,
     CursoRecursoSlideShow,
     CursoSeccion,
     DocenteCurso,
     EstudianteCurso,
-    Etiqueta,
-    EtiquetaCurso,
     Evaluation,
     EvaluationAttempt,
-    Recurso,
     Slide,
     SlideShowResource,
     database,
@@ -87,7 +79,6 @@ from now_lms.forms import (
     CursoRecursoArchivoImagen,
     CursoRecursoArchivoPDF,
     CursoRecursoArchivoText,
-    CursoRecursoExternalCode,
     CursoRecursoExternalLink,
     CursoRecursoMeet,
     CursoRecursoVideoYoutube,
@@ -95,7 +86,6 @@ from now_lms.forms import (
 )
 from now_lms.i18n import _
 from now_lms.misc import INICIO_SESION, sanitize_slide_content
-from now_lms.themes import get_course_list_template
 from now_lms.vistas.courses.base import (
     NO_AUTORIZADO_MSG,
     RECURSO_AGREGADO,
@@ -1675,7 +1665,7 @@ def _generate_meet_ics_content(recurso: Any, course_obj: Any) -> str:
 
         lines.extend(
             [
-                f"BEGIN:VEVENT",
+                "BEGIN:VEVENT",
                 f"DTSTART:{start_str}",
                 f"DTEND:{end_str}",
                 f"SUMMARY:{recurso.nombre}",

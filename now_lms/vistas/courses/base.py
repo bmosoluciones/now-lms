@@ -24,20 +24,15 @@ from __future__ import annotations
 # Standard library
 # ---------------------------------------------------------------------------------------
 from collections import OrderedDict
-from datetime import datetime, timedelta, timezone
-from os import makedirs, path, remove, listdir, stat
+from datetime import datetime, timezone
 from os.path import splitext
-import re
-from typing import Any, Sequence
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from bleach import clean, linkify
 from flask import (
     Blueprint,
     abort,
-    current_app,
     flash,
     redirect,
     render_template,
@@ -46,10 +41,8 @@ from flask import (
 )
 from flask_login import current_user, login_required
 from flask_uploads import UploadNotAllowed
-from markdown import markdown
 from sqlalchemy import delete, func
 from sqlalchemy.exc import OperationalError
-from ulid import ULID
 from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
@@ -58,17 +51,10 @@ from werkzeug.wrappers import Response
 from now_lms.auth import perfil_requerido
 from now_lms.bi import (
     asignar_curso_a_instructor,
-    cambia_curso_publico,
-    cambia_estado_curso_por_id,
-    cambia_seccion_publico,
-    modificar_indice_curso,
-    modificar_indice_seccion,
-    reorganiza_indice_curso,
-    reorganiza_indice_seccion,
 )
 from now_lms.cache import cache, cache_key_with_auth_state
-from now_lms.calendar_utils import create_events_for_student_enrollment, update_meet_resource_events
-from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, DIRECTORIO_ARCHIVOS_PUBLICOS, audio, files, images
+from now_lms.calendar_utils import create_events_for_student_enrollment
+from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, images
 from now_lms.db import (
     Categoria,
     CategoriaCurso,
@@ -78,57 +64,34 @@ from now_lms.db import (
     CursoRecurso,
     CursoRecursoAvance,
     CursoRecursoDescargable,
-    CursoRecursoSlides,
-    CursoRecursoSlideShow,
     CursoSeccion,
     DocenteCurso,
     EstudianteCurso,
     Etiqueta,
     EtiquetaCurso,
-    Evaluation,
-    EvaluationAttempt,
     Pago,
     Recurso,
-    Slide,
-    SlideShowResource,
     Usuario,
     database,
     select,
 )
 from now_lms.db.tools import (
-    crear_indice_recurso,
     generate_category_choices,
     generate_tag_choices,
     generate_template_choices,
     get_course_category,
     get_course_tags,
-    verifica_docente_asignado_a_curso,
-    verifica_estudiante_asignado_a_curso,
 )
 from now_lms.forms import (
     CurseForm,
-    CursoRecursoArchivoAudio,
-    CursoRecursoArchivoDescargable,
-    CursoRecursoArchivoImagen,
-    CursoRecursoArchivoPDF,
-    CursoRecursoArchivoText,
     CursoRecursoExternalCode,
-    CursoRecursoExternalLink,
-    CursoRecursoMeet,
-    CursoRecursoVideoYoutube,
     CursoSeccionForm,
-    SlideShowForm,
 )
 from now_lms.i18n import _
 from now_lms.logs import log
-from now_lms.misc import CURSO_NIVEL, HTML_TAGS, INICIO_SESION, TIPOS_RECURSOS, sanitize_slide_content
+from now_lms.misc import CURSO_NIVEL, TIPOS_RECURSOS
 from now_lms.themes import get_course_list_template, get_course_view_template
-from now_lms.vistas.courses.helpers import (
-    get_site_config,
-    markdown2html,
-    _get_course_evaluations_and_attempts,
-    _get_user_resource_progress,
-)
+from now_lms.vistas.courses.helpers import markdown2html
 
 # ---------------------------------------------------------------------------------------
 # Gestión de cursos.
