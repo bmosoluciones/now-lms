@@ -56,7 +56,7 @@ from werkzeug.wrappers import Response
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
-from now_lms.auth import perfil_requerido, usuario_requiere_verificacion_email
+from now_lms.auth import perfil_requerido
 from now_lms.bi import (
     asignar_curso_a_instructor,
     cambia_curso_publico,
@@ -75,7 +75,6 @@ from now_lms.db import (
     CategoriaCurso,
     Certificacion,
     Configuracion,
-    Coupon,
     CourseLibrary,
     Curso,
     CursoRecurso,
@@ -90,7 +89,6 @@ from now_lms.db import (
     EtiquetaCurso,
     Evaluation,
     EvaluationAttempt,
-    EvaluationReopenRequest,
     Pago,
     Recurso,
     Slide,
@@ -110,8 +108,6 @@ from now_lms.db.tools import (
     verifica_estudiante_asignado_a_curso,
 )
 from now_lms.forms import (
-    CouponApplicationForm,
-    CouponForm,
     CurseForm,
     CursoLibraryFileForm,
     CursoRecursoArchivoAudio,
@@ -220,24 +216,11 @@ TEMPLATE_COUPON_EDIT = "learning/curso/coupons/edit.html"
 ROUTE_LIST_COUPONS = "course.list_coupons"
 
 
-# ---------------------------------------------------------------------------------------
-# Helper functions
-# ---------------------------------------------------------------------------------------
 def validate_downloadable_file(file, max_size_mb: int = 1) -> tuple[bool, str]:
-    """
-    Validate uploaded file for downloadable resources.
-
-    Args:
-        file: Flask uploaded file object
-        max_size_mb: Maximum file size in megabytes
-
-    Returns:
-        tuple: (is_valid, error_message)
-    """
+    """Validate uploaded file for downloadable resources."""
     if not file or not file.filename:
         return False, "No se ha seleccionado ningún archivo"
 
-    # Check file extension
     filename = file.filename.lower()
     file_ext = splitext(filename or "")[1].lower()
 
@@ -247,10 +230,9 @@ def validate_downloadable_file(file, max_size_mb: int = 1) -> tuple[bool, str]:
     if file_ext not in SAFE_FILE_EXTENSIONS:
         return False, f"Tipo de archivo no soportado: {file_ext}"
 
-    # Check file size (read position and reset)
-    file.seek(0, 2)  # Seek to end
+    file.seek(0, 2)
     file_size = file.tell()
-    file.seek(0)  # Reset position
+    file.seek(0)
 
     max_size_bytes = max_size_mb * 1024 * 1024
     if file_size > max_size_bytes:
@@ -268,30 +250,14 @@ def get_site_config() -> Configuracion:
 
 
 def sanitize_filename(filename: str) -> str:
-    """
-    Sanitize filename for library uploads.
-
-    - Replace spaces with underscores
-    - Remove unsafe characters
-    - Keep original extension
-
-    Args:
-        filename: Original filename
-
-    Returns:
-        str: Sanitized filename
-    """
+    """Sanitize filename for library uploads."""
     if not filename:
         return ""
 
-    # Get base name and extension
     base_name, extension = splitext(filename)
-
-    # Replace spaces with underscores and remove unsafe characters
-    # Allow alphanumeric, underscore, hyphen, and dots
     safe_base = re.sub(r"[^a-zA-Z0-9._-]", "_", base_name)
-    safe_base = re.sub(r"_+", "_", safe_base)  # Multiple underscores to single
-    safe_base = safe_base.strip("_")  # Remove leading/trailing underscores
+    safe_base = re.sub(r"_+", "_", safe_base)
+    safe_base = safe_base.strip("_")
 
     return safe_base + extension.lower()
 
@@ -316,7 +282,6 @@ def markdown2html(text: str) -> str:
 
     html = markdown(text)
     html_limpio = clean(linkify(html), tags=allowed_tags, attributes=allowed_attrs)
-
     return html_limpio
 
 
@@ -349,7 +314,6 @@ def curso(course_code: str) -> str:
             acceso = bool(docente_result)
             editable = bool(docente_result)
     elif current_user.is_authenticated:
-        # Check if user is enrolled in the course
         enrollment = (
             database.session.execute(
                 database.select(EstudianteCurso).filter_by(curso=course_code, usuario=current_user.usuario, vigente=True)
@@ -359,11 +323,9 @@ def curso(course_code: str) -> str:
         )
 
         if enrollment:
-            # Enrolled student has access
             acceso = True
             editable = False
         elif _curso and _curso.publico:
-            # Public course access
             acceso = _curso.estado == "open" and _curso.publico is True
             editable = False
         else:
@@ -402,299 +364,6 @@ def curso(course_code: str) -> str:
         )
 
     abort(403)
-
-
-def _crear_indice_avance_curso(course_code: str) -> None:
-    """Crea el índice de avance del curso."""
-    recursos = (
-        database.session.execute(
-            database.select(CursoRecurso).filter(CursoRecurso.curso == course_code).order_by(CursoRecurso.indice)
-        )
-        .scalars()
-        .all()
-    )
-    usuario = current_user.usuario
-
-    if recursos:
-        for recurso in recursos:
-            avance = CursoRecursoAvance(
-                usuario=usuario,
-                curso=course_code,
-                recurso=recurso.id,
-                completado=False,
-                requerido=recurso.requerido,
-            )
-            database.session.add(avance)
-            database.session.commit()
-
-
-@course.route("/course/<course_code>/enroll", methods=["GET", "POST"])
-@login_required
-@perfil_requerido("student")
-def course_enroll(course_code: str) -> str | Response:
-    """Pagina para inscribirse a un curso."""
-    from now_lms.forms import PagoForm
-
-    _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
-    _usuario = database.session.execute(database.select(Usuario).filter_by(usuario=current_user.usuario)).scalar_one_or_none()
-
-    _modo = request.args.get("modo", "") or request.form.get("modo", "")
-
-    # Check for coupon code in URL or form
-    coupon_code = request.args.get("coupon_code", "") or request.form.get("coupon_code", "")
-    applied_coupon = None
-    original_price = _curso.precio if _curso.pagado else 0
-    final_price = original_price
-    discount_amount = 0
-
-    # Check if user has unverified email and is trying to enroll in paid course or use coupon
-    if _curso.pagado and usuario_requiere_verificacion_email():
-        # User has unverified email - only allow free enrollment without coupons
-        flash(
-            "Debe verificar su correo electrónico para inscribirse en cursos de pago o usar cupones. "
-            "Los cursos gratuitos están disponibles sin verificación.",
-            "warning",
-        )
-        return redirect(url_for(VISTA_CURSOS, course_code=course_code))
-
-    # Validate and apply coupon if provided
-    if coupon_code and _curso.pagado:
-        coupon, _, validation_error = _validate_coupon_for_enrollment(course_code, coupon_code, _usuario)
-        if coupon:
-            applied_coupon = coupon
-            discount_amount = coupon.calculate_discount(original_price)
-            final_price = coupon.calculate_final_price(original_price)
-        elif validation_error:
-            flash(validation_error, "warning")
-
-    form = PagoForm()
-    coupon_form = CouponApplicationForm()
-
-    # Pre-fill form data
-    form.nombre.data = _usuario.nombre
-    form.apellido.data = _usuario.apellido
-    form.correo_electronico.data = _usuario.correo_electronico
-    if coupon_code:
-        coupon_form.coupon_code.data = coupon_code
-
-    if form.validate_on_submit():
-        pago = Pago()
-        pago.usuario = _usuario.usuario
-        pago.curso = _curso.codigo
-        pago.nombre = form.nombre.data
-        pago.apellido = form.apellido.data
-        pago.correo_electronico = form.correo_electronico.data
-        pago.direccion1 = form.direccion1.data
-        pago.direccion2 = form.direccion2.data
-        pago.provincia = form.provincia.data
-        pago.codigo_postal = form.codigo_postal.data
-        pago.pais = form.pais.data
-        pago.monto = final_price
-        pago.metodo = "paypal" if final_price > 0 else "free"
-
-        # Add coupon information to payment description
-        if applied_coupon:
-            pago.descripcion = f"Cupón aplicado: {applied_coupon.code} (Descuento: {discount_amount})"
-
-        # Handle different enrollment modes
-        if not _curso.pagado or final_price == 0:
-            # Free course or 100% discount coupon - complete enrollment immediately
-            pago.estado = "completed"
-            try:
-                pago.creado = datetime.now(timezone.utc).date()
-                pago.creado_por = current_user.usuario
-                database.session.add(pago)
-                database.session.flush()
-
-                # Update coupon usage if applied
-                if applied_coupon:
-                    applied_coupon.current_uses += 1
-
-                registro = EstudianteCurso(
-                    curso=pago.curso,
-                    usuario=pago.usuario,
-                    vigente=True,
-                    pago=pago.id,
-                )
-                registro.creado = datetime.now(timezone.utc).date()
-                registro.creado_por = current_user.usuario
-                database.session.add(registro)
-                database.session.commit()
-                _crear_indice_avance_curso(course_code)
-
-                # Create calendar events for the enrolled student
-                create_events_for_student_enrollment(pago.usuario, pago.curso)
-
-                if applied_coupon and final_price == 0:
-                    flash(
-                        f"¡Cupón aplicado exitosamente! Inscripción gratuita con código {applied_coupon.code}",
-                        "success",
-                    )
-                elif applied_coupon:
-                    flash(f"¡Cupón aplicado! Descuento de {discount_amount} aplicado", "success")
-
-                return redirect(url_for("course.tomar_curso", course_code=course_code))
-            except OperationalError:
-                database.session.rollback()
-                flash("Hubo en error al crear el registro de pago.", "warning")
-                return redirect(url_for(VISTA_CURSOS, course_code=course_code))
-
-        elif _modo == "audit" and _curso.auditable:
-            # Audit mode - allow access without payment but mark as audit
-            pago.audit = True
-            pago.estado = "completed"  # Audit enrollment is completed immediately
-            pago.monto = 0
-            pago.metodo = "audit"
-            try:
-                database.session.add(pago)
-                database.session.flush()
-                registro = EstudianteCurso(
-                    curso=pago.curso,
-                    usuario=pago.usuario,
-                    vigente=True,
-                    pago=pago.id,
-                )
-                database.session.add(registro)
-                database.session.commit()
-                _crear_indice_avance_curso(course_code)
-
-                # Create calendar events for the enrolled student
-                create_events_for_student_enrollment(pago.usuario, pago.curso)
-
-                return redirect(url_for("course.tomar_curso", course_code=course_code))
-            except OperationalError:
-                flash("Hubo en error al crear el registro de pago.", "warning")
-                return redirect(url_for(VISTA_CURSOS, course_code=course_code))
-
-        else:
-            # Paid course with amount > 0 - check for existing pending payment first
-            existing = (
-                database.session.execute(
-                    select(Pago).filter_by(usuario=current_user.usuario, curso=course_code, estado="pending")
-                )
-                .scalars()
-                .first()
-            )
-            if existing:
-                return redirect(url_for("paypal.resume_payment", payment_id=existing.id))
-
-            # Store payment with coupon information for PayPal processing
-            try:
-                database.session.add(pago)
-                database.session.commit()
-
-                # Redirect to PayPal payment page with payment ID
-                return redirect(url_for("paypal.payment_page", course_code=course_code, payment_id=pago.id))
-            except OperationalError:
-                database.session.rollback()
-                flash("Error al procesar el pago", "warning")
-                return redirect(url_for(VISTA_CURSOS, course_code=course_code))
-
-    return render_template(
-        "learning/curso/enroll.html",
-        curso=_curso,
-        usuario=_usuario,
-        form=form,
-        coupon_form=coupon_form,
-        applied_coupon=applied_coupon,
-        original_price=original_price,
-        final_price=final_price,
-        discount_amount=discount_amount,
-    )
-
-
-@course.route("/course/<course_code>/take")
-@login_required
-@perfil_requerido("student")
-@cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
-def tomar_curso(course_code: str) -> str | Response:
-    """Pagina principal del curso."""
-    if current_user.tipo == "student":
-        # Get evaluations for this course
-        evaluaciones = (
-            database.session.execute(select(Evaluation).join(CursoSeccion).filter(CursoSeccion.curso == course_code))
-            .scalars()
-            .all()
-        )
-
-        # Get user's evaluation attempts
-        evaluation_attempts = (
-            database.session.execute(select(EvaluationAttempt).filter_by(user_id=current_user.usuario)).scalars().all()
-        )
-
-        # Get reopen requests
-        reopen_requests = (
-            database.session.execute(select(EvaluationReopenRequest).filter_by(user_id=current_user.usuario)).scalars().all()
-        )
-
-        # Check if user has paid for course (for paid courses)
-        curso_obj = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
-        user_has_paid = True  # Default for free courses
-        if curso_obj and curso_obj.pagado:
-            enrollment = database.session.execute(
-                database.select(EstudianteCurso).filter_by(curso=course_code, usuario=current_user.usuario)
-            ).scalar_one_or_none()
-            user_has_paid = bool(enrollment and enrollment.pago)
-
-        # Check if user has a certificate for this course
-        user_certificate = (
-            database.session.execute(select(Certificacion).filter_by(curso=course_code, usuario=current_user.usuario))
-            .scalars()
-            .first()
-        )
-
-        return render_template(
-            "learning/curso.html",
-            curso=curso_obj,
-            secciones=database.session.execute(select(CursoSeccion).filter_by(curso=course_code).order_by(CursoSeccion.indice))
-            .scalars()
-            .all(),
-            recursos=database.session.execute(select(CursoRecurso).filter_by(curso=course_code).order_by(CursoRecurso.indice))
-            .scalars()
-            .all(),
-            descargas=database.session.execute(
-                database.select(Recurso).join(CursoRecursoDescargable).filter(CursoRecursoDescargable.curso == course_code)
-            )
-            .scalars()
-            .all(),  # El join devuelve una tuple.
-            nivel=CURSO_NIVEL,
-            tipo=TIPOS_RECURSOS,
-            evaluaciones=evaluaciones,
-            evaluation_attempts=evaluation_attempts,
-            reopen_requests=reopen_requests,
-            user_has_paid=user_has_paid,
-            user_certificate=user_certificate,
-            markdown2html=markdown2html,
-        )
-    return redirect(url_for(VISTA_CURSOS, course_code=course_code))
-
-
-@course.route("/course/<course_code>/moderate")
-@login_required
-@perfil_requerido("moderator")
-@cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
-def moderar_curso(course_code: str) -> str | Response:
-    """Pagina principal del curso."""
-    if current_user.tipo in ("moderator", "admin"):
-        return render_template(
-            "learning/curso.html",
-            curso=database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first(),
-            secciones=database.session.execute(select(CursoSeccion).filter_by(curso=course_code).order_by(CursoSeccion.indice))
-            .scalars()
-            .all(),
-            recursos=database.session.execute(select(CursoRecurso).filter_by(curso=course_code).order_by(CursoRecurso.indice))
-            .scalars()
-            .all(),
-            descargas=database.session.execute(
-                database.select(Recurso).join(CursoRecursoDescargable).filter(CursoRecursoDescargable.curso == course_code)
-            )
-            .scalars()
-            .all(),  # El join devuelve una tuple.
-            nivel=CURSO_NIVEL,
-            tipo=TIPOS_RECURSOS,
-            markdown2html=markdown2html,
-        )
-    return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
 
 @course.route("/course/<course_code>/admin")
@@ -2869,245 +2538,6 @@ def lista_cursos() -> str:
     )
 
 
-# ---------------------------------------------------------------------------------------
-# Coupon Management Functions
-# ---------------------------------------------------------------------------------------
-
-
-def _validate_coupon_permissions(course_code: str, user) -> tuple[object | None, str | None]:
-    """Validate that user can manage coupons for this course."""
-    course_obj = database.session.execute(select(Curso).filter_by(codigo=course_code)).scalars().first()
-    if not course_obj:
-        return None, "Curso no encontrado"
-
-    if not course_obj.pagado:
-        return None, "Los cupones solo están disponibles para cursos pagados"
-
-    # Check if user is instructor for this course
-    instructor_assignment = (
-        database.session.execute(select(DocenteCurso).filter_by(curso=course_code, usuario=user.usuario, vigente=True))
-        .scalars()
-        .first()
-    )
-
-    if not instructor_assignment and user.tipo != "admin":
-        return None, "Solo el instructor del curso puede gestionar cupones"
-
-    return course_obj, None
-
-
-def _validate_coupon_for_enrollment(
-    course_code: str, coupon_code: str, user
-) -> tuple[object | None, object | None, str | None]:
-    """Validate coupon for enrollment use."""
-    if not coupon_code:
-        return None, None, "No se proporcionó código de cupón"
-
-    # Find coupon
-    coupon = (
-        database.session.execute(select(Coupon).filter_by(course_id=course_code, code=coupon_code.upper())).scalars().first()
-    )
-
-    if not coupon:
-        return None, None, "Código de cupón inválido"
-
-    # Check if user is already enrolled
-    existing_enrollment = (
-        database.session.execute(select(EstudianteCurso).filter_by(curso=course_code, usuario=user.usuario, vigente=True))
-        .scalars()
-        .first()
-    )
-
-    if existing_enrollment:
-        return None, None, "No puede aplicar cupón - ya está inscrito en el curso"
-
-    # Validate coupon
-    is_valid, error_message = coupon.is_valid()
-    if not is_valid:
-        return None, None, error_message
-
-    # Check if coupon gives 100% discount and user has unverified email
-    # Get course to calculate final price
-    course_obj = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
-    if course_obj and course_obj.pagado:
-        final_price = coupon.calculate_final_price(course_obj.precio)
-        if final_price == 0 and not user.correo_electronico_verificado:
-            # 100% discount coupon requires email verification
-            # Check if system has email verification requirements
-            config = database.session.execute(database.select(Configuracion)).scalar_one_or_none()
-            if config and (config.verify_user_by_email or config.allow_unverified_email_login):
-                return None, None, "Debe verificar su correo electrónico antes de usar cupones de descuento"
-
-    return coupon, None, None
-
-
-@course.route("/course/<course_code>/coupons/")
-@login_required
-@perfil_requerido("instructor")
-def list_coupons(course_code: str) -> str | Response:
-    """Lista cupones existentes para un curso."""
-    course_obj, error = _validate_coupon_permissions(course_code, current_user)
-    if error:
-        flash(error, "warning")
-        return redirect(url_for("course.administrar_curso", course_code=course_code))
-
-    coupons = (
-        database.session.execute(select(Coupon).filter_by(course_id=course_code).order_by(Coupon.timestamp.desc()))
-        .scalars()
-        .all()
-    )
-
-    return render_template("learning/curso/coupons/list.html", curso=course_obj, coupons=coupons)
-
-
-@course.route("/course/<course_code>/coupons/new", methods=["GET", "POST"])
-@login_required
-@perfil_requerido("instructor")
-def create_coupon(course_code: str) -> str | Response:
-    """Crear nuevo cupón para un curso."""
-    course_obj, error = _validate_coupon_permissions(course_code, current_user)
-    if error:
-        flash(error, "warning")
-        return redirect(url_for("course.administrar_curso", course_code=course_code))
-
-    form = CouponForm()
-
-    if form.validate_on_submit():
-        # Check if coupon code already exists for this course
-        existing = (
-            database.session.execute(select(Coupon).filter_by(course_id=course_code, code=form.code.data.upper()))
-            .scalars()
-            .first()
-        )
-
-        if existing:
-            flash("Ya existe un cupón con este código para este curso", "warning")
-            return render_template(TEMPLATE_COUPON_CREATE, curso=curso, form=form)
-
-        # Validate discount value
-        if form.discount_type.data == "percentage" and form.discount_value.data > 100:
-            flash("El descuento porcentual no puede ser mayor al 100%", "warning")
-            return render_template(TEMPLATE_COUPON_CREATE, curso=curso, form=form)
-
-        if form.discount_type.data == "fixed" and form.discount_value.data > curso.precio:
-            flash("El descuento fijo no puede ser mayor al precio del curso", "warning")
-            return render_template(TEMPLATE_COUPON_CREATE, curso=curso, form=form)
-
-        try:
-            coupon = Coupon(
-                course_id=course_code,
-                code=form.code.data.upper(),
-                discount_type=form.discount_type.data,
-                discount_value=float(form.discount_value.data),
-                max_uses=form.max_uses.data if form.max_uses.data else None,
-                expires_at=form.expires_at.data if form.expires_at.data else None,
-                created_by=current_user.usuario,
-            )
-
-            database.session.add(coupon)
-            database.session.commit()
-
-            flash("Cupón creado exitosamente", "success")
-            return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
-
-        except Exception as e:
-            database.session.rollback()
-            flash("Error al crear el cupón", "danger")
-            log.error(f"Error creating coupon: {e}")
-
-    return render_template(TEMPLATE_COUPON_CREATE, curso=course_obj, form=form)
-
-
-@course.route("/course/<course_code>/coupons/<coupon_id>/edit", methods=["GET", "POST"])
-@login_required
-@perfil_requerido("instructor")
-def edit_coupon(course_code: str, coupon_id: int) -> str | Response:
-    """Editar cupón existente."""
-    course_obj, error = _validate_coupon_permissions(course_code, current_user)
-    if error:
-        flash(error, "warning")
-        return redirect(url_for("course.administrar_curso", course_code=course_code))
-
-    coupon = database.session.execute(select(Coupon).filter_by(id=coupon_id, course_id=course_code)).scalars().first()
-    if not coupon:
-        flash("Cupón no encontrado", "warning")
-        return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
-
-    form = CouponForm(obj=coupon)
-
-    if form.validate_on_submit():
-        # Check if coupon code already exists for this course (excluding current coupon)
-        existing = (
-            database.session.execute(
-                select(Coupon).filter(
-                    Coupon.course_id == course_code, Coupon.code == form.code.data.upper(), Coupon.id != coupon_id
-                )
-            )
-            .scalars()
-            .first()
-        )
-
-        if existing:
-            flash("Ya existe un cupón con este código para este curso", "warning")
-            return render_template(TEMPLATE_COUPON_EDIT, curso=curso, coupon=coupon, form=form)
-
-        # Validate discount value
-        if form.discount_type.data == "percentage" and form.discount_value.data > 100:
-            flash("El descuento porcentual no puede ser mayor al 100%", "warning")
-            return render_template(TEMPLATE_COUPON_EDIT, curso=course_obj, coupon=coupon, form=form)
-
-        if form.discount_type.data == "fixed" and form.discount_value.data > course_obj.precio:
-            flash("El descuento fijo no puede ser mayor al precio del curso", "warning")
-            return render_template(TEMPLATE_COUPON_EDIT, curso=course_obj, coupon=coupon, form=form)
-
-        try:
-            coupon.code = form.code.data.upper()
-            coupon.discount_type = form.discount_type.data
-            coupon.discount_value = float(form.discount_value.data)
-            coupon.max_uses = form.max_uses.data if form.max_uses.data else None
-            coupon.expires_at = form.expires_at.data if form.expires_at.data else None
-            coupon.modificado_por = current_user.usuario
-
-            database.session.commit()
-
-            flash("Cupón actualizado exitosamente", "success")
-            return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
-
-        except Exception as e:
-            database.session.rollback()
-            flash("Error al actualizar el cupón", "danger")
-            log.error(f"Error updating coupon: {e}")
-
-    return render_template(TEMPLATE_COUPON_EDIT, curso=course_obj, coupon=coupon, form=form)
-
-
-@course.route("/course/<course_code>/coupons/<coupon_id>/delete", methods=["POST"])
-@login_required
-@perfil_requerido("instructor")
-def delete_coupon(course_code: str, coupon_id: int) -> Response:
-    """Eliminar cupón."""
-    _, error = _validate_coupon_permissions(course_code, current_user)
-    if error:
-        flash(error, "warning")
-        return redirect(url_for("course.administrar_curso", course_code=course_code))
-
-    coupon = database.session.execute(select(Coupon).filter_by(id=coupon_id, course_id=course_code)).scalars().first()
-    if not coupon:
-        flash("Cupón no encontrado", "warning")
-        return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
-
-    try:
-        database.session.delete(coupon)
-        database.session.commit()
-        flash("Cupón eliminado exitosamente", "success")
-    except Exception as e:
-        database.session.rollback()
-        flash("Error al eliminar el cupón", "danger")
-        log.error(f"Error deleting coupon: {e}")
-
-    return redirect(url_for(ROUTE_LIST_COUPONS, course_code=course_code))
-
-
 @course.route("/course/<course_code>/resource/meet/<codigo>/calendar.ics")
 @login_required
 def download_meet_calendar(course_code: str, codigo: str) -> Response:
@@ -3462,6 +2892,8 @@ def admin_course_enrollment(course_code: str) -> str | Response:
             database.session.commit()
 
             # Create course progress index
+            from .enrollment import _crear_indice_avance_curso  # local import to avoid circular
+
             _crear_indice_avance_curso(course_code)
 
             # Create calendar events for the enrolled student
