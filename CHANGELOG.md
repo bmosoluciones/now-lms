@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
-## [1.2.1]
+## [1.2.1] - 2026-01-18
 
 ### Added:
  - Footer customization: Static pages can now be marked to appear in footer via `mostrar_en_footer` field.
@@ -148,7 +148,7 @@ flask db upgrade
   - Administrators can manually verify user emails from `/admin/users/list_inactive` via the new verification button
   - Manual verification by admin immediately activates the account and grants full access
   - Default behavior unchanged: unverified users are blocked by default (backward compatible, non-breaking change)
-  
+
 ### Changed
 - Login flow enhanced to support conditional access for unverified users based on system configuration
 - Admin inactive users list now includes email verification functionality
