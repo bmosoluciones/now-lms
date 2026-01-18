@@ -2224,6 +2224,7 @@ def crear_paginas_estaticas_predeterminadas() -> None:
             title=about_title,
             content=about_content,
             is_active=True,
+            mostrar_en_footer=True,
         )
         database.session.add(about_page)
         log.debug("About Us page created.")
@@ -2240,6 +2241,7 @@ def crear_paginas_estaticas_predeterminadas() -> None:
             title=privacy_title,
             content=privacy_content,
             is_active=True,
+            mostrar_en_footer=True,
         )
         database.session.add(privacy_page)
         log.debug("Privacy Policy page created.")

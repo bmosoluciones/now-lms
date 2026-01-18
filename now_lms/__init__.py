@@ -204,9 +204,11 @@ def inicializa_extenciones_terceros(flask_app: Flask) -> None:
     log.trace("Starting third-party extensions")
     with flask_app.app_context():
         from now_lms.i18n import get_locale, get_timezone
+        from os.path import abspath, dirname, join
 
-        # Ensure Alembic reads migration scripts from the package directory
-        flask_app.config.from_mapping({"ALEMBIC": {"script_location": "now_lms/migrations"}})
+        # Ensure Alembic reads migration scripts from the package directory using absolute path
+        migrations_dir = abspath(join(dirname(__file__), "migrations"))
+        flask_app.config.from_mapping({"ALEMBIC": {"script_location": migrations_dir}})
 
         database.init_app(flask_app)
         alembic.init_app(flask_app)
