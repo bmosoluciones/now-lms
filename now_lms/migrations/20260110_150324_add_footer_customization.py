@@ -49,10 +49,11 @@ def upgrade():
         )
 
     # 2. Add mostrar_en_footer column to static_pages table if it doesn't exist
-    static_pages_columns = [col["name"] for col in inspector.get_columns("static_pages")]
+    if "static_pages" in existing_tables:
+        static_pages_columns = [col["name"] for col in inspector.get_columns("static_pages")]
 
-    if "mostrar_en_footer" not in static_pages_columns:
-        op.add_column("static_pages", sa.Column("mostrar_en_footer", sa.Boolean(), nullable=False, server_default="0"))
+        if "mostrar_en_footer" not in static_pages_columns:
+            op.add_column("static_pages", sa.Column("mostrar_en_footer", sa.Boolean(), nullable=False, server_default="0"))
 
 
 def downgrade():
@@ -67,7 +68,8 @@ def downgrade():
         op.drop_table("enlaces_utiles")
 
     # 2. Drop mostrar_en_footer column from static_pages if it exists
-    static_pages_columns = [col["name"] for col in inspector.get_columns("static_pages")]
+    if "static_pages" in existing_tables:
+        static_pages_columns = [col["name"] for col in inspector.get_columns("static_pages")]
 
-    if "mostrar_en_footer" in static_pages_columns:
-        op.drop_column("static_pages", "mostrar_en_footer")
+        if "mostrar_en_footer" in static_pages_columns:
+            op.drop_column("static_pages", "mostrar_en_footer")
