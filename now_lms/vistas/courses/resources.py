@@ -23,12 +23,17 @@ circulares.
 
 from __future__ import annotations
 
-from collections import OrderedDict
+# ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
 from datetime import datetime, timedelta, timezone
 from os import listdir, path, remove, stat
 from os.path import splitext
 from typing import Any, Sequence
 
+# ---------------------------------------------------------------------------------------
+# Third-party libraries
+# ---------------------------------------------------------------------------------------
 from flask import (
     Blueprint,
     abort,
@@ -47,29 +52,25 @@ from sqlalchemy.exc import OperationalError
 from ulid import ULID
 from werkzeug.wrappers import Response
 
+# ---------------------------------------------------------------------------------------
+# Local resources
+# ---------------------------------------------------------------------------------------
 from now_lms.auth import perfil_requerido
-from now_lms.cache import cache, cache_key_with_auth_state
 from now_lms.calendar_utils import update_meet_resource_events
-from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, audio, files, images
+from now_lms.config import DIRECTORIO_PLANTILLAS, audio, files, images
 from now_lms.db import (
-    Categoria,
-    CategoriaCurso,
     Configuracion,
     CourseLibrary,
     Curso,
     CursoRecurso,
     CursoRecursoAvance,
-    CursoRecursoDescargable,
     CursoRecursoSlides,
     CursoRecursoSlideShow,
     CursoSeccion,
     DocenteCurso,
     EstudianteCurso,
-    Etiqueta,
-    EtiquetaCurso,
     Evaluation,
     EvaluationAttempt,
-    Recurso,
     Slide,
     SlideShowResource,
     database,
@@ -95,7 +96,6 @@ from now_lms.forms import (
 )
 from now_lms.i18n import _
 from now_lms.misc import INICIO_SESION, sanitize_slide_content
-from now_lms.themes import get_course_list_template
 from now_lms.vistas.courses.base import (
     NO_AUTORIZADO_MSG,
     RECURSO_AGREGADO,
@@ -110,12 +110,21 @@ from now_lms.vistas.courses.helpers import (
     get_course_library_path,
     ensure_course_library_directory,
     markdown2html,
+    _actualizar_avance_curso,
     _get_course_evaluations_and_attempts,
     _get_user_resource_progress,
 )
 
 
 resources = Blueprint("resources", __name__, template_folder=DIRECTORIO_PLANTILLAS)
+
+# Reused literals
+PAGINA_RECURSO_ENDPOINT = ".pagina_recurso"
+COURSE_LIBRARY_ENDPOINT = ".course_library"
+MSG_RECURSO_NO_ENCONTRADO = "Recurso no encontrado."
+MSG_RECURSO_ACTUALIZADO = "Recurso actualizado correctamente."
+MSG_RECURSO_ERROR_ACTUALIZAR = "Hubo un error al actualizar el recurso."
+TEMPLATE_LIBRARY_UPLOAD = "learning/curso/library_upload.html"
 
 
 # Visualización y avance de recursos
@@ -244,9 +253,6 @@ def marcar_recurso_completado(curso_id: str, resource_type: str, codigo: str) ->
                     database.session.add(avance)
                     database.session.commit()
                     flash("Recurso marcado como completado.", "success")
-                # actualizar avance del curso
-                from now_lms.vistas.courses.base import _actualizar_avance_curso
-
                 _actualizar_avance_curso(curso_id, current_user.usuario)
 
                 indice = crear_indice_recurso(codigo)
@@ -268,7 +274,9 @@ def marcar_recurso_completado(curso_id: str, resource_type: str, codigo: str) ->
                             codigo=indice.next_resource.codigo,
                         )
                     )
-                return redirect(url_for(".pagina_recurso", curso_id=curso_id, resource_type=resource_type, codigo=codigo))
+                return redirect(
+                    url_for(PAGINA_RECURSO_ENDPOINT, curso_id=curso_id, resource_type=resource_type, codigo=codigo)
+                )
             flash(NO_AUTORIZADO_MSG, "warning")
             return abort(403)
         flash(NO_AUTORIZADO_MSG, "warning")
@@ -331,6 +339,95 @@ def nuevo_recurso(course_code: str, seccion: str) -> str:
     return render_template("learning/resources_new/nuevo_recurso.html", id_curso=course_code, id_seccion=seccion)
 
 
+@resources.route("/course/<course_code>/<seccion>/html/new", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def nuevo_recurso_html(course_code: str, seccion: str) -> str | Response:
+    """Formulario para crear un recurso HTML externo."""
+    form = CursoRecursoExternalCode()
+    recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
+    nuevo_indice = int((recursos or 0) + 1)
+    if form.validate_on_submit() or request.method == "POST":
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        html_preformateado = False
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            html_preformateado = form.descripcion_html_preformateado.data or False
+
+        nuevo_recurso_ = CursoRecurso(
+            curso=course_code,
+            seccion=seccion,
+            tipo="html",
+            nombre=form.nombre.data,
+            descripcion=form.descripcion.data,
+            requerido=form.requerido.data,
+            external_code=form.html_externo.data,
+            indice=nuevo_indice,
+            creado_por=current_user.usuario,
+            descripcion_html_preformateado=html_preformateado,
+        )
+        try:
+            database.session.add(nuevo_recurso_)
+            database.session.commit()
+            flash(RECURSO_AGREGADO, "success")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+        except OperationalError:
+            flash(ERROR_AL_AGREGAR_CURSO, "warning")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+    return render_template(
+        "learning/resources_new/nuevo_recurso_html.html", id_curso=course_code, id_seccion=seccion, form=form
+    )
+
+
+@resources.route("/course/<course_code>/<seccion>/html/<resource_id>/edit", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("instructor")
+def editar_recurso_html(course_code: str, seccion: str, resource_id: str) -> str | Response:
+    """Formulario para editar un recurso HTML externo."""
+    recurso = database.session.execute(
+        select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
+    ).scalar_one_or_none()
+    if not recurso or recurso.tipo != "html":
+        flash(MSG_RECURSO_NO_ENCONTRADO, "warning")
+        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+
+    form = CursoRecursoExternalCode()
+
+    if form.validate_on_submit() or request.method == "POST":
+        recurso.nombre = form.nombre.data
+        recurso.descripcion = form.descripcion.data
+        recurso.requerido = form.requerido.data
+        recurso.external_code = form.html_externo.data
+        recurso.modificado_por = current_user.usuario
+
+        config = database.session.execute(database.select(Configuracion)).scalars().first()
+        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+            recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
+        else:
+            recurso.descripcion_html_preformateado = False
+
+        try:
+            database.session.commit()
+            flash(MSG_RECURSO_ACTUALIZADO, "success")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+        except OperationalError:
+            flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+
+    form.nombre.data = recurso.nombre
+    form.descripcion.data = recurso.descripcion
+    form.requerido.data = recurso.requerido
+    form.html_externo.data = recurso.external_code
+    form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
+
+    return render_template(
+        "learning/resources_new/editar_recurso_html.html",
+        id_curso=course_code,
+        id_seccion=seccion,
+        recurso=recurso,
+        form=form,
+    )
+
+
 @resources.route("/course/<course_code>/<seccion>/youtube/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -378,7 +475,7 @@ def editar_recurso_youtube_video(course_code: str, seccion: str, resource_id: st
         select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
     ).scalar_one_or_none()
     if not recurso or recurso.tipo != "youtube":
-        flash("Recurso no encontrado.", "warning")
+        flash(MSG_RECURSO_NO_ENCONTRADO, "warning")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
     form = CursoRecursoVideoYoutube()
@@ -399,10 +496,10 @@ def editar_recurso_youtube_video(course_code: str, seccion: str, resource_id: st
 
         try:
             database.session.commit()
-            flash("Recurso actualizado correctamente.", "success")
+            flash(MSG_RECURSO_ACTUALIZADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
-            flash("Hubo un error al actualizar el recurso.", "warning")
+            flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         form.nombre.data = recurso.nombre
@@ -469,7 +566,7 @@ def editar_recurso_text(course_code: str, seccion: str, resource_id: str) -> str
         select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
     ).scalar_one_or_none()
     if not recurso or recurso.tipo != "text":
-        flash("Recurso no encontrado.", "warning")
+        flash(MSG_RECURSO_NO_ENCONTRADO, "warning")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
     form = CursoRecursoArchivoText()
@@ -490,10 +587,10 @@ def editar_recurso_text(course_code: str, seccion: str, resource_id: str) -> str
 
         try:
             database.session.commit()
-            flash("Recurso actualizado correctamente.", "success")
+            flash(MSG_RECURSO_ACTUALIZADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
-            flash("Hubo un error al actualizar el recurso.", "warning")
+            flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         form.nombre.data = recurso.nombre
@@ -558,7 +655,7 @@ def editar_recurso_link(course_code: str, seccion: str, resource_id: str) -> str
         select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
     ).scalar_one_or_none()
     if not recurso or recurso.tipo != "link":
-        flash("Recurso no encontrado.", "warning")
+        flash(MSG_RECURSO_NO_ENCONTRADO, "warning")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
     form = CursoRecursoExternalLink()
@@ -578,10 +675,10 @@ def editar_recurso_link(course_code: str, seccion: str, resource_id: str) -> str
 
         try:
             database.session.commit()
-            flash("Recurso actualizado correctamente.", "success")
+            flash(MSG_RECURSO_ACTUALIZADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
-            flash("Hubo un error al actualizar el recurso.", "warning")
+            flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         form.nombre.data = recurso.nombre
@@ -649,7 +746,7 @@ def editar_recurso_pdf(course_code: str, seccion: str, resource_id: str) -> str 
         select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
     ).scalar_one_or_none()
     if not recurso or recurso.tipo != "pdf":
-        flash("Recurso no encontrado.", "warning")
+        flash(MSG_RECURSO_NO_ENCONTRADO, "warning")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
     form = CursoRecursoArchivoPDF()
@@ -674,10 +771,10 @@ def editar_recurso_pdf(course_code: str, seccion: str, resource_id: str) -> str 
 
         try:
             database.session.commit()
-            flash("Recurso actualizado correctamente.", "success")
+            flash(MSG_RECURSO_ACTUALIZADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
-            flash("Hubo un error al actualizar el recurso.", "warning")
+            flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         form.nombre.data = recurso.nombre
@@ -745,7 +842,7 @@ def editar_recurso_meet(course_code: str, seccion: str, resource_id: str) -> str
         select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
     ).scalar_one_or_none()
     if not recurso or recurso.tipo != "meet":
-        flash("Recurso no encontrado.", "warning")
+        flash(MSG_RECURSO_NO_ENCONTRADO, "warning")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
     form = CursoRecursoMeet()
@@ -770,10 +867,10 @@ def editar_recurso_meet(course_code: str, seccion: str, resource_id: str) -> str
         try:
             database.session.commit()
             update_meet_resource_events(resource_id)
-            flash("Recurso actualizado correctamente.", "success")
+            flash(MSG_RECURSO_ACTUALIZADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
-            flash("Hubo un error al actualizar el recurso.", "warning")
+            flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         form.nombre.data = recurso.nombre
@@ -848,7 +945,7 @@ def editar_recurso_img(course_code: str, seccion: str, resource_id: str) -> str 
         select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
     ).scalar_one_or_none()
     if not recurso or recurso.tipo != "img":
-        flash("Recurso no encontrado.", "warning")
+        flash(MSG_RECURSO_NO_ENCONTRADO, "warning")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
     form = CursoRecursoArchivoImagen()
@@ -875,10 +972,10 @@ def editar_recurso_img(course_code: str, seccion: str, resource_id: str) -> str 
 
         try:
             database.session.commit()
-            flash("Recurso actualizado correctamente.", "success")
+            flash(MSG_RECURSO_ACTUALIZADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
-            flash("Hubo un error al actualizar el recurso.", "warning")
+            flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         form.nombre.data = recurso.nombre
@@ -962,7 +1059,7 @@ def editar_recurso_audio(course_code: str, seccion: str, resource_id: str) -> st
         select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
     ).scalar_one_or_none()
     if not recurso or recurso.tipo != "mp3":
-        flash("Recurso no encontrado.", "warning")
+        flash(MSG_RECURSO_NO_ENCONTRADO, "warning")
         return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
     form = CursoRecursoArchivoAudio()
@@ -999,10 +1096,10 @@ def editar_recurso_audio(course_code: str, seccion: str, resource_id: str) -> st
 
         try:
             database.session.commit()
-            flash("Recurso actualizado correctamente.", "success")
+            flash(MSG_RECURSO_ACTUALIZADO, "success")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
-            flash("Hubo un error al actualizar el recurso.", "warning")
+            flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
     else:
         form.nombre.data = recurso.nombre
@@ -1488,7 +1585,7 @@ def upload_library_file(course_code: str) -> str | Response:
     site_config = get_site_config()
     if not site_config.enable_file_uploads:
         flash("La subida de archivos no está habilitada por el administrador.", "warning")
-        return redirect(url_for(".course_library", course_code=course_code))
+        return redirect(url_for(COURSE_LIBRARY_ENDPOINT, course_code=course_code))
 
     _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
     if not _curso:
@@ -1509,17 +1606,13 @@ def upload_library_file(course_code: str) -> str | Response:
         is_valid, error_msg = validate_downloadable_file(uploaded_file, site_config.max_file_size)
         if not is_valid:
             flash(error_msg, "warning")
-            return render_template(
-                "learning/curso/library_upload.html", curso=_curso, form=form, max_file_size=site_config.max_file_size
-            )
+            return render_template(TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size)
 
         original_filename = uploaded_file.filename or ""
         sanitized_filename = sanitize_filename(original_filename)
         if not sanitized_filename:
             flash("Nombre de archivo inválido.", "warning")
-            return render_template(
-                "learning/curso/library_upload.html", curso=_curso, form=form, max_file_size=site_config.max_file_size
-            )
+            return render_template(TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size)
 
         try:
             library_path = ensure_course_library_directory(course_code)
@@ -1530,7 +1623,7 @@ def upload_library_file(course_code: str) -> str | Response:
             if existing_file:
                 flash(f"Ya existe un archivo con el nombre '{sanitized_filename}' en la biblioteca.", "warning")
                 return render_template(
-                    "learning/curso/library_upload.html", curso=_curso, form=form, max_file_size=site_config.max_file_size
+                    TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size
                 )
 
             destination_path = path.join(library_path, sanitized_filename)
@@ -1552,7 +1645,7 @@ def upload_library_file(course_code: str) -> str | Response:
             database.session.commit()
 
             flash(f"Archivo '{sanitized_filename}' subido exitosamente a la biblioteca del curso.", "success")
-            return redirect(url_for(".course_library", course_code=course_code))
+            return redirect(url_for(COURSE_LIBRARY_ENDPOINT, course_code=course_code))
 
         except Exception as e:
             database.session.rollback()
@@ -1564,13 +1657,9 @@ def upload_library_file(course_code: str) -> str | Response:
                 pass
 
             flash(f"Error al subir el archivo: {str(e)}", "error")
-            return render_template(
-                "learning/curso/library_upload.html", curso=_curso, form=form, max_file_size=site_config.max_file_size
-            )
+            return render_template(TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size)
 
-    return render_template(
-        "learning/curso/library_upload.html", curso=_curso, form=form, max_file_size=site_config.max_file_size
-    )
+    return render_template(TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size)
 
 
 @resources.route("/course/<course_code>/library/file/<filename>")
@@ -1632,7 +1721,7 @@ def delete_library_file(course_code: str, file_id: str) -> Response:
 
     if not library_file:
         flash(_("Archivo no encontrado en la biblioteca."), "warning")
-        return redirect(url_for(".course_library", course_code=course_code))
+        return redirect(url_for(COURSE_LIBRARY_ENDPOINT, course_code=course_code))
 
     try:
         library_path = get_course_library_path(course_code)
@@ -1650,11 +1739,11 @@ def delete_library_file(course_code: str, file_id: str) -> Response:
         database.session.rollback()
         flash(f"Error al eliminar el archivo: {str(e)}", "error")
 
-    return redirect(url_for(".course_library", course_code=course_code))
+    return redirect(url_for(COURSE_LIBRARY_ENDPOINT, course_code=course_code))
 
 
 # Calendarios para recursos meet
-def _generate_meet_ics_content(recurso: Any, course_obj: Any) -> str:
+def _generate_meet_ics_content(recurso: Any) -> str:
     lines = [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
@@ -1675,7 +1764,7 @@ def _generate_meet_ics_content(recurso: Any, course_obj: Any) -> str:
 
         lines.extend(
             [
-                f"BEGIN:VEVENT",
+                "BEGIN:VEVENT",
                 f"DTSTART:{start_str}",
                 f"DTEND:{end_str}",
                 f"SUMMARY:{recurso.nombre}",
@@ -1704,10 +1793,6 @@ def download_meet_calendar(course_code: str, codigo: str) -> Response:
     if not recurso:
         abort(404)
 
-    course_obj = database.session.execute(database.select(Curso).filter(Curso.codigo == course_code)).scalars().first()
-    if not course_obj:
-        abort(404)
-
     if current_user.is_authenticated:
         if current_user.tipo in ("admin", "instructor"):
             show_resource = True
@@ -1721,7 +1806,7 @@ def download_meet_calendar(course_code: str, codigo: str) -> Response:
     if not (show_resource or recurso.publico):
         abort(403)
 
-    ics_content = _generate_meet_ics_content(recurso, course_obj)
+    ics_content = _generate_meet_ics_content(recurso)
     filename = f"meet-{recurso.nombre[:20].replace(' ', '-')}-{recurso.id}.ics"
     return Response(
         ics_content,
@@ -1791,7 +1876,7 @@ def google_calendar_link(course_code: str, codigo: str) -> Response:
         return redirect(google_url)
 
     flash("No se puede crear el evento: faltan datos de fecha/hora", "error")
-    return redirect(url_for(".pagina_recurso", curso_id=course_code, resource_type=recurso.tipo, codigo=codigo))
+    return redirect(url_for(PAGINA_RECURSO_ENDPOINT, curso_id=course_code, resource_type=recurso.tipo, codigo=codigo))
 
 
 @resources.route("/course/<course_code>/resource/meet/<codigo>/outlook-calendar")
@@ -1856,4 +1941,4 @@ def outlook_calendar_link(course_code: str, codigo: str) -> str | Response:
         return redirect(outlook_url)
 
     flash("No se puede crear el evento: faltan datos de fecha/hora", "error")
-    return redirect(url_for(".pagina_recurso", curso_id=course_code, resource_type=recurso.tipo, codigo=codigo))
+    return redirect(url_for(PAGINA_RECURSO_ENDPOINT, curso_id=course_code, resource_type=recurso.tipo, codigo=codigo))

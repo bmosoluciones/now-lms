@@ -1,3 +1,17 @@
+# Copyright 2025 BMO Soluciones, S.A.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 """Acciones y rutas auxiliares para gestión de cursos."""
 
 from __future__ import annotations
@@ -24,7 +38,6 @@ from now_lms.bi import (
     reorganiza_indice_seccion,
 )
 from now_lms.db import CursoRecurso, CursoSeccion, database
-from now_lms.db import select as db_select
 from now_lms.vistas.courses.base import course, VISTA_ADMINISTRAR_CURSO, VISTA_CURSOS
 
 
@@ -87,6 +100,17 @@ def eliminar_seccion(curso_id: str, id_: str) -> Response:
     database.session.commit()
     reorganiza_indice_curso(codigo_curso=curso_id)
     return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=curso_id))
+
+
+@course.route("/course/<course_code>/delete_logo")
+@login_required
+@perfil_requerido("instructor")
+def elimina_logo(course_code: str) -> Response:
+    """Elimina el logotipo personalizado de un curso."""
+    from now_lms.db.tools import elimina_logo_perzonalizado_curso
+
+    elimina_logo_perzonalizado_curso(course_code=course_code)
+    return redirect(url_for("course.editar_curso", course_code=course_code))
 
 
 @course.route("/course/change_curse_status")
