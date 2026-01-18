@@ -5,780 +5,772 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
 
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
-    <head>
-        {{ current_theme.headertags() }}
-        <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
 
-        {{ current_theme.local_style() }}
-        
-        <style>
-        .player-container {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #8e44ad 100%);
-            color: white;
-            padding: 2rem;
-            border-radius: 20px;
-            min-height: 400px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .player-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-                        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
-            z-index: 1;
-        }
-        
-        .player-container > * {
-            position: relative;
-            z-index: 2;
-        }
-        
-        .lyrics-container {
-            text-align: center;
-            margin: 2rem 0;
-            min-height: 240px;
-            height: 240px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-        }
-        
-        .lyrics {
-            font-size: 1.1rem;
-            margin: 0.5rem 0;
-            transition: all 0.3s ease;
-            opacity: 0.5;
-        }
-        
-        .lyrics.active {
-            font-size: 1.4rem;
-            font-weight: 600;
-            opacity: 1;
-            color: white;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .lyrics-secondary {
-            font-size: 0.95rem;
-            margin: 0.3rem 0;
-            transition: all 0.3s ease;
-            opacity: 0.6;
-            font-style: italic;
-            color: rgba(255,255,255,0.8);
-            background: rgba(0,0,0,0.3);
-            padding: 0.2rem 0.8rem;
-            border-radius: 8px;
-            display: inline-block;
-        }
-        
-        .lyrics-secondary.active {
-            font-size: 1.0rem;
-            opacity: 0.9;
-            color: rgba(255,255,255,0.95);
-            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
-            background: rgba(0,0,0,0.4);
-        }
-        
-        .lyrics-secondary::before {
-            content: "(";
-            opacity: 0.6;
-        }
-        
-        .lyrics-secondary::after {
-            content: ")";
-            opacity: 0.6;
-        }
-        
-        .progress-container {
-            position: relative;
-            height: 6px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 3px;
-            cursor: pointer;
-            margin: 1rem 0;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #ff6b6b, #ffd93d);
-            border-radius: 3px;
-            transition: width 0.1s ease;
-        }
-        
-        .progress-dot {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 16px;
-            height: 16px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            transition: left 0.1s ease;
-            cursor: pointer;
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            align-items: center;
-        }
-        
-        .controls button {
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.2);
-            color: white;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-        
-        .controls button:hover {
-            background: rgba(255,255,255,0.2);
-            border-color: rgba(255,255,255,0.4);
-            transform: scale(1.1);
-        }
-        
-        .controls button#playPause {
-            width: 70px;
-            height: 70px;
-            font-size: 1.5rem;
-        }
-        
-        .controls button i {
-            font-size: 1.2rem;
-        }
-        
-        .controls button#playPause i {
-            font-size: 1.8rem;
-        }
-        
-        .small {
-            color: rgba(255,255,255,0.8);
-        }
-        
-        .control-row {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
-        
-        .control-group {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem;
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .control-label {
-            color: rgba(255,255,255,0.9);
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-right: 0.25rem;
-        }
-        
-        .speed-btn, .zoom-btn {
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.2);
-            color: white;
-            border-radius: 6px;
-            padding: 0.3rem 0.6rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            font-size: 0.85rem;
-            min-width: 45px;
-        }
-        
-        .speed-btn:hover, .zoom-btn:hover {
-            background: rgba(255,255,255,0.2);
-            border-color: rgba(255,255,255,0.4);
-            transform: scale(1.05);
-        }
-        
-        .speed-btn.active {
-            background: linear-gradient(90deg, #ff6b6b, #ffd93d);
-            border-color: rgba(255,255,255,0.5);
-            font-weight: 600;
-        }
-        
-        .zoom-btn {
-            width: 35px;
-            height: 35px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-        }
-        </style>
-    </head>
+<head>
+  {{ current_theme.headertags() }}
+  <title>{{ curso.codigo | upper }} - {{ curso.nombre | title }}</title>
 
-    <body>
-        {{ current_theme.navbar() }}
+  {{ current_theme.local_style() }}
 
-        <main>
-            {{ current_theme.notify() }}
+  <style>
+    .player-container {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #8e44ad 100%);
+      color: white;
+      padding: 2rem;
+      border-radius: 20px;
+      min-height: 400px;
+      position: relative;
+      overflow: hidden;
+    }
 
-            <div class="container px-0 py-3" id="icon-grid">
-                <h4 class="pb-2 border-bottom">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item">
-                                <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
-                                    >{{ _("Inicio") }}</a
-                                >
-                            </li>
-                            <li class="breadcrumb-item">
-                                <a
-                                    class="text-reset text-decoration-none link-dark"
-                                    href="{{ url_for('course.curso', course_code=curso.codigo) }}"
-                                    >{{ curso.nombre }}</a
-                                >
-                            </li>
-                            <li class="breadcrumb-item">{{ recurso.nombre }}</li>
-                        </ol>
-                    </nav>
-                </h4>
+    .player-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+      z-index: 1;
+    }
 
-                <div class="row">
-                    <div class="col-sm-8">
-                        <div id="audio_player_container" class="mb-4">
-                            <!-- Enhanced Audio Player for all audio files -->
-                            <div class="player-container">
-                                <audio id="player" style="display: none;">
-                                    <source
-                                        src="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
-                                        type="{% if recurso.doc.endswith('.mp3') %}audio/mpeg{% elif recurso.doc.endswith('.wav') %}audio/wav{% else %}audio/ogg{% endif %}"
-                                    />
-                                    {% if recurso.subtitle_vtt %}
-                                    <track 
-                                        kind="subtitles" 
-                                        src="{{ url_for('course.recurso_vtt', recurso_code=recurso.id, course_code=recurso.curso) }}" 
-                                        srclang="{{ current_locale() }}" 
-                                        label="Español"
-                                        default>
-                                    {% endif %}
-                                    {% if recurso.subtitle_vtt_secondary %}
-                                    <track 
-                                        kind="subtitles" 
-                                        src="{{ url_for('course.recurso_vtt_secondary', recurso_code=recurso.id, course_code=recurso.curso) }}" 
-                                        srclang="es-sec" 
-                                        label="Secundario">
-                                    {% endif %}
-                                    {{_("Su navegador no soporta el elemento de audio")}}.
-                                </audio>
-                                
-                                <h6 class="text-muted">{{ recurso.nombre | title }}</h6>
-                                <h6 class="text-muted">{{ curso.nombre | title }}</h6>
+    .player-container>* {
+      position: relative;
+      z-index: 2;
+    }
 
-                                <!-- Lyrics Display Area - show empty initially -->
-                                {% if recurso.subtitle_vtt or recurso.subtitle_vtt_secondary %}
-                                <div id="lyrics-container" class="lyrics-container">
-                                    <!-- Empty initially, will be populated during playback -->
-                                </div>
-                                {% else %}
-                                <div id="lyrics-container" class="lyrics-container">
-                                    <div class="lyrics text-muted">Reproductor de audio</div>
-                                    <div class="lyrics active">{{ recurso.nombre | title }}</div>
-                                </div>
-                                {% endif %}
+    .lyrics-container {
+      text-align: center;
+      margin: 2rem 0;
+      min-height: 240px;
+      height: 240px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
 
-                                <!-- Progress and Time -->
-                                <div class="d-flex justify-content-between small mt-4">
-                                    <span id="currentTime">0:00</span>
-                                    <span id="duration">0:00</span>
-                                </div>
-                                <div class="progress-container">
-                                    <div class="progress-bar" id="progressBar" style="width:0%"></div>
-                                    <div class="progress-dot" id="progressDot"></div>
-                                </div>
+    .lyrics {
+      font-size: 1.1rem;
+      margin: 0.5rem 0;
+      transition: all 0.3s ease;
+      opacity: 0.5;
+    }
 
-                                <!-- Controls -->
-                                <div class="controls mt-3">
-                                    <button id="rewind5" title="Retroceder 5 segundos"><i class="bi bi-rewind"></i></button>
-                                    <button id="prev" title="Retroceder 10 segundos"><i class="bi bi-skip-backward-fill"></i></button>
-                                    <button id="playPause" title="Reproducir/Pausar"><i class="bi bi-play-fill"></i></button>
-                                    <button id="next" title="Avanzar 10 segundos"><i class="bi bi-skip-forward-fill"></i></button>
-                                    <button id="forward5" title="Avanzar 5 segundos"><i class="bi bi-fast-forward"></i></button>
-                                </div>
-                                
-                                <!-- Additional Controls Row -->
-                                <div class="control-row">
-                                    <!-- Playback Speed Control -->
-                                    <div class="control-group">
-                                        <span class="control-label">Velocidad:</span>
-                                        <button class="speed-btn" data-speed="0.5">0.5x</button>
-                                        <button class="speed-btn" data-speed="0.75">0.75x</button>
-                                        <button class="speed-btn active" data-speed="1">1x</button>
-                                        <button class="speed-btn" data-speed="1.5">1.5x</button>
-                                        <button class="speed-btn" data-speed="2">2x</button>
-                                    </div>
-                                    
-                                    {% if recurso.subtitle_vtt or recurso.subtitle_vtt_secondary %}
-                                    <!-- Text Size Control (only show if subtitles are available) -->
-                                    <div class="control-group">
-                                        <span class="control-label">Tamaño texto:</span>
-                                        <button class="zoom-btn" id="zoomOut" title="Reducir tamaño de texto"><i class="bi bi-zoom-out"></i></button>
-                                        <button class="zoom-btn" id="zoomIn" title="Aumentar tamaño de texto"><i class="bi bi-zoom-in"></i></button>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
+    .lyrics.active {
+      font-size: 1.4rem;
+      font-weight: 600;
+      opacity: 1;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
 
-                        <div id="download" class="d-flex justify-content-around">
-                            <a
-                                type="button"
-                                class="btn btn-success"
-                                id="download"
-                                href="{{ url_for('course.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
-                            >
-                                <i class="bi bi-soundwave" aria-hidden="true"></i>
-                                Descargar Audio
-                            </a>
-                        </div>
+    .lyrics-secondary {
+      font-size: 0.95rem;
+      margin: 0.3rem 0;
+      transition: all 0.3s ease;
+      opacity: 0.6;
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.8);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.2rem 0.8rem;
+      border-radius: 8px;
+      display: inline-block;
+    }
 
-                        <div>
-                            {% if recurso.descripcion_html_preformateado %}
-                                {{ recurso.descripcion | safe }}
-                            {% else %}
-                                {{ markdown2html(recurso.descripcion) | safe }}
-                            {% endif %}
-                        </div>
+    .lyrics-secondary.active {
+      font-size: 1.0rem;
+      opacity: 0.9;
+      color: rgba(255, 255, 255, 0.95);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.4);
+    }
 
-                        <!-- AdSense Ad after resource description for free courses -->
-                        {% if adsense_enabled() and not curso.pagado %} {% set ad_code = ad_large_rectangle() %} {% if ad_code
-                        %}
-                        <div class="mt-4 mb-4" style="text-align: center">
-                            <small class="text-muted">Publicidad</small>
-                            {{ ad_code | safe }}
-                        </div>
-                        {% endif %} {% endif %}
-                    </div>
+    .lyrics-secondary::before {
+      content: "(";
+      opacity: 0.6;
+    }
 
-                    <div class="col-sm-4">
-                        {{ r_macros.resource_nav(recursos=recursos, secciones=secciones, user_progress=user_progress,
-                        evaluaciones=evaluaciones, evaluation_attempts=evaluation_attempts) }}
-                    </div>
+    .lyrics-secondary::after {
+      content: ")";
+      opacity: 0.6;
+    }
+
+    .progress-container {
+      position: relative;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      cursor: pointer;
+      margin: 1rem 0;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #ff6b6b, #ffd93d);
+      border-radius: 3px;
+      transition: width 0.1s ease;
+    }
+
+    .progress-dot {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      transition: left 0.1s ease;
+      cursor: pointer;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .controls button {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .controls button:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: scale(1.1);
+    }
+
+    .controls button#playPause {
+      width: 70px;
+      height: 70px;
+      font-size: 1.5rem;
+    }
+
+    .controls button i {
+      font-size: 1.2rem;
+    }
+
+    .controls button#playPause i {
+      font-size: 1.8rem;
+    }
+
+    .small {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .control-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      backdrop-filter: blur(10px);
+    }
+
+    .control-label {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-right: 0.25rem;
+    }
+
+    .speed-btn,
+    .zoom-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      border-radius: 6px;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      font-size: 0.85rem;
+      min-width: 45px;
+    }
+
+    .speed-btn:hover,
+    .zoom-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: scale(1.05);
+    }
+
+    .speed-btn.active {
+      background: linear-gradient(90deg, #ff6b6b, #ffd93d);
+      border-color: rgba(255, 255, 255, 0.5);
+      font-weight: 600;
+    }
+
+    .zoom-btn {
+      width: 35px;
+      height: 35px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+  </style>
+</head>
+
+<body>
+  {{ current_theme.navbar() }}
+
+  <main>
+    {{ current_theme.notify() }}
+
+    <div class="container px-0 py-3" id="icon-grid">
+      <h4 class="pb-2 border-bottom">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a class="text-reset text-decoration-none link-dark"
+                href="{{ url_for('home.panel') }}">{{ _("Inicio") }}</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a class="text-reset text-decoration-none link-dark"
+                href="{{ url_for('course.curso', course_code=curso.codigo) }}">{{ curso.nombre }}</a>
+            </li>
+            <li class="breadcrumb-item">{{ recurso.nombre }}</li>
+          </ol>
+        </nav>
+      </h4>
+
+      <div class="row">
+        <div class="col-sm-8">
+          <div id="audio_player_container" class="mb-4">
+            <!-- Enhanced Audio Player for all audio files -->
+            <div class="player-container">
+              <audio id="player" style="display: none;">
+                <source
+                  src="{{ url_for('resources.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}"
+                  type="{% if recurso.doc.endswith('.mp3') %}audio/mpeg{% elif recurso.doc.endswith('.wav') %}audio/wav{% else %}audio/ogg{% endif %}" />
+                {% if recurso.subtitle_vtt %}
+                <track kind="subtitles"
+                  src="{{ url_for('resources.recurso_vtt', recurso_code=recurso.id, course_code=recurso.curso) }}"
+                  srclang="{{ current_locale() }}" label="Español" default>
+                {% endif %}
+                {% if recurso.subtitle_vtt_secondary %}
+                <track kind="subtitles"
+                  src="{{ url_for('resources.recurso_vtt_secondary', recurso_code=recurso.id, course_code=recurso.curso) }}"
+                  srclang="es-sec" label="Secundario">
+                {% endif %}
+                {{_("Su navegador no soporta el elemento de audio")}}.
+              </audio>
+
+              <h6 class="text-muted">{{ recurso.nombre | title }}</h6>
+              <h6 class="text-muted">{{ curso.nombre | title }}</h6>
+
+              <!-- Lyrics Display Area - show empty initially -->
+              {% if recurso.subtitle_vtt or recurso.subtitle_vtt_secondary %}
+              <div id="lyrics-container" class="lyrics-container">
+                <!-- Empty initially, will be populated during playback -->
+              </div>
+              {% else %}
+              <div id="lyrics-container" class="lyrics-container">
+                <div class="lyrics text-muted">Reproductor de audio</div>
+                <div class="lyrics active">{{ recurso.nombre | title }}</div>
+              </div>
+              {% endif %}
+
+              <!-- Progress and Time -->
+              <div class="d-flex justify-content-between small mt-4">
+                <span id="currentTime">0:00</span>
+                <span id="duration">0:00</span>
+              </div>
+              <div class="progress-container">
+                <div class="progress-bar" id="progressBar" style="width:0%"></div>
+                <div class="progress-dot" id="progressDot"></div>
+              </div>
+
+              <!-- Controls -->
+              <div class="controls mt-3">
+                <button id="rewind5" title="Retroceder 5 segundos"><i class="bi bi-rewind"></i></button>
+                <button id="prev" title="Retroceder 10 segundos"><i class="bi bi-skip-backward-fill"></i></button>
+                <button id="playPause" title="Reproducir/Pausar"><i class="bi bi-play-fill"></i></button>
+                <button id="next" title="Avanzar 10 segundos"><i class="bi bi-skip-forward-fill"></i></button>
+                <button id="forward5" title="Avanzar 5 segundos"><i class="bi bi-fast-forward"></i></button>
+              </div>
+
+              <!-- Additional Controls Row -->
+              <div class="control-row">
+                <!-- Playback Speed Control -->
+                <div class="control-group">
+                  <span class="control-label">Velocidad:</span>
+                  <button class="speed-btn" data-speed="0.5">0.5x</button>
+                  <button class="speed-btn" data-speed="0.75">0.75x</button>
+                  <button class="speed-btn active" data-speed="1">1x</button>
+                  <button class="speed-btn" data-speed="1.5">1.5x</button>
+                  <button class="speed-btn" data-speed="2">2x</button>
                 </div>
+
+                {% if recurso.subtitle_vtt or recurso.subtitle_vtt_secondary %}
+                <!-- Text Size Control (only show if subtitles are available) -->
+                <div class="control-group">
+                  <span class="control-label">Tamaño texto:</span>
+                  <button class="zoom-btn" id="zoomOut" title="Reducir tamaño de texto"><i
+                      class="bi bi-zoom-out"></i></button>
+                  <button class="zoom-btn" id="zoomIn" title="Aumentar tamaño de texto"><i
+                      class="bi bi-zoom-in"></i></button>
+                </div>
+                {% endif %}
+              </div>
             </div>
+          </div>
 
-            {{ r_macros.nav_footer(indice=indice, curso=recurso.curso, type=recurso.tipo, codigo=recurso.id,
-            recurso_completado=recurso_completado) }}
-        </main>
+          <div id="download" class="d-flex justify-content-around">
+            <a type="button" class="btn btn-success" id="download"
+              href="{{ url_for('resources.recurso_file', recurso_code=recurso.id, course_code=recurso.curso) }}">
+              <i class="bi bi-soundwave" aria-hidden="true"></i>
+              Descargar Audio
+            </a>
+          </div>
 
-        <script>
-        document.addEventListener("DOMContentLoaded", () => {
-          const audio = document.getElementById("player");
-          const playPauseBtn = document.getElementById("playPause");
-          const progressBar = document.getElementById("progressBar");
-          const progressDot = document.getElementById("progressDot");
-          const currentTimeEl = document.getElementById("currentTime");
-          const durationEl = document.getElementById("duration");
-          const lyricsContainer = document.getElementById("lyrics-container");
-          
-          let isPlaying = false;
-          let currentLyrics = [];
-          let currentLyricsSecondary = [];
-          let currentFontSizeMultiplier = 1.0; // Track current font size multiplier
-
-          // Load VTT and parse cues for both tracks
-          {% if recurso.subtitle_vtt %}
-          let track = audio.textTracks[0];
-          if (track) {
-            track.mode = "hidden";
-            track.addEventListener("cuechange", () => {
-              updateLyrics();
-            });
-          }
-          {% endif %}
-
-          {% if recurso.subtitle_vtt_secondary %}
-          {% if recurso.subtitle_vtt %}
-          let trackSecondary = audio.textTracks[1];
-          {% else %}
-          let trackSecondary = audio.textTracks[0];
-          {% endif %}
-          if (trackSecondary) {
-            trackSecondary.mode = "hidden";
-            trackSecondary.addEventListener("cuechange", () => {
-              updateLyrics();
-            });
-          }
-          {% endif %}
-
-          // Parse primary VTT content
-          async function loadLyrics() {
-            {% if recurso.subtitle_vtt %}
-            try {
-              const response = await fetch("{{ url_for('course.recurso_vtt', recurso_code=recurso.id, course_code=recurso.curso) }}");
-              if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-              }
-              const vttText = await response.text();
-              console.log('Primary VTT loaded:', vttText.length, 'characters');
-              
-              currentLyrics = parseVttContent(vttText);
-              console.log('Primary lyrics parsed:', currentLyrics.length, 'entries');
-              
-              // Log first few entries for debugging
-              if (currentLyrics.length > 0) {
-                console.log('First primary lyric:', currentLyrics[0]);
-              }
-            } catch (error) {
-              console.error('Could not load primary lyrics:', error);
-              currentLyrics = [];
-            }
-            {% endif %}
-
-            {% if recurso.subtitle_vtt_secondary %}
-            try {
-              const responseSecondary = await fetch("{{ url_for('course.recurso_vtt_secondary', recurso_code=recurso.id, course_code=recurso.curso) }}");
-              if (!responseSecondary.ok) {
-                throw new Error(`HTTP ${responseSecondary.status}: ${responseSecondary.statusText}`);
-              }
-              const vttTextSecondary = await responseSecondary.text();
-              console.log('Secondary VTT loaded:', vttTextSecondary.length, 'characters');
-              
-              currentLyricsSecondary = parseVttContent(vttTextSecondary);
-              console.log('Secondary lyrics parsed:', currentLyricsSecondary.length, 'entries');
-              
-              // Log first few entries for debugging
-              if (currentLyricsSecondary.length > 0) {
-                console.log('First secondary lyric:', currentLyricsSecondary[0]);
-              }
-            } catch (error) {
-              console.error('Could not load secondary lyrics:', error);
-              currentLyricsSecondary = [];
-            }
-            {% endif %}
-          }
-
-          function parseVttContent(vttText) {
-            const lyrics = [];
-            const lines = vttText.split('\n');
-            
-            let i = 0;
-            while (i < lines.length) {
-              const line = lines[i].trim();
-              
-              // Skip empty lines and metadata
-              if (!line || line.startsWith('WEBVTT') || line.startsWith('NOTE')) {
-                i++;
-                continue;
-              }
-              
-              // Check if this line contains timing info
-              if (line.includes(' --> ')) {
-                try {
-                  const [startStr, endStr] = line.split(' --> ');
-                  const startTime = parseTimeToSeconds(startStr.trim());
-                  const endTime = parseTimeToSeconds(endStr.trim());
-                  
-                  // Collect subtitle text (may span multiple lines)
-                  const textLines = [];
-                  i++;
-                  
-                  while (i < lines.length && lines[i].trim() && !lines[i].includes(' --> ')) {
-                    const textLine = lines[i].trim();
-                    if (textLine) {
-                      textLines.push(textLine);
-                    }
-                    i++;
-                  }
-                  
-                  if (textLines.length > 0) {
-                    const text = textLines.join(' ');
-                    lyrics.push({
-                      start: startTime,
-                      end: endTime,
-                      text: text
-                    });
-                  }
-                  
-                  continue;
-                  
-                } catch (error) {
-                  console.warn('Error parsing timing line:', line, error);
-                }
-              }
-              
-              i++;
-            }
-            
-            return lyrics;
-          }
-
-          function parseTimeToSeconds(timeStr) {
-            timeStr = timeStr.trim();
-            
-            // Handle milliseconds
-            let milliseconds = 0;
-            if (timeStr.includes('.')) {
-              const [timePart, msPart] = timeStr.split('.');
-              timeStr = timePart;
-              milliseconds = parseFloat('0.' + msPart) || 0;
-            }
-            
-            const parts = timeStr.split(':');
-            
-            if (parts.length === 3) {  // HH:MM:SS
-              const hours = parseInt(parts[0]) || 0;
-              const minutes = parseInt(parts[1]) || 0;
-              const seconds = parseInt(parts[2]) || 0;
-              return hours * 3600 + minutes * 60 + seconds + milliseconds;
-            } else if (parts.length === 2) {  // MM:SS
-              const minutes = parseInt(parts[0]) || 0;
-              const seconds = parseInt(parts[1]) || 0;
-              return minutes * 60 + seconds + milliseconds;
-            } else {
-              console.warn('Invalid time format:', timeStr);
-              return 0;
-            }
-          }
-
-          function findActiveSubtitle(lyrics, currentTime) {
-            for (let i = 0; i < lyrics.length; i++) {
-              if (currentTime >= lyrics[i].start && currentTime <= lyrics[i].end) {
-                return i;
-              }
-            }
-            return -1;
-          }
-
-          function updateLyrics() {
-            {% if recurso.subtitle_vtt or recurso.subtitle_vtt_secondary %}
-            const currentTime = audio.currentTime;
-            
-            // Debug logging (can be enabled for troubleshooting)
-            const debug = false;
-            if (debug) {
-              console.log(`Current time: ${currentTime.toFixed(3)}s`);
-            }
-            
-            // Find active subtitles for both tracks
-            const activeIndex = findActiveSubtitle(currentLyrics, currentTime);
-            const activeIndexSecondary = findActiveSubtitle(currentLyricsSecondary, currentTime);
-
-            if (debug) {
-              console.log(`Active indices - Primary: ${activeIndex}, Secondary: ${activeIndexSecondary}`);
-            }
-
-            // Build context lines for display
-            const contextLines = [];
-            
-            // Determine which tracks we have and show appropriate context
-            const hasPrimary = currentLyrics.length > 0;
-            const hasSecondary = currentLyricsSecondary.length > 0;
-            
-            if (hasPrimary && hasSecondary) {
-              // Both tracks available - show only current line for both tracks for easier reading
-              const primaryContext = getContextLines(currentLyrics, activeIndex, 'primary', true); // true = only current
-              const secondaryContext = getContextLines(currentLyricsSecondary, activeIndexSecondary, 'secondary', true); // true = only current
-              
-              // Show both tracks with clear separation
-              if (primaryContext.length > 0) {
-                contextLines.push(...primaryContext);
-              }
-              if (secondaryContext.length > 0) {
-                contextLines.push(...secondaryContext);
-              }
-            } else if (hasPrimary) {
-              // Only primary track - show karaoke effect with context (previous, current, next)
-              contextLines.push(...getContextLines(currentLyrics, activeIndex, 'primary'));
-            } else if (hasSecondary) {
-              // Only secondary track - show karaoke effect with context (previous, current, next)
-              contextLines.push(...getContextLines(currentLyricsSecondary, activeIndexSecondary, 'secondary'));
-            }
-
-            // Update display
-            lyricsContainer.innerHTML = '';
-            if (contextLines.length > 0) {
-              contextLines.forEach(line => {
-                const div = document.createElement('div');
-                if (line.type === 'secondary') {
-                  div.className = `lyrics-secondary ${line.active ? 'active' : ''}`;
-                } else {
-                  div.className = `lyrics ${line.active ? 'active' : ''}`;
-                }
-                div.textContent = line.text;
-                lyricsContainer.appendChild(div);
-              });
-            } else {
-              // Keep container empty when no subtitles are active
-              lyricsContainer.innerHTML = '';
-            }
+          <div>
+            {% if recurso.descripcion_html_preformateado %}
+            {{ recurso.descripcion | safe }}
             {% else %}
-            // For files without subtitles, no lyrics update needed
-            // The static message is already shown in the template
+            {{ markdown2html(recurso.descripcion) | safe }}
             {% endif %}
+          </div>
+
+          <!-- AdSense Ad after resource description for free courses -->
+          {% if adsense_enabled() and not curso.pagado %} {% set ad_code = ad_large_rectangle() %} {% if ad_code
+                        %}
+          <div class="mt-4 mb-4" style="text-align: center">
+            <small class="text-muted">Publicidad</small>
+            {{ ad_code | safe }}
+          </div>
+          {% endif %} {% endif %}
+        </div>
+
+        <div class="col-sm-4">
+          {{ r_macros.resource_nav(recursos=recursos, secciones=secciones, user_progress=user_progress,
+                        evaluaciones=evaluaciones, evaluation_attempts=evaluation_attempts) }}
+        </div>
+      </div>
+    </div>
+
+    {{ r_macros.nav_footer(indice=indice, curso=recurso.curso, type=recurso.tipo, codigo=recurso.id,
+            recurso_completado=recurso_completado) }}
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const audio = document.getElementById("player");
+      const playPauseBtn = document.getElementById("playPause");
+      const progressBar = document.getElementById("progressBar");
+      const progressDot = document.getElementById("progressDot");
+      const currentTimeEl = document.getElementById("currentTime");
+      const durationEl = document.getElementById("duration");
+      const lyricsContainer = document.getElementById("lyrics-container");
+
+      let isPlaying = false;
+      let currentLyrics = [];
+      let currentLyricsSecondary = [];
+      let currentFontSizeMultiplier = 1.0; // Track current font size multiplier
+
+      // Load VTT and parse cues for both tracks
+      {% if recurso.subtitle_vtt %}
+      let track = audio.textTracks[0];
+      if (track) {
+        track.mode = "hidden";
+        track.addEventListener("cuechange", () => {
+          updateLyrics();
+        });
+      }
+      {% endif %}
+
+      {% if recurso.subtitle_vtt_secondary %}
+      {% if recurso.subtitle_vtt %}
+      let trackSecondary = audio.textTracks[1];
+      {% else %}
+      let trackSecondary = audio.textTracks[0];
+      {% endif %}
+      if (trackSecondary) {
+        trackSecondary.mode = "hidden";
+        trackSecondary.addEventListener("cuechange", () => {
+          updateLyrics();
+        });
+      }
+      {% endif %}
+
+      // Parse primary VTT content
+      async function loadLyrics() {
+        {% if recurso.subtitle_vtt %}
+        try {
+          const response = await fetch("{{ url_for('resources.recurso_vtt', recurso_code=recurso.id, course_code=recurso.curso) }}");
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          const vttText = await response.text();
+          console.log('Primary VTT loaded:', vttText.length, 'characters');
+
+          currentLyrics = parseVttContent(vttText);
+          console.log('Primary lyrics parsed:', currentLyrics.length, 'entries');
+
+          // Log first few entries for debugging
+          if (currentLyrics.length > 0) {
+            console.log('First primary lyric:', currentLyrics[0]);
+          }
+        } catch (error) {
+          console.error('Could not load primary lyrics:', error);
+          currentLyrics = [];
+        }
+        {% endif %}
+
+        {% if recurso.subtitle_vtt_secondary %}
+        try {
+          const responseSecondary = await fetch("{{ url_for('resources.recurso_vtt_secondary', recurso_code=recurso.id, course_code=recurso.curso) }}");
+          if (!responseSecondary.ok) {
+            throw new Error(`HTTP ${responseSecondary.status}: ${responseSecondary.statusText}`);
+          }
+          const vttTextSecondary = await responseSecondary.text();
+          console.log('Secondary VTT loaded:', vttTextSecondary.length, 'characters');
+
+          currentLyricsSecondary = parseVttContent(vttTextSecondary);
+          console.log('Secondary lyrics parsed:', currentLyricsSecondary.length, 'entries');
+
+          // Log first few entries for debugging
+          if (currentLyricsSecondary.length > 0) {
+            console.log('First secondary lyric:', currentLyricsSecondary[0]);
+          }
+        } catch (error) {
+          console.error('Could not load secondary lyrics:', error);
+          currentLyricsSecondary = [];
+        }
+        {% endif %}
+      }
+
+      function parseVttContent(vttText) {
+        const lyrics = [];
+        const lines = vttText.split('\n');
+
+        let i = 0;
+        while (i < lines.length) {
+          const line = lines[i].trim();
+
+          // Skip empty lines and metadata
+          if (!line || line.startsWith('WEBVTT') || line.startsWith('NOTE')) {
+            i++;
+            continue;
           }
 
-          function getContextLines(lyrics, activeIndex, type, onlyCurrentLine = false) {
-            const contextLines = [];
-            if (lyrics.length === 0 || activeIndex === -1) {
-              return contextLines;
+          // Check if this line contains timing info
+          if (line.includes(' --> ')) {
+            try {
+              const [startStr, endStr] = line.split(' --> ');
+              const startTime = parseTimeToSeconds(startStr.trim());
+              const endTime = parseTimeToSeconds(endStr.trim());
+
+              // Collect subtitle text (may span multiple lines)
+              const textLines = [];
+              i++;
+
+              while (i < lines.length && lines[i].trim() && !lines[i].includes(' --> ')) {
+                const textLine = lines[i].trim();
+                if (textLine) {
+                  textLines.push(textLine);
+                }
+                i++;
+              }
+
+              if (textLines.length > 0) {
+                const text = textLines.join(' ');
+                lyrics.push({
+                  start: startTime,
+                  end: endTime,
+                  text: text
+                });
+              }
+
+              continue;
+
+            } catch (error) {
+              console.warn('Error parsing timing line:', line, error);
             }
-            
-            if (onlyCurrentLine) {
-              // For secondary track when both tracks exist - show only current line
+          }
+
+          i++;
+        }
+
+        return lyrics;
+      }
+
+      function parseTimeToSeconds(timeStr) {
+        timeStr = timeStr.trim();
+
+        // Handle milliseconds
+        let milliseconds = 0;
+        if (timeStr.includes('.')) {
+          const [timePart, msPart] = timeStr.split('.');
+          timeStr = timePart;
+          milliseconds = parseFloat('0.' + msPart) || 0;
+        }
+
+        const parts = timeStr.split(':');
+
+        if (parts.length === 3) {  // HH:MM:SS
+          const hours = parseInt(parts[0]) || 0;
+          const minutes = parseInt(parts[1]) || 0;
+          const seconds = parseInt(parts[2]) || 0;
+          return hours * 3600 + minutes * 60 + seconds + milliseconds;
+        } else if (parts.length === 2) {  // MM:SS
+          const minutes = parseInt(parts[0]) || 0;
+          const seconds = parseInt(parts[1]) || 0;
+          return minutes * 60 + seconds + milliseconds;
+        } else {
+          console.warn('Invalid time format:', timeStr);
+          return 0;
+        }
+      }
+
+      function findActiveSubtitle(lyrics, currentTime) {
+        for (let i = 0; i < lyrics.length; i++) {
+          if (currentTime >= lyrics[i].start && currentTime <= lyrics[i].end) {
+            return i;
+          }
+        }
+        return -1;
+      }
+
+      function updateLyrics() {
+        {% if recurso.subtitle_vtt or recurso.subtitle_vtt_secondary %}
+        const currentTime = audio.currentTime;
+
+        // Debug logging (can be enabled for troubleshooting)
+        const debug = false;
+        if (debug) {
+          console.log(`Current time: ${currentTime.toFixed(3)}s`);
+        }
+
+        // Find active subtitles for both tracks
+        const activeIndex = findActiveSubtitle(currentLyrics, currentTime);
+        const activeIndexSecondary = findActiveSubtitle(currentLyricsSecondary, currentTime);
+
+        if (debug) {
+          console.log(`Active indices - Primary: ${activeIndex}, Secondary: ${activeIndexSecondary}`);
+        }
+
+        // Build context lines for display
+        const contextLines = [];
+
+        // Determine which tracks we have and show appropriate context
+        const hasPrimary = currentLyrics.length > 0;
+        const hasSecondary = currentLyricsSecondary.length > 0;
+
+        if (hasPrimary && hasSecondary) {
+          // Both tracks available - show only current line for both tracks for easier reading
+          const primaryContext = getContextLines(currentLyrics, activeIndex, 'primary', true); // true = only current
+          const secondaryContext = getContextLines(currentLyricsSecondary, activeIndexSecondary, 'secondary', true); // true = only current
+
+          // Show both tracks with clear separation
+          if (primaryContext.length > 0) {
+            contextLines.push(...primaryContext);
+          }
+          if (secondaryContext.length > 0) {
+            contextLines.push(...secondaryContext);
+          }
+        } else if (hasPrimary) {
+          // Only primary track - show karaoke effect with context (previous, current, next)
+          contextLines.push(...getContextLines(currentLyrics, activeIndex, 'primary'));
+        } else if (hasSecondary) {
+          // Only secondary track - show karaoke effect with context (previous, current, next)
+          contextLines.push(...getContextLines(currentLyricsSecondary, activeIndexSecondary, 'secondary'));
+        }
+
+        // Update display
+        lyricsContainer.innerHTML = '';
+        if (contextLines.length > 0) {
+          contextLines.forEach(line => {
+            const div = document.createElement('div');
+            if (line.type === 'secondary') {
+              div.className = `lyrics-secondary ${line.active ? 'active' : ''}`;
+            } else {
+              div.className = `lyrics ${line.active ? 'active' : ''}`;
+            }
+            div.textContent = line.text;
+            lyricsContainer.appendChild(div);
+          });
+        } else {
+          // Keep container empty when no subtitles are active
+          lyricsContainer.innerHTML = '';
+        }
+        {% else %}
+        // For files without subtitles, no lyrics update needed
+        // The static message is already shown in the template
+        {% endif %}
+      }
+
+      function getContextLines(lyrics, activeIndex, type, onlyCurrentLine = false) {
+        const contextLines = [];
+        if (lyrics.length === 0 || activeIndex === -1) {
+          return contextLines;
+        }
+
+        if (onlyCurrentLine) {
+          // For secondary track when both tracks exist - show only current line
+          contextLines.push({
+            text: lyrics[activeIndex].text,
+            active: true,
+            type: type
+          });
+        } else {
+          // Show context around active subtitle (previous, current, next)
+          const startIndex = Math.max(0, activeIndex - 1);
+          const endIndex = Math.min(lyrics.length - 1, activeIndex + 1);
+
+          for (let i = startIndex; i <= endIndex; i++) {
+            if (lyrics[i]) {
               contextLines.push({
-                text: lyrics[activeIndex].text,
-                active: true,
+                text: lyrics[i].text,
+                active: i === activeIndex,
                 type: type
               });
-            } else {
-              // Show context around active subtitle (previous, current, next)
-              const startIndex = Math.max(0, activeIndex - 1);
-              const endIndex = Math.min(lyrics.length - 1, activeIndex + 1);
-              
-              for (let i = startIndex; i <= endIndex; i++) {
-                if (lyrics[i]) {
-                  contextLines.push({
-                    text: lyrics[i].text,
-                    active: i === activeIndex,
-                    type: type
-                  });
-                }
-              }
             }
-            
-            return contextLines;
           }
+        }
+
+        return contextLines;
+      }
 
 
-          // Play/Pause functionality
-          playPauseBtn.addEventListener("click", () => {
-            if (isPlaying) {
-              audio.pause();
-              playPauseBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
-              isPlaying = false;
-            } else {
-              audio.play();
-              playPauseBtn.innerHTML = '<i class="bi bi-pause-fill"></i>';
-              isPlaying = true;
-            }
-          });
+      // Play/Pause functionality
+      playPauseBtn.addEventListener("click", () => {
+        if (isPlaying) {
+          audio.pause();
+          playPauseBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
+          isPlaying = false;
+        } else {
+          audio.play();
+          playPauseBtn.innerHTML = '<i class="bi bi-pause-fill"></i>';
+          isPlaying = true;
+        }
+      });
 
-          // Update progress bar and dot
-          audio.addEventListener("timeupdate", () => {
-            const progress = (audio.currentTime / audio.duration) * 100;
-            progressBar.style.width = progress + "%";
-            progressDot.style.left = `calc(${progress}% - 8px)`;
-            currentTimeEl.textContent = formatTime(audio.currentTime);
-            {% if recurso.subtitle_vtt or recurso.subtitle_vtt_secondary %}
-            updateLyrics();
-            {% endif %}
-          });
+      // Update progress bar and dot
+      audio.addEventListener("timeupdate", () => {
+        const progress = (audio.currentTime / audio.duration) * 100;
+        progressBar.style.width = progress + "%";
+        progressDot.style.left = `calc(${progress}% - 8px)`;
+        currentTimeEl.textContent = formatTime(audio.currentTime);
+        {% if recurso.subtitle_vtt or recurso.subtitle_vtt_secondary %}
+        updateLyrics();
+        {% endif %}
+      });
 
-          audio.addEventListener("loadedmetadata", () => {
-            durationEl.textContent = formatTime(audio.duration);
-            loadLyrics();
-          });
+      audio.addEventListener("loadedmetadata", () => {
+        durationEl.textContent = formatTime(audio.duration);
+        loadLyrics();
+      });
 
-          audio.addEventListener("ended", () => {
-            playPauseBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
-            isPlaying = false;
-          });
+      audio.addEventListener("ended", () => {
+        playPauseBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
+        isPlaying = false;
+      });
 
-          function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs.toString().padStart(2, "0")}`;
-          }
+      function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, "0")}`;
+      }
 
-          // Progress bar click to seek
-          const progressContainer = document.querySelector('.progress-container');
-          progressContainer.addEventListener('click', (e) => {
-            const rect = progressContainer.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const progressWidth = rect.width;
-            const duration = audio.duration;
-            audio.currentTime = (clickX / progressWidth) * duration;
-          });
+      // Progress bar click to seek
+      const progressContainer = document.querySelector('.progress-container');
+      progressContainer.addEventListener('click', (e) => {
+        const rect = progressContainer.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const progressWidth = rect.width;
+        const duration = audio.duration;
+        audio.currentTime = (clickX / progressWidth) * duration;
+      });
 
-          // Button functionality
-          document.getElementById("rewind5").addEventListener("click", () => {
-            audio.currentTime = Math.max(0, audio.currentTime - 5);
-          });
-          
-          document.getElementById("prev").addEventListener("click", () => {
-            audio.currentTime = Math.max(0, audio.currentTime - 10);
-          });
-          
-          document.getElementById("next").addEventListener("click", () => {
-            audio.currentTime = Math.min(audio.duration, audio.currentTime + 10);
-          });
-          
-          document.getElementById("forward5").addEventListener("click", () => {
-            audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
-          });
+      // Button functionality
+      document.getElementById("rewind5").addEventListener("click", () => {
+        audio.currentTime = Math.max(0, audio.currentTime - 5);
+      });
 
-          // Playback speed control
-          const speedButtons = document.querySelectorAll('.speed-btn');
-          speedButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-              const speed = parseFloat(btn.dataset.speed);
-              audio.playbackRate = speed;
-              
-              // Update active button
-              speedButtons.forEach(b => b.classList.remove('active'));
-              btn.classList.add('active');
-            });
-          });
+      document.getElementById("prev").addEventListener("click", () => {
+        audio.currentTime = Math.max(0, audio.currentTime - 10);
+      });
 
-          {% if recurso.subtitle_vtt or recurso.subtitle_vtt_secondary %}
-          // Text size control for subtitles
-          const zoomInBtn = document.getElementById('zoomIn');
-          const zoomOutBtn = document.getElementById('zoomOut');
-          
-          if (zoomInBtn) {
-            zoomInBtn.addEventListener('click', () => {
-              currentFontSizeMultiplier = Math.min(currentFontSizeMultiplier + 0.1, 2.0); // Max 2x
-              updateLyricsFontSize();
-            });
-          }
-          
-          if (zoomOutBtn) {
-            zoomOutBtn.addEventListener('click', () => {
-              currentFontSizeMultiplier = Math.max(currentFontSizeMultiplier - 0.1, 0.5); // Min 0.5x
-              updateLyricsFontSize();
-            });
-          }
-          
-          function updateLyricsFontSize() {
-            const style = document.getElementById('dynamic-lyrics-style') || document.createElement('style');
-            style.id = 'dynamic-lyrics-style';
-            
-            // Calculate font sizes based on multiplier
-            const basePrimarySize = 1.1; // rem
-            const baseActiveSize = 1.4; // rem
-            const baseSecondarySize = 0.95; // rem
-            const baseSecondaryActiveSize = 1.0; // rem
-            
-            style.textContent = `
+      document.getElementById("next").addEventListener("click", () => {
+        audio.currentTime = Math.min(audio.duration, audio.currentTime + 10);
+      });
+
+      document.getElementById("forward5").addEventListener("click", () => {
+        audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+      });
+
+      // Playback speed control
+      const speedButtons = document.querySelectorAll('.speed-btn');
+      speedButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const speed = parseFloat(btn.dataset.speed);
+          audio.playbackRate = speed;
+
+          // Update active button
+          speedButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+      });
+
+      {% if recurso.subtitle_vtt or recurso.subtitle_vtt_secondary %}
+      // Text size control for subtitles
+      const zoomInBtn = document.getElementById('zoomIn');
+      const zoomOutBtn = document.getElementById('zoomOut');
+
+      if (zoomInBtn) {
+        zoomInBtn.addEventListener('click', () => {
+          currentFontSizeMultiplier = Math.min(currentFontSizeMultiplier + 0.1, 2.0); // Max 2x
+          updateLyricsFontSize();
+        });
+      }
+
+      if (zoomOutBtn) {
+        zoomOutBtn.addEventListener('click', () => {
+          currentFontSizeMultiplier = Math.max(currentFontSizeMultiplier - 0.1, 0.5); // Min 0.5x
+          updateLyricsFontSize();
+        });
+      }
+
+      function updateLyricsFontSize() {
+        const style = document.getElementById('dynamic-lyrics-style') || document.createElement('style');
+        style.id = 'dynamic-lyrics-style';
+
+        // Calculate font sizes based on multiplier
+        const basePrimarySize = 1.1; // rem
+        const baseActiveSize = 1.4; // rem
+        const baseSecondarySize = 0.95; // rem
+        const baseSecondaryActiveSize = 1.0; // rem
+
+        style.textContent = `
               .lyrics {
                 font-size: ${basePrimarySize * currentFontSizeMultiplier}rem !important;
               }
@@ -792,16 +784,17 @@ permitir_editar = current_user.tipo == "admin" or permitir_docente %}
                 font-size: ${baseSecondaryActiveSize * currentFontSizeMultiplier}rem !important;
               }
             `;
-            
-            if (!document.getElementById('dynamic-lyrics-style')) {
-              document.head.appendChild(style);
-            }
-          }
-          {% endif %}
 
-          // Initialize
-          loadLyrics();
-        });
-        </script>
-    </body>
+        if (!document.getElementById('dynamic-lyrics-style')) {
+          document.head.appendChild(style);
+        }
+      }
+      {% endif %}
+
+      // Initialize
+      loadLyrics();
+    });
+  </script>
+</body>
+
 </html>
