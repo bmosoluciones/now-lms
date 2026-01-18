@@ -11,14 +11,14 @@ get_footer_enlaces() %}
                     <li>
                         <a
                             href="{{ url_for('static_pages.view_page', slug=page.slug) }}"
-                            class="text-muted text-decoration-none"
+                            class="text-white-50 text-decoration-none"
                             >{{ page.title }}</a
                         >
                     </li>
                     {% endfor %}
                 </ul>
                 {% else %}
-                <p class="text-muted">{{ _("Sistema de gestión de aprendizaje moderno y completo.") }}</p>
+                <p class="text-white-50">{{ _("Sistema de gestión de aprendizaje moderno y completo.") }}</p>
                 {% endif %}
             </div>
             <div class="col-md-4 mb-2">
@@ -29,7 +29,7 @@ get_footer_enlaces() %}
                     <li>
                         <a
                             href="{{ enlace.url }}"
-                            class="text-muted text-decoration-none"
+                            class="text-white-50 text-decoration-none"
                             target="_blank"
                             rel="noopener noreferrer"
                             >{{ enlace.titulo }}</a
@@ -40,7 +40,7 @@ get_footer_enlaces() %}
                 {% else %}
                 <ul class="list-unstyled">
                     <li>
-                        <a href="{{ url_for('static_pages.contact') }}" class="text-muted text-decoration-none"
+                        <a href="{{ url_for('static_pages.contact') }}" class="text-white-50 text-decoration-none"
                             >{{ _("Contacto") }}</a
                         >
                     </li>
@@ -53,7 +53,7 @@ get_footer_enlaces() %}
                     {% set site_config = config() %} {% if site_config.social_facebook %}
                     <a
                         href="{{ site_config.social_facebook }}"
-                        class="text-muted"
+                        class="text-white-50"
                         aria-label="Facebook"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -62,7 +62,7 @@ get_footer_enlaces() %}
                     {% endif %} {% if site_config.social_twitter %}
                     <a
                         href="{{ site_config.social_twitter }}"
-                        class="text-muted"
+                        class="text-white-50"
                         aria-label="Twitter"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -71,7 +71,7 @@ get_footer_enlaces() %}
                     {% endif %} {% if site_config.social_linkedin %}
                     <a
                         href="{{ site_config.social_linkedin }}"
-                        class="text-muted"
+                        class="text-white-50"
                         aria-label="LinkedIn"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -80,7 +80,7 @@ get_footer_enlaces() %}
                     {% endif %} {% if site_config.social_youtube %}
                     <a
                         href="{{ site_config.social_youtube }}"
-                        class="text-muted"
+                        class="text-white-50"
                         aria-label="YouTube"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -89,7 +89,7 @@ get_footer_enlaces() %}
                     {% endif %} {% if site_config.social_instagram %}
                     <a
                         href="{{ site_config.social_instagram }}"
-                        class="text-muted"
+                        class="text-white-50"
                         aria-label="Instagram"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -98,7 +98,7 @@ get_footer_enlaces() %}
                     {% endif %} {% if site_config.social_github %}
                     <a
                         href="{{ site_config.social_github }}"
-                        class="text-muted"
+                        class="text-white-50"
                         aria-label="GitHub"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -111,7 +111,7 @@ get_footer_enlaces() %}
         <hr class="bg-secondary" />
         <div class="row">
             <div class="col-12 text-center">
-                <p class="text-muted mb-0">&copy; 2026 {{ config().titulo }}. {{ _("Todos los derechos reservados.") }}</p>
+                <p class="text-white-50 mb-0">&copy; 2026 {{ config().titulo }}. {{ _("Todos los derechos reservados.") }}</p>
             </div>
         </div>
     </div>
