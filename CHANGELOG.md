@@ -9,10 +9,38 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
-## [1.2.0]
+## [1.2.1]
+
+### Added:
+ - Footer customization: Static pages can now be marked to appear in footer via `mostrar_en_footer` field.
+ - Customizable footer links via "Enlaces Útiles" (Useful Links) admin interface.
+
+### Fixed:
+ - Fixed Alembic migrations not being loaded due to incorrect relative path configuration.
+ - Fixed missing `mostrar_en_footer` field in default static pages creation.
+ - Fixed `/admin/pages` route failing when database schema is outdated.
 
 ### Changed:
- - Refactor course module (no changes to user experience).
+ - Updated Alembic configuration to use absolute path for migrations directory.
+ - Updated CHANGELOG to document database schema changes introduced in v1.2.0.
+
+**IMPORTANT**: This version fixes a critical bug where `alembic.upgrade()` would not execute migrations. If you upgraded to v1.2.0 and encountered errors accessing `/admin/pages`, upgrade to v1.2.1 and the migrations will run automatically if you have `NOW_LMS_AUTO_MIGRATE=1` set, or run:
+
+```bash
+# Using lmsctl (recommended)
+lmsctl database migrate
+
+# Or enable automatic migrations on startup
+NOW_LMS_AUTO_MIGRATE=1 lmsctl serve
+
+# Or using Flask-Alembic directly
+flask db upgrade
+```
+
+## [1.2.0] - 2026-01-18
+
+### Changed:
+ - Refactor course module (no changes to user experience)
 
 ## [1.1.8] - 2026-01-16
 
