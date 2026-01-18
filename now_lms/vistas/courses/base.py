@@ -24,20 +24,15 @@ from __future__ import annotations
 # Standard library
 # ---------------------------------------------------------------------------------------
 from collections import OrderedDict
-from datetime import datetime, timedelta, timezone
-from os import makedirs, path, remove, listdir, stat
+from datetime import datetime, timezone
 from os.path import splitext
-import re
-from typing import Any, Sequence
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-from bleach import clean, linkify
 from flask import (
     Blueprint,
     abort,
-    current_app,
     flash,
     redirect,
     render_template,
@@ -46,10 +41,8 @@ from flask import (
 )
 from flask_login import current_user, login_required
 from flask_uploads import UploadNotAllowed
-from markdown import markdown
 from sqlalchemy import delete, func
 from sqlalchemy.exc import OperationalError
-from ulid import ULID
 from werkzeug.wrappers import Response
 
 # ---------------------------------------------------------------------------------------
@@ -58,77 +51,43 @@ from werkzeug.wrappers import Response
 from now_lms.auth import perfil_requerido
 from now_lms.bi import (
     asignar_curso_a_instructor,
-    cambia_curso_publico,
-    cambia_estado_curso_por_id,
-    cambia_seccion_publico,
-    modificar_indice_curso,
-    modificar_indice_seccion,
-    reorganiza_indice_curso,
-    reorganiza_indice_seccion,
 )
 from now_lms.cache import cache, cache_key_with_auth_state
-from now_lms.calendar_utils import create_events_for_student_enrollment, update_meet_resource_events
-from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, DIRECTORIO_ARCHIVOS_PUBLICOS, audio, files, images
+from now_lms.calendar_utils import create_events_for_student_enrollment
+from now_lms.config import DESARROLLO, DIRECTORIO_PLANTILLAS, images
 from now_lms.db import (
     Categoria,
     CategoriaCurso,
-    Certificacion,
-    Configuracion,
     Curso,
     CursoRecurso,
-    CursoRecursoAvance,
     CursoRecursoDescargable,
-    CursoRecursoSlides,
-    CursoRecursoSlideShow,
     CursoSeccion,
     DocenteCurso,
     EstudianteCurso,
     Etiqueta,
     EtiquetaCurso,
-    Evaluation,
-    EvaluationAttempt,
     Pago,
     Recurso,
-    Slide,
-    SlideShowResource,
     Usuario,
     database,
     select,
 )
 from now_lms.db.tools import (
-    crear_indice_recurso,
     generate_category_choices,
     generate_tag_choices,
     generate_template_choices,
     get_course_category,
     get_course_tags,
-    verifica_docente_asignado_a_curso,
-    verifica_estudiante_asignado_a_curso,
 )
 from now_lms.forms import (
     CurseForm,
-    CursoRecursoArchivoAudio,
-    CursoRecursoArchivoDescargable,
-    CursoRecursoArchivoImagen,
-    CursoRecursoArchivoPDF,
-    CursoRecursoArchivoText,
-    CursoRecursoExternalCode,
-    CursoRecursoExternalLink,
-    CursoRecursoMeet,
-    CursoRecursoVideoYoutube,
     CursoSeccionForm,
-    SlideShowForm,
 )
 from now_lms.i18n import _
 from now_lms.logs import log
-from now_lms.misc import CURSO_NIVEL, HTML_TAGS, INICIO_SESION, TIPOS_RECURSOS, sanitize_slide_content
+from now_lms.misc import CURSO_NIVEL, TIPOS_RECURSOS
 from now_lms.themes import get_course_list_template, get_course_view_template
-from now_lms.vistas.courses.helpers import (
-    get_site_config,
-    markdown2html,
-    _get_course_evaluations_and_attempts,
-    _get_user_resource_progress,
-)
+from now_lms.vistas.courses.helpers import markdown2html, _crear_indice_avance_curso
 
 # ---------------------------------------------------------------------------------------
 # Gestión de cursos.
@@ -556,214 +515,6 @@ def editar_seccion(course_code: str, seccion: str) -> str | Response:
         return render_template("learning/editar_seccion.html", form=form, seccion=seccion_a_editar)
 
 
-# Rutas movidas a now_lms.vistas.courses.actions
-
-
-# Rutas movidas a now_lms.vistas.courses.actions
-
-
-# Rutas movidas a now_lms.vistas.courses.actions
-
-
-# Rutas movidas a now_lms.vistas.courses.actions
-
-
-# Rutas movidas a now_lms.vistas.courses.actions
-
-
-# Rutas movidas a now_lms.vistas.courses.actions
-
-
-# Rutas movidas a now_lms.vistas.courses.actions
-
-
-# Rutas movidas a now_lms.vistas.courses.actions
-
-
-# Progress helper moved to helpers
-
-
-# Evaluation helper moved to helpers
-
-
-def _emitir_certificado(curso_id: str, usuario: str, plantilla: str) -> None:
-    """Emit a certificate for a user in a course."""
-    certificado = Certificacion(
-        curso=curso_id,
-        usuario=usuario,
-        certificado=plantilla,
-    )
-    certificado.creado = datetime.now(timezone.utc).date()
-    # Handle automatic certificate generation where current_user might not be available
-    if current_user.is_authenticated:
-        certificado.creado_por = current_user.usuario
-    else:
-        certificado.creado_por = "system"  # Mark as system-generated
-    database.session.add(certificado)
-    database.session.commit()
-    flash("Certificado de finalización emitido.", "success")
-
-
-def _actualizar_avance_curso(curso_id: str, usuario: str) -> None:
-    """Actualiza el avance de un usuario en un curso."""
-    from now_lms.db import CursoUsuarioAvance
-
-    _avance = (
-        database.session.execute(
-            select(CursoUsuarioAvance).filter(CursoUsuarioAvance.curso == curso_id, CursoUsuarioAvance.usuario == usuario)
-        )
-        .scalars()
-        .first()
-    )
-
-    if not _avance:
-        _avance = CursoUsuarioAvance(
-            curso=curso_id,
-            usuario=usuario,
-            recursos_requeridos=0,
-            recursos_completados=0,
-        )
-        database.session.add(_avance)
-        database.session.commit()
-
-    _recursos_requeridos = database.session.execute(
-        select(func.count(CursoRecurso.id)).filter(CursoRecurso.curso == curso_id, CursoRecurso.requerido == "required")
-    ).scalar()
-
-    _recursos_completados = database.session.execute(
-        select(func.count(CursoRecursoAvance.id)).filter(
-            CursoRecursoAvance.curso == curso_id,
-            CursoRecursoAvance.usuario == usuario,
-            CursoRecursoAvance.completado.is_(True),
-            CursoRecursoAvance.requerido == "required",
-        )
-    ).scalar()
-    log.warning("Required resources: %s, Completed: %s", _recursos_requeridos, _recursos_completados)
-
-    _avance.recursos_requeridos = _recursos_requeridos or 0
-    _avance.recursos_completados = _recursos_completados or 0
-    _avance.avance = ((_recursos_completados or 0) / (_recursos_requeridos or 1)) * 100
-    if _avance.avance >= 100:
-        _avance.completado = True
-        flash("Curso completado", "success")
-        _curso = database.session.execute(select(Curso).filter(Curso.codigo == curso_id)).scalars().first()
-        log.warning(_curso)
-        if _curso.certificado:
-            # Check if user meets ALL requirements including evaluations before issuing certificate
-            from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
-
-            can_receive, reason = can_user_receive_certificate(curso_id, usuario)
-            if can_receive:
-                _emitir_certificado(curso_id, usuario, _curso.plantilla_certificado)
-            else:
-                log.info(f"Certificate not issued for user {usuario} in course {curso_id}: {reason}")
-    database.session.commit()
-
-
-@course.route("/course/<course_code>/<seccion>/html/new", methods=["GET", "POST"])
-@login_required
-@perfil_requerido("instructor")
-def nuevo_recurso_html(course_code: str, seccion: str) -> str | Response:
-    """Formulario para crear un nuevo recurso tipo HTML externo."""
-    form = CursoRecursoExternalCode()
-    recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
-    nuevo_indice = int((recursos or 0) + 1)
-    if form.validate_on_submit() or request.method == "POST":
-        # Get global configuration for HTML preformatted descriptions
-        config = database.session.execute(database.select(Configuracion)).scalars().first()
-        html_preformateado = False
-        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
-            html_preformateado = form.descripcion_html_preformateado.data or False
-
-        nuevo_recurso_ = CursoRecurso(
-            curso=course_code,
-            seccion=seccion,
-            tipo="html",
-            nombre=form.nombre.data,
-            descripcion=form.descripcion.data,
-            requerido=form.requerido.data,
-            external_code=form.html_externo.data,
-            indice=nuevo_indice,
-            creado_por=current_user.usuario,
-            descripcion_html_preformateado=html_preformateado,
-        )
-        try:
-            database.session.add(nuevo_recurso_)
-            database.session.commit()
-            flash("RECURSO_AGREGADO", "success")
-            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:
-            flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
-        return render_template(
-            "learning/resources_new/nuevo_recurso_html.html", id_curso=course_code, id_seccion=seccion, form=form
-        )
-
-
-@course.route("/course/<course_code>/<seccion>/html/<resource_id>/edit", methods=["GET", "POST"])
-@login_required
-@perfil_requerido("instructor")
-def editar_recurso_html(course_code: str, seccion: str, resource_id: str) -> str | Response:
-    """Formulario para editar un recurso tipo HTML externo."""
-    recurso = database.session.execute(
-        select(CursoRecurso).filter_by(id=resource_id, curso=course_code, seccion=seccion)
-    ).scalar_one_or_none()
-    if not recurso or recurso.tipo != "html":
-        flash("Recurso no encontrado.", "warning")
-        return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-
-    form = CursoRecursoExternalCode()
-
-    if form.validate_on_submit() or request.method == "POST":
-        recurso.nombre = form.nombre.data
-        recurso.descripcion = form.descripcion.data
-        recurso.requerido = form.requerido.data
-        recurso.external_code = form.html_externo.data
-        recurso.modificado_por = current_user.usuario
-
-        # Handle HTML preformatted flag - only set if global config allows it
-        config = database.session.execute(database.select(Configuracion)).scalars().first()
-        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
-            recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
-        else:
-            recurso.descripcion_html_preformateado = False
-
-        try:
-            database.session.commit()
-            flash("Recurso actualizado correctamente.", "success")
-            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:
-            flash("Hubo un error al actualizar el recurso.", "warning")
-            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
-        # Pre-populate form with existing data
-        form.nombre.data = recurso.nombre
-        form.descripcion.data = recurso.descripcion
-        form.requerido.data = recurso.requerido
-        form.html_externo.data = recurso.external_code
-        form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
-
-        return render_template(
-            "learning/resources_new/editar_recurso_html.html",
-            id_curso=course_code,
-            id_seccion=seccion,
-            recurso=recurso,
-            form=form,
-        )
-
-
-@course.route("/course/<course_code>/delete_logo")
-@login_required
-@perfil_requerido("instructor")
-def elimina_logo(course_code: str) -> Response:
-    """Elimina logotipo del curso."""
-    from now_lms.db.tools import elimina_logo_perzonalizado_curso
-
-    elimina_logo_perzonalizado_curso(course_code=course_code)
-    return redirect(url_for("course.editar_curso", course_code=course_code))
-
-
 @course.route("/my_courses")
 @login_required
 def my_courses() -> str | Response:
@@ -899,15 +650,6 @@ def lista_cursos() -> str:
     )
 
 
-@course.route("/course/<course_code>/section/<section_id>/new_evaluation")
-@login_required
-@perfil_requerido("instructor")
-def new_evaluation_from_section(course_code: str, section_id: str) -> Response:
-    """Create a new evaluation for a course section from section actions."""
-    # Redirect to the existing instructor profile route for evaluation creation
-    return redirect(url_for("instructor_profile.new_evaluation", course_code=course_code, section_id=section_id))
-
-
 # ---------------------------------------------------------------------------------------
 # Administrative Enrollment Routes
 # ---------------------------------------------------------------------------------------
@@ -991,9 +733,6 @@ def admin_course_enrollment(course_code: str) -> str | Response:
             enrollment.creado_por = current_user.usuario
             database.session.add(enrollment)
             database.session.commit()
-
-            # Create course progress index
-            from .enrollment import _crear_indice_avance_curso  # local import to avoid circular
 
             _crear_indice_avance_curso(course_code)
 
@@ -1083,3 +822,12 @@ def admin_course_unenrollment(course_code: str, student_username: str) -> Respon
         flash(f"Error al desinscribir al estudiante: {str(e)}", "error")
 
     return redirect(url_for("course.admin_course_enrollments", course_code=course_code))
+
+
+@course.route("/course/<course_code>/section/<section_id>/new_evaluation")
+@login_required
+@perfil_requerido("instructor")
+def new_evaluation_from_section(course_code: str, section_id: str) -> Response:
+    """Create a new evaluation for a course section from section actions."""
+    # Redirect to the existing instructor profile route for evaluation creation
+    return redirect(url_for("instructor_profile.new_evaluation", course_code=course_code, section_id=section_id))
