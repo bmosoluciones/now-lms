@@ -30,35 +30,38 @@ def upgrade():
     # Check if columns already exist before adding them
     conn = op.get_bind()
     inspector = sa.inspect(conn)
-    columns = [col["name"] for col in inspector.get_columns("configuracion")]
+    existing_tables = inspector.get_table_names()
 
-    if "enable_file_uploads" not in columns:
-        # Add column with default value False for backward compatibility
-        op.add_column(
-            "configuracion",
-            sa.Column("enable_file_uploads", sa.Boolean(), nullable=False, server_default=sa.false()),
-        )
+    if "configuracion" in existing_tables:
+        columns = [col["name"] for col in inspector.get_columns("configuracion")]
 
-    if "max_file_size" not in columns:
-        # Add column with default value 1 (MB) for backward compatibility
-        op.add_column(
-            "configuracion",
-            sa.Column("max_file_size", sa.Integer(), nullable=False, server_default=sa.text("1")),
-        )
+        if "enable_file_uploads" not in columns:
+            # Add column with default value False for backward compatibility
+            op.add_column(
+                "configuracion",
+                sa.Column("enable_file_uploads", sa.Boolean(), nullable=False, server_default=sa.false()),
+            )
 
-    if "enable_html_preformatted_descriptions" not in columns:
-        # Add column with default value False for backward compatibility
-        op.add_column(
-            "configuracion",
-            sa.Column("enable_html_preformatted_descriptions", sa.Boolean(), nullable=False, server_default=sa.false()),
-        )
+        if "max_file_size" not in columns:
+            # Add column with default value 1 (MB) for backward compatibility
+            op.add_column(
+                "configuracion",
+                sa.Column("max_file_size", sa.Integer(), nullable=False, server_default=sa.text("1")),
+            )
 
-    if "enable_footer" not in columns:
-        # Add column with default value True for backward compatibility
-        op.add_column(
-            "configuracion",
-            sa.Column("enable_footer", sa.Boolean(), nullable=False, server_default=sa.true()),
-        )
+        if "enable_html_preformatted_descriptions" not in columns:
+            # Add column with default value False for backward compatibility
+            op.add_column(
+                "configuracion",
+                sa.Column("enable_html_preformatted_descriptions", sa.Boolean(), nullable=False, server_default=sa.false()),
+            )
+
+        if "enable_footer" not in columns:
+            # Add column with default value True for backward compatibility
+            op.add_column(
+                "configuracion",
+                sa.Column("enable_footer", sa.Boolean(), nullable=False, server_default=sa.true()),
+            )
 
 
 def downgrade():
@@ -66,17 +69,20 @@ def downgrade():
     # Check if columns exist before dropping them
     conn = op.get_bind()
     inspector = sa.inspect(conn)
-    columns = [col["name"] for col in inspector.get_columns("configuracion")]
+    existing_tables = inspector.get_table_names()
 
-    # Drop columns in reverse order
-    if "enable_footer" in columns:
-        op.drop_column("configuracion", "enable_footer")
+    if "configuracion" in existing_tables:
+        columns = [col["name"] for col in inspector.get_columns("configuracion")]
 
-    if "enable_html_preformatted_descriptions" in columns:
-        op.drop_column("configuracion", "enable_html_preformatted_descriptions")
+        # Drop columns in reverse order
+        if "enable_footer" in columns:
+            op.drop_column("configuracion", "enable_footer")
 
-    if "max_file_size" in columns:
-        op.drop_column("configuracion", "max_file_size")
+        if "enable_html_preformatted_descriptions" in columns:
+            op.drop_column("configuracion", "enable_html_preformatted_descriptions")
 
-    if "enable_file_uploads" in columns:
-        op.drop_column("configuracion", "enable_file_uploads")
+        if "max_file_size" in columns:
+            op.drop_column("configuracion", "max_file_size")
+
+        if "enable_file_uploads" in columns:
+            op.drop_column("configuracion", "enable_file_uploads")

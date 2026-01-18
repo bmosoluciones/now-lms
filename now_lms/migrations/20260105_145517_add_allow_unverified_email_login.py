@@ -27,13 +27,16 @@ def upgrade():
     # Check if column already exists before adding it
     conn = op.get_bind()
     inspector = sa.inspect(conn)
-    columns = [col["name"] for col in inspector.get_columns("configuracion")]
+    existing_tables = inspector.get_table_names()
 
-    if "allow_unverified_email_login" not in columns:
-        # Add column with default value False for backward compatibility
-        op.add_column(
-            "configuracion", sa.Column("allow_unverified_email_login", sa.Boolean(), nullable=False, server_default=sa.false())
-        )
+    if "configuracion" in existing_tables:
+        columns = [col["name"] for col in inspector.get_columns("configuracion")]
+
+        if "allow_unverified_email_login" not in columns:
+            # Add column with default value False for backward compatibility
+            op.add_column(
+                "configuracion", sa.Column("allow_unverified_email_login", sa.Boolean(), nullable=False, server_default=sa.false())
+            )
 
 
 def downgrade():
@@ -41,7 +44,10 @@ def downgrade():
     # Check if column exists before dropping it
     conn = op.get_bind()
     inspector = sa.inspect(conn)
-    columns = [col["name"] for col in inspector.get_columns("configuracion")]
+    existing_tables = inspector.get_table_names()
 
-    if "allow_unverified_email_login" in columns:
-        op.drop_column("configuracion", "allow_unverified_email_login")
+    if "configuracion" in existing_tables:
+        columns = [col["name"] for col in inspector.get_columns("configuracion")]
+
+        if "allow_unverified_email_login" in columns:
+            op.drop_column("configuracion", "allow_unverified_email_login")

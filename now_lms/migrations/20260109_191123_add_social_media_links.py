@@ -27,21 +27,24 @@ def upgrade():
     # Check if columns already exist before adding them
     conn = op.get_bind()
     inspector = sa.inspect(conn)
-    columns = [col["name"] for col in inspector.get_columns("configuracion")]
+    existing_tables = inspector.get_table_names()
 
-    # Add social media columns if they don't exist
-    social_fields = [
-        "social_facebook",
-        "social_twitter",
-        "social_linkedin",
-        "social_youtube",
-        "social_instagram",
-        "social_github",
-    ]
+    if "configuracion" in existing_tables:
+        columns = [col["name"] for col in inspector.get_columns("configuracion")]
 
-    for field in social_fields:
-        if field not in columns:
-            op.add_column("configuracion", sa.Column(field, sa.String(200), nullable=True))
+        # Add social media columns if they don't exist
+        social_fields = [
+            "social_facebook",
+            "social_twitter",
+            "social_linkedin",
+            "social_youtube",
+            "social_instagram",
+            "social_github",
+        ]
+
+        for field in social_fields:
+            if field not in columns:
+                op.add_column("configuracion", sa.Column(field, sa.String(200), nullable=True))
 
 
 def downgrade():
@@ -49,18 +52,21 @@ def downgrade():
     # Check if columns exist before dropping them
     conn = op.get_bind()
     inspector = sa.inspect(conn)
-    columns = [col["name"] for col in inspector.get_columns("configuracion")]
+    existing_tables = inspector.get_table_names()
 
-    # Drop social media columns if they exist
-    social_fields = [
-        "social_facebook",
-        "social_twitter",
-        "social_linkedin",
-        "social_youtube",
-        "social_instagram",
-        "social_github",
-    ]
+    if "configuracion" in existing_tables:
+        columns = [col["name"] for col in inspector.get_columns("configuracion")]
 
-    for field in social_fields:
-        if field in columns:
-            op.drop_column("configuracion", field)
+        # Drop social media columns if they exist
+        social_fields = [
+            "social_facebook",
+            "social_twitter",
+            "social_linkedin",
+            "social_youtube",
+            "social_instagram",
+            "social_github",
+        ]
+
+        for field in social_fields:
+            if field in columns:
+                op.drop_column("configuracion", field)
