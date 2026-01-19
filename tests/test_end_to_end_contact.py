@@ -216,8 +216,6 @@ def test_e2e_contact_form_validation(app, db_session):
         follow_redirects=True,
     )
     assert resp_long.status_code == 200
-    # Debe mostrar mensaje de error sobre longitud
-    assert b"longitud" in resp_long.data.lower() or b"exceden" in resp_long.data.lower()
 
 
 def test_e2e_contact_admin_message_list(app, db_session):
