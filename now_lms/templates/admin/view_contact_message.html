@@ -75,13 +75,13 @@
                             <div class="mb-3">
                                 <label for="status" class="form-label">{{ _("Estado") }}</label>
                                 <select name="status" id="status" class="form-select">
-                                    <option value="not_seen" {% if message.status="" ="not_seen" %}selected{% endif %}>
+                                    <option value="not_seen" {% if message.status=="not_seen" %}selected{% endif %}>
                                         {{ _("No Visto") }}
                                     </option>
-                                    <option value="seen" {% if message.status="" ="seen" %}selected{% endif %}>
+                                    <option value="seen" {% if message.status=="seen" %}selected{% endif %}>
                                         {{ _("Visto") }}
                                     </option>
-                                    <option value="answered" {% if message.status="" ="answered" %}selected{% endif %}>
+                                    <option value="answered" {% if message.status=="answered" %}selected{% endif %}>
                                         {{ _("Contestado") }}
                                     </option>
                                 </select>

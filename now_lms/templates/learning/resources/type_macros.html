@@ -6,13 +6,17 @@ recurso_completado=False) -%}
             <div class="row align-items-center">
                 <div class="col-md-4">
                     {% if indice.has_prev and indice.prev_is_alternative %}
-                    <a href="{{ url_for('resources.pagina_recurso_alternativo', curso_id=indice.prev_resource.curso_id, codigo=indice.prev_resource.codigo, order='desc') }}"
-                        class="btn btn-outline-primary d-block"><i class="bi bi-arrow-left me-2"
-                            aria-hidden="true"></i>Recurso Anterior</a>
+                    <a
+                        href="{{ url_for('resources.pagina_recurso_alternativo', curso_id=indice.prev_resource.curso_id, codigo=indice.prev_resource.codigo, order='desc') }}"
+                        class="btn btn-outline-primary d-block"
+                        ><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Recurso Anterior</a
+                    >
                     {% elif indice.has_prev %}
-                    <a href="{{ url_for('resources.pagina_recurso', curso_id=indice.prev_resource.curso_id , resource_type=indice.prev_resource.resource_type, codigo=indice.prev_resource.codigo) }}"
-                        class="btn btn-outline-primary d-block"><i class="bi bi-arrow-left me-2"
-                            aria-hidden="true"></i>Recurso Anterior</a>
+                    <a
+                        href="{{ url_for('resources.pagina_recurso', curso_id=indice.prev_resource.curso_id , resource_type=indice.prev_resource.resource_type, codigo=indice.prev_resource.codigo) }}"
+                        class="btn btn-outline-primary d-block"
+                        ><i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Recurso Anterior</a
+                    >
                     {% else %}
                     <button type="button" class="btn btn-outline-secondary d-block" disabled>
                         <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Recurso Anterior
@@ -22,9 +26,11 @@ recurso_completado=False) -%}
 
                 <div class="col-md-4 text-center">
                     {% if not recurso_completado %}
-                    <a href="{{ url_for('resources.marcar_recurso_completado', curso_id=curso, resource_type=type, codigo=codigo) }}"
-                        class="btn btn-success btn-lg"><i class="bi bi-check-circle me-2" aria-hidden="true"></i>Marcar
-                        Completado</a>
+                    <a
+                        href="{{ url_for('resources.marcar_recurso_completado', curso_id=curso, resource_type=type, codigo=codigo) }}"
+                        class="btn btn-success btn-lg"
+                        ><i class="bi bi-check-circle me-2" aria-hidden="true"></i>Marcar Completado</a
+                    >
                     {% else %}
                     <button type="button" class="btn btn-success btn-lg" disabled>
                         <i class="bi bi-check-circle-fill me-2" aria-hidden="True"></i>Recurso Completado
@@ -34,13 +40,17 @@ recurso_completado=False) -%}
 
                 <div class="col-md-4">
                     {% if indice.has_next and indice.next_is_alternative %}
-                    <a href="{{ url_for('resources.pagina_recurso_alternativo', curso_id=indice.next_resource.curso_id, codigo=indice.next_resource.codigo, order='asc') }}"
-                        class="btn btn-primary d-block">Recurso Siguiente<i class="bi bi-arrow-right ms-2"
-                            aria-hidden="true"></i></a>
+                    <a
+                        href="{{ url_for('resources.pagina_recurso_alternativo', curso_id=indice.next_resource.curso_id, codigo=indice.next_resource.codigo, order='asc') }}"
+                        class="btn btn-primary d-block"
+                        >Recurso Siguiente<i class="bi bi-arrow-right ms-2" aria-hidden="true"></i
+                    ></a>
                     {% elif indice.has_next %}
-                    <a href="{{ url_for('resources.pagina_recurso', curso_id=indice.next_resource.curso_id , resource_type=indice.next_resource.resource_type, codigo=indice.next_resource.codigo) }}"
-                        class="btn btn-primary d-block">Recurso Siguiente<i class="bi bi-arrow-right ms-2"
-                            aria-hidden="true"></i></a>
+                    <a
+                        href="{{ url_for('resources.pagina_recurso', curso_id=indice.next_resource.curso_id , resource_type=indice.next_resource.resource_type, codigo=indice.next_resource.codigo) }}"
+                        class="btn btn-primary d-block"
+                        >Recurso Siguiente<i class="bi bi-arrow-right ms-2" aria-hidden="true"></i
+                    ></a>
                     {% else %}
                     <button type="button" class="btn btn-outline-secondary d-block" disabled>
                         Recurso Siguiente<i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
@@ -52,23 +62,36 @@ recurso_completado=False) -%}
     </div>
 </div>
 {%- endmacro %} {% macro get_resource_icon(resource_type) -%} {% if resource_type == "youtube" %}<i
-    class="bi bi-play-circle-fill text-danger" aria-hidden="true"></i>
+    class="bi bi-play-circle-fill text-danger"
+    aria-hidden="true"
+></i>
 {% elif resource_type == "pdf" %}<i class="bi bi-file-earmark-pdf-fill text-danger" aria-hidden="true"></i> {% elif
-resource_type == "img" %}<i class="bi bi-image-fill text-primary" aria-hidden="true"></i>
-{% elif resource_type == "text" %}<i class="bi bi-file-earmark-text-fill text-info" aria-hidden="true"></i>
+resource_type == "img" %}<i class="bi bi-image-fill text-primary" aria-hidden="true"></i> {% elif resource_type == "text" %}<i
+    class="bi bi-file-earmark-text-fill text-info"
+    aria-hidden="true"
+></i>
 {% elif resource_type == "mp3" %}<i class="bi bi-file-earmark-music-fill text-success" aria-hidden="true"></i> {% elif
-resource_type == "link" %}<i class="bi bi-link-45deg text-warning" aria-hidden="true"></i>
-{% elif resource_type == "html" %}<i class="bi bi-code-slash text-secondary" aria-hidden="true"></i>
+resource_type == "link" %}<i class="bi bi-link-45deg text-warning" aria-hidden="true"></i> {% elif resource_type == "html" %}<i
+    class="bi bi-code-slash text-secondary"
+    aria-hidden="true"
+></i>
 {% elif resource_type == "meet" %}<i class="bi bi-camera-video-fill text-primary" aria-hidden="true"></i> {% elif resource_type
 == "slides" %}<i class="bi bi-easel-fill text-info" aria-hidden="true"></i> {% else %}<i
-    class="bi bi-file-earmark-fill text-muted" aria-hidden="true"></i>
+    class="bi bi-file-earmark-fill text-muted"
+    aria-hidden="true"
+></i>
 {% endif %} {%- endmacro %} {% macro get_requirement_badge(requerido) -%} {% if requerido == 'required' %}<span
-    class="badge bg-danger rounded-pill ms-1" title="{{ _('Requerido') }}">R</span>
+    class="badge bg-danger rounded-pill ms-1"
+    title="{{ _('Requerido') }}"
+    >R</span
+>
 {% elif requerido == 'optional' %}<span class="badge bg-warning rounded-pill ms-1" title="{{ _('Opcional') }}">O</span> {% elif
-requerido == 'substitute' %}<span class="badge bg-info rounded-pill ms-1" title="{{ _('Alternativo') }}">A</span>
-{% endif %}
+requerido == 'substitute' %}<span class="badge bg-info rounded-pill ms-1" title="{{ _('Alternativo') }}">A</span> {% endif %}
 {%- endmacro %} {% macro get_completion_icon(completed) -%} {% if completed %}<i
-    class="bi bi-check-circle-fill text-success ms-2" title="{{ _('Completado') }}" aria-hidden="true"></i>
+    class="bi bi-check-circle-fill text-success ms-2"
+    title="{{ _('Completado') }}"
+    aria-hidden="true"
+></i>
 {% else %}<i class="bi bi-circle text-muted ms-2" title="{{ _('Pendiente') }}" aria-hidden="true"></i>
 {% endif %} {%- endmacro %} {% macro resource_nav(secciones=None, recursos=None, user_progress=None, evaluaciones=None,
 evaluation_attempts=None) %}
@@ -79,16 +102,19 @@ evaluation_attempts=None) %}
     <div class="card-body p-0">
         <nav class="small" id="toc">
             <div class="list-group list-group-flush">
-                {% for s in secciones %}
-                {% set section_resources = recursos | selectattr("seccion", "equalto", s.id) | list %}
+                {% for s in secciones %} {% set section_resources = recursos | selectattr("seccion", "equalto", s.id) | list %}
                 {% set required_resources = section_resources | selectattr("requerido", "equalto", "required") | list %} {% set
                 completed_required = [] %} {% for r in required_resources %} {% if user_progress and user_progress.get(r.id,
                 {}).get('completado', False) %} {% set _ = completed_required.append(r) %} {% endif %} {% endfor %}
 
                 <div class="list-group-item p-0">
-                    <button class="btn d-flex align-items-center border-0 w-100 text-start collapsed p-3"
-                        data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#contents-collapse-{{ s.id }}"
-                        aria-controls="contents-collapse">
+                    <button
+                        class="btn d-flex align-items-center border-0 w-100 text-start collapsed p-3"
+                        data-bs-toggle="collapse"
+                        aria-expanded="false"
+                        data-bs-target="#contents-collapse-{{ s.id }}"
+                        aria-controls="contents-collapse"
+                    >
                         <div class="w-100">
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-folder2 me-2 text-primary"></i>
@@ -97,8 +123,7 @@ evaluation_attempts=None) %}
                             </div>
                             <div class="text-muted small mt-1">
                                 <i class="bi bi-check-circle-fill text-success me-1"></i>
-                                {{ completed_required | length }} de {{ required_resources | length }} recursos
-                                completados
+                                {{ completed_required | length }} de {{ required_resources | length }} recursos completados
                             </div>
                         </div>
                         <i class="bi bi-chevron-down"></i>
@@ -107,8 +132,10 @@ evaluation_attempts=None) %}
                     <div class="collapse" id="contents-collapse-{{ s.id }}">
                         <div class="border-top">
                             {% for r in section_resources | sort(attribute="indice") %}
-                            <a class="list-group-item list-group-item-action border-0 d-flex align-items-center py-2 px-3"
-                                href="{{ url_for('resources.pagina_recurso', curso_id=r.curso, codigo=r.id, resource_type=r.tipo) }}">
+                            <a
+                                class="list-group-item list-group-item-action border-0 d-flex align-items-center py-2 px-3"
+                                href="{{ url_for('resources.pagina_recurso', curso_id=r.curso, codigo=r.id, resource_type=r.tipo) }}"
+                            >
                                 <div class="me-2">{{ get_resource_icon(r.tipo) }}</div>
                                 <div class="flex-grow-1">
                                     <div class="fw-medium">{{ r.nombre | capitalize }}</div>
@@ -131,8 +158,10 @@ evaluation_attempts=None) %}
                                 []) if evaluation_attempts else [] %} {% set last_attempt = eval_attempts[-1] if eval_attempts
                                 else None %} {% set is_completed = last_attempt and last_attempt.submitted_at %}
 
-                                <a class="list-group-item list-group-item-action border-0 d-flex align-items-center py-2 px-2 mb-1 rounded"
-                                    href="{{ url_for('evaluation.take_evaluation', evaluation_id=eval.id) }}">
+                                <a
+                                    class="list-group-item list-group-item-action border-0 d-flex align-items-center py-2 px-2 mb-1 rounded"
+                                    href="{{ url_for('evaluation.take_evaluation', evaluation_id=eval.id) }}"
+                                >
                                     <div class="me-2">
                                         {% if eval.is_exam %}
                                         <i class="bi bi-mortarboard-fill text-warning" aria-hidden="true"></i>
@@ -160,8 +189,11 @@ evaluation_attempts=None) %}
 
                                     <div class="ms-2">
                                         {% if is_completed %}
-                                        <i class="bi bi-check-circle-fill text-success" title="Completado"
-                                            aria-hidden="true"></i>
+                                        <i
+                                            class="bi bi-check-circle-fill text-success"
+                                            title="Completado"
+                                            aria-hidden="true"
+                                        ></i>
                                         {% if last_attempt.score is not none %}
                                         <div class="small text-success">{{ "%.0f"|format(last_attempt.score) }}%</div>
                                         {% endif %} {% else %}

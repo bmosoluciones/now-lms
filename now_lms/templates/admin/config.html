@@ -351,6 +351,21 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <div class="form-check">
+                                                {{ form.enable_contact(class="form-check-input", id="enable_contact",
+                                                checked=config.enable_contact) }} {{ render_field_errors(form.enable_contact)
+                                                }}
+                                                <label class="form-check-label" for="enable_contact">
+                                                    {{_("Habilitar Contacto")}}
+                                                </label>
+                                            </div>
+                                            <div class="form-text">
+                                                {{_("Los usuarios verán la opción Contacto en el menú de navegación")}}.
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-check">

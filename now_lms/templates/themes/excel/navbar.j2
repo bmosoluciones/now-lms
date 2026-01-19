@@ -56,6 +56,12 @@
                         <i class="bi bi-chat-quote-fill me-1"></i>{{ _('Blog') }}
                     </a>
                 </li>
+                {% endif %} {% if is_contact_enabled() %}
+                <li class="nav-item">
+                    <a class="nav-link excel-tab" href="{{ url_for('static_pages.contact') }}">
+                        <i class="bi bi-envelope-fill me-1"></i>{{ _('Contacto') }}
+                    </a>
+                </li>
                 {% endif %} {% if current_user.is_authenticated %}
                 <li>
                     <a href="{{ url_for('moderator_profile.pagina_moderador') }}" class="nav-link excel-tab"

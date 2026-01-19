@@ -67,6 +67,10 @@
                 <li>
                     <a href="{{ url_for('blog.blog_index') }}" class="nav-link px-2">📝 Blog</a>
                 </li>
+                {% endif %} {% if is_contact_enabled() %}
+                <li>
+                    <a href="{{ url_for('static_pages.contact') }}" class="nav-link px-2">✉️ {{ _('Contacto') }}</a>
+                </li>
                 {% endif %} {% if current_user.is_authenticated %} {% if current_user.tipo == "moderator" or current_user.tipo
                 == "instructor" or current_user.tipo == "admin" %}
                 <li>

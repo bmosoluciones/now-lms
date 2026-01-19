@@ -11,6 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+# Copyright 2025 BMO Soluciones, S.A.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 #
 """
 NOW Learning Management System.
@@ -116,6 +130,7 @@ from now_lms.db.tools import (
     get_paypal_id,
     get_slideshowid,
     is_blog_enabled,
+    is_contact_enabled,
     is_masterclass_enabled,
     is_programs_enabled,
     is_resources_enabled,
@@ -373,6 +388,7 @@ def define_variables_globales_jinja2(flask_app: Flask):
     flask_app.jinja_env.globals["is_programs_enabled"] = is_programs_enabled
     flask_app.jinja_env.globals["is_resources_enabled"] = is_resources_enabled
     flask_app.jinja_env.globals["is_blog_enabled"] = is_blog_enabled
+    flask_app.jinja_env.globals["is_contact_enabled"] = is_contact_enabled
     flask_app.jinja_env.globals["limpiar_html"] = limpiar_html
     flask_app.jinja_env.globals["lms_info"] = lms_info
     flask_app.jinja_env.globals["logo_perzonalizado"] = logo_perzonalizado

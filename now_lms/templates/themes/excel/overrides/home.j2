@@ -246,17 +246,16 @@ current_theme() %}
                                     cursos.') }}
                                 </p>
                                 <div class="excel-cta-actions">
+                                    {% if is_contact_enabled() %}
                                     <a
-                                        href="{{ url_for('user.crear_cuenta') }}"
+                                        href="{{ url_for('static_pages.contact') }}"
                                         class="btn excel-btn-primary excel-btn-lg me-3"
                                     >
-                                        {{ _('Registrarse Gratis') }}
+                                        {{ _('Contáctanos') }}
                                     </a>
-                                    <a
-                                        href="{{ url_for('course.lista_cursos', page=1) }}"
-                                        class="btn excel-btn-outline excel-btn-lg"
-                                    >
-                                        {{ _('Explorar Cursos') }}
+                                    {% endif %}
+                                    <a href="{{ url_for('user.crear_cuenta') }}" class="btn excel-btn-outline excel-btn-lg">
+                                        {{ _('Registrarse Gratis') }}
                                     </a>
                                 </div>
                                 {% else %}
@@ -274,6 +273,11 @@ current_theme() %}
                                     >
                                         {{ _('Explorar Cursos') }}
                                     </a>
+                                    {% if is_contact_enabled() %}
+                                    <a href="{{ url_for('static_pages.contact') }}" class="btn excel-btn-outline excel-btn-lg">
+                                        {{ _('Contáctanos') }}
+                                    </a>
+                                    {% endif %}
                                 </div>
                                 {% endif %}
                             </div>

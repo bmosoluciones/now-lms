@@ -47,7 +47,14 @@
                         ><i class="bi bi-book" aria-hidden="true"></i> {{ _('Cursos') }}</a
                     >
                 </li>
-                {% if current_user.is_authenticated and current_user.role and current_user.role.can_access_instructor_panel %}
+                {% if is_contact_enabled() %}
+                <li>
+                    <a href="{{ url_for('static_pages.contact') }}" class="nav-link px-2">
+                        <i class="bi bi-envelope" aria-hidden="true"></i> {{ _('Contacto') }}
+                    </a>
+                </li>
+                {% endif %} {% if current_user.is_authenticated and current_user.role and
+                current_user.role.can_access_instructor_panel %}
                 <li>
                     <a href="{{ url_for('instructor_profile.pagina_instructor') }}" class="nav-link px-2"
                         ><i class="bi bi-person-workspace" aria-hidden="true"></i> {{ _('Panel de Instructor') }}</a
