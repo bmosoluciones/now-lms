@@ -14,7 +14,6 @@
 
 import datetime
 
-import pytest
 
 from now_lms.auth import proteger_passwd
 from now_lms.db import (

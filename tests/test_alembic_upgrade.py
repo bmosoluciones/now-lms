@@ -20,14 +20,14 @@ from sqlalchemy.pool import StaticPool
 def test_alembic_upgrade_app_context(monkeypatch):
     """
     Test robusto y destructivo de migraciones Alembic.
-    
+
     Este test verifica que las migraciones funcionan correctamente ejecutando:
     1. drop_all() - Elimina todas las tablas
     2. initial_setup() - Crea esquema base
     3. upgrade() - No debe hacer nada en BD recién creada
     4. downgrade('base') - Baja hasta la migración cero
     5. upgrade() - Sube de nuevo hasta head
-    
+
     Todo el recorrido debe ejecutarse sin errores.
     """
     # Respetar DATABASE_URL o usar SQLite en memoria
@@ -95,7 +95,7 @@ def test_alembic_upgrade_app_context(monkeypatch):
         # Verificar que ahora sí hay una versión válida
         version_after_final_upgrade = db.session.execute(db.text("SELECT version_num FROM alembic_version")).scalar()
         assert version_after_final_upgrade is not None, "Después de upgrade(), debe haber una versión válida"
-        
+
         # Verificar que el ciclo completo funcionó correctamente
         # La versión final debe ser igual a la inicial si no se agregaron migraciones durante el test
         # Nota: En producción/desarrollo, la versión puede cambiar si se agregan nuevas migraciones
