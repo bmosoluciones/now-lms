@@ -9,6 +9,33 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [1.2.2] - 2026-01-18
+
+### Fixed:
+ - Jinja2 errors in templates related to contac messages.
+
+### Added:
+ - Configuration toggle for Contact page in navbar: Admins can now enable/disable the Contact link in the navigation menu via System Configuration.
+ - New `enable_contact` boolean field in `Configuracion` model (defaults to `False` for backward compatibility).
+ - Cached helper function `is_contact_enabled()` to check Contact page visibility status.
+
+### Changed:
+ - Updated navbar template to conditionally render Contact link based on configuration setting.
+ - Extended admin configuration UI with Contact toggle in Navigation Configuration section.
+
+**IMPORTANT**: This version includes a database schema change. After updating, run database migrations:
+
+```bash
+# Using lmsctl (recommended)
+lmsctl database migrate
+
+# Or enable automatic migrations on startup
+NOW_LMS_AUTO_MIGRATE=1 lmsctl serve
+
+# Or using Flask-Alembic directly
+flask db upgrade
+```
+
 ## [1.2.1] - 2026-01-18
 
 ### Added:

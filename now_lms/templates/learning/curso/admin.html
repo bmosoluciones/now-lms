@@ -5,509 +5,659 @@ permitir_docente %}
 
 <!doctype html>
 <html lang="{{ current_locale() }}" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ curso.nombre | title }}</title>
 
-<head>
-    {{ current_theme.headertags() }}
-    <title>{{ curso.nombre | title }}</title>
+        {{ current_theme.local_style() }}
+    </head>
 
-    {{ current_theme.local_style() }}
-</head>
+    <body>
+        {{ current_theme.navbar() }}
 
-<body>
-    {{ current_theme.navbar() }}
+        <main>
+            {{ current_theme.notify() }}
+            <br />
 
-    <main>
-        {{ current_theme.notify() }}
-        <br />
-
-        <div class="container">
-            <div class="d-flex justify-content-between border-bottom">
-                <h4>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item">
-                                <a class="text-reset text-decoration-none link-dark"
-                                    href="{{ url_for('home.panel') }}">{{ _("Inicio") }}</a>
-                            </li>
-                            <li class="breadcrumb-item">{{ curso.nombre }}</li>
-                        </ol>
-                    </nav>
-                </h4>
-                <div>
-                    <div class="btn-group">
-                        <button class="btn btn-secondary btn-sm" type="button">
-                            <i class="bi bi-gear" aria-hidden="true"></i> {{ _("Acciones") }}
-                        </button>
-                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            <span class="visually-hidden">{{ _("Ocultar") }} Menu</span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><span class="dropdown-item-text text-start">{{ _('Cambiar status:') }}</span></li>
-                            <li>
-                                <a href="{{ url_for('course.cambiar_estatus_curso', curse=curso.codigo, status='draft') }}"
-                                    class="text-reset text-decoration-none">{{ _('Borrador') }}</a>
-                            </li>
-                            <li>
-                                <a href="{{ url_for('course.cambiar_estatus_curso', curse=curso.codigo, status='open') }}"
-                                    class="text-reset text-decoration-none">{{ _("Abierto") }}</a>
-                            </li>
-                            <li>
-                                <a href="{{ url_for('course.cambiar_estatus_curso', curse=curso.codigo, status='closed') }}"
-                                    class="text-reset text-decoration-none">{{ _("Cerrado") }}</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider" />
-                            </li>
-                            <li><span class="dropdown-item-text">{{ _('Publicar') }} {{ _("Curso") }}:</span></li>
-                            <li>
-                                <a href="{{ url_for('course.cambiar_curso_publico', curse=curso.codigo) }}"
-                                    class="text-reset text-decoration-none">{{ _('Quitar del Sitio Web.') }}</a>
-                            </li>
-                            <li>
-                                <a href="{{ url_for('course.cambiar_curso_publico', curse=curso.codigo) }}"
-                                    class="text-reset text-decoration-none">{{ _('Agregar al Sitio Web.') }}</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider" />
-                            </li>
-                            <li><span class="dropdown-item-text">{{ _("Gestión del curso") }}:</span></li>
-                            <li>
-                                <a href="{{ url_for('resources.course_library', course_code=curso.codigo) }}"
-                                    class="dropdown-item"><i class="bi bi-folder" aria-hidden="true"></i>
-                                    {{ _("Biblioteca del curso") }}</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider" />
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
-                <div class="col-md-4 border-right">
-                    {% if curso.portada and course_logo(curso.codigo) %}
-                    <img src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/' + course_logo(curso.codigo)) }}"
-                        width="100%" height="225" alt="{{ _('Portada del Curso') }}" />
-                    {% else %}
-                    <svg class="bd-placeholder-img card-img-top" width="100%" height="225"
-                        xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail"
-                        preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <title>{{ curso.nombre }}</title>
-                        <rect width="100%" height="100%" fill="#55595c" />
-                        <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{ curso.nombre }}</text>
-                    </svg>
-                    {% endif %}
-
-                    <br />
-
-                    <div class="d-flex d-flex justify-content-around">
-                        <a class="btn btn-warning btn-sm"
-                            href="{{ url_for('course.editar_curso', course_code=curso.codigo) }}" role="button"><i
-                                class="bi bi-pencil-square" aria-hidden="true"></i> {{ _("Editar") }} {{ _("Información")
-                                }} del {{ _("Curso") }}</a>
-                    </div>
-
-                    <h2>{{ curso.nombre }}</h2>
-                    {{ markdown2html(curso.descripcion) | safe }} {% if curso.estado == "draft" %}
-                    <p>
-                        {{ _('Estatus del curso:') }} <i class="bi bi-pencil-square" aria-hidden="true"></i> {{
-                            _('Borrador') }}
-                    </p>
-                    {% elif curso.estado == "open" %}
-                    <p>Estatus del curso: <i class="bi bi-person-plus" aria-hidden="true"></i> {{ _("Abierto") }}</p>
-                    {% elif curso.estado == "closed" %}
-                    <p>Estatus del curso: <i class="bi bi-x-octagon" aria-hidden="true"></i> {{ _("Cerrado") }}</p>
-                    {% endif %} {% if curso.publico == True %}
-                    <p>{{ _("Curso") }} publicado en el sitio Web.</p>
-                    {% else %}
-                    <p>{{ _('Este curso no se ha publicado en el sitio Web.') }}</p>
-                    {% endif %}
-                </div>
-                <div class="col-md-8">
-                    <h3>{{ _('Contenido del curso.') }}</h3>
-
-                    <a href="{{ url_for('course.nuevo_seccion', course_code=curso.codigo) }}"
-                        class="btn btn-sm btn-success"><i class="bi bi-bookmark-plus-fill" aria-hidden="true"></i>
-                        {{ _("Nueva") }} Sección</a>
-
-                    {% if curso.pagado %}
-                    <a href="{{ url_for('course.list_coupons', course_code=curso.codigo) }}"
-                        class="btn btn-sm btn-primary"><i class="bi bi-tags" aria-hidden="true"></i>
-                        {{ _("Gestionar") }} Cupones</a>
-                    {% endif %}
-
-                    <!-- Administrative Enrollment Management -->
-                    <a href="{{ url_for('course.admin_course_enrollment', course_code=curso.codigo) }}"
-                        class="btn btn-sm btn-info"><i class="bi bi-person-plus" aria-hidden="true"></i>
-                        {{ _("Inscribir") }} {{ _("Estudiante") }}</a>
-                    <a href="{{ url_for('course.admin_course_enrollments', course_code=curso.codigo) }}"
-                        class="btn btn-sm btn-outline-info"><i class="bi bi-people" aria-hidden="true"></i>
-                        {{ _("Ver") }} Inscripciones</a>
-
-                    {% if secciones %}
+            <div class="container">
+                <div class="d-flex justify-content-between border-bottom">
+                    <h4>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a class="text-reset text-decoration-none link-dark" href="{{ url_for('home.panel') }}"
+                                        >{{ _("Inicio") }}</a
+                                    >
+                                </li>
+                                <li class="breadcrumb-item">{{ curso.nombre }}</li>
+                            </ol>
+                        </nav>
+                    </h4>
                     <div>
-                        {% for seccion in secciones %}
-                        <div class="d-flex justify-content-between border-bottom">
-                            <div>
-                                <h5>{{ seccion.nombre }}</h5>
-                            </div>
+                        <div class="btn-group">
+                            <button class="btn btn-secondary btn-sm" type="button">
+                                <i class="bi bi-gear" aria-hidden="true"></i> {{ _("Acciones") }}
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-secondary dropdown-toggle"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
+                                <span class="visually-hidden">{{ _("Ocultar") }} Menu</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><span class="dropdown-item-text text-start">{{ _('Cambiar status:') }}</span></li>
+                                <li>
+                                    <a
+                                        href="{{ url_for('course.cambiar_estatus_curso', curse=curso.codigo, status='draft') }}"
+                                        class="text-reset text-decoration-none"
+                                        >{{ _('Borrador') }}</a
+                                    >
+                                </li>
+                                <li>
+                                    <a
+                                        href="{{ url_for('course.cambiar_estatus_curso', curse=curso.codigo, status='open') }}"
+                                        class="text-reset text-decoration-none"
+                                        >{{ _("Abierto") }}</a
+                                    >
+                                </li>
+                                <li>
+                                    <a
+                                        href="{{ url_for('course.cambiar_estatus_curso', curse=curso.codigo, status='closed') }}"
+                                        class="text-reset text-decoration-none"
+                                        >{{ _("Cerrado") }}</a
+                                    >
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+                                <li><span class="dropdown-item-text">{{ _('Publicar') }} {{ _("Curso") }}:</span></li>
+                                <li>
+                                    <a
+                                        href="{{ url_for('course.cambiar_curso_publico', curse=curso.codigo) }}"
+                                        class="text-reset text-decoration-none"
+                                        >{{ _('Quitar del Sitio Web.') }}</a
+                                    >
+                                </li>
+                                <li>
+                                    <a
+                                        href="{{ url_for('course.cambiar_curso_publico', curse=curso.codigo) }}"
+                                        class="text-reset text-decoration-none"
+                                        >{{ _('Agregar al Sitio Web.') }}</a
+                                    >
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+                                <li><span class="dropdown-item-text">{{ _("Gestión del curso") }}:</span></li>
+                                <li>
+                                    <a
+                                        href="{{ url_for('resources.course_library', course_code=curso.codigo) }}"
+                                        class="dropdown-item"
+                                        ><i class="bi bi-folder" aria-hidden="true"></i> {{ _("Biblioteca del curso") }}</a
+                                    >
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+                            </ul>
                         </div>
-                        <div class="accordion accordion-flush" id="accordionSeccionesCurso">
-                            <div>
-                                <!-- Desktop layout - show all buttons -->
-                                <div class="d-none d-md-flex justify-content-end">
-                                    <a href="{{ url_for('resources.nuevo_recurso', course_code=curso.codigo, seccion=seccion.id) }}"
-                                        class="btn btn-success btn-sm me-2"><i class="bi bi-plus-circle"
-                                            aria-hidden="true"></i> {{ _("Nuevo") }} {{
-                                            _("Recurso") }}</a>
+                    </div>
+                </div>
 
-                                    <a href="{{ url_for('course.new_evaluation_from_section', course_code=curso.codigo, section_id=seccion.id) }}"
-                                        class="btn btn-success btn-sm me-2"><i class="bi bi-plus-circle"
-                                            aria-hidden="true"></i> {{ _("Crear") }}
-                                        Evaluación</a>
-
-                                    <div class="btn-group me-2">
-                                        <button class="btn btn-info btn-sm" type="button">
-                                            <i class="bi bi-arrows-move" aria-hidden="true"></i> {{ _('Ordenar') }}
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-info dropdown-toggle"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            <span class="visually-hidden">{{ _("Ocultar") }} Menu Ordenar</span>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="{{ url_for('course.reducir_indice_seccion', course_code=curso.codigo, indice=seccion.indice) }}"
-                                                    class="dropdown-item"><i class="bi bi-arrow-down-short"
-                                                        aria-hidden="true"></i> Bajar</a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ url_for('course.incrementar_indice_seccion', course_code=curso.codigo, indice=seccion.indice) }}"
-                                                    class="dropdown-item"><i class="bi bi-arrow-up-short"
-                                                        aria-hidden="true"></i> Subir</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <a href="{{ url_for('course.editar_seccion', course_code=seccion.curso, seccion=seccion.id) }}"
-                                        class="btn btn-warning btn-sm me-2"><i class="bi bi-pencil-square"
-                                            aria-hidden="true"></i> {{ _("Editar") }}
-                                        Sección</a>
-                                    <div class="btn-group">
-                                        <button class="btn btn-secondary btn-sm" type="button">
-                                            <i class="bi bi-ui-checks" aria-hidden="true"></i> {{ _("Acciones") }}
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            <span class="visually-hidden">{{ _("Ocultar") }} Menu
-                                                {{ _("Acciones") }}</span>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="{{ url_for('course.cambiar_seccion_publico', course_code=curso.codigo, codigo=seccion.id) }}"
-                                                    class="dropdown-item">{{ _('Publicar Sección') }}</a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ url_for('course.cambiar_seccion_publico', course_code=curso.codigo, codigo=seccion.id) }}"
-                                                    class="dropdown-item">{{ _("Ocultar") }} Sección</a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ url_for('course.eliminar_seccion', curso_id=curso.codigo, id_=seccion.id) }}"
-                                                    class="dropdown-item">{{ _('Eliminar Sección') }}</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <!-- Mobile layout - single dropdown with all actions -->
-                                <div class="d-md-none d-flex justify-content-end">
-                                    <div class="dropdown">
-                                        <button class="btn btn-primary btn-sm dropdown-toggle" type="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-three-dots" aria-hidden="true"></i> {{ _("Acciones") }} de
-                                            Sección
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a href="{{ url_for('resources.nuevo_recurso', course_code=curso.codigo, seccion=seccion.id) }}"
-                                                    class="dropdown-item"><i class="bi bi-plus-circle"
-                                                        aria-hidden="true"></i> {{ _("Nuevo") }}
-                                                    {{ _("Recurso") }}</a>
-                                            </li>
-                                            <li>
-                                                <hr class="dropdown-divider" />
-                                            </li>
-                                            <li>
-                                                <span
-                                                    class="dropdown-item-text"><strong>{{ _('Ordenar Sección:') }}</strong></span>
-                                            </li>
-                                            <li>
-                                                <a href="{{ url_for('course.reducir_indice_seccion', course_code=curso.codigo, indice=seccion.indice) }}"
-                                                    class="dropdown-item"><i class="bi bi-arrow-down-short"
-                                                        aria-hidden="true"></i> {{ _('Bajar
-                                                        Sección') }}</a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ url_for('course.incrementar_indice_seccion', course_code=curso.codigo, indice=seccion.indice) }}"
-                                                    class="dropdown-item"><i class="bi bi-arrow-up-short"
-                                                        aria-hidden="true"></i> {{ _('Subir
-                                                        Sección') }}</a>
-                                            </li>
-                                            <li>
-                                                <hr class="dropdown-divider" />
-                                            </li>
-                                            <li>
-                                                <a href="{{ url_for('course.editar_seccion', course_code=seccion.curso, seccion=seccion.id) }}"
-                                                    class="dropdown-item"><i class="bi bi-pencil-square"
-                                                        aria-hidden="true"></i> {{ _("Editar")
-                                                        }} Sección</a>
-                                            </li>
-                                            <li>
-                                                <hr class="dropdown-divider" />
-                                            </li>
-                                            <li>
-                                                <span class="dropdown-item-text"><strong>Más
-                                                        {{ _("Acciones") }}:</strong></span>
-                                            </li>
-                                            <li>
-                                                <a href="{{ url_for('course.new_evaluation_from_section', course_code=curso.codigo, section_id=seccion.id) }}"
-                                                    class="dropdown-item"><i class="bi bi-plus-circle"
-                                                        aria-hidden="true"></i> {{ _("Crear") }}
-                                                    Evaluación</a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ url_for('course.cambiar_seccion_publico', course_code=curso.codigo, codigo=seccion.id) }}"
-                                                    class="dropdown-item">{{ _('Publicar Sección') }}</a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ url_for('course.cambiar_seccion_publico', course_code=curso.codigo, codigo=seccion.id) }}"
-                                                    class="dropdown-item">{{ _("Ocultar") }} Sección</a>
-                                            </li>
-                                            <li>
-                                                <a href="{{ url_for('course.eliminar_seccion', curso_id=curso.codigo, id_=seccion.id) }}"
-                                                    class="dropdown-item text-danger"><i class="bi bi-trash3"
-                                                        aria-hidden="true"></i> {{ _("Eliminar") }}
-                                                    Sección</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <p>{{ seccion.descripcion }}</p>
-                        <h6>{{ _("Recursos") }} disponibles en esta sección</h6>
-
-                        <ul>
-                            {% for recurso in recursos %} {% if recurso.seccion == seccion.id %}
-                            <li class="list-group-item">
-                                <div class="d-flex justify-content-between border-bottom">
-                                    {% if current_user.tipo == "admin" or permitir_docente or permitir_estudiante %}
-                                    <a class="link-dark text-decoration-none"
-                                        href="{{ url_for('resources.pagina_recurso', curso_id=recurso.curso, resource_type=recurso.tipo, codigo=recurso.id) }} ">
-                                        <div class="fw-bold">
-                                            <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i> {{
-                                                recurso.nombre }}
-                                        </div>
-                                    </a>
-                                    {% elif recurso.publico == True %}
-                                    <a class="link-dark text-decoration-none"
-                                        href="{{ url_for('resources.pagina_recurso', curso_id=recurso.curso, codigo=recurso.id, resource_type=recurso.tipo) }} ">
-                                        <div class="fw-bold">
-                                            <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i> {{
-                                                recurso.nombre }}
-                                        </div>
-                                    </a>
-                                    <span class="badge bg-success">Preview</span>
-                                    {% else %}
-                                    <div class="fw-bold">
-                                        <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i> {{
-                                            recurso.nombre }}
-                                    </div>
-                                    {% endif %} {% if permitir_editar %}
-                                    <div>
-                                        <!-- Desktop layout - show badges -->
-                                        <div class="d-none d-md-block">
-                                            <span class="badge bg-warning me-1">
-                                                {% if recurso.tipo == "youtube" %}
-                                                <a href="{{ url_for('resources.editar_recurso_youtube_video', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
-                                                    class="link-light"><i class="bi bi-pencil-square"
-                                                        aria-hidden="true"></i> {{ _("Editar")
-                                                        }}</a>
-                                                {% elif recurso.tipo == "text" %}
-                                                <a href="{{ url_for('resources.editar_recurso_text', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
-                                                    class="link-light"><i class="bi bi-pencil-square"
-                                                        aria-hidden="true"></i> {{ _("Editar")
-                                                        }}</a>
-                                                {% elif recurso.tipo == "link" %}
-                                                <a href="{{ url_for('resources.editar_recurso_link', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
-                                                    class="link-light"><i class="bi bi-pencil-square"
-                                                        aria-hidden="true"></i> {{ _("Editar")
-                                                        }}</a>
-                                                {% elif recurso.tipo == "pdf" %}
-                                                <a href="{{ url_for('resources.editar_recurso_pdf', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
-                                                    class="link-light"><i class="bi bi-pencil-square"
-                                                        aria-hidden="true"></i> {{ _("Editar")
-                                                        }}</a>
-                                                {% elif recurso.tipo == "meet" %}
-                                                <a href="{{ url_for('resources.editar_recurso_meet', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
-                                                    class="link-light"><i class="bi bi-pencil-square"
-                                                        aria-hidden="true"></i> {{ _("Editar")
-                                                        }}</a>
-                                                {% elif recurso.tipo == "img" %}
-                                                <a href="{{ url_for('resources.editar_recurso_img', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
-                                                    class="link-light"><i class="bi bi-pencil-square"
-                                                        aria-hidden="true"></i> {{ _("Editar")
-                                                        }}</a>
-                                                {% elif recurso.tipo == "mp3" %}
-                                                <a href="{{ url_for('resources.editar_recurso_audio', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
-                                                    class="link-light"><i class="bi bi-pencil-square"
-                                                        aria-hidden="true"></i> {{ _("Editar")
-                                                        }}</a>
-                                                {% elif recurso.tipo == "html" %}
-                                                <a href="{{ url_for('course.editar_recurso_html', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
-                                                    class="link-light"><i class="bi bi-pencil-square"
-                                                        aria-hidden="true"></i> {{ _("Editar")
-                                                        }}</a>
-                                                {% elif recurso.tipo == "slides" %}
-                                                <a href="{{ url_for('resources.editar_slideshow', course_code=recurso.curso, slideshow_id=get_slideshowid(recurso.id)) }}"
-                                                    class="link-light"><i class="bi bi-pencil-square"
-                                                        aria-hidden="true"></i> {{ _("Editar")
-                                                        }}</a>
-                                                {% else %}
-                                                <span class="text-muted">N/A</span>
-                                                {% endif %}
-                                            </span>
-                                            <span class="badge bg-primary me-1">
-                                                <a href="{{ url_for('course.modificar_orden_recurso', cource_code=recurso.curso, seccion_id=recurso.seccion , resource_index=recurso.indice , task='increment') }}"
-                                                    class="link-light"><i class="bi bi-arrow-down-short"
-                                                        aria-hidden="true"></i> Bajar</a>
-                                            </span>
-                                            <span class="badge bg-primary me-1">
-                                                <a href="{{  url_for('course.modificar_orden_recurso', cource_code=recurso.curso, seccion_id=recurso.seccion , resource_index=recurso.indice, task='decrement')  }}"
-                                                    class="link-light"><i class="bi bi-arrow-up-short"
-                                                        aria-hidden="true"></i> Subir</a>
-                                            </span>
-                                            <span class="badge bg-danger">
-                                                <a href="{{ url_for('course.eliminar_recurso', curso_code=recurso.curso, seccion=recurso.seccion, id_=recurso.id) }}"
-                                                    class="link-light"><i class="bi bi-trash3" aria-hidden="true"></i>
-                                                    {{ _("Eliminar") }}</a>
-                                            </span>
-                                        </div>
-
-                                        <!-- Mobile layout - dropdown -->
-                                        <div class="d-md-none">
-                                            <div class="dropdown">
-                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li>
-                                                        {% if recurso.tipo == "youtube" %}
-                                                        <a href="{{ url_for('resources.editar_recurso_youtube_video', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
-                                                            class="dropdown-item"><i class="bi bi-pencil-square"
-                                                                aria-hidden="true"></i> {{
-                                                                _("Editar") }}</a>
-                                                        {% elif recurso.tipo == "text" %}
-                                                        <a href="{{ url_for('resources.editar_recurso_text', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
-                                                            class="dropdown-item"><i class="bi bi-pencil-square"
-                                                                aria-hidden="true"></i> {{
-                                                                _("Editar") }}</a>
-                                                        {% elif recurso.tipo == "link" %}
-                                                        <a href="{{ url_for('resources.editar_recurso_link', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
-                                                            class="dropdown-item"><i class="bi bi-pencil-square"
-                                                                aria-hidden="true"></i> {{
-                                                                _("Editar") }}</a>
-                                                        {% elif recurso.tipo == "pdf" %}
-                                                        <a href="{{ url_for('resources.editar_recurso_pdf', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
-                                                            class="dropdown-item"><i class="bi bi-pencil-square"
-                                                                aria-hidden="true"></i> {{
-                                                                _("Editar") }}</a>
-                                                        {% elif recurso.tipo == "meet" %}
-                                                        <a href="{{ url_for('resources.editar_recurso_meet', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
-                                                            class="dropdown-item"><i class="bi bi-pencil-square"
-                                                                aria-hidden="true"></i> {{
-                                                                _("Editar") }}</a>
-                                                        {% elif recurso.tipo == "img" %}
-                                                        <a href="{{ url_for('resources.editar_recurso_img', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
-                                                            class="dropdown-item"><i class="bi bi-pencil-square"
-                                                                aria-hidden="true"></i> {{
-                                                                _("Editar") }}</a>
-                                                        {% elif recurso.tipo == "mp3" %}
-                                                        <a href="{{ url_for('resources.editar_recurso_audio', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
-                                                            class="dropdown-item"><i class="bi bi-pencil-square"
-                                                                aria-hidden="true"></i> {{
-                                                                _("Editar") }}</a>
-                                                        {% elif recurso.tipo == "html" %}
-                                                        <a href="{{ url_for('course.editar_recurso_html', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
-                                                            class="dropdown-item"><i class="bi bi-pencil-square"
-                                                                aria-hidden="true"></i> {{
-                                                                _("Editar") }}</a>
-                                                        {% elif recurso.tipo == "slides" %}
-                                                        <a href="{{ url_for('resources.editar_slideshow', course_code=recurso.curso, slideshow_id=get_slideshowid(recurso.id)) }}"
-                                                            class="dropdown-item"><i class="bi bi-pencil-square"
-                                                                aria-hidden="true"></i> {{
-                                                                _("Editar") }}</a>
-                                                        {% else %}
-                                                        <span class="dropdown-item-text text-muted">N/A</span>
-                                                        {% endif %}
-                                                    </li>
-                                                    <li>
-                                                        <hr class="dropdown-divider" />
-                                                    </li>
-                                                    <li>
-                                                        <span
-                                                            class="dropdown-item-text"><strong>Ordenar:</strong></span>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ url_for('course.modificar_orden_recurso', cource_code=recurso.curso, seccion_id=recurso.seccion , resource_index=recurso.indice , task='increment') }}"
-                                                            class="dropdown-item"><i class="bi bi-arrow-down-short"
-                                                                aria-hidden="true"></i>
-                                                            Bajar</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{  url_for('course.modificar_orden_recurso', cource_code=recurso.curso, seccion_id=recurso.seccion , resource_index=recurso.indice, task='decrement')  }}"
-                                                            class="dropdown-item"><i class="bi bi-arrow-up-short"
-                                                                aria-hidden="true"></i>
-                                                            Subir</a>
-                                                    </li>
-                                                    <li>
-                                                        <hr class="dropdown-divider" />
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ url_for('course.eliminar_recurso', curso_code=recurso.curso, seccion=recurso.seccion, id_=recurso.id) }}"
-                                                            class="dropdown-item text-danger"><i class="bi bi-trash3"
-                                                                aria-hidden="true"></i> {{
-                                                                _("Eliminar") }}</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                                {% endif %}
-                            </li>
-                            {% endfor %}
-                        </ul>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
+                    <div class="col-md-4 border-right">
+                        {% if curso.portada and course_logo(curso.codigo) %}
+                        <img
+                            src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/' + course_logo(curso.codigo)) }}"
+                            width="100%"
+                            height="225"
+                            alt="{{ _('Portada del Curso') }}"
+                        />
+                        {% else %}
+                        <svg
+                            class="bd-placeholder-img card-img-top"
+                            width="100%"
+                            height="225"
+                            xmlns="http://www.w3.org/2000/svg"
+                            role="img"
+                            aria-label="Placeholder: Thumbnail"
+                            preserveAspectRatio="xMidYMid slice"
+                            focusable="false"
+                        >
+                            <title>{{ curso.nombre }}</title>
+                            <rect width="100%" height="100%" fill="#55595c" />
+                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">{{ curso.nombre }}</text>
+                        </svg>
+                        {% endif %}
 
                         <br />
-                        {% endfor %} {% else %}
 
-                        <div class="d-flex justify-content-center">
-                            <a href="{{ url_for('course.nuevo_seccion', course_code=curso.codigo) }}"
-                                class="btn btn-success btn-sm" role="button" aria-disabled="true"><i
-                                    class="bi bi-plus-circle-fill" aria-hidden="true"></i>Agrega la primer sección a tu
-                                nuevo curso
-                            </a>
+                        <div class="d-flex d-flex justify-content-around">
+                            <a
+                                class="btn btn-warning btn-sm"
+                                href="{{ url_for('course.editar_curso', course_code=curso.codigo) }}"
+                                role="button"
+                                ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _("Editar") }} {{ _("Información")
+                                }} del {{ _("Curso") }}</a
+                            >
                         </div>
 
+                        <h2>{{ curso.nombre }}</h2>
+                        {{ markdown2html(curso.descripcion) | safe }} {% if curso.estado == "draft" %}
+                        <p>
+                            {{ _('Estatus del curso:') }} <i class="bi bi-pencil-square" aria-hidden="true"></i> {{
+                            _('Borrador') }}
+                        </p>
+                        {% elif curso.estado == "open" %}
+                        <p>Estatus del curso: <i class="bi bi-person-plus" aria-hidden="true"></i> {{ _("Abierto") }}</p>
+                        {% elif curso.estado == "closed" %}
+                        <p>Estatus del curso: <i class="bi bi-x-octagon" aria-hidden="true"></i> {{ _("Cerrado") }}</p>
+                        {% endif %} {% if curso.publico == True %}
+                        <p>{{ _("Curso") }} publicado en el sitio Web.</p>
+                        {% else %}
+                        <p>{{ _('Este curso no se ha publicado en el sitio Web.') }}</p>
                         {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <h3>{{ _('Contenido del curso.') }}</h3>
+
+                        <a
+                            href="{{ url_for('course.nuevo_seccion', course_code=curso.codigo) }}"
+                            class="btn btn-sm btn-success"
+                            ><i class="bi bi-bookmark-plus-fill" aria-hidden="true"></i> {{ _("Nueva") }} Sección</a
+                        >
+
+                        {% if curso.pagado %}
+                        <a href="{{ url_for('course.list_coupons', course_code=curso.codigo) }}" class="btn btn-sm btn-primary"
+                            ><i class="bi bi-tags" aria-hidden="true"></i> {{ _("Gestionar") }} Cupones</a
+                        >
+                        {% endif %}
+
+                        <!-- Administrative Enrollment Management -->
+                        <a
+                            href="{{ url_for('course.admin_course_enrollment', course_code=curso.codigo) }}"
+                            class="btn btn-sm btn-info"
+                            ><i class="bi bi-person-plus" aria-hidden="true"></i> {{ _("Inscribir") }} {{ _("Estudiante") }}</a
+                        >
+                        <a
+                            href="{{ url_for('course.admin_course_enrollments', course_code=curso.codigo) }}"
+                            class="btn btn-sm btn-outline-info"
+                            ><i class="bi bi-people" aria-hidden="true"></i> {{ _("Ver") }} Inscripciones</a
+                        >
+
+                        {% if secciones %}
+                        <div>
+                            {% for seccion in secciones %}
+                            <div class="d-flex justify-content-between border-bottom">
+                                <div>
+                                    <h5>{{ seccion.nombre }}</h5>
+                                </div>
+                            </div>
+                            <div class="accordion accordion-flush" id="accordionSeccionesCurso">
+                                <div>
+                                    <!-- Desktop layout - show all buttons -->
+                                    <div class="d-none d-md-flex justify-content-end">
+                                        <a
+                                            href="{{ url_for('resources.nuevo_recurso', course_code=curso.codigo, seccion=seccion.id) }}"
+                                            class="btn btn-success btn-sm me-2"
+                                            ><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _("Nuevo") }} {{
+                                            _("Recurso") }}</a
+                                        >
+
+                                        <a
+                                            href="{{ url_for('course.new_evaluation_from_section', course_code=curso.codigo, section_id=seccion.id) }}"
+                                            class="btn btn-success btn-sm me-2"
+                                            ><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _("Crear") }}
+                                            Evaluación</a
+                                        >
+
+                                        <div class="btn-group me-2">
+                                            <button class="btn btn-info btn-sm" type="button">
+                                                <i class="bi bi-arrows-move" aria-hidden="true"></i> {{ _('Ordenar') }}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="btn btn-sm btn-info dropdown-toggle"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                            >
+                                                <span class="visually-hidden">{{ _("Ocultar") }} Menu Ordenar</span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a
+                                                        href="{{ url_for('course.reducir_indice_seccion', course_code=curso.codigo, indice=seccion.indice) }}"
+                                                        class="dropdown-item"
+                                                        ><i class="bi bi-arrow-down-short" aria-hidden="true"></i> Bajar</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a
+                                                        href="{{ url_for('course.incrementar_indice_seccion', course_code=curso.codigo, indice=seccion.indice) }}"
+                                                        class="dropdown-item"
+                                                        ><i class="bi bi-arrow-up-short" aria-hidden="true"></i> Subir</a
+                                                    >
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <a
+                                            href="{{ url_for('course.editar_seccion', course_code=seccion.curso, seccion=seccion.id) }}"
+                                            class="btn btn-warning btn-sm me-2"
+                                            ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _("Editar") }}
+                                            Sección</a
+                                        >
+                                        <div class="btn-group">
+                                            <button class="btn btn-secondary btn-sm" type="button">
+                                                <i class="bi bi-ui-checks" aria-hidden="true"></i> {{ _("Acciones") }}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="btn btn-sm btn-secondary dropdown-toggle"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                            >
+                                                <span class="visually-hidden"
+                                                    >{{ _("Ocultar") }} Menu {{ _("Acciones") }}</span
+                                                >
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a
+                                                        href="{{ url_for('course.cambiar_seccion_publico', course_code=curso.codigo, codigo=seccion.id) }}"
+                                                        class="dropdown-item"
+                                                        >{{ _('Publicar Sección') }}</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a
+                                                        href="{{ url_for('course.cambiar_seccion_publico', course_code=curso.codigo, codigo=seccion.id) }}"
+                                                        class="dropdown-item"
+                                                        >{{ _("Ocultar") }} Sección</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a
+                                                        href="{{ url_for('course.eliminar_seccion', curso_id=curso.codigo, id_=seccion.id) }}"
+                                                        class="dropdown-item"
+                                                        >{{ _('Eliminar Sección') }}</a
+                                                    >
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <!-- Mobile layout - single dropdown with all actions -->
+                                    <div class="d-md-none d-flex justify-content-end">
+                                        <div class="dropdown">
+                                            <button
+                                                class="btn btn-primary btn-sm dropdown-toggle"
+                                                type="button"
+                                                data-bs-toggle="dropdown"
+                                                aria-expanded="false"
+                                            >
+                                                <i class="bi bi-three-dots" aria-hidden="true"></i> {{ _("Acciones") }} de
+                                                Sección
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a
+                                                        href="{{ url_for('resources.nuevo_recurso', course_code=curso.codigo, seccion=seccion.id) }}"
+                                                        class="dropdown-item"
+                                                        ><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _("Nuevo") }}
+                                                        {{ _("Recurso") }}</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider" />
+                                                </li>
+                                                <li>
+                                                    <span class="dropdown-item-text"
+                                                        ><strong>{{ _('Ordenar Sección:') }}</strong></span
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a
+                                                        href="{{ url_for('course.reducir_indice_seccion', course_code=curso.codigo, indice=seccion.indice) }}"
+                                                        class="dropdown-item"
+                                                        ><i class="bi bi-arrow-down-short" aria-hidden="true"></i> {{ _('Bajar
+                                                        Sección') }}</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a
+                                                        href="{{ url_for('course.incrementar_indice_seccion', course_code=curso.codigo, indice=seccion.indice) }}"
+                                                        class="dropdown-item"
+                                                        ><i class="bi bi-arrow-up-short" aria-hidden="true"></i> {{ _('Subir
+                                                        Sección') }}</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider" />
+                                                </li>
+                                                <li>
+                                                    <a
+                                                        href="{{ url_for('course.editar_seccion', course_code=seccion.curso, seccion=seccion.id) }}"
+                                                        class="dropdown-item"
+                                                        ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _("Editar")
+                                                        }} Sección</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider" />
+                                                </li>
+                                                <li>
+                                                    <span class="dropdown-item-text"
+                                                        ><strong>Más {{ _("Acciones") }}:</strong></span
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a
+                                                        href="{{ url_for('course.new_evaluation_from_section', course_code=curso.codigo, section_id=seccion.id) }}"
+                                                        class="dropdown-item"
+                                                        ><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _("Crear") }}
+                                                        Evaluación</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a
+                                                        href="{{ url_for('course.cambiar_seccion_publico', course_code=curso.codigo, codigo=seccion.id) }}"
+                                                        class="dropdown-item"
+                                                        >{{ _('Publicar Sección') }}</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a
+                                                        href="{{ url_for('course.cambiar_seccion_publico', course_code=curso.codigo, codigo=seccion.id) }}"
+                                                        class="dropdown-item"
+                                                        >{{ _("Ocultar") }} Sección</a
+                                                    >
+                                                </li>
+                                                <li>
+                                                    <a
+                                                        href="{{ url_for('course.eliminar_seccion', curso_id=curso.codigo, id_=seccion.id) }}"
+                                                        class="dropdown-item text-danger"
+                                                        ><i class="bi bi-trash3" aria-hidden="true"></i> {{ _("Eliminar") }}
+                                                        Sección</a
+                                                    >
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>{{ seccion.descripcion }}</p>
+                            <h6>{{ _("Recursos") }} disponibles en esta sección</h6>
+
+                            <ul>
+                                {% for recurso in recursos %} {% if recurso.seccion == seccion.id %}
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between border-bottom">
+                                        {% if current_user.tipo == "admin" or permitir_docente or permitir_estudiante %}
+                                        <a
+                                            class="link-dark text-decoration-none"
+                                            href="{{ url_for('resources.pagina_recurso', curso_id=recurso.curso, resource_type=recurso.tipo, codigo=recurso.id) }} "
+                                        >
+                                            <div class="fw-bold">
+                                                <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i> {{
+                                                recurso.nombre }}
+                                            </div>
+                                        </a>
+                                        {% elif recurso.publico == True %}
+                                        <a
+                                            class="link-dark text-decoration-none"
+                                            href="{{ url_for('resources.pagina_recurso', curso_id=recurso.curso, codigo=recurso.id, resource_type=recurso.tipo) }} "
+                                        >
+                                            <div class="fw-bold">
+                                                <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i> {{
+                                                recurso.nombre }}
+                                            </div>
+                                        </a>
+                                        <span class="badge bg-success">Preview</span>
+                                        {% else %}
+                                        <div class="fw-bold">
+                                            <i class="{{ iconos_recursos[recurso.tipo] }}" aria-hidden="true"></i> {{
+                                            recurso.nombre }}
+                                        </div>
+                                        {% endif %} {% if permitir_editar %}
+                                        <div>
+                                            <!-- Desktop layout - show badges -->
+                                            <div class="d-none d-md-block">
+                                                <span class="badge bg-warning me-1">
+                                                    {% if recurso.tipo == "youtube" %}
+                                                    <a
+                                                        href="{{ url_for('resources.editar_recurso_youtube_video', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                        class="link-light"
+                                                        ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _("Editar")
+                                                        }}</a
+                                                    >
+                                                    {% elif recurso.tipo == "text" %}
+                                                    <a
+                                                        href="{{ url_for('resources.editar_recurso_text', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                        class="link-light"
+                                                        ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _("Editar")
+                                                        }}</a
+                                                    >
+                                                    {% elif recurso.tipo == "link" %}
+                                                    <a
+                                                        href="{{ url_for('resources.editar_recurso_link', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                        class="link-light"
+                                                        ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _("Editar")
+                                                        }}</a
+                                                    >
+                                                    {% elif recurso.tipo == "pdf" %}
+                                                    <a
+                                                        href="{{ url_for('resources.editar_recurso_pdf', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                        class="link-light"
+                                                        ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _("Editar")
+                                                        }}</a
+                                                    >
+                                                    {% elif recurso.tipo == "meet" %}
+                                                    <a
+                                                        href="{{ url_for('resources.editar_recurso_meet', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                        class="link-light"
+                                                        ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _("Editar")
+                                                        }}</a
+                                                    >
+                                                    {% elif recurso.tipo == "img" %}
+                                                    <a
+                                                        href="{{ url_for('resources.editar_recurso_img', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                        class="link-light"
+                                                        ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _("Editar")
+                                                        }}</a
+                                                    >
+                                                    {% elif recurso.tipo == "mp3" %}
+                                                    <a
+                                                        href="{{ url_for('resources.editar_recurso_audio', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                        class="link-light"
+                                                        ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _("Editar")
+                                                        }}</a
+                                                    >
+                                                    {% elif recurso.tipo == "html" %}
+                                                    <a
+                                                        href="{{ url_for('course.editar_recurso_html', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                        class="link-light"
+                                                        ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _("Editar")
+                                                        }}</a
+                                                    >
+                                                    {% elif recurso.tipo == "slides" %}
+                                                    <a
+                                                        href="{{ url_for('resources.editar_slideshow', course_code=recurso.curso, slideshow_id=get_slideshowid(recurso.id)) }}"
+                                                        class="link-light"
+                                                        ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _("Editar")
+                                                        }}</a
+                                                    >
+                                                    {% else %}
+                                                    <span class="text-muted">N/A</span>
+                                                    {% endif %}
+                                                </span>
+                                                <span class="badge bg-primary me-1">
+                                                    <a
+                                                        href="{{ url_for('course.modificar_orden_recurso', cource_code=recurso.curso, seccion_id=recurso.seccion , resource_index=recurso.indice , task='increment') }}"
+                                                        class="link-light"
+                                                        ><i class="bi bi-arrow-down-short" aria-hidden="true"></i> Bajar</a
+                                                    >
+                                                </span>
+                                                <span class="badge bg-primary me-1">
+                                                    <a
+                                                        href="{{  url_for('course.modificar_orden_recurso', cource_code=recurso.curso, seccion_id=recurso.seccion , resource_index=recurso.indice, task='decrement')  }}"
+                                                        class="link-light"
+                                                        ><i class="bi bi-arrow-up-short" aria-hidden="true"></i> Subir</a
+                                                    >
+                                                </span>
+                                                <span class="badge bg-danger">
+                                                    <a
+                                                        href="{{ url_for('course.eliminar_recurso', curso_code=recurso.curso, seccion=recurso.seccion, id_=recurso.id) }}"
+                                                        class="link-light"
+                                                        ><i class="bi bi-trash3" aria-hidden="true"></i> {{ _("Eliminar") }}</a
+                                                    >
+                                                </span>
+                                            </div>
+
+                                            <!-- Mobile layout - dropdown -->
+                                            <div class="d-md-none">
+                                                <div class="dropdown">
+                                                    <button
+                                                        class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                                        type="button"
+                                                        data-bs-toggle="dropdown"
+                                                        aria-expanded="false"
+                                                    >
+                                                        <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            {% if recurso.tipo == "youtube" %}
+                                                            <a
+                                                                href="{{ url_for('resources.editar_recurso_youtube_video', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                                class="dropdown-item"
+                                                                ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{
+                                                                _("Editar") }}</a
+                                                            >
+                                                            {% elif recurso.tipo == "text" %}
+                                                            <a
+                                                                href="{{ url_for('resources.editar_recurso_text', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                                class="dropdown-item"
+                                                                ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{
+                                                                _("Editar") }}</a
+                                                            >
+                                                            {% elif recurso.tipo == "link" %}
+                                                            <a
+                                                                href="{{ url_for('resources.editar_recurso_link', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                                class="dropdown-item"
+                                                                ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{
+                                                                _("Editar") }}</a
+                                                            >
+                                                            {% elif recurso.tipo == "pdf" %}
+                                                            <a
+                                                                href="{{ url_for('resources.editar_recurso_pdf', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                                class="dropdown-item"
+                                                                ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{
+                                                                _("Editar") }}</a
+                                                            >
+                                                            {% elif recurso.tipo == "meet" %}
+                                                            <a
+                                                                href="{{ url_for('resources.editar_recurso_meet', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                                class="dropdown-item"
+                                                                ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{
+                                                                _("Editar") }}</a
+                                                            >
+                                                            {% elif recurso.tipo == "img" %}
+                                                            <a
+                                                                href="{{ url_for('resources.editar_recurso_img', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                                class="dropdown-item"
+                                                                ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{
+                                                                _("Editar") }}</a
+                                                            >
+                                                            {% elif recurso.tipo == "mp3" %}
+                                                            <a
+                                                                href="{{ url_for('resources.editar_recurso_audio', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                                class="dropdown-item"
+                                                                ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{
+                                                                _("Editar") }}</a
+                                                            >
+                                                            {% elif recurso.tipo == "html" %}
+                                                            <a
+                                                                href="{{ url_for('course.editar_recurso_html', course_code=recurso.curso, seccion=recurso.seccion, resource_id=recurso.id) }}"
+                                                                class="dropdown-item"
+                                                                ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{
+                                                                _("Editar") }}</a
+                                                            >
+                                                            {% elif recurso.tipo == "slides" %}
+                                                            <a
+                                                                href="{{ url_for('resources.editar_slideshow', course_code=recurso.curso, slideshow_id=get_slideshowid(recurso.id)) }}"
+                                                                class="dropdown-item"
+                                                                ><i class="bi bi-pencil-square" aria-hidden="true"></i> {{
+                                                                _("Editar") }}</a
+                                                            >
+                                                            {% else %}
+                                                            <span class="dropdown-item-text text-muted">N/A</span>
+                                                            {% endif %}
+                                                        </li>
+                                                        <li>
+                                                            <hr class="dropdown-divider" />
+                                                        </li>
+                                                        <li>
+                                                            <span class="dropdown-item-text"><strong>Ordenar:</strong></span>
+                                                        </li>
+                                                        <li>
+                                                            <a
+                                                                href="{{ url_for('course.modificar_orden_recurso', cource_code=recurso.curso, seccion_id=recurso.seccion , resource_index=recurso.indice , task='increment') }}"
+                                                                class="dropdown-item"
+                                                                ><i class="bi bi-arrow-down-short" aria-hidden="true"></i>
+                                                                Bajar</a
+                                                            >
+                                                        </li>
+                                                        <li>
+                                                            <a
+                                                                href="{{  url_for('course.modificar_orden_recurso', cource_code=recurso.curso, seccion_id=recurso.seccion , resource_index=recurso.indice, task='decrement')  }}"
+                                                                class="dropdown-item"
+                                                                ><i class="bi bi-arrow-up-short" aria-hidden="true"></i>
+                                                                Subir</a
+                                                            >
+                                                        </li>
+                                                        <li>
+                                                            <hr class="dropdown-divider" />
+                                                        </li>
+                                                        <li>
+                                                            <a
+                                                                href="{{ url_for('course.eliminar_recurso', curso_code=recurso.curso, seccion=recurso.seccion, id_=recurso.id) }}"
+                                                                class="dropdown-item text-danger"
+                                                                ><i class="bi bi-trash3" aria-hidden="true"></i> {{
+                                                                _("Eliminar") }}</a
+                                                            >
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                </li>
+                                {% endfor %}
+                            </ul>
+
+                            <br />
+                            {% endfor %} {% else %}
+
+                            <div class="d-flex justify-content-center">
+                                <a
+                                    href="{{ url_for('course.nuevo_seccion', course_code=curso.codigo) }}"
+                                    class="btn btn-success btn-sm"
+                                    role="button"
+                                    aria-disabled="true"
+                                    ><i class="bi bi-plus-circle-fill" aria-hidden="true"></i>Agrega la primer sección a tu
+                                    nuevo curso
+                                </a>
+                            </div>
+
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
-</body>
-
+        </main>
+    </body>
 </html>

@@ -75,6 +75,12 @@
                         ><i class="bi bi-journal-text" aria-hidden="true"></i> {{ _("Blog") }}</a
                     >
                 </li>
+                {% endif %} {% if is_contact_enabled() %}
+                <li>
+                    <a href="{{ url_for('static_pages.contact') }}" class="nav-link text-light px-2"
+                        ><i class="bi bi-envelope" aria-hidden="true"></i> {{ _("Contacto") }}</a
+                    >
+                </li>
                 {% endif %} {% if current_user.is_authenticated %} {% if current_user.tipo == "moderator" or current_user.tipo
                 == "instructor" or current_user.tipo == "admin" %}
                 <li>

@@ -171,23 +171,47 @@
                 <h2 class="display-5 fw-bold mb-3">{{ _('¡Comienza tu transformación hoy!') }}</h2>
                 <p class="lead mb-4">{{ _('Únete a miles de estudiantes que ya están invirtiendo en su futuro.') }}</p>
                 {% if not current_user.is_authenticated %}
-                <a
-                    href="{{ url_for('user.crear_cuenta') }}"
-                    class="btn btn-light btn-lg px-5 py-3"
-                    style="background: #ffffff; border-color: #ffffff; color: #2e7d32; font-weight: 600"
-                >
-                    <i class="bi bi-rocket-takeoff me-2" aria-hidden="true"></i>
-                    <strong>{{ _('Registrarse Gratis') }}</strong>
-                </a>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    {% if is_contact_enabled() %}
+                    <a
+                        href="{{ url_for('static_pages.contact') }}"
+                        class="btn btn-light btn-lg px-5 py-3"
+                        style="background: #ffffff; border-color: #ffffff; color: #2e7d32; font-weight: 600"
+                    >
+                        <i class="bi bi-envelope me-2" aria-hidden="true"></i>
+                        <strong>{{ _('Contáctanos') }}</strong>
+                    </a>
+                    {% endif %}
+                    <a
+                        href="{{ url_for('user.crear_cuenta') }}"
+                        class="btn btn-outline-light btn-lg px-5 py-3"
+                        style="border-color: #ffffff; color: #ffffff; font-weight: 600"
+                    >
+                        <i class="bi bi-rocket-takeoff me-2" aria-hidden="true"></i>
+                        <strong>{{ _('Registrarse Gratis') }}</strong>
+                    </a>
+                </div>
                 {% else %}
-                <a
-                    href="{{ url_for('home.panel') }}"
-                    class="btn btn-light btn-lg px-5 py-3"
-                    style="background: #ffffff; border-color: #ffffff; color: #2e7d32; font-weight: 600"
-                >
-                    <i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>
-                    <strong>{{ _('Ir al Panel') }}</strong>
-                </a>
+                <div class="d-flex gap-3 justify-content-center flex-wrap">
+                    <a
+                        href="{{ url_for('home.panel') }}"
+                        class="btn btn-light btn-lg px-5 py-3"
+                        style="background: #ffffff; border-color: #ffffff; color: #2e7d32; font-weight: 600"
+                    >
+                        <i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>
+                        <strong>{{ _('Ir al Panel') }}</strong>
+                    </a>
+                    {% if is_contact_enabled() %}
+                    <a
+                        href="{{ url_for('static_pages.contact') }}"
+                        class="btn btn-outline-light btn-lg px-5 py-3"
+                        style="border-color: #ffffff; color: #ffffff; font-weight: 600"
+                    >
+                        <i class="bi bi-envelope me-2" aria-hidden="true"></i>
+                        <strong>{{ _('Contáctanos') }}</strong>
+                    </a>
+                    {% endif %}
+                </div>
                 {% endif %}
             </div>
         </section>

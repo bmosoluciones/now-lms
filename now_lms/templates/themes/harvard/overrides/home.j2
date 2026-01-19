@@ -491,20 +491,31 @@
                             {{ _('Únete a nuestra comunidad de estudiantes excepcionales y descubre el poder del aprendizaje de
                             calidad.') }}
                         </p>
-                        <a
-                            href="{{ url_for('user.crear_cuenta') }}"
-                            class="btn btn-lg px-5 py-3"
-                            style="
-                                background: linear-gradient(45deg, #a41034, #7a5e49);
-                                color: white;
-                                border: none;
-                                border-radius: 10px;
-                                font-weight: 600;
-                                text-decoration: none;
-                            "
-                        >
-                            {{ _('Registrarse Ahora') }}
-                        </a>
+                        <div class="d-flex gap-3 justify-content-center flex-wrap">
+                            {% if is_contact_enabled() %}
+                            <a
+                                href="{{ url_for('static_pages.contact') }}"
+                                class="btn btn-lg px-5 py-3"
+                                style="
+                                    background: linear-gradient(45deg, #a41034, #7a5e49);
+                                    color: white;
+                                    border: none;
+                                    border-radius: 10px;
+                                    font-weight: 600;
+                                    text-decoration: none;
+                                "
+                            >
+                                {{ _('Contáctanos') }}
+                            </a>
+                            {% endif %}
+                            <a
+                                href="{{ url_for('user.crear_cuenta') }}"
+                                class="btn btn-lg btn-outline-dark px-5 py-3"
+                                style="border-radius: 10px; font-weight: 600"
+                            >
+                                {{ _('Registrarse Ahora') }}
+                            </a>
+                        </div>
                         {% else %}
                         <h3 class="mb-4" style="color: #474340; font-family: &quot;Merriweather&quot;, serif">
                             {{ _('Bienvenido de vuelta') }}, {{ current_user.nombre }}
@@ -512,27 +523,38 @@
                         <p class="lead mb-4" style="color: #7a5e49">
                             {{ _('Continúa tu viaje académico y explora nuevas oportunidades de aprendizaje.') }}
                         </p>
-                        <a
-                            href="{{ url_for('home.panel') }}"
-                            class="btn btn-lg px-5 py-3 me-3"
-                            style="
-                                background: linear-gradient(45deg, #a41034, #7a5e49);
-                                color: white;
-                                border: none;
-                                border-radius: 10px;
-                                font-weight: 600;
-                                text-decoration: none;
-                            "
-                        >
-                            {{ _('Ir a Mi Panel') }}
-                        </a>
-                        <a
-                            href="{{ url_for('course.lista_cursos', page=1) }}"
-                            class="btn btn-lg btn-outline-dark px-5 py-3"
-                            style="border-radius: 10px; font-weight: 600"
-                        >
-                            {{ _('Explorar Cursos') }}
-                        </a>
+                        <div class="d-flex gap-3 justify-content-center flex-wrap">
+                            <a
+                                href="{{ url_for('home.panel') }}"
+                                class="btn btn-lg px-5 py-3"
+                                style="
+                                    background: linear-gradient(45deg, #a41034, #7a5e49);
+                                    color: white;
+                                    border: none;
+                                    border-radius: 10px;
+                                    font-weight: 600;
+                                    text-decoration: none;
+                                "
+                            >
+                                {{ _('Ir a Mi Panel') }}
+                            </a>
+                            <a
+                                href="{{ url_for('course.lista_cursos', page=1) }}"
+                                class="btn btn-lg btn-outline-dark px-5 py-3"
+                                style="border-radius: 10px; font-weight: 600"
+                            >
+                                {{ _('Explorar Cursos') }}
+                            </a>
+                            {% if is_contact_enabled() %}
+                            <a
+                                href="{{ url_for('static_pages.contact') }}"
+                                class="btn btn-lg btn-outline-dark px-5 py-3"
+                                style="border-radius: 10px; font-weight: 600"
+                            >
+                                {{ _('Contáctanos') }}
+                            </a>
+                            {% endif %}
+                        </div>
                         {% endif %}
                     </div>
                 </div>

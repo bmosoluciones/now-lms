@@ -11,6 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+# Copyright 2025 BMO Soluciones, S.A.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 #
 """NOW Learning Management System."""
 
@@ -87,6 +101,7 @@ def invalidar_cache() -> bool:
         cache.delete("nav_masterclass_enabled")
         cache.delete("nav_resources_enabled")
         cache.delete("nav_blog_enabled")
+        cache.delete("nav_contact_enabled")
 
         # Invalidate appearance caches
         cache.delete("cached_style")
@@ -201,6 +216,7 @@ def configuracion() -> str | Response:
         enable_masterclass=config.enable_masterclass,
         enable_resources=config.enable_resources,
         enable_blog=config.enable_blog,
+        enable_contact=config.enable_contact,
         show_latest_blog_posts_on_home=config.show_latest_blog_posts_on_home,
         enable_file_uploads=config.enable_file_uploads,
         max_file_size=config.max_file_size,
@@ -234,6 +250,7 @@ def configuracion() -> str | Response:
         config.enable_masterclass = form.enable_masterclass.data
         config.enable_resources = form.enable_resources.data
         config.enable_blog = form.enable_blog.data
+        config.enable_contact = form.enable_contact.data
         config.show_latest_blog_posts_on_home = form.show_latest_blog_posts_on_home.data
         config.enable_file_uploads = form.enable_file_uploads.data
         config.max_file_size = form.max_file_size.data

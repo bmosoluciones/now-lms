@@ -27,16 +27,16 @@
                             </div>
                             <div class="col-auto">
                                 <select name="status" id="status" class="form-select" onchange="this.form.submit()">
-                                    <option value="all" {% if status_filter="" ="all" %}selected{% endif %}>
+                                    <option value="all" {% if status_filter=="all" %}selected{% endif %}>
                                         {{ _("Todos") }}
                                     </option>
-                                    <option value="not_seen" {% if status_filter="" ="not_seen" %}selected{% endif %}>
+                                    <option value="not_seen" {% if status_filter=="not_seen" %}selected{% endif %}>
                                         {{ _("No Vistos") }}
                                     </option>
-                                    <option value="seen" {% if status_filter="" ="seen" %}selected{% endif %}>
+                                    <option value="seen" {% if status_filter=="seen" %}selected{% endif %}>
                                         {{ _("Vistos") }}
                                     </option>
-                                    <option value="answered" {% if status_filter="" ="answered" %}selected{% endif %}>
+                                    <option value="answered" {% if status_filter=="answered" %}selected{% endif %}>
                                         {{ _("Contestados") }}
                                     </option>
                                 </select>
@@ -62,7 +62,7 @@
                                 </thead>
                                 <tbody>
                                     {% for message in messages %}
-                                    <tr {% if message.status="" ="not_seen" %}class="table-warning" {% endif %}>
+                                    <tr {% if message.status=="not_seen" %}class="table-warning" {% endif %}>
                                         <td>
                                             {% if message.status == 'not_seen' %}
                                             <span class="badge bg-warning text-dark">{{ _("No Visto") }}</span>

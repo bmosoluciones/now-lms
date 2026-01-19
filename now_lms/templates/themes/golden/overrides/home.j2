@@ -60,7 +60,15 @@
                                 }} {% endif %}
                             </p>
                             <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-md-start">
-                                {% if not current_user.is_authenticated %}
+                                {% if not current_user.is_authenticated %} {% if is_contact_enabled() %}
+                                <a
+                                    href="{{ url_for('static_pages.contact') }}"
+                                    class="btn btn-dark btn-lg px-4 py-2"
+                                    style="background: #141411; border-color: #141411"
+                                >
+                                    <strong>{{ _('Reserva tu clase gratis') }}</strong>
+                                </a>
+                                {% else %}
                                 <a
                                     href="{{ url_for('user.crear_cuenta') }}"
                                     class="btn btn-dark btn-lg px-4 py-2"
@@ -68,6 +76,7 @@
                                 >
                                     <strong>{{ _('Reserva tu clase gratis') }}</strong>
                                 </a>
+                                {% endif %}
                                 <a
                                     href="{{ url_for('course.lista_cursos', page=1) }}"
                                     class="btn btn-outline-dark btn-lg px-4 py-2"
@@ -294,16 +303,26 @@
                     <p class="lead mb-4" style="color: #5a5a54">
                         {{ _('Únete a nuestra plataforma educativa y comienza tu viaje de aprendizaje hoy mismo.') }}
                     </p>
-                    <a href="{{ url_for('user.crear_cuenta') }}" class="cta-primary"> {{ _('Registrarse Gratis') }} </a>
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        {% if is_contact_enabled() %}
+                        <a href="{{ url_for('static_pages.contact') }}" class="cta-primary"> {{ _('Contáctanos') }} </a>
+                        {% endif %}
+                        <a href="{{ url_for('user.crear_cuenta') }}" class="cta-secondary"> {{ _('Registrarse Gratis') }} </a>
+                    </div>
                     {% else %}
                     <h3 class="mb-4" style="color: #141411">{{ _('Bienvenido de vuelta') }}, {{ current_user.nombre }}</h3>
                     <p class="lead mb-4" style="color: #5a5a54">
                         {{ _('Continúa tu viaje de aprendizaje y explora nuevas oportunidades educativas.') }}
                     </p>
-                    <a href="{{ url_for('home.panel') }}" class="cta-primary me-3"> {{ _('Ir a Mi Panel') }} </a>
-                    <a href="{{ url_for('course.lista_cursos', page=1) }}" class="cta-secondary">
-                        {{ _('Explorar Cursos') }}
-                    </a>
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="{{ url_for('home.panel') }}" class="cta-primary"> {{ _('Ir a Mi Panel') }} </a>
+                        <a href="{{ url_for('course.lista_cursos', page=1) }}" class="cta-secondary">
+                            {{ _('Explorar Cursos') }}
+                        </a>
+                        {% if is_contact_enabled() %}
+                        <a href="{{ url_for('static_pages.contact') }}" class="cta-secondary"> {{ _('Contáctanos') }} </a>
+                        {% endif %}
+                    </div>
                     {% endif %}
                 </div>
             </section>
