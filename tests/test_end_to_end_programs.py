@@ -22,10 +22,9 @@ Prueba el flujo completo de:
 - Visualización de programas
 """
 
-import pytest
 
 from now_lms.auth import proteger_passwd
-from now_lms.db import Categoria, Curso, Programa, ProgramaCurso, ProgramaEstudiante, Usuario, database
+from now_lms.db import Categoria, Curso, Programa, ProgramaEstudiante, Usuario, database
 
 REDIRECT_STATUS_CODES = {301, 302, 303, 307, 308}
 
@@ -71,7 +70,7 @@ def _login_usuario(app, usuario: str, password: str):
 def test_e2e_program_creation(app, db_session):
     """Test: crear un programa nuevo."""
     # 1) Crear instructor y login
-    instructor = _crear_instructor(db_session)
+    instructor = _crear_instructor(db_session)  # noqa: F841
     client = _login_usuario(app, "instructor", "instructor")
 
     # 2) Crear programa via POST
@@ -89,9 +88,7 @@ def test_e2e_program_creation(app, db_session):
     assert resp_new.status_code in REDIRECT_STATUS_CODES | {200}
 
     # 3) Verificar que el programa existe en la base de datos
-    programa = (
-        db_session.execute(database.select(Programa).filter_by(codigo="python-adv")).scalars().first()
-    )
+    programa = db_session.execute(database.select(Programa).filter_by(codigo="python-adv")).scalars().first()
     assert programa is not None
     assert programa.nombre == "Programa Python Avanzado"
     assert programa.descripcion == "Programa completo de Python"
@@ -100,7 +97,7 @@ def test_e2e_program_creation(app, db_session):
 def test_e2e_program_editing(app, db_session):
     """Test: editar un programa existente."""
     # 1) Crear instructor y programa
-    instructor = _crear_instructor(db_session)
+    instructor = _crear_instructor(db_session)  # noqa: F841
     programa = Programa(
         nombre="Programa Original",
         codigo="prog-orig",
@@ -125,7 +122,7 @@ def test_e2e_program_editing(app, db_session):
     )
     db_session.add(admin)
     db_session.commit()
-    
+
     client = _login_usuario(app, "admin", "admin")
 
     # 3) Editar programa via POST (usar ID no código)
@@ -153,7 +150,7 @@ def test_e2e_program_editing(app, db_session):
 def test_e2e_program_enrollment(app, db_session):
     """Test: inscribir un estudiante en un programa."""
     # 1) Crear instructor, estudiante y programa
-    instructor = _crear_instructor(db_session)
+    instructor = _crear_instructor(db_session)  # noqa: F841
     estudiante = _crear_estudiante(db_session)
     programa = Programa(
         nombre="Programa de Inscripción",
@@ -175,10 +172,8 @@ def test_e2e_program_enrollment(app, db_session):
     assert resp_enroll.status_code in REDIRECT_STATUS_CODES | {200}
 
     # 4) Verificar inscripción en la base de datos (puede requerir confirmación adicional)
-    inscripcion = (
-        db_session.execute(
-            database.select(ProgramaEstudiante).filter_by(usuario=estudiante.id, programa=programa.codigo)
-        )
+    inscripcion = (  # noqa: F841
+        db_session.execute(database.select(ProgramaEstudiante).filter_by(usuario=estudiante.id, programa=programa.codigo))
         .scalars()
         .first()
     )
@@ -188,7 +183,7 @@ def test_e2e_program_enrollment(app, db_session):
 def test_e2e_program_view(app, db_session):
     """Test: visualizar un programa público."""
     # 1) Crear instructor y programa público
-    instructor = _crear_instructor(db_session)
+    instructor = _crear_instructor(db_session)  # noqa: F841
     programa = Programa(
         nombre="Programa Público",
         codigo="prog-public",
@@ -211,7 +206,7 @@ def test_e2e_program_view(app, db_session):
 def test_e2e_program_list(app, db_session):
     """Test: listar programas disponibles."""
     # 1) Crear instructor y varios programas
-    instructor = _crear_instructor(db_session)
+    instructor = _crear_instructor(db_session)  # noqa: F841
     for i in range(3):
         programa = Programa(
             nombre=f"Programa {i}",
@@ -236,7 +231,7 @@ def test_e2e_program_list(app, db_session):
 def test_e2e_program_add_course(app, db_session):
     """Test: agregar un curso a un programa."""
     # 1) Crear instructor, programa y curso
-    instructor = _crear_instructor(db_session)
+    instructor = _crear_instructor(db_session)  # noqa: F841
     programa = Programa(
         nombre="Programa con Cursos",
         codigo="prog-cursos",
@@ -275,7 +270,7 @@ def test_e2e_program_add_course(app, db_session):
 def test_e2e_program_with_category(app, db_session):
     """Test: crear un programa con categoría asignada."""
     # 1) Crear instructor y categoría
-    instructor = _crear_instructor(db_session)
+    instructor = _crear_instructor(db_session)  # noqa: F841
     categoria = Categoria(
         nombre="Programación",
         descripcion="Cursos de programación",

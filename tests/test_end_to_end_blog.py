@@ -23,7 +23,6 @@ Prueba el flujo completo de:
 - Tags de blog
 """
 
-import pytest
 
 from now_lms.auth import proteger_passwd
 from now_lms.db import BlogComment, BlogPost, BlogTag, Usuario, database
@@ -157,9 +156,7 @@ def test_e2e_blog_comments(app, db_session):
     assert resp_comment.status_code in REDIRECT_STATUS_CODES | {200}
 
     # 4) Verificar que el comentario existe en la base de datos
-    comentario = (
-        db_session.execute(database.select(BlogComment).filter_by(post_id=post_id)).scalars().first()
-    )
+    comentario = db_session.execute(database.select(BlogComment).filter_by(post_id=post_id)).scalars().first()
     assert comentario is not None
     assert comentario.content == "Este es un comentario de prueba"
     assert comentario.user_id == admin.usuario  # user_id es el nombre de usuario, no el ID
@@ -168,7 +165,7 @@ def test_e2e_blog_comments(app, db_session):
 def test_e2e_blog_tags(app, db_session):
     """Test: crear y usar tags de blog."""
     # 1) Crear admin y login
-    admin = _crear_admin(db_session)
+    admin = _crear_admin(db_session)  # noqa: F841
     client = _login_admin(app)
 
     # 2) Crear post con tags via POST (los tags se crean automáticamente si el usuario es admin)
@@ -185,15 +182,13 @@ def test_e2e_blog_tags(app, db_session):
     assert resp_new_post.status_code in REDIRECT_STATUS_CODES | {200}
 
     # 3) Verificar que el post existe
-    post = (
-        db_session.execute(database.select(BlogPost).filter_by(title="Post sobre Python")).scalars().first()
-    )
+    post = db_session.execute(database.select(BlogPost).filter_by(title="Post sobre Python")).scalars().first()
     assert post is not None
 
     # 4) Verificar que los tags fueron creados
     tag_python = db_session.execute(database.select(BlogTag).filter_by(name="Python")).scalars().first()
     tag_prog = db_session.execute(database.select(BlogTag).filter_by(name="Programación")).scalars().first()
-    
+
     # Al menos uno de los tags debe existir (dependiendo de la implementación)
     assert tag_python is not None or tag_prog is not None
 
@@ -211,7 +206,7 @@ def test_e2e_blog_draft_post(app, db_session):
     )
     db_session.add(instructor)
     db_session.commit()
-    
+
     client = app.test_client()
     client.post("/user/login", data={"usuario": "instructor", "acceso": "instructor"}, follow_redirects=False)
 
@@ -242,7 +237,7 @@ def test_e2e_blog_draft_post(app, db_session):
 def test_e2e_blog_post_list_admin(app, db_session):
     """Test: listar posts desde el panel de administración."""
     # 1) Crear admin y login
-    admin = _crear_admin(db_session)
+    admin = _crear_admin(db_session)  # noqa: F841
     client = _login_admin(app)
 
     # 2) Ver lista de posts en admin (puede estar vacía o tener el post por defecto)

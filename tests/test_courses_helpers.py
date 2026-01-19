@@ -15,7 +15,6 @@
 import io
 import os
 
-import pytest
 
 from now_lms.vistas.courses.helpers import (
     sanitize_filename,

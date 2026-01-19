@@ -22,7 +22,6 @@ Prueba el flujo completo de:
 - Verificación de roles y permisos
 """
 
-import pytest
 
 from now_lms.auth import proteger_passwd
 from now_lms.db import Configuracion, Usuario, database
@@ -46,9 +45,7 @@ def test_e2e_user_login_success(app, db_session):
 
     # 2) Intentar login via POST
     client = app.test_client()
-    resp_login = client.post(
-        "/user/login", data={"usuario": "testuser", "acceso": "testpass"}, follow_redirects=False
-    )
+    resp_login = client.post("/user/login", data={"usuario": "testuser", "acceso": "testpass"}, follow_redirects=False)
     assert resp_login.status_code in REDIRECT_STATUS_CODES | {200}
 
     # 3) Verificar que el usuario está autenticado accediendo a una ruta protegida simple
@@ -61,9 +58,7 @@ def test_e2e_user_login_failure(app, db_session):
     """Test: login fallido con credenciales incorrectas."""
     # 1) Intentar login con usuario inexistente
     client = app.test_client()
-    resp_login = client.post(
-        "/user/login", data={"usuario": "noexiste", "acceso": "wrongpass"}, follow_redirects=False
-    )
+    resp_login = client.post("/user/login", data={"usuario": "noexiste", "acceso": "wrongpass"}, follow_redirects=False)
 
     # 2) Verificar que el login no fue exitoso
     # Puede mostrar el formulario de nuevo o redirigir con mensaje de error
@@ -117,9 +112,7 @@ def test_e2e_user_logout(app, db_session):
     db_session.commit()
 
     client = app.test_client()
-    client.post(
-        "/user/login", data={"usuario": "logoutuser", "acceso": "logoutpass"}, follow_redirects=False
-    )
+    client.post("/user/login", data={"usuario": "logoutuser", "acceso": "logoutpass"}, follow_redirects=False)
 
     # 2) Hacer logout
     resp_logout = client.get("/user/logout", follow_redirects=False)
@@ -169,9 +162,7 @@ def test_e2e_user_inactive_account(app, db_session):
 
     # 2) Intentar login
     client = app.test_client()
-    resp_login = client.post(
-        "/user/login", data={"usuario": "inactiveuser", "acceso": "inactivepass"}, follow_redirects=False
-    )
+    resp_login = client.post("/user/login", data={"usuario": "inactiveuser", "acceso": "inactivepass"}, follow_redirects=False)
 
     # 3) El login puede fallar o mostrar mensaje de cuenta inactiva
     assert resp_login.status_code in REDIRECT_STATUS_CODES | {200, 403}
@@ -193,9 +184,7 @@ def test_e2e_user_role_permissions(app, db_session):
 
     # 2) Login como estudiante
     client = app.test_client()
-    client.post(
-        "/user/login", data={"usuario": "estudiante", "acceso": "estudiantepass"}, follow_redirects=False
-    )
+    client.post("/user/login", data={"usuario": "estudiante", "acceso": "estudiantepass"}, follow_redirects=False)
 
     # 3) Intentar acceder a ruta de instructor (debe fallar)
     resp_instructor = client.get("/tag/new", follow_redirects=False)
@@ -218,9 +207,7 @@ def test_e2e_user_profile_view(app, db_session):
     db_session.commit()
 
     client = app.test_client()
-    client.post(
-        "/user/login", data={"usuario": "profileuser", "acceso": "profilepass"}, follow_redirects=False
-    )
+    client.post("/user/login", data={"usuario": "profileuser", "acceso": "profilepass"}, follow_redirects=False)
 
     # 2) Acceder al inicio (el perfil puede tener otra ruta)
     resp_profile = client.get("/", follow_redirects=False)
@@ -242,9 +229,7 @@ def test_e2e_user_already_logged_in(app, db_session):
     db_session.commit()
 
     client = app.test_client()
-    client.post(
-        "/user/login", data={"usuario": "loggeduser", "acceso": "loggedpass"}, follow_redirects=False
-    )
+    client.post("/user/login", data={"usuario": "loggeduser", "acceso": "loggedpass"}, follow_redirects=False)
 
     # 2) Intentar acceder a /user/login de nuevo
     resp_login_again = client.get("/user/login", follow_redirects=False)

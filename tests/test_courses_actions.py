@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
 
 from now_lms.auth import proteger_passwd
 from now_lms.db import Curso, CursoSeccion, CursoRecurso, Usuario
@@ -165,6 +164,7 @@ def test_cambiar_seccion_publico_redirect(app, db_session):
     r = client.get(f"/course/change_curse_seccion_public?codigo={s.id}&course_code={curso.codigo}", follow_redirects=False)
     assert r.status_code in REDIRECT_STATUS_CODES
     assert f"/course/{curso.codigo}/view" in (r.headers.get("Location") or "")
+
 
 def test_cambiar_seccion_publico_toggle_estado(app, db_session):
     _crear_instructor(db_session)

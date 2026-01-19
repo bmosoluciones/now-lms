@@ -22,7 +22,6 @@ Prueba el flujo completo de:
 - Verificación de certificados emitidos
 """
 
-import pytest
 
 from now_lms.auth import proteger_passwd
 from now_lms.db import Certificado, Curso, EstudianteCurso, Usuario, database
@@ -144,7 +143,7 @@ def test_e2e_certificate_remove_and_add(app, db_session):
 def test_e2e_certificate_emission(app, db_session):
     """Test: emitir certificado a un estudiante que completó un curso."""
     # 1) Crear instructor, estudiante y curso
-    instructor = _crear_instructor(db_session)
+    instructor = _crear_instructor(db_session)  # noqa: F841
     estudiante = _crear_estudiante(db_session)
 
     curso = Curso(
@@ -172,7 +171,7 @@ def test_e2e_certificate_emission(app, db_session):
     db_session.commit()
 
     # 3) Login como instructor
-    client = _login_usuario(app, "instructor", "instructor")
+    client = _login_usuario(app, "instructor", "instructor")  # noqa: F841
 
     # 4) Verificar que el curso y la inscripción existen
     assert curso is not None
@@ -182,7 +181,7 @@ def test_e2e_certificate_emission(app, db_session):
 def test_e2e_certificate_view_student(app, db_session):
     """Test: verificar que un estudiante puede ver sus certificados."""
     # 1) Crear estudiante
-    estudiante = _crear_estudiante(db_session)
+    estudiante = _crear_estudiante(db_session)  # noqa: F841
     client = _login_usuario(app, "estudiante", "estudiante")
 
     # 2) Ver la lista de certificados emitidos
@@ -217,11 +216,7 @@ def test_e2e_certificate_new_form(app, db_session):
     assert resp_create.status_code in REDIRECT_STATUS_CODES | {200}
 
     # Verificar en base de datos
-    certificado = (
-        db_session.execute(database.select(Certificado).filter_by(titulo="Certificado Nuevo"))
-        .scalars()
-        .first()
-    )
+    certificado = db_session.execute(database.select(Certificado).filter_by(titulo="Certificado Nuevo")).scalars().first()
     if certificado:
         # Los certificados se crean deshabilitados por defecto
         assert certificado.habilitado is False or certificado.habilitado is True

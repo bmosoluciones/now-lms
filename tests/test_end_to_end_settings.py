@@ -22,7 +22,6 @@ Prueba el flujo completo de:
 - Configuración de PayPal
 """
 
-import pytest
 
 from now_lms.auth import proteger_passwd
 from now_lms.db import AdSense, Configuracion, MailConfig, PaypalConfig, Style, Usuario, database
@@ -244,9 +243,7 @@ def test_e2e_settings_non_admin_access(app, db_session):
 
     # 2) Login como estudiante
     client = app.test_client()
-    client.post(
-        "/user/login", data={"usuario": "estudiante", "acceso": "estudiante"}, follow_redirects=False
-    )
+    client.post("/user/login", data={"usuario": "estudiante", "acceso": "estudiante"}, follow_redirects=False)
 
     # 3) Intentar acceder a configuración (ruta correcta /setting/general)
     resp_config = client.get("/setting/general", follow_redirects=False)

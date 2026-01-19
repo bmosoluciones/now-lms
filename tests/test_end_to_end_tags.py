@@ -22,7 +22,6 @@ Prueba el flujo completo de:
 - Eliminación de etiquetas
 """
 
-import pytest
 
 from now_lms.auth import proteger_passwd
 from now_lms.db import Etiqueta, Usuario, database
@@ -48,9 +47,7 @@ def _crear_instructor(db_session) -> Usuario:
 def _login_instructor(app):
     """Inicia sesión como instructor y retorna el cliente."""
     client = app.test_client()
-    resp = client.post(
-        "/user/login", data={"usuario": "instructor", "acceso": "instructor"}, follow_redirects=False
-    )
+    resp = client.post("/user/login", data={"usuario": "instructor", "acceso": "instructor"}, follow_redirects=False)
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
     return client
 
@@ -237,8 +234,6 @@ def test_e2e_tag_duplicate_prevention(app, db_session):
     assert resp_duplicate.status_code in REDIRECT_STATUS_CODES | {200, 400}
 
     # 3) Verificar cuántas etiquetas "JavaScript" existen
-    etiquetas = (
-        db_session.execute(database.select(Etiqueta).filter_by(nombre="JavaScript")).scalars().all()
-    )
+    etiquetas = db_session.execute(database.select(Etiqueta).filter_by(nombre="JavaScript")).scalars().all()
     # Puede haber 1 o 2 dependiendo de la validación del sistema
     assert len(etiquetas) >= 1
