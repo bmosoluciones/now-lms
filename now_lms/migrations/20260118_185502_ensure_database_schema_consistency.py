@@ -132,7 +132,7 @@ def upgrade():
 def downgrade():
     """
     This migration is a consistency check and doesn't need a downgrade.
-    
+
     The downgrade functionality is handled by the individual migrations
     that originally added each column.
     """

@@ -35,7 +35,8 @@ def upgrade():
         if "allow_unverified_email_login" not in columns:
             # Add column with default value False for backward compatibility
             op.add_column(
-                "configuracion", sa.Column("allow_unverified_email_login", sa.Boolean(), nullable=False, server_default=sa.false())
+                "configuracion",
+                sa.Column("allow_unverified_email_login", sa.Boolean(), nullable=False, server_default=sa.false()),
             )
 
 
