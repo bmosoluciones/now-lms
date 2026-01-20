@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -31,6 +30,9 @@ PORT = environ.get("PORT") or 8080
 # Get WSGI server from environment variable (defaults to waitress)
 WSGI_SERVER = environ.get("WSGI_SERVER", "waitress").lower()
 
+# ---------------------------------------------------------------------------------------
+# Update the database schema
+# ---------------------------------------------------------------------------------------
 with lms_app.app_context():
     alembic.upgrade()
 
