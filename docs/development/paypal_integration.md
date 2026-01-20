@@ -23,10 +23,12 @@ The PayPal integration allows students to pay for courses using PayPal's secure 
 
 ### Payment Processing
 
-- Uses PayPal REST API SDK for secure payment processing
-- Supports both sandbox (development) and live (production) environments
+- Uses PayPal JavaScript SDK for client-side payment processing
+- Supports both sandbox (development) and production (live) environments
 - Encrypted storage of PayPal API credentials
+- Server-side payment verification through PayPal REST API
 - Automatic payment status updates based on PayPal responses
+- Retry mechanism for payment confirmation with exponential backoff
 
 ### Security
 
@@ -45,7 +47,7 @@ The PayPal integration allows students to pay for courses using PayPal's secure 
 
 ### LMS Configuration
 
-1. Go to Admin Panel → Settings → PayPal Configuration
+1. Go to Admin Panel → Settings → PayPal Configuration (`/setting/paypal`)
 2. Enable PayPal payments
 3. Configure your PayPal credentials:
    - **Sandbox Mode**: Use for testing and development
@@ -56,23 +58,36 @@ The PayPal integration allows students to pay for courses using PayPal's secure 
 - **Enable PayPal**: Toggle to enable/disable PayPal payments
 - **Sandbox Mode**: Toggle between sandbox and production
 - **Client ID (Production)**: Your live PayPal Client ID
-- **Client Secret (Production)**: Your live PayPal Client Secret
+- **Client Secret (Production)**: Your live PayPal Client Secret (encrypted)
 - **Client ID (Sandbox)**: Your sandbox PayPal Client ID  
-- **Client Secret (Sandbox)**: Your sandbox PayPal Client Secret
+- **Client Secret (Sandbox)**: Your sandbox PayPal Client Secret (encrypted)
 
-### PayPal Return URLs
+**Note**: Client secrets are automatically encrypted before storage using the site's encryption key.
 
-Configure these URLs in your PayPal application:
+### Payment Flow
 
-- **Return URL**: `https://yourdomain.com/paypal_checkout/execute_payment/{payment_id}`
-- **Cancel URL**: `https://yourdomain.com/paypal_checkout/cancel_payment/{payment_id}`
+The payment flow uses the PayPal JavaScript SDK for a seamless user experience:
+
+1. Student navigates to course payment page
+2. Page loads PayPal JavaScript SDK with client ID
+3. PayPal buttons render with course amount and currency
+4. Student clicks PayPal button and completes payment in popup
+5. Payment is captured on the client side
+6. Client sends payment confirmation to server (`/paypal_checkout/confirm_payment`)
+7. Server verifies payment with PayPal REST API
+8. Server creates enrollment record and marks payment as completed
+9. Student is redirected to course page
 
 ## Database Schema
 
-### New Fields in PaypalConfig
+### PaypalConfig Table
 
-- `paypal_secret`: Encrypted production client secret
-- `paypal_sandbox_secret`: Encrypted sandbox client secret
+- `enable`: Boolean flag to enable/disable PayPal payments
+- `sandbox`: Boolean flag for sandbox/production mode
+- `paypal_id`: Production client ID (plain text)
+- `paypal_sandbox`: Sandbox client ID (plain text)
+- `paypal_secret`: Encrypted production client secret (binary)
+- `paypal_sandbox_secret`: Encrypted sandbox client secret (binary)
 
 ### Payment Records (Pago)
 
@@ -81,14 +96,80 @@ Payment records track the following states:
 - `completed`: Payment successful, course enrollment created
 - `failed`: Payment failed or cancelled
 
+Key fields:
+- `usuario`: Student username (foreign key)
+- `curso`: Course code (foreign key)
+- `monto`: Payment amount (decimal)
+- `moneda`: Currency code (e.g., USD, EUR, CRC)
+- `metodo`: Payment method (e.g., "paypal")
+- `estado`: Payment status (pending, completed, failed)
+- `referencia`: PayPal order ID for verification
+- `audit`: Boolean flag for audit-mode enrollments
+- `descripcion`: Additional payment details (e.g., coupon applied)
+
+## Implementation Details
+
+### Client-Side JavaScript (`static/js/paypal.js`)
+
+The client-side implementation handles:
+- PayPal SDK loading with retry mechanism
+- PayPal button rendering and configuration
+- Order creation with course details
+- Payment capture and approval
+- Payment confirmation with server-side retry logic
+- Error handling and user feedback
+- CSRF token management
+- Browser state management (page visibility, unload events)
+
+Key features:
+- **Exponential backoff retry**: Automatically retries failed SDK loads and payment confirmations
+- **State management**: Tracks payment state (idle, processing, completed, failed)
+- **CSRF protection**: Includes CSRF token in all API requests
+- **User experience**: Shows loading indicators and user-friendly error messages
+
+### Server-Side Implementation (`vistas/paypal.py`)
+
+The server-side implementation provides:
+
+**Configuration Functions:**
+- `check_paypal_enabled()`: Checks if PayPal is enabled (cached)
+- `get_site_currency()`: Returns site's default currency (cached)
+- `validate_paypal_configuration()`: Validates PayPal credentials by requesting access token
+- `get_paypal_access_token()`: Obtains PayPal API access token with credential decryption
+- `verify_paypal_payment()`: Verifies payment order with PayPal REST API
+
+**Payment Endpoints:**
+- `payment_page()`: Displays PayPal payment form for a course
+- `get_client_id()`: Returns PayPal client ID for JavaScript SDK initialization
+- `confirm_payment()`: Processes payment confirmation from client
+  - Validates all payment data (order ID, payer ID, amount, currency)
+  - Verifies payment with PayPal API
+  - Checks amount matches expected course price (with coupon support)
+  - Prevents duplicate payment processing
+  - Creates enrollment record on success
+  - Updates coupon usage if applicable
+  - Creates course progress index
+- `resume_payment()`: Allows resuming pending payments
+- `payment_status()`: Returns detailed payment and enrollment information
+- `debug_config()`: Admin-only endpoint for debugging configuration
+
+**Security Features:**
+- All payment amounts are verified server-side
+- PayPal order verification before enrollment
+- Duplicate payment detection
+- User authentication required for all operations
+- Admin-only access to sensitive configuration data
+
 ## API Endpoints
 
 ### Payment Processing Routes
 
-- `POST /course/{course_code}/enroll` - Course enrollment with payment logic
-- `GET /paypal_checkout/create_payment/{payment_id}` - Create PayPal payment
-- `GET /paypal_checkout/execute_payment/{payment_id}` - Handle successful payment
-- `GET /paypal_checkout/cancel_payment/{payment_id}` - Handle cancelled payment
+- `GET /paypal_checkout/payment/<course_code>` - Display PayPal payment page for a course
+- `POST /paypal_checkout/confirm_payment` - Confirm PayPal payment after client-side processing
+- `GET /paypal_checkout/resume_payment/<payment_id>` - Resume an existing pending payment
+- `GET /paypal_checkout/get_client_id` - Get PayPal client ID for JavaScript SDK
+- `GET /paypal_checkout/payment_status/<course_code>` - Check payment status for a course
+- `GET /paypal_checkout/debug_config` - Debug PayPal configuration (admin only)
 
 ## Error Handling
 
@@ -96,9 +177,11 @@ The system handles various error scenarios:
 
 - PayPal API configuration errors
 - Payment creation failures
-- Payment execution failures
+- Payment verification failures
 - Network connectivity issues
 - Invalid payment states
+- Amount mismatch errors
+- Duplicate payment prevention
 
 Users receive appropriate error messages and are redirected to safe pages.
 
@@ -106,11 +189,19 @@ Users receive appropriate error messages and are redirected to safe pages.
 
 ### Unit Tests
 
-Run the payment flow tests:
+Run the PayPal integration tests:
 
 ```bash
-python -m pytest tests/test_payment_flow.py -v
+python -m pytest tests/test_paypal_integration.py -v
 ```
+
+The test suite includes 29 comprehensive tests covering:
+- PayPal configuration validation
+- Payment flow endpoints
+- Payment confirmation logic
+- Error handling scenarios
+- Client ID retrieval
+- Payment status checking
 
 ### Manual Testing
 
