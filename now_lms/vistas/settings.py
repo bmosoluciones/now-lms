@@ -239,6 +239,11 @@ def configuracion() -> str | Response:
         social_youtube=config.social_youtube,
         social_instagram=config.social_instagram,
         social_github=config.social_github,
+        contact_address=config.contact_address,
+        contact_email=config.contact_email,
+        contact_phone=config.contact_phone,
+        contact_mobile=config.contact_mobile,
+        contact_whatsapp=config.contact_whatsapp,
     )
     if form.validate_on_submit() or request.method == "POST":
         config.titulo = form.titulo.data
@@ -273,6 +278,11 @@ def configuracion() -> str | Response:
         config.social_youtube = form.social_youtube.data
         config.social_instagram = form.social_instagram.data
         config.social_github = form.social_github.data
+        config.contact_address = form.contact_address.data
+        config.contact_email = form.contact_email.data
+        config.contact_phone = form.contact_phone.data
+        config.contact_mobile = form.contact_mobile.data
+        config.contact_whatsapp = form.contact_whatsapp.data
 
         if form.verify_user_by_email.data is True:
             row = database.session.execute(database.select(MailConfig)).first()

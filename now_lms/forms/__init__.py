@@ -446,6 +446,13 @@ class ConfigForm(FlaskForm):
     social_instagram = StringField(_("URL de Instagram"), validators=[])
     social_github = StringField(_("URL de GitHub"), validators=[])
 
+    # Contact information
+    contact_address = StringField(_("Dirección del negocio"), validators=[])
+    contact_email = StringField(_("Correo de contacto"), validators=[])
+    contact_phone = StringField(_("Teléfono"), validators=[])
+    contact_mobile = StringField(_("Número celular"), validators=[])
+    contact_whatsapp = StringField(_("WhatsApp"), validators=[])
+
     def __init__(self, *args, **kwargs):
         """Initialize form with translated choices."""
         super().__init__(*args, **kwargs)

@@ -3,11 +3,19 @@ current_theme = current_theme() %} {{ current_theme.navbar() }}
 
 <main class="container my-5">
     <div class="row">
-        <div class="col-12 col-lg-8 offset-lg-2">
-            <div class="bg-white p-4 shadow-sm rounded">
-                <h1 class="display-5 mb-4">{{ _("Contáctenos") }}</h1>
+        <div class="col-12">
+            <div class="text-center mb-4">
+                <h1 class="display-5">{{ _("Contáctenos") }}</h1>
                 <p class="lead">{{ _("¿Tiene preguntas o comentarios? Envíenos un mensaje y le responderemos pronto.") }}</p>
+            </div>
+        </div>
+    </div>
 
+    <div class="row">
+        <!-- Contact Form Column -->
+        <div class="col-12 col-lg-6 mb-4">
+            <div class="bg-white p-4 shadow-sm rounded h-100">
+                <h3 class="mb-4">{{ _("Envíenos un mensaje") }}</h3>
                 <form method="POST" action="{{ url_for('static_pages.contact') }}">
                     <div class="mb-3">
                         <label for="name" class="form-label">{{ _("Nombre") }} <span class="text-danger">*</span></label>
@@ -72,6 +80,68 @@ current_theme = current_theme() %} {{ current_theme.navbar() }}
                         </a>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <!-- Contact Information Column -->
+        <div class="col-12 col-lg-6 mb-4">
+            <div class="bg-white p-4 shadow-sm rounded h-100">
+                <h3 class="mb-4">{{ _("Información de Contacto") }}</h3>
+
+                {% if config and (config.contact_address or config.contact_email or config.contact_phone or
+                config.contact_mobile or config.contact_whatsapp) %}
+                <div class="contact-info">
+                    {% if config.contact_address %}
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2">
+                            <i class="bi bi-geo-alt-fill me-2"></i>{{ _("Sede central y oficinas") }}
+                        </h6>
+                        <p class="mb-0">{{ config.contact_address }}</p>
+                    </div>
+                    {% endif %} {% if config.contact_phone %}
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2"><i class="bi bi-telephone-fill me-2"></i>{{ _("Teléfono") }}</h6>
+                        <p class="mb-0">
+                            <a href="tel:{{ config.contact_phone }}" class="text-decoration-none"
+                                >{{ config.contact_phone }}</a
+                            >
+                        </p>
+                    </div>
+                    {% endif %} {% if config.contact_email %}
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2"><i class="bi bi-envelope-fill me-2"></i>{{ _("Administración") }}</h6>
+                        <p class="mb-0">
+                            <a href="mailto:{{ config.contact_email }}" class="text-decoration-none"
+                                >{{ config.contact_email }}</a
+                            >
+                        </p>
+                    </div>
+                    {% endif %} {% if config.contact_mobile %}
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2"><i class="bi bi-phone-fill me-2"></i>{{ _("Compras") }}</h6>
+                        <p class="mb-0">
+                            <a href="mailto:{{ config.contact_mobile }}" class="text-decoration-none"
+                                >{{ config.contact_mobile }}</a
+                            >
+                        </p>
+                    </div>
+                    {% endif %} {% if config.contact_whatsapp %}
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2"><i class="bi bi-whatsapp me-2"></i>{{ _("Ventas") }}</h6>
+                        <p class="mb-0">
+                            <a href="mailto:{{ config.contact_whatsapp }}" class="text-decoration-none"
+                                >{{ config.contact_whatsapp }}</a
+                            >
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="text-muted">
+                    <p>{{ _("La información de contacto no está disponible en este momento.") }}</p>
+                    <p class="mb-0">{{ _("Por favor, utilice el formulario para enviarnos su mensaje.") }}</p>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

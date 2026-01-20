@@ -77,6 +77,12 @@ def view_page(slug: str) -> str | Response:
 @static_pages.route("/contact", methods=["GET", "POST"])
 def contact() -> str | Response:
     """Contact form page."""
+    # Get system configuration to display contact information
+    from now_lms.db import Configuracion
+
+    config_row = database.session.execute(database.select(Configuracion)).first()
+    config = config_row[0] if config_row else None
+
     if request.method == "POST":
         name = request.form.get("name", "").strip()
         email = request.form.get("email", "").strip()
@@ -86,11 +92,11 @@ def contact() -> str | Response:
         # Basic validation
         if not name or not email or not subject or not message:
             flash(_("Por favor complete todos los campos."), "warning")
-            return render_template(CONTACT_TEMPLATE)
+            return render_template(CONTACT_TEMPLATE, config=config)
 
         if len(name) > 150 or len(email) > 150 or len(subject) > 200 or len(message) > 5000:
             flash(_("Uno o más campos exceden la longitud máxima permitida."), "warning")
-            return render_template(CONTACT_TEMPLATE)
+            return render_template(CONTACT_TEMPLATE, config=config)
 
         # Save contact message
         contact_msg = ContactMessage(
@@ -106,7 +112,7 @@ def contact() -> str | Response:
         flash(_("Gracias por contactarnos. Le responderemos pronto."), "success")
         return redirect(url_for(HOME_ROUTE))
 
-    return render_template(CONTACT_TEMPLATE)
+    return render_template(CONTACT_TEMPLATE, config=config)
 
 
 @static_pages.route("/admin/pages")

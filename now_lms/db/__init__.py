@@ -621,6 +621,13 @@ class Configuracion(database.Model, BaseTabla):
     social_instagram = database.Column(database.String(200), nullable=True)
     social_github = database.Column(database.String(200), nullable=True)
 
+    # Contact information
+    contact_address = database.Column(database.String(500), nullable=True)
+    contact_email = database.Column(database.String(150), nullable=True)
+    contact_phone = database.Column(database.String(50), nullable=True)
+    contact_mobile = database.Column(database.String(50), nullable=True)
+    contact_whatsapp = database.Column(database.String(50), nullable=True)
+
     r = database.Column(database.LargeBinary())
 
 
