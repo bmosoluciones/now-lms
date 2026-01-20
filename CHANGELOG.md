@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [1.2.3] - 2026-01-19
+
 ### Changed:
  - Add unread messages in admin dashboard.
  - Updated contact form.
