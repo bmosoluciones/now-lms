@@ -49,10 +49,11 @@ NOW LMS includes built-in PayPal integration that automatically processes paymen
     - Note your Client ID and Client Secret for both sandbox and live environments
 
 2. **Configure NOW LMS**
-    - Go to Admin Panel → Settings → PayPal Configuration
+    - Go to Admin Panel → Settings → PayPal Configuration (`/setting/paypal`)
     - Enable PayPal payments
-    - Enter your PayPal credentials (sandbox for testing, live for production)
-    - Configure return URLs in PayPal dashboard
+    - Select sandbox or production mode
+    - Enter your PayPal Client ID and Client Secret
+    - Client secrets are automatically encrypted before storage
 
 3. **Test the Integration**
     - Create a test course with payment enabled
@@ -62,12 +63,15 @@ NOW LMS includes built-in PayPal integration that automatically processes paymen
 ### Payment Flow
 
 1. Student selects a paid course and clicks "Enroll"
-2. Student fills in billing information
-3. System creates a pending payment record
-4. Student is redirected to PayPal for secure payment
-5. After payment, student is redirected back to NOW LMS
-6. System verifies payment with PayPal API
-7. Student is automatically enrolled in the course
+2. System redirects to PayPal payment page
+3. PayPal JavaScript SDK loads with site configuration
+4. PayPal buttons render with course price and currency
+5. Student clicks PayPal button and completes payment in popup
+6. Payment is captured and confirmed on client side
+7. Client sends payment details to server for verification
+8. Server verifies payment with PayPal REST API
+9. Server creates enrollment record and marks payment as completed
+10. Student is redirected to course page with immediate access
 
 ### Course Types
 
