@@ -75,14 +75,14 @@ def configured_adsense(db_session):
     adsense.pub_id = "1234567890"
     adsense.show_ads = True
     adsense.add_code = '<script>console.log("AdSense loaded");</script>'
-    adsense.add_leaderboard = '<div>Leaderboard Ad (728x90)</div>'
-    adsense.add_medium_rectangle = '<div>Medium Rectangle Ad (300x250)</div>'
-    adsense.add_large_rectangle = '<div>Large Rectangle Ad (336x280)</div>'
-    adsense.add_mobile_banner = '<div>Mobile Banner Ad (300x50)</div>'
-    adsense.add_wide_skyscraper = '<div>Wide Skyscraper Ad (160x600)</div>'
-    adsense.add_skyscraper = '<div>Skyscraper Ad (120x600)</div>'
-    adsense.add_large_skyscraper = '<div>Large Skyscraper Ad (300x600)</div>'
-    adsense.add_billboard = '<div>Billboard Ad (970x250)</div>'
+    adsense.add_leaderboard = "<div>Leaderboard Ad (728x90)</div>"
+    adsense.add_medium_rectangle = "<div>Medium Rectangle Ad (300x250)</div>"
+    adsense.add_large_rectangle = "<div>Large Rectangle Ad (336x280)</div>"
+    adsense.add_mobile_banner = "<div>Mobile Banner Ad (300x50)</div>"
+    adsense.add_wide_skyscraper = "<div>Wide Skyscraper Ad (160x600)</div>"
+    adsense.add_skyscraper = "<div>Skyscraper Ad (120x600)</div>"
+    adsense.add_large_skyscraper = "<div>Large Skyscraper Ad (300x600)</div>"
+    adsense.add_billboard = "<div>Billboard Ad (970x250)</div>"
 
     db_session.commit()
     return adsense
@@ -187,42 +187,42 @@ class TestAdSenseTemplateFunctions:
     def test_get_ad_leaderboard(self, configured_adsense):
         """Test that get_ad_leaderboard returns leaderboard ad code."""
         ad = get_ad_leaderboard()
-        assert ad == '<div>Leaderboard Ad (728x90)</div>'
+        assert ad == "<div>Leaderboard Ad (728x90)</div>"
 
     def test_get_ad_medium_rectangle(self, configured_adsense):
         """Test that get_ad_medium_rectangle returns medium rectangle ad code."""
         ad = get_ad_medium_rectangle()
-        assert ad == '<div>Medium Rectangle Ad (300x250)</div>'
+        assert ad == "<div>Medium Rectangle Ad (300x250)</div>"
 
     def test_get_ad_large_rectangle(self, configured_adsense):
         """Test that get_ad_large_rectangle returns large rectangle ad code."""
         ad = get_ad_large_rectangle()
-        assert ad == '<div>Large Rectangle Ad (336x280)</div>'
+        assert ad == "<div>Large Rectangle Ad (336x280)</div>"
 
     def test_get_ad_mobile_banner(self, configured_adsense):
         """Test that get_ad_mobile_banner returns mobile banner ad code."""
         ad = get_ad_mobile_banner()
-        assert ad == '<div>Mobile Banner Ad (300x50)</div>'
+        assert ad == "<div>Mobile Banner Ad (300x50)</div>"
 
     def test_get_ad_wide_skyscraper(self, configured_adsense):
         """Test that get_ad_wide_skyscraper returns wide skyscraper ad code."""
         ad = get_ad_wide_skyscraper()
-        assert ad == '<div>Wide Skyscraper Ad (160x600)</div>'
+        assert ad == "<div>Wide Skyscraper Ad (160x600)</div>"
 
     def test_get_ad_skyscraper(self, configured_adsense):
         """Test that get_ad_skyscraper returns skyscraper ad code."""
         ad = get_ad_skyscraper()
-        assert ad == '<div>Skyscraper Ad (120x600)</div>'
+        assert ad == "<div>Skyscraper Ad (120x600)</div>"
 
     def test_get_ad_large_skyscraper(self, configured_adsense):
         """Test that get_ad_large_skyscraper returns large skyscraper ad code."""
         ad = get_ad_large_skyscraper()
-        assert ad == '<div>Large Skyscraper Ad (300x600)</div>'
+        assert ad == "<div>Large Skyscraper Ad (300x600)</div>"
 
     def test_get_ad_billboard(self, configured_adsense):
         """Test that get_ad_billboard returns billboard ad code."""
         ad = get_ad_billboard()
-        assert ad == '<div>Billboard Ad (970x250)</div>'
+        assert ad == "<div>Billboard Ad (970x250)</div>"
 
     def test_ad_functions_return_empty_when_disabled(self, db_session):
         """Test that ad functions return empty string when ads are disabled."""
