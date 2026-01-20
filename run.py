@@ -22,7 +22,7 @@ from os import environ
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
-from now_lms import lms_app, init_app
+from now_lms import lms_app, init_app, alembic
 from now_lms.logs import log
 from now_lms.worker_config import get_worker_config_from_env
 
@@ -30,6 +30,9 @@ PORT = environ.get("PORT") or 8080
 
 # Get WSGI server from environment variable (defaults to waitress)
 WSGI_SERVER = environ.get("WSGI_SERVER", "waitress").lower()
+
+with lms_app.app_context():
+    alembic.upgrade()
 
 if init_app():
     log.info("Iniciando NOW Learning Management System")

@@ -9,6 +9,23 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Changed:
+ - Add unread messages in admin dashboard.
+ - Updated contact form.
+
+**IMPORTANT**: This version includes a database schema change. After updating, run database migrations:
+
+```bash
+# Using lmsctl (recommended)
+lmsctl database migrate
+
+# Or enable automatic migrations on startup
+NOW_LMS_AUTO_MIGRATE=1 lmsctl serve
+
+# Or using Flask-Alembic directly
+flask db upgrade
+```
+
 ## [1.2.2] - 2026-01-18
 
 ### Fixed:
@@ -88,11 +105,13 @@ flask db upgrade
 After updating, you must run database migrations:
 
 ```bash
-# Using lmsctl
-lmsctl database upgrade
+# Using lmsctl:
+lmsctl db upgrade
 
-# Or using Fla directly
-flask db upgrade
+# Using alembic API:
+from now_lms import lms_app, alembic
+with lms_app.app_context():
+    alembic.upgrade()
 ```
 
 References:
