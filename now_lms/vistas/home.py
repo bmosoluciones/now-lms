@@ -37,6 +37,7 @@ from now_lms.db import (
     BlogPost,
     Certificacion,
     Configuracion,
+    ContactMessage,
     Curso,
     CursoRecurso,
     EstudianteCurso,
@@ -117,6 +118,9 @@ def panel() -> str | Response:
             usuarios_registrados = database.session.execute(select(func.count(Usuario.usuario))).scalar()
             recursos_creados = database.session.execute(select(func.count(CursoRecurso.id))).scalar()
             certificados_emitidos = database.session.execute(select(func.count(Certificacion.id))).scalar()
+            mensajes_sin_leer = database.session.execute(
+                select(func.count(ContactMessage.id)).filter(ContactMessage.status == "not_seen")
+            ).scalar()
             cursos_por_fecha = database.session.execute(select(Curso).order_by(Curso.creado).limit(5)).scalars().all()
             return render_template(
                 "inicio/panel_admin.html",
@@ -125,6 +129,7 @@ def panel() -> str | Response:
                 recursos_creados=recursos_creados,
                 cursos_por_fecha=cursos_por_fecha,
                 certificados_emitidos=certificados_emitidos,
+                mensajes_sin_leer=mensajes_sin_leer,
             )
         case "student":
             cuenta_cursos = database.session.execute(
