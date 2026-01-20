@@ -279,3 +279,53 @@ def test_e2e_contact_disabled_configuration(app, db_session):
     assert resp_home.status_code == 200
     # Cuando está deshabilitado, no debe haber enlace visible a contact en navbar
     # (esto depende del template, pero el enlace está condicionado por is_contact_enabled())
+
+
+def test_admin_panel_shows_unread_contact_messages(app, db_session):
+    """Test: verificar que el panel de administrador muestra el contador de mensajes sin leer."""
+    # 1) Crear admin y mensajes de contacto
+    admin = _crear_admin(db_session)
+    _habilitar_contacto(db_session)
+
+    # Crear mensajes con diferentes estados
+    mensaje1 = ContactMessage(
+        name="Usuario Test 1",
+        email="test1@example.com",
+        subject="Consulta 1",
+        message="Mensaje de prueba 1",
+        status="not_seen",
+    )
+    mensaje2 = ContactMessage(
+        name="Usuario Test 2",
+        email="test2@example.com",
+        subject="Consulta 2",
+        message="Mensaje de prueba 2",
+        status="not_seen",
+    )
+    mensaje3 = ContactMessage(
+        name="Usuario Test 3",
+        email="test3@example.com",
+        subject="Consulta 3",
+        message="Mensaje de prueba 3",
+        status="seen",
+    )
+    db_session.add_all([mensaje1, mensaje2, mensaje3])
+    db_session.commit()
+
+    # 2) Login como admin
+    client = _login_admin(app)
+
+    # 3) Acceder al panel de administrador
+    resp = client.get("/home/panel")
+    assert resp.status_code == 200
+
+    # 4) Verificar que el contador de mensajes sin leer aparece en el panel
+    # Debe mostrar "2" porque hay 2 mensajes con status "not_seen"
+    assert b"Mensajes Sin Leer" in resp.data or b"Unread Messages" in resp.data
+    # Verificar que aparece el número correcto (2)
+    # El número debe estar cerca del texto de mensajes sin leer
+    data_str = resp.data.decode("utf-8")
+    # Buscar el patrón: el número 2 debe aparecer en el contexto de mensajes sin leer
+    assert "2" in data_str
+    # Verificar que existe el enlace a la lista de mensajes de contacto
+    assert b"/admin/contact-messages" in resp.data
