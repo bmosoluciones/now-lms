@@ -703,7 +703,89 @@
                             </div>
                         </div>
 
-                        <!-- Section 10: Footer Management -->
+                        <!-- Section 10: Contact Information -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingContactInfo">
+                                <button
+                                    class="accordion-button collapsed"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapseContactInfo"
+                                    aria-expanded="false"
+                                    aria-controls="collapseContactInfo"
+                                >
+                                    <i class="bi bi-telephone me-2"></i> {{_("Información de Contacto")}}
+                                </button>
+                            </h2>
+                            <div
+                                id="collapseContactInfo"
+                                class="accordion-collapse collapse"
+                                aria-labelledby="headingContactInfo"
+                                data-bs-parent="#accordionSettings"
+                            >
+                                <div class="accordion-body">
+                                    <p class="text-muted">
+                                        {{_("Configure la información de contacto del negocio que se mostrará en la página de
+                                        contacto")}}.
+                                    </p>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-12">
+                                            <label for="contact_address" class="form-label">
+                                                <i class="bi bi-geo-alt"></i> {{_("Dirección del negocio")}}:
+                                            </label>
+                                            {{ form.contact_address(class="form-control", id="contact_address",
+                                            value=config.contact_address, placeholder=_("Calle, ciudad, país")) }} {{
+                                            render_field_errors(form.contact_address) }}
+                                            <div class="form-text">
+                                                {{_("Dirección física del negocio u oficina principal")}}.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <label for="contact_email" class="form-label">
+                                                <i class="bi bi-envelope"></i> {{_("Correo de contacto")}}:
+                                            </label>
+                                            {{ form.contact_email(class="form-control", id="contact_email",
+                                            value=config.contact_email, placeholder="contacto@ejemplo.com") }} {{
+                                            render_field_errors(form.contact_email) }}
+                                            <div class="form-text">{{_("Correo electrónico de contacto público")}}.</div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="contact_phone" class="form-label">
+                                                <i class="bi bi-telephone"></i> {{_("Teléfono")}}:
+                                            </label>
+                                            {{ form.contact_phone(class="form-control", id="contact_phone",
+                                            value=config.contact_phone, placeholder="(+34) 900 123 456") }} {{
+                                            render_field_errors(form.contact_phone) }}
+                                            <div class="form-text">{{_("Número de teléfono fijo o principal")}}.</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label for="contact_mobile" class="form-label">
+                                                <i class="bi bi-phone"></i> {{_("Número celular")}}:
+                                            </label>
+                                            {{ form.contact_mobile(class="form-control", id="contact_mobile",
+                                            value=config.contact_mobile, placeholder="(+34) 600 123 456") }} {{
+                                            render_field_errors(form.contact_mobile) }}
+                                            <div class="form-text">{{_("Número de teléfono móvil")}}.</div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="contact_whatsapp" class="form-label">
+                                                <i class="bi bi-whatsapp"></i> {{_("WhatsApp")}}:
+                                            </label>
+                                            {{ form.contact_whatsapp(class="form-control", id="contact_whatsapp",
+                                            value=config.contact_whatsapp, placeholder="(+34) 600 123 456") }} {{
+                                            render_field_errors(form.contact_whatsapp) }}
+                                            <div class="form-text">{{_("Número de WhatsApp para contacto")}}.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 11: Footer Management -->
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingFooterManagement">
                                 <button
