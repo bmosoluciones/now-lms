@@ -20,7 +20,7 @@ flask-sqlalchemy==3.1.1
 flask_weasyprint==1.1.0
 flask-wtf==1.2.2
 gunicorn==23.0.0
-markdown==3.10
+markdown==3.10.1
 memcache==0.14.0
 mysql-connector-python==9.5.0
 pg8000==1.31.5
