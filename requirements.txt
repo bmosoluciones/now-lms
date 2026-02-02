@@ -33,5 +33,5 @@ sqlalchemy==2.0.45
 requests==2.32.5
 redis==7.1.0
 waitress==3.0.2
-weasyprint==67.0
+weasyprint==68.0
 wtforms==3.2.1
