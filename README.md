@@ -130,6 +130,10 @@ NOW - LMS is designed to be simple yet powerful. Here are its key features:
 - The session is not shared in multithreaded WSGI servers. Work is in progress to address this issue. Meanwhile, using Waitress is recommended.
 
 ## Licence
+```
+SPDX-License-Identifier: Apache-2.0
+Copyright 2025 - 2026 BMO Soluciones, S.A.
+```
 
 **Apache License 2.0** - a permissive open-source license that allows free use, modification, and distribution (including for commercial purposes), as long as copyright and license notices are preserved.
 It also includes a patent grant to protect users from patent claims but terminates rights if you file such claims.
