@@ -24,7 +24,9 @@ import sys
 from typing import Iterable
 
 HEADER = (
-    "# Copyright 2025 BMO Soluciones, S.A.\n"
+    "# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: 2025 - 2026 BMO Soluciones, S.A.
+# Copyright 2025 - 2026 BMO Soluciones, S.A.\n"
     "#\n"
     '# Licensed under the Apache License, Version 2.0 (the "License");\n'
     "# you may not use this file except in compliance with the License.\n"
