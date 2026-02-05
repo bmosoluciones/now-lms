@@ -1225,9 +1225,6 @@ def test_instructor_subir_archivo_biblioteca(app, db_session):
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
 
 
-@pytest.mark.skip(
-    reason="Template has a bug with blueprint name - 'course.upload_library_file' should be 'resources.upload_library_file'"
-)
 def test_ver_biblioteca_curso_instructor_asignado(app, db_session):
     """Un instructor asignado al curso puede acceder a la URL de biblioteca."""
     instructor = crear_usuario(db_session, "instructor", "instructor_lib")
@@ -1239,12 +1236,11 @@ def test_ver_biblioteca_curso_instructor_asignado(app, db_session):
     client = app.test_client()
     login_usuario(client, "instructor_lib")
 
-    # Intentar acceder a la biblioteca - puede fallar por template pero no por permisos
+    # Acceder a la biblioteca del curso
     resp = client.get(f"/course/{curso.codigo}/library", follow_redirects=False)
 
-    # Si falla por template (500) o tiene éxito (200), ambos indican que pasó la validación de permisos
-    # Un 403 indicaría problema de permisos
-    assert resp.status_code in {200, 500, *REDIRECT_STATUS_CODES}
+    # El instructor asignado debe poder acceder sin errores
+    assert resp.status_code == 200
 
 
 def test_ver_biblioteca_curso_estudiante_no_permitido(app, db_session):
