@@ -22,7 +22,6 @@ import pytest
 from now_lms.auth import proteger_passwd
 from now_lms.db import (
     Configuracion,
-    CourseLibrary,
     Curso,
     CursoRecurso,
     CursoRecursoAvance,
@@ -47,7 +46,7 @@ def crear_usuario(db_session, tipo: str = "student", username: str = None) -> Us
     """Crea un usuario para pruebas."""
     if username is None:
         username = f"{tipo}_test"
-    
+
     user = Usuario(
         usuario=username,
         acceso=proteger_passwd("password123"),
@@ -155,7 +154,7 @@ def test_visualizar_recurso_texto_estudiante_inscrito(app, db_session):
     curso = crear_curso(db_session, "curso_texto")
     seccion = crear_seccion(db_session, curso)
     inscribir_estudiante(db_session, curso, estudiante)
-    
+
     # Crear recurso de texto
     recurso = CursoRecurso(
         curso=curso.codigo,
@@ -170,14 +169,14 @@ def test_visualizar_recurso_texto_estudiante_inscrito(app, db_session):
     )
     db_session.add(recurso)
     db_session.commit()
-    
+
     # Iniciar sesión
     client = app.test_client()
     login_usuario(client, "alumno1")
-    
+
     # Acceder al recurso
     resp = client.get(f"/course/{curso.codigo}/resource/text/{recurso.id}")
-    
+
     # Verificaciones
     assert resp.status_code == 200
     assert "Lección de texto" in resp.data.decode("utf-8")
@@ -189,7 +188,7 @@ def test_visualizar_recurso_youtube_estudiante_inscrito(app, db_session):
     curso = crear_curso(db_session, "curso_youtube")
     seccion = crear_seccion(db_session, curso)
     inscribir_estudiante(db_session, curso, estudiante)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -203,12 +202,12 @@ def test_visualizar_recurso_youtube_estudiante_inscrito(app, db_session):
     )
     db_session.add(recurso)
     db_session.commit()
-    
+
     client = app.test_client()
     login_usuario(client, "alumno2")
-    
+
     resp = client.get(f"/course/{curso.codigo}/resource/youtube/{recurso.id}")
-    
+
     assert resp.status_code == 200
 
 
@@ -218,7 +217,7 @@ def test_visualizar_recurso_html_estudiante_inscrito(app, db_session):
     curso = crear_curso(db_session, "curso_html")
     seccion = crear_seccion(db_session, curso)
     inscribir_estudiante(db_session, curso, estudiante)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -232,12 +231,12 @@ def test_visualizar_recurso_html_estudiante_inscrito(app, db_session):
     )
     db_session.add(recurso)
     db_session.commit()
-    
+
     client = app.test_client()
     login_usuario(client, "alumno3")
-    
+
     resp = client.get(f"/course/{curso.codigo}/resource/html/{recurso.id}")
-    
+
     assert resp.status_code == 200
 
 
@@ -247,7 +246,7 @@ def test_visualizar_recurso_link_estudiante_inscrito(app, db_session):
     curso = crear_curso(db_session, "curso_link")
     seccion = crear_seccion(db_session, curso)
     inscribir_estudiante(db_session, curso, estudiante)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -261,12 +260,12 @@ def test_visualizar_recurso_link_estudiante_inscrito(app, db_session):
     )
     db_session.add(recurso)
     db_session.commit()
-    
+
     client = app.test_client()
     login_usuario(client, "alumno4")
-    
+
     resp = client.get(f"/course/{curso.codigo}/resource/link/{recurso.id}")
-    
+
     assert resp.status_code == 200
 
 
@@ -276,7 +275,7 @@ def test_visualizar_recurso_meet_estudiante_inscrito(app, db_session):
     curso = crear_curso(db_session, "curso_meet")
     seccion = crear_seccion(db_session, curso)
     inscribir_estudiante(db_session, curso, estudiante)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -294,12 +293,12 @@ def test_visualizar_recurso_meet_estudiante_inscrito(app, db_session):
     )
     db_session.add(recurso)
     db_session.commit()
-    
+
     client = app.test_client()
     login_usuario(client, "alumno5")
-    
+
     resp = client.get(f"/course/{curso.codigo}/resource/meet/{recurso.id}")
-    
+
     assert resp.status_code == 200
 
 
@@ -307,7 +306,7 @@ def test_visualizar_recurso_publico_sin_autenticar(app, db_session):
     """Un usuario no autenticado puede ver recursos públicos."""
     curso = crear_curso(db_session, "curso_publico")
     seccion = crear_seccion(db_session, curso)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -321,11 +320,11 @@ def test_visualizar_recurso_publico_sin_autenticar(app, db_session):
     )
     db_session.add(recurso)
     db_session.commit()
-    
+
     client = app.test_client()
-    
+
     resp = client.get(f"/course/{curso.codigo}/resource/text/{recurso.id}")
-    
+
     assert resp.status_code == 200
 
 
@@ -334,7 +333,7 @@ def test_no_visualizar_recurso_privado_sin_inscripcion(app, db_session):
     estudiante = crear_usuario(db_session, "student", "alumno6")
     curso = crear_curso(db_session, "curso_privado")
     seccion = crear_seccion(db_session, curso)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -348,12 +347,12 @@ def test_no_visualizar_recurso_privado_sin_inscripcion(app, db_session):
     )
     db_session.add(recurso)
     db_session.commit()
-    
+
     client = app.test_client()
     login_usuario(client, "alumno6")
-    
+
     resp = client.get(f"/course/{curso.codigo}/resource/text/{recurso.id}")
-    
+
     # Debería redirigir o mostrar mensaje de no autorizado
     assert resp.status_code in REDIRECT_STATUS_CODES | {200, 403}
 
@@ -369,7 +368,7 @@ def test_marcar_recurso_completado_crea_registro_avance(app, db_session):
     curso = crear_curso(db_session, "curso_avance")
     seccion = crear_seccion(db_session, curso)
     inscribir_estudiante(db_session, curso, estudiante)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -383,19 +382,19 @@ def test_marcar_recurso_completado_crea_registro_avance(app, db_session):
     )
     db_session.add(recurso)
     db_session.commit()
-    
+
     client = app.test_client()
     login_usuario(client, "alumno7")
-    
+
     # Marcar recurso como completado
     resp = client.get(
         f"/course/{curso.codigo}/resource/text/{recurso.id}/complete",
         follow_redirects=False,
     )
-    
+
     # Verificar respuesta
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
-    
+
     # Verificar que se creó el registro de avance usando SQLAlchemy 2.0 API
     avance = db_session.execute(
         select(CursoRecursoAvance).filter_by(
@@ -404,7 +403,7 @@ def test_marcar_recurso_completado_crea_registro_avance(app, db_session):
             usuario=estudiante.usuario,
         )
     ).scalar_one()
-    
+
     assert avance is not None
     assert avance.completado is True
 
@@ -415,7 +414,7 @@ def test_marcar_multiples_recursos_completados(app, db_session):
     curso = crear_curso(db_session, "curso_multiple")
     seccion = crear_seccion(db_session, curso)
     inscribir_estudiante(db_session, curso, estudiante)
-    
+
     # Crear 3 recursos
     recursos = []
     for i in range(1, 4):
@@ -433,10 +432,10 @@ def test_marcar_multiples_recursos_completados(app, db_session):
         db_session.add(recurso)
         recursos.append(recurso)
     db_session.commit()
-    
+
     client = app.test_client()
     login_usuario(client, "alumno8")
-    
+
     # Marcar cada recurso como completado
     for recurso in recursos:
         resp = client.get(
@@ -444,15 +443,19 @@ def test_marcar_multiples_recursos_completados(app, db_session):
             follow_redirects=False,
         )
         assert resp.status_code in REDIRECT_STATUS_CODES | {200}
-    
+
     # Verificar que todos están marcados como completados
-    avances = db_session.execute(
-        select(CursoRecursoAvance).filter_by(
-            curso=curso.codigo,
-            usuario=estudiante.usuario,
+    avances = (
+        db_session.execute(
+            select(CursoRecursoAvance).filter_by(
+                curso=curso.codigo,
+                usuario=estudiante.usuario,
+            )
         )
-    ).scalars().all()
-    
+        .scalars()
+        .all()
+    )
+
     assert len(avances) == 3
     assert all(a.completado for a in avances)
 
@@ -462,7 +465,7 @@ def test_no_marcar_completado_sin_inscripcion(app, db_session):
     estudiante = crear_usuario(db_session, "student", "alumno9")
     curso = crear_curso(db_session, "curso_sin_acceso")
     seccion = crear_seccion(db_session, curso)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -476,18 +479,18 @@ def test_no_marcar_completado_sin_inscripcion(app, db_session):
     )
     db_session.add(recurso)
     db_session.commit()
-    
+
     client = app.test_client()
     login_usuario(client, "alumno9")
-    
+
     resp = client.get(
         f"/course/{curso.codigo}/resource/text/{recurso.id}/complete",
         follow_redirects=False,
     )
-    
+
     # No debería poder completar
     assert resp.status_code in REDIRECT_STATUS_CODES | {403}
-    
+
     # Verificar que NO se creó registro de avance
     avance = db_session.execute(
         select(CursoRecursoAvance).filter_by(
@@ -496,7 +499,7 @@ def test_no_marcar_completado_sin_inscripcion(app, db_session):
             usuario=estudiante.usuario,
         )
     ).scalar_one_or_none()
-    
+
     assert avance is None
 
 
@@ -510,10 +513,10 @@ def test_instructor_crear_recurso_texto(app, db_session):
     instructor = crear_usuario(db_session, "instructor", "instructor1")
     curso = crear_curso(db_session, "curso_crear_texto")
     seccion = crear_seccion(db_session, curso)
-    
+
     client = app.test_client()
     login_usuario(client, "instructor1")
-    
+
     # Crear recurso de texto vía POST
     resp = client.post(
         f"/course/{curso.codigo}/{seccion.id}/text/new",
@@ -525,10 +528,10 @@ def test_instructor_crear_recurso_texto(app, db_session):
         },
         follow_redirects=False,
     )
-    
+
     # Verificar redirección exitosa
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
-    
+
     # Verificar que se creó el recurso en BD usando SQLAlchemy 2.0
     recurso = db_session.execute(
         select(CursoRecurso).filter_by(
@@ -537,7 +540,7 @@ def test_instructor_crear_recurso_texto(app, db_session):
             nombre="Nuevo texto",
         )
     ).scalar_one_or_none()
-    
+
     assert recurso is not None
     assert recurso.text is not None
     assert recurso.seccion == seccion.id
@@ -548,10 +551,10 @@ def test_instructor_crear_recurso_youtube(app, db_session):
     instructor = crear_usuario(db_session, "instructor", "instructor2")
     curso = crear_curso(db_session, "curso_crear_youtube")
     seccion = crear_seccion(db_session, curso)
-    
+
     client = app.test_client()
     login_usuario(client, "instructor2")
-    
+
     resp = client.post(
         f"/course/{curso.codigo}/{seccion.id}/youtube/new",
         data={
@@ -562,16 +565,16 @@ def test_instructor_crear_recurso_youtube(app, db_session):
         },
         follow_redirects=False,
     )
-    
+
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
-    
+
     recurso = db_session.execute(
         select(CursoRecurso).filter_by(
             curso=curso.codigo,
             tipo="youtube",
         )
     ).scalar_one_or_none()
-    
+
     assert recurso is not None
     assert recurso.url is not None
     assert "youtube.com" in recurso.url or "youtu.be" in recurso.url
@@ -582,10 +585,10 @@ def test_instructor_crear_recurso_html(app, db_session):
     instructor = crear_usuario(db_session, "instructor", "instructor3")
     curso = crear_curso(db_session, "curso_crear_html")
     seccion = crear_seccion(db_session, curso)
-    
+
     client = app.test_client()
     login_usuario(client, "instructor3")
-    
+
     resp = client.post(
         f"/course/{curso.codigo}/{seccion.id}/html/new",
         data={
@@ -596,16 +599,16 @@ def test_instructor_crear_recurso_html(app, db_session):
         },
         follow_redirects=False,
     )
-    
+
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
-    
+
     recurso = db_session.execute(
         select(CursoRecurso).filter_by(
             curso=curso.codigo,
             tipo="html",
         )
     ).scalar_one_or_none()
-    
+
     assert recurso is not None
     assert recurso.external_code is not None
 
@@ -615,10 +618,10 @@ def test_instructor_crear_recurso_link(app, db_session):
     instructor = crear_usuario(db_session, "instructor", "instructor4")
     curso = crear_curso(db_session, "curso_crear_link")
     seccion = crear_seccion(db_session, curso)
-    
+
     client = app.test_client()
     login_usuario(client, "instructor4")
-    
+
     resp = client.post(
         f"/course/{curso.codigo}/{seccion.id}/link/new",
         data={
@@ -629,16 +632,16 @@ def test_instructor_crear_recurso_link(app, db_session):
         },
         follow_redirects=False,
     )
-    
+
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
-    
+
     recurso = db_session.execute(
         select(CursoRecurso).filter_by(
             curso=curso.codigo,
             tipo="link",
         )
     ).scalar_one_or_none()
-    
+
     assert recurso is not None
     assert recurso.url == "https://example.com/recurso-externo"
 
@@ -648,10 +651,10 @@ def test_instructor_crear_recurso_meet(app, db_session):
     instructor = crear_usuario(db_session, "instructor", "instructor5")
     curso = crear_curso(db_session, "curso_crear_meet")
     seccion = crear_seccion(db_session, curso)
-    
+
     client = app.test_client()
     login_usuario(client, "instructor5")
-    
+
     resp = client.post(
         f"/course/{curso.codigo}/{seccion.id}/meet/new",
         data={
@@ -666,16 +669,16 @@ def test_instructor_crear_recurso_meet(app, db_session):
         },
         follow_redirects=False,
     )
-    
+
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
-    
+
     recurso = db_session.execute(
         select(CursoRecurso).filter_by(
             curso=curso.codigo,
             tipo="meet",
         )
     ).scalar_one_or_none()
-    
+
     assert recurso is not None
     assert recurso.url is not None
     assert recurso.fecha is not None
@@ -688,7 +691,7 @@ def test_instructor_crear_recurso_pdf(app, db_session):
     instructor = crear_usuario(db_session, "instructor", "instructor6")
     curso = crear_curso(db_session, "curso_crear_pdf")
     seccion = crear_seccion(db_session, curso)
-    
+
     # Habilitar carga de archivos
     with app.app_context():
         config = database.session.execute(select(Configuracion)).scalar_one_or_none()
@@ -696,13 +699,13 @@ def test_instructor_crear_recurso_pdf(app, db_session):
             config.enable_file_uploads = True
             database.session.commit()
     db_session.expire_all()
-    
+
     client = app.test_client()
     login_usuario(client, "instructor6")
-    
+
     # Crear archivo PDF falso
     pdf_bytes = io.BytesIO(b"%PDF-1.4\n%Test PDF content\n")
-    
+
     resp = client.post(
         f"/course/{curso.codigo}/{seccion.id}/pdf/new",
         data={
@@ -714,16 +717,16 @@ def test_instructor_crear_recurso_pdf(app, db_session):
         content_type="multipart/form-data",
         follow_redirects=False,
     )
-    
+
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
-    
+
     recurso = db_session.execute(
         select(CursoRecurso).filter_by(
             curso=curso.codigo,
             tipo="pdf",
         )
     ).scalar_one_or_none()
-    
+
     assert recurso is not None
     assert recurso.doc is not None
 
@@ -733,7 +736,7 @@ def test_instructor_crear_recurso_imagen(app, db_session):
     instructor = crear_usuario(db_session, "instructor", "instructor7")
     curso = crear_curso(db_session, "curso_crear_img")
     seccion = crear_seccion(db_session, curso)
-    
+
     # Habilitar carga de archivos
     with app.app_context():
         config = database.session.execute(select(Configuracion)).scalar_one_or_none()
@@ -741,13 +744,13 @@ def test_instructor_crear_recurso_imagen(app, db_session):
             config.enable_file_uploads = True
             database.session.commit()
     db_session.expire_all()
-    
+
     client = app.test_client()
     login_usuario(client, "instructor7")
-    
+
     # Crear imagen falsa (PNG header)
     img_bytes = io.BytesIO(b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR")
-    
+
     resp = client.post(
         f"/course/{curso.codigo}/{seccion.id}/img/new",
         data={
@@ -759,16 +762,16 @@ def test_instructor_crear_recurso_imagen(app, db_session):
         content_type="multipart/form-data",
         follow_redirects=False,
     )
-    
+
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
-    
+
     recurso = db_session.execute(
         select(CursoRecurso).filter_by(
             curso=curso.codigo,
             tipo="img",
         )
     ).scalar_one_or_none()
-    
+
     assert recurso is not None
     assert recurso.doc is not None
 
@@ -778,7 +781,7 @@ def test_instructor_crear_recurso_audio(app, db_session):
     instructor = crear_usuario(db_session, "instructor", "instructor8")
     curso = crear_curso(db_session, "curso_crear_audio")
     seccion = crear_seccion(db_session, curso)
-    
+
     # Habilitar carga de archivos
     with app.app_context():
         config = database.session.execute(select(Configuracion)).scalar_one_or_none()
@@ -786,13 +789,13 @@ def test_instructor_crear_recurso_audio(app, db_session):
             config.enable_file_uploads = True
             database.session.commit()
     db_session.expire_all()
-    
+
     client = app.test_client()
     login_usuario(client, "instructor8")
-    
+
     # Crear archivo de audio falso (MP3 header)
     audio_bytes = io.BytesIO(b"ID3\x04\x00\x00\x00")
-    
+
     resp = client.post(
         f"/course/{curso.codigo}/{seccion.id}/audio/new",
         data={
@@ -804,16 +807,16 @@ def test_instructor_crear_recurso_audio(app, db_session):
         content_type="multipart/form-data",
         follow_redirects=False,
     )
-    
+
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
-    
+
     recurso = db_session.execute(
         select(CursoRecurso).filter_by(
             curso=curso.codigo,
             tipo="mp3",
         )
     ).scalar_one_or_none()
-    
+
     assert recurso is not None
     assert recurso.doc is not None
 
@@ -828,7 +831,7 @@ def test_instructor_editar_recurso_texto(app, db_session):
     instructor = crear_usuario(db_session, "instructor", "instructor9")
     curso = crear_curso(db_session, "curso_editar_texto")
     seccion = crear_seccion(db_session, curso)
-    
+
     # Crear recurso inicial
     recurso = CursoRecurso(
         curso=curso.codigo,
@@ -844,10 +847,10 @@ def test_instructor_editar_recurso_texto(app, db_session):
     db_session.add(recurso)
     db_session.commit()
     recurso_id = recurso.id
-    
+
     client = app.test_client()
     login_usuario(client, "instructor9")
-    
+
     # Editar recurso
     resp = client.post(
         f"/course/{curso.codigo}/{seccion.id}/text/{recurso_id}/edit",
@@ -859,9 +862,9 @@ def test_instructor_editar_recurso_texto(app, db_session):
         },
         follow_redirects=False,
     )
-    
+
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
-    
+
     # Verificar cambios en BD
     recurso_editado = db_session.get(CursoRecurso, recurso_id)
     assert recurso_editado.nombre == "Texto editado"
@@ -873,7 +876,7 @@ def test_instructor_editar_recurso_youtube(app, db_session):
     instructor = crear_usuario(db_session, "instructor", "instructor10")
     curso = crear_curso(db_session, "curso_editar_youtube")
     seccion = crear_seccion(db_session, curso)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -888,10 +891,10 @@ def test_instructor_editar_recurso_youtube(app, db_session):
     db_session.add(recurso)
     db_session.commit()
     recurso_id = recurso.id
-    
+
     client = app.test_client()
     login_usuario(client, "instructor10")
-    
+
     resp = client.post(
         f"/course/{curso.codigo}/{seccion.id}/youtube/{recurso_id}/edit",
         data={
@@ -902,9 +905,9 @@ def test_instructor_editar_recurso_youtube(app, db_session):
         },
         follow_redirects=False,
     )
-    
+
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
-    
+
     recurso_editado = db_session.get(CursoRecurso, recurso_id)
     assert recurso_editado.nombre == "Video actualizado"
     assert "new_video" in recurso_editado.url
@@ -915,7 +918,7 @@ def test_instructor_editar_recurso_link(app, db_session):
     instructor = crear_usuario(db_session, "instructor", "instructor11")
     curso = crear_curso(db_session, "curso_editar_link")
     seccion = crear_seccion(db_session, curso)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -930,10 +933,10 @@ def test_instructor_editar_recurso_link(app, db_session):
     db_session.add(recurso)
     db_session.commit()
     recurso_id = recurso.id
-    
+
     client = app.test_client()
     login_usuario(client, "instructor11")
-    
+
     resp = client.post(
         f"/course/{curso.codigo}/{seccion.id}/link/{recurso_id}/edit",
         data={
@@ -944,9 +947,9 @@ def test_instructor_editar_recurso_link(app, db_session):
         },
         follow_redirects=False,
     )
-    
+
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
-    
+
     recurso_editado = db_session.get(CursoRecurso, recurso_id)
     assert recurso_editado.nombre == "Enlace nuevo"
     assert recurso_editado.url == "https://example.com/new"
@@ -957,7 +960,7 @@ def test_instructor_editar_recurso_meet(app, db_session):
     instructor = crear_usuario(db_session, "instructor", "instructor12")
     curso = crear_curso(db_session, "curso_editar_meet")
     seccion = crear_seccion(db_session, curso)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -976,10 +979,10 @@ def test_instructor_editar_recurso_meet(app, db_session):
     db_session.add(recurso)
     db_session.commit()
     recurso_id = recurso.id
-    
+
     client = app.test_client()
     login_usuario(client, "instructor12")
-    
+
     resp = client.post(
         f"/course/{curso.codigo}/{seccion.id}/meet/{recurso_id}/edit",
         data={
@@ -994,9 +997,9 @@ def test_instructor_editar_recurso_meet(app, db_session):
         },
         follow_redirects=False,
     )
-    
+
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
-    
+
     recurso_editado = db_session.get(CursoRecurso, recurso_id)
     assert recurso_editado.nombre == "Sesión nueva"
     assert "new" in recurso_editado.url
@@ -1012,7 +1015,7 @@ def test_descargar_calendario_ics_meet(app, db_session):
     instructor = crear_usuario(db_session, "instructor", "instructor13")
     curso = crear_curso(db_session, "curso_cal_ics")
     seccion = crear_seccion(db_session, curso)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -1030,15 +1033,15 @@ def test_descargar_calendario_ics_meet(app, db_session):
     )
     db_session.add(recurso)
     db_session.commit()
-    
+
     client = app.test_client()
     login_usuario(client, "instructor13")
-    
+
     resp = client.get(f"/course/{curso.codigo}/resource/meet/{recurso.id}/calendar.ics")
-    
+
     assert resp.status_code == 200
     assert resp.mimetype == "text/calendar"
-    
+
     # Verificar contenido del ICS
     contenido = resp.data.decode("utf-8")
     assert "BEGIN:VCALENDAR" in contenido
@@ -1053,7 +1056,7 @@ def test_google_calendar_link_redireccion(app, db_session):
     instructor = crear_usuario(db_session, "instructor", "instructor14")
     curso = crear_curso(db_session, "curso_gcal")
     seccion = crear_seccion(db_session, curso)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -1071,17 +1074,17 @@ def test_google_calendar_link_redireccion(app, db_session):
     )
     db_session.add(recurso)
     db_session.commit()
-    
+
     client = app.test_client()
     login_usuario(client, "instructor14")
-    
+
     resp = client.get(
         f"/course/{curso.codigo}/resource/meet/{recurso.id}/google-calendar",
         follow_redirects=False,
     )
-    
+
     assert resp.status_code in REDIRECT_STATUS_CODES
-    
+
     location = resp.headers.get("Location", "")
     assert "calendar.google.com" in location
     assert "action=TEMPLATE" in location
@@ -1092,7 +1095,7 @@ def test_outlook_calendar_link_redireccion(app, db_session):
     instructor = crear_usuario(db_session, "instructor", "instructor15")
     curso = crear_curso(db_session, "curso_outlook")
     seccion = crear_seccion(db_session, curso)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -1110,15 +1113,15 @@ def test_outlook_calendar_link_redireccion(app, db_session):
     )
     db_session.add(recurso)
     db_session.commit()
-    
+
     client = app.test_client()
     login_usuario(client, "instructor15")
-    
+
     resp = client.get(
         f"/course/{curso.codigo}/resource/meet/{recurso.id}/outlook-calendar",
         follow_redirects=False,
     )
-    
+
     # Puede ser redirect o página con botón
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
 
@@ -1133,7 +1136,7 @@ def test_admin_puede_ver_todos_recursos(app, db_session):
     admin = crear_usuario(db_session, "admin", "admin1")
     curso = crear_curso(db_session, "curso_admin")
     seccion = crear_seccion(db_session, curso)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -1147,12 +1150,12 @@ def test_admin_puede_ver_todos_recursos(app, db_session):
     )
     db_session.add(recurso)
     db_session.commit()
-    
+
     client = app.test_client()
     login_usuario(client, "admin1")
-    
+
     resp = client.get(f"/course/{curso.codigo}/resource/text/{recurso.id}")
-    
+
     assert resp.status_code == 200
 
 
@@ -1161,10 +1164,10 @@ def test_estudiante_no_inscrito_no_puede_crear_recursos(app, db_session):
     estudiante = crear_usuario(db_session, "student", "alumno10")
     curso = crear_curso(db_session, "curso_no_crear")
     seccion = crear_seccion(db_session, curso)
-    
+
     client = app.test_client()
     login_usuario(client, "alumno10")
-    
+
     resp = client.post(
         f"/course/{curso.codigo}/{seccion.id}/text/new",
         data={
@@ -1175,7 +1178,7 @@ def test_estudiante_no_inscrito_no_puede_crear_recursos(app, db_session):
         },
         follow_redirects=False,
     )
-    
+
     # Debería ser rechazado (redirect o 403)
     assert resp.status_code in REDIRECT_STATUS_CODES | {403}
 
@@ -1190,10 +1193,10 @@ def test_instructor_subir_archivo_biblioteca(app, db_session):
     instructor = crear_usuario(db_session, "instructor", "instructor16")
     curso = crear_curso(db_session, "curso_biblioteca")
     seccion = crear_seccion(db_session, curso)
-    
+
     # Asignar instructor al curso
     asignar_instructor(db_session, curso, instructor)
-    
+
     # Habilitar carga de archivos
     with app.app_context():
         config = database.session.execute(select(Configuracion)).scalar_one_or_none()
@@ -1201,13 +1204,13 @@ def test_instructor_subir_archivo_biblioteca(app, db_session):
             config.enable_file_uploads = True
             database.session.commit()
     db_session.expire_all()
-    
+
     client = app.test_client()
     login_usuario(client, "instructor16")
-    
+
     # Subir archivo a biblioteca
     archivo_bytes = io.BytesIO(b"Contenido del archivo de biblioteca")
-    
+
     resp = client.post(
         f"/course/{curso.codigo}/library/new",
         data={
@@ -1217,26 +1220,28 @@ def test_instructor_subir_archivo_biblioteca(app, db_session):
         content_type="multipart/form-data",
         follow_redirects=False,
     )
-    
+
     # Puede redirigir o retornar 200
     assert resp.status_code in REDIRECT_STATUS_CODES | {200}
 
 
-@pytest.mark.skip(reason="Template has a bug with blueprint name - 'course.upload_library_file' should be 'resources.upload_library_file'")
+@pytest.mark.skip(
+    reason="Template has a bug with blueprint name - 'course.upload_library_file' should be 'resources.upload_library_file'"
+)
 def test_ver_biblioteca_curso_instructor_asignado(app, db_session):
     """Un instructor asignado al curso puede acceder a la URL de biblioteca."""
     instructor = crear_usuario(db_session, "instructor", "instructor_lib")
     curso = crear_curso(db_session, "curso_ver_biblioteca")
-    
+
     # Asignar instructor al curso
     asignar_instructor(db_session, curso, instructor)
-    
+
     client = app.test_client()
     login_usuario(client, "instructor_lib")
-    
+
     # Intentar acceder a la biblioteca - puede fallar por template pero no por permisos
     resp = client.get(f"/course/{curso.codigo}/library", follow_redirects=False)
-    
+
     # Si falla por template (500) o tiene éxito (200), ambos indican que pasó la validación de permisos
     # Un 403 indicaría problema de permisos
     assert resp.status_code in {200, 500, *REDIRECT_STATUS_CODES}
@@ -1247,12 +1252,12 @@ def test_ver_biblioteca_curso_estudiante_no_permitido(app, db_session):
     estudiante = crear_usuario(db_session, "student", "alumno11")
     curso = crear_curso(db_session, "curso_biblioteca_estudiante")
     inscribir_estudiante(db_session, curso, estudiante)
-    
+
     client = app.test_client()
     login_usuario(client, "alumno11")
-    
+
     resp = client.get(f"/course/{curso.codigo}/library", follow_redirects=False)
-    
+
     # Los estudiantes no tienen acceso a la biblioteca (requiere perfil instructor)
     assert resp.status_code in REDIRECT_STATUS_CODES | {403}
 
@@ -1261,12 +1266,12 @@ def test_ver_biblioteca_curso_no_inscrito(app, db_session):
     """Un usuario no inscrito no puede ver la biblioteca privada."""
     estudiante = crear_usuario(db_session, "student", "alumno12")
     curso = crear_curso(db_session, "curso_biblioteca_privada")
-    
+
     client = app.test_client()
     login_usuario(client, "alumno12")
-    
+
     resp = client.get(f"/course/{curso.codigo}/library", follow_redirects=False)
-    
+
     # Debe redirigir o denegar acceso
     assert resp.status_code in REDIRECT_STATUS_CODES | {403, 200}
 
@@ -1282,7 +1287,7 @@ def test_visor_pdf_recurso(app, db_session):
     curso = crear_curso(db_session, "curso_visor_pdf")
     seccion = crear_seccion(db_session, curso)
     inscribir_estudiante(db_session, curso, estudiante)
-    
+
     # Crear recurso PDF
     recurso = CursoRecurso(
         curso=curso.codigo,
@@ -1297,12 +1302,12 @@ def test_visor_pdf_recurso(app, db_session):
     )
     db_session.add(recurso)
     db_session.commit()
-    
+
     client = app.test_client()
     login_usuario(client, "alumno13")
-    
+
     resp = client.get(f"/course/{curso.codigo}/pdf_viewer/{recurso.id}")
-    
+
     # Puede retornar HTML o redirect
     assert resp.status_code in {200, *REDIRECT_STATUS_CODES}
 
@@ -1313,7 +1318,7 @@ def test_external_code_recurso_html(app, db_session):
     curso = crear_curso(db_session, "curso_ext_code")
     seccion = crear_seccion(db_session, curso)
     inscribir_estudiante(db_session, curso, estudiante)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -1327,12 +1332,12 @@ def test_external_code_recurso_html(app, db_session):
     )
     db_session.add(recurso)
     db_session.commit()
-    
+
     client = app.test_client()
     login_usuario(client, "alumno14")
-    
+
     resp = client.get(f"/course/{curso.codigo}/external_code/{recurso.id}")
-    
+
     assert resp.status_code in {200, *REDIRECT_STATUS_CODES}
 
 
@@ -1345,24 +1350,24 @@ def test_recurso_no_existente_retorna_404(app, db_session):
     """Acceder a un recurso inexistente retorna 404."""
     estudiante = crear_usuario(db_session, "student", "alumno15")
     curso = crear_curso(db_session, "curso_404")
-    
+
     client = app.test_client()
     login_usuario(client, "alumno15")
-    
+
     resp = client.get(f"/course/{curso.codigo}/resource/text/id_inexistente")
-    
+
     assert resp.status_code == 404
 
 
 def test_curso_no_existente_retorna_404(app, db_session):
     """Acceder a recursos de un curso inexistente retorna error."""
     estudiante = crear_usuario(db_session, "student", "alumno16")
-    
+
     client = app.test_client()
     login_usuario(client, "alumno16")
-    
+
     resp = client.get("/course/curso_inexistente/resource/text/123")
-    
+
     # Puede ser 404 o otro error
     assert resp.status_code in {404, 500, *REDIRECT_STATUS_CODES}
 
@@ -1372,7 +1377,7 @@ def test_tipo_recurso_invalido_retorna_404(app, db_session):
     estudiante = crear_usuario(db_session, "student", "alumno17")
     curso = crear_curso(db_session, "curso_tipo_inv")
     seccion = crear_seccion(db_session, curso)
-    
+
     recurso = CursoRecurso(
         curso=curso.codigo,
         seccion=seccion.id,
@@ -1386,11 +1391,11 @@ def test_tipo_recurso_invalido_retorna_404(app, db_session):
     )
     db_session.add(recurso)
     db_session.commit()
-    
+
     client = app.test_client()
     login_usuario(client, "alumno17")
-    
+
     # Intentar acceder con tipo incorrecto
     resp = client.get(f"/course/{curso.codigo}/resource/tipo_invalido/{recurso.id}")
-    
+
     assert resp.status_code == 404
