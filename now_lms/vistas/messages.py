@@ -7,7 +7,6 @@ NOW Learning Management System.
 Gestión del sistema de mensajería.
 """
 
-
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------

@@ -4,7 +4,6 @@
 
 """NOW Learning Management System."""
 
-
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------

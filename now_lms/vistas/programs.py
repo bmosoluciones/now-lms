@@ -7,7 +7,6 @@ NOW Learning Management System.
 Gestión de certificados.
 """
 
-
 from __future__ import annotations
 
 from collections import OrderedDict

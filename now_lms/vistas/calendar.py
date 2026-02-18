@@ -3,7 +3,6 @@
 
 """Calendar views for student users."""
 
-
 from __future__ import annotations
 
 import calendar as cal

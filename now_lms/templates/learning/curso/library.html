@@ -38,7 +38,7 @@
                     </h3>
                     <div>
                         <a
-                            href="{{ url_for('course.upload_library_file', course_code=curso.codigo) }}"
+                            href="{{ url_for('resources.upload_library_file', course_code=curso.codigo) }}"
                             class="btn btn-primary"
                         >
                             <i class="bi bi-upload"></i> {{ _("Subir Archivo") }}
@@ -212,7 +212,7 @@
                                 {{ _("Sube archivos para que estén disponibles para usar en los recursos del curso.") }}
                             </p>
                             <a
-                                href="{{ url_for('course.upload_library_file', course_code=curso.codigo) }}"
+                                href="{{ url_for('resources.upload_library_file', course_code=curso.codigo) }}"
                                 class="btn btn-primary"
                             >
                                 <i class="bi bi-upload"></i> {{ _("Subir primer archivo") }}
@@ -267,7 +267,7 @@
             function confirmDelete(fileId, fileName) {
                 document.getElementById("fileName").textContent = fileName
                 document.getElementById("deleteForm").action =
-                    "{{ url_for('course.delete_library_file', course_code=curso.codigo, file_id='__FILE_ID__') }}".replace(
+                    "{{ url_for('resources.delete_library_file', course_code=curso.codigo, file_id='__FILE_ID__') }}".replace(
                         "__FILE_ID__",
                         fileId
                     )

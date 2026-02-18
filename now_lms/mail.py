@@ -3,7 +3,6 @@
 
 """Email functionality for NOW LMS."""
 
-
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------

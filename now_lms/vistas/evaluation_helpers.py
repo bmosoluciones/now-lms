@@ -7,7 +7,6 @@ NOW Learning Management System.
 Evaluation helper functions.
 """
 
-
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------

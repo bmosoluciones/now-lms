@@ -17,7 +17,6 @@ These columns were introduced between versions 1.1.0 and 1.1.2.
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "20260109_205100"
 down_revision = "20260109_191123"

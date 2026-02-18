@@ -3,7 +3,6 @@
 
 """Utilities for managing user calendar events."""
 
-
 from __future__ import annotations
 
 import threading

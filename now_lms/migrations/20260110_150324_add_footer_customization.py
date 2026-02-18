@@ -17,7 +17,6 @@ import sqlalchemy as sa
 from now_lms.db import utc_now
 from datetime import date
 
-
 # revision identifiers, used by Alembic.
 revision = "20260110_150324"
 down_revision = "20260110_035505"

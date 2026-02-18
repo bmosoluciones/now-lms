@@ -3,7 +3,6 @@
 
 """Business logic implementation."""
 
-
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------

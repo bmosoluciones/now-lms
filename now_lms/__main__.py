@@ -3,7 +3,6 @@
 
 """Modulo para ejecutar NOW LMS."""
 
-
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------

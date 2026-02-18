@@ -104,7 +104,6 @@ from now_lms.vistas.courses.helpers import (
     _get_user_resource_progress,
 )
 
-
 resources = Blueprint("resources", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 # Reused literals

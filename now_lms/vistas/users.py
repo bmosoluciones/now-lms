@@ -7,7 +7,6 @@ NOW Learning Management System.
 Gestión de usuarios.
 """
 
-
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------

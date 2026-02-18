@@ -3,7 +3,6 @@
 
 """Demo mode functionality for NOW LMS."""
 
-
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------

@@ -3,7 +3,6 @@
 
 """Plantillas para certificados en Linea."""
 
-
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------

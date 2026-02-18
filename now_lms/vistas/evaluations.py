@@ -7,7 +7,6 @@ NOW Learning Management System.
 Evaluations management.
 """
 
-
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------

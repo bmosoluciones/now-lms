@@ -1,17 +1,28 @@
 name: Release Validation
 
 on:
-    push:
-        branches: [main]
+    # Keep original triggers for pull requests
     pull_request:
         branches: [main]
+    # Trigger after CI workflow completes successfully on main branch
+    workflow_run:
+        workflows: ["CI"]
+        types:
+            - completed
+        branches:
+            - main
 
 jobs:
     multiple_db_check:
         name: Test with multiple databases
         runs-on: ubuntu-latest
+        # Only run if CI workflow was successful (for workflow_run trigger)
+        # For pull_request trigger, this condition will be true by default
+        if: ${{ github.event_name == 'pull_request' || github.event.workflow_run.conclusion == 'success' }}
         steps:
             - uses: actions/checkout@v4
+              with:
+                ref: ${{ github.event.workflow_run.head_sha || github.sha }}
             - name: Set up Python 3
               uses: actions/setup-python@v5
               with:

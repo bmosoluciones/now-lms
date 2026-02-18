@@ -3,7 +3,6 @@
 
 """Public announcements views."""
 
-
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------

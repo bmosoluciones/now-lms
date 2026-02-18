@@ -17,7 +17,6 @@ preventing NoSuchTableError exceptions.
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "20260118_184906"
 down_revision = "20260110_150324"

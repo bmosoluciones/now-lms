@@ -14,7 +14,6 @@ accidentally omitted.
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision = "20260109_152634"
 down_revision = "20260105_145517"

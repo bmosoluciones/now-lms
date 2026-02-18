@@ -3,7 +3,6 @@
 
 """Vistas para la funcionalidad del foro."""
 
-
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------

@@ -3,7 +3,6 @@
 
 """Utilidades de inicialización de cache en memoria."""
 
-
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
