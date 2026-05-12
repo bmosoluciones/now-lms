@@ -17,7 +17,6 @@ Cubre todas las funcionalidades de gestión de recursos de curso:
 import io
 from datetime import date, time
 
-import pytest
 
 from now_lms.auth import proteger_passwd
 from now_lms.db import (
@@ -42,7 +41,7 @@ REDIRECT_STATUS_CODES = {301, 302, 303, 307, 308}
 # =============================================================================
 
 
-def crear_usuario(db_session, tipo: str = "student", username: str = None) -> Usuario:
+def crear_usuario(db_session, tipo: str = "student", username: str | None = None) -> Usuario:
     """Crea un usuario para pruebas."""
     if username is None:
         username = f"{tipo}_test"
@@ -330,7 +329,7 @@ def test_visualizar_recurso_publico_sin_autenticar(app, db_session):
 
 def test_no_visualizar_recurso_privado_sin_inscripcion(app, db_session):
     """Un estudiante no inscrito no puede ver recursos privados."""
-    estudiante = crear_usuario(db_session, "student", "alumno6")
+    crear_usuario(db_session, "student", "alumno6")
     curso = crear_curso(db_session, "curso_privado")
     seccion = crear_seccion(db_session, curso)
 
@@ -510,7 +509,7 @@ def test_no_marcar_completado_sin_inscripcion(app, db_session):
 
 def test_instructor_crear_recurso_texto(app, db_session):
     """Un instructor puede crear un recurso de texto."""
-    instructor = crear_usuario(db_session, "instructor", "instructor1")
+    crear_usuario(db_session, "instructor", "instructor1")
     curso = crear_curso(db_session, "curso_crear_texto")
     seccion = crear_seccion(db_session, curso)
 
@@ -548,7 +547,7 @@ def test_instructor_crear_recurso_texto(app, db_session):
 
 def test_instructor_crear_recurso_youtube(app, db_session):
     """Un instructor puede crear un recurso de YouTube."""
-    instructor = crear_usuario(db_session, "instructor", "instructor2")
+    crear_usuario(db_session, "instructor", "instructor2")
     curso = crear_curso(db_session, "curso_crear_youtube")
     seccion = crear_seccion(db_session, curso)
 
@@ -582,7 +581,7 @@ def test_instructor_crear_recurso_youtube(app, db_session):
 
 def test_instructor_crear_recurso_html(app, db_session):
     """Un instructor puede crear un recurso HTML."""
-    instructor = crear_usuario(db_session, "instructor", "instructor3")
+    crear_usuario(db_session, "instructor", "instructor3")
     curso = crear_curso(db_session, "curso_crear_html")
     seccion = crear_seccion(db_session, curso)
 
@@ -615,7 +614,7 @@ def test_instructor_crear_recurso_html(app, db_session):
 
 def test_instructor_crear_recurso_link(app, db_session):
     """Un instructor puede crear un recurso de enlace externo."""
-    instructor = crear_usuario(db_session, "instructor", "instructor4")
+    crear_usuario(db_session, "instructor", "instructor4")
     curso = crear_curso(db_session, "curso_crear_link")
     seccion = crear_seccion(db_session, curso)
 
@@ -648,7 +647,7 @@ def test_instructor_crear_recurso_link(app, db_session):
 
 def test_instructor_crear_recurso_meet(app, db_session):
     """Un instructor puede crear un recurso de sesión Meet."""
-    instructor = crear_usuario(db_session, "instructor", "instructor5")
+    crear_usuario(db_session, "instructor", "instructor5")
     curso = crear_curso(db_session, "curso_crear_meet")
     seccion = crear_seccion(db_session, curso)
 
@@ -688,7 +687,7 @@ def test_instructor_crear_recurso_meet(app, db_session):
 
 def test_instructor_crear_recurso_pdf(app, db_session):
     """Un instructor puede crear un recurso PDF."""
-    instructor = crear_usuario(db_session, "instructor", "instructor6")
+    crear_usuario(db_session, "instructor", "instructor6")
     curso = crear_curso(db_session, "curso_crear_pdf")
     seccion = crear_seccion(db_session, curso)
 
@@ -733,7 +732,7 @@ def test_instructor_crear_recurso_pdf(app, db_session):
 
 def test_instructor_crear_recurso_imagen(app, db_session):
     """Un instructor puede crear un recurso de imagen."""
-    instructor = crear_usuario(db_session, "instructor", "instructor7")
+    crear_usuario(db_session, "instructor", "instructor7")
     curso = crear_curso(db_session, "curso_crear_img")
     seccion = crear_seccion(db_session, curso)
 
@@ -778,7 +777,7 @@ def test_instructor_crear_recurso_imagen(app, db_session):
 
 def test_instructor_crear_recurso_audio(app, db_session):
     """Un instructor puede crear un recurso de audio."""
-    instructor = crear_usuario(db_session, "instructor", "instructor8")
+    crear_usuario(db_session, "instructor", "instructor8")
     curso = crear_curso(db_session, "curso_crear_audio")
     seccion = crear_seccion(db_session, curso)
 
@@ -828,7 +827,7 @@ def test_instructor_crear_recurso_audio(app, db_session):
 
 def test_instructor_editar_recurso_texto(app, db_session):
     """Un instructor puede editar un recurso de texto existente."""
-    instructor = crear_usuario(db_session, "instructor", "instructor9")
+    crear_usuario(db_session, "instructor", "instructor9")
     curso = crear_curso(db_session, "curso_editar_texto")
     seccion = crear_seccion(db_session, curso)
 
@@ -873,7 +872,7 @@ def test_instructor_editar_recurso_texto(app, db_session):
 
 def test_instructor_editar_recurso_youtube(app, db_session):
     """Un instructor puede editar un recurso de YouTube."""
-    instructor = crear_usuario(db_session, "instructor", "instructor10")
+    crear_usuario(db_session, "instructor", "instructor10")
     curso = crear_curso(db_session, "curso_editar_youtube")
     seccion = crear_seccion(db_session, curso)
 
@@ -915,7 +914,7 @@ def test_instructor_editar_recurso_youtube(app, db_session):
 
 def test_instructor_editar_recurso_link(app, db_session):
     """Un instructor puede editar un recurso de enlace."""
-    instructor = crear_usuario(db_session, "instructor", "instructor11")
+    crear_usuario(db_session, "instructor", "instructor11")
     curso = crear_curso(db_session, "curso_editar_link")
     seccion = crear_seccion(db_session, curso)
 
@@ -957,7 +956,7 @@ def test_instructor_editar_recurso_link(app, db_session):
 
 def test_instructor_editar_recurso_meet(app, db_session):
     """Un instructor puede editar un recurso Meet."""
-    instructor = crear_usuario(db_session, "instructor", "instructor12")
+    crear_usuario(db_session, "instructor", "instructor12")
     curso = crear_curso(db_session, "curso_editar_meet")
     seccion = crear_seccion(db_session, curso)
 
@@ -1012,7 +1011,7 @@ def test_instructor_editar_recurso_meet(app, db_session):
 
 def test_descargar_calendario_ics_meet(app, db_session):
     """Se puede descargar un archivo ICS para un recurso Meet."""
-    instructor = crear_usuario(db_session, "instructor", "instructor13")
+    crear_usuario(db_session, "instructor", "instructor13")
     curso = crear_curso(db_session, "curso_cal_ics")
     seccion = crear_seccion(db_session, curso)
 
@@ -1053,7 +1052,7 @@ def test_descargar_calendario_ics_meet(app, db_session):
 
 def test_google_calendar_link_redireccion(app, db_session):
     """El enlace de Google Calendar redirige correctamente."""
-    instructor = crear_usuario(db_session, "instructor", "instructor14")
+    crear_usuario(db_session, "instructor", "instructor14")
     curso = crear_curso(db_session, "curso_gcal")
     seccion = crear_seccion(db_session, curso)
 
@@ -1092,7 +1091,7 @@ def test_google_calendar_link_redireccion(app, db_session):
 
 def test_outlook_calendar_link_redireccion(app, db_session):
     """El enlace de Outlook Calendar redirige correctamente."""
-    instructor = crear_usuario(db_session, "instructor", "instructor15")
+    crear_usuario(db_session, "instructor", "instructor15")
     curso = crear_curso(db_session, "curso_outlook")
     seccion = crear_seccion(db_session, curso)
 
@@ -1133,7 +1132,7 @@ def test_outlook_calendar_link_redireccion(app, db_session):
 
 def test_admin_puede_ver_todos_recursos(app, db_session):
     """Un administrador puede ver todos los recursos."""
-    admin = crear_usuario(db_session, "admin", "admin1")
+    crear_usuario(db_session, "admin", "admin1")
     curso = crear_curso(db_session, "curso_admin")
     seccion = crear_seccion(db_session, curso)
 
@@ -1161,7 +1160,7 @@ def test_admin_puede_ver_todos_recursos(app, db_session):
 
 def test_estudiante_no_inscrito_no_puede_crear_recursos(app, db_session):
     """Un estudiante no puede crear recursos."""
-    estudiante = crear_usuario(db_session, "student", "alumno10")
+    crear_usuario(db_session, "student", "alumno10")
     curso = crear_curso(db_session, "curso_no_crear")
     seccion = crear_seccion(db_session, curso)
 
@@ -1192,7 +1191,7 @@ def test_instructor_subir_archivo_biblioteca(app, db_session):
     """Un instructor puede subir archivos a la biblioteca del curso."""
     instructor = crear_usuario(db_session, "instructor", "instructor16")
     curso = crear_curso(db_session, "curso_biblioteca")
-    seccion = crear_seccion(db_session, curso)
+    crear_seccion(db_session, curso)
 
     # Asignar instructor al curso
     asignar_instructor(db_session, curso, instructor)
@@ -1260,7 +1259,7 @@ def test_ver_biblioteca_curso_estudiante_no_permitido(app, db_session):
 
 def test_ver_biblioteca_curso_no_inscrito(app, db_session):
     """Un usuario no inscrito no puede ver la biblioteca privada."""
-    estudiante = crear_usuario(db_session, "student", "alumno12")
+    crear_usuario(db_session, "student", "alumno12")
     curso = crear_curso(db_session, "curso_biblioteca_privada")
 
     client = app.test_client()
@@ -1344,7 +1343,7 @@ def test_external_code_recurso_html(app, db_session):
 
 def test_recurso_no_existente_retorna_404(app, db_session):
     """Acceder a un recurso inexistente retorna 404."""
-    estudiante = crear_usuario(db_session, "student", "alumno15")
+    crear_usuario(db_session, "student", "alumno15")
     curso = crear_curso(db_session, "curso_404")
 
     client = app.test_client()
@@ -1357,7 +1356,7 @@ def test_recurso_no_existente_retorna_404(app, db_session):
 
 def test_curso_no_existente_retorna_404(app, db_session):
     """Acceder a recursos de un curso inexistente retorna error."""
-    estudiante = crear_usuario(db_session, "student", "alumno16")
+    crear_usuario(db_session, "student", "alumno16")
 
     client = app.test_client()
     login_usuario(client, "alumno16")
@@ -1370,7 +1369,7 @@ def test_curso_no_existente_retorna_404(app, db_session):
 
 def test_tipo_recurso_invalido_retorna_404(app, db_session):
     """Acceder a un tipo de recurso inválido retorna 404."""
-    estudiante = crear_usuario(db_session, "student", "alumno17")
+    crear_usuario(db_session, "student", "alumno17")
     curso = crear_curso(db_session, "curso_tipo_inv")
     seccion = crear_seccion(db_session, curso)
 
