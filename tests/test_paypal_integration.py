@@ -278,7 +278,7 @@ class TestPayPalEndpoints:
         _configurar_paypal(db_session, habilitado=False)
         _login(client, "student", "student")
 
-        resp = client.get("/paypal_checkout/payment/PAID001", follow_redirects=True)
+        client.get("/paypal_checkout/payment/PAID001", follow_redirects=True)
 
     def test_get_client_id_success(self, app, client, db_session):
         """Test successful client ID retrieval."""

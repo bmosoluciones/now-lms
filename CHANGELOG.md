@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [1.2.4] - 2026-05-12
+
+### Changed:
+ - Maintenance release: update Python and JavaScript dependencies.
+
 ## [1.2.3] - 2026-01-19
 
 ### Changed:
