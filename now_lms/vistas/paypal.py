@@ -289,7 +289,12 @@ def confirm_payment() -> tuple[FlaskResponse, int]:
             )
 
         # Check if this payment has already been processed
-        existing_payment = database.session.execute(database.select(Pago).filter_by(referencia=order_id)).scalars().first()
+        existing_payment = (
+            database.session.execute(database.select(Pago).filter_by(referencia=order_id, curso=course_code))
+            .scalars()
+            .first()
+        )
+
         if existing_payment:
             if existing_payment.estado == "completed":
                 logging.info(f"Payment {order_id} already completed for user {current_user.usuario}")
@@ -306,6 +311,14 @@ def confirm_payment() -> tuple[FlaskResponse, int]:
             # Update existing payment
             existing_payment.estado = "completed"
             pago = existing_payment
+        elif pending_payment:
+            # Reuse the pending payment record
+            pago = pending_payment
+            pago.referencia = order_id
+            pago.estado = "completed"
+            logging.info(
+                f"Reusing pending payment {pago.id} for order {order_id}, user {current_user.usuario}, course {course_code}"
+            )
         else:
             # Create new payment record
             pago = Pago()
@@ -323,7 +336,7 @@ def confirm_payment() -> tuple[FlaskResponse, int]:
         pago.estado = "completed"
 
         try:
-            if not existing_payment:
+            if not (existing_payment or pending_payment):
                 database.session.add(pago)
             database.session.flush()
 
@@ -435,6 +448,17 @@ def resume_payment(payment_id: str) -> Response:
 @perfil_requerido("student")
 def payment_page(course_code: str) -> str | Response | tuple[FlaskResponse, int]:
     """Display PayPal payment page for a course."""
+    payment_id = request.args.get("payment_id")
+    pago = None
+    if payment_id:
+        pago = (
+            database.session.execute(
+                database.select(Pago).filter_by(id=payment_id, usuario=current_user.usuario, curso=course_code)
+            )
+            .scalars()
+            .first()
+        )
+
     curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalars().first()
     if not curso:
         flash("Curso no encontrado.", "error")
@@ -452,7 +476,7 @@ def payment_page(course_code: str) -> str | Response | tuple[FlaskResponse, int]
     # Get site currency
     site_currency = get_site_currency()
 
-    return render_template("learning/paypal_payment.html", curso=curso, site_currency=site_currency)
+    return render_template("learning/paypal_payment.html", curso=curso, site_currency=site_currency, pago=pago)
 
 
 @paypal.route("/get_client_id")
