@@ -120,10 +120,16 @@
                                                 <span>{{ _("Precio") }} del curso:</span>
                                                 <strong>{{ "%.2f"|format(curso.precio) }} {{ site_currency }}</strong>
                                             </div>
+                                            {% if pago and pago.monto < curso.precio %}
+                                            <div class="d-flex justify-content-between text-success">
+                                                <span>{{ _("Descuento aplicado") }}:</span>
+                                                <strong>-{{ "%.2f"|format(curso.precio - pago.monto) }} {{ site_currency }}</strong>
+                                            </div>
+                                            {% endif %}
                                             <hr />
                                             <div class="d-flex justify-content-between">
                                                 <span><strong>{{ _("Total") }}:</strong></span>
-                                                <strong>{{ "%.2f"|format(curso.precio) }} {{ site_currency }}</strong>
+                                                <strong>{{ "%.2f"|format(pago.monto if pago else curso.precio) }} {{ site_currency }}</strong>
                                             </div>
                                         </div>
                                     </div>
@@ -143,7 +149,7 @@
                                     <div
                                         id="paypal-button-container"
                                         data-course-code="{{ curso.codigo }}"
-                                        data-amount="{{ curso.precio }}"
+                                        data-amount="{{ pago.monto if pago else curso.precio }}"
                                         data-currency="{{ site_currency }}"
                                         style="min-height: 50px"
                                     ></div>
