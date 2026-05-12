@@ -9,6 +9,7 @@ from __future__ import annotations
 # ---------------------------------------------------------------------------------------
 from dataclasses import dataclass
 from os import path, remove
+from typing import Any
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
