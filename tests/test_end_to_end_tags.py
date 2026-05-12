@@ -11,7 +11,6 @@ Prueba el flujo completo de:
 - Eliminación de etiquetas
 """
 
-
 from now_lms.auth import proteger_passwd
 from now_lms.db import Etiqueta, Usuario, database
 

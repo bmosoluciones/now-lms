@@ -8,7 +8,6 @@ from datetime import date, time
 from now_lms.auth import proteger_passwd
 from now_lms.db import MasterClass, MasterClassEnrollment, Usuario, database, select
 
-
 REDIRECT_STATUS_CODES = {301, 302, 303, 307, 308}
 
 

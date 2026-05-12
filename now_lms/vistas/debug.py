@@ -240,8 +240,8 @@ def debug_redis() -> tuple[Response, int]:
         }
 
         # Try to list session keys (limited)
-        session_keys: Any = client.keys("session:*")
-        key_count = len(session_keys)
+        session_keys = client.keys("session:*")
+        key_count = len(session_keys) if isinstance(session_keys, list) else 0
 
         return (
             jsonify(
