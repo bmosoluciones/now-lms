@@ -12,7 +12,6 @@ Prueba el flujo completo de:
 - Tags de blog
 """
 
-
 from now_lms.auth import proteger_passwd
 from now_lms.db import BlogComment, BlogPost, BlogTag, Usuario, database
 

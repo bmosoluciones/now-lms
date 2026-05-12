@@ -9,6 +9,7 @@ from __future__ import annotations
 # ---------------------------------------------------------------------------------------
 from dataclasses import dataclass
 from os import path, remove
+from typing import Any
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -1039,7 +1040,7 @@ def get_one_record(table_name: str, value, column_name: str | None = None):
     # Determinar la columna a usar
     if column_name is None:
         # Usar la primary key
-        pk_column = inspect(model_class).primary_key[0]
+        pk_column: Any = inspect(model_class).primary_key[0]
         column = pk_column
     else:
         # Buscar la columna por nombre
@@ -1049,7 +1050,7 @@ def get_one_record(table_name: str, value, column_name: str | None = None):
 
     # Ejecutar la query y capturar errores
     try:
-        query = db.session.query(model_class).filter(column == value)
+        query: Any = db.session.query(model_class).filter(column == value)
         return query.one()
     except (NoResultFound, MultipleResultsFound):
         return None
@@ -1067,7 +1068,7 @@ def get_all_records(table_name: str, filters: dict[str, object] | None = None):
     if model_class is None or not isinstance(model_class, type):
         return None
 
-    query = db.session.query(model_class)
+    query: Any = db.session.query(model_class)
 
     if filters:
         for col, val in filters.items():

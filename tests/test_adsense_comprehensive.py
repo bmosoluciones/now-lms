@@ -353,7 +353,6 @@ class TestThemeIntegration:
 
     def test_all_themes_have_adsense_integration(self):
         """Test that all theme header files include AdSense integration."""
-        import os
         from pathlib import Path
 
         themes_dir = Path("now_lms/templates/themes")

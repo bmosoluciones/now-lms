@@ -1,5 +1,4 @@
 import subprocess
-import os
 import shutil
 
 # Archivos de entrada y salida
