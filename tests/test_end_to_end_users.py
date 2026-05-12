@@ -11,7 +11,6 @@ Prueba el flujo completo de:
 - Verificación de roles y permisos
 """
 
-
 from now_lms.auth import proteger_passwd
 from now_lms.db import Configuracion, Usuario, database
 

@@ -11,7 +11,6 @@ Prueba el flujo completo de:
 - Configuración de PayPal
 """
 
-
 from now_lms.auth import proteger_passwd
 from now_lms.db import AdSense, Configuracion, MailConfig, PaypalConfig, Style, Usuario, database
 

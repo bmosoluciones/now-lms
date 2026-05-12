@@ -12,7 +12,6 @@ Prueba el flujo completo de:
 - Cambio de estados de mensajes
 """
 
-
 from now_lms.auth import proteger_passwd
 from now_lms.db import Configuracion, ContactMessage, Usuario, database
 
@@ -273,7 +272,7 @@ def test_e2e_contact_disabled_configuration(app, db_session):
 def test_admin_panel_shows_unread_contact_messages(app, db_session):
     """Test: verificar que el panel de administrador muestra el contador de mensajes sin leer."""
     # 1) Crear admin y mensajes de contacto
-    admin = _crear_admin(db_session)
+    _crear_admin(db_session)
     _habilitar_contacto(db_session)
 
     # Crear mensajes con diferentes estados

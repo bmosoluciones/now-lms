@@ -9,7 +9,6 @@ import pytest
 from now_lms.auth import proteger_passwd
 from now_lms.db import Configuracion, Curso, CursoRecurso, CursoSeccion, Usuario, database
 
-
 REDIRECT_STATUS_CODES = {301, 302, 303, 307, 308}
 
 
@@ -38,7 +37,10 @@ def _ultimo_recurso(seccion_id: str, tipo: str | None = None) -> CursoRecurso:
     query = database.select(CursoRecurso).filter(CursoRecurso.seccion == seccion_id)
     if tipo:
         query = query.filter(CursoRecurso.tipo == tipo)
-    return database.session.execute(query.order_by(CursoRecurso.indice.desc())).scalars().first()
+    result = database.session.execute(query.order_by(CursoRecurso.indice.desc())).scalars().first()
+    if result is None:
+        raise ValueError("No se encontró el recurso")
+    return result
 
 
 @pytest.mark.parametrize(
