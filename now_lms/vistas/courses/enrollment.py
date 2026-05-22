@@ -237,6 +237,7 @@ def course_enroll(course_code: str) -> str | Response:
 
     return render_template(
         "learning/curso/enroll.html",
+        title=f"Inscripción - {_curso.nombre}",
         curso=_curso,
         usuario=_usuario,
         form=form,

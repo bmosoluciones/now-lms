@@ -1,0 +1,235 @@
+{% set current_theme = current_theme() %}
+<!doctype html>
+<html lang="{{ get_locale() }}" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ _("Pagos Recibidos") }}</title>
+        {{ current_theme.local_style() }}
+    </head>
+
+    <body>
+        {{ current_theme.navbar() }}
+
+        <main>
+            <div class="container px-0 py-3">
+                <div class="row align-items-center border-bottom pb-3 mb-4">
+                    <div class="col-md-8">
+                        <h4 class="mb-0">
+                            <i class="bi bi-credit-card-fill me-2"></i>{{ _("Pagos Recibidos") }}
+                        </h4>
+                        <p class="text-muted mb-0">{{ _("Historial de pagos procesados en el sistema") }}</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="{{ url_for('admin_profile.pagina_admin') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>{{ _("Panel Admin") }}
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Summary cards -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card border-success">
+                            <div class="card-body">
+                                <h6 class="card-title text-success">
+                                    <i class="bi bi-check-circle me-2"></i>{{ _("Pagos Completados") }}
+                                </h6>
+                                <h3 class="mb-0 text-success">{{ total_pagos }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-primary">
+                            <div class="card-body">
+                                <h6 class="card-title text-primary">
+                                    <i class="bi bi-paypal me-2"></i>{{ _("Ingresos PayPal") }}
+                                </h6>
+                                <h3 class="mb-0 text-primary">{{ "%.2f"|format(total_ingresos) }} USD</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <form method="get" class="row g-3 align-items-end">
+                            <div class="col-md-4">
+                                <label for="course_code" class="form-label">{{ _("Curso") }}</label>
+                                <select id="course_code" name="course_code" class="form-select">
+                                    <option value="">{{ _("Todos los cursos") }}</option>
+                                    {% for curso in cursos %}
+                                    <option value="{{ curso.codigo }}" {% if filter_args.course_code == curso.codigo %}selected{% endif %}>
+                                        {{ curso.nombre }} ({{ curso.codigo }})
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="start_date" class="form-label">{{ _("Desde") }}</label>
+                                <input
+                                    type="date"
+                                    id="start_date"
+                                    name="start_date"
+                                    class="form-control"
+                                    value="{{ filter_args.start_date }}"
+                                />
+                            </div>
+                            <div class="col-md-3">
+                                <label for="end_date" class="form-label">{{ _("Hasta") }}</label>
+                                <input
+                                    type="date"
+                                    id="end_date"
+                                    name="end_date"
+                                    class="form-control"
+                                    value="{{ filter_args.end_date }}"
+                                />
+                            </div>
+                            <div class="col-md-2 d-flex gap-2">
+                                <button type="submit" class="btn btn-primary flex-fill">
+                                    <i class="bi bi-funnel me-1"></i>{{ _("Filtrar") }}
+                                </button>
+                                <a href="{{ url_for('admin_profile.pagos') }}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-lg"></i>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th><i class="bi bi-person me-1"></i>{{ _("Estudiante") }}</th>
+                                        <th><i class="bi bi-book me-1"></i>{{ _("Curso") }}</th>
+                                        <th><i class="bi bi-cash me-1"></i>{{ _("Monto") }}</th>
+                                        <th><i class="bi bi-credit-card me-1"></i>{{ _("Método") }}</th>
+                                        <th><i class="bi bi-flag me-1"></i>{{ _("Estado") }}</th>
+                                        <th><i class="bi bi-hash me-1"></i>{{ _("Referencia") }}</th>
+                                        <th><i class="bi bi-calendar me-1"></i>{{ _("Fecha") }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for pago, usuario, curso in payment_rows %}
+                                    <tr>
+                                        <td>
+                                            {% if usuario %}
+                                            <strong>{{ usuario.nombre }} {{ usuario.apellido }}</strong><br />
+                                            <small class="text-muted">{{ usuario.usuario }}</small>
+                                            {% else %}
+                                            <strong>{{ pago.nombre }} {{ pago.apellido }}</strong><br />
+                                            <small class="text-muted">{{ pago.usuario }}</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if curso %}
+                                            <a href="{{ url_for('course.curso', course_code=curso.codigo) }}" class="text-decoration-none">
+                                                {{ curso.nombre }}
+                                            </a><br />
+                                            <small class="text-muted">{{ curso.codigo }}</small>
+                                            {% else %}
+                                            <span class="text-muted">{{ pago.curso }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <strong>{{ "%.2f"|format(pago.monto) }}</strong>
+                                            <small class="text-muted">{{ pago.moneda or "USD" }}</small>
+                                        </td>
+                                        <td>
+                                            {% if pago.metodo == "paypal" %}
+                                            <span class="badge bg-primary"><i class="bi bi-paypal me-1"></i>PayPal</span>
+                                            {% elif pago.metodo == "free" %}
+                                            <span class="badge bg-success">{{ _("Gratuito") }}</span>
+                                            {% elif pago.metodo == "audit" %}
+                                            <span class="badge bg-warning text-dark">{{ _("Auditoría") }}</span>
+                                            {% elif pago.metodo == "admin_enrollment" %}
+                                            <span class="badge bg-info">{{ _("Admin") }}</span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">{{ pago.metodo or "-" }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if pago.estado == "completed" %}
+                                            <span class="badge bg-success">{{ _("Completado") }}</span>
+                                            {% elif pago.estado == "pending" %}
+                                            <span class="badge bg-warning text-dark">{{ _("Pendiente") }}</span>
+                                            {% elif pago.estado == "failed" %}
+                                            <span class="badge bg-danger">{{ _("Fallido") }}</span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">{{ pago.estado }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if pago.referencia %}
+                                            <small class="font-monospace">{{ pago.referencia }}</small>
+                                            {% else %}
+                                            <small class="text-muted">-</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small>{{ pago.fecha.strftime('%d/%m/%Y %H:%M') if pago.fecha else '-' }}</small>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted py-4">
+                                            <i class="bi bi-inbox display-6 opacity-25"></i>
+                                            <p class="mt-2 mb-0">{{ _("No hay pagos registrados") }}</p>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        {% if consulta.pages > 1 %}
+                        <div class="card-footer">
+                            <nav>
+                                <ul class="pagination pagination-sm justify-content-center mb-0">
+                                    {% if consulta.has_prev %}
+                                    <li class="page-item">
+                                        <a
+                                            class="page-link"
+                                            href="{{ url_for('admin_profile.pagos', page=consulta.prev_num, course_code=filter_args.course_code, start_date=filter_args.start_date, end_date=filter_args.end_date) }}"
+                                        >
+                                            <i class="bi bi-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                    {% for p in consulta.iter_pages() %}
+                                    {% if p %}
+                                    <li class="page-item {% if p == consulta.page %}active{% endif %}">
+                                        <a
+                                            class="page-link"
+                                            href="{{ url_for('admin_profile.pagos', page=p, course_code=filter_args.course_code, start_date=filter_args.start_date, end_date=filter_args.end_date) }}"
+                                        >
+                                            {{ p }}
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% if consulta.has_next %}
+                                    <li class="page-item">
+                                        <a
+                                            class="page-link"
+                                            href="{{ url_for('admin_profile.pagos', page=consulta.next_num, course_code=filter_args.course_code, start_date=filter_args.start_date, end_date=filter_args.end_date) }}"
+                                        >
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

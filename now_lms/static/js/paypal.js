@@ -32,22 +32,17 @@ function showPaymentMessage(message, type = 'info') {
 
 function setPaymentState(state) {
     currentPaymentState = state;
-    const container = document.getElementById('paypal-button-container');
-    const loadingDiv = document.getElementById('paypal-loading');
     
     switch(state) {
         case PaymentState.PROCESSING:
-            if (container) container.style.pointerEvents = 'none';
             showPaymentMessage('Procesando pago...', 'info');
             break;
         case PaymentState.COMPLETED:
             showPaymentMessage('¡Pago completado exitosamente! Redirigiendo...', 'success');
             break;
         case PaymentState.FAILED:
-            if (container) container.style.pointerEvents = 'auto';
             break;
         default:
-            if (container) container.style.pointerEvents = 'auto';
     }
 }
 
@@ -235,7 +230,7 @@ function loadPayPalSDKWithRetry(clientId, currency, maxRetries = 3) {
             console.log(`Loading PayPal SDK attempt ${attempt}/${maxRetries}`);
             
             const script = document.createElement('script');
-            script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}`;
+            script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}&enable-funding=card&disable-funding=venmo`;
             
             script.onload = function() {
                 console.log('PayPal SDK loaded successfully');

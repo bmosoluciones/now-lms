@@ -496,6 +496,70 @@ class TestPaymentConfirmation:
 
     @patch("now_lms.vistas.paypal.verify_paypal_payment")
     @patch("now_lms.vistas.paypal.get_paypal_access_token")
+    def test_confirm_payment_requires_completed_status(self, mock_get_token, mock_verify, app, client, db_session):
+        """Test payment confirmation rejects verified orders that are not completed."""
+        _crear_estudiante(db_session)
+        _crear_curso_pagado(db_session)
+        _configurar_paypal(db_session)
+        _login(client, "student", "student")
+
+        mock_get_token.return_value = "test_access_token"
+        mock_verify.return_value = {
+            "verified": True,
+            "status": "APPROVED",
+            "amount": "99.99",
+            "currency": "USD",
+            "payer_id": "test_payer_123",
+        }
+
+        payment_data = {
+            "orderID": "test_order_123",
+            "payerID": "test_payer_123",
+            "courseCode": "PAID001",
+            "amount": "99.99",
+            "currency": "USD",
+        }
+
+        resp = client.post("/paypal_checkout/confirm_payment", json=payment_data)
+        assert resp.status_code == 400
+        data = resp.get_json()
+        assert data["success"] is False
+        assert "not completed" in data["error"].lower()
+
+    @patch("now_lms.vistas.paypal.verify_paypal_payment")
+    @patch("now_lms.vistas.paypal.get_paypal_access_token")
+    def test_confirm_payment_currency_mismatch(self, mock_get_token, mock_verify, app, client, db_session):
+        """Test payment confirmation rejects payments in a different currency."""
+        _crear_estudiante(db_session)
+        _crear_curso_pagado(db_session)
+        _configurar_paypal(db_session)
+        _login(client, "student", "student")
+
+        mock_get_token.return_value = "test_access_token"
+        mock_verify.return_value = {
+            "verified": True,
+            "status": "COMPLETED",
+            "amount": "99.99",
+            "currency": "EUR",
+            "payer_id": "test_payer_123",
+        }
+
+        payment_data = {
+            "orderID": "test_order_123",
+            "payerID": "test_payer_123",
+            "courseCode": "PAID001",
+            "amount": "99.99",
+            "currency": "USD",
+        }
+
+        resp = client.post("/paypal_checkout/confirm_payment", json=payment_data)
+        assert resp.status_code == 400
+        data = resp.get_json()
+        assert data["success"] is False
+        assert "currency mismatch" in data["error"].lower()
+
+    @patch("now_lms.vistas.paypal.verify_paypal_payment")
+    @patch("now_lms.vistas.paypal.get_paypal_access_token")
     def test_confirm_payment_duplicate_prevention(self, mock_get_token, mock_verify, app, client, db_session):
         """Test that duplicate payment processing is prevented."""
         student = _crear_estudiante(db_session)

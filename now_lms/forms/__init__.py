@@ -29,7 +29,7 @@ from wtforms import (
     TextAreaField,
     TimeField,
 )
-from wtforms.validators import DataRequired, Length, ValidationError
+from wtforms.validators import DataRequired, Length, Optional, ValidationError
 from wtforms.widgets import ColorInput, TextArea, html_params
 
 # ---------------------------------------------------------------------------------------
@@ -999,7 +999,7 @@ class CourseAnnouncementForm(AnnouncementBaseForm):
 # ---------------------------------------------------------------------------------------
 
 
-class CouponForm(BaseForm):
+class CouponForm(FlaskForm):
     """Formulario para crear y editar cupones de descuento."""
 
     code = StringField(_("Código del Cupón"), validators=[DataRequired()], render_kw={"placeholder": _("Ej: DESCUENTO50")})
@@ -1010,8 +1010,16 @@ class CouponForm(BaseForm):
         validators=[DataRequired()],
     )
     discount_value = DecimalField(_("Valor del Descuento"), validators=[DataRequired()], render_kw={"min": "0"})
-    max_uses = IntegerField(_("Máximo de Usos"), render_kw={"min": "1", "placeholder": _("Dejar vacío para ilimitado")})
-    expires_at = DateField(_("Fecha de Expiración"), render_kw={"placeholder": _("Dejar vacío si no expira")})
+    max_uses = FlexibleIntegerField(
+        _("Máximo de Usos"),
+        validators=[Optional()],
+        render_kw={"min": "1", "placeholder": _("Dejar vacío para ilimitado")},
+    )
+    expires_at = MultiFormatDateField(
+        _("Fecha de Expiración"),
+        validators=[Optional()],
+        render_kw={"placeholder": _("Dejar vacío si no expira")},
+    )
 
     def __init__(self, *args, **kwargs):
         """Initialize form with translated choices."""

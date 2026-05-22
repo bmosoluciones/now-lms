@@ -194,6 +194,34 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-sm-6 mb-3">
+                                    <div class="card admin-card border-success">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col">
+                                                    <h6 class="card-title text-success mb-2">
+                                                        <i class="bi bi-credit-card me-2"></i>{{ _('Pagos PayPal') }}
+                                                    </h6>
+                                                    <h2 class="mb-0 text-success">{{ total_payments }}</h2>
+                                                    <small class="text-muted"
+                                                        >{{ "%.2f"|format(total_ingresos) }} USD {{ _('recibidos') }}</small
+                                                    >
+                                                </div>
+                                                <div class="col-auto">
+                                                    <i class="bi bi-credit-card stat-icon text-success"></i>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <a
+                                                    href="{{ url_for('admin_profile.pagos') }}"
+                                                    class="btn btn-outline-success btn-sm"
+                                                >
+                                                    <i class="bi bi-eye me-1"></i>{{ _('Ver Pagos') }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -396,6 +424,12 @@
                                                         class="btn btn-sm btn-outline-info"
                                                         >{{ _('AdSense') }}</a
                                                     >
+                                                    <a
+                                                        href="{{ url_for('admin_profile.pagos') }}"
+                                                        class="btn btn-sm btn-outline-success"
+                                                    >
+                                                        <i class="bi bi-credit-card me-1"></i>{{ _('Ver Pagos Recibidos') }}
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>

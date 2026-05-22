@@ -98,7 +98,7 @@ moderador_asignado(id_curso=curso.codigo) %} {% set permitir_editar = current_us
                                                     {% endif %}
                                                 </td>
                                                 <td>
-                                                    {% if pago and pago.monto %} {{ pago.monto }} {{ pago.moneda or 'USD' }} {%
+                                                    {% if pago and pago.monto %} {{ "%.2f"|format(pago.monto) }} {{ pago.moneda or 'USD' }} {%
                                                     else %}
                                                     <span class="text-muted">$0</span>
                                                     {% endif %}

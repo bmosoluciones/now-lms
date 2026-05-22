@@ -116,7 +116,9 @@ def get_paypal_access_token() -> str | None:
 
         # Decrypt the client secret
         try:
-            client_secret = descifrar_secreto(client_secret_encrypted).decode()
+            client_secret = descifrar_secreto(client_secret_encrypted)
+            if client_secret is None:
+                raise ValueError("Decryption returned None")
         except Exception as e:
             logging.error(f"Failed to decrypt PayPal client secret: {e}")
             return None
@@ -245,6 +247,12 @@ def confirm_payment() -> tuple[FlaskResponse, int]:
             logging.error(f"PayPal payment verification failed for order {order_id}, user {current_user.usuario}: {error_msg}")
             return jsonify({"success": False, "error": f"Payment verification failed: {error_msg}"}), 400
 
+        if verification.get("status") != "COMPLETED":
+            logging.error(
+                f"PayPal payment {order_id} for user {current_user.usuario} is not completed: {verification.get('status')}"
+            )
+            return jsonify({"success": False, "error": "Payment is not completed"}), 400
+
         # Check if payment amount matches expected amount (considering coupons)
         curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalars().first()
         if not curso:
@@ -283,6 +291,22 @@ def confirm_payment() -> tuple[FlaskResponse, int]:
                     {
                         "success": False,
                         "error": f"Payment amount mismatch: expected {expected_amount}, received {verified_amount}",
+                    }
+                ),
+                400,
+            )
+
+        verified_currency = verification.get("currency")
+        expected_currency = get_site_currency()
+        if verified_currency != expected_currency:
+            logging.error(
+                f"Payment currency mismatch for course {course_code}, user {current_user.usuario}: expected {expected_currency}, got {verified_currency}"
+            )
+            return (
+                jsonify(
+                    {
+                        "success": False,
+                        "error": f"Payment currency mismatch: expected {expected_currency}, received {verified_currency}",
                     }
                 ),
                 400,
@@ -331,7 +355,7 @@ def confirm_payment() -> tuple[FlaskResponse, int]:
 
         # Update payment details
         pago.monto = verified_amount
-        pago.moneda = currency
+        pago.moneda = verified_currency
         pago.metodo = "paypal"
         pago.estado = "completed"
 
@@ -476,7 +500,15 @@ def payment_page(course_code: str) -> str | Response | tuple[FlaskResponse, int]
     # Get site currency
     site_currency = get_site_currency()
 
-    return render_template("learning/paypal_payment.html", curso=curso, site_currency=site_currency, pago=pago)
+    from flask_wtf.csrf import generate_csrf
+
+    return render_template(
+        "learning/paypal_payment.html",
+        curso=curso,
+        site_currency=site_currency,
+        pago=pago,
+        csrf_token=generate_csrf(),
+    )
 
 
 @paypal.route("/get_client_id")
