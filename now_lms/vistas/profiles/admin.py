@@ -6,6 +6,11 @@
 from __future__ import annotations
 
 # ---------------------------------------------------------------------------------------
+# Standard library
+# ---------------------------------------------------------------------------------------
+from datetime import date, datetime, time
+
+# ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
 from flask import Blueprint, flash, redirect, render_template, request, url_for
@@ -21,11 +26,7 @@ from now_lms.bi import cambia_tipo_de_usuario_por_id
 from now_lms.cache import cache
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Curso, EstudianteCurso, Usuario, database
-
-# ---------------------------------------------------------------------------------------
-# Standard library
-# ---------------------------------------------------------------------------------------
-
+from now_lms.db import Pago
 
 # Constants
 ADMIN_USERS_ROUTE = "admin_profile.usuarios"
@@ -57,6 +58,16 @@ def pagina_admin() -> str:
     # Get total enrollments
     total_enrollments = database.session.execute(database.select(func.count(EstudianteCurso.id))).scalar() or 0
 
+    from sqlalchemy import cast, Numeric
+    total_payments = database.session.execute(
+        database.select(func.count(Pago.id)).filter(Pago.estado == "completed", Pago.metodo == "paypal")
+    ).scalar() or 0
+    total_ingresos = database.session.execute(
+        database.select(func.sum(cast(Pago.monto, Numeric))).filter(
+            Pago.estado == "completed", Pago.metodo == "paypal"
+        )
+    ).scalar() or 0
+
     return render_template(
         "perfiles/admin.html",
         inactivos=inactive_users,
@@ -65,6 +76,8 @@ def pagina_admin() -> str:
         total_courses=total_courses,
         total_enrollments=total_enrollments,
         cursos_recientes=cursos_recientes,
+        total_payments=total_payments,
+        total_ingresos=total_ingresos,
     )
 
 
@@ -273,3 +286,77 @@ def cambiar_tipo_usario() -> Response:
     if redirect_to == "list":
         return redirect(url_for(ADMIN_USERS_ROUTE))
     return redirect(url_for("user_profile.usuario", id_usuario=user_id))
+
+
+@admin_profile.route("/admin/payments")
+@login_required
+@perfil_requerido("admin")
+def pagos() -> str:
+    """Lista de pagos recibidos."""
+    from sqlalchemy import Numeric, cast
+
+    course_code = request.args.get("course_code", "").strip()
+    start_date_raw = request.args.get("start_date", "").strip()
+    end_date_raw = request.args.get("end_date", "").strip()
+    start_date = None
+    end_date = None
+
+    try:
+        if start_date_raw:
+            start_date = date.fromisoformat(start_date_raw)
+        if end_date_raw:
+            end_date = date.fromisoformat(end_date_raw)
+    except ValueError:
+        flash("El rango de fechas no es válido.", "warning")
+        start_date_raw = ""
+        end_date_raw = ""
+
+    filters = []
+    if course_code:
+        filters.append(Pago.curso == course_code)
+    if start_date:
+        filters.append(Pago.fecha >= datetime.combine(start_date, time.min))
+    if end_date:
+        filters.append(Pago.fecha <= datetime.combine(end_date, time.max))
+
+    query = database.select(Pago)
+    if filters:
+        query = query.filter(*filters)
+
+    CONSULTA = database.paginate(
+        query.order_by(Pago.fecha.desc()),
+        page=request.args.get("page", default=1, type=int),
+        max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
+        count=True,
+    )
+    payment_rows = []
+    for pago in CONSULTA.items:
+        usuario = database.session.execute(database.select(Usuario).filter_by(usuario=pago.usuario)).scalar_one_or_none()
+        curso = database.session.execute(database.select(Curso).filter_by(codigo=pago.curso)).scalar_one_or_none()
+        payment_rows.append((pago, usuario, curso))
+
+    total_pagos_query = database.select(func.count(Pago.id)).filter(Pago.estado == "completed")
+    total_ingresos_query = database.select(func.sum(cast(Pago.monto, Numeric))).filter(
+        Pago.estado == "completed", Pago.metodo == "paypal"
+    )
+    if filters:
+        total_pagos_query = total_pagos_query.filter(*filters)
+        total_ingresos_query = total_ingresos_query.filter(*filters)
+
+    total_pagos = database.session.execute(total_pagos_query).scalar() or 0
+    total_ingresos = database.session.execute(total_ingresos_query).scalar() or 0
+    cursos = database.session.execute(database.select(Curso).order_by(Curso.nombre)).scalars().all()
+    filter_args = {
+        "course_code": course_code,
+        "start_date": start_date_raw,
+        "end_date": end_date_raw,
+    }
+    return render_template(
+        "admin/payments.html",
+        consulta=CONSULTA,
+        payment_rows=payment_rows,
+        cursos=cursos,
+        filter_args=filter_args,
+        total_pagos=total_pagos,
+        total_ingresos=total_ingresos,
+    )

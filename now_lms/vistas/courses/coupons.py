@@ -122,7 +122,7 @@ def create_coupon(course_code: str) -> str | Response:
 
         if form.discount_type.data == "fixed" and form.discount_value.data > course_obj.precio:
             flash("El descuento fijo no puede ser mayor al precio del curso", "warning")
-            return render_template(TEMPLATE_COUPON_CREATE, curso=course, form=form)
+            return render_template(TEMPLATE_COUPON_CREATE, curso=course_obj, form=form)
 
         try:
             coupon = Coupon(

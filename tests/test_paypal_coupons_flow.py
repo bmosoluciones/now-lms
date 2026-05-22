@@ -9,6 +9,22 @@ import pytest
 from now_lms.auth import proteger_passwd, proteger_secreto
 from now_lms.db import Curso, Pago, PaypalConfig, Usuario, Coupon, database
 
+
+def _crear_admin(db_session) -> Usuario:
+    user = Usuario(
+        usuario="admin_coupon",
+        acceso=proteger_passwd("password"),
+        nombre="Admin",
+        apellido="Coupon",
+        correo_electronico="admin_coupon@example.com",
+        tipo="admin",
+        activo=True,
+    )
+    db_session.add(user)
+    db_session.commit()
+    return user
+
+
 def _crear_estudiante(db_session) -> Usuario:
     user = Usuario(
         usuario="student_coupon",
@@ -65,6 +81,47 @@ def _login(client, username, password):
     return client.post("/user/login", data={"usuario": username, "acceso": password}, follow_redirects=True)
 
 class TestPayPalCouponFlow:
+    def test_course_enroll_has_page_title(self, app, client, db_session):
+        student = _crear_estudiante(db_session)
+        curso = _crear_curso_pagado(db_session)
+
+        _login(client, student.usuario, "password")
+
+        resp = client.get(f"/course/{curso.codigo}/enroll")
+
+        assert resp.status_code == 200
+        assert f"<title>Inscripción - {curso.nombre}</title>".encode() in resp.data
+
+    def test_create_coupon_allows_blank_optional_limits(self, app, client, db_session):
+        admin = _crear_admin(db_session)
+        curso = _crear_curso_pagado(db_session)
+
+        _login(client, admin.usuario, "password")
+
+        resp = client.post(
+            f"/course/{curso.codigo}/coupons/new",
+            data={
+                "code": "TEST1",
+                "discount_type": "fixed",
+                "discount_value": "4",
+                "max_uses": "",
+                "expires_at": "",
+            },
+            follow_redirects=False,
+        )
+
+        assert resp.status_code == 302
+        assert f"/course/{curso.codigo}/coupons/" in resp.location
+
+        coupon = (
+            db_session.execute(database.select(Coupon).filter_by(course_id=curso.codigo, code="TEST1"))
+            .scalars()
+            .first()
+        )
+        assert coupon is not None
+        assert coupon.max_uses is None
+        assert coupon.expires_at is None
+
     @patch("now_lms.vistas.paypal.render_template")
     @patch("now_lms.vistas.paypal.verify_paypal_payment")
     @patch("now_lms.vistas.paypal.get_paypal_access_token")
