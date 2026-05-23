@@ -9,6 +9,14 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [1.2.5] - 2026-05-22
+
+### Fixed:
+- Fixed paypal workflow
+
+### Changed:
+ - Maintenance release: update Python and JavaScript dependencies.
+
 ## [1.2.4] - 2026-05-12
 
 ### Changed:
