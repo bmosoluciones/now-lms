@@ -25,7 +25,7 @@ memcache==0.14.0
 mysql-connector-python==9.7.0
 pg8000==1.31.5
 psutil==7.2.2
-pyjwt==2.12.1
+pyjwt==2.13.0
 python-slugify==8.0.4
 python-ulid==3.1.0
 qrcode==8.2
