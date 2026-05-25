@@ -13,7 +13,7 @@ pytest==9.0.3
 pytest-xdist==3.8.0
 pytest-timeout==2.4.0
 pytest-benchmark==5.2.3
-ruff==0.15.12
+ruff==0.15.14
 
 # Cobertura de código
 coverage==7.14.0
