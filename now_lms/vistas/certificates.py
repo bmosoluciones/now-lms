@@ -414,20 +414,33 @@ def certificado(ulid: str) -> str:
     return render_template("learning/certificados/certificado.html", **context)
 
 
-@certificate.route("/certificate/issue/<course>/<user>/<template>/")
+@certificate.route("/certificate/issue/<course_id>/<user>/<template>/")
 @login_required
 @perfil_requerido("instructor")
-def certificacion_crear(course: str, user: str, template: str) -> Response:
+def certificacion_crear(course_id: str, user: str, template: str) -> Response:
     """Generar un nuevo certificado."""
     # Check if user meets all requirements including evaluations
     from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
 
-    can_receive, reason = can_user_receive_certificate(course, user)
+    can_receive, reason = can_user_receive_certificate(course_id, user)
     if not can_receive:
         flash(f"No se puede emitir el certificado: {reason}", "warning")
         return redirect(url_for("certificate.certificaciones"))
 
-    cert = Certificacion(usuario=user, curso=course, certificado=template)
+    # Calculate expiration date if required
+    expires_at = None
+    curso_obj = database.session.execute(
+        database.select(Curso).filter_by(codigo=course_id)
+    ).scalar_one_or_none()
+
+    if curso_obj and curso_obj.recertification_required and curso_obj.recertification_period_years:
+        from datetime import date, timedelta
+        try:
+            expires_at = date.today().replace(year=date.today().year + curso_obj.recertification_period_years)
+        except ValueError: # Handle Feb 29
+            expires_at = date.today() + timedelta(days=365 * curso_obj.recertification_period_years)
+
+    cert = Certificacion(usuario=user, curso=course_id, certificado=template, expires_at=expires_at)
 
     database.session.add(cert)
     database.session.commit()
@@ -475,12 +488,26 @@ def certificacion_generar() -> str | Response:
                 flash(f"No se puede emitir el certificado: {reason}", "warning")
                 return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
 
+            # Calculate expiration date if required
+            expires_at = None
+            curso_obj = database.session.execute(
+                database.select(Curso).filter_by(codigo=form.curso.data)
+            ).scalar_one_or_none()
+
+            if curso_obj and curso_obj.recertification_required and curso_obj.recertification_period_years:
+                from datetime import date, timedelta
+                try:
+                    expires_at = date.today().replace(year=date.today().year + curso_obj.recertification_period_years)
+                except ValueError:
+                    expires_at = date.today() + timedelta(days=365 * curso_obj.recertification_period_years)
+
             cert = Certificacion(
                 usuario=form.usuario.data,
                 curso=form.curso.data,
                 master_class_id=None,
                 certificado=form.template.data,
                 nota=form.nota.data,
+                expires_at=expires_at,
             )
         else:  # masterclass
             # For master classes, check if user is enrolled and confirmed

@@ -19,9 +19,9 @@ from werkzeug.wrappers import Response
 from now_lms.auth import perfil_requerido, proteger_secreto
 from now_lms.cache import cache, invalidate_all_cache
 from now_lms.config import DIRECTORIO_PLANTILLAS, images
-from now_lms.db import AdSense, Configuracion, MailConfig, PaypalConfig, Style, database
+from now_lms.db import AdSense, Configuracion, MailConfig, PaypalConfig, Style, ExternalApiKey, database
 from now_lms.db.tools import elimina_logo_perzonalizado
-from now_lms.forms import AdSenseForm, CheckMailForm, ConfigForm, MailForm, PayaplForm, ThemeForm
+from now_lms.forms import AdSenseForm, CheckMailForm, ConfigForm, MailForm, PayaplForm, ThemeForm, ExternalApiKeyForm
 from now_lms.i18n import _
 from now_lms.logs import log
 
@@ -538,6 +538,65 @@ def elimina_logo() -> Response:
 def stripe() -> str:
     """Configuración de Stripe."""
     return render_template("admin/stripe.html")
+
+
+@setting.route("/setting/api_keys", methods=["GET", "POST"])
+@login_required
+@perfil_requerido("admin")
+def api_keys() -> str | Response:
+    """Manage external API keys."""
+    import hashlib
+    import secrets
+
+    keys = database.session.execute(
+        database.select(ExternalApiKey).order_by(ExternalApiKey.timestamp.desc())
+    ).scalars().all()
+
+    form = ExternalApiKeyForm()
+    new_key_plain = None
+
+    if form.validate_on_submit():
+        # Generate a new random API key
+        api_key = secrets.token_urlsafe(32)
+        new_key_plain = api_key
+
+        key_hash = hashlib.sha256(api_key.encode()).hexdigest()
+
+        new_key = ExternalApiKey(
+            name=form.name.data,
+            key_hash=key_hash,
+            active=True,
+            allowed_origin=form.allowed_origin.data,
+            notes=form.notes.data
+        )
+
+        database.session.add(new_key)
+        database.session.commit()
+        flash(_("API Key creada exitosamente. Asegúrese de copiarla ahora, ya que no podrá verla de nuevo."), "success")
+
+        # Refresh the list to include the new key
+        keys = database.session.execute(
+            database.select(ExternalApiKey).order_by(ExternalApiKey.timestamp.desc())
+        ).scalars().all()
+
+    return render_template("admin/api_keys.html", keys=keys, form=form, new_key_plain=new_key_plain)
+
+
+@setting.route("/setting/api_keys/<id>/revoke")
+@login_required
+@perfil_requerido("admin")
+def revoke_api_key(id: str) -> Response:
+    """Revoke an API key."""
+    from datetime import datetime
+
+    key = database.session.get(ExternalApiKey, id)
+    if key:
+        key.active = False
+        key.revoked_at = datetime.now()
+        database.session.commit()
+        flash(_("API Key revocada exitosamente."), "success")
+
+    return redirect(url_for("setting.api_keys"))
 
 
 @setting.route("/setting/paypal", methods=["GET", "POST"])

@@ -30,6 +30,8 @@ __all__ = [
     "StaticPage",
     "ContactMessage",
     "EnlacesUtiles",
+    "ExternalApiKey",
+    "RemoteEnrollmentRequest",
 ]
 
 # ---------------------------------------------------------------------------------------
@@ -255,6 +257,8 @@ class Curso(database.Model, BaseTabla):
     plantilla_certificado = database.Column(
         database.String(25), database.ForeignKey(LLAVE_FORANEA_CERTIFICADO), nullable=True, index=True, default="default"
     )
+    recertification_required = database.Column(database.Boolean(), default=False)
+    recertification_period_years = database.Column(database.Integer(), nullable=True)
 
     def validar_foro_habilitado(self):
         """Valida que el foro solo pueda habilitarse en cursos no self-paced."""
@@ -762,9 +766,19 @@ class Certificacion(database.Model, BaseTabla):
     )
     fecha = database.Column(database.Date, default=date.today, nullable=False)
     nota = database.Column(database.Numeric(precision=5, scale=2))
+    expires_at = database.Column(database.Date, nullable=True)
 
     # Relationships
     master_class_rel = database.relationship("MasterClass", foreign_keys=[master_class_id])
+
+    @property
+    def status(self):
+        """Returns the status of the certification based on expires_at."""
+        if self.expires_at is None:
+            return "vigente"
+        if self.expires_at >= date.today():
+            return "vigente"
+        return "no vigente"
 
     def get_content_info(self):
         """Get the course or master class information for this certificate."""
@@ -1396,6 +1410,38 @@ class EnlacesUtiles(database.Model, BaseTabla):
     url = database.Column(database.String(500), nullable=False)
     orden = database.Column(database.Integer(), default=0, nullable=False)
     activo = database.Column(database.Boolean(), default=True, nullable=False)
+
+
+class ExternalApiKey(database.Model, BaseTabla):
+    """API Keys for external integration."""
+
+    __tablename__ = "external_api_keys"
+
+    name = database.Column(database.String(100), nullable=False)
+    key_hash = database.Column(database.String(255), nullable=False, index=True)
+    active = database.Column(database.Boolean(), default=True, nullable=False)
+    last_used_at = database.Column(database.DateTime, nullable=True)
+    revoked_at = database.Column(database.DateTime, nullable=True)
+    allowed_origin = database.Column(database.String(255), nullable=True)
+    notes = database.Column(database.Text, nullable=True)
+
+
+class RemoteEnrollmentRequest(database.Model, BaseTabla):
+    """Traceability for remote enrollment requests."""
+
+    __tablename__ = "remote_enrollment_requests"
+
+    request_id = database.Column(database.String(100), unique=True, nullable=False, index=True)
+    course_code = database.Column(database.String(20), nullable=False)
+    email = database.Column(database.String(150), nullable=False)
+    payment_confirmed = database.Column(database.Boolean(), default=False, nullable=False)
+    status = database.Column(database.String(50), nullable=False)
+    response_message = database.Column(database.Text, nullable=True)
+    api_key_id = database.Column(database.String(26), database.ForeignKey("external_api_keys.id"), nullable=False)
+    user_id = database.Column(database.String(150), database.ForeignKey(LLAVE_FORANEA_USUARIO), nullable=True)
+    enrollment_id = database.Column(database.String(26), database.ForeignKey("estudiante_curso.id"), nullable=True)
+    processed_at = database.Column(database.DateTime, nullable=True)
+    raw_payload_json = database.Column(database.Text, nullable=True)
 
 
 # Event listeners for audit field population and validation
