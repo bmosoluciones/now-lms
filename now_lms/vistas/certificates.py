@@ -415,7 +415,7 @@ def certificado(ulid: str) -> str:
     return render_template("learning/certificados/certificado.html", **context)
 
 
-@certificate.route("/certificate/issue/<course_id>/<user>/<template>/")
+@certificate.route("/certificate/issue/<course_id>/<user>/<template>/", methods=["POST"])
 @login_required
 @perfil_requerido("instructor")
 def certificacion_crear(course_id: str, user: str, template: str) -> Response:
