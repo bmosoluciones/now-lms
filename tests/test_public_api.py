@@ -99,9 +99,10 @@ def test_enrollment_new_user(client, api_key, active_course):
             "request_id": request_id,
             "course_code": active_course.codigo,
             "email": email,
-            "payment_confirmed": True
+            "payment_confirmed": True,
+            "_sync_email": True
         }
-        response = client.post("/api/v1/public/enrollments?_sync_email=1",
+        response = client.post("/api/v1/public/enrollments",
                                headers={"Authorization": f"Bearer {api_key}"},
                                json=payload)
         assert response.status_code == 201

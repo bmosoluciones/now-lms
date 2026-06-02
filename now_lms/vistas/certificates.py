@@ -33,6 +33,7 @@ from now_lms.db import (
     Certificacion,
     CertificacionPrograma,
     Certificado,
+    Curso,
     MasterClassEnrollment,
     Programa,
     Usuario,

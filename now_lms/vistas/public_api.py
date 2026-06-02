@@ -241,7 +241,7 @@ def remote_enrollment():
 
     # Send notification email
     # Determine if we should send synchronously (useful for tests)
-    sync = request.args.get('_sync_email') == '1'
+    sync = data.get('_sync_email') == '1' or data.get('_sync_email') is True
     send_enrollment_email(user, course, new_user, sync=sync)
 
     message = "Existing user was enrolled successfully."
