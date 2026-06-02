@@ -72,11 +72,13 @@
                                             <td>{{ key.creado }}</td>
                                             <td>
                                                 {% if key.active %}
-                                                <a href="{{ url_for('setting.revoke_api_key', id=key.id) }}"
-                                                   class="btn btn-sm btn-outline-danger"
-                                                   onclick="return confirm('{{ _('¿Está seguro de que desea revocar esta API Key? Esta acción no se puede deshacer.') }}')">
-                                                    <i class="bi bi-x-circle me-1"></i>{{ _('Revocar') }}
-                                                </a>
+                                                <form action="{{ url_for('setting.revoke_api_key', key_id=key.id) }}" method="POST" class="d-inline">
+                                                    <input type="hidden" name="csrf_token" value="{{ form.csrf_token._value() }}">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                       onclick="return confirm('{{ _('¿Está seguro de que desea revocar esta API Key? Esta acción no se puede deshacer.') }}')">
+                                                        <i class="bi bi-x-circle me-1"></i>{{ _('Revocar') }}
+                                                    </button>
+                                                </form>
                                                 {% endif %}
                                             </td>
                                         </tr>

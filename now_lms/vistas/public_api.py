@@ -240,7 +240,9 @@ def remote_enrollment():
     database.session.commit()
 
     # Send notification email
-    send_enrollment_email(user, course, new_user)
+    # Determine if we should send synchronously (useful for tests)
+    sync = request.args.get('_sync_email') == '1'
+    send_enrollment_email(user, course, new_user, sync=sync)
 
     message = "Existing user was enrolled successfully."
     if new_user:
@@ -255,7 +257,7 @@ def remote_enrollment():
     }), 201
 
 
-def send_enrollment_email(user, course, is_new_user):
+def send_enrollment_email(user, course, is_new_user, sync=False):
     """Send notification email to student."""
     mail_config = database.session.execute(database.select(MailConfig)).scalar_one_or_none()
     if not mail_config or not mail_config.email_verificado:
@@ -298,6 +300,6 @@ def send_enrollment_email(user, course, is_new_user):
     )
 
     try:
-        send_mail(msg, background=True, no_config=True)
+        send_mail(msg, background=not sync, no_config=True)
     except Exception:
         pass

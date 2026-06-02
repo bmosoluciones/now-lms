@@ -428,17 +428,10 @@ def certificacion_crear(course_id: str, user: str, template: str) -> Response:
         return redirect(url_for("certificate.certificaciones"))
 
     # Calculate expiration date if required
-    expires_at = None
     curso_obj = database.session.execute(
         database.select(Curso).filter_by(codigo=course_id)
     ).scalar_one_or_none()
-
-    if curso_obj and curso_obj.recertification_required and curso_obj.recertification_period_years:
-        from datetime import date, timedelta
-        try:
-            expires_at = date.today().replace(year=date.today().year + curso_obj.recertification_period_years)
-        except ValueError: # Handle Feb 29
-            expires_at = date.today() + timedelta(days=365 * curso_obj.recertification_period_years)
+    expires_at = curso_obj.calculate_expiration_date() if curso_obj else None
 
     cert = Certificacion(usuario=user, curso=course_id, certificado=template, expires_at=expires_at)
 
@@ -489,17 +482,10 @@ def certificacion_generar() -> str | Response:
                 return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
 
             # Calculate expiration date if required
-            expires_at = None
             curso_obj = database.session.execute(
                 database.select(Curso).filter_by(codigo=form.curso.data)
             ).scalar_one_or_none()
-
-            if curso_obj and curso_obj.recertification_required and curso_obj.recertification_period_years:
-                from datetime import date, timedelta
-                try:
-                    expires_at = date.today().replace(year=date.today().year + curso_obj.recertification_period_years)
-                except ValueError:
-                    expires_at = date.today() + timedelta(days=365 * curso_obj.recertification_period_years)
+            expires_at = curso_obj.calculate_expiration_date() if curso_obj else None
 
             cert = Certificacion(
                 usuario=form.usuario.data,

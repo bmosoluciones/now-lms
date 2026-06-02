@@ -277,6 +277,18 @@ class Curso(database.Model, BaseTabla):
         """Retorna True si el curso es self-paced."""
         return self.modalidad == "self_paced"
 
+    def calculate_expiration_date(self):
+        """Calculates the expiration date based on recertification rules."""
+        from datetime import date, timedelta
+        if not self.recertification_required or not self.recertification_period_years:
+            return None
+
+        try:
+            return date.today().replace(year=date.today().year + self.recertification_period_years)
+        except ValueError:
+            # Handle Feb 29th
+            return date.today() + timedelta(days=365 * self.recertification_period_years)
+
     def puede_habilitar_foro(self):
         """Retorna True si el foro puede ser habilitado para este curso."""
         return not self.is_self_paced()

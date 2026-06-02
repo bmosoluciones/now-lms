@@ -43,6 +43,7 @@ EXCLUDED_PATHS = {
     "/user/calendar/export.ics",
     "/setting/delete_site_logo",
     "/user/logout",
+    "/api/v1/public/ping",
 }
 
 # Excluir prefijos completos (e.g., rutas del Debug Toolbar)

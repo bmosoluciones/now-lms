@@ -582,14 +582,14 @@ def api_keys() -> str | Response:
     return render_template("admin/api_keys.html", keys=keys, form=form, new_key_plain=new_key_plain)
 
 
-@setting.route("/setting/api_keys/<id>/revoke")
+@setting.route("/setting/api_keys/<key_id>/revoke", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
-def revoke_api_key(id: str) -> Response:
+def revoke_api_key(key_id: str) -> Response:
     """Revoke an API key."""
     from datetime import datetime
 
-    key = database.session.get(ExternalApiKey, id)
+    key = database.session.get(ExternalApiKey, key_id)
     if key:
         key.active = False
         key.revoked_at = datetime.now()
