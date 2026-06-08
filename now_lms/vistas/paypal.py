@@ -205,7 +205,6 @@ def confirm_payment() -> tuple[FlaskResponse, int]:
         payer_id = data.get("payerID")
         course_code = data.get("courseCode")
         amount = data.get("amount")
-        currency = data.get("currency", get_site_currency())
 
         logging.info(f"Payment confirmation attempt for user {current_user.usuario}, course {course_code}, order {order_id}")
 
