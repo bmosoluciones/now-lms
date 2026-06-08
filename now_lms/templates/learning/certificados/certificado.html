@@ -165,6 +165,26 @@
                                             </div>
                                             <div class="col-7">{{ certificacion.fecha }}</div>
                                         </div>
+                                        {% if certificacion.expires_at %}
+                                        <div class="row mb-2">
+                                            <div class="col-5">
+                                                <strong>{{ _('Fecha de Vencimiento') }}:</strong>
+                                            </div>
+                                            <div class="col-7">{{ certificacion.expires_at }}</div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-5">
+                                                <strong>{{ _('Estado') }}:</strong>
+                                            </div>
+                                            <div class="col-7">
+                                                {% if certificacion.status == 'vigente' %}
+                                                <span class="badge bg-success">{{ _('Vigente') }}</span>
+                                                {% else %}
+                                                <span class="badge bg-danger">{{ _('No Vigente') }}</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
                                         {% if certificacion.nota %}
                                         <div class="row">
                                             <div class="col-5">

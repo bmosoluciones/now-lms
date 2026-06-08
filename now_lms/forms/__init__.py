@@ -1118,3 +1118,11 @@ class StaticPageFooterForm(FlaskForm):
     """Formulario para configurar si una página estática se muestra en el footer."""
 
     mostrar_en_footer = BooleanField(_("Mostrar en el footer"), default=False, validators=[])
+
+
+class ExternalApiKeyForm(FlaskForm):
+    """Form to create a new external API key."""
+
+    name = StringField(_("Nombre de la integración"), validators=[DataRequired(), Length(max=100)])
+    allowed_origin = StringField(_("Origen permitido (opcional)"), validators=[Optional(), Length(max=255)])
+    notes = TextAreaField(_("Notas"), validators=[Optional()])

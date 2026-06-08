@@ -1,0 +1,147 @@
+{% set current_theme = current_theme() %}
+<!DOCTYPE html>
+<html lang="{{ current_locale() }}" class="h-100">
+<head>
+    {{ current_theme.headertags() }}
+    <title>{{ _('Gestión de API Keys Externas') }} - NOW LMS</title>
+    {{ current_theme.local_style() }}
+</head>
+<body class="d-flex flex-column h-100">
+    {{ current_theme.navbar() }}
+
+    <main class="flex-shrink-0">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{ url_for('home.pagina_de_inicio') }}">{{ _('Inicio') }}</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url_for('setting.configuracion') }}">{{ _('Configuración') }}</a></li>
+                            <li class="breadcrumb-item active">{{ _('API Keys Externas') }}</li>
+                        </ol>
+                    </nav>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="bi bi-key-fill me-2"></i>{{ _('API Keys Externas') }}</h2>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newKeyModal">
+                            <i class="bi bi-plus-lg me-2"></i>{{ _('Nueva API Key') }}
+                        </button>
+                    </div>
+
+                    {% if new_key_plain %}
+                    <div class="alert alert-warning border-start border-4 border-warning shadow-sm mb-4">
+                        <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>{{ _('¡Importante!') }}</h4>
+                        <p>{{ _('Esta es su nueva API Key. Cópiela ahora mismo, ya que no podrá volver a verla por razones de seguridad:') }}</p>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control font-monospace" value="{{ new_key_plain }}" id="newApiKey" readonly>
+                            <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard()">
+                                <i class="bi bi-clipboard me-1"></i>{{ _('Copiar') }}
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="card shadow-sm">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0 align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>{{ _('Nombre') }}</th>
+                                            <th>{{ _('Estado') }}</th>
+                                            <th>{{ _('Último Uso') }}</th>
+                                            <th>{{ _('Creado') }}</th>
+                                            <th>{{ _('Acciones') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for key in keys %}
+                                        <tr>
+                                            <td>
+                                                <div class="fw-bold">{{ key.name }}</div>
+                                                <small class="text-muted">{{ key.notes or '' }}</small>
+                                            </td>
+                                            <td>
+                                                {% if key.active %}
+                                                <span class="badge bg-success">{{ _('Activa') }}</span>
+                                                {% else %}
+                                                <span class="badge bg-danger">{{ _('Revocada') }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ key.last_used_at.strftime('%Y-%m-%d %H:%M') if key.last_used_at else _('Nunca') }}</td>
+                                            <td>{{ key.creado }}</td>
+                                            <td>
+                                                {% if key.active %}
+                                                <form action="{{ url_for('setting.revoke_api_key', key_id=key.id) }}" method="POST" class="d-inline">
+                                                    <input type="hidden" name="csrf_token" value="{{ form.csrf_token._value() }}">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                       onclick="return confirm('{{ _('¿Está seguro de que desea revocar esta API Key? Esta acción no se puede deshacer.') }}')">
+                                                        <i class="bi bi-x-circle me-1"></i>{{ _('Revocar') }}
+                                                    </button>
+                                                </form>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% else %}
+                                        <tr>
+                                            <td colspan="5" class="text-center py-4 text-muted">
+                                                {{ _('No hay API Keys configuradas.') }}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- New Key Modal -->
+    <div class="modal fade" id="newKeyModal" tabindex="-1" aria-labelledby="newKeyModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="newKeyModalLabel">{{ _('Nueva API Key Externa') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.name.label }}</label>
+                            {{ form.name(class="form-control", placeholder=_("Ej: Integración Admiral Harbor")) }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.allowed_origin.label }}</label>
+                            {{ form.allowed_origin(class="form-control", placeholder=_("https://admiral.example.com")) }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.notes.label }}</label>
+                            {{ form.notes(class="form-control", rows="3") }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancelar') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ _('Generar API Key') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{ current_theme.footer() }}
+
+    <script>
+        function copyToClipboard() {
+            var copyText = document.getElementById("newApiKey");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            alert("{{ _('API Key copiada al portapapeles') }}");
+        }
+    </script>
+</body>
+</html>
