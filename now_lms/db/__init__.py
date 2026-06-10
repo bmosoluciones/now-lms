@@ -280,6 +280,7 @@ class Curso(database.Model, BaseTabla):
     def calculate_expiration_date(self):
         """Calculates the expiration date based on recertification rules."""
         from datetime import date, timedelta
+
         if not self.recertification_required or not self.recertification_period_years:
             return None
 

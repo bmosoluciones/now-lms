@@ -173,7 +173,11 @@ set config = config() %}
                                                                             method="POST"
                                                                             action="{{ url_for('instructor_profile.delete_question_option', option_id=option.id) }}"
                                                                             style="display: inline"
-                                                                            onsubmit="return confirm('¿Está seguro de eliminar esta opción?')"
+                                                                            onsubmit="
+                                                                                return confirm(
+                                                                                    '¿Está seguro de eliminar esta opción?'
+                                                                                )
+                                                                            "
                                                                         >
                                                                             <button
                                                                                 type="submit"
@@ -210,7 +214,11 @@ set config = config() %}
                                                             method="POST"
                                                             action="{{ url_for('instructor_profile.delete_question', question_id=pregunta.id) }}"
                                                             style="display: inline"
-                                                            onsubmit="return confirm('¿Está seguro de eliminar esta pregunta y todas sus opciones?')"
+                                                            onsubmit="
+                                                                return confirm(
+                                                                    '¿Está seguro de eliminar esta pregunta y todas sus opciones?'
+                                                                )
+                                                            "
                                                         >
                                                             <button
                                                                 type="submit"
