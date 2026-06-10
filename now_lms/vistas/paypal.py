@@ -313,9 +313,7 @@ def confirm_payment() -> tuple[FlaskResponse, int]:
 
         # Check if this payment has already been processed
         existing_payment = (
-            database.session.execute(database.select(Pago).filter_by(referencia=order_id, curso=course_code))
-            .scalars()
-            .first()
+            database.session.execute(database.select(Pago).filter_by(referencia=order_id, curso=course_code)).scalars().first()
         )
 
         if existing_payment:

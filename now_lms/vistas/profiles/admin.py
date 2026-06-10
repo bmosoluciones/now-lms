@@ -59,14 +59,19 @@ def pagina_admin() -> str:
     total_enrollments = database.session.execute(database.select(func.count(EstudianteCurso.id))).scalar() or 0
 
     from sqlalchemy import cast, Numeric
-    total_payments = database.session.execute(
-        database.select(func.count(Pago.id)).filter(Pago.estado == "completed", Pago.metodo == "paypal")
-    ).scalar() or 0
-    total_ingresos = database.session.execute(
-        database.select(func.sum(cast(Pago.monto, Numeric))).filter(
-            Pago.estado == "completed", Pago.metodo == "paypal"
-        )
-    ).scalar() or 0
+
+    total_payments = (
+        database.session.execute(
+            database.select(func.count(Pago.id)).filter(Pago.estado == "completed", Pago.metodo == "paypal")
+        ).scalar()
+        or 0
+    )
+    total_ingresos = (
+        database.session.execute(
+            database.select(func.sum(cast(Pago.monto, Numeric))).filter(Pago.estado == "completed", Pago.metodo == "paypal")
+        ).scalar()
+        or 0
+    )
 
     return render_template(
         "perfiles/admin.html",

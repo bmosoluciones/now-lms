@@ -429,9 +429,7 @@ def certificacion_crear(course_id: str, user: str, template: str) -> Response:
         return redirect(url_for("certificate.certificaciones"))
 
     # Calculate expiration date if required
-    curso_obj = database.session.execute(
-        database.select(Curso).filter_by(codigo=course_id)
-    ).scalar_one_or_none()
+    curso_obj = database.session.execute(database.select(Curso).filter_by(codigo=course_id)).scalar_one_or_none()
     expires_at = curso_obj.calculate_expiration_date() if curso_obj else None
 
     cert = Certificacion(usuario=user, curso=course_id, certificado=template, expires_at=expires_at)
@@ -483,9 +481,7 @@ def certificacion_generar() -> str | Response:
                 return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
 
             # Calculate expiration date if required
-            curso_obj = database.session.execute(
-                database.select(Curso).filter_by(codigo=form.curso.data)
-            ).scalar_one_or_none()
+            curso_obj = database.session.execute(database.select(Curso).filter_by(codigo=form.curso.data)).scalar_one_or_none()
             expires_at = curso_obj.calculate_expiration_date() if curso_obj else None
 
             cert = Certificacion(

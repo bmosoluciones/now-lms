@@ -86,7 +86,9 @@
                                                     href="{{ url_for('tag.delete_tag', ulid=item.id) }}"
                                                     class="btn btn-sm btn-outline-danger"
                                                     title="{{_('Eliminar etiqueta')}}"
-                                                    onclick="return confirm('¿Está seguro de que desea eliminar esta etiqueta?')"
+                                                    onclick="
+                                                        return confirm('¿Está seguro de que desea eliminar esta etiqueta?')
+                                                    "
                                                 >
                                                     <i class="bi bi-trash" aria-hidden="true"></i>
                                                 </a>

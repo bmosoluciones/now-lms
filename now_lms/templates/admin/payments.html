@@ -14,9 +14,7 @@
             <div class="container px-0 py-3">
                 <div class="row align-items-center border-bottom pb-3 mb-4">
                     <div class="col-md-8">
-                        <h4 class="mb-0">
-                            <i class="bi bi-credit-card-fill me-2"></i>{{ _("Pagos Recibidos") }}
-                        </h4>
+                        <h4 class="mb-0"><i class="bi bi-credit-card-fill me-2"></i>{{ _("Pagos Recibidos") }}</h4>
                         <p class="text-muted mb-0">{{ _("Historial de pagos procesados en el sistema") }}</p>
                     </div>
                     <div class="col-md-4 text-end">
@@ -58,7 +56,17 @@
                                 <select id="course_code" name="course_code" class="form-select">
                                     <option value="">{{ _("Todos los cursos") }}</option>
                                     {% for curso in cursos %}
-                                    <option value="{{ curso.codigo }}" {% if filter_args.course_code == curso.codigo %}selected{% endif %}>
+                                    <option
+                                        value="{{ curso.codigo }}"
+                                        {%
+                                        if
+                                        filter_args.course_code
+                                        ==
+                                        curso.codigo
+                                        %}selected{%
+                                        endif
+                                        %}
+                                    >
                                         {{ curso.nombre }} ({{ curso.codigo }})
                                     </option>
                                     {% endfor %}
@@ -125,9 +133,12 @@
                                         </td>
                                         <td>
                                             {% if curso %}
-                                            <a href="{{ url_for('course.curso', course_code=curso.codigo) }}" class="text-decoration-none">
-                                                {{ curso.nombre }}
-                                            </a><br />
+                                            <a
+                                                href="{{ url_for('course.curso', course_code=curso.codigo) }}"
+                                                class="text-decoration-none"
+                                            >
+                                                {{ curso.nombre }} </a
+                                            ><br />
                                             <small class="text-muted">{{ curso.codigo }}</small>
                                             {% else %}
                                             <span class="text-muted">{{ pago.curso }}</span>
@@ -198,9 +209,7 @@
                                             <i class="bi bi-chevron-left"></i>
                                         </a>
                                     </li>
-                                    {% endif %}
-                                    {% for p in consulta.iter_pages() %}
-                                    {% if p %}
+                                    {% endif %} {% for p in consulta.iter_pages() %} {% if p %}
                                     <li class="page-item {% if p == consulta.page %}active{% endif %}">
                                         <a
                                             class="page-link"
@@ -211,9 +220,7 @@
                                     </li>
                                     {% else %}
                                     <li class="page-item disabled"><span class="page-link">…</span></li>
-                                    {% endif %}
-                                    {% endfor %}
-                                    {% if consulta.has_next %}
+                                    {% endif %} {% endfor %} {% if consulta.has_next %}
                                     <li class="page-item">
                                         <a
                                             class="page-link"
