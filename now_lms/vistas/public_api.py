@@ -95,40 +95,40 @@ def require_api_key(f):
 @require_api_key
 def ping():
     """Health check / handshake endpoint."""
-    return jsonify({
-        "status": "ok",
-        "service": "NOW LMS",
-        "version": VERSION
-    }), 200
+    return jsonify({"status": "ok", "service": "NOW LMS", "version": VERSION}), 200
 
 
 @public_api.route("/courses/<course_code>", methods=["GET"])
 @require_api_key
 def get_course(course_code):
     """Consult public course information by code."""
-    course = database.session.execute(
-        database.select(Curso).filter_by(codigo=course_code)
-    ).scalar_one_or_none()
+    course = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
 
     if not course:
-        return jsonify({
-            "error": "course_not_found",
-            "message": "Course code was not found."
-        }), 404
+        return jsonify({"error": "course_not_found", "message": "Course code was not found."}), 404
 
-    return jsonify({
-        "code": course.codigo,
-        "title": course.nombre,
-        "description": course.descripcion_corta,
-        "duration_hours": course.duracion,
-        "course_type": "certification" if course.certificado else "course",
-        "thumbnail_url": url_for('static', filename=f'uploads/images/{course.codigo}/portada.jpg', _external=True) if course.portada else None,
-        "is_active": course.estado == 'open',
-        "certificate_available": course.certificado,
-        "recertification_required": course.recertification_required,
-        "recertification_period_years": course.recertification_period_years,
-        "resources": ["video", "quiz", "certificate"]
-    }), 200
+    return (
+        jsonify(
+            {
+                "code": course.codigo,
+                "title": course.nombre,
+                "description": course.descripcion_corta,
+                "duration_hours": course.duracion,
+                "course_type": "certification" if course.certificado else "course",
+                "thumbnail_url": (
+                    url_for("static", filename=f"uploads/images/{course.codigo}/portada.jpg", _external=True)
+                    if course.portada
+                    else None
+                ),
+                "is_active": course.estado == "open",
+                "certificate_available": course.certificado,
+                "recertification_required": course.recertification_required,
+                "recertification_period_years": course.recertification_period_years,
+                "resources": ["video", "quiz", "certificate"],
+            }
+        ),
+        200,
+    )
 
 
 @public_api.route("/enrollments", methods=["POST"])
@@ -157,24 +157,21 @@ def remote_enrollment():
     ).scalar_one_or_none()
 
     if existing_request:
-        return jsonify({
-            "status": "already_processed",
-            "course_code": existing_request.course_code,
-            "email": existing_request.email
-        }), 200
+        return (
+            jsonify(
+                {"status": "already_processed", "course_code": existing_request.course_code, "email": existing_request.email}
+            ),
+            200,
+        )
 
     # Course existence check
-    course = database.session.execute(
-        database.select(Curso).filter_by(codigo=course_code)
-    ).scalar_one_or_none()
+    course = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
 
     if not course:
         return jsonify({"error": "course_not_found", "message": "Course code was not found."}), 404
 
     # User existence/creation
-    user = database.session.execute(
-        database.select(Usuario).filter_by(correo_electronico=email)
-    ).scalar_one_or_none()
+    user = database.session.execute(database.select(Usuario).filter_by(correo_electronico=email)).scalar_one_or_none()
 
     user_status = "existing_user"
     new_user = False
@@ -185,18 +182,19 @@ def remote_enrollment():
         # Create new user as pending verification
         import secrets
         import string
-        temp_password = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(12))
+
+        temp_password = "".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(12))
 
         user = Usuario(
             usuario=email,
             acceso=proteger_passwd(temp_password),
-            nombre=email.split('@')[0],
+            nombre=email.split("@")[0],
             apellido="",
             correo_electronico=email,
             tipo="student",
             activo=False,
             correo_electronico_verificado=False,
-            visible=True
+            visible=True,
         )
         database.session.add(user)
         database.session.flush()
@@ -207,18 +205,10 @@ def remote_enrollment():
     ).scalar_one_or_none()
 
     if existing_enrollment:
-        return jsonify({
-            "status": "already_enrolled",
-            "course_code": course_code,
-            "email": email
-        }), 200
+        return jsonify({"status": "already_enrolled", "course_code": course_code, "email": email}), 200
 
     # Create enrollment
-    enrollment = EstudianteCurso(
-        curso=course_code,
-        usuario=user.usuario,
-        vigente=True
-    )
+    enrollment = EstudianteCurso(curso=course_code, usuario=user.usuario, vigente=True)
     database.session.add(enrollment)
     database.session.flush()
 
@@ -234,27 +224,26 @@ def remote_enrollment():
         user_id=user.usuario,
         enrollment_id=enrollment.id,
         processed_at=datetime.now(),
-        raw_payload_json=json.dumps(data)
+        raw_payload_json=json.dumps(data),
     )
     database.session.add(remote_request)
     database.session.commit()
 
     # Send notification email
     # Determine if we should send synchronously (useful for tests)
-    sync = data.get('_sync_email') == '1' or data.get('_sync_email') is True
+    sync = data.get("_sync_email") == "1" or data.get("_sync_email") is True
     send_enrollment_email(user, course, new_user, sync=sync)
 
     message = "Existing user was enrolled successfully."
     if new_user:
         message = "User was created as pending verification and enrolled successfully."
 
-    return jsonify({
-        "status": "enrolled",
-        "user_status": user_status,
-        "course_code": course_code,
-        "email": email,
-        "message": message
-    }), 201
+    return (
+        jsonify(
+            {"status": "enrolled", "user_status": user_status, "course_code": course_code, "email": email, "message": message}
+        ),
+        201,
+    )
 
 
 def send_enrollment_email(user, course, is_new_user, sync=False):
@@ -296,7 +285,7 @@ def send_enrollment_email(user, course, is_new_user, sync=False):
         subject=subject,
         recipients=[user.correo_electronico],
         sender=((mail_config.MAIL_DEFAULT_SENDER_NAME or "NOW LMS"), mail_config.MAIL_DEFAULT_SENDER),
-        body=body_text
+        body=body_text,
     )
 
     try:

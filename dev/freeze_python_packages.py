@@ -12,7 +12,8 @@ with open(input_file, "r") as f:
 output_lines = []
 
 # Procesar cada paquete
-for package in packages:
+for package_raw in packages:
+    package = package_raw.split("==")[0].split(">=")[0].split("<=")[0].split("~=")[0].strip()
     try:
         # Ejecutar 'pip show' para obtener la versión
         result = subprocess.run(["pip", "show", package], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)

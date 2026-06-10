@@ -548,9 +548,7 @@ def api_keys() -> str | Response:
     import hashlib
     import secrets
 
-    keys = database.session.execute(
-        database.select(ExternalApiKey).order_by(ExternalApiKey.timestamp.desc())
-    ).scalars().all()
+    keys = database.session.execute(database.select(ExternalApiKey).order_by(ExternalApiKey.timestamp.desc())).scalars().all()
 
     form = ExternalApiKeyForm()
     new_key_plain = None
@@ -563,11 +561,7 @@ def api_keys() -> str | Response:
         key_hash = hashlib.sha256(api_key.encode()).hexdigest()
 
         new_key = ExternalApiKey(
-            name=form.name.data,
-            key_hash=key_hash,
-            active=True,
-            allowed_origin=form.allowed_origin.data,
-            notes=form.notes.data
+            name=form.name.data, key_hash=key_hash, active=True, allowed_origin=form.allowed_origin.data, notes=form.notes.data
         )
 
         database.session.add(new_key)
@@ -575,9 +569,9 @@ def api_keys() -> str | Response:
         flash(_("API Key creada exitosamente. Asegúrese de copiarla ahora, ya que no podrá verla de nuevo."), "success")
 
         # Refresh the list to include the new key
-        keys = database.session.execute(
-            database.select(ExternalApiKey).order_by(ExternalApiKey.timestamp.desc())
-        ).scalars().all()
+        keys = (
+            database.session.execute(database.select(ExternalApiKey).order_by(ExternalApiKey.timestamp.desc())).scalars().all()
+        )
 
     return render_template("admin/api_keys.html", keys=keys, form=form, new_key_plain=new_key_plain)
 
