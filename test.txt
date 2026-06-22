@@ -9,7 +9,7 @@ wheel==0.47.0
 black==26.5.1
 flake8==7.3.0
 pylint==4.0.5
-pytest==9.0.3
+pytest==9.1.1
 pytest-xdist==3.8.0
 pytest-timeout==2.4.0
 pytest-benchmark==5.2.3
