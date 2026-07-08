@@ -28,7 +28,7 @@ CODE_NAME = "Karla"
 # SemVer (https://semver.org)
 MAYOR = "1"
 MENOR = "2"
-PATCH = "6"
+PATCH = "7"
 
 # <--------------------------------------------------------------------------> #
 # Quick fix

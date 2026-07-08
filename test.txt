@@ -8,12 +8,12 @@ wheel==0.47.0
 # Control de calidad python
 black==26.5.1
 flake8==7.3.0
-pylint==4.0.5
+pylint==4.0.6
 pytest==9.0.3
 pytest-xdist==3.8.0
 pytest-timeout==2.4.0
 pytest-benchmark==5.2.3
-ruff==0.15.16
+ruff==0.15.20
 
 # Cobertura de código
 coverage==7.14.1
