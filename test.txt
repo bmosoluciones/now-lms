@@ -1,7 +1,7 @@
 -r requirements.txt
 
 # Crear tarball y wheel
-build==1.5.0
+build==1.5.1
 twine==6.2.0
 wheel==0.47.0
 
