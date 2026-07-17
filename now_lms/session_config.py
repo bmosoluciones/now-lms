@@ -29,14 +29,13 @@ from flask import Flask
 # ---------------------------------------------------------------------------------------
 # Local resources
 # ---------------------------------------------------------------------------------------
-from now_lms.config import TESTING
 from now_lms.logs import log
 
 # Global variable to track if we've created the session model
 _session_model_created = False
 
 
-def get_session_config() -> dict[str, object] | None:
+def get_session_config(app: Flask | None = None) -> dict[str, object] | None:
     """
     Determine the best session storage backend available.
 
@@ -48,7 +47,11 @@ def get_session_config() -> dict[str, object] | None:
     Returns:
         dict: Configuration dictionary for Flask-Session, or None to skip
     """
-    if TESTING:
+    # Use the application configuration rather than the import-time TESTING
+    # constant.  Application factories can create production and test apps in
+    # the same interpreter, and session selection must follow the app being
+    # initialized.
+    if app is not None and app.config.get("TESTING"):
         # In testing mode, don't use Flask-Session at all
         # Flask's default signed cookie sessions work fine for tests
         return None
@@ -134,7 +137,7 @@ def init_session(app: Flask) -> None:
             )
 
         # Get the session configuration
-        session_config = get_session_config()
+        session_config = get_session_config(app)
 
         # If None (testing mode), skip Flask-Session initialization
         if session_config is None:
@@ -160,18 +163,23 @@ def init_session(app: Flask) -> None:
         # Update Flask config with session settings
         app.config.update(session_config)
 
-        # Initialize Flask-Session
-        # This may fail if called multiple times with SQLAlchemy backend
-        try:
-            Session(app)
-            if session_config.get("SESSION_TYPE") == "sqlalchemy":
-                _session_model_created = True
-        except Exception as e:
-            # If initialization fails due to table already exists, that's ok for subsequent apps
-            if "already defined" in str(e):
-                log.debug(f"Session model already defined, continuing: {e}")
-            else:
-                raise
+        # Initialize Flask-Session.  Do not swallow model/configuration errors:
+        # doing so leaves Flask's cookie session interface active while the
+        # logs incorrectly claim that shared SQLAlchemy sessions are enabled.
+        Session(app)
+        if session_config.get("SESSION_TYPE") == "sqlalchemy":
+            _session_model_created = True
+
+        # Configuration alone is not proof that Flask-Session took control.
+        # A previous implementation could catch an initialization error and
+        # continue with SecureCookieSessionInterface, causing diagnostics to
+        # report a shared backend that was not actually active.
+        from flask_session.base import ServerSideSessionInterface
+
+        if not isinstance(app.session_interface, ServerSideSessionInterface):
+            raise RuntimeError(
+                f"Flask-Session did not install a server-side interface for {session_config.get('SESSION_TYPE')}"
+            )
 
         # Mark as initialized
         app._session_initialized = True
@@ -186,15 +194,17 @@ def init_session(app: Flask) -> None:
         match session_type:
             case "redis":
                 log.info("Using Redis for session storage - optimal for multi-worker WSGI servers")
-                # Validate Redis connection
+                # Validate Redis connection. An explicitly configured but
+                # unreachable backend must fail startup; accepting traffic in
+                # that state makes every login appear to succeed and then
+                # disappear on the following request.
                 redis_client = session_config.get("SESSION_REDIS")
                 if redis_client:
                     try:
                         redis_client.ping()
                         log.info("Redis connection verified successfully")
                     except Exception as e:
-                        log.error(f"Redis connection failed: {e}")
-                        log.error("Sessions will not work correctly without Redis!")
+                        raise RuntimeError("Configured Redis session backend is unavailable") from e
 
             case "sqlalchemy":
                 log.info("Using SQLAlchemy database for session storage - works with multi-worker/multi-threaded WSGI servers")
@@ -226,3 +236,22 @@ def init_session(app: Flask) -> None:
     except Exception as e:
         log.error(f"Failed to initialize session storage: {e}")
         raise
+
+
+def reset_connections_after_fork(server, worker) -> None:
+    """Discard connection pools inherited by a newly forked Gunicorn worker."""
+    # lms_app is already constructed before the embedded Gunicorn application
+    # starts, even when preload_app is false. SQLAlchemy explicitly recommends
+    # disposing inherited pools in the child process.
+    from now_lms import lms_app
+    from now_lms.db import database
+
+    with lms_app.app_context():
+        for engine in database.engines.values():
+            engine.dispose(close=False)
+
+    redis_client = lms_app.config.get("SESSION_REDIS")
+    if redis_client is not None:
+        redis_client.connection_pool.reset()
+
+    log.info(f"Reset inherited session/database connections in Gunicorn worker {worker.pid}")

@@ -19,6 +19,9 @@ PORT = environ.get("PORT") or 8080
 # Get WSGI server from environment variable (defaults to waitress)
 WSGI_SERVER = environ.get("WSGI_SERVER", "waitress").lower()
 
+if WSGI_SERVER not in {"gunicorn", "waitress"}:
+    raise SystemExit(f"Unsupported WSGI_SERVER={WSGI_SERVER!r}; expected 'gunicorn' or 'waitress'")
+
 # ---------------------------------------------------------------------------------------
 # Update the database schema
 # ---------------------------------------------------------------------------------------
@@ -56,12 +59,18 @@ if init_app():
                     def load(self):
                         return self.application
 
+                from now_lms.session_config import reset_connections_after_fork
+
                 options = {
                     "bind": f"0.0.0.0:{PORT}",
                     "workers": workers,
                     "threads": threads,
                     "worker_class": "gthread" if threads > 1 else "sync",
-                    "preload_app": True,
+                    # The application is constructed before embedded Gunicorn
+                    # starts. The post-fork hook below is therefore the
+                    # authoritative protection against inherited connections.
+                    "preload_app": False,
+                    "post_fork": reset_connections_after_fork,
                     "timeout": 120,
                     "graceful_timeout": 30,
                     "keepalive": 5,
@@ -97,5 +106,7 @@ if init_app():
         except ImportError:
             log.error("Waitress no está instalado. Por favor instálalo con: pip install waitress")
             log.error("No se pudo iniciar NOW Learning Management System.")
+            raise
 else:
     log.error("No se pudo iniciar NOW Learning Management System.")
+    raise SystemExit(1)

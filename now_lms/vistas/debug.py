@@ -86,6 +86,7 @@ def debug_session() -> tuple[Response, int]:
 
     # Get session backend type
     session_type = current_app.config.get("SESSION_TYPE", "default")
+    session_interface = type(current_app.session_interface).__name__
 
     # Get worker info
     worker_info = {
@@ -97,6 +98,7 @@ def debug_session() -> tuple[Response, int]:
     response_data = {
         "worker": worker_info,
         "session_backend": session_type,
+        "session_interface": session_interface,
         "session_data": session_data,
         "current_user": user_info,
         "authenticated": current_user.is_authenticated,
