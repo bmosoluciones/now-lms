@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Changed
+ - Reworked the default visual themes with clearer academic identities for Cambridge, Harvard and Oxford.
+ - Improved the default theme presentation and restored the missing base template required by the Invest theme.
+
 ## [1.2.7] - 2026-07-08
 
 ### Changed:

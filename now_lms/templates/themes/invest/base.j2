@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="{{ current_locale }}" class="h-100">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="{{ _('Aplicación para gestión del aprendizaje.') }}" />
+        <meta name="author" content="BMO Moreno Berroteran Ortiz Soluciones Sociedad Anonima" />
+        {% set theme_context = current_theme() %}
+        {{ theme_context.headertags() }}
+        {{ theme_context.local_style() }}
+        <title>{{ title }}</title>
+    </head>
+    <body>
+        {% block contenido %}{% endblock %}
+        {{ theme_context.jslibs() }}
+    </body>
+</html>

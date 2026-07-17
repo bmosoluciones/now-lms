@@ -118,6 +118,43 @@
         }
     }
 
+    /* Oxford identity: ink blue, illuminated gold and manuscript folios. */
+    :root {
+        --academic-theme-name: "Oxford";
+    }
+
+    .navbar-oxford,
+    .oxford-hero {
+        background-image: linear-gradient(135deg, rgba(0, 33, 71, 0.99), rgba(0, 24, 41, 0.97)),
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M8 8h32v32H8z' fill='none' stroke='%23c5b358' stroke-width='1' opacity='.3'/%3E%3C/svg%3E");
+    }
+
+    .oxford-hero {
+        border-top: 10px solid var(--oxford-accent);
+        border-bottom: 10px solid var(--oxford-accent);
+    }
+
+    .oxford-folio {
+        border-left: 4px solid var(--oxford-secondary);
+        border-radius: 0;
+    }
+
+    /* Keep the showcase hero readable over Oxford's ink-blue manuscript panel. */
+    .oxford-hero h1 {
+        color: var(--oxford-text-light) !important;
+        text-shadow: 0 2px 3px rgba(0, 0, 0, 0.45);
+    }
+
+    .oxford-hero .lead,
+    .oxford-hero .oxford-marginalia p {
+        color: var(--oxford-text-light) !important;
+    }
+
+    .oxford-hero .btn-outline-dark {
+        color: var(--oxford-text-light) !important;
+        border-color: var(--oxford-accent) !important;
+    }
+
     /* Custom Oxford Navbar Styling */
     .navbar-oxford {
         background: linear-gradient(90deg, var(--oxford-primary) 0%, var(--oxford-dark) 100%) !important;
@@ -306,3 +343,39 @@
         background: linear-gradient(45deg, rgba(0, 33, 71, 0.05), rgba(197, 179, 88, 0.05));
         color: var(--oxford-primary);
     }
+
+    /* Oxford showcase rework: reading-room/catalogue layout. */
+    .oxford-showcase { background: #f5f5f5; }
+    .oxford-showcase-hero { min-height: 620px; padding: 7rem 0 5rem; color: white; background: linear-gradient(90deg, rgba(0,16,34,.97) 0%, rgba(0,33,71,.88) 54%, rgba(0,33,71,.2) 100%), url("/static/themes/oxford/images/reading-room-hero.png") center/cover; }
+    .oxford-hero-grid { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(280px,.8fr); align-items: end; gap: 5rem; }
+    .oxford-kicker, .oxford-volume-type { font: 700 .72rem/1.4 "Cardo", Georgia, serif; letter-spacing: .18em; text-transform: uppercase; }
+    .oxford-kicker span { color: var(--oxford-accent); }
+    .oxford-showcase-hero h1 { max-width: 650px; margin: 1.2rem 0; color: white; font: 700 clamp(4rem,8vw,8rem)/.88 "Cormorant Garamond", Georgia, serif; letter-spacing: -.05em; }
+    .oxford-hero-lead { max-width: 520px; color: rgba(255,255,255,.8); font: 1.2rem/1.75 "Cardo", Georgia, serif; }
+    .oxford-hero-actions { display: flex; align-items: center; gap: 1.5rem; margin-top: 2.2rem; }
+    .oxford-showcase .btn { border-radius: 0; }
+    .oxford-text-link, .oxford-volume a { color: white; font-weight: 700; text-decoration: none; }
+    .oxford-text-link:hover, .oxford-volume a:hover { color: var(--oxford-accent); }
+    .oxford-index-card { padding: 1.8rem; color: var(--oxford-text); background: rgba(245,245,245,.95); border-top: 7px solid var(--oxford-accent); box-shadow: 18px 18px 0 rgba(0,0,0,.3); }
+    .oxford-index-top, .oxford-index-bottom { display: flex; justify-content: space-between; color: var(--oxford-secondary); font: 700 .68rem "Cardo", Georgia, serif; letter-spacing: .14em; }
+    .oxford-index-mark { margin: 2.5rem 0 1rem; color: var(--oxford-primary); font: 700 7rem/.65 "Cormorant Garamond", Georgia, serif; }
+    .oxford-index-card p { max-width: 240px; font: italic 1.4rem/1.25 "Cardo", Georgia, serif; }
+    .oxford-reading-note { background: white; border-bottom: 1px solid #b4b7ba; }
+    .oxford-reading-note h2, .oxford-section-heading h2, .oxford-closing h2 { font: 700 2.8rem/1 "Cormorant Garamond", Georgia, serif; }
+    .oxford-reading-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+    .oxford-reading-grid article { padding: 1.2rem; border-top: 2px solid var(--oxford-accent); }
+    .oxford-reading-grid span { color: var(--oxford-secondary); font-weight: 700; }
+    .oxford-reading-grid h3 { margin: 1rem 0 .5rem; font-size: 1.4rem; }
+    .oxford-reading-grid p { color: #5a5f68; }
+    .oxford-catalogue { background: #e6e7e8; }
+    .oxford-section-heading { display: flex; justify-content: space-between; align-items: end; gap: 2rem; }
+    .oxford-section-heading > p { max-width: 360px; color: #5a5f68; font: 1.1rem/1.6 "Cardo", Georgia, serif; }
+    .oxford-catalogue-list { margin-top: 2.5rem; border-top: 1px solid #b4b7ba; }
+    .oxford-volume { display: grid; grid-template-columns: 80px 1fr 40px; gap: 1rem; align-items: center; padding: 1.6rem 0; border-bottom: 1px solid #b4b7ba; }
+    .oxford-volume-index { color: var(--oxford-accent); font: 700 2.5rem "Cormorant Garamond", Georgia, serif; }
+    .oxford-volume h3 { margin: .25rem 0; color: var(--oxford-primary); font-size: 1.55rem; }
+    .oxford-volume p:not(.oxford-volume-type) { margin: 0; color: #5a5f68; }
+    .oxford-volume a { color: var(--oxford-secondary); font-size: 1.5rem; text-align: right; }
+    .oxford-closing { color: white; background: var(--oxford-primary); text-align: center; }
+    .oxford-closing h2 { margin: 1rem auto 2rem; color: white; }
+    @media (max-width: 768px) { .oxford-showcase-hero { padding: 5rem 0 3rem; } .oxford-hero-grid { grid-template-columns: 1fr; gap: 2rem; } .oxford-showcase-hero h1 { font-size: 4rem; } .oxford-reading-grid { grid-template-columns: 1fr; } .oxford-section-heading { align-items: flex-start; flex-direction: column; } .oxford-hero-actions { align-items: flex-start; flex-direction: column; } }
