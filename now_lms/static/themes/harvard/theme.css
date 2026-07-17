@@ -96,6 +96,26 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
+/* Harvard identity: editorial crimson, parchment and gold rules. */
+:root {
+    --academic-theme-name: "Harvard";
+}
+
+.navbar-harvard,
+.harvard-hero {
+    background-image: linear-gradient(120deg, rgba(164, 16, 52, 0.98), rgba(71, 67, 64, 0.96)),
+        repeating-linear-gradient(0deg, transparent 0, transparent 23px, rgba(216, 184, 102, 0.12) 24px);
+}
+
+.harvard-hero {
+    border-bottom: 8px double var(--harvard-gold);
+}
+
+.harvard-case-card {
+    border-left: 5px solid var(--harvard-primary);
+    border-radius: 0 12px 12px 0;
+}
+
 h1 { font-size: 2.5rem; }
 h2 { font-size: 2rem; }
 h3 { font-size: 1.75rem; }
@@ -180,6 +200,40 @@ h3 { font-size: 1.75rem; }
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(71, 67, 64, 0.3);
 }
+
+/* Harvard showcase rework: casebook/editorial layout. */
+.harvard-showcase { background: var(--harvard-background); }
+.harvard-showcase-hero { min-height: 620px; padding: 7rem 0 5rem; color: white; background: linear-gradient(90deg, rgba(18,10,11,.95) 0%, rgba(110,10,35,.84) 57%, rgba(164,16,52,.45) 100%), url("/static/themes/harvard/images/casebook-hero.png") center/cover; }
+.harvard-kicker, .harvard-card-label { font: 700 .72rem/1.4 "Source Sans Pro", sans-serif; letter-spacing: .18em; text-transform: uppercase; }
+.harvard-kicker span, .harvard-card-label { color: var(--harvard-gold); }
+.harvard-showcase-hero h1 { max-width: 720px; margin: 1.2rem 0; color: white; font: 700 clamp(3.5rem,7vw,7rem)/.92 "Merriweather", Georgia, serif; letter-spacing: -.045em; }
+.harvard-hero-lead { max-width: 530px; color: rgba(255,255,255,.82); font-size: 1.15rem; line-height: 1.75; }
+.harvard-hero-actions { display: flex; align-items: center; gap: 1.5rem; margin-top: 2.2rem; }
+.harvard-showcase .btn { border-radius: 0; }
+.harvard-text-link, .harvard-case-card a { color: white; font-weight: 700; text-decoration: none; }
+.harvard-text-link:hover, .harvard-case-card a:hover { color: var(--harvard-gold); }
+.harvard-editorial-card { position: relative; min-height: 330px; padding: 2.3rem; color: var(--harvard-text); background: rgba(245,243,242,.96); border-left: 8px solid var(--harvard-gold); box-shadow: 20px 20px 0 rgba(0,0,0,.25); }
+.harvard-editorial-card blockquote { margin: 4rem 0 1.5rem; font: 600 2.25rem/1.12 "Merriweather", Georgia, serif; }
+.harvard-case-stamp { position: absolute; top: 1.6rem; right: 1.6rem; color: var(--harvard-primary); font: 700 .7rem/1.2 "Source Sans Pro", sans-serif; letter-spacing: .12em; text-align: right; }
+.harvard-signature { color: var(--harvard-accent); font-size: .8rem; }
+.harvard-manifesto { background: white; border-bottom: 1px solid var(--harvard-border); }
+.harvard-manifesto h2, .harvard-section-heading h2, .harvard-closing h2 { font: 700 2.6rem/1.12 "Merriweather", Georgia, serif; }
+.harvard-manifesto strong { display: block; margin-bottom: 1rem; color: var(--harvard-primary); font: 700 1.5rem Georgia, serif; }
+.harvard-manifesto h3 { font-size: 1.25rem; }
+.harvard-manifesto p:not(.harvard-kicker) { color: var(--harvard-text-secondary); }
+.harvard-case-library { background: var(--harvard-light); }
+.harvard-section-heading { max-width: 620px; }
+.harvard-section-heading > p:last-child { color: var(--harvard-accent); font-size: 1.1rem; }
+.harvard-case-card { height: 100%; padding: 1.7rem; background: white; border: 1px solid var(--harvard-border); border-left: 5px solid var(--harvard-primary); border-radius: 0; transition: transform .2s ease, box-shadow .2s ease; }
+.harvard-case-card:hover { transform: translateY(-4px); box-shadow: 9px 10px 0 rgba(164,16,52,.14); }
+.harvard-case-meta { display: flex; justify-content: space-between; color: var(--harvard-accent); font-size: .68rem; font-weight: 700; letter-spacing: .14em; }
+.harvard-case-card h3 { margin: 2rem 0 .7rem; font-size: 1.45rem; }
+.harvard-case-card p { color: var(--harvard-text-secondary); }
+.harvard-case-card a { display: inline-block; margin-top: 1rem; color: var(--harvard-primary); }
+.harvard-closing { color: white; background: var(--harvard-primary); text-align: center; }
+.harvard-closing h2 { margin: 1rem auto 2rem; color: white; }
+.harvard-closing-rule { width: 70px; margin: 0 auto; border-top: 3px solid var(--harvard-gold); }
+@media (max-width: 768px) { .harvard-showcase-hero { padding: 5rem 0 3rem; } .harvard-showcase-hero h1 { font-size: 3.7rem; } .harvard-editorial-card { margin-top: 1rem; } .harvard-hero-actions { align-items: flex-start; flex-direction: column; } }
 
 .btn-harvard-secondary:hover {
     background: linear-gradient(45deg, var(--harvard-border), var(--harvard-text));

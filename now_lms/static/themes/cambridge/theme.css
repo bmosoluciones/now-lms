@@ -142,6 +142,26 @@
         }
     }
 
+    /* Cambridge identity: scientific grid, patina and copper details. */
+    :root {
+        --academic-theme-name: "Cambridge";
+    }
+
+    .navbar-cambridge,
+    .cambridge-hero {
+        background-image: linear-gradient(135deg, rgba(74, 123, 109, 0.98), rgba(46, 43, 40, 0.96)),
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M0 16h32M16 0v32' stroke='%23b08b5c' stroke-width='.5' opacity='.28'/%3E%3C/svg%3E");
+    }
+
+    .cambridge-hero {
+        border-bottom: 6px solid var(--cambridge-accent);
+    }
+
+    .cambridge-lab-sample {
+        border-top: 3px solid var(--cambridge-accent);
+        border-radius: 2px 2px 10px 10px;
+    }
+
     h1 {
         font-size: 2.5rem;
     }
@@ -377,3 +397,37 @@
             padding: 0.6rem 1.2rem;
         }
     }
+
+    /* Cambridge showcase rework: research editorial layout. */
+    .cambridge-showcase { background: var(--cambridge-background); }
+    .cambridge-showcase-hero { min-height: 620px; padding: 7rem 0 5rem; color: white; background: linear-gradient(90deg, rgba(35,47,43,.92) 0%, rgba(74,123,109,.72) 54%, rgba(74,123,109,.18) 100%), url("/static/themes/cambridge/images/research-hero.png") center/cover; }
+    .cambridge-kicker, .cambridge-card-label { font: 700 .72rem/1.4 "Open Sans", sans-serif; letter-spacing: .18em; text-transform: uppercase; }
+    .cambridge-kicker span, .cambridge-card-label { color: var(--cambridge-accent); }
+    .cambridge-showcase-hero h1 { max-width: 720px; margin: 1.2rem 0; color: white; font: 600 clamp(3.6rem,8vw,7.5rem)/.9 "Cormorant Garamond", Georgia, serif; letter-spacing: -.04em; }
+    .cambridge-hero-lead { max-width: 540px; color: rgba(255,255,255,.82); font-size: 1.2rem; line-height: 1.7; }
+    .cambridge-hero-actions { display: flex; align-items: center; gap: 1.5rem; margin-top: 2.2rem; }
+    .cambridge-showcase .btn { border-radius: 2px; }
+    .cambridge-text-link, .cambridge-course-card a { color: white; font-weight: 700; text-decoration: none; }
+    .cambridge-text-link:hover, .cambridge-course-card a:hover { color: var(--cambridge-accent); }
+    .cambridge-research-card { padding: 2rem; color: var(--cambridge-text); background: rgba(243,241,231,.95); border-top: 5px solid var(--cambridge-accent); box-shadow: 18px 18px 0 rgba(46,43,40,.28); }
+    .cambridge-research-card h2 { margin: 1.5rem 0 .75rem; font: 600 2rem/1 "Cormorant Garamond", Georgia, serif; }
+    .cambridge-research-card small { font-size: .65rem; letter-spacing: .16em; }
+    .cambridge-diagram { display: flex; align-items: center; gap: 1rem; color: var(--cambridge-primary); font: 3rem Georgia, serif; }
+    .cambridge-diagram i { width: 65px; border-top: 1px solid var(--cambridge-accent); }
+    .cambridge-card-rule { margin: 1.5rem 0; border-top: 1px solid var(--cambridge-border); }
+    .cambridge-principles { background: #fff; border-bottom: 1px solid var(--cambridge-border); }
+    .cambridge-index { color: var(--cambridge-accent); font-weight: 700; letter-spacing: .12em; }
+    .cambridge-principles h2, .cambridge-section-heading h2, .cambridge-closing h2 { font: 600 2.6rem/1 "Cormorant Garamond", Georgia, serif; }
+    .cambridge-principles p:not(.cambridge-index) { max-width: 290px; color: var(--cambridge-text-secondary); }
+    .cambridge-catalog { background: var(--cambridge-light); }
+    .cambridge-section-heading { max-width: 620px; }
+    .cambridge-section-heading > p:last-child { color: var(--cambridge-text-secondary); font-size: 1.1rem; }
+    .cambridge-course-card { display: grid; grid-template-columns: 64px 1fr; gap: 1rem; height: 100%; padding: 1.6rem; background: white; border: 1px solid var(--cambridge-border); border-left: 5px solid var(--cambridge-primary); transition: transform .2s ease, box-shadow .2s ease; }
+    .cambridge-course-card:hover { transform: translateY(-4px); box-shadow: 8px 10px 0 rgba(74,123,109,.16); }
+    .cambridge-course-number { color: var(--cambridge-accent); font: 700 2.3rem/1 "Cormorant Garamond", Georgia, serif; }
+    .cambridge-course-card h3 { margin: .4rem 0 .7rem; font-size: 1.45rem; }
+    .cambridge-course-card p:not(.cambridge-card-label) { color: var(--cambridge-text-secondary); }
+    .cambridge-course-card a { color: var(--cambridge-primary); }
+    .cambridge-closing { color: white; background: var(--cambridge-secondary); }
+    .cambridge-closing h2 { margin: 1rem 0 2rem; color: white; }
+    @media (max-width: 768px) { .cambridge-showcase-hero { padding: 5rem 0 3rem; } .cambridge-showcase-hero h1 { font-size: 4rem; } .cambridge-research-card { margin-top: 1rem; } .cambridge-hero-actions { align-items: flex-start; flex-direction: column; } }
