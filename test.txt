@@ -1,7 +1,7 @@
 -r requirements.txt
 
 # Crear tarball y wheel
-build==1.5.0
+build==1.5.1
 twine==6.2.0
 wheel==0.47.0
 
@@ -13,11 +13,11 @@ pytest==9.0.3
 pytest-xdist==3.8.0
 pytest-timeout==2.4.0
 pytest-benchmark==5.2.3
-ruff==0.15.20
+ruff==0.15.21
 
 # Cobertura de código
 coverage==7.14.1
 pytest-cov==7.1.0
 
 # Verificación de tipos
-mypy==2.1.0
+mypy==2.3.0
