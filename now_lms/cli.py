@@ -393,12 +393,18 @@ def serve(wsgi_server):
                     def load(self):
                         return self.application
 
+                from now_lms.session_config import reset_connections_after_fork
+
                 options = {
                     "bind": f"0.0.0.0:{PORT}",
                     "workers": WORKERS,
                     "threads": THREADS,
                     "worker_class": "gthread" if THREADS > 1 else "sync",
-                    "preload_app": True,  # Load app before forking workers for memory efficiency and shared sessions
+                    # Do not fork with SQLAlchemy connections opened by the
+                    # server-side session backend. Session data is shared by
+                    # Redis/the database, while engines remain worker-local.
+                    "preload_app": False,
+                    "post_fork": reset_connections_after_fork,
                     "timeout": 120,
                     "graceful_timeout": 30,
                     "keepalive": 5,

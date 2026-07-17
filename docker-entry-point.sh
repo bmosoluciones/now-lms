@@ -3,6 +3,6 @@
 set -e
 
 # Use run.py which supports both Waitress and Gunicorn with shared configuration
-# Defaults to Waitress (cross-platform, included in requirements.txt)
-# Set WSGI_SERVER=gunicorn to use Gunicorn instead (requires gunicorn in requirements.txt)
+# The Linux container defaults to Gunicorn; set WSGI_SERVER=waitress to use
+# the cross-platform single-process server instead.
 exec /usr/bin/python3.12 /app/run.py

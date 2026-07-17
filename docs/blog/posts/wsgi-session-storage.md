@@ -26,21 +26,15 @@ When running NOW LMS with production WSGI servers (Gunicorn multi-process or Wai
 
 ## Root Cause
 
-Both Gunicorn and Waitress can cause session issues, but for slightly different reasons:
+The WSGI server does not make Flask's signed-cookie sessions worker-local. The failure occurs when NOW LMS selects server-side sessions but that interface is not actually installed, its backend is unavailable, or workers use different secrets/backends.
 
 ### Gunicorn (Multi-Process)
 
-Gunicorn spawns multiple worker processes (e.g., `gunicorn app:app --workers 4`), and each worker has its own memory space. Flask's default session handling uses signed cookies stored in each process's memory:
-
-1. User logs in → Request handled by Worker 1 → Session created in Worker 1's memory
-2. User refreshes page → Request handled by Worker 2 → Worker 2 doesn't know about the session → User appears logged out
-3. User refreshes again → Request handled by Worker 1 → Session found → User appears logged in
+Gunicorn spawns multiple worker processes (e.g., `gunicorn app:app --workers 4`). Every process must use the same stable `SECRET_KEY` and the same Redis or SQLAlchemy session backend. NOW LMS also disables Gunicorn app preloading so workers do not inherit pooled database connections opened before the fork.
 
 ### Waitress (Multi-Threaded)
 
-Waitress uses a single process with multiple threads. While threads share memory, concurrent access to session data without proper synchronization can cause race conditions and inconsistent session state, especially under high load.
-
-Both scenarios create "erratic" behavior where session state is inconsistent.
+Waitress uses a single process with multiple threads, so it does not switch requests between process-local workers. It still uses the same server-side backend as Gunicorn, which keeps deployment behavior consistent and supports multiple NOW LMS instances behind a load balancer.
 
 ## Solution
 
@@ -56,13 +50,13 @@ Redis provides optimal performance and is the recommended solution for productio
 - Persistent across server restarts
 - Supports session expiration
 
-### 2. Filesystem (Fallback)
+### 2. SQLAlchemy (Fallback)
 
-When Redis is not available, filesystem-based sessions work for both servers as long as they share the same filesystem:
+When Redis is not configured, sessions use the same SQLAlchemy database as NOW LMS:
 
-- Sessions stored in `/tmp/now_lms_sessions/`
-- Slower than Redis but functional
-- Works for single-server deployments
+- Shared across worker processes and application instances
+- Requires no additional service
+- Works with every database backend supported by NOW LMS
 
 ### 3. Testing Mode
 
@@ -77,7 +71,7 @@ The system automatically detects the best available session storage:
 ```python
 # Priority order:
 1. Redis (if REDIS_URL or SESSION_REDIS_URL is set)
-2. Filesystem (if not in testing mode)
+2. SQLAlchemy database (if not in testing mode)
 3. Default Flask sessions (for testing)
 ```
 
@@ -106,7 +100,7 @@ gunicorn "now_lms:lms_app" --workers 4 --bind 0.0.0.0:8000
 
 ### Without Redis
 
-If Redis is not available, the system will automatically use filesystem storage. No configuration needed.
+If Redis is not configured, the system automatically stores sessions in the configured SQLAlchemy database. No additional service is needed.
 
 ### SECRET_KEY (Critical!)
 
@@ -135,7 +129,7 @@ All session storage backends use these production-ready settings:
 - **SESSION_COOKIE_HTTPONLY**: True (prevents JavaScript access to session cookie)
 - **SESSION_COOKIE_SECURE**: True in production (enforces HTTPS)
 - **SESSION_COOKIE_SAMESITE**: "Lax" (protects against CSRF attacks)
-- **SESSION_FILE_THRESHOLD**: 1000 (maximum number of sessions before cleanup)
+- **SESSION_CLEANUP_N_REQUESTS**: 100 for the SQLAlchemy backend
 
 ## Files Modified
 
@@ -151,14 +145,14 @@ All session storage backends use these production-ready settings:
 Run the session configuration tests:
 
 ```bash
-pytest tests/test_session_gunicorn.py -v
+pytest tests/test_session_multiworker.py -v
 ```
 
 Tests verify:
 - Redis configuration when REDIS_URL is set
-- Filesystem fallback when Redis is unavailable
+- SQLAlchemy fallback when Redis is not configured
 - Proper settings for production use
-- Session persistence across requests
+- Flask-Login persistence across independent worker processes
 
 ## WSGI Server Configuration
 
@@ -181,7 +175,7 @@ serve(
 **Important**: 
 - Waitress is single-process, multi-threaded
 - Thread count is automatically calculated based on CPU and RAM
-- Works well with both Redis and filesystem sessions
+- Works well with both Redis and SQLAlchemy sessions
 - Cross-platform (Windows, Linux, macOS)
 
 ### Gunicorn Configuration
@@ -189,7 +183,7 @@ serve(
 ```python
 # Key configurations for session support
 options = {
-    "preload_app": True,  # Load app before forking workers
+    "preload_app": False,  # Keep SQLAlchemy engines worker-local
     "workers": workers,  # Intelligent calculation based on CPU and RAM
     "threads": threads,  # Default 1, can be >1 for more concurrency
     "worker_class": "gthread" if threads > 1 else "sync",
@@ -198,8 +192,8 @@ options = {
 ```
 
 **Important**: 
-- `preload_app = True` ensures consistent app configuration across all workers
-- Works with both Redis and filesystem sessions
+- `preload_app = False` prevents workers from inheriting pooled database connections
+- Works with both Redis and SQLAlchemy sessions
 - Worker/thread counts are automatically calculated based on system resources
 - Linux/Unix only (not supported on Windows)
 
@@ -308,9 +302,9 @@ INFO: Using Redis for session storage - optimal for multi-worker WSGI servers
 or
 
 ```
-INFO: Configuring CacheLib FileSystemCache-based session storage for multi-worker/multi-threaded WSGI servers
-INFO: Session storage initialized: cachelib
-INFO: Session cache directory: /tmp/now_lms_sessions
+INFO: Configuring SQLAlchemy-based session storage for multi-worker/multi-threaded WSGI servers
+INFO: Session storage initialized: sqlalchemy
+INFO: Session table: flask_sessions
 ```
 
 ## Troubleshooting
@@ -325,7 +319,7 @@ INFO: Session cache directory: /tmp/now_lms_sessions
 ### Sessions not persisting
 
 1. Check SECRET_KEY is not "dev": `echo $SECRET_KEY`
-2. If using filesystem storage, verify `/tmp/now_lms_sessions` (or `/dev/shm/now_lms_sessions`) is writable
+2. Verify the application database is reachable and the `flask_sessions` table can be created
 3. Check session expiration (default 24 hours)
 
 ### Redis connection errors
@@ -333,7 +327,7 @@ INFO: Session cache directory: /tmp/now_lms_sessions
 If Redis is configured but not available:
 
 ```bash
-# Temporarily disable Redis to use filesystem fallback
+# Disable the Redis setting to use the SQLAlchemy fallback
 unset REDIS_URL
 unset SESSION_REDIS_URL
 ```
@@ -354,7 +348,7 @@ Both servers work well with NOW LMS and support the same session storage configu
 - Need multiple worker processes for better CPU utilization
 - Want traditional Unix-style process management
 - High-traffic production environment
-- Want to use `preload_app` for memory efficiency
+- Need worker-local database connection pools
 
 ### Switching Between Servers
 
@@ -374,20 +368,20 @@ Session storage configuration is shared and works identically with both servers.
 
 ## Performance
 
-### Redis vs Filesystem
+### Redis vs SQLAlchemy
 
-| Feature | Redis | Filesystem |
+| Feature | Redis | SQLAlchemy |
 |---------|-------|------------|
-| Speed | Very Fast | Moderate |
-| Scalability | Excellent | Limited |
-| Multi-server | Yes | No |
+| Speed | Very Fast | Database-dependent |
+| Scalability | Excellent | Good |
+| Multi-server | Yes | Yes, with a shared database |
 | Persistence | Configurable | Yes |
-| Setup | Requires Redis | No setup |
-| Thread-safe | Yes | Yes (with proper locking) |
+| Setup | Requires Redis | Uses the NOW LMS database |
+| Concurrent workers | Yes | Yes |
 
 ### Recommendations
 
-- **Single server, low traffic**: Filesystem is sufficient
+- **Single server, low traffic**: SQLAlchemy is sufficient
 - **Single server, high traffic**: Use Redis
 - **Multiple servers**: Use Redis (required)
 - **Development**: Either works

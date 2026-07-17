@@ -9,6 +9,15 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [1.3.0] - 2026-07-17
+
+### Fixed:
+ - Fixed authentication sessions disappearing when consecutive requests are handled by different Gunicorn workers.
+ - Added a shared SQLAlchemy session backend when Redis is not configured and fail-fast validation when Redis is unavailable.
+ - Reset inherited SQLAlchemy and Redis connection pools after each Gunicorn worker fork.
+ - Switched the Linux container default from Waitress to Gunicorn and made invalid server startup fail explicitly.
+ - Added a regression test that writes a login session in one process and reads it from another process.
+
 ### Changed
  - Reworked the default visual themes with clearer academic identities for Cambridge, Harvard and Oxford.
  - Improved the default theme presentation and restored the missing base template required by the Invest theme.
