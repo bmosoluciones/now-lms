@@ -5,6 +5,7 @@
 
 import pytest
 from unittest import mock
+from sqlalchemy.exc import OperationalError
 
 from now_lms.auth import proteger_passwd
 from now_lms.db import Certificacion, Curso, EstudianteCurso, Usuario, database
@@ -158,6 +159,24 @@ def test_edit_perfil(client_student, profile_users, db_session):
         print("HTML RESP:", resp_post_email.data.decode("utf-8"))
     assert resp_post_email.status_code == 200
     assert b"verifique su nuevo correo" in resp_post_email.data
+
+
+def test_edit_perfil_operational_error(client_student, profile_users, db_session):
+    """Test OperationalError exception path during profile edit commit."""
+    student_id = profile_users["student"].id
+    edit_data = {
+        "nombre": "Updated Name Error",
+        "apellido": "Updated Surname Error",
+        "correo_electronico": "student_user@example.com",
+        "url": "https://updated.com",
+    }
+
+    # Mock database commit to raise OperationalError
+    err = OperationalError("select", {}, Exception("Mock DB error"))
+    with mock.patch("now_lms.vistas.profiles.user.database.session.commit", side_effect=err):
+        resp = client_student.post(f"/perfil/edit/{student_id}", data=edit_data, follow_redirects=True)
+        assert resp.status_code == 200
+        assert b"Error al editar el perfil" in resp.data
 
 
 def test_edit_perfil_unauthorized(client_student, profile_users):
