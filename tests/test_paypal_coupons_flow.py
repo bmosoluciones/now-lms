@@ -201,3 +201,34 @@ class TestPayPalCouponFlow:
         # Verify another payment was NOT created
         all_payments = db_session.execute(database.select(Pago).filter_by(usuario=student.usuario, curso=curso.codigo)).scalars().all()
         assert len(all_payments) == 1
+
+    def test_post_enrollment_preserves_custom_details(self, app, client, db_session):
+        student = _crear_estudiante(db_session)
+        curso = _crear_curso_pagado(db_session)
+
+        _login(client, student.usuario, "password")
+
+        # POST to enroll with custom billing details (nombre, apellido, correo_electronico)
+        custom_data = {
+            "nombre": "CustomName",
+            "apellido": "CustomSurname",
+            "correo_electronico": "custom_email@example.com",
+            "direccion1": "Custom Street 1",
+            "pais": "Costa Rica",
+            "provincia": "San Jose",
+            "codigo_postal": "10101",
+            "modo": "paid"
+        }
+
+        resp = client.post(f"/course/{curso.codigo}/enroll", data=custom_data, follow_redirects=False)
+
+        # Should redirect to payment page
+        assert resp.status_code == 302
+        assert f"/paypal_checkout/payment/{curso.codigo}" in resp.location
+
+        # Verify that the created pending Pago has our CUSTOM details rather than defaults
+        pago = db_session.execute(database.select(Pago).filter_by(usuario=student.usuario, curso=curso.codigo, estado="pending")).scalars().first()
+        assert pago is not None
+        assert pago.nombre == "CustomName"
+        assert pago.apellido == "CustomSurname"
+        assert pago.correo_electronico == "custom_email@example.com"
