@@ -128,6 +128,8 @@ def edit_perfil(ulid: str) -> str | Response:
 
     if request.method == "POST":
         #
+        email_changed = form.correo_electronico.data != usuario_.correo_electronico
+
         usuario_.nombre = form.nombre.data
         usuario_.apellido = form.apellido.data
         usuario_.correo_electronico = form.correo_electronico.data
@@ -142,7 +144,7 @@ def edit_perfil(ulid: str) -> str | Response:
         usuario_.nacimiento = form.nacimiento.data
         usuario_.bio = form.bio.data
 
-        if form.correo_electronico.data != usuario_.correo_electronico:
+        if email_changed:
             usuario_.correo_electronico_verificado = False
             flash("Favor verifique su nuevo correo electronico.", "warning")
 
@@ -162,8 +164,9 @@ def edit_perfil(ulid: str) -> str | Response:
                             flash("Imagen de perfil actualizada.", "success")
                 except UploadNotAllowed:
                     log.warning("Could not update profile image.")
-        except OperationalError:
+        except OperationalError as e:
             database.session.rollback()
+            log.error(f"OperationalError in edit_perfil: {e}")
             flash("Error al editar el perfil.", "error")
 
         return redirect(PROFILE_ROUTE)
