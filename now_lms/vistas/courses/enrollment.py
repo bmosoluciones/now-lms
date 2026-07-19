@@ -199,12 +199,13 @@ def course_enroll(course_code: str) -> str | Response:
     form = PagoForm()
     coupon_form = CouponApplicationForm()
 
-    # Pre-fill form data
-    form.nombre.data = _usuario.nombre
-    form.apellido.data = _usuario.apellido
-    form.correo_electronico.data = _usuario.correo_electronico
-    if coupon_code:
-        coupon_form.coupon_code.data = coupon_code
+    # Pre-fill form data only on GET requests to avoid overwriting user submission on POST
+    if request.method == "GET":
+        form.nombre.data = _usuario.nombre
+        form.apellido.data = _usuario.apellido
+        form.correo_electronico.data = _usuario.correo_electronico
+        if coupon_code:
+            coupon_form.coupon_code.data = coupon_code
 
     if form.validate_on_submit():
         pago = _build_pago_from_form(form, _curso, pricing.final_price)
