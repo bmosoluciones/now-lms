@@ -98,7 +98,7 @@ def nuevo_programa() -> str | Response:
             plantilla_certificado=(
                 form.plantilla_certificado.data if form.certificado.data and form.plantilla_certificado.data else None
             ),
-            creado_por=current_user.id,
+            creado_por=current_user.usuario,
         )
         database.session.add(programa)
         try:
@@ -142,7 +142,7 @@ def programas() -> str:
         )
     else:
         consulta = database.paginate(
-            database.select(Programa).filter(Programa.creado_por == current_user.id),  # noqa: E712
+            database.select(Programa).filter(Programa.creado_por == current_user.usuario),  # noqa: E712
             page=request.args.get("page", default=1, type=int),
             max_per_page=MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA,
             count=True,

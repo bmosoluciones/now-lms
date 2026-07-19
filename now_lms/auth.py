@@ -115,7 +115,7 @@ def perfil_requerido(perfil_id: str | tuple[str, ...]) -> Callable[[Callable], C
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             if not current_user.is_authenticated:
                 flash("Favor iniciar sesión.", "warning")
-                return redirect(url_for("user.login"))
+                return redirect(url_for("user.inicio_sesion"))
 
             log.trace(f"Verifying access for user {current_user.usuario} with profile {perfil_id}")
             # Always allow admin access
@@ -154,7 +154,7 @@ def email_verificado_requerido(func: Callable) -> Callable:
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         if not current_user.is_authenticated:
             flash("Favor iniciar sesión.", "warning")
-            return redirect(url_for("user.login"))
+            return redirect(url_for("user.inicio_sesion"))
 
         # Admins bypass email verification requirement
         if current_user.tipo == "admin":
