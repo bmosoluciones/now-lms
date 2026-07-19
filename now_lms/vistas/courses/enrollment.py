@@ -166,6 +166,60 @@ def _is_audit_enrollment(mode: str, course_obj: Curso) -> bool:
     return mode == "audit" and course_obj.auditable
 
 
+def _check_unverified_email_restriction(course_obj: Curso) -> bool:
+    """Check if the student has restricted access because of unverified email.
+
+    Flashes a message and returns True if restricted, False otherwise.
+    """
+    if course_obj.pagado and usuario_requiere_verificacion_email():
+        flash(
+            "Debe verificar su correo electrónico para inscribirse en cursos de pago o usar cupones. "
+            "Los cursos gratuitos están disponibles sin verificación.",
+            "warning",
+        )
+        return True
+    return False
+
+
+def _process_validated_enrollment(
+    form,
+    course_obj: Curso,
+    pricing,
+    mode: str,
+    course_code: str,
+) -> Response:
+    """Handle PagoForm submission when it has been successfully validated."""
+    pago = _build_pago_from_form(form, course_obj, pricing.final_price)
+
+    # Add coupon information to payment description
+    if pricing.applied_coupon:
+        pago.descripcion = f"Cupón aplicado: {pricing.applied_coupon.code} (Descuento: {pricing.discount_amount})"
+
+    # Handle different enrollment modes
+    if _is_free_enrollment(course_obj, pricing.final_price):
+        pago.estado = "completed"
+        success_message = _build_coupon_flash_message(
+            pricing.applied_coupon, pricing.final_price, pricing.discount_amount
+        )
+        return _finalize_completed_enrollment(
+            pago,
+            course_code,
+            pricing.applied_coupon,
+            pricing.final_price,
+            pricing.discount_amount,
+            success_message,
+        )
+
+    if _is_audit_enrollment(mode, course_obj):
+        pago.audit = True
+        pago.estado = "completed"  # Audit enrollment is completed immediately
+        pago.monto = 0
+        pago.metodo = "audit"
+        return _finalize_completed_enrollment(pago, course_code)
+
+    return _process_paid_enrollment(pago, course_code)
+
+
 @course.route("/course/<course_code>/enroll", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("student")
@@ -183,14 +237,7 @@ def course_enroll(course_code: str) -> str | Response:
     coupon_code = request.args.get("coupon_code", "") or request.form.get("coupon_code", "")
     pricing = _calculate_enrollment_pricing(_curso, coupon_code, _usuario)
 
-    # Check if user has unverified email and is trying to enroll in paid course or use coupon
-    if _curso.pagado and usuario_requiere_verificacion_email():
-        # User has unverified email - only allow free enrollment without coupons
-        flash(
-            "Debe verificar su correo electrónico para inscribirse en cursos de pago o usar cupones. "
-            "Los cursos gratuitos están disponibles sin verificación.",
-            "warning",
-        )
+    if _check_unverified_email_restriction(_curso):
         return redirect(url_for(VISTA_CURSOS, course_code=course_code))
 
     if pricing.validation_error:
@@ -208,33 +255,7 @@ def course_enroll(course_code: str) -> str | Response:
             coupon_form.coupon_code.data = coupon_code
 
     if form.validate_on_submit():
-        pago = _build_pago_from_form(form, _curso, pricing.final_price)
-
-        # Add coupon information to payment description
-        if pricing.applied_coupon:
-            pago.descripcion = f"Cupón aplicado: {pricing.applied_coupon.code} (Descuento: {pricing.discount_amount})"
-
-        # Handle different enrollment modes
-        if _is_free_enrollment(_curso, pricing.final_price):
-            pago.estado = "completed"
-            success_message = _build_coupon_flash_message(pricing.applied_coupon, pricing.final_price, pricing.discount_amount)
-            return _finalize_completed_enrollment(
-                pago,
-                course_code,
-                pricing.applied_coupon,
-                pricing.final_price,
-                pricing.discount_amount,
-                success_message,
-            )
-
-        if _is_audit_enrollment(_modo, _curso):
-            pago.audit = True
-            pago.estado = "completed"  # Audit enrollment is completed immediately
-            pago.monto = 0
-            pago.metodo = "audit"
-            return _finalize_completed_enrollment(pago, course_code)
-
-        return _process_paid_enrollment(pago, course_code)
+        return _process_validated_enrollment(form, _curso, pricing, _modo, course_code)
 
     return render_template(
         "learning/curso/enroll.html",
