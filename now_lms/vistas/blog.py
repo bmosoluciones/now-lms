@@ -512,10 +512,10 @@ def create_tag() -> str | Response:
     return redirect(url_for("blog.admin_tags"))
 
 
-@blog.route("/admin/blog/tags/<tag_id>", methods=["DELETE"])
+@blog.route("/admin/blog/tags/<tag_id>/delete", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
-def delete_tag(tag_id: int) -> Response:
+def delete_tag(tag_id: str) -> Response:
     """Delete a blog tag."""
     tag = database.session.get(BlogTag, tag_id)
     if not tag:
@@ -560,7 +560,7 @@ def ban_comment(comment_id: str) -> str | Response:
     return redirect(url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
 
 
-@blog.route("/admin/blog/comments/<comment_id>", methods=["DELETE"])
+@blog.route("/admin/blog/comments/<comment_id>/delete", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
 def delete_comment(comment_id: str) -> str | Response:

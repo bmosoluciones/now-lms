@@ -213,9 +213,10 @@
                                                     </li>
                                                     <li>
                                                         <form
-                                                            method="DELETE"
+                                                            method="POST"
                                                             action="{{ url_for('blog.delete_comment', comment_id=comment.id) }}"
                                                             class="d-inline"
+                                                            onsubmit="return confirm('{{ _('¿Está seguro de que desea eliminar este comentario?') }}')"
                                                         >
                                                             <button type="submit" class="dropdown-item text-danger">
                                                                 <i class="fas fa-trash"></i> {{ _('Eliminar') }}
