@@ -88,7 +88,7 @@ def test_perfil_student(client_student, db_session, profile_users):
 
     # Create a certification
     cert = Certificacion(
-        usuario=profile_users["student"].id,
+        usuario=profile_users["student"].usuario,
         curso="PROF101",
         certificado="default",
     )
@@ -99,6 +99,9 @@ def test_perfil_student(client_student, db_session, profile_users):
     resp = client_student.get("/perfil")
     assert resp.status_code == 200
     assert b"Test Course For Profile" in resp.data
+    # Assert that the certifications list is populated and contains the cert information
+    assert b"Mis Certificaciones" in resp.data
+    assert b"No tienes certificaciones obtenidas" not in resp.data
 
 
 def test_perfil_instructor(client, profile_users, app):
