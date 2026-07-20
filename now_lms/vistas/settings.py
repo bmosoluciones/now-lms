@@ -262,13 +262,14 @@ def configuracion() -> str | Response:
             row = database.session.execute(database.select(MailConfig)).first()
             if row is None:
                 config.verify_user_by_email = False
+                flash(_("Debe configurar el correo electronico antes de habilitar verificación por e-mail."), "warning")
             else:
                 config_mail = row[0]
-            if not config_mail.email_verificado:
-                flash(_("Debe configurar el correo electronico antes de habilitar verificación por e-mail."), "warning")
-                config.verify_user_by_email = False
-            else:
-                config.verify_user_by_email = True
+                if not config_mail.email_verificado:
+                    flash(_("Debe configurar el correo electronico antes de habilitar verificación por e-mail."), "warning")
+                    config.verify_user_by_email = False
+                else:
+                    config.verify_user_by_email = True
 
         try:
             # Invalidate all configuration-related cache
