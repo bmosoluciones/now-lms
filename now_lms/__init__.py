@@ -638,10 +638,22 @@ def initial_setup(with_examples=False, with_tests=False, flask_app=None):
 
     with app_to_use.app_context():
         log.info("Creating database schema.")
+
+        # Ensure Flask-Session extension is declared BEFORE create_all so its
+        # model is registered in SQLAlchemy metadata and the session table is
+        # created together with all other tables.
+        session_type = app_to_use.config.get("SESSION_TYPE")
+        has_db_uri = bool(app_to_use.config.get("SQLALCHEMY_DATABASE_URI"))
+        if session_type in ("sqlalchemy", "redis") and has_db_uri and not hasattr(app_to_use, "_session_initialized"):
+            from now_lms.session_config import init_session
+
+            log.info("Ensuring Flask-Session is initialized before create_all")
+            init_session(app_to_use)
+
         database.create_all()
 
         # Verify that the session tables are established if Flask-Session is using SQLAlchemy
-        if app_to_use.config.get("SESSION_TYPE") == "sqlalchemy":
+        if session_type == "sqlalchemy":
             from sqlalchemy import inspect
 
             inspector = inspect(database.engine)

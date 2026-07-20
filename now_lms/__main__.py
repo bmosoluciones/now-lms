@@ -29,7 +29,7 @@ if __name__ == "__main__":
     if DESARROLLO:
         log.trace("Running NOW-LMS with development options.")
         init_app(with_examples=True)
-        serve()
-    log.trace("Starting NOW-LMS as importable module.")
-    init_app(with_examples=False)
+    else:
+        log.trace("Starting NOW-LMS as importable module.")
+        init_app(with_examples=False)
     serve()
