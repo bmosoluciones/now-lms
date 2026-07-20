@@ -10,21 +10,16 @@
         {{ current_theme.navbar() }}
 
         <!-- Hero Section -->
-        <section
-            class="hero-section py-5"
-            style="
-                background: linear-gradient(135deg, #2e2e2e 0%, #dadada 100%);
-                min-height: 60vh;
-                display: flex;
-                align-items: center;
-            "
-        >
-            <div class="container">
+        <section class="hero-section classic-hero py-5">
+            <div class="classic-ornament" aria-hidden="true"></div>
+            <div class="classic-hero-lines" aria-hidden="true"></div>
+            <div class="container position-relative">
                 <div class="row align-items-center">
-                    <div class="col-12 col-md-8 col-lg-8 text-white order-2 order-md-1">
+                    <div class="col-12 col-md-7 col-lg-7 text-white order-2 order-md-1">
                         <div class="hero-content">
+                            <p class="classic-kicker mb-3">EST. · {{ _('Aprendizaje para toda la vida') }}</p>
                             <h1 class="display-4 fw-bold mb-4">{{ _('Bienvenido a') }} {{ site_config.titulo }}</h1>
-                            <p class="lead mb-4" style="font-size: 1.3rem; line-height: 1.6">
+                            <p class="lead mb-4 classic-hero-copy">
                                 {% if site_config.hero and site_config.hero != "" %} {{ site_config.hero }} {% else %} {{
                                 _('Experimenta el aprendizaje en su forma más pura y elegante con nuestro diseño clásico.
                                 Nuestra plataforma está diseñada para brindar una experiencia de aprendizaje excepcional.') }}
@@ -55,27 +50,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 col-lg-4 text-center order-1 order-md-2 mb-4 mb-md-0">
+                    <div class="col-12 col-md-5 col-lg-5 text-center order-1 order-md-2 mb-4 mb-md-0">
                         <div class="hero-visual">
-                            <div
-                                class="learning-icon"
-                                style="
-                                    background: rgba(255, 255, 255, 0.1);
-                                    border-radius: 50%;
-                                    width: 250px;
-                                    height: 250px;
-                                    margin: 0 auto;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    border: 4px solid rgba(255, 255, 255, 0.3);
-                                "
-                            >
-                                <div class="text-center text-white">
-                                    <div style="font-size: 3rem; margin-bottom: 0.5rem">📚</div>
-                                    <div style="font-size: 1.2rem; font-weight: 600">{{ _('Aprendizaje') }}</div>
-                                    <div style="font-size: 0.9rem; opacity: 0.8">{{ _('Digital') }}</div>
-                                </div>
+                            <div class="classic-crest">
+                                <span class="classic-crest-mark">◆</span>
+                                <span class="classic-crest-title">{{ _('Saber') }}</span>
+                                <span class="classic-crest-subtitle">{{ _('forma el futuro') }}</span>
                             </div>
                         </div>
                     </div>
