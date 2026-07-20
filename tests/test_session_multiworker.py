@@ -93,3 +93,66 @@ def test_gunicorn_postfork_discards_inherited_database_pool(monkeypatch):
     reset_connections_after_fork(None, SimpleNamespace(pid=1234))
 
     dispose.assert_called_once_with(close=False)
+
+
+def test_init_session_sqlalchemy_success(monkeypatch):
+    from flask import Flask
+    from now_lms.session_config import init_session
+    from unittest.mock import MagicMock
+    from flask_session.base import ServerSideSessionInterface
+
+    app = Flask("test_app")
+    app.config["TESTING"] = False
+    monkeypatch.delenv("SESSION_REDIS_URL", raising=False)
+    monkeypatch.delenv("CACHE_REDIS_URL", raising=False)
+    monkeypatch.delenv("REDIS_URL", raising=False)
+
+    mock_db = MagicMock()
+
+    import now_lms.session_config
+    monkeypatch.setattr(now_lms.session_config, "get_session_config", lambda app: {
+        "SESSION_TYPE": "sqlalchemy",
+        "SESSION_SQLALCHEMY_TABLE": "flask_sessions",
+    })
+
+    monkeypatch.setattr("now_lms.db.database", mock_db)
+
+    mock_session_cls = MagicMock()
+    monkeypatch.setattr("flask_session.Session", mock_session_cls)
+    app.session_interface = MagicMock(spec=ServerSideSessionInterface)
+
+    init_session(app)
+
+    mock_db.create_all.assert_called_once()
+
+
+def test_init_session_sqlalchemy_failure(monkeypatch):
+    from flask import Flask
+    from now_lms.session_config import init_session
+    from unittest.mock import MagicMock
+    from flask_session.base import ServerSideSessionInterface
+    import pytest
+
+    app = Flask("test_app")
+    app.config["TESTING"] = False
+    monkeypatch.delenv("SESSION_REDIS_URL", raising=False)
+    monkeypatch.delenv("CACHE_REDIS_URL", raising=False)
+    monkeypatch.delenv("REDIS_URL", raising=False)
+
+    mock_db = MagicMock()
+    mock_db.create_all.side_effect = Exception("mock database error")
+
+    import now_lms.session_config
+    monkeypatch.setattr(now_lms.session_config, "get_session_config", lambda app: {
+        "SESSION_TYPE": "sqlalchemy",
+        "SESSION_SQLALCHEMY_TABLE": "flask_sessions",
+    })
+
+    monkeypatch.setattr("now_lms.db.database", mock_db)
+
+    mock_session_cls = MagicMock()
+    monkeypatch.setattr("flask_session.Session", mock_session_cls)
+    app.session_interface = MagicMock(spec=ServerSideSessionInterface)
+
+    with pytest.raises(Exception, match="mock database error"):
+        init_session(app)
