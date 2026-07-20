@@ -435,3 +435,83 @@
         position: relative;
         z-index: 1;
     }
+
+    /* Animated cherry-blossom hero */
+    .sakura-hero {
+        min-height: 64vh;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        isolation: isolate;
+        background:
+            radial-gradient(circle at 78% 18%, rgba(255, 255, 255, 0.8), transparent 16rem),
+            linear-gradient(125deg, #8d5366 0%, #c97991 44%, #efb5c2 100%);
+    }
+
+    .sakura-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0.22;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.7) 1px, transparent 1px);
+        background-size: 28px 28px;
+        mask-image: linear-gradient(120deg, black, transparent 70%);
+        pointer-events: none;
+    }
+
+    .sakura-hero .container { z-index: 3; }
+    .sakura-hero h1 { color: #fff; text-shadow: 0 4px 24px rgba(79, 35, 50, 0.32); }
+    .sakura-kicker {
+        color: #ffe8ef;
+        font-family: "Noto Serif JP", "Georgia", serif;
+        font-size: 1rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+    }
+    .sakura-hero-copy { max-width: 39rem; font-size: 1.22rem; line-height: 1.75; color: #fff7fa; }
+    .btn-sakura-light { background: #fff; border: 1px solid #fff; color: #7b465b; border-radius: 999px; font-weight: 700; box-shadow: 0 8px 20px rgba(84, 34, 53, 0.18); }
+    .btn-sakura-light:hover { background: #fff3f6; border-color: #fff3f6; color: #5c3c47; transform: translateY(-2px); }
+    .btn-sakura-outline { color: #fff; border: 1px solid rgba(255, 255, 255, 0.75); border-radius: 999px; }
+    .btn-sakura-outline:hover { color: #7b465b; background: #fff; border-color: #fff; }
+
+    .sakura-emblem {
+        width: min(21rem, 72vw);
+        height: min(21rem, 72vw);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.08) 62%, transparent 63%);
+        box-shadow: 0 0 0 1rem rgba(255, 255, 255, 0.06), 0 24px 55px rgba(84, 34, 53, 0.22);
+        animation: sakura-breathe 6s ease-in-out infinite;
+    }
+    .sakura-emblem-flower { color: #fff; font-size: 5rem; line-height: 1; text-shadow: 0 0 25px rgba(255, 255, 255, 0.75); animation: sakura-spin 12s linear infinite; }
+    .sakura-emblem-kanji { color: #fff; font-family: "Noto Serif JP", serif; font-size: 3.3rem; line-height: 1; margin-top: -0.5rem; }
+    .sakura-emblem-caption { margin-top: 0.75rem; color: #fff8fa; font-family: "Noto Serif JP", serif; letter-spacing: 0.12em; }
+
+    .sakura-petals { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+    .sakura-petal { position: absolute; top: -4rem; width: 1rem; height: 1.5rem; border-radius: 100% 0 100% 0; background: linear-gradient(135deg, #fff8fa, #f5b6c7); box-shadow: 0 2px 8px rgba(92, 60, 71, 0.18); animation: sakura-fall linear infinite; }
+    .petal-1 { left: 8%; animation-duration: 11s; animation-delay: -2s; }
+    .petal-2 { left: 19%; animation-duration: 14s; animation-delay: -8s; transform: scale(.75); }
+    .petal-3 { left: 32%; animation-duration: 10s; animation-delay: -5s; transform: scale(1.2); }
+    .petal-4 { left: 47%; animation-duration: 16s; animation-delay: -11s; transform: scale(.65); }
+    .petal-5 { left: 58%; animation-duration: 12s; animation-delay: -1s; }
+    .petal-6 { left: 69%; animation-duration: 15s; animation-delay: -7s; transform: scale(.8); }
+    .petal-7 { left: 77%; animation-duration: 10s; animation-delay: -4s; transform: scale(1.15); }
+    .petal-8 { left: 86%; animation-duration: 13s; animation-delay: -9s; transform: scale(.7); }
+    .petal-9 { left: 93%; animation-duration: 17s; animation-delay: -13s; }
+    .petal-10 { left: 39%; animation-duration: 18s; animation-delay: -15s; transform: scale(.55); }
+    @keyframes sakura-fall { 0% { opacity: 0; transform: translate3d(0, -5vh, 0) rotate(0); } 10% { opacity: .95; } 50% { transform: translate3d(5vw, 35vh, 0) rotate(180deg); } 100% { opacity: 0; transform: translate3d(-8vw, 112vh, 0) rotate(420deg); } }
+    @keyframes sakura-breathe { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-8px) scale(1.02); } }
+    @keyframes sakura-spin { to { transform: rotate(360deg); } }
+    .sakura-branch { position: absolute; z-index: 1; color: #ffe1eb; font-size: 2.2rem; opacity: .7; transform-origin: bottom; }
+    .sakura-branch span { display: block; animation: sakura-sway 4s ease-in-out infinite; }
+    .sakura-branch-left { left: -1rem; top: -1rem; transform: rotate(28deg); }
+    .sakura-branch-right { right: -1rem; bottom: -1rem; transform: rotate(-28deg); }
+    .sakura-branch-right span { animation-delay: -2s; }
+    @keyframes sakura-sway { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
+    @media (prefers-reduced-motion: reduce) { .sakura-petal, .sakura-emblem, .sakura-emblem-flower, .sakura-branch span { animation: none; } }
+    @media (max-width: 768px) { .sakura-hero { min-height: 78vh; } .sakura-emblem { width: 15rem; height: 15rem; } .sakura-emblem-flower { font-size: 3.5rem; } .sakura-emblem-kanji { font-size: 2.5rem; } .sakura-hero-copy { font-size: 1.05rem; } }
