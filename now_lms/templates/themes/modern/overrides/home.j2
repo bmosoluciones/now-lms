@@ -1,0 +1,73 @@
+<!doctype html>
+{% from 'macros/blog_section.j2' import render_blog_section %}
+{% set current_theme = current_theme() %}
+{% set site_config = config() %}
+<html lang="{{ current_locale() }}" class="h-100">
+    <head>
+        {{ current_theme.headertags() }}
+        <title>{{ site_config.titulo_html or "NOW - Learning Management System" }}</title>
+        {{ current_theme.local_style() }}
+    </head>
+    <body>
+        {{ current_theme.navbar() }}
+        <main>
+            {{ current_theme.notify() }}
+            <section class="modern-hero py-5">
+                <div class="modern-orbit modern-orbit-one" aria-hidden="true"></div>
+                <div class="modern-orbit modern-orbit-two" aria-hidden="true"></div>
+                <div class="modern-grid" aria-hidden="true"></div>
+                <div class="container position-relative">
+                    <div class="row align-items-center g-5">
+                        <div class="col-12 col-lg-7">
+                            <p class="modern-kicker mb-3">NOW / {{ _('Aprendizaje en movimiento') }}</p>
+                            <h1 class="modern-display mb-4">{{ _('Convierte la curiosidad en') }} <span>{{ _('progreso real') }}</span></h1>
+                            <p class="modern-hero-copy lead mb-4">
+                                {% if site_config.hero and site_config.hero|length > 0 %}{{ site_config.hero }}{% else %}{{ _('Una experiencia de aprendizaje clara, flexible y conectada con lo que quieres conseguir.') }}{% endif %}
+                            </p>
+                            <div class="d-flex gap-3 flex-wrap">
+                                {% if not current_user.is_authenticated %}
+                                <a href="{{ url_for('user.crear_cuenta') }}" class="btn modern-btn-primary btn-lg">{{ _('Comenzar Ahora') }}</a>
+                                {% else %}
+                                <a href="{{ url_for('home.panel') }}" class="btn modern-btn-primary btn-lg">{{ _('Mi Panel') }}</a>
+                                {% endif %}
+                                <a href="{{ url_for('course.lista_cursos', page=1) }}" class="btn modern-btn-ghost btn-lg">{{ _('Explorar Cursos') }} <span aria-hidden="true">↗</span></a>
+                            </div>
+                            <div class="modern-proof mt-5"><span class="modern-proof-line"></span><span>{{ _('Aprende. Practica. Evoluciona.') }}</span></div>
+                        </div>
+                        <div class="col-12 col-lg-5">
+                            <div class="modern-dashboard" aria-label="{{ _('Vista previa del aprendizaje') }}">
+                                <div class="modern-dashboard-top"><span class="modern-status-dot"></span><span>{{ _('Tu espacio de progreso') }}</span><span class="ms-auto">•••</span></div>
+                                <div class="modern-progress-ring"><strong>72<span>%</span></strong><small>{{ _('completado') }}</small></div>
+                                <div class="modern-dashboard-label">{{ _('Ritmo de esta semana') }}</div>
+                                <div class="modern-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                                <div class="modern-dashboard-footer"><span>01 — 07 {{ _('JUL') }}</span><b>+18%</b></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {% if site_config.enable_feature_section %}
+            <section class="modern-features py-5">
+                <div class="container"><div class="row g-4">
+                    <div class="col-md-4"><div class="modern-feature-card"><span class="modern-feature-number">01</span><h3>{{ _('Aprende a tu manera') }}</h3><p>{{ _('Contenido pensado para avanzar con libertad y claridad.') }}</p></div></div>
+                    <div class="col-md-4"><div class="modern-feature-card modern-feature-card-accent"><span class="modern-feature-number">02</span><h3>{{ _('Conecta ideas') }}</h3><p>{{ _('Encuentra personas, cursos y recursos que amplían tu perspectiva.') }}</p></div></div>
+                    <div class="col-md-4"><div class="modern-feature-card"><span class="modern-feature-number">03</span><h3>{{ _('Mide tu avance') }}</h3><p>{{ _('Cada pequeño paso se convierte en una señal de progreso.') }}</p></div></div>
+                </div></div>
+            </section>
+            {% endif %}
+
+            {% if cursos.total > 0 %}
+            <section class="py-5 modern-courses"><div class="container">
+                <div class="d-flex justify-content-between align-items-end mb-4"><div><p class="modern-section-kicker">{{ _('Selección actual') }}</p><h2>{{ _('Cursos para tu próximo paso') }}</h2></div><a class="modern-text-link" href="{{ url_for('course.lista_cursos', page=1) }}">{{ _('Ver todos') }} ↗</a></div>
+                <div class="row row-cols-1 row-cols-sm-2 g-4">
+                    {% for curso in cursos.items[:4] %}<div class="col"><div class="card modern-course-card h-100">{% if curso.portada and course_logo(curso.codigo) %}<img src="{{ url_for('static', filename='/files/public/images/' + curso.codigo + '/' + course_logo(curso.codigo)) }}" alt="{{ curso.nombre }}" class="card-img-top" />{% else %}<div class="modern-course-placeholder">✦</div>{% endif %}<div class="card-body"><h5>{{ curso.nombre }}</h5><p>{{ curso.descripcion_corta | truncate(100) }}</p><a href="{{ url_for('course.curso', course_code=curso.codigo) }}" class="modern-text-link">{{ _('Ver curso') }} ↗</a></div></div></div>{% endfor %}
+                </div>
+            </div></section>
+            {% endif %}
+            <section class="modern-cta py-5"><div class="container text-center"><p class="modern-section-kicker">{{ _('Tu siguiente capítulo') }}</p><h2>{{ _('Empieza donde estás.') }}</h2><p>{{ _('El progreso no necesita ser perfecto, solo necesita comenzar.') }}</p><a href="{{ url_for('home.panel') if current_user.is_authenticated else url_for('user.crear_cuenta') }}" class="btn modern-btn-primary btn-lg">{{ _('Dar el primer paso') }} ↗</a></div></section>
+        </main>
+        {% if show_blog_posts %}{{ render_blog_section(latest_blog_posts, '#f8f9fc') }}{% endif %}
+        {{ current_theme.footer() }} {{ current_theme.jslibs() }}
+    </body>
+</html>
