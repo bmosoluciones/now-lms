@@ -167,8 +167,10 @@ class Usuario(UserMixin, database.Model, BaseTabla):
     """Una entidad con acceso al sistema."""
 
     # Información Básica
-    __table_args__ = (database.UniqueConstraint("usuario", name="id_usuario_unico"),)
-    __table_args__ = (database.UniqueConstraint("correo_electronico", name="correo_usuario_unico"),)
+    __table_args__ = (
+        database.UniqueConstraint("usuario", name="id_usuario_unico"),
+        database.UniqueConstraint("correo_electronico", name="correo_usuario_unico"),
+    )
     # Info de sistema
     usuario = database.Column(database.String(150), nullable=False, index=True, unique=True)
     acceso = database.Column(database.LargeBinary(), nullable=False)
@@ -231,7 +233,7 @@ class Curso(database.Model, BaseTabla):
     descripcion = database.Column(database.String(1000), nullable=False)
     portada = database.Column(database.Boolean())
     portada_ext = database.Column(database.String(5))
-    nivel = database.Column(database.Integer(), default=False)  # 0: Introductorio, 1: Principiante, 2: Intermedio, 3: Avanzado
+    nivel = database.Column(database.Integer(), default=0)  # 0: Introductorio, 1: Principiante, 2: Intermedio, 3: Avanzado
     duracion = database.Column(database.Integer())
     # Estado de publicación
     estado = database.Column(database.String(9), nullable=False, index=True)  # draft, open, closed, finalized
