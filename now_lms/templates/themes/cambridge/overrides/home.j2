@@ -1,8 +1,7 @@
 <!doctype html>
 <html lang="es">
-    {% from 'macros/blog_section.j2' import render_blog_section %}
-    {% set current_theme = current_theme() %}
-    {% set site_config = config() %}
+    {% from 'macros/blog_section.j2' import render_blog_section %} {% set current_theme = current_theme() %} {% set site_config
+    = config() %}
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
         <title>{{ site_config.titulo_html or "Cambridge Collection · NOW LMS" }}</title>
@@ -18,15 +17,22 @@
                             <p class="cambridge-kicker">THE CAMBRIDGE COLLECTION <span>·</span> NOW LMS</p>
                             <h1>{{ _('Ideas become discoveries.') }}</h1>
                             <p class="cambridge-hero-lead">
-                                {{ site_config.hero or _('Un espacio de aprendizaje para investigar, experimentar y compartir conocimiento.') }}
+                                {{ site_config.hero or _('Un espacio de aprendizaje para investigar, experimentar y compartir
+                                conocimiento.') }}
                             </p>
                             <div class="cambridge-hero-actions">
                                 {% if not current_user.is_authenticated %}
-                                <a href="{{ url_for('user.crear_cuenta') }}" class="btn btn-cambridge-primary">{{ _('Empezar a explorar') }}</a>
+                                <a href="{{ url_for('user.crear_cuenta') }}" class="btn btn-cambridge-primary"
+                                    >{{ _('Empezar a explorar') }}</a
+                                >
                                 {% else %}
-                                <a href="{{ url_for('home.panel') }}" class="btn btn-cambridge-primary">{{ _('Abrir mi espacio') }}</a>
+                                <a href="{{ url_for('home.panel') }}" class="btn btn-cambridge-primary"
+                                    >{{ _('Abrir mi espacio') }}</a
+                                >
                                 {% endif %}
-                                <a href="{{ url_for('course.lista_cursos', page=1) }}" class="cambridge-text-link">{{ _('Ver cursos') }} <span aria-hidden="true">↗</span></a>
+                                <a href="{{ url_for('course.lista_cursos', page=1) }}" class="cambridge-text-link"
+                                    >{{ _('Ver cursos') }} <span aria-hidden="true">↗</span></a
+                                >
                             </div>
                         </div>
                         <div class="col-lg-4">
@@ -46,9 +52,21 @@
             <section class="cambridge-principles py-5">
                 <div class="container">
                     <div class="row g-4">
-                        <div class="col-md-4"><p class="cambridge-index">01</p><h2>{{ _('Collegiate') }}</h2><p>{{ _('Aprende en comunidad y encuentra tu propia ruta entre distintas disciplinas.') }}</p></div>
-                        <div class="col-md-4"><p class="cambridge-index">02</p><h2>{{ _('Investigative') }}</h2><p>{{ _('Convierte la teoría en práctica con recursos, proyectos y conversaciones.') }}</p></div>
-                        <div class="col-md-4"><p class="cambridge-index">03</p><h2>{{ _('Forward-looking') }}</h2><p>{{ _('Construye las capacidades que necesitas para resolver los retos que vienen.') }}</p></div>
+                        <div class="col-md-4">
+                            <p class="cambridge-index">01</p>
+                            <h2>{{ _('Collegiate') }}</h2>
+                            <p>{{ _('Aprende en comunidad y encuentra tu propia ruta entre distintas disciplinas.') }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="cambridge-index">02</p>
+                            <h2>{{ _('Investigative') }}</h2>
+                            <p>{{ _('Convierte la teoría en práctica con recursos, proyectos y conversaciones.') }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="cambridge-index">03</p>
+                            <h2>{{ _('Forward-looking') }}</h2>
+                            <p>{{ _('Construye las capacidades que necesitas para resolver los retos que vienen.') }}</p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -56,19 +74,47 @@
             {% if site_config.enable_feature_section %}
             <section class="cambridge-catalog py-5">
                 <div class="container">
-                    <div class="cambridge-section-heading"><p class="cambridge-kicker">THE RESEARCH CATALOGUE</p><h2>{{ _('Start with a question') }}</h2><p>{{ _('Una selección de espacios para aprender a tu propio ritmo.') }}</p></div>
+                    <div class="cambridge-section-heading">
+                        <p class="cambridge-kicker">THE RESEARCH CATALOGUE</p>
+                        <h2>{{ _('Start with a question') }}</h2>
+                        <p>{{ _('Una selección de espacios para aprender a tu propio ritmo.') }}</p>
+                    </div>
                     {% if cursos and cursos.total > 0 %}
                     <div class="row g-4 mt-2">
                         {% for curso in cursos.items[:4] %}
-                        <div class="col-md-6"><article class="cambridge-course-card"><div class="cambridge-course-number">{{ '%02d'|format(loop.index) }}</div><div><p class="cambridge-card-label">{{ _('OPEN SEMINAR') }}</p><h3>{{ curso.nombre }}</h3><p>{{ curso.descripcion_corta|truncate(125) }}</p><a href="{{ url_for('course.lista_cursos', page=1) }}">{{ _('Consultar programa') }} <span aria-hidden="true">→</span></a></div></article></div>
+                        <div class="col-md-6">
+                            <article class="cambridge-course-card">
+                                <div class="cambridge-course-number">{{ '%02d'|format(loop.index) }}</div>
+                                <div>
+                                    <p class="cambridge-card-label">{{ _('OPEN SEMINAR') }}</p>
+                                    <h3>{{ curso.nombre }}</h3>
+                                    <p>{{ curso.descripcion_corta|truncate(125) }}</p>
+                                    <a href="{{ url_for('course.lista_cursos', page=1) }}"
+                                        >{{ _('Consultar programa') }} <span aria-hidden="true">→</span></a
+                                    >
+                                </div>
+                            </article>
+                        </div>
                         {% endfor %}
                     </div>
-                    {% else %}<p class="cambridge-empty">{{ _('El catálogo se está preparando.') }}</p>{% endif %}
+                    {% else %}
+                    <p class="cambridge-empty">{{ _('El catálogo se está preparando.') }}</p>
+                    {% endif %}
                 </div>
             </section>
             {% endif %}
 
-            <section class="cambridge-closing py-5"><div class="container"><p class="cambridge-kicker">A PLACE TO BEGIN</p><h2>{{ _('Bring your next question.') }}</h2>{% if not current_user.is_authenticated %}<a class="btn btn-cambridge-secondary" href="{{ url_for('user.crear_cuenta') }}">{{ _('Crear una cuenta') }}</a>{% endif %}</div></section>
+            <section class="cambridge-closing py-5">
+                <div class="container">
+                    <p class="cambridge-kicker">A PLACE TO BEGIN</p>
+                    <h2>{{ _('Bring your next question.') }}</h2>
+                    {% if not current_user.is_authenticated %}<a
+                        class="btn btn-cambridge-secondary"
+                        href="{{ url_for('user.crear_cuenta') }}"
+                        >{{ _('Crear una cuenta') }}</a
+                    >{% endif %}
+                </div>
+            </section>
             {% if show_blog_posts %}{{ render_blog_section(latest_blog_posts, '#f3f1e7') }}{% endif %}
         </main>
         {{ current_theme.footer() }} {{ current_theme.jslibs() }}

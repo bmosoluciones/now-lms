@@ -1,8 +1,7 @@
 <!doctype html>
 <html lang="es">
-    {% from 'macros/blog_section.j2' import render_blog_section %}
-    {% set current_theme = current_theme() %}
-    {% set site_config = config() %}
+    {% from 'macros/blog_section.j2' import render_blog_section %} {% set current_theme = current_theme() %} {% set site_config
+    = config() %}
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
         <title>{{ site_config.titulo_html or "Oxford Reading Room · NOW LMS" }}</title>
@@ -10,13 +9,114 @@
     <body class="oxford-showcase">
         {{ current_theme.navbar() }}
         <main>
-            <section class="oxford-showcase-hero"><div class="container"><div class="oxford-hero-grid"><div><p class="oxford-kicker">THE OXFORD READING ROOM <span>·</span> 1249—NOW</p><h1>{{ _('Question everything.') }}</h1><p class="oxford-hero-lead">{{ site_config.hero or _('Una colección abierta de cursos, ideas y lecturas para aprender con profundidad.') }}</p><div class="oxford-hero-actions">{% if not current_user.is_authenticated %}<a href="{{ url_for('user.crear_cuenta') }}" class="btn btn-oxford-primary">{{ _('Enter the reading room') }}</a>{% else %}<a href="{{ url_for('home.panel') }}" class="btn btn-oxford-primary">{{ _('Return to my desk') }}</a>{% endif %}<a href="{{ url_for('course.lista_cursos', page=1) }}" class="oxford-text-link">{{ _('Search the catalogue') }} <span aria-hidden="true">↗</span></a></div></div><div class="oxford-index-card"><div class="oxford-index-top"><span>INDEX</span><span>VOL. I</span></div><div class="oxford-index-mark">O</div><p>{{ _('The pursuit of knowledge is a lifelong practice.') }}</p><div class="oxford-index-bottom">OXONIENSIS · LIBER APERTUS</div></div></div></div></section>
+            <section class="oxford-showcase-hero">
+                <div class="container">
+                    <div class="oxford-hero-grid">
+                        <div>
+                            <p class="oxford-kicker">THE OXFORD READING ROOM <span>·</span> 1249—NOW</p>
+                            <h1>{{ _('Question everything.') }}</h1>
+                            <p class="oxford-hero-lead">
+                                {{ site_config.hero or _('Una colección abierta de cursos, ideas y lecturas para aprender con
+                                profundidad.') }}
+                            </p>
+                            <div class="oxford-hero-actions">
+                                {% if not current_user.is_authenticated %}<a
+                                    href="{{ url_for('user.crear_cuenta') }}"
+                                    class="btn btn-oxford-primary"
+                                    >{{ _('Enter the reading room') }}</a
+                                >{% else %}<a href="{{ url_for('home.panel') }}" class="btn btn-oxford-primary"
+                                    >{{ _('Return to my desk') }}</a
+                                >{% endif %}<a href="{{ url_for('course.lista_cursos', page=1) }}" class="oxford-text-link"
+                                    >{{ _('Search the catalogue') }} <span aria-hidden="true">↗</span></a
+                                >
+                            </div>
+                        </div>
+                        <div class="oxford-index-card">
+                            <div class="oxford-index-top"><span>INDEX</span><span>VOL. I</span></div>
+                            <div class="oxford-index-mark">O</div>
+                            <p>{{ _('The pursuit of knowledge is a lifelong practice.') }}</p>
+                            <div class="oxford-index-bottom">OXONIENSIS · LIBER APERTUS</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-            <section class="oxford-reading-note py-5"><div class="container"><div class="row g-5 align-items-start"><div class="col-lg-4"><p class="oxford-kicker">A READING PRACTICE</p><h2>{{ _('Slow down. Look closer.') }}</h2></div><div class="col-lg-8"><div class="oxford-reading-grid"><article><span>01</span><h3>{{ _('Attend') }}</h3><p>{{ _('Make room for a difficult question and stay with it.') }}</p></article><article><span>02</span><h3>{{ _('Interpret') }}</h3><p>{{ _('Bring context, curiosity and your own point of view.') }}</p></article><article><span>03</span><h3>{{ _('Exchange') }}</h3><p>{{ _('Learning becomes vivid when it moves between people.') }}</p></article></div></div></div></div></section>
+            <section class="oxford-reading-note py-5">
+                <div class="container">
+                    <div class="row g-5 align-items-start">
+                        <div class="col-lg-4">
+                            <p class="oxford-kicker">A READING PRACTICE</p>
+                            <h2>{{ _('Slow down. Look closer.') }}</h2>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="oxford-reading-grid">
+                                <article>
+                                    <span>01</span>
+                                    <h3>{{ _('Attend') }}</h3>
+                                    <p>{{ _('Make room for a difficult question and stay with it.') }}</p>
+                                </article>
+                                <article>
+                                    <span>02</span>
+                                    <h3>{{ _('Interpret') }}</h3>
+                                    <p>{{ _('Bring context, curiosity and your own point of view.') }}</p>
+                                </article>
+                                <article>
+                                    <span>03</span>
+                                    <h3>{{ _('Exchange') }}</h3>
+                                    <p>{{ _('Learning becomes vivid when it moves between people.') }}</p>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-            {% if site_config.enable_feature_section %}<section class="oxford-catalogue py-5"><div class="container"><div class="oxford-section-heading"><div><p class="oxford-kicker">THE OPEN CATALOGUE</p><h2>{{ _('Find your next volume.') }}</h2></div><p>{{ _('Una selección de lecturas para empezar una nueva línea de pensamiento.') }}</p></div>{% if cursos and cursos.total > 0 %}<div class="oxford-catalogue-list">{% for curso in cursos.items[:4] %}<article class="oxford-volume"><div class="oxford-volume-index">{{ '%02d'|format(loop.index) }}</div><div class="oxford-volume-copy"><p class="oxford-volume-type">{{ _('VOLUME') }} {{ '%02d'|format(loop.index) }}</p><h3>{{ curso.nombre }}</h3><p>{{ curso.descripcion_corta|truncate(130) }}</p></div><a href="{{ url_for('course.lista_cursos', page=1) }}" aria-label="{{ _('Leer') }} {{ curso.nombre }}">↗</a></article>{% endfor %}</div>{% else %}<p class="oxford-empty">{{ _('El catálogo está siendo catalogado.') }}</p>{% endif %}</div></section>{% endif %}
+            {% if site_config.enable_feature_section %}
+            <section class="oxford-catalogue py-5">
+                <div class="container">
+                    <div class="oxford-section-heading">
+                        <div>
+                            <p class="oxford-kicker">THE OPEN CATALOGUE</p>
+                            <h2>{{ _('Find your next volume.') }}</h2>
+                        </div>
+                        <p>{{ _('Una selección de lecturas para empezar una nueva línea de pensamiento.') }}</p>
+                    </div>
+                    {% if cursos and cursos.total > 0 %}
+                    <div class="oxford-catalogue-list">
+                        {% for curso in cursos.items[:4] %}
+                        <article class="oxford-volume">
+                            <div class="oxford-volume-index">{{ '%02d'|format(loop.index) }}</div>
+                            <div class="oxford-volume-copy">
+                                <p class="oxford-volume-type">{{ _('VOLUME') }} {{ '%02d'|format(loop.index) }}</p>
+                                <h3>{{ curso.nombre }}</h3>
+                                <p>{{ curso.descripcion_corta|truncate(130) }}</p>
+                            </div>
+                            <a
+                                href="{{ url_for('course.lista_cursos', page=1) }}"
+                                aria-label="{{ _('Leer') }} {{ curso.nombre }}"
+                                >↗</a
+                            >
+                        </article>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="oxford-empty">{{ _('El catálogo está siendo catalogado.') }}</p>
+                    {% endif %}
+                </div>
+            </section>
+            {% endif %}
 
-            <section class="oxford-closing py-5"><div class="container"><p class="oxford-kicker">ADMISSION IS OPEN</p><h2>{{ _('Take your seat at the table.') }}</h2>{% if not current_user.is_authenticated %}<a class="btn btn-oxford-secondary" href="{{ url_for('user.crear_cuenta') }}">{{ _('Create your account') }}</a>{% endif %}</div></section>
+            <section class="oxford-closing py-5">
+                <div class="container">
+                    <p class="oxford-kicker">ADMISSION IS OPEN</p>
+                    <h2>{{ _('Take your seat at the table.') }}</h2>
+                    {% if not current_user.is_authenticated %}<a
+                        class="btn btn-oxford-secondary"
+                        href="{{ url_for('user.crear_cuenta') }}"
+                        >{{ _('Create your account') }}</a
+                    >{% endif %}
+                </div>
+            </section>
             {% if show_blog_posts %}{{ render_blog_section(latest_blog_posts, '#f5f5f5') }}{% endif %}
         </main>
         {{ current_theme.footer() }} {{ current_theme.jslibs() }}

@@ -198,9 +198,7 @@ def _process_validated_enrollment(
     # Handle different enrollment modes
     if _is_free_enrollment(course_obj, pricing.final_price):
         pago.estado = "completed"
-        success_message = _build_coupon_flash_message(
-            pricing.applied_coupon, pricing.final_price, pricing.discount_amount
-        )
+        success_message = _build_coupon_flash_message(pricing.applied_coupon, pricing.final_price, pricing.discount_amount)
         return _finalize_completed_enrollment(
             pago,
             course_code,
