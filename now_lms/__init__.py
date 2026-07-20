@@ -643,6 +643,7 @@ def initial_setup(with_examples=False, with_tests=False, flask_app=None):
         # Verify that the session tables are established if Flask-Session is using SQLAlchemy
         if app_to_use.config.get("SESSION_TYPE") == "sqlalchemy":
             from sqlalchemy import inspect
+
             inspector = inspect(database.engine)
             existing_tables = inspector.get_table_names()
             session_table = app_to_use.config.get("SESSION_SQLALCHEMY_TABLE", "flask_sessions")
