@@ -58,14 +58,7 @@
                                     {% for curso in cursos %}
                                     <option
                                         value="{{ curso.codigo }}"
-                                        {%
-                                        if
-                                        filter_args.course_code
-                                        ==
-                                        curso.codigo
-                                        %}selected{%
-                                        endif
-                                        %}
+                                        {% if filter_args.course_code == curso.codigo %}selected{% endif %}
                                     >
                                         {{ curso.nombre }} ({{ curso.codigo }})
                                     </option>
