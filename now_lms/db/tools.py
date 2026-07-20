@@ -396,7 +396,7 @@ def favicon_perzonalizado():
     consulta = database.session.execute(database.select(Style)).first()
     if consulta:
         consulta = consulta[0]
-        return consulta.custom_logo
+        return consulta.custom_favicon
     return False
 
 
