@@ -360,3 +360,51 @@
         background-color: var(--amber-info);
         border-color: var(--amber-info);
     }
+
+    /* Amber horizon hero */
+    .amber-hero {
+        min-height: 64vh;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        isolation: isolate;
+        background: linear-gradient(165deg, #332319 0%, #6d4025 44%, #cf791a 100%);
+    }
+    .amber-hero .container { z-index: 4; }
+    .amber-sky, .amber-hills, .amber-leaves { position: absolute; inset: 0; pointer-events: none; }
+    .amber-sky { z-index: 1; background: radial-gradient(circle at 74% 18%, rgba(255, 222, 143, .42), transparent 18rem); }
+    .amber-sun { position: absolute; top: 10%; right: 16%; width: 8rem; height: 8rem; border-radius: 50%; background: #ffd36e; box-shadow: 0 0 0 1.5rem rgba(255, 211, 110, .12), 0 0 5rem rgba(255, 186, 49, .65); animation: amber-sunrise 7s ease-in-out infinite; }
+    .amber-cloud { position: absolute; width: 11rem; height: 2rem; border-radius: 50%; background: rgba(255, 236, 194, .18); filter: blur(2px); animation: amber-drift 22s linear infinite; }
+    .cloud-1 { top: 22%; left: 8%; }
+    .cloud-2 { top: 35%; left: 50%; width: 7rem; opacity: .55; animation-duration: 29s; animation-delay: -12s; }
+    .amber-hills { z-index: 2; top: auto; height: 42%; }
+    .hill-back, .hill-front { position: absolute; bottom: -18%; left: -5%; width: 110%; height: 100%; border-radius: 50% 50% 0 0; transform: rotate(-3deg); }
+    .hill-back { background: #74452b; opacity: .82; }
+    .hill-front { left: 35%; bottom: -30%; background: #41291f; transform: rotate(5deg); }
+    .amber-leaves { z-index: 3; color: #f8bd43; font-size: 1.4rem; }
+    .amber-leaves span { position: absolute; opacity: 0; animation: amber-leaf-drift 9s linear infinite; text-shadow: 0 2px 8px rgba(48, 28, 16, .35); }
+    .amber-leaves span:nth-child(1) { left: 8%; animation-delay: -1s; }
+    .amber-leaves span:nth-child(2) { left: 24%; animation-delay: -5s; animation-duration: 12s; }
+    .amber-leaves span:nth-child(3) { left: 43%; animation-delay: -7s; animation-duration: 10s; }
+    .amber-leaves span:nth-child(4) { left: 63%; animation-delay: -3s; animation-duration: 13s; }
+    .amber-leaves span:nth-child(5) { left: 81%; animation-delay: -8s; animation-duration: 11s; }
+    .amber-leaves span:nth-child(6) { left: 92%; animation-delay: -4s; animation-duration: 15s; }
+    .amber-kicker { color: #ffd77e; font-family: "Georgia", serif; font-size: 1rem; letter-spacing: .16em; text-transform: uppercase; }
+    .amber-hero h1 { color: #fff8e8; text-shadow: 0 4px 22px rgba(39, 23, 14, .4); }
+    .amber-hero-copy { max-width: 39rem; font-size: 1.22rem; line-height: 1.75; color: #fff3d6; }
+    .btn-amber-light { background: #ffd36e; border: 1px solid #ffd36e; color: #4f2d1b; border-radius: 8px; font-weight: 700; box-shadow: 0 8px 20px rgba(51, 30, 16, .22); }
+    .btn-amber-light:hover { background: #ffe5a3; border-color: #ffe5a3; color: #3d2518; transform: translateY(-2px); }
+    .btn-amber-outline { color: #fff8e8; border: 1px solid rgba(255, 239, 197, .8); border-radius: 8px; }
+    .btn-amber-outline:hover { color: #4f2d1b; background: #fff3d6; border-color: #fff3d6; }
+    .amber-compass { position: relative; width: min(20rem, 72vw); height: min(20rem, 72vw); margin: 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid rgba(255, 224, 145, .75); border-radius: 50%; background: rgba(255, 218, 125, .1); box-shadow: 0 0 0 1rem rgba(255, 211, 110, .08), 0 25px 55px rgba(34, 20, 12, .3); animation: amber-compass-float 6s ease-in-out infinite; }
+    .amber-compass-ring { position: absolute; inset: 1.2rem; border: 1px dashed rgba(255, 224, 145, .7); border-radius: 50%; animation: amber-compass-spin 24s linear infinite; }
+    .amber-compass-symbol { color: #ffd36e; font-size: 5rem; line-height: 1; text-shadow: 0 0 25px rgba(255, 211, 110, .7); }
+    .amber-compass-title { color: #fff4d6; font-family: Georgia, serif; font-size: 1.15rem; margin-top: .8rem; }
+    .amber-compass-subtitle { color: #f5bd52; font-size: .72rem; letter-spacing: .3em; margin-top: .5rem; }
+    @keyframes amber-sunrise { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(10px) scale(1.06); } }
+    @keyframes amber-drift { from { transform: translateX(-18vw); } to { transform: translateX(110vw); } }
+    @keyframes amber-leaf-drift { 0% { opacity: 0; transform: translate3d(0, -8vh, 0) rotate(0); } 12% { opacity: .8; } 50% { transform: translate3d(5vw, 38vh, 0) rotate(180deg); } 100% { opacity: 0; transform: translate3d(-7vw, 106vh, 0) rotate(420deg); } }
+    @keyframes amber-compass-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+    @keyframes amber-compass-spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .amber-sun, .amber-cloud, .amber-leaves span, .amber-compass, .amber-compass-ring { animation: none; } }
+    @media (max-width: 768px) { .amber-hero { min-height: 78vh; } .amber-sun { right: 7%; width: 5rem; height: 5rem; } .amber-compass { width: 15rem; height: 15rem; } .amber-compass-symbol { font-size: 3.5rem; } .amber-hero-copy { font-size: 1.05rem; } }
