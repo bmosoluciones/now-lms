@@ -1,8 +1,7 @@
 <!doctype html>
 <html lang="es">
-    {% from 'macros/blog_section.j2' import render_blog_section %}
-    {% set current_theme = current_theme() %}
-    {% set site_config = config() %}
+    {% from 'macros/blog_section.j2' import render_blog_section %} {% set current_theme = current_theme() %} {% set site_config
+    = config() %}
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
         <title>{{ site_config.titulo_html or "Harvard Casebook · NOW LMS" }}</title>
@@ -10,13 +9,114 @@
     <body class="harvard-showcase">
         {{ current_theme.navbar() }}
         <main>
-            <section class="harvard-showcase-hero"><div class="container"><div class="row align-items-center g-5"><div class="col-lg-7"><p class="harvard-kicker">THE HARVARD CASEBOOK <span>·</span> EST. 1636</p><h1>{{ _('Make the case for what comes next.') }}</h1><p class="harvard-hero-lead">{{ site_config.hero or _('Aprende a pensar con claridad, discutir con rigor y convertir las decisiones en resultados.') }}</p><div class="harvard-hero-actions">{% if not current_user.is_authenticated %}<a href="{{ url_for('user.crear_cuenta') }}" class="btn btn-harvard-primary">{{ _('Join the conversation') }}</a>{% else %}<a href="{{ url_for('home.panel') }}" class="btn btn-harvard-primary">{{ _('Enter your casebook') }}</a>{% endif %}<a href="{{ url_for('course.lista_cursos', page=1) }}" class="harvard-text-link">{{ _('Browse the cases') }} <span aria-hidden="true">↗</span></a></div></div><div class="col-lg-5"><div class="harvard-editorial-card"><span class="harvard-case-stamp">CASE<br />NO. 001</span><p class="harvard-card-label">TODAY'S PROMPT</p><blockquote>{{ _('What will you choose to learn next?') }}</blockquote><div class="harvard-signature">— The Office of Continuing Education</div></div></div></div></div></section>
+            <section class="harvard-showcase-hero">
+                <div class="container">
+                    <div class="row align-items-center g-5">
+                        <div class="col-lg-7">
+                            <p class="harvard-kicker">THE HARVARD CASEBOOK <span>·</span> EST. 1636</p>
+                            <h1>{{ _('Make the case for what comes next.') }}</h1>
+                            <p class="harvard-hero-lead">
+                                {{ site_config.hero or _('Aprende a pensar con claridad, discutir con rigor y convertir las
+                                decisiones en resultados.') }}
+                            </p>
+                            <div class="harvard-hero-actions">
+                                {% if not current_user.is_authenticated %}<a
+                                    href="{{ url_for('user.crear_cuenta') }}"
+                                    class="btn btn-harvard-primary"
+                                    >{{ _('Join the conversation') }}</a
+                                >{% else %}<a href="{{ url_for('home.panel') }}" class="btn btn-harvard-primary"
+                                    >{{ _('Enter your casebook') }}</a
+                                >{% endif %}<a href="{{ url_for('course.lista_cursos', page=1) }}" class="harvard-text-link"
+                                    >{{ _('Browse the cases') }} <span aria-hidden="true">↗</span></a
+                                >
+                            </div>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="harvard-editorial-card">
+                                <span class="harvard-case-stamp">CASE<br />NO. 001</span>
+                                <p class="harvard-card-label">TODAY'S PROMPT</p>
+                                <blockquote>{{ _('What will you choose to learn next?') }}</blockquote>
+                                <div class="harvard-signature">— The Office of Continuing Education</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-            <section class="harvard-manifesto py-5"><div class="container"><div class="row g-4 align-items-end"><div class="col-lg-5"><p class="harvard-kicker">A METHOD, NOT A MOOD</p><h2>{{ _('Knowledge gets stronger when it is shared.') }}</h2></div><div class="col-lg-7"><div class="row g-4"><div class="col-sm-4"><strong>01</strong><h3>{{ _('Read') }}</h3><p>{{ _('Find the signal in the noise.') }}</p></div><div class="col-sm-4"><strong>02</strong><h3>{{ _('Debate') }}</h3><p>{{ _('Test ideas with other minds.') }}</p></div><div class="col-sm-4"><strong>03</strong><h3>{{ _('Act') }}</h3><p>{{ _('Carry insight into the world.') }}</p></div></div></div></div></div></section>
+            <section class="harvard-manifesto py-5">
+                <div class="container">
+                    <div class="row g-4 align-items-end">
+                        <div class="col-lg-5">
+                            <p class="harvard-kicker">A METHOD, NOT A MOOD</p>
+                            <h2>{{ _('Knowledge gets stronger when it is shared.') }}</h2>
+                        </div>
+                        <div class="col-lg-7">
+                            <div class="row g-4">
+                                <div class="col-sm-4">
+                                    <strong>01</strong>
+                                    <h3>{{ _('Read') }}</h3>
+                                    <p>{{ _('Find the signal in the noise.') }}</p>
+                                </div>
+                                <div class="col-sm-4">
+                                    <strong>02</strong>
+                                    <h3>{{ _('Debate') }}</h3>
+                                    <p>{{ _('Test ideas with other minds.') }}</p>
+                                </div>
+                                <div class="col-sm-4">
+                                    <strong>03</strong>
+                                    <h3>{{ _('Act') }}</h3>
+                                    <p>{{ _('Carry insight into the world.') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-            {% if site_config.enable_feature_section %}<section class="harvard-case-library py-5"><div class="container"><div class="harvard-section-heading"><p class="harvard-kicker">THE CASE LIBRARY</p><h2>{{ _('Choose a point of view.') }}</h2><p>{{ _('Cursos y conversaciones para quienes quieren aprender haciendo.') }}</p></div>{% if cursos and cursos.total > 0 %}<div class="row g-4 mt-2">{% for curso in cursos.items[:4] %}<div class="col-md-6"><article class="harvard-case-card"><div class="harvard-case-meta"><span>CASE {{ '%02d'|format(loop.index) }}</span><span>{{ _('OPEN') }}</span></div><h3>{{ curso.nombre }}</h3><p>{{ curso.descripcion_corta|truncate(130) }}</p><a href="{{ url_for('course.lista_cursos', page=1) }}">{{ _('Read the brief') }} <span aria-hidden="true">→</span></a></article></div>{% endfor %}</div>{% else %}<p class="harvard-empty">{{ _('La biblioteca de casos se está preparando.') }}</p>{% endif %}</div></section>{% endif %}
+            {% if site_config.enable_feature_section %}
+            <section class="harvard-case-library py-5">
+                <div class="container">
+                    <div class="harvard-section-heading">
+                        <p class="harvard-kicker">THE CASE LIBRARY</p>
+                        <h2>{{ _('Choose a point of view.') }}</h2>
+                        <p>{{ _('Cursos y conversaciones para quienes quieren aprender haciendo.') }}</p>
+                    </div>
+                    {% if cursos and cursos.total > 0 %}
+                    <div class="row g-4 mt-2">
+                        {% for curso in cursos.items[:4] %}
+                        <div class="col-md-6">
+                            <article class="harvard-case-card">
+                                <div class="harvard-case-meta">
+                                    <span>CASE {{ '%02d'|format(loop.index) }}</span><span>{{ _('OPEN') }}</span>
+                                </div>
+                                <h3>{{ curso.nombre }}</h3>
+                                <p>{{ curso.descripcion_corta|truncate(130) }}</p>
+                                <a href="{{ url_for('course.lista_cursos', page=1) }}"
+                                    >{{ _('Read the brief') }} <span aria-hidden="true">→</span></a
+                                >
+                            </article>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="harvard-empty">{{ _('La biblioteca de casos se está preparando.') }}</p>
+                    {% endif %}
+                </div>
+            </section>
+            {% endif %}
 
-            <section class="harvard-closing py-5"><div class="container"><div class="harvard-closing-rule"></div><p class="harvard-kicker">THE NEXT CHAPTER</p><h2>{{ _('Your best argument starts here.') }}</h2>{% if not current_user.is_authenticated %}<a class="btn btn-harvard-secondary" href="{{ url_for('user.crear_cuenta') }}">{{ _('Begin your casebook') }}</a>{% endif %}</div></section>
+            <section class="harvard-closing py-5">
+                <div class="container">
+                    <div class="harvard-closing-rule"></div>
+                    <p class="harvard-kicker">THE NEXT CHAPTER</p>
+                    <h2>{{ _('Your best argument starts here.') }}</h2>
+                    {% if not current_user.is_authenticated %}<a
+                        class="btn btn-harvard-secondary"
+                        href="{{ url_for('user.crear_cuenta') }}"
+                        >{{ _('Begin your casebook') }}</a
+                    >{% endif %}
+                </div>
+            </section>
             {% if show_blog_posts %}{{ render_blog_section(latest_blog_posts, '#f5f3f2') }}{% endif %}
         </main>
         {{ current_theme.footer() }} {{ current_theme.jslibs() }}
