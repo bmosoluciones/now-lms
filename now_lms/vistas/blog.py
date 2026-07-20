@@ -175,7 +175,7 @@ def add_comment(slug: str) -> Response:
                 and_(BlogComment.post_id == post.id, BlogComment.status == "visible")
             )
         ).scalar()
-        post.comment_count = (result or 0) + 1
+        post.comment_count = result or 0
 
         database.session.commit()
 

@@ -149,6 +149,10 @@ def test_e2e_blog_comments(app, db_session):
     assert comentario.content == "Este es un comentario de prueba"
     assert comentario.user_id == admin.usuario  # user_id es el nombre de usuario, no el ID
 
+    # Verify post comment_count
+    post_db = db_session.get(BlogPost, post_id)
+    assert post_db.comment_count == 1
+
 
 def test_e2e_blog_tags(app, db_session):
     """Test: crear y usar tags de blog."""
