@@ -42,6 +42,8 @@ def modificar_indice_curso(
     actual = database.session.execute(
         database.select(CursoSeccion).filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_current)
     ).scalar_one_or_none()
+    if actual is None:
+        return
     superior = database.session.execute(
         database.select(CursoSeccion).filter(CursoSeccion.curso == codigo_curso, CursoSeccion.indice == indice_next)
     ).scalar_one_or_none()
@@ -126,13 +128,13 @@ def modificar_indice_seccion(
         database.select(CursoRecurso).filter(CursoRecurso.seccion == seccion_id, CursoRecurso.indice == NO_INDICE_POSTERIOR)
     ).scalar_one_or_none()
 
-    if task == "increment" and RECURSO_POSTERIOR:
+    if task == "increment" and RECURSO_POSTERIOR and RECURSO_ACTUAL:
         RECURSO_ACTUAL.indice = NO_INDICE_POSTERIOR
         RECURSO_POSTERIOR.indice = NO_INDICE_ACTUAL
         database.session.add(RECURSO_ACTUAL)
         database.session.add(RECURSO_POSTERIOR)
 
-    elif task == "decrement" and RECURSO_ANTERIOR:
+    elif task == "decrement" and RECURSO_ANTERIOR and RECURSO_ACTUAL:
         RECURSO_ACTUAL.indice = NO_INDICE_ANTERIOR
         RECURSO_ANTERIOR.indice = NO_INDICE_ACTUAL
         database.session.add(RECURSO_ACTUAL)
@@ -241,6 +243,8 @@ def cambia_curso_publico(id_curso: str | int | None = None):
 def cambia_seccion_publico(codigo: str | int | None = None):
     """Cambia el estatus publico de una sección."""
     SECCION = database.session.execute(database.select(CursoSeccion).filter_by(id=codigo)).scalar_one_or_none()
+    if SECCION is None:
+        return
     if SECCION.estado:
         SECCION.estado = False
     else:
