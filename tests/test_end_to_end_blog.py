@@ -233,3 +233,65 @@ def test_e2e_blog_post_list_admin(app, db_session):
     assert resp_list.status_code == 200
     # Verificar que la página carga correctamente
     assert b"blog" in resp_list.data.lower() or b"post" in resp_list.data.lower()
+
+
+def test_e2e_blog_tag_deletion(app, db_session):
+    """Test: eliminar una etiqueta de blog mediante la nueva ruta POST."""
+    # 1) Crear admin y login
+    _crear_admin(db_session)
+    client = _login_admin(app)
+
+    # 2) Crear un tag de blog directamente en base de datos
+    tag = BlogTag(name="TestTagToDelete", slug="testtagtodelete")
+    db_session.add(tag)
+    db_session.commit()
+    tag_id = tag.id
+
+    # 3) Enviar petición POST para eliminar la etiqueta
+    resp_delete = client.post(f"/admin/blog/tags/{tag_id}/delete", follow_redirects=True)
+    assert resp_delete.status_code == 200
+
+    # 4) Verificar que fue eliminada
+    tag_eliminado = db_session.get(BlogTag, tag_id)
+    assert tag_eliminado is None
+
+
+def test_e2e_blog_comment_deletion_and_banning(app, db_session):
+    """Test: banear y eliminar un comentario de blog mediante rutas POST."""
+    # 1) Crear admin y login
+    admin = _crear_admin(db_session)
+    client = _login_admin(app)
+
+    # 2) Crear post y comentario en base de datos
+    post = BlogPost(
+        title="Post Comentarios",
+        content="Contenido",
+        status="published",
+        slug="post-comentarios",
+        author_id=admin.id,
+    )
+    db_session.add(post)
+    db_session.commit()
+
+    comment = BlogComment(
+        post_id=post.id,
+        user_id=admin.usuario,
+        content="Comentario de prueba",
+        status="visible",
+    )
+    db_session.add(comment)
+    db_session.commit()
+    comment_id = comment.id
+
+    # 3) Banear comentario mediante POST
+    resp_ban = client.post(f"/admin/blog/comments/{comment_id}/ban", follow_redirects=True)
+    assert resp_ban.status_code == 200
+    comment_db = db_session.get(BlogComment, comment_id)
+    assert comment_db is not None
+    assert comment_db.status == "banned"
+
+    # 4) Eliminar comentario mediante POST
+    resp_delete = client.post(f"/admin/blog/comments/{comment_id}/delete", follow_redirects=True)
+    assert resp_delete.status_code == 200
+    comment_eliminado = db_session.get(BlogComment, comment_id)
+    assert comment_eliminado is None
