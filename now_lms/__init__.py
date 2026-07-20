@@ -639,6 +639,18 @@ def initial_setup(with_examples=False, with_tests=False, flask_app=None):
     with app_to_use.app_context():
         log.info("Creating database schema.")
         database.create_all()
+
+        # Verify that the session tables are established if Flask-Session is using SQLAlchemy
+        if app_to_use.config.get("SESSION_TYPE") == "sqlalchemy":
+            from sqlalchemy import inspect
+            inspector = inspect(database.engine)
+            existing_tables = inspector.get_table_names()
+            session_table = app_to_use.config.get("SESSION_SQLALCHEMY_TABLE", "flask_sessions")
+            if session_table not in existing_tables:
+                log.error(f"Required session table '{session_table}' was not created during bootstrap!")
+                raise RuntimeError(f"Required session table '{session_table}' is missing.")
+            log.info(f"Verified that session table '{session_table}' exists in database schema.")
+
         system_info(app_to_use)
         log.debug("Database schema created successfully.")
         log.debug("Loading sample data.")

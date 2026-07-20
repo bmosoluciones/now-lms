@@ -66,10 +66,11 @@ if init_app():
                     "workers": workers,
                     "threads": threads,
                     "worker_class": "gthread" if threads > 1 else "sync",
-                    # The application is constructed before embedded Gunicorn
-                    # starts. The post-fork hook below is therefore the
-                    # authoritative protection against inherited connections.
-                    "preload_app": False,
+                    # Preload the application to ensure that the shared session
+                    # storage and database connections/tables are fully established
+                    # in the master process before worker processes and threads are created.
+                    # This prevents session loss and initialization race conditions across threads.
+                    "preload_app": True,
                     "post_fork": reset_connections_after_fork,
                     "timeout": 120,
                     "graceful_timeout": 30,
