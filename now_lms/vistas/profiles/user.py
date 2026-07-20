@@ -80,7 +80,7 @@ def perfil() -> str | Response:
         certificaciones_query = database.session.execute(
             database.select(Certificacion, Curso)
             .join(Curso, Certificacion.curso == Curso.codigo)
-            .filter(Certificacion.usuario == current_user.id)
+            .filter(Certificacion.usuario == current_user.usuario)
         ).fetchall()
         certificaciones = [{"certificacion": cert[0], "curso": cert[1]} for cert in certificaciones_query]
 
