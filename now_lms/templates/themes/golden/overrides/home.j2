@@ -6,55 +6,24 @@
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
         <title>{{ site_config.titulo_html or "NOW - Learning Management System" }}</title>
 
-        <style>
-            /* Custom styles for golden theme */
-            @keyframes float {
-                0%,
-                100% {
-                    transform: translateY(0px);
-                }
-                50% {
-                    transform: translateY(-10px);
-                }
-            }
-        </style>
     </head>
     <body>
         {{ current_theme.navbar() }}
 
         <!-- Hero Section -->
-        <section
-            class="hero-section py-5"
-            style="
-                background: linear-gradient(135deg, #f0b744 0%, #f49640 100%);
-                min-height: 60vh;
-                display: flex;
-                align-items: center;
-            "
-        >
-            <div class="container">
+        <section class="hero-section golden-hero py-5">
+            <div class="golden-rays" aria-hidden="true"></div>
+            <div class="golden-sparks" aria-hidden="true"><span>✦</span><span>✦</span><span>✦</span><span>✦</span><span>✦</span><span>✦</span></div>
+            <div class="container position-relative">
                 <div class="row align-items-center">
-                    <div class="col-12 col-md-8 col-lg-8 order-2 order-md-1 text-white order-2 order-md-1 order-2 order-md-1">
+                    <div class="col-12 col-md-7 col-lg-7 order-2 order-md-1 text-white">
                         <div class="hero-content">
-                            <div
-                                style="
-                                    font-family: &quot;Lato&quot;, sans-serif;
-                                    font-weight: 900;
-                                    font-size: 1.2rem;
-                                    color: #141411;
-                                    margin-bottom: 1rem;
-                                    letter-spacing: 2px;
-                                "
-                            >
-                                NOW-LMS
-                            </div>
-                            <h1 class="display-4 fw-bold mb-4" style="color: #141411">
-                                {{ _('Aprende inglés') }}
-                                <span style="color: #f1e7ddff; font-family: &quot;Caveat&quot;, cursive"
-                                    >{{ _('con confianza') }}</span
-                                >
+                            <p class="golden-kicker mb-3">NOW · {{ _('Brilla con tu potencial') }}</p>
+                            <h1 class="display-4 fw-bold mb-4">
+                                {{ _('Aprende con') }}
+                                <span class="golden-script">{{ _('confianza') }}</span>
                             </h1>
-                            <p class="lead mb-4" style="font-size: 1.3rem; line-height: 1.6; color: #141411">
+                            <p class="lead mb-4 golden-hero-copy">
                                 {% if site_config.hero and site_config.hero != "" %} {{ site_config.hero }} {% else %} {{
                                 _('Cursos dinámicos, prácticos y divertidos — Clases online en vivo y material interactivo.')
                                 }} {% endif %}
@@ -63,39 +32,34 @@
                                 {% if not current_user.is_authenticated %} {% if is_contact_enabled() %}
                                 <a
                                     href="{{ url_for('static_pages.contact') }}"
-                                    class="btn btn-dark btn-lg px-4 py-2"
-                                    style="background: #141411; border-color: #141411"
+                                    class="btn btn-golden-dark btn-lg px-4 py-2"
                                 >
                                     <strong>{{ _('Reserva tu clase gratis') }}</strong>
                                 </a>
                                 {% else %}
                                 <a
                                     href="{{ url_for('user.crear_cuenta') }}"
-                                    class="btn btn-dark btn-lg px-4 py-2"
-                                    style="background: #141411; border-color: #141411"
+                                    class="btn btn-golden-dark btn-lg px-4 py-2"
                                 >
                                     <strong>{{ _('Reserva tu clase gratis') }}</strong>
                                 </a>
                                 {% endif %}
                                 <a
                                     href="{{ url_for('course.lista_cursos', page=1) }}"
-                                    class="btn btn-outline-dark btn-lg px-4 py-2"
-                                    style="color: #141411; border-color: #141411"
+                                    class="btn btn-golden-outline btn-lg px-4 py-2"
                                 >
                                     {{ _('Ver cursos') }}
                                 </a>
                                 {% else %}
                                 <a
                                     href="{{ url_for('home.panel') }}"
-                                    class="btn btn-dark btn-lg px-4 py-2"
-                                    style="background: #141411; border-color: #141411"
+                                    class="btn btn-golden-dark btn-lg px-4 py-2"
                                 >
                                     <strong>{{ _('Mi Panel') }}</strong>
                                 </a>
                                 <a
                                     href="{{ url_for('course.lista_cursos', page=1) }}"
-                                    class="btn btn-outline-dark btn-lg px-4 py-2"
-                                    style="color: #141411; border-color: #141411"
+                                    class="btn btn-golden-outline btn-lg px-4 py-2"
                                 >
                                     {{ _('Ver cursos') }}
                                 </a>
@@ -103,32 +67,12 @@
                             </div>
                         </div>
                     </div>
-                    <div
-                        class="col-12 col-md-4 col-lg-4 order-1 order-md-2 mb-4 mb-md-0 text-center order-1 order-md-2 mb-4 mb-md-0 order-1 order-md-2 mb-4 mb-md-0"
-                    >
+                    <div class="col-12 col-md-5 col-lg-5 order-1 order-md-2 mb-4 mb-md-0 text-center">
                         <div class="hero-visual">
-                            <div
-                                class="learning-icon"
-                                style="
-                                    background: rgba(20, 20, 17, 0.1);
-                                    border-radius: 50%;
-                                    width: min(200px, 80vw);
-                                    height: min(200px, 80vw);
-                                    max-width: 250px;
-                                    max-height: 250px;
-                                    margin: 0 auto;
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    border: 4px solid rgba(20, 20, 17, 0.3);
-                                    animation: float 3s ease-in-out infinite;
-                                "
-                            >
-                                <div class="text-center" style="color: #141411">
-                                    <div style="font-size: 3rem; margin-bottom: 0.5rem">😊</div>
-                                    <div style="font-size: 1.2rem; font-weight: 600">{{ _('Aprendizaje') }}</div>
-                                    <div style="font-size: 0.9rem; opacity: 0.8">{{ _('Inglés') }}</div>
-                                </div>
+                            <div class="golden-medallion">
+                                <span class="golden-medallion-mark">✦</span>
+                                <span class="golden-medallion-title">{{ _('Tu momento') }}</span>
+                                <span class="golden-medallion-subtitle">{{ _('empieza hoy') }}</span>
                             </div>
                         </div>
                     </div>
