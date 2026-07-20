@@ -169,16 +169,6 @@ def init_session(app: Flask) -> None:
         Session(app)
         if session_config.get("SESSION_TYPE") == "sqlalchemy":
             _session_model_created = True
-            # Establish the database connection and verify/create session tables
-            # before any worker processes and threads are created.
-            from now_lms.db import database
-            with app.app_context():
-                try:
-                    database.create_all()
-                    log.info("SQLAlchemy database connection established and session tables verified.")
-                except Exception as e:
-                    log.error(f"Failed to establish database connection or verify session tables: {e}")
-                    raise
 
         # Configuration alone is not proof that Flask-Session took control.
         # A previous implementation could catch an initialization error and
