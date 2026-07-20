@@ -93,3 +93,94 @@ def test_gunicorn_postfork_discards_inherited_database_pool(monkeypatch):
     reset_connections_after_fork(None, SimpleNamespace(pid=1234))
 
     dispose.assert_called_once_with(close=False)
+
+
+def test_init_session_sqlalchemy_success(monkeypatch):
+    from flask import Flask
+    from now_lms.session_config import init_session
+    from unittest.mock import MagicMock
+    from flask_session.base import ServerSideSessionInterface
+
+    app = Flask("test_app")
+    app.config["TESTING"] = False
+    monkeypatch.delenv("SESSION_REDIS_URL", raising=False)
+    monkeypatch.delenv("CACHE_REDIS_URL", raising=False)
+    monkeypatch.delenv("REDIS_URL", raising=False)
+
+    mock_db = MagicMock()
+
+    import now_lms.session_config
+    monkeypatch.setattr(now_lms.session_config, "get_session_config", lambda app: {
+        "SESSION_TYPE": "sqlalchemy",
+        "SESSION_SQLALCHEMY_TABLE": "flask_sessions",
+    })
+
+    monkeypatch.setattr("now_lms.db.database", mock_db)
+
+    mock_session_cls = MagicMock()
+    monkeypatch.setattr("flask_session.Session", mock_session_cls)
+    app.session_interface = MagicMock(spec=ServerSideSessionInterface)
+
+    init_session(app)
+
+    # Should run successfully and set session configuration
+    assert app.config.get("SESSION_TYPE") == "sqlalchemy"
+
+
+def test_initial_setup_session_table_verification_success(monkeypatch):
+    from flask import Flask
+    from now_lms import initial_setup
+    from unittest.mock import MagicMock
+
+    app = Flask("test_app")
+    app.config["TESTING"] = False
+    app.config["SESSION_TYPE"] = "sqlalchemy"
+    app.config["SESSION_SQLALCHEMY_TABLE"] = "flask_sessions"
+
+    mock_db = MagicMock()
+    monkeypatch.setattr("now_lms.database", mock_db)
+    monkeypatch.setattr("now_lms.db.database", mock_db)
+
+    mock_inspector = MagicMock()
+    mock_inspector.get_table_names.return_value = ["flask_sessions"]
+    monkeypatch.setattr("sqlalchemy.inspect", lambda engine: mock_inspector)
+
+    monkeypatch.setattr("now_lms.system_info", MagicMock())
+    monkeypatch.setattr("now_lms.crear_configuracion_predeterminada", MagicMock())
+    monkeypatch.setattr("now_lms.crear_certificados", MagicMock())
+    monkeypatch.setattr("now_lms.crear_curso_predeterminado", MagicMock())
+    monkeypatch.setattr("now_lms.crear_curso_autoaprendizaje", MagicMock())
+    monkeypatch.setattr("now_lms.crear_evaluacion_predeterminada", MagicMock())
+    monkeypatch.setattr("now_lms.crear_usuarios_predeterminados", MagicMock())
+    monkeypatch.setattr("now_lms.crear_certificacion", MagicMock())
+    monkeypatch.setattr("now_lms.crear_blog_post_predeterminado", MagicMock())
+    monkeypatch.setattr("now_lms.crear_paginas_estaticas_predeterminadas", MagicMock())
+    monkeypatch.setattr("now_lms.populate_custmon_data_dir", MagicMock())
+    monkeypatch.setattr("now_lms.populate_custom_theme_dir", MagicMock())
+
+    initial_setup(flask_app=app)
+
+    mock_db.create_all.assert_called_once()
+
+
+def test_initial_setup_session_table_verification_failure(monkeypatch):
+    from flask import Flask
+    from now_lms import initial_setup
+    from unittest.mock import MagicMock
+    import pytest
+
+    app = Flask("test_app")
+    app.config["TESTING"] = False
+    app.config["SESSION_TYPE"] = "sqlalchemy"
+    app.config["SESSION_SQLALCHEMY_TABLE"] = "flask_sessions"
+
+    mock_db = MagicMock()
+    monkeypatch.setattr("now_lms.database", mock_db)
+    monkeypatch.setattr("now_lms.db.database", mock_db)
+
+    mock_inspector = MagicMock()
+    mock_inspector.get_table_names.return_value = []
+    monkeypatch.setattr("sqlalchemy.inspect", lambda engine: mock_inspector)
+
+    with pytest.raises(RuntimeError, match="Required session table 'flask_sessions' is missing."):
+        initial_setup(flask_app=app)

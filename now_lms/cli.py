@@ -400,10 +400,11 @@ def serve(wsgi_server):
                     "workers": WORKERS,
                     "threads": THREADS,
                     "worker_class": "gthread" if THREADS > 1 else "sync",
-                    # Do not fork with SQLAlchemy connections opened by the
-                    # server-side session backend. Session data is shared by
-                    # Redis/the database, while engines remain worker-local.
-                    "preload_app": False,
+                    # Preload the application to ensure that the shared session
+                    # storage and database connections/tables are fully established
+                    # in the master process before worker processes and threads are created.
+                    # This prevents session loss and initialization race conditions across threads.
+                    "preload_app": True,
                     "post_fork": reset_connections_after_fork,
                     "timeout": 120,
                     "graceful_timeout": 30,
