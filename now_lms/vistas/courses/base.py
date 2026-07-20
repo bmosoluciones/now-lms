@@ -218,7 +218,7 @@ def nuevo_curso() -> str | Response:
     form.categoria.choices = generate_category_choices()
     form.etiquetas.choices = generate_tag_choices()
 
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         nuevo_curso_ = Curso(
             # Información básica
             nombre=form.nombre.data,
@@ -346,7 +346,7 @@ def editar_curso(course_code: str) -> str | Response:
         curso_a_editar.precio = form.precio.data
         # Información de marketing
         if curso_a_editar.promocionado is False and form.promocionado.data is True:
-            curso_a_editar.promocionado = datetime.today()
+            curso_a_editar.fecha_promocionado = datetime.today()
         curso_a_editar.promocionado = form.promocionado.data
         # Información adicional
         curso_a_editar.modificado_por = current_user.usuario
@@ -451,7 +451,7 @@ def nuevo_seccion(course_code: str) -> str | Response:
     """Formulario para crear una nueva sección en el curso."""
     # Las seccion son contenedores de recursos.
     form = CursoSeccionForm()
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         secciones = database.session.execute(select(func.count(CursoSeccion.id)).filter_by(curso=course_code)).scalar()
         nuevo_indice = int((secciones or 0) + 1)
         nueva_seccion = CursoSeccion(
@@ -485,7 +485,7 @@ def editar_seccion(course_code: str, seccion: str) -> str | Response:
     if seccion_a_editar is None:
         abort(404)
     form = CursoSeccionForm(nombre=seccion_a_editar.nombre, descripcion=seccion_a_editar.descripcion)
-    if form.validate_on_submit() or request.method == "POST":
+    if form.validate_on_submit():
         seccion_a_editar.nombre = form.nombre.data
         seccion_a_editar.descripcion = form.descripcion.data
         seccion_a_editar.modificado_por = current_user.usuario
