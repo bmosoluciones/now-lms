@@ -9,9 +9,11 @@ Several services prefer to have a wsgi.py server file.
 
 from now_lms import init_app, lms_app as app
 from now_lms.cli import serve
+from now_lms.session_config import ensure_session_storage
 
 app.app_context().push()
 
 if __name__ == "__main__":
     init_app(with_examples=False)
+    ensure_session_storage(app)
     serve()

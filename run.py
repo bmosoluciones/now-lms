@@ -12,6 +12,7 @@ from os import environ
 # ---------------------------------------------------------------------------------------
 from now_lms import lms_app, init_app, alembic
 from now_lms.logs import log
+from now_lms.session_config import ensure_session_storage
 from now_lms.worker_config import get_worker_config_from_env
 
 PORT = environ.get("PORT") or 8080
@@ -30,6 +31,9 @@ with lms_app.app_context():
 
 if init_app():
     log.info("Iniciando NOW Learning Management System")
+
+    # Ensure session storage is ready before starting the WSGI server
+    ensure_session_storage(lms_app)
 
     # Get optimal worker and thread configuration
     workers, threads = get_worker_config_from_env()

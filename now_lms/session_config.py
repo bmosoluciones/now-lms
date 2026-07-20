@@ -238,6 +238,69 @@ def init_session(app: Flask) -> None:
         raise
 
 
+def ensure_session_storage(app: Flask) -> None:
+    """Ensure session storage is initialized and the session table exists.
+
+    This function must be called BEFORE the WSGI server starts accepting
+    requests.  It guarantees that:
+    1. ``init_session`` has been called (Flask-Session is active).
+    2. The ``flask_sessions`` table (or equivalent) exists in the database.
+
+    Args:
+        app: Flask application instance
+
+    Raises:
+        RuntimeError: If the session backend cannot be initialized.
+    """
+    # 1. Initialize session if not already done
+    if not hasattr(app, "_session_initialized"):
+        log.info("Session not yet initialized — calling init_session now")
+        init_session(app)
+
+    session_type = app.config.get("SESSION_TYPE")
+
+    if session_type == "sqlalchemy":
+        from now_lms.db import database
+
+        table_name = app.config.get("SESSION_SQLALCHEMY_TABLE", "flask_sessions")
+
+        with app.app_context():
+            from sqlalchemy import inspect
+
+            inspector = inspect(database.engine)
+            existing_tables = inspector.get_table_names()
+
+            if table_name not in existing_tables:
+                log.warning(f"Session table '{table_name}' missing — creating it now")
+                # Re-run init_session which creates the table via __table__.create(checkfirst=True)
+                # Reset the flag so init_session will re-execute
+                if hasattr(app, "_session_initialized"):
+                    delattr(app, "_session_initialized")
+                init_session(app)
+
+                # Verify it was created
+                inspector = inspect(database.engine)
+                existing_tables = inspector.get_table_names()
+                if table_name not in existing_tables:
+                    raise RuntimeError(
+                        f"Failed to create session table '{table_name}'. "
+                        "Check database permissions and configuration."
+                    )
+            log.info(f"Session table '{table_name}' verified — {session_type} backend ready")
+
+    elif session_type == "redis":
+        redis_client = app.config.get("SESSION_REDIS")
+        if redis_client is not None:
+            try:
+                redis_client.ping()
+                log.info("Redis session backend verified")
+            except Exception as exc:
+                raise RuntimeError("Redis session backend is unavailable") from exc
+
+    else:
+        log.warning(f"Session type '{session_type}' — sessions may not persist across threads")
+
+
 def reset_connections_after_fork(server, worker) -> None:
     """Discard connection pools inherited by a newly forked Gunicorn worker."""
     # lms_app is already constructed before the embedded Gunicorn application

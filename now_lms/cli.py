@@ -295,6 +295,7 @@ def serve(wsgi_server):
     import subprocess
     import sys
 
+    from now_lms.session_config import ensure_session_storage
     from now_lms.worker_config import get_worker_config_from_env
 
     if environ.get("LMS_PORT"):
@@ -310,6 +311,10 @@ def serve(wsgi_server):
     else:
         # Get optimal worker and thread configuration
         WORKERS, THREADS = get_worker_config_from_env()
+
+    # Ensure session storage is initialized and the session table exists
+    # BEFORE the WSGI server starts accepting requests.
+    ensure_session_storage(lms_app)
 
     wsgi_server = wsgi_server.lower()
 
