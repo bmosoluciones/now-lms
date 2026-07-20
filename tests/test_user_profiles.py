@@ -129,6 +129,12 @@ def test_view_other_users(client_student, profile_users):
     assert b"private" in resp_priv.data or b"privado" in resp_priv.data.lower()
 
 
+def test_view_nonexistent_user(client_student):
+    """Test viewing a nonexistent user's profile returns 404."""
+    resp = client_student.get("/user/nonexistent_user_123456")
+    assert resp.status_code == 404
+
+
 def test_edit_perfil(client_student, profile_users, db_session):
     """Test editing profile via GET and POST."""
     student_id = profile_users["student"].id

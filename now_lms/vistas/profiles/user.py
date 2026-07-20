@@ -109,6 +109,8 @@ def perfil() -> str | Response:
 def usuario(id_usuario: str) -> str:
     """Acceso administrativo al perfil de un usuario."""
     perfil_usuario = database.session.execute(database.select(Usuario).filter_by(usuario=id_usuario)).scalar_one_or_none()
+    if perfil_usuario is None:
+        abort(404)
     # La misma plantilla del perfil de usuario con permisos elevados como
     # activar desactivar el perfil o cambiar el perfil del usuario.
     if current_user.usuario == id_usuario or current_user.tipo != "student" or perfil_usuario.visible is True:
