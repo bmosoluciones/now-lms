@@ -733,11 +733,7 @@ def editar_recurso_pdf(course_code: str, seccion: str, resource_id: str) -> str 
         recurso.requerido = form.requerido.data
         recurso.modificado_por = current_user.usuario
 
-        config = database.session.execute(database.select(Configuracion)).scalars().first()
-        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
-            recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
-        else:
-            recurso.descripcion_html_preformateado = False
+        recurso.descripcion_html_preformateado = _get_html_preformateado(form)
 
         if "pdf" in request.files and request.files["pdf"].filename:
             file_name = str(ULID()) + ".pdf"
@@ -932,11 +928,7 @@ def editar_recurso_img(course_code: str, seccion: str, resource_id: str) -> str 
         recurso.requerido = form.requerido.data
         recurso.modificado_por = current_user.usuario
 
-        config = database.session.execute(database.select(Configuracion)).scalars().first()
-        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
-            recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
-        else:
-            recurso.descripcion_html_preformateado = False
+        recurso.descripcion_html_preformateado = _get_html_preformateado(form)
 
         if "img" in request.files and request.files["img"].filename:
             img_filename = request.files["img"].filename
