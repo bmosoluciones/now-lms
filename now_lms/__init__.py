@@ -22,6 +22,7 @@ from __future__ import annotations
 # ---------------------------------------------------------------------------------------
 from os import environ
 from platform import python_version
+from secrets import token_hex
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -483,7 +484,7 @@ def create_app(app_name="now_lms", testing=False, config_overrides=None):
         flask_app.config.update(
             {
                 "TESTING": True,
-                "SECRET_KEY": "test-secret-key-for-testing",
+                "SECRET_KEY": token_hex(32),
                 "SQLALCHEMY_TRACK_MODIFICATIONS": False,
                 "WTF_CSRF_ENABLED": False,
                 "DEBUG": True,
