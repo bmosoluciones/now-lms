@@ -1124,6 +1124,18 @@ def nuevo_recurso_descargable(course_code: str, seccion: str) -> str | Response:
         )
 
 
+def _update_downloadable_file(recurso, course_code: str, site_config) -> None:
+    """Validate and save a replacement downloadable file."""
+    uploaded_file = request.files.get("archivo")
+    if uploaded_file is None or not uploaded_file.filename:
+        return
+    is_valid, error_msg = validate_downloadable_file(uploaded_file, site_config.max_file_size)
+    if not is_valid:
+        raise ValueError(error_msg)
+    file_ext = splitext(uploaded_file.filename or "")[1]
+    recurso.doc = files.save(uploaded_file, folder=course_code, name=f"{ULID()}{file_ext or ''}")
+
+
 @resources.route("/course/<course_code>/<seccion>/descargable/<resource_id>/edit", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -1137,39 +1149,27 @@ def editar_recurso_descargable(course_code: str, seccion: str, resource_id: str)
     form = CursoRecursoArchivoDescargable()
 
     if form.validate_on_submit() or request.method == "POST":
-        if "archivo" in request.files and request.files["archivo"].filename:
-            uploaded_file = request.files["archivo"]
-            is_valid, error_msg = validate_downloadable_file(uploaded_file, site_config.max_file_size)
-            if not is_valid:
-                flash(error_msg, "warning")
-                return render_template(
-                    "learning/resources_new/editar_recurso_descargable.html",
-                    id_curso=course_code,
-                    id_seccion=seccion,
-                    recurso=recurso,
-                    form=form,
-                    max_file_size=site_config.max_file_size,
-                )
-
-            filename = uploaded_file.filename
-            file_ext = splitext(filename or "")[1]
-            file_name = str(ULID()) + (file_ext or "")
-
-            try:
-                saved_file = files.save(uploaded_file, folder=course_code, name=file_name)
-                recurso.doc = saved_file
-            except UploadNotAllowed:
-                flash("Tipo de archivo no permitido.", "warning")
-                return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-
-        recurso.nombre = form.nombre.data
-        recurso.descripcion = form.descripcion.data
-        recurso.requerido = form.requerido.data
-        recurso.modificado_por = current_user.usuario
-
         try:
+            _update_downloadable_file(recurso, course_code, site_config)
+            recurso.nombre = form.nombre.data
+            recurso.descripcion = form.descripcion.data
+            recurso.requerido = form.requerido.data
+            recurso.modificado_por = current_user.usuario
             database.session.commit()
             flash(RECURSO_AGREGADO, "success")
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
+        except ValueError as exc:
+            flash(str(exc), "warning")
+            return render_template(
+                "learning/resources_new/editar_recurso_descargable.html",
+                id_curso=course_code,
+                id_seccion=seccion,
+                recurso=recurso,
+                form=form,
+                max_file_size=site_config.max_file_size,
+            )
+        except UploadNotAllowed:
+            flash("Tipo de archivo no permitido.", "warning")
             return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
         except OperationalError:
             flash(ERROR_AL_AGREGAR_CURSO, "warning")
