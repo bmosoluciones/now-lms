@@ -38,6 +38,20 @@ TEMPLATE_CAMBIAR_CONTRASENA = "inicio/cambiar_contraseña.html"
 user_profile = Blueprint("user_profile", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
+def _update_profile_photo(usuario_: Usuario) -> None:
+    """Save a profile photo when one was uploaded."""
+    if "logo" not in request.files:
+        return
+    try:
+        picture_file = images.save(request.files["logo"], folder="usuarios", name=current_user.id + ".jpg")
+        if picture_file:
+            usuario_.portada = True
+            database.session.commit()
+            flash("Imagen de perfil actualizada.", "success")
+    except UploadNotAllowed:
+        log.warning("Could not update profile image.")
+
+
 # ---------------------------------------------------------------------------------------
 # Espacio del usuario, por defecto un usuario se considera un estudiante.
 # ---------------------------------------------------------------------------------------
@@ -154,18 +168,7 @@ def edit_perfil(ulid: str) -> str | Response:
             database.session.commit()
             cache.delete("view/" + url_for("user_profile.perfil"))
             flash("Pefil actualizado.", "success")
-            if "logo" in request.files:
-                try:
-                    picture_file = images.save(request.files["logo"], folder="usuarios", name=current_user.id + ".jpg")
-                    if picture_file:
-                        row = database.session.execute(database.select(Usuario).filter(Usuario.id == current_user.id)).first()
-                        if row:
-                            usuario_ = row[0]
-                            usuario_.portada = True
-                            database.session.commit()
-                            flash("Imagen de perfil actualizada.", "success")
-                except UploadNotAllowed:
-                    log.warning("Could not update profile image.")
+            _update_profile_photo(usuario_)
         except OperationalError as e:
             database.session.rollback()
             log.error(f"OperationalError in edit_perfil: {e}")
