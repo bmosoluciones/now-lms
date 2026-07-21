@@ -5,6 +5,7 @@
 ![PyPI](https://img.shields.io/pypi/v/now_lms?color=brightgreen&label=version&logo=python&logoColor=white)
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/now_lms?logo=python&logoColor=white)
 [![Docker Repository on Quay](https://quay.io/repository/bmosoluciones/now_lms/status "Docker Repository on Quay")](https://quay.io/repository/bmosoluciones/now_lms)
+[![CI](https://github.com/bmosoluciones/now-lms/actions/workflows/python.yml/badge.svg)](https://github.com/bmosoluciones/now-lms/actions/workflows/python.yml)
 [![codecov](https://codecov.io/github/bmosoluciones/now-lms/graph/badge.svg?token=SFVXF6Y3R3)](https://codecov.io/github/bmosoluciones/now-lms)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bmosoluciones_now-lms&metric=alert_status)](https://sonarcloud.io/dashboard?id=bmosoluciones_now-lms)
 [![Code style: black](https://img.shields.io/badge/Python%20code%20style-black-000000.svg)](https://github.com/psf/black)
