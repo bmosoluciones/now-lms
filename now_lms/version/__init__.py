@@ -43,23 +43,26 @@ PRERELEASE = ""
 REVISION = ""
 
 # <--------------------------------------------------------------------------> #
-# Release string preprocessing
-PRE_RELEASE_PART = (PRERELEASE if PRERELEASE != "" else "") + (REVISION if REVISION != "" else "")
-POST_RELEASE_PART = (POST if POST != "" else "") + (REVISION if REVISION != "" else "")
-
-# <--------------------------------------------------------------------------> #
 # Release string
-# Refences:
+# References:
 #  - https://peps.python.org/pep-0440/
+#  - https://semver.org/
+#
+# Formula: {MAYOR}.{MENOR}.{PATCH}[{PRERELEASE}][.{POST}[.{REVISION}]]
+#   Examples:
+#     1.3.0              -> stable release
+#     1.3.0a1            -> alpha pre-release
+#     1.3.0b2            -> beta pre-release
+#     1.3.0rc1           -> release candidate
+#     1.3.0.post1        -> post-release
+#     1.3.0.post1.202601 -> post-release with revision date
 #
 
 BASE_VERSION = MAYOR + "." + MENOR + "." + PATCH
 
-if PRERELEASE != "":
-    VERSION = BASE_VERSION + PRE_RELEASE_PART
-
-if POST != "":
-    VERSION = BASE_VERSION + POST_RELEASE_PART
-
-if PRERELEASE == "" and POST == "":
+if PRERELEASE:
+    VERSION = BASE_VERSION + PRERELEASE
+elif POST:
+    VERSION = BASE_VERSION + ".post" + POST + ("." + REVISION if REVISION else "")
+else:
     VERSION = BASE_VERSION
