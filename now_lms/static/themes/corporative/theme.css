@@ -248,7 +248,7 @@ body {
 .alert-warning {
     border-left-color: var(--corporate-warning);
     background-color: rgba(255, 193, 7, 0.05);
-    color: #856404;
+    color: #4d3b00;
 }
 
 .alert-danger {

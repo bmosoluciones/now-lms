@@ -495,26 +495,26 @@
 .excel-alert-success {
     background: rgba(40, 167, 69, 0.1);
     border-left-color: #28A745;
-    color: #155724;
+    color: #0b3d1c;
 }
 
 .excel-alert-error,
 .excel-alert-danger {
     background: rgba(220, 53, 69, 0.1);
     border-left-color: #DC3545;
-    color: #721C24;
+    color: #5a1018;
 }
 
 .excel-alert-warning {
     background: rgba(255, 193, 7, 0.1);
     border-left-color: #FFC107;
-    color: #856404;
+    color: #5a4300;
 }
 
 .excel-alert-info {
     background: rgba(23, 162, 184, 0.1);
     border-left-color: #17A2B8;
-    color: #0C5460;
+    color: #063743;
 }
 
 /* ===== PAGINATION ===== */

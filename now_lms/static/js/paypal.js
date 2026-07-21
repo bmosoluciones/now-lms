@@ -16,8 +16,12 @@ let currentPaymentState = PaymentState.IDLE;
 function showPaymentMessage(message, type = 'info') {
     const messageContainer = document.getElementById('payment-messages');
     if (messageContainer) {
-        const alertClass = type === 'error' ? 'alert-danger' : 
-                          type === 'success' ? 'alert-success' : 'alert-info';
+        let alertClass = 'alert-info';
+        if (type === 'error') {
+            alertClass = 'alert-danger';
+        } else if (type === 'success') {
+            alertClass = 'alert-success';
+        }
         messageContainer.innerHTML = `
             <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
                 ${message}
@@ -70,7 +74,7 @@ function initializePayPalButtons(courseCode, amount, currency = 'USD') {
                 return actions.order.create({
                     purchase_units: [{
                         amount: {
-                            value: parseFloat(amount).toFixed(2),
+                            value: Number.parseFloat(amount).toFixed(2),
                             currency_code: currency
                         },
                         description: `Pago por curso ${courseCode}`,
@@ -244,7 +248,7 @@ function loadPayPalSDKWithRetry(clientId, currency, maxRetries = 3) {
                 if (attempt < maxRetries) {
                     // Remove failed script
                     if (script.parentNode) {
-                        script.parentNode.removeChild(script);
+                        script.remove();
                     }
                     
                     // Retry after delay (exponential backoff)
@@ -266,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const paypalContainer = document.getElementById('paypal-button-container');
     if (paypalContainer) {
         const courseCode = paypalContainer.dataset.courseCode;
-        const amount = parseFloat(paypalContainer.dataset.amount);
+        const amount = Number.parseFloat(paypalContainer.dataset.amount);
         const currency = paypalContainer.dataset.currency || 'USD';
         
         if (courseCode && amount && amount > 0) {

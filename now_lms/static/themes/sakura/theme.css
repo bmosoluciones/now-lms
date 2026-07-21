@@ -311,7 +311,7 @@
 
     .btn-success:hover {
         background: #8fb394;
-        color: white;
+        color: #183321;
     }
 
     /* Danger button override */
@@ -324,7 +324,7 @@
 
     .btn-danger:hover {
         background: #b56666;
-        color: white;
+        color: #3d1111;
     }
 
     /* Info button override */
@@ -337,7 +337,7 @@
 
     .btn-info:hover {
         background: #7a91a1;
-        color: white;
+        color: #10232d;
     }
 
     /* Text color overrides */

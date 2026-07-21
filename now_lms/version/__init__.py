@@ -4,6 +4,8 @@
 
 from __future__ import annotations
 
+import os
+
 # ---------------------------------------------------------------------------------------
 # Standard library
 # ---------------------------------------------------------------------------------------
@@ -32,15 +34,15 @@ PATCH = "4"
 
 # <--------------------------------------------------------------------------> #
 # Quick fix
-POST = None
+POST = os.environ.get("NOW_LMS_VERSION_POST")
 
 # <--------------------------------------------------------------------------> #
 # Pre release not for production
-PRERELEASE = None
+PRERELEASE = os.environ.get("NOW_LMS_VERSION_PRERELEASE")
 
 # <--------------------------------------------------------------------------> #
 # Date of release
-REVISION = None
+REVISION = os.environ.get("NOW_LMS_VERSION_REVISION")
 
 # <--------------------------------------------------------------------------> #
 # Release string
@@ -58,12 +60,12 @@ REVISION = None
 #     1.3.0.post1.202601 -> post-release with revision date
 #
 
-BASE_VERSION = MAYOR + "." + MENOR + "." + PATCH
+BASE_VERSION = f"{MAYOR}.{MENOR}.{PATCH}"
 
-if PRERELEASE is not None:
-    VERSION = BASE_VERSION + PRERELEASE
-elif POST is not None:
-    revision_part = "." + REVISION if REVISION is not None else ""
-    VERSION = BASE_VERSION + ".post" + POST + revision_part
+if PRERELEASE:
+    VERSION = f"{BASE_VERSION}{PRERELEASE}"
+elif POST:
+    revision_part = f".{REVISION}" if REVISION else ""
+    VERSION = f"{BASE_VERSION}.post{POST}{revision_part}"
 else:
     VERSION = BASE_VERSION

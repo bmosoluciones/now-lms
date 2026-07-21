@@ -125,12 +125,6 @@
         }
     }
 
-    /* Oxford identity: ink blue, illuminated gold and manuscript folios. */
-    .navbar-oxford {
-        background-image: linear-gradient(135deg, rgba(0, 33, 71, 0.99), rgba(0, 24, 41, 0.97)),
-            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M8 8h32v32H8z' fill='none' stroke='%23c5b358' stroke-width='1' opacity='.3'/%3E%3C/svg%3E");
-    }
-
     /* Keep the showcase hero readable over Oxford's ink-blue manuscript panel. */
     .oxford-hero h1 {
         color: var(--oxford-text-light) !important;
