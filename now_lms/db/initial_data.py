@@ -1635,9 +1635,9 @@ def populate_custmon_data_dir() -> None:
         # Check if directory doesn't exist or is empty
         should_populate = False
         try:
-            if not path.exists(DIRECTORIO_ARCHIVOS):
-                should_populate = True
-            elif path.isdir(DIRECTORIO_ARCHIVOS) and len(listdir(DIRECTORIO_ARCHIVOS)) == 0:
+            if not path.exists(DIRECTORIO_ARCHIVOS) or (
+                path.isdir(DIRECTORIO_ARCHIVOS) and len(listdir(DIRECTORIO_ARCHIVOS)) == 0
+            ):
                 should_populate = True
         except OSError:
             should_populate = True
@@ -1659,9 +1659,9 @@ def populate_custom_theme_dir() -> None:
         # Check if directory doesn't exist or is empty
         should_populate = False
         try:
-            if not path.exists(DIRECTORIO_PLANTILLAS):
-                should_populate = True
-            elif path.isdir(DIRECTORIO_PLANTILLAS) and len(listdir(DIRECTORIO_PLANTILLAS)) == 0:
+            if not path.exists(DIRECTORIO_PLANTILLAS) or (
+                path.isdir(DIRECTORIO_PLANTILLAS) and len(listdir(DIRECTORIO_PLANTILLAS)) == 0
+            ):
                 should_populate = True
         except OSError:
             should_populate = True
