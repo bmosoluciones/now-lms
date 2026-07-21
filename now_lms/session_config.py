@@ -101,6 +101,67 @@ def get_session_config(app: Flask | None = None) -> dict[str, object] | None:
     }
 
 
+def _warn_secret_key(secret_key) -> None:
+    """Warn when the application secret is missing or weak."""
+    if not secret_key or secret_key in {"dev", "development", "test"}:
+        log.warning(
+            "SECRET_KEY is not set or using default value! "
+            "Set a unique SECRET_KEY for production: export SECRET_KEY=$(openssl rand -hex 32)"
+        )
+    elif len(str(secret_key)) < 32:
+        log.warning(f"SECRET_KEY is too short ({len(str(secret_key))} chars). Use at least 32 characters for better security.")
+
+
+def _prepare_session_config(session_config: dict) -> dict:
+    """Add application-specific dependencies to session configuration."""
+    if session_config.get("SESSION_TYPE") == "sqlalchemy":
+        from now_lms.db import database
+
+        session_config["SESSION_SQLALCHEMY"] = database
+        if _session_model_created:
+            log.debug("Session model already created, reusing existing model")
+    return session_config
+
+
+def _initialize_session_backend(app: Flask, session_config: dict) -> None:
+    """Install and verify the Flask-Session backend."""
+    from flask_session import Session
+    from flask_session.base import ServerSideSessionInterface
+
+    app.config.update(session_config)
+    Session(app)
+    if not isinstance(app.session_interface, ServerSideSessionInterface):
+        raise RuntimeError(
+            f"Flask-Session did not install a server-side interface for {session_config.get('SESSION_TYPE')}"
+        )
+
+
+def _log_session_backend(session_config: dict) -> None:
+    """Log backend diagnostics and multi-worker recommendations."""
+    session_type = session_config.get("SESSION_TYPE", "unknown")
+    log.info(f"Session storage initialized: {session_type}")
+    workers_env = os.environ.get("NOW_LMS_WORKERS") or os.environ.get("WORKERS")
+    num_workers = int(workers_env) if workers_env else 1
+    if session_type == "redis":
+        log.info("Using Redis for session storage - optimal for multi-worker WSGI servers")
+        redis_client = session_config.get("SESSION_REDIS")
+        if redis_client:
+            try:
+                redis_client.ping()
+                log.info("Redis connection verified successfully")
+            except Exception as exc:
+                raise RuntimeError("Configured Redis session backend is unavailable") from exc
+    elif session_type == "sqlalchemy":
+        log.info("Using SQLAlchemy database for session storage - works with multi-worker/multi-threaded WSGI servers")
+        log.info(f"Session table: {session_config.get('SESSION_SQLALCHEMY_TABLE', 'flask_sessions')}")
+        if num_workers > 1:
+            log.warning(f"Running with {num_workers} workers using database backend. Redis is recommended for better performance.")
+    else:
+        log.warning(f"Unknown session type: {session_type}")
+        if num_workers > 1:
+            log.warning("Running with multiple workers without shared session storage; sessions may not persist correctly.")
+
+
 def init_session(app: Flask) -> None:
     """
     Initialize Flask-Session with the appropriate backend.
@@ -124,17 +185,7 @@ def init_session(app: Flask) -> None:
         return
 
     try:
-        # Validate SECRET_KEY configuration
-        secret_key = app.config.get("SECRET_KEY")
-        if not secret_key or secret_key in {"dev", "development", "test"}:
-            log.warning(
-                "SECRET_KEY is not set or using default value! "
-                "Set a unique SECRET_KEY for production: export SECRET_KEY=$(openssl rand -hex 32)"
-            )
-        elif len(str(secret_key)) < 32:
-            log.warning(
-                f"SECRET_KEY is too short ({len(str(secret_key))} chars). " "Use at least 32 characters for better security."
-            )
+        _warn_secret_key(app.config.get("SECRET_KEY"))
 
         # Get the session configuration
         session_config = get_session_config(app)
@@ -145,87 +196,15 @@ def init_session(app: Flask) -> None:
             app._session_initialized = True
             return
 
-        from flask_session import Session
-
-        # For SQLAlchemy backend, inject the app's database instance
-        if session_config.get("SESSION_TYPE") == "sqlalchemy":
-            from now_lms.db import database
-
-            session_config["SESSION_SQLALCHEMY"] = database
-
-            # If the model has already been created (e.g., by another app instance),
-            # we need to skip re-creating it to avoid metadata conflicts
-            if _session_model_created:
-                log.debug("Session model already created, reusing existing model")
-                # We still need to initialize flask-session for this app instance
-                # but we need to handle the fact that the model already exists
-
-        # Update Flask config with session settings
-        app.config.update(session_config)
-
-        # Initialize Flask-Session.  Do not swallow model/configuration errors:
-        # doing so leaves Flask's cookie session interface active while the
-        # logs incorrectly claim that shared SQLAlchemy sessions are enabled.
-        Session(app)
+        session_config = _prepare_session_config(session_config)
+        _initialize_session_backend(app, session_config)
         if session_config.get("SESSION_TYPE") == "sqlalchemy":
             _session_model_created = True
-
-        # Configuration alone is not proof that Flask-Session took control.
-        # A previous implementation could catch an initialization error and
-        # continue with SecureCookieSessionInterface, causing diagnostics to
-        # report a shared backend that was not actually active.
-        from flask_session.base import ServerSideSessionInterface
-
-        if not isinstance(app.session_interface, ServerSideSessionInterface):
-            raise RuntimeError(
-                f"Flask-Session did not install a server-side interface for {session_config.get('SESSION_TYPE')}"
-            )
 
         # Mark as initialized
         app._session_initialized = True
 
-        session_type = session_config.get("SESSION_TYPE", "unknown")
-        log.info(f"Session storage initialized: {session_type}")
-
-        # Log warnings and recommendations based on session type
-        workers_env = os.environ.get("NOW_LMS_WORKERS") or os.environ.get("WORKERS")
-        num_workers = int(workers_env) if workers_env else 1
-
-        match session_type:
-            case "redis":
-                log.info("Using Redis for session storage - optimal for multi-worker WSGI servers")
-                # Validate Redis connection. An explicitly configured but
-                # unreachable backend must fail startup; accepting traffic in
-                # that state makes every login appear to succeed and then
-                # disappear on the following request.
-                redis_client = session_config.get("SESSION_REDIS")
-                if redis_client:
-                    try:
-                        redis_client.ping()
-                        log.info("Redis connection verified successfully")
-                    except Exception as e:
-                        raise RuntimeError("Configured Redis session backend is unavailable") from e
-
-            case "sqlalchemy":
-                log.info("Using SQLAlchemy database for session storage - works with multi-worker/multi-threaded WSGI servers")
-                table_name = session_config.get("SESSION_SQLALCHEMY_TABLE", "flask_sessions")
-                log.info(f"Session table: {table_name}")
-
-                if num_workers > 1:
-                    log.warning(
-                        f"Running with {num_workers} workers using database backend."
-                        "Redis is recommended for better performance and reliability. "
-                        "Set SESSION_REDIS_URL environment variable to use Redis."
-                    )
-            case _:
-                log.warning(f"Unknown session type: {session_type}")
-
-                if num_workers > 1:
-                    log.warning(
-                        f"Running with {num_workers} workers without shared session storage! "
-                        "Sessions may not persist correctly. "
-                        "Set SESSION_REDIS_URL for Redis or ensure Flask-Session is configured."
-                    )
+        _log_session_backend(session_config)
 
     except ImportError:
         log.error(
