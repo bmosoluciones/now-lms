@@ -36,6 +36,7 @@ from now_lms.logs import log
 ROUTE_BLOG_POST = "blog.blog_post"
 ROUTE_BLOG_INDEX = "blog.blog_index"
 ROUTE_BLOG_ADMIN_INDEX = "blog.admin_blog_index"
+CACHE_VIEW_PREFIX = CACHE_VIEW_PREFIX
 
 blog = Blueprint("blog", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
@@ -180,7 +181,7 @@ def add_comment(slug: str) -> Response:
         database.session.commit()
 
         # Invalidate cache for this blog post
-        cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=slug))
+        cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=slug))
 
         flash("Comentario agregado exitosamente.", "success")
     else:
@@ -201,7 +202,7 @@ def flag_comment(comment_id: int) -> Response:
     database.session.commit()
 
     # Invalidate cache for this blog post
-    cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
+    cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
 
     flash("Comentario marcado como inapropiado.", "info")
     return redirect(url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
@@ -297,9 +298,9 @@ def _handle_status_change(post: BlogPost, form: BlogPostForm) -> None:
 def _invalidate_post_caches(slug: str, old_slug: str | None = None) -> None:
     """Invalidate caches related to a blog post."""
     if old_slug and old_slug != slug:
-        cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=old_slug))
-    cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=slug))
-    cache.delete("view/" + url_for(ROUTE_BLOG_INDEX))
+        cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=old_slug))
+    cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=slug))
+    cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_INDEX))
 
 
 def _redirect_after_post_save() -> Response:
@@ -407,8 +408,8 @@ def approve_post(post_id: int) -> Response:
     database.session.commit()
 
     # Invalidate cache for blog index and the post itself
-    cache.delete("view/" + url_for(ROUTE_BLOG_INDEX))
-    cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=post.slug))
+    cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_INDEX))
+    cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=post.slug))
 
     flash(f"Entrada '{post.title}' aprobada y publicada.", "success")
     return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
@@ -427,8 +428,8 @@ def ban_post(post_id: int) -> Response:
     database.session.commit()
 
     # Invalidate cache for blog index and the post itself
-    cache.delete("view/" + url_for(ROUTE_BLOG_INDEX))
-    cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=post.slug))
+    cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_INDEX))
+    cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=post.slug))
 
     flash(f"Entrada '{post.title}' ha sido baneada.", "warning")
     return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
@@ -524,7 +525,7 @@ def ban_comment(comment_id: str) -> str | Response:
     database.session.commit()
 
     # Invalidate cache for this blog post
-    cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
+    cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
 
     flash("Comentario baneado.", "warning")
     return redirect(url_for(ROUTE_BLOG_POST, slug=comment.post.slug))
@@ -555,7 +556,7 @@ def delete_comment(comment_id: str) -> str | Response:
     database.session.commit()
 
     # Invalidate cache for this blog post
-    cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=post_slug))
+    cache.delete(CACHE_VIEW_PREFIX + url_for(ROUTE_BLOG_POST, slug=post_slug))
 
     flash("Comentario eliminado.", "info")
     return redirect(url_for(ROUTE_BLOG_POST, slug=post_slug))

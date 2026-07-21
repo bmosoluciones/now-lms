@@ -17,11 +17,12 @@ from now_lms.config import DIRECTORIO_ARCHIVOS_PUBLICOS
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
+IMAGES_PATH = IMAGES_PATH
 
 
 def get_current_course_logo(course_code: str) -> str | None:
     """Return the name of the logo file for the current course."""
-    course_dir = Path(str(str(DIRECTORIO_ARCHIVOS_PUBLICOS) + "/images/" + course_code))
+    course_dir = Path(str(str(DIRECTORIO_ARCHIVOS_PUBLICOS) + IMAGES_PATH + course_code))
     logo_files = [f for f in course_dir.iterdir() if f.is_file() and f.stem == "logo"]
 
     try:
@@ -47,7 +48,7 @@ def get_blog_post_cover_image(post_id: str) -> str | None:
 
 def get_site_logo() -> str | None:
     """Return the name of the logo file of the site."""
-    course_dir = Path(str(str(DIRECTORIO_ARCHIVOS_PUBLICOS) + "/images/"))
+    course_dir = Path(str(str(DIRECTORIO_ARCHIVOS_PUBLICOS) + IMAGES_PATH))
     logo_files = [f for f in course_dir.iterdir() if f.is_file() and f.stem == "logotipo"]
     try:
         logo_file = logo_files[0]
@@ -58,7 +59,7 @@ def get_site_logo() -> str | None:
 
 def get_site_favicon() -> str | None:
     """Return the name of the logo file of the site."""
-    course_dir = Path(str(str(DIRECTORIO_ARCHIVOS_PUBLICOS) + "/images/"))
+    course_dir = Path(str(str(DIRECTORIO_ARCHIVOS_PUBLICOS) + IMAGES_PATH))
     logo_files = [f for f in course_dir.iterdir() if f.is_file() and f.stem == "favicon"]
     try:
         logo_file = logo_files[0]

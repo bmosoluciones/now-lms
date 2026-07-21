@@ -31,6 +31,7 @@ from now_lms.db import Pago
 # Constants
 ADMIN_USERS_ROUTE = "admin_profile.usuarios"
 ADMIN_UNVERIFIED_USERS_ROUTE = "admin_profile.usuarios_sin_verificar"
+CACHE_VIEW_PREFIX = CACHE_VIEW_PREFIX
 
 admin_profile = Blueprint("admin_profile", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
@@ -120,7 +121,7 @@ def activar_usuario(user_id: str) -> Response:
         flash("Usuario definido como activo", "info")
     else:
         flash("Usuario ya se encuentra definido como activo", "warning")
-    cache.delete("view/" + url_for(ADMIN_USERS_ROUTE))
+    cache.delete(CACHE_VIEW_PREFIX + url_for(ADMIN_USERS_ROUTE))
     return redirect(url_for(ADMIN_USERS_ROUTE))
 
 
@@ -139,7 +140,7 @@ def inactivar_usuario(user_id: str) -> Response:
         flash("Usuario definido como inactivo", "info")
     else:
         flash("Usuario ya se encuentra definido como inactivo", "warning")
-    cache.delete("view/" + url_for(ADMIN_USERS_ROUTE))
+    cache.delete(CACHE_VIEW_PREFIX + url_for(ADMIN_USERS_ROUTE))
     return redirect(url_for(ADMIN_USERS_ROUTE))
 
 
@@ -150,7 +151,7 @@ def eliminar_usuario(user_id: str) -> Response:
     """Elimina un usuario por su id y redirecciona a la vista dada."""
     database.session.execute(delete(Usuario).where(Usuario.id == user_id))
     database.session.commit()
-    cache.delete("view/" + url_for(ADMIN_USERS_ROUTE))
+    cache.delete(CACHE_VIEW_PREFIX + url_for(ADMIN_USERS_ROUTE))
     flash("Usuario eliminado correctamente.", "info")
     return redirect(url_for(request.form.get("ruta", default="home", type=str)))
 
@@ -224,7 +225,7 @@ def verificar_email_usuario(user_id: str) -> Response:
         flash(f"Error al verificar el correo electrónico: {str(e)}", "error")
 
     # Clear cache
-    cache.delete("view/" + url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
+    cache.delete(CACHE_VIEW_PREFIX + url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
     return redirect(url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
@@ -259,7 +260,7 @@ def rechazar_usuario_sin_verificar(user_id: str) -> Response:
         flash(f"Error al rechazar el usuario: {str(e)}", "error")
 
     # Clear cache
-    cache.delete("view/" + url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
+    cache.delete(CACHE_VIEW_PREFIX + url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
     return redirect(url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 

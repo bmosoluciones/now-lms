@@ -85,6 +85,7 @@ ERROR_AL_AGREGAR_CURSO = "Hubo en error al crear el recurso."
 
 VISTA_CURSOS = "course.curso"
 VISTA_ADMINISTRAR_CURSO = "course.administrar_curso"
+COULD_NOT_UPDATE_PROFILE_PHOTO = "Could not update profile photo."
 NO_AUTORIZADO_MSG = "No se encuentra autorizado a acceder al recurso solicitado."
 
 # ---------------------------------------------------------------------------------------
@@ -93,6 +94,7 @@ NO_AUTORIZADO_MSG = "No se encuentra autorizado a acceder al recurso solicitado.
 TEMPLATE_SLIDE_SHOW = "learning/resources/slide_show.html"
 TEMPLATE_COUPON_CREATE = "learning/curso/coupons/create.html"
 TEMPLATE_COUPON_EDIT = "learning/curso/coupons/edit.html"
+TEMPLATE_ADMIN_ENROLL = TEMPLATE_ADMIN_ENROLL
 
 # Route constants
 ROUTE_LIST_COUPONS = "course.list_coupons"
@@ -160,7 +162,7 @@ def _save_course_logo(curso_) -> None:
             database.session.commit()
             log.warning("Course Logo not saved")
     except (UploadNotAllowed, AttributeError):
-        log.warning("Could not update profile photo.")
+        log.warning(COULD_NOT_UPDATE_PROFILE_PHOTO)
         database.session.rollback()
 
 
@@ -633,7 +635,7 @@ def admin_course_enrollment(course_code: str) -> str | Response:
 
         if not usuario_existe:
             flash(f"El usuario '{student_username}' no existe en el sistema.", "error")
-            return render_template("learning/curso/admin_enroll.html", curso=_curso, form=form)
+            return render_template(TEMPLATE_ADMIN_ENROLL, curso=_curso, form=form)
 
         # Check if student is already enrolled
         existing_enrollment = database.session.execute(
@@ -642,7 +644,7 @@ def admin_course_enrollment(course_code: str) -> str | Response:
 
         if existing_enrollment:
             flash(f"El estudiante '{student_username}' ya está inscrito en este curso.", "warning")
-            return render_template("learning/curso/admin_enroll.html", curso=_curso, form=form)
+            return render_template(TEMPLATE_ADMIN_ENROLL, curso=_curso, form=form)
 
         try:
             # Create payment record for administrative enrollment
@@ -683,13 +685,13 @@ def admin_course_enrollment(course_code: str) -> str | Response:
             create_events_for_student_enrollment(student_username, course_code)
 
             flash(f"Estudiante '{student_username}' inscrito exitosamente en el curso '{_curso.nombre}'.", "success")
-            return redirect(url_for("course.administrar_curso", course_code=course_code))
+            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
         except Exception as e:
             database.session.rollback()
             flash(f"Error al inscribir al estudiante: {str(e)}", "error")
 
-    return render_template("learning/curso/admin_enroll.html", curso=_curso, form=form)
+    return render_template(TEMPLATE_ADMIN_ENROLL, curso=_curso, form=form)
 
 
 @course.route("/course/<course_code>/admin/enrollments", methods=["GET"])

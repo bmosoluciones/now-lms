@@ -113,6 +113,7 @@ MSG_RECURSO_NO_ENCONTRADO = "Recurso no encontrado."
 MSG_RECURSO_ACTUALIZADO = "Recurso actualizado correctamente."
 MSG_RECURSO_ERROR_ACTUALIZAR = "Hubo un error al actualizar el recurso."
 TEMPLATE_LIBRARY_UPLOAD = "learning/curso/library_upload.html"
+ICS_DATETIME_FORMAT = ICS_DATETIME_FORMAT
 
 
 def _read_vtt_content(field_name: str) -> str | None:
@@ -1750,8 +1751,8 @@ def _generate_meet_ics_content(recurso: Any) -> str:
         else:
             end_datetime = start_datetime + timedelta(hours=1)
 
-        start_str = start_datetime.strftime("%Y%m%dT%H%M%S")
-        end_str = end_datetime.strftime("%Y%m%dT%H%M%S")
+        start_str = start_datetime.strftime(ICS_DATETIME_FORMAT)
+        end_str = end_datetime.strftime(ICS_DATETIME_FORMAT)
 
         lines.extend(
             [
@@ -1845,8 +1846,8 @@ def google_calendar_link(course_code: str, codigo: str) -> Response:
         end_datetime = (
             datetime.combine(recurso.fecha, recurso.hora_fin) if recurso.hora_fin else start_datetime + timedelta(hours=1)
         )
-        start_str = start_datetime.strftime("%Y%m%dT%H%M%S")
-        end_str = end_datetime.strftime("%Y%m%dT%H%M%S")
+        start_str = start_datetime.strftime(ICS_DATETIME_FORMAT)
+        end_str = end_datetime.strftime(ICS_DATETIME_FORMAT)
 
         description_parts = [f"Curso: {course_obj.nombre}"]
         if recurso.descripcion:
@@ -1909,8 +1910,8 @@ def outlook_calendar_link(course_code: str, codigo: str) -> str | Response:
         end_datetime = (
             datetime.combine(recurso.fecha, recurso.hora_fin) if recurso.hora_fin else start_datetime + timedelta(hours=1)
         )
-        start_str = start_datetime.strftime("%Y%m%dT%H%M%S")
-        end_str = end_datetime.strftime("%Y%m%dT%H%M%S")
+        start_str = start_datetime.strftime(ICS_DATETIME_FORMAT)
+        end_str = end_datetime.strftime(ICS_DATETIME_FORMAT)
 
         description_parts = [f"Curso: {course_obj.nombre}"]
         if recurso.descripcion:

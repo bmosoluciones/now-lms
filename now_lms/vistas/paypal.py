@@ -33,6 +33,7 @@ PAYPAL_SANDBOX_API_URL = "https://api.sandbox.paypal.com"
 PAYPAL_PRODUCTION_API_URL = "https://api.paypal.com"
 HOME_PAGE_ROUTE = "home.pagina_de_inicio"
 PAYPAL_NOT_CONFIGURED_MESSAGE = "PayPal not configured"
+CONTENT_TYPE_JSON = CONTENT_TYPE_JSON
 
 paypal = Blueprint("paypal", __name__, template_folder=DIRECTORIO_PLANTILLAS, url_prefix="/paypal_checkout")
 
@@ -74,7 +75,7 @@ def validate_paypal_configuration(client_id: str, client_secret: str, sandbox: b
         token_url = f"{base_url}/v1/oauth2/token"
 
         headers = {
-            "Accept": "application/json",
+            "Accept": CONTENT_TYPE_JSON,
             "Accept-Language": "en_US",
         }
 
@@ -128,7 +129,7 @@ def get_paypal_access_token() -> str | None:
         token_url = f"{base_url}/v1/oauth2/token"
 
         headers = {
-            "Accept": "application/json",
+            "Accept": CONTENT_TYPE_JSON,
             "Accept-Language": "en_US",
         }
 
@@ -165,7 +166,7 @@ def verify_paypal_payment(order_id: str, access_token: str) -> dict[str, object]
         order_url = f"{base_url}/v2/checkout/orders/{order_id}"
 
         headers = {
-            "Content-Type": "application/json",
+            "Content-Type": CONTENT_TYPE_JSON,
             "Authorization": f"Bearer {access_token}",
         }
 
