@@ -425,6 +425,11 @@ def _build_specs() -> list[dict]:
 
 def main() -> int:
     """Seed all four courses inside the app context. Returns a shell exit code."""
+    # When run as a script, sys.path[0] is this file's directory (scripts/), not
+    # the repo root, so the ``now_lms`` package next to it isn't importable.
+    # Put the repo root first so ``import now_lms`` resolves regardless of cwd.
+    if str(REPO_ROOT) not in sys.path:
+        sys.path.insert(0, str(REPO_ROOT))
     from now_lms import app
     from now_lms.db import (
         Curso,
