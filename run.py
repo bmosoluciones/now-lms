@@ -17,6 +17,13 @@ from now_lms.worker_config import get_worker_config_from_env
 
 PORT = environ.get("PORT") or 8080
 
+# When running behind a trusted reverse proxy that terminates TLS (e.g. Caddy/Nginx),
+# set NOW_LMS_TRUSTED_PROXY to the proxy's address ("*" to trust any, safe when the app
+# is bound to loopback and only the proxy can reach it). Without this, Waitress strips the
+# X-Forwarded-* headers (clear_untrusted_proxy_headers defaults True), so NOW_LMS_FORCE_HTTPS
+# never sees X-Forwarded-Proto=https and redirect-loops. Default None keeps current behavior.
+TRUSTED_PROXY = environ.get("NOW_LMS_TRUSTED_PROXY") or None
+
 # Get WSGI server from environment variable (defaults to waitress)
 WSGI_SERVER = environ.get("WSGI_SERVER", "waitress").lower()
 
@@ -99,8 +106,7 @@ if init_app():
             from waitress import serve
 
             log.info(f"Starting Waitress WSGI server on port {PORT} with {threads} threads")
-            serve(
-                lms_app,
+            waitress_kwargs = dict(
                 host="0.0.0.0",
                 port=PORT,
                 threads=threads,
@@ -108,6 +114,15 @@ if init_app():
                 cleanup_interval=30,
                 _quiet=False,
             )
+            if TRUSTED_PROXY:
+                # Trust the reverse proxy so X-Forwarded-* headers survive to the app.
+                waitress_kwargs.update(
+                    trusted_proxy=TRUSTED_PROXY,
+                    trusted_proxy_headers={"x-forwarded-for", "x-forwarded-proto", "x-forwarded-host"},
+                    clear_untrusted_proxy_headers=True,
+                )
+                log.info(f"Waitress trusting reverse proxy: {TRUSTED_PROXY}")
+            serve(lms_app, **waitress_kwargs)
         except ImportError:
             log.error("Waitress no está instalado. Por favor instálalo con: pip install waitress")
             log.error("No se pudo iniciar NOW Learning Management System.")
