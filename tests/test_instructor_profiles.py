@@ -140,8 +140,8 @@ def test_grupos_management(client_instructor, db_session):
     assert resp_view.status_code == 200
 
     # Add user to group
-    post_data = {"usuario": "prof_instructor"}
-    resp_add = client_instructor.post(f"/group/add?id={grupo.id}", data=post_data, follow_redirects=True)
+    post_data = {"usuario": "prof_instructor", "id": grupo.id}
+    resp_add = client_instructor.post("/group/add", data=post_data, follow_redirects=True)
     assert resp_add.status_code == 200
 
     # Verify membership directly in database since group template doesn't render flashed notifications

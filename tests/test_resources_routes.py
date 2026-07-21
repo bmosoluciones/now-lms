@@ -147,7 +147,7 @@ def test_marcar_recurso_completado_crea_avance(app, db_session):
     client = app.test_client()
     _login(client, estudiante.usuario, "alumno")
 
-    resp = client.get(
+    resp = client.post(
         f"/course/{curso.codigo}/resource/{recurso.tipo}/{recurso.id}/complete",
         follow_redirects=False,
     )
