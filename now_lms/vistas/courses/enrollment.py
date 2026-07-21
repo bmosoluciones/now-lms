@@ -101,7 +101,6 @@ def _finalize_completed_enrollment(
     course_code: str,
     applied_coupon: object | None = None,
     final_price: float = 0,
-    discount_amount: float = 0,
     success_message: str | None = None,
 ) -> Response:
     """Persist payment/enrollment and return navigation response."""
@@ -204,7 +203,6 @@ def _process_validated_enrollment(
             course_code,
             pricing.applied_coupon,
             pricing.final_price,
-            pricing.discount_amount,
             success_message,
         )
 

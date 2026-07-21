@@ -5,6 +5,10 @@
 
 from __future__ import annotations
 
+import logging
+
+log = logging.getLogger(__name__)
+
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
@@ -62,6 +66,7 @@ def demo_restriction_check(action_name: str | None = None) -> bool:
         True if action should be blocked, False if it should proceed
     """
     if check_demo_admin_restriction():
+        log.debug("Demo mode restriction triggered for action: %s", action_name)
         flash_demo_restriction_message()
         return True
     return False

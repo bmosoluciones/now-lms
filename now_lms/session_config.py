@@ -301,7 +301,7 @@ def ensure_session_storage(app: Flask) -> None:
         log.warning(f"Session type '{session_type}' — sessions may not persist across threads")
 
 
-def reset_connections_after_fork(server, worker) -> None:
+def reset_connections_after_fork(_server, _worker) -> None:
     """Discard connection pools inherited by a newly forked Gunicorn worker."""
     # lms_app is already constructed before the embedded Gunicorn application
     # starts, even when preload_app is false. SQLAlchemy explicitly recommends
