@@ -103,6 +103,13 @@ ROUTE_LIST_COUPONS = "course.list_coupons"
 # Helper functions moved to now_lms.vistas.courses.helpers
 
 
+def _public_course_access(_curso) -> tuple[bool, bool]:
+    """Return access for a public course."""
+    if _curso and _curso.publico:
+        return _curso.estado == "open", False
+    return False, False
+
+
 def _check_course_access(_curso, course_code: str) -> tuple[bool, bool]:
     """Check if the current user has access to the course.
 
@@ -132,14 +139,9 @@ def _check_course_access(_curso, course_code: str) -> tuple[bool, bool]:
         ).scalars().first()
         if enrollment:
             return True, False
-        if _curso and _curso.publico:
-            return _curso.estado == "open" and _curso.publico is True, False
-        return False, False
+        return (True, False) if enrollment else _public_course_access(_curso)
 
-    if _curso and _curso.publico:
-        return _curso.estado == "open" and _curso.publico is True, False
-
-    return False, False
+    return _public_course_access(_curso)
 
 
 def _save_course_logo(curso_) -> None:
