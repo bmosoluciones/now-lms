@@ -115,6 +115,24 @@ MSG_RECURSO_ERROR_ACTUALIZAR = "Hubo un error al actualizar el recurso."
 TEMPLATE_LIBRARY_UPLOAD = "learning/curso/library_upload.html"
 
 
+def _read_vtt_content(field_name: str) -> str | None:
+    """Read VTT subtitle content from an uploaded file in the request."""
+    if field_name not in request.files:
+        return None
+    vtt_file = request.files[field_name]
+    if not vtt_file.filename or not vtt_file.filename.endswith(".vtt"):
+        return None
+    return vtt_file.read().decode("utf-8")
+
+
+def _get_html_preformateado(form: Any) -> bool:
+    """Get the html_preformateado setting from config and form."""
+    config = database.session.execute(database.select(Configuracion)).scalars().first()
+    if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+        return form.descripcion_html_preformateado.data or False
+    return False
+
+
 # Visualización y avance de recursos
 @resources.route("/course/<curso_id>/resource/<resource_type>/<codigo>", methods=["GET"])
 def pagina_recurso(curso_id: str, resource_type: str, codigo: str) -> str:
@@ -987,56 +1005,41 @@ def nuevo_recurso_audio(course_code: str, seccion: str) -> str | Response:
     form = CursoRecursoArchivoAudio()
     recursos = database.session.execute(select(func.count(CursoRecurso.id)).filter_by(seccion=seccion)).scalar()
     nuevo_indice = int((recursos or 0) + 1)
-    if (form.validate_on_submit() or request.method == "POST") and "audio" in request.files:
-        config = database.session.execute(database.select(Configuracion)).scalars().first()
-        html_preformateado = False
-        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
-            html_preformateado = form.descripcion_html_preformateado.data or False
 
-        audio_filename = request.files["audio"].filename
-        audio_ext = splitext(audio_filename or "")[1]
-        audio_name = str(ULID()) + (audio_ext or "")
-        audio_file = audio.save(request.files["audio"], folder=course_code, name=audio_name)
-
-        subtitle_vtt_content = None
-        if "vtt_subtitle" in request.files and request.files["vtt_subtitle"].filename:
-            vtt_file = request.files["vtt_subtitle"]
-            if vtt_file.filename.endswith(".vtt"):
-                subtitle_vtt_content = vtt_file.read().decode("utf-8")
-
-        subtitle_vtt_secondary_content = None
-        if "vtt_subtitle_secondary" in request.files and request.files["vtt_subtitle_secondary"].filename:
-            vtt_secondary_file = request.files["vtt_subtitle_secondary"]
-            if vtt_secondary_file.filename.endswith(".vtt"):
-                subtitle_vtt_secondary_content = vtt_secondary_file.read().decode("utf-8")
-
-        nuevo_recurso_ = CursoRecurso(
-            curso=course_code,
-            seccion=seccion,
-            tipo="mp3",
-            nombre=form.nombre.data,
-            descripcion=form.descripcion.data,
-            requerido=form.requerido.data,
-            indice=nuevo_indice,
-            base_doc_url=audio.name,
-            doc=audio_file,
-            subtitle_vtt=subtitle_vtt_content,
-            subtitle_vtt_secondary=subtitle_vtt_secondary_content,
-            creado_por=current_user.usuario,
-            descripcion_html_preformateado=html_preformateado,
-        )
-        try:
-            database.session.add(nuevo_recurso_)
-            database.session.commit()
-            flash("RECURSO_AGREGADO", "success")
-            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:
-            flash(ERROR_AL_AGREGAR_CURSO, "warning")
-            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
+    if not ((form.validate_on_submit() or request.method == "POST") and "audio" in request.files):
         return render_template(
             "learning/resources_new/nuevo_recurso_mp3.html", id_curso=course_code, id_seccion=seccion, form=form
         )
+
+    html_preformateado = _get_html_preformateado(form)
+
+    audio_filename = request.files["audio"].filename
+    audio_ext = splitext(audio_filename or "")[1]
+    audio_name = str(ULID()) + (audio_ext or "")
+    audio_file = audio.save(request.files["audio"], folder=course_code, name=audio_name)
+
+    nuevo_recurso_ = CursoRecurso(
+        curso=course_code,
+        seccion=seccion,
+        tipo="mp3",
+        nombre=form.nombre.data,
+        descripcion=form.descripcion.data,
+        requerido=form.requerido.data,
+        indice=nuevo_indice,
+        base_doc_url=audio.name,
+        doc=audio_file,
+        subtitle_vtt=_read_vtt_content("vtt_subtitle"),
+        subtitle_vtt_secondary=_read_vtt_content("vtt_subtitle_secondary"),
+        creado_por=current_user.usuario,
+        descripcion_html_preformateado=html_preformateado,
+    )
+    try:
+        database.session.add(nuevo_recurso_)
+        database.session.commit()
+        flash("RECURSO_AGREGADO", "success")
+    except OperationalError:
+        flash(ERROR_AL_AGREGAR_CURSO, "warning")
+    return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
 
 @resources.route("/course/<course_code>/<seccion>/audio/<resource_id>/edit", methods=["GET", "POST"])
@@ -1052,49 +1055,11 @@ def editar_recurso_audio(course_code: str, seccion: str, resource_id: str) -> st
 
     form = CursoRecursoArchivoAudio()
 
-    if form.validate_on_submit() or request.method == "POST":
-        recurso.nombre = form.nombre.data
-        recurso.descripcion = form.descripcion.data
-        recurso.requerido = form.requerido.data
-        recurso.modificado_por = current_user.usuario
-
-        config = database.session.execute(database.select(Configuracion)).scalars().first()
-        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
-            recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
-        else:
-            recurso.descripcion_html_preformateado = False
-
-        if "audio" in request.files and request.files["audio"].filename:
-            audio_filename = request.files["audio"].filename
-            audio_ext = splitext(audio_filename or "")[1]
-            audio_name = str(ULID()) + (audio_ext or "")
-            audio_file = audio.save(request.files["audio"], folder=course_code, name=audio_name)
-            recurso.base_doc_url = audio.name
-            recurso.doc = audio_file
-
-        if "vtt_subtitle" in request.files and request.files["vtt_subtitle"].filename:
-            vtt_file = request.files["vtt_subtitle"]
-            if vtt_file.filename.endswith(".vtt"):
-                recurso.subtitle_vtt = vtt_file.read().decode("utf-8")
-
-        if "vtt_subtitle_secondary" in request.files and request.files["vtt_subtitle_secondary"].filename:
-            vtt_secondary_file = request.files["vtt_subtitle_secondary"]
-            if vtt_secondary_file.filename.endswith(".vtt"):
-                recurso.subtitle_vtt_secondary = vtt_secondary_file.read().decode("utf-8")
-
-        try:
-            database.session.commit()
-            flash(MSG_RECURSO_ACTUALIZADO, "success")
-            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-        except OperationalError:
-            flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
-            return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
-    else:
+    if not (form.validate_on_submit() or request.method == "POST"):
         form.nombre.data = recurso.nombre
         form.descripcion.data = recurso.descripcion
         form.requerido.data = recurso.requerido
         form.descripcion_html_preformateado.data = recurso.descripcion_html_preformateado or False
-
         return render_template(
             "learning/resources_new/editar_recurso_mp3.html",
             id_curso=course_code,
@@ -1102,6 +1067,35 @@ def editar_recurso_audio(course_code: str, seccion: str, resource_id: str) -> st
             recurso=recurso,
             form=form,
         )
+
+    recurso.nombre = form.nombre.data
+    recurso.descripcion = form.descripcion.data
+    recurso.requerido = form.requerido.data
+    recurso.modificado_por = current_user.usuario
+    recurso.descripcion_html_preformateado = _get_html_preformateado(form)
+
+    if "audio" in request.files and request.files["audio"].filename:
+        audio_filename = request.files["audio"].filename
+        audio_ext = splitext(audio_filename or "")[1]
+        audio_name = str(ULID()) + (audio_ext or "")
+        audio_file = audio.save(request.files["audio"], folder=course_code, name=audio_name)
+        recurso.base_doc_url = audio.name
+        recurso.doc = audio_file
+
+    vtt_content = _read_vtt_content("vtt_subtitle")
+    if vtt_content is not None:
+        recurso.subtitle_vtt = vtt_content
+
+    vtt_secondary_content = _read_vtt_content("vtt_subtitle_secondary")
+    if vtt_secondary_content is not None:
+        recurso.subtitle_vtt_secondary = vtt_secondary_content
+
+    try:
+        database.session.commit()
+        flash(MSG_RECURSO_ACTUALIZADO, "success")
+    except OperationalError:
+        flash(MSG_RECURSO_ERROR_ACTUALIZAR, "warning")
+    return redirect(url_for(VISTA_ADMINISTRAR_CURSO, course_code=course_code))
 
 
 @resources.route("/course/<course_code>/<seccion>/descargable/new", methods=["GET", "POST"])
