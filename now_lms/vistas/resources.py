@@ -43,6 +43,29 @@ from now_lms.misc import TIPOS_RECURSOS
 resource_d = Blueprint("resource", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
+def _save_resource_files(form: RecursoForm) -> tuple[str | None, str, object | None]:
+    """Save uploaded resource files and return their names and handles."""
+    file_name = None
+    picture_file = None
+    resource_file = ""
+    if "img" in request.files:
+        file_name = form.codigo.data + ".jpg"
+        picture_file = images.save(request.files["img"], folder="resources_files", name=file_name)
+    if "recurso" in request.files:
+        recurso_file = request.files["recurso"]
+        file_name = form.codigo.data + "." + recurso_file.filename.split(".")[1]
+        resource_file = files.save(recurso_file, folder="resources_files", name=file_name)
+    return file_name, resource_file, picture_file
+
+
+def _html_preformatted_value(form: RecursoForm) -> bool:
+    """Read the optional HTML formatting flag when globally enabled."""
+    config = database.session.execute(database.select(Configuracion)).scalars().first()
+    if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
+        return bool(form.descripcion_html_preformateado.data)
+    return False
+
+
 @resource_d.route("/resource/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -50,26 +73,8 @@ def new_resource() -> str | Response:
     """Nueva recursos."""
     form = RecursoForm()
     if form.validate_on_submit() or request.method == "POST":
-        file_name = None  # Initialize file_name to avoid UnboundLocalError
-
-        if "img" in request.files:
-            file_name = form.codigo.data + ".jpg"
-            picture_file = images.save(request.files["img"], folder="resources_files", name=file_name)
-        else:
-            picture_file = None
-
-        if "recurso" in request.files:
-            recurso = request.files["recurso"]
-            file_name = form.codigo.data + "." + recurso.filename.split(".")[1]
-            resource_file = files.save(request.files["recurso"], folder="resources_files", name=file_name)
-        else:
-            resource_file = ""
-
-        # Get global configuration for HTML preformatted descriptions
-        config = database.session.execute(database.select(Configuracion)).scalars().first()
-        html_preformateado = False
-        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
-            html_preformateado = form.descripcion_html_preformateado.data or False
+        file_name, resource_file, picture_file = _save_resource_files(form)
+        html_preformateado = _html_preformatted_value(form)
 
         recurso = Recurso(
             nombre=form.nombre.data,
