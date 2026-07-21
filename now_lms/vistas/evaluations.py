@@ -130,33 +130,29 @@ def can_user_attempt_evaluation(evaluation_obj, user) -> bool:
     return True
 
 
+def _answer_is_correct(answer) -> bool:
+    """Determine whether a submitted answer is correct."""
+    if not answer.selected_option_ids:
+        return False
+    selected_ids = json.loads(answer.selected_option_ids)
+    if answer.question.type == "boolean":
+        if len(selected_ids) != 1:
+            return False
+        option = database.session.get(QuestionOption, selected_ids[0])
+        return bool(option and option.is_correct)
+    if answer.question.type == "multiple":
+        correct_ids = {option.id for option in answer.question.options if option.is_correct}
+        return set(selected_ids) == correct_ids
+    return False
+
+
 def calculate_score(attempt) -> float:
     """Calculate the score for an evaluation attempt."""
     total_questions = len(attempt.evaluation.questions)
     if total_questions == 0:
         return 0.0
 
-    correct_answers = 0
-
-    for answer in attempt.answers:
-        question = answer.question
-        match question.type:
-            case "boolean":
-                # For boolean questions, check if the selected option is correct
-                if answer.selected_option_ids:
-                    selected_ids = json.loads(answer.selected_option_ids)
-                    if len(selected_ids) == 1:
-                        option = database.session.get(QuestionOption, selected_ids[0])
-                        if option and option.is_correct:
-                            correct_answers += 1
-            case "multiple":
-                # For multiple choice, check if all correct options are selected and no incorrect ones
-                if answer.selected_option_ids:
-                    selected_ids = json.loads(answer.selected_option_ids)
-                    correct_option_ids = [opt.id for opt in question.options if opt.is_correct]
-
-                    if set(selected_ids) == set(correct_option_ids):
-                        correct_answers += 1
+    correct_answers = sum(_answer_is_correct(answer) for answer in attempt.answers)
 
     return (correct_answers / total_questions) * 100
 
