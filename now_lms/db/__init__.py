@@ -1461,6 +1461,21 @@ class RemoteEnrollmentRequest(database.Model, BaseTabla):
 
 
 # Event listeners for audit field population and validation
+def _populate_new_audit_fields(instance: BaseTabla, current_user_id: str | None, current_date) -> None:
+    """Populate creation audit fields for a new model instance."""
+    if instance.creado_por is None and current_user_id:
+        instance.creado_por = current_user_id
+    if instance.creado is None:
+        instance.creado = current_date
+
+
+def _populate_modified_audit_fields(instance: BaseTabla, current_user_id: str | None, current_time) -> None:
+    """Populate modification audit fields for a dirty model instance."""
+    if current_user_id:
+        instance.modificado_por = current_user_id
+    instance.modificado = current_time
+
+
 @event.listens_for(database.session, "before_flush")
 def populate_audit_fields_before_flush(session, flush_context, instances):
     """Automatically populate audit fields for BaseTabla instances before flushing."""
@@ -1472,24 +1487,13 @@ def populate_audit_fields_before_flush(session, flush_context, instances):
     current_time = utc_now()
     current_date = current_time.date()
 
-    # Handle new instances
     for instance in session.new:
         if isinstance(instance, BaseTabla):
-            # Set creation audit fields if not already set
-            if instance.creado_por is None and current_user_id:
-                instance.creado_por = current_user_id
-            # creado field has a default, but ensure it's set to today if somehow null
-            if instance.creado is None:
-                instance.creado = current_date
+            _populate_new_audit_fields(instance, current_user_id, current_date)
 
-    # Handle modified instances
     for instance in session.dirty:
         if isinstance(instance, BaseTabla):
-            # Set modification audit fields
-            if current_user_id:
-                instance.modificado_por = current_user_id
-            # The modificado field has onupdate=utc_now, but ensure it's set
-            instance.modificado = current_time
+            _populate_modified_audit_fields(instance, current_user_id, current_time)
 
 
 @event.listens_for(database.session, "before_commit")
