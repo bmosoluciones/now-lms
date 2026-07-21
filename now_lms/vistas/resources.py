@@ -94,7 +94,7 @@ def new_resource() -> str | Response:
     return render_template("learning/recursos/nuevo_recurso.html", form=form)
 
 
-@resource_d.route("/resource/list")
+@resource_d.route("/resource/list", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def lista_de_recursos() -> str:
@@ -117,7 +117,7 @@ def lista_de_recursos() -> str:
     return render_template("learning/recursos/lista_recursos.html", consulta=consulta)
 
 
-@resource_d.route("/resource/<resource_code>/donwload")
+@resource_d.route("/resource/<resource_code>/donwload", methods=["GET"])
 @login_required
 @perfil_requerido("user")
 def descargar_recurso(resource_code: str) -> Response:
@@ -133,7 +133,7 @@ def descargar_recurso(resource_code: str) -> Response:
     return redirect("/login")
 
 
-@resource_d.route("/resource/<ulid>/delete")
+@resource_d.route("/resource/<ulid>/delete", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def delete_resource(ulid: str) -> Response:
@@ -187,7 +187,7 @@ def edit_resource(ulid: str) -> str | Response:
     return render_template("learning/recursos/editar_recurso.html", form=form, recurso=recurso)
 
 
-@resource_d.route("/resource/<resource_code>")
+@resource_d.route("/resource/<resource_code>", methods=["GET"])
 @cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def vista_recurso(resource_code: str) -> str:
     """Pagina de un recurso."""
@@ -198,7 +198,7 @@ def vista_recurso(resource_code: str) -> str:
     )
 
 
-@resource_d.route("/resource/explore")
+@resource_d.route("/resource/explore", methods=["GET"])
 @cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def lista_recursos() -> str:
     """Lista de programas."""

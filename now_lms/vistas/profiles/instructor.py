@@ -56,7 +56,7 @@ MESSAGE_PREGUNTA_NO_ENCONTRADA = "Pregunta no encontrada."
 instructor_profile = Blueprint("instructor_profile", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
-@instructor_profile.route("/instructor")
+@instructor_profile.route("/instructor", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def pagina_instructor() -> str:
@@ -116,7 +116,7 @@ def pagina_instructor() -> str:
     )
 
 
-@instructor_profile.route("/instructor/courses_list")
+@instructor_profile.route("/instructor/courses_list", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def cursos() -> str:
@@ -142,7 +142,7 @@ def cursos() -> str:
     return render_template("learning/curso_lista.html", consulta=consulta_cursos)
 
 
-@instructor_profile.route("/instructor/group/list")
+@instructor_profile.route("/instructor/group/list", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 @cache.cached(timeout=60)
@@ -160,7 +160,7 @@ def lista_grupos() -> str:
     return render_template("admin/grupos/lista.html", grupos=grupos, usuarios=_usuarios)
 
 
-@instructor_profile.route("/group/<ulid>")
+@instructor_profile.route("/group/<ulid>", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def grupo(ulid: str) -> str | Response:
@@ -182,6 +182,7 @@ def grupo(ulid: str) -> str | Response:
 
 @instructor_profile.route(
     "/group/remove/<group>/<user>",
+    methods=["GET"],
 )
 @login_required
 @perfil_requerido("instructor")
@@ -224,7 +225,7 @@ def agrega_usuario_a_grupo() -> Response:
 # ---------------------------------------------------------------------------------------
 
 
-@instructor_profile.route("/instructor/courses/<course_code>/evaluations")
+@instructor_profile.route("/instructor/courses/<course_code>/evaluations", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def course_evaluations(course_code: str) -> str | Response:
@@ -310,7 +311,7 @@ def new_evaluation(course_code: str, section_id: str) -> str | Response:
     return render_template("instructor/new_evaluation.html", form=form, seccion=seccion)
 
 
-@instructor_profile.route("/instructor/evaluations")
+@instructor_profile.route("/instructor/evaluations", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def evaluaciones_lista() -> str:
@@ -332,7 +333,7 @@ def evaluaciones_lista() -> str:
     return render_template("instructor/evaluaciones_lista.html", evaluaciones=evaluaciones_con_curso)
 
 
-@instructor_profile.route("/instructor/new-evaluation")
+@instructor_profile.route("/instructor/new-evaluation", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def nueva_evaluacion_global() -> str:
@@ -555,7 +556,7 @@ def edit_question(question_id: str) -> str | Response:
     return render_template("instructor/edit_question.html", form=form, question=question, evaluacion=evaluacion)
 
 
-@instructor_profile.route("/instructor/evaluations/<evaluation_id>/results")
+@instructor_profile.route("/instructor/evaluations/<evaluation_id>/results", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def evaluation_results(evaluation_id: str) -> str | Response:

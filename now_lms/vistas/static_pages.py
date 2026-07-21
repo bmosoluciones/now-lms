@@ -28,7 +28,7 @@ CONTACT_TEMPLATE = "page_info/contact.html"
 STATIC_LINKS_ROUTE = "static_pages.list_enlaces_utiles"
 
 
-@static_pages.route("/page/<slug>")
+@static_pages.route("/page/<slug>", methods=["GET"])
 @cache.cached(timeout=300)
 def view_page(slug: str) -> str | Response:
     """View a static page by slug."""
@@ -89,7 +89,7 @@ def contact() -> str | Response:
     return render_template(CONTACT_TEMPLATE, config=config)
 
 
-@static_pages.route("/admin/pages")
+@static_pages.route("/admin/pages", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def list_pages() -> str:
@@ -127,7 +127,7 @@ def edit_page(page_id: str) -> str | Response:
     return render_template("admin/edit_static_page.html", page=page)
 
 
-@static_pages.route("/admin/contact-messages")
+@static_pages.route("/admin/contact-messages", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def list_contact_messages() -> str:
@@ -185,7 +185,7 @@ def view_contact_message(message_id: str) -> str | Response:
     return render_template("admin/view_contact_message.html", message=message)
 
 
-@static_pages.route("/admin/enlaces-utiles")
+@static_pages.route("/admin/enlaces-utiles", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def list_enlaces_utiles() -> str:

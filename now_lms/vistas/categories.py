@@ -63,7 +63,7 @@ def new_category() -> str | Response:
     return render_template("learning/categorias/nueva_categoria.html", form=form)
 
 
-@category.route("/category/list")
+@category.route("/category/list", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def categories() -> str:
@@ -82,7 +82,7 @@ def categories() -> str:
     )
 
 
-@category.route("/category/<ulid>/delete")
+@category.route("/category/<ulid>/delete", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def delete_category(ulid: str) -> Response:

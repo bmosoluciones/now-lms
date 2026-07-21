@@ -41,7 +41,7 @@ user_profile = Blueprint("user_profile", __name__, template_folder=DIRECTORIO_PL
 # ---------------------------------------------------------------------------------------
 # Espacio del usuario, por defecto un usuario se considera un estudiante.
 # ---------------------------------------------------------------------------------------
-@user_profile.route("/student")
+@user_profile.route("/student", methods=["GET"])
 @login_required
 def pagina_estudiante() -> str:
     """Perfil de usuario."""
@@ -51,7 +51,7 @@ def pagina_estudiante() -> str:
     return render_template("perfiles/estudiante.html", upcoming_events=upcoming_events)
 
 
-@user_profile.route("/perfil")
+@user_profile.route("/perfil", methods=["GET"])
 @login_required
 def perfil() -> str | Response:
     """Perfil del usuario."""
@@ -104,7 +104,7 @@ def perfil() -> str | Response:
     )
 
 
-@user_profile.route("/user/<id_usuario>")
+@user_profile.route("/user/<id_usuario>", methods=["GET"])
 @login_required
 def usuario(id_usuario: str) -> str:
     """Acceso administrativo al perfil de un usuario."""
@@ -176,7 +176,7 @@ def edit_perfil(ulid: str) -> str | Response:
     return render_template("inicio/perfil_editar.html", form=form, usuario=usuario_)
 
 
-@user_profile.route("/perfil/<ulid>/delete_logo")
+@user_profile.route("/perfil/<ulid>/delete_logo", methods=["GET"])
 @login_required
 def elimina_logo_usuario(ulid: str) -> Response:
     """Elimina logo de usuario."""

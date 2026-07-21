@@ -104,7 +104,7 @@ ROUTE_LIST_COUPONS = "course.list_coupons"
 course = Blueprint("course", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
-@course.route("/course/<course_code>/view")
+@course.route("/course/<course_code>/view", methods=["GET"])
 @cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def curso(course_code: str) -> str:
     """Pagina principal del curso."""
@@ -182,7 +182,7 @@ def curso(course_code: str) -> str:
     abort(403)
 
 
-@course.route("/course/<course_code>/admin")
+@course.route("/course/<course_code>/admin", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 @cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
@@ -503,7 +503,7 @@ def editar_seccion(course_code: str, seccion: str) -> str | Response:
         return render_template("learning/editar_seccion.html", form=form, seccion=seccion_a_editar)
 
 
-@course.route("/my_courses")
+@course.route("/my_courses", methods=["GET"])
 @login_required
 def my_courses() -> str | Response:
     """Show user's courses based on their role."""
@@ -553,13 +553,13 @@ def my_courses() -> str | Response:
     return redirect(url_for("course.lista_cursos"))
 
 
-@course.route("/course/")
+@course.route("/course/", methods=["GET"])
 def course_index() -> Response:
     """Redirect to course exploration page."""
     return redirect(url_for("course.lista_cursos"))
 
 
-@course.route("/course/explore")
+@course.route("/course/explore", methods=["GET"])
 @cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def lista_cursos() -> str:
     """Lista de cursos."""
@@ -737,7 +737,7 @@ def admin_course_enrollment(course_code: str) -> str | Response:
     return render_template("learning/curso/admin_enroll.html", curso=_curso, form=form)
 
 
-@course.route("/course/<course_code>/admin/enrollments")
+@course.route("/course/<course_code>/admin/enrollments", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def admin_course_enrollments(course_code: str) -> str:
@@ -812,7 +812,7 @@ def admin_course_unenrollment(course_code: str, student_username: str) -> Respon
     return redirect(url_for("course.admin_course_enrollments", course_code=course_code))
 
 
-@course.route("/course/<course_code>/section/<section_id>/new_evaluation")
+@course.route("/course/<course_code>/section/<section_id>/new_evaluation", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def new_evaluation_from_section(course_code: str, section_id: str) -> Response:

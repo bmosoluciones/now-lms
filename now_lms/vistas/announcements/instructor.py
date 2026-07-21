@@ -51,7 +51,7 @@ def get_instructor_courses(instructor_user) -> list:
     )
 
 
-@instructor_announcements.route("/instructor/announcements")
+@instructor_announcements.route("/instructor/announcements", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 @cache.cached(timeout=60)

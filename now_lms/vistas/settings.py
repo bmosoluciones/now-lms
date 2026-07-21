@@ -494,7 +494,7 @@ def adsense() -> str | Response:
         return render_template("admin/adsense.html", form=form, config=config)
 
 
-@setting.route("/ads.txt")
+@setting.route("/ads.txt", methods=["GET"])
 def ads_txt() -> tuple[str, int, dict[str, str]]:
     """Información de ads.txt para anuncios."""
     try:
@@ -524,7 +524,7 @@ def test_mail() -> Response:
     return redirect(url_for(SETTING_MAIL_ROUTE))
 
 
-@setting.route("/setting/delete_site_logo")
+@setting.route("/setting/delete_site_logo", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def elimina_logo() -> Response:

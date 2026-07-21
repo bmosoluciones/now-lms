@@ -116,7 +116,7 @@ TEMPLATE_LIBRARY_UPLOAD = "learning/curso/library_upload.html"
 
 
 # Visualización y avance de recursos
-@resources.route("/course/<curso_id>/resource/<resource_type>/<codigo>")
+@resources.route("/course/<curso_id>/resource/<resource_type>/<codigo>", methods=["GET"])
 def pagina_recurso(curso_id: str, resource_type: str, codigo: str) -> str:
     CURSO = database.session.execute(select(Curso).filter(Curso.codigo == curso_id)).scalars().first()
     RECURSO = database.session.execute(select(CursoRecurso).filter(CursoRecurso.id == codigo)).scalars().first()
@@ -209,7 +209,7 @@ def pagina_recurso(curso_id: str, resource_type: str, codigo: str) -> str:
     return abort(403)
 
 
-@resources.route("/course/<curso_id>/resource/<resource_type>/<codigo>/complete")
+@resources.route("/course/<curso_id>/resource/<resource_type>/<codigo>/complete", methods=["POST"])
 @login_required
 @perfil_requerido("student")
 def marcar_recurso_completado(curso_id: str, resource_type: str, codigo: str) -> Response:
@@ -273,7 +273,7 @@ def marcar_recurso_completado(curso_id: str, resource_type: str, codigo: str) ->
     return abort(403)
 
 
-@resources.route("/course/<curso_id>/alternative/<codigo>/<order>")
+@resources.route("/course/<curso_id>/alternative/<codigo>/<order>", methods=["GET"])
 @login_required
 @perfil_requerido("student")
 def pagina_recurso_alternativo(curso_id: str, codigo: str, order: str) -> str:
@@ -320,7 +320,7 @@ def pagina_recurso_alternativo(curso_id: str, codigo: str, order: str) -> str:
 
 
 # Nuevo/editar recursos por tipo
-@resources.route("/course/<course_code>/<seccion>/new_resource")
+@resources.route("/course/<course_code>/<seccion>/new_resource", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def nuevo_recurso(course_code: str, seccion: str) -> str:
@@ -1349,7 +1349,7 @@ def editar_slideshow(course_code: str, slideshow_id: str) -> str | Response:
     )
 
 
-@resources.route("/course/<course_code>/slideshow/<slideshow_id>/preview")
+@resources.route("/course/<course_code>/slideshow/<slideshow_id>/preview", methods=["GET"])
 @login_required
 def preview_slideshow(course_code: str, slideshow_id: str) -> str:
     slideshow = database.session.get(SlideShowResource, slideshow_id)
@@ -1363,7 +1363,7 @@ def preview_slideshow(course_code: str, slideshow_id: str) -> str:
     return render_template(TEMPLATE_SLIDE_SHOW, slideshow=slideshow, slides=slides)
 
 
-@resources.route("/course/<course_code>/files/<recurso_code>")
+@resources.route("/course/<course_code>/files/<recurso_code>", methods=["GET"])
 def recurso_file(course_code: str, recurso_code: str) -> Response:
     doc = (
         database.session.execute(
@@ -1386,7 +1386,7 @@ def recurso_file(course_code: str, recurso_code: str) -> Response:
     return INICIO_SESION
 
 
-@resources.route("/course/<course_code>/vtt/<recurso_code>")
+@resources.route("/course/<course_code>/vtt/<recurso_code>", methods=["GET"])
 def recurso_vtt(course_code: str, recurso_code: str) -> Response:
     doc = (
         database.session.execute(
@@ -1405,7 +1405,7 @@ def recurso_vtt(course_code: str, recurso_code: str) -> Response:
     return INICIO_SESION
 
 
-@resources.route("/course/<course_code>/vtt_secondary/<recurso_code>")
+@resources.route("/course/<course_code>/vtt_secondary/<recurso_code>", methods=["GET"])
 def recurso_vtt_secondary(course_code: str, recurso_code: str) -> Response:
     doc = (
         database.session.execute(
@@ -1426,7 +1426,7 @@ def recurso_vtt_secondary(course_code: str, recurso_code: str) -> Response:
     return INICIO_SESION
 
 
-@resources.route("/course/<course_code>/pdf_viewer/<recurso_code>")
+@resources.route("/course/<course_code>/pdf_viewer/<recurso_code>", methods=["GET"])
 def pdf_viewer(course_code: str, recurso_code: str) -> str | Response:
     recurso = (
         database.session.execute(
@@ -1450,7 +1450,7 @@ def pdf_viewer(course_code: str, recurso_code: str) -> str | Response:
     return INICIO_SESION
 
 
-@resources.route("/course/<course_code>/external_code/<recurso_code>")
+@resources.route("/course/<course_code>/external_code/<recurso_code>", methods=["GET"])
 def external_code(course_code: str, recurso_code: str) -> str | Response:
     recurso = (
         database.session.execute(
@@ -1466,7 +1466,7 @@ def external_code(course_code: str, recurso_code: str) -> str | Response:
     return INICIO_SESION
 
 
-@resources.route("/course/slide_show/<recurso_code>")
+@resources.route("/course/slide_show/<recurso_code>", methods=["GET"])
 def slide_show(recurso_code: str) -> str:
     recurso = database.session.execute(select(CursoRecurso).filter(CursoRecurso.id == recurso_code)).scalars().first()
     if not recurso:
@@ -1499,7 +1499,7 @@ def slide_show(recurso_code: str) -> str:
 
 
 # Biblioteca del curso
-@resources.route("/course/<course_code>/library")
+@resources.route("/course/<course_code>/library", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def course_library(course_code: str) -> str:
@@ -1650,7 +1650,7 @@ def upload_library_file(course_code: str) -> str | Response:
     return render_template(TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size)
 
 
-@resources.route("/course/<course_code>/library/file/<filename>")
+@resources.route("/course/<course_code>/library/file/<filename>", methods=["GET"])
 @login_required
 def serve_library_file(course_code: str, filename: str) -> Response:
     _curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
@@ -1766,7 +1766,7 @@ def _generate_meet_ics_content(recurso: Any) -> str:
     return "\r\n".join(lines)
 
 
-@resources.route("/course/<course_code>/resource/meet/<codigo>/calendar.ics")
+@resources.route("/course/<course_code>/resource/meet/<codigo>/calendar.ics", methods=["GET"])
 @login_required
 def download_meet_calendar(course_code: str, codigo: str) -> Response:
     recurso = (
@@ -1803,7 +1803,7 @@ def download_meet_calendar(course_code: str, codigo: str) -> Response:
     )
 
 
-@resources.route("/course/<course_code>/resource/meet/<codigo>/google-calendar")
+@resources.route("/course/<course_code>/resource/meet/<codigo>/google-calendar", methods=["GET"])
 @login_required
 def google_calendar_link(course_code: str, codigo: str) -> Response:
     from urllib.parse import quote
@@ -1867,7 +1867,7 @@ def google_calendar_link(course_code: str, codigo: str) -> Response:
     return redirect(url_for(PAGINA_RECURSO_ENDPOINT, curso_id=course_code, resource_type=recurso.tipo, codigo=codigo))
 
 
-@resources.route("/course/<course_code>/resource/meet/<codigo>/outlook-calendar")
+@resources.route("/course/<course_code>/resource/meet/<codigo>/outlook-calendar", methods=["GET"])
 @login_required
 def outlook_calendar_link(course_code: str, codigo: str) -> str | Response:
     from urllib.parse import quote

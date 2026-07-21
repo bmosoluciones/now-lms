@@ -248,7 +248,7 @@ def take_evaluation(evaluation_id: int) -> str | Response:
     return render_template("evaluations/take_evaluation.html", evaluation=eval_obj)
 
 
-@evaluation.route("/evaluation/attempt/<attempt_id>/result")
+@evaluation.route("/evaluation/attempt/<attempt_id>/result", methods=["GET"])
 @login_required
 @perfil_requerido("student")
 def evaluation_result(attempt_id: int) -> str:
