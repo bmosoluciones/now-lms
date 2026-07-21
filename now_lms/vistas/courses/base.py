@@ -168,6 +168,40 @@ def _save_course_logo(curso_) -> None:
         database.session.rollback()
 
 
+def _course_explore_query(nivel_param: str | None, tag_param: str | None, category_param: str | None):
+    """Build the filtered public course query."""
+    query = database.select(Curso).filter(Curso.publico.is_(True), Curso.estado == "open")
+    if nivel_param is not None:
+        try:
+            query = query.filter(Curso.nivel == int(nivel_param))
+        except ValueError:
+            pass
+    if tag_param:
+        tag = database.session.execute(select(Etiqueta).filter(Etiqueta.nombre == tag_param)).scalars().first()
+        if tag:
+            query = query.join(EtiquetaCurso, Curso.codigo == EtiquetaCurso.curso).filter(EtiquetaCurso.etiqueta == tag.id)
+    if category_param:
+        category = database.session.execute(select(Categoria).filter(Categoria.nombre == category_param)).scalars().first()
+        if category:
+            query = query.join(CategoriaCurso, Curso.codigo == CategoriaCurso.curso).filter(
+                CategoriaCurso.categoria == category.id
+            )
+    return query
+
+
+def _course_explore_params(nivel_param: str | None, tag_param: str | None, category_param: str | None):
+    """Build pagination URL parameters without the page number."""
+    if not any((nivel_param, tag_param, category_param)):
+        return None
+    params = OrderedDict()
+    for arg in request.url.split("?", 1)[-1].split("&"):
+        if "=" in arg:
+            key, value = arg.split("=", 1)
+            if key != "page":
+                params[key] = value
+    return params
+
+
 def _update_course_fields(curso_a_editar, form) -> None:
     """Update course fields from form data."""
     curso_a_editar.nombre = form.nombre.data
@@ -521,78 +555,32 @@ def course_index() -> Response:
 @cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def lista_cursos() -> str:
     """Lista de cursos."""
-    if DESARROLLO:
-        MAX_COUNT = 3
-    else:
-        MAX_COUNT = 30
+    max_count = 3 if DESARROLLO else 30
 
     etiquetas = database.session.execute(select(Etiqueta)).scalars().all()
     categorias = database.session.execute(select(Categoria)).scalars().all()
 
-    # Build base query for courses
-    query = database.select(Curso).filter(Curso.publico.is_(True), Curso.estado == "open")
-
-    # Extract filter parameters
     nivel_param = request.args.get("nivel")
     tag_param = request.args.get("tag")
     category_param = request.args.get("category")
-
-    # Apply level filter
-    if nivel_param is not None:
-        try:
-            nivel = int(nivel_param)
-            query = query.filter(Curso.nivel == nivel)
-        except ValueError:
-            pass  # Ignore invalid level values
-
-    # Apply tag filter
-    if tag_param:
-        # Find tag by name
-        tag = database.session.execute(select(Etiqueta).filter(Etiqueta.nombre == tag_param)).scalars().first()
-        if tag:
-            # Join with EtiquetaCurso to filter courses by tag
-            query = query.join(EtiquetaCurso, Curso.codigo == EtiquetaCurso.curso).filter(EtiquetaCurso.etiqueta == tag.id)
-
-    # Apply category filter
-    if category_param:
-        # Find category by name
-        categoria = database.session.execute(select(Categoria).filter(Categoria.nombre == category_param)).scalars().first()
-        if categoria:
-            # Join with CategoriaCurso to filter courses by category
-            query = query.join(CategoriaCurso, Curso.codigo == CategoriaCurso.curso).filter(
-                CategoriaCurso.categoria == categoria.id
-            )
+    query = _course_explore_query(nivel_param, tag_param, category_param)
 
     # Paginate the filtered query
     consulta_cursos = database.paginate(
         query,
         page=request.args.get("page", default=1, type=int),
-        max_per_page=MAX_COUNT,
+        max_per_page=max_count,
         count=True,
     )
 
-    # Build parameters dict for URL building
-    # /explore?page=2&nivel=2&tag=python&category=programming
-    if nivel_param or tag_param or category_param:
-        PARAMETROS = OrderedDict()
-        for arg in request.url[request.url.find("?") + 1 :].split("&"):  # noqa: E203
-            if "=" in arg:
-                PARAMETROS[arg[: arg.find("=")]] = arg[arg.find("=") + 1 :]  # noqa: E203
-
-        # El numero de pagina debe ser generado por el macro de paginación.
-        try:
-            del PARAMETROS["page"]
-        except KeyError:
-            pass
-    else:
-        PARAMETROS = None
+    parametros = _course_explore_params(nivel_param, tag_param, category_param)
 
     return render_template(
         get_course_list_template(),
         cursos=consulta_cursos,
         etiquetas=etiquetas,
         categorias=categorias,
-        parametros=PARAMETROS,
+        parametros=parametros,
     )
 
 
