@@ -36,7 +36,7 @@ masterclass = Blueprint("masterclass", __name__, url_prefix="/masterclass")
 # ---------------------------------------------------------------------------------------
 
 
-@masterclass.route("/")
+@masterclass.route("/", methods=["GET"])
 def list_public() -> str:
     """Public listing of master classes."""
     page = request.args.get("page", 1, type=int)
@@ -55,7 +55,7 @@ def list_public() -> str:
     return render_template("masterclass/list_public.html", master_classes=master_classes, title="Clases Magistrales")
 
 
-@masterclass.route("/<slug>")
+@masterclass.route("/<slug>", methods=["GET"])
 def detail_public(slug: str) -> str:
     """Public detail view of a master class."""
     master_class = database.session.execute(select(MasterClass).filter_by(slug=slug)).scalars().first()
@@ -126,7 +126,7 @@ def enroll(slug: str) -> str | Response:
 # ---------------------------------------------------------------------------------------
 
 
-@masterclass.route("/instructor")
+@masterclass.route("/instructor", methods=["GET"])
 @login_required
 def instructor_list() -> str:
     """List instructor's master classes."""
@@ -262,7 +262,7 @@ def instructor_edit(master_class_id: int) -> str | Response:
     )
 
 
-@masterclass.route("/instructor/<master_class_id>/students")
+@masterclass.route("/instructor/<master_class_id>/students", methods=["GET"])
 @login_required
 def instructor_students(master_class_id: int) -> str:
     """View enrolled students in a master class."""
@@ -304,7 +304,7 @@ def instructor_students(master_class_id: int) -> str:
 # ---------------------------------------------------------------------------------------
 
 
-@masterclass.route("/my-enrollments")
+@masterclass.route("/my-enrollments", methods=["GET"])
 @login_required
 def my_enrollments() -> str:
     """View user's master class enrollments."""
@@ -330,7 +330,7 @@ def my_enrollments() -> str:
 # ---------------------------------------------------------------------------------------
 
 
-@masterclass.route("/admin")
+@masterclass.route("/admin", methods=["GET"])
 @login_required
 def admin_list() -> str:
     """Admin view of all master classes."""

@@ -64,7 +64,7 @@ def new_tag() -> str | Response:
     return render_template("learning/etiquetas/nueva_etiqueta.html", form=form)
 
 
-@tag.route("/tag/list")
+@tag.route("/tag/list", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def tags() -> str:
@@ -83,7 +83,7 @@ def tags() -> str:
     )
 
 
-@tag.route("/tag/<ulid>/delete")
+@tag.route("/tag/<ulid>/delete", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def delete_tag(ulid: str) -> Response:

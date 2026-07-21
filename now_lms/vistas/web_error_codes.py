@@ -31,7 +31,7 @@ from now_lms.config import DIRECTORIO_PLANTILLAS
 web_error = Blueprint("error", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
-@web_error.route("/http/error/<code>")
+@web_error.route("/http/error/<code>", methods=["GET"])
 def error_page(code: str) -> str:
     """HTTP error code pages."""
     url = "error_pages/" + code + ".html"

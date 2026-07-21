@@ -23,7 +23,7 @@ from now_lms.version import CODE_NAME, VERSION
 page_info = Blueprint("page_info", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
-@page_info.route("/page_info")
+@page_info.route("/page_info", methods=["GET"])
 def page_info_view() -> str | Response:
     """Display development information page - only available when CI environment variable is set."""
     # Check if CI environment variable is set using the same logic as config

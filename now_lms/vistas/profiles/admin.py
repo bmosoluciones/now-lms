@@ -35,7 +35,7 @@ ADMIN_UNVERIFIED_USERS_ROUTE = "admin_profile.usuarios_sin_verificar"
 admin_profile = Blueprint("admin_profile", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
-@admin_profile.route("/admin/panel")
+@admin_profile.route("/admin/panel", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 @cache.cached(timeout=90)
@@ -86,7 +86,7 @@ def pagina_admin() -> str:
     )
 
 
-@admin_profile.route("/admin/users/list")
+@admin_profile.route("/admin/users/list", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 @cache.cached(timeout=60)
@@ -105,7 +105,7 @@ def usuarios() -> str:
     )
 
 
-@admin_profile.route("/admin/users/set_active/<user_id>")
+@admin_profile.route("/admin/users/set_active/<user_id>", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def activar_usuario(user_id: str) -> Response:
@@ -124,7 +124,7 @@ def activar_usuario(user_id: str) -> Response:
     return redirect(url_for(ADMIN_USERS_ROUTE))
 
 
-@admin_profile.route("/admin/users/set_inactive/<user_id>")
+@admin_profile.route("/admin/users/set_inactive/<user_id>", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def inactivar_usuario(user_id: str) -> Response:
@@ -143,7 +143,7 @@ def inactivar_usuario(user_id: str) -> Response:
     return redirect(url_for(ADMIN_USERS_ROUTE))
 
 
-@admin_profile.route("/admin/users/delete/<user_id>")
+@admin_profile.route("/admin/users/delete/<user_id>", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def eliminar_usuario(user_id: str) -> Response:
@@ -155,7 +155,7 @@ def eliminar_usuario(user_id: str) -> Response:
     return redirect(url_for(request.args.get("ruta", default="home", type=str)))
 
 
-@admin_profile.route("/admin/users/list_inactive")
+@admin_profile.route("/admin/users/list_inactive", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 @cache.cached(timeout=60)
@@ -174,7 +174,7 @@ def usuarios_inactivos() -> str:
     )
 
 
-@admin_profile.route("/admin/users/list_unverified")
+@admin_profile.route("/admin/users/list_unverified", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 @cache.cached(timeout=60)
@@ -193,7 +193,7 @@ def usuarios_sin_verificar() -> str:
     )
 
 
-@admin_profile.route("/admin/users/verify_email/<user_id>")
+@admin_profile.route("/admin/users/verify_email/<user_id>", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def verificar_email_usuario(user_id: str) -> Response:
@@ -229,7 +229,7 @@ def verificar_email_usuario(user_id: str) -> Response:
     return redirect(url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
 
-@admin_profile.route("/admin/users/reject_unverified/<user_id>")
+@admin_profile.route("/admin/users/reject_unverified/<user_id>", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def rechazar_usuario_sin_verificar(user_id: str) -> Response:
@@ -264,7 +264,7 @@ def rechazar_usuario_sin_verificar(user_id: str) -> Response:
     return redirect(url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
 
-@admin_profile.route("/admin/user/change_type")
+@admin_profile.route("/admin/user/change_type", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def cambiar_tipo_usario() -> Response:
@@ -293,7 +293,7 @@ def cambiar_tipo_usario() -> Response:
     return redirect(url_for("user_profile.usuario", id_usuario=user_id))
 
 
-@admin_profile.route("/admin/payments")
+@admin_profile.route("/admin/payments", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def pagos() -> str:

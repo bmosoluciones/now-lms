@@ -90,7 +90,7 @@ def check_thread_access(thread, user) -> bool:
     return False
 
 
-@msg.route("/course/<course_code>/messages")
+@msg.route("/course/<course_code>/messages", methods=["GET"])
 @login_required
 def course_messages(course_code: str) -> str | Response:
     """List all message threads for a specific course."""
@@ -127,7 +127,7 @@ def course_messages(course_code: str) -> str | Response:
     return render_template("learning/mensajes/course_messages.html", course=course, threads=threads)
 
 
-@msg.route("/user/messages")
+@msg.route("/user/messages", methods=["GET"])
 @login_required
 def user_messages() -> str:
     """List all message threads for the current user across all courses."""
@@ -222,7 +222,7 @@ def new_thread(course_code: str) -> str | Response:
     return render_template("learning/mensajes/new_thread.html", form=form, course=course)
 
 
-@msg.route("/thread/<thread_id>")
+@msg.route("/thread/<thread_id>", methods=["GET"])
 @login_required
 def view_thread(thread_id: int) -> str | Response:
     """View a message thread and its messages."""
@@ -298,7 +298,7 @@ def reply_to_thread(thread_id: int) -> str | Response:
     return redirect(url_for(ROUTE_MSG_VIEW_THREAD, thread_id=thread_id))
 
 
-@msg.route("/thread/<thread_id>/status/<new_status>")
+@msg.route("/thread/<thread_id>/status/<new_status>", methods=["GET"])
 @login_required
 def change_thread_status(thread_id: int, new_status: str) -> Response:
     """Change thread status."""
@@ -366,7 +366,7 @@ def report_message(message_id: int) -> Response:
     return redirect(url_for(ROUTE_MSG_VIEW_THREAD, thread_id=message.thread_id))
 
 
-@msg.route("/admin/flagged-messages")
+@msg.route("/admin/flagged-messages", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def admin_flagged_messages() -> str:

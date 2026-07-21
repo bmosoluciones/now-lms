@@ -33,7 +33,7 @@ ROUTE_ADMIN_ANNOUNCEMENTS_LIST = "admin_announcements.list_announcements"
 admin_announcements = Blueprint("admin_announcements", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
-@admin_announcements.route("/admin/announcements")
+@admin_announcements.route("/admin/announcements", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 @cache.cached(timeout=60)

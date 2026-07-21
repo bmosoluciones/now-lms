@@ -436,7 +436,7 @@ def confirm_payment() -> tuple[FlaskResponse, int]:
         return jsonify({"success": False, "error": "Error interno del servidor. Por favor contacte soporte."}), 500
 
 
-@paypal.route("/resume_payment/<payment_id>")
+@paypal.route("/resume_payment/<payment_id>", methods=["GET"])
 @login_required
 @perfil_requerido("student")
 def resume_payment(payment_id: str) -> Response:
@@ -464,7 +464,7 @@ def resume_payment(payment_id: str) -> Response:
         return redirect(url_for(HOME_PAGE_ROUTE))
 
 
-@paypal.route("/payment/<course_code>")
+@paypal.route("/payment/<course_code>", methods=["GET"])
 @login_required
 @perfil_requerido("student")
 def payment_page(course_code: str) -> str | Response | tuple[FlaskResponse, int]:
@@ -508,7 +508,7 @@ def payment_page(course_code: str) -> str | Response | tuple[FlaskResponse, int]
     )
 
 
-@paypal.route("/get_client_id")
+@paypal.route("/get_client_id", methods=["GET"])
 @login_required
 def get_client_id() -> Response | tuple[FlaskResponse, int]:
     """Get PayPal client ID for JavaScript SDK."""
@@ -532,7 +532,7 @@ def get_client_id() -> Response | tuple[FlaskResponse, int]:
         return jsonify({"error": "Configuration error"}), 500
 
 
-@paypal.route("/payment_status/<course_code>")
+@paypal.route("/payment_status/<course_code>", methods=["GET"])
 @login_required
 @perfil_requerido("student")
 def payment_status(course_code: str) -> tuple[FlaskResponse, int]:
@@ -601,7 +601,7 @@ def payment_status(course_code: str) -> tuple[FlaskResponse, int]:
         return jsonify({"error": "Internal server error"}), 500
 
 
-@paypal.route("/debug_config")
+@paypal.route("/debug_config", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def debug_config() -> tuple[FlaskResponse, int]:

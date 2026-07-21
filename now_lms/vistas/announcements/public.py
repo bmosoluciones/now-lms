@@ -27,7 +27,7 @@ from now_lms.db import MAXIMO_RESULTADOS_EN_CONSULTA_PAGINADA, Announcement, Cur
 public_announcements = Blueprint("public_announcements", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
-@public_announcements.route("/dashboard/announcements")
+@public_announcements.route("/dashboard/announcements", methods=["GET"])
 @login_required
 @cache.cached(timeout=60)
 def global_announcements() -> str:
@@ -53,7 +53,7 @@ def global_announcements() -> str:
     return render_template("announcements/global.html", consulta=consulta)
 
 
-@public_announcements.route("/course/<course_id>/announcements")
+@public_announcements.route("/course/<course_id>/announcements", methods=["GET"])
 @login_required
 @cache.cached(timeout=60)
 def course_announcements(course_id: str) -> str | Response:

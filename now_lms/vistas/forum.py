@@ -114,7 +114,7 @@ def markdown_to_html(contenido_markdown: str) -> str:
 # ---------------------------------------------------------------------------------------
 
 
-@forum.route("/course/<course_code>/forum")
+@forum.route("/course/<course_code>/forum", methods=["GET"])
 @login_required
 def ver_foro(course_code: str) -> str | Response:
     """Página principal del foro de un curso."""
@@ -185,7 +185,7 @@ def nuevo_mensaje(course_code: str) -> str | Response:
     return render_template("forum/new_message.html", curso=curso, form=form)
 
 
-@forum.route("/course/<course_code>/forum/message/<message_id>")
+@forum.route("/course/<course_code>/forum/message/<message_id>", methods=["GET"])
 @login_required
 def ver_mensaje(course_code: str, message_id: str) -> str:
     """Ver un mensaje específico con sus respuestas."""
