@@ -148,12 +148,6 @@
         }
     }
 
-    /* Cambridge identity: scientific grid, patina and copper details. */
-    .navbar-cambridge {
-        background-image: linear-gradient(135deg, rgba(74, 123, 109, 0.98), rgba(46, 43, 40, 0.96)),
-            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M0 16h32M16 0v32' stroke='%23b08b5c' stroke-width='.5' opacity='.28'/%3E%3C/svg%3E");
-    }
-
     h1 {
         font-size: 2.5rem;
     }
