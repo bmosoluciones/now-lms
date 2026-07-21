@@ -190,127 +190,97 @@ def verify_paypal_payment(order_id: str, access_token: str) -> dict[str, object]
         return {"verified": False, "error": str(e)}
 
 
+def _validate_payment_confirmation() -> tuple[dict[str, object] | None, tuple[FlaskResponse, int] | None]:
+    """Validate request data and PayPal response before changing local state."""
+    data = request.get_json()
+    if not data:
+        logging.warning(f"Payment confirmation attempt without data from user {current_user.usuario}")
+        return None, (jsonify({"success": False, "error": "No payment data received"}), 400)
+
+    fields = {
+        "orderID": data.get("orderID"),
+        "payerID": data.get("payerID"),
+        "courseCode": data.get("courseCode"),
+        "amount": data.get("amount"),
+    }
+    logging.info(
+        f"Payment confirmation attempt for user {current_user.usuario}, "
+        f"course {fields['courseCode']}, order {fields['orderID']}"
+    )
+    missing_fields = [name for name, value in fields.items() if not value]
+    if missing_fields:
+        logging.warning(f"Payment confirmation missing fields {missing_fields} for user {current_user.usuario}")
+        return None, (jsonify({"success": False, "error": f"Missing required payment data: {', '.join(missing_fields)}"}), 400)
+
+    try:
+        if float(fields["amount"]) <= 0:
+            raise ValueError("Amount must be positive")
+    except (ValueError, TypeError) as exc:
+        logging.warning(f"Invalid payment amount {fields['amount']} for user {current_user.usuario}: {exc}")
+        return None, (jsonify({"success": False, "error": "Invalid payment amount"}), 400)
+
+    access_token = get_paypal_access_token()
+    if not access_token:
+        logging.error(f"Failed to get PayPal access token for user {current_user.usuario}")
+        return None, (jsonify({"success": False, "error": "PayPal configuration error - please contact support"}), 500)
+    verification = verify_paypal_payment(fields["orderID"], access_token)
+    if not verification["verified"]:
+        error_msg = verification.get("error", "Payment verification failed")
+        logging.error(f"PayPal payment verification failed for order {fields['orderID']}: {error_msg}")
+        return None, (jsonify({"success": False, "error": f"Payment verification failed: {error_msg}"}), 400)
+    if verification.get("status") != "COMPLETED":
+        return None, (jsonify({"success": False, "error": "Payment is not completed"}), 400)
+
+    course = database.session.execute(
+        database.select(Curso).filter_by(codigo=fields["courseCode"])
+    ).scalars().first()
+    if not course:
+        return None, (jsonify({"success": False, "error": "Course not found"}), 404)
+    pending_payment = database.session.execute(
+        database.select(Pago).filter_by(usuario=current_user.usuario, curso=fields["courseCode"], estado="pending")
+    ).scalars().first()
+    expected_amount = float(pending_payment.monto if pending_payment else course.precio)
+    try:
+        verified_amount = float(str(verification.get("amount")))
+    except (ValueError, TypeError):
+        verified_amount = 0.0
+    if abs(verified_amount - expected_amount) > 0.01:
+        return None, (jsonify({
+            "success": False,
+            "error": f"Payment amount mismatch: expected {expected_amount}, received {verified_amount}",
+        }), 400)
+
+    verified_currency = verification.get("currency")
+    expected_currency = get_site_currency()
+    if verified_currency != expected_currency:
+        return None, (jsonify({
+            "success": False,
+            "error": f"Payment currency mismatch: expected {expected_currency}, received {verified_currency}",
+        }), 400)
+    return {
+        "order_id": fields["orderID"],
+        "course_code": fields["courseCode"],
+        "pending_payment": pending_payment,
+        "verified_amount": verified_amount,
+        "verified_currency": verified_currency,
+    }, None
+
+
 @paypal.route("/confirm_payment", methods=["POST"])
 @login_required
 @perfil_requerido("student")
 def confirm_payment() -> tuple[FlaskResponse, int]:
     """Confirm PayPal payment after successful client-side processing."""
     try:
-        data = request.get_json()
-
-        if not data:
-            logging.warning(f"Payment confirmation attempt without data from user {current_user.usuario}")
-            return jsonify({"success": False, "error": "No payment data received"}), 400
-
-        order_id = data.get("orderID")
-        payer_id = data.get("payerID")
-        course_code = data.get("courseCode")
-        amount = data.get("amount")
-
-        logging.info(f"Payment confirmation attempt for user {current_user.usuario}, course {course_code}, order {order_id}")
-
-        if not all([order_id, payer_id, course_code, amount]):
-            missing_fields = [
-                field
-                for field, value in {
-                    "orderID": order_id,
-                    "payerID": payer_id,
-                    "courseCode": course_code,
-                    "amount": amount,
-                }.items()
-                if not value
-            ]
-            logging.warning(f"Payment confirmation missing fields {missing_fields} for user {current_user.usuario}")
-            return (
-                jsonify({"success": False, "error": f'Missing required payment data: {", ".join(missing_fields)}'}),
-                400,
-            )
-
-        # Validate amount is numeric and positive
-        try:
-            amount_float = float(amount)
-            if amount_float <= 0:
-                raise ValueError("Amount must be positive")
-        except (ValueError, TypeError) as e:
-            logging.warning(f"Invalid payment amount {amount} for user {current_user.usuario}: {e}")
-            return jsonify({"success": False, "error": "Invalid payment amount"}), 400
-
-        # Get access token and verify payment with PayPal
-        access_token = get_paypal_access_token()
-        if not access_token:
-            logging.error(f"Failed to get PayPal access token for user {current_user.usuario}")
-            return jsonify({"success": False, "error": "PayPal configuration error - please contact support"}), 500
-
-        verification = verify_paypal_payment(order_id, access_token)
-        if not verification["verified"]:
-            error_msg = verification.get("error", "Payment verification failed")
-            logging.error(f"PayPal payment verification failed for order {order_id}, user {current_user.usuario}: {error_msg}")
-            return jsonify({"success": False, "error": f"Payment verification failed: {error_msg}"}), 400
-
-        if verification.get("status") != "COMPLETED":
-            logging.error(
-                f"PayPal payment {order_id} for user {current_user.usuario} is not completed: {verification.get('status')}"
-            )
-            return jsonify({"success": False, "error": "Payment is not completed"}), 400
-
-        # Check if payment amount matches expected amount (considering coupons)
-        curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalars().first()
-        if not curso:
-            logging.warning(f"Course {course_code} not found for payment confirmation by user {current_user.usuario}")
-            return jsonify({"success": False, "error": "Course not found"}), 404
-
-        # First check if there's a pending payment record for this user/course with coupon discount applied
-        pending_payment = (
-            database.session.execute(
-                database.select(Pago).filter_by(usuario=current_user.usuario, curso=course_code, estado="pending")
-            )
-            .scalars()
-            .first()
-        )
-
-        # Determine expected amount - either from pending payment (with coupon) or course price
-        if pending_payment:
-            expected_amount = float(pending_payment.monto)
-        else:
-            expected_amount = float(curso.precio)
-
-        # Compare amounts with tolerance for floating point precision
-        try:
-            amount_value = verification["amount"]
-            verified_amount = float(str(amount_value)) if amount_value is not None else 0.0
-        except (ValueError, TypeError):
-            verified_amount = 0.0
-        amount_tolerance = 0.01  # 1 cent tolerance
-
-        if abs(verified_amount - expected_amount) > amount_tolerance:
-            logging.error(
-                f"Payment amount mismatch for course {course_code}, user {current_user.usuario}: expected {expected_amount}, got {verified_amount}"
-            )
-            return (
-                jsonify(
-                    {
-                        "success": False,
-                        "error": f"Payment amount mismatch: expected {expected_amount}, received {verified_amount}",
-                    }
-                ),
-                400,
-            )
-
-        verified_currency = verification.get("currency")
-        expected_currency = get_site_currency()
-        if verified_currency != expected_currency:
-            logging.error(
-                f"Payment currency mismatch for course {course_code}, user {current_user.usuario}: expected {expected_currency}, got {verified_currency}"
-            )
-            return (
-                jsonify(
-                    {
-                        "success": False,
-                        "error": f"Payment currency mismatch: expected {expected_currency}, received {verified_currency}",
-                    }
-                ),
-                400,
-            )
+        payment_data, error_response = _validate_payment_confirmation()
+        if error_response:
+            return error_response
+        assert payment_data is not None
+        order_id = payment_data["order_id"]
+        course_code = payment_data["course_code"]
+        pending_payment = payment_data["pending_payment"]
+        verified_amount = payment_data["verified_amount"]
+        verified_currency = payment_data["verified_currency"]
 
         # Check if this payment has already been processed
         existing_payment = (
