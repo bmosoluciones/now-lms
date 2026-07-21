@@ -15,6 +15,7 @@
     --harvard-warning: #d8b866;
     --harvard-danger: #a41034;
     --harvard-info: #474340;
+    --academic-theme-name: "Harvard";
 }
 
 /* Import Charter and fallback fonts */
@@ -55,6 +56,9 @@ h1, h2, h3, h4, h5, h6 {
 .harvard-hero {
     position: relative;
     overflow: hidden;
+    border-bottom: 8px double var(--harvard-gold);
+    background-image: linear-gradient(120deg, rgba(164, 16, 52, 0.98), rgba(71, 67, 64, 0.96)),
+        repeating-linear-gradient(0deg, transparent 0, transparent 23px, rgba(216, 184, 102, 0.12) 24px);
 }
 
 .harvard-podium {
@@ -66,11 +70,17 @@ h1, h2, h3, h4, h5, h6 {
 .harvard-case-card {
     transition: all 0.3s ease;
     position: relative;
+    border-left: 5px solid var(--harvard-primary);
+    border-radius: 0 12px 12px 0;
+    height: 100%;
+    padding: 1.7rem;
+    background: white;
+    border: 1px solid var(--harvard-border);
 }
 
 .harvard-case-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(164, 16, 52, 0.15);
+    transform: translateY(-4px);
+    box-shadow: 9px 10px 0 rgba(164,16,52,.14);
 }
 
 .case-footnotes {
@@ -97,23 +107,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Harvard identity: editorial crimson, parchment and gold rules. */
-:root {
-    --academic-theme-name: "Harvard";
-}
-
-.navbar-harvard,
-.harvard-hero {
+.navbar-harvard {
     background-image: linear-gradient(120deg, rgba(164, 16, 52, 0.98), rgba(71, 67, 64, 0.96)),
         repeating-linear-gradient(0deg, transparent 0, transparent 23px, rgba(216, 184, 102, 0.12) 24px);
-}
-
-.harvard-hero {
-    border-bottom: 8px double var(--harvard-gold);
-}
-
-.harvard-case-card {
-    border-left: 5px solid var(--harvard-primary);
-    border-radius: 0 12px 12px 0;
 }
 
 h1 { font-size: 2.5rem; }
@@ -224,8 +220,6 @@ h3 { font-size: 1.75rem; }
 .harvard-case-library { background: var(--harvard-light); }
 .harvard-section-heading { max-width: 620px; }
 .harvard-section-heading > p:last-child { color: var(--harvard-accent); font-size: 1.1rem; }
-.harvard-case-card { height: 100%; padding: 1.7rem; background: white; border: 1px solid var(--harvard-border); border-left: 5px solid var(--harvard-primary); border-radius: 0; transition: transform .2s ease, box-shadow .2s ease; }
-.harvard-case-card:hover { transform: translateY(-4px); box-shadow: 9px 10px 0 rgba(164,16,52,.14); }
 .harvard-case-meta { display: flex; justify-content: space-between; color: var(--harvard-accent); font-size: .68rem; font-weight: 700; letter-spacing: .14em; }
 .harvard-case-card h3 { margin: 2rem 0 .7rem; font-size: 1.45rem; }
 .harvard-case-card p { color: var(--harvard-text-secondary); }
