@@ -252,51 +252,44 @@ def get_monedas_choices() -> list[tuple[str, str]]:
 def get_zonas_horarias_choices() -> list[tuple[str, str]]:
     """Return timezone choices."""
     return [
-        # UTC
         ("UTC", "UTC"),
-        # América del Norte
-        ("America/New_York", "America/New_York"),  # EE.UU. Este
-        ("America/Chicago", "America/Chicago"),  # EE.UU. Central
-        ("America/Denver", "America/Denver"),  # EE.UU. Montaña
-        ("America/Los_Angeles", "America/Los_Angeles"),  # EE.UU. Pacífico
-        ("America/Mexico_City", "America/Mexico_City"),  # México
-        # Centroamérica
-        ("America/Guatemala", "America/Guatemala"),  # Guatemala
-        ("America/El_Salvador", "America/El_Salvador"),  # El Salvador
-        ("America/Tegucigalpa", "America/Tegucigalpa"),  # Honduras
-        ("America/Managua", "America/Managua"),  # Nicaragua
-        ("America/Costa_Rica", "America/Costa_Rica"),  # Costa Rica
-        ("America/Panama", "America/Panama"),  # Panamá
-        # Caribe
-        ("America/Havana", "America/Havana"),  # Cuba
-        ("America/Santo_Domingo", "America/Santo_Domingo"),  # R. Dominicana
-        ("America/Puerto_Rico", "America/Puerto_Rico"),  # Puerto Rico
-        ("America/Jamaica", "America/Jamaica"),  # Jamaica
-        # Sudamérica
-        ("America/Bogota", "America/Bogota"),  # Colombia
-        ("America/Lima", "America/Lima"),  # Perú
-        ("America/Caracas", "America/Caracas"),  # Venezuela
-        ("America/La_Paz", "America/La_Paz"),  # Bolivia
-        ("America/Santiago", "America/Santiago"),  # Chile
-        ("America/Asuncion", "America/Asuncion"),  # Paraguay
-        ("America/Montevideo", "America/Montevideo"),  # Uruguay
-        ("America/Argentina/Buenos_Aires", "America/Argentina/Buenos_Aires"),  # Argentina
-        ("America/Sao_Paulo", "America/Sao_Paulo"),  # Brasil
-        # Europa
-        ("Europe/London", "Europe/London"),  # Reino Unido
-        ("Europe/Madrid", "Europe/Madrid"),  # España
-        ("Europe/Paris", "Europe/Paris"),  # Francia
-        ("Europe/Berlin", "Europe/Berlin"),  # Alemania
-        ("Europe/Rome", "Europe/Rome"),  # Italia
-        ("Europe/Moscow", "Europe/Moscow"),  # Rusia
-        # Asia
-        ("Asia/Dubai", "Asia/Dubai"),  # Emiratos Árabes
-        ("Asia/Kolkata", "Asia/Kolkata"),  # India
-        ("Asia/Bangkok", "Asia/Bangkok"),  # Tailandia
-        ("Asia/Shanghai", "Asia/Shanghai"),  # China
-        ("Asia/Tokyo", "Asia/Tokyo"),  # Japón
-        ("Asia/Seoul", "Asia/Seoul"),  # Corea del Sur
-        ("Asia/Singapore", "Asia/Singapore"),  # Singapur
+        ("America/New_York", "America/New_York"),
+        ("America/Chicago", "America/Chicago"),
+        ("America/Denver", "America/Denver"),
+        ("America/Los_Angeles", "America/Los_Angeles"),
+        ("America/Mexico_City", "America/Mexico_City"),
+        ("America/Guatemala", "America/Guatemala"),
+        ("America/El_Salvador", "America/El_Salvador"),
+        ("America/Tegucigalpa", "America/Tegucigalpa"),
+        ("America/Managua", "America/Managua"),
+        ("America/Costa_Rica", "America/Costa_Rica"),
+        ("America/Panama", "America/Panama"),
+        ("America/Havana", "America/Havana"),
+        ("America/Santo_Domingo", "America/Santo_Domingo"),
+        ("America/Puerto_Rico", "America/Puerto_Rico"),
+        ("America/Jamaica", "America/Jamaica"),
+        ("America/Bogota", "America/Bogota"),
+        ("America/Lima", "America/Lima"),
+        ("America/Caracas", "America/Caracas"),
+        ("America/La_Paz", "America/La_Paz"),
+        ("America/Santiago", "America/Santiago"),
+        ("America/Asuncion", "America/Asuncion"),
+        ("America/Montevideo", "America/Montevideo"),
+        ("America/Argentina/Buenos_Aires", "America/Argentina/Buenos_Aires"),
+        ("America/Sao_Paulo", "America/Sao_Paulo"),
+        ("Europe/London", "Europe/London"),
+        ("Europe/Madrid", "Europe/Madrid"),
+        ("Europe/Paris", "Europe/Paris"),
+        ("Europe/Berlin", "Europe/Berlin"),
+        ("Europe/Rome", "Europe/Rome"),
+        ("Europe/Moscow", "Europe/Moscow"),
+        ("Asia/Dubai", "Asia/Dubai"),
+        ("Asia/Kolkata", "Asia/Kolkata"),
+        ("Asia/Bangkok", "Asia/Bangkok"),
+        ("Asia/Shanghai", "Asia/Shanghai"),
+        ("Asia/Tokyo", "Asia/Tokyo"),
+        ("Asia/Seoul", "Asia/Seoul"),
+        ("Asia/Singapore", "Asia/Singapore"),
     ]
 
 
