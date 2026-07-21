@@ -134,6 +134,50 @@ def _get_html_preformateado(form: Any) -> bool:
     return False
 
 
+RESOURCE_TEMPLATES = {
+    "html": "learning/resources/type_html.html",
+    "img": "learning/resources/type_img.html",
+    "link": "learning/resources/type_link.html",
+    "meet": "learning/resources/type_meet.html",
+    "mp3": "learning/resources/type_audio.html",
+    "pdf": "learning/resources/type_pdf.html",
+    "slides": "learning/resources/type_slides.html",
+    "text": "learning/resources/type_text.html",
+    "youtube": "learning/resources/type_youtube.html",
+}
+
+
+def _resource_template(resource_type: str) -> str:
+    """Return the template for a resource type or abort for unknown types."""
+    template = RESOURCE_TEMPLATES.get(resource_type)
+    if not template:
+        abort(404)
+    return template
+
+
+def _student_can_view_resource(course_id: str) -> bool:
+    """Return whether the current user can view a course resource."""
+    if not current_user.is_authenticated:
+        return False
+    if current_user.tipo == "admin":
+        return True
+    if current_user.tipo == "instructor":
+        return verifica_docente_asignado_a_curso(course_id)
+    return current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(course_id)
+
+
+def _resource_completion(course_id: str, resource_id: str) -> bool:
+    """Return completion status for the current user and resource."""
+    if not current_user.is_authenticated:
+        return False
+    progress = database.session.execute(
+        database.select(CursoRecursoAvance).filter_by(
+            usuario=current_user.usuario, curso=course_id, recurso=resource_id
+        )
+    ).scalars().first()
+    return bool(progress and progress.completado)
+
+
 # Visualización y avance de recursos
 @resources.route("/course/<curso_id>/resource/<resource_type>/<codigo>", methods=["GET"])
 def pagina_recurso(curso_id: str, resource_type: str, codigo: str) -> str:
@@ -153,54 +197,14 @@ def pagina_recurso(curso_id: str, resource_type: str, codigo: str) -> str:
         .scalars()
         .all()
     )
-    match resource_type:
-        case "html":
-            TEMPLATE = "learning/resources/type_html.html"
-        case "img":
-            TEMPLATE = "learning/resources/type_img.html"
-        case "link":
-            TEMPLATE = "learning/resources/type_link.html"
-        case "meet":
-            TEMPLATE = "learning/resources/type_meet.html"
-        case "mp3":
-            TEMPLATE = "learning/resources/type_audio.html"
-        case "pdf":
-            TEMPLATE = "learning/resources/type_pdf.html"
-        case "slides":
-            TEMPLATE = "learning/resources/type_slides.html"
-        case "text":
-            TEMPLATE = "learning/resources/type_text.html"
-        case "youtube":
-            TEMPLATE = "learning/resources/type_youtube.html"
-        case _:
-            abort(404)
+    TEMPLATE = _resource_template(resource_type)
 
     INDICE = crear_indice_recurso(codigo)
 
-    if current_user.is_authenticated:
-        if current_user.tipo == "admin":
-            show_resource = True
-        elif current_user.tipo == "instructor" and verifica_docente_asignado_a_curso(curso_id):
-            show_resource = True
-        elif current_user.tipo == "student" and verifica_estudiante_asignado_a_curso(curso_id):
-            show_resource = True
-        else:
-            show_resource = False
-    else:
-        show_resource = False
+    show_resource = _student_can_view_resource(curso_id)
 
     if show_resource or RECURSO.publico:
-        recurso_completado = False
-        if current_user.is_authenticated:
-            resource_progress = (
-                database.session.execute(
-                    database.select(CursoRecursoAvance).filter_by(usuario=current_user.usuario, curso=curso_id, recurso=codigo)
-                )
-                .scalars()
-                .first()
-            )
-            if resource_progress:
-                recurso_completado = resource_progress.completado
+        recurso_completado = _resource_completion(curso_id, codigo)
 
         user_progress: dict[int, dict[str, bool]] = {}
         evaluaciones: Sequence[Evaluation] = []
@@ -232,64 +236,37 @@ def pagina_recurso(curso_id: str, resource_type: str, codigo: str) -> str:
 @login_required
 @perfil_requerido("student")
 def marcar_recurso_completado(curso_id: str, resource_type: str, codigo: str) -> Response:
-    if current_user.is_authenticated:
-        if current_user.tipo == "student":
-            if verifica_estudiante_asignado_a_curso(curso_id):
-                avance = (
-                    database.session.execute(
-                        select(CursoRecursoAvance).filter(
-                            CursoRecursoAvance.usuario == current_user.usuario,
-                            CursoRecursoAvance.curso == curso_id,
-                            CursoRecursoAvance.recurso == codigo,
-                        )
-                    )
-                    .scalars()
-                    .first()
-                )
-                if avance:
-                    avance.completado = True
-                    database.session.commit()
-                    flash("Recurso marcado como completado.", "success")
-                else:
-                    avance = CursoRecursoAvance(
-                        usuario=current_user.usuario,
-                        curso=curso_id,
-                        recurso=codigo,
-                        completado=True,
-                    )
-                    database.session.add(avance)
-                    database.session.commit()
-                    flash("Recurso marcado como completado.", "success")
-                _actualizar_avance_curso(curso_id, current_user.usuario)
-
-                indice = crear_indice_recurso(codigo)
-                if indice.next_resource:
-                    if indice.next_is_alternative:
-                        return redirect(
-                            url_for(
-                                ".pagina_recurso_alternativo",
-                                curso_id=indice.next_resource.curso_id,
-                                codigo=indice.next_resource.codigo,
-                                order="asc",
-                            )
-                        )
-                    return redirect(
-                        url_for(
-                            ".pagina_recurso",
-                            curso_id=indice.next_resource.curso_id,
-                            resource_type=indice.next_resource.resource_type,
-                            codigo=indice.next_resource.codigo,
-                        )
-                    )
-                return redirect(
-                    url_for(PAGINA_RECURSO_ENDPOINT, curso_id=curso_id, resource_type=resource_type, codigo=codigo)
-                )
-            flash(NO_AUTORIZADO_MSG, "warning")
-            return abort(403)
+    if current_user.tipo != "student" or not verifica_estudiante_asignado_a_curso(curso_id):
         flash(NO_AUTORIZADO_MSG, "warning")
         return abort(403)
-    flash(NO_AUTORIZADO_MSG, "warning")
-    return abort(403)
+
+    avance = database.session.execute(
+        select(CursoRecursoAvance).filter_by(
+            usuario=current_user.usuario, curso=curso_id, recurso=codigo
+        )
+    ).scalars().first()
+    if avance:
+        avance.completado = True
+    else:
+        database.session.add(CursoRecursoAvance(
+            usuario=current_user.usuario, curso=curso_id, recurso=codigo, completado=True
+        ))
+    database.session.commit()
+    flash("Recurso marcado como completado.", "success")
+    _actualizar_avance_curso(curso_id, current_user.usuario)
+
+    indice = crear_indice_recurso(codigo)
+    if not indice.next_resource:
+        return redirect(url_for(PAGINA_RECURSO_ENDPOINT, curso_id=curso_id, resource_type=resource_type, codigo=codigo))
+    if indice.next_is_alternative:
+        return redirect(url_for(
+            ".pagina_recurso_alternativo", curso_id=indice.next_resource.curso_id,
+            codigo=indice.next_resource.codigo, order="asc"
+        ))
+    return redirect(url_for(
+        ".pagina_recurso", curso_id=indice.next_resource.curso_id,
+        resource_type=indice.next_resource.resource_type, codigo=indice.next_resource.codigo
+    ))
 
 
 @resources.route("/course/<curso_id>/alternative/<codigo>/<order>", methods=["GET"])
