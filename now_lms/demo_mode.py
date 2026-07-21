@@ -7,18 +7,12 @@ from __future__ import annotations
 
 import logging
 
-log = logging.getLogger(__name__)
-
-# ---------------------------------------------------------------------------------------
-# Third-party libraries
-# ---------------------------------------------------------------------------------------
 from flask import flash
 from flask_login import current_user
 
-# ---------------------------------------------------------------------------------------
-# Local resources
-# ---------------------------------------------------------------------------------------
 from now_lms.i18n import _
+
+log = logging.getLogger(__name__)
 
 
 def is_demo_mode() -> bool:
