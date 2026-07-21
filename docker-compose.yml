@@ -52,6 +52,7 @@ services:
       NOW_LMS_DATA_DIR: /app/data
       NOW_LMS_THEMES_DIR: /app/themes
       NOW_LMS_FORCE_HTTPS: "1"        # behind the Caddy TLS terminator
+      NOW_LMS_TRUSTED_PROXY: "*"      # trust Caddy's X-Forwarded-* (app is loopback-bound; only Caddy reaches it)
       WSGI_SERVER: waitress          # single-process — avoids multi-worker session loss (no Redis in v1)
     volumes:
       - nowlms-data:/app/data
