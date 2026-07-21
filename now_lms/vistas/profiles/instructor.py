@@ -205,7 +205,7 @@ def elimina_usuario__grupo(group: str, user: str) -> Response:
 @perfil_requerido("instructor")
 def agrega_usuario_a_grupo() -> Response:
     """Agrega un usuario a un grupo y redirecciona a la pagina del grupo."""
-    id_ = request.form.get("id", type=str)
+    id_ = request.form.get("id", type=str) or request.args.get("id", type=str)
     registro = UsuarioGrupoMiembro(
         grupo=id_, usuario=request.form["usuario"], creado_por=current_user.usuario, creado=datetime.now()
     )

@@ -172,7 +172,7 @@ def test_marcar_recurso_completado_and_progression(client_student, db_session, r
     db_session.commit()
 
     # Complete resource 1 -> should redirect to resource 2 page
-    resp = client_student.get(f"/course/{course_code}/resource/text/{rec1.id}/complete", follow_redirects=True)
+    resp = client_student.post(f"/course/{course_code}/resource/text/{rec1.id}/complete", follow_redirects=True)
     assert resp.status_code == 200
 
     # Check progress in DB

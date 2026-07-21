@@ -386,7 +386,7 @@ def test_marcar_recurso_completado_crea_registro_avance(app, db_session):
     login_usuario(client, "alumno7")
 
     # Marcar recurso como completado
-    resp = client.get(
+    resp = client.post(
         f"/course/{curso.codigo}/resource/text/{recurso.id}/complete",
         follow_redirects=False,
     )
@@ -437,7 +437,7 @@ def test_marcar_multiples_recursos_completados(app, db_session):
 
     # Marcar cada recurso como completado
     for recurso in recursos:
-        resp = client.get(
+        resp = client.post(
             f"/course/{curso.codigo}/resource/text/{recurso.id}/complete",
             follow_redirects=False,
         )
@@ -482,7 +482,7 @@ def test_no_marcar_completado_sin_inscripcion(app, db_session):
     client = app.test_client()
     login_usuario(client, "alumno9")
 
-    resp = client.get(
+    resp = client.post(
         f"/course/{curso.codigo}/resource/text/{recurso.id}/complete",
         follow_redirects=False,
     )

@@ -317,4 +317,4 @@ def reset_connections_after_fork(_server, _worker) -> None:
     if redis_client is not None:
         redis_client.connection_pool.reset()
 
-    log.info(f"Reset inherited session/database connections in Gunicorn worker {worker.pid}")
+    log.info(f"Reset inherited session/database connections in Gunicorn worker {_worker.pid}")

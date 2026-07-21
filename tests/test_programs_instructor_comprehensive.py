@@ -115,8 +115,8 @@ def test_instructor_groups_workflow(client, test_setup, db_session):
     assert resp.status_code == 200
 
     # Add student to group (POST)
-    data = {"usuario": "stud_prof"}
-    resp = client.post(f"/group/add?id={grp.id}", data=data, follow_redirects=True)
+    data = {"usuario": "stud_prof", "id": grp.id}
+    resp = client.post("/group/add", data=data, follow_redirects=True)
     assert resp.status_code == 200
 
     gu = db_session.execute(database.select(UsuarioGrupoMiembro).filter_by(grupo=grp.id, usuario="stud_prof")).scalar_one_or_none()
