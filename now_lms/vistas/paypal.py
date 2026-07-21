@@ -33,7 +33,7 @@ PAYPAL_SANDBOX_API_URL = "https://api.sandbox.paypal.com"
 PAYPAL_PRODUCTION_API_URL = "https://api.paypal.com"
 HOME_PAGE_ROUTE = "home.pagina_de_inicio"
 PAYPAL_NOT_CONFIGURED_MESSAGE = "PayPal not configured"
-CONTENT_TYPE_JSON = CONTENT_TYPE_JSON
+CONTENT_TYPE_JSON = "application/json"
 
 paypal = Blueprint("paypal", __name__, template_folder=DIRECTORIO_PLANTILLAS, url_prefix="/paypal_checkout")
 

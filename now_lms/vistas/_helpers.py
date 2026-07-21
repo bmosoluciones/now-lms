@@ -17,7 +17,7 @@ from now_lms.config import DIRECTORIO_ARCHIVOS_PUBLICOS
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
 # ---------------------------------------------------------------------------------------
-IMAGES_PATH = IMAGES_PATH
+IMAGES_PATH = "/images/"
 
 
 def get_current_course_logo(course_code: str) -> str | None:
