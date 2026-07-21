@@ -36,6 +36,58 @@ def is_debug_enabled() -> bool:
     return os.environ.get("NOW_LMS_DEBUG_ENDPOINTS", "0").strip().lower() in {"1", "true", "yes", "on"}
 
 
+def _mask_value(value: str | None) -> str:
+    """Mask sensitive configuration values."""
+    if not value:
+        return "[not set]"
+    if len(value) <= 8:
+        return "****"
+    return f"{value[:4]}...{value[-4:]}"
+
+
+def _debug_config_info() -> dict[str, Any]:
+    """Collect safe application configuration details."""
+    redis_url = os.environ.get("SESSION_REDIS_URL") or os.environ.get("CACHE_REDIS_URL") or os.environ.get("REDIS_URL")
+    return {
+        "secret_key": _mask_value(current_app.config.get("SECRET_KEY")),
+        "secret_key_is_default": current_app.config.get("SECRET_KEY") in {"dev", "test-secret-key-for-testing"},
+        "session_type": current_app.config.get("SESSION_TYPE", "default"),
+        "session_permanent": current_app.config.get("SESSION_PERMANENT"),
+        "session_use_signer": current_app.config.get("SESSION_USE_SIGNER"),
+        "session_cookie_httponly": current_app.config.get("SESSION_COOKIE_HTTPONLY"),
+        "session_cookie_secure": current_app.config.get("SESSION_COOKIE_SECURE"),
+        "session_cookie_samesite": current_app.config.get("SESSION_COOKIE_SAMESITE"),
+        "permanent_session_lifetime": str(current_app.config.get("PERMANENT_SESSION_LIFETIME")),
+        "redis_url": _mask_value(redis_url),
+        "testing": current_app.config.get("TESTING"),
+    }
+
+
+def _debug_environment() -> dict[str, Any]:
+    """Collect environment values relevant to worker/session diagnostics."""
+    redis_url = os.environ.get("SESSION_REDIS_URL") or os.environ.get("CACHE_REDIS_URL") or os.environ.get("REDIS_URL")
+    return {
+        "NOW_LMS_WORKERS": os.environ.get("NOW_LMS_WORKERS") or os.environ.get("WORKERS"),
+        "NOW_LMS_THREADS": os.environ.get("NOW_LMS_THREADS") or os.environ.get("THREADS"),
+        "FLASK_ENV": os.environ.get("FLASK_ENV"),
+        "has_redis_url": bool(redis_url),
+    }
+
+
+def _debug_warnings(config_info: dict[str, Any], env_checks: dict[str, Any]) -> list[str]:
+    """Return actionable warnings for common worker/session misconfigurations."""
+    warnings = []
+    workers = env_checks["NOW_LMS_WORKERS"]
+    multiple_workers = bool(workers and int(workers) > 1)
+    if config_info["secret_key_is_default"]:
+        warnings.append("SECRET_KEY is using default value - set a unique value for production")
+    if multiple_workers and config_info["session_type"] == "default":
+        warnings.append("Using default session with multiple workers - sessions may not persist. Use Redis or CacheLib.")
+    if multiple_workers and config_info["session_type"] == "cachelib":
+        warnings.append("Using CacheLib with multiple workers - ensure shared filesystem. Redis is recommended for multi-worker.")
+    return warnings
+
+
 @debug_bp.route("/session", methods=["GET"])
 def debug_session() -> tuple[Response, int]:
     """Debug endpoint to verify session persistence across workers.
@@ -129,57 +181,9 @@ def debug_config() -> tuple[Response, int]:
         log.warning("Debug config endpoint accessed but NOW_LMS_DEBUG_ENDPOINTS is not enabled")
         return jsonify({"error": DEBUG_DISABLED_MESSAGE, "help": DEBUG_HELP_MESSAGE}), 403
 
-    def mask_value(value: str | None) -> str:
-        """Mask sensitive configuration values."""
-        if not value:
-            return "[not set]"
-        if len(value) <= 8:
-            return "****"
-        return f"{value[:4]}...{value[-4:]}"
-
-    # Get relevant configuration
-    config_info = {
-        "secret_key": mask_value(current_app.config.get("SECRET_KEY")),
-        "secret_key_is_default": current_app.config.get("SECRET_KEY") in {"dev", "test-secret-key-for-testing"},
-        "session_type": current_app.config.get("SESSION_TYPE", "default"),
-        "session_permanent": current_app.config.get("SESSION_PERMANENT"),
-        "session_use_signer": current_app.config.get("SESSION_USE_SIGNER"),
-        "session_cookie_httponly": current_app.config.get("SESSION_COOKIE_HTTPONLY"),
-        "session_cookie_secure": current_app.config.get("SESSION_COOKIE_SECURE"),
-        "session_cookie_samesite": current_app.config.get("SESSION_COOKIE_SAMESITE"),
-        "permanent_session_lifetime": str(current_app.config.get("PERMANENT_SESSION_LIFETIME")),
-        "redis_url": mask_value(
-            os.environ.get("SESSION_REDIS_URL") or os.environ.get("CACHE_REDIS_URL") or os.environ.get("REDIS_URL")
-        ),
-        "testing": current_app.config.get("TESTING"),
-    }
-
-    # Environment checks
-    env_checks = {
-        "NOW_LMS_WORKERS": os.environ.get("NOW_LMS_WORKERS") or os.environ.get("WORKERS"),
-        "NOW_LMS_THREADS": os.environ.get("NOW_LMS_THREADS") or os.environ.get("THREADS"),
-        "FLASK_ENV": os.environ.get("FLASK_ENV"),
-        "has_redis_url": bool(
-            os.environ.get("SESSION_REDIS_URL") or os.environ.get("CACHE_REDIS_URL") or os.environ.get("REDIS_URL")
-        ),
-    }
-
-    # Warnings for common misconfigurations
-    warnings = []
-    if config_info["secret_key_is_default"]:
-        warnings.append("SECRET_KEY is using default value - set a unique value for production")
-
-    if config_info["session_type"] == "default" and (
-        env_checks["NOW_LMS_WORKERS"] and int(env_checks["NOW_LMS_WORKERS"] or "1") > 1
-    ):
-        warnings.append("Using default session with multiple workers - sessions may not persist. Use Redis or CacheLib.")
-
-    if config_info["session_type"] == "cachelib" and (
-        env_checks["NOW_LMS_WORKERS"] and int(env_checks["NOW_LMS_WORKERS"] or "1") > 1
-    ):
-        warnings.append(
-            "Using CacheLib with multiple workers - ensure shared filesystem. Redis is recommended for multi-worker."
-        )
+    config_info = _debug_config_info()
+    env_checks = _debug_environment()
+    warnings = _debug_warnings(config_info, env_checks)
 
     response_data = {
         "config": config_info,
