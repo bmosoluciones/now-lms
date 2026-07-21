@@ -27,7 +27,7 @@ moderator_profile = Blueprint("moderator_profile", __name__, template_folder=DIR
 # ---------------------------------------------------------------------------------------
 # Espacio del moderador.
 # ---------------------------------------------------------------------------------------
-@moderator_profile.route("/moderator")
+@moderator_profile.route("/moderator", methods=["GET"])
 @login_required
 def pagina_moderador() -> str:
     """Perfil de usuario moderador."""

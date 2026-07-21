@@ -54,7 +54,7 @@ certificate = Blueprint("certificate", __name__, template_folder=DIRECTORIO_PLAN
 VISTA_CERTIFICADOS = "certificate.certificados"
 
 
-@certificate.route("/certificate/list")
+@certificate.route("/certificate/list", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def certificados() -> str:
@@ -68,7 +68,7 @@ def certificados() -> str:
     return render_template("learning/certificados/lista_certificados.html", consulta=certificados_list)
 
 
-@certificate.route("/certificate/<ulid>/remove")
+@certificate.route("/certificate/<ulid>/remove", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def certificate_remove(ulid: str) -> Response:
@@ -82,7 +82,7 @@ def certificate_remove(ulid: str) -> Response:
     return redirect(url_for(VISTA_CERTIFICADOS))
 
 
-@certificate.route("/certificate/<ulid>/add")
+@certificate.route("/certificate/<ulid>/add", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def certificate_add(ulid: str) -> Response:
@@ -96,7 +96,7 @@ def certificate_add(ulid: str) -> Response:
     return redirect(url_for(VISTA_CERTIFICADOS))
 
 
-@certificate.route("/certificate/<ulid>/publish")
+@certificate.route("/certificate/<ulid>/publish", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def certificate_publish(ulid: str) -> Response:
@@ -110,7 +110,7 @@ def certificate_publish(ulid: str) -> Response:
     return redirect(url_for(VISTA_CERTIFICADOS))
 
 
-@certificate.route("/certificate/<ulid>/unpublish")
+@certificate.route("/certificate/<ulid>/unpublish", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def certificate_unpublish(ulid: str) -> Response:
@@ -201,7 +201,7 @@ def insert_style_in_html(template: str) -> str:
     return html
 
 
-@certificate.route("/certificate/inspect/<ulid>/")
+@certificate.route("/certificate/inspect/<ulid>/", methods=["GET"])
 def certificate_inspect(ulid: str) -> str:
     """Inspect a certificate by its ULID."""
     row = database.session.execute(database.select(Certificado).filter_by(id=ulid)).first()
@@ -212,7 +212,7 @@ def certificate_inspect(ulid: str) -> str:
     return insert_style_in_html(consulta)
 
 
-@certificate.route("/certificate/get_as_qr/<cert_id>/")
+@certificate.route("/certificate/get_as_qr/<cert_id>/", methods=["GET"])
 def certificacion_qr(cert_id: str) -> Response:
     """Generate QR code for certificate verification."""
     import qrcode
@@ -231,7 +231,7 @@ def certificacion_qr(cert_id: str) -> Response:
     return response
 
 
-@certificate.route("/certificate/certificate/<ulid>/")
+@certificate.route("/certificate/certificate/<ulid>/", methods=["GET"])
 def certificacion(ulid: str) -> str | Response:
     """Render a certificate based on certification ULID."""
     from jinja2 import BaseLoader, Environment
@@ -276,7 +276,7 @@ def certificacion(ulid: str) -> str | Response:
     return template.render(**context)
 
 
-@certificate.route("/certificate/download/<ulid>/")
+@certificate.route("/certificate/download/<ulid>/", methods=["GET"])
 def certificate_serve_pdf(ulid: str) -> Response:
     """Editar categoria."""
     from flask_weasyprint import HTML, render_pdf
@@ -326,7 +326,7 @@ def certificate_serve_pdf(ulid: str) -> Response:
     )
 
 
-@certificate.route("/certificate/issued/list")
+@certificate.route("/certificate/issued/list", methods=["GET"])
 @login_required
 def certificaciones() -> str:
     """Lista de certificaciones emitidas."""
@@ -375,7 +375,7 @@ def certificaciones() -> str:
     return render_template("learning/certificados/lista_certificaciones.html", consulta=certificados_list)
 
 
-@certificate.route("/certificate/view/<ulid>")
+@certificate.route("/certificate/view/<ulid>", methods=["GET"])
 def certificado(ulid: str) -> str:
     """Lista de certificaciones emitidas."""
     row = database.session.execute(database.select(Certificacion).filter_by(id=ulid)).first()
@@ -530,7 +530,7 @@ def certificacion_generar() -> str | Response:
 # ---------------------------------------------------------------------------------------
 
 
-@certificate.route("/certificate/program/get_as_qr/<certificate_id>/")
+@certificate.route("/certificate/program/get_as_qr/<certificate_id>/", methods=["GET"])
 def certificacion_programa_qr(certificate_id: str) -> Response:
     """Generate QR code for program certificate verification."""
     import qrcode
@@ -549,7 +549,7 @@ def certificacion_programa_qr(certificate_id: str) -> Response:
     return response
 
 
-@certificate.route("/certificate/program/view/<ulid>/")
+@certificate.route("/certificate/program/view/<ulid>/", methods=["GET"])
 def certificacion_programa(ulid: str) -> str:
     """View program certificate."""
     from jinja2 import BaseLoader, Environment
@@ -597,7 +597,7 @@ def certificacion_programa(ulid: str) -> str:
     return template.render(**context)
 
 
-@certificate.route("/certificate/program/download/<ulid>/")
+@certificate.route("/certificate/program/download/<ulid>/", methods=["GET"])
 def certificate_programa_serve_pdf(ulid: str) -> Any:
     """Download program certificate as PDF."""
     from flask_weasyprint import HTML, render_pdf

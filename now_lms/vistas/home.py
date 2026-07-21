@@ -49,8 +49,8 @@ home = Blueprint("home", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 # ---------------------------------------------------------------------------------------
 # Página de inicio de la aplicación.
 # ---------------------------------------------------------------------------------------
-@home.route("/")
-@home.route("/home")
+@home.route("/", methods=["GET"])
+@home.route("/home", methods=["GET"])
 @cache.cached(timeout=90, key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def pagina_de_inicio() -> str:
     """Página principal de la aplicación."""
@@ -93,7 +93,7 @@ def pagina_de_inicio() -> str:
     )
 
 
-@home.route("/home/panel")
+@home.route("/home/panel", methods=["GET"])
 @login_required
 def panel() -> str | Response:
     """Panel principal de la aplicacion luego de inicar sesión."""
@@ -238,7 +238,7 @@ def panel() -> str | Response:
             return redirect("/")
 
 
-@home.route("/custom/<page>")
+@home.route("/custom/<page>", methods=["GET"])
 @cache.cached(timeout=180)
 def custom_page(page: str) -> str | Response:
     """Muestra páginas personalizadas por tema."""

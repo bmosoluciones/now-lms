@@ -127,7 +127,7 @@ def nuevo_programa() -> str | Response:
     return render_template("learning/programas/nuevo_programa.html", form=form)
 
 
-@program.route("/program/list")
+@program.route("/program/list", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 @cache.cached(timeout=60)
@@ -151,7 +151,7 @@ def programas() -> str:
     return render_template("learning/programas/lista_programas.html", consulta=consulta)
 
 
-@program.route("/program/<ulid>/delete")
+@program.route("/program/<ulid>/delete", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def delete_program(ulid: str) -> Response:
@@ -257,7 +257,7 @@ def edit_program(ulid: str) -> str | Response:
     return render_template("learning/programas/editar_programa.html", form=form, programa=programa)
 
 
-@program.route("/program/<codigo>/courses")
+@program.route("/program/<codigo>/courses", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def programa_cursos(codigo: str) -> str | Response:
@@ -268,7 +268,7 @@ def programa_cursos(codigo: str) -> str | Response:
     return abort(403)
 
 
-@program.route("/program/<codigo>")
+@program.route("/program/<codigo>", methods=["GET"])
 @cache.cached(timeout=60, key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def pagina_programa(codigo: str) -> str:
     """Pagina principal del curso."""
@@ -277,7 +277,7 @@ def pagina_programa(codigo: str) -> str:
     return render_template(get_program_view_template(), programa=programa_obj, cuenta_cursos=cuenta_cursos_por_programa)
 
 
-@program.route("/program/explore")
+@program.route("/program/explore", methods=["GET"])
 @cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def lista_programas() -> str:
     """Lista de programas."""
@@ -380,7 +380,7 @@ def inscribir_programa(codigo: str) -> str | Response:
     return render_template("learning/programas/inscribir_programa.html", programa=programa)
 
 
-@program.route("/program/<codigo>/take")
+@program.route("/program/<codigo>/take", methods=["GET"])
 @login_required
 @perfil_requerido("student")
 def tomar_programa(codigo: str) -> str | Response:
@@ -677,7 +677,7 @@ def admin_program_enrollment(codigo: str) -> str | Response:
     return render_template(ADMIN_PROGRAM_ENROLL_TEMPLATE, programa=programa, form=form)
 
 
-@program.route("/program/<codigo>/admin/enrollments")
+@program.route("/program/<codigo>/admin/enrollments", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def admin_program_enrollments(codigo: str) -> str:

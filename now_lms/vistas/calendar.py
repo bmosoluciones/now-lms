@@ -27,7 +27,7 @@ from now_lms.db import UserEvent, database
 calendar = Blueprint("calendar", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
-@calendar.route("/user/calendar")
+@calendar.route("/user/calendar", methods=["GET"])
 @login_required
 def calendar_view() -> str:
     """Display the user's calendar with events."""
@@ -95,7 +95,7 @@ def calendar_view() -> str:
     )
 
 
-@calendar.route("/user/calendar/event/<event_id>")
+@calendar.route("/user/calendar/event/<event_id>", methods=["GET"])
 @login_required
 def event_detail(event_id: int) -> str:
     """Display details for a specific event."""
@@ -109,7 +109,7 @@ def event_detail(event_id: int) -> str:
     return render_template("calendar/event_detail.html", event=event)
 
 
-@calendar.route("/user/calendar/export.ics")
+@calendar.route("/user/calendar/export.ics", methods=["GET"])
 @login_required
 def export_ics() -> Response:
     """Export user's calendar events as ICS file."""
@@ -200,7 +200,7 @@ def _escape_ics_text(text: str | None) -> str:
     return text.replace("\\", "\\\\").replace(",", "\\,").replace(";", "\\;").replace("\n", "\\n")
 
 
-@calendar.route("/user/calendar/upcoming")
+@calendar.route("/user/calendar/upcoming", methods=["GET"])
 @login_required
 def upcoming_events() -> str:
     """Get upcoming events for dashboard display."""

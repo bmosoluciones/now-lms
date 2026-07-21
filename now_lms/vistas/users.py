@@ -108,7 +108,7 @@ def inicio_sesion() -> str | Response:
     )
 
 
-@user.route("/user/logout")
+@user.route("/user/logout", methods=["GET"])
 def cerrar_sesion() -> Response:
     """Finaliza la sesion actual."""
     logout_user()
@@ -202,7 +202,7 @@ def crear_usuario() -> str | Response:
         )
 
 
-@user.route("/user/check_mail/<token>")
+@user.route("/user/check_mail/<token>", methods=["GET"])
 def check_mail(token: str) -> Response:
     """Verifica correo electronico."""
     from now_lms.auth import validate_confirmation_token

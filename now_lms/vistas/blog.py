@@ -68,7 +68,7 @@ def ensure_unique_slug(title: str, post_id: int | None = None) -> str:
 
 
 # Public blog routes
-@blog.route("/blog")
+@blog.route("/blog", methods=["GET"])
 @cache.cached(timeout=60)
 def blog_index() -> str:
     """Public blog index page."""
@@ -108,7 +108,7 @@ def blog_index() -> str:
     )
 
 
-@blog.route("/blog/<slug>")
+@blog.route("/blog/<slug>", methods=["GET"])
 @cache.cached(timeout=60)
 def blog_post(slug: str) -> str:
     """Display a single blog post."""
@@ -208,7 +208,7 @@ def flag_comment(comment_id: int) -> Response:
 
 
 # Admin blog routes
-@blog.route("/admin/blog")
+@blog.route("/admin/blog", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def admin_blog_index() -> str:
@@ -465,7 +465,7 @@ def ban_post(post_id: int) -> Response:
 
 
 # Tag management routes
-@blog.route("/admin/blog/tags")
+@blog.route("/admin/blog/tags", methods=["GET"])
 @login_required
 @perfil_requerido("admin")
 def admin_tags() -> str:
@@ -592,7 +592,7 @@ def delete_comment(comment_id: str) -> str | Response:
 
 
 # Instructor blog routes
-@blog.route("/instructor/blog")
+@blog.route("/instructor/blog", methods=["GET"])
 @login_required
 @perfil_requerido("instructor")
 def instructor_blog_index() -> str:
