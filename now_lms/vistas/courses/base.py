@@ -94,7 +94,7 @@ NO_AUTORIZADO_MSG = "No se encuentra autorizado a acceder al recurso solicitado.
 TEMPLATE_SLIDE_SHOW = "learning/resources/slide_show.html"
 TEMPLATE_COUPON_CREATE = "learning/curso/coupons/create.html"
 TEMPLATE_COUPON_EDIT = "learning/curso/coupons/edit.html"
-TEMPLATE_ADMIN_ENROLL = TEMPLATE_ADMIN_ENROLL
+TEMPLATE_ADMIN_ENROLL = "learning/curso/admin_enroll.html"
 
 # Route constants
 ROUTE_LIST_COUPONS = "course.list_coupons"

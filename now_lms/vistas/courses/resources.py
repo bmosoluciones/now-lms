@@ -113,7 +113,7 @@ MSG_RECURSO_NO_ENCONTRADO = "Recurso no encontrado."
 MSG_RECURSO_ACTUALIZADO = "Recurso actualizado correctamente."
 MSG_RECURSO_ERROR_ACTUALIZAR = "Hubo un error al actualizar el recurso."
 TEMPLATE_LIBRARY_UPLOAD = "learning/curso/library_upload.html"
-ICS_DATETIME_FORMAT = ICS_DATETIME_FORMAT
+ICS_DATETIME_FORMAT = "%Y%m%dT%H%M%S"
 
 
 def _read_vtt_content(field_name: str) -> str | None:

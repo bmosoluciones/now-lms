@@ -31,7 +31,7 @@ from now_lms.db import Pago
 # Constants
 ADMIN_USERS_ROUTE = "admin_profile.usuarios"
 ADMIN_UNVERIFIED_USERS_ROUTE = "admin_profile.usuarios_sin_verificar"
-CACHE_VIEW_PREFIX = CACHE_VIEW_PREFIX
+CACHE_VIEW_PREFIX = "view/"
 
 admin_profile = Blueprint("admin_profile", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 

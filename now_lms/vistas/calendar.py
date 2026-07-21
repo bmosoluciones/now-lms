@@ -24,7 +24,7 @@ from flask_login import current_user, login_required
 from now_lms.config import DIRECTORIO_PLANTILLAS
 from now_lms.db import UserEvent, database
 
-ICS_DATETIME_FORMAT_UTC = ICS_DATETIME_FORMAT_UTC
+ICS_DATETIME_FORMAT_UTC = "%Y%m%dT%H%M%SZ"
 
 calendar = Blueprint("calendar", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 

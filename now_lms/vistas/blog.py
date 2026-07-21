@@ -36,7 +36,7 @@ from now_lms.logs import log
 ROUTE_BLOG_POST = "blog.blog_post"
 ROUTE_BLOG_INDEX = "blog.blog_index"
 ROUTE_BLOG_ADMIN_INDEX = "blog.admin_blog_index"
-CACHE_VIEW_PREFIX = CACHE_VIEW_PREFIX
+CACHE_VIEW_PREFIX = "view/"
 
 blog = Blueprint("blog", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
