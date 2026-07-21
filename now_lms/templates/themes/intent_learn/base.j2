@@ -7,6 +7,20 @@
         <meta name="description" content="{{ _('Aplicación para gestión del aprendizaje.') }}" />
         <meta name="author" content="BMO Moreno Berroteran Ortiz Soluciones Sociedad Anonima" />
 
+        <meta name="theme-color" content="#f97316" />
+
+        <!-- Intent Solutions node-mark (real orange logo; matches intentsolutions.io) -->
+        <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='themes/intent_learn/favicon.svg') }}" />
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/favicon/apple-touch-icon.png') }}" />
+
+        <!-- Google Fonts: Syne (display) + Inter (body) — same as intentsolutions.io -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap"
+            rel="stylesheet"
+        />
+
         <!-- Código local -->
         <link href="{{ url_for('static', filename='css/cacaoaccounting.css') }}" rel="stylesheet" />
 

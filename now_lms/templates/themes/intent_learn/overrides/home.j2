@@ -1,848 +1,362 @@
 <!doctype html>
-<html lang="en">
-    {% from 'macros/blog_section.j2' import render_blog_section %} {% set current_theme = current_theme() %}{% set
-    site_config = config() %}
+<html lang="{{ current_locale }}">
+    {% from 'macros/blog_section.j2' import render_blog_section %}
+    {% set current_theme = current_theme() %}
+    {% set site_config = config() %}
+    {% set S = url_for('static', filename='themes/intent_learn') %}
+    {% set team = [
+        {'photo': 'jeremy-longshore.jpeg', 'name': 'Jeremy Longshore', 'role': 'Founder & CEO'},
+        {'photo': 'opeyemi-ariyo.jpeg',    'name': 'Opeyemi Ariyo',    'role': 'Co-Founder & Chief Technical Officer'},
+        {'photo': 'pablo-perez.jpeg',      'name': 'Pablo Perez',      'role': 'Co-Founder & Project Manager'},
+        {'photo': 'max-sheahan.jpeg',      'name': 'Max Sheahan',      'role': 'Lead Instructor'},
+        {'photo': 'tim-neunzig.png',       'name': 'Tim Neunzig',      'role': 'Head of German Operations'},
+        {'photo': 'tolulope-ariyo.jpeg',   'name': 'Tolulope Ariyo',   'role': 'Software & Design Engineer'}
+    ] %}
     <head>
         {{ current_theme.headertags() }} {{ current_theme.local_style() }}
-        <title>{{ site_config.titulo_html or "Intent Solutions Learn" }}</title>
+        <title>{{ site_config.titulo_html or 'Intent Solutions Learn' }}</title>
 
         <style>
             /* ============================================================
-       Intent Solutions Learn — front door
-       TRANSFERRED FROM MAX'S HUB THEME (learn-intent-solutions-hub/
-       public/theme.css). Tokens + primitives are his, verbatim:
-       #18171b warm near-black ground, #f97316 orange, elevated-DARKER
-       cards, Syne display / Inter body / JetBrains Mono labels, his
-       logo-badge glyph, header-glow, orange-glow CTA. Only the page
-       composition here is new; the design language is Max's.
-       ============================================================ */
-            :root {
-                --bg: #18171b;
-                --bg-elevated: #131217;
-                --bg-inset: #201f24;
-                --bg-inset-2: #29282e;
-                --ink: #f5f4f2;
-                --ink-dim: #a5a3a0;
-                --ink-faint: #85837f;
-                --accent: #f97316;
-                --accent-bright: #fb923c;
-                --accent-press: #ea6a0e;
-                --accent-ink: #18171b;
-                --accent-wash: rgba(249, 115, 22, 0.11);
-                --accent-line: rgba(249, 115, 22, 0.32);
-                --accent-line-hi: rgba(249, 115, 22, 0.55);
-                --accent-ring: 0 0 0 3px rgba(249, 115, 22, 0.35);
-                --accent-glow: 0 4px 14px -4px rgba(249, 115, 22, 0.5);
-                --accent-glow-hi: 0 6px 20px -4px rgba(249, 115, 22, 0.65);
-                --line: rgba(245, 244, 242, 0.11);
-                --line-soft: rgba(245, 244, 242, 0.06);
-                --positive: #4ade80;
-                --shadow:
-                    0 2px 4px rgba(0, 0, 0, 0.3),
-                    0 16px 40px -20px rgba(0, 0, 0, 0.7);
-                --shadow-hover:
-                    0 4px 10px rgba(0, 0, 0, 0.35),
-                    0 20px 50px -20px rgba(0, 0, 0, 0.8);
-                --ease: cubic-bezier(0.32, 0.72, 0, 1);
-                --font-display: "Syne", "Inter", system-ui, sans-serif;
-                --font-ui:
-                    "Inter",
-                    -apple-system,
-                    BlinkMacSystemFont,
-                    "Segoe UI",
-                    system-ui,
-                    sans-serif;
-                --font-mono:
-                    "JetBrains Mono",
-                    ui-monospace,
-                    SFMono-Regular,
-                    Menlo,
-                    monospace;
-                --maxw: 1200px;
-            }
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            html {
-                scroll-behavior: smooth;
-            }
-            body {
-                background: var(--bg);
-                color: var(--ink);
+               Intent Solutions Learn — front door.
+               Replicates intentsolutions.io "Charcoal Slate (Theme 7)"
+               verbatim: zinc-950 grounds, ember #F97316 accent, the
+               marker-highlight device, Syne display / Inter body, real
+               orange node-mark logo, the site's own team grid. Classes are
+               `isl-` prefixed so they never collide with the Bootstrap /
+               theme.min.css already pulled in by headertags()/local_style().
+               ============================================================ */
+            .isl-root {
+                --bg: 9 9 11;          /* zinc-950 section ground   */
+                --bg-body: 24 24 27;   /* zinc-900 body             */
+                --card: 24 24 27;      /* card base                 */
+                --ink: 250 250 250;    /* zinc-50                   */
+                --ink-dim: 161 161 170;/* zinc-400                  */
+                --ink-faint: 113 113 122;/* zinc-500                */
+                --line: 39 39 42;      /* zinc-800                  */
+                --ember: 249 115 22;   /* orange-500                */
+                --ember-hi: 251 146 60;/* orange-400                */
+                --font-display: 'Syne', system-ui, sans-serif;
+                --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
+                --maxw: 72rem;
+                background: rgb(var(--bg-body));
+                color: rgb(var(--ink));
                 font-family: var(--font-ui);
                 line-height: 1.6;
                 -webkit-font-smoothing: antialiased;
-                overflow-x: hidden;
             }
-            a {
-                color: inherit;
-                text-decoration: none;
-            }
-            h1,
-            h2,
-            h3 {
-                font-family: var(--font-display);
-                font-weight: 700;
-                letter-spacing: -0.01em;
-                text-wrap: balance;
-            }
-            .num {
-                font-family: var(--font-ui);
-                font-weight: 800;
-                font-variant-numeric: tabular-nums;
-            }
-            :focus-visible {
-                outline: 2px solid var(--accent);
-                outline-offset: 2px;
-            }
-            .wrap {
-                max-width: var(--maxw);
-                margin: 0 auto;
-                padding: 0 28px;
-            }
-            .mono {
-                font-family: var(--font-mono);
-            }
+            .isl-root *, .isl-root *::before, .isl-root *::after { box-sizing: border-box; }
+            .isl-root a { color: inherit; text-decoration: none; }
+            .isl-root img { max-width: 100%; }
+            .isl-root :focus-visible { outline: 2px solid rgb(var(--ember)); outline-offset: 3px; border-radius: 4px; }
+            .isl-wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 2rem; }
 
-            /* header — his chrome */
-            header.top {
-                position: sticky;
-                top: 0;
-                z-index: 20;
-                overflow: hidden;
-                background: color-mix(in srgb, var(--bg) 88%, transparent);
-                backdrop-filter: blur(10px);
-                border-bottom: 1px solid var(--line);
+            /* ── shared section furniture (from intentsolutions.io) ── */
+            .isl-eyebrow { display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 1.25rem; }
+            .isl-eyebrow .rule { display: block; height: 1px; width: 3.5rem; background: linear-gradient(to right, transparent, rgba(249,115,22,0.2)); }
+            .isl-eyebrow .rule:last-child { background: linear-gradient(to left, transparent, rgba(249,115,22,0.2)); }
+            .isl-eyebrow .label {
+                font-family: var(--font-display); font-size: 0.6rem; font-weight: 700;
+                letter-spacing: 0.28em; text-transform: uppercase; color: rgb(var(--ember-hi));
             }
-            .header-glow {
-                position: absolute;
-                top: -140px;
-                left: 60px;
-                width: 340px;
-                height: 220px;
-                background: radial-gradient(ellipse at center, rgba(249, 115, 22, 0.16), transparent 70%);
-                pointer-events: none;
-                filter: blur(8px);
+            .isl-sec-title {
+                font-family: var(--font-display); font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 700;
+                color: rgb(var(--ink)); text-align: center; letter-spacing: -0.02em; line-height: 1.2; margin: 0 0 1rem;
             }
-            .top .wrap {
-                position: relative;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 16px;
-                height: 66px;
+            /* marker-highlight — the signature brand device */
+            .isl-hl {
+                background: linear-gradient(120deg, #FF8A2A, #F26205); color: rgb(9 9 11);
+                padding: 0.02em 0.22em 0.06em; border-radius: 8px;
+                box-decoration-break: clone; -webkit-box-decoration-break: clone;
             }
-            .brand {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-            .logo-badge {
-                width: 30px;
-                height: 30px;
-                border-radius: 8px;
-                background: var(--accent);
-                display: grid;
-                place-items: center;
-                flex-shrink: 0;
-                box-shadow:
-                    0 0 0 1px rgba(249, 115, 22, 0.4),
-                    0 4px 14px -4px rgba(249, 115, 22, 0.55);
-            }
-            .logo-badge svg {
-                width: 17px;
-                height: 17px;
-            }
-            .brand .name {
-                font-weight: 700;
-                font-size: 15px;
-                letter-spacing: -0.005em;
-                color: var(--ink-dim);
-            }
-            .brand .name .sep {
-                color: var(--line);
-            }
-            .brand .name .here {
-                color: var(--ink);
-                font-weight: 600;
-            }
-            nav.crumbs {
-                display: flex;
-                gap: 24px;
-                font-size: 13.5px;
-                color: var(--ink-faint);
-            }
-            nav.crumbs a {
-                padding: 4px 0;
-                border-bottom: 2px solid transparent;
-                transition:
-                    color 160ms var(--ease),
-                    border-color 160ms var(--ease);
-            }
-            nav.crumbs a:hover {
-                color: var(--ink);
-            }
-            @media (max-width: 760px) {
-                nav.crumbs {
-                    display: none;
-                }
-                .brand .name .sub-hide {
-                    display: none;
-                }
-            }
+            .isl-sub { text-align: center; font-size: 0.95rem; color: rgb(var(--ink-dim)); margin: 0 auto 3.25rem; max-width: 44ch; }
 
-            /* buttons — his primitives */
-            .cta {
-                display: inline-flex;
-                align-items: center;
-                gap: 9px;
-                background: var(--accent);
-                color: var(--accent-ink);
-                border: 0;
-                font: inherit;
-                font-weight: 700;
-                cursor: pointer;
-                text-decoration: none;
-                padding: 11px 20px;
-                border-radius: 999px;
-                box-shadow: var(--accent-glow);
-                transition:
-                    background 160ms var(--ease),
-                    transform 160ms var(--ease),
-                    box-shadow 160ms var(--ease);
-            }
-            .cta:hover {
-                background: var(--accent-bright);
-                box-shadow: var(--accent-glow-hi);
-                transform: translateY(-2px);
-            }
-            .cta:active {
-                background: var(--accent-press);
-                transform: none;
-            }
-            .btn-ghost {
-                display: inline-flex;
-                align-items: center;
-                gap: 9px;
-                background: var(--bg-inset);
-                color: var(--ink);
-                border: 1px solid var(--line);
-                font: inherit;
-                font-weight: 700;
-                cursor: pointer;
-                padding: 11px 20px;
-                border-radius: 999px;
-                transition:
-                    border-color 160ms var(--ease),
-                    color 160ms var(--ease),
-                    background 160ms var(--ease);
-            }
-            .btn-ghost:hover {
-                border-color: var(--accent);
-                color: var(--accent);
-                background: var(--accent-wash);
-            }
-            .btn-sm {
-                padding: 9px 16px;
-                font-size: 13px;
-            }
+            /* ── buttons ── */
+            .isl-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; min-height: 44px;
+                padding: 0.75rem 1.5rem; border-radius: 0.55rem; font-weight: 700; font-size: 0.9rem; cursor: pointer;
+                border: 1px solid transparent; transition: all 0.25s cubic-bezier(0.22,1,0.36,1); }
+            .isl-btn-primary { background: rgb(var(--ember)); color: rgb(9 9 11); box-shadow: 0 0 20px rgba(249,115,22,0.25); }
+            .isl-btn-primary:hover { background: rgb(var(--ember-hi)); box-shadow: 0 0 30px rgba(249,115,22,0.4); transform: translateY(-1px); }
+            .isl-btn-secondary { background: transparent; border-color: rgb(113 113 122); color: rgb(228 228 231); }
+            .isl-btn-secondary:hover { background: rgb(39 39 42); border-color: rgb(var(--ink-dim)); color: rgb(var(--ink)); }
+            .isl-btn-sm { padding: 0.5rem 1rem; font-size: 0.82rem; min-height: 40px; }
 
-            /* labels */
-            .eyebrow {
-                font-family: var(--font-mono);
-                font-size: 11.5px;
-                letter-spacing: 0.14em;
-                text-transform: uppercase;
-                color: var(--accent);
-                display: inline-flex;
-                align-items: center;
-                gap: 9px;
-            }
-            .sec-label {
-                font-family: var(--font-mono);
-                font-size: 11px;
-                letter-spacing: 0.15em;
-                text-transform: uppercase;
-                color: var(--ink-faint);
-            }
+            /* ── header ── */
+            .isl-header { position: sticky; top: 0; z-index: 40; background: rgba(9,9,11,0.72);
+                backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(39,39,42,0.6); }
+            .isl-header .isl-wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: 4.25rem; }
+            .isl-brand { display: inline-flex; align-items: center; gap: 0.6rem; min-height: 44px; }
+            .isl-brand img { width: 30px; height: 30px; object-fit: contain; }
+            .isl-brand .word { font-family: var(--font-display); font-weight: 700; font-size: 1.12rem; letter-spacing: -0.01em; color: rgb(var(--ink)); }
+            .isl-brand .word .s { color: #FF7A1A; }
+            .isl-nav { display: flex; align-items: center; gap: 1.6rem; }
+            .isl-nav a.link { display: inline-flex; align-items: center; min-height: 44px; font-size: 0.88rem; font-weight: 500;
+                color: rgb(var(--ink-dim)); transition: color 0.2s ease; }
+            .isl-nav a.link:hover { color: rgb(var(--ink)); }
+            .isl-nav-actions { display: flex; align-items: center; gap: 0.6rem; }
+            @media (max-width: 860px) { .isl-nav a.link { display: none; } }
 
-            /* entrance — his rise */
-            @keyframes rise {
-                from {
-                    opacity: 0;
-                    transform: translateY(16px);
-                }
-                to {
-                    opacity: 1;
-                    transform: none;
-                }
+            /* ── hero ── */
+            .isl-hero { position: relative; overflow: hidden; background: rgb(var(--bg)); border-bottom: 1px solid rgba(39,39,42,0.5);
+                padding: 6.5rem 0 5.5rem; text-align: center; }
+            /* ember radial glow + star dust + film grain, all CSS, mobile-safe */
+            .isl-hero-glow { position: absolute; inset: 0; pointer-events: none;
+                background: radial-gradient(ellipse at 50% 0%, rgba(249,115,22,0.14), transparent 55%),
+                            radial-gradient(circle at 82% 12%, rgba(249,115,22,0.07), transparent 45%); }
+            .isl-hero-stars { position: absolute; inset: 0; pointer-events: none; opacity: 0.55;
+                background-image:
+                    radial-gradient(1.4px 1.4px at 12% 22%, rgba(255,255,255,0.7), transparent),
+                    radial-gradient(1.2px 1.2px at 27% 68%, rgba(255,255,255,0.5), transparent),
+                    radial-gradient(1.6px 1.6px at 44% 34%, rgba(251,146,60,0.6), transparent),
+                    radial-gradient(1.2px 1.2px at 63% 18%, rgba(255,255,255,0.55), transparent),
+                    radial-gradient(1.5px 1.5px at 78% 58%, rgba(255,255,255,0.5), transparent),
+                    radial-gradient(1.2px 1.2px at 88% 30%, rgba(251,146,60,0.5), transparent),
+                    radial-gradient(1.3px 1.3px at 55% 78%, rgba(255,255,255,0.4), transparent);
             }
-            .rise {
-                animation: rise 640ms var(--ease) both;
-            }
-            .d1 {
-                animation-delay: 60ms;
-            }
-            .d2 {
-                animation-delay: 140ms;
-            }
-            .d3 {
-                animation-delay: 220ms;
-            }
-            .d4 {
-                animation-delay: 300ms;
-            }
+            .isl-hero-grain { position: absolute; inset: 0; pointer-events: none; opacity: 0.035; mix-blend-mode: overlay;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+            .isl-hero .isl-wrap { position: relative; z-index: 1; }
+            .isl-hero h1 { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em; line-height: 1.08;
+                font-size: clamp(2.4rem, 5.4vw, 3.9rem); color: rgb(var(--ink)); max-width: 18ch; margin: 1.5rem auto 1.4rem; }
+            .isl-hero .lede { font-size: clamp(1rem, 1.5vw, 1.18rem); color: rgb(var(--ink-dim)); max-width: 56ch; margin: 0 auto; }
+            .isl-hero .lede b { color: rgb(var(--ink)); font-weight: 600; }
+            .isl-cta-row { display: flex; gap: 0.85rem; flex-wrap: wrap; justify-content: center; margin-top: 2.5rem; }
+
+            /* ── proof strip ── */
+            .isl-proof { background: rgb(var(--bg)); border-bottom: 1px solid rgba(39,39,42,0.5); }
+            .isl-proof .isl-wrap { display: flex; flex-wrap: wrap; }
+            .isl-stat { flex: 1; min-width: 8rem; display: flex; flex-direction: column; gap: 0.25rem; padding: 1.9rem 0; text-align: center; }
+            .isl-stat + .isl-stat { border-left: 1px solid rgba(39,39,42,0.6); }
+            .isl-stat .n { font-family: var(--font-display); font-weight: 700; font-size: 1.85rem; line-height: 1; color: #FB923C;
+                font-variant-numeric: tabular-nums; text-shadow: 0 0 24px rgba(249,115,22,0.3); }
+            .isl-stat .l { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgb(var(--ink-faint)); }
+            @media (max-width: 640px) { .isl-stat { flex: 1 1 50%; } .isl-stat:nth-child(odd) { border-left: 0; } }
+
+            /* ── sections ── */
+            .isl-section { padding: 6rem 0; background: rgb(var(--bg)); border-top: 1px solid rgba(39,39,42,0.5); }
+
+            /* track cards */
+            .isl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
+            .isl-card { display: flex; flex-direction: column; padding: 1.6rem 1.5rem; border-radius: 0.9rem;
+                background: rgba(24,24,27,0.65); border: 1px solid rgba(39,39,42,0.75);
+                transition: border-color 0.28s ease, transform 0.22s ease, background 0.28s ease; }
+            .isl-card:hover { border-color: rgba(249,115,22,0.3); background: rgba(24,24,27,0.9); transform: translateY(-3px); }
+            .isl-card .ico { width: 2.6rem; height: 2.6rem; border-radius: 0.6rem; display: flex; align-items: center; justify-content: center;
+                background: rgba(249,115,22,0.08); border: 1px solid rgba(249,115,22,0.18); color: rgb(var(--ember-hi)); margin-bottom: 1.05rem; }
+            .isl-card .ico svg { width: 1.4rem; height: 1.4rem; }
+            .isl-card h3 { font-family: var(--font-display); font-size: 1.08rem; font-weight: 700; color: rgb(var(--ink)); margin: 0 0 0.5rem; }
+            .isl-card p { font-size: 0.86rem; color: rgb(var(--ink-dim)); line-height: 1.6; margin: 0 0 1rem; }
+            .isl-card ul { list-style: none; margin: auto 0 0; padding: 0; display: grid; gap: 0.4rem; }
+            .isl-card li { font-size: 0.82rem; color: rgb(var(--ink-dim)); padding-left: 1rem; position: relative; }
+            .isl-card li::before { content: "—"; position: absolute; left: 0; color: rgb(var(--ember-hi)); }
+            @media (max-width: 900px) { .isl-grid { grid-template-columns: repeat(2, 1fr); } }
+            @media (max-width: 600px) { .isl-grid { grid-template-columns: 1fr; } }
+
+            /* ── team (verbatim treatment from intentsolutions.io) ── */
+            .isl-team-rows { display: flex; flex-direction: column; gap: 1.25rem; }
+            .isl-team-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.25rem; }
+            .isl-team-card { flex: 1 1 14rem; max-width: 20rem; text-align: center; padding: 2rem 1.1rem 1.75rem; border-radius: 0.9rem;
+                background: rgba(24,24,27,0.65); border: 1px solid rgba(39,39,42,0.75); transition: border-color 0.28s ease, transform 0.22s ease; }
+            .isl-team-card:hover { border-color: rgba(249,115,22,0.3); transform: translateY(-4px); }
+            .isl-team-ring { display: inline-block; padding: 3px; border-radius: 50%; margin-bottom: 1.15rem;
+                background: linear-gradient(135deg, rgba(249,115,22,0.6), rgba(249,115,22,0.15)); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+            .isl-team-photo { display: block; width: 7rem; height: 7rem; border-radius: 50%; object-fit: cover; border: 2px solid rgb(9 9 11);
+                filter: grayscale(1) contrast(1.02); transition: filter 0.35s ease; }
+            .isl-team-card:hover .isl-team-photo { filter: grayscale(0); }
+            .isl-team-initials { display: flex; align-items: center; justify-content: center; width: 7rem; height: 7rem; border-radius: 50%;
+                border: 2px solid rgb(9 9 11); background: linear-gradient(135deg,#1f1a17,#141010); font-family: var(--font-display);
+                font-size: 1.5rem; font-weight: 700; color: rgb(var(--ember-hi)); }
+            .isl-team-name { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: rgb(var(--ink)); margin: 0 0 0.3rem; }
+            .isl-team-role { font-size: 0.8rem; font-weight: 600; color: rgb(var(--ember-hi)); margin: 0; line-height: 1.4; }
+
+            /* ── closing CTA ── */
+            .isl-final { padding: 6.5rem 0; text-align: center; background: rgb(var(--bg)); border-top: 1px solid rgba(39,39,42,0.5); position: relative; overflow: hidden; }
+            .isl-final .glow { position: absolute; left: 50%; bottom: -160px; transform: translateX(-50%); width: 640px; height: 360px;
+                background: radial-gradient(ellipse at center, rgba(249,115,22,0.12), transparent 70%); pointer-events: none; }
+            .isl-final .isl-wrap { position: relative; }
+            .isl-final h2 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 2.9rem); font-weight: 700; letter-spacing: -0.02em;
+                color: rgb(var(--ink)); max-width: 18ch; margin: 0 auto 1rem; }
+            .isl-final p { color: rgb(var(--ink-dim)); max-width: 46ch; margin: 0 auto 2rem; font-size: 1.02rem; }
+
+            /* ── footer ── */
+            .isl-footer { border-top: 1px solid rgba(39,39,42,0.6); background: rgb(var(--bg-body)); }
+            .isl-footer .isl-wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.9rem; padding: 2rem 2rem 2.5rem; }
+            .isl-footer .fb { display: inline-flex; align-items: center; gap: 0.55rem; font-family: var(--font-display); font-weight: 700; color: rgb(var(--ink-dim)); }
+            .isl-footer .fb img { width: 22px; height: 22px; object-fit: contain; }
+            .isl-footer .fc { font-size: 0.75rem; letter-spacing: 0.04em; color: rgb(var(--ink-faint)); }
+            .isl-footer .fc a { color: rgb(var(--ember-hi)); }
+
             @media (prefers-reduced-motion: reduce) {
-                .rise {
-                    animation: none;
-                }
-                * {
-                    scroll-behavior: auto;
-                }
-            }
-
-            /* hero */
-            .hero {
-                position: relative;
-                padding: 104px 0 84px;
-                overflow: hidden;
-            }
-            .hero .header-glow {
-                top: -60px;
-                left: auto;
-                right: 8%;
-                width: 520px;
-                height: 360px;
-                opacity: 0.9;
-            }
-            .hero .wrap {
-                position: relative;
-                z-index: 1;
-            }
-            .hero h1 {
-                font-size: clamp(2.5rem, 6vw, 4.3rem);
-                line-height: 1.03;
-                letter-spacing: -0.03em;
-                max-width: 16ch;
-                margin: 26px 0 22px;
-            }
-            .hero .lede {
-                font-size: clamp(1.05rem, 1.7vw, 1.26rem);
-                color: var(--ink-dim);
-                max-width: 56ch;
-            }
-            .hero .lede b {
-                color: var(--ink);
-                font-weight: 600;
-            }
-            .cta-row {
-                display: flex;
-                gap: 13px;
-                flex-wrap: wrap;
-                margin-top: 38px;
-            }
-
-            /* proof strip */
-            .proof {
-                border-top: 1px solid var(--line);
-                border-bottom: 1px solid var(--line);
-                background: var(--bg-elevated);
-            }
-            .proof .wrap {
-                display: flex;
-                flex-wrap: wrap;
-                padding: 26px 28px;
-                gap: 20px 0;
-            }
-            .stat {
-                flex: 1;
-                min-width: 150px;
-                display: flex;
-                flex-direction: column;
-                gap: 4px;
-            }
-            .stat + .stat {
-                border-left: 1px solid var(--line);
-                padding-left: 26px;
-                margin-left: 26px;
-            }
-            .stat .n {
-                font-family: var(--font-ui);
-                font-weight: 800;
-                font-variant-numeric: tabular-nums;
-                font-size: 1.8rem;
-                letter-spacing: -0.02em;
-                color: var(--ink);
-            }
-            .stat .l {
-                font-family: var(--font-mono);
-                font-size: 10.5px;
-                letter-spacing: 0.13em;
-                text-transform: uppercase;
-                color: var(--ink-faint);
-            }
-            @media (max-width: 760px) {
-                .stat + .stat {
-                    border-left: 0;
-                    padding-left: 0;
-                    margin-left: 0;
-                }
-                .proof .wrap {
-                    gap: 22px 32px;
-                }
-            }
-
-            section.band {
-                padding: 92px 0;
-            }
-            .band-head .eyebrow {
-                margin-bottom: 16px;
-            }
-            .band-head h2 {
-                font-size: clamp(1.8rem, 3.4vw, 2.5rem);
-                letter-spacing: -0.025em;
-                max-width: 20ch;
-            }
-            .band-head p {
-                color: var(--ink-dim);
-                max-width: 56ch;
-                margin-top: 14px;
-                font-size: 1.04rem;
-            }
-
-            /* cards — his card primitive */
-            .grid {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 16px;
-                margin-top: 48px;
-            }
-            @media (max-width: 900px) {
-                .grid {
-                    grid-template-columns: 1fr 1fr;
-                }
-            }
-            @media (max-width: 600px) {
-                .grid {
-                    grid-template-columns: 1fr;
-                }
-            }
-            .card {
-                background: var(--bg-elevated);
-                border: 1px solid var(--line);
-                border-radius: 16px;
-                box-shadow: var(--shadow);
-                padding: 24px 22px 26px;
-                position: relative;
-                overflow: hidden;
-                transition:
-                    border-color 200ms var(--ease),
-                    transform 200ms var(--ease),
-                    box-shadow 200ms var(--ease);
-            }
-            .card:hover {
-                border-color: var(--accent-line);
-                transform: translateY(-3px);
-                box-shadow: var(--shadow-hover);
-            }
-            .card .k {
-                font-family: var(--font-mono);
-                font-size: 10px;
-                letter-spacing: 0.1em;
-                color: var(--accent);
-                border: 1px solid var(--accent-line);
-                border-radius: 999px;
-                padding: 3px 9px;
-                display: inline-block;
-            }
-            .card h3 {
-                font-size: 1.2rem;
-                margin: 15px 0 9px;
-            }
-            .card p {
-                color: var(--ink-dim);
-                font-size: 0.95rem;
-                line-height: 1.6;
-            }
-            .card ul {
-                list-style: none;
-                margin-top: 15px;
-                display: grid;
-                gap: 8px;
-            }
-            .card li {
-                font-size: 0.88rem;
-                color: var(--ink-dim);
-                line-height: 1.5;
-                padding-left: 16px;
-                position: relative;
-            }
-            .card li::before {
-                content: "—";
-                position: absolute;
-                left: 0;
-                color: var(--accent);
-            }
-
-            /* teaching */
-            .people {
-                background: var(--bg-elevated);
-                border-top: 1px solid var(--line);
-                border-bottom: 1px solid var(--line);
-            }
-            .people-grid {
-                display: grid;
-                grid-template-columns: 1.05fr 1fr;
-                gap: 52px;
-                align-items: center;
-            }
-            @media (max-width: 820px) {
-                .people-grid {
-                    grid-template-columns: 1fr;
-                    gap: 34px;
-                }
-            }
-            .person {
-                display: flex;
-                gap: 16px;
-                align-items: flex-start;
-                padding: 20px 0;
-            }
-            .person + .person {
-                border-top: 1px solid var(--line-soft);
-            }
-            .avatar {
-                width: 52px;
-                height: 52px;
-                flex: none;
-                border-radius: 999px;
-                display: grid;
-                place-items: center;
-                font-family: var(--font-mono);
-                font-size: 15px;
-                font-weight: 700;
-            }
-            .avatar.brand {
-                background: var(--accent);
-                color: var(--accent-ink);
-            }
-            .avatar.plain {
-                background: var(--bg-inset);
-                color: var(--ink-dim);
-                border: 1px solid var(--line);
-            }
-            .person .role {
-                font-family: var(--font-mono);
-                font-size: 10.5px;
-                letter-spacing: 0.13em;
-                text-transform: uppercase;
-                color: var(--accent);
-                margin-bottom: 5px;
-            }
-            .person .nm {
-                font-size: 1.14rem;
-                font-weight: 700;
-                font-family: var(--font-display);
-                letter-spacing: -0.01em;
-            }
-            .person .bio {
-                color: var(--ink-dim);
-                font-size: 0.93rem;
-                margin-top: 6px;
-                max-width: 42ch;
-            }
-
-            /* final */
-            .final {
-                padding: 98px 0;
-                text-align: center;
-                position: relative;
-                overflow: hidden;
-            }
-            .final .header-glow {
-                top: auto;
-                bottom: -160px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 640px;
-                height: 360px;
-                opacity: 0.8;
-            }
-            .final .wrap {
-                position: relative;
-            }
-            .final h2 {
-                font-size: clamp(2rem, 4vw, 3rem);
-                letter-spacing: -0.03em;
-                max-width: 18ch;
-                margin: 0 auto 16px;
-            }
-            .final p {
-                color: var(--ink-dim);
-                max-width: 46ch;
-                margin: 0 auto 32px;
-                font-size: 1.06rem;
-            }
-            .final .cta-row {
-                justify-content: center;
-            }
-
-            footer.foot {
-                border-top: 1px solid var(--line);
-                padding: 30px 28px 42px;
-                display: flex;
-                justify-content: space-between;
-                flex-wrap: wrap;
-                gap: 12px;
-                align-items: center;
-            }
-            footer.foot .f-brand {
-                display: flex;
-                align-items: center;
-                gap: 9px;
-                color: var(--ink-dim);
-                font-weight: 700;
-                font-size: 14px;
-            }
-            footer.foot .f-credit {
-                font-family: var(--font-mono);
-                font-size: 11px;
-                letter-spacing: 0.06em;
-                color: var(--ink-faint);
+                .isl-root * { transition: none !important; animation: none !important; }
+                html { scroll-behavior: auto; }
             }
         </style>
     </head>
-    <body>
-        <!-- Intent Solutions mark, reused verbatim from public/favicon.svg -->
-        <header class="top">
-            <div class="header-glow" aria-hidden="true"></div>
-            <div class="wrap">
-                <a class="brand" href="#top">
-                    <span class="logo-badge" aria-hidden="true">
-                        <svg viewBox="0 0 128 128" fill="none">
-                            <path
-                                fill="var(--bg)"
-                                d="M50.4 78.5a75.1 75.1 0 0 0-28.5 6.9l24.2-65.7c.7-2 1.9-3.2 3.4-3.2h29c1.5 0 2.7 1.2 3.4 3.2l24.2 65.7s-11.6-7-28.5-7L67 45.5c-.4-1.7-1.6-2.8-2.9-2.8-1.3 0-2.5 1.1-2.9 2.7L50.4 78.5Zm-1.1 28.2Zm-4.2-20.2c-2 6.6-.6 15.8 4.2 20.2a17.5 17.5 0 0 1 .2-.7 5.5 5.5 0 0 1 5.7-4.5c2.8.1 4.3 1.5 4.7 4.7.2 1.1.2 2.3.2 3.5v.4c0 2.7.7 5.2 2.2 7.4a13 13 0 0 0 5.7 4.9v-.3l-.2-.3c-1.8-5.6-.5-9.5 4.4-12.8l1.5-1a73 73 0 0 0 3.2-2.2 16 16 0 0 0 6.8-11.4c.3-2 .1-4-.6-6l-.8.6-1.6 1a37 37 0 0 1-22.4 2.7c-5-.7-9.7-2-13.2-6.2Z"
-                            />
-                        </svg>
-                    </span>
-                    <span class="name">Intent&nbsp;Solutions <span class="sep">/</span> <span class="here">Learn</span></span>
+
+    <body class="isl-root" id="top">
+        <!-- ── Header ── -->
+        <header class="isl-header">
+            <div class="isl-wrap">
+                <a class="isl-brand" href="#top" aria-label="Intent Solutions Learn — home">
+                    <img src="{{ S }}/logo-mark.png" alt="" width="30" height="30" />
+                    <span class="word">Intent<span class="s">Solutions</span></span>
                 </a>
-                <nav class="crumbs" aria-label="Primary">
-                    <a href="#curriculum">Curriculum</a>
-                    <a href="#teaching">Who teaches</a>
-                    <a href="#why">Why us</a>
-                    {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('home.panel') }}">Dashboard</a>
-                    {% else %}
-                    <a href="{{ url_for('user.inicio_sesion') }}">Sign in</a>
-                    {% endif %}
+                <nav class="isl-nav" aria-label="Primary">
+                    <a class="link" href="{{ url_for('course.lista_cursos') }}">Courses</a>
+                    <a class="link" href="#team">Team</a>
+                    <a class="link" href="https://intentsolutions.io" target="_blank" rel="noopener">About</a>
+                    <span class="isl-nav-actions">
+                        {% if current_user.is_authenticated %}
+                        <a class="isl-btn isl-btn-secondary isl-btn-sm" href="{{ url_for('home.panel') }}">Dashboard</a>
+                        <a class="isl-btn isl-btn-primary isl-btn-sm" href="{{ url_for('course.lista_cursos') }}">Browse courses</a>
+                        {% else %}
+                        <a class="isl-btn isl-btn-secondary isl-btn-sm" href="{{ url_for('user.inicio_sesion') }}">Sign in</a>
+                        <a class="isl-btn isl-btn-primary isl-btn-sm" href="{{ url_for('course.lista_cursos') }}">Browse courses</a>
+                        {% endif %}
+                    </span>
                 </nav>
-                {% if current_user.is_authenticated %}
-                <a class="cta btn-sm" href="{{ url_for('home.panel') }}">Go to dashboard →</a>
-                {% else %}
-                <a class="cta btn-sm" href="{{ url_for('course.lista_cursos', page=1) }}">Start learning →</a>
-                {% endif %}
             </div>
         </header>
 
-        <main id="top">
-            <section class="hero">
-                <div class="header-glow" aria-hidden="true"></div>
-                <div class="wrap">
-                    <span class="eyebrow rise d1">Intent Solutions Learn</span>
-                    <h1 class="rise d2">Learn to build AI-native software the way we ship it.</h1>
-                    <p class="lede rise d3">
+        <main>
+            <!-- ── Hero ── -->
+            <section class="isl-hero">
+                <div class="isl-hero-glow" aria-hidden="true"></div>
+                <div class="isl-hero-stars" aria-hidden="true"></div>
+                <div class="isl-hero-grain" aria-hidden="true"></div>
+                <div class="isl-wrap">
+                    <div class="isl-eyebrow" aria-hidden="true">
+                        <span class="rule"></span><span class="label">building intelligence · delivering impact</span><span class="rule"></span>
+                    </div>
+                    <h1>Learn to build <span class="isl-hl">AI-native software</span>, the way we ship it.</h1>
+                    <p class="lede">
                         Practitioner training from the team behind open-source developer tooling used by thousands of
                         engineers. <b>No theory for theory's sake</b> — you learn the exact workflows, patterns, and
                         guardrails we use to put real systems into production.
                     </p>
-                    <div class="cta-row rise d4">
-                        <a class="cta" href="#curriculum">Browse the curriculum →</a>
+                    <div class="isl-cta-row">
+                        <a class="isl-btn isl-btn-primary" href="{{ url_for('course.lista_cursos') }}">Browse courses →</a>
                         {% if current_user.is_authenticated %}
-                        <a class="btn-ghost" href="{{ url_for('home.panel') }}">Go to dashboard</a>
+                        <a class="isl-btn isl-btn-secondary" href="{{ url_for('home.panel') }}">Go to dashboard</a>
                         {% else %}
-                        <a class="btn-ghost" href="{{ url_for('user.inicio_sesion') }}">Sign in</a>
+                        <a class="isl-btn isl-btn-secondary" href="{{ url_for('user.inicio_sesion') }}">Sign in</a>
                         {% endif %}
                     </div>
                 </div>
             </section>
 
-            <div class="proof" id="why">
-                <div class="wrap">
-                    <div class="stat"><span class="n">2,500+</span><span class="l">GitHub stars</span></div>
-                    <div class="stat"><span class="n">300+</span><span class="l">Forks</span></div>
-                    <div class="stat"><span class="n">45k+</span><span class="l">npm installs</span></div>
-                    <div class="stat"><span class="n">In prod</span><span class="l">Not a sandbox</span></div>
+            <!-- ── Proof strip (public OSS numbers) ── -->
+            <div class="isl-proof">
+                <div class="isl-wrap">
+                    <div class="isl-stat"><span class="n">2,500+</span><span class="l">GitHub stars</span></div>
+                    <div class="isl-stat"><span class="n">432</span><span class="l">Plugins</span></div>
+                    <div class="isl-stat"><span class="n">2,769</span><span class="l">Skills</span></div>
+                    <div class="isl-stat"><span class="n">53k+</span><span class="l">npm installs</span></div>
                 </div>
             </div>
 
-            <section class="band" id="curriculum">
-                <div class="wrap">
-                    <div class="band-head">
-                        <span class="eyebrow">The curriculum</span>
-                        <h2>From first principles to shipping in production.</h2>
-                        <p>
-                            Every track is hands-on and built from real work — the same tooling and decisions that produced
-                            our open-source platform.
-                        </p>
-                    </div>
-                    <div class="grid">
-                        <article class="card">
-                            <span class="k">TRACK 01</span>
+            <!-- ── What you'll learn ── -->
+            <section class="isl-section" id="curriculum">
+                <div class="isl-wrap">
+                    <div class="isl-eyebrow" aria-hidden="true"><span class="rule"></span><span class="label">What you'll learn</span><span class="rule"></span></div>
+                    <h2 class="isl-sec-title">From first principles to <span class="isl-hl">shipping in production</span></h2>
+                    <p class="isl-sub">Every track is hands-on and built from real work — the same tooling and decisions that produced our open-source platform.</p>
+                    <div class="isl-grid">
+                        <article class="isl-card">
+                            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg></span>
                             <h3>AI-native foundations</h3>
-                            <p>
-                                How to think, prompt, and structure work when an agent is in the loop — the mental model
-                                before the tools.
-                            </p>
-                            <ul>
-                                <li>Agentic workflow design</li>
-                                <li>Context &amp; memory patterns</li>
-                                <li>When not to use AI</li>
-                            </ul>
+                            <p>How to think, prompt, and structure work when an agent is in the loop — the mental model before the tools.</p>
+                            <ul><li>Agentic workflow design</li><li>Context &amp; memory patterns</li><li>When not to use AI</li></ul>
                         </article>
-                        <article class="card">
-                            <span class="k">TRACK 02</span>
+                        <article class="isl-card">
+                            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg></span>
                             <h3>Building &amp; extending</h3>
                             <p>Build and ship real tooling — plugins, skills, and agents — end to end.</p>
-                            <ul>
-                                <li>Authoring skills &amp; plugins</li>
-                                <li>Multi-agent orchestration</li>
-                                <li>Testing what agents write</li>
-                            </ul>
+                            <ul><li>Authoring skills &amp; plugins</li><li>Multi-agent orchestration</li><li>Testing what agents write</li></ul>
                         </article>
-                        <article class="card">
-                            <span class="k">TRACK 03</span>
+                        <article class="isl-card">
+                            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span>
                             <h3>Shipping to production</h3>
-                            <p>
-                                The part tutorials skip: deploys, rollbacks, secrets, and monitoring for systems with AI
-                                inside them.
-                            </p>
-                            <ul>
-                                <li>Deploy &amp; auto-rollback</li>
-                                <li>Secrets &amp; supply chain</li>
-                                <li>Observability for agents</li>
-                            </ul>
+                            <p>The part tutorials skip: deploys, rollbacks, secrets, and monitoring for systems with AI inside them.</p>
+                            <ul><li>Deploy &amp; auto-rollback</li><li>Secrets &amp; supply chain</li><li>Observability for agents</li></ul>
                         </article>
-                        <article class="card">
-                            <span class="k">TRACK 04</span>
+                        <article class="isl-card">
+                            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>
                             <h3>Evaluation &amp; governance</h3>
-                            <p>
-                                Prove it works and keep it honest — evals, guardrails, and the receipts that make AI output
-                                trustworthy.
-                            </p>
-                            <ul>
-                                <li>Building real evals</li>
-                                <li>Guardrails &amp; policy</li>
-                                <li>Audit &amp; provenance</li>
-                            </ul>
+                            <p>Prove it works and keep it honest — evals, guardrails, and the receipts that make AI output trustworthy.</p>
+                            <ul><li>Building real evals</li><li>Guardrails &amp; policy</li><li>Audit &amp; provenance</li></ul>
                         </article>
-                        <article class="card">
-                            <span class="k">TRACK 05</span>
+                        <article class="isl-card">
+                            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
                             <h3>Practice &amp; assessment</h3>
-                            <p>
-                                Scored practice, real projects, and feedback — prove your skills on work that resembles the
-                                job.
-                            </p>
-                            <ul>
-                                <li>Scored practice sets</li>
-                                <li>Project-based review</li>
-                                <li>A portfolio you keep</li>
-                            </ul>
+                            <p>Scored practice, real projects, and feedback — prove your skills on work that resembles the job.</p>
+                            <ul><li>Scored practice sets</li><li>Project-based review</li><li>A portfolio you keep</li></ul>
                         </article>
-                        <article class="card">
-                            <span class="k">TRACK 06</span>
+                        <article class="isl-card">
+                            <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
                             <h3>Community &amp; support</h3>
-                            <p>
-                                Learn alongside other builders, get unblocked fast, and ship together — the part that keeps
-                                you going.
-                            </p>
-                            <ul>
-                                <li>Live working sessions</li>
-                                <li>Peer &amp; mentor review</li>
-                                <li>A room full of builders</li>
-                            </ul>
+                            <p>Learn alongside other builders, get unblocked fast, and ship together — the part that keeps you going.</p>
+                            <ul><li>Live working sessions</li><li>Peer &amp; mentor review</li><li>A room full of builders</li></ul>
                         </article>
                     </div>
                 </div>
             </section>
 
-            <section class="people band" id="teaching">
-                <div class="wrap">
-                    <div class="people-grid">
-                        <div class="band-head">
-                            <span class="eyebrow">Who teaches</span>
-                            <h2>Taught by people who actually ship this.</h2>
-                            <p>
-                                Not a content mill. The curriculum, the platform, and the reviews come from the same small
-                                team that maintains the open-source tooling this training is built on.
-                            </p>
-                        </div>
-                        <div>
-                            <div class="person">
-                                <div class="avatar brand" aria-hidden="true">MX</div>
-                                <div>
-                                    <p class="role">Lead instructor &amp; platform</p>
-                                    <p class="nm">
-                                        Max&nbsp;<span style="color: var(--ink-faint); font-weight: 400">&lt;last name&gt;</span>
-                                    </p>
-                                    <p class="bio">
-                                        Builds and runs the Intent Solutions Learn experience end to end — curriculum,
-                                        question banks, and the platform look &amp; feel.
-                                    </p>
-                                </div>
+            <!-- ── The Team (all 6, real photos — mirrors intentsolutions.io #team) ── -->
+            <section class="isl-section" id="team">
+                <div class="isl-wrap">
+                    <div class="isl-eyebrow" aria-hidden="true"><span class="rule"></span><span class="label">The Team</span><span class="rule"></span></div>
+                    <h2 class="isl-sec-title">the brains behind <span class="isl-hl">Intent Solutions</span></h2>
+                    <p class="isl-sub">Engineers who build, train, and ship.</p>
+                    <div class="isl-team-rows">
+                        {% for row in [team[:3], team[3:]] %}
+                        <div class="isl-team-row">
+                            {% for m in row %}
+                            <div class="isl-team-card">
+                                <span class="isl-team-ring">
+                                    {% if m.photo %}
+                                    <img class="isl-team-photo" src="{{ S }}/team/{{ m.photo }}" alt="{{ m.name }}, {{ m.role }}" width="112" height="112" loading="lazy" />
+                                    {% else %}
+                                    <span class="isl-team-initials" aria-hidden="true">{{ m.name.split()[0][0] }}{{ m.name.split()[-1][0] }}</span>
+                                    {% endif %}
+                                </span>
+                                <p class="isl-team-name">{{ m.name }}</p>
+                                <p class="isl-team-role">{{ m.role }}</p>
                             </div>
-                            <div class="person">
-                                <div class="avatar plain" aria-hidden="true">JL</div>
-                                <div>
-                                    <p class="role">Founder</p>
-                                    <p class="nm">Jeremy Longshore</p>
-                                    <p class="bio">
-                                        Founder of Intent Solutions; maintainer of the open-source developer tooling the
-                                        training is drawn from.
-                                    </p>
-                                </div>
-                            </div>
+                            {% endfor %}
                         </div>
+                        {% endfor %}
                     </div>
                 </div>
             </section>
 
-            <section class="final">
-                <div class="header-glow" aria-hidden="true"></div>
-                <div class="wrap">
+            <!-- ── Closing CTA ── -->
+            <section class="isl-final">
+                <div class="glow" aria-hidden="true"></div>
+                <div class="isl-wrap">
                     <h2>Proof, not promises.</h2>
                     <p>Start with the foundations track. Bring a real project — leave with it shipped.</p>
-                    <div class="cta-row">
+                    <div class="isl-cta-row">
                         {% if current_user.is_authenticated %}
-                        <a class="cta" href="{{ url_for('home.panel') }}">Go to dashboard →</a>
+                        <a class="isl-btn isl-btn-primary" href="{{ url_for('home.panel') }}">Go to dashboard →</a>
                         {% else %}
-                        <a class="cta" href="{{ url_for('course.lista_cursos', page=1) }}">Start learning →</a>
+                        <a class="isl-btn isl-btn-primary" href="{{ url_for('course.lista_cursos') }}">Start learning →</a>
+                        <a class="isl-btn isl-btn-secondary" href="{{ url_for('user.inicio_sesion') }}">Sign in</a>
                         {% endif %}
-                        <a class="btn-ghost" href="#curriculum">See the full curriculum</a>
                     </div>
                 </div>
             </section>
+
+            {% if show_blog_posts %} {{ render_blog_section(latest_blog_posts, 'rgb(9 9 11)') }} {% endif %}
         </main>
 
-        {% if show_blog_posts %} {{ render_blog_section(latest_blog_posts, '#131217') }} {% endif %}
-
-        <footer class="foot">
-            <div class="f-brand">
-                <span class="logo-badge" aria-hidden="true" style="width: 22px; height: 22px; border-radius: 6px">
-                    <svg viewBox="0 0 128 128" fill="none" style="width: 13px; height: 13px">
-                        <path
-                            fill="var(--bg)"
-                            d="M50.4 78.5a75.1 75.1 0 0 0-28.5 6.9l24.2-65.7c.7-2 1.9-3.2 3.4-3.2h29c1.5 0 2.7 1.2 3.4 3.2l24.2 65.7s-11.6-7-28.5-7L67 45.5c-.4-1.7-1.6-2.8-2.9-2.8-1.3 0-2.5 1.1-2.9 2.7L50.4 78.5Zm-1.1 28.2Zm-4.2-20.2c-2 6.6-.6 15.8 4.2 20.2a17.5 17.5 0 0 1 .2-.7 5.5 5.5 0 0 1 5.7-4.5c2.8.1 4.3 1.5 4.7 4.7.2 1.1.2 2.3.2 3.5v.4c0 2.7.7 5.2 2.2 7.4a13 13 0 0 0 5.7 4.9v-.3l-.2-.3c-1.8-5.6-.5-9.5 4.4-12.8l1.5-1a73 73 0 0 0 3.2-2.2 16 16 0 0 0 6.8-11.4c.3-2 .1-4-.6-6l-.8.6-1.6 1a37 37 0 0 1-22.4 2.7c-5-.7-9.7-2-13.2-6.2Z"
-                        />
-                    </svg>
-                </span>
-                Intent&nbsp;Solutions&nbsp;Learn
+        <!-- ── Footer ── -->
+        <footer class="isl-footer">
+            <div class="isl-wrap">
+                <span class="fb"><img src="{{ S }}/logo-mark.png" alt="" width="22" height="22" /> Intent Solutions Learn</span>
+                <span class="fc">building intelligence · delivering impact</span>
+                <span class="fc"><a href="https://intentsolutions.io" target="_blank" rel="noopener">intentsolutions.io</a></span>
             </div>
-            <span class="f-credit">building intelligence · delivering impact</span>
-            <span class="f-credit">© 2026 intentsolutions.io</span>
         </footer>
 
         {{ current_theme.jslibs() }}
