@@ -282,6 +282,113 @@ def routes():
             click.echo(f"{rule.endpoint} -> {rule.rule}")
 
 
+def _get_port():
+    """Return the port from environment variables, defaulting to 8080."""
+    return environ.get("LMS_PORT") or environ.get("PORT") or 8080
+
+
+def _get_workers_threads():
+    """Return (workers, threads) based on environment."""
+    if DESARROLLO:
+        return 1, 1
+    from now_lms.worker_config import get_worker_config_from_env
+
+    return get_worker_config_from_env()
+
+
+def _run_waitress(port, threads):
+    """Start the Waitress WSGI server. Raises ImportError if not installed."""
+    from waitress import serve as waitress_serve
+
+    log.info(f"Starting Waitress WSGI server on port {port} with {threads} threads")
+    waitress_serve(
+        lms_app,
+        host="0.0.0.0",
+        port=port,
+        threads=threads,
+        channel_timeout=120,
+        cleanup_interval=30,
+        _quiet=False,
+    )
+
+
+def _run_flask_dev_server(port):
+    """Spawn a Flask development server via subprocess."""
+    import subprocess
+    import sys
+
+    log.info("Falling back to Flask development server.")
+    cmd_ = [
+        sys.executable,
+        "-m",
+        "flask",
+        "run",
+        "--host=0.0.0.0",
+        f"--port={port}",
+    ]
+    if DESARROLLO:
+        cmd_.append("--debug")
+
+    environ["FLASK_APP"] = "now_lms"
+    try:
+        subprocess.run(cmd_, check=True)
+    except KeyboardInterrupt:
+        log.info("Server stopped by user.")
+    except subprocess.CalledProcessError as e:
+        log.error(f"Failed to start Flask development server: {e}")
+        raise
+
+
+def _run_gunicorn(port, workers, threads):
+    """Start the Gunicorn WSGI server. Raises ImportError if not installed."""
+    from gunicorn.app.base import BaseApplication
+    from now_lms.session_config import reset_connections_after_fork
+
+    class StandaloneApplication(BaseApplication):
+        """Gunicorn application class for NOW LMS."""
+
+        def __init__(self, app, options=None):
+            self.options = options or {}
+            self.application = app
+            super().__init__()
+
+        def load_config(self):
+            for key, value in self.options.items():
+                if key in self.cfg.settings and value is not None:
+                    self.cfg.set(key.lower(), value)
+
+        def load(self):
+            return self.application
+
+    options = {
+        "bind": f"0.0.0.0:{port}",
+        "workers": workers,
+        "threads": threads,
+        "worker_class": "gthread" if threads > 1 else "sync",
+        "preload_app": True,
+        "post_fork": reset_connections_after_fork,
+        "timeout": 120,
+        "graceful_timeout": 30,
+        "keepalive": 5,
+        "accesslog": "-",
+        "errorlog": "-",
+        "loglevel": "info",
+    }
+
+    log.info(f"Starting Gunicorn WSGI server on port {port} with {workers} workers and {threads} threads per worker.")
+
+    StandaloneApplication(lms_app, options).run()
+
+
+def _start_waitress_or_fallback(port, threads):
+    """Try Waitress, fall back to Flask dev server on ImportError."""
+    try:
+        _run_waitress(port, threads)
+    except ImportError:
+        log.error(WAITRESS_INSTALL_MESSAGE)
+        _run_flask_dev_server(port)
+
+
 @lms_app.cli.command()
 @click.option(
     "--wsgi-server",
@@ -292,157 +399,35 @@ def routes():
 def serve(wsgi_server):
     """Serve NOW LMS with the specified WSGI server."""
     import platform
-    import subprocess
-    import sys
 
     from now_lms.session_config import ensure_session_storage
-    from now_lms.worker_config import get_worker_config_from_env
 
-    if environ.get("LMS_PORT"):
-        PORT = environ.get("LMS_PORT")
-    elif environ.get("PORT"):
-        PORT = environ.get("PORT")
-    else:
-        PORT = 8080
+    port = _get_port()
+    workers, threads = _get_workers_threads()
 
-    if DESARROLLO:
-        WORKERS = 1
-        THREADS = 1
-    else:
-        # Get optimal worker and thread configuration
-        WORKERS, THREADS = get_worker_config_from_env()
-
-    # Ensure session storage is initialized and the session table exists
-    # BEFORE the WSGI server starts accepting requests.
     ensure_session_storage(lms_app)
 
     wsgi_server = wsgi_server.lower()
 
-    # Use Waitress as the default WSGI server (works on both Windows and Linux)
     if wsgi_server == "waitress":
-        try:
-            from waitress import serve as waitress_serve
+        _start_waitress_or_fallback(port, threads)
+        return
 
-            log.info(f"Starting Waitress WSGI server on port {PORT} with {THREADS} threads")
-            waitress_serve(
-                lms_app,
-                host="0.0.0.0",
-                port=PORT,
-                threads=THREADS,
-                channel_timeout=120,
-                cleanup_interval=30,
-                _quiet=False,
-            )
+    if wsgi_server == "gunicorn" and platform.system() == "Windows":
+        log.error("Gunicorn is not supported on Windows. Use waitress instead or run on Linux/containers.")
+        log.info("Starting Waitress WSGI server instead.")
+        try:
+            _run_waitress(port, threads)
         except ImportError:
             log.error(WAITRESS_INSTALL_MESSAGE)
-            log.info("Falling back to Flask development server.")
+            raise
+        return
 
-            # Use subprocess to spawn Flask development server to avoid CLI context blocking
-            cmd_ = [
-                sys.executable,
-                "-m",
-                "flask",
-                "run",
-                "--host=0.0.0.0",
-                f"--port={PORT}",
-            ]
-            if DESARROLLO:
-                cmd_.append("--debug")
-
-            environ["FLASK_APP"] = "now_lms"
-            try:
-                subprocess.run(cmd_, check=True)
-            except KeyboardInterrupt:
-                log.info("Server stopped by user.")
-            except subprocess.CalledProcessError as e:
-                log.error(f"Failed to start Flask development server: {e}")
-                raise
-    elif wsgi_server == "gunicorn":
-        # Use Gunicorn (Linux/Unix only)
-        if platform.system() == "Windows":
-            log.error("Gunicorn is not supported on Windows. Use waitress instead or run on Linux/containers.")
-            log.info("Starting Waitress WSGI server instead.")
-            try:
-                from waitress import serve as waitress_serve
-
-                log.info(f"Starting Waitress WSGI server on port {PORT} with {THREADS} threads")
-                waitress_serve(
-                    lms_app,
-                    host="0.0.0.0",
-                    port=PORT,
-                    threads=THREADS,
-                    channel_timeout=120,
-                    cleanup_interval=30,
-                    _quiet=False,
-                )
-            except ImportError:
-                log.error(WAITRESS_INSTALL_MESSAGE)
-                raise
-        else:
-            try:
-                from gunicorn.app.base import BaseApplication
-
-                class StandaloneApplication(BaseApplication):
-                    """Gunicorn application class for NOW LMS."""
-
-                    def __init__(self, app, options=None):
-                        self.options = options or {}
-                        self.application = app
-                        super().__init__()
-
-                    def load_config(self):
-                        for key, value in self.options.items():
-                            if key in self.cfg.settings and value is not None:
-                                self.cfg.set(key.lower(), value)
-
-                    def load(self):
-                        return self.application
-
-                from now_lms.session_config import reset_connections_after_fork
-
-                options = {
-                    "bind": f"0.0.0.0:{PORT}",
-                    "workers": WORKERS,
-                    "threads": THREADS,
-                    "worker_class": "gthread" if THREADS > 1 else "sync",
-                    # Preload the application to ensure that the shared session
-                    # storage and database connections/tables are fully established
-                    # in the master process before worker processes and threads are created.
-                    # This prevents session loss and initialization race conditions across threads.
-                    "preload_app": True,
-                    "post_fork": reset_connections_after_fork,
-                    "timeout": 120,
-                    "graceful_timeout": 30,
-                    "keepalive": 5,
-                    "accesslog": "-",
-                    "errorlog": "-",
-                    "loglevel": "info",
-                }
-
-                log.info(
-                    f"Starting Gunicorn WSGI server on port {PORT} with {WORKERS} workers and {THREADS} threads per worker."
-                )
-
-                StandaloneApplication(lms_app, options).run()
-            except ImportError:
-                log.error("Gunicorn is not installed. Install it with: pip install gunicorn")
-                log.info("Falling back to Waitress WSGI server.")
-                try:
-                    from waitress import serve as waitress_serve
-
-                    log.info(f"Starting Waitress WSGI server on port {PORT} with {THREADS} threads")
-                    waitress_serve(
-                        lms_app,
-                        host="0.0.0.0",
-                        port=PORT,
-                        threads=THREADS,
-                        channel_timeout=120,
-                        cleanup_interval=30,
-                        _quiet=False,
-                    )
-                except ImportError:
-                    log.error(WAITRESS_INSTALL_MESSAGE)
-                    raise
+    try:
+        _run_gunicorn(port, workers, threads)
+    except ImportError:
+        log.error("Gunicorn is not installed. Install it with: pip install gunicorn")
+        _start_waitress_or_fallback(port, threads)
 
 
 @lms_app.cli.group()
@@ -802,6 +787,55 @@ def clear():
             click.echo(f"Error clearing cache: {e}")
 
 
+def _print_redis_stats(cache_backend):
+    """Print Redis cache statistics."""
+    click.echo("Cache Statistics (Redis):")
+    try:
+        if not cache_backend._read_clients:
+            click.echo("  No Redis connection available for statistics.")
+            return
+
+        redis_info = cache_backend._read_clients[0].info()
+        click.echo(f"  Connected clients: {redis_info.get('connected_clients', 'N/A')}")
+        click.echo(f"  Used memory: {redis_info.get('used_memory_human', 'N/A')}")
+        click.echo(f"  Total commands processed: {redis_info.get('total_commands_processed', 'N/A')}")
+        click.echo(f"  Keyspace hits: {redis_info.get('keyspace_hits', 'N/A')}")
+        click.echo(f"  Keyspace misses: {redis_info.get('keyspace_misses', 'N/A')}")
+
+        hits = redis_info.get("keyspace_hits", 0)
+        misses = redis_info.get("keyspace_misses", 0)
+        if hits + misses > 0:
+            hit_ratio = (hits / (hits + misses)) * 100
+            click.echo(f"  Hit ratio: {hit_ratio:.2f}%")
+    except Exception as redis_error:
+        click.echo(f"  Error getting Redis statistics: {redis_error}")
+
+
+_REDIS_KEYS = {"get_hits", "get_misses", "cmd_get", "cmd_set", "bytes", "curr_items"}
+
+
+def _print_memcached_stats(cache_backend):
+    """Print Memcached cache statistics."""
+    click.echo("Cache Statistics (Memcached):")
+    try:
+        if not hasattr(cache_backend._client, "get_stats"):
+            click.echo("  Statistics not supported by this Memcached client.")
+            return
+
+        memcached_stats = cache_backend._client.get_stats()
+        if not memcached_stats:
+            click.echo("  No statistics available from Memcached.")
+            return
+
+        for server, server_stats in memcached_stats:
+            click.echo(f"  Server {server}:")
+            for key, value in server_stats.items():
+                if key in _REDIS_KEYS:
+                    click.echo(f"    {key}: {value}")
+    except Exception as memcached_error:
+        click.echo(f"  Error getting Memcached statistics: {memcached_error}")
+
+
 @cache.command()
 def stats():
     """Show cache statistics (when supported by backend)."""
@@ -813,52 +847,12 @@ def stats():
             return
 
         try:
-            # Try to get cache statistics if the backend supports it
             cache_backend = cache_instance.cache
 
             if hasattr(cache_backend, "_read_clients") and hasattr(cache_backend, "_write_clients"):
-                # Redis backend
-                click.echo("Cache Statistics (Redis):")
-                try:
-                    if cache_backend._read_clients:
-                        client = cache_backend._read_clients[0]
-                        redis_info = client.info()
-                        click.echo(f"  Connected clients: {redis_info.get('connected_clients', 'N/A')}")
-                        click.echo(f"  Used memory: {redis_info.get('used_memory_human', 'N/A')}")
-                        click.echo(f"  Total commands processed: {redis_info.get('total_commands_processed', 'N/A')}")
-                        click.echo(f"  Keyspace hits: {redis_info.get('keyspace_hits', 'N/A')}")
-                        click.echo(f"  Keyspace misses: {redis_info.get('keyspace_misses', 'N/A')}")
-
-                        # Calculate hit ratio
-                        hits = redis_info.get("keyspace_hits", 0)
-                        misses = redis_info.get("keyspace_misses", 0)
-                        if hits + misses > 0:
-                            hit_ratio = (hits / (hits + misses)) * 100
-                            click.echo(f"  Hit ratio: {hit_ratio:.2f}%")
-                    else:
-                        click.echo("  No Redis connection available for statistics.")
-                except Exception as redis_error:
-                    click.echo(f"  Error getting Redis statistics: {redis_error}")
-
+                _print_redis_stats(cache_backend)
             elif hasattr(cache_backend, "_client"):
-                # Memcached backend
-                click.echo("Cache Statistics (Memcached):")
-                try:
-                    if hasattr(cache_backend._client, "get_stats"):
-                        memcached_stats = cache_backend._client.get_stats()
-                        if memcached_stats:
-                            for server, server_stats in memcached_stats:
-                                click.echo(f"  Server {server}:")
-                                for key, value in server_stats.items():
-                                    if key in ["get_hits", "get_misses", "cmd_get", "cmd_set", "bytes", "curr_items"]:
-                                        click.echo(f"    {key}: {value}")
-                        else:
-                            click.echo("  No statistics available from Memcached.")
-                    else:
-                        click.echo("  Statistics not supported by this Memcached client.")
-                except Exception as memcached_error:
-                    click.echo(f"  Error getting Memcached statistics: {memcached_error}")
-
+                _print_memcached_stats(cache_backend)
             else:
                 click.echo("Statistics not available for this cache backend.")
                 click.echo(f"Backend type: {type(cache_backend)}")

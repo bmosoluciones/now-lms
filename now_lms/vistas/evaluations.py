@@ -161,6 +161,60 @@ def calculate_score(attempt) -> float:
     return (correct_answers / total_questions) * 100
 
 
+def _resolve_option_ids(question, selected_values: list[str]) -> list[str]:
+    """Resolve form values to option IDs based on question type."""
+    option_ids: list[str] = []
+    for value in selected_values:
+        if question.type != "boolean":
+            option_ids.append(value)
+            continue
+        option = (
+            database.session.execute(
+                database.select(QuestionOption).filter_by(question_id=question.id, text=value)
+            )
+            .scalars()
+            .first()
+        )
+        if option:
+            option_ids.append(option.id)
+    return option_ids
+
+
+def _save_question_answers(attempt, evaluation_obj) -> None:
+    """Process and save answers for all questions in an evaluation attempt."""
+    for question in evaluation_obj.questions:
+        answer_key = f"question_{question.id}"
+        if answer_key not in request.form:
+            continue
+        selected_values = request.form.getlist(answer_key)
+        selected_option_ids = _resolve_option_ids(question, selected_values)
+        answer = Answer(
+            attempt_id=attempt.id,
+            question_id=question.id,
+            selected_option_ids=json.dumps(selected_option_ids),
+        )
+        database.session.add(answer)
+
+
+def _try_issue_certificate(section) -> None:
+    """Attempt to issue a certificate if the user is eligible."""
+    if not section:
+        return
+    from now_lms.vistas.courses import _emitir_certificado
+    from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
+
+    can_receive, _ = can_user_receive_certificate(section.curso, current_user.usuario)
+    if not can_receive:
+        return
+    curso = (
+        database.session.execute(database.select(Curso).filter(Curso.codigo == section.curso))
+        .scalars()
+        .first()
+    )
+    if curso and curso.certificado and curso.plantilla_certificado:
+        _emitir_certificado(section.curso, current_user.usuario, curso.plantilla_certificado)
+
+
 @evaluation.route("/evaluation/<evaluation_id>/take", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("student")
@@ -170,77 +224,33 @@ def take_evaluation(evaluation_id: int) -> str | Response:
     if not eval_obj:
         abort(404)
 
-    # Check if user can access this evaluation
     if not can_user_access_evaluation(eval_obj, current_user):
         flash("No tiene acceso a esta evaluación.", "warning")
         abort(403)
 
-    # Check if user can attempt this evaluation
     if not can_user_attempt_evaluation(eval_obj, current_user):
         flash("No puede realizar más intentos en esta evaluación.", "warning")
         section = database.session.get(CursoSeccion, eval_obj.section_id)
         return redirect(url_for(ROUTE_COURSE_TOMAR_CURSO, course_code=section.curso))
 
     if request.method == "POST":
-        # Create new attempt
-        attempt = EvaluationAttempt(evaluation_id=evaluation_id, user_id=current_user.usuario, started_at=datetime.now())
+        attempt = EvaluationAttempt(
+            evaluation_id=evaluation_id, user_id=current_user.usuario, started_at=datetime.now()
+        )
         database.session.add(attempt)
-        database.session.flush()  # Get the attempt ID
+        database.session.flush()
 
-        # Save answers
-        for question in eval_obj.questions:
-            answer_key = f"question_{question.id}"
-            if answer_key in request.form:
-                selected_values = request.form.getlist(answer_key)
+        _save_question_answers(attempt, eval_obj)
 
-                # Find the corresponding option IDs
-                selected_option_ids = []
-                for value in selected_values:
-                    if question.type == "boolean":
-                        # For boolean questions, value is "true" or "false"
-                        option = (
-                            database.session.execute(
-                                database.select(QuestionOption).filter_by(question_id=question.id, text=value)
-                            )
-                            .scalars()
-                            .first()
-                        )
-                        if option:
-                            selected_option_ids.append(option.id)
-                    else:
-                        # For multiple choice, value is the option ID
-                        selected_option_ids.append(value)
-
-                answer = Answer(
-                    attempt_id=attempt.id, question_id=question.id, selected_option_ids=json.dumps(selected_option_ids)
-                )
-                database.session.add(answer)
-
-        # Calculate score and determine if passed
         attempt.submitted_at = datetime.now()
         attempt.score = calculate_score(attempt)
         attempt.passed = attempt.score >= eval_obj.passing_score
 
         database.session.commit()
 
-        # Check if user can receive certificate after passing evaluation
         if attempt.passed:
             section = database.session.get(CursoSeccion, eval_obj.section_id)
-            if section:
-                from now_lms.vistas.courses import _emitir_certificado
-                from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
-
-                can_receive, _ = can_user_receive_certificate(section.curso, current_user.usuario)
-                if can_receive:
-                    # Get course to check if certificates are enabled
-                    curso = (
-                        database.session.execute(database.select(Curso).filter(Curso.codigo == section.curso))
-                        .scalars()
-                        .first()
-                    )
-
-                    if curso and curso.certificado and curso.plantilla_certificado:
-                        _emitir_certificado(section.curso, current_user.usuario, curso.plantilla_certificado)
+            _try_issue_certificate(section)
 
         flash(EVALUATION_SUBMITTED, "success")
         return redirect(url_for("evaluation.evaluation_result", attempt_id=attempt.id))
