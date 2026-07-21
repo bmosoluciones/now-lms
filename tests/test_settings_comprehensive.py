@@ -132,12 +132,12 @@ def test_routes_theming(client, db_session, settings_setup):
 
     response_post = client.post(
         "/setting/theming",
-        data={"style": "classic"},
+        data={"style": "cambridge"},
         follow_redirects=True,
     )
     assert response_post.status_code == 200
     db_session.refresh(settings_setup["style"])
-    assert settings_setup["style"].theme == "classic"
+    assert settings_setup["style"].theme == "cambridge"
 
 def test_routes_configuracion_general(client, db_session, settings_setup):
     """Prueba la actualización de la configuración general."""
