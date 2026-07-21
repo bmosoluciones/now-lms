@@ -235,6 +235,80 @@ def admin_blog_index() -> str:
     )
 
 
+def _handle_cover_image_upload(form: BlogPostForm, post: BlogPost) -> None:
+    """Handle cover image upload for a blog post."""
+    if not form.cover_image.data:
+        return
+
+    from werkzeug.utils import secure_filename
+
+    cover_image = form.cover_image.data
+    filename = secure_filename(cover_image.filename)
+    cover_ext = path.splitext(filename)[1] if filename else ""
+
+    try:
+        log.trace("Saving blog post cover image")
+        picture_file = images.save(cover_image, folder=f"blog/{post.id}", name=f"cover{cover_ext}")
+        if picture_file:
+            post.cover_image = True
+            post.cover_image_ext = cover_ext
+            log.info("Blog post cover image saved")
+        else:
+            log.warning("Blog post cover image not saved")
+    except UploadNotAllowed:
+        log.warning("Could not save blog post cover image - file type not allowed")
+        flash("Tipo de archivo no permitido para la imagen de portada.", "warning")
+
+
+def _process_post_tags(form: BlogPostForm, post: BlogPost, *, clear_existing: bool = False) -> None:
+    """Process and attach tags to a blog post from form data."""
+    if not form.tags.data:
+        return
+
+    if clear_existing:
+        post.tags.clear()
+
+    tag_names = [name.strip() for name in form.tags.data.split(",") if name.strip()]
+    for tag_name in tag_names:
+        tag_slug = create_slug(tag_name)
+        tag = database.session.execute(select(BlogTag).filter(BlogTag.slug == tag_slug)).scalars().first()
+        if not tag and current_user.tipo == "admin":
+            tag = BlogTag(name=tag_name, slug=tag_slug)
+            database.session.add(tag)
+            database.session.flush()
+
+        if tag and tag not in post.tags:
+            post.tags.append(tag)
+
+
+def _handle_status_change(post: BlogPost, form: BlogPostForm) -> None:
+    """Handle status change for a blog post during edit."""
+    can_change = current_user.tipo == "admin" or (form.status.data == "pending" and post.status == "draft")
+    if not can_change:
+        return
+
+    old_status = post.status
+    post.status = form.status.data
+
+    if form.status.data == "published" and old_status != "published":
+        post.published_at = datetime.now(timezone.utc)
+
+
+def _invalidate_post_caches(slug: str, old_slug: str | None = None) -> None:
+    """Invalidate caches related to a blog post."""
+    if old_slug and old_slug != slug:
+        cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=old_slug))
+    cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=slug))
+    cache.delete("view/" + url_for(ROUTE_BLOG_INDEX))
+
+
+def _redirect_after_post_save() -> Response:
+    """Redirect to the appropriate page after saving a blog post."""
+    if current_user.tipo == "admin":
+        return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
+    return redirect(url_for("blog.instructor_blog_index"))
+
+
 @blog.route("/admin/blog/posts/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -242,20 +316,16 @@ def admin_create_post() -> str | Response:
     """Create a new blog post."""
     form = BlogPostForm()
 
-    # Set initial status based on user role
     if current_user.tipo == "admin":
         form.status.data = "published"
     else:
         form.status.data = "pending"
-        # Instructors can only create drafts or pending posts
         form.status.choices = [("draft", "Borrador"), ("pending", "Pendiente")]
 
     if form.validate_on_submit() or request.method == "POST":
-        slug = ensure_unique_slug(form.title.data)
-
         post = BlogPost(
             title=form.title.data,
-            slug=slug,
+            slug=ensure_unique_slug(form.title.data),
             content=form.content.data,
             author_id=current_user.usuario,
             status=form.status.data,
@@ -268,56 +338,13 @@ def admin_create_post() -> str | Response:
         database.session.add(post)
         database.session.flush()
 
-        # Handle cover image upload
-        if form.cover_image.data:
-            cover_image = form.cover_image.data
-            # Get file extension
-            from werkzeug.utils import secure_filename
-
-            filename = secure_filename(cover_image.filename)
-            cover_ext = path.splitext(filename)[1] if filename else ""
-
-            try:
-                log.trace("Saving blog post cover image")
-                # Save to blog/{post_id}/ directory
-                picture_file = images.save(cover_image, folder=f"blog/{post.id}", name=f"cover{cover_ext}")
-                if picture_file:
-                    post.cover_image = True
-                    post.cover_image_ext = cover_ext
-                    log.info("Blog post cover image saved")
-                else:
-                    log.warning("Blog post cover image not saved")
-            except UploadNotAllowed:
-                log.warning("Could not save blog post cover image - file type not allowed")
-                flash("Tipo de archivo no permitido para la imagen de portada.", "warning")
-
-        # Handle tags
-        if form.tags.data:
-            tag_names = [name.strip() for name in form.tags.data.split(",") if name.strip()]
-            for tag_name in tag_names:
-                tag_slug = create_slug(tag_name)
-                tag = database.session.execute(select(BlogTag).filter(BlogTag.slug == tag_slug)).scalars().first()
-                if not tag:
-                    # Only admins can create new tags
-                    if current_user.tipo == "admin":
-                        tag = BlogTag(name=tag_name, slug=tag_slug)
-                        database.session.add(tag)
-                        database.session.flush()
-
-                if tag and tag not in post.tags:
-                    post.tags.append(tag)
+        _handle_cover_image_upload(form, post)
+        _process_post_tags(form, post)
 
         database.session.commit()
         log.info(f"Blog post created: {post.title} by {current_user.usuario}")
-
-        # Invalidate blog index cache when a new post is created
-        cache.delete("view/" + url_for(ROUTE_BLOG_INDEX))
-
         flash("Entrada de blog creada exitosamente.", "success")
-
-        if current_user.tipo == "admin":
-            return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
-        return redirect(url_for("blog.instructor_blog_index"))
+        return _redirect_after_post_save()
 
     return render_template("blog/post_form.html", form=form, title="Nueva Entrada", edit=False)
 
@@ -333,22 +360,18 @@ def admin_edit_post(post_id: int) -> str | Response:
 
     title = "Editar entrada - " + post.slug[:10]
 
-    # Check permissions
     if current_user.tipo != "admin" and post.author_id != current_user.usuario:
         abort(403)
 
     form = BlogPostForm(obj=post)
 
-    # Set form choices based on user role
     if current_user.tipo != "admin":
         form.status.choices = [("draft", "Borrador"), ("pending", "Pendiente")]
 
-    # Pre-populate tags
     tag_names = [tag.name for tag in post.tags]
     form.tags.data = ", ".join(tag_names)
 
     if form.validate_on_submit() or request.method == "POST":
-        # Save old slug to invalidate its cache if it changes
         old_slug = post.slug
 
         post.title = form.title.data
@@ -356,69 +379,16 @@ def admin_edit_post(post_id: int) -> str | Response:
         post.content = form.content.data
         post.allow_comments = form.allow_comments.data
 
-        # Handle cover image upload
-        if form.cover_image.data:
-            cover_image = form.cover_image.data
-            from werkzeug.utils import secure_filename
-
-            filename = secure_filename(cover_image.filename)
-            cover_ext = path.splitext(filename)[1] if filename else ""
-
-            try:
-                log.trace("Saving blog post cover image")
-                picture_file = images.save(cover_image, folder=f"blog/{post.id}", name=f"cover{cover_ext}")
-                if picture_file:
-                    post.cover_image = True
-                    post.cover_image_ext = cover_ext
-                    log.info("Blog post cover image updated")
-                else:
-                    log.warning("Blog post cover image not saved")
-            except UploadNotAllowed:
-                log.warning("Could not update blog post cover image")
-                flash("Tipo de archivo no permitido para la imagen de portada.", "warning")
-
-        # Only allow status change if admin or if changing to pending
-        if current_user.tipo == "admin" or (form.status.data == "pending" and post.status == "draft"):
-            old_status = post.status
-            post.status = form.status.data
-
-            # Set published_at if publishing for first time
-            if form.status.data == "published" and old_status != "published":
-                post.published_at = datetime.now(timezone.utc)
-
-        # Clear existing tags
-        post.tags.clear()
-
-        # Handle tags
-        if form.tags.data:
-            tag_names = [name.strip() for name in form.tags.data.split(",") if name.strip()]
-            for tag_name in tag_names:
-                tag_slug = create_slug(tag_name)
-                tag = database.session.execute(select(BlogTag).filter(BlogTag.slug == tag_slug)).scalars().first()
-                if not tag and current_user.tipo == "admin":
-                    tag = BlogTag(name=tag_name, slug=tag_slug)
-                    database.session.add(tag)
-                    database.session.flush()
-
-                if tag:
-                    post.tags.append(tag)
+        _handle_cover_image_upload(form, post)
+        _handle_status_change(post, form)
+        _process_post_tags(form, post, clear_existing=True)
 
         database.session.commit()
         log.info(f"Blog post updated: {post.title} by {current_user.usuario}")
 
-        # Invalidate cache for the blog post (both old and new slugs if changed)
-        if old_slug != post.slug:
-            cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=old_slug))
-        cache.delete("view/" + url_for(ROUTE_BLOG_POST, slug=post.slug))
-
-        # Invalidate blog index cache when a post is edited
-        cache.delete("view/" + url_for(ROUTE_BLOG_INDEX))
-
+        _invalidate_post_caches(post.slug, old_slug)
         flash("Entrada de blog actualizada exitosamente.", "success")
-
-        if current_user.tipo == "admin":
-            return redirect(url_for(ROUTE_BLOG_ADMIN_INDEX))
-        return redirect(url_for("blog.instructor_blog_index"))
+        return _redirect_after_post_save()
 
     return render_template("blog/post_form.html", form=form, title=title, post=post, edit=True)
 

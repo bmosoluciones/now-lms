@@ -42,6 +42,68 @@ TEMPLATE_STANDALONE_REPORT = "learning/mensajes/standalone_report.html"
 msg = Blueprint("msg", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
+def _get_course_codes_for_user(user) -> list[str]:
+    """Get list of course codes the user has access to."""
+    if user.tipo == "student":
+        student_courses = (
+            database.session.execute(select(EstudianteCurso).filter_by(usuario=user.usuario, vigente=True))
+            .scalars()
+            .all()
+        )
+        return [sc.curso for sc in student_courses]
+
+    if user.tipo == "instructor":
+        return [
+            dc.curso
+            for dc in database.session.execute(
+                select(DocenteCurso).filter_by(usuario=user.usuario, vigente=True)
+            )
+            .scalars()
+            .all()
+        ]
+
+    if user.tipo == "moderator":
+        return [
+            mc.curso
+            for mc in database.session.execute(
+                select(ModeradorCurso).filter_by(usuario=user.usuario, vigente=True)
+            )
+            .scalars()
+            .all()
+        ]
+
+    return [c.codigo for c in database.session.execute(select(Curso)).scalars().all()]
+
+
+def _get_accessible_messages(course_codes: list[str]) -> list[dict]:
+    """Get formatted messages from threads in the given courses."""
+    if not course_codes:
+        return []
+
+    threads = (
+        database.session.execute(select(MessageThread).filter(MessageThread.course_id.in_(course_codes)))
+        .scalars()
+        .all()
+    )
+
+    accessible_messages = []
+    for thread in threads:
+        messages = database.session.execute(select(Message).filter_by(thread_id=thread.id)).scalars().all()
+        for message in messages:
+            content = message.content[:100] + "..." if len(message.content) > 100 else message.content
+            accessible_messages.append(
+                {
+                    "id": message.id,
+                    "content": content,
+                    "sender": f"{message.sender.nombre} {message.sender.apellido}",
+                    "thread_title": f"Curso: {thread.course.nombre}",
+                    "timestamp": message.timestamp.strftime("%d/%m/%Y %H:%M"),
+                }
+            )
+
+    return accessible_messages
+
+
 def check_course_access(course_code: str, user) -> bool:
     """Check if user has access to course messaging."""
     if user.tipo == "admin":
@@ -405,117 +467,40 @@ def standalone_report_message() -> str | Response:
     """Standalone page for reporting messages."""
     from flask import request
 
-    # Get messages accessible to the current user
-    accessible_messages = []
+    course_codes = _get_course_codes_for_user(current_user)
+    accessible_messages = _get_accessible_messages(course_codes)
 
-    if current_user.tipo == "student":
-        # Students can see messages in threads from courses they're enrolled in
-        student_courses = (
-            database.session.execute(select(EstudianteCurso).filter_by(usuario=current_user.usuario, vigente=True))
-            .scalars()
-            .all()
-        )
-        course_codes = [sc.curso for sc in student_courses]
+    if request.method == "GET":
+        return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
 
-        if course_codes:
-            threads = (
-                database.session.execute(select(MessageThread).filter(MessageThread.course_id.in_(course_codes)))
-                .scalars()
-                .all()
-            )
+    message_id = request.form.get("message_id")
+    reason = request.form.get("reason")
 
-            for thread in threads:
-                messages = database.session.execute(select(Message).filter_by(thread_id=thread.id)).scalars().all()
-                for message in messages:
-                    accessible_messages.append(
-                        {
-                            "id": message.id,
-                            "content": message.content[:100] + "..." if len(message.content) > 100 else message.content,
-                            "sender": f"{message.sender.nombre} {message.sender.apellido}",
-                            "thread_title": f"Curso: {thread.course.nombre}",
-                            "timestamp": message.timestamp.strftime("%d/%m/%Y %H:%M"),
-                        }
-                    )
-    else:
-        # For instructors, moderators, and admins
-        match current_user.tipo:
-            case "instructor":
-                course_codes = [
-                    dc.curso
-                    for dc in database.session.execute(
-                        select(DocenteCurso).filter_by(usuario=current_user.usuario, vigente=True)
-                    )
-                    .scalars()
-                    .all()
-                ]
-            case "moderator":
-                course_codes = [
-                    mc.curso
-                    for mc in database.session.execute(
-                        select(ModeradorCurso).filter_by(usuario=current_user.usuario, vigente=True)
-                    )
-                    .scalars()
-                    .all()
-                ]
-            case _:  # admin
-                course_codes = [c.codigo for c in database.session.execute(select(Curso)).scalars().all()]
+    if not message_id or not reason:
+        flash("Debe seleccionar un mensaje y proporcionar un motivo.", "error")
+        return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
 
-        if course_codes:
-            threads = (
-                database.session.execute(select(MessageThread).filter(MessageThread.course_id.in_(course_codes)))
-                .scalars()
-                .all()
-            )
+    message = database.session.execute(select(Message).filter_by(id=message_id)).scalars().first()
+    if not message:
+        flash("Mensaje no encontrado.", "error")
+        return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
 
-            for thread in threads:
-                messages = database.session.execute(select(Message).filter_by(thread_id=thread.id)).scalars().all()
-                for message in messages:
-                    accessible_messages.append(
-                        {
-                            "id": message.id,
-                            "content": message.content[:100] + "..." if len(message.content) > 100 else message.content,
-                            "sender": f"{message.sender.nombre} {message.sender.apellido}",
-                            "thread_title": f"Curso: {thread.course.nombre}",
-                            "timestamp": message.timestamp.strftime("%d/%m/%Y %H:%M"),
-                        }
-                    )
+    thread = database.session.execute(select(MessageThread).filter_by(id=message.thread_id)).scalars().first()
+    if not thread:
+        flash("Hilo de conversación no encontrado.", "error")
+        return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
 
-    if request.method == "POST":
-        message_id = request.form.get("message_id")
-        reason = request.form.get("reason")
+    has_access = (
+        check_course_access(thread.course_id, current_user)
+        if current_user.tipo == "student"
+        else check_thread_access(thread, current_user)
+    )
+    if not has_access:
+        return abort(403)
 
-        if not message_id or not reason:
-            flash("Debe seleccionar un mensaje y proporcionar un motivo.", "error")
-            return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
+    message.is_reported = True
+    message.reported_reason = reason
+    database.session.commit()
 
-        # Find the message
-        message_result = database.session.execute(select(Message).filter_by(id=message_id)).scalars().first()
-        if not message_result:
-            flash("Mensaje no encontrado.", "error")
-            return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
-        message = message_result
-
-        # Verify user has access to this message
-        thread_result = database.session.execute(select(MessageThread).filter_by(id=message.thread_id)).scalars().first()
-        if not thread_result:
-            flash("Hilo de conversación no encontrado.", "error")
-            return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
-        thread = thread_result
-
-        # Check access permissions
-        if current_user.tipo == "student":
-            if not check_course_access(thread.course_id, current_user):
-                return abort(403)
-        else:
-            if not check_thread_access(thread, current_user):
-                return abort(403)
-
-        # Report the message
-        message.is_reported = True
-        message.reported_reason = reason
-        database.session.commit()
-
-        flash("Mensaje reportado correctamente. El administrador será notificado.", "success")
-        return redirect(url_for("home.panel"))
-
-    return render_template(TEMPLATE_STANDALONE_REPORT, messages=accessible_messages)
+    flash("Mensaje reportado correctamente. El administrador será notificado.", "success")
+    return redirect(url_for("home.panel"))
