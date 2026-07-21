@@ -550,129 +550,149 @@ def _emitir_certificado_programa(codigo_programa: str, usuario: str, plantilla: 
 # ---------------------------------------------------------------------------------------
 
 
+def _verify_program_and_admin(codigo: str) -> Programa:
+    """Verify program exists and current user is admin. Returns Programa or aborts."""
+    programa = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalar_one_or_none()
+    if not programa:
+        abort(404)
+    if current_user.tipo != "admin":
+        abort(403)
+    return programa
+
+
+def _verify_student_and_enrollment(student_username: str) -> dict | None:
+    """Verify student exists and is not already enrolled in the program. Returns None if ok, else render_template call."""
+    usuario_existe = database.session.execute(
+        database.select(Usuario).filter_by(usuario=student_username)
+    ).scalar_one_or_none()
+    if not usuario_existe:
+        return dict(msg=f"El usuario '{student_username}' no existe en el sistema.", cat="error")
+    return None
+
+
+def _get_or_create_course_enrollment(course_code, student_username, bypass_payment, notes, programa):
+    """Enroll a student into a single course of the program if not already enrolled. Returns course_code if enrolled."""
+    existing_course_enrollment = database.session.execute(
+        database.select(EstudianteCurso).filter_by(curso=course_code, usuario=student_username, vigente=True)
+    ).scalar_one_or_none()
+
+    if existing_course_enrollment:
+        return None
+
+    curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
+    if not curso:
+        return None
+
+    pago = Pago()
+    pago.usuario = student_username
+    pago.curso = course_code
+    pago.estado = "completed"
+    pago.metodo = "admin_program_enrollment"
+    pago.monto = 0 if bypass_payment else curso.precio
+    pago.descripcion = f"Inscripción administrativa al programa '{programa.nombre}' por {current_user.usuario}"
+    if notes:
+        pago.descripcion += f" - Notas: {notes}"
+    pago.audit = not bypass_payment and curso.pagado
+    pago.creado = datetime.now(timezone.utc).date()
+    pago.creado_por = current_user.usuario
+    database.session.add(pago)
+    database.session.flush()
+
+    course_enrollment = EstudianteCurso(
+        curso=course_code,
+        usuario=student_username,
+        vigente=True,
+        pago=pago.id,
+        creado=datetime.now(timezone.utc).date(),
+        creado_por=current_user.usuario,
+    )
+    database.session.add(course_enrollment)
+
+    return course_code
+
+
+def _post_enrollment_processing(student_username, enrolled_courses, programa):
+    """Create progress indices and calendar events for enrolled courses."""
+    from now_lms.calendar_utils import create_events_for_student_enrollment
+    from now_lms.vistas.courses import _crear_indice_avance_curso
+
+    for course_code in enrolled_courses:
+        _crear_indice_avance_curso(course_code)
+        create_events_for_student_enrollment(student_username, course_code)
+
+    message = f"Estudiante '{student_username}' inscrito exitosamente en el programa '{programa.nombre}'"
+    if enrolled_courses:
+        message += f" y en {len(enrolled_courses)} curso(s)."
+    else:
+        message += ". El estudiante ya estaba inscrito en todos los cursos del programa."
+
+    return message
+
+
 @program.route("/program/<codigo>/admin/enroll", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
 def admin_program_enrollment(codigo: str) -> str | Response:
     """Administrative enrollment of students to a program and all its courses."""
-    from now_lms.calendar_utils import create_events_for_student_enrollment
-
-    # Verify program exists
-    programa = database.session.execute(database.select(Programa).filter(Programa.codigo == codigo)).scalar_one_or_none()
-    if not programa:
-        abort(404)
-
-    # Only admins can perform administrative enrollment for programs
-    # (since programs might span multiple instructors)
-    if current_user.tipo != "admin":
-        abort(403)
+    programa = _verify_program_and_admin(codigo)
 
     form = AdminProgramEnrollmentForm()
 
-    if form.validate_on_submit():
-        student_username = form.student_username.data.strip()
-        bypass_payment = form.bypass_payment.data
-        notes = form.notes.data.strip() if form.notes.data else ""
+    if not form.validate_on_submit():
+        return render_template(ADMIN_PROGRAM_ENROLL_TEMPLATE, programa=programa, form=form)
 
-        # Verify student exists
-        usuario_existe = database.session.execute(
-            database.select(Usuario).filter_by(usuario=student_username)
-        ).scalar_one_or_none()
+    student_username = form.student_username.data.strip()
+    bypass_payment = form.bypass_payment.data
+    notes = form.notes.data.strip() if form.notes.data else ""
 
-        if not usuario_existe:
-            flash(f"El usuario '{student_username}' no existe en el sistema.", "error")
-            return render_template(ADMIN_PROGRAM_ENROLL_TEMPLATE, programa=programa, form=form)
+    # Verify student
+    err = _verify_student_and_enrollment(student_username)
+    if err:
+        flash(err["msg"], err["cat"])
+        return render_template(ADMIN_PROGRAM_ENROLL_TEMPLATE, programa=programa, form=form)
 
-        # Check if student is already enrolled in program
-        existing_enrollment = database.session.execute(
-            database.select(ProgramaEstudiante).filter_by(programa=programa.id, usuario=student_username)
-        ).scalar_one_or_none()
+    # Check if student is already enrolled in program
+    existing_enrollment = database.session.execute(
+        database.select(ProgramaEstudiante).filter_by(programa=programa.id, usuario=student_username)
+    ).scalar_one_or_none()
+    if existing_enrollment:
+        flash(f"El estudiante '{student_username}' ya está inscrito en este programa.", "warning")
+        return render_template(ADMIN_PROGRAM_ENROLL_TEMPLATE, programa=programa, form=form)
 
-        if existing_enrollment:
-            flash(f"El estudiante '{student_username}' ya está inscrito en este programa.", "warning")
-            return render_template(ADMIN_PROGRAM_ENROLL_TEMPLATE, programa=programa, form=form)
+    try:
+        # Get all courses in the program
+        program_courses = database.session.execute(
+            database.select(ProgramaCurso).filter_by(programa=programa.id)
+        ).scalars().all()
 
-        try:
-            # Get all courses in the program by querying ProgramaCurso
-            program_courses = (
-                database.session.execute(database.select(ProgramaCurso).filter_by(programa=programa.id)).scalars().all()
+        # Enroll student in program
+        program_enrollment = ProgramaEstudiante(
+            usuario=student_username,
+            programa=programa.id,
+            creado=datetime.now(timezone.utc).date(),
+            creado_por=current_user.usuario,
+        )
+        database.session.add(program_enrollment)
+
+        # Enroll student in all courses of the program
+        enrolled_courses = [
+            cid
+            for cid in (
+                _get_or_create_course_enrollment(c.curso, student_username, bypass_payment, notes, programa)
+                for c in program_courses
             )
+            if cid is not None
+        ]
 
-            # Enroll student in program
-            program_enrollment = ProgramaEstudiante(
-                usuario=student_username,
-                programa=programa.id,
-                creado=datetime.now(timezone.utc).date(),
-                creado_por=current_user.usuario,
-            )
-            database.session.add(program_enrollment)
+        database.session.commit()
 
-            # Enroll student in all courses of the program
-            enrolled_courses = []
-            for course_data in program_courses:
-                course_code = course_data.curso  # Assuming course_data has a curso attribute
+        message = _post_enrollment_processing(student_username, enrolled_courses, programa)
+        flash(message, "success")
+        return redirect(url_for("program.programa_cursos", codigo=codigo))
 
-                # Check if already enrolled in this course
-                existing_course_enrollment = database.session.execute(
-                    database.select(EstudianteCurso).filter_by(curso=course_code, usuario=student_username, vigente=True)
-                ).scalar_one_or_none()
-
-                if not existing_course_enrollment:
-                    # Get course details
-                    curso = database.session.execute(database.select(Curso).filter_by(codigo=course_code)).scalar_one_or_none()
-
-                    if curso:
-                        # Create payment record for administrative enrollment
-                        pago = Pago()
-                        pago.usuario = student_username
-                        pago.curso = course_code
-                        pago.estado = "completed"
-                        pago.metodo = "admin_program_enrollment"
-                        pago.monto = 0 if bypass_payment else curso.precio
-                        pago.descripcion = (
-                            f"Inscripción administrativa al programa '{programa.nombre}' por {current_user.usuario}"
-                        )
-                        if notes:
-                            pago.descripcion += f" - Notas: {notes}"
-                        pago.audit = not bypass_payment and curso.pagado
-                        pago.creado = datetime.now(timezone.utc).date()
-                        pago.creado_por = current_user.usuario
-                        database.session.add(pago)
-                        database.session.flush()
-
-                        # Create course enrollment record
-                        course_enrollment = EstudianteCurso(
-                            curso=course_code,
-                            usuario=student_username,
-                            vigente=True,
-                            pago=pago.id,
-                            creado=datetime.now(timezone.utc).date(),
-                            creado_por=current_user.usuario,
-                        )
-                        database.session.add(course_enrollment)
-                        enrolled_courses.append(course_code)
-
-            database.session.commit()
-
-            # Create course progress indices and calendar events for all enrolled courses
-            for course_code in enrolled_courses:
-                from now_lms.vistas.courses import _crear_indice_avance_curso
-
-                _crear_indice_avance_curso(course_code)
-                create_events_for_student_enrollment(student_username, course_code)
-
-            message = f"Estudiante '{student_username}' inscrito exitosamente en el programa '{programa.nombre}'"
-            if enrolled_courses:
-                message += f" y en {len(enrolled_courses)} curso(s)."
-            else:
-                message += ". El estudiante ya estaba inscrito en todos los cursos del programa."
-
-            flash(message, "success")
-            return redirect(url_for("program.programa_cursos", codigo=codigo))
-
-        except Exception as e:
-            database.session.rollback()
-            flash(f"Error al inscribir al estudiante en el programa: {str(e)}", "error")
+    except Exception:
+        database.session.rollback()
+        flash("Error al inscribir al estudiante en el programa.", "error")
 
     return render_template(ADMIN_PROGRAM_ENROLL_TEMPLATE, programa=programa, form=form)
 
