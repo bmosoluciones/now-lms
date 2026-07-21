@@ -54,6 +54,49 @@ def _save_theme_asset(config: Style, field_name: str, filename: str, config_attr
         log.warning("An error occurred while updating the website %s.", field_name)
 
 
+def _configuration_form(config: Configuracion) -> ConfigForm:
+    """Build the general settings form from persisted configuration."""
+    values = {field: getattr(config, field) for field in (
+        "titulo", "descripcion", "moneda", "lang", "enable_programs", "enable_masterclass", "enable_resources",
+        "enable_blog", "enable_contact", "show_latest_blog_posts_on_home", "enable_file_uploads", "max_file_size",
+        "enable_html_preformatted_descriptions", "enable_footer", "verify_user_by_email", "allow_unverified_email_login",
+        "titulo_html", "hero", "enable_feature_section", "custom_feature_section", "custom_text1", "custom_text2",
+        "custom_text3", "custom_text4", "eslogan", "social_facebook", "social_twitter", "social_linkedin",
+        "social_youtube", "social_instagram", "social_github", "contact_address", "contact_email", "contact_phone",
+        "contact_mobile", "contact_whatsapp",
+    )}
+    values["timezone"] = config.time_zone
+    return ConfigForm(**values)
+
+
+def _update_configuration(config: Configuracion, form: ConfigForm) -> None:
+    """Copy editable general settings from the form to the model."""
+    fields = (
+        "titulo", "descripcion", "moneda", "lang", "enable_programs", "enable_masterclass", "enable_resources",
+        "enable_blog", "enable_contact", "show_latest_blog_posts_on_home", "enable_file_uploads", "max_file_size",
+        "enable_html_preformatted_descriptions", "enable_footer", "verify_user_by_email", "allow_unverified_email_login",
+        "titulo_html", "hero", "enable_feature_section", "custom_feature_section", "custom_text1", "custom_text2",
+        "custom_text3", "custom_text4", "eslogan", "social_facebook", "social_twitter", "social_linkedin",
+        "social_youtube", "social_instagram", "social_github", "contact_address", "contact_email", "contact_phone",
+        "contact_mobile", "contact_whatsapp",
+    )
+    for field in fields:
+        setattr(config, field, getattr(form, field).data)
+    config.time_zone = form.timezone.data
+
+
+def _validate_email_verification(config: Configuracion, form: ConfigForm) -> None:
+    """Only enable email verification when mail is configured and verified."""
+    if not form.verify_user_by_email.data:
+        return
+    row = database.session.execute(database.select(MailConfig)).first()
+    if row is None or not row[0].email_verificado:
+        config.verify_user_by_email = False
+        flash(_("Debe configurar el correo electronico antes de habilitar verificación por e-mail."), "warning")
+        return
+    config.verify_user_by_email = True
+
+
 def invalidar_cache() -> bool:
     """
     Invalida comprensivamente todas las entradas de la cache relacionadas con la configuración del sistema.
@@ -175,97 +218,10 @@ def configuracion() -> str | Response:
     row = database.session.execute(database.select(MailConfig)).first()
     if row is None:
         return redirect(url_for(HOME_ROUTE))
-    config_mail = row[0]
-    form = ConfigForm(
-        titulo=config.titulo,
-        descripcion=config.descripcion,
-        moneda=config.moneda,
-        lang=config.lang,
-        timezone=config.time_zone,
-        enable_programs=config.enable_programs,
-        enable_masterclass=config.enable_masterclass,
-        enable_resources=config.enable_resources,
-        enable_blog=config.enable_blog,
-        enable_contact=config.enable_contact,
-        show_latest_blog_posts_on_home=config.show_latest_blog_posts_on_home,
-        enable_file_uploads=config.enable_file_uploads,
-        max_file_size=config.max_file_size,
-        enable_html_preformatted_descriptions=config.enable_html_preformatted_descriptions,
-        enable_footer=config.enable_footer,
-        verify_user_by_email=config.verify_user_by_email,
-        allow_unverified_email_login=config.allow_unverified_email_login,
-        titulo_html=config.titulo_html,
-        hero=config.hero,
-        enable_feature_section=config.enable_feature_section,
-        custom_feature_section=config.custom_feature_section,
-        custom_text1=config.custom_text1,
-        custom_text2=config.custom_text2,
-        custom_text3=config.custom_text3,
-        custom_text4=config.custom_text4,
-        eslogan=config.eslogan,
-        social_facebook=config.social_facebook,
-        social_twitter=config.social_twitter,
-        social_linkedin=config.social_linkedin,
-        social_youtube=config.social_youtube,
-        social_instagram=config.social_instagram,
-        social_github=config.social_github,
-        contact_address=config.contact_address,
-        contact_email=config.contact_email,
-        contact_phone=config.contact_phone,
-        contact_mobile=config.contact_mobile,
-        contact_whatsapp=config.contact_whatsapp,
-    )
+    form = _configuration_form(config)
     if form.validate_on_submit() or request.method == "POST":
-        config.titulo = form.titulo.data
-        config.descripcion = form.descripcion.data
-        config.moneda = form.moneda.data
-        config.lang = form.lang.data
-        config.time_zone = form.timezone.data
-        config.enable_programs = form.enable_programs.data
-        config.enable_masterclass = form.enable_masterclass.data
-        config.enable_resources = form.enable_resources.data
-        config.enable_blog = form.enable_blog.data
-        config.enable_contact = form.enable_contact.data
-        config.show_latest_blog_posts_on_home = form.show_latest_blog_posts_on_home.data
-        config.enable_file_uploads = form.enable_file_uploads.data
-        config.max_file_size = form.max_file_size.data
-        config.enable_html_preformatted_descriptions = form.enable_html_preformatted_descriptions.data
-        config.enable_footer = form.enable_footer.data
-        config.verify_user_by_email = form.verify_user_by_email.data
-        config.allow_unverified_email_login = form.allow_unverified_email_login.data
-        config.titulo_html = form.titulo_html.data
-        config.hero = form.hero.data
-        config.enable_feature_section = form.enable_feature_section.data
-        config.custom_feature_section = form.custom_feature_section.data
-        config.custom_text1 = form.custom_text1.data
-        config.custom_text2 = form.custom_text2.data
-        config.custom_text3 = form.custom_text3.data
-        config.custom_text4 = form.custom_text4.data
-        config.eslogan = form.eslogan.data
-        config.social_facebook = form.social_facebook.data
-        config.social_twitter = form.social_twitter.data
-        config.social_linkedin = form.social_linkedin.data
-        config.social_youtube = form.social_youtube.data
-        config.social_instagram = form.social_instagram.data
-        config.social_github = form.social_github.data
-        config.contact_address = form.contact_address.data
-        config.contact_email = form.contact_email.data
-        config.contact_phone = form.contact_phone.data
-        config.contact_mobile = form.contact_mobile.data
-        config.contact_whatsapp = form.contact_whatsapp.data
-
-        if form.verify_user_by_email.data is True:
-            row = database.session.execute(database.select(MailConfig)).first()
-            if row is None:
-                config.verify_user_by_email = False
-                flash(_("Debe configurar el correo electronico antes de habilitar verificación por e-mail."), "warning")
-            else:
-                config_mail = row[0]
-                if not config_mail.email_verificado:
-                    flash(_("Debe configurar el correo electronico antes de habilitar verificación por e-mail."), "warning")
-                    config.verify_user_by_email = False
-                else:
-                    config.verify_user_by_email = True
+        _update_configuration(config, form)
+        _validate_email_verification(config, form)
 
         try:
             # Invalidate all configuration-related cache
