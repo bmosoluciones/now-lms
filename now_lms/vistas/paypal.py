@@ -121,7 +121,7 @@ def get_paypal_access_token() -> str | None:
             if client_secret is None:
                 raise ValueError("Decryption returned None")
         except Exception as e:
-            logging.error(f"Failed to decrypt PayPal client secret: {e}")
+            logging.exception("Failed to decrypt PayPal client secret")
             return None
 
         # Get access token from PayPal
@@ -151,7 +151,7 @@ def get_paypal_access_token() -> str | None:
         return None
 
     except Exception as e:
-        logging.error(f"Exception while getting PayPal access token: {e}")
+        logging.exception("Exception while getting PayPal access token")
         return None
 
 
@@ -186,7 +186,7 @@ def verify_paypal_payment(order_id: str, access_token: str) -> dict[str, object]
         return {"verified": False, "error": "Payment verification failed"}
 
     except Exception as e:
-        logging.error(f"PayPal payment verification error: {e}")
+        logging.exception("PayPal payment verification error")
         return {"verified": False, "error": str(e)}
 
 
@@ -429,11 +429,11 @@ def confirm_payment() -> tuple[FlaskResponse, int]:
 
         except OperationalError as e:
             database.session.rollback()
-            logging.error(f"Database error during enrollment for user {current_user.usuario}, order {order_id}: {e}")
+            logging.exception("Database error during enrollment")
             return jsonify({"success": False, "error": "Error en la base de datos. Por favor contacte soporte."}), 500
 
     except Exception as e:
-        logging.error(f"Unexpected error in payment confirmation for user {current_user.usuario}: {e}")
+        logging.exception("Unexpected error in payment confirmation")
         return jsonify({"success": False, "error": "Error interno del servidor. Por favor contacte soporte."}), 500
 
 
@@ -460,7 +460,7 @@ def resume_payment(payment_id: str) -> Response:
         return redirect(url_for("paypal.payment_page", course_code=pago.curso))
 
     except Exception as e:
-        logging.error(f"Error resuming payment: {e}")
+        logging.exception("Error resuming payment")
         flash("Error al reanudar el pago.", "error")
         return redirect(url_for(HOME_PAGE_ROUTE))
 
@@ -529,7 +529,7 @@ def get_client_id() -> Response | tuple[FlaskResponse, int]:
         return jsonify({"client_id": client_id, "sandbox": paypal_config.sandbox, "currency": get_site_currency()}), 200
 
     except Exception as e:
-        logging.error(f"Failed to get PayPal client ID for user {current_user.usuario}: {e}")
+        logging.exception("Failed to get PayPal client ID")
         return jsonify({"error": "Configuration error"}), 500
 
 
@@ -598,7 +598,7 @@ def payment_status(course_code: str) -> tuple[FlaskResponse, int]:
         )
 
     except Exception as e:
-        logging.error(f"Error getting payment status for course {course_code}, user {current_user.usuario}: {e}")
+        logging.exception("Error getting payment status")
         return jsonify({"error": "Internal server error"}), 500
 
 
@@ -636,5 +636,5 @@ def debug_config() -> tuple[FlaskResponse, int]:
         )
 
     except Exception as e:
-        logging.error(f"Error in debug config for user {current_user.usuario}: {e}")
+        logging.exception("Error in debug config")
         return jsonify({"error": "Internal server error"}), 500
