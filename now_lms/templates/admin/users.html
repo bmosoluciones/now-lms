@@ -126,21 +126,17 @@
                                                     <i class="bi bi-eye" aria-hidden="true"></i>
                                                 </a>
                                                 {% if item.activo %}
-                                                <a
-                                                    href="{{ url_for('admin_profile.inactivar_usuario', user_id=item.id) }}"
-                                                    class="btn btn-sm btn-outline-warning"
-                                                    title="{{ _('Inactivar Usuario') }}"
-                                                >
-                                                    <i class="bi bi-person-fill-slash" aria-hidden="true"></i>
-                                                </a>
+                                                <form action="{{ url_for('admin_profile.inactivar_usuario', user_id=item.id) }}" method="POST" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-outline-warning" title="{{ _('Inactivar Usuario') }}">
+                                                        <i class="bi bi-person-fill-slash" aria-hidden="true"></i>
+                                                    </button>
+                                                </form>
                                                 {% else %}
-                                                <a
-                                                    href="{{ url_for('admin_profile.activar_usuario', user_id=item.id) }}"
-                                                    class="btn btn-sm btn-outline-success"
-                                                    title="{{ _('Activar Usuario') }}"
-                                                >
-                                                    <i class="bi bi-person-fill-check" aria-hidden="true"></i>
-                                                </a>
+                                                <form action="{{ url_for('admin_profile.activar_usuario', user_id=item.id) }}" method="POST" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-outline-success" title="{{ _('Activar Usuario') }}">
+                                                        <i class="bi bi-person-fill-check" aria-hidden="true"></i>
+                                                    </button>
+                                                </form>
                                                 {% endif %}
                                                 <div class="btn-group" role="group">
                                                     <button
@@ -162,40 +158,47 @@
                                                         <li><h6 class="dropdown-header">{{ _('Cambiar Tipo') }}</h6></li>
                                                         {% if item.tipo != "admin" %}
                                                         <li>
-                                                            <a
-                                                                class="dropdown-item"
-                                                                href="{{ url_for('admin_profile.cambiar_tipo_usario', type='admin', user=item.usuario, redirect_to='list') }}"
-                                                            >
-                                                                <i class="bi bi-shield-check me-2"></i>{{ _('Admin') }}
-                                                            </a>
+                                                            <form action="{{ url_for('admin_profile.cambiar_tipo_usario') }}" method="POST" class="d-inline">
+                                                                <input type="hidden" name="type" value="admin">
+                                                                <input type="hidden" name="user" value="{{ item.usuario }}">
+                                                                <input type="hidden" name="redirect_to" value="list">
+                                                                <button type="submit" class="dropdown-item">
+                                                                    <i class="bi bi-shield-check me-2"></i>{{ _('Admin') }}
+                                                                </button>
+                                                            </form>
                                                         </li>
                                                         {% endif %} {% if item.tipo != "instructor" %}
                                                         <li>
-                                                            <a
-                                                                class="dropdown-item"
-                                                                href="{{ url_for('admin_profile.cambiar_tipo_usario', type='instructor', user=item.usuario, redirect_to='list') }}"
-                                                            >
-                                                                <i class="bi bi-person-workspace me-2"></i>{{ _('Instructor')
-                                                                }}
-                                                            </a>
+                                                            <form action="{{ url_for('admin_profile.cambiar_tipo_usario') }}" method="POST" class="d-inline">
+                                                                <input type="hidden" name="type" value="instructor">
+                                                                <input type="hidden" name="user" value="{{ item.usuario }}">
+                                                                <input type="hidden" name="redirect_to" value="list">
+                                                                <button type="submit" class="dropdown-item">
+                                                                    <i class="bi bi-person-workspace me-2"></i>{{ _('Instructor') }}
+                                                                </button>
+                                                            </form>
                                                         </li>
                                                         {% endif %} {% if item.tipo != "moderator" %}
                                                         <li>
-                                                            <a
-                                                                class="dropdown-item"
-                                                                href="{{ url_for('admin_profile.cambiar_tipo_usario', type='moderator', user=item.usuario, redirect_to='list') }}"
-                                                            >
-                                                                <i class="bi bi-person-gear me-2"></i>{{ _('Moderador') }}
-                                                            </a>
+                                                            <form action="{{ url_for('admin_profile.cambiar_tipo_usario') }}" method="POST" class="d-inline">
+                                                                <input type="hidden" name="type" value="moderator">
+                                                                <input type="hidden" name="user" value="{{ item.usuario }}">
+                                                                <input type="hidden" name="redirect_to" value="list">
+                                                                <button type="submit" class="dropdown-item">
+                                                                    <i class="bi bi-person-gear me-2"></i>{{ _('Moderador') }}
+                                                                </button>
+                                                            </form>
                                                         </li>
                                                         {% endif %} {% if item.tipo != "user" %}
                                                         <li>
-                                                            <a
-                                                                class="dropdown-item"
-                                                                href="{{ url_for('admin_profile.cambiar_tipo_usario', type='user', user=item.usuario, redirect_to='list') }}"
-                                                            >
-                                                                <i class="bi bi-person-check me-2"></i>{{ _('Usuario') }}
-                                                            </a>
+                                                            <form action="{{ url_for('admin_profile.cambiar_tipo_usario') }}" method="POST" class="d-inline">
+                                                                <input type="hidden" name="type" value="user">
+                                                                <input type="hidden" name="user" value="{{ item.usuario }}">
+                                                                <input type="hidden" name="redirect_to" value="list">
+                                                                <button type="submit" class="dropdown-item">
+                                                                    <i class="bi bi-person-check me-2"></i>{{ _('Usuario') }}
+                                                                </button>
+                                                            </form>
                                                         </li>
                                                         {% endif %}
                                                     </ul>
