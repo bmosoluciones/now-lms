@@ -1,0 +1,72 @@
+# Intent Solutions deployment of NOW-LMS (learn.intentsolutions.io).
+#
+# INTERIM (until bmosoluciones/now-lms#179 + the Dockerfile lockfile fix merge upstream and
+# Quay republishes): the app image is built from THIS fork's source, which carries the
+# fresh-PostgreSQL bootstrap fix. Once upstream publishes a fixed image, replace the `build:`
+# block with `image: quay.io/bmosoluciones/now_lms@sha256:<new-digest>` — one-line swap.
+#
+# Secrets are injected from the environment (SOPS-decrypted at deploy time), never committed.
+# Required: LMS_SECRET_KEY (>=32 chars), LMS_DB_PASSWORD, LMS_ADMIN_USER, LMS_ADMIN_PSWD.
+
+name: now-lms
+
+services:
+  # One-shot: make the named volumes writable by the app's arbitrary UBI user (uid 1001, gid 0).
+  volinit:
+    image: alpine
+    command: sh -c "chown -R 1001:0 /data /themes && chmod -R g+w /data /themes"
+    volumes:
+      - nowlms-data:/data
+      - nowlms-themes:/themes
+    restart: "no"
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: nowlms
+      POSTGRES_PASSWORD: ${LMS_DB_PASSWORD:?set LMS_DB_PASSWORD}
+      POSTGRES_DB: nowlms
+    volumes:
+      - nowlms-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nowlms -d nowlms"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  app:
+    build: .
+    image: now-lms:intent-bootfix   # tag the locally-built image so redeploys reuse it
+    depends_on:
+      db:
+        condition: service_healthy
+      volinit:
+        condition: service_completed_successfully
+    environment:
+      SECRET_KEY: ${LMS_SECRET_KEY:?set LMS_SECRET_KEY}
+      # bare postgresql:// crashes (psycopg2 not installed) — pg8000 is mandatory and explicit
+      DATABASE_URL: postgresql+pg8000://nowlms:${LMS_DB_PASSWORD}@db:5432/nowlms
+      ADMIN_USER: ${LMS_ADMIN_USER:?set LMS_ADMIN_USER}
+      ADMIN_PSWD: ${LMS_ADMIN_PSWD:?set LMS_ADMIN_PSWD}
+      NOW_LMS_DATA_DIR: /app/data
+      NOW_LMS_THEMES_DIR: /app/themes
+      NOW_LMS_FORCE_HTTPS: "1"        # behind the Caddy TLS terminator
+      WSGI_SERVER: waitress          # single-process — avoids multi-worker session loss (no Redis in v1)
+    volumes:
+      - nowlms-data:/app/data
+      - nowlms-themes:/app/themes
+    ports:
+      - "127.0.0.1:8080:8080"        # Caddy reverse_proxy target; never public-bound
+    healthcheck:
+      test: ["CMD-SHELL", "python3.12 -c \"import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8080/health').status==200 else 1)\""]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+volumes:
+  nowlms-pgdata:
+  nowlms-data:
+  nowlms-themes:
