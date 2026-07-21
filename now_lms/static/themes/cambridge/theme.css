@@ -1,3 +1,6 @@
+    /* Import Cambria and scientific publication fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&display=swap');
+
     /* Cambridge Academic Theme Custom Variables */
     :root {
         --cambridge-primary: #4a7b6d;
@@ -28,9 +31,6 @@
         --cambridge-info: #5e7585;
         --academic-theme-name: "Cambridge";
     }
-
-    /* Import Cambria and scientific publication fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&display=swap');
 
     .bd-placeholder-img {
         font-size: 1.125rem;

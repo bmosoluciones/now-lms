@@ -1,3 +1,6 @@
+/* Import Charter and fallback fonts */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap');
+
 /* Harvard Academic Theme Custom Variables */
 :root {
     --harvard-primary: #a41034; /* Rojo Harvard */
@@ -17,9 +20,6 @@
     --harvard-info: #474340;
     --academic-theme-name: "Harvard";
 }
-
-/* Import Charter and fallback fonts */
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap');
 
 .bd-placeholder-img {
     font-size: 1.125rem;
