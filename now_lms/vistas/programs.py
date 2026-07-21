@@ -74,6 +74,39 @@ ADMIN_PROGRAM_ENROLL_TEMPLATE = "learning/programas/admin_enroll.html"
 program = Blueprint("program", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
+def _program_explore_query(tag_param: str | None, category_param: str | None):
+    """Build the filtered public program query."""
+    query = database.select(Programa).filter(Programa.publico.is_(True), Programa.estado == "open")
+    if tag_param:
+        tag = database.session.execute(database.select(Etiqueta).filter(Etiqueta.nombre == tag_param)).scalars().first()
+        if tag:
+            query = query.join(EtiquetaPrograma, Programa.id == EtiquetaPrograma.programa).filter(
+                EtiquetaPrograma.etiqueta == tag.id
+            )
+    if category_param:
+        category = database.session.execute(
+            database.select(Categoria).filter(Categoria.nombre == category_param)
+        ).scalars().first()
+        if category:
+            query = query.join(CategoriaPrograma, Programa.id == CategoriaPrograma.programa).filter(
+                CategoriaPrograma.categoria == category.id
+            )
+    return query
+
+
+def _program_explore_params(tag_param: str | None, category_param: str | None):
+    """Build program pagination parameters without the page number."""
+    if not any((request.args.get("nivel"), tag_param, category_param)):
+        return None
+    params = OrderedDict()
+    for arg in request.url.split("?", 1)[-1].split("&"):
+        if "=" in arg:
+            key, value = arg.split("=", 1)
+            if key != "page":
+                params[key] = value
+    return params
+
+
 @program.route("/program/new", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -281,71 +314,31 @@ def pagina_programa(codigo: str) -> str:
 @cache.cached(key_prefix=cache_key_with_auth_state)  # type: ignore[arg-type]
 def lista_programas() -> str:
     """Lista de programas."""
-    if DESARROLLO:
-        MAX_COUNT = 3
-    else:
-        MAX_COUNT = 30
+    max_count = 3 if DESARROLLO else 30
 
     etiquetas = database.session.execute(database.select(Etiqueta)).scalars().all()
     categorias = database.session.execute(database.select(Categoria)).scalars().all()
 
-    # Start with base query
-    query = database.select(Programa).filter(Programa.publico.is_(True), Programa.estado == "open")
-
-    # Get filtering parameters
     tag_param = request.args.get("tag")
     category_param = request.args.get("category")
-
-    # Apply tag filter
-    if tag_param:
-        # Find tag by name
-        tag = database.session.execute(database.select(Etiqueta).filter(Etiqueta.nombre == tag_param)).scalars().first()
-        if tag:
-            # Join with EtiquetaPrograma to filter programs by tag
-            query = query.join(EtiquetaPrograma, Programa.id == EtiquetaPrograma.programa).filter(
-                EtiquetaPrograma.etiqueta == tag.id
-            )
-
-    # Apply category filter
-    if category_param:
-        # Find category by name
-        categoria = (
-            database.session.execute(database.select(Categoria).filter(Categoria.nombre == category_param)).scalars().first()
-        )
-        if categoria:
-            # Join with CategoriaPrograma to filter programs by category
-            query = query.join(CategoriaPrograma, Programa.id == CategoriaPrograma.programa).filter(
-                CategoriaPrograma.categoria == categoria.id
-            )
+    query = _program_explore_query(tag_param, category_param)
 
     # Paginate the filtered query
     consulta_cursos = database.paginate(
         query,
         page=request.args.get("page", default=1, type=int),
-        max_per_page=MAX_COUNT,
+        max_per_page=max_count,
         count=True,
     )
 
-    # /explore?page=2&nivel=2&tag=python&category=programing
-    if request.args.get("nivel") or request.args.get("tag") or request.args.get("category"):
-        PARAMETROS = OrderedDict()
-        for arg in request.url[request.url.find("?") + 1 :].split("&"):  # noqa: E203
-            PARAMETROS[arg[: arg.find("=")]] = arg[arg.find("=") + 1 :]  # noqa: E203
-
-            # El numero de pagina debe ser generado por el macro de paginación.
-            try:
-                del PARAMETROS["page"]
-            except KeyError:
-                pass
-    else:
-        PARAMETROS = None
+    parametros = _program_explore_params(tag_param, category_param)
 
     return render_template(
         get_program_list_template(),
         cursos=consulta_cursos,
         etiquetas=etiquetas,
         categorias=categorias,
-        parametros=PARAMETROS,
+        parametros=parametros,
     )
 
 
