@@ -62,14 +62,22 @@ def process_line(line: str) -> str:
     return name + env_marker + comment
 
 
+def validate_path(path_str: str) -> str:
+    resolved = os.path.realpath(path_str)
+    if not resolved.startswith(os.path.realpath(".")):
+        raise ValueError(f"Path must be within current directory: {path_str}")
+    return resolved
+
+
 def main():
     parser = argparse.ArgumentParser(description="Quitar versiones de requirements.txt")
     parser.add_argument("file", nargs="?", default="requirements.txt", help="Ruta al requirements.txt")
     args = parser.parse_args()
 
-    input_path = os.path.realpath(args.file)
-    if not input_path.startswith(os.path.realpath(".")):
-        print(f"[ERROR] La ruta debe estar dentro del directorio actual", file=sys.stderr)
+    try:
+        input_path = validate_path(args.file)
+    except ValueError as e:
+        print(f"[ERROR] {e}", file=sys.stderr)
         sys.exit(1)
     if not os.path.isfile(input_path):
         print(f"[ERROR] Archivo no encontrado: {input_path}", file=sys.stderr)
