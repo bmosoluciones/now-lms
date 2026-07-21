@@ -13,7 +13,7 @@ WORKDIR /build
 
 COPY now_lms/static/package.json now_lms/static/package-lock.json* ./now_lms/static/
 
-RUN cd now_lms/static && npm ci --omit=dev --ignore-scripts --no-audit --no-fund \
+RUN cd now_lms/static && npm ci --omit=dev --ignore-scripts --no-fund \
     && find node_modules -type d \( \
         -name "test" -o -name "tests" -o -name "doc" -o -name "docs" \
         -o -name "examples" -o -name "icons" -o -name "scss" -o -name "ts" \
