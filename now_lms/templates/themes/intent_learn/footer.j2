@@ -1,0 +1,119 @@
+{% macro footer() -%} {% if config().enable_footer %} {% set footer_pages = get_footer_pages() %} {% set footer_enlaces =
+get_footer_enlaces() %}
+<footer class="footer bg-dark text-white mt-auto py-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-2">
+                <h5>{{ _("Acerca de") }}</h5>
+                {% if footer_pages %}
+                <ul class="list-unstyled">
+                    {% for page in footer_pages %}
+                    <li>
+                        <a
+                            href="{{ url_for('static_pages.view_page', slug=page.slug) }}"
+                            class="text-white-50 text-decoration-none"
+                            >{{ page.title }}</a
+                        >
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-white-50">{{ _("Sistema de gestión de aprendizaje moderno y completo.") }}</p>
+                {% endif %}
+            </div>
+            <div class="col-md-4 mb-2">
+                <h5>{{ _("Enlaces Útiles") }}</h5>
+                {% if footer_enlaces %}
+                <ul class="list-unstyled">
+                    {% for enlace in footer_enlaces %}
+                    <li>
+                        <a
+                            href="{{ enlace.url }}"
+                            class="text-white-50 text-decoration-none"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            >{{ enlace.titulo }}</a
+                        >
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="{{ url_for('static_pages.contact') }}" class="text-white-50 text-decoration-none"
+                            >{{ _("Contacto") }}</a
+                        >
+                    </li>
+                </ul>
+                {% endif %}
+            </div>
+            <div class="col-md-4 mb-2">
+                <h5>{{ _("Síguenos") }}</h5>
+                <div class="d-flex gap-3">
+                    {% set site_config = config() %} {% if site_config.social_facebook %}
+                    <a
+                        href="{{ site_config.social_facebook }}"
+                        class="text-white-50"
+                        aria-label="Facebook"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        ><i class="bi bi-facebook"></i
+                    ></a>
+                    {% endif %} {% if site_config.social_twitter %}
+                    <a
+                        href="{{ site_config.social_twitter }}"
+                        class="text-white-50"
+                        aria-label="Twitter"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        ><i class="bi bi-twitter-x"></i
+                    ></a>
+                    {% endif %} {% if site_config.social_linkedin %}
+                    <a
+                        href="{{ site_config.social_linkedin }}"
+                        class="text-white-50"
+                        aria-label="LinkedIn"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        ><i class="bi bi-linkedin"></i
+                    ></a>
+                    {% endif %} {% if site_config.social_youtube %}
+                    <a
+                        href="{{ site_config.social_youtube }}"
+                        class="text-white-50"
+                        aria-label="YouTube"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        ><i class="bi bi-youtube"></i
+                    ></a>
+                    {% endif %} {% if site_config.social_instagram %}
+                    <a
+                        href="{{ site_config.social_instagram }}"
+                        class="text-white-50"
+                        aria-label="Instagram"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        ><i class="bi bi-instagram"></i
+                    ></a>
+                    {% endif %} {% if site_config.social_github %}
+                    <a
+                        href="{{ site_config.social_github }}"
+                        class="text-white-50"
+                        aria-label="GitHub"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        ><i class="bi bi-github"></i
+                    ></a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <hr class="bg-secondary" />
+        <div class="row">
+            <div class="col-12 text-center">
+                <p class="text-white-50 mb-0">&copy; 2026 {{ config().titulo }}. {{ _("Todos los derechos reservados.") }}</p>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endif %} {%- endmacro %}

@@ -1,0 +1,34 @@
+{% macro headertags() -%}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="{{ _('Practitioner AI-native software training from Intent Solutions.') }}" />
+<meta name="author" content="BMO Moreno Berroteran Ortiz Soluciones Sociedad Anonima" />
+
+<meta name="theme-color" content="#f97316" />
+<meta name="msapplication-TileColor" content="#18171b" />
+
+<!-- Intent Solutions mark (auto light/dark via prefers-color-scheme) -->
+<link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='themes/intent_learn/favicon.svg') }}" />
+
+<!-- Google Fonts: Syne (display) / Inter (body) / JetBrains Mono (labels) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+/>
+
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css') }}" />
+<script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+
+<!-- Bootstrap Font -->
+<link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap-icons/font/bootstrap-icons.min.css') }}" />
+
+<!-- Favicons (fallback raster set, kept for platforms that ignore the SVG icon above) -->
+<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/favicon/apple-touch-icon.png') }}" />
+<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='icons/favicon/favicon-32x32.png') }}" />
+<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='icons/favicon/favicon-16x16.png') }}" />
+<link rel="manifest" href="{{ url_for('static', filename='icons/favicon/site.webmanifest') }}" />
+
+{{ adsense_meta() | safe }} {{ adsense_code() | safe }} {%- endmacro %}
