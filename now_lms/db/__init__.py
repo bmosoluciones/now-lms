@@ -171,6 +171,7 @@ class Usuario(UserMixin, database.Model, BaseTabla):
         database.UniqueConstraint("usuario", name="id_usuario_unico"),
         database.UniqueConstraint("correo_electronico", name="correo_usuario_unico"),
     )
+    __tablename__ = "usuario"
     # Info de sistema
     usuario = database.Column(database.String(150), nullable=False, index=True, unique=True)
     acceso = database.Column(database.LargeBinary(), nullable=False)
