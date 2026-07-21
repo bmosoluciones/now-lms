@@ -68,6 +68,13 @@ def _load_bank(filename: str) -> list[dict]:
     return data["questions"] if isinstance(data, dict) else data
 
 
+def _load_bank_optional(filename: str) -> list[dict]:
+    """Like ``_load_bank`` but returns ``[]`` if the bank file is absent."""
+    if (BANKS_DIR / filename).is_file():
+        return _load_bank(filename)
+    return []
+
+
 def _load_lesson(course_dir: str, stem: str, fallback_title: str) -> str:
     """Return authored lesson markdown, or a minimal stub if the file is absent.
 
@@ -125,6 +132,37 @@ def _weighted_mock(questions: list[dict], weights: dict[str, int], total: int) -
         take = round(total * weight / weight_sum)
         selected.extend(by_key.get(key, [])[:take])
     return selected
+
+
+def _weighted_exam_series(questions: list[dict], weights: dict[str, int], per_exam: int,
+                          max_exams: int) -> list[list[dict]]:
+    """Partition ``questions`` into up to ``max_exams`` weighted, NON-overlapping
+    full-length exams of ~``per_exam`` questions each (deterministic).
+
+    Each exam draws ``round(per_exam * weight / sum)`` fresh questions per domain
+    from that domain's remaining queue, so no question repeats across exams. The
+    series stops when the pool can no longer fill a full exam or ``max_exams`` is
+    reached.
+    """
+    queues: dict[str, list[dict]] = {}
+    for question in questions:
+        queues.setdefault(question.get("domainKey"), []).append(question)
+    cursors = {key: 0 for key in queues}
+    weight_sum = sum(weights.values()) or 1
+    targets = {key: round(per_exam * w / weight_sum) for key, w in weights.items()}
+
+    exams: list[list[dict]] = []
+    for _ in range(max_exams):
+        # Only build a full exam if every domain still has its target available.
+        if any(cursors.get(key, 0) + targets[key] > len(queues.get(key, [])) for key in weights):
+            break
+        exam: list[dict] = []
+        for key in weights:
+            start = cursors[key]
+            exam.extend(queues[key][start:start + targets[key]])
+            cursors[key] = start + targets[key]
+        exams.append(exam)
+    return exams
 
 
 # ---------------------------------------------------------------------------
@@ -295,6 +333,22 @@ def _create_course(db, models, spec: dict) -> None:
         )
         indice += 1
 
+    # --- Extra full-length practice exams (e.g. Rick Hightower's set) ---
+    for exam in spec.get("extra_exams", []):
+        seccion = _add_section(db, models, spec["codigo"], indice, exam["nombre"], exam["descripcion"])
+        _add_lesson_resource(db, models, spec["codigo"], seccion.id, exam["nombre"], exam["lesson"])
+        total_questions += _add_evaluation(
+            db,
+            models,
+            seccion.id,
+            title=exam["nombre"],
+            description="Full-length practice exam. Passing score 72%; unlimited attempts.",
+            is_exam=True,
+            passing_score=72.0,
+            questions=exam["questions"],
+        )
+        indice += 1
+
     print(
         f"  [ok]   course '{spec['codigo']}' — {indice - 1} sections, "
         f"{total_questions} questions imported"
@@ -405,6 +459,22 @@ def _build_specs() -> list[dict]:
         "lesson": _load_lesson("course-c-cca-f", "professional-scenarios", "Professional-level scenario practice"),
         "questions": architect,
     })
+    # Rick Hightower's authored practice-exam pool (optional, reuse-granted) →
+    # up to 3 full-length weighted practice exams appended to Course C.
+    rick = _load_bank_optional("rick-practice-exams.json")
+    extra_exams = []
+    for i, exam_qs in enumerate(_weighted_exam_series(rick, cca_f_weights, per_exam=60, max_exams=3), start=1):
+        extra_exams.append({
+            "nombre": f"Practice exam {i} — Rick Hightower (scenario-based)",
+            "descripcion": "Full-length 60-question weighted practice exam, unlimited attempts.",
+            "lesson": f"# Practice exam {i} — Rick Hightower's CCA-F set\n\n"
+                      "A full-length, exam-shaped practice test (~60 questions weighted across the five "
+                      "domains) drawn from Rick Hightower's scenario-based question set — reused with "
+                      "permission. Passing is **72%**; attempts are unlimited. Work the domain quizzes "
+                      "first, then use these to rehearse under exam conditions.",
+            "questions": exam_qs,
+        })
+
     specs.append({
         "codigo": "CCA-F",
         "nombre": "Claude Certified Architect — Foundations (CCA-F) prep",
@@ -412,15 +482,39 @@ def _build_specs() -> list[dict]:
         "descripcion": "Preliminary preparation toward Anthropic's Claude Certified Architect (CCA) — "
                        "Foundations credential. One section per official domain (Agentic Architecture, "
                        "Claude Code Workflows, Prompt Engineering, Tool Design & MCP, Context Management) "
-                       "with a practice quiz each, plus a weighted 60-question mock exam at the 72% pass mark. "
+                       "with a practice quiz each, plus a weighted 60-question mock exam at the 72% pass mark "
+                       "and additional full-length scenario practice exams. "
                        "This course prepares you for the real Anthropic exam; it is not the exam itself.",
         "nivel": 3,
         "duracion": 6,
         "sections": cca_sections,
         "mock_questions": _weighted_mock(general, cca_f_weights, total=60),
+        "extra_exams": extra_exams,
     })
 
     return specs
+
+
+def _delete_course(db, models, code: str) -> bool:
+    """Delete a course and its sections/lessons/evaluations. Returns True if found.
+
+    Used by ``--reset`` to allow re-seeding a course that has no learner data yet
+    (deleting an Evaluation cascades to its questions + options).
+    """
+    Curso = models["Curso"]
+    curso = db.session.execute(db.select(Curso).filter_by(codigo=code)).scalar_one_or_none()
+    if curso is None:
+        return False
+    secs = db.session.execute(db.select(models["CursoSeccion"]).filter_by(curso=code)).scalars().all()
+    for sec in secs:
+        for ev in db.session.execute(db.select(models["Evaluation"]).filter_by(section_id=sec.id)).scalars().all():
+            db.session.delete(ev)
+        for rec in db.session.execute(db.select(models["CursoRecurso"]).filter_by(seccion=sec.id)).scalars().all():
+            db.session.delete(rec)
+        db.session.delete(sec)
+    db.session.delete(curso)
+    db.session.commit()
+    return True
 
 
 def main() -> int:
@@ -450,8 +544,18 @@ def main() -> int:
         "QuestionOption": QuestionOption,
     }
 
+    # Optional: `--reset=CODE1,CODE2` deletes those courses before seeding so they
+    # can be rebuilt (safe only when they carry no learner data).
+    reset_codes: list[str] = []
+    for arg in sys.argv[1:]:
+        if arg.startswith("--reset="):
+            reset_codes = [c.strip() for c in arg.split("=", 1)[1].split(",") if c.strip()]
+
     with app.app_context():
         print("Seeding CCA-F preliminary prep curriculum...")
+        for code in reset_codes:
+            if _delete_course(database, models, code):
+                print(f"  [reset] deleted course '{code}' for rebuild")
         specs = _build_specs()
         for spec in specs:
             _create_course(database, models, spec)
