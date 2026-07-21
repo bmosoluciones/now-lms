@@ -81,7 +81,7 @@ CACHE_CONFIG = _get_cache_config_for_compatibility()
 
 if CTYPE != "NullCache":
     log.trace(f"Using {CTYPE} service for storage")
-elif CTYPE == "NullCache":
+else:
     log.debug("No cache service configured.")
 
 # Create cache instance (will be properly initialized via cache_utils.init_cache)

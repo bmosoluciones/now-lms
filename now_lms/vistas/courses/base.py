@@ -391,9 +391,8 @@ def editar_curso(course_code: str) -> str | Response:
         except OperationalError:
             flash("Hubo en error al actualizar el curso.", "warning")
             return redirect(curso_url)
-    elif request.method == "POST":
-        if form.errors:
-            flash("El formulario tiene errores. Revisa los campos marcados.", "warning")
+    elif request.method == "POST" and form.errors:
+        flash("El formulario tiene errores. Revisa los campos marcados.", "warning")
 
     if request.method == "GET":
         _populate_edit_form(form, curso_a_editar, course_code)
