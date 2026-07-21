@@ -88,20 +88,22 @@ def _fresh_boot_then_idempotent_restart(app):
         assert payload["status"] == "ok"
         assert payload["database"] == "ok"
 
-        assert validar_acceso(ADMIN_USER_WITH_FALLBACK, "lms-admin") is True, (
-            "the default administrator account created during a fresh boot must be able to log in"
-        )
+        assert (
+            validar_acceso(ADMIN_USER_WITH_FALLBACK, "lms-admin") is True
+        ), "the default administrator account created during a fresh boot must be able to log in"
 
     # Second boot: the exact "container restart" scenario. Must not crash
     # (defect 3's duplicate-key symptom: "duplicate key value violates
     # unique constraint ix_system_info_param") and must not silently wipe
     # or re-seed data.
-    assert init_app(flask_app=app) is True, "a second boot against an already-populated database (a restart) must be idempotent"
+    assert (
+        init_app(flask_app=app) is True
+    ), "a second boot against an already-populated database (a restart) must be idempotent"
 
     with app.app_context():
-        assert validar_acceso(ADMIN_USER_WITH_FALLBACK, "lms-admin") is True, (
-            "the admin account must still be able to log in after a second, idempotent boot"
-        )
+        assert (
+            validar_acceso(ADMIN_USER_WITH_FALLBACK, "lms-admin") is True
+        ), "the admin account must still be able to log in after a second, idempotent boot"
 
 
 def test_fresh_sqlite_boot_then_idempotent_restart():
