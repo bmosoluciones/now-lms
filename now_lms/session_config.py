@@ -238,6 +238,36 @@ def init_session(app: Flask) -> None:
         raise
 
 
+def _ensure_sqlalchemy_session_storage(app: Flask) -> None:
+    """Ensure the SQLAlchemy session table exists."""
+    from now_lms.db import database
+    from sqlalchemy import inspect
+
+    table_name = app.config.get("SESSION_SQLALCHEMY_TABLE", "flask_sessions")
+    with app.app_context():
+        if table_name not in inspect(database.engine).get_table_names():
+            log.warning(f"Session table '{table_name}' missing — creating it now")
+            app.__dict__.pop("_session_initialized", None)
+            init_session(app)
+        if table_name not in inspect(database.engine).get_table_names():
+            raise RuntimeError(
+                f"Failed to create session table '{table_name}'. Check database permissions and configuration."
+            )
+    log.info(f"Session table '{table_name}' verified — sqlalchemy backend ready")
+
+
+def _ensure_redis_session_storage(app: Flask) -> None:
+    """Verify a configured Redis session backend."""
+    redis_client = app.config.get("SESSION_REDIS")
+    if redis_client is None:
+        return
+    try:
+        redis_client.ping()
+        log.info("Redis session backend verified")
+    except Exception as exc:
+        raise RuntimeError("Redis session backend is unavailable") from exc
+
+
 def ensure_session_storage(app: Flask) -> None:
     """Ensure session storage is initialized and the session table exists.
 
@@ -260,43 +290,9 @@ def ensure_session_storage(app: Flask) -> None:
     session_type = app.config.get("SESSION_TYPE")
 
     if session_type == "sqlalchemy":
-        from now_lms.db import database
-
-        table_name = app.config.get("SESSION_SQLALCHEMY_TABLE", "flask_sessions")
-
-        with app.app_context():
-            from sqlalchemy import inspect
-
-            inspector = inspect(database.engine)
-            existing_tables = inspector.get_table_names()
-
-            if table_name not in existing_tables:
-                log.warning(f"Session table '{table_name}' missing — creating it now")
-                # Re-run init_session which creates the table via __table__.create(checkfirst=True)
-                # Reset the flag so init_session will re-execute
-                if hasattr(app, "_session_initialized"):
-                    delattr(app, "_session_initialized")
-                init_session(app)
-
-                # Verify it was created
-                inspector = inspect(database.engine)
-                existing_tables = inspector.get_table_names()
-                if table_name not in existing_tables:
-                    raise RuntimeError(
-                        f"Failed to create session table '{table_name}'. "
-                        "Check database permissions and configuration."
-                    )
-            log.info(f"Session table '{table_name}' verified — {session_type} backend ready")
-
+        _ensure_sqlalchemy_session_storage(app)
     elif session_type == "redis":
-        redis_client = app.config.get("SESSION_REDIS")
-        if redis_client is not None:
-            try:
-                redis_client.ping()
-                log.info("Redis session backend verified")
-            except Exception as exc:
-                raise RuntimeError("Redis session backend is unavailable") from exc
-
+        _ensure_redis_session_storage(app)
     else:
         log.warning(f"Session type '{session_type}' — sessions may not persist across threads")
 
