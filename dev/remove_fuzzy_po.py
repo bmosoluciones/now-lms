@@ -3,34 +3,38 @@ import sys
 import re
 
 
+def validate_po_path(ruta_po: str) -> str:
+    resolved = os.path.realpath(ruta_po)
+    if not resolved.startswith(os.path.realpath(".")):
+        raise ValueError(f"Path must be within current directory: {ruta_po}")
+    if not os.path.isfile(resolved):
+        raise FileNotFoundError(f"File not found: {ruta_po}")
+    return resolved
+
+
 def limpiar_fuzzy_po(ruta_po):
-    with open(ruta_po, encoding="utf-8") as f:
+    po_path = validate_po_path(ruta_po)
+    with open(po_path, encoding="utf-8") as f:
         lineas = f.readlines()
 
     nuevas_lineas = []
     i = 0
     while i < len(lineas):
         if lineas[i].startswith("#, fuzzy"):
-            # Saltar el comentario
             i += 1
-            # Procesar el bloque msgid/msgstr
-            bloque = []
             while i < len(lineas) and not lineas[i].strip().startswith("#, fuzzy"):
-                bloque.append(lineas[i])
                 if lineas[i].startswith("msgstr"):
-                    # Reemplaza la traducción por vacío
                     nuevas_lineas.append(re.sub(r'msgstr\s+".*"', 'msgstr ""', lineas[i]))
                     i += 1
                     break
                 else:
                     nuevas_lineas.append(lineas[i])
                 i += 1
-            # El resto del bloque ya se procesó
         else:
             nuevas_lineas.append(lineas[i])
             i += 1
 
-    with open(ruta_po, "w", encoding="utf-8") as f:
+    with open(po_path, "w", encoding="utf-8") as f:
         f.writelines(nuevas_lineas)
 
 
@@ -38,11 +42,8 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Uso: python remove_fuzzy_po.py <archivo.po>")
         sys.exit(1)
-    ruta_po = os.path.realpath(sys.argv[1])
-    if not ruta_po.startswith(os.path.realpath(".")):
-        print("Error: La ruta debe estar dentro del directorio actual", file=sys.stderr)
+    try:
+        limpiar_fuzzy_po(sys.argv[1])
+    except (ValueError, FileNotFoundError) as e:
+        print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
-    if not os.path.isfile(ruta_po):
-        print(f"Error: Archivo no encontrado: {ruta_po}", file=sys.stderr)
-        sys.exit(1)
-    limpiar_fuzzy_po(ruta_po)
