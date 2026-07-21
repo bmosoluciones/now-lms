@@ -566,7 +566,7 @@ def _verify_student_and_enrollment(student_username: str) -> dict | None:
         database.select(Usuario).filter_by(usuario=student_username)
     ).scalar_one_or_none()
     if not usuario_existe:
-        return dict(msg=f"El usuario '{student_username}' no existe en el sistema.", cat="error")
+        return {"msg": f"El usuario '{student_username}' no existe en el sistema.", "cat": "error"}
     return None
 
 
