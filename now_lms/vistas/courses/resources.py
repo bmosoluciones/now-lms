@@ -1241,7 +1241,7 @@ def _slide_orders(slide_count: int) -> list[int]:
     return [int(request.form.get(f"slide_{index}_order", index + 1)) for index in range(slide_count)]
 
 
-def _update_slideshow(slideshow: SlideShowResource, slideshow_id: str, slides: list[Slide]) -> None:
+def _update_slideshow(slideshow: SlideShowResource, slideshow_id: str, slides: Sequence[Slide]) -> None:
     """Apply submitted slideshow metadata and slide changes."""
     slideshow.title = request.form.get("title", slideshow.title)
     slideshow.theme = request.form.get("theme", slideshow.theme)
