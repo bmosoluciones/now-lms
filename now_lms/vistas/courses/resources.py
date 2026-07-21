@@ -1614,7 +1614,10 @@ def upload_library_file(course_code: str) -> str | Response:
                     TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size
                 )
 
-            destination_path = path.join(library_path, sanitized_filename)
+            destination_path = path.realpath(path.join(library_path, sanitized_filename))
+            if not destination_path.startswith(path.realpath(library_path)):
+                flash("Ruta de destino inválida.", "warning")
+                return render_template(TEMPLATE_LIBRARY_UPLOAD, curso=_curso, form=form, max_file_size=site_config.max_file_size)
             uploaded_file.save(destination_path)
             file_size = uploaded_file.content_length or path.getsize(destination_path)
 
@@ -1638,9 +1641,9 @@ def upload_library_file(course_code: str) -> str | Response:
         except Exception as e:
             database.session.rollback()
             try:
-                destination_path = path.join(library_path, sanitized_filename)
-                if path.exists(destination_path):
-                    path.remove(destination_path)
+                cleanup_path = path.realpath(path.join(library_path, sanitized_filename))
+                if cleanup_path.startswith(path.realpath(library_path)) and path.exists(cleanup_path):
+                    path.remove(cleanup_path)
             except Exception:
                 pass
 
@@ -1677,8 +1680,12 @@ def serve_library_file(course_code: str, filename: str) -> Response:
         abort(403)
 
     safe_filename = path.basename(filename)
+    if not safe_filename or safe_filename.startswith("."):
+        abort(404)
     library_path = get_course_library_path(course_code)
-    file_path = path.join(library_path, safe_filename)
+    file_path = path.realpath(path.join(library_path, safe_filename))
+    if not file_path.startswith(path.realpath(library_path)):
+        abort(403)
     if not path.exists(file_path) or not path.isfile(file_path):
         abort(404)
 
@@ -1713,7 +1720,9 @@ def delete_library_file(course_code: str, file_id: str) -> Response:
 
     try:
         library_path = get_course_library_path(course_code)
-        file_path = path.join(library_path, library_file.filename)
+        file_path = path.realpath(path.join(library_path, library_file.filename))
+        if not file_path.startswith(path.realpath(library_path)):
+            abort(403)
 
         if path.exists(file_path):
             remove(file_path)

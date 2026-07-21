@@ -99,7 +99,12 @@ def sanitize_filename(filename: str) -> str:
 
 def get_course_library_path(course_code: str) -> str:
     """Devuelve el directorio de librería para un curso."""
-    return path.join(DIRECTORIO_ARCHIVOS_PUBLICOS, "files", course_code, "library")
+    safe_code = course_code.replace("/", "_").replace("\\", "_").replace("..", "_")
+    base = path.realpath(DIRECTORIO_ARCHIVOS_PUBLICOS)
+    result = path.realpath(path.join(base, "files", safe_code, "library"))
+    if not result.startswith(base + path.sep) and result != base:
+        raise ValueError("Invalid course code path")
+    return result
 
 
 def ensure_course_library_directory(course_code: str) -> str:
