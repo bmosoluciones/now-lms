@@ -173,12 +173,7 @@ def edit_resource(ulid: str) -> str | Response:
             recurso.publico = form.publico.data
             recurso.tipo = form.tipo.data
 
-            # Handle HTML preformatted flag - only set if global config allows it
-            config = database.session.execute(database.select(Configuracion)).scalars().first()
-            if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
-                recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
-            else:
-                recurso.descripcion_html_preformateado = False
+            recurso.descripcion_html_preformateado = _html_preformatted_value(form)
         else:
             return abort(403)
 
