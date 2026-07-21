@@ -189,7 +189,7 @@ def elimina_logo_usuario(ulid: str) -> Response:
 
 @user_profile.route("/perfil/cambiar_contraseña/<ulid>", methods=["GET", "POST"])
 @login_required
-def cambiar_contraseña(ulid: str) -> str | Response:
+def cambiar_contrasena(ulid: str) -> str | Response:
     """Cambiar contraseña del usuario."""
     if current_user.id != ulid:
         abort(403)

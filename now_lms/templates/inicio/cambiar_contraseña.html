@@ -18,7 +18,7 @@
 
             <div class="container px-4 py-5" id="icon-grid">
                 <h4 class="pb-2 border-bottom">{{ _('Cambiar Contraseña del usuario') }}: {{ usuario.usuario }}</h4>
-                <form method="post" action="{{ url_for('user_profile.cambiar_contraseña', ulid=usuario.id) }}">
+                <form method="post" action="{{ url_for('user_profile.cambiar_contrasena', ulid=usuario.id) }}">
                     {{ form.csrf_token }} {{ render_form_errors(form) }}
 
                     <div class="row g-3">
