@@ -94,6 +94,30 @@ def test_build_specs_shapes():
     assert by_code["CCA-F"]["mock_questions"] and len(by_code["CCA-F"]["mock_questions"]) == 60
 
 
+def test_weighted_exam_series_non_overlapping():
+    # 300 synthetic questions, 60 per domain, weighted evenly -> whole exams of 50.
+    questions = []
+    for d, key in enumerate(["agentic", "claudecode", "prompt", "tools", "context"], start=1):
+        for n in range(60):
+            questions.append({"domainKey": key, "domain": d, "text": f"{key}-{n}", "id": f"{key}-{n}"})
+    weights = {"agentic": 20, "claudecode": 20, "prompt": 20, "tools": 20, "context": 20}
+    exams = seed._weighted_exam_series(questions, weights, per_exam=50, max_exams=5)
+    assert len(exams) == 5  # 300 questions / 50 per exam
+    assert all(len(e) == 50 for e in exams)
+    ids = [q["id"] for e in exams for q in e]
+    assert len(ids) == len(set(ids))  # no question reused across exams
+
+
+def test_build_specs_includes_rick_practice_exams():
+    """When Rick's bank is vendored, Course C gains full-length practice exams."""
+    if not seed._load_bank_optional("rick-practice-exams.json"):
+        pytest.skip("Rick practice-exam bank not vendored in this checkout")
+    cca_f = {s["codigo"]: s for s in seed._build_specs()}["CCA-F"]
+    assert len(cca_f["extra_exams"]) >= 1
+    for exam in cca_f["extra_exams"]:
+        assert len(exam["questions"]) == 60
+
+
 # --------------------------------------------------------------------------- #
 # Integration (in-memory DB via the self-contained cca_db fixture)
 # --------------------------------------------------------------------------- #
