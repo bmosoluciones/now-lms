@@ -17,6 +17,7 @@ ENV NOW_LMS_THEMES_DIR=/app/themes
 WORKDIR /app
 
 COPY ./now_lms/static/package.json /app/now_lms/static/package.json
+COPY ./now_lms/static/package-lock.json /app/now_lms/static/package-lock.json
 COPY requirements.lock /app/requirements.lock
 
 RUN microdnf update -y --nodocs --best --refresh \
