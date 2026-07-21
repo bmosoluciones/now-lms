@@ -91,6 +91,51 @@ def validate_paypal_configuration(client_id: str, client_secret: str, sandbox: b
         return {"valid": False, "message": f"Error al validar configuración: {str(e)}"}
 
 
+def _paypal_credentials(config_data, descifrar_secreto) -> tuple[str, str] | None:
+    """Select and decrypt credentials for the configured PayPal environment."""
+    sandbox = config_data.sandbox
+    client_id = config_data.paypal_sandbox if sandbox else config_data.paypal_id
+    encrypted_secret = config_data.paypal_sandbox_secret if sandbox else config_data.paypal_secret
+    environment = "sandbox" if sandbox else "production"
+    if not client_id:
+        logging.error(f"PayPal client ID not configured for {environment} mode")
+        return None
+    if not encrypted_secret:
+        logging.error(f"PayPal client secret not configured for {environment} mode")
+        return None
+    try:
+        client_secret = descifrar_secreto(encrypted_secret)
+    except Exception:
+        logging.exception("Failed to decrypt PayPal client secret")
+        return None
+    if not client_secret:
+        logging.error("PayPal client secret decryption returned no value")
+        return None
+    return client_id, client_secret
+
+
+def _request_paypal_access_token(config_data, credentials: tuple[str, str]) -> str | None:
+    """Request an OAuth token from PayPal."""
+    client_id, client_secret = credentials
+    base_url = PAYPAL_SANDBOX_API_URL if config_data.sandbox else PAYPAL_PRODUCTION_API_URL
+    response = requests.post(
+        f"{base_url}/v1/oauth2/token",
+        headers={"Accept": CONTENT_TYPE_JSON, "Accept-Language": "en_US"},
+        data="grant_type=client_credentials",
+        auth=(client_id, client_secret),
+        timeout=20,
+    )
+    if response.status_code != 200:
+        logging.error(f"Failed to get PayPal access token: HTTP {response.status_code} - {response.text}")
+        return None
+    access_token = response.json().get("access_token")
+    if not access_token:
+        logging.error("PayPal access token missing in response")
+        return None
+    logging.info(f"Successfully obtained PayPal access token ({'sandbox' if config_data.sandbox else 'production'})")
+    return access_token
+
+
 def get_paypal_access_token() -> str | None:
     """Get PayPal access token for API calls."""
     try:
@@ -102,53 +147,8 @@ def get_paypal_access_token() -> str | None:
             return None
 
         config_data = paypal_config[0]
-
-        # Get the appropriate client ID and secret based on sandbox mode
-        client_id = config_data.paypal_sandbox if config_data.sandbox else config_data.paypal_id
-        client_secret_encrypted = config_data.paypal_sandbox_secret if config_data.sandbox else config_data.paypal_secret
-
-        if not client_id:
-            logging.error(f"PayPal client ID not configured for {'sandbox' if config_data.sandbox else 'production'} mode")
-            return None
-
-        if not client_secret_encrypted:
-            logging.error(f"PayPal client secret not configured for {'sandbox' if config_data.sandbox else 'production'} mode")
-            return None
-
-        # Decrypt the client secret
-        try:
-            client_secret = descifrar_secreto(client_secret_encrypted)
-            if client_secret is None:
-                raise ValueError("Decryption returned None")
-        except Exception:
-            logging.exception("Failed to decrypt PayPal client secret")
-            return None
-
-        # Get access token from PayPal
-        base_url = PAYPAL_SANDBOX_API_URL if config_data.sandbox else PAYPAL_PRODUCTION_API_URL
-        token_url = f"{base_url}/v1/oauth2/token"
-
-        headers = {
-            "Accept": CONTENT_TYPE_JSON,
-            "Accept-Language": "en_US",
-        }
-
-        data = "grant_type=client_credentials"
-
-        response = requests.post(token_url, headers=headers, data=data, auth=(client_id, client_secret), timeout=20)
-
-        if response.status_code == 200:
-            token_data = response.json()
-            access_token = token_data.get("access_token")
-            if access_token:
-                logging.info(
-                    f"Successfully obtained PayPal access token ({'sandbox' if config_data.sandbox else 'production'})"
-                )
-                return access_token
-            logging.error("PayPal access token missing in response")
-            return None
-        logging.error(f"Failed to get PayPal access token: HTTP {response.status_code} - {response.text}")
-        return None
+        credentials = _paypal_credentials(config_data, descifrar_secreto)
+        return _request_paypal_access_token(config_data, credentials) if credentials else None
 
     except Exception:
         logging.exception("Exception while getting PayPal access token")
