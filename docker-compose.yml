@@ -59,7 +59,11 @@ services:
     ports:
       - "127.0.0.1:8080:8080"        # Caddy reverse_proxy target; never public-bound
     healthcheck:
-      test: ["CMD-SHELL", "python3.12 -c \"import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8080/health').status==200 else 1)\""]
+      # Send X-Forwarded-Proto: https (as Caddy does) so NOW_LMS_FORCE_HTTPS does not
+      # 301-redirect the probe to https://localhost/ — urllib follows that redirect into a
+      # hang, tripping the timeout and flapping the container unhealthy despite a live app.
+      # timeout=5 caps any future redirect/stall well under the healthcheck timeout below.
+      test: ["CMD-SHELL", "python3.12 -c \"import urllib.request,sys; req=urllib.request.Request('http://127.0.0.1:8080/health', headers={'X-Forwarded-Proto': 'https'}); sys.exit(0 if urllib.request.urlopen(req, timeout=5).status==200 else 1)\""]
       interval: 30s
       timeout: 10s
       retries: 5
