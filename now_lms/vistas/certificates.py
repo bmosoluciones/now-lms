@@ -441,6 +441,50 @@ def certificacion_crear(course_id: str, user: str, template: str) -> Response:
     return redirect(url_for("certificate.certificado", ulid=cert.id))
 
 
+def _build_certificate_from_form(form: EmitCertificateForm) -> Certificacion | None:
+    """Validate certificate prerequisites and build the pending model."""
+    if form.content_type.data == "course":
+        if not form.curso.data:
+            flash("Por favor selecciona un curso.", "warning")
+            return None
+        from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
+
+        can_receive, reason = can_user_receive_certificate(form.curso.data, form.usuario.data)
+        if not can_receive:
+            flash(f"No se puede emitir el certificado: {reason}", "warning")
+            return None
+        curso_obj = database.session.execute(
+            database.select(Curso).filter_by(codigo=form.curso.data)
+        ).scalar_one_or_none()
+        return Certificacion(
+            usuario=form.usuario.data,
+            curso=form.curso.data,
+            master_class_id=None,
+            certificado=form.template.data,
+            nota=form.nota.data,
+            expires_at=curso_obj.calculate_expiration_date() if curso_obj else None,
+        )
+
+    if not form.master_class.data:
+        flash("Por favor selecciona una clase magistral.", "warning")
+        return None
+    enrollment = database.session.execute(
+        database.select(MasterClassEnrollment).filter_by(
+            master_class_id=form.master_class.data, user_id=form.usuario.data
+        )
+    ).first()
+    if not enrollment or not enrollment[0].is_confirmed:
+        flash("El usuario debe estar inscrito y confirmado en la clase magistral.", "warning")
+        return None
+    return Certificacion(
+        usuario=form.usuario.data,
+        curso=None,
+        master_class_id=form.master_class.data,
+        certificado=form.template.data,
+        nota=form.nota.data,
+    )
+
+
 @certificate.route("/certificate/release/", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("instructor")
@@ -461,56 +505,9 @@ def certificacion_generar() -> str | Response:
     form.template.choices = generate_template_choices()
 
     if form.validate_on_submit() or request.method == "POST":
-        content_type = form.content_type.data
-
-        # Validate that either curso or master_class is selected based on content_type
-        if content_type == "course" and not form.curso.data:
-            flash("Por favor selecciona un curso.", "warning")
+        cert = _build_certificate_from_form(form)
+        if cert is None:
             return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
-        if content_type == "masterclass" and not form.master_class.data:
-            flash("Por favor selecciona una clase magistral.", "warning")
-            return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
-
-        # Check if user meets requirements for courses
-        if content_type == "course":
-            from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
-
-            can_receive, reason = can_user_receive_certificate(form.curso.data, form.usuario.data)
-            if not can_receive:
-                flash(f"No se puede emitir el certificado: {reason}", "warning")
-                return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
-
-            # Calculate expiration date if required
-            curso_obj = database.session.execute(database.select(Curso).filter_by(codigo=form.curso.data)).scalar_one_or_none()
-            expires_at = curso_obj.calculate_expiration_date() if curso_obj else None
-
-            cert = Certificacion(
-                usuario=form.usuario.data,
-                curso=form.curso.data,
-                master_class_id=None,
-                certificado=form.template.data,
-                nota=form.nota.data,
-                expires_at=expires_at,
-            )
-        else:  # masterclass
-            # For master classes, check if user is enrolled and confirmed
-            enrollment = database.session.execute(
-                database.select(MasterClassEnrollment).filter_by(
-                    master_class_id=form.master_class.data, user_id=form.usuario.data
-                )
-            ).first()
-
-            if not enrollment or not enrollment[0].is_confirmed:
-                flash("El usuario debe estar inscrito y confirmado en la clase magistral.", "warning")
-                return render_template(TEMPLATE_EMITIR_CERTIFICADO, form=form)
-
-            cert = Certificacion(
-                usuario=form.usuario.data,
-                curso=None,
-                master_class_id=form.master_class.data,
-                certificado=form.template.data,
-                nota=form.nota.data,
-            )
 
         try:
             database.session.add(cert)
