@@ -74,7 +74,7 @@
             /* ── buttons ── */
             .isl-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; min-height: 44px;
                 padding: 0.75rem 1.5rem; border-radius: 0.55rem; font-weight: 700; font-size: 0.9rem; cursor: pointer;
-                border: 1px solid transparent; transition: all 0.25s cubic-bezier(0.22,1,0.36,1); }
+                white-space: nowrap; border: 1px solid transparent; transition: all 0.25s cubic-bezier(0.22,1,0.36,1); }
             .isl-btn-primary { background: rgb(var(--ember)); color: rgb(9 9 11); box-shadow: 0 0 20px rgba(249,115,22,0.25); }
             .isl-btn-primary:hover { background: rgb(var(--ember-hi)); box-shadow: 0 0 30px rgba(249,115,22,0.4); transform: translateY(-1px); }
             .isl-btn-secondary { background: transparent; border-color: rgb(113 113 122); color: rgb(228 228 231); }
@@ -117,7 +117,8 @@
                 background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
             .isl-hero .isl-wrap { position: relative; z-index: 1; }
             .isl-hero h1 { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em; line-height: 1.08;
-                font-size: clamp(2.4rem, 5.4vw, 3.9rem); color: rgb(var(--ink)); max-width: 18ch; margin: 1.5rem auto 1.4rem; }
+                font-size: clamp(2rem, 5vw, 3.9rem); color: rgb(var(--ink)); max-width: 18ch; margin: 1.5rem auto 1.4rem;
+                text-wrap: balance; }
             .isl-hero .lede { font-size: clamp(1rem, 1.5vw, 1.18rem); color: rgb(var(--ink-dim)); max-width: 56ch; margin: 0 auto; }
             .isl-hero .lede b { color: rgb(var(--ink)); font-weight: 600; }
             .isl-cta-row { display: flex; gap: 0.85rem; flex-wrap: wrap; justify-content: center; margin-top: 2.5rem; }
@@ -186,6 +187,23 @@
             .isl-footer .fc { font-size: 0.75rem; letter-spacing: 0.04em; color: rgb(var(--ink-faint)); }
             .isl-footer .fc a { color: rgb(var(--ember-hi)); }
 
+            /* ── mobile ── */
+            @media (max-width: 640px) {
+                .isl-wrap { padding: 0 1.25rem; }
+                .isl-hero { padding: 5rem 0 4rem; }
+                .isl-hero h1 { font-size: clamp(1.95rem, 8.4vw, 2.4rem); max-width: 100%; margin: 1.1rem auto; }
+                .isl-hero .lede { font-size: 1rem; }
+                .isl-section, .isl-final { padding: 4.5rem 0; }
+                .isl-cta-row .isl-btn { flex: 1 1 auto; }
+            }
+            @media (max-width: 600px) {
+                .isl-header .isl-wrap { padding: 0 1rem; height: 3.9rem; }
+                .isl-brand .word { display: none; }
+                .isl-nav { gap: 0.5rem; }
+                .isl-nav-actions { gap: 0.5rem; }
+                .isl-nav .isl-btn-sm { padding: 0.5rem 0.85rem; font-size: 0.78rem; min-height: 40px; }
+            }
+
             @media (prefers-reduced-motion: reduce) {
                 .isl-root * { transition: none !important; animation: none !important; }
                 html { scroll-behavior: auto; }
@@ -228,7 +246,7 @@
                     <div class="isl-eyebrow" aria-hidden="true">
                         <span class="rule"></span><span class="label">building intelligence · delivering impact</span><span class="rule"></span>
                     </div>
-                    <h1>Learn to build <span class="isl-hl">AI-native software</span>, the way we ship it.</h1>
+                    <h1>Learn to build AI-native software, the way we <span class="isl-hl">ship&nbsp;it</span>.</h1>
                     <p class="lede">
                         Practitioner training from the team behind open-source developer tooling used by thousands of
                         engineers. <b>No theory for theory's sake</b> — you learn the exact workflows, patterns, and
