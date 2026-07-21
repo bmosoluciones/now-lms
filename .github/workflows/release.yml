@@ -39,7 +39,7 @@ jobs:
                   CI: True
                   LOG_LEVEL: TRACE
               run: |
-                  python -m pip install -r test.txt
+                  python -m pip install --require-hashes -r test.lock
                   python -m pip install --no-deps -e .
             - name: Test with SQLite
               env:

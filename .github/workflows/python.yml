@@ -25,7 +25,7 @@ jobs:
                   python-version: ${{ matrix.python-version }}
             - name: Install dependencies
               run: |
-                  python -m pip install -r test.txt
+                  python -m pip install --require-hashes -r test.lock
             - name: Check python package
               run: |
                   python -m build
