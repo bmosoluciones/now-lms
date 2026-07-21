@@ -671,7 +671,24 @@ def initial_setup(with_examples=False, with_tests=False, flask_app=None):
         # alembic.upgrade() from base, and collide with the schema create_all() already made
         # (e.g. an unguarded "CREATE TABLE external_api_keys" that already exists). Stamping
         # keeps subsequent AUTO_MIGRATE upgrades incremental — only genuinely new migrations run.
-        alembic.stamp()
+        #
+        # Stamp with a short-lived, explicitly-scoped connection rather than Alembic.stamp()
+        # (Flask-Alembic's wrapper). Flask-Alembic caches the connection it stamps with in a
+        # per-app cache and registers a teardown_appcontext callback that *invalidates* that
+        # connection when the app context ends. For a SQLite ":memory:" database (SQLAlchemy
+        # uses StaticPool for it -- a single physical connection for the engine's whole
+        # lifetime), invalidating that one connection destroys the only connection to the
+        # database, silently wiping every table create_all() just created the moment any code
+        # later opens a *new* app context for this app -- exactly what the standard pytest
+        # fixtures do right after init_app() returns. A connection opened and closed normally
+        # via `with database.engine.connect()` returns to the pool without being invalidated.
+        from alembic.runtime.migration import MigrationContext
+
+        heads = alembic.script_directory.get_heads()
+        with database.engine.connect() as connection:
+            context = MigrationContext.configure(connection)
+            context.stamp(alembic.script_directory, heads)
+            connection.commit()
         log.info("Alembic stamped to head for the freshly created schema.")
 
         system_info(app_to_use)
