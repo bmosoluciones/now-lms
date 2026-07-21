@@ -9,6 +9,7 @@ from __future__ import annotations
 # Standard library
 # ---------------------------------------------------------------------------------------
 import logging
+from typing import Any, cast
 
 # ---------------------------------------------------------------------------------------
 # Third-party libraries
@@ -266,7 +267,7 @@ def _validate_payment_confirmation() -> tuple[dict[str, object] | None, tuple[Fl
     }, None
 
 
-def _payment_record(payment_data: dict[str, object]) -> tuple[object, tuple[FlaskResponse, int] | None]:
+def _payment_record(payment_data: dict[str, object]) -> tuple[Any, tuple[FlaskResponse, int] | None]:
     """Find or create the local payment record for a verified order."""
     order_id = payment_data["order_id"]
     course_code = payment_data["course_code"]
@@ -301,7 +302,7 @@ def _payment_record(payment_data: dict[str, object]) -> tuple[object, tuple[Flas
     return pago, None
 
 
-def _save_payment_enrollment(pago: object, course_code: str) -> None:
+def _save_payment_enrollment(pago: Any, course_code: str) -> None:
     """Persist payment and activate the student's course enrollment."""
     from now_lms.db import EstudianteCurso
 
@@ -323,7 +324,7 @@ def _save_payment_enrollment(pago: object, course_code: str) -> None:
     database.session.commit()
 
 
-def _update_coupon_usage(pago: object, course_code: str, order_id: str) -> None:
+def _update_coupon_usage(pago: Any, course_code: str, order_id: str) -> None:
     """Increment coupon usage after a successful payment."""
     if not pago.descripcion or "Cupón aplicado:" not in pago.descripcion:
         return
@@ -345,8 +346,8 @@ def _update_coupon_usage(pago: object, course_code: str, order_id: str) -> None:
 
 def _process_confirmed_payment(payment_data: dict[str, object]) -> tuple[FlaskResponse, int]:
     """Complete the local payment and enrollment transaction."""
-    order_id = payment_data["order_id"]
-    course_code = payment_data["course_code"]
+    order_id = cast(str, payment_data["order_id"])
+    course_code = cast(str, payment_data["course_code"])
     pago, already_processed = _payment_record(payment_data)
     if already_processed:
         return already_processed

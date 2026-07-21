@@ -140,6 +140,8 @@ def edit_perfil(ulid: str) -> str | Response:
         abort(403)
 
     usuario_ = database.session.get(Usuario, ulid)
+    if usuario_ is None:
+        abort(404)
     form = UserForm(obj=usuario_)
 
     if request.method == "POST":

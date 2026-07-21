@@ -221,6 +221,8 @@ def delete_program(ulid: str) -> Response:
 def edit_program(ulid: str) -> str | Response:
     """Editar programa."""
     programa = database.session.execute(database.select(Programa).filter(Programa.id == ulid)).scalars().first()
+    if programa is None:
+        abort(404)
 
     form = ProgramaForm(
         nombre=programa.nombre,
