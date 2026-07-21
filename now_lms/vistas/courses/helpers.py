@@ -46,6 +46,14 @@ from now_lms.vistas.evaluation_helpers import can_user_receive_certificate
 from .data import SAFE_FILE_EXTENSIONS, DANGEROUS_FILE_EXTENSIONS
 
 
+_COURSE_CODE_RE = re.compile(r"^[a-zA-Z0-9_.-]+$")
+
+
+def _validate_course_code(course_code: str) -> None:
+    if not _COURSE_CODE_RE.match(course_code):
+        raise ValueError(f"Invalid course code: {course_code!r}")
+
+
 def validate_downloadable_file(file, max_size_mb: int = 1) -> tuple[bool, str]:
     """Valida archivo subido para recursos descargables."""
     if not file or not getattr(file, "filename", None):
@@ -99,9 +107,9 @@ def sanitize_filename(filename: str) -> str:
 
 def get_course_library_path(course_code: str) -> str:
     """Devuelve el directorio de librería para un curso."""
-    safe_code = course_code.replace("/", "_").replace("\\", "_").replace("..", "_")
+    _validate_course_code(course_code)
     base = path.realpath(DIRECTORIO_ARCHIVOS_PUBLICOS)
-    result = path.realpath(path.join(base, "files", safe_code, "library"))
+    result = path.realpath(path.join(base, "files", course_code, "library"))
     if not result.startswith(base + path.sep) and result != base:
         raise ValueError("Invalid course code path")
     return result
