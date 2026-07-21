@@ -43,6 +43,17 @@ ADMIN_PAYPAL_TEMPLATE = "admin/paypal.html"
 setting = Blueprint("setting", __name__, template_folder=DIRECTORIO_PLANTILLAS)
 
 
+def _save_theme_asset(config: Style, field_name: str, filename: str, config_attribute: str) -> None:
+    """Save an optional theme asset and mark it as configured."""
+    if field_name not in request.files:
+        return
+    try:
+        if images.save(request.files[field_name], name=filename):
+            setattr(config, config_attribute, True)
+    except UploadNotAllowed:
+        log.warning("An error occurred while updating the website %s.", field_name)
+
+
 def invalidar_cache() -> bool:
     """
     Invalida comprensivamente todas las entradas de la cache relacionadas con la configuración del sistema.
@@ -126,23 +137,8 @@ def personalizacion() -> str | Response:
         theme_changed = old_theme != new_theme
         config.theme = new_theme
 
-        if "logo" in request.files:
-            try:
-                picture_file = images.save(request.files["logo"], name="logotipo.jpg")
-                if picture_file:
-                    config.custom_logo = True
-
-            except UploadNotAllowed:
-                log.warning("An error occurred while updating the website logo.")
-
-        if "favicon" in request.files:
-            try:
-                picture_file = images.save(request.files["favicon"], name="favicon.png")
-                if picture_file:
-                    config.custom_favicon = True
-
-            except UploadNotAllowed:
-                log.warning("An error occurred while updating the website favicon.")
+        _save_theme_asset(config, "logo", "logotipo.jpg", "custom_logo")
+        _save_theme_asset(config, "favicon", "favicon.png", "custom_favicon")
 
         try:
             database.session.commit()
