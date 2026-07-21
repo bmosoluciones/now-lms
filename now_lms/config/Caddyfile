@@ -1,0 +1,16 @@
+:8080 {
+    encode gzip
+
+    handle_path /static/* {
+        root * /app/now_lms/static
+        file_server
+        header Cache-Control "public, max-age=86400"
+        header -Server
+    }
+
+    reverse_proxy localhost:8000 {
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+        header_up X-Forwarded-Host {host}
+    }
+}
