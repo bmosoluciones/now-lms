@@ -716,6 +716,15 @@ def initial_setup(with_examples=False, with_tests=False, flask_app=None):
                 raise RuntimeError(f"Required session table '{session_table}' is missing.")
             log.info(f"Verified that session table '{session_table}' exists in database schema.")
 
+        # create_all() above builds the full current-model schema (the migration "head").
+        # Stamp Alembic to head so this fresh database is recorded as already at the latest
+        # revision. Without this, a later boot would see a populated database, run
+        # alembic.upgrade() from base, and collide with the schema create_all() already made
+        # (e.g. an unguarded "CREATE TABLE external_api_keys" that already exists). Stamping
+        # keeps subsequent AUTO_MIGRATE upgrades incremental — only genuinely new migrations run.
+        alembic.stamp()
+        log.info("Alembic stamped to head for the freshly created schema.")
+
         system_info(app_to_use)
         log.debug("Database schema created successfully.")
         log.debug("Loading sample data.")
