@@ -255,3 +255,50 @@ def test_cambiar_curso_publico_inexistente_redirect_no_change(app, db_session):
     r = client.get("/course/change_curse_public?curse=nope", follow_redirects=False)
     assert r.status_code in REDIRECT_STATUS_CODES
     assert db_session.query(Curso).filter_by(codigo="nope").count() == 0
+
+
+def test_incrementar_indice_seccion_swap_order(app, db_session):
+    _crear_instructor(db_session)
+    curso = _crear_curso_minimo(db_session, code="c_inc_swap")
+    client = _login_instructor(app)
+
+    s1 = CursoSeccion(curso=curso.codigo, nombre="S1", descripcion="D", indice=1, estado=True)
+    s2 = CursoSeccion(curso=curso.codigo, nombre="S2", descripcion="D", indice=2, estado=True)
+    db_session.add_all([s1, s2])
+    db_session.commit()
+
+    r = client.get(f"/course/{curso.codigo}/seccion/increment/1", follow_redirects=False)
+    assert r.status_code in REDIRECT_STATUS_CODES
+
+    indices = [
+        x.indice
+        for x in db_session.query(CursoSeccion)
+        .filter_by(curso=curso.codigo)
+        .order_by(CursoSeccion.indice)
+        .all()
+    ]
+    assert indices == [1, 2]
+
+    s1_new = db_session.get(CursoSeccion, s1.id)
+    s2_new = db_session.get(CursoSeccion, s2.id)
+    assert s1_new.indice == 2
+    assert s2_new.indice == 1
+
+
+def test_reducir_indice_seccion_swap_order(app, db_session):
+    _crear_instructor(db_session)
+    curso = _crear_curso_minimo(db_session, code="c_dec_swap")
+    client = _login_instructor(app)
+
+    s1 = CursoSeccion(curso=curso.codigo, nombre="S1", descripcion="D", indice=1, estado=True)
+    s2 = CursoSeccion(curso=curso.codigo, nombre="S2", descripcion="D", indice=2, estado=True)
+    db_session.add_all([s1, s2])
+    db_session.commit()
+
+    r = client.get(f"/course/{curso.codigo}/seccion/decrement/2", follow_redirects=False)
+    assert r.status_code in REDIRECT_STATUS_CODES
+
+    s1_new = db_session.get(CursoSeccion, s1.id)
+    s2_new = db_session.get(CursoSeccion, s2.id)
+    assert s2_new.indice == 1
+    assert s1_new.indice == 2
