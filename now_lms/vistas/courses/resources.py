@@ -383,11 +383,7 @@ def editar_recurso_html(course_code: str, seccion: str, resource_id: str) -> str
         recurso.external_code = form.html_externo.data
         recurso.modificado_por = current_user.usuario
 
-        config = database.session.execute(database.select(Configuracion)).scalars().first()
-        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
-            recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
-        else:
-            recurso.descripcion_html_preformateado = False
+        recurso.descripcion_html_preformateado = _get_html_preformateado(form)
 
         try:
             database.session.commit()
@@ -472,11 +468,7 @@ def editar_recurso_youtube_video(course_code: str, seccion: str, resource_id: st
         recurso.modificado = datetime.now(timezone.utc)
         recurso.modificado_por = current_user.usuario
 
-        config = database.session.execute(database.select(Configuracion)).scalars().first()
-        if config and config.enable_html_preformatted_descriptions and hasattr(form, "descripcion_html_preformateado"):
-            recurso.descripcion_html_preformateado = form.descripcion_html_preformateado.data or False
-        else:
-            recurso.descripcion_html_preformateado = False
+        recurso.descripcion_html_preformateado = _get_html_preformateado(form)
 
         try:
             database.session.commit()
