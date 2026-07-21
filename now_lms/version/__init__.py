@@ -32,15 +32,15 @@ PATCH = "4"
 
 # <--------------------------------------------------------------------------> #
 # Quick fix
-POST = ""
+POST = None
 
 # <--------------------------------------------------------------------------> #
 # Pre release not for production
-PRERELEASE = ""
+PRERELEASE = None
 
 # <--------------------------------------------------------------------------> #
 # Date of release
-REVISION = ""
+REVISION = None
 
 # <--------------------------------------------------------------------------> #
 # Release string
@@ -60,9 +60,10 @@ REVISION = ""
 
 BASE_VERSION = MAYOR + "." + MENOR + "." + PATCH
 
-if PRERELEASE:
+if PRERELEASE is not None:
     VERSION = BASE_VERSION + PRERELEASE
-elif POST:
-    VERSION = BASE_VERSION + ".post" + POST + ("." + REVISION if REVISION else "")
+elif POST is not None:
+    revision_part = "." + REVISION if REVISION is not None else ""
+    VERSION = BASE_VERSION + ".post" + POST + revision_part
 else:
     VERSION = BASE_VERSION
