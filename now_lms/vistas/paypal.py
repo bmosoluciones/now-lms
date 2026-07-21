@@ -120,7 +120,7 @@ def get_paypal_access_token() -> str | None:
             client_secret = descifrar_secreto(client_secret_encrypted)
             if client_secret is None:
                 raise ValueError("Decryption returned None")
-        except Exception as e:
+        except Exception:
             logging.exception("Failed to decrypt PayPal client secret")
             return None
 
@@ -459,7 +459,7 @@ def resume_payment(payment_id: str) -> Response:
         # Redirect to the payment page for this course
         return redirect(url_for("paypal.payment_page", course_code=pago.curso))
 
-    except Exception as e:
+    except Exception:
         logging.exception("Error resuming payment")
         flash("Error al reanudar el pago.", "error")
         return redirect(url_for(HOME_PAGE_ROUTE))
@@ -528,7 +528,7 @@ def get_client_id() -> Response | tuple[FlaskResponse, int]:
 
         return jsonify({"client_id": client_id, "sandbox": paypal_config.sandbox, "currency": get_site_currency()}), 200
 
-    except Exception as e:
+    except Exception:
         logging.exception("Failed to get PayPal client ID")
         return jsonify({"error": "Configuration error"}), 500
 
@@ -597,7 +597,7 @@ def payment_status(course_code: str) -> tuple[FlaskResponse, int]:
             200,
         )
 
-    except Exception as e:
+    except Exception:
         logging.exception("Error getting payment status")
         return jsonify({"error": "Internal server error"}), 500
 
@@ -635,6 +635,6 @@ def debug_config() -> tuple[FlaskResponse, int]:
             200,
         )
 
-    except Exception as e:
+    except Exception:
         logging.exception("Error in debug config")
         return jsonify({"error": "Internal server error"}), 500
