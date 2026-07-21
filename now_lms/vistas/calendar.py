@@ -150,7 +150,7 @@ def _generate_ics_content(events) -> str:
         # If event has timezone info, handle accordingly
         if event.timezone and event.timezone != "UTC":
             try:
-                from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+                from zoneinfo import ZoneInfo
 
                 local_tz = ZoneInfo(event.timezone)
 
@@ -158,7 +158,7 @@ def _generate_ics_content(events) -> str:
                     start_time = start_time.replace(tzinfo=local_tz).astimezone(datetime.timezone.utc)
                 if end_time.tzinfo is None:
                     end_time = end_time.replace(tzinfo=local_tz).astimezone(datetime.timezone.utc)
-            except (ZoneInfoNotFoundError, KeyError):
+            except KeyError:
                 pass
 
         # Format datetime for ICS (UTC)
