@@ -221,9 +221,7 @@ def get_upcoming_events_for_user(user_id: str, limit: int = 5) -> list[UserEvent
         .order_by(UserEvent.start_time)
     )
 
-    # Only apply limit if it's positive to avoid MySQL syntax errors
-    if limit > 0:
-        query = query.limit(limit)
+    query = query.limit(limit)
 
     events = database.session.execute(query).scalars().all()
     return list(events)

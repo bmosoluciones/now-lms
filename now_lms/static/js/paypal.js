@@ -290,8 +290,6 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('beforeunload', function(e) {
     if (currentPaymentState === PaymentState.PROCESSING) {
         e.preventDefault();
-        e.returnValue = 'Un pago está siendo procesado. ¿Está seguro de que desea salir?';
-        return e.returnValue;
     }
 });
 
