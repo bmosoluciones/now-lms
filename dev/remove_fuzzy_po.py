@@ -1,3 +1,4 @@
+import os
 import sys
 import re
 
@@ -37,4 +38,11 @@ if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Uso: python remove_fuzzy_po.py <archivo.po>")
         sys.exit(1)
-    limpiar_fuzzy_po(sys.argv[1])
+    ruta_po = os.path.realpath(sys.argv[1])
+    if not ruta_po.startswith(os.path.realpath(".")):
+        print("Error: La ruta debe estar dentro del directorio actual", file=sys.stderr)
+        sys.exit(1)
+    if not os.path.isfile(ruta_po):
+        print(f"Error: Archivo no encontrado: {ruta_po}", file=sys.stderr)
+        sys.exit(1)
+    limpiar_fuzzy_po(ruta_po)
