@@ -6,7 +6,7 @@
 # =======================================================================================
 FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4 AS frontend
 
-RUN microdnf install -y --nodocs --best nodejs npm \
+RUN microdnf install -y --nodocs --best nodejs npm findutils \
     && microdnf clean all
 
 WORKDIR /build
@@ -29,7 +29,7 @@ RUN cd now_lms/static && npm ci --omit=dev --ignore-scripts --no-fund \
 FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4 AS python-builder
 
 RUN microdnf install -y --nodocs --best --refresh \
-       python3.12 python3.12-pip python3.12-cryptography \
+       python3.12 python3.12-pip python3.12-cryptography findutils \
     && microdnf clean all
 
 WORKDIR /build
