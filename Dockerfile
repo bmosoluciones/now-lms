@@ -33,10 +33,12 @@ RUN pybabel compile -d /app/now_lms/translations
 
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 
-RUN chmod +x docker-entry-point.sh && chmod +x /usr/bin/tini
+RUN chmod +x docker-entry-point.sh && chmod +x /usr/bin/tini \
+    && useradd -u 1001 -r -g 0 -d /app -s /sbin/nologin -c "App User" appuser
 
 VOLUME ["/app/data", "/app/themes"]
 
 EXPOSE 8080
+USER 1001
 ENTRYPOINT [ "/usr/bin/tini", "--", "/app/docker-entry-point.sh" ]
 CMD ["/bin/sh"]
