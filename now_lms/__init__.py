@@ -682,14 +682,28 @@ def initial_setup(with_examples=False, with_tests=False, flask_app=None):
         # later opens a *new* app context for this app -- exactly what the standard pytest
         # fixtures do right after init_app() returns. A connection opened and closed normally
         # via `with database.engine.connect()` returns to the pool without being invalidated.
-        from alembic.runtime.migration import MigrationContext
+        #
+        # Only stamp when this Flask app is actually registered with the Alembic
+        # extension (app.extensions["alembic"], set by alembic.init_app() during
+        # inicializa_extenciones_terceros() -- every real app built via create_app()
+        # has this). A caller that constructs a bare Flask() and calls
+        # initial_setup(flask_app=...) directly, bypassing create_app() entirely
+        # (existing white-box unit tests do this to exercise this function in
+        # isolation), never registered with the extension; accessing any of its
+        # per-app-cached properties for such an app raises KeyError. Skip stamping
+        # gracefully in that case -- there is no Alembic-tracked revision to stamp
+        # for an app the extension doesn't know about.
+        if "alembic" in app_to_use.extensions:
+            from alembic.runtime.migration import MigrationContext
 
-        heads = alembic.script_directory.get_heads()
-        with database.engine.connect() as connection:
-            context = MigrationContext.configure(connection)
-            context.stamp(alembic.script_directory, heads)
-            connection.commit()
-        log.info("Alembic stamped to head for the freshly created schema.")
+            heads = alembic.script_directory.get_heads()
+            with database.engine.connect() as connection:
+                context = MigrationContext.configure(connection)
+                context.stamp(alembic.script_directory, heads)
+                connection.commit()
+            log.info("Alembic stamped to head for the freshly created schema.")
+        else:
+            log.trace("Skipping Alembic stamp: this Flask app is not registered with the Alembic extension.")
 
         system_info(app_to_use)
         log.debug("Database schema created successfully.")
