@@ -105,7 +105,7 @@ def usuarios() -> str:
     )
 
 
-@admin_profile.route("/admin/users/set_active/<user_id>", methods=["GET"])
+@admin_profile.route("/admin/users/set_active/<user_id>", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
 def activar_usuario(user_id: str) -> Response:
@@ -124,7 +124,7 @@ def activar_usuario(user_id: str) -> Response:
     return redirect(url_for(ADMIN_USERS_ROUTE))
 
 
-@admin_profile.route("/admin/users/set_inactive/<user_id>", methods=["GET"])
+@admin_profile.route("/admin/users/set_inactive/<user_id>", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
 def inactivar_usuario(user_id: str) -> Response:
@@ -143,7 +143,7 @@ def inactivar_usuario(user_id: str) -> Response:
     return redirect(url_for(ADMIN_USERS_ROUTE))
 
 
-@admin_profile.route("/admin/users/delete/<user_id>", methods=["GET"])
+@admin_profile.route("/admin/users/delete/<user_id>", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
 def eliminar_usuario(user_id: str) -> Response:
@@ -152,7 +152,7 @@ def eliminar_usuario(user_id: str) -> Response:
     database.session.commit()
     cache.delete("view/" + url_for(ADMIN_USERS_ROUTE))
     flash("Usuario eliminado correctamente.", "info")
-    return redirect(url_for(request.args.get("ruta", default="home", type=str)))
+    return redirect(url_for(request.form.get("ruta", default="home", type=str)))
 
 
 @admin_profile.route("/admin/users/list_inactive", methods=["GET"])
@@ -193,7 +193,7 @@ def usuarios_sin_verificar() -> str:
     )
 
 
-@admin_profile.route("/admin/users/verify_email/<user_id>", methods=["GET"])
+@admin_profile.route("/admin/users/verify_email/<user_id>", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
 def verificar_email_usuario(user_id: str) -> Response:
@@ -229,7 +229,7 @@ def verificar_email_usuario(user_id: str) -> Response:
     return redirect(url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
 
-@admin_profile.route("/admin/users/reject_unverified/<user_id>", methods=["GET"])
+@admin_profile.route("/admin/users/reject_unverified/<user_id>", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
 def rechazar_usuario_sin_verificar(user_id: str) -> Response:
@@ -264,16 +264,16 @@ def rechazar_usuario_sin_verificar(user_id: str) -> Response:
     return redirect(url_for(ADMIN_UNVERIFIED_USERS_ROUTE))
 
 
-@admin_profile.route("/admin/user/change_type", methods=["GET"])
+@admin_profile.route("/admin/user/change_type", methods=["POST"])
 @login_required
 @perfil_requerido("admin")
 def cambiar_tipo_usario() -> Response:
     """Actualiza el tipo de usuario."""
     from now_lms.demo_mode import demo_restriction_check
 
-    new_type = request.args.get("type")
-    user_id = request.args.get("user")
-    redirect_to = request.args.get("redirect_to", "profile")
+    new_type = request.form.get("type")
+    user_id = request.form.get("user")
+    redirect_to = request.form.get("redirect_to", "profile")
 
     # Check demo mode restrictions for any user type changes by admin
     if demo_restriction_check("change_user_type"):

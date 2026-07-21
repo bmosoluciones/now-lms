@@ -96,20 +96,16 @@
                                         </td>
                                         <td>
                                             <div class="btn-group" role="group" aria-label="{{_('Acciones del usuario')}}">
-                                                <a
-                                                    href="{{ url_for('admin_profile.verificar_email_usuario', user_id=item.id) }}"
-                                                    class="btn btn-sm btn-success"
-                                                    title="{{ _('Aprobar y verificar correo electrónico') }}"
-                                                >
-                                                    <i class="bi bi-check-circle me-1"></i>{{_("Aprobar")}}
-                                                </a>
-                                                <a
-                                                    href="{{ url_for('admin_profile.rechazar_usuario_sin_verificar', user_id=item.id) }}"
-                                                    class="btn btn-sm btn-danger"
-                                                    title="{{ _('Rechazar e inhabilitar usuario') }}"
-                                                >
-                                                    <i class="bi bi-x-circle me-1"></i>{{_("Rechazar")}}
-                                                </a>
+                                                <form action="{{ url_for('admin_profile.verificar_email_usuario', user_id=item.id) }}" method="POST" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-success" title="{{ _('Aprobar y verificar correo electrónico') }}">
+                                                        <i class="bi bi-check-circle me-1"></i>{{_("Aprobar")}}
+                                                    </button>
+                                                </form>
+                                                <form action="{{ url_for('admin_profile.rechazar_usuario_sin_verificar', user_id=item.id) }}" method="POST" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="{{ _('Rechazar e inhabilitar usuario') }}">
+                                                        <i class="bi bi-x-circle me-1"></i>{{_("Rechazar")}}
+                                                    </button>
+                                                </form>
                                             </div>
                                         </td>
                                     </tr>
