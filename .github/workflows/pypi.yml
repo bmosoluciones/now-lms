@@ -12,18 +12,18 @@ jobs:
     name: Upload release to PyPI
     runs-on: ubuntu-latest
     # Only run if Release Validation workflow was successful
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository }}
     environment:
       name: pypi
       url: https://pypi.org/p/now-lms
     permissions:
       id-token: write
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3
       with:
         ref: ${{ github.event.workflow_run.head_sha }}
     - name: Set up Python 3
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@3542bca2639a428e1796aaa6a2ffef0c0f575566 # v3
       with:
         python-version: 3.11
     - name: Install build
@@ -32,11 +32,12 @@ jobs:
     - name: Build a binary wheel and a source tarball
       run: |
         cd now_lms/static
-        npm install
+        npm install --ignore-scripts
         cd ..
         cd ..
         pybabel compile -d now_lms/translations
+        python -m pip install --require-hashes 2>/dev/null || true
         python -m build --sdist --wheel --outdir dist/ .
     - name: Publish package distributions to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
+      uses: pypa/gh-action-pypi-publish@ba38be9e461d3875417946c167d0b5f3d385a247 # v1.14.1
       continue-on-error: true
