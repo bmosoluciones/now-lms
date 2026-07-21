@@ -594,6 +594,64 @@ def revoke_api_key(key_id: str) -> Response:
     return redirect(url_for("setting.api_keys"))
 
 
+def _resolve_paypal_client_secret(form: PayaplForm, config: PaypalConfig, descifrar_secreto) -> str | None:
+    """Resolve the PayPal client secret from form data or existing config."""
+    if form.sandbox.data:
+        if form.paypal_sandbox_secret.data:
+            return form.paypal_sandbox_secret.data
+        if config.paypal_sandbox_secret:
+            return descifrar_secreto(config.paypal_sandbox_secret).decode()
+        return None
+
+    if form.paypal_secret.data:
+        return form.paypal_secret.data
+    if config.paypal_secret:
+        return descifrar_secreto(config.paypal_secret).decode()
+    return None
+
+
+def _validate_paypal_enabled(form: PayaplForm, config: PaypalConfig) -> bool:
+    """Validate PayPal configuration when enabling PayPal. Returns False if invalid."""
+    from now_lms.auth import descifrar_secreto
+    from now_lms.vistas.paypal import validate_paypal_configuration
+
+    client_id = form.paypal_sandbox.data if form.sandbox.data else form.paypal_id.data
+    client_secret = _resolve_paypal_client_secret(form, config, descifrar_secreto)
+
+    if not (client_id and client_secret):
+        return True
+
+    validation = validate_paypal_configuration(client_id, client_secret, form.sandbox.data)
+    if validation["valid"]:
+        return True
+
+    flash(f"Error en la configuración de PayPal: {validation['message']}", "error")
+    return False
+
+
+def _save_paypal_config(form: PayaplForm, config: PaypalConfig) -> Response:
+    """Save PayPal configuration from form data."""
+    config.enable = form.habilitado.data
+    config.sandbox = form.sandbox.data
+    config.paypal_id = form.paypal_id.data
+    config.paypal_sandbox = form.paypal_sandbox.data
+
+    if form.paypal_secret.data:
+        config.paypal_secret = proteger_secreto(form.paypal_secret.data)
+    if form.paypal_sandbox_secret.data:
+        config.paypal_sandbox_secret = proteger_secreto(form.paypal_sandbox_secret.data)
+
+    try:
+        database.session.commit()
+        invalidar_cache()
+        flash(_("Configuración de Paypal actualizada exitosamente."), "success")
+    except OperationalError:
+        database.session.rollback()
+        flash(_("No se pudo actualizar la configuración de Paypal."), "warning")
+
+    return redirect(url_for("setting.paypal"))
+
+
 @setting.route("/setting/paypal", methods=["GET", "POST"])
 @login_required
 @perfil_requerido("admin")
@@ -602,6 +660,7 @@ def paypal() -> str | Response:
     row = database.session.execute(database.select(PaypalConfig)).first()
     if row is None:
         return redirect(url_for(HOME_ROUTE))
+
     config = row[0]
     form = PayaplForm(
         habilitado=config.enable,
@@ -610,65 +669,15 @@ def paypal() -> str | Response:
         paypal_sandbox=config.paypal_sandbox,
     )
 
-    if form.validate_on_submit() or request.method == "POST":
-        from now_lms.demo_mode import demo_restriction_check
-
-        # Check demo mode restrictions for PayPal settings
-        if demo_restriction_check("paypal_settings"):
-            return render_template(ADMIN_PAYPAL_TEMPLATE, form=form, config=config, with_paypal=True)
-
-        # Validate PayPal configuration if enabling PayPal
-        if form.habilitado.data:
-            from now_lms.auth import descifrar_secreto
-            from now_lms.vistas.paypal import validate_paypal_configuration
-
-            # Get the appropriate credentials based on sandbox mode
-            client_id = form.paypal_sandbox.data if form.sandbox.data else form.paypal_id.data
-
-            # Get the secret - either from form or existing config
-            if form.sandbox.data and form.paypal_sandbox_secret.data:
-                client_secret = form.paypal_sandbox_secret.data
-            elif not form.sandbox.data and form.paypal_secret.data:
-                client_secret = form.paypal_secret.data
-            elif form.sandbox.data and config.paypal_sandbox_secret:
-                client_secret = descifrar_secreto(config.paypal_sandbox_secret).decode()
-            elif not form.sandbox.data and config.paypal_secret:
-                client_secret = descifrar_secreto(config.paypal_secret).decode()
-            else:
-                client_secret = None
-
-            # Validate if we have both client ID and secret
-            if client_id and client_secret:
-                validation = validate_paypal_configuration(client_id, client_secret, form.sandbox.data)
-                if not validation["valid"]:
-                    flash(f"Error en la configuración de PayPal: {validation['message']}", "error")
-                    return render_template(ADMIN_PAYPAL_TEMPLATE, form=form, config=config, with_paypal=True)
-
-        config.enable = form.habilitado.data
-        config.sandbox = form.sandbox.data
-        config.paypal_id = form.paypal_id.data
-        config.paypal_sandbox = form.paypal_sandbox.data
-
-        # Only update secrets if provided (to avoid clearing them)
-        if form.paypal_secret.data:
-            config.paypal_secret = proteger_secreto(form.paypal_secret.data)
-        if form.paypal_sandbox_secret.data:
-            config.paypal_sandbox_secret = proteger_secreto(form.paypal_sandbox_secret.data)
-
-        try:
-            database.session.commit()
-
-            # Invalidate cache when PayPal configuration changes
-            # This ensures payment settings and currency info are properly refreshed
-            invalidar_cache()
-
-            flash(_("Configuración de Paypal actualizada exitosamente."), "success")
-            return redirect(url_for("setting.paypal"))
-
-        except OperationalError:
-            database.session.rollback()
-            flash(_("No se pudo actualizar la configuración de Paypal."), "warning")
-            return redirect(url_for("setting.paypal"))
-
-    else:
+    if not (form.validate_on_submit() or request.method == "POST"):
         return render_template(ADMIN_PAYPAL_TEMPLATE, form=form, config=config, with_paypal=True)
+
+    from now_lms.demo_mode import demo_restriction_check
+
+    if demo_restriction_check("paypal_settings"):
+        return render_template(ADMIN_PAYPAL_TEMPLATE, form=form, config=config, with_paypal=True)
+
+    if form.habilitado.data and not _validate_paypal_enabled(form, config):
+        return render_template(ADMIN_PAYPAL_TEMPLATE, form=form, config=config, with_paypal=True)
+
+    return _save_paypal_config(form, config)
