@@ -1293,7 +1293,7 @@ def editar_slideshow(course_code: str, slideshow_id: str) -> str | Response:
             slideshow.theme = request.form.get("theme", slideshow.theme)
             slideshow.modificado_por = current_user.usuario
 
-            slide_count = int(request.form.get("slide_count", 0))
+            slide_count = min(int(request.form.get("slide_count", 0)), 100)
             existing_orders = []
             for i in range(slide_count):
                 order = int(request.form.get(f"slide_{i}_order", i + 1))
