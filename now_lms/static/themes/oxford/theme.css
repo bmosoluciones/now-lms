@@ -1,3 +1,6 @@
+    /* Import medieval-style fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Cardo:ital,wght@0,400;0,700;1,400&display=swap');
+
     /* Oxford Theme Custom Variables - Oxford University Inspired */
     :root {
         --oxford-primary: #002147; /* Oxford Blue - Dark Navy */
@@ -13,9 +16,6 @@
         --oxford-text-light: #FFFFFF; /* White Text */
         --academic-theme-name: "Oxford";
     }
-
-    /* Import medieval-style fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Cardo:ital,wght@0,400;0,700;1,400&display=swap');
 
     .bd-placeholder-img {
         font-size: 1.125rem;
